@@ -72,7 +72,7 @@
 %
 %  The format of the ReadICONImage method is:
 %
-%      Image *ReadICONImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -82,11 +82,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadICONImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MaxIcons  256
 
@@ -174,13 +174,13 @@ static Image *ReadICONImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   icon_file.reserved=LSBFirstReadShort(image);
   icon_file.resource_type=LSBFirstReadShort(image);
   icon_file.count=LSBFirstReadShort(image);
   if ((icon_file.reserved != 0) || (icon_file.resource_type != 1) ||
       (icon_file.count > MaxIcons))
-    ReaderExit(CorruptImageWarning,"Not a ICO image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a ICO image file",image);
   for (i=0; i < icon_file.count; i++)
   {
     icon_file.directory[i].width=ReadByte(image);
@@ -219,7 +219,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ErrorInfo *error)
     image->colormap=(PixelPacket *)
       AllocateMemory(image->colors*sizeof(PixelPacket));
     if (image->colormap == (PixelPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     if (image_info->ping)
       {
         CloseBlob(image);
@@ -230,7 +230,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ErrorInfo *error)
     */
     icon_colormap=(unsigned char *) AllocateMemory(4*image->colors);
     if (icon_colormap == (unsigned char *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
     p=icon_colormap;
     for (x=0; x < (int) image->colors; x++)
@@ -352,7 +352,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ErrorInfo *error)
         break;
       }
       default:
-        ReaderExit(CorruptImageWarning,"Not a ICO image file",image);
+        ThrowReaderException(CorruptImageWarning,"Not a ICO image file",image);
     }
     SyncImage(image);
     /*

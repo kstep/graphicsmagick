@@ -80,7 +80,7 @@ static unsigned int
 %
 %  The format of the ReadJBIGImage method is:
 %
-%      Image *ReadJBIGImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -90,11 +90,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadJBIGImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MaxBufferSize  8192
 
@@ -139,7 +139,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Initialize JBIG toolkit.
   */
@@ -161,7 +161,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,ErrorInfo *error)
   */
   buffer=(unsigned char *) AllocateMemory(MaxBufferSize);
   if (buffer == (unsigned char *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=JBG_EAGAIN;
   do
   {
@@ -189,7 +189,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,ErrorInfo *error)
   if (image->colormap == (PixelPacket *) NULL)
     {
       FreeMemory(buffer);
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     }
   image->colormap[0].red=0;
   image->colormap[0].green=0;
@@ -236,7 +236,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,ErrorInfo *error)
   return(image);
 }
 #else
-static Image *ReadJBIGImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"JBIG library is not available",
     image_info->filename);
@@ -368,7 +368,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   scene=0;
   do
   {
@@ -379,7 +379,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     number_packets=((image->columns+7) >> 3)*image->rows;
     pixels=(unsigned char *) AllocateMemory(number_packets);
     if (pixels == (unsigned char *) NULL)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Convert Runlength encoded pixels to a bitmap.
     */

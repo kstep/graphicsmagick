@@ -173,9 +173,9 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
   assert(image != (Image *) NULL);
   assert(tile != (Image *) NULL);
   if ((x_offset < 0) || (x_offset >= (int) image->columns))
-    return;
+    return(False);
   if ((y_offset < 0) || (y_offset >= (int) image->rows))
-    return;
+    return(False);
   /*
     Set floodfill color.
   */
@@ -184,7 +184,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
   if (p != (PixelPacket *) NULL)
     color=(*p);
   if (ColorMatch(color,*target,image->fuzz))
-    return;
+    return(False);
   segment_stack=(SegmentInfo *)
     AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
@@ -820,7 +820,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       }
       case ImagePrimitive:
       {
-        ErrorInfo
+        ExceptionInfo
           error;
 
         Image
@@ -1548,11 +1548,11 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
   */
   assert(image != (Image *) NULL);
   if ((x_offset < 0) || (x_offset >= (int) image->columns))
-    return;
+    return(False);
   if ((y_offset < 0) || (y_offset >= (int) image->rows))
-    return;
+    return(False);
   if (target->opacity == (unsigned short) matte)
-    return;
+    return(False);
   q=GetPixelCache(image,x_offset,y_offset,1,1);
   if (q == (PixelPacket *) NULL)
     return(False);
@@ -1685,7 +1685,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
 %
 %  The format of the OpaqueImage method is:
 %
-%      void OpaqueImage(Image *image,const char *opaque_color,
+%      unsigned int OpaqueImage(Image *image,const char *opaque_color,
 %        const char *pen_color)
 %
 %  A description of each parameter follows:
@@ -1698,7 +1698,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket *target,
 %
 %
 */
-Export void OpaqueImage(Image *image,const char *opaque_color,
+Export unsigned int OpaqueImage(Image *image,const char *opaque_color,
   const char *pen_color)
 {
 #define OpaqueImageText  "  Setting opaque color in the image...  "
@@ -1726,10 +1726,10 @@ Export void OpaqueImage(Image *image,const char *opaque_color,
   assert(image != (Image *) NULL);
   status=QueryColorDatabase(opaque_color,&target);
   if (status == False)
-    return;
+    return(False);
   status=QueryColorDatabase(pen_color,&target_color);
   if (status == False)
-    return;
+    return(False);
   /*
     Make image color opaque.
   */
@@ -1793,7 +1793,7 @@ Export void OpaqueImage(Image *image,const char *opaque_color,
 %
 %  The format of the TransparentImage method is:
 %
-%      void TransparentImage(Image *image,const char *color)
+%      unsigned int TransparentImage(Image *image,const char *color)
 %
 %  A description of each parameter follows:
 %
@@ -1804,7 +1804,7 @@ Export void OpaqueImage(Image *image,const char *opaque_color,
 %
 %
 */
-Export void TransparentImage(Image *image,const char *color)
+Export unsigned int TransparentImage(Image *image,const char *color)
 {
 #define TransparentImageText  "  Setting transparent color in the image...  "
 
@@ -1829,7 +1829,7 @@ Export void TransparentImage(Image *image,const char *color)
   assert(image != (Image *) NULL);
   status=QueryColorDatabase(color,&target);
   if (status == False)
-    return;
+    return(False);
   /*
     Make image color transparent.
   */

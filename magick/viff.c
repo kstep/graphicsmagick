@@ -118,7 +118,7 @@ static unsigned int IsVIFF(const unsigned char *magick,
 %
 %  The format of the ReadVIFFImage method is:
 %
-%      Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -128,11 +128,11 @@ static unsigned int IsVIFF(const unsigned char *magick,
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define VFF_CM_genericRGB  15
 #define VFF_CM_ntscRGB  1
@@ -242,7 +242,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read VIFF header (1024 bytes).
   */
@@ -253,7 +253,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
       Verify VIFF identifier.
     */
     if ((status == False) || ((unsigned char) viff_header.identifier != 0xab))
-      ReaderExit(CorruptImageWarning,"Not a VIFF raster",image);
+      ThrowReaderException(CorruptImageWarning,"Not a VIFF raster",image);
     /*
       Initialize VIFF image.
     */
@@ -324,7 +324,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
       Verify that we can read this VIFF image.
     */
     if ((viff_header.columns*viff_header.rows) == 0)
-      ReaderExit(CorruptImageWarning,
+      ThrowReaderException(CorruptImageWarning,
         "Image column or row size is not supported",image);
     if ((viff_header.data_storage_type != VFF_TYP_BIT) &&
         (viff_header.data_storage_type != VFF_TYP_1_BYTE) &&
@@ -332,10 +332,10 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
         (viff_header.data_storage_type != VFF_TYP_4_BYTE) &&
         (viff_header.data_storage_type != VFF_TYP_FLOAT) &&
         (viff_header.data_storage_type != VFF_TYP_DOUBLE))
-      ReaderExit(CorruptImageWarning,"Data storage type is not supported",
+      ThrowReaderException(CorruptImageWarning,"Data storage type is not supported",
         image);
     if (viff_header.data_encode_scheme != VFF_DES_RAW)
-      ReaderExit(CorruptImageWarning,"Data encoding scheme is not supported",
+      ThrowReaderException(CorruptImageWarning,"Data encoding scheme is not supported",
         image);
     if ((viff_header.map_storage_type != VFF_MAPTYP_NONE) &&
         (viff_header.map_storage_type != VFF_MAPTYP_1_BYTE) &&
@@ -343,15 +343,15 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
         (viff_header.map_storage_type != VFF_MAPTYP_4_BYTE) &&
         (viff_header.map_storage_type != VFF_MAPTYP_FLOAT) &&
         (viff_header.map_storage_type != VFF_MAPTYP_DOUBLE))
-      ReaderExit(CorruptImageWarning,"Map storage type is not supported",image);
+      ThrowReaderException(CorruptImageWarning,"Map storage type is not supported",image);
     if ((viff_header.color_space_model != VFF_CM_NONE) &&
         (viff_header.color_space_model != VFF_CM_ntscRGB) &&
         (viff_header.color_space_model != VFF_CM_genericRGB))
-      ReaderExit(CorruptImageWarning,"Colorspace model is not supported",image);
+      ThrowReaderException(CorruptImageWarning,"Colorspace model is not supported",image);
     if (viff_header.location_type != VFF_LOC_IMPLICIT)
-      ReaderExit(CorruptImageWarning,"Location type is not supported",image);
+      ThrowReaderException(CorruptImageWarning,"Location type is not supported",image);
     if (viff_header.number_of_images != 1)
-      ReaderExit(CorruptImageWarning,"Number of images is not supported",image);
+      ThrowReaderException(CorruptImageWarning,"Number of images is not supported",image);
     if (viff_header.map_rows == 0)
       viff_header.map_scheme=VFF_MS_NONE;
     switch (viff_header.map_scheme)
@@ -370,7 +370,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
             image->colormap=(PixelPacket *)
               AllocateMemory(image->colors*sizeof(PixelPacket));
             if (image->colormap == (PixelPacket *) NULL)
-              ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+              ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
             for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
@@ -405,7 +405,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
           AllocateMemory(bytes_per_pixel*image->colors*viff_header.map_rows);
         if ((image->colormap == (PixelPacket *) NULL) ||
             (viff_colormap == (unsigned char *) NULL))
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           Read VIFF raster colormap.
         */
@@ -459,7 +459,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
         break;
       }
       default:
-        ReaderExit(CorruptImageWarning,"Colormap type is not supported",image);
+        ThrowReaderException(CorruptImageWarning,"Colormap type is not supported",image);
     }
     /*
       Allocate VIFF pixels.
@@ -480,7 +480,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ErrorInfo *error)
     viff_pixels=(unsigned char *)
       AllocateMemory(bytes_per_pixel*max_packets*sizeof(Quantum));
     if (viff_pixels == (unsigned char *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     (void) ReadBlob(image,bytes_per_pixel*max_packets,(char *) viff_pixels);
     if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
         (viff_header.machine_dependency == VFF_DEP_NSORDER))
@@ -874,7 +874,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   scene=0;
   do
   {
@@ -992,7 +992,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     */
     viff_pixels=(unsigned char *) AllocateMemory(packets);
     if (viff_pixels == (unsigned char *) NULL)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     q=viff_pixels;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
@@ -1034,7 +1034,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           */
           viff_colormap=(unsigned char *) AllocateMemory(3*image->colors);
           if (viff_colormap == (unsigned char *) NULL)
-            WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
           q=viff_colormap;
           for (i=0; i < (int) image->colors; i++)
             *q++=DownScale(image->colormap[i].red);

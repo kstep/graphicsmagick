@@ -287,11 +287,11 @@ static unsigned int IsPSD(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define BitmapMode  0
 #define GrayscaleMode  1
@@ -402,7 +402,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read image header.
   */
@@ -410,7 +410,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
   psd_header.version=MSBFirstReadShort(image);
   if ((status == False) || (strncmp(psd_header.signature,"8BPS",4) != 0) ||
       (psd_header.version != 1))
-    ReaderExit(CorruptImageWarning,"Not a PSD image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
   (void) ReadBlob(image,6,(char *) psd_header.reserved);
   psd_header.channels=MSBFirstReadShort(image);
   psd_header.rows=MSBFirstReadLong(image);
@@ -440,7 +440,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
       image->colormap=(PixelPacket *)
         AllocateMemory(image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
@@ -468,11 +468,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
 
       data=(unsigned char *) AllocateMemory(length);
       if (data == (unsigned char *) NULL)
-        ReaderExit(ResourceLimitWarning,
+        ThrowReaderException(ResourceLimitWarning,
           "8BIM resource memory allocation failed",image);
       status=ReadBlob(image,length,(char *) data);
       if ((status == False) || (strncmp((char *) data,"8BIM",4) != 0))
-        ReaderExit(CorruptImageWarning,"Not a PSD image file",image);
+        ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
       image->iptc_profile.info=data;
       image->iptc_profile.length=length;
     }
@@ -494,7 +494,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
       number_layers=AbsoluteValue(number_layers);
       layer_info=(LayerInfo *) AllocateMemory(number_layers*sizeof(LayerInfo));
       if (layer_info == (LayerInfo *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < number_layers; i++)
       {
         layer_info[i].y=MSBFirstReadLong(image);
@@ -503,7 +503,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
         layer_info[i].width=MSBFirstReadLong(image)-layer_info[i].x;
         layer_info[i].channels=MSBFirstReadShort(image);
         if (layer_info[i].channels > 24)
-          ReaderExit(CorruptImageWarning,"Not a PSD image file",image);
+          ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
           layer_info[i].channel_info[j].type=MSBFirstReadShort(image);
@@ -511,7 +511,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
         }
         status=ReadBlob(image,4,(char *) type);
         if ((status == False) || (strncmp(type,"8BIM",4) != 0))
-          ReaderExit(CorruptImageWarning,"Not a PSD image file",image);
+          ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
         layer_info[i].opacity=ReadByte(image);
         layer_info[i].clipping=ReadByte(image);
@@ -529,7 +529,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
           {
             for (j=0; j < i; j++)
               DestroyImage(layer_info[j].image);
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
           }
         if (psd_header.mode == CMYKMode)
           layer_info[i].image->colorspace=CMYKColorspace;
@@ -570,7 +570,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
               scanline=(unsigned char *)
                 AllocateMemory(packet_size*layer_info[i].image->columns+1);
               if (scanline == (unsigned char *) NULL)
-                ReaderExit(ResourceLimitWarning,"Memory allocation failed",
+                ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
                   image);
               for (y=0; y < (int) layer_info[i].image->rows; y++)
               {
@@ -705,7 +705,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ErrorInfo *error)
         channel_map[i]=!image->matte ? i : i-1;
       scanline=(unsigned char *) AllocateMemory(packet_size*image->columns);
       if (scanline == (unsigned char *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) psd_header.channels; i++)
       {
         for (y=0; y < (int) image->rows; y++)
@@ -875,14 +875,14 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   packet_size=image->depth > 8 ? 6 : 3;
   if (image->matte)
     packet_size+=image->depth > 8 ? 2 : 1;
   pixels=(unsigned char *)
     AllocateMemory(packet_size*image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   (void) WriteBlob(image,4,"8BPS");
   MSBFirstWriteShort(image,1);  /* version */
   (void) WriteBlob(image,6,"      ");  /* reserved */

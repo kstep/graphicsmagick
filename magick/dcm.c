@@ -93,8 +93,8 @@ static const DicomInfo
     { 0x0000, 0x0860, "US", "Response Sequence Number" },
     { 0x0000, 0x0900, "US", "Status" },
     { 0x0000, 0x0901, "AT", "Offending Element" },
-    { 0x0000, 0x0902, "LO", "Error Comment" },
-    { 0x0000, 0x0903, "US", "Error ID" },
+    { 0x0000, 0x0902, "LO", "Exception Comment" },
+    { 0x0000, 0x0903, "US", "Exception ID" },
     { 0x0000, 0x1000, "UI", "Affected SOP Instance UID" },
     { 0x0000, 0x1001, "UI", "Requested SOP Instance UID" },
     { 0x0000, 0x1002, "US", "Event Type ID" },
@@ -2655,7 +2655,7 @@ static unsigned int IsDCM(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadDCMImage method is:
 %
-%      Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2665,11 +2665,11 @@ static unsigned int IsDCM(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     explicit_vr[3],
@@ -2734,7 +2734,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read DCM preamble.
   */
@@ -2899,7 +2899,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
             {
               data=(unsigned char *) AllocateMemory(quantum*(length+1));
               if (data == (unsigned char *) NULL)
-                ReaderExit(ResourceLimitWarning,"Memory allocation failed",
+                ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
                   image);
               (void) ReadBlob(image,quantum*length,(char *) data);
               data[length*quantum]=0;
@@ -2917,10 +2917,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
             */
             (void) strcpy(transfer_syntax,(char *) data);
             if (strcmp(transfer_syntax,"1.2.840.10008.1.2.2") == 0)
-              ReaderExit(CorruptImageWarning,
+              ThrowReaderException(CorruptImageWarning,
                 "big endian byte order not supported",image);
             if (strcmp(transfer_syntax,"1.2.840.10008.1.2.5") == 0)
-              ReaderExit(CorruptImageWarning,"RLE compression not supported",
+              ThrowReaderException(CorruptImageWarning,"RLE compression not supported",
                 image);
             break;
           }
@@ -3112,7 +3112,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
     FreeMemory(data);
   }
   if ((width == 0) || (height == 0))
-    ReaderExit(CorruptImageWarning,"Not a DCM image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a DCM image file",image);
   if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0) ||
       (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0))
     {
@@ -3132,7 +3132,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
       TemporaryFilename((char *) clone_info->filename);
       file=fopen(clone_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
-        ReaderExit(FileOpenWarning,"Unable to write file",image);
+        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
       c=16;
       if (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0)
         c+=48;
@@ -3146,7 +3146,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
       }
       (void) fclose(file);
       DestroyImage(image);
-      image=ReadImage(clone_info,error);
+      image=ReadImage(clone_info,exception);
       (void) remove(clone_info->filename);
       DestroyImageInfo(clone_info);
       return(image);
@@ -3162,7 +3162,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
       */
       scale=(Quantum *) AllocateMemory((max_value+1)*sizeof(Quantum));
       if (scale == (Quantum *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i <= (int) max_value; i++)
         scale[i]=((unsigned long) (MaxRGB*i)/max_value);
     }
@@ -3183,7 +3183,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ErrorInfo *error)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=((unsigned long) (MaxRGB*i)/(image->colors-1));

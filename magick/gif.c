@@ -647,7 +647,7 @@ static unsigned int IsGIF(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadGIFImage method is:
 %
-%      Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -657,11 +657,11 @@ static unsigned int IsGIF(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define BitSet(byte,bit)  (((byte) & (bit)) == (bit))
 #define LSBFirstOrder(x,y)  (((y) << 8) | (x))
@@ -703,14 +703,14 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Determine if this is a GIF file.
   */
   status=ReadBlob(image,6,(char *) magick);
   if ((status == False) || ((strncmp((char *) magick,"GIF87",5) != 0) &&
       (strncmp((char *) magick,"GIF89",5) != 0)))
-    ReaderExit(CorruptImageWarning,"Not a GIF image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a GIF image file",image);
   global_colors=0;
   global_colormap=(unsigned char *) NULL;
   page.width=LSBFirstReadShort(image);
@@ -726,7 +726,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
       global_colors=1 << ((flag & 0x07)+1);
       global_colormap=(unsigned char *) AllocateMemory(3*global_colors);
       if (global_colormap == (unsigned char *) NULL)
-        ReaderExit(ResourceLimitWarning,"Unable to read image colormap file",
+        ThrowReaderException(ResourceLimitWarning,"Unable to read image colormap file",
           image);
       (void) ReadBlob(image,3*global_colors,(char *) global_colormap);
     }
@@ -749,7 +749,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
         */
         status=ReadBlob(image,1,(char *) &c);
         if (status == False)
-          ReaderExit(CorruptImageWarning,"Unable to read extension block",
+          ThrowReaderException(CorruptImageWarning,"Unable to read extension block",
             image);
         switch (c)
         {
@@ -794,7 +794,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
                     *comments='\0';
                 }
               if (comments == (char *) NULL)
-                ReaderExit(ResourceLimitWarning,"Memory allocation failed",
+                ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
                   image);
               header[length]='\0';
               (void) strcat(comments,(char *) header);
@@ -882,7 +882,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
         return(image);
       }
     if ((image->columns == 0) || (image->rows == 0))
-      ReaderExit(CorruptImageWarning,"image size is 0",image);
+      ThrowReaderException(CorruptImageWarning,"image size is 0",image);
     /*
       Inititialize colormap.
     */
@@ -893,7 +893,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
       image->colormap=(PixelPacket *)
         AllocateMemory(image->colors*sizeof(PixelPacket));
     if (image->colormap == (PixelPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     if (!BitSet(flag,0x80))
       {
         /*
@@ -919,7 +919,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ErrorInfo *error)
         */
         colormap=(unsigned char *) AllocateMemory(3*image->colors);
         if (colormap == (unsigned char *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         (void) ReadBlob(image,3*image->colors,(char *) colormap);
         p=colormap;
         for (i=0; i < (int) image->colors; i++)
@@ -1077,7 +1077,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   /*
     Determine image bounding box.
   */
@@ -1102,7 +1102,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   colormap=(unsigned char *) AllocateMemory(768);
   if ((global_colormap == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < 768; i++)
     colormap[i]=0;
   /*
@@ -1154,7 +1154,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               {
                 FreeMemory(global_colormap);
                 FreeMemory(colormap);
-                WriterExit(ResourceLimitWarning,"Memory allocation failed",
+                ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
                   image);
               }
             image->colormap[opacity]=image->background_color;
@@ -1353,7 +1353,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
           {
             FreeMemory(global_colormap);
             FreeMemory(colormap);
-            WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
           }
         i=0;
         for (pass=0; pass < 4; pass++)
@@ -1383,7 +1383,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       {
         FreeMemory(global_colormap);
         FreeMemory(colormap);
-        WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
       }
     (void) WriteByte(image,0x0);
     if (image->next == (Image *) NULL)

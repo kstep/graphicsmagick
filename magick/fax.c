@@ -117,7 +117,7 @@ static unsigned int IsFAX(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadFAXImage method is:
 %
-%      Image *ReadFAXImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -127,11 +127,11 @@ static unsigned int IsFAX(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadFAXImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -145,7 +145,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Initialize image structure.
   */
@@ -159,7 +159,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ErrorInfo *error)
   image->colormap=(PixelPacket *)
     AllocateMemory(image->colors*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Monochrome colormap.
   */
@@ -171,7 +171,7 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ErrorInfo *error)
   image->colormap[1].blue=0;
   status=HuffmanDecodeImage(image);
   if (status == False)
-    ReaderExit(CorruptImageWarning,"Unable to read image data",image);
+    ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
   CloseBlob(image);
   return(image);
 }
@@ -260,7 +260,7 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) strcpy((char *) image_info->magick,"FAX");
   scene=0;
   do

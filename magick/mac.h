@@ -11,7 +11,7 @@ extern "C" {
 #include <locale.h>
 #include <stat.h>
 #include <errno.h>
-#include <Errors.h>
+#include <Exceptions.h>
 
 /*
   Define declarations.
@@ -62,8 +62,8 @@ extern struct dirent
  
 extern void
   closedir(DIR *),
-  MACErrorHandler(const ErrorType,const char *,const char *),
-  MACWarningHandler(const ErrorType,const char *,const char *),
+  MACErrorHandler(const ExceptionType,const char *,const char *),
+  MACWarningHandler(const ExceptionType,const char *,const char *),
   ProcessPendingEvents(const char *),
   seekdir(DIR *,long),
   SetApplicationType(const char *,const char *,OSType);

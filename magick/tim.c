@@ -74,7 +74,7 @@
 %
 %  The format of the ReadTIMImage method is:
 %
-%      Image *ReadTIMImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -84,11 +84,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadTIMImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define ScaleColor5to8(x)  ((x) << 3)
 
@@ -141,7 +141,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Determine if this is a TIM file.
   */
@@ -152,7 +152,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ErrorInfo *error)
       Verify TIM identifier.
     */
     if (tim_header.id != 0x00000010)
-      ReaderExit(CorruptImageWarning,"Not a TIM image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a TIM image file",image);
     tim_header.flag=LSBFirstReadLong(image);
     has_clut=!!(tim_header.flag & (1 << 3));
     pixel_mode=tim_header.flag & 0x07;
@@ -184,7 +184,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ErrorInfo *error)
         tim_colormap=(unsigned char *) AllocateMemory(image->colors*2);
         if ((image->colormap == (PixelPacket *) NULL) ||
             (tim_colormap == (unsigned char *) NULL))
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         (void) ReadBlob(image,2*image->colors,(char *) tim_colormap);
         p=tim_colormap;
         for (i=0; i < (int) image->colors; i++)
@@ -210,7 +210,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ErrorInfo *error)
     width=(width*16)/bits_per_pixel;
     tim_data=(unsigned char *) AllocateMemory(image_size);
     if (tim_data == (unsigned char *) NULL)
-      ReaderExit(ResourceLimitWarning,"Unable to allocate memory",image);
+      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",image);
     (void) ReadBlob(image,image_size,(char *) tim_data);
     tim_pixels=tim_data;
     /*
@@ -323,7 +323,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ErrorInfo *error)
         break;
       }
       default:
-        ReaderExit(CorruptImageWarning,"Not a TIM image file",image);
+        ThrowReaderException(CorruptImageWarning,"Not a TIM image file",image);
     }
     if (image->class == PseudoClass)
       SyncImage(image);

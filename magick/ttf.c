@@ -73,7 +73,7 @@
 %
 %  The format of the ReadTTFImage method is:
 %
-%      Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -83,11 +83,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   AnnotateInfo
     *annotate_info;
@@ -121,10 +121,10 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   magick=MSBFirstReadLong(image);
   if ((magick != 256) && (magick != 65536))
-    ReaderExit(CorruptImageWarning,"Not a TTF font file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a TTF font file",image);
   /*
     Start with a white canvas.
   */
@@ -150,7 +150,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
     }
   DestroyImage(image);
   (void) strcpy(clone_info->filename,"xc:white");
-  image=ReadImage(clone_info,error);
+  image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     {
@@ -211,7 +211,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
   return(image);
 }
 #else
-static Image *ReadTTFImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read TTF images",
     image_info->filename);

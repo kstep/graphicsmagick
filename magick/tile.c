@@ -72,7 +72,7 @@
 %
 %  The format of the ReadTILEImage method is:
 %
-%      Image *ReadTILEImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadTILEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -82,11 +82,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadTILEImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadTILEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *cloned_image,
@@ -107,21 +107,22 @@ static Image *ReadTILEImage(const ImageInfo *image_info,ErrorInfo *error)
   */
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionWarning,"Must specify image size",image);
   if (*image_info->filename == '\0')
-    ReaderExit(OptionWarning,"must specify an image name",image);
+    ThrowReaderException(OptionWarning,"must specify an image name",image);
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   *clone_info->magick='\0';
-  tiled_image=ReadImage(clone_info,error);
+  tiled_image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   if (tiled_image == (Image *) NULL)
     return((Image *) NULL);
   cloned_image=CloneImage(tiled_image,image->columns,image->rows,True);
   DestroyImage(image);
   if (cloned_image == (Image *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",tiled_image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      tiled_image);
   image=cloned_image;
   (void) strcpy(image->filename,image_info->filename);
   /*

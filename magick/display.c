@@ -2196,7 +2196,7 @@ static unsigned int XCompositeImage(Display *display,
     blend,
     scale_factor;
 
-  ErrorInfo
+  ExceptionInfo
     error;
 
   Image
@@ -3830,7 +3830,7 @@ static unsigned int XDrawEditImage(Display *display,
             }
             case DrawStippleCommand:
             {
-              ErrorInfo
+              ExceptionInfo
                 error;
 
               Image
@@ -5275,7 +5275,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     geometry[MaxTextExtent],
     modulate_factors[MaxTextExtent];
 
-  ErrorInfo
+  ExceptionInfo
     error;
 
   Image
@@ -7835,7 +7835,7 @@ static unsigned int XMatteEditImage(Display *display,
 static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const unsigned int command)
 {
-  ErrorInfo
+  ExceptionInfo
     error;
 
   Image
@@ -10621,7 +10621,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   double
     scale_factor;
 
-  ErrorInfo
+  ExceptionInfo
     error;
 
   Image
@@ -11140,7 +11140,7 @@ static Image *XVisualDirectoryImage(Display *display,
     **filelist,
     window_id[MaxTextExtent];
 
-  ErrorInfo
+  ExceptionInfo
     error;
 
   Image
@@ -12584,7 +12584,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 if (status == 0)
                   if (update_time != file_info.st_mtime)
                     {
-                      ErrorInfo
+                      ExceptionInfo
                         error;
 
                       /*
@@ -12887,7 +12887,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               selection,
               type;
 
-            ErrorInfo
+            ExceptionInfo
               error;
 
             int
@@ -13349,7 +13349,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Atom
           type;
 
-        ErrorInfo
+        ExceptionInfo
           error;
 
         int

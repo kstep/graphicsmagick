@@ -126,7 +126,7 @@ static unsigned int IsMIFF(const unsigned char *magick,
 %
 %  The format of the ReadMIFFImage method is:
 %
-%      Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  Decompression code contributed by Kyle Shorter.
 %
@@ -138,11 +138,11 @@ static unsigned int IsMIFF(const unsigned char *magick,
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #if defined(HasBZLIB)
   bz_stream
@@ -197,7 +197,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Decode image header;  header terminates one character beyond a ':'.
   */
@@ -248,7 +248,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
             *p=c;
           }
           if (comment == (char *) NULL)
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
           *p='\0';
           (void) SetImageAttribute(image,"Comment",comment);
           FreeMemory(comment);
@@ -441,7 +441,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
                   *p=c;
                 }
                 if (attribute == (char *) NULL)
-                  ReaderExit(ResourceLimitWarning,"Memory allocation failed",
+                  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
                     image);
                 *p='\0';
                 (void) SetImageAttribute(image,keyword,attribute);
@@ -461,7 +461,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
     if ((strcmp(id,"ImageMagick") != 0) || (image->class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
-      ReaderExit(CorruptImageWarning,"Incorrect image header in file",image);
+      ThrowReaderException(CorruptImageWarning,"Incorrect image header in file",image);
     if (image_info->ping)
       {
         CloseBlob(image);
@@ -477,7 +477,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
         */
         image->directory=(char *) AllocateMemory(MaxTextExtent);
         if (image->directory == (char *) NULL)
-          ReaderExit(CorruptImageWarning,"Unable to read image data",image);
+          ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
         p=image->directory;
         do
         {
@@ -490,7 +490,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
               image->directory=(char *) ReallocateMemory((char *)
                 image->directory,(Extent(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
-                ReaderExit(CorruptImageWarning,"Unable to read image data",
+                ThrowReaderException(CorruptImageWarning,"Unable to read image data",
                   image);
               p=image->directory+Extent(image->directory);
             }
@@ -506,7 +506,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
         image->color_profile.info=(unsigned char *)
           AllocateMemory(image->color_profile.length);
         if (image->color_profile.info == (unsigned char *) NULL)
-          ReaderExit(CorruptImageWarning,"Unable to read color profile",image);
+          ThrowReaderException(CorruptImageWarning,"Unable to read color profile",image);
         (void) ReadBlob(image,image->color_profile.length,
           image->color_profile.info);
       }
@@ -518,7 +518,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
         image->colormap=(PixelPacket *)
           AllocateMemory(Max(image->colors,256)*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         if (image->colors == 0)
           for (i=0; i < 256; i++)
           {
@@ -542,7 +542,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
             colormap=(unsigned char *)
               AllocateMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
-              ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+              ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
             if (image->colors <= 256)
@@ -581,7 +581,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
       AllocateMemory(1.01*packet_size*image->columns+600);
     if ((pixels == (unsigned char *) NULL) ||
         (compressed_pixels == (unsigned char *) NULL))
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Read image pixels.
     */
@@ -691,7 +691,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ErrorInfo *error)
                     if (image->colors > 256)
                       index=(index << 8)+ReadByte(image);
                     if (index >= image->colors)
-                      ReaderExit(CorruptImageWarning,"invalid colormap index",
+                      ThrowReaderException(CorruptImageWarning,"invalid colormap index",
                         image);
                     pixel=image->colormap[index];
                   }
@@ -895,7 +895,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) IsPseudoClass(image);
   (void) strcpy((char *) image_info->magick,"MIFF");
   compression=image->compression;
@@ -920,7 +920,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       AllocateMemory(1.01*packet_size*image->columns+600);
     if ((pixels == (unsigned char *) NULL) ||
         (compressed_pixels == (unsigned char *) NULL))
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Write MIFF header.
     */
@@ -1112,7 +1112,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         packet_size=image->colors > 256 ? 6 : 3;
         colormap=(unsigned char *) AllocateMemory(packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
-          WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           Write colormap to file.
         */

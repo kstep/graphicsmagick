@@ -350,7 +350,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -581,15 +581,15 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           TemporaryFilename(filename);
           jpeg_image=CloneImage(image,image->columns,image->rows,True);
           if (jpeg_image == (Image *) NULL)
-            WriterExit(DelegateWarning,"Unable to clone image",image);
+            ThrowWriterException(DelegateWarning,"Unable to clone image",image);
           (void) FormatString(jpeg_image->filename,"jpeg:%s",filename);
           status=WriteImage(image_info,jpeg_image);
           DestroyImage(jpeg_image);
           if (status == False)
-            WriterExit(DelegateWarning,"Unable to write image",image);
+            ThrowWriterException(DelegateWarning,"Unable to write image",image);
           file=fopen(filename,ReadBinaryType);
           if (file == (FILE *) NULL)
-            WriterExit(FileOpenWarning,"Unable to open file",image);
+            ThrowWriterException(FileOpenWarning,"Unable to open file",image);
           Ascii85Initialize();
           for (c=fgetc(file); c != EOF; c=fgetc(file))
             Ascii85Encode(image,c);
@@ -611,7 +611,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             image->columns*image->rows;
           pixels=(unsigned char *) AllocateMemory(number_packets);
           if (pixels == (unsigned char *) NULL)
-            WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
           /*
             Dump Packbit encoded pixels.
           */
@@ -799,7 +799,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               number_packets=image->columns*image->rows;
               pixels=(unsigned char *) AllocateMemory(number_packets);
               if (pixels == (unsigned char *) NULL)
-                WriterExit(ResourceLimitWarning,"Memory allocation failed",
+                ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
                   image);
               /*
                 Dump Runlength encoded pixels.

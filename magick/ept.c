@@ -213,7 +213,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
         return(status);
       status=OpenBlob(image_info,image,ReadBinaryType);
       if (status == False)
-        WriterExit(FileOpenWarning,"Unable to open file",image);
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       (void) remove(image->filename);
       eps_length=image->filesize;
       ps_file=image->file;
@@ -229,7 +229,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     return(status);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) remove(image->filename);
   tiff_length=image->filesize;
   tiff_file=image->file;
@@ -240,7 +240,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(image->filename,filename);
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   LSBFirstWriteLong(image,0xc6d3d0c5ul);
   LSBFirstWriteLong(image,30);
   LSBFirstWriteLong(image,eps_length);

@@ -72,7 +72,7 @@
 %
 %  The format of the ReadPIXImage method is:
 %
-%      Image *ReadPIXImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -82,11 +82,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadPIXImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -123,7 +123,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read PIX image.
   */
@@ -134,7 +134,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ErrorInfo *error)
   bits_per_pixel=MSBFirstReadShort(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0) ||
       ((bits_per_pixel != 8) && (bits_per_pixel != 24)))
-    ReaderExit(CorruptImageWarning,"Not a PIX image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a PIX image file",image);
   do
   {
     /*
@@ -155,7 +155,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ErrorInfo *error)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=(Quantum) UpScale(i);

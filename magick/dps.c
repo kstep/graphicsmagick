@@ -74,7 +74,7 @@
 %
 %  The format of the ReadDPSImage method is:
 %
-%      Image *ReadDPSImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -84,11 +84,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadDPSImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     *client_name;
@@ -486,7 +486,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ErrorInfo *error)
   return(image);
 }
 #else
-static Image *ReadDPSImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read DPS images",
     image_info->filename);

@@ -360,7 +360,7 @@ static unsigned int IsXPM(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadXPMImage method is:
 %
-%      Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -370,7 +370,7 @@ static unsigned int IsXPM(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -415,7 +415,7 @@ static char *ParseColor(char *data)
   return((char *) NULL);
 }
 
-static Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     key[MaxTextExtent],
@@ -455,7 +455,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read XPM file.
   */
@@ -480,7 +480,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
       p=xpm_buffer+Extent(xpm_buffer);
     }
   if (xpm_buffer == (char *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Remove comments.
   */
@@ -529,7 +529,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
   textlist=StringToList(xpm_buffer);
   FreeMemory(xpm_buffer);
   if (textlist == (char **) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Read hints.
   */
@@ -542,7 +542,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
       for (i=0; textlist[i] != (char *) NULL; i++)
         FreeMemory(textlist[i]);
       FreeMemory(textlist);
-      ReaderExit(CorruptImageWarning,"Not a XPM image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a XPM image file",image);
     }
   image->depth=8;
   /*
@@ -556,7 +556,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
       for (i=0; textlist[i] != (char *) NULL; i++)
         FreeMemory(textlist[i]);
       FreeMemory(textlist);
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     }
   /*
     Read image colormap.
@@ -575,7 +575,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
           FreeMemory(textlist[i]);
         FreeMemory(textlist);
         FreeMemory(keys);
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       }
     keys[x][width]='\0';
     (void) strncpy(keys[x],p,width);
@@ -608,7 +608,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ErrorInfo *error)
       for (i=0; textlist[i] != (char *) NULL; i++)
         FreeMemory(textlist[i]);
       FreeMemory(textlist);
-      ReaderExit(CorruptImageWarning,"Corrupt XPM image file",image);
+      ThrowReaderException(CorruptImageWarning,"Corrupt XPM image file",image);
     }
   if (image_info->ping)
     {
@@ -779,7 +779,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   transparent=False;
   if (image->class == PseudoClass)

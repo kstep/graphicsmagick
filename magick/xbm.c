@@ -117,7 +117,7 @@ static unsigned int IsXBM(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadXBMImage method is:
 %
-%      Image *ReadXBMImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -127,7 +127,7 @@ static unsigned int IsXBM(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -162,7 +162,7 @@ static int XBMInteger(Image *image,short int *hex_digits)
   return(value);
 }
 
-static Image *ReadXBMImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     buffer[MaxTextExtent],
@@ -202,7 +202,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read X bitmap header.
   */
@@ -249,7 +249,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ErrorInfo *error)
       break;
   }
   if ((image->columns == 0) || (image->rows == 0) || EOFBlob(image))
-    ReaderExit(CorruptImageWarning,"XBM file is not in the correct format",
+    ThrowReaderException(CorruptImageWarning,"XBM file is not in the correct format",
       image);
   /*
     Initialize image structure.
@@ -260,11 +260,10 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ErrorInfo *error)
   if ((image->columns % 16) && ((image->columns % 16) < 9)  && (version == 10))
     padding=1;
   bytes_per_line=(image->columns+7)/8+padding;
-  data=(unsigned char *)
-    AllocateMemory(bytes_per_line*image->rows*sizeof(unsigned char *));
+  data=(unsigned char *) AllocateMemory(bytes_per_line*image->rows);
   if ((image->colormap == (PixelPacket *) NULL) ||
       (data == (unsigned char *) NULL))
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Initialize colormap.
   */
@@ -453,7 +452,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*
     Write X bitmap header.

@@ -123,7 +123,7 @@ static unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadHDFImage method is:
 %
-%      Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -133,11 +133,11 @@ static unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   ClassType
     class;
@@ -181,7 +181,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read HDF image.
   */
@@ -193,7 +193,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
       status=DFR8getdims(image->filename,&width,&height,&is_palette);
     }
   if (status == -1)
-    ReaderExit(CorruptImageWarning,
+    ThrowReaderException(CorruptImageWarning,
       "Image file or does not contain any image data",image);
   do
   {
@@ -215,7 +215,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
     hdf_pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     if (image->class == PseudoClass)
       {
         unsigned char
@@ -229,7 +229,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if ((hdf_palette == (unsigned char *) NULL) ||
             (image->colormap == (PixelPacket *) NULL))
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         (void) DFR8getimage(image->filename,hdf_pixels,(int) image->columns,
           (int) image->rows,hdf_palette);
         reference=DFR8lastref();
@@ -368,7 +368,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
   return(image);
 }
 #else
-static Image *ReadHDFImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"HDF library is not available",
     image_info->filename);
@@ -483,7 +483,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   CloseBlob(image);
   scene=0;
   do
@@ -496,7 +496,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     hdf_pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
         /*
@@ -649,7 +649,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 
             hdf_palette=(unsigned char *) AllocateMemory(768);
             if (hdf_palette == (unsigned char *) NULL)
-              WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+              ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
             q=hdf_palette;
             for (i=0; i < (int) image->colors; i++)
             {

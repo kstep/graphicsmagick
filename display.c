@@ -308,8 +308,8 @@ int main(int argc,char **argv)
   double
     sans;
 
-  ErrorInfo
-    error;
+  ExceptionInfo
+    exception;
 
   Image
     *image,
@@ -1333,10 +1333,10 @@ int main(int argc,char **argv)
           (void) strcpy(image_info->magick,"MIFF");
           image_info->colorspace=quantize_info->colorspace;
           image_info->dither=quantize_info->dither;
-          image=ReadImage(image_info,&error);
+          image=ReadImage(image_info,&exception);
           if (image == (Image *) NULL)
             {
-              MagickWarning(error.type,error.message,error.qualifier);
+              MagickWarning(exception.type,exception.message,exception.qualifier);
               if ((i < (argc-1)) || (scene < last_scene))
                 continue;
               else
@@ -1422,8 +1422,8 @@ int main(int argc,char **argv)
                 SetImageInfo(image_info,True);
                 status=WriteImage(image_info,image);
                 if (status == False)
-                  MagickWarning(image->error.type,image->error.message,
-                    image->error.qualifier);
+                  MagickWarning(image->exception.type,image->exception.message,
+                    image->exception.qualifier);
               }
             if (image_info->verbose)
               DescribeImage(image,stderr,False);

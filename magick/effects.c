@@ -111,7 +111,7 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type)
   assert(image != (Image *) NULL);
   noisy_image=CloneImage(image,image->columns,image->rows,False);
   if (noisy_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to add noise",
+    ThrowImageException(ResourceLimitWarning,"Unable to add noise",
       "Memory allocation failed");
   noisy_image->class=DirectClass;
   /*
@@ -220,7 +220,7 @@ Export Image *BlurImage(Image *image,const double factor)
   */
   blur_image=CloneImage(image,image->columns,image->rows,False);
   if (blur_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to blur image",
+    ThrowImageException(ResourceLimitWarning,"Unable to blur image",
       "Memory allocation failed");
   blur_image->class=DirectClass;
   /*
@@ -334,7 +334,7 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
   assert(image != (Image *) NULL);
   colorize_image=CloneImage(image,image->columns,image->rows,False);
   if (colorize_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to colorize image",
+    ThrowImageException(ResourceLimitWarning,"Unable to colorize image",
       "Memory allocation failed");
   colorize_image->class=DirectClass;
   /*
@@ -452,7 +452,7 @@ Export Image *DespeckleImage(Image *image)
   assert(image != (Image *) NULL);
   despeckle_image=CloneImage(image,image->columns,image->rows,False);
   if (despeckle_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to despeckle image",
+    ThrowImageException(ResourceLimitWarning,"Unable to despeckle image",
       "Memory allocation failed");
   despeckle_image->class=DirectClass;
   /*
@@ -471,7 +471,7 @@ Export Image *DespeckleImage(Image *image)
       (buffer == (Quantum *) NULL))
     {
       DestroyImage(despeckle_image);
-      ImageExit(ResourceLimitWarning,"Unable to despeckle image",
+      ThrowImageException(ResourceLimitWarning,"Unable to despeckle image",
         "Memory allocation failed");
     }
   /*
@@ -658,7 +658,7 @@ Export Image *EdgeImage(Image *image,const double factor)
   */
   edge_image=CloneImage(image,image->columns,image->rows,False);
   if (edge_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to detect edges",
+    ThrowImageException(ResourceLimitWarning,"Unable to detect edges",
       "Memory allocation failed");
   edge_image->class=DirectClass;
   /*
@@ -789,7 +789,7 @@ Export Image *EmbossImage(Image *image)
   */
   emboss_image=CloneImage(image,image->columns,image->rows,False);
   if (emboss_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to enhance image",
+    ThrowImageException(ResourceLimitWarning,"Unable to enhance image",
       "Memory allocation failed");
   emboss_image->class=DirectClass;
   /*
@@ -952,7 +952,7 @@ Export Image *EnhanceImage(Image *image)
   */
   enhance_image=CloneImage(image,image->columns,image->rows,False);
   if (enhance_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to enhance image",
+    ThrowImageException(ResourceLimitWarning,"Unable to enhance image",
       "Memory allocation failed");
   enhance_image->class=DirectClass;
   /*
@@ -963,7 +963,7 @@ Export Image *EnhanceImage(Image *image)
   if (squares == (unsigned int *) NULL)
     {
       DestroyImage(enhance_image);
-      ImageExit(ResourceLimitWarning,"Unable to enhance image",
+      ThrowImageException(ResourceLimitWarning,"Unable to enhance image",
         "Memory allocation failed");
     }
   squares+=MaxRGB;
@@ -1100,7 +1100,7 @@ Export Image *ImplodeImage(Image *image,const double factor)
     MatteImage(image,Opaque);
   implode_image=CloneImage(image,image->columns,image->rows,False);
   if (implode_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to implode image",
+    ThrowImageException(ResourceLimitWarning,"Unable to implode image",
       "Memory allocation failed");
   /*
     Compute scaling factor.
@@ -1237,14 +1237,14 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
 
   assert(image != (Image *) NULL);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
-    ImageExit(ResourceLimitWarning,"Unable to median filter",
+    ThrowImageException(ResourceLimitWarning,"Unable to median filter",
       "image smaller than radius");
   /*
     Initialize median image attributes.
   */
   median_image=CloneImage(image,image->columns,image->rows,False);
   if (median_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to reduce noise",
+    ThrowImageException(ResourceLimitWarning,"Unable to reduce noise",
       "Memory allocation failed");
   median_image->class=DirectClass;
   /*
@@ -1255,7 +1255,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
   if (neighbors == (PixelPacket *) NULL)
     {
       DestroyImage(median_image);
-      ImageExit(ResourceLimitWarning,"Unable to reduce noise",
+      ThrowImageException(ResourceLimitWarning,"Unable to reduce noise",
         "Memory allocation failed");
     }
   /*
@@ -1367,13 +1367,13 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
 
   assert(images != (Image *) NULL);
   if (images->next == (Image *) NULL)
-    ImageExit(OptionWarning,"Unable to morph image","image sequence required");
+    ThrowImageException(OptionWarning,"Unable to morph image","image sequence required");
   /*
     Clone first frame in sequence.
   */
   morph_images=CloneImage(images,images->columns,images->rows,True);
   if (morph_images == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to morph image sequence",
+    ThrowImageException(ResourceLimitWarning,"Unable to morph image sequence",
       "Memory allocation failed");
   /*
     Morph image.
@@ -1393,7 +1393,7 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
       if (morph_images->next == (Image *) NULL)
         {
           DestroyImages(morph_images);
-          ImageExit(ResourceLimitWarning,"Unable to morph image sequence",
+          ThrowImageException(ResourceLimitWarning,"Unable to morph image sequence",
             "Memory allocation failed");
         }
       morph_images->next->previous=morph_images;
@@ -1404,7 +1404,7 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
       if (morph_image == (Image *) NULL)
         {
           DestroyImages(morph_images);
-          ImageExit(ResourceLimitWarning,"Unable to morph image sequence",
+          ThrowImageException(ResourceLimitWarning,"Unable to morph image sequence",
             "Memory allocation failed");
         }
       morph_images->class=DirectClass;
@@ -1436,7 +1436,7 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
     if (morph_images->next == (Image *) NULL)
       {
         DestroyImages(morph_images);
-        ImageExit(ResourceLimitWarning,"Unable to morph image sequence",
+        ThrowImageException(ResourceLimitWarning,"Unable to morph image sequence",
           "Memory allocation failed");
       }
     morph_images->next->previous=morph_images;
@@ -1514,14 +1514,14 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
 
   assert(image != (Image *) NULL);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
-    ImageExit(ResourceLimitWarning,"Unable to oil paint",
+    ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
       "image smaller than radius");
   /*
     Initialize painted image attributes.
   */
   paint_image=CloneImage(image,image->columns,image->rows,False);
   if (paint_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to oil paint",
+    ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
       "Memory allocation failed");
   paint_image->class=DirectClass;
   /*
@@ -1531,7 +1531,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
   if (histogram == (unsigned int *) NULL)
     {
       DestroyImage(paint_image);
-      ImageExit(ResourceLimitWarning,"Unable to oil paint",
+      ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
         "Memory allocation failed");
     }
   /*
@@ -1902,7 +1902,7 @@ Export Image *ReduceNoiseImage(Image *image)
   */
   noisy_image=CloneImage(image,image->columns,image->rows,False);
   if (noisy_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to reduce noise",
+    ThrowImageException(ResourceLimitWarning,"Unable to reduce noise",
       "Memory allocation failed");
   noisy_image->class=DirectClass;
   /*
@@ -2048,7 +2048,7 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
   assert(image != (Image *) NULL);
   shade_image=CloneImage(image,image->columns,image->rows,False);
   if (shade_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to shade image",
+    ThrowImageException(ResourceLimitWarning,"Unable to shade image",
       "Memory allocation failed");
   shade_image->class=DirectClass;
   /*
@@ -2211,7 +2211,7 @@ Export Image *SharpenImage(Image *image,const double factor)
   */
   sharpen_image=CloneImage(image,image->columns,image->rows,False);
   if (sharpen_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to sharpen image",
+    ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
       "Memory allocation failed");
   sharpen_image->class=DirectClass;
   /*
@@ -2440,7 +2440,7 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
   */
   spread_image=CloneImage(image,image->columns,image->rows,False);
   if (spread_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to spread image",
+    ThrowImageException(ResourceLimitWarning,"Unable to spread image",
       "Memory allocation failed");
   spread_image->class=DirectClass;
   /*
@@ -2542,7 +2542,7 @@ Export Image *SteganoImage(Image *image,Image *watermark)
   assert(watermark != (Image *) NULL);
   stegano_image=CloneImage(image,image->columns,image->rows,False);
   if (stegano_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to create steganograph image",
+    ThrowImageException(ResourceLimitWarning,"Unable to create steganograph image",
       "Memory allocation failed");
   if (stegano_image->class == PseudoClass)
     {
@@ -2559,7 +2559,7 @@ Export Image *SteganoImage(Image *image,Image *watermark)
           if (stegano_image->colormap == (PixelPacket *) NULL)
             {
               DestroyImage(stegano_image);
-              ImageExit(ResourceLimitWarning,
+              ThrowImageException(ResourceLimitWarning,
                 "Unable to create steganograph image",
                 "Memory allocation failed");
             }
@@ -2669,7 +2669,7 @@ Export Image *StereoImage(Image *image,Image *offset_image)
   assert(offset_image != (Image *) NULL);
   if ((image->columns != offset_image->columns) ||
       (image->rows != offset_image->rows))
-    ImageExit(ResourceLimitWarning,"Unable to create stereo image",
+    ThrowImageException(ResourceLimitWarning,"Unable to create stereo image",
       "left and right image sizes differ");
   /*
     Initialize stereo image attributes.
@@ -2677,7 +2677,7 @@ Export Image *StereoImage(Image *image,Image *offset_image)
   stereo_image=
     CloneImage(image,image->columns,image->rows,False);
   if (stereo_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to create stereo image",
+    ThrowImageException(ResourceLimitWarning,"Unable to create stereo image",
       "Memory allocation failed");
   stereo_image->class=DirectClass;
   /*
@@ -2779,7 +2779,7 @@ Export Image *SwirlImage(Image *image,double degrees)
     MatteImage(image,Opaque);
   swirl_image=CloneImage(image,image->columns,image->rows,False);
   if (swirl_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to swirl image",
+    ThrowImageException(ResourceLimitWarning,"Unable to swirl image",
       "Memory allocation failed");
   /*
     Compute scaling factor.
@@ -2886,12 +2886,8 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
   assert(image != (Image *) NULL);
   colormap=(PixelPacket *) AllocateMemory(2*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
-    {
-      image->error.type=ResourceLimitWarning;
-      image->error.message="Unable to threshold image";
-      image->error.qualifier="Memory allocation failed";
-      return(False);
-    }
+    ThrowBooleanException(ResourceLimitWarning,"Unable to threshold image",
+      "Memory allocation failed");
   if (image->colormap != (PixelPacket *) NULL)
     FreeMemory(image->colormap);
   image->class=PseudoClass;
@@ -2985,7 +2981,7 @@ Export Image *WaveImage(Image *image,const double amplitude,
   wave_image=CloneImage(image,image->columns,image->rows+
     (int) (2*AbsoluteValue(amplitude)),False);
   if (wave_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to wave image",
+    ThrowImageException(ResourceLimitWarning,"Unable to wave image",
       "Memory allocation failed");
   /*
     Allocate sine map.
@@ -2994,7 +2990,7 @@ Export Image *WaveImage(Image *image,const double amplitude,
   if (sine_map == (double *) NULL)
     {
       DestroyImage(wave_image);
-      ImageExit(ResourceLimitWarning,"Unable to wave image",
+      ThrowImageException(ResourceLimitWarning,"Unable to wave image",
         "Memory allocation failed");
     }
   for (x=0; x < (int) wave_image->columns; x++)

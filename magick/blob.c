@@ -92,7 +92,7 @@
 Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   const size_t length)
 {
-  ErrorInfo
+  ExceptionInfo
     error;
 
   Image

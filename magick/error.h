@@ -1,5 +1,5 @@
 /*
-  ImageMagick Error Methods.
+  ImageMagick Exception Methods.
 */
 #ifndef _ERROR_H
 #define _ERROR_H
@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 /*
-  Error define definitions.
+  Exception define definitions.
 */
 #if defined(sun) && !defined(SVR4)
 #if !defined(strerror)
@@ -23,39 +23,70 @@ extern int
   sys_nerr;
 #endif
 #endif
+#define ThrowException(exception,code,reason,description) \
+{ \
+  exception.type=code; \
+  exception.message=reason; \
+  exception.qualifier=description; \
+}
+#define ThrowBooleanException(code,reason,description) \
+{ \
+  ThrowException(image->exception,code,reason,description); \
+  return(False); \
+}
+#define ThrowImageException(code,reason,description) \
+{ \
+  ThrowException(image->exception,code,reason,description); \
+  return((Image *) NULL); \
+}
+#define ThrowReaderException(code,reason,image) \
+{ \
+  ThrowException(image->exception,code,reason,image->filename); \
+  DestroyImages(image); \
+  return((Image *) NULL); \
+}
+#define ThrowWriterException(code,reason,image) \
+{ \
+  ThrowException(image->exception,code,reason,image->filename); \
+  if (image_info->adjoin) \
+    while (image->previous != (Image *) NULL) \
+      image=image->previous; \
+  CloseBlob(image); \
+  return(False); \
+}
 
 /*
-  Error typedef declarations.
+  Exception typedef declarations.
 */
-typedef struct _ErrorInfo
+typedef struct _ExceptionInfo
 {
-  ErrorType
+  ExceptionType
     type;
 
-  char
+  const char
     *message,
     *qualifier;
-} ErrorInfo;
+} ExceptionInfo;
 
 /*
-  Error typedef declarations.
+  Exception typedef declarations.
 */
 typedef void
-  (*ErrorHandler)(const ErrorType,const char *,const char *);
+  (*ErrorHandler)(const ExceptionType,const char *,const char *);
 
 typedef void
-  (*WarningHandler)(const ErrorType,const char *,const char *);
+  (*WarningHandler)(const ExceptionType,const char *,const char *);
 
 /*
-  Error declarations.
+  Exception declarations.
 */
 extern Export ErrorHandler
   SetErrorHandler(ErrorHandler);
 
 extern Export void
-  GetErrorInfo(ErrorInfo *),
-  MagickError(const ErrorType,const char *,const char *),
-  MagickWarning(const ErrorType,const char *,const char *);
+  GetExceptionInfo(ExceptionInfo *),
+  MagickError(const ExceptionType,const char *,const char *),
+  MagickWarning(const ExceptionType,const char *,const char *);
 
 extern Export WarningHandler
   SetWarningHandler(WarningHandler);

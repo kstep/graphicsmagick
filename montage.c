@@ -265,8 +265,8 @@ int main(int argc,char **argv)
   double
     sans;
 
-  ErrorInfo
-    error;
+  ExceptionInfo
+    exception;
 
   Image
     *image,
@@ -1123,10 +1123,10 @@ int main(int argc,char **argv)
         image_info->dither=quantize_info.dither;
         if (image_info->size == (char *) NULL)
           image_info->size=montage_info.geometry;
-        next_image=ReadImage(image_info,&error);
+        next_image=ReadImage(image_info,&exception);
         if (next_image == (Image *) NULL)
           {
-            MagickWarning(error.type,error.message,error.qualifier);
+            MagickWarning(exception.type,exception.message,exception.qualifier);
             if (*option == '-')
               break;
             else
@@ -1186,8 +1186,8 @@ int main(int argc,char **argv)
   {
     status=WriteImage(image_info,p);
     if (status == False)
-      MagickWarning(image->error.type,image->error.message,
-        image->error.qualifier);
+      MagickWarning(image->exception.type,image->exception.message,
+        image->exception.qualifier);
     if (image_info->adjoin)
       break;
   }

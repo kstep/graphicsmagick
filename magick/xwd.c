@@ -123,7 +123,7 @@ static unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadXWDImage method is:
 %
-%      Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -133,11 +133,11 @@ static unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     *comment;
@@ -181,13 +181,13 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
      Read in header information.
   */
   status=ReadBlob(image,sz_XWDheader,(char *) &header);
   if (status == False)
-    ReaderExit(CorruptImageWarning,"Unable to read dump file header",image);
+    ThrowReaderException(CorruptImageWarning,"Unable to read dump file header",image);
   image->columns=header.pixmap_width;
   image->rows=header.pixmap_height;
   image->depth=8;
@@ -201,26 +201,26 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
     Check to see if the dump file is in the proper format.
   */
   if (header.file_version != XWD_FILE_VERSION)
-    ReaderExit(CorruptImageWarning,"XWD file format version mismatch",image);
+    ThrowReaderException(CorruptImageWarning,"XWD file format version mismatch",image);
   if (header.header_size < sz_XWDheader)
-    ReaderExit(CorruptImageWarning,"XWD header size is too small",image);
+    ThrowReaderException(CorruptImageWarning,"XWD header size is too small",image);
   length=header.header_size-sz_XWDheader;
   comment=(char *) AllocateMemory(length+1);
   if (comment == (char *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,length,comment);
   comment[length]='\0';
   (void) SetImageAttribute(image,"Comment",comment);
   FreeMemory(comment);
   if (status == False)
-    ReaderExit(CorruptImageWarning,"Unable to read window name from dump file",
+    ThrowReaderException(CorruptImageWarning,"Unable to read window name from dump file",
       image);
   /*
     Initialize the X image.
   */
   ximage=(XImage *) AllocateMemory(sizeof(XImage));
   if (ximage == (XImage *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   ximage->depth=header.pixmap_depth;
   ximage->format=header.pixmap_format;
   ximage->xoffset=header.xoffset;
@@ -238,7 +238,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
   ximage->blue_mask=header.blue_mask;
   status=XInitImage(ximage);
   if (status == False)
-    ReaderExit(CorruptImageWarning,"Invalid XWD header",image);
+    ThrowReaderException(CorruptImageWarning,"Invalid XWD header",image);
   /*
     Read colormap.
   */
@@ -251,12 +251,12 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
       colors=(XColor *)
         AllocateMemory((unsigned int) header.ncolors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) header.ncolors; i++)
       {
         status=ReadBlob(image,sz_XWDColor,(char *) &color);
         if (status == False)
-          ReaderExit(CorruptImageWarning,
+          ThrowReaderException(CorruptImageWarning,
             "Unable to read color map from dump file",image);
         colors[i].pixel=color.pixel;
         colors[i].red=color.red;
@@ -284,10 +284,10 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
     length=ximage->bytes_per_line*ximage->height*ximage->depth;
   ximage->data=(char *) AllocateMemory(length);
   if (ximage->data == (char *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,length,ximage->data);
   if (status == False)
-    ReaderExit(CorruptImageWarning,"Unable to read dump pixmap",image);
+    ThrowReaderException(CorruptImageWarning,"Unable to read dump pixmap",image);
   /*
     Convert image to MIFF format.
   */
@@ -403,7 +403,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
       image->colormap=(PixelPacket *)
         AllocateMemory(image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=XDownScale(colors[i].red);
@@ -420,7 +420,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
           index=XGetPixel(ximage,x,y);
           image->indexes[x]=index;
           if (index >= image->colors)
-            ReaderExit(CorruptImageWarning,"invalid colormap index",image);
+            ThrowReaderException(CorruptImageWarning,"invalid colormap index",image);
           *q++=image->colormap[index];
         }
         if (!SyncPixelCache(image))
@@ -442,7 +442,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
   return(image);
 }
 #else
-static Image *ReadXWDImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"X11 library is not available",
     image_info->filename);
@@ -555,7 +555,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*
     Initialize XWD file header.
@@ -612,7 +612,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       */
       colors=(XColor *) AllocateMemory(image->colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) image->colors; i++)
       {
         colors[i].pixel=i;
@@ -644,7 +644,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   pixels=(unsigned char *)
     AllocateMemory(image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Convert MIFF to XWD raster pixels.
   */

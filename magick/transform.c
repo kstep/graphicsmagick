@@ -122,7 +122,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
       ((chop_info->y+(int) chop_info->height) < 0) ||
       (chop_info->x >= (int) image->columns) ||
       (chop_info->y >= (int) image->rows))
-    ImageExit(OptionWarning,"Unable to chop image",
+    ThrowImageException(OptionWarning,"Unable to chop image",
       "geometry does not contain image");
   clone_info=(*chop_info);
   if ((clone_info.x+(int) clone_info.width) > (int) image->columns)
@@ -145,7 +145,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
   chop_image=CloneImage(image,image->columns-clone_info.width,
     image->rows-clone_info.height,False);
   if (chop_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to chop image",
+    ThrowImageException(ResourceLimitWarning,"Unable to chop image",
       "Memory allocation failed");
   /*
     Extract chop image.
@@ -240,7 +240,7 @@ Export Image *CoalesceImages(Image *images)
   */
   assert(images != (Image *) NULL);
   if (images->next == (Image *) NULL)
-    ImageExit(OptionWarning,"Unable to coalesce images",
+    ThrowImageException(OptionWarning,"Unable to coalesce images",
       "image sequence required");
   /*
     Clone first image in sequence.
@@ -259,7 +259,7 @@ Export Image *CoalesceImages(Image *images)
     if (coalesce_image->next == (Image *) NULL)
       {
         DestroyImages(coalesce_image);
-        ImageExit(ResourceLimitWarning,"Unable to coalesce images",
+        ThrowImageException(ResourceLimitWarning,"Unable to coalesce images",
           "Memory allocation failed for cloned image");
       }
     coalesce_image->next->previous=coalesce_image;
@@ -338,7 +338,7 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
           ((crop_info->y+(int) crop_info->height) < 0) ||
           (crop_info->x >= (int) image->columns) ||
           (crop_info->y >= (int) image->rows))
-        ImageExit(OptionWarning,"Unable to crop image",
+        ThrowImageException(OptionWarning,"Unable to crop image",
           "geometry does not contain any part of the image");
     }
   page=(*crop_info);
@@ -444,11 +444,11 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
         page.y=0;
       if ((((int) page.width+page.x) > (int) image->columns) ||
           (((int) page.height+page.y) > (int) image->rows))
-        ImageExit(OptionWarning,"Unable to crop image",
+        ThrowImageException(OptionWarning,"Unable to crop image",
           "geometry does not contain image");
     }
   if ((page.width == 0) || (page.height == 0))
-    ImageExit(OptionWarning,"Unable to crop image",
+    ThrowImageException(OptionWarning,"Unable to crop image",
       "geometry dimensions are zero");
   if ((page.width == image->columns) &&
       (page.height == image->rows) && (page.x == 0) &&
@@ -459,7 +459,7 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
   */
   crop_image=CloneImage(image,page.width,page.height,False);
   if (crop_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to crop image",
+    ThrowImageException(ResourceLimitWarning,"Unable to crop image",
       "Memory allocation failed");
   /*
     Extract crop image.
@@ -535,7 +535,7 @@ Export Image *DeconstructImages(Image *images)
 
   assert(images != (Image *) NULL);
   if (images->next == (Image *) NULL)
-    ImageExit(OptionWarning,"Unable to deconstruct images",
+    ThrowImageException(OptionWarning,"Unable to deconstruct images",
       "image sequence required");
   /*
     Ensure the images are the same size.
@@ -543,7 +543,7 @@ Export Image *DeconstructImages(Image *images)
   for (image=images; image != (Image *) NULL; image=image->next)
   {
     if ((image->columns != images->columns) || (image->rows != images->rows))
-      ImageExit(OptionWarning,"Unable to deconstruct images",
+      ThrowImageException(OptionWarning,"Unable to deconstruct images",
         "images are not the same size");
   }
   /*
@@ -552,7 +552,7 @@ Export Image *DeconstructImages(Image *images)
   bounding_box=(RectangleInfo *)
     AllocateMemory(GetNumberScenes(images)*sizeof(RectangleInfo));
   if (bounding_box == (RectangleInfo *) NULL)
-    ImageExit(OptionWarning,"Unable to disintegrate images",
+    ThrowImageException(OptionWarning,"Unable to disintegrate images",
       "Memory allocation failed");
   /*
     Compute the bounding box for each image in the sequence.
@@ -717,7 +717,7 @@ Export Image *FlipImage(Image *image)
   assert(image != (Image *) NULL);
   flip_image=CloneImage(image,image->columns,image->rows,False);
   if (flip_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to flip image",
+    ThrowImageException(ResourceLimitWarning,"Unable to flip image",
       "Memory allocation failed");
   /*
     Flip each row.
@@ -801,7 +801,7 @@ Export Image *FlopImage(Image *image)
   assert(image != (Image *) NULL);
   flop_image=CloneImage(image,image->columns,image->rows,False);
   if (flop_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to flop image",
+    ThrowImageException(ResourceLimitWarning,"Unable to flop image",
       "Memory allocation failed");
   /*
     Flop each row.
@@ -890,7 +890,7 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset)
   assert(image != (Image *) NULL);
   roll_image=CloneImage(image,image->columns,image->rows,False);
   if (roll_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to roll image",
+    ThrowImageException(ResourceLimitWarning,"Unable to roll image",
       "Memory allocation failed");
   /*
     Roll image.

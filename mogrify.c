@@ -310,8 +310,8 @@ int main(int argc,char **argv)
   double
     sans;
 
-  ErrorInfo
-    error;
+  ExceptionInfo
+    exception;
 
   ImageInfo
     *image_info;
@@ -1398,10 +1398,10 @@ int main(int argc,char **argv)
           Option is a file name: begin by reading image from specified file.
         */
         (void) strcpy(image_info->filename,argv[i]);
-        image=ReadImage(image_info,&error);
+        image=ReadImage(image_info,&exception);
         if (image == (Image *) NULL)
           {
-            MagickWarning(error.type,error.message,error.qualifier);
+            MagickWarning(exception.type,exception.message,exception.qualifier);
             if (*option == '-')
               break;
             else
@@ -1457,8 +1457,8 @@ int main(int argc,char **argv)
         {
           status=WriteImage(image_info,p);
           if (status == False)
-            MagickWarning(image->error.type,image->error.message,
-              image->error.qualifier);
+            MagickWarning(image->exception.type,image->exception.message,
+              image->exception.qualifier);
           if (image_info->adjoin)
             break;
         }

@@ -111,7 +111,7 @@ static unsigned int IsSCT(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadSCTImage method is:
 %
-%      Image *ReadSCTImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -121,11 +121,11 @@ static unsigned int IsSCT(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadSCTImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     buffer[768],
@@ -152,7 +152,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read control block.
   */
@@ -163,12 +163,12 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ErrorInfo *error)
       (strncmp((char *) magick,"BM",2) != 0) &&
       (strncmp((char *) magick,"PG",2) != 0) &&
       (strncmp((char *) magick,"TX",2) != 0))
-    ReaderExit(CorruptImageWarning,"Not a SCT image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a SCT image file",image);
   if ((strncmp((char *) magick,"LW",2) == 0) ||
       (strncmp((char *) magick,"BM",2) == 0) ||
       (strncmp((char *) magick,"PG",2) == 0) ||
       (strncmp((char *) magick,"TX",2) == 0))
-    ReaderExit(CorruptImageWarning,"only Continuous Tone Picture supported",
+    ThrowReaderException(CorruptImageWarning,"only Continuous Tone Picture supported",
       image);
   (void) ReadBlob(image,174,(char *) buffer);
   (void) ReadBlob(image,768,(char *) buffer);

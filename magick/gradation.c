@@ -73,7 +73,7 @@
 %
 %  The format of the ReadGRADATIONImage method is:
 %
-%      Image *ReadGRADATIONImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadGRADATIONImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -83,11 +83,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadGRADATIONImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadGRADATIONImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     colorname[MaxTextExtent];

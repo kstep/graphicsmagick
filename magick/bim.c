@@ -119,7 +119,7 @@ static unsigned int Is8BIM(const unsigned char *magick,
 %
 %  The format of the Read8BIMImage method is:
 %
-%      Image *Read8BIMImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *Read8BIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -129,11 +129,11 @@ static unsigned int Is8BIM(const unsigned char *magick,
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *Read8BIMImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *Read8BIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -154,7 +154,7 @@ static Image *Read8BIMImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read 8BIM image.
   */
@@ -256,13 +256,13 @@ static unsigned int Write8BIMImage(const ImageInfo *image_info,Image *image)
     status;
 
   if (image->iptc_profile.length == 0)
-    WriterExit(FileOpenWarning,"No 8BIM data is available",image);
+    ThrowWriterException(FileOpenWarning,"No 8BIM data is available",image);
   /*
     Open image file.
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) WriteBlob(image,(int) image->iptc_profile.length,
     (char *) image->iptc_profile.info);
   CloseBlob(image);

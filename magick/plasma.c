@@ -71,7 +71,7 @@
 %
 %  The format of the ReadPLASMAImage method is:
 %
-%      Image *ReadPLASMAImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadPLASMAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -81,11 +81,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadPLASMAImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPLASMAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define PlasmaImageText  "  Applying image plasma...  "
 #define PlasmaPixel(x,y) \
@@ -128,7 +128,7 @@ static Image *ReadPLASMAImage(const ImageInfo *image_info,ErrorInfo *error)
   */
   clone_info=CloneImageInfo(image_info);
   (void) FormatString(clone_info->filename,"gradation:%s",image_info->filename);
-  image=ReadImage(clone_info,error);
+  image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     return(image);

@@ -78,7 +78,7 @@ static unsigned int
 %
 %  The format of the ReadTGAImage method is:
 %
-%      Image *ReadTGAImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -88,11 +88,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadTGAImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define TGAColormap 1
 #define TGARGB 2
@@ -167,7 +167,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read TGA header information.
   */
@@ -178,7 +178,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ErrorInfo *error)
   {
     if ((status == False) || (tga_header.image_type == 0) ||
         (tga_header.image_type > 11))
-      ReaderExit(CorruptImageWarning,"Not a TGA image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a TGA image file",image);
     tga_header.colormap_index=LSBFirstReadShort(image);
     tga_header.colormap_length=LSBFirstReadShort(image);
     tga_header.colormap_size=ReadByte(image);
@@ -217,7 +217,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ErrorInfo *error)
         */
         comment=(char *) AllocateMemory(tga_header.id_length+1);
         if (comment == (char *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         (void) ReadBlob(image,tga_header.id_length,comment);
         comment[tga_header.id_length]='\0';
         (void) SetImageAttribute(image,"Comment",comment);
@@ -232,7 +232,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ErrorInfo *error)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         for (i=0; i < (int) image->colors; i++)
         {
           switch (tga_header.colormap_size)
@@ -310,7 +310,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ErrorInfo *error)
               {
                 status=ReadBlob(image,1,(char *) &runlength);
                 if (status == False)
-                  ReaderExit(CorruptImageWarning,"Unable to read image data",
+                  ThrowReaderException(CorruptImageWarning,"Unable to read image data",
                     image);
                 flag=runlength & 0x80;
                 if (flag != 0)
@@ -368,7 +368,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ErrorInfo *error)
             }
           }
         if (status == False)
-          ReaderExit(CorruptImageWarning,"Unable to read image data",image);
+          ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
         if (image->class == PseudoClass)
           image->indexes[x]=index;
         *q++=pixel;
@@ -571,7 +571,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   scene=0;
   do
   {
@@ -640,7 +640,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         targa_colormap=(unsigned char *)
           AllocateMemory(3*targa_header.colormap_length);
         if (targa_colormap == (unsigned char *) NULL)
-          WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
         q=targa_colormap;
         for (i=0; i < (int) image->colors; i++)
         {
@@ -658,7 +658,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     count=(unsigned int) (targa_header.bits_per_pixel*targa_header.width) >> 3;
     targa_pixels=(unsigned char *) AllocateMemory(count);
     if (targa_pixels == (unsigned char *) NULL)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     for (y=(int) (image->rows-1); y >= 0; y--)
     {
       p=GetPixelCache(image,0,y,image->columns,1);

@@ -119,7 +119,7 @@ static unsigned int IsPS(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPSImage method is:
 %
-%      Image *ReadPSImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -129,11 +129,11 @@ static unsigned int IsPS(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadPSImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define BoundingBox  "%%BoundingBox:"
 #define DocumentMedia  "%%DocumentMedia:"
@@ -208,14 +208,14 @@ static Image *ReadPSImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Open temporary output file.
   */
   TemporaryFilename(postscript_filename);
   file=fopen(postscript_filename,WriteBinaryType);
   if (file == (FILE *) NULL)
-    ReaderExit(FileOpenWarning,"Unable to write file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to write file",image);
   FormatString(translate_geometry,"%f %f translate\n              ",0.0,0.0);
   (void) fputs(translate_geometry,file);
   /*
@@ -320,10 +320,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ErrorInfo *error)
     (unsigned int) ((page.height*image->y_resolution+0.5)/dy_resolution));
   if (ferror(file))
     {
-      MagickWarning(FileOpenWarning,"An error has occurred writing to file",
-        postscript_filename);
       (void) fclose(file);
-      return((Image *) NULL);
+      ThrowReaderException(FileOpenWarning,
+        "An error has occurred writing to file",image);
     }
   (void) rewind(file);
   (void) fputs(translate_geometry,file);
@@ -352,7 +351,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ErrorInfo *error)
       */
       file=fopen(postscript_filename,AppendBinaryType);
       if (file == (FILE *) NULL)
-        ReaderExit(FileOpenWarning,"Unable to write file",image);
+        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
       (void) fputs("showpage\n",file);
       (void) fclose(file);
       status=SystemCommand(image_info->verbose,command);
@@ -365,24 +364,20 @@ static Image *ReadPSImage(const ImageInfo *image_info,ErrorInfo *error)
         Ghostscript has failed-- try the Display Postscript Extension.
       */
       (void) FormatString((char *) image_info->filename,"dps:%s",filename);
-      image=ReadImage((ImageInfo *) image_info,error);
+      image=ReadImage((ImageInfo *) image_info,exception);
       if (image != (Image *) NULL)
         return(image);
-      MagickWarning(CorruptImageWarning,"Postscript delegation failed",
-        image_info->filename);
-      return((Image *) NULL);
+      ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
+        image);
     }
   clone_info=CloneImageInfo(image_info);
   GetBlobInfo(&(clone_info->blob));
-  image=ReadImage(clone_info,error);
+  image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
-    {
-      MagickWarning(CorruptImageWarning,"Postscript delegation failed",
-        image_info->filename);
-      return((Image *) NULL);
-    }
+    ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
+      image);
   (void) strcpy((char *) image_info->filename,filename);
   do
   {
@@ -818,7 +813,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   page=1;
   scene=0;
   do
@@ -957,7 +952,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             */
             preview_image=CloneImage(image,image->columns,image->rows,True);
             if (preview_image == (Image *) NULL)
-              WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+              ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
             /*
               Dump image as bitmap.
             */

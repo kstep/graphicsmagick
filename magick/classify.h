@@ -83,8 +83,7 @@ typedef enum
 
 typedef enum
 {
-  UndefinedError,
-  UndefinedWarning,
+  UndefinedException,
   ResourceLimitWarning = 300,
   XServerWarning = 305,
   OptionWarning = 310,
@@ -103,7 +102,7 @@ typedef enum
   FileOpenError = 430,
   BlobError = 435,
   CacheError = 440
-} ErrorType;
+} ExceptionType;
 
 typedef enum
 {

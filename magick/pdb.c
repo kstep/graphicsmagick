@@ -175,7 +175,7 @@ static unsigned int IsPDB(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPDBImage method is:
 %
-%      Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -185,11 +185,11 @@ static unsigned int IsPDB(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   typedef struct _PDBHeader
   {
@@ -287,7 +287,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Determine if this is a PDB image file.
   */
@@ -307,7 +307,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
   pdb_header.number_records=MSBFirstReadShort(image);
   if ((status == False) || (memcmp((char *) &pdb_header.type,"vIMG",4) != 0) ||
       (memcmp((char *) &pdb_header.id,"View",4) != 0))
-    ReaderExit(CorruptImageWarning,"Not a PDB image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
   /*
     Read record header.
   */
@@ -316,7 +316,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
   record_type=ReadByte(image);
   if (((record_type != 0x00) && (record_type != 0x01)) ||
       (memcmp(tag,"\x40\x6f\x80",3) != 0))
-    ReaderExit(CorruptImageWarning,"Corrupt PDB image file",image);
+    ThrowReaderException(CorruptImageWarning,"Corrupt PDB image file",image);
   if ((offset-TellBlob(image)) == 6)
     {
       (void) ReadByte(image);
@@ -329,7 +329,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
       record_type=ReadByte(image);
       if (((record_type != 0x00) && (record_type != 0x01)) ||
           (memcmp(tag,"\x40\x6f\x80",3) != 0))
-        ReaderExit(CorruptImageWarning,"Corrupt PDB image file",image);
+        ThrowReaderException(CorruptImageWarning,"Corrupt PDB image file",image);
       if ((offset-TellBlob(image)) == 6)
         {
           (void) ReadByte(image);
@@ -363,7 +363,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
   image->colormap=(PixelPacket *)
     AllocateMemory(image->colors*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].red= ((unsigned long) (MaxRGB*i)/(image->colors-1));
@@ -378,7 +378,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
   packets=(bits_per_pixel*image->columns/8)*image->rows;
   pixels=(unsigned char *) AllocateMemory(packets+256);
   if (pixels == (unsigned char *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   if (pdb_image.version != 0)
     (void) DecodeImage(image,pixels,packets);
   else
@@ -477,7 +477,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
       break;
     }
     default:
-      ReaderExit(CorruptImageWarning,"Not a PDB image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
   }
   FreeMemory(pixels);
   if ((offset-TellBlob(image)) == 0)
@@ -517,7 +517,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ErrorInfo *error)
           *(p+1)='\0';
         }
       if (comment == (char *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       (void) SetImageAttribute(image,"Comment",comment);
       FreeMemory(comment);
     }

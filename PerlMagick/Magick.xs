@@ -620,7 +620,7 @@ static void DestroyPackageInfo(struct PackageInfo *info)
 %
 %
 */
-static void errorhandler(const ErrorType error,const char *message,
+static void errorhandler(const ExceptionType error,const char *message,
   const char *qualifier)
 {
   char
@@ -631,7 +631,7 @@ static void errorhandler(const ErrorType error,const char *message,
 
   error_number=errno;
   errno=0;
-  FormatString(text,"Error %d: %.1024s%s%.1024s%s%s%.64s%s",error,
+  FormatString(text,"Exception %d: %.1024s%s%.1024s%s%s%.64s%s",error,
     (message ? message : "ERROR"),
     qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
     error_number ? " [" : "",error_number ? strerror(error_number) : "",
@@ -1669,7 +1669,7 @@ static int strEQcase(const char *p,const char *q)
 %
 %
 */
-static void warninghandler(const ErrorType warning,const char *message,
+static void warninghandler(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
   char
@@ -1772,18 +1772,18 @@ Animate(ref,...)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
-      goto MethodError;
+      goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickWarning(OptionWarning,"No images to animate",NULL);
-        goto MethodError;
+        goto MethodException;
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
@@ -1794,7 +1794,7 @@ Animate(ref,...)
           SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     AnimateImages(package_info->image_info,image);
 
-  MethodError:
+  MethodException:
     if (package_info)
       DestroyPackageInfo(package_info);
     sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
@@ -1870,7 +1870,7 @@ Append(ref,...)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
@@ -1880,12 +1880,12 @@ Append(ref,...)
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
-      goto MethodError;
+      goto MethodException;
     image=SetupList(reference,&info,&reference_vector);
     if (!image)
       {
         MagickWarning(OptionWarning,"No images to montage",NULL);
-        goto MethodError;
+        goto MethodException;
       }
     info=GetPackageInfo((void *) av,info);
     /*
@@ -1918,7 +1918,7 @@ Append(ref,...)
     }
     image=AppendImages(image,stack);
     if (!image)
-      goto MethodError;
+      goto MethodException;
     for (next=image; next; next=next->next)
     {
       sv=newSViv((IV) next);
@@ -1932,7 +1932,7 @@ Append(ref,...)
     error_list=NULL;
     XSRETURN(1);
 
-  MethodError:
+  MethodException:
     error_jump=NULL;
     sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
     SvPOK_on(error_list);
@@ -1994,23 +1994,23 @@ Average(ref)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
-      goto MethodError;
+      goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickWarning(OptionWarning,"No images to average",NULL);
-        goto MethodError;
+        goto MethodException;
       }
     image=AverageImages(image);
     if (!image)
-      goto MethodError;
+      goto MethodException;
     /*
       Create blessed Perl array for the returned image.
     */
@@ -2030,7 +2030,7 @@ Average(ref)
     error_jump=NULL;
     XSRETURN(1);
 
-  MethodError:
+  MethodException:
     sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
     SvPOK_on(error_list);  /* return messages in string context */
     ST(0)=sv_2mortal(error_list);
@@ -2228,19 +2228,19 @@ Copy(ref)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
-      goto MethodError;
+      goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!(image=SetupList(reference,&info,(SV ***) NULL)))
       {
         MagickWarning(OptionWarning,"No images to Copy",NULL);
-        goto MethodError;
+        goto MethodException;
       }
     /*
       Create blessed Perl array for the returned image.
@@ -2263,7 +2263,7 @@ Copy(ref)
     error_jump=NULL;
     XSRETURN(1);
 
-  MethodError:
+  MethodException:
     sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -2392,18 +2392,18 @@ Display(ref,...)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
-      goto MethodError;
+      goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!(image=SetupList(reference,&info,(SV ***) NULL)))
       {
         MagickWarning(OptionWarning,"No images to display",NULL);
-        goto MethodError;
+        goto MethodException;
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
@@ -2414,7 +2414,7 @@ Display(ref,...)
           SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     DisplayImages(package_info->image_info,image);
 
-  MethodError:
+  MethodException:
     if (package_info)
       DestroyPackageInfo(package_info);
     sv_setiv(error_list,(IV) status);
@@ -3286,17 +3286,17 @@ ImageToBlob(ref,...)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     error_jump=(&error_jmp);
     if (setjmp(error_jmp))
-      goto MethodError;
+      goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickWarning(OptionWarning,"No images to blob",NULL);
-        goto MethodError;
+        goto MethodException;
       }
     package_info=ClonePackageInfo(info);
     for (i=2; i < items; i+=2)
@@ -3322,7 +3322,7 @@ ImageToBlob(ref,...)
         break;
     }
 
-  MethodError:
+  MethodException:
     if (package_info)
       DestroyPackageInfo(package_info);
     SvREFCNT_dec(error_list);  /* throw away all errors */
@@ -3680,6 +3680,7 @@ Mogrify(ref,...)
     for (next=image; next; first=False, next=next->next)
     {
       image=next;
+      GetExceptionInfo(&image->exception);
       rectangle_info.width=image->columns;
       rectangle_info.height=image->rows;
       rectangle_info.x=rectangle_info.y=0;
@@ -4612,17 +4613,20 @@ Mogrify(ref,...)
           break;
         }
       }
-    if (region_image != (Image *) NULL)
-      {
-        /*
-          Composite region.
-        */
-        CompositeImage(region_image,ReplaceCompositeOp,image,region_info.x,
-          region_info.y);
-        image->orphan=True;
-        DestroyImage(image);
-        image=region_image;
-      }
+      if (region_image != (Image *) NULL)
+        {
+          /*
+            Composite region.
+          */
+          CompositeImage(region_image,ReplaceCompositeOp,image,region_info.x,
+            region_info.y);
+          image->orphan=True;
+          DestroyImage(image);
+          image=region_image;
+        }
+      if (image && (image->exception.type != UndefinedException))
+        MagickWarning(image->exception.type,image->exception.message,
+          image->exception.qualifier);
       if (image)
         {
           number_images++;
@@ -4724,7 +4728,7 @@ Montage(ref,...)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
@@ -4735,12 +4739,12 @@ Montage(ref,...)
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
-      goto MethodError;
+      goto MethodException;
     image=SetupList(reference,&info,&reference_vector);
     if (!image)
       {
         MagickWarning(OptionWarning,"No images to montage",NULL);
-        goto MethodError;
+        goto MethodException;
       }
     info=GetPackageInfo((void *) av,info);
     /*
@@ -5005,7 +5009,7 @@ Montage(ref,...)
     image=MontageImages(image,&montage_info);
     DestroyMontageInfo(&montage_info);
     if (!image)
-      goto MethodError;
+      goto MethodException;
     if (transparent_color)
       for (next=image; next; next=next->next)
         TransparentImage(next,transparent_color);
@@ -5024,7 +5028,7 @@ Montage(ref,...)
     error_list=NULL;
     XSRETURN(1);
 
-  MethodError:
+  MethodException:
     sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -5097,7 +5101,7 @@ Morph(ref,...)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
@@ -5107,12 +5111,12 @@ Morph(ref,...)
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
-      goto MethodError;
+      goto MethodException;
     image=SetupList(reference,&info,&reference_vector);
     if (!image)
       {
         MagickWarning(OptionWarning,"No images to montage",NULL);
-        goto MethodError;
+        goto MethodException;
       }
     info=GetPackageInfo((void *) av,info);
     /*
@@ -5139,7 +5143,7 @@ Morph(ref,...)
     }
     image=MorphImages(image,number_frames);
     if (!image)
-      goto MethodError;
+      goto MethodException;
     for (next=image; next; next=next->next)
     {
       sv=newSViv((IV) next);
@@ -5153,7 +5157,7 @@ Morph(ref,...)
     error_list=NULL;
     XSRETURN(1);
 
-  MethodError:
+  MethodException:
     error_jump=NULL;
     sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
     SvPOK_on(error_list);
@@ -5215,23 +5219,23 @@ Mosaic(ref)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
     error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
-      goto MethodError;
+      goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickWarning(OptionWarning,"No images to average",NULL);
-        goto MethodError;
+        goto MethodException;
       }
     image=MosaicImages(image);
     if (!image)
-      goto MethodError;
+      goto MethodException;
     /*
       Create blessed Perl array for the returned image.
     */
@@ -5251,7 +5255,7 @@ Mosaic(ref)
     error_jump=NULL;
     XSRETURN(1);
 
-  MethodError:
+  MethodException:
     sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
     SvPOK_on(error_list);  /* return messages in string context */
     ST(0)=sv_2mortal(error_list);
@@ -5287,7 +5291,7 @@ Ping(ref,...)
     char
       message[MaxTextExtent];
 
-    ErrorInfo
+    ExceptionInfo
       error;
 
     Image
@@ -5413,8 +5417,8 @@ Read(ref,...)
       **keep,
       **list;
 
-    ErrorInfo
-      error;
+    ExceptionInfo
+      exception;
 
     HV
       *hv;
@@ -5498,18 +5502,18 @@ Read(ref,...)
     for (i=number_images=0; i < n; i++)
     {
       (void) strncpy(info->image_info->filename,list[i],MaxTextExtent-1);
-      for (image=ReadImage(info->image_info,&error); image; image=image->next)
+      for (image=ReadImage(info->image_info,&exception); image; image=image->next)
       {
-        if (error.type != UndefinedError)
-          MagickWarning(error.type,error.message,error.qualifier);
+        if (exception.type != UndefinedException)
+          MagickWarning(exception.type,exception.message,exception.qualifier);
         sv=newSViv((IV) image);
         rv=newRV(sv);
         av_push(av,sv_bless(rv,hv));
         SvREFCNT_dec(sv);
         number_images++;
       }
-      if (error.type != UndefinedError)
-        MagickWarning(error.type,error.message,error.qualifier);
+      if (exception.type != UndefinedException)
+        MagickWarning(exception.type,exception.message,exception.qualifier);
     }
     /*
       Free resources.
@@ -5624,14 +5628,14 @@ Set(ref,...)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     image=SetupList(reference,&info,(SV ***) NULL);
     for (i=2; i < items; i+=2)
       SetAttribute(info,image,SvPV(ST(i-1),na),ST(i));
 
-  MethodError:
+  MethodException:
     sv_setiv(error_list,(IV) (SvCUR(error_list) != 0));
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -5695,17 +5699,17 @@ Write(ref,...)
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto MethodException;
       }
     reference=SvRV(ST(0));
     error_jump=(&error_jmp);
     if (setjmp(error_jmp))
-      goto MethodError;
+      goto MethodException;
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickWarning(OptionWarning,"No images to write",NULL);
-        goto MethodError;
+        goto MethodException;
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
@@ -5726,14 +5730,14 @@ Write(ref,...)
     {
       status=WriteImage(package_info->image_info,next);
       if (status == False)
-        MagickWarning(next->error.type,next->error.message,
-          next->error.qualifier);
+        MagickWarning(next->exception.type,next->exception.message,
+          next->exception.qualifier);
       number_images++;
       if (package_info->image_info->adjoin)
         break;
     }
 
-  MethodError:
+  MethodException:
     if (package_info)
       DestroyPackageInfo(package_info);
     sv_setiv(error_list,(IV) number_images);

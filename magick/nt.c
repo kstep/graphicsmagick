@@ -362,12 +362,12 @@ Export double NTElapsedTime(void)
 %
 %  The format of the NTErrorHandler method is:
 %
-%      void NTErrorHandler(const ErrorType error,const char *message,
+%      void NTErrorHandler(const ExceptionType error,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
-%    o error: Specifies the numeric error category.
+%    o exception: Specifies the numeric error category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -376,7 +376,7 @@ Export double NTElapsedTime(void)
 %
 %
 */
-Export void NTErrorHandler(const ErrorType error,const char *message,
+Export void NTErrorHandler(const ExceptionType error,const char *message,
   const char *qualifier)
 {
   char
@@ -398,7 +398,7 @@ Export void NTErrorHandler(const ErrorType error,const char *message,
       else
         FormatString(buffer,"%.1024s: %.1024s.\n",SetClientName((char *) NULL),
           message);
-  (void) MessageBox(NULL,buffer,"ImageMagick Error",MB_OK | MB_TASKMODAL |
+  (void) MessageBox(NULL,buffer,"ImageMagick Exception",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONEXCLAMATION);
   Exit(0);
 }
@@ -598,7 +598,7 @@ Export double NTUserTime(void)
 %
 %  The format of the NTWarningHandler method is:
 %
-%      void NTWarningHandler(const ErrorType warning,const char *message,
+%      void NTWarningHandler(const ExceptionType warning,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -612,7 +612,7 @@ Export double NTUserTime(void)
 %
 %
 */
-Export void NTWarningHandler(const ErrorType warning,const char *message,
+Export void NTWarningHandler(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
   char

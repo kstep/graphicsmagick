@@ -166,7 +166,7 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 %
 %  The format of the MontageImages method is:
 %
-%      Image *MontageImages(const Image *images,const MontageInfo *montage_info)
+%      Image *MontageImages(Image *images,const MontageInfo *montage_info)
 %
 %  A description of each parameter follows:
 %
@@ -180,7 +180,7 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 static void FormatLabel(ImageInfo *image_info,char *label,
   const unsigned int width,unsigned int *font_height)
 {
-  ErrorInfo
+  ExceptionInfo
     error;
 
   Image
@@ -238,7 +238,7 @@ static int SceneCompare(const void *x,const void *y)
   return((int) (*image_1)->scene-(int) (*image_2)->scene);
 }
 
-Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
+Export Image *MontageImages(Image *images,const MontageInfo *montage_info)
 {
 #define MontageImageText  "  Creating visual image directory...  "
 #define TileImageText  "  Creating image tiles...  "
@@ -249,7 +249,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   char
     geometry[MaxTextExtent];
 
-  ErrorInfo
+  ExceptionInfo
     error;
 
   FrameInfo

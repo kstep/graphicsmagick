@@ -111,7 +111,7 @@ static unsigned int IsRLE(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadRLEImage method is:
 %
-%      Image *ReadRLEImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -121,11 +121,11 @@ static unsigned int IsRLE(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadRLEImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define SkipLinesOp  0x01
 #define SetColorOp  0x02
@@ -176,13 +176,13 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Determine if this is a RLE file.
   */
   status=ReadBlob(image,2,(char *) magick);
   if ((status == False) || (strncmp(magick,"\122\314",2) != 0))
-    ReaderExit(CorruptImageWarning,"Not a RLE image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a RLE image file",image);
   do
   {
     /*
@@ -205,7 +205,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ErrorInfo *error)
     map_length=1 << ReadByte(image);
     if ((number_planes == 0) || (number_planes == 2) || (bits_per_pixel != 8) ||
         (image->columns == 0))
-      ReaderExit(CorruptImageWarning,"Unsupported RLE image file",image);
+      ThrowReaderException(CorruptImageWarning,"Unsupported RLE image file",image);
     if (flags & 0x02)
       {
         /*
@@ -234,7 +234,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ErrorInfo *error)
         */
         colormap=(unsigned char *) AllocateMemory(number_colormaps*map_length);
         if (colormap == (unsigned char *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         p=colormap;
         for (i=0; i < (int) number_colormaps; i++)
           for (x=0; x < (int) map_length; x++)
@@ -254,7 +254,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ErrorInfo *error)
         length=LSBFirstReadShort(image);
         comment=(char *) AllocateMemory(length);
         if (comment == (char *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         (void) ReadBlob(image,length-1,comment);
         comment[length-1]='\0';
         (void) SetImageAttribute(image,"Comment",comment);
@@ -270,7 +270,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ErrorInfo *error)
     rle_pixels=(unsigned char *)
       AllocateMemory(image->columns*image->rows*number_planes);
     if (rle_pixels == (unsigned char *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     if ((flags & 0x01) && !(flags & 0x02))
       {
         /*
@@ -438,7 +438,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ErrorInfo *error)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         p=colormap;
         if (number_colormaps == 0)
           for (i=0; i < (int) image->colors; i++)

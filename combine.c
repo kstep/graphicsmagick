@@ -196,8 +196,8 @@ int main(int argc,char **argv)
     blend,
     sans;
 
-  ErrorInfo
-    error;
+  ExceptionInfo
+    exception;
 
   Image
     *combined_image,
@@ -265,23 +265,23 @@ int main(int argc,char **argv)
         (void) strcpy(image_info->filename,filename);
         if (image == (Image *) NULL)
           {
-            image=ReadImage(image_info,&error);
+            image=ReadImage(image_info,&exception);
             if (image == (Image *) NULL)
-              MagickWarning(error.type,error.message,error.qualifier);
+              MagickWarning(exception.type,exception.message,exception.qualifier);
             continue;
           }
         if (mask_image != (Image *) NULL)
           MagickError(OptionError,"input images already specified",filename);
         if (composite_image == (Image *) NULL)
           {
-            composite_image=ReadImage(image_info,&error);
+            composite_image=ReadImage(image_info,&exception);
             if (composite_image == (Image *) NULL)
-              MagickWarning(error.type,error.message,error.qualifier);
+              MagickWarning(exception.type,exception.message,exception.qualifier);
             continue;
           }
-        mask_image=ReadImage(image_info,&error);
+        mask_image=ReadImage(image_info,&exception);
         if (mask_image == (Image *) NULL)
-          MagickWarning(error.type,error.message,error.qualifier);
+          MagickWarning(exception.type,exception.message,exception.qualifier);
       }
     else
       switch(*(option+1))
@@ -967,8 +967,8 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   status=WriteImage(image_info,combined_image);
   if (status == False)
-    MagickWarning(image->error.type,image->error.message,
-      image->error.qualifier);
+    MagickWarning(image->exception.type,image->exception.message,
+      image->exception.qualifier);
   if (image_info->verbose)
     DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);

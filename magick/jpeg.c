@@ -167,7 +167,7 @@ static unsigned int IsJPEG(const unsigned char *magick,
 %
 %  The format of the ReadJPEGImage method is:
 %
-%      Image *ReadJPEGImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadJPEGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -177,7 +177,7 @@ static unsigned int IsJPEG(const unsigned char *magick,
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -479,7 +479,7 @@ static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
   source->image=image;
 }
 
-static Image *ReadJPEGImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadJPEGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   IndexPacket
     index;
@@ -518,7 +518,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Initialize image structure.
   */
@@ -607,7 +607,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,ErrorInfo *error)
       image->colormap=(PixelPacket *)
         AllocateMemory(image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=
@@ -621,7 +621,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,ErrorInfo *error)
   jpeg_pixels=(JSAMPLE *)
     AllocateMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Convert JPEG pixels to pixel packets.
   */
@@ -706,7 +706,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,ErrorInfo *error)
   return(image);
 }
 #else
-static Image *ReadJPEGImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadJPEGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"JPEG library is not available",
     image_info->filename);
@@ -1002,7 +1002,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   /*
     Initialize JPEG parameters.
   */
@@ -1087,7 +1087,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_pixels=(JSAMPLE *)
     AllocateMemory(jpeg_info.input_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   scanline[0]=(JSAMPROW) jpeg_pixels;
   if (jpeg_info.data_precision > 8)
     {

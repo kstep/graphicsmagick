@@ -201,7 +201,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->tainted=False;
   allocated_image->restart_animation_here=False;
   GetTimerInfo(&allocated_image->timer);
-  GetErrorInfo(&allocated_image->error);
+  GetExceptionInfo(&allocated_image->exception);
   allocated_image->orphan=False;
   allocated_image->previous=(Image *) NULL;
   allocated_image->list=(Image *) NULL;
@@ -374,9 +374,9 @@ Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
     resource.delay=atoi(image_info->delay);
   (void) XAnimateImages(display,&resource,&client_name,1,image);
   XCloseDisplay(display);
-  return(True);
+  return(image->exception.type == UndefinedException);
 #else
-  MagickWarning(MissingDelegateWarning,"X11 library is not available",
+  ThrowBooleanException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
   return(False);
 #endif
@@ -433,19 +433,13 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
   */
   assert(images != (Image *) NULL);
   if (images->next == (Image *) NULL)
-    {
-      MagickWarning(OptionWarning,"Unable to append image",
-        "image sequence required");
-      return((Image *) NULL);
-    }
+    ThrowImageException(OptionWarning,"Unable to append image",
+      "image sequence required");
   for (image=images->next; image != (Image *) NULL; image=image->next)
     if ((image->columns != images->columns) &&
         (image->rows != images->rows))
-      {
-        MagickWarning(OptionWarning,"Unable to append image",
-          "image widths or heights differ");
-        return((Image *) NULL);
-      }
+      ThrowImageException(OptionWarning,"Unable to append image",
+        "image widths or heights differ");
   width=images->columns;
   height=images->rows;
   for (image=images->next; image != (Image *) NULL; image=image->next)
@@ -461,11 +455,8 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
   else
     appended_image=CloneImage(images,images->columns,height,True);
   if (appended_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to append image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ThrowImageException(ResourceLimitWarning,"Unable to append image",
+      "Memory allocation failed");
   scene=0;
   if ((images->columns != images->next->columns) || !stack)
     {
@@ -599,11 +590,8 @@ Export Image *AverageImages(Image *images)
 
   assert(images != (Image *) NULL);
   if (images->next == (Image *) NULL)
-    {
-      MagickWarning(OptionWarning,"Unable to average image",
-        "image sequence required");
-      return((Image *) NULL);
-    }
+    ThrowImageException(OptionWarning,"Unable to average image",
+      "image sequence required");
   /*
     Ensure the images are the same size.
   */
@@ -611,11 +599,8 @@ Export Image *AverageImages(Image *images)
   {
     if ((image->columns != images->columns) ||
         (image->rows != images->rows))
-      {
-        MagickWarning(OptionWarning,"Unable to average image",
-          "images are not the same size");
-        return((Image *) NULL);
-      }
+      ThrowImageException(OptionWarning,"Unable to average image",
+        "images are not the same size");
   }
   /*
     Allocate sum accumulation buffer.
@@ -623,11 +608,8 @@ Export Image *AverageImages(Image *images)
   sum=(SumPacket *)
     AllocateMemory(images->columns*images->rows*sizeof(SumPacket));
   if (sum == (SumPacket *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to average image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
+    ThrowImageException(ResourceLimitWarning,"Unable to average image",
+      "Memory allocation failed");
   for (i=0; i < (int) (images->columns*images->rows); i++)
   {
     sum[i].red=0.0;
@@ -641,10 +623,9 @@ Export Image *AverageImages(Image *images)
   average_image=CloneImage(images,images->columns,images->rows,True);
   if (average_image == (Image *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to average image",
-        "Memory allocation failed");
       FreeMemory(sum);
-      return((Image *) NULL);
+      ThrowImageException(ResourceLimitWarning,"Unable to average image",
+        "Memory allocation failed");
     }
   average_image->class=DirectClass;
   /*
@@ -955,7 +936,7 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %  The format of the CompositeImage method is:
 %
-%      void CompositeImage(Image *image,const CompositeOperator compose,
+%      unsigned int CompositeImage(Image *image,const CompositeOperator compose,
 %        Image *composite_image,const int x_offset,const int y_offset)
 %
 %  A description of each parameter follows:
@@ -974,7 +955,7 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %
 */
-Export void CompositeImage(Image *image,const CompositeOperator compose,
+Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
   Image *composite_image,const int x_offset,const int y_offset)
 {
   int
@@ -1015,11 +996,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   if (((x_offset+(int) composite_image->columns) < 0) ||
       ((y_offset+(int) composite_image->rows) < 0) ||
       (x_offset > (int) image->columns) || (y_offset > (int) image->rows))
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to composite image",
-        "geometry does not contain image");
-      return;
-    }
+    ThrowBooleanException(OptionWarning,"Unable to composite image",
+      "geometry does not contain image");
   /*
     Image must be uncompressed.
   */
@@ -1072,11 +1050,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       displace_image=CloneImage(composite_image,composite_image->columns,
         composite_image->rows,True);
       if (displace_image == (Image *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to display image",
-            "Memory allocation failed");
-          return;
-        }
+        ThrowBooleanException(ResourceLimitWarning,"Unable to composite image",
+          "Memory allocation failed");
       horizontal_scale=20.0;
       vertical_scale=20.0;
       if (composite_image->geometry != (char *) NULL)
@@ -1503,6 +1478,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   if (compose == DisplaceCompositeOp)
     DestroyImage(composite_image);
   (void) IsMatteImage(image);
+  return(True);
 }
 
 /*
@@ -1579,10 +1555,8 @@ Export Image *CreateImage(const unsigned int width,const unsigned int height,
   */
   assert(pixels != (void *) NULL);
   if ((width*height) == 0)
-    {
-      MagickWarning(CorruptImageWarning,"impossible image size",(char *) NULL);
-      return((Image *) NULL);
-    }
+    ThrowBooleanException(OptionWarning,"Unable to create image",
+      "impossible image size");
   image=AllocateImage((ImageInfo *) NULL);
   if (image == (Image *) NULL)
     return((Image *) NULL);
@@ -1668,9 +1642,8 @@ Export Image *CreateImage(const unsigned int width,const unsigned int height,
               }
               default:
               {
-                MagickWarning(OptionWarning,"Invalid pixel map",map);
                 DestroyImage(image);
-                return((Image *) NULL);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map);
               }
             }
           }
@@ -1732,9 +1705,8 @@ Export Image *CreateImage(const unsigned int width,const unsigned int height,
               }
               default:
               {
-                MagickWarning(OptionWarning,"Invalid pixel map",map);
                 DestroyImage(image);
-                return((Image *) NULL);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map);
               }
             }
           }
@@ -1796,9 +1768,8 @@ Export Image *CreateImage(const unsigned int width,const unsigned int height,
               }
               default:
               {
-                MagickWarning(OptionWarning,"Invalid pixel map",map);
                 DestroyImage(image);
-                return((Image *) NULL);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map);
               }
             }
           }
@@ -1860,9 +1831,8 @@ Export Image *CreateImage(const unsigned int width,const unsigned int height,
               }
               default:
               {
-                MagickWarning(OptionWarning,"Invalid pixel map",map);
                 DestroyImage(image);
-                return((Image *) NULL);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map);
               }
             }
           }
@@ -1924,9 +1894,8 @@ Export Image *CreateImage(const unsigned int width,const unsigned int height,
               }
               default:
               {
-                MagickWarning(OptionWarning,"Invalid pixel map",map);
                 DestroyImage(image);
-                return((Image *) NULL);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map);
               }
             }
           }
@@ -1939,9 +1908,8 @@ Export Image *CreateImage(const unsigned int width,const unsigned int height,
     }
     default:
     {
-      MagickWarning(OptionWarning,"Invalid pixel type",(char *) NULL);
       DestroyImage(image);
-      return((Image *) NULL);
+      ThrowImageException(OptionWarning,"Invalid pixel map",map);
     }
   }
   return(image);
@@ -2241,13 +2209,13 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       }
     }
   if (image->mean_error_per_pixel != 0)
-    (void) fprintf(file,"  Mean Error Per Pixel: %d\n",
+    (void) fprintf(file,"  Mean Exception Per Pixel: %d\n",
       image->mean_error_per_pixel);
   if (image->normalized_mean_error != 0)
-    (void) fprintf(file,"  Normalized Mean Error: %.6f\n",
+    (void) fprintf(file,"  Normalized Mean Exception: %.6f\n",
       image->normalized_mean_error);
   if (image->normalized_maximum_error != 0)
-    (void) fprintf(file,"  Normalized Maximum Error: %.6f\n",
+    (void) fprintf(file,"  Normalized Maximum Exception: %.6f\n",
       image->normalized_maximum_error);
   if (image->rendering_intent == SaturationIntent)
     (void) fprintf(file,"  Rendering-Intent: saturation\n");
@@ -2469,7 +2437,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  Montage: %.1024s\n",image->montage);
   if (image->directory != (char *) NULL)
     {
-      ErrorInfo
+      ExceptionInfo
         error;
 
       Image
@@ -2805,6 +2773,9 @@ Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
   Image
     *next;
 
+  unsigned int
+    status;
+
   unsigned long
     state;
 
@@ -2833,9 +2804,9 @@ Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
       break;
   }
   XCloseDisplay(display);
-  return(True);
+  return(image->exception.type != UndefinedException);
 #else
-  MagickWarning(MissingDelegateWarning,"X11 library is not available",
+  ThrowBooleanException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
   return(False);
 #endif
@@ -3109,7 +3080,7 @@ Export void GetPageInfo(RectangleInfo *page)
 %
 %  The format of the GetPixels method is:
 %
-%      void GetPixels(Image *image,const int x,const int y,
+%      unsigned int GetPixels(Image *image,const int x,const int y,
 %        const unsigned int columns,const unsigned int rows,
 %        const char *map,const StorageType type,void *pixels)
 %
@@ -3137,7 +3108,7 @@ Export void GetPageInfo(RectangleInfo *page)
 %
 %
 */
-Export void GetPixels(Image *image,const int x,const int y,
+Export unsigned int GetPixels(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows,const char *map,
   const StorageType type,void *pixels)
 {
@@ -3219,8 +3190,8 @@ Export void GetPixels(Image *image,const int x,const int y,
             }
             default:
             {
-              MagickWarning(OptionWarning,"Invalid pixel map",map);
-              return;
+              ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+              break;
             }
           }
         }
@@ -3277,8 +3248,8 @@ Export void GetPixels(Image *image,const int x,const int y,
             }
             default:
             {
-              MagickWarning(OptionWarning,"Invalid pixel map",map);
-              return;
+              ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+              break;
             }
           }
         }
@@ -3335,8 +3306,8 @@ Export void GetPixels(Image *image,const int x,const int y,
             }
             default:
             {
-              MagickWarning(OptionWarning,"Invalid pixel map",map);
-              return;
+              ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+              break;
             }
           }
         }
@@ -3393,8 +3364,8 @@ Export void GetPixels(Image *image,const int x,const int y,
             }
             default:
             {
-              MagickWarning(OptionWarning,"Invalid pixel map",map);
-              return;
+              ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+              break;
             }
           }
         }
@@ -3451,8 +3422,8 @@ Export void GetPixels(Image *image,const int x,const int y,
             }
             default:
             {
-              MagickWarning(OptionWarning,"Invalid pixel map",map);
-              return;
+              ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+              break;
             }
           }
         }
@@ -3462,8 +3433,8 @@ Export void GetPixels(Image *image,const int x,const int y,
     }
     default:
     {
-      MagickWarning(OptionWarning,"Invalid pixel type",(char *) NULL);
-      return;
+      ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+      break;
     }
   }
 }
@@ -3659,7 +3630,7 @@ Export unsigned int IsTainted(const Image *image)
 %
 %  The format of the LayerImage method is:
 %
-%      void LayerImage(Image *image,const LayerType layer)
+%      unsigned int LayerImage(Image *image,const LayerType layer)
 %
 %  A description of each parameter follows:
 %
@@ -3670,7 +3641,7 @@ Export unsigned int IsTainted(const Image *image)
 %
 %
 */
-Export void LayerImage(Image *image,const LayerType layer)
+Export unsigned int LayerImage(Image *image,const LayerType layer)
 {
 #define LayerImageText  "  Extracting the layer from the image...  "
 
@@ -3685,11 +3656,8 @@ Export void LayerImage(Image *image,const LayerType layer)
 
   assert(image != (Image *) NULL);
   if ((layer == MatteLayer) && !image->matte)
-    {
-      MagickWarning(OptionWarning,"Unable to extract layer",
-        "image does not have a matte layer");
-      return;
-    }
+    ThrowBooleanException(OptionWarning,"Unable to extract layer",
+      "image does not have a matte layer");
   /*
     Layer DirectClass packets.
   */
@@ -3739,6 +3707,7 @@ Export void LayerImage(Image *image,const LayerType layer)
       ProgressMonitor(LayerImageText,y,image->rows);
   }
   (void) IsGrayImage(image);
+  return(True);
 }
 
 /*
@@ -3756,7 +3725,7 @@ Export void LayerImage(Image *image,const LayerType layer)
 %
 %  The format of the ListToGroupImage method is:
 %
-%      Image **ListToGroupImage(const Image *image,unsigned int *number_images)
+%      Image **ListToGroupImage(Image *image,unsigned int *number_images)
 %
 %  A description of each parameter follows:
 %
@@ -3771,7 +3740,7 @@ Export void LayerImage(Image *image,const LayerType layer)
 %
 %
 */
-Export Image **ListToGroupImage(const Image *image,unsigned int *number_images)
+Export Image **ListToGroupImage(Image *image,unsigned int *number_images)
 {
   Image
     **images,
@@ -3791,8 +3760,9 @@ Export Image **ListToGroupImage(const Image *image,unsigned int *number_images)
   images=(Image **) AllocateMemory(i*sizeof(Image *));
   if (images == (Image **) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to convert image list",
-        "Memory allocation failed");
+      image->exception.type=ResourceLimitWarning;
+      image->exception.message="Unable to convert image list";
+      image->exception.qualifier="Memory allocation failed";
       return((Image **) NULL);
     }
   *number_images=i;
@@ -3878,8 +3848,8 @@ Export void MatteImage(Image *image,Quantum opacity)
 %
 %  The format of the MogrifyImage method is:
 %
-%      void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
-%        Image **image)
+%      unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
+%        char **argv,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -3896,14 +3866,14 @@ Export void MatteImage(Image *image,Quantum opacity)
 %
 %
 */
-Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
-  Image **image)
+Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
+  char **argv,Image **image)
 {
   char
     *geometry,
     *option;
 
-  ErrorInfo
+  ExceptionInfo
     error;
 
   Image
@@ -3944,9 +3914,10 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
   for (i=1; i < argc; i++)
     if (Extent(argv[i]) > (MaxTextExtent/2-1))
       {
-        MagickWarning(ResourceLimitWarning,"Option length exceeds limit",
-          argv[i]);
-        return;
+        (*image)->exception.type=OptionWarning;
+        (*image)->exception.message="Option length exceeds limit";
+        (*image)->exception.qualifier=argv[i];
+        return(False);
       }
   /*
     Initialize method variables.
@@ -4119,8 +4090,6 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
               compression=RunlengthEncodedCompression;
             if (Latin1Compare("Zip",option) == 0)
               compression=ZipCompression;
-            if (compression == UndefinedCompression)
-              MagickError(OptionError,"Invalid compression type",option);
             (*image)->compression=compression;
           }
         continue;
@@ -5143,6 +5112,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     FreeMemory(geometry);
   DestroyImageInfo(clone_info);
   CloseCache((*image)->cache);
+  return(True);
 }
 
 /*
@@ -5160,7 +5130,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
 %
 %  The format of the MogrifyImage method is:
 %
-%      void MogrifyImages(const ImageInfo *image_info,const int argc,
+%      unsigned int MogrifyImages(const ImageInfo *image_info,const int argc,
 %        char **argv,Image **images)
 %
 %  A description of each parameter follows:
@@ -5178,7 +5148,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
 %
 %
 */
-Export void MogrifyImages(const ImageInfo *image_info,const int argc,
+Export unsigned int MogrifyImages(const ImageInfo *image_info,const int argc,
   char **argv,Image **images)
 {
 #define MogrifyImageText  "  Transforming images...  "
@@ -5194,7 +5164,8 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
     handler;
 
   unsigned int
-    number_images;
+    number_images,
+    status;
 
   assert(image_info != (ImageInfo *) NULL);
   assert(images != (Image **) NULL);
@@ -5203,8 +5174,10 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
     image=image->next;
   ProgressMonitor(MogrifyImageText,0,number_images);
   handler=SetMonitorHandler((MonitorHandler) NULL);
-  MogrifyImage(image_info,argc,argv,images);
+  status=MogrifyImage(image_info,argc,argv,images);
   (void) SetMonitorHandler(handler);
+  if (status == False)
+    return(False);
   image=(*images);
   mogrify_image=(*images)->next;
   if (image_info->verbose)
@@ -5212,7 +5185,9 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
   for (i=1; mogrify_image != (Image *) NULL; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    MogrifyImage(image_info,argc,argv,&mogrify_image);
+    status=MogrifyImage(image_info,argc,argv,&mogrify_image);
+    if (status == False)
+      break;
     image->next=mogrify_image;
     image->next->previous=image;
     image=image->next;
@@ -5222,6 +5197,7 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
     (void) SetMonitorHandler(handler);
     ProgressMonitor(MogrifyImageText,i,number_images);
   }
+  return(status);
 }
 
 /*
@@ -5273,11 +5249,8 @@ Export Image *MosaicImages(Image *images)
 
   assert(images != (Image *) NULL);
   if (images->next == (Image *) NULL)
-    {
-      MagickWarning(OptionWarning,"Unable to create a mosaic",
-        "image sequence required");
-      return((Image *) NULL);
-    }
+    ThrowImageException(OptionWarning,"Unable to create image mosaic",
+      "image sequence required");
   /*
     Determine image bounding box.
   */
@@ -5531,7 +5504,7 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
 %
 %  The format of the PingImage method is:
 %
-%      Image *PingImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5542,7 +5515,7 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
 %
 %
 */
-Export Image *PingImage(const ImageInfo *image_info,ErrorInfo *error)
+Export Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -5555,7 +5528,7 @@ Export Image *PingImage(const ImageInfo *image_info,ErrorInfo *error)
   ping_info->verbose=False;
   ping_info->subimage=0;
   ping_info->subrange=0;
-  image=ReadImage(ping_info,error);
+  image=ReadImage(ping_info,exception);
   DestroyImageInfo(ping_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
@@ -5584,7 +5557,7 @@ Export Image *PingImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %  The format of the ReadImage method is:
 %
-%      Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5594,11 +5567,11 @@ Export Image *PingImage(const ImageInfo *image_info,ErrorInfo *error)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-Export Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
+Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent];
@@ -5621,9 +5594,9 @@ Export Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
-  GetErrorInfo(error);
+  GetExceptionInfo(exception);
   if (*image_info->filename == '@')
-    return(ReadImages(image_info,error));
+    return(ReadImages(image_info,exception));
   SetImageInfo(image_info,False);
   (void) strcpy(filename,image_info->filename);
   /*
@@ -5632,12 +5605,12 @@ Export Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
   image=(Image *) NULL;
   magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
   if ((magick_info != (MagickInfo *) NULL) &&
-      (magick_info->decoder != (Image *(*)(const ImageInfo *,ErrorInfo *)) NULL))
-    image=(magick_info->decoder)(image_info,error);
+      (magick_info->decoder != (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
+    image=(magick_info->decoder)(image_info,exception);
   else
     if (!GetDelegateInfo(image_info->magick,(char *) NULL,&delegate_info))
-      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
-        image_info->filename);
+      ThrowImageException(MissingDelegateWarning,
+        "no delegate for this image format",image_info->filename)
     else
       {
         unsigned int
@@ -5660,10 +5633,10 @@ Export Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
         SetImageInfo(image_info,False);
         magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
         if ((magick_info != (MagickInfo *) NULL) &&
-            (magick_info->decoder != (Image *(*)(const ImageInfo *,ErrorInfo *)) NULL))
-          image=(magick_info->decoder)(image_info,error);
+            (magick_info->decoder != (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
+          image=(magick_info->decoder)(image_info,exception);
         else
-          MagickWarning(MissingDelegateWarning,
+          ThrowImageException(MissingDelegateWarning,
             "no delegate for this image format",image_info->filename);
       }
   if (image_info->temporary)
@@ -5721,8 +5694,8 @@ Export Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
               next_image->rows,True);
             if (clone_image == (Image *) NULL)
               {
-                MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-                  image_info->filename);
+                ThrowImageException(MissingDelegateWarning,
+                  "Memory allocation failed",image_info->filename);
                 break;
               }
             if (subimages == (Image *) NULL)
@@ -5739,11 +5712,8 @@ Export Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
       DestroyImages(image);
       image=(Image *) NULL;
       if (subimages == (Image *) NULL)
-        {
-          MagickWarning(OptionWarning,
-            "Subimage specification returns no images",image_info->filename);
-          return((Image *) NULL);
-        }
+        ThrowImageException(OptionWarning,
+          "Subimage specification returns no images",image_info->filename);
       while (subimages->previous != (Image *) NULL)
         subimages=subimages->previous;
       image=subimages;
@@ -5784,16 +5754,15 @@ Export Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
         }
         if (image == (Image *) NULL)
           {
-            MagickWarning(OptionWarning,
+            ThrowImageException(OptionWarning,
               "Subimage specification returns no images",image_info->filename);
-            return((Image *) NULL);
           }
         while (image->previous != (Image *) NULL)
           image=image->previous;
       }
   if (image->status)
-    MagickWarning(CorruptImageWarning,"An error has occurred reading file",
-      image->filename);
+    ThrowImageException(CorruptImageWarning,
+      "An error has occurred reading file",image_info->filename);
   DestroyBlobInfo(&image->blob);
   for (next_image=image; next_image; next_image=next_image->next)
   {
@@ -5826,7 +5795,7 @@ Export Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
 %
 %  The format of the ReadImage method is:
 %
-%      Image *ReadImages(ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5838,7 +5807,7 @@ Export Image *ReadImage(ImageInfo *image_info,ErrorInfo *error)
 %
 %
 */
-Export Image *ReadImages(ImageInfo *image_info,ErrorInfo *error)
+Export Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     *command,
@@ -5867,11 +5836,8 @@ Export Image *ReadImages(ImageInfo *image_info,ErrorInfo *error)
   */
   file=(FILE *) fopen(image_info->filename+1,"r");
   if (file == (FILE *) NULL)
-    {
-      MagickWarning(FileOpenWarning,"Unable to read image list",
-        image_info->filename);
-      return(False);
-    }
+    ThrowBooleanException(ResourceLimitWarning,"Unable to read image list",
+      "Memory allocation failed");
   length=MaxTextExtent;
   command=(char *) AllocateMemory(length);
   for (p=command; command != (char *) NULL; p++)
@@ -5892,11 +5858,8 @@ Export Image *ReadImages(ImageInfo *image_info,ErrorInfo *error)
   }
   (void) fclose(file);
   if (command == (char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to read image list",
-        "Memory allocation failed");
-      return(False);
-    }
+    ThrowBooleanException(ResourceLimitWarning,"Unable to read image list",
+      "Memory allocation failed");
   *p='\0';
   Strip(command);
   images=StringToArgv(command,&number_images);
@@ -5908,7 +5871,7 @@ Export Image *ReadImages(ImageInfo *image_info,ErrorInfo *error)
   for (i=1; i < number_images; i++)
   {
     (void) strcpy(image_info->filename,images[i]);
-    next_image=ReadImage(image_info,error);
+    next_image=ReadImage(image_info,exception);
     if (next_image == (Image *) NULL)
       continue;
     if (image == (Image *) NULL)
@@ -5946,7 +5909,8 @@ Export Image *ReadImages(ImageInfo *image_info,ErrorInfo *error)
 %
 %  The format of the RGBTransformImage method is:
 %
-%      void RGBTransformImage(Image *image,const ColorspaceType colorspace)
+%      unsigned int RGBTransformImage(Image *image,
+%        const ColorspaceType colorspace)
 %
 %  A description of each parameter follows:
 %
@@ -5958,7 +5922,8 @@ Export Image *ReadImages(ImageInfo *image_info,ErrorInfo *error)
 %
 %
 */
-Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
+Export unsigned int RGBTransformImage(Image *image,
+  const ColorspaceType colorspace)
 {
 #define RGBTransformImageText  "  Transforming image colors...  "
 #define X 0
@@ -6061,11 +6026,8 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
   z_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   if ((x_map == (double *) NULL) || (y_map == (double *) NULL) ||
       (z_map == (double *) NULL))
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to transform color space",
-        "Memory allocation failed");
-      return;
-    }
+    ThrowBooleanException(ResourceLimitWarning,
+      "Unable to transform color space","Memory allocation failed");
   tx=0;
   ty=0;
   tz=0;
@@ -6396,6 +6358,7 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
   FreeMemory(z_map);
   FreeMemory(y_map);
   FreeMemory(x_map);
+  return(True);
 }
 
 /*
@@ -6477,7 +6440,8 @@ Export void SetImage(Image *image,Quantum opacity)
 %
 %  The format of the SetImageInfo method is:
 %
-%      void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
+%      unsigned int SetImageInfo(ImageInfo *image_info,
+%        const unsigned int rectify)
 %
 %  A description of each parameter follows:
 %
@@ -6489,7 +6453,8 @@ Export void SetImage(Image *image,Quantum opacity)
 %
 %
 */
-Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
+Export unsigned int SetImageInfo(ImageInfo *image_info,
+  const unsigned int rectify)
 {
   char
     magick[MaxTextExtent];
@@ -6680,10 +6645,8 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
       FormatString(image_info->filename,"%.1024s",image->filename);
       file=fopen(image->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
-        {
-          MagickWarning(FileOpenWarning,"Unable to write file",image->filename);
-          return;
-        }
+        ThrowBooleanException(MissingDelegateWarning,"Unable to write file",
+          image->filename);
       i=0;
       for (c=fgetc(image->file); c != EOF; c=fgetc(image->file))
       {
@@ -6720,6 +6683,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
     if (r->magick)
       if (r->magick((unsigned char *) magick,MaxTextExtent))
         (void) strcpy(image_info->magick,r->tag);
+  return(True);
 }
 
 /*
@@ -6738,7 +6702,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
 %
 %  The format of the SortColormapByIntensity method is:
 %
-%      void SortColormapByIntensity(Image *image)
+%      unsigned int SortColormapByIntensity(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -6758,7 +6722,7 @@ static int IntensityCompare(const void *x,const void *y)
   return((int) Intensity(*color_2)-(int) Intensity(*color_1));
 }
 
-Export void SortColormapByIntensity(Image *image)
+Export unsigned int SortColormapByIntensity(Image *image)
 {
   int
     y;
@@ -6785,11 +6749,8 @@ Export void SortColormapByIntensity(Image *image)
   pixels=(unsigned short *)
     AllocateMemory(image->colors*sizeof(unsigned short));
   if (pixels == (unsigned short *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to sort colormap",
-        "Memory allocation failed");
-      return;
-    }
+    ThrowBooleanException(MissingDelegateWarning,"Unable to sort colormap",
+      "Memory allocation failed");
   /*
     Assign index values to colormap entries.
   */
@@ -6818,6 +6779,7 @@ Export void SortColormapByIntensity(Image *image)
     }
   }
   FreeMemory(pixels);
+  return(True);
 }
 
 /*
@@ -6944,7 +6906,8 @@ Export void TextureImage(Image *image,Image *texture)
 %
 %  The format of the TransformRGBImage method is:
 %
-%      void TransformRGBImage(Image *image,const ColorspaceType colorspace)
+%      unsigned int TransformRGBImage(Image *image,
+%        const ColorspaceType colorspace)
 %
 %  A description of each parameter follows:
 %
@@ -6956,7 +6919,8 @@ Export void TextureImage(Image *image,Image *texture)
 %
 %
 */
-Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
+Export unsigned int TransformRGBImage(Image *image,
+  const ColorspaceType colorspace)
 {
 #define B (MaxRGB+1)*2
 #define G (MaxRGB+1)
@@ -7097,11 +7061,8 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
   blue_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   if ((red_map == (double *) NULL) || (green_map == (double *) NULL) ||
       (blue_map == (double *) NULL))
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to transform color space",
-        "Memory allocation failed");
-      return;
-    }
+    ThrowBooleanException(MissingDelegateWarning,
+      "Unable to transform colorspace","Memory allocation failed");
   max_value=MaxRGB;
   switch (colorspace)
   {
@@ -7405,6 +7366,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
   FreeMemory(blue_map);
   FreeMemory(green_map);
   FreeMemory(red_map);
+  return(True);
 }
 
 /*
@@ -7461,7 +7423,7 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
   assert(image != (Image *) NULL);
-  GetErrorInfo(&image->error);
+  GetExceptionInfo(&image->exception);
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->filename,image->filename);
   (void) strcpy(clone_info->magick,image->magick);
@@ -7494,7 +7456,7 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   else
     if (!GetDelegateInfo((char *) NULL,clone_info->magick,&delegate_info))
       {
-        MagickWarning(MissingDelegateWarning,
+        ThrowBooleanException(MissingDelegateWarning,
           "no encode delegate for this image format",clone_info->magick);
         magick_info=(MagickInfo *) GetMagickInfo(image->magick);
         if ((magick_info != (MagickInfo *) NULL) &&
@@ -7502,8 +7464,8 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
             (unsigned int (*)(const ImageInfo *,Image *)) NULL))
           status=(magick_info->encoder)(clone_info,image);
         else
-          MagickWarning(MissingDelegateWarning,
-            "no encode delegate for this image format",image->magick);
+          ThrowBooleanException(MissingDelegateWarning,
+            "no encode delegate for this image format",clone_info->magick);
       }
     else
       {
@@ -7517,14 +7479,10 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
         DestroyImageInfo(clone_info);
         return(status);
       }
-  if (image->status)
-    {
-      MagickWarning(CorruptImageWarning,"An error has occurred writing to file",
-        image->filename);
-      DestroyImageInfo(clone_info);
-      return(False);
-    }
   (void) strcpy(image->magick,clone_info->magick);
   DestroyImageInfo(clone_info);
+  if (image->status)
+    ThrowBooleanException(CorruptImageWarning,
+      "An error has occurred writing to file",image->filename);
   return(status);
 }

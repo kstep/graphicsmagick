@@ -101,7 +101,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     *text,
     **textlist;
 
-  ErrorInfo
+  ExceptionInfo
     error;
 
   Image
@@ -459,7 +459,7 @@ Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 Export void GetAnnotateInfo(const ImageInfo *image_info,
   AnnotateInfo *annotate_info)
 {
-  ErrorInfo
+  ExceptionInfo
     error;
 
   ImageAttribute

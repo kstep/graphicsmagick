@@ -121,7 +121,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       char
         **filelist;
 
-      ErrorInfo
+      ExceptionInfo
         error;
 
       Image
@@ -1886,7 +1886,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
               selection,
               type;
 
-            ErrorInfo
+            ExceptionInfo
               error;
 
             int
@@ -2239,7 +2239,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         Atom
           type;
 
-        ErrorInfo
+        ExceptionInfo
           error;
 
         int

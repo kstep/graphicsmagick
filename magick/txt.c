@@ -78,7 +78,7 @@ static unsigned int
 %
 %  The format of the ReadTXTImage method is:
 %
-%      Image *ReadTXTImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -88,11 +88,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadTXTImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   AnnotateInfo
     *annotate_info;
@@ -129,7 +129,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Set the page geometry.
   */
@@ -172,7 +172,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ErrorInfo *error)
       if (clone_info == (ImageInfo *) NULL)
         return((Image *) NULL);
       (void) strcpy(clone_info->filename,image_info->texture);
-      texture=ReadImage(clone_info,error);
+      texture=ReadImage(clone_info,exception);
       if (texture != (Image *) NULL)
         TextureImage(image,texture);
       DestroyImageInfo(clone_info);
@@ -340,7 +340,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   scene=0;
   do
   {

@@ -74,7 +74,7 @@
 %
 %  The format of the ReadRLAImage method is:
 %
-%      Image *ReadRLAImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -84,11 +84,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadRLAImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   typedef struct _WindowFrame
   {
@@ -190,7 +190,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   rla_header.window.left=MSBFirstReadShort(image);
   rla_header.window.right=MSBFirstReadShort(image);
   rla_header.window.bottom=MSBFirstReadShort(image);
@@ -247,7 +247,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ErrorInfo *error)
     }
   scanlines=(long *) AllocateMemory(image->rows*sizeof(long));
   if (scanlines == (long *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   if (*rla_header.description != '\0')
     (void) SetImageAttribute(image,"Comment",rla_header.description);
   /*

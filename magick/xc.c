@@ -79,7 +79,7 @@ static unsigned int
 %
 %  The format of the ReadXCImage method is:
 %
-%      Image *ReadXCImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -89,11 +89,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadXCImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -121,7 +121,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ErrorInfo *error)
   image->colormap=(PixelPacket *)
     AllocateMemory(image->colors*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Initialize colormap.
   */

@@ -82,7 +82,7 @@ static unsigned int
 %
 %  The format of the ReadFPXImage method is:
 %
-%      Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -92,11 +92,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   FPXColorspace
     colorspace;
@@ -164,7 +164,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   if ((image->file == stdin) || image->pipe)
     {
       FILE
@@ -179,7 +179,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
       TemporaryFilename((char *) image_info->filename);
       file=fopen(image_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
-        ReaderExit(FileOpenWarning,"Unable to write file",image);
+        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
       c=ReadByte(image);
       while (c != EOF)
       {
@@ -197,7 +197,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)
-    ReaderExit(DelegateWarning,"Unable to initialize FPX library",image);
+    ThrowReaderException(DelegateWarning,"Unable to initialize FPX library",image);
   tile_width=64;
   tile_height=64;
   flashpix=(FPXImageHandle *) NULL;
@@ -216,12 +216,12 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
   if (fpx_status == FPX_LOW_MEMORY_ERROR)
     {
       FPX_ClearSystem();
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     }
   if (fpx_status != FPX_OK)
     {
       FPX_ClearSystem();
-      ReaderExit(FileOpenWarning,"Unable to open FPX file",image);
+      ThrowReaderException(FileOpenWarning,"Unable to open FPX file",image);
     }
   if (image_info->view == (char *) NULL)
     {
@@ -243,7 +243,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
   if (fpx_status != FPX_OK)
     {
       FPX_ClearSystem();
-      ReaderExit(FileOpenWarning,"Unable to read summary info",image);
+      ThrowReaderException(FileOpenWarning,"Unable to read summary info",image);
     }
   if (summary_info.title_valid)
     if ((summary_info.title.length != 0) &&
@@ -319,7 +319,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
       if (image->colormap == (PixelPacket *) NULL)
         {
           FPX_ClearSystem();
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         }
       for (i=0; i < (int) image->colors; i++)
       {
@@ -343,7 +343,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
     {
       FPX_ClearSystem();
       (void) FPX_CloseImage(flashpix);
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     }
   /*
     Initialize FlashPix image description.
@@ -396,7 +396,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
             FreeMemory(scanline);
             (void) FPX_CloseImage(flashpix);
             FPX_ClearSystem();
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
           }
       }
     /*
@@ -446,7 +446,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
   return(image);
 }
 #else
-static Image *ReadFPXImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"FPX library is not available",
     image_info->filename);
@@ -759,7 +759,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   if ((image->file != stdout) && !image->pipe)
     (void) remove(image->filename);
   else
@@ -779,7 +779,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)
-    WriterExit(ResourceLimitWarning,"Unable to initialize FPX library",image);
+    ThrowWriterException(ResourceLimitWarning,"Unable to initialize FPX library",image);
   tile_width=64;
   tile_height=64;
   colorspace.numberOfComponents=3;
@@ -811,7 +811,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     background_color,compression,&flashpix);
   }
   if (fpx_status != FPX_OK)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   if (image_info->compression == JPEGCompression)
     {
       /*
@@ -885,7 +885,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     {
       (void) FPX_CloseImage(flashpix);
       FPX_ClearSystem();
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     }
   /*
     Initialize FlashPix image description.
@@ -1071,7 +1071,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       */
       file=fopen(image->filename,ReadBinaryType);
       if (file == (FILE *) NULL)
-        WriterExit(FileOpenWarning,"Unable to open file",image);
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) fputc(c,fpx_image.file);
       (void) fclose(file);

@@ -190,7 +190,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   image->orphan=True;
   preview_image=ZoomImage(image,width,height);
   if (preview_image == (Image *) NULL)
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   preview_image->exempt=True;
   (void) SetImageAttribute(preview_image,"Label",DefaultTileLabel);
   /*
@@ -198,7 +198,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   */
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   clone_info->quality=0;
   degrees=0;
   gamma=(-0.2f);
@@ -216,7 +216,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       {
         for (x=0;  x < i; x++)
           DestroyImage(images[x]);
-        WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
       }
     argc=1;
     if (i == (NumberTiles >> 1))
@@ -486,7 +486,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
         status=WriteImage(clone_info,images[i]);
         if (status != False)
           {
-            ErrorInfo
+            ExceptionInfo
               error;
 
             Image
@@ -541,7 +541,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   DestroyMontageInfo(&montage_info);
   DestroyImages(*images);
   if (montage_image == (Image *) NULL)
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   if (montage_image->montage != (char *) NULL)
     {
       /*

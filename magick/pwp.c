@@ -111,7 +111,7 @@ static unsigned int IsPWP(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPWPImage method is:
 %
-%      Image *ReadPWPImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -121,11 +121,11 @@ static unsigned int IsPWP(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadPWPImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   FILE
     *file;
@@ -165,10 +165,10 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ErrorInfo *error)
   pwp_image=AllocateImage(image_info);
   status=OpenBlob(image_info,pwp_image,ReadBinaryType);
   if (pwp_image->file == (FILE *) NULL)
-    ReaderExit(FileOpenWarning,"Unable to open file",pwp_image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",pwp_image);
   status=ReadBlob(pwp_image,5,(char *) magick);
   if ((status == False) || (strncmp((char *) magick,"SFW95",5) != 0))
-    ReaderExit(CorruptImageWarning,"Not a PWP image file",pwp_image);
+    ThrowReaderException(CorruptImageWarning,"Not a PWP image file",pwp_image);
   clone_info=CloneImageInfo(image_info);
   TemporaryFilename(clone_info->filename);
   image=(Image *) NULL;
@@ -185,13 +185,13 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ErrorInfo *error)
     if (c == EOF)
       break;
     if (strncmp((char *) (magick+12),"SFW94A",6) != 0)
-      ReaderExit(CorruptImageWarning,"Not a PWP image file",pwp_image);
+      ThrowReaderException(CorruptImageWarning,"Not a PWP image file",pwp_image);
     /*
       Dump SFW image to a temporary file.
     */
     file=fopen(clone_info->filename,WriteBinaryType);
     if (file == (FILE *) NULL)
-      ReaderExit(FileOpenWarning,"Unable to write file",image);
+      ThrowReaderException(FileOpenWarning,"Unable to write file",image);
     (void) fwrite("SFW94A",1,6,file);
     filesize=65535L*magick[2]+256L*magick[1]+magick[0];
     for (i=0; i < filesize; i++)
@@ -201,7 +201,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ErrorInfo *error)
     }
     (void) fclose(file);
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    next_image=ReadImage(clone_info,error);
+    next_image=ReadImage(clone_info,exception);
     (void) SetMonitorHandler(handler);
     if (next_image == (Image *) NULL)
       break;

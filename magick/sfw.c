@@ -111,7 +111,7 @@ static unsigned int IsSFW(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadSFWImage method is:
 %
-%      Image *ReadSFWImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -121,7 +121,7 @@ static unsigned int IsSFW(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -162,7 +162,7 @@ static void TranslateSFWMarker(unsigned char *marker)
   }
 }
 
-static Image *ReadSFWImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   static unsigned char
     HuffmanTable[] =
@@ -235,16 +235,16 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read image into a buffer.
   */
   buffer=(unsigned char *) AllocateMemory(image->filesize);
   if (buffer == (unsigned char *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,image->filesize,(char *) buffer);
   if ((status == False) || (strncmp((char *) buffer,"SFW",3) != 0))
-    ReaderExit(CorruptImageWarning,"Not a SFW image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image);
   CloseBlob(image);
   DestroyImage(image);
   /*
@@ -255,7 +255,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ErrorInfo *error)
   if (header == (unsigned char *) NULL)
     {
       FreeMemory(buffer);
-      ReaderExit(CorruptImageWarning,"Not a SFW image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image);
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
   TranslateSFWMarker(header+2);
@@ -277,7 +277,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ErrorInfo *error)
   if (data == (unsigned char *) NULL)
     {
       FreeMemory(buffer);
-      ReaderExit(CorruptImageWarning,"Not a SFW image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image);
     }
   TranslateSFWMarker(data++);  /* translate eoi marker */
   /*
@@ -290,7 +290,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ErrorInfo *error)
     {
       FreeMemory(buffer);
       DestroyImageInfo(clone_info);
-      ReaderExit(FileOpenWarning,"Unable to write file",image);
+      ThrowReaderException(FileOpenWarning,"Unable to write file",image);
     }
   (void) fwrite(header,offset-header+1,1,file);
   (void) fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);
@@ -302,12 +302,12 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ErrorInfo *error)
     {
       (void) remove(clone_info->filename);
       DestroyImageInfo(clone_info);
-      ReaderExit(FileOpenWarning,"Unable to write file",image);
+      ThrowReaderException(FileOpenWarning,"Unable to write file",image);
     }
   /*
     Read JPEG image.
   */
-  image=ReadImage(clone_info,error);
+  image=ReadImage(clone_info,exception);
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)

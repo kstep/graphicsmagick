@@ -175,7 +175,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   transparent=False;
   i=0;
@@ -201,7 +201,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           matte_image=(unsigned char *)
             AllocateMemory(image->columns*image->rows);
           if (matte_image == (unsigned char *) NULL)
-            WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
           for (y=0; y < (int) image->rows; y++)
           {
             p=GetPixelCache(image,0,y,image->columns,1);

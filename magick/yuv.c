@@ -78,7 +78,7 @@ static unsigned int
 %
 %  The format of the ReadYUVImage method is:
 %
-%      Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -88,11 +88,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *chroma_image,
@@ -125,7 +125,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
   */
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionWarning,"Must specify image size",image);
   image->depth=8;
   if (image_info->interlace != PartitionInterlace)
     {
@@ -134,7 +134,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
       */
       status=OpenBlob(image_info,image,ReadBinaryType);
       if (status == False)
-        ReaderExit(FileOpenWarning,"Unable to open file",image);
+        ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       for (i=0; i < image->offset; i++)
         (void) ReadByte(image);
     }
@@ -143,7 +143,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
   */
   scanline=(unsigned char *) AllocateMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   do
   {
     /*
@@ -154,7 +154,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
         AppendImageFormat("Y",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryType);
         if (status == False)
-          ReaderExit(FileOpenWarning,"Unable to open file",image);
+          ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
     for (y=0; y < (int) image->rows; y++)
     {
@@ -182,11 +182,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
         AppendImageFormat("U",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryType);
         if (status == False)
-          ReaderExit(FileOpenWarning,"Unable to open file",image);
+          ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
     chroma_image=CloneImage(image,image->columns/2,image->rows/2,True);
     if (chroma_image == (Image *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     for (y=0; y < (int) chroma_image->rows; y++)
     {
       (void) ReadBlob(image,chroma_image->columns,scanline);
@@ -210,7 +210,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
         AppendImageFormat("V",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryType);
         if (status == False)
-          ReaderExit(FileOpenWarning,"Unable to open file",image);
+          ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
     for (y=0; y < (int) chroma_image->rows; y++)
     {
@@ -234,7 +234,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ErrorInfo *error)
     zoom_image=SampleImage(chroma_image,image->columns,image->rows);
     DestroyImage(chroma_image);
     if (zoom_image == (Image *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     for (y=0; y < (int) image->rows; y++)
     {
       q=GetPixelCache(image,0,y,image->columns,1);
@@ -379,14 +379,14 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       */
       status=OpenBlob(image_info,image,WriteBinaryType);
       if (status == False)
-        WriterExit(FileOpenWarning,"Unable to open file",image);
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
     }
   if (image_info->interlace == PartitionInterlace)
     {
       AppendImageFormat("Y",image->filename);
       status=OpenBlob(image_info,image,WriteBinaryType);
       if (status == False)
-        WriterExit(FileOpenWarning,"Unable to open file",image);
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
     }
   scene=0;
   do
@@ -400,7 +400,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     image->orphan=True;
     yuv_image=SampleImage(image,width,height);
     if (yuv_image == (Image *) NULL)
-      WriterExit(ResourceLimitWarning,"Unable to zoom image",image);
+      ThrowWriterException(ResourceLimitWarning,"Unable to zoom image",image);
     RGBTransformImage(yuv_image,YCbCrColorspace);
     /*
       Initialize Y channel.
@@ -426,7 +426,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     image->orphan=True;
     chroma_image=SampleImage(image,width/2,height/2);
     if (chroma_image == (Image *) NULL)
-      WriterExit(ResourceLimitWarning,"Unable to zoom image",image);
+      ThrowWriterException(ResourceLimitWarning,"Unable to zoom image",image);
     RGBTransformImage(chroma_image,YCbCrColorspace);
     /*
       Initialize U channel.
@@ -437,7 +437,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         AppendImageFormat("U",image->filename);
         status=OpenBlob(image_info,image,WriteBinaryType);
         if (status == False)
-          WriterExit(FileOpenWarning,"Unable to open file",image);
+          ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       }
     for (y=0; y < (int) chroma_image->rows; y++)
     {
@@ -459,7 +459,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         AppendImageFormat("V",image->filename);
         status=OpenBlob(image_info,image,WriteBinaryType);
         if (status == False)
-          WriterExit(FileOpenWarning,"Unable to open file",image);
+          ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       }
     for (y=0; y < (int) chroma_image->rows; y++)
     {

@@ -120,7 +120,7 @@ static unsigned int IsFITS(const unsigned char *magick,
 %
 %  The format of the ReadFITSImage method is:
 %
-%      Image *ReadFITSImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadFITSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -130,11 +130,11 @@ static unsigned int IsFITS(const unsigned char *magick,
 %
 %    o filename: Specifies the name of the image to read.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadFITSImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadFITSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   typedef struct _FITSHeader
   {
@@ -210,7 +210,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Initialize image header.
   */
@@ -318,7 +318,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,ErrorInfo *error)
   if ((!fits_header.simple) || (fits_header.number_axes < 1) ||
       (fits_header.number_axes > 4) ||
       (fits_header.columns*fits_header.rows) == 0)
-    ReaderExit(CorruptImageWarning,"image type not supported",image);
+    ThrowReaderException(CorruptImageWarning,"image type not supported",image);
   for (scene=0; scene < fits_header.number_scenes; scene++)
   {
     /*
@@ -338,7 +338,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,ErrorInfo *error)
     image->colormap=(PixelPacket *)
       AllocateMemory(image->colors*sizeof(PixelPacket));
     if (image->colormap == (PixelPacket *) NULL)
-      ReaderExit(FileOpenWarning,"Unable to open file",image);
+      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
     for (i=0; i < (int) image->colors; i++)
     {
       image->colormap[i].red=((unsigned long) (MaxRGB*i)/(image->colors-1));
@@ -354,7 +354,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,ErrorInfo *error)
     fits_pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*image->rows);
     if (fits_pixels == (unsigned char *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Convert FITS pixels to pixel packets.
     */
@@ -578,7 +578,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*
     Allocate image memory.
@@ -587,7 +587,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   fits_header=(char *) AllocateMemory(2880);
   pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
   if ((fits_header == (char *) NULL) || (pixels == (unsigned char *) NULL))
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Initialize image header.
   */

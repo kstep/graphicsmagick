@@ -2229,7 +2229,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
 %    o display: Specifies a pointer to the Display structure;  returned from
 %      XOpenDisplay.
 %
-%    o error: Specifies the error event.
+%    o exception: Specifies the error event.
 %
 %
 */
@@ -8652,7 +8652,7 @@ Export char *XVisualClassName(const int class)
 %
 %
 */
-Export void XWarning(const ErrorType warning,const char *message,
+Export void XWarning(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
   char

@@ -213,7 +213,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   CloseBlob(image);
   TransformRGBImage(image,RGBColorspace);
   *url='\0';
@@ -244,7 +244,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(filename,image->filename);
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
-    WriterExit(FileOpenWarning,"Unable to allocate memory",image);
+    ThrowWriterException(FileOpenWarning,"Unable to allocate memory",image);
   clone_info->adjoin=True;
   status=True;
   if (Latin1Compare(image_info->magick,"SHTML") != 0)
@@ -257,7 +257,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       */
       status=OpenBlob(image_info,image,WriteBinaryType);
       if (status == False)
-        WriterExit(FileOpenWarning,"Unable to open file",image);
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       /*
         Write the HTML image file.
       */
@@ -382,7 +382,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(clone_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   DestroyImageInfo(clone_info);
   /*
     Determine the size and location of each image tile.

@@ -80,17 +80,17 @@ static unsigned int
 %
 %  The format of the ReadXImage method is:
 %
-%      Image *ReadXImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadXImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   XImportInfo
     ximage_info;
@@ -99,7 +99,7 @@ static Image *ReadXImage(const ImageInfo *image_info,ErrorInfo *error)
   return(XImportImage(image_info,&ximage_info));
 }
 #else
-static Image *ReadXImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"X11 library is not available",
     image_info->filename);
@@ -197,7 +197,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   */
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
-    WriterExit(ResourceLimitWarning,"Unable to connect to X server",image);
+    ThrowWriterException(ResourceLimitWarning,"Unable to connect to X server",image);
   /*
     Set our forgiving error handler.
   */

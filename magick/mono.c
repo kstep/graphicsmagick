@@ -78,7 +78,7 @@ static unsigned int
 %
 %  The format of the ReadMONOImage method is:
 %
-%      Image *ReadMONOImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadMONOImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -88,11 +88,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadMONOImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadMONOImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -116,10 +116,10 @@ static Image *ReadMONOImage(const ImageInfo *image_info,ErrorInfo *error)
   */
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionWarning,"Must specify image size",image);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   for (i=0; i < image->offset; i++)
     (void) ReadByte(image);
   /*
@@ -130,7 +130,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,ErrorInfo *error)
   image->colormap=(PixelPacket *)
     AllocateMemory(image->colors*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
@@ -253,7 +253,7 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*
     Convert image to a bi-level image.

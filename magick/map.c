@@ -78,7 +78,7 @@ static unsigned int
 %
 %  The format of the ReadMAPImage method is:
 %
-%      Image *ReadMAPImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -88,11 +88,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadMAPImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -126,10 +126,10 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ErrorInfo *error)
   */
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionWarning,"Must specify image size",image);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Initialize image structure.
   */
@@ -144,7 +144,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ErrorInfo *error)
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL) ||
       (image->colormap == (PixelPacket *) NULL))
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Read image colormap.
   */
@@ -185,7 +185,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ErrorInfo *error)
       if (image->colors > 256)
         index=(index << 8)+(*p++);
       if (index >= image->colors)
-        ReaderExit(CorruptImageWarning,"invalid colormap index",image);
+        ThrowReaderException(CorruptImageWarning,"invalid colormap index",image);
       image->indexes[x]=index;
       *q++=image->colormap[index];
     }
@@ -289,7 +289,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*
     Allocate colormap.
@@ -313,7 +313,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   colormap=(unsigned char *) AllocateMemory(packet_size*image->colors);
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Write colormap to file.
   */

@@ -859,8 +859,8 @@ int main(int argc,char **argv)
   {
     status=WriteImage(image_info,p);
     if (status == False)
-      MagickWarning(image->error.type,image->error.message,
-        image->error.qualifier);
+      MagickWarning(image->exception.type,image->exception.message,
+        image->exception.qualifier);
     if (image_info->adjoin)
       break;
   }

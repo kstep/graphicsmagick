@@ -137,8 +137,8 @@ int main(int argc,char **argv)
   double
     sans;
 
-  ErrorInfo
-    error;
+  ExceptionInfo
+    exception;
 
   Image
     *image,
@@ -266,14 +266,14 @@ int main(int argc,char **argv)
     if (image_info->ping)
       {
         image_info->verbose=True;
-        image=PingImage(image_info,&error);
+        image=PingImage(image_info,&exception);
         number_images++;
         continue;
       }
-    image=ReadImage(image_info,&error);
+    image=ReadImage(image_info,&exception);
     if (image == (Image *) NULL)
       {
-        MagickWarning(error.type,error.message,error.qualifier);
+        MagickWarning(exception.type,exception.message,exception.qualifier);
         continue;
       }
     for (p=image; p != (Image *) NULL; p=p->next)

@@ -117,7 +117,7 @@ static unsigned int IsPNM(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPNMImage method is:
 %
-%      Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -127,7 +127,7 @@ static unsigned int IsPNM(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -219,7 +219,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
   return(value);
 }
 
-static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     format;
@@ -266,7 +266,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read PNM image.
   */
@@ -277,7 +277,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
       Verify PNM identifier.
     */
     if ((status == False) || (format != 'P'))
-      ReaderExit(CorruptImageWarning,"Not a PNM image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a PNM image file",image);
     /*
       Initialize image structure.
     */
@@ -302,7 +302,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
         return(image);
       }
     if ((image->columns*image->rows) == 0)
-      ReaderExit(CorruptImageWarning,
+      ThrowReaderException(CorruptImageWarning,
         "Unable to read image: image dimensions are zero",image);
     scale=(Quantum *) NULL;
     if (image->class == PseudoClass)
@@ -313,7 +313,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         if (format != '7')
           for (i=0; i < (int) image->colors; i++)
           {
@@ -350,7 +350,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
           */
           scale=(Quantum *) AllocateMemory((max_value+1)*sizeof(Quantum));
           if (scale == (Quantum *) NULL)
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
           for (i=0; i <= (int) max_value; i++)
             scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
         }
@@ -486,12 +486,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
         packets=image->depth <= 8 ? 1 : 2;
         pixels=(unsigned char *) AllocateMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ReaderExit(CorruptImageWarning,"Unable to allocate memory",image);
+          ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",image);
         for (y=0; y < (int) image->rows; y++)
         {
           status=ReadBlob(image,packets*image->columns,pixels);
           if (status == False)
-            ReaderExit(CorruptImageWarning,"Unable to read image data",image);
+            ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
           p=pixels;
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -506,7 +506,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
                 index|=(*p++);
               }
             if (index >= image->colors)
-              ReaderExit(CorruptImageWarning,"invalid colormap index",image);
+              ThrowReaderException(CorruptImageWarning,"invalid colormap index",image);
             image->indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -527,12 +527,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
         packets=image->depth <= 8 ? 3 : 6;
         pixels=(unsigned char *) AllocateMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ReaderExit(CorruptImageWarning,"Unable to allocate memory",image);
+          ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",image);
         for (y=0; y < (int) image->rows; y++)
         {
           status=ReadBlob(image,packets*image->columns,pixels);
           if (status == False)
-            ReaderExit(CorruptImageWarning,"Unable to read image data",image);
+            ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
           p=pixels;
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -577,7 +577,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ErrorInfo *error)
         break;
       }
       default:
-        ReaderExit(CorruptImageWarning,"Not a PNM image file",image);
+        ThrowReaderException(CorruptImageWarning,"Not a PNM image file",image);
     }
     if (scale != (Quantum *) NULL)
       FreeMemory(scale);
@@ -742,7 +742,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   scene=0;
   do
   {
@@ -1019,7 +1019,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         pixels=(unsigned char *)
           AllocateMemory(image->columns*sizeof(PixelPacket));
         if (pixels == (unsigned char *) NULL)
-          WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           Convert image to a PNM image.
         */
@@ -1091,7 +1091,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if ((red_map[i][j] == (unsigned short *) NULL) ||
                 (green_map[i][j] == (unsigned short *) NULL) ||
                 (blue_map[i][j] == (unsigned short *) NULL))
-              WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+              ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
           }
         /*
           Initialize dither tables.

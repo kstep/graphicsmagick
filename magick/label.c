@@ -88,7 +88,7 @@ Export const char
 %
 %  The format of the ReadLABELImage method is:
 %
-%      Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -98,7 +98,7 @@ Export const char
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -235,7 +235,7 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
 }
 #endif
 
-static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MaxGlyphs  65535
 
@@ -346,7 +346,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
       */
       status=TT_Init_FreeType(&engine);
       if (status)
-        ReaderExit(DelegateWarning,"Cannot initialize TTF engine",image);
+        ThrowReaderException(DelegateWarning,"Cannot initialize TTF engine",image);
       /*
         Search for Truetype font filename.
       */
@@ -418,7 +418,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
             clone_info->font+1);
           DestroyImage(image);
           (void) CloneString(&clone_info->font,DefaultXFont);
-          image=ReadLABELImage(clone_info,error);
+          image=ReadLABELImage(clone_info,exception);
           DestroyImageInfo(clone_info);
           return(image);
         }
@@ -436,7 +436,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
       status|=
         TT_Set_Instance_CharSize(instance,(int) (64.0*clone_info->pointsize));
       if (status)
-        ReaderExit(DelegateWarning,"Cannot initialize TTF instance",image);
+        ThrowReaderException(DelegateWarning,"Cannot initialize TTF instance",image);
       for (code=0; (int) code < (int) face_properties.num_CharMaps; code++)
       {
         TT_Get_CharMap_ID(face,code,&platform,&encoding);
@@ -457,12 +457,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
         }
       glyphs=(TT_Glyph *) AllocateMemory(MaxGlyphs*sizeof(TT_Glyph));
       if (glyphs == (TT_Glyph *) NULL)
-        ReaderExit(DelegateWarning,"Memory allocation failed",image);
+        ThrowReaderException(DelegateWarning,"Memory allocation failed",image);
       for (i=0; i < MaxGlyphs; i++)
         glyphs[i].z=(TT_Glyph *) NULL;
       unicode=ConvertTextToUnicode(text,&length);
       if (unicode == (unsigned short *) NULL)
-        ReaderExit(DelegateWarning,"Memory allocation failed",image);
+        ThrowReaderException(DelegateWarning,"Memory allocation failed",image);
       for (i=0; i < length; i++)
       {
         if (glyphs[unicode[i]].z != (TT_Glyph *) NULL)
@@ -479,7 +479,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
         status|=TT_Load_Glyph(instance,glyphs[unicode[i]],code,
           TTLOAD_SCALE_GLYPH | TTLOAD_HINT_GLYPH);
         if (status)
-          ReaderExit(DelegateWarning,"Cannot initialize TTF glyph",image);
+          ThrowReaderException(DelegateWarning,"Cannot initialize TTF glyph",image);
       }
       TT_Get_Face_Properties(face,&face_properties);
       TT_Get_Instance_Metrics(instance,&instance_metrics);
@@ -506,7 +506,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
       canvas.size=canvas.rows*canvas.width;
       canvas.bitmap=(void *) AllocateMemory(canvas.size);
       if (!canvas.bitmap)
-        ReaderExit(DelegateWarning,"Memory allocation failed",image);
+        ThrowReaderException(DelegateWarning,"Memory allocation failed",image);
       p=(unsigned char *) canvas.bitmap;
       for (i=0; i < canvas.size; i++)
         *p++=0;
@@ -517,7 +517,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
       character.size=character.rows*character.width;
       character.bitmap=(void *) AllocateMemory(character.size);
       if (!character.bitmap)
-        ReaderExit(DelegateWarning,"Memory allocation failed",image);
+        ThrowReaderException(DelegateWarning,"Memory allocation failed",image);
       x=0;
       y=(-instance_metrics.y_ppem*face_properties.horizontal->Descender)/
         face_properties.header->Units_Per_EM+1;
@@ -653,14 +653,14 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
               resource_info.foreground_color=AllocateString("white");
               map_info=XAllocStandardColormap();
               if (map_info == (XStandardColormap *) NULL)
-                ReaderExit(ResourceLimitWarning,"Memory allocation failed",
+                ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
                   image);
               /*
                 Initialize visual info.
               */
               visual_info=XBestVisualInfo(display,map_info,&resource_info);
               if (visual_info == (XVisualInfo *) NULL)
-                ReaderExit(XServerWarning,"Unable to get visual",image);
+                ThrowReaderException(XServerWarning,"Unable to get visual",image);
               map_info->colormap=(Colormap) NULL;
               pixel.pixels=(unsigned long *) NULL;
               pixel.gamma_map=(XColor *) NULL;
@@ -678,7 +678,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
               */
               font_info=XBestFont(display,&resource_info,False);
               if (font_info == (XFontStruct *) NULL)
-                ReaderExit(XServerWarning,"Unable to load font",image);
+                ThrowReaderException(XServerWarning,"Unable to load font",image);
               if ((map_info == (XStandardColormap *) NULL) ||
                   (visual_info == (XVisualInfo *) NULL) ||
                   (font_info == (XFontStruct *) NULL))
@@ -699,7 +699,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
             clone_info->server_name);
           DestroyImage(image);
           (void) CloneString(&clone_info->font,"Helvetica");
-          image=ReadLABELImage(clone_info,error);
+          image=ReadLABELImage(clone_info,exception);
           DestroyImageInfo(clone_info);
           return(image);
         }
@@ -717,7 +717,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
           (void) CloneString(&resource_info.font,clone_info->font);
           font_info=XBestFont(display,&resource_info,False);
           if (font_info == (XFontStruct *) NULL)
-            ReaderExit(ResourceLimitWarning,"Unable to load font",image);
+            ThrowReaderException(ResourceLimitWarning,"Unable to load font",image);
         }
       annotate_info.font_info=font_info;
       annotate_info.text=text;
@@ -735,7 +735,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
       image->background_color=image->border_color;
       status=XAnnotateImage(display,&pixel,&annotate_info,image);
       if (status == 0)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       for (y=0; y < (int) image->rows; y++)
       {
         q=GetPixelCache(image,0,y,image->columns,1);
@@ -776,7 +776,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
   (void) fprintf(file,"/ReencodeFont\n");
   (void) fprintf(file,"{\n");
@@ -800,7 +800,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ErrorInfo *error)
   (void) fclose(file);
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   DestroyImage(image);
-  image=ReadImage(clone_info,error);
+  image=ReadImage(clone_info,exception);
   (void) remove(filename);
   /*
     Set bounding box to the image dimensions.

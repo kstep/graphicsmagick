@@ -496,12 +496,8 @@ Export unsigned int SignatureImage(Image *image)
   signature=(char *) AllocateMemory(33);
   message=(unsigned char *) AllocateMemory(8*image->columns);
   if ((signature == (char *) NULL) || (message == (unsigned char *) NULL))
-    {
-      image->error.type=ResourceLimitWarning;
-      image->error.message="Unable to compute digital signature";
-      image->error.qualifier="Memory allocation failed";
-      return(False);
-    }
+    ThrowBooleanException(ResourceLimitWarning,
+      "Unable to compute image signature","Memory allocation failed");
   /*
     Compute image digital signature.
   */

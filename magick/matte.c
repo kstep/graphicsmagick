@@ -138,17 +138,17 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     status;
 
   if (!image->matte)
-    WriterExit(ResourceLimitWarning,"Image does not have a matte channel",
+    ThrowWriterException(ResourceLimitWarning,"Image does not have a matte channel",
       image);
   matte_image=CloneImage(image,image->columns,image->rows,True);
   if (matte_image == (Image *) NULL)
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   matte_image->class=PseudoClass;
   matte_image->colors=(Opaque-Transparent)+1;
   matte_image->colormap=(PixelPacket *)
     AllocateMemory(matte_image->colors*sizeof(PixelPacket));
   if (matte_image->colormap == (PixelPacket *) NULL)
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=Transparent; i <= Opaque; i++)
   {
     matte_image->colormap[i].red=(Quantum) i;

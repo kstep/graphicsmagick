@@ -150,13 +150,6 @@ extern "C" {
 #define Extent(string)  ((int) strlen(string))
 #define False  0
 #define DegreesToRadians(x) ((x)*M_PI/180.0)
-#define ImageExit(code,reason,description) \
-{ \
-  image->error.type=code; \
-  image->error.message=reason; \
-  image->error.qualifier=description; \
-  return((Image *) NULL); \
-}
 #define Intensity(color)  ((unsigned long) \
   ((0.299*(color).red+0.587*(color).green+0.1140000000000001*(color).blue)))
 #define IsFaxImage(color)  \
@@ -172,28 +165,9 @@ extern "C" {
 #define QuantumTick(i,span) \
   (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
 #define RadiansToDegrees(x) (180.0*(x)/M_PI)
-#define ReaderExit(code,reason,image) \
-{ \
-  error->type=code; \
-  error->message=reason; \
-  error->qualifier=image->filename; \
-  DestroyImages(image); \
-  return((Image *) NULL); \
-}
 #define RenderPostscriptText  "  Rendering postscript...  "
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #define True  1
-#define WriterExit(code,reason,image) \
-{ \
-  image->error.type=code; \
-  image->error.message=reason; \
-  image->error.qualifier=image->filename; \
-  if (image_info->adjoin) \
-    while (image->previous != (Image *) NULL) \
-      image=image->previous; \
-  CloseBlob(image); \
-  return(False); \
-}
 
 /*
   Define system symbols if not already defined.

@@ -198,7 +198,7 @@ Export char *BaseFilename(const char *name)
   assert(name != (char *) NULL);
   if (basename == (char *) NULL)
     {
-      basename=(char *) malloc(MaxTextExtent*sizeof(char *));
+      basename=(char *) AllocateMemory(MaxTextExtent);
       if (basename == (char *) NULL)
         MagickError(ResourceLimitError,"Unable to get base filename",
           "Memory allocation failed");
@@ -617,8 +617,8 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
           continue;
         }
       expanded=True;
-      vector[count]=(char *) AllocateMemory(((p-filename)+Extent(filelist[j])+
-        MaxTextExtent+1)*sizeof(char));
+      vector[count]=(char *)
+	AllocateMemory(((p-filename)+Extent(filelist[j])+MaxTextExtent+1));
       if (vector[count] == (char *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to expand filenames",
@@ -1906,7 +1906,7 @@ Export char *PostscriptGeometry(const char *page)
   /*
     Allocate page geometry memory.
   */
-  geometry=(char *) AllocateMemory((Extent(page)+MaxTextExtent)*sizeof(char));
+  geometry=(char *) AllocateMemory(Extent(page)+MaxTextExtent);
   if (geometry == (char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to translate page geometry",
@@ -2074,7 +2074,7 @@ Export char **StringToArgv(const char *text,int *argc)
       else
         while (!isspace((int) (*q)) && (*q != '\0'))
           q++;
-    argv[i]=(char *) AllocateMemory((q-p+1)*sizeof(char));
+    argv[i]=(char *) AllocateMemory(q-p+1);
     if (argv[i] == (char *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to convert text",
@@ -2164,7 +2164,7 @@ Export char **StringToList(const char *text)
         for (q=(char *) p; *q != '\0'; q++)
           if ((*q == '\r') || (*q == '\n'))
             break;
-        textlist[i]=(char *) AllocateMemory((q-p+2)*sizeof(char));
+        textlist[i]=(char *) AllocateMemory(q-p+2);
         if (textlist[i] == (char *) NULL)
           {
             MagickWarning(ResourceLimitWarning,"Unable to convert text",
@@ -2200,7 +2200,7 @@ Export char **StringToList(const char *text)
       p=text;
       for (i=0; i < (int) lines; i++)
       {
-        textlist[i]=(char *) AllocateMemory(900*sizeof(char));
+        textlist[i]=(char *) AllocateMemory(900);
         if (textlist[i] == (char *) NULL)
           {
             MagickWarning(ResourceLimitWarning,"Unable to convert text",
@@ -2284,7 +2284,7 @@ Export void Strip(char *data)
     q--;
   count=q-p+1;
   q=data;
-  (void) memcpy(q,p,count*sizeof(char));
+  (void) memcpy(q,p,count);
   *(q+count)='\0';
 }
 
@@ -2336,7 +2336,7 @@ Export int SystemCommand(const unsigned int verbose,const char *command)
   status=NTSystemCommand(command);
 #endif
   if (verbose)
-    MagickWarning(UndefinedWarning,command,status ? strerror(errno) :
+    MagickWarning(DelegateWarning,command,status ? strerror(errno) :
       (char *) NULL);
   return(status);
 }

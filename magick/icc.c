@@ -80,7 +80,7 @@ static unsigned int
 %
 %  The format of the ReadICCImage method is:
 %
-%      Image *ReadICCImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadICCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -90,11 +90,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadICCImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadICCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -115,7 +115,7 @@ static Image *ReadICCImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read ICC image.
   */
@@ -216,13 +216,13 @@ static unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
     status;
 
   if (image->color_profile.length == 0)
-    WriterExit(FileOpenWarning,"No color profile available",image);
+    ThrowWriterException(FileOpenWarning,"No color profile available",image);
   /*
     Open image file.
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) WriteBlob(image,(int) image->color_profile.length,
     (char *) image->color_profile.info);
   CloseBlob(image);

@@ -252,8 +252,8 @@ int main(int argc,char **argv)
   double
     sans;
 
-  ErrorInfo
-    error;
+  ExceptionInfo
+    exception;
 
   Image
     *image,
@@ -930,10 +930,10 @@ int main(int argc,char **argv)
           (void) strcpy(image_info->magick,"MIFF");
           image_info->colorspace=quantize_info->colorspace;
           image_info->dither=quantize_info->dither;
-          next_image=ReadImage(image_info,&error);
+          next_image=ReadImage(image_info,&exception);
           if (next_image == (Image *) NULL)
             {
-              MagickWarning(error.type,error.message,error.qualifier);
+              MagickWarning(exception.type,exception.message,exception.qualifier);
               if (*option == '-')
                 break;
               else

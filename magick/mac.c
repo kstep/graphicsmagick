@@ -446,12 +446,12 @@ Export int ImageFormatConflict(const char *magick)
 %
 %  The format of the MACErrorHandler method is:
 %
-%      void MACErrorHandler(const ErrorType error,const char *message,
+%      void MACErrorHandler(const ExceptionType error,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
-%    o error: Specifies the numeric error category.
+%    o exception: Specifies the numeric error category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -460,7 +460,7 @@ Export int ImageFormatConflict(const char *magick)
 %
 %
 */
-Export void MACErrorHandler(const ErrorType error,const char *message,
+Export void MACErrorHandler(const ExceptionType error,const char *message,
   const char *qualifier)
 {
   char
@@ -780,7 +780,7 @@ Export int MACSystemCommand(const char * command)
 %
 %  The format of the MACWarningHandler method is:
 %
-+      void MACWarningHandler(const ErrorType warning,const char *message,
++      void MACWarningHandler(const ExceptionType warning,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -794,7 +794,7 @@ Export int MACSystemCommand(const char * command)
 %
 %
 */
-Export void MACWarningHandler(const ErrorType warning,const char *message,
+Export void MACWarningHandler(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
   char
@@ -1002,11 +1002,11 @@ Export struct dirent *readdir(DIR *entry)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadPICTImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define LoadImageText  "  Loading image...  "
 #define PICTHeaderSize    512

@@ -120,7 +120,7 @@ static unsigned int IsIPTC(const unsigned char *magick,
 %
 %  The format of the ReadIPTCImage method is:
 %
-%      Image *ReadIPTCImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadIPTCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -130,11 +130,11 @@ static unsigned int IsIPTC(const unsigned char *magick,
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadIPTCImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadIPTCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -159,7 +159,7 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read IPTC image.
   */
@@ -167,7 +167,7 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,ErrorInfo *error)
   tag_length=12;
   data=(unsigned char *) AllocateMemory(length+2);
   if (data == (unsigned char *) NULL)
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   (void) memcpy((char *) data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
   q=data;
   q+=tag_length;
@@ -388,18 +388,18 @@ static unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
     length;
 
   if (image->iptc_profile.length == 0)
-    WriterExit(FileOpenWarning,"No IPTC profile available",image);
+    ThrowWriterException(FileOpenWarning,"No IPTC profile available",image);
   info=image->iptc_profile.info;
   length=image->iptc_profile.length;
   length=GetIPTCStream(&info,length);
   if (length <= 0)
-    WriterExit(FileOpenWarning,"No IPTC info was found",image);
+    ThrowWriterException(FileOpenWarning,"No IPTC info was found",image);
   /*
     Open image file.
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) WriteBlob(image,(int) length,info);
   CloseBlob(image);
   return(True);

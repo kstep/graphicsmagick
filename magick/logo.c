@@ -3813,7 +3813,7 @@ static unsigned int
 %
 %  The format of the ReadLOGOImage method is:
 %
-%      Image *ReadLOGOImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadLOGOImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3823,11 +3823,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadLOGOImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadLOGOImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   if (Latin1Compare(image_info->magick,"GRANITE") == 0)
     return(BlobToImage(image_info,(char *) GraniteImage,GraniteImageExtent));
@@ -3955,14 +3955,14 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   file=fopen(image->filename,ReadBinaryType);
   (void) remove(image->filename);
   if (file == (FILE *) NULL)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   /*
     Write logo image.
   */
   (void) strcpy(image->filename,filename);
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) strcpy(buffer,"/*\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"  Logo image declaration.\n");

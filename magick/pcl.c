@@ -119,7 +119,7 @@ static unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPCLImage method is:
 %
-%      Image *ReadPCLImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -129,11 +129,11 @@ static unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadPCLImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"Cannot read PCL images",
     image_info->filename);
@@ -240,7 +240,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*
     Initialize the printer.
@@ -388,7 +388,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           image->orphan=True;
           monochrome_image=ZoomImage(image,width,height);
           if (monochrome_image == (Image *) NULL)
-            WriterExit(ResourceLimitWarning,"Unable to scale image",image);
+            ThrowWriterException(ResourceLimitWarning,"Unable to scale image",image);
         }
       if (!IsMonochromeImage(monochrome_image))
         {

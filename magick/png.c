@@ -404,7 +404,7 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPNGImage method is:
 %
-%      Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -414,7 +414,7 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %  To do, more or less in chronological order (as of version 5.1.1,
 %   January 25, 2000 -- glennrp -- see also "To do" under WritePNGImage):
@@ -496,7 +496,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
 
       check=(png_size_t) ReadBlob(image,(size_t) length,(char *) data);
       if (check != length)
-        png_error(png_ptr,"Read Error");
+        png_error(png_ptr,"Read Exception");
     }
 }
 
@@ -537,7 +537,7 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
     {
       check=(png_size_t) ReadBlob(image,(size_t) length,(char *) data);
       if (check != length)
-        png_error(png_ptr,"Read Error");
+        png_error(png_ptr,"Read Exception");
       if (length == 4)
         {
           if ((data[0] == 0) && (data[1] == 0) && (data[2] == 0) &&
@@ -595,7 +595,7 @@ static void png_put_data(png_structp png_ptr,png_bytep data,png_size_t length)
 
       check=(png_size_t) WriteBlob(image,(unsigned long) length,(char *) data);
       if (check != length)
-        png_error(png_ptr,"Write Error");
+        png_error(png_ptr,"Write Exception");
     }
 }
 
@@ -806,7 +806,7 @@ static png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
 }
 #endif
 
-static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     page_geometry[MaxTextExtent];
@@ -917,7 +917,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   first_mng_object=0;
   skipping_loop=(-1);
   have_mng_structure=False;
@@ -931,14 +931,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
       */
       (void) ReadBlob(image,8,magic_number);
       if (strncmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
-        ReaderExit(CorruptImageWarning,"Not a MNG image file",image);
+        ThrowReaderException(CorruptImageWarning,"Not a MNG image file",image);
       first_mng_object=1;
       /*
         Allocate a MngInfo structure.
       */
       mng_info=(MngInfo *) AllocateMemory(sizeof(MngInfo));
       if (mng_info == (MngInfo *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       have_mng_structure=True;
       mng_info->image=image;
       mng_info->global_plte=(png_colorp) NULL;
@@ -1045,7 +1045,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
           {
             chunk=(unsigned char *) AllocateMemory(length);
             if (chunk == (unsigned char *) NULL)
-              ReaderExit(ResourceLimitWarning,
+              ThrowReaderException(ResourceLimitWarning,
                "Unable to allocate memory for chunk data",image);
             for (i=0; i < (int) length; i++)
               chunk[i]=ReadByte(image);
@@ -1866,18 +1866,18 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
       PNGErrorHandler,PNGWarningHandler);
 #endif
     if (ping == (png_struct *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     ping_info=png_create_info_struct(ping);
     if (ping_info == (png_info *) NULL)
       {
         png_destroy_read_struct(&ping,(png_info **) NULL,(png_info **) NULL);
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       }
     end_info=png_create_info_struct(ping);
     if (end_info == (png_info *) NULL)
       {
         png_destroy_read_struct(&ping,&ping_info,(png_info **) NULL);
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       }
     png_pixels=(unsigned char *) NULL;
     scanlines=(unsigned char **) NULL;
@@ -2177,7 +2177,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
       AllocateMemory(image->rows*sizeof(unsigned char *));
     if ((png_pixels == (unsigned char *) NULL) ||
         (scanlines == (unsigned char **) NULL))
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     if (image->class == PseudoClass)
       {
         /*
@@ -2186,7 +2186,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
             png_colorp
@@ -2270,7 +2270,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
           AllocateMemory((ping_info->color_type == 4 ? 2 : 1) * image->columns
              *sizeof(Quantum));
         if (quantum_scanline == (Quantum *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
         for (y=0; y < (int) image->rows; y++)
         {
           q=SetPixelCache(image,0,y,image->columns,1);
@@ -2729,7 +2729,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
   return(image);
 }
 #else
-static Image *ReadPNGImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"PNG library is not available",
     image_info->filename);
@@ -2962,7 +2962,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #endif
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   use_global_plte=False;
   page.width=0;
   page.height=0;
@@ -3417,12 +3417,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       PNGErrorHandler,PNGWarningHandler);
 #endif
     if (ping == (png_struct *) NULL)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     ping_info=png_create_info_struct(ping);
     if (ping_info == (png_info *) NULL)
       {
         png_destroy_write_struct(&ping,(png_info **) NULL);
-        WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
       }
     png_set_write_fn(ping,image,png_put_data,png_flush_data);
     png_pixels=(unsigned char *) NULL;
@@ -3688,7 +3688,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 palette=(png_color *)
                   AllocateMemory(image->colors*sizeof(png_color));
                 if (palette == (png_color *) NULL)
-                  WriterExit(ResourceLimitWarning,"Memory allocation failed",
+                  ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
                     image);
                 for (i=0; i < (int) image->colors; i++)
                 {
@@ -3712,7 +3712,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             */
             ping_info->trans=(unsigned char *) AllocateMemory(image->colors);
             if (ping_info->trans == (unsigned char *) NULL)
-              WriterExit(ResourceLimitWarning,"Memory allocation failed",
+              ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
                 image);
             for (i=0; i < (int) image->colors; i++)
                ping_info->trans[i]=(png_byte) DownScale(Opaque);
@@ -3885,7 +3885,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       AllocateMemory(image->rows*sizeof(unsigned char *));
     if ((png_pixels == (unsigned char *) NULL) ||
         (scanlines == (unsigned char **) NULL))
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Initialize image scanlines.
     */

@@ -72,7 +72,7 @@
 %
 %  The format of the ReadSTEGANOImage method is:
 %
-%      Image *ReadSTEGANOImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadSTEGANOImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -82,11 +82,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadSTEGANOImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadSTEGANOImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define UnembedBit(byte) \
 { \
@@ -129,26 +129,27 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,ErrorInfo *error)
   */
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionWarning,"Must specify image size",image);
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   *clone_info->magick='\0';
-  stegano_image=ReadImage(clone_info,error);
+  stegano_image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
   cloned_image=CloneImage(stegano_image,image->columns,image->rows,True);
   DestroyImage(image);
   if (cloned_image == (Image *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",stegano_image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      stegano_image);
   image=cloned_image;
   image->class=PseudoClass;
   image->colors=1 << QuantumDepth;
   image->colormap=(PixelPacket *)
     AllocateMemory(image->colors*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].red=((unsigned long) (MaxRGB*i)/(image->colors-1));

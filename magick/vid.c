@@ -72,7 +72,7 @@
 %
 %  The format of the ReadVIDImage method is:
 %
-%      Image *ReadVIDImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -82,11 +82,11 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadVIDImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define ClientName  "montage"
 
@@ -163,7 +163,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ErrorInfo *error)
     handler=SetMonitorHandler((MonitorHandler) NULL);
     (void) strcpy(clone_info->filename,filelist[i]);
     *clone_info->magick='\0';
-    next_image=ReadImage(clone_info,error);
+    next_image=ReadImage(clone_info,exception);
     FreeMemory(filelist[i]);
     if (next_image != (Image *) NULL)
       {

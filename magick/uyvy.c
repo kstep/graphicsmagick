@@ -78,7 +78,7 @@ static unsigned int
 %
 %  The format of the ReadUYVYImage method is:
 %
-%      Image *ReadUYVYImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadUYVYImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -88,11 +88,11 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadUYVYImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadUYVYImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -121,11 +121,11 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,ErrorInfo *error)
   */
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionWarning,"Must specify image size",image);
   (void) strcpy(image->filename,image_info->filename);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image)
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image)
   for (i=0; i < image->offset; i++)
     (void) ReadByte(image);
   /*
@@ -253,7 +253,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*
     Convert to YUV, at full resolution.

@@ -262,7 +262,7 @@ static unsigned int IsTIFF(const unsigned char *magick,
 %
 %  The format of the ReadTIFFImage method is:
 %
-%      Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -272,7 +272,7 @@ static unsigned int IsTIFF(const unsigned char *magick,
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -412,7 +412,7 @@ static void TIFFWarningHandler(const char *module,const char *format,
 }
 #endif
 
-static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     *text;
@@ -476,7 +476,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   if ((image->file == stdin) || image->pipe)
     {
       FILE
@@ -491,7 +491,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
       TemporaryFilename((char *) image_info->filename);
       file=fopen(image_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
-        ReaderExit(FileOpenWarning,"Unable to write file",image);
+        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
       c=ReadByte(image);
       while (c != EOF)
       {
@@ -507,7 +507,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
   TIFFSetWarningHandler(TIFFWarningHandler);
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
     {
@@ -517,7 +517,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
       image->scene++;
       status=TIFFReadDirectory(tiff);
       if (status == False)
-        ReaderExit(CorruptImageWarning,"Unable to read subimage",image);
+        ThrowReaderException(CorruptImageWarning,"Unable to read subimage",image);
     }
   do
   {
@@ -611,7 +611,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
         if (image->colormap == (PixelPacket *) NULL)
           {
             TIFFClose(tiff);
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
           }
       }
     if (image_info->ping)
@@ -672,7 +672,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
           }
         /*
           Create colormap.
@@ -854,7 +854,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
           }
         TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
           &sample_info);
@@ -929,14 +929,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
           }
         status=TIFFReadRGBAImage(tiff,image->columns,image->rows,pixels,0);
         if (status == False)
           {
             FreeMemory(pixels);
             TIFFClose(tiff);
-            ReaderExit(CorruptImageWarning,"Unable to read image",image);
+            ThrowReaderException(CorruptImageWarning,"Unable to read image",image);
           }
         /*
           Convert image to DirectClass pixel packets.
@@ -1002,7 +1002,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
   return(image);
 }
 #else
-static Image *ReadTIFFImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image_info->filename);
@@ -1310,7 +1310,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         image->orphan=True;
         next_image=ZoomImage(image,width,height);
         if (next_image == (Image *) NULL)
-          WriterExit(FileOpenWarning,"Unable to pyramid encode image",image);
+          ThrowWriterException(FileOpenWarning,"Unable to pyramid encode image",image);
         next_image->next=(Image *) NULL;
         if (pyramid_image == (Image *) NULL)
           pyramid_image=next_image;
@@ -1339,7 +1339,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   if ((image->file != stdout) && !image->pipe)
     (void) remove(image->filename);
   else
@@ -1564,7 +1564,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     */
     scanline=(unsigned char *) AllocateMemory(2*TIFFScanlineSize(tiff)+4);
     if (scanline == (unsigned char *) NULL)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     switch (photometric)
     {
       case PHOTOMETRIC_RGB:
@@ -1680,7 +1680,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
-          WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           Initialize TIFF colormap.
         */
@@ -1799,7 +1799,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       */
       file=fopen(image->filename,ReadBinaryType);
       if (file == (FILE *) NULL)
-        WriterExit(FileOpenWarning,"Unable to open file",image);
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) fputc(c,encode_image.file);
       (void) fclose(file);

@@ -179,19 +179,20 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
   assert(image != (Image *) NULL);
   assert(frame_info != (FrameInfo *) NULL);
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
-    ImageExit(OptionWarning,"Unable to frame image","bevel width is negative");
+    ThrowImageException(OptionWarning,"Unable to frame image",
+      "bevel width is negative");
   bevel_width=frame_info->outer_bevel+frame_info->inner_bevel;
   width=(int) frame_info->width-frame_info->x-bevel_width;
   height=(int) frame_info->height-frame_info->y-bevel_width;
   if ((width < (int) image->columns) || (height < (int) image->rows))
-    ImageExit(OptionWarning,"Unable to frame image",
+    ThrowImageException(OptionWarning,"Unable to frame image",
       "frame is less than image size");
   /*
     Initialize framed image attributes.
   */
   frame_image=CloneImage(image,frame_info->width,frame_info->height,False);
   if (frame_image == (Image *) NULL)
-    ImageExit(ResourceLimitWarning,"Unable to frame image",
+    ThrowImageException(ResourceLimitWarning,"Unable to frame image",
       "Memory allocation failed");
   frame_image->class=DirectClass;
   /*
@@ -433,7 +434,7 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
   assert(raise_info != (RectangleInfo *) NULL);
   if ((image->columns <= (raise_info->width << 1)) ||
       (image->rows <= (raise_info->height << 1)))
-    ImageExit(OptionWarning,"Unable to raise image",
+    ThrowBooleanException(OptionWarning,"Unable to raise image",
       "image size must exceed bevel width");
   foreground=MaxRGB;
   background=0;

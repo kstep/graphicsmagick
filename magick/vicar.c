@@ -120,7 +120,7 @@ static unsigned int IsVICAR(const unsigned char *magick,
 %
 %  The format of the ReadVICARImage method is:
 %
-%      Image *ReadVICARImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -130,11 +130,11 @@ static unsigned int IsVICAR(const unsigned char *magick,
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadVICARImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -177,7 +177,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Decode image header.
   */
@@ -274,14 +274,14 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ErrorInfo *error)
     Verify that required image information is defined.
   */
   if ((image->columns*image->rows) == 0)
-    ReaderExit(CorruptImageWarning,"image size is zero",image);
+    ThrowReaderException(CorruptImageWarning,"image size is zero",image);
   /*
     Create linear colormap.
   */
   image->colormap=(PixelPacket *)
     AllocateMemory(image->colors*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].red=(Quantum) UpScale(i);
@@ -293,13 +293,13 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ErrorInfo *error)
   */
   vicar_pixels=(unsigned char *) AllocateMemory(image->columns*image->rows);
   if (vicar_pixels == (unsigned char *) NULL)
-    ReaderExit(CorruptImageWarning,"Unable to read image data",image);
+    ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
   /*
     Convert VICAR pixels to pixel packets.
   */
   status=ReadBlob(image,image->columns*image->rows,(char *) vicar_pixels);
   if (status == False)
-    ReaderExit(CorruptImageWarning,"Insufficient image data in file",image);
+    ThrowReaderException(CorruptImageWarning,"Insufficient image data in file",image);
   /*
     Convert VICAR pixels to pixel packets.
   */
@@ -430,7 +430,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*
     Write header.
@@ -461,7 +461,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   pixels=(unsigned char *)
     AllocateMemory(image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Write VICAR pixels.
   */

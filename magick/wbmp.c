@@ -79,7 +79,7 @@ static unsigned int
 %
 %  The format of the ReadWBMPImage method is:
 %
-%      Image *ReadWBMPImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadWBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -89,7 +89,7 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
@@ -111,7 +111,7 @@ static unsigned int WBMPReadInteger(Image *image,unsigned int *value)
   return(True);
 }
 
-static Image *ReadWBMPImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadWBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -139,18 +139,18 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   if (!ReadBlob(image,2,(char *) &header)) 
-    ReaderExit(CorruptImageWarning,"Not a WBMP image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a WBMP image file",image);
   if (header)
-    ReaderExit(CorruptImageWarning,"Only WBMP level 0 files supported",image);
+    ThrowReaderException(CorruptImageWarning,"Only WBMP level 0 files supported",image);
   /*
     Determine width and height
   */
   if (WBMPReadInteger(image,&image->columns) == False) 
-    ReaderExit(CorruptImageWarning,"Corrupt WBMP image",image);
+    ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",image);
   if (WBMPReadInteger(image,&image->rows) == False) 
-    ReaderExit(CorruptImageWarning,"Corrupt WBMP image",image);
+    ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",image);
   for (i=0; i < image->offset; i++)
     (void) ReadByte(image);
   /*
@@ -161,7 +161,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,ErrorInfo *error)
   image->colormap=(PixelPacket *)
     AllocateMemory(image->colors*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
     image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
@@ -183,7 +183,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,ErrorInfo *error)
         {
           byte=ReadByte(image);
           if (byte == EOF)
-            ReaderExit(CorruptImageWarning,"Corrupt WBMP image",image);
+            ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",image);
         }
       image->indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
       bit++;
@@ -324,7 +324,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*
     Convert image to a bi-level image.

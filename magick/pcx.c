@@ -158,7 +158,7 @@ static unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
 %
 %  The format of the ReadPCXImage method is:
 %
-%      Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
+%      Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -168,11 +168,11 @@ static unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   typedef struct _PCXHeader
   {
@@ -245,7 +245,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Determine if this is a PCX file.
   */
@@ -260,10 +260,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
       */
       magic=LSBFirstReadLong(image);
       if (magic != 987654321)
-        ReaderExit(CorruptImageWarning,"Not a DCX image file",image);
+        ThrowReaderException(CorruptImageWarning,"Not a DCX image file",image);
       page_table=(unsigned long *) AllocateMemory(1024*sizeof(unsigned long));
       if (page_table == (unsigned long *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
       for (id=0; id < 1024; id++)
       {
         page_table[id]=LSBFirstReadLong(image);
@@ -283,7 +283,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
     if ((status == False) || (pcx_header.identifier != 0x0a) ||
         ((pcx_header.version != 2) && (pcx_header.version != 3) &&
          (pcx_header.version != 5)))
-      ReaderExit(CorruptImageWarning,"Not a PCX image file",image);
+      ThrowReaderException(CorruptImageWarning,"Not a PCX image file",image);
     pcx_header.encoding=ReadByte(image);
     pcx_header.bits_per_pixel=ReadByte(image);
     pcx_header.left=LSBFirstReadShort(image);
@@ -304,7 +304,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
     image->colors=16;
     pcx_colormap=(unsigned char *) AllocateMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
     pcx_header.reserved=ReadByte(image);
     pcx_header.planes=ReadByte(image);
@@ -324,7 +324,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
       }
     image->colormap=(PixelPacket *) AllocateMemory(256*sizeof(PixelPacket));
     if (image->colormap == (PixelPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     p=pcx_colormap;
     for (i=0; i < (int) image->colors; i++)
     {
@@ -352,7 +352,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
     scanline=(unsigned char *) AllocateMemory(image->columns*pcx_header.planes);
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Uncompress image data.
     */
@@ -384,7 +384,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ErrorInfo *error)
             Initialize image colormap.
           */
           if (image->colors > 256)
-            ReaderExit(CorruptImageWarning,"PCX colormap exceeded 256 colors",
+            ThrowReaderException(CorruptImageWarning,"PCX colormap exceeded 256 colors",
               image);
           if ((pcx_header.bits_per_pixel*pcx_header.planes) == 1)
             {
@@ -741,7 +741,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   page_table=(unsigned long *) NULL;
   if (image_info->adjoin)
@@ -752,7 +752,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       LSBFirstWriteLong(image,0x3ADE68B1L);
       page_table=(unsigned long *) AllocateMemory(1024*sizeof(unsigned long));
       if (page_table == (unsigned long *) NULL)
-        WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
       for (scene=0; scene < 1024; scene++)
         LSBFirstWriteLong(image,0x00000000L);
     }
@@ -815,7 +815,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     */
     pcx_colormap=(unsigned char *) AllocateMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     for (i=0; i < (3*256); i++)
       pcx_colormap[i]=0;
     q=pcx_colormap;
@@ -836,7 +836,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     packets=image->rows*pcx_header.bytes_per_line*pcx_header.planes;
     pcx_pixels=(unsigned char *) AllocateMemory(packets);
     if (pcx_pixels == (unsigned char *) NULL)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     q=pcx_pixels;
     if (image->class == DirectClass)
       {

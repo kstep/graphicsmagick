@@ -399,11 +399,11 @@ static unsigned int IsPCD(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o error: return any errors or warnings in this structure.
+%    o exception: return any errors or warnings in this structure.
 %
 %
 */
-static Image *OverviewImage(const ImageInfo *image_info,ErrorInfo *error,
+static Image *OverviewImage(const ImageInfo *image_info,ExceptionInfo *exception,
   Image *image)
 {
   char
@@ -439,12 +439,12 @@ static Image *OverviewImage(const ImageInfo *image_info,ErrorInfo *error,
   montage_image=MontageImages(image,&montage_info);
   DestroyMontageInfo(&montage_info);
   if (montage_image == (Image *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   DestroyImage(image);
   return(montage_image);
 }
 
-static Image *ReadPCDImage(const ImageInfo *image_info,ErrorInfo *error)
+static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -488,18 +488,18 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ErrorInfo *error)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ReaderExit(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Determine if this is a PCD file.
   */
   header=(unsigned char *) AllocateMemory(3*0x800);
   if (header == (unsigned char *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,3*0x800,(char *) header);
   overview=strncmp((char *) header,"PCD_OPA",7) == 0;
   if ((status == False) ||
       ((strncmp((char *) header+0x800,"PCD",3) != 0) && !overview))
-    ReaderExit(CorruptImageWarning,"Not a PCD image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a PCD image file",image);
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
   FreeMemory(header);
@@ -557,7 +557,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ErrorInfo *error)
   luma=(unsigned char *) AllocateMemory(image->columns*image->rows+1);
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Advance to image data.
   */
@@ -657,7 +657,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ErrorInfo *error)
       FreeMemory(luma);
       while (image->previous != (Image *) NULL)
         image=image->previous;
-      overview_image=OverviewImage(image_info,error,image);
+      overview_image=OverviewImage(image_info,exception,image);
       return(overview_image);
     }
   /*
@@ -892,7 +892,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   image->orphan=True;
   tile_image=ZoomImage(image,width,height);
   if (tile_image == (Image *) NULL)
-    WriterExit(ResourceLimitWarning,"Unable to scale image",image);
+    ThrowWriterException(ResourceLimitWarning,"Unable to scale image",image);
   (void) sscanf(geometry,"%ux%u",&width,&height);
   if ((tile_image->columns != width) || (tile_image->rows != height))
     {
@@ -909,7 +909,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       border_info.height=(height-tile_image->rows+1) >> 1;
       bordered_image=BorderImage(tile_image,&border_info);
       if (bordered_image == (Image *) NULL)
-        WriterExit(ResourceLimitWarning,"Unable to border image",image);
+        ThrowWriterException(ResourceLimitWarning,"Unable to border image",image);
       DestroyImage(tile_image);
       tile_image=bordered_image;
     }
@@ -918,7 +918,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   downsampled_image=
     ZoomImage(tile_image,tile_image->columns >> 1,tile_image->rows >> 1);
   if (downsampled_image == (Image *) NULL)
-    WriterExit(ResourceLimitWarning,"Unable to down sample image",image);
+    ThrowWriterException(ResourceLimitWarning,"Unable to down sample image",image);
   /*
     Write tile to PCD file.
   */
@@ -981,7 +981,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
       image->orphan=True;
       rotated_image=RotateImage(image,90.0);
       if (rotated_image == (Image *) NULL)
-        WriterExit(ResourceLimitWarning,"Unable to rotate image",image);
+        ThrowWriterException(ResourceLimitWarning,"Unable to rotate image",image);
       pcd_image=rotated_image;
     }
   /*
@@ -989,7 +989,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,pcd_image,WriteBinaryType);
   if (status == False)
-    WriterExit(FileOpenWarning,"Unable to open file",pcd_image);
+    ThrowWriterException(FileOpenWarning,"Unable to open file",pcd_image);
   TransformRGBImage(pcd_image,RGBColorspace);
   /*
     Write PCD image header.

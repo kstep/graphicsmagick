@@ -10,12 +10,12 @@
 %                      EEEEE  R  R   R  R   OOO   R  R                        %
 %                                                                             %
 %                                                                             %
-%                         ImageMagick Error Methods                           %
+%                       ImageMagick Exception Methods                         %
 %                                                                             %
 %                                                                             %
-%                              Software Design                                %
-%                                John Cristy                                  %
-%                                 July 1993                                   %
+%                             Software Design                                 %
+%                               John Cristy                                   %
+%                                July 1993                                    %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
@@ -64,8 +64,8 @@ extern "C" {
 #endif
 
 static void
-  DefaultErrorHandler(const ErrorType,const char *,const char *),
-  DefaultWarningHandler(const ErrorType,const char *,const char *);
+  DefaultErrorHandler(const ExceptionType,const char *,const char *),
+  DefaultWarningHandler(const ExceptionType,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -96,12 +96,12 @@ static WarningHandler
 %
 %  The format of the DefaultErrorHandler method is:
 %
-%      void MagickError(const ErrorType error,const char *message,
+%      void MagickError(const ExceptionType error,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
-%    o error: Specifies the numeric error category.
+%    o exception: Specifies the numeric error category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -110,7 +110,7 @@ static WarningHandler
 %
 %
 */
-static void DefaultErrorHandler(const ErrorType error,const char *message,
+static void DefaultErrorHandler(const ExceptionType error,const char *message,
   const char *qualifier)
 {
   DestroyDelegateInfo();
@@ -141,8 +141,8 @@ static void DefaultErrorHandler(const ErrorType error,const char *message,
 %
 %  The format of the DefaultWarningHandler method is:
 %
-%      void DefaultWarningHandler(const ErrorType warning,const char *message,
-%        const char *qualifier)
+%      void DefaultWarningHandler(const ExceptionType warning,
+%        const char *message,const char *qualifier)
 %
 %  A description of each parameter follows:
 %
@@ -155,8 +155,8 @@ static void DefaultErrorHandler(const ErrorType error,const char *message,
 %
 %
 */
-static void DefaultWarningHandler(const ErrorType warning,const char *message,
-  const char *qualifier)
+static void DefaultWarningHandler(const ExceptionType warning,
+  const char *message,const char *qualifier)
 {
   if (message == (char *) NULL)
     return;
@@ -178,24 +178,24 @@ static void DefaultWarningHandler(const ErrorType warning,const char *message,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetErrorInfo initializes the ErrorInfo structure.
+%  Method GetExceptionInfo initializes the ExceptionInfo structure.
 %
-%  The format of the GetErrorInfo method is:
+%  The format of the GetExceptionInfo method is:
 %
-%      GetErrorInfo(ErrorInfo *error_info)
+%      GetExceptionInfo(ExceptionInfo *exception_info)
 %
 %  A description of each parameter follows:
 %
-%    o error_info: Specifies a pointer to a ErrorInfo structure.
+%    o error_info: Specifies a pointer to a ExceptionInfo structure.
 %
 %
 */
-Export void GetErrorInfo(ErrorInfo *error_info)
+Export void GetExceptionInfo(ExceptionInfo *exception_info)
 {
-  assert(error_info != (ErrorInfo *) NULL);
-  error_info->type=UndefinedError;
-  error_info->message=(char *) NULL;
-  error_info->qualifier=(char *) NULL;
+  assert(exception_info != (ExceptionInfo *) NULL);
+  exception_info->type=UndefinedException;
+  exception_info->message=(char *) NULL;
+  exception_info->qualifier=(char *) NULL;
 }
 
 /*
@@ -213,12 +213,12 @@ Export void GetErrorInfo(ErrorInfo *error_info)
 %
 %  The format of the MagickError method is:
 %
-%      void MagickError(const ErrorType error,const char *message,
+%      void MagickError(const ExceptionType error,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
 %
-%    o error: Specifies the numeric error category.
+%    o exception: Specifies the numeric error category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -227,7 +227,7 @@ Export void GetErrorInfo(ErrorInfo *error_info)
 %
 %
 */
-Export void MagickError(const ErrorType error,const char *message,
+Export void MagickError(const ExceptionType error,const char *message,
   const char *qualifier)
 {
   if (error_handler != (ErrorHandler) NULL)
@@ -251,7 +251,7 @@ Export void MagickError(const ErrorType error,const char *message,
 %
 %  The format of the MagickWarning method is:
 %
-%      void MagickWarning(const ErrorType warning,const char *message,
+%      void MagickWarning(const ExceptionType warning,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -265,7 +265,7 @@ Export void MagickError(const ErrorType error,const char *message,
 %
 %
 */
-Export void MagickWarning(const ErrorType warning,const char *message,
+Export void MagickWarning(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
   if (warning_handler != (WarningHandler) NULL)
