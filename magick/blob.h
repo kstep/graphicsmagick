@@ -56,6 +56,7 @@ extern MagickExport unsigned short
   ReadBlobMSBShort(Image *);
 
 extern MagickExport void
+  AttachBlob(BlobInfo *,const void *,const size_t),
   CloseBlob(Image *),
   DestroyBlobInfo(BlobInfo *),
   DetachBlob(BlobInfo *),
