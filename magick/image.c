@@ -2064,7 +2064,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             (void) fprintf(file,"\n");
     }
   if (image->filesize >= (1 << 24))
-    (void) fprintf(file,"  Filesize: %lumb ",
+    (void) fprintf(file,"  Filesize: %lumb\n",
       (unsigned long) (image->filesize/1024/1024));
   else
     if (image->filesize >= (1 << 16))
