@@ -282,13 +282,30 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   */
   for (next=image->next; next != (Image *) NULL; next=next->next)
   {
-    if (next->dispose == 4)
-      coalesce_image->next=CloneImage(previous_image,0,0,True,exception);
-    else
+    switch (next->dispose)
+    {
+      case UndefinedDispose:
+      case NoneDispose:
       {
         coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
-        previous_image=coalesce_image;
+        if (coalesce_image->next != (Image *) NULL)
+          previous_image=coalesce_image;
+        break;
       }
+      case BackgroundDispose:
+      {
+        coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
+        if (coalesce_image->next != (Image *) NULL)
+          SetImage(coalesce_image->next,OpaqueOpacity);
+        break;
+      }
+      case PreviousDispose:
+      default:
+      {
+        coalesce_image->next=CloneImage(previous_image,0,0,True,exception);
+        break;
+      }
+    }
     if (coalesce_image->next == (Image *) NULL)
       {
         DestroyImageList(coalesce_image);
