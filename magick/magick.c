@@ -62,6 +62,7 @@
 #include "magick.h"
 #include "module.h"
 #include "registry.h"
+#include "resource.h"
 #include "render.h"
 #include "utility.h"
 
@@ -330,6 +331,9 @@ MagickExport void InitializeMagick(const char *path)
   (void) setlocale(LC_ALL,"");
   InitializeSemaphore();
   (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
+#if defined(PixelCacheThreshold)
+  SetMagickResourceLimit(MemoryResource,PixelCacheThreshold);
+#endif
   *execution_path='\0';
 #if !defined(UseInstalledImageMagick)
 #if defined(POSIX) || defined(WIN32)

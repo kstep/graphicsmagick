@@ -238,7 +238,7 @@ MagickExport unsigned long GetMagickResource(const ResourceType type)
     }
     default:
     {
-      resource=0;
+      resource=0UL;
       break;
     }
   }
@@ -310,7 +310,7 @@ MagickExport void LiberateMagickResource(const ResourceType type,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetMagickResourceLimit() sets the limit for a particular resource in
-%  megabytes..
+%  megabytes.
 %
 %  The format of the SetMagickResourceLimit() method is:
 %

@@ -45,7 +45,6 @@ Unix/Linux/Darwin/Cygwin/MinGW Install:
      you may find these variables useful:
 
        MAGICK_HOME             path to ImageMagick installation directory
-       MAGICK_CACHE_THRESHOLD  megabytes of memory available to pixel cache
        TMPDIR                  path to store temporary files
        LD_LIBRARY_PATH         path to libMagick.so and other libraries
 
