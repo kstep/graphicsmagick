@@ -73,7 +73,7 @@ WriteMakefile
    'PERLMAINCC'	=> '@CC@',
 
    # Set Perl installation prefix to ImageMagick installation prefix
-   'PREFIX'	=> '@prefix@',
+#   'PREFIX'	=> '@prefix@',
 
    # File to extract PerlMagick version from
    'VERSION_FROM' => 'Magick.pm',
