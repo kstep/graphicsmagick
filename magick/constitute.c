@@ -1167,17 +1167,13 @@ MagickExport unsigned int PopImagePixels(Image *image,
       if (image->depth <= 8)
         {
           for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(p->opacity);
-            p++;
-          }
+            *q++=DownScale(indexes[x]);
           break;
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
-        p++;
+        *q++=indexes[x] >> 8;
+        *q++=indexes[x];
       }
       break;
     }
@@ -1546,17 +1542,13 @@ MagickExport unsigned int PushImagePixels(Image *image,
       if (image->depth <= 8)
         {
           for (x=0; x < (int) image->columns; x++)
-          {
-            q->opacity=UpScale(*p++);
-            q++;
-          }
+            indexes[x]=UpScale(*p++);
           break;
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        q->opacity=XDownScale((*p << 8) | *(p+1));
+        indexes[x]=XDownScale((*p << 8) | *(p+1));
         p+=2;
-        q++;
       }
       break;
     }
