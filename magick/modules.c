@@ -668,7 +668,11 @@ Export int LoadDynamicModule(const char* module)
   char
     func_name[MaxTextExtent],
     *module_file,
-    module_name[MaxTextExtent];
+    module_name[MaxTextExtent],
+    module_load_path[MaxTextExtent];
+
+  int
+    i;
 
   ModuleHandle
     handle;
@@ -697,16 +701,30 @@ Export int LoadDynamicModule(const char* module)
     Load module file
   */
   module_file=TagToModule(module_name);
-  if( ( handle=lt_dlopen( module_file ) ) == 0)
+  handle=(ModuleHandle)NULL;
+  for( i=0; module_path[i]; ++i)
     {
-#if 1  /* Without this enabled, there is no useful diagnostic */
-      printf("WARNING: failed to load module \"%s\": %s\n",
-             module_file, lt_dlerror());
-#endif
-      FreeMemory((void **) &module_file);
-      return False;
+      strcpy(module_load_path, module_path[i]);
+      strcat(module_load_path, DirectorySeparator);
+      strcat(module_load_path, module_file);
+      /* 
+         Only attempt to load module if module file exists
+       */
+      if(access(module_load_path,F_OK) == 0)
+        {
+          if( ( handle=lt_dlopen( module_load_path ) ) == 0)
+            {
+              printf("WARNING: failed to load module \"%s\": %s\n",
+                     module_load_path, lt_dlerror());
+              FreeMemory((void **) &module_file);
+              return False;
+            }
+        }
     }
   FreeMemory((void **) &module_file);
+
+  if(handle == 0)
+    return False;
 
   /*
     Add module to module list
