@@ -578,7 +578,7 @@ MagickExport unsigned int ConcatenateString(char **destination,
 %
 %  The format of the EscapeString method is:
 %
-%      char *EscapeString(const char *source, const char escape)
+%      char *EscapeString(const char *source,const char escape)
 %
 %  A description of each parameter follows:
 %
@@ -592,35 +592,36 @@ MagickExport unsigned int ConcatenateString(char **destination,
 MagickExport char *EscapeString(const char *source,const char escape)
 {
   char
-    *destination,
+    *destination;
+
+  register char
     *q;
 
-  const char
+  register const char
     *p;
 
   unsigned int
-    allocated;
+    length;
 
   assert(source != (const char *) NULL);
-
-  allocated=strlen(source)+1;
+  length=strlen(source)+1;
   for (p=source; *p; p++)
-    if ( (*p=='\\') || (*p==escape) )
-      ++allocated;
-  destination=(char *) AcquireMemory(allocated);
+    if ((*p == '\\') || (*p == escape))
+      length++;
+  destination=(char *) AcquireMemory(length);
   if (destination == (char *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to acquire string",
-                     "Memory allocation failed");
-  *destination=0;
+    MagickFatalError(ResourceLimitFatalError,"Unable to escape string",
+      "Memory allocation failed");
+  *destination='\0';
   if (source != (char *) NULL)
     {
-      for (p = source, q=destination; *p; p++)
-        {
-          if ( (*p == '\\') || (*p == escape))
-            *q++ = '\\';
-          *q++ = (*p);
-        }
-      *q = 0;
+      for (p=source, q=destination; *p; p++)
+      {
+        if ((*p == '\\') || (*p == escape))
+          *q++= '\\';
+        *q++=(*p);
+      }
+      *q=0;
     }
   return(destination);
 }
@@ -1613,7 +1614,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
       {
         register char
           escape;
-            
+
         escape=(*p);
         if (escape == '{')
           escape='}';
