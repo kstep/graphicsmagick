@@ -1,10 +1,16 @@
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
 
+/* Define if you have the libdl library or equivalent.  */
+#undef HAVE_LIBDL
+
+/* Define if you have the GNU dld library.  */
+#undef HAVE_DLD
+
+/* Define if you have the shl_load function.  */
+#undef HAVE_SHL_LOAD
+
 /* Define if you have the <ctype.h> header file. */
 #undef HAVE_CTYPE_H
-
-/* Define if you have the GNU dld library. */
-#undef HAVE_DLD
 
 /* Define if you have the <dld.h> header file. */
 #undef HAVE_DLD_H
@@ -21,14 +27,11 @@
 /* Define if you have the `index' function. */
 #undef HAVE_INDEX
 
-/* Define if you have the libdl library or equivalent. */
+/* Define if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
 
 /* Define if you have the `dld' library (-ldld). */
 #undef HAVE_LIBDLD
-
-/* Define if you have the `pthread' library (-lpthread). */
-#undef HAVE_LIBPTHREAD
 
 /* Define if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
@@ -42,9 +45,6 @@
 /* Define if you have the `rindex' function. */
 #undef HAVE_RINDEX
 
-/* Define if you have the shl_load function. */
-#undef HAVE_SHL_LOAD
-
 /* Define if you have the <stdio.h> header file. */
 #undef HAVE_STDIO_H
 
@@ -54,9 +54,6 @@
 /* Define if you have the `strchr' function. */
 #undef HAVE_STRCHR
 
-/* Define if you have the `strcmp' function. */
-#undef HAVE_STRCMP
-
 /* Define if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
 
@@ -65,9 +62,6 @@
 
 /* Define if you have the `strrchr' function. */
 #undef HAVE_STRRCHR
-
-/* Define if you have Posix thread methods. */
-#undef HasPTHREADS
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
@@ -79,9 +73,6 @@
 
 /* Define to the extension used for shared libraries, say, .so. */
 #undef LTDL_SHLIB_EXT
-
-/* Define to the system default library search path. */
-#undef LTDL_SYSSEARCHPATH
 
 /* Define if dlsym() requires a leading underscode in symbol names. */
 #undef NEED_USCORE

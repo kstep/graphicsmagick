@@ -173,7 +173,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 
       /* List module files */
       file_list=ListFiles(coder_dir,
-		      "*.la", &number_files);
+		      "*.so", &number_files);
       if (file_list == (char **) NULL)
 	{
 	  FreeMemory(coder_dir);
@@ -198,11 +198,6 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	  strcpy(func_name, "Register");
 	  base_name = BaseFilename( file_list[i] );
 	  Latin1Upper(base_name);
-
-	  /* Hack due to 8BIM vs bim.c naming difference */
-	  if(!strcmp("BIM", base_name))
-	     strcat(func_name,"8");
-
 	  strcat(func_name,base_name);
 	  FreeMemory(base_name);
 	  strcat(func_name, "Image");
@@ -214,8 +209,6 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	      continue;
 	    }
 	  func();
-
-	  /*ListMagickInfo(stdout);*/
 
 	}
       FreeMemory(func_name);
@@ -296,10 +289,6 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterYUVImage();
 #endif
     }
-#if defined(HasLTDL)
-  printf("MagickInfo List:\n");
-  ListMagickInfo(stdout);
-#endif /* HasLTDL */
   if (tag == (char *) NULL)
     return(magick_info);
   for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
@@ -385,13 +374,6 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
 {
   register MagickInfo
     *p;
-
-#if defined(HasLTDL)
-  p=entry;
-  (void) printf("%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
-		p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',p->encoder ? 'w' : '-',
-		p->encoder && p->adjoin ? '+' : '-',p->description ? p->description : "");
-#endif /* HasLTDL */
 
   /*
     Add tag info to the image format list.

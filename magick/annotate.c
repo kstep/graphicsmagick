@@ -162,7 +162,6 @@ Export unsigned int AnnotateImage(Image *image,
       DestroyAnnotateInfo(clone_info);
       ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
         "Memory allocation failed");
-      return;
     }
   width=image->columns;
   height=image->rows;

@@ -1445,14 +1445,13 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
     extrema[i]=(short *) AllocateMemory((DownScale(MaxRGB)+1)*sizeof(short));
     if ((histogram[i] == (long *) NULL) || (extrema[i] == (short *) NULL))
       {
-        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-          image->filename);
         for (i-- ; i >= 0; i--)
         {
           FreeMemory(extrema[i]);
           FreeMemory(histogram[i]);
         }
-        return(False);
+        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+          image->filename);
       }
   }
   if (colorspace != RGBColorspace)

@@ -6601,16 +6601,16 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
       magick_info=(MagickInfo *) GetMagickInfo(magick);
       if (magick_info != (MagickInfo *) NULL)
         image_info->adjoin&=magick_info->adjoin;
-      return;
+      return(True);
     }
   if (affirm)
-    return;
+    return(True);
   /*
     Allocate image structure.
   */
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
-    return;
+    return(True);
   /*
     Determine the image format from the first few bytes of the file.
   */
@@ -6619,7 +6619,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
   if (status == False)
     {
       DestroyImage(image);
-      return;
+      return(True);
     }
   if ((image->blob.data != (char *) NULL)  || !image->exempt)
     (void) ReadBlob(image,MaxTextExtent-1,magick);

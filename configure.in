@@ -44,18 +44,12 @@ then
 fi
 
 # Check for programs
-
 AC_PROG_CC
 AC_PROG_CPP
 AM_PROG_CC_STDC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-#AC_C_INLINE
-AC_C_BIGENDIAN
 
 #
 # Tests for Windows
@@ -304,7 +298,12 @@ AC_CHECK_HEADERS(sys/time.h sys/stat.h sys/types.h)
 AC_CHECK_HEADERS(math.h string.h stdarg.h pwd.h malloc.h)
 AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
 
-AC_TYPE_SIGNAL
+# Checks for typedefs, structures, and compiler characteristics.
+AC_PROG_CC_STDC
+AC_C_CONST
+#AC_C_INLINE
+AC_C_BIGENDIAN
+
 AC_TYPE_MODE_T
 AC_TYPE_OFF_T
 AC_TYPE_PID_T
@@ -1275,7 +1274,8 @@ AC_SUBST(X_PRE_LIBS)
 AC_SUBST(X_LIBS)
 AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL)
+AC_CONFIG_FILES(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL)
+AC_OUTPUT
 
 echo ""
 
