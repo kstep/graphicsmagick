@@ -1541,15 +1541,15 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         {
           (void) fprintf(file,"DirectClass ");
           if (image->total_colors != 0)
-            (void) fprintf(file,"%luc ",image->total_colors);
+            (void) fprintf(file,"%ldc ",(long) image->total_colors);
         }
       else
         if (image->total_colors <= image->colors)
           (void) fprintf(file,"PseudoClass %uc ",image->colors);
         else
           {
-            (void) fprintf(file,"PseudoClass %lu=>%uc ",image->total_colors,
-              image->colors);
+            (void) fprintf(file,"PseudoClass %ld=>%uc ",
+              (long) image->total_colors,image->colors);
             (void) fprintf(file,"%u/%.6f/%.6fe ",image->mean_error_per_pixel,
               image->normalized_mean_error,image->normalized_maximum_error);
           }
