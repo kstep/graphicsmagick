@@ -46,9 +46,9 @@ extern __declspec(dllexport) char
 
 extern __declspec(dllexport) int
   Exit(int),
-  ImageFormatConflict(char *),
+  ImageFormatConflict(const char *),
   IsWindows95(),
-  NTSystemCommand(char *);
+  NTSystemCommand(const char *);
 
 #if !defined(XS_VERSION)
 extern __declspec(dllexport) DIR

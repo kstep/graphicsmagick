@@ -540,7 +540,7 @@ extern Export void
     XStandardColormap *,XPixelInfo *),
   XMakeWindow(Display *,Window,char **,int,XClassHint *,XWMHints *,
     XWindowInfo *),
-  XProgressMonitor(char *,const unsigned int,const unsigned int),
+  XProgressMonitor(const char *,const unsigned int,const unsigned int),
   XQueryPosition(Display *,const Window,int *,int *),
   XRefreshWindow(Display *,const XWindowInfo *,const XEvent *),
   XRemoteCommand(Display *,const char *,const char *),

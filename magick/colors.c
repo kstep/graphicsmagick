@@ -90,7 +90,9 @@ typedef struct _CubeInfo
     *root;
 
   unsigned int
-    progress,
+    progress;
+
+  unsigned long
     colors;
 
   unsigned int
@@ -102,6 +104,15 @@ typedef struct _CubeInfo
   Nodes
     *node_list;
 } CubeInfo;
+
+/*
+  Forward declarations.
+*/
+static NodeInfo
+  *InitializeNode(CubeInfo *,const unsigned int);
+
+static void
+  Histogram(CubeInfo *,const NodeInfo *,FILE *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -142,6 +153,158 @@ static void DestroyList(const NodeInfo *node_info)
   if (node_info->level == MaxTreeDepth)
     if (node_info->list != (ColorPacket *) NULL)
       FreeMemory((char *) node_info->list);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  G e t N u m b e r C o l o r s                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetNumberColors returns the number of unique colors in an image.
+%
+%  The format of the GetNumberColors routine is:
+%
+%      number_colors=GetNumberColors(image,file)
+%
+%  A description of each parameter follows.
+%
+%    o number_colors: Method GetNumberColors returns the number of unique
+%      colors in the specified image.
+%
+%    o image: The address of a byte (8 bits) array of run-length
+%      encoded pixel data of your source image.  The sum of the
+%      run-length counts in the source image must be equal to or exceed
+%      the number of pixels.
+%
+%    o file:  An pointer to a FILE.  If it is non-null a list of unique pixel
+%      field values and the number of times each occurs in the image is
+%      written to the file.
+%
+%
+%
+*/
+Export unsigned long GetNumberColors(const Image *image,FILE *file)
+{
+#define NumberColorsImageText  "  Computing image colors...  "
+
+  CubeInfo
+    color_cube;
+
+  NodeInfo
+    *node_info;
+
+  Nodes
+    *nodes;
+
+  register int
+    i,
+    j;
+
+  register RunlengthPacket
+    *p;
+
+  register unsigned int
+    id,
+    index,
+    level;
+
+  /*
+    Initialize color description tree.
+  */
+  assert(image != (Image *) NULL);
+  color_cube.node_list=(Nodes *) NULL;
+  color_cube.progress=0;
+  color_cube.colors=0;
+  color_cube.free_nodes=0;
+  color_cube.root=InitializeNode(&color_cube,0);
+  if (color_cube.root == (NodeInfo *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to count colors",
+        "Memory allocation failed");
+      return(0);
+    }
+  p=image->pixels;
+  for (i=0; i < (int) image->packets; i++)
+  {
+    /*
+      Start at the root and proceed level by level.
+    */
+    node_info=color_cube.root;
+    index=MaxTreeDepth-1;
+    for (level=1; level <= MaxTreeDepth; level++)
+    {
+      id=(((Quantum) DownScale(p->red) >> index) & 0x01) << 2 |
+         (((Quantum) DownScale(p->green) >> index) & 0x01) << 1 |
+         (((Quantum) DownScale(p->blue) >> index) & 0x01);
+      if (node_info->child[id] == (NodeInfo *) NULL)
+        {
+          node_info->child[id]=InitializeNode(&color_cube,level);
+          if (node_info->child[id] == (NodeInfo *) NULL)
+            {
+              MagickWarning(ResourceLimitWarning,"Unable to count colors",
+                "Memory allocation failed");
+              return(0);
+            }
+        }
+      node_info=node_info->child[id];
+      index--;
+      if (level != MaxTreeDepth)
+        continue;
+      for (j=0; j < (int) node_info->number_unique; j++)
+         if ((p->red == node_info->list[j].red) &&
+             (p->green == node_info->list[j].green) &&
+             (p->blue == node_info->list[j].blue))
+           break;
+      if (j < (int) node_info->number_unique)
+        {
+          node_info->list[j].count+=p->length+1;
+          continue;
+        }
+      if (node_info->number_unique == 0)
+        node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
+      else
+        node_info->list=(ColorPacket *)
+          ReallocateMemory(node_info->list,(j+1)*sizeof(ColorPacket));
+      if (node_info->list == (ColorPacket *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to count colors",
+            "Memory allocation failed");
+          return(0);
+        }
+      node_info->list[j].red=p->red;
+      node_info->list[j].green=p->green;
+      node_info->list[j].blue=p->blue;
+      node_info->list[j].count=p->length+1;
+      node_info->number_unique++;
+      color_cube.colors++;
+    }
+    p++;
+    if (QuantumTick(i,image->packets))
+      ProgressMonitor(NumberColorsImageText,i,image->packets);
+  }
+  if (file != (FILE *) NULL)
+    {
+      Histogram(&color_cube,color_cube.root,file);
+      (void) fflush(file);
+    }
+  /*
+    Release color cube tree storage.
+  */
+  DestroyList(color_cube.root);
+  do
+  {
+    nodes=color_cube.node_list->next;
+    FreeMemory((char *) color_cube.node_list);
+    color_cube.node_list=nodes;
+  }
+  while (color_cube.node_list != (Nodes *) NULL);
+  return(color_cube.colors);
 }
 
 /*
@@ -501,154 +664,4 @@ Export unsigned int QueryColorName(const ColorPacket *color,char *name)
     FormatString(name,HexColorFormat,(unsigned int) color->red,
       (unsigned int) color->green,(unsigned int) color->blue);
   return((unsigned int) min_distance);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  N u m b e r C o l o r s                                                    %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method NumberColors returns the number of unique colors in an image.
-%
-%  The format of the NumberColors routine is:
-%
-%      NumberColors(image,file)
-%
-%  A description of each parameter follows.
-%
-%    o image: The address of a byte (8 bits) array of run-length
-%      encoded pixel data of your source image.  The sum of the
-%      run-length counts in the source image must be equal to or exceed
-%      the number of pixels.
-%
-%    o file:  An pointer to a FILE.  If it is non-null a list of unique pixel
-%      field values and the number of times each occurs in the image is
-%      written to the file.
-%
-%
-%
-*/
-Export void NumberColors(Image *image,FILE *file)
-{
-#define NumberColorsImageText  "  Computing image colors...  "
-
-  CubeInfo
-    color_cube;
-
-  NodeInfo
-    *node_info;
-
-  Nodes
-    *nodes;
-
-  register int
-    i,
-    j;
-
-  register RunlengthPacket
-    *p;
-
-  register unsigned int
-    id,
-    index,
-    level;
-
-  /*
-    Initialize color description tree.
-  */
-  assert(image != (Image *) NULL);
-  image->total_colors=0;
-  color_cube.node_list=(Nodes *) NULL;
-  color_cube.progress=0;
-  color_cube.colors=0;
-  color_cube.free_nodes=0;
-  color_cube.root=InitializeNode(&color_cube,0);
-  if (color_cube.root == (NodeInfo *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to count colors",
-        "Memory allocation failed");
-      return;
-    }
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
-  {
-    /*
-      Start at the root and proceed level by level.
-    */
-    node_info=color_cube.root;
-    index=MaxTreeDepth-1;
-    for (level=1; level <= MaxTreeDepth; level++)
-    {
-      id=(((Quantum) DownScale(p->red) >> index) & 0x01) << 2 |
-         (((Quantum) DownScale(p->green) >> index) & 0x01) << 1 |
-         (((Quantum) DownScale(p->blue) >> index) & 0x01);
-      if (node_info->child[id] == (NodeInfo *) NULL)
-        {
-          node_info->child[id]=InitializeNode(&color_cube,level);
-          if (node_info->child[id] == (NodeInfo *) NULL)
-            {
-              MagickWarning(ResourceLimitWarning,"Unable to count colors",
-                "Memory allocation failed");
-              return;
-            }
-        }
-      node_info=node_info->child[id];
-      index--;
-      if (level != MaxTreeDepth)
-        continue;
-      for (j=0; j < (int) node_info->number_unique; j++)
-         if ((p->red == node_info->list[j].red) &&
-             (p->green == node_info->list[j].green) &&
-             (p->blue == node_info->list[j].blue))
-           break;
-      if (j < (int) node_info->number_unique)
-        {
-          node_info->list[j].count+=p->length+1;
-          continue;
-        }
-      if (node_info->number_unique == 0)
-        node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
-      else
-        node_info->list=(ColorPacket *)
-          ReallocateMemory(node_info->list,(j+1)*sizeof(ColorPacket));
-      if (node_info->list == (ColorPacket *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to count colors",
-            "Memory allocation failed");
-          return;
-        }
-      node_info->list[j].red=p->red;
-      node_info->list[j].green=p->green;
-      node_info->list[j].blue=p->blue;
-      node_info->list[j].count=p->length+1;
-      node_info->number_unique++;
-      color_cube.colors++;
-    }
-    p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(NumberColorsImageText,i,image->packets);
-  }
-  if (file != (FILE *) NULL)
-    {
-      Histogram(&color_cube,color_cube.root,file);
-      (void) fflush(file);
-    }
-  /*
-    Release color cube tree storage.
-  */
-  DestroyList(color_cube.root);
-  do
-  {
-    nodes=color_cube.node_list->next;
-    FreeMemory((char *) color_cube.node_list);
-    color_cube.node_list=nodes;
-  }
-  while (color_cube.node_list != (Nodes *) NULL);
-  image->total_colors=color_cube.colors;
 }

@@ -253,8 +253,6 @@ int main(int argc,char **argv)
     {
       if (p->scene == 0)
         p->scene=count++;
-      if (image_info.verbose)
-        NumberColors(p,(FILE *) NULL);
       DescribeImage(p,stdout,image_info.verbose);
     }
     DestroyImages(image);

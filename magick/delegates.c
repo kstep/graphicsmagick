@@ -95,7 +95,7 @@
 %
 %
 */
-static unsigned int ReadDelegates(char *path,char *directory)
+static unsigned int ReadDelegates(const char *path,const char *directory)
 {
   char
     filename[MaxTextExtent],
@@ -378,7 +378,7 @@ Export unsigned int GetDelegateInfo(const char *decode_tag,
 %
 %
 */
-Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
+Export char *GetDelegateCommand(const ImageInfo *image_info,const Image *image,
   const char *decode_tag,const char *encode_tag)
 {
   char
@@ -443,8 +443,8 @@ Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %
 %
 */
-Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
-  const char *decode_tag,const char *encode_tag)
+Export unsigned int InvokeDelegate(const ImageInfo *image_info,
+  Image *image,const char *decode_tag,const char *encode_tag)
 {
   char
     *command,
@@ -496,7 +496,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
         (void) fprintf(file,"-\n");
         (void) fprintf(file,"%.1024s\n",image_info->unique);
         (void) fprintf(file,"1\n");
-        (void) fprintf(file,"%u\n",image->number_scenes);
+        (void) fprintf(file,"%u\n",GetNumberScenes(image));
         (void) fprintf(file,"0\n");
         (void) fprintf(file,"00:00:00:00\n");
         (void) fprintf(file,"%d\n",mpeg ? 12 : 15);

@@ -1,6 +1,6 @@
 Revision history for Perl extension Image::Magick.
 
-4.18 Fri Feb 01 1999
+4.19 Fri Feb 01 1999
         - Changed version to reflect the ImageMagick release #.
 1.58 Fri Jan 01 1999
         - Added Blob method.

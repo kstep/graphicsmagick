@@ -1663,6 +1663,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
           Convert DCM Medical image to runlength-encoded packets.
         */
         i=0;
+        byte=0;
         red=0;
         green=0;
         blue=0;
@@ -12962,9 +12963,6 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
 
   ImageInfo
     *local_info;
-
-  register int
-    i;
 
   register unsigned char
     *header,

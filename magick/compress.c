@@ -918,7 +918,8 @@ Export unsigned int GIFDecodeImage(Image *image)
 %
 %
 */
-Export unsigned int GIFEncodeImage(Image *image,const unsigned int data_size)
+Export unsigned int GIFEncodeImage(const Image *image,
+  const unsigned int data_size)
 {
 #define MaxCode(number_bits)  ((1 << (number_bits))-1)
 #define MaxHashTable  5003
@@ -1461,7 +1462,8 @@ Export unsigned int HuffmanDecodeImage(Image *image)
 %    o image: The address of a structure of type Image.
 %
 */
-Export unsigned int HuffmanEncodeImage(ImageInfo *image_info,Image *image)
+Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
+  const Image *image)
 {
 #define HuffmanOutputCode(entry)  \
 {  \
@@ -1683,7 +1685,8 @@ Export unsigned int HuffmanEncodeImage(ImageInfo *image_info,Image *image)
 %    o image: The address of a structure of type Image.
 %
 */
-Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
+Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
+  const Image *image)
 {
   char
     *buffer;
@@ -1711,9 +1714,9 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image != (Image *) NULL);
-  image->orphan=True;
+  ((Image *) image)->orphan=True;
   huffman_image=CloneImage(image,image->columns,image->rows,True);
-  image->orphan=False;
+  ((Image *) image)->orphan=False;
   TemporaryFilename(huffman_image->filename);
   (void) strcpy(huffman_image->magick,"TIFF");
   status=WriteImage(image_info,huffman_image);
@@ -1759,7 +1762,8 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
+Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
+  const Image *image)
 {
   MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image_info->filename);
@@ -2126,12 +2130,13 @@ Export unsigned int PackbitsDecodeImage(Image *image,const int channel)
 %
 %
 */
-Export unsigned int PackbitsEncodeImage(FILE *file,unsigned int number_pixels,
-  unsigned char *pixels)
+Export unsigned int PackbitsEncodeImage(FILE *file,
+  const unsigned int number_pixels,unsigned char *pixels)
 {
   register int
     count,
-    i;
+    i,
+    j;
 
   unsigned char
     *packbits;
@@ -2149,20 +2154,21 @@ Export unsigned int PackbitsEncodeImage(FILE *file,unsigned int number_pixels,
       return(False);
     }
   Ascii85Initialize();
-  while (number_pixels != 0)
+  i=number_pixels;
+  while (i != 0)
   {
-    switch (number_pixels)
+    switch (i)
     {
       case 1:
       {
-        number_pixels--;
+        i--;
         Ascii85Encode(0,file);
         Ascii85Encode(*pixels,file);
         break;
       }
       case 2:
       {
-        number_pixels-=2;
+        i-=2;
         Ascii85Encode(1,file);
         Ascii85Encode(*pixels,file);
         Ascii85Encode(pixels[1],file);
@@ -2170,7 +2176,7 @@ Export unsigned int PackbitsEncodeImage(FILE *file,unsigned int number_pixels,
       }
       case 3:
       {
-        number_pixels-=3;
+        i-=3;
         if ((*pixels == *(pixels+1)) && (*(pixels+1) == *(pixels+2)))
           {
             Ascii85Encode((256-3)+1,file);
@@ -2191,14 +2197,13 @@ Export unsigned int PackbitsEncodeImage(FILE *file,unsigned int number_pixels,
               Packed run.
             */
             count=3;
-            while ((count < (int) number_pixels) &&
-                   (*pixels == *(pixels+count)))
+            while ((count < i) && (*pixels == *(pixels+count)))
             {
               count++;
               if (count >= 127)
                 break;
             }
-            number_pixels-=count;
+            i-=count;
             Ascii85Encode((256-count)+1,file);
             Ascii85Encode(*pixels,file);
             pixels+=count;
@@ -2213,13 +2218,13 @@ Export unsigned int PackbitsEncodeImage(FILE *file,unsigned int number_pixels,
         {
           packbits[count+1]=pixels[count];
           count++;
-          if ((count >= (int) (number_pixels-3)) || (count >= 127))
+          if ((count >= (int) (i-3)) || (count >= 127))
             break;
         }
-        number_pixels-=count;
+        i-=count;
         *packbits=count-1;
-        for (i=0; i <= count; i++)
-          Ascii85Encode(packbits[i],file);
+        for (j=0; j <= count; j++)
+          Ascii85Encode(packbits[j],file);
         pixels+=count;
         break;
       }
@@ -2268,7 +2273,7 @@ Export unsigned int PackbitsEncodeImage(FILE *file,unsigned int number_pixels,
 %
 %
 */
-Export unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
+Export unsigned int PCDDecodeImage(const Image *image,unsigned char *luma,
   unsigned char *chroma1,unsigned char *chroma2)
 {
 #define IsSync  ((accumulator & 0xffffff00) == 0xfffffe00)
@@ -2339,7 +2344,7 @@ Export unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
   /*
     Initialize Huffman tables.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(luma != (unsigned char *) NULL);
   assert(chroma1 != (unsigned char *) NULL);
   assert(chroma2 != (unsigned char *) NULL);
@@ -2535,7 +2540,7 @@ Export unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
 */
 
 static unsigned char *ExpandBuffer(unsigned char *pixels,int *bytes_per_line,
-  int bits_per_pixel)
+  const int bits_per_pixel)
 {
   register int
     i;
@@ -2602,8 +2607,8 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,int *bytes_per_line,
   return(scanline);
 }
 
-Export unsigned char* PICTDecodeImage(Image *image,int bytes_per_line,
-  int bits_per_pixel)
+Export unsigned char* PICTDecodeImage(const Image *image,int bytes_per_line,
+  const int bits_per_pixel)
 {
   int
     bytes_per_pixel,

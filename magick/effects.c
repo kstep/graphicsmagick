@@ -87,7 +87,7 @@
 %
 %
 */
-Export Image *AddNoiseImage(Image *image,NoiseType noise_type)
+Export Image *AddNoiseImage(const Image *image,const NoiseType noise_type)
 {
 #define AddNoiseImageText  "  Adding noise to the image...  "
 
@@ -188,7 +188,7 @@ Export Image *AddNoiseImage(Image *image,NoiseType noise_type)
 %
 %
 */
-Export Image *BlurImage(Image *image,const double factor)
+Export Image *BlurImage(const Image *image,const double factor)
 {
 #define Blur(weight) \
   total_red+=(weight)*(int) (s->red); \
@@ -601,7 +601,7 @@ Export Image *DespeckleImage(Image *image)
 %
 %
 */
-Export Image *EdgeImage(Image *image,const double factor)
+Export Image *EdgeImage(const Image *image,const double factor)
 {
 #define Edge(weight) \
   total_red+=(long) ((weight)*(int) (s->red)); \
@@ -826,7 +826,7 @@ Export Image *EdgeImage(Image *image,const double factor)
 %
 %
 */
-Export Image *EmbossImage(Image *image)
+Export Image *EmbossImage(const Image *image)
 {
 #define EmbossImageText  "  Embossing image...  "
 #define Emboss(weight) \
@@ -1048,7 +1048,7 @@ Export Image *EmbossImage(Image *image)
 %
 %
 */
-Export Image *EnhanceImage(Image *image)
+Export Image *EnhanceImage(const Image *image)
 {
 #define Enhance(weight) \
   mean=(s->red+red)/2; \
@@ -1310,11 +1310,11 @@ Export Image *EnhanceImage(Image *image)
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o factor:  An double value that defines the extent of the implosion.
+%    o factor:  A double value that defines the extent of the implosion.
 %
 %
 */
-Export Image *ImplodeImage(Image *image,double factor)
+Export Image *ImplodeImage(Image *image,const double factor)
 {
 #define ImplodeImageText  "  Imploding image...  "
 
@@ -1398,6 +1398,9 @@ Export Image *ImplodeImage(Image *image,double factor)
         *q=(*p);
       else
         {
+          double
+            factor;
+
           /*
             Implode the pixel.
           */
@@ -1631,7 +1634,7 @@ static Quantum PlasmaPixel(const double pixel,const double noise)
   return((Quantum) (value+0.5));
 }
 
-Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
+Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
   int attenuate,int depth)
 {
   double
@@ -1981,7 +1984,7 @@ static int ReduceNoiseCompare(const void *x,const void *y)
   return((int) Intensity(*color_1)-(int) Intensity(*color_2));
 }
 
-Export Image *ReduceNoiseImage(Image *image)
+Export Image *ReduceNoiseImage(const Image *image)
 {
 #define ReduceNoiseImageText  "  Reducing the image noise...  "
 
@@ -2405,7 +2408,7 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 %
 %
 */
-Export Image *SharpenImage(Image *image,const double factor)
+Export Image *SharpenImage(const Image *image,const double factor)
 {
 #define Sharpen(weight) \
   total_red+=(weight)*(int) (s->red); \
@@ -2725,7 +2728,7 @@ Export void SolarizeImage(Image *image,const double factor)
 %
 %
 */
-Export Image *SpreadImage(Image *image,unsigned int amount)
+Export Image *SpreadImage(Image *image,const unsigned int amount)
 {
 #define SpreadImageText  "  Spreading image...  "
 
@@ -2768,15 +2771,14 @@ Export Image *SpreadImage(Image *image,unsigned int amount)
   /*
     Convolve each row.
   */
-  amount++;
-  quantum=amount >> 1;
+  quantum=(amount+1) >> 1;
   q=spread_image->pixels;
   for (y=0; y < image->rows; y++)
   {
     for (x=0; x < image->columns; x++)
     {
-      x_distance=(rand() & amount)-quantum;
-      y_distance=(rand() & amount)-quantum;
+      x_distance=(rand() & (amount+1))-quantum;
+      y_distance=(rand() & (amount+1))-quantum;
       p=image->pixels+(y+y_distance)*image->columns+(x+x_distance);
       if ((p > image->pixels) && (p < (image->pixels+image->packets)))
         *q=(*p);

@@ -260,7 +260,7 @@ Export Quantum GenerateNoise(const Quantum pixel,const NoiseType noise_type)
 %
 %
 */
-Export void HSLTransform(double hue,const double saturation,
+Export void HSLTransform(const double hue,const double saturation,
   const double luminosity,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
@@ -287,11 +287,10 @@ Export void HSLTransform(double hue,const double saturation,
       *blue=(Quantum) floor((luminosity*(double) MaxRGB)+0.5);
       return;
     }
-  hue*=6.0;
   y=2*luminosity-v;
-  x=y+(v-y)*(hue-(int) hue);
-  z=v-(v-y)*(hue-(int) hue);
-  switch ((int) hue)
+  x=y+(v-y)*(6.0*hue-(int) (6.0*hue));
+  z=v-(v-y)*(6.0*hue-(int) (6.0*hue));
+  switch ((int) (6.0*hue))
   {
     default: r=v; g=x; b=y; break;
     case 0: r=v; g=x; b=y; break;
@@ -524,7 +523,7 @@ static unsigned short PixelOnLine(const PointInfo *pixel,
 }
 
 Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
-  AnnotateInfo *annotate_info,const PointInfo *pixel,Image *image)
+  const AnnotateInfo *annotate_info,const PointInfo *pixel,Image *image)
 {
   double
     alpha,
@@ -956,24 +955,28 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 %
 %  The format of the InterpolateColor routine is:
 %
-%      InterpolateColor(image,x,y)
+%      InterpolateColor(image,x_offset,y_offset)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image.
 %
-%    o x,y: A double representing the current (x,y) position of the pixel.
+%    o x_offset,y_offset: A double representing the current (x,y) position of
+%      the pixel.
 %
 %
 */
-Export ColorPacket InterpolateColor(Image *image,double x,double y)
+Export ColorPacket InterpolateColor(Image *image,const double x_offset,
+  const double y_offset)
 {
   ColorPacket
     interpolated_pixel;
 
   double
     alpha,
-    beta;
+    beta,
+    x,
+    y;
 
   register RunlengthPacket
     *p,
@@ -988,12 +991,15 @@ Export ColorPacket InterpolateColor(Image *image,double x,double y)
   if (image->packets != (image->columns*image->rows))
     if (!UncondenseImage(image))
       return(image->background_color);
-  if ((x < -1) || (x >= image->columns) || (y < -1) || (y >= image->rows))
+  if ((x_offset < -1) || (x_offset >= image->columns) ||
+      (y_offset < -1) || (y_offset >= image->rows))
     return(image->background_color);
   background_pixel.red=image->background_color.red;
   background_pixel.green=image->background_color.green;
   background_pixel.blue=image->background_color.blue;
   background_pixel.index=image->background_color.index;
+  x=x_offset;
+  y=y_offset;
   if ((x >= 0) && (y >= 0))
     {
       p=image->pixels+((int) y)*image->columns+(int) x;

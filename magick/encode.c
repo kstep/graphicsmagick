@@ -180,7 +180,7 @@ Export unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -546,7 +546,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -788,7 +788,7 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -981,7 +981,7 @@ Export unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -2082,7 +2082,7 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   (void) fputc(';',image->file); /* terminator */
   FreeMemory((char *) global_colormap);
@@ -2202,7 +2202,7 @@ Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -2467,7 +2467,7 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -2678,7 +2678,7 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       */
       if (image->comments != (char *) NULL)
         (void) fprintf(file,"%s\n",image->comments);
-      NumberColors(image,file);
+      (void) GetNumberColors(image,file);
       (void) fclose(file);
       FormatString(command,"@%.1024s",filename);
       CommentImage(histogram_image,command);
@@ -3109,7 +3109,7 @@ Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -4230,7 +4230,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -4455,7 +4455,7 @@ Export unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -5281,7 +5281,7 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
     if (scene >= 1023)
       break;
   } while (image_info->adjoin);
@@ -6302,7 +6302,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -7202,7 +7202,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -7711,7 +7711,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -9010,7 +9010,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -9813,7 +9813,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -10064,7 +10064,7 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -10366,7 +10366,7 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -10648,7 +10648,7 @@ Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -11044,7 +11044,7 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -11492,11 +11492,11 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #endif
     TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
     TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
-    if (image->number_scenes > 1)
+    if (GetNumberScenes(image) > 1)
       {
         TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
         TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
-          image->number_scenes);
+          GetNumberScenes(image));
       }
     if (image->label != (char *) NULL)
       TIFFSetField(tiff,TIFFTAG_PAGENAME,image->label);
@@ -11821,7 +11821,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -11952,7 +11952,7 @@ Export unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -12796,7 +12796,7 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -13425,7 +13425,7 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
+    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
@@ -13687,7 +13687,6 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
   (void) strcpy(image_info->filename,image->filename);
   (void) strcpy(image_info->magick,image->magick);
   SetImageInfo(image_info,True);
-  SetNumberScenes(image);
   (void) strcpy(image->filename,image_info->filename);
   if ((image->next == (Image *) NULL) || image_info->adjoin)
     if ((image->previous == (Image *) NULL) && !IsTainted(image))

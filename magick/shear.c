@@ -206,7 +206,7 @@ static void CropShearImage(Image **image,const double x_shear,
 %
 %
 */
-static Image *IntegralRotateImage(Image *image,unsigned int rotations)
+static Image *IntegralRotateImage(const Image *image,unsigned int rotations)
 {
 #define RotateImageText  "  Rotating image...  "
 
@@ -971,12 +971,11 @@ static void YShearImage(Image *image,const double degrees,
 %
 %
 */
-Export Image *RotateImage(Image *image,double degrees,const unsigned int crop,
-  const unsigned int sharpen)
+Export Image *RotateImage(const Image *image,const double degrees,
+  const unsigned int crop,const unsigned int sharpen)
 {
   double
-    x_shear,
-    y_shear;
+    angle;
 
   Image
     *integral_image,
@@ -986,6 +985,9 @@ Export Image *RotateImage(Image *image,double degrees,const unsigned int crop,
   int
     x_offset,
     y_offset;
+
+  PointInfo
+    shear;
 
   Quantum
     *range_limit,
@@ -1007,18 +1009,19 @@ Export Image *RotateImage(Image *image,double degrees,const unsigned int crop,
     Adjust rotation angle.
   */
   assert(image != (Image *) NULL);
-  while (degrees < -45.0)
-    degrees+=360.0;
-  for (rotations=0; degrees > 45.0; rotations++)
-    degrees-=90.0;
+  angle=degrees;
+  while (angle < -45.0)
+    angle+=360.0;
+  for (rotations=0; angle > 45.0; rotations++)
+    angle-=90.0;
   rotations%=4;
   /*
     Calculate shear equations.
   */
-  x_shear=(-tan(DegreesToRadians(degrees)/2.0));
-  y_shear=sin(DegreesToRadians(degrees));
+  shear.x=(-tan(DegreesToRadians(angle)/2.0));
+  shear.y=sin(DegreesToRadians(angle));
   integral_image=IntegralRotateImage(image,rotations);
-  if ((x_shear == 0.0) || (y_shear == 0.0))
+  if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
   /*
     Initialize range table.
@@ -1048,10 +1051,10 @@ Export Image *RotateImage(Image *image,double degrees,const unsigned int crop,
       width=image->rows;
       height=image->columns;
     }
-  y_width=width+(int) ceil(fabs(x_shear)*(double) (height-1));
+  y_width=width+(int) ceil(fabs(shear.x)*(double) (height-1));
   x_offset=(width+
-    ((int) ceil(fabs(x_shear)*(double) (height-1)) << 1)-width) >> 1;
-  y_offset=(height+(int) ceil(fabs(y_shear)*(double) (y_width-1))-height) >> 1;
+    ((int) ceil(fabs(shear.y)*(double) (height-1)) << 1)-width) >> 1;
+  y_offset=(height+(int) ceil(fabs(shear.y)*(double) (y_width-1))-height) >> 1;
   /*
     Surround image with border of background color.
   */
@@ -1069,23 +1072,23 @@ Export Image *RotateImage(Image *image,double degrees,const unsigned int crop,
   /*
     Perform a fractional rotation.  First, shear the image rows.
   */
-  XShearImage(rotated_image,x_shear,width,height,x_offset,
+  XShearImage(rotated_image,shear.x,width,height,x_offset,
     ((int) (rotated_image->rows-height) >> 1),range_limit);
   /*
     Shear the image columns.
   */
-  YShearImage(rotated_image,y_shear,y_width,height,
+  YShearImage(rotated_image,shear.y,y_width,height,
     ((int) (rotated_image->columns-y_width) >> 1),y_offset+1,range_limit);
   /*
     Shear the image rows again.
   */
-  XShearImage(rotated_image,x_shear,y_width,rotated_image->rows-2,
+  XShearImage(rotated_image,shear.x,y_width,rotated_image->rows-2,
     ((int) (rotated_image->columns-y_width) >> 1),1,range_limit);
   FreeMemory((char *) range_table);
   /*
     Crop image.
   */
-  CropShearImage(&rotated_image,x_shear,y_shear,width,height,crop);
+  CropShearImage(&rotated_image,shear.x,shear.y,width,height,crop);
   if (sharpen)
     {
       /*
@@ -1146,8 +1149,8 @@ Export Image *RotateImage(Image *image,double degrees,const unsigned int crop,
 %
 %
 */
-Export Image *ShearImage(Image *image,double x_shear,double y_shear,
-  const unsigned int crop)
+Export Image *ShearImage(const Image *image,const double x_shear,
+  const double y_shear,const unsigned int crop)
 {
   Image
     *sharpened_image,
@@ -1156,6 +1159,9 @@ Export Image *ShearImage(Image *image,double x_shear,double y_shear,
   int
     x_offset,
     y_offset;
+
+  PointInfo
+    shear;
 
   Quantum
     *range_limit,
@@ -1180,8 +1186,8 @@ Export Image *ShearImage(Image *image,double x_shear,double y_shear,
   /*
     Initialize shear angle.
   */
-  x_shear=(-tan(DegreesToRadians(x_shear)/2.0));
-  y_shear=sin(DegreesToRadians(y_shear));
+  shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
+  shear.y=sin(DegreesToRadians(y_shear));
   /*
     Initialize range table.
   */
@@ -1202,10 +1208,10 @@ Export Image *ShearImage(Image *image,double x_shear,double y_shear,
   /*
     Compute image size.
   */
-  y_width=image->columns+(int) ceil(fabs(x_shear)*(double) (image->rows-1));
-  x_offset=(image->columns+((int) ceil(fabs(x_shear)*(double)
+  y_width=image->columns+(int) ceil(fabs(shear.x)*(double) (image->rows-1));
+  x_offset=(image->columns+((int) ceil(fabs(shear.x)*(double)
     (image->rows-1)) << 1)-image->columns) >> 1;
-  y_offset=(image->rows+(int) ceil(fabs(y_shear)*(double) (y_width-1))-
+  y_offset=(image->rows+(int) ceil(fabs(shear.y)*(double) (y_width-1))-
     image->rows) >> 1;
   /*
     Surround image with border of background color.
@@ -1223,18 +1229,18 @@ Export Image *ShearImage(Image *image,double x_shear,double y_shear,
   /*
     Shear the image rows.
   */
-  XShearImage(sheared_image,x_shear,image->columns,image->rows,x_offset,
+  XShearImage(sheared_image,shear.x,image->columns,image->rows,x_offset,
     ((int) (sheared_image->rows-image->rows) >> 1),range_limit);
   /*
     Shear the image columns.
   */
-  YShearImage(sheared_image,y_shear,y_width,image->rows,
+  YShearImage(sheared_image,shear.y,y_width,image->rows,
     ((int) (sheared_image->columns-y_width) >> 1),y_offset+1,range_limit);
   FreeMemory((char *) range_table);
   /*
     Crop image.
   */
-  CropShearImage(&sheared_image,x_shear,y_shear,image->columns,image->rows,
+  CropShearImage(&sheared_image,shear.x,shear.y,image->columns,image->rows,
     crop);
   /*
     Sharpen image.

@@ -150,7 +150,7 @@ static void
 %
 */
 static void XDrawBevel(Display *display,const XWindowInfo *window_info,
-  XWidgetInfo *bevel_info)
+  const XWidgetInfo *bevel_info)
 {
   int
     x1,
@@ -240,7 +240,7 @@ static void XDrawBevel(Display *display,const XWindowInfo *window_info,
 %
 */
 static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
-  XWidgetInfo *button_info)
+  const XWidgetInfo *button_info)
 {
   int
     x,
@@ -343,7 +343,7 @@ static void XDrawBeveledButton(Display *display,const XWindowInfo *window_info,
 %
 */
 static void XDrawBeveledMatte(Display *display,const XWindowInfo *window_info,
-  XWidgetInfo *matte_info)
+  const XWidgetInfo *matte_info)
 {
   /*
     Draw matte.
@@ -567,7 +567,7 @@ static void XDrawMatteText(Display *display,const XWindowInfo *window_info,
 %
 */
 static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
-  XWidgetInfo *triangle_info)
+  const XWidgetInfo *triangle_info)
 {
   int
     x1,
@@ -694,7 +694,7 @@ static void XDrawTriangleEast(Display *display,const XWindowInfo *window_info,
 %
 */
 static void XDrawTriangleNorth(Display *display,const XWindowInfo *window_info,
-  XWidgetInfo *triangle_info)
+  const XWidgetInfo *triangle_info)
 {
   int
     x1,
@@ -805,7 +805,7 @@ static void XDrawTriangleNorth(Display *display,const XWindowInfo *window_info,
 %
 */
 static void XDrawTriangleSouth(Display *display,const XWindowInfo *window_info,
-  XWidgetInfo *triangle_info)
+  const XWidgetInfo *triangle_info)
 {
   int
     x1,
@@ -1195,7 +1195,7 @@ static void XGetWidgetInfo(const char *text,XWidgetInfo *widget_info)
 %
 */
 static void XHighlightWidget(Display *display,const XWindowInfo *window_info,
-  int x,int y)
+  const int x,const int y)
 {
   /*
     Draw the widget highlighting rectangle.
@@ -1532,8 +1532,8 @@ static void XSetTextColor(Display *display,const XWindowInfo *window_info,
 %
 %
 */
-Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
-  char *reply)
+Export void XColorBrowserWidget(Display *display,XWindows *windows,
+  const char *action,char *reply)
 {
 #define CancelButtonText  "Cancel"
 #define ColornameText  "Name:"
@@ -3121,8 +3121,8 @@ Export int XCommandWidget(Display *display,XWindows *windows,
 %
 %
 */
-Export int XConfirmWidget(Display *display,XWindows *windows,char *message,
-  char *qualifier)
+Export int XConfirmWidget(Display *display,XWindows *windows,
+  const char *message,const char *qualifier)
 {
 #define CancelButtonText  "Cancel"
 #define DismissButtonText  "Dismiss"
@@ -3522,8 +3522,8 @@ Export int XConfirmWidget(Display *display,XWindows *windows,char *message,
 %
 %
 */
-Export int XDialogWidget(Display *display,XWindows *windows,char *action,
-  char *query,char *reply)
+Export int XDialogWidget(Display *display,XWindows *windows,const char *action,
+  const char *query,char *reply)
 {
 #define CancelButtonText  "Cancel"
 
@@ -4090,8 +4090,8 @@ Export int XDialogWidget(Display *display,XWindows *windows,char *action,
 %
 %
 */
-Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
-  char *reply)
+Export void XFileBrowserWidget(Display *display,XWindows *windows,
+  const char *action,char *reply)
 {
 #define CancelButtonText  "Cancel"
 #define DirectoryText  "Directory:"
@@ -5331,8 +5331,8 @@ static int FontCompare(const void *x,const void *y)
   return(*p-(*q));
 }
 
-Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
-  char *reply)
+Export void XFontBrowserWidget(Display *display,XWindows *windows,
+  const char *action,char *reply)
 {
 #define BackButtonText  "Back"
 #define CancelButtonText  "Cancel"
@@ -6489,7 +6489,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
 %
 %
 */
-Export void XInfoWidget(Display *display,XWindows *windows,char *activity)
+Export void XInfoWidget(Display *display,XWindows *windows,const char *activity)
 {
   int
     height,
@@ -6592,8 +6592,8 @@ Export void XInfoWidget(Display *display,XWindows *windows,char *activity)
 %
 */
 Export void XListBrowserWidget(Display *display,XWindows *windows,
-  XWindowInfo *window_info,char const **list,char *action,char *query,
-  char *reply)
+  XWindowInfo *window_info,char const **list,const char *action,
+  const char *query,char *reply)
 {
 #define CancelButtonText  "Cancel"
 
@@ -7913,7 +7913,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
 %
 %
 */
-Export void XMonitorWidget(Display *display,XWindows *windows,char *task,
+Export void XMonitorWidget(Display *display,XWindows *windows,const char *task,
   const unsigned int quantum,const unsigned int span)
 {
   unsigned int
@@ -7924,7 +7924,7 @@ Export void XMonitorWidget(Display *display,XWindows *windows,char *task,
 
   assert(display != (Display *) NULL);
   assert(windows != (XWindows *) NULL);
-  assert(task != (char *) NULL);
+  assert(task != (const char *) NULL);
   if (span == 0)
     return;
   /*
@@ -7988,8 +7988,8 @@ Export void XMonitorWidget(Display *display,XWindows *windows,char *task,
 %
 %
 */
-Export void XNoticeWidget(Display *display,XWindows *windows,char *message,
-  char *qualifier)
+Export void XNoticeWidget(Display *display,XWindows *windows,
+  const char *message,const char *qualifier)
 {
 #define DismissButtonText  "Dismiss"
 #define Timeout  8
@@ -8729,7 +8729,8 @@ Export unsigned int XPreferencesWidget(Display *display,
 %
 */
 Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
-  XWindows *windows,const unsigned int mono,char *title,char const **textlist)
+  XWindows *windows,const unsigned int mono,const char *title,
+  char const **textlist)
 {
 #define DismissButtonText  "Dismiss"
 
@@ -8785,7 +8786,7 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
   assert(display != (Display *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
   assert(windows != (XWindows *) NULL);
-  assert(title != (char *) NULL);
+  assert(title != (const char *) NULL);
   assert(textlist != (char const **) NULL);
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);

@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 extern Export unsigned char
-  *PICTDecodeImage(Image *,int,int);
+  *PICTDecodeImage(const Image *,int,const int);
 
 extern Export unsigned int
   BMPDecodeImage(FILE *,const unsigned int,const unsigned int,
@@ -17,14 +17,14 @@ extern Export unsigned int
   BMPEncodeImage(const unsigned char *,const unsigned int,const unsigned int,
     unsigned char *),
   GIFDecodeImage(Image *),
-  GIFEncodeImage(Image *,const unsigned int),
+  GIFEncodeImage(const Image *,const unsigned int),
   HuffmanDecodeImage(Image *),
-  HuffmanEncodeImage(ImageInfo *,Image *),
-  Huffman2DEncodeImage(ImageInfo *,Image *),
+  HuffmanEncodeImage(const ImageInfo *,const Image *),
+  Huffman2DEncodeImage(ImageInfo *,const Image *),
   LZWEncodeImage(FILE *,const unsigned int,unsigned char *),
   PackbitsDecodeImage(Image *,const int),
-  PackbitsEncodeImage(FILE *,unsigned int,unsigned char *),
-  PCDDecodeImage(Image *,unsigned char *,unsigned char *,unsigned char *),
+  PackbitsEncodeImage(FILE *,const unsigned int,unsigned char *),
+  PCDDecodeImage(const Image *,unsigned char *,unsigned char *,unsigned char *),
   PICTEncodeImage(Image *,const unsigned char *,unsigned char *),
   RunlengthDecodeImage(Image *),
   RunlengthEncodeImage(Image *),

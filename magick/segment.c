@@ -199,7 +199,8 @@ static void
 %
 */
 static unsigned int Classify(Image *image,short **extrema,
-  double cluster_threshold,const double weighting_exponent,unsigned int verbose)
+  const double cluster_threshold,const double weighting_exponent,
+  const unsigned int verbose)
 {
 #define SegmentImageText  "  Segmenting image...  "
 
@@ -359,14 +360,13 @@ static unsigned int Classify(Image *image,short **extrema,
   /*
     Remove clusters that do not meet minimum cluster threshold.
   */
-  cluster_threshold*=(double) count*0.01;
   count=0;
   last_cluster=head;
   next_cluster=head;
   for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
   {
     next_cluster=cluster->next;
-    if ((double) cluster->count >= cluster_threshold)
+    if ((double) cluster->count >= (cluster_threshold*count*0.01))
       {
         /*
           Initialize cluster.
@@ -800,7 +800,7 @@ static void DerivativeHistogram(const double *histogram,double *derivative)
 %
 %
 */
-static void InitializeHistogram(Image *image,long **histogram)
+static void InitializeHistogram(const Image *image,long **histogram)
 {
   register int
     i;

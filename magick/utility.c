@@ -814,7 +814,7 @@ Export int GetGeometry(const char *image_geometry,int *x,int *y,
 %
 %
 */
-Export int GlobExpression(char *expression,const char *pattern)
+Export int GlobExpression(const char *expression,const char *pattern)
 {
   ImageInfo
     image_info;
@@ -958,7 +958,7 @@ Export int GlobExpression(char *expression,const char *pattern)
         int
           match;
 
-        register char
+        register const char
           *p;
 
         pattern++;
@@ -2658,7 +2658,7 @@ Export void Strip(char *data)
 %
 %
 */
-Export int SystemCommand(unsigned int verbose,char *command)
+Export int SystemCommand(const unsigned int verbose,const char *command)
 {
   int
     status;

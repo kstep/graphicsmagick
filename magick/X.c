@@ -7933,7 +7933,7 @@ Export void XMakeWindow(Display *display,Window parent,char **argv,int argc,
 %
 %
 */
-Export void XProgressMonitor(char *task,const unsigned int quantum,
+Export void XProgressMonitor(const char *task,const unsigned int quantum,
   const unsigned int span)
 {
   XWindows
@@ -8333,7 +8333,7 @@ Export void XRefreshWindow(Display *display,const XWindowInfo *window,
 %
 %
 */
-Export void XRemoteCommand(Display *display,const char * window,
+Export void XRemoteCommand(Display *display,const char *window,
   const char *filename)
 {
   Atom

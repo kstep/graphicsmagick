@@ -822,7 +822,7 @@ DIR *opendir(char *path)
 %
 %
 */
-Export void ProcessPendingEvents(char *text)
+Export void ProcessPendingEvents(const char *text)
 {
   static char
     *mark = (char *) NULL;

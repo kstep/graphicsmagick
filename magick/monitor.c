@@ -88,7 +88,7 @@ static MonitorHandler
 %
 %
 */
-Export void ProgressMonitor(char *text,const unsigned int quantum,
+Export void ProgressMonitor(const char *text,const unsigned int quantum,
   const unsigned int span)
 {
   ProcessPendingEvents(text);

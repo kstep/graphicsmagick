@@ -58,11 +58,11 @@ extern Export char
 
 extern Export int
   GetGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
-  GlobExpression(char *,const char *),
+  GlobExpression(const char *,const char *),
   Latin1Compare(const char *,const char *),
   MultilineCensus(const char *),
   ReadDataBlock(char *,FILE *),
-  SystemCommand(unsigned int,char *);
+  SystemCommand(const unsigned int,const char *);
 
 extern Export unsigned int
   ExpandFilenames(int *,char ***),

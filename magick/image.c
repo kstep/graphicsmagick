@@ -150,7 +150,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->offset=0;
   allocated_image->interlace=DefaultInterlace;
   allocated_image->scene=0;
-  allocated_image->number_scenes=1;
   allocated_image->units=UndefinedResolution;
   allocated_image->x_resolution=0.0;
   allocated_image->y_resolution=0.0;
@@ -176,7 +175,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->normalized_maximum_error=0.0;
   allocated_image->normalized_mean_error=0.0;
   allocated_image->mean_error_per_pixel=0;
-  allocated_image->total_colors=0;
   allocated_image->signature=(char *) NULL;
   allocated_image->pixels=(RunlengthPacket *) NULL;
   allocated_image->packet=(RunlengthPacket *) NULL;
@@ -366,8 +364,11 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
+Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
 {
+  AnnotateInfo
+    *local_info;
+
   char
     size[MaxTextExtent],
     *text,
@@ -400,14 +401,11 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Translate any embedded format characters (e.g. %f).
   */
-  if (image->text != (char *) NULL)
-    FreeMemory((char *) image->text);
-  image->text=TranslateText((ImageInfo *) NULL,image,annotate_info->text);
-  if (image->text == (char *) NULL)
+  local_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
+  text=TranslateText((ImageInfo *) NULL,image,local_info->text);
+  if (text == (char *) NULL)
     return;
-  textlist=StringToList(image->text);
-  FreeMemory(image->text);
-  image->text=(char *) NULL;
+  textlist=StringToList(text);
   if (textlist == (char **) NULL)
     return;
   length=Extent(textlist[0]);
@@ -426,7 +424,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   height=image->rows;
   x=0;
   y=0;
-  if (annotate_info->geometry != (char *) NULL)
+  if (local_info->geometry != (char *) NULL)
     {
       int
         flags;
@@ -434,7 +432,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
       /*
         User specified annotation geometry.
       */
-      flags=XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
+      flags=XParseGeometry(local_info->geometry,&x,&y,&width,&height);
       if ((flags & XNegative) != 0)
         x+=image->columns;
       if ((flags & WidthValue) == 0)
@@ -457,9 +455,9 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     /*
       Convert text to image.
     */
-    FormatString(annotate_info->image_info->filename,"%.1024s",textlist[i]);
+    FormatString(local_info->image_info->filename,"%.1024s",textlist[i]);
     FreeMemory(textlist[i]);
-    annotate_image=ReadLABELImage(annotate_info->image_info);
+    annotate_image=ReadLABELImage(local_info->image_info);
     if (annotate_image == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
@@ -472,32 +470,32 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     /*
       Composite text onto the image.
     */
-    switch (annotate_info->gravity)
+    switch (local_info->gravity)
     {
       case NorthWestGravity:
       {
-        annotate_info->bounds.x=x;
-        annotate_info->bounds.y=i*annotate_info->bounds.height+y;
+        local_info->bounds.x=x;
+        local_info->bounds.y=i*local_info->bounds.height+y;
         break;
       }
       case NorthGravity:
       {
-        annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
-        annotate_info->bounds.y=y+i*annotate_info->bounds.height;
+        local_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
+        local_info->bounds.y=y+i*local_info->bounds.height;
         break;
       }
       case NorthEastGravity:
       {
-        annotate_info->bounds.x=x+width-annotate_image->columns;
-        annotate_info->bounds.y=y+i*annotate_info->bounds.height;
+        local_info->bounds.x=x+width-annotate_image->columns;
+        local_info->bounds.y=y+i*local_info->bounds.height;
         break;
       }
       case WestGravity:
       {
-        annotate_info->bounds.x=x;
-        annotate_info->bounds.y=y+(height >> 1)-
-          (number_lines*annotate_info->bounds.height >> 1)+
-          i*annotate_info->bounds.height;
+        local_info->bounds.x=x;
+        local_info->bounds.y=y+(height >> 1)-
+          (number_lines*local_info->bounds.height >> 1)+
+          i*local_info->bounds.height;
         break;
       }
       case ForgetGravity:
@@ -505,60 +503,61 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
       case CenterGravity:
       default:
       {
-        annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
-        annotate_info->bounds.y=y+(height >> 1)-
-          (number_lines*annotate_info->bounds.height >> 1)+
-          i*annotate_info->bounds.height;
+        local_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
+        local_info->bounds.y=y+(height >> 1)-
+          (number_lines*local_info->bounds.height >> 1)+
+          i*local_info->bounds.height;
         break;
       }
       case EastGravity:
       {
-        annotate_info->bounds.x=x+width-annotate_image->columns;
-        annotate_info->bounds.y=y+(height >> 1)-
-          (number_lines*annotate_info->bounds.height >> 1)+
-          i*annotate_info->bounds.height;
+        local_info->bounds.x=x+width-annotate_image->columns;
+        local_info->bounds.y=y+(height >> 1)-
+          (number_lines*local_info->bounds.height >> 1)+
+          i*local_info->bounds.height;
         break;
       }
       case SouthWestGravity:
       {
-        annotate_info->bounds.x=x;
-        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
+        local_info->bounds.x=x;
+        local_info->bounds.y=y+height-(i+1)*local_info->bounds.height;
         break;
       }
       case SouthGravity:
       {
-        annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
-        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
+        local_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
+        local_info->bounds.y=y+height-(i+1)*local_info->bounds.height;
         break;
       }
       case SouthEastGravity:
       {
-        annotate_info->bounds.x=x+width-annotate_image->columns;
-        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
+        local_info->bounds.x=x+width-annotate_image->columns;
+        local_info->bounds.y=y+height-(i+1)*local_info->bounds.height;
         break;
       }
     }
-    if (annotate_info->image_info->box != (char *) NULL)
+    if (local_info->image_info->box != (char *) NULL)
       {
         /*
           Surround text with a bounding box.
         */
-        FormatString(annotate_info->image_info->filename,"xc:%.1024s",
-          annotate_info->image_info->box);
+        FormatString(local_info->image_info->filename,"xc:%.1024s",
+          local_info->image_info->box);
         FormatString(size,"%ux%u",annotate_image->columns,annotate_image->rows);
-        CloneString(&annotate_info->image_info->size,size);
-        box_image=ReadImage(annotate_info->image_info);
+        CloneString(&local_info->image_info->size,size);
+        box_image=ReadImage(local_info->image_info);
         if (box_image != (Image *) NULL)
           {
             CompositeImage(image,ReplaceCompositeOp,box_image,
-              annotate_info->bounds.x,annotate_info->bounds.y);
+              local_info->bounds.x,local_info->bounds.y);
             DestroyImage(box_image);
           }
       }
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
-      annotate_info->bounds.x,annotate_info->bounds.y);
+      local_info->bounds.x,local_info->bounds.y);
     DestroyImage(annotate_image);
   }
+  DestroyAnnotateInfo(local_info);
   FreeMemory(text);
   for ( ; textlist[i] != (char *) NULL; i++)
     FreeMemory(textlist[i]);
@@ -602,7 +601,6 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
   Image
     *appended_image,
     *image;
-
 
   register int
     i;
@@ -660,7 +658,6 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
       return((Image *) NULL);
     }
   scene=0;
-  SetNumberScenes(images);
   if ((images->columns != images->next->columns) || !stack)
     {
       register int
@@ -676,7 +673,7 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
           appended_image->class=DirectClass;
         CompositeImage(appended_image,ReplaceCompositeOp,image,x,0);
         x+=image->columns;
-        ProgressMonitor(AppendImageText,scene,images->number_scenes);
+        ProgressMonitor(AppendImageText,scene,GetNumberScenes(images));
         scene++;
       }
     }
@@ -708,7 +705,7 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
           p++;
           q++;
         }
-        ProgressMonitor(AppendImageText,scene,images->number_scenes);
+        ProgressMonitor(AppendImageText,scene,GetNumberScenes(images));
         scene++;
       }
     }
@@ -817,9 +814,9 @@ Export Image *AverageImages(Image *images)
   /*
     Initialize average image attributes.
   */
-  images->orphan=True;
+  ((Image *) images)->orphan=True;
   averaged_image=CloneImage(images,images->columns,images->rows,False);
-  images->orphan=False;
+  ((Image *) images)->orphan=False;
   if (averaged_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to average image",
@@ -885,7 +882,7 @@ Export Image *AverageImages(Image *images)
 %      defines the border region.
 %
 */
-Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
+Export Image *BorderImage(const Image *image,const RectangleInfo *border_info)
 {
   ColorPacket
     matte_color;
@@ -905,10 +902,10 @@ Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
   frame_info.inner_bevel=0;
   frame_info.outer_bevel=0;
   matte_color=image->matte_color;
-  image->matte_color=image->border_color;
+  ((Image *) image)->matte_color=image->border_color;
   bordered_image=FrameImage(image,&frame_info);
   bordered_image->matte_color=matte_color;
-  image->matte_color=matte_color;
+  ((Image *) image)->matte_color=matte_color;
   return(bordered_image);
 }
 
@@ -944,7 +941,7 @@ Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
 %
 %
 */
-Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
+Export Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 {
 #define ChopImageText  "  Chopping image...  "
 
@@ -953,6 +950,9 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
 
   int
     y;
+
+  RectangleInfo
+    local_info;
 
   register int
     runlength,
@@ -979,25 +979,26 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
         "geometry does not contain image");
       return((Image *) NULL);
     }
-  if ((chop_info->x+(int) chop_info->width) > (int) image->columns)
-    chop_info->width=(unsigned int) ((int) image->columns-chop_info->x);
-  if ((chop_info->y+(int) chop_info->height) > (int) image->rows)
-    chop_info->height=(unsigned int) ((int) image->rows-chop_info->y);
-  if (chop_info->x < 0)
+  local_info=(*chop_info);
+  if ((local_info.x+(int) local_info.width) > (int) image->columns)
+    local_info.width=(unsigned int) ((int) image->columns-local_info.x);
+  if ((local_info.y+(int) local_info.height) > (int) image->rows)
+    local_info.height=(unsigned int) ((int) image->rows-local_info.y);
+  if (local_info.x < 0)
     {
-      chop_info->width-=(unsigned int) (-chop_info->x);
-      chop_info->x=0;
+      local_info.width-=(unsigned int) (-local_info.x);
+      local_info.x=0;
     }
-  if (chop_info->y < 0)
+  if (local_info.y < 0)
     {
-      chop_info->height-=(unsigned int) (-chop_info->y);
-      chop_info->y=0;
+      local_info.height-=(unsigned int) (-local_info.y);
+      local_info.y=0;
     }
   /*
     Initialize chop image attributes.
   */
-  chopped_image=CloneImage(image,image->columns-chop_info->width,
-    image->rows-chop_info->height,False);
+  chopped_image=CloneImage(image,image->columns-local_info.width,
+    image->rows-local_info.height,False);
   if (chopped_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to chop image",
@@ -1010,7 +1011,7 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
   p=image->pixels;
   runlength=p->length+1;
   q=chopped_image->pixels;
-  for (y=0; y < chop_info->y; y++)
+  for (y=0; y < local_info.y; y++)
     for (x=0; x < (int) image->columns; x++)
     {
       if (runlength != 0)
@@ -1020,7 +1021,7 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
           p++;
           runlength=p->length;
         }
-      if ((x < chop_info->x) || (x >= (int) (chop_info->x+chop_info->width)))
+      if ((x < local_info.x) || (x >= (int) (local_info.x+local_info.width)))
         {
           *q=(*p);
           q->length=0;
@@ -1030,7 +1031,7 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
   /*
     Skip pixels up to the chop image.
   */
-  for (x=0; x < (int) (chop_info->height*image->columns); x++)
+  for (x=0; x < (int) (local_info.height*image->columns); x++)
     if (runlength != 0)
       runlength--;
     else
@@ -1041,7 +1042,7 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
   /*
     Extract chop image.
   */
-  height=image->rows-(chop_info->y+chop_info->height);
+  height=image->rows-(local_info.y+local_info.height);
   for (y=0; y < (int) height; y++)
   {
     for (x=0; x < (int) image->columns; x++)
@@ -1053,7 +1054,7 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
           p++;
           runlength=p->length;
         }
-      if ((x < chop_info->x) || (x >= (int) (chop_info->x+chop_info->width)))
+      if ((x < local_info.x) || (x >= (int) (local_info.x+local_info.width)))
         {
           *q=(*p);
           q->length=0;
@@ -1064,6 +1065,305 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
       ProgressMonitor(ChopImageText,y,height);
   }
   return(chopped_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C l o n e A n n o t a t e I n f o                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloneAnnotateInfo makes a duplicate of the given annotate info, or if
+%  annotate info is NULL, a new one.
+%
+%  The format of the CloneAnnotateInfo routine is:
+%
+%      cloned_info=CloneAnnotateInfo(image_info,annotate_info)
+%
+%  A description of each parameter follows:
+%
+%    o cloned_info: Method CloneAnnotateInfo returns a duplicate of the given
+%      annotate info, or if annotate info is NULL a new one.
+%
+%    o image_info: a structure of type info.
+%
+%    o annotate_info: a structure of type info.
+%
+%
+*/
+Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
+  const AnnotateInfo *annotate_info)
+{
+  AnnotateInfo
+    *cloned_info;
+
+  cloned_info=(AnnotateInfo *) AllocateMemory(sizeof(AnnotateInfo));
+  if (cloned_info == (AnnotateInfo *) NULL)
+    MagickError(ResourceLimitWarning,"Unable to clone annotate info",
+      "Memory allocation failed");
+  if (annotate_info == (AnnotateInfo *) NULL)
+    {
+      GetAnnotateInfo(image_info,cloned_info);
+      return(cloned_info);
+    }
+  *cloned_info=(*annotate_info);
+  if (annotate_info->image_info != (ImageInfo *) NULL)
+    cloned_info->image_info=CloneImageInfo(annotate_info->image_info);
+  if (annotate_info->geometry != (char *) NULL)
+    cloned_info->geometry=AllocateString(annotate_info->geometry);
+  if (annotate_info->text != (char *) NULL)
+    cloned_info->text=AllocateString(annotate_info->text);
+  if (annotate_info->primitive != (char *) NULL)
+    cloned_info->primitive=AllocateString(annotate_info->primitive);
+  if (annotate_info->font_name != (char *) NULL)
+    cloned_info->font_name=AllocateString(annotate_info->font_name);
+  return(cloned_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C l o n e I m a g e                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloneImage returns a copy of all fields of the input image.  The
+%  the pixel memory is allocated but the pixel data is not copied.
+%
+%  The format of the CloneImage routine is:
+%
+%      clone_image=CloneImage(image,columns,rows,clone_pixels)
+%
+%  A description of each parameter follows:
+%
+%    o clone_image: Method CloneImage returns a pointer to the image after
+%      copying.  A null image is returned if there is a memory shortage.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o columns: An integer that specifies the number of columns in the copied
+%      image.
+%
+%    o rows: An integer that specifies the number of rows in the copied
+%      image.
+%
+%    o clone_pixels: Specifies whether the pixel data is copied.  Must be
+%      either True or False;
+%
+%
+*/
+Export Image *CloneImage(const Image *image,const unsigned int columns,
+  const unsigned int rows,const unsigned int clone_pixels)
+{
+  Image
+    *clone_image;
+
+  register int
+    i;
+
+  /*
+    Allocate image structure.
+  */
+  assert(image != (Image *) NULL);
+  clone_image=(Image *) AllocateMemory(sizeof(Image));
+  if (clone_image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Allocate the image pixels.
+  */
+  *clone_image=(*image);
+  clone_image->columns=columns;
+  clone_image->rows=rows;
+  if (!clone_pixels)
+    clone_image->packets=clone_image->columns*clone_image->rows;
+  clone_image->pixels=(RunlengthPacket *) AllocateMemory((unsigned int)
+    clone_image->packets*sizeof(RunlengthPacket));
+  if (clone_image->pixels == (RunlengthPacket *) NULL)
+    return((Image *) NULL);
+  if (!clone_pixels)
+    {
+      clone_image->tainted=True;
+      SetImage(clone_image);
+    }
+  else
+    {
+      register RunlengthPacket
+        *p,
+        *q;
+
+      /*
+        Copy image pixels.
+      */
+      p=image->pixels;
+      q=clone_image->pixels;
+      for (i=0; i < (int) image->packets; i++)
+      {
+        *q=(*p);
+        p++;
+        q++;
+      }
+    }
+  clone_image->packed_pixels=(unsigned char *) NULL;
+  clone_image->comments=(char *) NULL;
+  if (image->comments != (char *) NULL)
+    CloneString(&clone_image->comments,image->comments);
+  clone_image->label=(char *) NULL;
+  if (image->label != (char *) NULL)
+    CloneString(&clone_image->label,image->label);
+  clone_image->montage=(char *) NULL;
+  if (clone_pixels)
+    if (image->montage != (char *) NULL)
+      CloneString(&clone_image->montage,image->montage);
+  clone_image->directory=(char *) NULL;
+  if (clone_pixels)
+    if (image->directory != (char *) NULL)
+      CloneString(&clone_image->directory,image->directory);
+  clone_image->signature=(char *) NULL;
+  if (clone_pixels)
+    if (image->signature != (char *) NULL)
+      CloneString(&clone_image->signature,image->signature);
+  clone_image->page=(char *) NULL;
+  if (clone_pixels)
+    if (image->page != (char *) NULL)
+      CloneString(&clone_image->page,image->page);
+  if (image->colormap != (ColorPacket *) NULL)
+    {
+      /*
+        Allocate and copy the image colormap.
+      */
+      clone_image->colormap=(ColorPacket *)
+        AllocateMemory(image->colors*sizeof(ColorPacket));
+      if (clone_image->colormap == (ColorPacket *) NULL)
+        return((Image *) NULL);
+      for (i=0; i < (int) image->colors; i++)
+        clone_image->colormap[i]=image->colormap[i];
+    }
+  if (image->color_profile.length > 0)
+    {
+      /*
+        Allocate and copy the image ICC profile.
+      */
+      clone_image->color_profile.info=(unsigned char *)
+        AllocateMemory(image->color_profile.length*sizeof(unsigned char));
+      if (clone_image->color_profile.info == (unsigned char *) NULL)
+        return((Image *) NULL);
+      for (i=0; i < (int) image->color_profile.length; i++)
+        clone_image->color_profile.info[i]=image->color_profile.info[i];
+    }
+  if (image->iptc_profile.length > 0)
+    {
+      /*
+        Allocate and copy the image IPTC profile.
+      */
+      clone_image->iptc_profile.info=(unsigned char *)
+        AllocateMemory(image->iptc_profile.length*sizeof(unsigned char));
+      if (clone_image->iptc_profile.info == (unsigned char *) NULL)
+        return((Image *) NULL);
+      for (i=0; i < (int) image->iptc_profile.length; i++)
+        clone_image->iptc_profile.info[i]=image->iptc_profile.info[i];
+    }
+  if (image->orphan)
+    {
+      clone_image->file=(FILE *) NULL;
+      clone_image->previous=(Image *) NULL;
+      clone_image->next=(Image *) NULL;
+    }
+  else
+    {
+      /*
+        Link image into image list.
+      */
+      if (clone_image->previous != (Image *) NULL)
+        clone_image->previous->next=clone_image;
+      if (clone_image->next != (Image *) NULL)
+        clone_image->next->previous=clone_image;
+    }
+  clone_image->orphan=False;
+  return(clone_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C l o n e I m a g e I n f o                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloneImageInfo makes a duplicate of the given image info, or if
+%  image info is NULL, a new one.
+%
+%  The format of the CloneImageInfo routine is:
+%
+%      cloned_info=CloneImageInfo(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o cloned_info: Method CloneImageInfo returns a duplicate of the given
+%      image info, or if image info is NULL a new one.
+%
+%    o image_info: a structure of type info.
+%
+%
+*/
+Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
+{
+  ImageInfo
+    *cloned_info;
+
+  cloned_info=(ImageInfo *) AllocateMemory(sizeof(ImageInfo));
+  if (cloned_info == (ImageInfo *) NULL)
+    MagickError(ResourceLimitWarning,"Unable to clone image info",
+      "Memory allocation failed");
+  if (image_info == (ImageInfo *) NULL)
+    {
+      GetImageInfo(cloned_info);
+      return(cloned_info);
+    }
+  *cloned_info=(*image_info);
+  if (image_info->server_name != (char *) NULL)
+    cloned_info->server_name=AllocateString(image_info->server_name);
+  if (image_info->size != (char *) NULL)
+    cloned_info->size=AllocateString(image_info->size);
+  if (image_info->tile != (char *) NULL)
+    cloned_info->tile=AllocateString(image_info->tile);
+  if (image_info->density != (char *) NULL)
+    cloned_info->density=AllocateString(image_info->density);
+  if (image_info->page != (char *) NULL)
+    cloned_info->page=AllocateString(image_info->page);
+  if (image_info->dispose != (char *) NULL)
+    cloned_info->dispose=AllocateString(image_info->dispose);
+  if (image_info->delay != (char *) NULL)
+    cloned_info->delay=AllocateString(image_info->delay);
+  if (image_info->iterations != (char *) NULL)
+    cloned_info->iterations=AllocateString(image_info->iterations);
+  if (image_info->texture != (char *) NULL)
+    cloned_info->texture=AllocateString(image_info->texture);
+  if (image_info->box != (char *) NULL)
+    cloned_info->box=AllocateString(image_info->box);
+  if (image_info->font != (char *) NULL)
+    cloned_info->font=AllocateString(image_info->font);
+  if (image_info->pen != (char *) NULL)
+    cloned_info->pen=AllocateString(image_info->pen);
+  if (image_info->background_color != (char *) NULL)
+    cloned_info->background_color=AllocateString(image_info->background_color);
+  if (image_info->border_color != (char *) NULL)
+    cloned_info->border_color=AllocateString(image_info->border_color);
+  if (image_info->matte_color != (char *) NULL)
+    cloned_info->matte_color=AllocateString(image_info->matte_color);
+  return(cloned_info);
 }
 
 /*
@@ -1250,7 +1550,8 @@ Export void CoalesceImages(Image *image)
 %
 */
 Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
-  const char *pen,int x,int y,const PaintMethod method)
+  const char *pen,const int x_offset,const int y_offset,
+  const PaintMethod method)
 {
   ColorPacket
     color;
@@ -1264,6 +1565,10 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     start,
     x1,
     x2;
+
+  register int
+    x,
+    y;
 
   register RunlengthPacket
     *pixel;
@@ -1281,15 +1586,17 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     Check boundary conditions.
   */
   assert(image != (Image *) NULL);
-  if ((y < 0) || (y >= (int) image->rows))
+  if ((x_offset < 0) || (x_offset >= (int) image->columns))
     return;
-  if ((x < 0) || (x >= (int) image->columns))
+  if ((y_offset < 0) || (y_offset >= (int) image->rows))
     return;
   if (!UncondenseImage(image))
     return;
   /*
     Set floodfill color.
   */
+  x=x_offset;
+  y=y_offset;
   color.red=0;
   color.green=0;
   color.blue=0;
@@ -2451,247 +2758,6 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o n e I m a g e                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CloneImage returns a copy of all fields of the input image.  The
-%  the pixel memory is allocated but the pixel data is not copied.
-%
-%  The format of the CloneImage routine is:
-%
-%      clone_image=CloneImage(image,columns,rows,clone_pixels)
-%
-%  A description of each parameter follows:
-%
-%    o clone_image: Method CloneImage returns a pointer to the image after
-%      copying.  A null image is returned if there is a memory shortage.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o columns: An integer that specifies the number of columns in the copied
-%      image.
-%
-%    o rows: An integer that specifies the number of rows in the copied
-%      image.
-%
-%    o clone_pixels: Specifies whether the pixel data is copied.  Must be
-%      either True or False;
-%
-%
-*/
-Export Image *CloneImage(const Image *image,const unsigned int columns,
-  const unsigned int rows,const unsigned int clone_pixels)
-{
-  Image
-    *clone_image;
-
-  register int
-    i;
-
-  /*
-    Allocate image structure.
-  */
-  assert(image != (Image *) NULL);
-  clone_image=(Image *) AllocateMemory(sizeof(Image));
-  if (clone_image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Allocate the image pixels.
-  */
-  *clone_image=(*image);
-  clone_image->columns=columns;
-  clone_image->rows=rows;
-  if (!clone_pixels)
-    clone_image->packets=clone_image->columns*clone_image->rows;
-  clone_image->pixels=(RunlengthPacket *) AllocateMemory((unsigned int)
-    clone_image->packets*sizeof(RunlengthPacket));
-  if (clone_image->pixels == (RunlengthPacket *) NULL)
-    return((Image *) NULL);
-  if (!clone_pixels)
-    {
-      clone_image->tainted=True;
-      SetImage(clone_image);
-    }
-  else
-    {
-      register RunlengthPacket
-        *p,
-        *q;
-
-      /*
-        Copy image pixels.
-      */
-      p=image->pixels;
-      q=clone_image->pixels;
-      for (i=0; i < (int) image->packets; i++)
-      {
-        *q=(*p);
-        p++;
-        q++;
-      }
-    }
-  clone_image->packed_pixels=(unsigned char *) NULL;
-  clone_image->comments=(char *) NULL;
-  if (image->comments != (char *) NULL)
-    CloneString(&clone_image->comments,image->comments);
-  clone_image->label=(char *) NULL;
-  if (image->label != (char *) NULL)
-    CloneString(&clone_image->label,image->label);
-  clone_image->montage=(char *) NULL;
-  if (clone_pixels)
-    if (image->montage != (char *) NULL)
-      CloneString(&clone_image->montage,image->montage);
-  clone_image->directory=(char *) NULL;
-  if (clone_pixels)
-    if (image->directory != (char *) NULL)
-      CloneString(&clone_image->directory,image->directory);
-  clone_image->signature=(char *) NULL;
-  if (clone_pixels)
-    if (image->signature != (char *) NULL)
-      CloneString(&clone_image->signature,image->signature);
-  clone_image->page=(char *) NULL;
-  if (clone_pixels)
-    if (image->page != (char *) NULL)
-      CloneString(&clone_image->page,image->page);
-  if (image->colormap != (ColorPacket *) NULL)
-    {
-      /*
-        Allocate and copy the image colormap.
-      */
-      clone_image->colormap=(ColorPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
-      if (clone_image->colormap == (ColorPacket *) NULL)
-        return((Image *) NULL);
-      for (i=0; i < (int) image->colors; i++)
-        clone_image->colormap[i]=image->colormap[i];
-    }
-  if (image->color_profile.length > 0)
-    {
-      /*
-        Allocate and copy the image ICC profile.
-      */
-      clone_image->color_profile.info=(unsigned char *)
-        AllocateMemory(image->color_profile.length*sizeof(unsigned char));
-      if (clone_image->color_profile.info == (unsigned char *) NULL)
-        return((Image *) NULL);
-      for (i=0; i < (int) image->color_profile.length; i++)
-        clone_image->color_profile.info[i]=image->color_profile.info[i];
-    }
-  if (image->iptc_profile.length > 0)
-    {
-      /*
-        Allocate and copy the image IPTC profile.
-      */
-      clone_image->iptc_profile.info=(unsigned char *)
-        AllocateMemory(image->iptc_profile.length*sizeof(unsigned char));
-      if (clone_image->iptc_profile.info == (unsigned char *) NULL)
-        return((Image *) NULL);
-      for (i=0; i < (int) image->iptc_profile.length; i++)
-        clone_image->iptc_profile.info[i]=image->iptc_profile.info[i];
-    }
-  if (image->orphan)
-    {
-      clone_image->file=(FILE *) NULL;
-      clone_image->previous=(Image *) NULL;
-      clone_image->next=(Image *) NULL;
-    }
-  else
-    {
-      /*
-        Link image into image list.
-      */
-      if (clone_image->previous != (Image *) NULL)
-        clone_image->previous->next=clone_image;
-      if (clone_image->next != (Image *) NULL)
-        clone_image->next->previous=clone_image;
-    }
-  clone_image->orphan=False;
-  return(clone_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   C l o n e I m a g e I n f o                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CloneImageInfo makes a duplicate of the given image info, or if
-%  image info is NULL, a new one.
-%
-%  The format of the CloneImageInfo routine is:
-%
-%      cloned_info=CloneImageInfo(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o cloned_info: Method CloneImageInfo returns a duplicate of the given
-%      image info, or if image info is NULL a new one.
-%
-%    o image_info: a structure of type info.
-%
-%
-*/
-Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
-{
-  ImageInfo
-    *cloned_info;
-
-  cloned_info=(ImageInfo *) AllocateMemory(sizeof(ImageInfo));
-  if (cloned_info == (ImageInfo *) NULL)
-    MagickError(ResourceLimitWarning,"Unable to clone image info",
-      "Memory allocation failed");
-  if (image_info == (ImageInfo *) NULL)
-    {
-      GetImageInfo(cloned_info);
-      return(cloned_info);
-    }
-  *cloned_info=(*image_info);
-  if (image_info->server_name != (char *) NULL)
-    cloned_info->server_name=AllocateString(image_info->server_name);
-  if (image_info->size != (char *) NULL)
-    cloned_info->size=AllocateString(image_info->size);
-  if (image_info->tile != (char *) NULL)
-    cloned_info->tile=AllocateString(image_info->tile);
-  if (image_info->density != (char *) NULL)
-    cloned_info->density=AllocateString(image_info->density);
-  if (image_info->page != (char *) NULL)
-    cloned_info->page=AllocateString(image_info->page);
-  if (image_info->dispose != (char *) NULL)
-    cloned_info->dispose=AllocateString(image_info->dispose);
-  if (image_info->delay != (char *) NULL)
-    cloned_info->delay=AllocateString(image_info->delay);
-  if (image_info->iterations != (char *) NULL)
-    cloned_info->iterations=AllocateString(image_info->iterations);
-  if (image_info->texture != (char *) NULL)
-    cloned_info->texture=AllocateString(image_info->texture);
-  if (image_info->box != (char *) NULL)
-    cloned_info->box=AllocateString(image_info->box);
-  if (image_info->font != (char *) NULL)
-    cloned_info->font=AllocateString(image_info->font);
-  if (image_info->pen != (char *) NULL)
-    cloned_info->pen=AllocateString(image_info->pen);
-  if (image_info->background_color != (char *) NULL)
-    cloned_info->background_color=AllocateString(image_info->background_color);
-  if (image_info->border_color != (char *) NULL)
-    cloned_info->border_color=AllocateString(image_info->border_color);
-  if (image_info->matte_color != (char *) NULL)
-    cloned_info->matte_color=AllocateString(image_info->matte_color);
-  return(cloned_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   C r e a t e I m a g e                                                     %
 %                                                                             %
 %                                                                             %
@@ -2816,7 +2882,7 @@ Image *CreateImage(const unsigned int width,const unsigned int height,
 %
 %
 */
-Export Image *CropImage(Image *image,RectangleInfo *crop_info)
+Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
 {
 #define CropImageText  "  Cropping image...  "
 
@@ -2825,6 +2891,9 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
 
   int
     y;
+
+  RectangleInfo
+    local_info;
 
   register int
     runlength,
@@ -2841,7 +2910,7 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
     Check crop geometry.
   */
   assert(image != (Image *) NULL);
-  assert(crop_info != (RectangleInfo *) NULL);
+  assert(crop_info != (const RectangleInfo *) NULL);
   if (((crop_info->x+(int) crop_info->width) < 0) ||
       ((crop_info->y+(int) crop_info->height) < 0) ||
       (crop_info->x >= (int) image->columns) ||
@@ -2851,21 +2920,22 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
         "geometry does not contain image");
       return((Image *) NULL);
     }
-  if ((crop_info->x+(int) crop_info->width) > (int) image->columns)
-    crop_info->width=(unsigned int) ((int) image->columns-crop_info->x);
-  if ((crop_info->y+(int) crop_info->height) > (int) image->rows)
-    crop_info->height=(unsigned int) ((int) image->rows-crop_info->y);
-  if (crop_info->x < 0)
+  local_info=(*crop_info);
+  if ((local_info.x+(int) local_info.width) > (int) image->columns)
+    local_info.width=(unsigned int) ((int) image->columns-local_info.x);
+  if ((local_info.y+(int) local_info.height) > (int) image->rows)
+    local_info.height=(unsigned int) ((int) image->rows-local_info.y);
+  if (local_info.x < 0)
     {
-      crop_info->width-=(unsigned int) (-crop_info->x);
-      crop_info->x=0;
+      local_info.width-=(unsigned int) (-local_info.x);
+      local_info.x=0;
     }
-  if (crop_info->y < 0)
+  if (local_info.y < 0)
     {
-      crop_info->height-=(unsigned int) (-crop_info->y);
-      crop_info->y=0;
+      local_info.height-=(unsigned int) (-local_info.y);
+      local_info.y=0;
     }
-  if ((crop_info->width == 0) && (crop_info->height == 0))
+  if ((local_info.width == 0) && (local_info.height == 0))
     {
       int
         x_border,
@@ -2880,12 +2950,12 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
       /*
         Set bounding box to the image dimensions.
       */
-      x_border=crop_info->x;
-      y_border=crop_info->y;
-      crop_info->width=0;
-      crop_info->height=0;
-      crop_info->x=image->columns;
-      crop_info->y=image->rows;
+      x_border=local_info.x;
+      y_border=local_info.y;
+      local_info.width=0;
+      local_info.height=0;
+      local_info.x=image->columns;
+      local_info.y=image->rows;
       p=image->pixels;
       runlength=p->length+1;
       corners[0]=(*p);
@@ -2919,54 +2989,54 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
               runlength=p->length;
             }
           if (!ColorMatch(*p,corners[0],image->fuzz))
-            if (x < crop_info->x)
-              crop_info->x=x;
+            if (x < local_info.x)
+              local_info.x=x;
           if (!ColorMatch(*p,corners[1],image->fuzz))
-            if (x > (int) crop_info->width)
-              crop_info->width=x;
+            if (x > (int) local_info.width)
+              local_info.width=x;
           if (!ColorMatch(*p,corners[0],image->fuzz))
-            if (y < crop_info->y)
-              crop_info->y=y;
+            if (y < local_info.y)
+              local_info.y=y;
           if (!ColorMatch(*p,corners[2],image->fuzz))
-            if (y > (int) crop_info->height)
-              crop_info->height=y;
+            if (y > (int) local_info.height)
+              local_info.height=y;
         }
       }
-      if ((crop_info->width != 0) || (crop_info->height != 0))
+      if ((local_info.width != 0) || (local_info.height != 0))
         {
-          crop_info->width-=crop_info->x-1;
-          crop_info->height-=crop_info->y-1;
+          local_info.width-=local_info.x-1;
+          local_info.height-=local_info.y-1;
         }
-      crop_info->width+=x_border*2;
-      crop_info->height+=y_border*2;
-      crop_info->x-=x_border;
-      if (crop_info->x < 0)
-        crop_info->x=0;
-      crop_info->y-=y_border;
-      if (crop_info->y < 0)
-        crop_info->y=0;
-      if ((((int) crop_info->width+crop_info->x) > (int) image->columns) ||
-          (((int) crop_info->height+crop_info->y) > (int) image->rows))
+      local_info.width+=x_border*2;
+      local_info.height+=y_border*2;
+      local_info.x-=x_border;
+      if (local_info.x < 0)
+        local_info.x=0;
+      local_info.y-=y_border;
+      if (local_info.y < 0)
+        local_info.y=0;
+      if ((((int) local_info.width+local_info.x) > (int) image->columns) ||
+          (((int) local_info.height+local_info.y) > (int) image->rows))
         {
           MagickWarning(OptionWarning,"Unable to crop image",
             "geometry does not contain image");
           return((Image *) NULL);
         }
     }
-  if ((crop_info->width == 0) || (crop_info->height == 0))
+  if ((local_info.width == 0) || (local_info.height == 0))
     {
       MagickWarning(OptionWarning,"Unable to crop image",
         "geometry dimensions are zero");
       return((Image *) NULL);
     }
-  if ((crop_info->width == image->columns) &&
-      (crop_info->height == image->rows) && (crop_info->x == 0) &&
-      (crop_info->y == 0))
+  if ((local_info.width == image->columns) &&
+      (local_info.height == image->rows) && (local_info.x == 0) &&
+      (local_info.y == 0))
     return((Image *) NULL);
   /*
     Initialize cropped image attributes.
   */
-  cropped_image=CloneImage(image,crop_info->width,crop_info->height,True);
+  cropped_image=CloneImage(image,local_info.width,local_info.height,True);
   if (cropped_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to crop image",
@@ -2978,7 +3048,7 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
   */
   p=image->pixels;
   runlength=p->length+1;
-  for (x=0; x < (int) (crop_info->y*image->columns+crop_info->x); x++)
+  for (x=0; x < (int) (local_info.y*image->columns+local_info.x); x++)
     if (runlength != 0)
       runlength--;
     else
@@ -3090,7 +3160,7 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
 %
 %
 */
-Export void CycleColormapImage(Image *image,int amount)
+Export void CycleColormapImage(Image *image,const int amount)
 {
 #define CycleColormapImageText  "  Cycling image...  "
 
@@ -3172,9 +3242,13 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   unsigned int
     count;
 
+  unsigned long
+    number_colors;
+
   assert(image != (Image *) NULL);
   if (file == (FILE *) NULL)
     file=stdout;
+  number_colors=GetNumberColors(image,(FILE *) NULL);
   if (!verbose)
     {
       /*
@@ -3212,15 +3286,15 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       if (image->class == DirectClass)
         {
           (void) fprintf(file,"DirectClass ");
-          if (image->total_colors != 0)
-            (void) fprintf(file,"%luc ",image->total_colors);
+          if (number_colors != 0)
+            (void) fprintf(file,"%luc ",number_colors);
         }
       else
-        if (image->total_colors <= image->colors)
+        if (number_colors <= image->colors)
           (void) fprintf(file,"PseudoClass %uc ",image->colors);
         else
           {
-            (void) fprintf(file,"PseudoClass %lu=>%uc ",image->total_colors,
+            (void) fprintf(file,"PseudoClass %lu=>%uc ",number_colors,
               image->colors);
             (void) fprintf(file,"%u/%.6f/%.6fe ",image->mean_error_per_pixel,
               image->normalized_mean_error,image->normalized_maximum_error);
@@ -3266,7 +3340,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  class: DirectClass\n");
   else
     (void) fprintf(file,"  class: PseudoClass\n");
-  NumberColors(image,(FILE *) NULL);
   if (!image->matte)
     (void) fprintf(file,"  matte: False\n");
   else
@@ -3288,17 +3361,16 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
           q->red,q->green,q->blue,q->red,q->green,q->blue);
       }
   if (image->class == DirectClass)
-    (void) fprintf(file,"  colors: %lu\n",image->total_colors);
+    (void) fprintf(file,"  colors: %lu\n",number_colors);
   else
-    if (image->total_colors <= image->colors)
+    if (number_colors <= image->colors)
       (void) fprintf(file,"  colors: %u\n",image->colors);
     else
-      (void) fprintf(file,"  colors: %lu=>%u\n",image->total_colors,
-        image->colors);
+      (void) fprintf(file,"  colors: %lu=>%u\n",number_colors,image->colors);
   if (image->class == DirectClass)
     {
-      if (image->total_colors < 1024)
-        NumberColors(image,file);
+      if (number_colors < 1024)
+        (void) GetNumberColors(image,file);
     }
   else
     {
@@ -3916,9 +3988,12 @@ Export void DestroyMontageInfo(MontageInfo *montage_info)
 %
 %
 */
-Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
+Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
 {
 #define DrawImageText  "  Drawing on image...  "
+
+  AnnotateInfo
+    *local_info;
 
   char
     keyword[MaxTextExtent],
@@ -3977,30 +4052,35 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   */
   assert(image != (Image *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
-  primitive=annotate_info->primitive;
-  if ((primitive == (char *) NULL) || (*primitive == '\0'))
+  if ((annotate_info->primitive == (char *) NULL) ||
+      (*annotate_info->primitive == '\0'))
     return;
   if (!UncondenseImage(image))
     return;
   tile=(Image *) NULL;
-  if ((annotate_info->image_info->pen != (char *) NULL) &&
-      (*annotate_info->image_info->pen == '@'))
+  local_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
+  if ((local_info->image_info->pen != (char *) NULL) &&
+      (*local_info->image_info->pen == '@'))
     {
       /*
         Read tiled pen.
       */
-      (void) strcpy(annotate_info->image_info->filename,
-        annotate_info->image_info->pen+1);
-      tile=ReadImage(annotate_info->image_info);
+      (void) strcpy(local_info->image_info->filename,
+        local_info->image_info->pen+1);
+      tile=ReadImage(local_info->image_info);
       if (tile == (Image *) NULL)
-        return;
+        {
+          DestroyAnnotateInfo(local_info);
+          return;
+        }
       if (!UncondenseImage(tile))
         {
+          DestroyAnnotateInfo(local_info);
           DestroyImage(tile);
           return;
         }
     }
-  primitive=annotate_info->primitive;
+  primitive=local_info->primitive;
   indirection=(*primitive == '@');
   if (indirection)
     {
@@ -4021,6 +4101,9 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         {
           MagickWarning(FileOpenWarning,"Unable to read primitive file",
             primitive+1);
+          if (tile != (Image *) NULL)
+            DestroyImage(tile);
+          DestroyAnnotateInfo(local_info);
           return;
         }
       length=MaxTextExtent;
@@ -4057,6 +4140,9 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         {
           MagickWarning(ResourceLimitWarning,"Unable to draw image",
             "Memory allocation failed");
+          if (tile != (Image *) NULL)
+            DestroyImage(tile);
+          DestroyAnnotateInfo(local_info);
           return;
         }
       *q='\0';
@@ -4067,25 +4153,28 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   number_coordinates=2048;
   primitive_info=(PrimitiveInfo *)
     AllocateMemory(number_coordinates*sizeof(PrimitiveInfo));
-  annotate_info->geometry=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
-  annotate_info->text=(char *) AllocateMemory(Extent(primitive)*sizeof(char));
+  local_info->geometry=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
+  local_info->text=(char *) AllocateMemory(Extent(primitive)*sizeof(char));
   if ((primitive_info == (PrimitiveInfo *) NULL) ||
-      (annotate_info->geometry == (char *) NULL) ||
-      (annotate_info->text == (char *) NULL))
+      (local_info->geometry == (char *) NULL) ||
+      (local_info->text == (char *) NULL))
     {
-      if (indirection)
-        FreeMemory((char *) primitive);
       MagickWarning(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
+      if (indirection)
+        FreeMemory((char *) primitive);
+      DestroyAnnotateInfo(local_info);
+      if (tile != (Image *) NULL)
+        DestroyImage(tile);
       return;
     }
   /*
     Parse the primitive attributes.
   */
   (void) XQueryColorDatabase("black",&pen_color);
-  if ((annotate_info->image_info->pen == (char *) NULL) ||
-      (*annotate_info->image_info->pen != '@'))
-    (void) XQueryColorDatabase(annotate_info->image_info->pen,&pen_color);
+  if ((local_info->image_info->pen == (char *) NULL) ||
+      (*local_info->image_info->pen != '@'))
+    (void) XQueryColorDatabase(local_info->image_info->pen,&pen_color);
   primitive_type=UndefinedPrimitive;
   p=primitive;
   bounds.x1=image->columns-1;
@@ -4185,12 +4274,13 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         number_coordinates*sizeof(PrimitiveInfo));
       if (primitive_info != (PrimitiveInfo *) NULL)
         continue;
-      if (indirection)
-        FreeMemory((char *) primitive);
-      FreeMemory((char *) annotate_info->geometry);
-      FreeMemory((char *) annotate_info->text);
       MagickWarning(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
+      if (indirection)
+        FreeMemory((char *) primitive);
+      DestroyAnnotateInfo(local_info);
+      if (tile != (Image *) NULL)
+        DestroyImage(tile);
       return;
     }
     primitive_info[j].coordinates=x;
@@ -4230,7 +4320,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         x=(int) (primitive_info[j+1].x-primitive_info[j].x);
         y=(int) (primitive_info[j+1].y-primitive_info[j].y);
         radius=
-          sqrt((double) (x*x+y*y))+annotate_info->image_info->linewidth/2.0+0.5;
+          sqrt((double) (x*x+y*y))+local_info->image_info->linewidth/2.0+0.5;
         point.x=Max(primitive_info[j].x-radius,0);
         point.y=Max(primitive_info[j].y-radius,0);
         if (point.x < bounds.x1)
@@ -4397,15 +4487,12 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     {
       MagickWarning(OptionWarning,
         "Non-conforming drawing primitive definition",keyword);
-      if (tile != (Image *)NULL)
-        DestroyImage(tile);
       FreeMemory((char *) primitive_info);
       if (indirection)
         FreeMemory((char *) primitive);
-      FreeMemory((char *) annotate_info->geometry);
-      annotate_info->geometry=(char *) NULL;
-      FreeMemory((char *) annotate_info->text);
-      annotate_info->text=(char *) NULL;
+      DestroyAnnotateInfo(local_info);
+      if (tile != (Image *) NULL)
+        DestroyImage(tile);
       return;
     }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
@@ -4423,7 +4510,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Account for linewidth.
   */
-  mid=annotate_info->image_info->linewidth/2.0;
+  mid=local_info->image_info->linewidth/2.0;
   if ((bounds.x1 != bounds.x2) || (bounds.y1 != bounds.y2))
     {
       bounds.x1=Max(bounds.x1-mid,0);
@@ -4448,8 +4535,8 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
     {
       target.x=x;
-      opacity=InsidePrimitive(primitive_info,annotate_info,&target,image);
-      if (!annotate_info->image_info->antialias)
+      opacity=InsidePrimitive(primitive_info,local_info,&target,image);
+      if (!local_info->image_info->antialias)
         if (opacity != Transparent)
           opacity=Opaque;
       if (opacity != Transparent)
@@ -4489,10 +4576,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   FreeMemory((char *) primitive_info);
   if (indirection)
     FreeMemory((char *) primitive);
-  FreeMemory((char *) annotate_info->geometry);
-  annotate_info->geometry=(char *) NULL;
-  FreeMemory((char *) annotate_info->text);
-  annotate_info->text=(char *) NULL;
+  DestroyAnnotateInfo(local_info);
 }
 
 /*
@@ -4659,7 +4743,7 @@ Export void EqualizeImage(Image *image)
 %
 %
 */
-Export Image *FlipImage(Image *image)
+Export Image *FlipImage(const Image *image)
 {
 #define FlipImageText  "  Flipping image...  "
 
@@ -4685,7 +4769,9 @@ Export Image *FlipImage(Image *image)
     Initialize flipped image attributes.
   */
   assert(image != (Image *) NULL);
+  ((Image *) image)->orphan=True;
   flipped_image=CloneImage(image,image->columns,image->rows,False);
+  ((Image *) image)->orphan=False;
   if (flipped_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to flip image",
@@ -4775,7 +4861,7 @@ Export Image *FlipImage(Image *image)
 %
 %
 */
-Export Image *FlopImage(Image *image)
+Export Image *FlopImage(const Image *image)
 {
 #define FlopImageText  "  Flopping image...  "
 
@@ -4801,7 +4887,9 @@ Export Image *FlopImage(Image *image)
     Initialize flopped image attributes.
   */
   assert(image != (Image *) NULL);
+  ((Image *) image)->orphan=True;
   flopped_image=CloneImage(image,image->columns,image->rows,False);
+  ((Image *) image)->orphan=False;
   if (flopped_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to reflect image",
@@ -4893,7 +4981,7 @@ Export Image *FlopImage(Image *image)
 %
 %
 */
-Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
+Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
 {
 #define FrameImageText  "  Adding frame to image...  "
 
@@ -5466,6 +5554,52 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t N u m b e r S c e n e s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetNumberScenes returns the number of scenes in an image sequence.
+%
+%  The format of the GetNumberScenes routine is:
+%
+%      scenes=GetNumberScenes(image)
+%
+%  A description of each parameter follows:
+%
+%    o scenes:  Method GetNumberScenes returns the number of scenes in an
+%      image sequence.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export unsigned int GetNumberScenes(const Image *image)
+{
+  const Image
+    *next_image;
+
+  unsigned int
+    number_scenes;
+
+  /*
+    Compute the number of scenes in the image.
+  */
+  assert(image != (const Image *) NULL);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
+  next_image=image;
+  for (number_scenes=0; next_image != (Image *) NULL; number_scenes++)
+    next_image=next_image->next;
+  return(number_scenes);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t P i x e l s                                                         %
 %                                                                             %
 %                                                                             %
@@ -5782,13 +5916,13 @@ Export unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
 %
 %
 */
-Export unsigned int IsTainted(Image *image)
+Export unsigned int IsTainted(const Image *image)
 {
   char
     magick[MaxTextExtent],
     filename[MaxTextExtent];
 
-  register Image
+  register const Image
     *p;
 
   assert(image != (Image *) NULL);
@@ -5964,7 +6098,7 @@ Export void LayerImage(Image *image,const LayerType layer)
 %
 %
 */
-Export Image **ListToGroupImage(Image *image,unsigned int *number_images)
+Export Image **ListToGroupImage(const Image *image,unsigned int *number_images)
 {
   Image
     **images,
@@ -5978,7 +6112,7 @@ Export Image **ListToGroupImage(Image *image,unsigned int *number_images)
   */
   assert(image != (Image *) NULL);
   assert(number_images != (unsigned int *) NULL);
-  next_image=image;
+  next_image=(Image *) image;
   for (i=0; next_image != (Image *) NULL; i++)
     next_image=next_image->next;
   images=(Image **) AllocateMemory(i*sizeof(Image *));
@@ -5992,7 +6126,7 @@ Export Image **ListToGroupImage(Image *image,unsigned int *number_images)
   /*
     Add each image in the linked list to the group.
   */
-  next_image=image;
+  next_image=(Image *) image;
   for (i=0; next_image != (Image *) NULL; i++)
   {
     images[i]=next_image;
@@ -6203,7 +6337,8 @@ Export Image *MagnifyImage(Image *image)
 %
 */
 Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
-  const unsigned int matte,int x,int y,const PaintMethod method)
+  const unsigned int matte,const int x_offset,const int y_offset,
+  const PaintMethod method)
 {
   int
     offset,
@@ -6211,6 +6346,10 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     start,
     x1,
     x2;
+
+  register int
+    x,
+    y;
 
   register RunlengthPacket
     *pixel;
@@ -6225,20 +6364,22 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     Check boundary conditions.
   */
   assert(image != (Image *) NULL);
-  if ((y < 0) || (y >= (int) image->rows))
+  if ((x_offset < 0) || (x_offset >= (int) image->columns))
     return;
-  if ((x < 0) || (x >= (int) image->columns))
+  if ((y_offset < 0) || (y_offset >= (int) image->rows))
     return;
   if (target->index == (unsigned short) matte)
     return;
   if (!UncondenseImage(image))
     return;
-  pixel=PixelOffset(image,x,y);
+  pixel=PixelOffset(image,x_offset,y_offset);
   if (pixel->index == (unsigned short) matte)
     return;
   /*
     Allocate segment stack.
   */
+  x=x_offset;
+  y=y_offset;
   segment_stack=(XSegment *) AllocateMemory(MaxStacksize*sizeof(XSegment));
   if (segment_stack == (XSegment *) NULL)
     {
@@ -6761,7 +6902,7 @@ Export void ModulateImage(Image *image,const char *modulate)
 %
 %
 */
-Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
+Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
   Image **image)
 {
   char
@@ -6771,6 +6912,9 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
   Image
     *map_image,
     *region_image;
+
+  ImageInfo
+    *local_info;
 
   int
     flags,
@@ -6797,10 +6941,21 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     target_color;
 
   /*
-    Initialize routine variables.
+    Verify option length.
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image != (Image **) NULL);
+  for (i=1; i < argc; i++)
+    if (Extent(argv[i]) > (MaxTextExtent/2-1))
+      {
+        MagickWarning(ResourceLimitWarning,"Option length exceeds limit",
+          argv[i]);
+        return;
+      }
+  /*
+    Initialize routine variables.
+  */
+  local_info=CloneImageInfo(image_info);
   GetQuantizeInfo(&quantize_info);
   compress=(*image)->packets < (((*image)->columns*(*image)->rows*3) >> 2);
   geometry=(char *) NULL;
@@ -6809,7 +6964,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
   quantize_info.number_colors=0;
   quantize_info.tree_depth=0;
   quantize_info.dither=True;
-  if (image_info->monochrome)
+  if (local_info->monochrome)
     if (!IsMonochromeImage(*image))
       {
         quantize_info.number_colors=2;
@@ -6825,26 +6980,19 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     Transmogrify the image.
   */
   for (i=1; i < argc; i++)
-    if (Extent(argv[i]) > (MaxTextExtent/2-1))
-      {
-        MagickWarning(ResourceLimitWarning,"Option length exceeds limit",
-          argv[i]);
-        return;
-      }
-  for (i=1; i < argc; i++)
   {
     option=argv[i];
     if ((Extent(option) <= 1) || ((*option != '-') && (*option != '+')))
       continue;
     if (strncmp("antialias",option+1,3) == 0)
       {
-        image_info->antialias=(*option == '-');
+        local_info->antialias=(*option == '-');
         continue;
       }
     if (strncmp("-background",option,6) == 0)
       {
-        CloneString(&image_info->background_color,argv[++i]);
-        (void) XQueryColorDatabase(image_info->background_color,&target_color);
+        CloneString(&local_info->background_color,argv[++i]);
+        (void) XQueryColorDatabase(local_info->background_color,&target_color);
         (*image)->background_color.red=XDownScale(target_color.red);
         (*image)->background_color.green=XDownScale(target_color.green);
         (*image)->background_color.blue=XDownScale(target_color.blue);
@@ -6900,8 +7048,8 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-bordercolor",option,8) == 0)
       {
-        CloneString(&image_info->border_color,argv[++i]);
-        (void) XQueryColorDatabase(image_info->border_color,&target_color);
+        CloneString(&local_info->border_color,argv[++i]);
+        (void) XQueryColorDatabase(local_info->border_color,&target_color);
         (*image)->border_color.red=XDownScale(target_color.red);
         (*image)->border_color.green=XDownScale(target_color.green);
         (*image)->border_color.blue=XDownScale(target_color.blue);
@@ -6909,7 +7057,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-box",option) == 0)
       {
-        CloneString(&image_info->box,argv[++i]);
+        CloneString(&local_info->box,argv[++i]);
         continue;
       }
     if (strncmp("-charcoal",option,3) == 0)
@@ -6918,16 +7066,16 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
           *commands[7];
 
         QuantizeInfo
-          local_info;
+          quantize_info;
 
         /*
           Charcoal drawing.
         */
         i++;
-        GetQuantizeInfo(&local_info);
-        local_info.dither=quantize_info.dither;
-        local_info.colorspace=GRAYColorspace;
-        (void) QuantizeImage(&local_info,*image);
+        GetQuantizeInfo(&quantize_info);
+        quantize_info.dither=quantize_info.dither;
+        quantize_info.colorspace=GRAYColorspace;
+        (void) QuantizeImage(&quantize_info,*image);
         SyncImage(*image);
         commands[0]=SetClientName((char *) NULL);
         commands[1]="-edge";
@@ -6936,14 +7084,14 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
         commands[4]=argv[i];
         commands[5]="-normalize";
         commands[6]="-negate";
-        MogrifyImage(image_info,7,commands,image);
-        (void) QuantizeImage(&local_info,*image);
+        MogrifyImage(local_info,7,commands,image);
+        (void) QuantizeImage(&quantize_info,*image);
         SyncImage(*image);
         continue;
       }
     if (strncmp("-colorize",option,8) == 0)
       {
-        ColorizeImage(*image,argv[++i],image_info->pen);
+        ColorizeImage(*image,argv[++i],local_info->pen);
         continue;
       }
     if (Latin1Compare("-colors",option) == 0)
@@ -6989,7 +7137,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
           quantize_info.colorspace=YPbPrColorspace;
         if (Latin1Compare("yuv",option) == 0)
           quantize_info.colorspace=YUVColorspace;
-        image_info->colorspace=quantize_info.colorspace;
+        local_info->colorspace=quantize_info.colorspace;
         continue;
       }
     if (strncmp("comment",option+1,4) == 0)
@@ -7026,8 +7174,8 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
         /*
           Set image density.
         */
-        CloneString(&image_info->density,argv[++i]);
-        count=sscanf(image_info->density,"%fx%f",
+        CloneString(&local_info->density,argv[++i]);
+        count=sscanf(local_info->density,"%fx%f",
           &(*image)->x_resolution,&(*image)->y_resolution);
         if (count != 2)
           (*image)->y_resolution=(*image)->x_resolution;
@@ -7050,12 +7198,12 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-display",option,6) == 0)
       {
-        CloneString(&image_info->server_name,argv[++i]);
+        CloneString(&local_info->server_name,argv[++i]);
         continue;
       }
     if (strncmp("dither",option+1,3) == 0)
       {
-        image_info->dither=(*option == '-');
+        local_info->dither=(*option == '-');
         quantize_info.dither=(*option == '-');
         continue;
       }
@@ -7067,7 +7215,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
         /*
           Draw image.
         */
-        GetAnnotateInfo(image_info,&annotate_info);
+        GetAnnotateInfo(local_info,&annotate_info);
         CloneString(&annotate_info.primitive,argv[++i]);
         if (geometry != (char *) NULL)
           CloneString(&annotate_info.geometry,geometry);
@@ -7139,42 +7287,42 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("filter",option+1,3) == 0)
       {
-        image_info->filter=MitchellFilter;
+        local_info->filter=MitchellFilter;
         if (*option == '-')
           {
             option=argv[++i];
             if (Latin1Compare("Point",option) == 0)
-              image_info->filter=PointFilter;
+              local_info->filter=PointFilter;
             if (Latin1Compare("Box",option) == 0)
-              image_info->filter=BoxFilter;
+              local_info->filter=BoxFilter;
             if (Latin1Compare("Triangle",option) == 0)
-              image_info->filter=TriangleFilter;
+              local_info->filter=TriangleFilter;
             if (Latin1Compare("Hermite",option) == 0)
-              image_info->filter=HermiteFilter;
+              local_info->filter=HermiteFilter;
             if (Latin1Compare("Hanning",option) == 0)
-              image_info->filter=HanningFilter;
+              local_info->filter=HanningFilter;
             if (Latin1Compare("Hamming",option) == 0)
-              image_info->filter=HammingFilter;
+              local_info->filter=HammingFilter;
             if (Latin1Compare("Blackman",option) == 0)
-              image_info->filter=BlackmanFilter;
+              local_info->filter=BlackmanFilter;
             if (Latin1Compare("Gaussian",option) == 0)
-              image_info->filter=GaussianFilter;
+              local_info->filter=GaussianFilter;
             if (Latin1Compare("Quadratic",option) == 0)
-              image_info->filter=QuadraticFilter;
+              local_info->filter=QuadraticFilter;
             if (Latin1Compare("Cubic",option) == 0)
-              image_info->filter=CubicFilter;
+              local_info->filter=CubicFilter;
             if (Latin1Compare("Catrom",option) == 0)
-              image_info->filter=CatromFilter;
+              local_info->filter=CatromFilter;
             if (Latin1Compare("Mitchell",option) == 0)
-              image_info->filter=MitchellFilter;
+              local_info->filter=MitchellFilter;
             if (Latin1Compare("Lanczos",option) == 0)
-              image_info->filter=LanczosFilter;
+              local_info->filter=LanczosFilter;
             if (Latin1Compare("Bessel",option) == 0)
-              image_info->filter=BesselFilter;
+              local_info->filter=BesselFilter;
             if (Latin1Compare("Sinc",option) == 0)
-              image_info->filter=SincFilter;
+              local_info->filter=SincFilter;
           }
-        (*image)->filter=image_info->filter;
+        (*image)->filter=local_info->filter;
         continue;
       }
     if (strncmp("-flip",option,4) == 0)
@@ -7252,7 +7400,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-font",option) == 0)
       {
-        CloneString(&image_info->font,argv[++i]);
+        CloneString(&local_info->font,argv[++i]);
         continue;
       }
     if (strncmp("gamma",option+1,2) == 0)
@@ -7347,23 +7495,16 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-linewidth",option,3) == 0)
       {
-        image_info->linewidth=atoi(argv[++i]);
+        local_info->linewidth=atoi(argv[++i]);
         continue;
       }
     if (Latin1Compare("-map",option) == 0)
       {
-        ImageInfo
-          *local_info;
-
         /*
           Transform image colors to match this set of colors.
         */
-        local_info=CloneImageInfo(image_info);
-        if (local_info == (ImageInfo *) NULL)
-          continue;
         (void) strcpy(local_info->filename,argv[++i]);
         map_image=ReadImage(local_info);
-        DestroyImageInfo(local_info);
         continue;
       }
     if (Latin1Compare("matte",option+1) == 0)
@@ -7376,8 +7517,8 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-mattecolor",option,7) == 0)
       {
-        CloneString(&image_info->matte_color,argv[++i]);
-        (void) XQueryColorDatabase(image_info->matte_color,&target_color);
+        CloneString(&local_info->matte_color,argv[++i]);
+        (void) XQueryColorDatabase(local_info->matte_color,&target_color);
         (*image)->matte_color.red=XDownScale(target_color.red);
         (*image)->matte_color.green=XDownScale(target_color.green);
         (*image)->matte_color.blue=XDownScale(target_color.blue);
@@ -7390,7 +7531,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-monochrome",option,4) == 0)
       {
-        image_info->monochrome=True;
+        local_info->monochrome=True;
         quantize_info.number_colors=2;
         quantize_info.tree_depth=8;
         quantize_info.colorspace=GRAYColorspace;
@@ -7444,7 +7585,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-opaque",option,3) == 0)
       {
-        OpaqueImage(*image,argv[++i],image_info->pen);
+        OpaqueImage(*image,argv[++i],local_info->pen);
         continue;
       }
     if (strncmp("-paint",option,4) == 0)
@@ -7465,21 +7606,18 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-pen",option) == 0)
       {
-        CloneString(&image_info->pen,argv[++i]);
+        CloneString(&local_info->pen,argv[++i]);
         continue;
       }
     if (strncmp("pointsize",option+1,2) == 0)
       {
-        image_info->pointsize=atoi(argv[++i]);
+        local_info->pointsize=atoi(argv[++i]);
         continue;
       }
     if (strncmp("profile",option+1,4) == 0)
       {
         Image
           *profile;
-
-        ImageInfo
-          *local_info;
 
         if (*option == '+')
           {
@@ -7506,12 +7644,8 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
         /*
           Add a ICC or IPTC profile to the image.
         */
-        local_info=CloneImageInfo(image_info);
-        if (image_info == (ImageInfo *) NULL)
-          continue;
         (void) strcpy(local_info->filename,argv[++i]);
         profile=ReadImage(local_info);
-        DestroyImageInfo(local_info);
         if (profile == (Image *) NULL)
           continue;
         if (Latin1Compare("icc",profile->magick) == 0)
@@ -7681,7 +7815,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
         smoothing_threshold=1.5;
         (void) sscanf(argv[++i],"%lfx%lf",&cluster_threshold,
           &smoothing_threshold);
-        (void) SegmentImage(*image,quantize_info.colorspace,image_info->verbose,
+        (void) SegmentImage(*image,quantize_info.colorspace,local_info->verbose,
           (double) cluster_threshold,(double) smoothing_threshold);
         SyncImage(*image);
         continue;
@@ -7891,7 +8025,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       /*
         Measure quantization error.
       */
-      if (image_info->verbose)
+      if (local_info->verbose)
         (void) QuantizationError(*image);
       SyncImage(*image);
     }
@@ -7905,6 +8039,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
   */
   if (geometry != (char *) NULL)
     FreeMemory((char *) geometry);
+  DestroyImageInfo(local_info);
 }
 
 /*
@@ -7939,8 +8074,8 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
 %
 %
 */
-Export void MogrifyImages(ImageInfo *image_info,const int argc,char **argv,
-  Image **images)
+Export void MogrifyImages(const ImageInfo *image_info,const int argc,
+  char **argv,Image **images)
 {
 #define MogrifyImageText  "  Transforming images...  "
 
@@ -8001,11 +8136,11 @@ Export void MogrifyImages(ImageInfo *image_info,const int argc,char **argv,
 %
 %  The format of the MontageImages routine is:
 %
-%      MontageImages(image,montage_info)
+%      MontageImages(images,montage_info)
 %
 %  A description of each parameter follows:
 %
-%    o image: Specifies a pointer to an array of Image structures.
+%    o images: Specifies a pointer to an array of Image structures.
 %
 %    o montage_info: Specifies a pointer to a MontageInfo structure.
 %
@@ -8025,7 +8160,7 @@ static void FormatLabel(ImageInfo *image_info,char *label,
     *p,
     *q;
 
-  if (label == (char *) NULL)
+  if (label == (const char *) NULL)
     return;
   if (*label == '\0')
     return;
@@ -8070,7 +8205,7 @@ static int SceneCompare(const void *x,const void *y)
   return((int) (*image_1)->scene-(int) (*image_2)->scene);
 }
 
-Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
+Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
 {
 #define MontageImageText  "  Creating visual image directory...  "
 #define TileImageText  "  Creating image tiles...  "
@@ -8085,8 +8220,9 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     frame_info;
 
   Image
-    **images,
-    **masterlist,
+    *image,
+    **image_list,
+    **master_list,
     *montage_image,
     *texture,
     *tiled_image;
@@ -8134,69 +8270,69 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     total_tiles,
     width;
 
-  assert(image != (Image *) NULL);
+  assert(images != (Image *) NULL);
   assert(montage_info != (MontageInfo *) NULL);
   /*
     Convert image list to an image group.
   */
-  images=ListToGroupImage(image,&number_images);
-  if (images == (Image **) NULL)
+  image_list=ListToGroupImage(images,&number_images);
+  if (image_list == (Image **) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to montage images",
+      MagickWarning(ResourceLimitWarning,"Unable to montage image_list",
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  masterlist=images;
+  master_list=image_list;
   /*
     Create image tiles.
   */
   for (tile=0; tile < number_images; tile++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    width=images[tile]->columns;
-    height=images[tile]->rows;
+    width=image_list[tile]->columns;
+    height=image_list[tile]->rows;
     x=0;
     y=0;
     (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
     sharpen=((width*height) << 1) <
-      (images[tile]->columns*images[tile]->rows);
-    images[tile]->orphan=True;
-    tiled_image=ZoomImage(images[tile],width,height);
-    images[tile]->orphan=False;
+      (image_list[tile]->columns*image_list[tile]->rows);
+    image_list[tile]->orphan=True;
+    tiled_image=ZoomImage(image_list[tile],width,height);
+    image_list[tile]->orphan=False;
     if (tiled_image == (Image *) NULL)
       {
         for (i=0; i < (int) tile; i++)
-          DestroyImage(images[i]);
+          DestroyImage(image_list[i]);
         (void) SetMonitorHandler(handler);
         return((Image *) NULL);
       }
-    images[tile]=tiled_image;
+    image_list[tile]=tiled_image;
     if (sharpen)
       if ((tiled_image->columns > 3) && (tiled_image->rows > 3))
         {
           Image
             *sharpened_image;
 
-          images[tile]->orphan=True;
-          sharpened_image=SharpenImage(images[tile],SharpenFactor);
-          images[tile]->orphan=False;
+          image_list[tile]->orphan=True;
+          sharpened_image=SharpenImage(image_list[tile],SharpenFactor);
+          image_list[tile]->orphan=False;
           if (sharpened_image != (Image *) NULL)
             {
-              DestroyImage(images[tile]);
-              images[tile]=sharpened_image;
+              DestroyImage(image_list[tile]);
+              image_list[tile]=sharpened_image;
             }
         }
     (void) SetMonitorHandler(handler);
     ProgressMonitor(TileImageText,tile,number_images);
   }
   /*
-    Sort images by increasing tile number.
+    Sort image_list by increasing tile number.
   */
   for (tile=0; tile < number_images; tile++)
-    if (images[tile]->scene == 0)
+    if (image_list[tile]->scene == 0)
       break;
   if (tile == number_images)
-    qsort((void *) images,number_images,sizeof(Image *),
+    qsort((void *) image_list,number_images,sizeof(Image *),
       (int (*)(const void *, const void *)) SceneCompare);
   /*
     Determine tiles per row and column.
@@ -8245,8 +8381,8 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     }
   tile_info.x=montage_info->border_width;
   tile_info.y=montage_info->border_width;
-  tile_info.width=images[0]->columns;
-  tile_info.height=images[0]->rows;
+  tile_info.width=image_list[0]->columns;
+  tile_info.height=image_list[0]->rows;
   concatenate=False;
   if (montage_info->geometry != (char *) NULL)
     {
@@ -8274,10 +8410,10 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     }
   for (tile=1; tile < number_images; tile++)
   {
-    if (images[tile]->columns > tile_info.width)
-      tile_info.width=images[tile]->columns;
-    if (images[tile]->rows > tile_info.height)
-      tile_info.height=images[tile]->rows;
+    if (image_list[tile]->columns > tile_info.width)
+      tile_info.width=image_list[tile]->columns;
+    if (image_list[tile]->rows > tile_info.height)
+      tile_info.height=image_list[tile]->rows;
   }
   /*
     Initialize annotate info.
@@ -8304,7 +8440,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     (border_width << 1))*Min(number_images,tiles_per_column)) >> 1,
     &font_height);
   for (tile=0; tile < number_images; tile++)
-    FormatLabel(local_info,images[tile]->label,tile_info.width+
+    FormatLabel(local_info,image_list[tile]->label,tile_info.width+
       (border_width << 1),&font_height);
   /*
     Determine the number of lines in an image label.
@@ -8315,8 +8451,8 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
       (tile_info.y << 1);
   number_lines=0;
   for (tile=0; tile < number_images; tile++)
-    if (MultilineCensus(images[tile]->label) > (int) number_lines)
-      number_lines=MultilineCensus(images[tile]->label);
+    if (MultilineCensus(image_list[tile]->label) > (int) number_lines)
+      number_lines=MultilineCensus(image_list[tile]->label);
   /*
     Allocate image structure.
   */
@@ -8324,7 +8460,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
   DestroyImageInfo(local_info);
   if (montage_image == (Image *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to montage images",
+      MagickWarning(ResourceLimitWarning,"Unable to montage image_list",
         "Memory allocation failed");
       return((Image *) NULL);
     }
@@ -8345,12 +8481,12 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     bounding_box.height=0;
     for (tile=0; tile < tiles_per_page; tile++)
     {
-      width=concatenate ? images[tile]->columns : tile_info.width;
+      width=concatenate ? image_list[tile]->columns : tile_info.width;
       x_offset+=width+(tile_info.x+border_width)*2;
       if (x_offset > (int) bounding_box.width)
         bounding_box.width=x_offset;
-      if (images[tile]->rows > max_height)
-        max_height=images[tile]->rows;
+      if (image_list[tile]->rows > max_height)
+        max_height=image_list[tile]->rows;
       if (((tile+1) == tiles_per_page) || (((tile+1) % tiles_per_row) == 0))
         {
           x_offset=0;
@@ -8373,7 +8509,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
       montage_image->packets*sizeof(RunlengthPacket));
     if (montage_image->pixels == (RunlengthPacket *) NULL)
       {
-        MagickWarning(ResourceLimitWarning,"Unable to montage images",
+        MagickWarning(ResourceLimitWarning,"Unable to montage image_list",
           "Memory allocation failed");
         DestroyImages(montage_image);
         return((Image *) NULL);
@@ -8384,12 +8520,12 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     montage_image->montage=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
     count=1;
     for (tile=0; tile < tiles_per_page; tile++)
-      count+=Extent(images[tile]->filename)+1;
+      count+=Extent(image_list[tile]->filename)+1;
     montage_image->directory=(char *) AllocateMemory(count*sizeof(char));
     if ((montage_image->montage == (char *) NULL) ||
         (montage_image->directory == (char *) NULL))
       {
-        MagickWarning(ResourceLimitWarning,"Unable to montage images",
+        MagickWarning(ResourceLimitWarning,"Unable to montage image_list",
           "Memory allocation failed");
         DestroyImages(montage_image);
         return((Image *) NULL);
@@ -8403,7 +8539,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
     *montage_image->directory='\0';
     for (tile=0; tile < tiles_per_page; tile++)
     {
-      (void) strcat(montage_image->directory,images[tile]->filename);
+      (void) strcat(montage_image->directory,image_list[tile]->filename);
       (void) strcat(montage_image->directory,"\n");
     }
     /*
@@ -8426,7 +8562,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
       }
     (void) SetMonitorHandler(handler);
     /*
-      Copy tile images to the composite image.
+      Copy tile image_list to the composite image.
     */
     x_offset=tile_info.x;
     y_offset=title_offset+tile_info.y;
@@ -8437,7 +8573,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
         Copy this tile to the composite image.
       */
       handler=SetMonitorHandler((MonitorHandler) NULL);
-      image=images[tile];
+      image=image_list[tile];
       width=concatenate ? image->columns : tile_info.width;
       if (image->rows > max_height)
         max_height=image->rows;
@@ -8646,13 +8782,13 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
             return((Image *) NULL);
           }
         montage_image=montage_image->next;
-        images+=tiles_per_page;
+        image_list+=tiles_per_page;
         number_images-=tiles_per_page;
       }
   }
   if (texture != (Image *) NULL)
     FreeMemory((char *) texture);
-  FreeMemory((char *) masterlist);
+  FreeMemory((char *) master_list);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;
   return(montage_image);
@@ -8727,9 +8863,9 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
   /*
     Clone first frame in sequence.
   */
-  images->orphan=True;
+  ((Image *) images)->orphan=True;
   morphed_images=CloneImage(images,images->columns,images->rows,True);
-  images->orphan=False;
+  ((Image *) images)->orphan=False;
   if (morphed_images == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
@@ -8740,7 +8876,6 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
     Morph image.
   */
   scene=0;
-  SetNumberScenes(images);
   for (image=images; image->next != (Image *) NULL; image=image->next)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -8748,11 +8883,11 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
     {
       beta=(double) (i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
-      image->orphan=True;
+      ((Image *) image)->orphan=True;
       morphed_images->next=ZoomImage(image,
         (unsigned int) (alpha*image->columns+beta*image->next->columns+0.5),
         (unsigned int) (alpha*image->rows+beta*image->next->rows+0.5));
-      image->orphan=False;
+      ((Image *) image)->orphan=False;
       if (morphed_images->next == (Image *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
@@ -8808,7 +8943,7 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
     morphed_images->next->previous=morphed_images;
     morphed_images=morphed_images->next;
     (void) SetMonitorHandler(handler);
-    ProgressMonitor(MorphImageText,scene,images->number_scenes);
+    ProgressMonitor(MorphImageText,scene,GetNumberScenes(images));
     scene++;
   }
   while (morphed_images->previous != (Image *) NULL)
@@ -9574,20 +9709,21 @@ Export unsigned int PingImage(ImageInfo *image_info,unsigned int *columns,
     *image;
 
   ImageInfo
-    ping_info;
+    *ping_info;
 
   unsigned int
     filesize;
 
   *columns=0;
   *rows=0;
-  ping_info=(*image_info);
-  ping_info.ping=True;
-  ping_info.verbose=False;
-  ping_info.subimage=0;
-  ping_info.subrange=0;
-  image=ReadImage(&ping_info);
-  (void) strcpy(image_info->magick,ping_info.magick);
+  ping_info=CloneImageInfo(image_info);
+  ping_info->ping=True;
+  ping_info->verbose=False;
+  ping_info->subimage=0;
+  ping_info->subrange=0;
+  image=ReadImage(ping_info);
+  DestroyImageInfo(ping_info);
+  (void) strcpy(image_info->magick,ping_info->magick);
   if (image == (Image *) NULL)
     return(0);
   if (image_info->verbose)
@@ -10092,7 +10228,8 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 %
 %
 */
-Export Image *RollImage(Image *image,int x_offset,int y_offset)
+Export Image *RollImage(const Image *image,const int x_offset,
+  const int y_offset)
 {
 #define RollImageText  "  Rolling image...  "
 
@@ -10110,11 +10247,16 @@ Export Image *RollImage(Image *image,int x_offset,int y_offset)
     *p,
     *q;
 
+  PointInfo
+    offset;
+
   /*
     Initialize rolled image attributes.
   */
   assert(image != (Image *) NULL);
+  ((Image *) image)->orphan=True;
   rolled_image=CloneImage(image,image->columns,image->rows,False);
+  ((Image *) image)->orphan=False;
   if (rolled_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to roll image",
@@ -10124,12 +10266,12 @@ Export Image *RollImage(Image *image,int x_offset,int y_offset)
   /*
     Roll image.
   */
-  x_offset%=(int) image->columns;
-  if (x_offset < 0)
-    x_offset+=(int) image->columns;
-  y_offset%=(int) image->rows;
-  if (y_offset < 0)
-    y_offset+=(int) image->rows;
+  offset.x=x_offset % image->columns;
+  offset.y=y_offset % image->rows;
+  if (offset.x < 0)
+    offset.x+=image->columns;
+  if (offset.y < 0)
+    offset.y+=image->rows;
   p=image->pixels;
   runlength=p->length+1;
   for (y=0; y < (int) image->rows; y++)
@@ -10146,8 +10288,8 @@ Export Image *RollImage(Image *image,int x_offset,int y_offset)
           p++;
           runlength=p->length;
         }
-      q=rolled_image->pixels+((y_offset+y) % image->rows)*image->columns+
-        ((x+x_offset) % image->columns);
+      q=rolled_image->pixels+(((int) offset.y+y) % image->rows)*image->columns+
+        (((int) offset.x+x) % image->columns);
       *q=(*p);
       q->length=0;
     }
@@ -10191,7 +10333,8 @@ Export Image *RollImage(Image *image,int x_offset,int y_offset)
 %
 %
 */
-Export Image *SampleImage(Image *image,unsigned int columns,unsigned int rows)
+Export Image *SampleImage(const Image *image,const unsigned int columns,
+  const unsigned int rows)
 {
 #define SampleImageText  "  Sampling image...  "
 
@@ -10227,7 +10370,9 @@ Export Image *SampleImage(Image *image,unsigned int columns,unsigned int rows)
   /*
     Initialize sampled image attributes.
   */
+  ((Image *) image)->orphan=True;
   sampled_image=CloneImage(image,columns,rows,False);
+  ((Image *) image)->orphan=False;
   if (sampled_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to sample image",
@@ -10256,21 +10401,21 @@ Export Image *SampleImage(Image *image,unsigned int columns,unsigned int rows)
     Initialize column pixel offsets.
   */
   scale_factor=(double) image->columns/sampled_image->columns;
-  columns=0;
+  i=0;
   for (x=0; x < (int) sampled_image->columns; x++)
   {
-    x_offset[x]=(unsigned int) ((x+1)*scale_factor-(int) columns);
-    columns+=x_offset[x];
+    x_offset[x]=(unsigned int) ((x+1)*scale_factor-i);
+    i+=x_offset[x];
   }
   /*
     Initialize row pixel offsets.
   */
   scale_factor=(double) image->rows/sampled_image->rows;
-  rows=0;
+  i=0;
   for (y=0; y < (int) sampled_image->rows; y++)
   {
-    y_offset[y]=(unsigned int) ((y+1)*scale_factor-(int) rows);
-    rows+=y_offset[y];
+    y_offset[y]=(unsigned int) ((y+1)*scale_factor-i);
+    i+=y_offset[y];
   }
   /*
     Preload first scanline.
@@ -10379,7 +10524,7 @@ Export Image *SampleImage(Image *image,unsigned int columns,unsigned int rows)
 %
 %
 */
-Export Image *ScaleImage(Image *image,const unsigned int columns,
+Export Image *ScaleImage(const Image *image,const unsigned int columns,
   const unsigned int rows)
 {
 #define ScaleImageText  "  Scaling image...  "
@@ -10444,7 +10589,9 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   */
   scale_factor=UpShift(columns*rows)/(image->columns*image->rows);
   max_packets=Max(DownShift(image->packets*scale_factor),1);
+  ((Image *) image)->orphan=True;
   scaled_image=CloneImage(image,max_packets,1,False);
+  ((Image *) image)->orphan=False;
   if (scaled_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to scale image",
@@ -11156,50 +11303,6 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
     if ((magick[5] == 0x00) && (magick[6] == 0x00))
       if ((magick[4] == 0x07) || (magick[7] == 0x07))
         (void) strcpy(image_info->magick,"XWD");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t N u m b e r S c e n e s                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetNumberScenes sets the number of scenes in an image sequence.
-%
-%  The format of the SetNumberScenes routine is:
-%
-%      SetNumberScenes(image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-Export void SetNumberScenes(Image *image)
-{
-  Image
-    *next_image;
-
-  unsigned int
-    number_scenes;
-
-  /*
-    Compute the number of scenes in the image.
-  */
-  assert(image != (Image *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  next_image=image;
-  for (number_scenes=0; next_image != (Image *) NULL; number_scenes++)
-    next_image=next_image->next;
-  for ( ; image != (Image *) NULL; image=image->next)
-    image->number_scenes=number_scenes;
 }
 
 /*
@@ -12567,27 +12670,31 @@ Export unsigned int UncondenseImage(Image *image)
 extern "C" {
 #endif
 
-static double Box(double x)
+static double Box(const double x)
 {
   if ((x > -0.5) && (x <= 0.5))
     return(1.0);
   return(0.0);
 }
 
-static double Bessel(double x)
+static double Bessel(const double x)
 {
   if (x == 0.0)
     return(M_PI/4.0);
   return(M_PI*x/2.0*x);
 }
 
-static double Blackman(double x)
+static double Blackman(const double x)
 {
   return(0.42+0.50*cos(M_PI*x)+0.08*cos(2.0*M_PI*x));
 }
 
-static double Catrom(double x)
+static double Catrom(const double xx)
 {
+  register int
+    x;
+
+  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 1.0)
@@ -12597,8 +12704,12 @@ static double Catrom(double x)
   return(0.0);
 }
 
-static double Cubic(double x)
+static double Cubic(const double xx)
 {
+  register int
+    x;
+
+  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 1.0)
@@ -12611,23 +12722,27 @@ static double Cubic(double x)
   return(0.0);
 }
 
-static double Gaussian(double x)
+static double Gaussian(const double x)
 {
   return(exp(-2.0*x*x)*sqrt(2.0/M_PI));
 }
 
-static double Hanning(double x)
+static double Hanning(const double x)
 {
   return(0.5+0.5*cos(M_PI*x));
 }
 
-static double Hamming(double x)
+static double Hamming(const double x)
 {
   return(0.54+0.46*cos(M_PI*x));
 }
 
-static double Hermite(double x)
+static double Hermite(const double xx)
 {
+  register int
+    x;
+
+  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 1.0)
@@ -12635,16 +12750,24 @@ static double Hermite(double x)
   return(0.0);
 }
 
-static double Sinc(double x)
+static double Sinc(const double xx)
 {
+  register int
+    x;
+
+  x=xx;
   x*=M_PI;
   if (x != 0.0)
     return(sin(x)/x);
   return(1.0);
 }
 
-static double Lanczos(double x)
+static double Lanczos(const double xx)
 {
+  register int
+    x;
+
+  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 3.0)
@@ -12652,14 +12775,18 @@ static double Lanczos(double x)
   return(0.0);
 }
 
-static double Mitchell(double x)
+static double Mitchell(const double xx)
 {
   double
     b,
     c;
 
+  register int
+    x;
+
   b=1.0/3.0;
   c=1.0/3.0;
+  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 1.0)
@@ -12676,8 +12803,12 @@ static double Mitchell(double x)
   return(0.0);
 }
 
-static double Quadratic(double x)
+static double Quadratic(const double xx)
 {
+  register int
+    x;
+
+  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 0.5)
@@ -12690,8 +12821,12 @@ static double Quadratic(double x)
   return(0.0);
 }
 
-static double Triangle(double x)
+static double Triangle(const double xx)
 {
+  register int
+    x;
+
+  x=xx;
   if (x < 0.0)
     x=(-x);
   if (x < 1.0)
@@ -12705,7 +12840,7 @@ static double Triangle(double x)
 
 static void HorizontalFilter(Image *source,Image *destination,double x_factor,
   const FilterInfo *filter_info,ContributionInfo *contribution_info,
-  Quantum *range_limit,unsigned int span,unsigned int *quantum)
+  const Quantum *range_limit,const unsigned int span,unsigned int *quantum)
 {
   double
     blue_weight,
@@ -12799,7 +12934,7 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
 
 static void VerticalFilter(Image *source,Image *destination,double y_factor,
   const FilterInfo *filter_info,ContributionInfo *contribution_info,
-  Quantum *range_limit,unsigned int span,unsigned int *quantum)
+  const Quantum *range_limit,const unsigned int span,unsigned int *quantum)
 {
   double
     blue_weight,

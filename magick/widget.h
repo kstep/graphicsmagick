@@ -45,25 +45,25 @@ typedef struct _XWidgetInfo
 */
 extern Export int
   XCommandWidget(Display *,XWindows *,char const **,XEvent *),
-  XConfirmWidget(Display *,XWindows *,char *,char *),
-  XDialogWidget(Display *,XWindows *,char *,char *,char *),
+  XConfirmWidget(Display *,XWindows *,const char *,const char *),
+  XDialogWidget(Display *,XWindows *,const char *,const char *,char *),
   XMenuWidget(Display *,XWindows *,const char *,const char **,char *);
 
 extern Export unsigned int
   XPreferencesWidget(Display *,XResourceInfo *,XWindows *);
 
 extern Export void
-  XColorBrowserWidget(Display *,XWindows *,char *,char *),
-  XFileBrowserWidget(Display *,XWindows *,char *,char *),
-  XFontBrowserWidget(Display *,XWindows *,char *,char *),
-  XInfoWidget(Display *,XWindows *,char *),
-  XListBrowserWidget(Display *,XWindows *,XWindowInfo *,char const **,char *,
-    char *,char *),
-  XMonitorWidget(Display *,XWindows *,char *,const unsigned int,
+  XColorBrowserWidget(Display *,XWindows *,const char *,char *),
+  XFileBrowserWidget(Display *,XWindows *,const char *,char *),
+  XFontBrowserWidget(Display *,XWindows *,const char *,char *),
+  XInfoWidget(Display *,XWindows *,const char *),
+  XListBrowserWidget(Display *,XWindows *,XWindowInfo *,char const **,
+    const char *,const char *,char *),
+  XMonitorWidget(Display *,XWindows *,const char *,const unsigned int,
     const unsigned int),
-  XNoticeWidget(Display *,XWindows *,char *,char *),
+  XNoticeWidget(Display *,XWindows *,const char *,const char *),
   XTextViewWidget(Display *,const XResourceInfo *,XWindows *,const unsigned int,
-    char *,char const **);
+    const char *,char const **);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -380,13 +380,14 @@ static void TransformMessageDigest(MessageDigest *message_digest,
 %
 */
 static void UpdateMessageDigest(MessageDigest *message_digest,
-  unsigned char *input_message,unsigned long message_length)
+  unsigned char *input_message,const unsigned long message_length)
 {
   register unsigned char
     *p;
 
   register unsigned int
-    i;
+    i,
+    j;
 
   unsigned long
     message[16],
@@ -402,7 +403,7 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
     message_digest->number_bits[1]++;
   message_digest->number_bits[0]+=message_length << 3;
   message_digest->number_bits[1]+=message_length >> 29;
-  while (message_length--)
+  for (i=0; i < message_length; i++)
   {
     /*
       Add new character to message.
@@ -414,12 +415,12 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
           Transform message digest 64 bytes at a time.
         */
         p=message_digest->message;
-        for (i=0; i < 16; i++)
+        for (j=0; j < 16; j++)
         {
-          message[i]=(unsigned long) (*p++);
-          message[i]|=((unsigned long) (*p++)) << 8;
-          message[i]|=((unsigned long) (*p++)) << 16;
-          message[i]|=((unsigned long) (*p++)) << 24;
+          message[j]=(unsigned long) (*p++);
+          message[j]|=((unsigned long) (*p++)) << 8;
+          message[j]|=((unsigned long) (*p++)) << 16;
+          message[j]|=((unsigned long) (*p++)) << 24;
         }
         TransformMessageDigest(message_digest,message);
         number_bytes=0;

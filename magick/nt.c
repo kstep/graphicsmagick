@@ -157,7 +157,7 @@ Export int Exit(int status)
 %
 %
 */
-Export int ImageFormatConflict(char *magick)
+Export int ImageFormatConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
   if (strlen(magick) > 1)
@@ -273,7 +273,7 @@ Export void NTErrorHandler(const unsigned int error,const char *message,
 %
 %
 */
-Export int NTSystemCommand(char *command)
+Export int NTSystemCommand(const char *command)
 {
   char
     local_command[2048];

@@ -344,8 +344,8 @@ static void
 %
 %
 */
-static unsigned int Assignment(CubeInfo *cube_info,QuantizeInfo *quantize_info,
-  Image *image)
+static unsigned int Assignment(CubeInfo *cube_info,
+  const QuantizeInfo *quantize_info,Image *image)
 {
 #define AssignImageText  "  Assigning image colors...  "
 
@@ -362,6 +362,7 @@ static unsigned int Assignment(CubeInfo *cube_info,QuantizeInfo *quantize_info,
     index;
 
   unsigned int
+    dither,
     id;
 
   /*
@@ -410,10 +411,11 @@ static unsigned int Assignment(CubeInfo *cube_info,QuantizeInfo *quantize_info,
     Create a reduced color image.
   */
   image->tainted=True;
-  if (quantize_info->dither)
-    quantize_info->dither=!DitherImage(cube_info,image);
+  dither=quantize_info->dither;
+  if (dither)
+    dither=!DitherImage(cube_info,image);
   p=image->pixels;
-  if (!quantize_info->dither)
+  if (!dither)
     for (i=0; i < (int) image->packets; i++)
     {
       /*
@@ -514,7 +516,7 @@ static unsigned int Assignment(CubeInfo *cube_info,QuantizeInfo *quantize_info,
 %
 %
 */
-static unsigned int Classification(CubeInfo *cube_info,Image *image)
+static unsigned int Classification(CubeInfo *cube_info,const Image *image)
 {
 #define ClassifyImageText  "  Classifying image colors...  "
 
@@ -549,8 +551,6 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
   squares=cube_info->squares;
   cube_info->root->quantization_error=
     3.0*(MaxRGB/2.0)*(MaxRGB/2.0)*image->columns*image->rows;
-  if (image->packets == (image->columns*image->rows))
-    CondenseImage(image);
   p=image->pixels;
   for (i=0; i < (int) image->packets; i++)
   {
@@ -904,7 +904,8 @@ Export void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 %      to move to next to follow the Hilbert curve.
 %
 */
-static void Dither(CubeInfo *cube_info,Image *image,unsigned int direction)
+static void Dither(CubeInfo *cube_info,Image *image,
+  const unsigned int direction)
 {
   register CubeInfo
     *p;
@@ -1336,8 +1337,8 @@ Export void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %
 */
-static void HilbertCurve(CubeInfo *cube_info,Image *image,int level,
-  unsigned int direction)
+static void HilbertCurve(CubeInfo *cube_info,Image *image,const int level,
+  const unsigned int direction)
 {
   if (level == 1)
     {
@@ -1457,7 +1458,8 @@ static void HilbertCurve(CubeInfo *cube_info,Image *image,int level,
 %
 %
 */
-unsigned int MapImage(Image *image,Image *map_image,const unsigned int dither)
+unsigned int MapImage(Image *image,const Image *map_image,
+  const unsigned int dither)
 {
   CubeInfo
     cube_info;
@@ -1523,7 +1525,7 @@ unsigned int MapImage(Image *image,Image *map_image,const unsigned int dither)
 %
 %
 */
-Export unsigned int MapImages(Image *images,Image *map_image,
+Export unsigned int MapImages(Image *images,const Image *map_image,
   const unsigned int dither)
 {
   CubeInfo
@@ -1860,7 +1862,6 @@ unsigned int QuantizationError(Image *image)
   image->mean_error_per_pixel=0;
   image->normalized_mean_error=0.0;
   image->normalized_maximum_error=0.0;
-  NumberColors(image,(FILE *) NULL);
   if (image->class == DirectClass)
     return(True);
   cube_info.squares=(unsigned int *)
@@ -1932,7 +1933,8 @@ unsigned int QuantizationError(Image *image)
 %    o image: Specifies a pointer to a Image structure.
 %
 */
-Export unsigned int QuantizeImage(QuantizeInfo *quantize_info,Image *image)
+Export unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
+  Image *image)
 {
   CubeInfo
     cube_info;
@@ -1987,8 +1989,6 @@ Export unsigned int QuantizeImage(QuantizeInfo *quantize_info,Image *image)
       /*
         Reduce the number of colors in the continuous tone image.
       */
-      if ((cube_info.colors >> 1) < number_colors)
-        quantize_info->dither=False;
       if (number_colors < cube_info.colors)
         Reduction(&cube_info,number_colors);
       status=Assignment(&cube_info,quantize_info,image);
@@ -2030,7 +2030,8 @@ Export unsigned int QuantizeImage(QuantizeInfo *quantize_info,Image *image)
 %
 %
 */
-Export unsigned int QuantizeImages(QuantizeInfo *quantize_info,Image *images)
+Export unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
+  Image *images)
 {
   CubeInfo
     cube_info;
@@ -2119,8 +2120,6 @@ Export unsigned int QuantizeImages(QuantizeInfo *quantize_info,Image *images)
       /*
         Reduce the number of colors in the continuous tone image sequence.
       */
-      if ((cube_info.colors >> 1) < number_colors)
-        quantize_info->dither=False;
       Reduction(&cube_info,number_colors);
       image=images;
       for (i=0; image != (Image *) NULL; i++)

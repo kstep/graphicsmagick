@@ -3214,10 +3214,7 @@ Get(ref,...)
           if (strEQcase(attribute,"total"))
             {
               if (image)
-                {
-                  NumberColors(image,(FILE *) NULL);
-                  s=newSViv(image->total_colors);
-                }
+                s=newSViv(GetNumberColors(image,(FILE *) NULL));
               break;
             }
          if (strEQcase(attribute,"tree"))

@@ -356,8 +356,7 @@ typedef struct _Image
     interlace;
 
   unsigned int
-    scene,
-    number_scenes;
+    scene;
 
   char
     *montage,
@@ -398,9 +397,6 @@ typedef struct _Image
   double
     normalized_mean_error,
     normalized_maximum_error;
-
-  unsigned long
-    total_colors;
 
   char
     *signature;
@@ -463,31 +459,34 @@ typedef struct _Image
 /*
   Image utilities methods.
 */
+extern Export AnnotateInfo
+  *CloneAnnotateInfo(const ImageInfo *,const AnnotateInfo *);
+
 extern Export Image
-  *AddNoiseImage(Image *,NoiseType),
+  *AddNoiseImage(const Image *,const NoiseType),
   *AllocateImage(const ImageInfo *),
   *AppendImages(Image *,const unsigned int),
   *AverageImages(Image *),
-  *BlurImage(Image *,const double),
-  *BorderImage(Image *,const RectangleInfo *),
-  *ChopImage(Image *,RectangleInfo *),
+  *BlurImage(const Image *,const double),
+  *BorderImage(const Image *,const RectangleInfo *),
+  *ChopImage(const Image *,const RectangleInfo *),
   *CloneImage(const Image *,const unsigned int,const unsigned int,
     const unsigned int),
   *CreateImage(const unsigned int,const unsigned int,const float *,
     const float *,const float *,const float *),
-  *CropImage(Image *,RectangleInfo *),
+  *CropImage(const Image *,const RectangleInfo *),
   *DespeckleImage(Image *),
-  *EdgeImage(Image *,const double),
-  *EmbossImage(Image *),
-  *EnhanceImage(Image *),
-  *FlipImage(Image *),
-  *FlopImage(Image *),
-  *FrameImage(Image *,const FrameInfo *),
-  *ImplodeImage(Image *,double),
-  **ListToGroupImage(Image *,unsigned int *),
+  *EdgeImage(const Image *,const double),
+  *EmbossImage(const Image *),
+  *EnhanceImage(const Image *),
+  *FlipImage(const Image *),
+  *FlopImage(const Image *),
+  *FrameImage(const Image *,const FrameInfo *),
+  *ImplodeImage(Image *,const double),
+  **ListToGroupImage(const Image *,unsigned int *),
   *MagnifyImage(Image *),
   *MinifyImage(Image *),
-  *MontageImages(Image *,const MontageInfo *),
+  *MontageImages(const Image *,const MontageInfo *),
   *MorphImages(Image *,const unsigned int),
   *OilPaintImage(Image *,const unsigned int),
   *ReadAVSImage(const ImageInfo *image_info),
@@ -552,15 +551,16 @@ extern Export Image
   *ReadXPMImage(const ImageInfo *image_info),
   *ReadXWDImage(const ImageInfo *image_info),
   *ReadYUVImage(const ImageInfo *image_info),
-  *ReduceNoiseImage(Image *),
-  *RollImage(Image *,int,int),
-  *RotateImage(Image *,double,const unsigned int,const unsigned int),
-  *SampleImage(Image *,unsigned int,unsigned int),
-  *ScaleImage(Image *,const unsigned int,const unsigned int),
+  *ReduceNoiseImage(const Image *),
+  *RollImage(const Image *,const int,const int),
+  *RotateImage(const Image *,const double,const unsigned int,
+    const unsigned int),
+  *SampleImage(const Image *,const unsigned int,const unsigned int),
+  *ScaleImage(const Image *,const unsigned int,const unsigned int),
   *ShadeImage(Image *,const unsigned int,double,double),
-  *SharpenImage(Image *,const double),
-  *ShearImage(Image *,double,double,const unsigned int),
-  *SpreadImage(Image *,unsigned int),
+  *SharpenImage(const Image *,const double),
+  *ShearImage(const Image *,const double,const double,const unsigned int),
+  *SpreadImage(Image *,const unsigned int),
   *SteganoImage(Image *,Image *),
   *StereoImage(Image *,const Image *),
   *SwirlImage(Image *,double),
@@ -577,14 +577,15 @@ extern Export int
   ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
 
 extern Export unsigned int
+  GetNumberScenes(const Image *),
   IsGeometry(const char *),
   IsGrayImage(Image *),
   IsMonochromeImage(Image *),
   IsPseudoClass(Image *),
   IsSubimage(const char *,const unsigned int),
-  IsTainted(Image *),
+  IsTainted(const Image *),
   PingImage(ImageInfo *,unsigned int *,unsigned int *),
-  PlasmaImage(Image *,SegmentInfo *,int,int),
+  PlasmaImage(Image *,const SegmentInfo *,int,int),
   UncondenseImage(Image *),
   WriteAVSImage(const ImageInfo *image_info,Image *image),
   WriteBMPImage(const ImageInfo *image_info,Image *image),
@@ -639,25 +640,25 @@ extern Export unsigned int
 
 extern Export void
   AllocateNextImage(const ImageInfo *,Image *),
-  AnnotateImage(Image *,AnnotateInfo *),
+  AnnotateImage(Image *,const AnnotateInfo *),
   CloseImage(Image *),
   CoalesceImages(Image *),
-  ColorFloodfillImage(Image *,const RunlengthPacket *,const char *,int x,int y,
-    const PaintMethod),
+  ColorFloodfillImage(Image *,const RunlengthPacket *,const char *,const int x,
+    const int y,const PaintMethod),
   ColorizeImage(Image *,const char *,const char *),
   CommentImage(Image *,const char *),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   CompressColormap(Image *),
   CondenseImage(Image *),
   ContrastImage(Image *,const unsigned int),
-  CycleColormapImage(Image *,int),
+  CycleColormapImage(Image *,const int),
   DescribeImage(Image *,FILE *,const unsigned int),
   DestroyAnnotateInfo(AnnotateInfo *),
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
   DestroyImages(Image *),
   DestroyMontageInfo(MontageInfo *),
-  DrawImage(Image *,AnnotateInfo *),
+  DrawImage(Image *,const AnnotateInfo *),
   EqualizeImage(Image *),
   GammaImage(Image *,const char *),
   GetAnnotateInfo(const ImageInfo *,AnnotateInfo *),
@@ -667,12 +668,12 @@ extern Export void
   HSLTransform(double,const double,const double,Quantum *,Quantum *,Quantum *),
   LabelImage(Image *,const char *),
   LayerImage(Image *,const LayerType),
-  MatteFloodfillImage(Image *,const RunlengthPacket *,const unsigned int,int x,
-    int y,const PaintMethod),
+  MatteFloodfillImage(Image *,const RunlengthPacket *,const unsigned int,
+    const int x,const int y,const PaintMethod),
   MatteImage(Image *),
   ModulateImage(Image *,const char *),
-  MogrifyImage(ImageInfo *,const int,char **,Image **),
-  MogrifyImages(ImageInfo *,const int,char **,Image **),
+  MogrifyImage(const ImageInfo *,const int,char **,Image **),
+  MogrifyImages(const ImageInfo *,const int,char **,Image **),
   NegateImage(Image *,const unsigned int),
   NormalizeImage(Image *),
   OpaqueImage(Image *,const char *,const char *),
@@ -681,7 +682,6 @@ extern Export void
   RGBTransformImage(Image *,const ColorspaceType),
   SetImage(Image *),
   SetImageInfo(ImageInfo *,const unsigned int),
-  SetNumberScenes(Image *),
   SignatureImage(Image *),
   SolarizeImage(Image *,const double),
   SortColormapByIntensity(Image *),
