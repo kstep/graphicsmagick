@@ -144,9 +144,6 @@ static unsigned int IsFPX(const unsigned char *magick,const size_t length)
 */
 static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  FILE
-    *file;
-
   FPXColorspace
     colorspace;
 
@@ -173,9 +170,6 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   IndexPacket
     index;
-
-  int
-    c;
 
   long
     y;
@@ -221,21 +215,6 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
-  /*
-    Copy image to temporary file.
-  */
-  TemporaryFilename((char *) image_info->filename);
-  file=fopen(image_info->filename,"wb");
-  if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
-  c=ReadBlobByte(image);
-  while (c != EOF)
-  {
-    (void) fputc(c,file);
-    c=ReadBlobByte(image);
-  }
-  (void) fclose(file);
-  (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   CloseBlob(image);
   /*
     Initialize FPX toolkit.
@@ -492,7 +471,6 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void **) &scanline);
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
-  (void) remove(image->filename);
   return(image);
 }
 #else
@@ -536,6 +514,7 @@ ModuleExport void RegisterFPXImage(void)
   entry->decoder=(DecoderHandler) ReadFPXImage;
   entry->encoder=(EncoderHandler) WriteFPXImage;
   entry->adjoin=False;
+  entry->seekable_stream=True;
   entry->magick=(MagickHandler) IsFPX;
   entry->description=AcquireString("FlashPix Format");
   entry->module=AcquireString("FPX");
@@ -781,9 +760,6 @@ static void SetSaturation(double saturation,FPXColorTwistMatrix *color_twist)
 
 static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
-  char
-    filename[MaxTextExtent];
-
   FPXBackground
     background_color;
 
@@ -872,9 +848,6 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   compression=NONE;
   if (image_info->compression == JPEGCompression)
     compression=JPEG_UNSPECIFIED;
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  if (image->blob->type != FileStream)
-    TemporaryFilename(filename);
   {
 #if defined(macintosh)
     FSSpec
@@ -883,7 +856,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     FilenameToFSSpec(filename,&fsspec);
     fpx_status=FPX_CreateImageByFilename((const FSSpec &) fsspec,image->columns,
 #else
-    fpx_status=FPX_CreateImageByFilename(filename,image->columns,
+    fpx_status=FPX_CreateImageByFilename(image->filename,image->columns,
 #endif
       image->rows,tile_width,tile_height,colorspace,background_color,
       compression,&flashpix);
@@ -1134,25 +1107,6 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   LiberateMemory((void **) &pixels);
-  if (image->blob->type != FileStream)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy temporary file to image blob->
-      */
-      file=fopen(filename,"rb");
-      if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) WriteBlobByte(image,c);
-      (void) fclose(file);
-      (void) remove(filename);
-    }
   CloseBlob(image);
   return(True);
 }

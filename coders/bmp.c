@@ -563,7 +563,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  BMP size: %lu",
         bmp_info.size);
     if (bmp_info.file_size != GetBlobSize(image))
-      ThrowReaderException(CorruptImageWarning,"LengthAndFilesizeDoNotMatch",
+      ThrowReaderException(CorruptImageError,"LengthAndFilesizeDoNotMatch",
         image);
     if (bmp_info.size == 12)
       {
@@ -1325,6 +1325,7 @@ ModuleExport void RegisterBMPImage(void)
   entry->description=AcquireString("Microsoft Windows bitmap image");
   entry->module=AcquireString("BMP");
   entry->adjoin=False;
+  entry->seekable_stream=True;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("BMP2");
   entry->encoder=(EncoderHandler) WriteBMPImage;
@@ -1332,6 +1333,7 @@ ModuleExport void RegisterBMPImage(void)
   entry->description=AcquireString("Microsoft Windows bitmap image v2");
   entry->module=AcquireString("BMP2");
   entry->adjoin=False;
+  entry->seekable_stream=True;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("BMP3");
   entry->encoder=(EncoderHandler) WriteBMPImage;
@@ -1339,6 +1341,7 @@ ModuleExport void RegisterBMPImage(void)
   entry->description=AcquireString("Microsoft Windows bitmap image v3");
   entry->module=AcquireString("BMP3");
   entry->adjoin=False;
+  entry->seekable_stream=True;
   (void) RegisterMagickInfo(entry);
 }
 

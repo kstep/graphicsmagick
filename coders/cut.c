@@ -593,6 +593,7 @@ ModuleExport void RegisterCUTImage(void)
 
   entry=SetMagickInfo("CUT");
   entry->decoder=(DecoderHandler) ReadCUTImage;
+  entry->seekable_stream=True;
   entry->description=AcquireString("DR Halo");
   entry->module=AcquireString("CUT");
   (void) RegisterMagickInfo(entry);
