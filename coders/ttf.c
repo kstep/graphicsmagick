@@ -92,6 +92,12 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     filename[MaxTextExtent],
     geometry[MaxTextExtent];
 
+  const char
+    *Text = 
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz\n0123456789 "
+      "\342\352\356\373\364\344\353\357\366\374\377\340\371\351\350\347\n"
+      "&#~\\\"\'(-`_^@)=+\260 $\243^\250*\265\371%!\247:/;.,?<>";
+
   FILE
     *file;
 
@@ -124,13 +130,11 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  y=0;
+  y=20;
   (void) fprintf(file,"font %.1024s\n",image_info->filename);
   (void) fprintf(file,"font-size 18\n");
-  (void) fprintf(file,"text +10%+d 'abcdefghijklmnopqrstuvwxyz'\n",y+=20);
-  (void) fprintf(file,"text +10%+d 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n",y+=20);
-  (void) fprintf(file,"text +10%+d '1234567890.:,;(:*!?\")'\n",y+=20);
-  y+=20;
+  (void) fprintf(file,"text +10%+d \"%s\"\n",y,Text);
+  y+=20*MultilineCensus(Text)+20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+12;
