@@ -223,15 +223,14 @@ MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"\nImageMagick uses these fonts to anonnote an image\n");
-  (void) fprintf(file,"Font name   Glyphs\n");
-  (void) fprintf(file,"--------------------------------------------------------"
-    "-----------------\n");
-  p=GetFontInfo("*",exception);
-  if (p == (FontInfo *) NULL)
+  (void) fprintf(file,"\nImageMagick supports these built-in fonts:\n\n");
+  (void) fprintf(file,"Font\n");
+  (void) fprintf(file,"-----------------------------\n");
+  (void) GetFontInfo("*",exception);
+  if (font_list == (FontInfo *) NULL)
     return(False);
   for (p=font_list; p != (FontInfo *) NULL; p=p->next)
-    (void) fprintf(file,"%.1024s\t%.1024s\n", p->name,p->glyphs);
+    (void) fprintf(file,"%.1024s\n",p->name);
   (void) fflush(file);
   return(True);
 }
