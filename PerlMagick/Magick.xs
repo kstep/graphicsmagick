@@ -244,7 +244,7 @@ static char
   *PrimitiveTypes[] =
   {
     "Undefined", "point", "line", "rectangle", "roundRectangle", "arc", 
-    "ellipse", "circle", "polyline", "polygon", "bezier", "color",
+    "ellipse", "circle", "polyline", "polygon", "bezier", "path", "color",
     "matte", "text", "image", (char *) NULL
   },
   *ResolutionTypes[] =
