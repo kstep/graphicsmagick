@@ -46,13 +46,7 @@ AM_CONDITIONAL(WIN32, test "$native_win32_build" != 'no')
 #
 if test "x$prefix" = xNONE
 then
-  if test "$native_win32_build" = 'yes'
-  then
-    # Use Unix prefix convention, but default to drive C:
-    prefix="/c${ac_default_prefix}"
-  else
-    prefix=$ac_default_prefix
-  fi
+  prefix=$ac_default_prefix
 fi
 # Let make expand exec_prefix.
 if test "x$exec_prefix" = xNONE
@@ -187,7 +181,7 @@ then
   MagickModulesPath="${im_cv_x_coder_modules}"
   if test "$native_win32_build" = 'yes'
   then
-    MagickModulesPath=`$WinPathScript "$MagickModulesPath" 2`
+    MagickModulesPath=`$WinPathScript "$MagickModulesPath" 1`
   fi
   AC_DEFINE_UNQUOTED(MagickModulesPath,"$MagickModulesPath",Location of coder modules)
 fi
@@ -744,7 +738,7 @@ AC_CACHE_CHECK(for X11 configure files,im_cv_x_configure,
 X11ConfigurePath="$im_cv_x_configure"
 if test "$native_win32_build" = 'yes'
 then
-  X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 2`
+  X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 1`
 fi
 AC_DEFINE_UNQUOTED(X11ConfigurePath,"X11ConfigurePath",Location of X11 configure files)
 
@@ -1557,7 +1551,7 @@ AC_SUBST(LIB_WMF_DEPS)
 MagickLibPath="${LIB_DIR}/ImageMagick/"
 if test "$native_win32_build" = 'yes'
 then
-  MagickLibPath=`$WinPathScript "$MagickLibPath" 2`
+  MagickLibPath=`$WinPathScript "$MagickLibPath" 1`
 fi
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-dependent files live.)
 
@@ -1570,7 +1564,7 @@ AC_ARG_WITH(share-path,
    MagickSharePathDefine="$MagickSharePath"
  if test "$native_win32_build" = 'yes'
  then
-   MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 2`
+   MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
  fi)
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePathDefine",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
@@ -1613,7 +1607,7 @@ AC_PATH_PROG(RLEEncodeDelegate, rawtorle, rawtorle)
 AC_PATH_PROG(RMDelegate, rm, rm)
 AC_PATH_PROG(SCANDecodeDelegate, scanimage, scanimage)
 AC_PATH_PROG(TXTDelegate, enscript, enscript)
-AC_PATH_PROG(WMFDecodeDelegate, wmf2magick, wmf2magick)
+AC_PATH_PROG(WMFDecodeDelegate, wmf2eps, wmf2eps)
 AC_PATH_PROG(WWWDecodeDelegate, wget, wget)
 AC_PATH_PROG(ZipDelegate, gzip, gzip)
 
@@ -1676,7 +1670,7 @@ else
 	  windows_font_dir="/${drive}/${sysdir}/fonts/"
           if test -f "${windows_font_dir}times.ttf"
           then
-            windows_font_dir=`$WinPathScript "$windows_font_dir" 2`
+            windows_font_dir=`$WinPathScript "$windows_font_dir" 0`
             break 2
           fi
         done
