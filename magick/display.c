@@ -7565,7 +7565,7 @@ static unsigned int XMatteEditImage(Display *display,
                 (*image)->fuzz=atof(FuzzMenu[entry]);
                 break;
               }
-            FormatString(fuzz,"%d",(*image)->fuzz);
+            FormatString(fuzz,"%f",(*image)->fuzz);
             (void) XDialogWidget(display,windows,"Ok","Enter fuzz factor:",
               fuzz);
             if (*fuzz == '\0')
