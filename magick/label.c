@@ -58,7 +58,7 @@
 #include "xwindows.h"
 #endif
 #if defined(HasTTF)
-#include "freetype.h"
+#include <freetype.h>
 #endif
 
 /*
