@@ -101,7 +101,7 @@ void Magick::Blob::update ( const void* data_, size_t length_ )
 // ensure that the pointer supplied is not deleted or otherwise
 // modified after it has been supplied to this method.
 void Magick::Blob::updateNoCopy ( void* data_, size_t length_,
-                                  Allocator allocator_ = NewAllocator )
+                                  Allocator allocator_  )
 {
   bool doDelete = false;
   {
