@@ -231,7 +231,7 @@ static unsigned int CompressCache(Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->type == MemoryCache)
+  if (cache_info->type != DiskCache)
     return(True);
   if (cache_info->file == -1)
     {
@@ -1689,7 +1689,7 @@ static unsigned int UncompressCache(Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->type == MemoryCache)
+  if (cache_info->type != DiskCache)
     return(True);
   if (cache_info->file == -1)
     {
