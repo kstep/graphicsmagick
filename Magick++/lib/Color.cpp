@@ -136,23 +136,12 @@ Magick::Color::operator std::string() const
   if ( !isValid() )
     return std::string("none");
 
-  char colorbuf[20];
+  char colorbuf[MaxTextExtent];
 
-#if QuantumDepth == 8
   if ( _pixelType == RGBAPixel )
-    FormatString(colorbuf,"#%02X%02X%02X%02X",redQuantum(),greenQuantum(),
-                 blueQuantum(),alphaQuantum());
+    GetColorTuple( _pixel, QuantumDepth, true, true, colorbuf );
   else
-    FormatString(colorbuf,"#%02X%02X%02X",redQuantum(),greenQuantum(),
-                 blueQuantum());
-#elif QuantumDepth == 16
-  if ( _pixelType == RGBAPixel )
-    FormatString(colorbuf,"#%04X%04X%04X%04X",redQuantum(),greenQuantum(),
-                 blueQuantum(),alphaQuantum());
-  else
-    FormatString(colorbuf,"#%04X%04X%04X",redQuantum(),greenQuantum(),
-                 blueQuantum());
-#endif
+    GetColorTuple( _pixel, QuantumDepth, false, true, colorbuf );
 
   return std::string(colorbuf);
 }
