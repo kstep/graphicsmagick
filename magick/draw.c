@@ -176,8 +176,7 @@ static unsigned int ClipImage(Image *image,const DrawInfo *draw_info)
     timer;
 
   unsigned int
-    status,
-    sync;
+    status;
 
   /*
     Allocate image mask.
@@ -227,19 +226,15 @@ static unsigned int ClipImage(Image *image,const DrawInfo *draw_info)
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
         (r == (PixelPacket *) NULL))
       break;
-    sync=False;
     for (x=0; x < (int) image->columns; x++)
     {
       if (r->opacity != TransparentOpacity)
-        {
-          *p=(*q);
-          sync=True;
-        }
+        *p=(*q);
       p++;
       q++;
       r++;
     }
-    if (sync && !SyncImagePixels(image))
+    if (!SyncImagePixels(image))
       break;
   }
   DestroyImage(mask);
