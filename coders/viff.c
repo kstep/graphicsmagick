@@ -927,6 +927,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+  memset(&viff_info,0,sizeof(ViffInfo));
   scene=0;
   do
   {
