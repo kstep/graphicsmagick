@@ -130,16 +130,11 @@ MagickExport void *CloneMemory(void *destination,const void *source,
   assert(source != (const void *) NULL);
   p=(const unsigned char *) source;
   q=(unsigned char *) destination;
-  if (((q < p) && ((q+size) < p)) || ((q > p) && ((p+size) < q)))
+  if ((p <= q) || ((p+size) >= q))
     return(memcpy(destination,source,size));
-  if (p == q)
-    return(destination);
-  if (q < p)
-    {
-      for (i=0; i < size; i++)
-        *q++=(*p++);
-      return(destination);
-    }
+  /*
+    Overlap, copy backwards.
+  */
   p+=size;
   q+=size;
   for (i=size-1; i >= 0; i--)
