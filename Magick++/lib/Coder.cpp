@@ -29,9 +29,9 @@ Magick::Coder::~Coder ()
 
 // Decoder method (callback)
 /* virtual */
-Magick::Image Magick::Coder::decoder ( const Magick::Options& options_ )
+Magick::Image Magick::Coder::decoder ( Image& image_ )
 {
-  return Magick::Image();
+  return image_;
 }
 
 // Encoder method (callback)
@@ -64,6 +64,8 @@ extern "C" {
 static MagickLib::Image *decoder( const MagickLib::ImageInfo *imageInfo_,
                                   MagickLib::ExceptionInfo *exception_ )
 {
+
+  Magick::Image image;
   MagickLib::MagickInfo* info = 0; // FIXME!
 
   if ( info->data == 0 )
@@ -78,6 +80,7 @@ static MagickLib::Image *decoder( const MagickLib::ImageInfo *imageInfo_,
 
   Magick::Coder* coder = static_cast<Magick::Coder*>(info->data);
   //  coder->decoder( Magick::Options( imageInfo_, quantizeInfo ) );
+  coder->decoder( image );
 }
 
 // Image encoder callback (C linkage)

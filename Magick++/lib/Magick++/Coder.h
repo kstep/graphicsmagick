@@ -29,7 +29,7 @@ namespace Magick
     virtual ~Coder ();
 
     // Decoder method (callback)
-    virtual Image decoder ( const Options& options_ );
+    virtual Image decoder ( Image& image_ );
 
     // Encoder method (callback)
     // Returns true if image is successfully written.
