@@ -997,18 +997,10 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
     saturation;
 
   /*
-    Check composite geometry.
+    Prepare composite image.
   */
   assert(image != (Image *) NULL);
   assert(composite_image != (Image *) NULL);
-  if (((x_offset+(int) composite_image->columns) < 0) ||
-      ((y_offset+(int) composite_image->rows) < 0) ||
-      (x_offset > (int) image->columns) || (y_offset > (int) image->rows))
-    ThrowBinaryException(OptionWarning,"Unable to composite image",
-      "geometry does not contain image");
-  /*
-    Image must be uncompressed.
-  */
   alpha=1.0/Opaque;
   red=0.0;
   green=0.0;
@@ -1208,7 +1200,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
     }
   }
   /*
-    Initialize composited image.
+    Composite image.
   */
   for (y=0; y < image->rows; y++)
   {

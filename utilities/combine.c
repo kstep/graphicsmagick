@@ -903,17 +903,17 @@ int main(int argc,char **argv)
               break;
             case NorthGravity:
             {
-              x+=(image->columns-composite_image->columns) >> 1;
+              x+=(image->columns-(int) composite_image->columns)/2;
               break;
             }
             case NorthEastGravity:
             {
-              x+=image->columns-composite_image->columns;
+              x+=image->columns-(int) composite_image->columns;
               break;
             }
             case WestGravity:
             {
-              y+=(image->rows-composite_image->rows) >> 1;
+              y+=(image->rows-(int) composite_image->rows)/2;
               break;
             }
             case ForgetGravity:
@@ -932,31 +932,31 @@ int main(int argc,char **argv)
             case CenterGravity:
             default:
             {
-              x+=(image->columns-composite_image->columns) >> 1;
-              y+=(image->rows-composite_image->rows) >> 1;
+              x+=(image->columns-(int) composite_image->columns)/2;
+              y+=(image->rows-(int) composite_image->rows)/2;
               break;
             }
             case EastGravity:
             {
-              x+=image->columns-composite_image->columns;
-              y+=(image->rows-composite_image->rows) >> 1;
+              x+=image->columns-(int) composite_image->columns;
+              y+=(image->rows-(int) composite_image->rows)/2;
               break;
             }
             case SouthWestGravity:
             {
-              y+=image->rows-composite_image->rows;
+              y+=image->rows-(int) composite_image->rows;
               break;
             }
             case SouthGravity:
             {
-              x+=(image->columns-composite_image->columns) >> 1;
-              y+=image->rows-composite_image->rows;
+              x+=(image->columns-(int) composite_image->columns)/2;
+              y+=image->rows-(int) composite_image->rows;
               break;
             }
             case SouthEastGravity:
             {
-              x+=image->columns-composite_image->columns;
-              y+=image->rows-composite_image->rows;
+              x+=image->columns-(int) composite_image->columns;
+              y+=image->rows-(int) composite_image->rows;
               break;
             }
           }
