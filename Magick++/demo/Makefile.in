@@ -175,7 +175,7 @@ AUTOMAKE_OPTIONS = 1.4
 
 INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 
-check_PROGRAMS = button demo detrans flip shapes
+check_PROGRAMS = button demo detrans flip piddle shapes
 
 LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
 
@@ -183,17 +183,18 @@ button_SOURCES = button.cpp
 demo_SOURCES = demo.cpp
 detrans_SOURCES = detrans.cpp
 flip_SOURCES = flip.cpp
+piddle_SOURCES = piddle.cpp
 shapes_SOURCES = shapes.cpp
 
 EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
 
-CLEANFILES = button.miff demo.miff flip_out.miff shapes.miff
+CLEANFILES = button.miff demo.miff flip_out.miff piddle.miff shapes.miff
 subdir = Magick++/demo
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../magick/config.h
 CONFIG_CLEAN_FILES = 
 check_PROGRAMS =  button$(EXEEXT) demo$(EXEEXT) detrans$(EXEEXT) \
-flip$(EXEEXT) shapes$(EXEEXT)
+flip$(EXEEXT) piddle$(EXEEXT) shapes$(EXEEXT)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../../magick
 CPPFLAGS = @CPPFLAGS@
@@ -222,6 +223,11 @@ flip_OBJECTS =  $(am_flip_OBJECTS)
 flip_LDADD = $(LDADD)
 flip_DEPENDENCIES =  ../lib/libMagick++.la ../../magick/libMagick.la
 flip_LDFLAGS = 
+am_piddle_OBJECTS =  piddle.$(OBJEXT)
+piddle_OBJECTS =  $(am_piddle_OBJECTS)
+piddle_LDADD = $(LDADD)
+piddle_DEPENDENCIES =  ../lib/libMagick++.la ../../magick/libMagick.la
+piddle_LDFLAGS = 
 am_shapes_OBJECTS =  shapes.$(OBJEXT)
 shapes_OBJECTS =  $(am_shapes_OBJECTS)
 shapes_LDADD = $(LDADD)
@@ -233,18 +239,19 @@ CXXFLAGS = @CXXFLAGS@
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES =  $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) \
-$(flip_SOURCES) $(shapes_SOURCES)
+$(flip_SOURCES) $(piddle_SOURCES) $(shapes_SOURCES)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 DEP_FILES =  @AMDEP@ $(DEPDIR)/button.Po $(DEPDIR)/demo.Po \
-$(DEPDIR)/detrans.Po $(DEPDIR)/flip.Po $(DEPDIR)/shapes.Po
+$(DEPDIR)/detrans.Po $(DEPDIR)/flip.Po $(DEPDIR)/piddle.Po \
+$(DEPDIR)/shapes.Po
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-SOURCES = $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) $(flip_SOURCES) $(shapes_SOURCES)
-OBJECTS = $(am_button_OBJECTS) $(am_demo_OBJECTS) $(am_detrans_OBJECTS) $(am_flip_OBJECTS) $(am_shapes_OBJECTS)
+SOURCES = $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) $(flip_SOURCES) $(piddle_SOURCES) $(shapes_SOURCES)
+OBJECTS = $(am_button_OBJECTS) $(am_demo_OBJECTS) $(am_detrans_OBJECTS) $(am_flip_OBJECTS) $(am_piddle_OBJECTS) $(am_shapes_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -303,6 +310,10 @@ flip$(EXEEXT): $(flip_OBJECTS) $(flip_DEPENDENCIES)
 	@rm -f flip$(EXEEXT)
 	$(CXXLINK) $(flip_LDFLAGS) $(flip_OBJECTS) $(flip_LDADD) $(LIBS)
 
+piddle$(EXEEXT): $(piddle_OBJECTS) $(piddle_DEPENDENCIES)
+	@rm -f piddle$(EXEEXT)
+	$(CXXLINK) $(piddle_LDFLAGS) $(piddle_OBJECTS) $(piddle_LDADD) $(LIBS)
+
 shapes$(EXEEXT): $(shapes_OBJECTS) $(shapes_DEPENDENCIES)
 	@rm -f shapes$(EXEEXT)
 	$(CXXLINK) $(shapes_LDFLAGS) $(shapes_OBJECTS) $(shapes_LDADD) $(LIBS)
@@ -344,6 +355,7 @@ maintainer-clean-tags:
 @AMDEP@include $(DEPDIR)/demo.Po
 @AMDEP@include $(DEPDIR)/detrans.Po
 @AMDEP@include $(DEPDIR)/flip.Po
+@AMDEP@include $(DEPDIR)/piddle.Po
 @AMDEP@include $(DEPDIR)/shapes.Po
 
 mostlyclean-depend:
@@ -473,6 +485,7 @@ check:
 	env srcdir=$(srcdir) ./button
 	env srcdir=$(srcdir) ./demo
 	env srcdir=$(srcdir) ./flip
+	env srcdir=$(srcdir) ./piddle
 	env srcdir=$(srcdir) ./shapes
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

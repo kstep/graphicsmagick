@@ -154,10 +154,10 @@ namespace Magick
   };
 
   // Specify drawing fill color
-  class DrawableFill : public Drawable
+  class DrawableFillColor : public Drawable
   {
   public:
-    DrawableFill ( Magick::Color &color_ );
+    DrawableFillColor ( const Magick::Color &color_ );
   };
 
   // Specify drawing fill opacity
@@ -258,10 +258,10 @@ namespace Magick
   };
 
   // Stroke color
-  class DrawableStroke : public Drawable
+  class DrawableStrokeColor : public Drawable
   {
   public:
-    DrawableStroke ( Color &color_ );
+    DrawableStrokeColor ( const Color &color_ );
   };
 
   // stroke-antialias stroke_antialias FIXME!

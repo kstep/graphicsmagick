@@ -156,6 +156,7 @@ Magick::DrawableArc::DrawableArc ( double startX_, double startY_,
 Magick::DrawableBezier::DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ )
 {
   list_arg_impl( "bezier", coordinates_ );
+  // cout << "Primitive: \"" << _primitive << "\"" << endl;
 }
 
 // Circle
@@ -254,7 +255,7 @@ Magick::DrawableEllipse::DrawableEllipse ( double originX_,
 }
 
 // Specify drawing fill color
-Magick::DrawableFill::DrawableFill ( Magick::Color &color_ )
+Magick::DrawableFillColor::DrawableFillColor ( const Magick::Color &color_ )
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
@@ -512,7 +513,7 @@ Magick::DrawablePointSize::DrawablePointSize( double pointSize_ )
 }
 
 // Stroke color
-Magick::DrawableStroke::DrawableStroke ( Magick::Color &color_ )
+Magick::DrawableStrokeColor::DrawableStrokeColor ( const Magick::Color &color_ )
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));

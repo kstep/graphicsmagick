@@ -7,23 +7,25 @@ AUTOMAKE_OPTIONS = 1.4
 
 INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 
-check_PROGRAMS = button demo detrans flip shapes
+check_PROGRAMS = button demo detrans flip piddle shapes
 
 LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
 
-button_SOURCES = button.cpp
-demo_SOURCES   = demo.cpp
-detrans_SOURCES =  detrans.cpp
-flip_SOURCES   = flip.cpp
-shapes_SOURCES = shapes.cpp
+button_SOURCES  = button.cpp
+demo_SOURCES    = demo.cpp
+detrans_SOURCES = detrans.cpp
+flip_SOURCES    = flip.cpp
+piddle_SOURCES  = piddle.cpp
+shapes_SOURCES  = shapes.cpp
 
 EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
 
-CLEANFILES = button.miff demo.miff flip_out.miff shapes.miff
+CLEANFILES = button.miff demo.miff flip_out.miff piddle.miff shapes.miff
 
 check:
 	env srcdir=$(srcdir) ./button
 	env srcdir=$(srcdir) ./demo
 	env srcdir=$(srcdir) ./flip
+	env srcdir=$(srcdir) ./piddle
 	env srcdir=$(srcdir) ./shapes
 
