@@ -616,8 +616,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
-  error_manager.image=image;
   jpeg_info.client_data=(void *) &error_manager;
+  error_manager.image=image;
   if (setjmp(error_manager.error_recovery))
     {
       if (jpeg_pixels != (JSAMPLE *) NULL)
