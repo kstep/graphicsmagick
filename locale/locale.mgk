@@ -90,4 +90,6 @@
 <localemap>
   <include locale="C" file="C.mgk" />
   <include locale="en_US" file="en_US.mgk" />
+  <include locale="koi8-r" file="koi8-r.mgk" />
+  <include locale="windows-1251" file="windows-1251.mgk" />
 </localemap>

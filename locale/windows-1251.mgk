@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<locale name="windows-1251">
+  <cache>
+    <error>
+      <message name="pixel-cache-is-not-open">
+        Невозможно открыть кэш пикселов
+      </message>
+    </error>
+  </cache>
+  <resource>
+    <limit>
+      <error>
+        <message name="memory-allocation-failed">
+          Сбой выделения памяти
+        </message>
+        <message name="unable-to-clone-image">
+          Невозможно клонировать изображение
+        </message>
+      </error>
+    </limit>
+  </resource>
+</locale>
