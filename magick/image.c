@@ -4989,9 +4989,8 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
         count=sscanf(geometry,"%lfx%lf",&x_area,&y_area);
       if (count == 1)
         y_area=x_area;
-      distance=sqrt((double) former_width*former_height);
-      *width=(unsigned int) (former_width/(distance/x_area));
-      *height=(unsigned int) (former_height/(distance/y_area));
+      *width=(unsigned int) (former_width/(sqrt(former_width)/x_area));
+      *height=(unsigned int) (former_height/(sqrt(former_width)/y_area));
       former_width=(*width);
       former_height=(*height);
     }
