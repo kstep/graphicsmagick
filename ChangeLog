@@ -1,9 +1,13 @@
 2005-01-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (DescribeImage): Report statistics for a virtual
+	gray channel for grayscale images rather than discrete red, green,
+	and blue.
+	* PerlMagick/Makefile.nt: JNG and JP2 to test list.
 	* configure.ac: Changed --without-fpx to --with-fpx due to
 	decision to default FlashPIX to 'no'.  FlashPIX library is not
 	very portable and is only known to work properly under SPARC
-	Solaris.
+	Solaris and Windows.
 	* NEWS: Updated with latest news.
 	* lcms: Updated to LCMS 1.14.
 

@@ -1573,9 +1573,12 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
                      GetImageChannelDepth(image,YellowChannel,&image->exception));
       (void) fprintf(file,"    Black:    %u bits\n",
                      GetImageChannelDepth(image,BlackChannel,&image->exception));
-      if (image->matte)
-        (void) fprintf(file,"    Opacity:  %u bits\n",
-                       GetImageChannelDepth(image,OpacityChannel,&image->exception));
+    }
+  else if ((image->colorspace == GRAYColorspace) ||
+           (image->is_grayscale == True))
+    {
+      (void) fprintf(file,"    Gray:     %u bits\n",
+                     GetImageChannelDepth(image,RedChannel,&image->exception));
     }
   else
     {
@@ -1585,10 +1588,10 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
                      GetImageChannelDepth(image,GreenChannel,&image->exception));
       (void) fprintf(file,"    Blue:     %u bits\n",
                      GetImageChannelDepth(image,BlueChannel,&image->exception));
-      if (image->matte)
-        (void) fprintf(file,"    Opacity:  %u bits\n",
-                       GetImageChannelDepth(image,OpacityChannel,&image->exception));
     }
+  if (image->matte)
+    (void) fprintf(file,"    Opacity:  %u bits\n",
+                   GetImageChannelDepth(image,OpacityChannel,&image->exception));
   (void) fprintf(file,"  Channel Statistics:\n");
   {
     ImageStatistics
@@ -1655,7 +1658,40 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
         (void) fprintf(file,"    Opacity:\n");
       */
     }
-  else
+    else if ((image->colorspace == GRAYColorspace) ||
+             (image->is_grayscale == True))
+      {
+      (void) fprintf(file,"    Gray:\n");
+      (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.minimum,
+                     statistics.red.minimum);
+      (void) fprintf(file,"      Maximum:            %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.maximum,
+                     statistics.red.maximum);
+      (void) fprintf(file,"      Mean:               %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.mean,
+                     statistics.red.mean);
+      (void) fprintf(file,"      Standard Deviation: %13.02lf (%1.4f)\n",
+                     MaxRGB*statistics.red.standard_deviation,
+                     statistics.red.standard_deviation);
+      if (image->matte)
+        {
+          (void) fprintf(file,"    Opacity:\n");
+          (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
+                         MaxRGB*statistics.opacity.minimum,
+                         statistics.opacity.minimum);
+          (void) fprintf(file,"      Maximum:            %13.02lf (%1.4f)\n",
+                         MaxRGB*statistics.opacity.maximum,
+                         statistics.opacity.maximum);
+          (void) fprintf(file,"      Mean:               %13.02lf (%1.4f)\n",
+                         MaxRGB*statistics.opacity.mean,
+                         statistics.opacity.mean);
+          (void) fprintf(file,"      Standard Deviation: %13.02lf (%1.4f)\n",
+                         MaxRGB*statistics.opacity.standard_deviation,
+                         statistics.opacity.standard_deviation);
+        }
+      }
+    else
     {
       (void) fprintf(file,"    Red:\n");
       (void) fprintf(file,"      Minimum:            %13.02lf (%1.4f)\n",
@@ -1918,55 +1954,14 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   */
   attribute=GetImageAttribute(image,(char *) NULL);
   {
-#if defined(WRAP_ATTRIBUTES)
-    int
-      screen_width=79;
-
-    if (getenv("COLUMNS"))
-        screen_width=atoi(getenv("COLUMNS"))-1;
-#endif /* defined(WRAP_ATTRIBUTES) */
-
     for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
       {
         (void) fprintf(file,"  %c", toupper((int)attribute->key[0]));
         if (strlen(attribute->key) > 1)
           (void) fprintf(file,"%.1024s",attribute->key+1);
-#if defined(WRAP_ATTRIBUTES)
-        {
-          int
-            attribute_length,
-            formatted_chars=0,
-            length=0,
-            start_column=4,
-            strip_length;
 
-          char
-            *s;
-
-          (void) fprintf(file,":\n");
-          attribute_length=strlen(attribute->value);
-          for (s=attribute->value; length < attribute_length; s+=formatted_chars)
-            {
-              fprintf(file,"%*s",start_column,"");
-              strip_length=screen_width-start_column;
-              if (length+strip_length < attribute_length)
-                {
-                  char
-                    *e;
-
-                  for(e=s+strip_length; (e > s) && ( !isspace((int)(*(e-1)))) ; e--);
-                  if ((e > s) && (*(e-1) == ' '))
-                    strip_length=e-s;
-                }
-              formatted_chars=fprintf(file,"%.*s",strip_length,s);
-              length+=formatted_chars;
-              fprintf(file,"\n");
-            }
-        }
-#else
         (void) fprintf(file,": ");
         (void) fprintf(file,"%s\n",attribute->value);
-#endif
       }
   }
   if((profile=GetImageProfile(image,"ICM",&profile_length)) != 0)
@@ -2128,6 +2123,13 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
               }
           }
       }
+#if 0
+   if (LocaleCompare(image->generic_profile[i].name,"XMP") == 0)
+     {
+       fwrite(image->generic_profile[i].info,1,image->generic_profile[i].length,
+              file);
+     }
+#endif
   }
   if (image->montage != (char *) NULL)
     (void) fprintf(file,"  Montage: %.1024s\n",image->montage);
