@@ -298,6 +298,9 @@ display image using this type.
 .B "-sample \fI<geometry>"\fP
 \fRscale image with pixel sampling
 .TP
+.B "-sampling_factor \fI<horizontal_factor>x<vertical_factor> "\fP
+\fRsampling factors used by JPEG encoder.
+.TP
 .B "-scenes \fI<value-value>"\fP
 \fRrange of image scene numbers to read
 .TP
@@ -347,7 +350,7 @@ detect when image file is modified and redisplay.
 .B "-window_group"
 \fRspecify the window group
 .TP
-.B "-write"
+.B "-write \fI<filename>"\fP
 \fRwrite the image to a file [\fIdisplay\fP]
 
 For a more detailed description of each option, see

@@ -1869,8 +1869,8 @@ image file.  Use +profile "*" to remove all profiles.
 
 For the JPEG image format, quality is 0 (lowest image quality and highest
 compression) to 100 (best quality but least effective compression). The default
-quality is 75.  If the quality is an odd number, 2x2 chroma downsampling is
-used.  If it is even, 1x1 chroma sampling is used.
+quality is 75.  Use the \fB-sampling_factor\fP option to specify the factors
+for chroma downsampling.
 
 
 For the MIFF image format, quality/10 is the zlib compression level, which
@@ -1998,6 +1998,13 @@ the geometry specification.
 is present.  Offsets, if present in the geometry string, are ignored, and
 the \fB-gravity\fP option has no effect.
 
+.TP
+.B "-sampling_factor \fI<horizontal_factor>x<vertical_factor> "\fP
+\fRsampling factors used by JPEG encoder.
+
+This option specifies the sampling factors to be used by the JPEG encoder for
+chroma downsampling.  If this option is omitted, the JPEG library
+will use its own default values.
 .TP
 .B "-scale \fI<geometry>"\fP
 \fRscale the image.

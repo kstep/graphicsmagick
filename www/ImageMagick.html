@@ -2722,8 +2722,8 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For the JPEG image format, quality is 0 (lowest image quality and highest
 compression) to 100 (best quality but least effective compression). The default
-quality is 75.  If the quality is an odd number, 2x2 chroma downsampling is
-used.  If it is even, 1x1 chroma sampling is used.
+quality is 75.  Use the <strong>-sampling_factor</strong> option to specify the factors
+for chroma downsampling.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For the MIFF image format, quality/10 is the zlib compression level, which
@@ -2908,6 +2908,21 @@ the geometry specification.
 is present.  Offsets, if present in the geometry string, are ignored, and
 the <strong>-gravity</strong> option has no effect.
 </font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="-sampling_factor">-sampling_factor</a> <i>&lt;horizontal_factor&gt;x&lt;vertical_factor&gt; </i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sampling factors used by JPEG encoder.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This option specifies the sampling factors to be used by the JPEG encoder for
+chroma downsampling.  If this option is omitted, the JPEG library
+will use its own default values.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
