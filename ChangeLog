@@ -1,3 +1,7 @@
+2002-02-14  Cristy  <cristy@mystic.es.dupont.com>,
+  * Command line options now stay in effect for any image in command
+    line order until a another option is encountered or if -new is specified.
+
 2002-02-07  Cristy  <cristy@mystic.es.dupont.com>,
   * SVG coders understands inline images.
 
