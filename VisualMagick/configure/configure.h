@@ -96,7 +96,7 @@ private:
   void process_3rd_party_library(ofstream &dsw, const char *filename,
           int runtime, int project_type);
   void process_module(ofstream &dsw,
-          WIN32_FIND_DATA	&data, const char *filename,
+          const char *root, const char *filename,
           int runtime, int project_type);
   void process_one_folder(ofstream &dsw,
           const char *root, WIN32_FIND_DATA	&data,

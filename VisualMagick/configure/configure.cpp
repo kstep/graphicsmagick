@@ -421,6 +421,14 @@ void CConfigureApp::process_utility(ofstream &dsw,
     int levels = strDepends.GetFieldCount('\\');
     add_includes(includes_list, libpath, levels-2);
   }
+  if (strDepends.FindNoCase("..\\jp2",0) == 0)
+  {
+    std::string libpath;
+    libpath = "..\\jp2";
+
+    int levels = strDepends.GetFieldCount('\\');
+    add_includes(includes_list, libpath, levels-2);
+  }
   if (strDepends.FindNoCase("..\\Magick++",0) == 0)
   {
     std::string libpath;
@@ -488,6 +496,10 @@ void CConfigureApp::process_utility(ofstream &dsw,
         {
 		      add_project_dependency(dsw, "CORE_SDL");
         }
+        if (strDepends.Find("..\\jp2",0) == 0)
+        {
+		      add_project_dependency(dsw, "CORE_jp2");
+        }
       }
 	    end_project(dsw);
       break;
@@ -500,6 +512,9 @@ void CConfigureApp::process_library(ofstream &dsw,
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
   std::string prefix = "CORE_";
+
+  std::string root = "..\\";
+  root += filename;
 
 	std::list<std::string> libs_list_release;
 	std::list<std::string> libs_list_debug;
@@ -549,7 +564,7 @@ void CConfigureApp::process_library(ofstream &dsw,
     dll,
     runtime, // multi-threaded
     project_type,
-    filename,
+    root,
 		"*",
 		name,
 		prefix,
@@ -847,12 +862,17 @@ void AddExtraLibs(std::string &name,
 
 
 void CConfigureApp::process_module(ofstream &dsw,
-  WIN32_FIND_DATA	&data, const char *filename,
-    int runtime, int project_type)
+    const char *root, const char *filename,
+      int runtime, int project_type)
 {
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
+  std::string extn = basename.GetField('.',1);
   std::string prefix;
+
+  //CStringEx staging = root;
+  //int levels = staging.GetFieldCount('\\');
+  //std::string parent = staging.GetField('\\',levels-1);
 
   if (project_type == MODULE)
     prefix = MODULE_PREFIX;    
@@ -877,6 +897,19 @@ void CConfigureApp::process_module(ofstream &dsw,
 		defines_list.push_back("_LIB");
   }
 
+  CStringEx strDepends = root;
+  {
+    std::string libpath;
+
+    int levels = strDepends.GetFieldCount('\\');
+    for (int i=0; i<levels; i++)
+      libpath += "..\\";
+		includes_list.push_back(libpath);
+
+    libpath = "..\\magick";
+    levels = strDepends.GetFieldCount('\\');
+    add_includes(includes_list, libpath, levels-2);
+  }
   if (name.compare("png") == 0)
   {
 		includes_list.push_back("..\\..\\zlib");
@@ -912,6 +945,16 @@ void CConfigureApp::process_module(ofstream &dsw,
   libpath += name;
   libpath += "\\LIBRARY.txt";
   HANDLE libhandle = FindFirstFile(libpath.c_str(), &libdata);
+	if (libhandle != INVALID_HANDLE_VALUE)
+  {
+    FindClose(libhandle);
+    dependency = "CORE_";
+    dependency += name;
+  }
+  libpath = "..\\";
+  libpath += name;
+  libpath += "\\STATICLIB.txt";
+  libhandle = FindFirstFile(libpath.c_str(), &libdata);
 	if (libhandle != INVALID_HANDLE_VALUE)
   {
     FindClose(libhandle);
@@ -979,7 +1022,7 @@ void CConfigureApp::process_module(ofstream &dsw,
     (runtime == MULTITHREADEDDLL),
     runtime, // multi-threaded
     project_type,
-    data.cFileName,
+    root,
 		"",
 		name,
 		prefix,
@@ -994,8 +1037,10 @@ void CConfigureApp::process_module(ofstream &dsw,
   std::string project;
   std::string pname;
   pname = prefix + name;
-  project += ".\\";
-  project += data.cFileName;
+  //project += ".\\";
+  //project += parent;
+  project = root;
+  project = project.substr(1, project.length() - 1);
   project += "\\";
   project += pname;
   if (project_type == MODULE)
@@ -1157,8 +1202,10 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
   case ADD_ON:
   case MODULE:
     {
-	    subpath = "..\\..\\";
-      subpath += data.cFileName;
+	    //subpath = "..\\..\\";
+      //subpath += data.cFileName;
+      subpath = "..\\";
+	    subpath += root;
       subpath += "\\*.c";
 	    WIN32_FIND_DATA	subdata;
 	    HANDLE subhandle = FindFirstFile(subpath, &subdata);
@@ -1166,21 +1213,23 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       {
 	      do
 	      {
-          process_module(dsw, data, subdata.cFileName,
+          process_module(dsw, root, subdata.cFileName,
             runtimeOption, project_type);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
 
-	    subpath = "..\\..\\";
-      subpath += data.cFileName;
+	    //subpath = "..\\..\\";
+      //subpath += data.cFileName;
+      subpath = "..\\";
+	    subpath += root;
       subpath += "\\*.cpp";
 	    subhandle = FindFirstFile(subpath, &subdata);
 	    if (subhandle != INVALID_HANDLE_VALUE)
       {
 	      do
 	      {
-          process_module(dsw, data, subdata.cFileName,
+          process_module(dsw, root, subdata.cFileName,
             runtimeOption, project_type);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
@@ -1442,7 +1491,7 @@ void CConfigureApp::process_project_type(ofstream &dsw,
           rootpath += "\\";
           rootpath += topdata.cFileName;
           process_one_folder(dsw,rootpath.c_str(),data,btype,runtime);
-          if (btype == UTILITY || btype == PROJECT)
+          if (btype == UTILITY || btype == PROJECT || btype == ADD_ON)
           {
             rootpath = root;
             rootpath += "\\";
@@ -2458,7 +2507,7 @@ void CConfigureApp::write_lib_dsp(
   bool dll,
   int runtime,
   int project_type,
-	std::string directory,
+	std::string root,
 	std::string search,
 	std::string dspname,
 	std::string prefix,
@@ -2470,8 +2519,9 @@ void CConfigureApp::write_lib_dsp(
 	std::list<std::string> &source_list,
   std::list<std::string> &exclude_list)
 {
-	CString filename = "..\\";
-  filename += directory.c_str();
+	//CString filename = "..\\";
+  //filename += directory.c_str();
+  CString filename = root.c_str();
   filename += "\\";
 	filename += prefix.c_str();
 	filename += dspname.c_str();
@@ -2684,9 +2734,9 @@ void CConfigureApp::write_lib_dsp(
     dsp << "/pdb:\"" << bin_loc << outname << ".pdb\"";
     {
 	    WIN32_FIND_DATA	defdata;
-	    CString defname = "..\\";
-
-      defname += directory.c_str();
+	    //CString defname = "..\\";
+      //defname += directory.c_str();
+      CString defname = root.c_str();
       defname += "\\";
       defname += outname;
       defname += ".def";
@@ -2823,9 +2873,9 @@ void CConfigureApp::write_lib_dsp(
     dsp << "/pdb:\"" << bin_loc << outname << ".pdb\"";
     {
 	    WIN32_FIND_DATA	defdata;
-	    CString defname = "..\\";
-
-      defname += directory.c_str();
+	    //CString defname = "..\\";
+      //defname += directory.c_str();
+      CString defname = root.c_str();
       defname += "\\";
       defname += outname;
       defname += ".def";
@@ -2881,8 +2931,9 @@ void CConfigureApp::write_lib_dsp(
       group = valid_dirs[i].group;
 	    begin_group(dsp, group);
     }
-	  dir = "..\\";
-    dir += directory.c_str();
+	  //dir = "..\\";
+    //dir += directory.c_str();
+    dir = root.c_str();
     dir += valid_dirs[i].name;
     if (search.length() > 0)
 	    spec = search.c_str();
@@ -3124,6 +3175,11 @@ void CConfigureApp::write_exe_dsp(
             strDepends.Format("CORE_%sSDL%s","RL_","_.lib");
 			      dsp << " " << strDepends << "";
           }
+          if (strPath.Find("..\\jp2",0) == 0)
+          {
+            strDepends.Format("CORE_%sjp2%s","RL_","_.lib");
+			      dsp << " " << strDepends << "";
+          }
         }
         break;
 	  }
@@ -3298,6 +3354,11 @@ void CConfigureApp::write_exe_dsp(
             strDepends.Format("CORE_%sSDL%s","DB_","_.lib");
 			      dsp << " " << strDepends << "";
           }
+          if (strPath.Find("..\\jp2",0) == 0)
+          {
+            strDepends.Format("CORE_%sjp2%s","DB_","_.lib");
+			      dsp << " " << strDepends << "";
+          }
         }
         break;
 	  }
@@ -3468,7 +3529,7 @@ void CConfigureApp::generate_dir(ofstream &dsp,
 
 		  if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
 			  continue;
-      if (project_type == UTILITY || project_type == PROJECT)
+      if (project_type == UTILITY || project_type == PROJECT || project_type == ADD_ON)
       {
         CStringEx getcount = path;
         int levels = getcount.GetFieldCount('\\');
