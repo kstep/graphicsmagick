@@ -747,12 +747,12 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     for (x=0; x < (int) image->columns; x++)
     {
       *q=image_info->fill;
-      if ((image_info->stroke.opacity != Transparent) && (*p == 1))
+      if ((image_info->stroke.opacity != Transparent) && (*p <= 1))
         *q=image_info->stroke;
       if (image_info->antialias)
         q->opacity=(int) (Opaque*Min(*p,4))/4;
       else
-        q->opacity=(*p) >= 1 ? Opaque : Transparent;
+        q->opacity=(*p) > 0 ? Opaque : Transparent;
       if (q->opacity == Transparent)
         {
           q->red=(~q->red);
