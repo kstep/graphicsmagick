@@ -40,9 +40,9 @@ cat <<!!
   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=us-ascii">
 	<title>GraphicsMagick GM Utility</title>
-	<style>
+	<style type=css/text>
 	<!--
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
