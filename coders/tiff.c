@@ -510,7 +510,19 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image->rows= height;
     range=max_sample_value-min_sample_value;
     image->depth=range <= 255 ? 8 : QuantumDepth;
-    if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff) &&
+    (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
+      &sample_info);
+    image->matte=((extra_samples == 1) &&
+      (sample_info[0] == EXTRASAMPLE_ASSOCALPHA));
+    if (image->colorspace == CMYKColorspace)
+      {
+        if (samples_per_pixel > 4)
+          image->matte=True;
+      }
+    else
+      if (samples_per_pixel > 3)
+        image->matte=True;
+    if ((samples_per_pixel <= 2) && !TIFFIsTiled(tiff) &&
         ((photometric == PHOTOMETRIC_MINISBLACK) ||
          (photometric == PHOTOMETRIC_MINISWHITE) ||
          (photometric == PHOTOMETRIC_PALETTE)))
@@ -556,31 +568,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) SetImageAttribute(image,"label",text);
     if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
       (void) SetImageAttribute(image,"comment",text);
-    if (image->storage_class == DirectClass)
-      {
-        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
-          &sample_info);
-        if (image->colorspace == CMYKColorspace)
-          {
-            if (samples_per_pixel > 4)
-              image->matte=True;
-          }
-        else
-          if (samples_per_pixel > 3)
-            image->matte=True;
-      }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     if (range < 0)
       range=max_sample_value;
     method=0;
-    if (image->storage_class == DirectClass)
+    if ((image->storage_class == DirectClass) || image->matte)
       {
         method=2;
-        if ((samples_per_pixel >= 2) && (photometric == PHOTOMETRIC_RGB) &&
-            (interlace == PLANARCONFIG_CONTIG))
-          method=1;
+        if (photometric == PHOTOMETRIC_RGB)
+          if ((samples_per_pixel >= 2) && (interlace == PLANARCONFIG_CONTIG))
+            method=1;
         if (image->colorspace == CMYKColorspace)
           method=1;
       }
@@ -603,6 +602,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           Convert TIFF image to PseudoClass MIFF image.
         */
         packet_size=bits_per_sample > 8 ? 2 : 1;
+        if (image->matte)
+          packet_size*=2;
         quantum_scanline=(unsigned char *) AcquireMemory(packet_size*width);
         scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
         if ((quantum_scanline == (unsigned char *) NULL) ||
@@ -779,10 +780,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           /*
             Transfer image scanline.
           */
-          if (photometric != PHOTOMETRIC_PALETTE)
-            (void) PushImagePixels(image,GrayQuantum,quantum_scanline);
-					else
-            (void) PushImagePixels(image,IndexQuantum,quantum_scanline);
+          if (image->matte)
+            (void) PushImagePixels(image,GrayAlphaQuantum,quantum_scanline);
+          else
+            if (photometric != PHOTOMETRIC_PALETTE)
+              (void) PushImagePixels(image,GrayQuantum,quantum_scanline);
+            else
+              (void) PushImagePixels(image,IndexQuantum,quantum_scanline);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -798,8 +802,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
-          &sample_info);
         scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
         if (scanline == (unsigned char *) NULL)
           {
@@ -809,15 +811,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitError,"Memory allocation failed",
               image)
           }
-        image->matte=extra_samples == 1;
-        if (image->colorspace == CMYKColorspace)
-          {
-            if (samples_per_pixel > 4)
-              image->matte=True;
-          }
-        else
-          if (samples_per_pixel > 3)
-            image->matte=True;
         for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -887,10 +880,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
-          &sample_info);
-        image->matte=
-          ((extra_samples == 1) && (sample_info[0] == EXTRASAMPLE_ASSOCALPHA));
         number_pixels=image->columns*image->rows;
         pixels=(uint32 *)
           AcquireMemory((number_pixels+6*image->columns)*sizeof(uint32));
@@ -920,7 +909,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             q->green=ScaleCharToQuantum(TIFFGetG(*p));
             q->blue=ScaleCharToQuantum(TIFFGetB(*p));
             if (image->matte)
-              q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(TIFFGetA(*p)));
+              q->opacity=(Quantum) ScaleCharToQuantum(TIFFGetA(*p));
             p--;
             q--;
           }
@@ -1859,13 +1848,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              if (photometric != PHOTOMETRIC_PALETTE)
-                (void) PopImagePixels(image,GrayQuantum,scanline);
+              if (image->matte)
+                (void) PopImagePixels(image,GrayAlphaQuantum,scanline);
               else
-                if (!image->matte)
-                  (void) PopImagePixels(image,IndexQuantum,scanline);
+                if (photometric != PHOTOMETRIC_PALETTE)
+                  (void) PopImagePixels(image,GrayQuantum,scanline);
                 else
-                  (void) PopImagePixels(image,IndexAlphaQuantum,scanline);
+                  (void) PopImagePixels(image,IndexQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)
