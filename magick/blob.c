@@ -77,7 +77,7 @@
 %
 %  The format of the BlobToImage method is:
 %
-%      Image *BlobToImage(const ImageInfo *image_info,void *blob,
+%      Image *BlobToImage(const ImageInfo *image_info,const void *blob,
 %        const size_t length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -96,7 +96,7 @@
 %
 %
 */
-MagickExport Image *BlobToImage(const ImageInfo *image_info,void *blob,
+MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   const size_t length,ExceptionInfo *exception)
 {
   Image

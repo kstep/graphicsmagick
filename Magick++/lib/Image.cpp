@@ -1134,7 +1134,7 @@ void Magick::Image::read ( const Blob &blob_ )
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* image =
     BlobToImage( imageInfo(),
-		 static_cast<const char *>(blob_.data()),
+		 static_cast<const void *>(blob_.data()),
 		 blob_.length(), &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );

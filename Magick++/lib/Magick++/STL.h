@@ -2416,7 +2416,7 @@ namespace Magick
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     MagickLib::Image *images = MagickLib::BlobToImage( options.imageInfo(),
-						       static_cast<const char *>(blob_.data()),
+						       static_cast<void *>(blob_.data()),
 						       blob_.length(), &exceptionInfo );
     insertImages( sequence_, images, options );
     throwException( exceptionInfo );
