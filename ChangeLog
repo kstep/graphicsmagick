@@ -4,7 +4,8 @@
 	* coders/ps3.c, coders/tiff.c, magick/command.c, magick/image.c,
 	magick/image.h, magick/utility.c: Changed -coder-options option to
 	-define. Also renamed functions {Add,Remove,Access}CoderOption(s)
-	to {Add,Remove,Access}Definition(s).
+	to {Add,Remove,Access}Definition(s). Changed ps coder-specific
+	option ps:image=imagemask to just ps:imagemask.
 
 2003-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
