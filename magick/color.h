@@ -19,9 +19,15 @@ extern "C" {
 { \
   if (index >= image->colors) \
     { \
-      index=0; \
+      char \
+        colormapIndexBuffer[MaxTextExtent]; \
+      \
+      FormatString(colormapIndexBuffer,"index %u >= %lu colors, %.1024s", \
+        (unsigned int) index, image->colors, image->filename); \
+      errno=0; \
+      index=0U; \
       ThrowException(&image->exception,CorruptImageError, \
-                     InvalidColormapIndex,image->filename); \
+        InvalidColormapIndex,colormapIndexBuffer); \
     } \
 }
 

@@ -369,7 +369,8 @@ int main ( int argc, char **argv )
       goto program_exit;
     }
 
-  /* DisplayImages( imageInfo, final ); */
+  if (getenv("SHOW_RESULT") != 0)
+    DisplayImages( imageInfo, final );
 
  program_exit:
   fflush(stdout);

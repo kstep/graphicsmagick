@@ -932,7 +932,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               case OpacityMapQuantum:
               {
-                *q++=ScaleQuantumToChar(p->opacity);
+                if (image->matte)
+                  *q=ScaleQuantumToChar(p->opacity);
+                else
+                  *q=0U;
+                q++;
                 break;
               }
               case IntensityMapQuantum:
@@ -991,7 +995,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               case OpacityMapQuantum:
               {
-                *q++=ScaleQuantumToShort(p->opacity);
+                if (image->matte)
+                  *q=ScaleQuantumToShort(p->opacity);
+                else
+                  *q=0U;
+                q++;
                 break;
               }
               case IntensityMapQuantum:
@@ -1050,7 +1058,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               case OpacityMapQuantum:
               {
-                *q++=ScaleQuantumToLong(p->opacity);
+                if (image->matte)
+                  *q=ScaleQuantumToLong(p->opacity);
+                else
+                  *q=0U;
+                q++;
                 break;
               }
               case IntensityMapQuantum:
@@ -1109,7 +1121,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               case OpacityMapQuantum:
               {
-                *q++=ScaleQuantumToLong(p->opacity);
+                if (image->matte)
+                  *q=ScaleQuantumToLong(p->opacity);
+                else
+                  *q=0UL;
+                q++;
                 break;
               }
               case IntensityMapQuantum:
@@ -1168,7 +1184,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               case OpacityMapQuantum:
               {
-                *q++=(double) p->opacity/MaxRGB;
+                if (image->matte)
+                  *q=(double) p->opacity/MaxRGB;
+                else
+                  *q=0.0;
+                q++;
                 break;
               }
               case IntensityMapQuantum:
@@ -1227,7 +1247,11 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               }
               case OpacityMapQuantum:
               {
-                *q++=(double) p->opacity/MaxRGB;
+                if (image->matte)
+                  *q=(double) p->opacity/MaxRGB;
+                else
+                  *q=0.0;
+                q++;
                 break;
               }
               case IntensityMapQuantum:
@@ -2553,6 +2577,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
                 q->red=ScaleCharToQuantum(*p++);
                 q->green=ScaleCharToQuantum(*p++);
                 q->blue=ScaleCharToQuantum(*p++);
+                /* q->opacity=0U; */
                 q++;
               }
             break;
@@ -2570,6 +2595,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
                 q->blue=ScaleShortToQuantum(quantum);
+                /* q->opacity=0U; */
                 q++;
               }
             break;
@@ -2591,6 +2617,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
             quantum|=(*p++ << 8);
             quantum|=(*p++);
             q->blue=ScaleLongToQuantum(quantum);
+            /* q->opacity=0U; */
             q++;
           }
         break;

@@ -165,7 +165,11 @@ int main ( int argc, char **argv )
     "Reading image %s", imageInfo->filename);
   original = ReadImage ( imageInfo, &exception );
   if (exception.severity != UndefinedException)
-    CatchException(&exception);
+    {
+      CatchException(&exception);
+      exit_status = 1;
+      goto program_exit;
+    }
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo->filename );
@@ -194,7 +198,12 @@ int main ( int argc, char **argv )
   fflush(stdout);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "Writing image %s", original->filename);
-  WriteImage ( imageInfo, original );
+  if (!WriteImage ( imageInfo, original ))
+    {
+      CatchException(&original->exception);
+      exit_status = 1;
+      goto program_exit;
+    }
   imageInfo->depth=original->depth;
   DestroyImage( original );
   original = (Image*)NULL;
@@ -209,7 +218,11 @@ int main ( int argc, char **argv )
   fflush(stdout);
   original = ReadImage ( imageInfo, &exception );
   if (exception.severity != UndefinedException)
-    CatchException(&exception);
+    {
+      CatchException(&exception);
+      exit_status = 1;
+      goto program_exit;
+    }
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
@@ -227,7 +240,12 @@ int main ( int argc, char **argv )
   strncpy( original->filename, filename, MaxTextExtent-1 );
   original->delay = 10;
   fflush(stdout);
-  WriteImage ( imageInfo, original );
+  if(!WriteImage (imageInfo,original))
+    {
+      CatchException(&original->exception);
+      exit_status = 1;
+      goto program_exit;
+    }
 
   /*
    * Read image back from file
@@ -241,7 +259,11 @@ int main ( int argc, char **argv )
     "Reading image %s", imageInfo->filename);
   final = ReadImage ( imageInfo, &exception );
   if (exception.severity != UndefinedException)
-    CatchException(&exception);
+    {
+      CatchException(&exception);
+      exit_status = 1;
+      goto program_exit;
+    }
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
@@ -267,7 +289,8 @@ int main ( int argc, char **argv )
        !strcmp( "PCD", format ) ||
        !strcmp( "PCDS", format ) ||
        !strcmp( "UYVY", format ) ||
-       !strcmp( "YUV", format ) )
+       !strcmp( "YUV", format ) ||
+       (final->compression == JPEGCompression))
     fuzz_factor = 0.06;
 
   if ( !IsImagesEqual(original, final ) &&

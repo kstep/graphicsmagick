@@ -1,3 +1,15 @@
+2004-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/color.h (VerifyColormapIndex): Improve diagnostics.
+	* coders/pict.c (WritePICTImage): Eliminate use of uninitialized
+	data when writing RGB PICT. Fix OpenBlob assertion when writing
+	JPEG PICT.	
+	(ReadPICTImage): Validate 'tile_image' colormap indexes rather
+	than 'image' colormap indexes. Preserve compression attribute from
+	tile image.
+	* magick/constitute.c (DispatchImage): Don't access image opacity
+	channel unless image->matte is True.
+
 2004-02-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/png.c (UnregisterPNGImage): Destroy PNG semaphore.

@@ -119,7 +119,6 @@ typedef struct _PICTRectangle
     right;
 } PICTRectangle;
 
-#define MaxPICTCode 0xa1
 static const PICTCode
   codes[] =
   {
@@ -580,6 +579,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
     Pack scanline.
   */
   assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(scanline != (unsigned char *) NULL);
   assert(pixels != (unsigned char *) NULL);
   count=0;
@@ -796,9 +796,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   /*
     Interpret PICT opcodes.
   */
-  code=0;
   jpeg=False;
-  for ( ; ; )
+  for (code=0; EOFBlob(image) == False; )
   {
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -807,9 +806,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       code=ReadBlobByte(image);
     if (version == 2)
       code=ReadBlobMSBShort(image);
-    if (EOFBlob(image))
-        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
-    if ((code < 0) || (code > MaxPICTCode) )
+    if (code > 0xa1)
       {
         if (IsEventLogging())
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%04X:",code);
@@ -973,14 +970,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             /*
               Initialize tile image.
             */
-            tile_image=image;
-            if ((frame.left != 0) || (frame.top != 0) ||
-                (frame.right != (long) image->columns) ||
-                (frame.bottom != (long) image->rows) || jpeg)
-              tile_image=CloneImage(image,frame.right-frame.left,
-                frame.bottom-frame.top,True,exception);
+            tile_image=CloneImage(image,frame.right-frame.left,
+              frame.bottom-frame.top,True,exception);
             if (tile_image == (Image *) NULL)
               return((Image *) NULL);
+            DestroyBlob(tile_image);
+            tile_image->blob=CloneBlobInfo((BlobInfo *) NULL);
             if ((code == 0x9a) || (code == 0x9b) || (bytes_per_line & 0x8000))
               {
                 ReadPixmap(pixmap);
@@ -1003,6 +998,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                     DestroyImage(tile_image);
                     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
                   }
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "Allocated tile image colormap with %lu colors",tile_image->colors);
                 if (bytes_per_line & 0x8000)
                   {
                     for (i=0; i < (long) tile_image->colors; i++)
@@ -1069,7 +1066,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (tile_image->storage_class == PseudoClass)
                   {
                     index=(IndexPacket) (*p);
-                    VerifyColormapIndex(image,index);
+                    VerifyColormapIndex(tile_image,index);
                     indexes[x]=index;
                     q->red=tile_image->colormap[index].red;
                     q->green=tile_image->colormap[index].green;
@@ -1118,15 +1115,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                     break;
             }
             MagickFreeMemory(pixels);
-            if (tile_image != image)
-              {
-                if (!jpeg)
-                  if ((code == 0x9a) || (code == 0x9b) ||
-                      (bytes_per_line & 0x8000))
-                    (void) CompositeImage(image,CopyCompositeOp,tile_image,
-                      destination.left,destination.top);
+            if (jpeg == False)
+              if ((code == 0x9a) || (code == 0x9b) ||
+                  (bytes_per_line & 0x8000))
+                (void) CompositeImage(image,CopyCompositeOp,tile_image,
+                   destination.left,destination.top);
                 DestroyImage(tile_image);
-              }
             if (destination.bottom != (long) image->rows)
               if (!MagickMonitor(LoadImageText,destination.bottom,image->rows,&image->exception))
                 break;
@@ -1159,6 +1153,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             {
               case 0xe0:
               {
+                if (length == 0)
+                  break;
                 image->color_profile.info=MagickAllocateMemory(unsigned char *,
                   length);
                 if (image->color_profile.info == (unsigned char *) NULL)
@@ -1169,6 +1165,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               }
               case 0x1f2:
               {
+                if (length == 0)
+                  break;
                 image->iptc_profile.info=MagickAllocateMemory(unsigned char *,
                   length);
                 if (image->iptc_profile.info == (unsigned char *) NULL)
@@ -1245,8 +1243,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         }
         (void) fclose(file);
         tile_image=ReadImage(clone_info,exception);
-        DestroyImageInfo(clone_info);
         LiberateTemporaryFile(clone_info->filename);
+        DestroyImageInfo(clone_info);
         if (tile_image == (Image *) NULL)
           continue;
         FormatString(geometry,"%lux%lu",Max(image->columns,tile_image->columns),
@@ -1254,6 +1252,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         (void) TransformImage(&image,(char *) NULL,geometry);
         (void) CompositeImage(image,CopyCompositeOp,tile_image,frame.left,
           frame.right);
+        image->compression=tile_image->compression;
         DestroyImage(tile_image);
         continue;
       }
@@ -1578,16 +1577,28 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image,crop_rectangle.right);
   if (image->compression == JPEGCompression)
     {
+      Image
+        *jpeg_image;
+
       size_t
         length;
 
-      void
+      unsigned char
         *blob;
 
-      (void) strcpy(image->magick,"JPEG");
-      length=image->columns*image->rows/4;
-      blob=ImageToBlob(image_info,image,&length,&image->exception);
-      if (blob == (void *) NULL)
+      jpeg_image=CloneImage(image,0,0,True,&image->exception);
+      if (jpeg_image == (Image *) NULL)
+        {
+          CloseBlob(image);
+          return (False);
+        }
+      DestroyBlob(jpeg_image);
+      jpeg_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+      (void) strcpy(jpeg_image->magick,"JPEG");
+      blob=(unsigned char *) ImageToBlob(image_info,jpeg_image,&length,
+        &image->exception);
+      DestroyImage(jpeg_image);
+      if (blob == (unsigned char *) NULL)
         return(False);
       (void) WriteBlobMSBShort(image,PictJPEGOp);
       (void) WriteBlobMSBLong(image,length+154);
@@ -1768,7 +1779,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
               *opacity++=ScaleQuantumToChar(MaxRGB-p->opacity);
             p++;
           }
-          count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
+          count+=EncodeImage(image,scanline,bytes_per_line & 0x7FFF,packed_scanline);
           if (QuantumTick(y,image->rows))
             if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
               break;
