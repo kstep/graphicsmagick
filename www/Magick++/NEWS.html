@@ -16,6 +16,15 @@ with Magick++ itself.
     the memory was allocated from.  Used to assume the C++ allocator.
     This resolves a bug on some platforms (e.g. Windows).
 
+  <LI> Added Image 'opacity' method (and STL opacityImage()) to set, or
+    attenuate, image opacity.
+
+  <LI> Added Image 'type' method (and STL typeImage()) to set image
+    representation type.
+
+  <LI> Image depth method now adjusts pixels to match specified image depth,
+    and reports depth based on current image pixels.
+
 </UL>
 <p>
 (5.3.8.1)<BR>
