@@ -4,6 +4,16 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2003-05-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Include.h: If _VISUALC_ is defined,
+        include &lt;sys/types.h&gt;. This ensures that this necessary
+        header is included even if HAVE_SYS_TYPES_H is not defined
+        in magick_config.h.
+
+</UL>
+<p>
 2003-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

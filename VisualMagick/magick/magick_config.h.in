@@ -171,4 +171,10 @@
 // Optional: Specify where filter modules (DLLs) are installed
 // #define MagickFilterModulesPath   "c:\\GraphicsMagick\\"
 
+/////////////
+//
+// The remaining defines should not require user modification.
+//
+#define HAVE_SYS_TYPES_H 1
+
 #endif // WIN32

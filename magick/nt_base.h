@@ -44,7 +44,6 @@ extern "C" {
 #define HAVE_VSNPRINTF 1
 #define HAVE_TEMPNAM 1
 #define HAVE_RAISE 1
-#define HAVE_SYS_TYPES_H 1
 
 // Define to support memory mapping files for improved performance
 #define HAVE_MMAP 1

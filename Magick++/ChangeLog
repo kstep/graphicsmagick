@@ -1,3 +1,9 @@
+2003-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h: Decided to back out change
+	which used the _VISUALC_ define to trigger inclusion of
+	<sys/types.h>.
+
 2003-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h: If _VISUALC_ is defined,

@@ -24,7 +24,7 @@
 // Needed for time_t
 #include <time.h>
 
-#if defined(HAVE_SYS_TYPES_H) || defined(_VISUALC_)
+#if defined(HAVE_SYS_TYPES_H)
 # include <sys/types.h>
 #endif
 
