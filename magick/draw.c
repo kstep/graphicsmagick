@@ -2867,7 +2867,7 @@ static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
   image_info->size=AllocateString(geometry->value);
   *pattern=AllocateImage(image_info);
   DestroyImageInfo(image_info);
-  (void) QueryColorDatabase("none",&pattern->background_color);
+  (void) QueryColorDatabase("none",&(*pattern)->background_color);
   SetImage(*pattern,OpaqueOpacity);
   if (draw_info->debug)
     (void) fprintf(stdout,"\nbegin pattern-path %.1024s %.1024s\n",name,
