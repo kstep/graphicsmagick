@@ -3069,7 +3069,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->delay != 0)
       scenes_found++;
     if (image_info->ping && (image_info->subrange != 0) &&
-        scenes_found > (long) image_info->subimage+image_info->subrange)
+        scenes_found > (long) (image_info->subimage+image_info->subrange))
       {
         png_destroy_read_struct(&ping,&ping_info,&end_info);
         break;
@@ -4010,7 +4010,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CatchImageException(image);
       if (image_info->subrange != 0)
         {
-          if (scenes_found > (long) image_info->subimage+image_info->subrange)
+          if (scenes_found > (long) (image_info->subimage+image_info->subrange))
             break;
         }
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
