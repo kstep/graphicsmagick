@@ -807,7 +807,6 @@ extern MagickExport unsigned long
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),
-  CompressColormap(Image *),
   CycleColormapImage(Image *,const int),
   DescribeImage(Image *,FILE *,const unsigned int),
   DestroyColorInfo(void),
