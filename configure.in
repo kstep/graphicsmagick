@@ -250,6 +250,12 @@ AC_ARG_WITH(fpx,
 	      [with_fpx=$withval],
 	      [with_fpx='yes'])
 
+# Disable Ghostscript library support.
+AC_ARG_WITH(gslib,
+	      [  --without-gslib         disable Ghostscript library support],
+	      [with_gslib=$withval],
+	      [with_gslib='yes'])
+
 # Disable HDF.
 AC_ARG_WITH(hdf,
 	      [  --without-hdf           disable HDF support],
@@ -824,6 +830,41 @@ fi
 fi
 AM_CONDITIONAL(HasJPEG, test "$have_jpeg" != 'no')
 AC_SUBST(LIB_JPEG)
+
+#
+# Check for Ghostscript library
+#
+# Test for iapi.h & test for gsapi_new_instance in -lgs
+have_gslib='no'
+LIB_GS=''
+if test "$with_gslib" != 'no'
+then
+    AC_MSG_CHECKING(for Ghostscript library support )
+    AC_MSG_RESULT()
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(iapi.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(gs,gsapi_new_instance,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if Ghostscript library package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_gslib='no (failed tests)'
+    else
+	LIB_GS='-lgs'
+	LIBS="$LIB_GS $LIBS"
+	AC_DEFINE(HasGS,,Define if you have Ghostscript library)
+	AC_MSG_RESULT(yes)
+	have_gslib='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+fi
+AM_CONDITIONAL(HasGS, test "$have_gslib" != 'no')
+AC_SUBST(LIB_GS)
 
 #
 # Check for TTF
@@ -1566,6 +1607,7 @@ echo "PERL              --with-perl=$with_perl		$have_perl"
 echo "BZLIB             --with-bzlib=$with_bzlib		$have_bzlib"
 echo "DPS               --with-dps=$with_dps		$have_dps"
 echo "FlashPIX          --with-fpx=$with_fpx		$have_fpx"
+echo "Ghostscript lib   --with-gslib=$with_gslib		$have_gslib"
 echo "HDF               --with-hdf=$with_hdf		$have_hdf"
 echo "JBIG              --with-jbig=$with_jbig		$have_jbig"
 echo "JPEG              --with-jpeg=$with_jpeg		$have_jpeg"

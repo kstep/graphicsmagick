@@ -152,6 +152,7 @@ UNIX/Cygwin COMPILATION
    --without-bzlib         disable BZLIB support
    --without-dps           disable Display Postscript support
    --without-fpx           disable FlashPIX support
+   --without-gslib         disable Ghostscript library support
    --without-hdf           disable HDF support
    --without-jbig          disable JBIG support
    --without-jpeg          disable JPEG support
@@ -440,6 +441,11 @@ MAGICK DELEGATES
       (assuming you define HasDPS).  The DPS extension is less robust
       than Ghostscript in that it will only rasterize one page of a
       multi-page document.
+
+      Ghostscript (released 7.0 and later) may optionally install a
+      library (libgs). If this library is installed, ImageMagick will
+      attempt to use it unless the option --without-gslib is passed to
+      configure.
 
     o ImageMagick requires the NCSA HDF library available via anonymous
       FTP as
