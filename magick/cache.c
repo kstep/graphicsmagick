@@ -230,13 +230,13 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   region.height=rows;
   pixels=SetNexus(image,&region,nexus);
   if (IsNexusInCore(image->cache,nexus))
-    if ((x >= 0) && ((x+columns) <= cache_info->columns))
+    if ((x >= 0) && (x < cache_info->columns))
       return(pixels);
   offset=y*cache_info->columns+x;
   span=(rows-1)*cache_info->columns+columns-1;
   number_pixels=cache_info->columns*cache_info->rows;
   if ((offset >= 0) && (offset+span) <= (off_t) number_pixels)
-    if ((x >= 0) && ((x+columns) <= cache_info->columns))
+    if ((x >= 0) && (x < cache_info->columns))
       {
         unsigned int
           status;
