@@ -419,7 +419,7 @@ MagickExport char **ListModules(void)
 
   max_entries=255;
   module_list=(char **) AcquireMemory((max_entries+1)*sizeof(char *));
-  if (module_list == (char **)NULL)
+  if (module_list == (char **) NULL)
     return((char **) NULL);
   *module_list=(char *) NULL;
   path=GetMagickConfigurePath(ModuleFilename);
@@ -461,6 +461,41 @@ MagickExport char **ListModules(void)
   }
   (void) closedir(directory);
   return(module_list);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M o d u l e T o T a g                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ModuleToTag parser a file system module name into the basic name
+%  of the module.
+%
+%  The format of the ModuleToTag method is:
+%
+%      int ModuleToTag(const char *filename, const char *format, char *module)
+%
+%  A description of each parameter follows:
+%
+%    o filename: the filesystem name of the module.
+%
+%    o format: a string used to format the result of the parsing.
+%
+%    o module: pointer to a destination buffer for the formatted result.
+%
+*/
+void ModuleToTag(const char *filename,const char *format,char *module)
+{
+  assert(format != (char *) NULL);
+  assert(module != (char *) NULL);
+  assert(filename != (char *) NULL);
+  FormatString(module,format,filename);
 }
 
 /*
@@ -524,27 +559,27 @@ MagickExport int OpenModule(const char *module)
   /*
     Load module file.
   */
-  handle=0;
+  handle=(ModuleHandle) NULL;
   module_file=TagToModule(module_name);
   path=GetMagickConfigurePath(module_file);
   if (path != (char *) NULL)
     {
       handle=lt_dlopen(path);
-      if (handle == 0)
+      if (handle == (ModuleHandle) NULL)
         {
           FormatString(message,"failed to load module \"%s\"",path);
           MagickWarning(MissingDelegateWarning,message,lt_dlerror());
         }
+      LiberateMemory((void **) &path);
     }
   LiberateMemory((void **) &module_file);
-  LiberateMemory((void **) &path);
-  if (handle == 0)
+  if (handle == (ModuleHandle) NULL)
     return(False);
   /*
     Add module to module list
   */
   module_info=SetModuleInfo(module_name);
-  if (module_info==(ModuleInfo*)NULL)
+  if (module_info == (ModuleInfo*) NULL)
     {
       lt_dlclose(handle);
       return(False);
@@ -613,41 +648,6 @@ MagickExport int OpenModules(void)
     LiberateMemory((void **) &module_list[i]);
   LiberateMemory((void **) &module_list);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M o d u l e T o T a g                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ModuleToTag parser a file system module name into the basic name
-%  of the module.
-%
-%  The format of the ModuleToTag method is:
-%
-%      int ModuleToTag(const char *filename, const char *format, char *module)
-%
-%  A description of each parameter follows:
-%
-%    o filename: the filesystem name of the module.
-%
-%    o format: a string used to format the result of the parsing.
-%
-%    o module: pointer to a destination buffer for the formatted result.
-%
-*/
-void ModuleToTag(const char *filename,const char *format,char *module)
-{
-  assert(format != (char *) NULL);
-  assert(module != (char *) NULL);
-  assert(filename != (char *) NULL);
-  FormatString(module,format,filename);
 }
 
 /*
