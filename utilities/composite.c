@@ -292,9 +292,6 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
             }
           else
             {
-              char
-                absolute_geometry[MaxTextExtent];
-
               int
                 flags;
 
@@ -305,8 +302,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                 Digitally composite image.
               */
               SetGeometry(*image,&geometry);
-              FormatString(absolute_geometry,"%.1024s!",option_info->geometry);
-              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
+              flags=ParseImageGeometry(option_info->geometry,&geometry.x,
                 &geometry.y,&geometry.width,&geometry.height);
               if ((flags & WidthValue) == 0)
                 geometry.width-=2*geometry.x > (long) geometry.width ?
