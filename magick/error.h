@@ -131,7 +131,8 @@ typedef struct _ExceptionInfo
 {
   char
     *reason,
-    *description;
+    *description,
+    *whence;
 
   ExceptionType
     severity;

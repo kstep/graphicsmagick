@@ -53,6 +53,20 @@
 </tr>
 </table>
 <p>
+2003-06-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/error.c (ThrowException): Handle 'whence'
+        member. MagickFreeMemory already checks for null pointer so don't
+        check again.<BR>
+        (DestroyExceptionInfo): Handle 'whence' member. MagickFreeMemory
+        already checks for null pointer so don't check again.
+  <LI> magick/error.h (ExceptionInfo): Add a 'whence' member to support
+        the ability to record where the exception is was thrown.
+  <LI> VisualMagick/installer: Install Wand files.
+
+</UL>
+<p>
 2003-06-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -63,7 +77,7 @@
   <LI> magick/log.c (GetLogBlob): GetLogBlob should always return
         a value.<BR>
   <LI> magick/magick.c (GetMagickInfoArray): Fixed array memory
-        allocation and clearing bug.
+        allocation and clearing bug. Eliminate warnings.
 
 </UL>
 <p>

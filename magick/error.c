@@ -292,10 +292,9 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (exception->reason != (char *) NULL)
-    MagickFreeMemory(exception->reason);
-  if (exception->description != (char *) NULL)
-    MagickFreeMemory(exception->description);
+  MagickFreeMemory(exception->reason);
+  MagickFreeMemory(exception->description);
+  MagickFreeMemory(exception->whence);
 }
 
 /*
@@ -720,20 +719,17 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   exception->severity=(ExceptionType) severity;
-  if (reason == (char *) NULL)
-    {
-      if (exception->reason != (char *) NULL)
-        MagickFreeMemory(exception->reason);
-    }
-  else
+  
+  MagickFreeMemory(exception->reason);
+  if (reason)
     (void) CloneString(&exception->reason,
       GetLocaleExceptionMessage(severity,reason));
-  if (description == (char *) NULL)
-    {
-      if (exception->description != (char *) NULL)
-        MagickFreeMemory(exception->description);
-      return;
-    }
-  (void) CloneString(&exception->description,
-    GetLocaleExceptionMessage(severity,description));
+
+  MagickFreeMemory(exception->description);
+  if (description)
+    (void) CloneString(&exception->description,
+      GetLocaleExceptionMessage(severity,description));
+
+  MagickFreeMemory(exception->whence);
+  return;
 }

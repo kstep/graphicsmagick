@@ -1,5 +1,12 @@
 2003-06-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/error.c (ThrowException): Handle 'whence'
+	member. MagickFreeMemory already checks for null pointer so don't
+	check again.
+	(DestroyExceptionInfo): Handle 'whence' member. MagickFreeMemory
+	already checks for null pointer so don't check again.
+	* magick/error.h (ExceptionInfo): Add a 'whence' member to support
+	the ability to record where the exception is was thrown.
 	* VisualMagick/installer: Install Wand files.
 
 2003-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
