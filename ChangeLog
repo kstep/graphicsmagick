@@ -1,7 +1,7 @@
 2002-10-16  Cristy  <cristy@mystic.es.dupont.com>
   * -border with a single value now produces correct results
     (e.g. -border 10).
-  * Added -lat to convert/mogirfy (local adatpive thresholding).
+  * Added -lat to convert/mogirfy (local adaptive thresholding).
 
 2002-10-15  Cristy  <cristy@mystic.es.dupont.com>
   * Set locale type LC_NUMERIC to "C".
