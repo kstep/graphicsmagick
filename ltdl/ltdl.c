@@ -2165,7 +2165,7 @@ foreach_dirinpath (search_path, base_name, func, data1, data2)
   int	 result		= 0;
   int	 filenamesize	= 0;
   int	 lenbase	= LT_STRLEN (base_name);
-  int	argz_len	= 0;
+  long	argz_len	= 0;
   char *argz		= 0;
   char *filename	= 0;
   char *canonical	= 0;
