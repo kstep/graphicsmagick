@@ -2,7 +2,7 @@ This file contains any messages produced by compilers while
 running configure, to aid debugging if configure makes a mistake.
 
 It was created by  2.49b, executed with
- > ./configure LDFLAGS=-R/usr/local/lib --enable-shared --disable-static --enable-ltdl-convenience --no-create --no-recursion
+ > ./configure LDFLAGS=-R/usr/local/lib --enable-shared --disable-static
 
 on scooby:
 
@@ -252,62 +252,19 @@ confdefs.h:
 | #define WORDS_BIGENDIAN 1
 configure:3962: creating ./config.status
 configure: exit 0
-
-----------------------------------------------------------------------
+-----------------------------------------------------
 
 This file was extended by config.status 2.49b, executed with
  > ./config.status 
 on scooby
 
 config.status:4400: creating Makefile
-
-----------------------------------------------------------------------
-
-This file was extended by config.status 2.49b, executed with
- > ./config.status 
-on scooby
-
 config.status:4400: creating basics/Makefile
-
-----------------------------------------------------------------------
-
-This file was extended by config.status 2.49b, executed with
- > ./config.status 
-on scooby
-
 config.status:4400: creating fpx/Makefile
-
-----------------------------------------------------------------------
-
-This file was extended by config.status 2.49b, executed with
- > ./config.status 
-on scooby
-
 config.status:4400: creating jpeg/Makefile
-
-----------------------------------------------------------------------
-
-This file was extended by config.status 2.49b, executed with
- > ./config.status 
-on scooby
-
 config.status:4400: creating ole/Makefile
-
-----------------------------------------------------------------------
-
-This file was extended by config.status 2.49b, executed with
- > ./config.status 
-on scooby
-
-config.status:4400: creating oless/Makefile
-
-----------------------------------------------------------------------
-
-This file was extended by config.status 2.49b, executed with
- > ./config.status 
-on scooby
-
 config.status:4400: creating ri_image/Makefile
+config.status:4400: creating oless/Makefile
 
 ----------------------------------------------------------------------
 

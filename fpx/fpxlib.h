@@ -104,6 +104,23 @@ typedef struct {
               CLSID         	  * ptr;
 } FPXClsIDArray;
 
+#ifndef _FILETIME_
+#define _FILETIME_
+typedef struct FARSTRUCT tagFILETIME
+{
+    unsigned long dwLowDateTime;
+    unsigned long dwHighDateTime;
+} FILETIME;
+#endif
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
 typedef FILETIME FPXfiletime;                  	   /* cf. OLE FILETIME in compobj.h */
 
 #ifndef DATE 

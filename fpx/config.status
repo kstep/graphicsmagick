@@ -259,11 +259,11 @@ s,@INSTALL_SCRIPT@,${INSTALL},;t t
 s,@INSTALL_DATA@,${INSTALL} -m 644,;t t
 s,@PACKAGE@,libfpx,;t t
 s,@VERSION@,1.2.0,;t t
-s,@ACLOCAL@,${SHELL} /home/bfriesen/src/graphics/fpx_port/fpx/missing --run aclocal,;t t
-s,@AUTOCONF@,${SHELL} /home/bfriesen/src/graphics/fpx_port/fpx/missing --run autoconf,;t t
-s,@AUTOMAKE@,${SHELL} /home/bfriesen/src/graphics/fpx_port/fpx/missing --run automake,;t t
-s,@AUTOHEADER@,${SHELL} /home/bfriesen/src/graphics/fpx_port/fpx/missing --run autoheader,;t t
-s,@MAKEINFO@,${SHELL} /home/bfriesen/src/graphics/fpx_port/fpx/missing --run makeinfo,;t t
+s,@ACLOCAL@,${SHELL} /tmp/delegates/fpx/missing --run aclocal,;t t
+s,@AUTOCONF@,${SHELL} /tmp/delegates/fpx/missing --run autoconf,;t t
+s,@AUTOMAKE@,${SHELL} /tmp/delegates/fpx/missing --run automake,;t t
+s,@AUTOHEADER@,${SHELL} /tmp/delegates/fpx/missing --run autoheader,;t t
+s,@MAKEINFO@,${SHELL} /tmp/delegates/fpx/missing --run makeinfo,;t t
 s,@AMTAR@,gtar,;t t
 s,@install_sh@,./install-sh,;t t
 s,@AWK@,gawk,;t t

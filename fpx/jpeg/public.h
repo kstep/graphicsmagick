@@ -2,7 +2,6 @@
 ******************************************************************************
 *
 * File:         public.h
-* RCS:          $Header$
 * Description:  A semi-private structure for the "public.c" routines,
 *               separated just in case somebody wants to share it.
 * Author:       Kirt Winter
@@ -11,7 +10,7 @@
 * Language:     C
 * Package:      Hewlett-Packard JPEG Encoder/Decoder
 *
-* Copyright (c) 1999 Digital Imaging Group
+* Copyright (c) 1999 Digital Imaging Group, Inc.
 * For conditions of distribution and use, see copyright notice
 * in Flashpix.h
 *

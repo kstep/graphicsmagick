@@ -37,10 +37,10 @@ pkgincludedir = $(includedir)/libfpx
 
 top_builddir = .
 
-ACLOCAL = ${SHELL} /home/bfriesen/src/graphics/fpx_port/fpx/missing --run aclocal
-AUTOCONF = ${SHELL} /home/bfriesen/src/graphics/fpx_port/fpx/missing --run autoconf
-AUTOMAKE = ${SHELL} /home/bfriesen/src/graphics/fpx_port/fpx/missing --run automake
-AUTOHEADER = ${SHELL} /home/bfriesen/src/graphics/fpx_port/fpx/missing --run autoheader
+ACLOCAL = ${SHELL} /tmp/delegates/fpx/missing --run aclocal
+AUTOCONF = ${SHELL} /tmp/delegates/fpx/missing --run autoconf
+AUTOMAKE = ${SHELL} /tmp/delegates/fpx/missing --run automake
+AUTOHEADER = ${SHELL} /tmp/delegates/fpx/missing --run autoheader
 
 INSTALL = /usr/local/bin/install -c
 INSTALL_PROGRAM = ${INSTALL}
@@ -83,7 +83,7 @@ LIBSTDC_LDFLAGS =
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 MAJOR_VERSION = 1
-MAKEINFO = ${SHELL} /home/bfriesen/src/graphics/fpx_port/fpx/missing --run makeinfo
+MAKEINFO = ${SHELL} /tmp/delegates/fpx/missing --run makeinfo
 MICRO_VERSION = 0
 MINOR_VERSION = 2
 OBJDUMP = @OBJDUMP@
