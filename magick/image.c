@@ -5578,8 +5578,9 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   background_color=image->background_color;
-  background_color.opacity=opacity;
   if (opacity != OpaqueOpacity)
+    background_color.opacity=opacity;
+  if (background_color.opacity != OpaqueOpacity)
     image->matte=True;
   for (y=0; y < (int) image->rows; y++)
   {

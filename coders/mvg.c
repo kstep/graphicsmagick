@@ -140,7 +140,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionWarning,"Must specify image size",image);
-  SetImage(image,TransparentOpacity);
+  SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) strcpy(filename,"@");
   (void) strcat(filename,image_info->filename);

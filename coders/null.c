@@ -108,7 +108,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   if (!AllocateImageColormap(image,1))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   image->colormap[0]=image->background_color;
-  SetImage(image,image->background_color.opacity);
+  SetImage(image,OpaqueOpacity);
   return(image);
 }
 

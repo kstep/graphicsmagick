@@ -110,7 +110,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image);
       image->colormap[0]=image->background_color;
     }
-  SetImage(image,image->background_color.opacity);
+  SetImage(image,OpaqueOpacity);
   return(image);
 }
 
