@@ -65,7 +65,7 @@
   Declare color map.
 */
 static char
-  *MagicMap =
+  *MagicMap = (char *)
     "<?xml version=\"1.0\"?>"
     "<magicmap>"
     "  <magic stealth=\"True\" />"

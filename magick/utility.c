@@ -271,11 +271,9 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
   int
     state;
 
-  register char
-    *q;
-
   register const char
-    *p;
+    *p,
+    *q;
 
   register size_t
     i;
@@ -3276,7 +3274,7 @@ MagickExport void TemporaryFilename(char *filename)
     LiberateMemory((void **) &name);
   }
 #endif
-  FormatString(filename+strlen(filename),"%ld.tmp",(long) getpid());
+  FormatString(filename+strlen(filename),".%ld.tmp",(long) getpid());
 }
 
 /*
@@ -3892,13 +3890,15 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         static char
           *ClassTypes[] =
           {
-            "Undefined", "DirectClass", "PseudoClass", (char *) NULL
+            (char *) "Undefined", (char *) "DirectClass",
+            (char *) "PseudoClass", (char *) NULL
           },
           *ColorspaceTypes[] =
           {
-            "undefined", "RGB", "Gray", "Transparent", "OHTA", "XYZ",
-            "YCbCr", "YCC", "YIQ", "YPbPr", "YUV", "CMYK", "sRGB",
-            (char *) NULL
+            (char *) "undefined", (char *) "RGB", (char *) "Gray",
+            (char *) "Transparent", (char *) "OHTA", (char *) "XYZ",
+            (char *) "YCbCr", (char *) "YCC", (char *) "YIQ", (char *) "YPbPr",
+            (char *) "YUV", (char *) "CMYK", (char *) "sRGB", (char *) NULL
           };
 
         FormatString(q,"%s%s%s",ClassTypes[image->storage_class],

@@ -91,7 +91,7 @@ typedef struct _LogInfo
   Declare color map.
 */
 static char
-  *MagickLog =
+  *MagickLog = (char *)
     "<?xml version=\"1.0\"?>"
     "<magicklog>"
     "  <log events=\"None\" />"
@@ -390,7 +390,7 @@ static unsigned int IsLogAccessible(const char *filename)
     return(False);
   status=stat(filename,&file_info);
   if (status != 0)
-    return(False);
+    return(-1);
   return(S_ISREG(file_info.st_mode));
 }
 
@@ -558,16 +558,16 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
   AcquireSemaphoreInfo(&log_semaphore);
   switch (type)
   {
-    case ConfigureEvent: domain="Configure"; break;
-    case AnnotateEvent: domain="Annotate"; break;
-    case RenderEvent: domain="Render"; break;
-    case LocaleEvent: domain="Locale"; break;
-    case CoderEvent: domain="Coder"; break;
-    case X11Event: domain="X11"; break;
-    case CacheEvent: domain="Cache"; break;
-    case BlobEvent: domain="Blob"; break;
-    case UserEvent: domain="User"; break;
-    default: domain="UnknownEvent"; break;
+    case ConfigureEvent: domain=(char *) "Configure"; break;
+    case AnnotateEvent: domain=(char *) "Annotate"; break;
+    case RenderEvent: domain=(char *) "Render"; break;
+    case LocaleEvent: domain=(char *) "Locale"; break;
+    case CoderEvent: domain=(char *) "Coder"; break;
+    case X11Event: domain=(char *) "X11"; break;
+    case CacheEvent: domain=(char *) "Cache"; break;
+    case BlobEvent: domain=(char *) "Blob"; break;
+    case UserEvent: domain=(char *) "User"; break;
+    default: domain=(char *) "UnknownEvent"; break;
   }
   va_start(operands,format);
 #if !defined(HAVE_VSNPRINTF)

@@ -84,7 +84,7 @@
   Declare module map.
 */
 static char
-  *ModuleMap =
+  *ModuleMap = (char *)
     "<?xml version=\"1.0\"?>"
     "<modulemap>"
     "  <module />"

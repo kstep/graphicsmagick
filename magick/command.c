@@ -333,7 +333,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   composite_image=(Image *) NULL;
   option_info.displace_geometry=(char *) NULL;
   filename=(char *) NULL;
-  format="%w,%h,%m";
+  format=(char *) "%w,%h,%m";
   option_info.geometry=(char *) NULL;
   image=(Image *) NULL;
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
@@ -1485,7 +1485,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   status=True;
   filename=(char *) NULL;
-  format="%w,%h,%m";
+  format=(char *) "%w,%h,%m";
   image=(Image *) NULL;
   image_list=(Image *) NULL;
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
@@ -5270,7 +5270,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   /*
     Set defaults.
   */
-  format="%w,%h,%m";
+  format=(char *) "%w,%h,%m";
   first_scene=0;
   image=(Image *) NULL;
   image_list=(Image *) NULL;

@@ -72,7 +72,7 @@
   Declare delegate map.
 */
 static char
-  *DelegateMap =
+  *DelegateMap = (char *)
     "<?xml version=\"1.0\"?>"
     "<delegatemap>"
     "  <delegate stealth=\"True\" />"

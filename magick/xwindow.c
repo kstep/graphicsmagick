@@ -3083,7 +3083,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     (char *) "displayWarnings",(char *) "True");
   resource_info->display_warnings=IsTrue(resource_value);
   resource_info->font=XGetResourceClass(database,client_name,(char *) "font",
-    "-*-helvetica-medium-r-normal--12-*-*-*-*-*-iso8859-1");
+    (char *) "-*-helvetica-medium-r-normal--12-*-*-*-*-*-iso8859-1");
   resource_info->font=XGetResourceClass(database,client_name,
     (char *) "fontList",resource_info->font);
   resource_info->font_name[0]=XGetResourceClass(database,client_name,
@@ -3192,8 +3192,8 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
   resource_value=XGetResourceClass(database,client_name,(char *) "quantum",
     (char *) "1");
   resource_info->quantum=atoi(resource_value);
-  resource_info->text_font=XGetResourceClass(database,client_name,
-    (char *) "font","-*-fixed-medium-r-normal-*-12-*-*-*-*-*-iso8859-1");
+  resource_info->text_font=XGetResourceClass(database,client_name,(char *)
+    "font",(char *) "-*-fixed-medium-r-normal-*-12-*-*-*-*-*-iso8859-1");
   resource_info->text_font=XGetResourceClass(database,client_name,
     (char *) "textFontList",resource_info->text_font);
   resource_info->title=XGetResourceClass(database,client_name,(char *) "title",
@@ -6980,7 +6980,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
         if (!image->matte && !resource_info->color_recovery &&
             resource_info->quantize_info->dither &&
-            (number_colors < MaxColormapSize))
+            ((int) number_colors < MaxColormapSize))
           {
             Image
               *map_image;
