@@ -13,15 +13,15 @@
   System include declarations.
 */
 #if defined(__cplusplus) || defined(c_plusplus)
-# include <cstdio>
-# include <cstdlib>
-# include <cstdarg>
-# include <cstring>
+#  include <cstdio>
+#  include <cstdlib>
+#  include <cstdarg>
+#  include <cstring>
 #else
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdarg.h>
-# include <string.h>
+#  include <stdio.h>
+#  include <stdlib.h>
+#  include <stdarg.h>
+#  include <string.h>
 #endif
 
 #if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
@@ -30,9 +30,9 @@
 #endif
 
 #if defined(_VISUALC_)
-# include <direct.h>
+#  include <direct.h>
 #else
-# include <unistd.h>
+#  include <unistd.h>
 #endif
 
 #include <ctype.h>
@@ -43,33 +43,40 @@
 #include <math.h>
 #include <limits.h>
 #include <time.h>
+#include <setjmp.h>
 #include <assert.h>
 
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#  include <sys/types.h>
+#  include <sys/stat.h>
+#  include <sys/times.h>
 #if defined(HAVE_CONFIG_H)
-#include "magick/config.h"
+#  include "magick/config.h"
 #endif
-
-#if !defined(vms) && !defined(macintosh)
-# include <sys/types.h>
-# include <sys/stat.h>
-#if !defined(WIN32)
-# include <sys/times.h>
 #if defined(HAVE_MMAP)
-# include <sys/mman.h>
+#  include <sys/mman.h>
 #endif
-# include "magick/api.h"
-#else
-# include "api.h"
+#if defined(HasPTHREADS)
+#  include <pthread.h>
 #endif
+#if defined(sysv)
+#  include <sys/poll.h>
+#endif
+#  include "magick/api.h"
 #else
-# include <types.h>
-# include <stat.h>
+#if defined(WIN32)
+#  include <sys/types.h>
+#  include <sys/stat.h>
+#else
+#  include <types.h>
+#  include <stat.h>
+#endif
 #if defined(macintosh)
-# include <SIOUX.h>
-# include <console.h>
-# include <unix.h>
+#  include <SIOUX.h>
+#  include <console.h>
+#  include <unix.h>
 #endif
-# include "api.h"
+#  include "api.h"
 #endif
 
 /*

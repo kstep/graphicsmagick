@@ -54,9 +54,9 @@
 */
 #include "magick.h"
 #include "defines.h"
-
 #if defined(HasX11)
 #include "xwindows.h"
+
 /*
   X defines.
 */
@@ -1415,11 +1415,7 @@ Export void XDelay(Display *display,const unsigned long milliseconds)
     return;
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #if defined(sysv)
-  {
-#include <sys/poll.h>
-
-    (void) poll((struct pollfd *) NULL,0,(int) milliseconds);
-  }
+  (void) poll((struct pollfd *) NULL,0,(int) milliseconds);
 #else
   {
     struct timeval

@@ -744,7 +744,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
             break;
         }
       }
-      if (image->matte)
+      if (image->matte && (number_layers != 0))
         MatteImage(image,Transparent);
       FreeMemory(scanline);
     }

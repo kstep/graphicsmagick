@@ -54,6 +54,9 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasX11)
+#include "xwindows.h"
+#include "display.h"
 
 /*
   Constant declaration.
@@ -61,9 +64,6 @@
 const int
   RoiDelta = 8;
 
-#if defined(HasX11)
-#include "xwindows.h"
-#include "display.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

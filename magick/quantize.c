@@ -1726,7 +1726,10 @@ static unsigned int OrderedDitherImage(Image *image)
     {
       index=Intensity(*q) > DitherMatrix[y & 0x07][x & 0x07] ? 1 : 0;
       image->indexes[x]=index;
-      *q++=image->colormap[index];
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
+      q++;
     }
     if (!SyncPixelCache(image))
       break;

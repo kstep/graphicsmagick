@@ -54,7 +54,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-
 #if defined(HasTIFF)
 #if defined(HAVE_TIFFCONF_H)
 #include "tiffconf.h"

@@ -58,6 +58,10 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasJPEG)
+#define JPEG_INTERNAL_OPTIONS
+#include "jpeglib.h"
+#include "jerror.h"
 
 /*
   Define declarations.
@@ -66,12 +70,6 @@
 #define IPTC_MARKER  (JPEG_APP0+13)
 #define MaxBufferExtent  8192
 
-#if defined(HasJPEG)
-#include <setjmp.h>
-#define JPEG_INTERNAL_OPTIONS
-#include "jpeglib.h"
-#include "jerror.h"
-
 typedef struct _DestinationManager
 {
   struct jpeg_destination_mgr

@@ -51,10 +51,9 @@
 
 #include "magick.h"
 #include "defines.h"
-
 #if defined(HasX11)
 #include "xwindows.h"
-
+
 #if defined(PRE_R6_ICCCM)
 /*
   Compatibility methods for pre X11R6 ICCCM.

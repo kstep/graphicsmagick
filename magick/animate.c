@@ -54,10 +54,10 @@
 */
 #include "magick.h"
 #include "defines.h"
-
 #if defined(HasX11)
 #include "xwindows.h"
 #include "animate.h"
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

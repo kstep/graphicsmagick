@@ -54,11 +54,11 @@
 */
 #include "magick.h"
 #include "defines.h"
-
 #if defined(HasPNG)
 #include "png.h"
 #include "zlib.h"
 #include "mng.h"
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

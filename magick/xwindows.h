@@ -45,6 +45,10 @@ extern "C" {
 #include <sys/shm.h>
 #include <X11/extensions/XShm.h>
 #endif
+#if defined(HasDPS)
+# include <DPS/dpsXclient.h>
+# include <DPS/dpsXpreview.h>
+#endif
 #include "PreRvIcccm.h"
 
 #undef index

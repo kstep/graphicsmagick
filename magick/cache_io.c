@@ -62,9 +62,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasPTHREADS)
-#include <pthread.h>
-#endif
 
 /*
   Typedef declarations.

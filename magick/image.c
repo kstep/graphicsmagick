@@ -6966,7 +6966,10 @@ Export void SyncImage(Image *image)
     for (x=0; x < (int) image->columns; x++)
     {
       index=image->indexes[x];
-      *q++=image->colormap[index];
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
+      q++;
     }
     if (!SyncPixelCache(image))
       break;

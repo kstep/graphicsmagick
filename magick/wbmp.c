@@ -15,7 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                 July 1992                                   %
+%                               January 2000                                  %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
@@ -137,20 +137,17 @@ Export Image *ReadWBMPImage(const ImageInfo *image_info)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
-  if (! ReadBlob (image, 2, (char *) &header)) 
-    ReaderExit(CorruptImageWarning,"WBMP file is not in the correct format",
-      image);
+  if (!ReadBlob(image,2,(char *) &header)) 
+    ReaderExit(CorruptImageWarning,"Not a WBMP image file",image);
   if (header)
     ReaderExit(CorruptImageWarning,"Only WBMP level 0 files supported",image);
   /*
     Determine width and height
   */
-  if (WBMPReadInteger(image, &image->columns) == False) 
-    ReaderExit(CorruptImageWarning,"WBMP file is not in the correct format",
-      image);
-  if (WBMPReadInteger(image, &image->rows) == False) 
-    ReaderExit(CorruptImageWarning,"WBMP file is not in the correct format",
-      image);
+  if (WBMPReadInteger(image,&image->columns) == False) 
+    ReaderExit(CorruptImageWarning,"Corrupt WBMP image",image);
+  if (WBMPReadInteger(image,&image->rows) == False) 
+    ReaderExit(CorruptImageWarning,"Corrupt WBMP image",image);
   for (i=0; i < image->offset; i++)
     (void) ReadByte(image);
   /*
@@ -183,8 +180,7 @@ Export Image *ReadWBMPImage(const ImageInfo *image_info)
         {
           byte=ReadByte(image);
           if (byte == EOF)
-            ReaderExit(CorruptImageWarning,
-              "WBMP file is not in the correct format",image);
+            ReaderExit(CorruptImageWarning,"Corrupt WBMP image",image);
         }
       image->indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
       bit++;
