@@ -465,19 +465,6 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
       image->colormap[!polarity].red=MaxRGB;
       image->colormap[!polarity].green=MaxRGB;
       image->colormap[!polarity].blue=MaxRGB;
-      for (y=0; y < (int) image->rows; y++)
-      {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x++)
-          if ((x == 0) || (x == (image->columns-1)) ||
-              (y == 0) || (y == (image->rows-1)))
-            indexes[x]=!polarity;
-        if (!SyncImagePixels(image))
-          break;
-      }
     }
   if (cube_info->quantize_info->measure_error)
     {
