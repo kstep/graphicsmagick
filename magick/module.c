@@ -1112,46 +1112,6 @@ static CoderInfo *SetCoderInfo(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  T a g T o P r o c e s s                                                    %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method TagToProcess takes a module "name" and returnes a complete file
-%  system dynamic module name.
-%
-%  The format of the TagToProcess method is:
-%
-%      void TagToProcess(const char *tag)
-%
-%  A description of each parameter follows:
-%
-%    o tag: a character string that represents the name of the particular
-%      processing dynamically loadable module.
-%
-*/
-static char *TagToProcess(const char *tag)
-{
-  char
-    *module_name;
-
-  assert(tag != (char *) NULL);
-  module_name=AllocateString((char *) NULL);
-#if defined(HasLTDL)
-  (void) FormatString(module_name,"%.1024s.la",tag);
-  (void) LocaleLower(module_name);
-#else
-  (void) FormatString(module_name,"%.1024s.dll",tag);
-#endif
-  return(module_name);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %  T a g T o M o d u l e                                                      %
 %                                                                             %
 %                                                                             %
@@ -1192,6 +1152,46 @@ MagickExport char *TagToModule(const char *tag)
       FormatString(module_name,"IM_MOD_RL_%.1024s_.dll",tag);
 #  endif
     }
+#endif
+  return(module_name);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  T a g T o P r o c e s s                                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method TagToProcess takes a module "name" and returnes a complete file
+%  system dynamic module name.
+%
+%  The format of the TagToProcess method is:
+%
+%      void TagToProcess(const char *tag)
+%
+%  A description of each parameter follows:
+%
+%    o tag: a character string that represents the name of the particular
+%      processing dynamically loadable module.
+%
+*/
+static char *TagToProcess(const char *tag)
+{
+  char
+    *module_name;
+
+  assert(tag != (char *) NULL);
+  module_name=AllocateString((char *) NULL);
+#if defined(HasLTDL)
+  (void) FormatString(module_name,"%.1024s.la",tag);
+  (void) LocaleLower(module_name);
+#else
+  (void) FormatString(module_name,"%.1024s.dll",tag);
 #endif
   return(module_name);
 }
