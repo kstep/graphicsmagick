@@ -191,21 +191,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       "Memory allocation failed");
   SetGeometry(image,&geometry);
   if (draw_info->geometry != (char *) NULL)
-    {
-      char
-        annotate_geometry[MaxTextExtent];
-
-      int
-        flags;
-
-      /*
-        User specified annotation geometry.
-      */
-      (void) strncpy(annotate_geometry,draw_info->geometry,MaxTextExtent-2);
-      (void) strcat(annotate_geometry,"!");
-      flags=ParseImageGeometry(annotate_geometry,&geometry.x,&geometry.y,
-        &geometry.width,&geometry.height);
-    }
+    (void) GetGeometry(draw_info->geometry,&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   matte=image->matte;
