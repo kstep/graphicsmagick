@@ -1008,7 +1008,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               *svg_info->text='\0';
             }
           (void) fprintf(svg_info->file,"push graphic-context\n");
-          (void) fprintf(svg_info->file,"affine 1 0 0 1 %g %g\n",
+          (void) fprintf(svg_info->file,"translate %g %g\n",
             svg_info->bounds.x,svg_info->bounds.y);
           break;
         }
@@ -1380,19 +1380,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"rotate") == 0)
             {
-              AffineMatrix
-                affine;
-
               double
                 angle;
 
               angle=GetUserSpaceCoordinateValue(svg_info,value);
-              affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
-              affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
-              affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
-              affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
-              (void) fprintf(svg_info->file,"affine %g %g %g %g 0 0\n",
-                affine.sx,affine.rx,affine.ry,affine.sy);
+              (void) fprintf(svg_info->file,"rotate %g\n",angle);
               break;
             }
           if (LocaleCompare(keyword,"rx") == 0)
