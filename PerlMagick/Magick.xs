@@ -5042,7 +5042,7 @@ Mogrify(ref,...)
                 argument_list[3].double_reference=1.0;
               if (!attribute_flag[0])
                 {
-                  FormatString(message,"%lf%*[/,]%lf%*[/,]%lf",
+                  FormatString(message,"%g,%g,%g",
                     argument_list[1].double_reference,
                     argument_list[2].double_reference,
                     argument_list[3].double_reference);
@@ -5115,7 +5115,7 @@ Mogrify(ref,...)
                 argument_list[2].double_reference=100.0;
               if (!attribute_flag[3])
                 argument_list[3].double_reference=100.0;
-              FormatString(message,"%lf/%lf/%lf",
+              FormatString(message,"%g,%g,%g",
                 argument_list[1].double_reference,
                 argument_list[2].double_reference,
                 argument_list[3].double_reference);
@@ -5507,7 +5507,7 @@ Mogrify(ref,...)
                 argument_list[3].double_reference=MaxRGB;
               if (!attribute_flag[0])
                 {
-                  FormatString(message,"%lf%*[/,]%lf%*[/,]%lf",
+                  FormatString(message,"%g,%g,%g",
                     argument_list[1].double_reference,
                     argument_list[2].double_reference,
                     argument_list[3].double_reference);
@@ -6726,7 +6726,7 @@ QueryFontMetrics(ref,...)
     if (draw_info->geometry == (char *) NULL)
       {
         draw_info->geometry=AllocateString((char *) NULL);
-        FormatString(draw_info->geometry,"%f,%f",x,y);
+        FormatString(draw_info->geometry,"%g,%g",x,y);
       }
     status=GetTypeMetrics(image,draw_info,&metrics);
     if (status == False)
