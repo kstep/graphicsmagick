@@ -152,6 +152,7 @@ in the scripting language.
 </dd>
 </dl>
 
+
 <p>&nbsp;
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
@@ -192,6 +193,42 @@ another. For example:
     &lt;image size=&quot;400x400&quot; /&gt;
 </pre>
 </dd>
+
+
+<dt><strong>&lt;group&gt;</strong>
+<dd><strong>&lt;group&gt;</strong> defines a new group of image objects.
+By default, images are only valid for the life of
+their <strong>&lt;image&gt;</strong>element.
+</dd>
+<dd>
+<pre>
+    &lt;image&gt;   -- creates the image
+    .....        -- do stuff with it
+    &lt;/image&gt;  -- dispose of the image
+</pre>
+</dd>
+
+<dd>
+However, in a group, all images in that group will stay 
+around for the life of the group:
+</dd>
+
+<dd>
+<pre>
+    &lt;group&gt;
+        &lt;image&gt;                  -- create an image
+        ....                               -- do stuff
+        &lt;/image&gt;                     -- NOOP
+        &lt;image&gt;                  -- create another image
+        ....                           -- do more stuff
+        &lt;/image&gt;                     -- NOOP
+        &lt;write filename=image.mng&quot; /&gt;  -- output
+    &lt;/group&gt;                     -- dispose of both images
+</pre>
+</dd>
+
+
+
 <dt><strong>&lt;read&gt;</strong>
 <dd><strong>&lt;read&gt; </strong>reads a new image from a disk file.
 <pre>
@@ -206,7 +243,7 @@ another. For example:
 </dd>
 <dt><strong>&lt;write&gt;</strong>
 <dd><strong>&lt;write&gt; </strong>writes the image(s) to disk, either as
-a single file or multiple ones if necessary.
+a single multiple-image file or multiple ones if necessary.
 </dd>
 <dd>
 <pre>
@@ -222,6 +259,7 @@ use. Currently only <em>width</em> and <em>height</em> are supported.
     &lt;print output=&quot;Image size is %[base-width]x%[base-height].\n&quot; /&gt;
 </pre>
 </dd>
+
 <dt><strong>&lt;border&gt;</strong>
     <dd>fill, geometry, height, width
 <dt><strong>&lt;blur&gt;</strong>
