@@ -596,21 +596,21 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %
 */
 
-static double Box(const double x)
+static double Box(double x)
 {
   if ((x >= -0.5) && (x < 0.5))
     return(1.0);
   return(0.0);
 }
 
-static double Bessel(const double x)
+static double Bessel(double x)
 {
   if (x == 0.0)
     return(MagickPI/4.0);
   return(BesselOrderOne(MagickPI*x)/(2.0*x));
 }
 
-static double Blackman(const double x)
+static double Blackman(double x)
 {
   return(0.42+0.50*cos(MagickPI*x)+0.08*cos(2.0*MagickPI*x));
 }
@@ -640,17 +640,17 @@ static double Cubic(double x)
   return(0.0);
 }
 
-static double Gaussian(const double x)
+static double Gaussian(double x)
 {
   return(exp(-2.0*x*x)*sqrt(2.0/MagickPI));
 }
 
-static double Hanning(const double x)
+static double Hanning(double x)
 {
   return(0.5+0.5*cos(MagickPI*x+MagickEpsilon)+MagickEpsilon);
 }
 
-static double Hamming(const double x)
+static double Hamming(double x)
 {
   return(0.54+0.46*cos(MagickPI*x));
 }
@@ -796,7 +796,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     Apply filter to resize horizontally from source to destination.
   */
   scale=blur/x_factor;
-  support=Max(scale*filter_info->support,0.5);
+  support=scale*filter_info->support;
   if (support > 0.5)
     SetImageType(destination,TrueColorType);
   else
@@ -804,8 +804,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
+      scale*=0.5/support;
       support=0.5;
-      scale=1.0;
     }
   scale=1.0/scale;
   offset=scale >= 1.0 ? 0.5 : -0.5;
@@ -936,7 +936,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     Apply filter to resize vertically from source to destination.
   */
   scale=blur/y_factor;
-  support=Max(scale*filter_info->support,0.5);
+  support=scale*filter_info->support;
   if (support > 0.5)
     SetImageType(destination,TrueColorType);
   else
@@ -944,8 +944,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
+      scale*=0.5/support;
       support=0.5;
-      scale=1.0;
     }
   scale=1.0/scale;
   offset=scale >= 1.0 ? 0.5 : -0.5;
