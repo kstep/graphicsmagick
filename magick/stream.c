@@ -440,8 +440,8 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
     Validate pixel cache geometry.
   */
   assert(image != (Image *) NULL);
-  if ((x < 0) || (y < 0) || ((x+columns) > (int) image->columns) ||
-      ((y+rows) > (int) image->rows) || (columns == 0) || (rows == 0))
+  if ((x < 0) || (y < 0) || ((x+(int) columns) > (int) image->columns) ||
+      ((y+(int) rows) > (int) image->rows) || (columns == 0) || (rows == 0))
     {
       ThrowException(&image->exception,StreamWarning,
         "Unable to set pixel stream",

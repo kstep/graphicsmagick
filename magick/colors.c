@@ -310,7 +310,7 @@ MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
   register ColorInfo
     *p;
 
-  register unsigned char
+  register char
     *q;
 
   AcquireSemaphore(&color_semaphore);
@@ -1385,7 +1385,7 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
   if (LocaleCompare(name,"grey100") == 0)
     (void) strcpy(name,"white");
   if (min_distance == 0.0)
-    return(0.0);
+    return(0);
   if (color->opacity == OpaqueOpacity)
     {
       if (image->depth <= 8)
@@ -1646,7 +1646,7 @@ MagickExport IndexPacket ValidateColormapIndex(Image *image,const int index)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if ((index >= 0) && (index < image->colors))
+  if ((index >= 0) && (index < (int) image->colors))
     return(index);
   ThrowException(&image->exception,CorruptImageWarning,
     "invalid colormap index",image->filename);

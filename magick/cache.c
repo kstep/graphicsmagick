@@ -255,27 +255,27 @@ static unsigned int CompressCache(Cache cache)
   for (y=0; y < (int) cache_info->rows; y++)
   {
     count=read(cache_info->file,pixels,cache_info->columns*sizeof(PixelPacket));
-    if (gzwrite(file,pixels,count) != count)
+    if ((size_t) gzwrite(file,pixels,count) != count)
       break;
   }
-  if (y == cache_info->rows)
+  if (y == (int) cache_info->rows)
     if ((cache_info->storage_class == PseudoClass) ||
         (cache_info->colorspace == CMYKColorspace))
       for (y=0; y < (int) cache_info->rows; y++)
       {
         count=read(cache_info->file,pixels,
           cache_info->columns*sizeof(IndexPacket));
-        if (gzwrite(file,pixels,count) != count)
+        if ((size_t) gzwrite(file,pixels,count) != count)
           break;
       }
   LiberateMemory((void **) &pixels);
   (void) gzclose(file);
   CloseCache(cache);
-  if (y != cache_info->rows)
+  if (y != (int) cache_info->rows)
     (void) remove(filename);
   else
     (void) remove(cache_info->cache_filename);
-  return(y == cache_info->rows);
+  return(y == (int) cache_info->rows);
 #else
   return(True);
 #endif
@@ -360,7 +360,7 @@ static void DestroyCacheInfo(Cache cache)
   }
   if (cache_info->type != UndefinedCache)
     {
-      for (id=0; id <= cache_info->rows; id++)
+      for (id=0; id <= (int) cache_info->rows; id++)
         DestroyCacheNexus(cache,id);
       LiberateMemory((void **) &cache_info->nexus);
     }
@@ -1027,8 +1027,8 @@ MagickExport unsigned int OpenCache(Image *image)
       */
       threshold=PixelCacheThreshold;
 #if defined(_SC_PAGESIZE) && defined(_SC_PHYS_PAGES)
-      threshold=(double) sysconf(_SC_PAGESIZE)*
-        sysconf(_SC_PHYS_PAGES)*4.0/1048576.0;
+      threshold=(off_t) (4.0*sysconf(_SC_PAGESIZE)*
+        sysconf(_SC_PHYS_PAGES)/1048576);
 #endif
       if (getenv("MAGICK_CACHE_THRESHOLD") != (char *) NULL)
         threshold=atoi(getenv("MAGICK_CACHE_THRESHOLD"));
@@ -1067,7 +1067,7 @@ MagickExport unsigned int OpenCache(Image *image)
       if (cache_info->nexus == (NexusInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
           "unable to allocate cache nexus");
-      for (i=0; i <= cache_info->rows; i++)
+      for (i=0; i <= (int) cache_info->rows; i++)
       {
         cache_info->nexus[i].available=True;
         cache_info->nexus[i].columns=0;
@@ -1537,8 +1537,8 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   assert(image != (Image *) NULL);
   assert(image->cache != (Cache) NULL);
   assert(image->signature == MagickSignature);
-  if ((x < 0) || (y < 0) || ((x+columns) > (int) image->columns) ||
-      ((y+rows) > (int) image->rows) || (columns == 0) || (rows == 0))
+  if ((x < 0) || (y < 0) || ((x+(int) columns) > (int) image->columns) ||
+      ((y+(int) rows) > (int) image->rows) || (columns == 0) || (rows == 0))
     return((PixelPacket *) NULL);
   if ((image->storage_class != GetCacheClass(image->cache)) ||
       (image->colorspace != GetCacheColorspace(image->cache)))
@@ -1714,22 +1714,22 @@ static unsigned int UncompressCache(Cache cache)
   for (y=0; y < (int) cache_info->rows; y++)
   {
     count=gzread(file,pixels,cache_info->columns*sizeof(PixelPacket));
-    if (write(cache_info->file,pixels,count) != count)
+    if ((size_t) write(cache_info->file,pixels,count) != count)
       break;
   }
-  if (y == cache_info->rows)
+  if (y == (int) cache_info->rows)
     if ((cache_info->storage_class == PseudoClass) ||
         (cache_info->colorspace == CMYKColorspace))
       for (y=0; y < (int) cache_info->rows; y++)
       {
         count=gzread(file,pixels,cache_info->columns*sizeof(IndexPacket));
-        if (write(cache_info->file,pixels,count) != count)
+        if ((size_t) write(cache_info->file,pixels,count) != count)
           break;
       }
   LiberateMemory((void **) &pixels);
   (void) gzclose(file);
   (void) remove(filename);
-  return(y == cache_info->rows);
+  return(y == (int) cache_info->rows);
 #else
   return(True);
 #endif
@@ -1998,7 +1998,7 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
       /*
         Generic profile.
       */
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (int) image->generic_profiles; i++)
         (void) fprintf(file,"profile-%s=%u\n",
           image->generic_profile[i].name == (char *) NULL ? "generic" :
           image->generic_profile[i].name,image->generic_profile[i].length);
@@ -2012,13 +2012,13 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
     if (attribute->value != NULL)
       {
         (void) fprintf(file,"%.1024s=",attribute->key);
-        for (i=0; i < strlen(attribute->value); i++)
+        for (i=0; i < (int) strlen(attribute->value); i++)
           if (isspace((int) attribute->value[i]))
             break;
-        if (i < strlen(attribute->value))
+        if (i < (int) strlen(attribute->value))
           (void) fputc('{',file);
         (void) fwrite(attribute->value,strlen(attribute->value),1,file);
-        if (i < strlen(attribute->value))
+        if (i < (int) strlen(attribute->value))
           (void) fputc('}',file);
         (void) fputc('\n',file);
       }
@@ -2042,7 +2042,7 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
       /*
         Generic profile.
       */
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (int) image->generic_profiles; i++)
       {
         if (image->generic_profile[i].length == 0)
           continue;

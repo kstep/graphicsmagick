@@ -430,7 +430,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
         Native blob support for this image format.
       */
       *image->filename='\0';
-      clone_info->blob.extent=Max((int) *length,image->blob.quantum);
+      clone_info->blob.extent=Max(*length,image->blob.quantum);
       clone_info->blob.data=(unsigned char *)
         AcquireMemory(clone_info->blob.extent);
       if (clone_info->blob.data == (unsigned char *) NULL)

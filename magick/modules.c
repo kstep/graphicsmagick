@@ -397,7 +397,7 @@ static char **ListModules(void)
         entry=readdir(directory);
         continue;
       }
-    if (i >= max_entries)
+    if (i >= (int) max_entries)
       {
         max_entries<<=1;
         ReacquireMemory((void **) &modules,max_entries*sizeof(char *));

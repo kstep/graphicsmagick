@@ -588,7 +588,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       if (p == (PixelPacket *) NULL)
         break;
       q=(unsigned char *) pixels;
-      for (i=0; i < (columns*rows); i++)
+      for (i=0; i < (int) (columns*rows); i++)
       {
         for (j=0; j < Extent(map); j++)
         {
@@ -643,7 +643,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       if (p == (PixelPacket *) NULL)
         break;
       q=(unsigned short *) pixels;
-      for (i=0; i < (columns*rows); i++)
+      for (i=0; i < (int) (columns*rows); i++)
       {
         for (j=0; j < Extent(map); j++)
         {
@@ -698,7 +698,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       if (p == (PixelPacket *) NULL)
         break;
       q=(unsigned int *) pixels;
-      for (i=0; i < (columns*rows); i++)
+      for (i=0; i < (int) (columns*rows); i++)
       {
         for (j=0; j < Extent(map); j++)
         {
@@ -753,7 +753,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       if (p == (PixelPacket *) NULL)
         break;
       q=(float *) pixels;
-      for (i=0; i < (columns*rows); i++)
+      for (i=0; i < (int) (columns*rows); i++)
       {
         for (j=0; j < Extent(map); j++)
         {
@@ -808,7 +808,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       if (p == (PixelPacket *) NULL)
         break;
       q=(double *) pixels;
-      for (i=0; i < (columns*rows); i++)
+      for (i=0; i < (int) (columns*rows); i++)
       {
         for (j=0; j < Extent(map); j++)
         {

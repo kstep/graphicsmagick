@@ -367,7 +367,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     {
       if (!skip)
         {
-          if (x < image->columns)
+          if (x < (int) image->columns)
             {
               q=GetImagePixels(image,x,y,image->columns-x,1);
               if (q == (PixelPacket *) NULL)
@@ -1272,7 +1272,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
       n=0;
       j=1;
     }
-  for (i=1; i < number_vertices; i++)
+  for (i=1; i < (int) number_vertices; i++)
   {
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
@@ -3443,7 +3443,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
       polygon_primitive[number_vertices]=primitive_info[1];
       number_vertices++;
     }
-  for (n=1; n < number_vertices; n++)
+  for (n=1; n < (int) number_vertices; n++)
   {
     dx.p=polygon_primitive[n].point.x-polygon_primitive[0].point.x;
     dy.p=polygon_primitive[n].point.y-polygon_primitive[0].point.y;
@@ -3519,7 +3519,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
   right_strokes[0].y=right_points[0].y;
   l++;
   r++;
-  for (i=n+1; i < number_vertices; i++)
+  for (i=n+1; i < (int) number_vertices; i++)
   {
     /*
       Compute the slope for this line segment, q.
@@ -4349,7 +4349,7 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
     p+=p->coordinates;
   }
   primitive_info->coordinates=p-primitive_info;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < (int) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -4437,7 +4437,7 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
   }
   TracePoint(p,end);
   primitive_info->coordinates=p-primitive_info+1;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < (int) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -4495,7 +4495,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
     p++;
   }
   primitive_info->coordinates=p-primitive_info;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < (int) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -4827,7 +4827,7 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
     }
   primitive_info->coordinates=q-primitive_info;
   number_coordinates+=primitive_info->coordinates;
-  for (i=0; i < number_coordinates; i++)
+  for (i=0; i < (int) number_coordinates; i++)
   {
     q--;
     q->primitive=primitive_type;
@@ -4871,7 +4871,7 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   TracePoint(p,start);
   p+=p->coordinates;
   primitive_info->coordinates=p-primitive_info;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < (int) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -4926,7 +4926,7 @@ static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
   TracePoint(p,primitive_info->point);
   p+=p->coordinates;
   primitive_info->coordinates=p-primitive_info;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < (int) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;

@@ -949,7 +949,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           image->iptc_profile.length=0;
           image->iptc_profile.info=(unsigned char *) NULL;
         }
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (int) image->generic_profiles; i++)
       {
         if ((LocaleCompare(image->generic_profile[i].name,profile_name) != 0) &&
             (*profile_name != '*'))
@@ -959,7 +959,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
         if (image->iptc_profile.length != 0)
           LiberateMemory((void **) &image->generic_profile[i].info);
         image->generic_profiles--;
-        for (j=i; j < image->generic_profiles; j++)
+        for (j=i; j < (int) image->generic_profiles; j++)
           image->generic_profile[j]=image->generic_profile[j+1];
         i--;
       }
@@ -1128,7 +1128,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
             (char *) NULL);
         }
       j=image->generic_profiles;
-      for (i=0; i < profile_image->generic_profiles; i++)
+      for (i=0; i < (int) profile_image->generic_profiles; i++)
       {
         image->generic_profile[j].name=profile_image->generic_profile[i].name;
         image->generic_profile[j].length=

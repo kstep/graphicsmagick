@@ -917,7 +917,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
           "Memory allocation failed");
       length=image->generic_profiles*sizeof(ProfileInfo);
       memcpy(clone_image->generic_profile,image->generic_profile,length);
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (int) image->generic_profiles; i++)
       {
         clone_image->generic_profile[i].name=
           AllocateString(image->generic_profile[i].name);
@@ -975,7 +975,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         if (!SyncImagePixels(clone_image))
           break;
       }
-      if (y < image->rows)
+      if (y < (int) image->rows)
         ThrowImageException(CacheWarning,"Unable to clone image",
           "could not get image cache");
       if (image->montage != (char *) NULL)
@@ -1269,24 +1269,24 @@ MagickExport unsigned int CompositeImage(Image *image,
     Composite image.
   */
   midpoint=0x80;
-  for (y=0; y < image->rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     if (y < y_offset)
       continue;
-    if ((y-y_offset) >= composite_image->rows)
+    if ((y-y_offset) >= (int) composite_image->rows)
       break;
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if (x < x_offset)
         {
           q++;
           continue;
         }
-      if ((x-x_offset) >= composite_image->columns)
+      if ((x-x_offset) >= (int) composite_image->columns)
         break;
       p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
       if (p == (PixelPacket *) NULL)
@@ -1496,10 +1496,11 @@ MagickExport unsigned int CompositeImage(Image *image,
             }
             case DifferenceCompositeOp:
             {
-              q->red=AbsoluteValue((double) p->red-q->red);
-              q->green=AbsoluteValue((double) p->green-q->green);
-              q->blue=AbsoluteValue((double) p->blue-q->blue);
-              q->opacity=AbsoluteValue((double) p->opacity-q->opacity);
+              q->red=(Quantum) AbsoluteValue((double) p->red-q->red);
+              q->green=(Quantum) AbsoluteValue((double) p->green-q->green);
+              q->blue=(Quantum) AbsoluteValue((double) p->blue-q->blue);
+              q->opacity=(Quantum)
+                AbsoluteValue((double) p->opacity-q->opacity);
               break;
             }
             case BumpmapCompositeOp:
@@ -1933,7 +1934,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       */
       (void) fprintf(file,"  Profile-iptc: %u bytes\n",
         image->iptc_profile.length);
-      for (i=0; i < image->iptc_profile.length; )
+      for (i=0; i < (int) image->iptc_profile.length; )
       {
         if (image->iptc_profile.info[i] != 0x1c)
           {
@@ -2028,7 +2029,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         i+=length;
       }
     }
-  for (i=0; i < image->generic_profiles; i++)
+  for (i=0; i < (int) image->generic_profiles; i++)
   {
     if (image->generic_profile[i].length == 0)
       continue;
@@ -2277,7 +2278,7 @@ MagickExport void DestroyImage(Image *image)
       /*
         Deallocate any generic profiles.
       */
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (int) image->generic_profiles; i++)
       {
         if (image->generic_profile[i].name != (char *) NULL)
           LiberateMemory((void **) &image->generic_profile[i].name);
@@ -4900,7 +4901,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     DescribeImage(*images,stdout,False);
   mogrify_images=(*images);
   image=(*images)->next;
-  for (scene=1; scene < number_images; scene++)
+  for (scene=1; scene < (int) number_images; scene++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
     status=MogrifyImage(image_info,argc,argv,&image);

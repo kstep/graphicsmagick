@@ -537,7 +537,7 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (int) minify_image->rows; y++)
   {
-    p=GetImagePixels(image,0,Min(2*y,image->rows-4),image->columns,4);
+    p=GetImagePixels(image,0,Min(2*y,image->rows-4),(int) image->columns,4);
     q=SetImagePixels(minify_image,0,y,minify_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -1462,7 +1462,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
     y_vector[x].opacity=0;
   }
   i=0;
-  for (y=0; y < scale_image->rows; y++)
+  for (y=0; y < (int) scale_image->rows; y++)
   {
     q=SetImagePixels(scale_image,0,y,scale_image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -1645,7 +1645,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
           blue+=x_span*s->blue;
           opacity+=x_span*s->opacity;
         }
-      if (!next_column && ((t-scale_scanline) < scale_image->columns))
+      if (!next_column && ((t-scale_scanline) < (int) scale_image->columns))
         {
           t->red=red > MaxRGB ? MaxRGB : red+0.5;
           t->green=green > MaxRGB ? MaxRGB : green+0.5;

@@ -353,8 +353,8 @@ MagickExport PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
   if (image->cache == (Cache) NULL)
     ThrowBinaryException(CacheWarning,"pixel cache is undefined",
       image->filename);
-  if ((x < 0) || (y < 0) || ((x+columns) > (int) image->columns) ||
-      ((y+rows) > (int) image->rows) || (columns == 0) || (rows == 0))
+  if ((x < 0) || (y < 0) || ((x+(int) columns) > (int) image->columns) ||
+      ((y+(int) rows) > (int) image->rows) || (columns == 0) || (rows == 0))
     {
       ThrowException(&image->exception,CacheWarning,"Unable to set pixel cache",
         "image does not contain the cache geometry");

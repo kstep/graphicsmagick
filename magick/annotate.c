@@ -185,11 +185,11 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       if ((flags & XNegative) != 0)
         x+=image->columns;
       if ((flags & WidthValue) == 0)
-        width-=2*x > width ? width : 2*x;
+        width-=2*x > (int) width ? width : 2*x;
       if ((flags & YNegative) != 0)
         y+=image->rows;
       if ((flags & HeightValue) == 0)
-        height-=2*y > height ? height : 2*y;
+        height-=2*y > (int) height ? height : 2*y;
     }
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   if ((annotate->fill.opacity == TransparentOpacity) &&
@@ -1334,8 +1334,9 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   metrics->pixels_per_em.y=font_info->max_bounds.width;
   metrics->ascent=font_info->ascent;
   metrics->descent=(-font_info->descent);
-  metrics->width=annotate_info.width/ExpandAffine(&draw_info->affine);
-  metrics->height=metrics->pixels_per_em.x+4;
+  metrics->width=(unsigned int)
+    (annotate_info.width/ExpandAffine(&draw_info->affine));
+  metrics->height=(unsigned int) (metrics->pixels_per_em.x+4);
   metrics->max_advance=font_info->max_bounds.width;
   if (!render)
     return(True);
