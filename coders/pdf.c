@@ -557,7 +557,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     (void) strcpy(image->magick,"PDF");
     (void) strncpy(image->filename,filename,MaxTextExtent-1);
-    if (!portrait)
+    if (!image_info->ping && !portrait)
       {
         Image
           *rotate_image;

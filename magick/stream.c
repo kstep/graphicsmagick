@@ -165,11 +165,11 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   const long y,const unsigned long columns,const unsigned long rows,
   ExceptionInfo *exception)
 {
+  off_t
+    offset;
+
   StreamInfo
     *stream_info;
-
-  size_t
-    length;
 
   unsigned long
     number_pixels;
@@ -197,19 +197,19 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
   number_pixels=columns*rows;
-  length=number_pixels*sizeof(PixelPacket);
+  offset=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
-    length+=number_pixels*sizeof(IndexPacket);
+    offset+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
-    stream_info->pixels=(PixelPacket *) AcquireMemory(length);
+    stream_info->pixels=(PixelPacket *) AcquireMemory(offset);
   else
-    if (length != stream_info->length)
-      ReacquireMemory((void **) &stream_info->pixels,length);
+    if (offset != stream_info->length)
+      ReacquireMemory((void **) &stream_info->pixels,offset);
   if (stream_info->pixels == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
-  stream_info->length=length;
+  stream_info->length=offset;
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
@@ -523,11 +523,11 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
 static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   const unsigned long columns,const unsigned long rows)
 {
+  off_t
+    offset;
+
   StreamInfo
     *stream_info;
-
-  size_t
-    length;
 
   unsigned long
     number_pixels;
@@ -566,19 +566,19 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
   number_pixels=columns*rows;
-  length=number_pixels*sizeof(PixelPacket);
+  offset=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
-    length+=number_pixels*sizeof(IndexPacket);
+    offset+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
-    stream_info->pixels=(PixelPacket *) AcquireMemory(length);
+    stream_info->pixels=(PixelPacket *) AcquireMemory(offset);
   else
-    if (length != stream_info->length)
-      ReacquireMemory((void **) &stream_info->pixels,length);
+    if (offset != stream_info->length)
+      ReacquireMemory((void **) &stream_info->pixels,offset);
   if (stream_info->pixels == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
-  stream_info->length=length;
+  stream_info->length=offset;
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
