@@ -2027,7 +2027,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     }
     case WriteMode:
     {
-      file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY,0777);
+      file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY |
+        O_EXCL,0777);
       if (file == -1)
         file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
       break;
@@ -2035,7 +2036,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     case IOMode:
     default:
     {
-      file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY,0777);
+      file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY |
+        O_EXCL,0777);
       if (file == -1)
         file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       break;
@@ -2563,11 +2565,10 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 %
 %  A description of each parameter follows:
 %
-%    o minimim: The number of megabytes of memory available to the pixel
 %      cache.  Once this threshold is exceeded the pixels are cached to disk.
 %
-%    o maximum:  The maximum number of megabytes available to the pixel
-%      cache.  Once this threshild is exceeded an error is returned.
+%    o threshold: The number of megabytes of memory available to the pixel
+%      cache.
 %
 %
 */
@@ -3158,7 +3159,9 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   /*
     Write indexes to disk.
   */
-  file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
+  file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,0777);
+  if (file == -1)
+    file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
   if (file == -1)
     return(False);
   number_pixels=cache_info->columns*cache_info->rows;
@@ -3264,7 +3267,9 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   /*
     Write pixels to disk.
   */
-  file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
+  file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,0777);
+  if (file == -1)
+    file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
   if (file == -1)
     return(False);
   for (y=0; y < (long) nexus_info->rows; y++)
