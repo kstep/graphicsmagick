@@ -634,7 +634,7 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
     return((PolygonInfo *) NULL);
   for (i=0; path_info[i].code != EndCode; i++);
   polygon_info->edges=(EdgeInfo *) AcquireMemory(i*sizeof(EdgeInfo));
-  polygon_info->points=(PointInfo *) AcquireMemory((2*i+3)*sizeof(PointInfo));
+  polygon_info->points=(PointInfo *) AcquireMemory(2*i*sizeof(PointInfo));
   if ((polygon_info->edges == (EdgeInfo *) NULL) ||
       (polygon_info->points == (PointInfo *) NULL))
     return((PolygonInfo *) NULL);
