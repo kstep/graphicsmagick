@@ -251,7 +251,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   static Fontmap
     fontmap[] =
     {
-      { "arial", "helvetica" }, { "fixed", "courier" },
+      { "helvetica", "arial" }, { "fixed", "courier" },
       { "modern","courier" }, { "monotype corsiva", "courier" },
       { "news gothic", "helvetica" }, { "system", "courier" },
       { "terminal", "courier" }, { "wingdings", "symbol" },
@@ -340,26 +340,20 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   }
   if (type_info != (TypeInfo *) NULL)
     {
-      ThrowException(exception,TypeWarning,"Unable to get font",family);
+      ThrowException(exception,TypeWarning,"Font substitution required",
+        type_info->family);
       return(type_info);
     }
-  /*
-    Default to Helvetica.
-  */
-  if (LocaleCompare(family,"helvetica") == 0)
-    return((TypeInfo *) NULL);
-  type_info=GetTypeInfoByFamily("helvetica",style,stretch,weight,exception);
-  if (type_info == (TypeInfo *) NULL)
+  if (LocaleCompare(family,"helvetica") != 0)
     {
       /*
-        Default to Arial.
+        Default to Helvetica.
       */
-      if (LocaleCompare(family,"arial") == 0)
-        return((TypeInfo *) NULL);
-      type_info=GetTypeInfoByFamily("arial",style,stretch,weight,exception);
-    }
-  if (type_info != (TypeInfo *) NULL)
-    ThrowException(exception,TypeWarning,"Unable to get font",family);
+      type_info=GetTypeInfoByFamily("helvetica",style,stretch,weight,exception);
+      if (type_info != (TypeInfo *) NULL)
+        ThrowException(exception,TypeWarning,"Font substitution required",
+          type_info->family);
+		}
   return(type_info);
 }
 
