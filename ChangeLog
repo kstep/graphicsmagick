@@ -1,5 +1,11 @@
 2003-08-06  William Radcliffe  <billr@corbis.com>
 
+	* locale/C.mgk: Removed duplicate messages and added some new
+	default messages that help to create a complete set of severity
+	strings.
+
+2003-08-06  William Radcliffe  <billr@corbis.com>
+
 	* magick/command.c, magick/magick.c: Get rid compiler warnings.
 
 2003-08-05  William Radcliffe  <billr@corbis.com>

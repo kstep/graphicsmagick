@@ -24,6 +24,16 @@
         Unrecognized image format
       </Message>
     </Error>
+    <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Blob>
   <Cache>
     <Error>
@@ -63,6 +73,11 @@
         Unable to extend pixel cache
       </Message>
     </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Cache>
   <Coder>
     <Error>
@@ -178,6 +193,11 @@
         Unsupported cell type in the matrix
       </Message>
     </Error>
+    <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
     <Warning>
       <Message name="LosslessToLossyJPEGConversion">
         Lossless to lossy JPEG conversion
@@ -205,6 +225,16 @@
         Unable to access module file
       </Message>
     </Error>
+    <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Configure>
   <Corrupt>
     <Image>
@@ -516,6 +546,16 @@
         Unable to write SVG format
       </Message>
     </Error>
+    <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Delegate>
   <Draw>
     <Error>
@@ -541,6 +581,16 @@
         URL not found
       </Message>
     </Error>
+    <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Draw>
   <File>
     <Open>
@@ -555,6 +605,16 @@
           Unable to write file
         </Message>
       </Error>
+      <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+      </FatalError>
+      <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+      </Warning>
     </Open>
   </File>
   <Image>
@@ -626,6 +686,16 @@
         Width or height exceeds limit
       </Message>
     </Error>
+    <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Image>
   <Missing>
     <Delegate>
@@ -664,6 +734,16 @@
           ZLIB compression library is not available
         </Message>
       </Error>
+      <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+      </FatalError>
+      <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+      </Warning>
     </Delegate>
   </Missing>
   <Module>
@@ -689,6 +769,11 @@
         Unable to initialize module loader
       </Message>
     </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Module>
   <Option>
     <Error>
@@ -1189,9 +1274,6 @@
       <Message name="UnrecognizedInterlaceType">
         Unrecognized interlace type
       </Message>
-      <Message name="UnrecognizedVirtualPixelMethod">
-        Unrecognized virtual pixel method
-      </Message>
       <Message name="UnrecognizedDisposeMethod">
         unrecognized dispose method
       </Message>
@@ -1204,10 +1286,12 @@
       <Message name="UnrecognizedResourceType">
         Unrecognized resource type
       </Message>
-      <Message name="UnrecognizedVirtualPixelMethod">
-        Unrecognized virtual pixel method
-      </Message>
     </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Option>
   <Registry>
     <Error>
@@ -1230,6 +1314,16 @@
         Unable to set registry
       </Message>
     </Error>
+    <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Registry>
   <Resource>
     <Limit>
@@ -1255,8 +1349,8 @@
         <Message name="UnableToAddGenericProfile">
           unable to add generic profile
         </Message>
-        <Message name="UnableToAddICMProfile">
-          unable to add ICM profile
+        <Message name="UnableToAddColorProfile">
+          unable to add ICC Color profile
         </Message>
         <Message name="UnableToAddIPTCProfile">
           unable to add IPTC profile
@@ -1306,9 +1400,6 @@
         <Message name="UnableToCreateCommandWidget">
           unable to create command widget
         </Message>
-        <Message name="UnableToCreateImageGroup">
-          Unable to create image group
-        </Message>
         <Message name="UnableToCreateImageMontage">
           Unable to create image montage
         </Message>
@@ -1353,7 +1444,6 @@
         </Message>
         <Message name="UnableToGetFromRegistry">
           unable to get from registry
-        </Message>
         </Message>
         <Message name="UnableToGetPackageInfo">
           Unable to get package info
@@ -1563,6 +1653,16 @@
         Unrecognized font encoding
       </Message>
     </Error>
+    <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Type>
   <Stream>
     <Error>
@@ -1585,6 +1685,16 @@
         Unable to sync pixel stream
       </Message>
     </Error>
+    <FatalError>
+      <Message name="Default">
+        default error
+      </Message>
+    </FatalError>
+    <Warning>
+      <Message name="Default">
+        default warning
+      </Message>
+    </Warning>
   </Stream>
   <XServer>
     <Error>
