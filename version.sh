@@ -13,7 +13,7 @@ PACKAGE_VERSION='1.0'
 
 #
 # Formal Package release date
-PACKAGE_RELEASE_DATE="04/29/03"
+PACKAGE_RELEASE_DATE="05/05/03"
 
 #
 # Package version addendum.  This is an arbitrary suffix (if any)
@@ -29,7 +29,7 @@ else
 fi
 
 # To hardcode the version addendum, uncomment the following line
-PACKAGE_VERSION_ADDENDUM='-Beta1'
+PACKAGE_VERSION_ADDENDUM=''
 
 #
 # Libtool library revision control info
@@ -52,6 +52,6 @@ PACKAGE_VERSION_ADDENDUM='-Beta1'
 #  6. If any interfaces have been removed since the last public release,
 #     then set age to 0.
 LIBRARY_CURRENT=0
-LIBRARY_REVISION=1
+LIBRARY_REVISION=2
 LIBRARY_AGE=0
 

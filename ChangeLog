@@ -1,5 +1,7 @@
 2003-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* GraphicsMagick 1.0 Released.
+	* version.sh (LIBRARY_REVISION): Updated for the 1.0 release.
 	* magick/studio.h: Add fix to avoid problems caused by zlib
 	under AIX.
 	* magick/cache.h: Parameterized prototypes to make them easier

@@ -44,7 +44,7 @@
 #define MagicFilename  "magic.mgk"
 
 /*
-  Declare color map.
+  Declare magick map.
 */
 static char
   *MagicMap = (char *)
