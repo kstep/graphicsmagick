@@ -4098,11 +4098,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             LayerImage(*image,layer);
             continue;
           }
-        if (LocaleNCompare("-linewidth",option,3) == 0)
-          {
-            draw_info->linewidth=atof(argv[++i]);
-            continue;
-          }
         break;
       }
       case 'm':
@@ -4616,6 +4611,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           {
             (void) QueryColorDatabase(argv[++i],&clone_info->stroke);
             draw_info->stroke=clone_info->stroke;
+            continue;
+          }
+        if (LocaleNCompare("-stroke_width",option,9) == 0)
+          {
+            draw_info->stroke_width=atof(argv[++i]);
             continue;
           }
         if (LocaleNCompare("-swirl",option,3) == 0)

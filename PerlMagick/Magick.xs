@@ -353,7 +353,7 @@ static struct
     { "CycleColormap", { {"amount", IntegerReference} } },
     { "Draw", { {"prim", PrimitiveTypes}, {"points", StringReference},
       {"meth", MethodTypes}, {"stroke", StringReference},
-      {"fill", StringReference}, {"linew", DoubleReference},
+      {"fill", StringReference}, {"linewidth", DoubleReference},
       {"sans", StringReference}, {"borderc", StringReference},
       {"x", DoubleReference}, {"y", DoubleReference},
       {"translate", StringReference}, {"scale", StringReference},
@@ -4763,7 +4763,7 @@ Mogrify(ref,...)
             (void) QueryColorDatabase(argument_list[4].string_reference,
               &draw_info->fill);
           if (attribute_flag[5])
-            draw_info->linewidth=argument_list[5].double_reference;
+            draw_info->stroke_width=argument_list[5].double_reference;
           if (attribute_flag[7])
             (void) QueryColorDatabase(argument_list[7].string_reference,
               &draw_info->border_color);

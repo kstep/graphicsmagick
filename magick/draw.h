@@ -53,7 +53,8 @@ typedef struct _AnnotateInfo
     gravity;
 
   double
-    pointsize;
+    pointsize,
+    stroke_width;
 
   AffineMatrix
     affine;
@@ -101,7 +102,7 @@ typedef struct _DrawInfo
     stroke_antialias;
 
   double
-    linewidth;
+    stroke_width;
 
   FillRule
     fill_rule;

@@ -46,6 +46,8 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% Digital Applications (www.digapp.com) contributed the stroked text algorithm.
+% It was written by Leonard Rosenthol.
 %
 %
 */
@@ -61,6 +63,7 @@
 #if defined(HasTTF)
 #include "freetype/freetype.h"
 #include "freetype/ftglyph.h"
+#include "freetype/ftoutln.h"
 #endif
 
 /*
@@ -68,7 +71,13 @@
 */
 static unsigned int
   RenderFont(Image *,const AnnotateInfo *,const PointInfo *,
-    const unsigned int,FontMetrics *);
+    const unsigned int,FontMetrics *),
+  RenderPostscript(Image *,const AnnotateInfo *,const PointInfo *,
+    const unsigned int,FontMetrics *),
+  RenderTruetype(Image *,const AnnotateInfo *,const PointInfo *,
+    const unsigned int,FontMetrics *),
+  RenderX11(Image *,const AnnotateInfo *,const PointInfo *,const unsigned int,
+    FontMetrics *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -498,6 +507,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
     annotate_info->density=AllocateString(clone_info->density);
   annotate_info->antialias=clone_info->antialias;
   annotate_info->gravity=(GravityType) NorthWestGravity;
+  annotate_info->stroke_width=1.0;
   annotate_info->pointsize=clone_info->pointsize;
   annotate_info->affine=clone_info->affine;
   annotate_info->fill=clone_info->fill;
@@ -605,6 +615,85 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %
 %
 */
+static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
+  const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
+{
+  AnnotateInfo
+    *clone_info;
+
+  ImageInfo
+    *image_info;
+
+  unsigned int
+    status;
+
+  if (annotate_info->font == (char *) NULL)
+    return(RenderPostscript(image,annotate_info,offset,render,metrics));
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  (void) strcpy(image_info->filename,annotate_info->font);
+  (void) strcpy(image_info->magick,"PS");
+  if (*image_info->filename == '@')
+    (void) strcpy(image_info->magick,"TTF");
+  if (*image_info->filename == '-')
+    (void) strcpy(image_info->magick,"X");
+  (void) SetImageInfo(image_info,False);
+  clone_info=CloneAnnotateInfo(image_info,annotate_info);
+  if (*image_info->filename != '@')
+    CloneString(&clone_info->font,image_info->filename);
+  else
+    CloneString(&clone_info->font,image_info->filename+1);
+  if (LocaleCompare(image_info->magick,"ps") == 0)
+    status=RenderPostscript(image,clone_info,offset,render,metrics);
+  else
+    if (LocaleCompare(image_info->magick,"ttf") == 0)
+      status=RenderTruetype(image,clone_info,offset,render,metrics);
+    else
+      if (LocaleCompare(image_info->magick,"x") == 0)
+        status=RenderX11(image,clone_info,offset,render,metrics);
+      else
+        status=RenderPostscript(image,clone_info,offset,render,metrics);
+  DestroyAnnotateInfo(clone_info);
+  DestroyImageInfo(image_info);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e n d e r P o s t s c r i p t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RenderPostscript renders text on the image with a Postscript font.
+%  It also returns the bounding box of the text relative to the image.
+%
+%  The format of the RenderPostscript method is:
+%
+%      unsigned int RenderPostscript(Image *image,AnnotateInfo *annotate_info,
+%        const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method RenderPostscript returns True if the text is rendered on
+%      the image, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o annotate_info: The address of a AnnotateInfo structure.
+%
+%    o offset: (x,y) location of text relative to image.
+%
+%    o render: a value other than zero renders the text otherwise just the
+%      font metric is returned.
+%
+%    o metrics: bounding box of text.
+%
+%
+*/
 
 static char *EscapeParenthesis(const char *text)
 {
@@ -634,321 +723,6 @@ static char *EscapeParenthesis(const char *text)
   *p='\0';
   return(buffer);
 }
-
-#if defined(HasTTF)
-static unsigned int RenderTruetype(Image *image,
-  const AnnotateInfo *annotate_info,const PointInfo *offset,
-  const unsigned int render,FontMetrics *metrics)
-{
-  typedef struct TGlyph_
-  {
-    FT_UInt
-      id;
-
-    FT_Vector
-      origin;
-
-    FT_Glyph
-      image;
-  } TGlyph;
-
-  char
-    filename[MaxTextExtent];
-
-  FT_BBox
-    bounding_box;
-
-  FT_BitmapGlyph
-    bitmap;
-
-  FT_Error
-    status;
-
-  FT_Matrix
-    affine;
-
-  FT_Vector
-    delta,
-    origin;
-
-  int
-    length,
-    y;
-
-  PointInfo
-    point,
-    resolution;
-
-  Quantum
-    opacity;
-
-  register unsigned char
-    *p;
-
-  register int
-    i,
-    x;
-
-  register PixelPacket
-    *q;
-
-  SegmentInfo
-    extent;
-
-  static char
-    font[MaxTextExtent];
-
-  static FT_Face
-    face = (FT_Face) NULL;
-
-  static FT_Library
-    library = (FT_Library) NULL;
-
-  TGlyph
-    *glyph,
-    *glyphs;
-
-  unsigned short
-    *unicode;
-
-  /*
-    Initialize Truetype library.
-  */
-  if (library == (FT_Library) NULL)
-    {
-      status=FT_Init_FreeType(&library);
-      if (status)
-        ThrowBinaryException(DelegateWarning,"Unable to open freetype library",
-          annotate_info->font);
-    }
-  if ((face == (FT_Face) NULL) ||
-      (LocaleCompare(annotate_info->font,font) != 0))
-    {
-      register char
-        *p,
-        *q;
-
-      /*
-        Search for Truetype font filename.
-      */
-      if (face != (FT_Face) NULL)
-        FT_Done_Face(face);
-      status=True;
-      p=getenv("TT_FONT_PATH");
-#if defined(TT_FONT_PATH)
-      if (p != (char *) NULL)
-        p=TT_FONT_PATH;
-#endif
-      if (p != (char *) NULL)
-        for ( ; ; )
-        {
-          /*
-            Environment variable TT_FONT_PATH.
-          */
-          q=strchr(p,DirectoryListSeparator);
-          if (q == (char *) NULL)
-            (void) strcpy(filename,p);
-          else
-            {
-              (void) strncpy(filename,p,q-p);
-              filename[q-p]='\0';
-            }
-          i=strlen(filename);
-          if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
-            (void) strcat(filename,DirectorySeparator);
-          (void) strcat(filename,annotate_info->font);
-          status=FT_New_Face(library,filename,0,&face);
-          if (!status || (q == (char *) NULL) || (*q == '\0'))
-            break;
-          p=q+1;
-        }
-      if (status)
-        status=FT_New_Face(library,annotate_info->font,0,&face);
-      if (status)
-        ThrowBinaryException(DelegateWarning,"Unable to read font",
-          annotate_info->font);
-    }
-  resolution.x=72.0;
-  resolution.y=72.0;
-  if (annotate_info->density != (char *) NULL)
-    {
-      int
-        count;
-
-      count=sscanf(annotate_info->density,"%lfx%lf",&resolution.x,
-        &resolution.y);
-      if (count != 2)
-        resolution.y=resolution.x;
-    }
-  (void) FT_Set_Char_Size(face,(long int) (64.0*annotate_info->pointsize),
-    (long int) (64.0*annotate_info->pointsize),(unsigned int) resolution.x,
-    (unsigned int) resolution.y);
-  /*
-    Convert to Unicode.
-  */
-  unicode=ConvertTextToUnicode(annotate_info->text,&length);
-  glyphs=(TGlyph *) AcquireMemory((length+1)*sizeof(TGlyph));
-  if ((unicode == (unsigned short *) NULL) || (glyphs == (TGlyph *) NULL))
-    {
-      FT_Done_FreeType(library);
-      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-        "Memory allocation failed");
-    }
-  /*
-    Compute bounding box.
-  */
-  origin.x=0;
-  origin.y=0;
-  extent.x1=32000;
-  extent.x2=(-32000);
-  extent.y1=32000;
-  extent.y2=(-32000);
-  affine.xx=(FT_Fixed) (65536.0*annotate_info->affine.sx);
-  affine.yx=(FT_Fixed) (-65536.0*annotate_info->affine.rx);
-  affine.xy=(FT_Fixed) (-65536.0*annotate_info->affine.ry);
-  affine.yy=(FT_Fixed) (65536.0*annotate_info->affine.sy);
-  glyph=glyphs;
-  for (i=0; i < length; i++)
-  {
-    glyph->id=FT_Get_Char_Index(face,unicode[i]);
-    if ((glyph > glyphs) && glyph->id && FT_HAS_KERNING(face))
-      {
-        FT_Get_Kerning(face,(glyph-1)->id,glyph->id,ft_kerning_default,&delta);
-        origin.x+=delta.x;
-      }
-    glyph->origin=origin;
-    status=FT_Load_Glyph(face,glyph->id,FT_LOAD_DEFAULT);
-    if (status)
-      continue;
-    status=FT_Get_Glyph(face->glyph,&glyph->image);
-    if (status)
-      continue;
-    FT_Vector_Transform(&glyph->origin,&affine);
-    FT_Glyph_Transform(glyphs[i].image,&affine,&glyph->origin);
-    FT_Glyph_Get_CBox(glyph->image,ft_glyph_bbox_pixels,&bounding_box);
-    if (status)
-      continue;
-    if (bounding_box.xMin < extent.x1)
-      extent.x1=bounding_box.xMin;
-    if (bounding_box.xMax > extent.x2)
-      extent.x2=bounding_box.xMax;
-    if (bounding_box.yMin < extent.y1)
-      extent.y1=bounding_box.yMin;
-    if (bounding_box.yMax > extent.y2)
-      extent.y2=bounding_box.yMax;
-    origin.x+=face->glyph->advance.x;
-    glyph++;
-  }
-  glyph->id=0;
-  LiberateMemory((void **) &unicode);
-  metrics->pixels_per_em.x=face->size->metrics.x_ppem;
-  metrics->pixels_per_em.y=face->size->metrics.y_ppem;
-  metrics->ascent=face->size->metrics.ascender >> 6;
-  metrics->descent=face->size->metrics.descender >> 6;
-  metrics->width=Max(origin.x >> 6,extent.x2);
-  metrics->height=face->size->metrics.height >> 6;
-  metrics->max_advance=face->size->metrics.max_advance >> 6;
-  if (!render)
-    {
-      for (glyph=glyphs; glyph->id != 0; glyph++)
-        FT_Done_Glyph(glyph->image);
-      LiberateMemory((void **) &glyphs);
-      return(True);
-    }
-  if (annotate_info->fill.opacity != TransparentOpacity)
-    {
-      PixelPacket
-        fill_color;
-
-      /*
-        Render fill color.
-      */
-      image->storage_class=DirectClass;
-      fill_color=annotate_info->fill;
-      for (glyph=glyphs; glyph->id != 0; glyph++)
-      {
-        if (glyph->image == (FT_Glyph) NULL)
-          continue;
-        status=FT_Glyph_To_Bitmap(&glyph->image,ft_render_mode_normal,False,
-          False);
-        bitmap=(FT_BitmapGlyph) glyph->image;
-        if ((bitmap->bitmap.width == 0) || (bitmap->bitmap.rows == 0))
-          continue;
-        point.x=offset->x+bitmap->left;
-        point.y=offset->y-bitmap->top;
-        p=bitmap->bitmap.buffer;
-        for (y=0; y < bitmap->bitmap.rows; y++)
-        {
-          if ((ceil(point.y+y-0.5) < 0) ||
-              (ceil(point.y+y-0.5) >= image->rows))
-            {
-              p+=bitmap->bitmap.width;
-              continue;
-            }
-          for (x=0; x < bitmap->bitmap.width; x++)
-          {
-            if ((ceil(point.x+x-0.5) < 0) ||
-                (ceil(point.x+x-0.5) >= image->columns) || (*p == 0))
-              {
-                p++;
-                continue;
-              }
-            q=GetImagePixels(image,(int) ceil(point.x+x-0.5),
-              (int) ceil(point.y+y-0.5),1,1);
-            if (q == (PixelPacket *) NULL)
-              {
-                p++;
-                continue;
-              }
-            opacity=MaxRGB-((unsigned long) (UpScale(*p)*
-              (MaxRGB-fill_color.opacity))/MaxRGB);
-            q->red=((unsigned long) (fill_color.red*(MaxRGB-opacity)+
-              q->red*opacity)/MaxRGB);
-            q->green=((unsigned long) (fill_color.green*(MaxRGB-opacity)+
-              q->green*opacity)/MaxRGB);
-            q->blue=((unsigned long) (fill_color.blue*(MaxRGB-opacity)+
-              q->blue*opacity)/MaxRGB);
-            q->opacity=((unsigned long) (opacity*(MaxRGB-opacity)+
-              q->opacity*opacity)/MaxRGB);
-            p++;
-            if (!SyncImagePixels(image))
-              continue;
-          }
-        }
-      }
-    }
-  if (annotate_info->stroke.opacity != TransparentOpacity)
-    {
-      PixelPacket
-        stroke_color;
-
-      /*
-        Render stroke color.
-      */
-      image->storage_class=DirectClass;
-      stroke_color=annotate_info->stroke;
-      for (glyph=glyphs; glyph->id != 0; glyph++)
-      {
-        /* waiting for leonard to code */
-      }
-    }
-  /*
-    Free resources.
-  */
-  for (glyph=glyphs; glyph->id != 0; glyph++)
-    FT_Done_Glyph(glyph->image);
-  LiberateMemory((void **) &glyphs);
-  return(True);
-}
-#else
-static unsigned int RenderTruetype(Image *image,
-  const AnnotateInfo *annotate_info,const PointInfo *offset,
-  const unsigned int render,FontMetrics *metrics)
-{
-  ThrowBinaryException(MissingDelegateWarning,
-    "FreeType library is not available",annotate_info->font);
-}
-#endif
 
 static unsigned int RenderPostscript(Image *image,
   const AnnotateInfo *annotate_info,const PointInfo *offset,
@@ -1131,7 +905,475 @@ static unsigned int RenderPostscript(Image *image,
   DestroyImage(annotate_image);
   return(True);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e n d e r T r u e t y p e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RenderTruetype renders text on the image with a Truetype font.  It
+%  also returns the bounding box of the text relative to the image.
+%
+%  The format of the RenderTruetype method is:
+%
+%      unsigned int RenderTruetype(Image *image,AnnotateInfo *annotate_info,
+%        const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method RenderTruetype returns True if the text is rendered on the
+%      image, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o annotate_info: The address of a AnnotateInfo structure.
+%
+%    o offset: (x,y) location of text relative to image.
+%
+%    o render: a value other than zero renders the text otherwise just the
+%      font metric is returned.
+%
+%    o metrics: bounding box of text.
+%
+%
+*/
 
+#if defined(HasTTF)
+
+static int CubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
+  DrawInfo *draw_info)
+{
+  char
+    path[MaxTextExtent];
+
+  FormatString(path,"C%g,%g %g,%g %g,%g",(p->x/64.0),(-p->y/64.0),(q->x/64.0),
+    (-q->y/64.0),(to->x/64.0),(-to->y/64.0));
+  ConcatenateString(&draw_info->primitive,path);
+  return(0);
+}
+
+static int LineTo(FT_Vector *to,DrawInfo *draw_info)
+{
+  char
+    path[MaxTextExtent];
+
+  FormatString(path,"L%g,%g",(to->x/64.0),(-to->y/64.0));
+  ConcatenateString(&draw_info->primitive,path);
+  return(0);
+}
+
+static int MoveTo(FT_Vector *to,DrawInfo *draw_info)
+{
+  char
+    path[MaxTextExtent];
+
+  FormatString(path,"M%g,%g",(to->x/64.0),(-to->y/64.0));
+  ConcatenateString(&draw_info->primitive,path);
+  return(0);
+}
+
+static int QuadraticBezier(FT_Vector *control,FT_Vector *to,
+  DrawInfo *draw_info)
+{
+  char
+    path[MaxTextExtent];
+
+  FormatString(path,"Q%g,%g %g,%g",(control->x/64.0),(-control->y/64.0),
+    (to->x/64.0),(-to->y/64.0));
+  ConcatenateString(&draw_info->primitive,path);
+  return(0);
+}
+
+static unsigned int RenderTruetype(Image *image,
+  const AnnotateInfo *annotate_info,const PointInfo *offset,
+  const unsigned int render,FontMetrics *metrics)
+{
+  typedef struct TGlyph_
+  {
+    FT_UInt
+      id;
+
+    FT_Vector
+      origin;
+
+    FT_Glyph
+      image;
+  } TGlyph;
+
+  char
+    filename[MaxTextExtent];
+
+  DrawInfo
+    *draw_info;
+
+  FT_BBox
+    bounding_box;
+
+  FT_BitmapGlyph
+    bitmap;
+
+  FT_Error
+    status;
+
+  FT_Matrix
+    affine;
+
+  static FT_Outline_Funcs
+    OutlineMethods =
+    {
+      (FT_Outline_MoveTo_Func) MoveTo,
+      (FT_Outline_LineTo_Func) LineTo,
+      (FT_Outline_ConicTo_Func) QuadraticBezier,
+      (FT_Outline_CubicTo_Func) CubicBezier,
+      NULL,
+      NULL
+    };
+
+  FT_OutlineGlyph
+    outline;
+
+  FT_Vector
+    delta,
+    origin;
+
+  int
+    length,
+    y;
+
+  PixelPacket
+    fill_color;
+
+  PointInfo
+    point,
+    resolution;
+
+  Quantum
+    opacity;
+
+  register unsigned char
+    *p;
+
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *q;
+
+  SegmentInfo
+    extent;
+
+  static char
+    font[MaxTextExtent];
+
+  static FT_Face
+    face = (FT_Face) NULL;
+
+  static FT_Library
+    library = (FT_Library) NULL;
+
+  TGlyph
+    *glyph,
+    *glyphs;
+
+  unsigned short
+    *unicode;
+
+  /*
+    Initialize Truetype library.
+  */
+  if (library == (FT_Library) NULL)
+    {
+      status=FT_Init_FreeType(&library);
+      if (status)
+        ThrowBinaryException(DelegateWarning,"Unable to open freetype library",
+          annotate_info->font);
+    }
+  if ((face == (FT_Face) NULL) ||
+      (LocaleCompare(annotate_info->font,font) != 0))
+    {
+      register char
+        *p,
+        *q;
+
+      /*
+        Search for Truetype font filename.
+      */
+      if (face != (FT_Face) NULL)
+        FT_Done_Face(face);
+      status=True;
+      p=getenv("TT_FONT_PATH");
+#if defined(TT_FONT_PATH)
+      if (p != (char *) NULL)
+        p=TT_FONT_PATH;
+#endif
+      if (p != (char *) NULL)
+        for ( ; ; )
+        {
+          /*
+            Environment variable TT_FONT_PATH.
+          */
+          q=strchr(p,DirectoryListSeparator);
+          if (q == (char *) NULL)
+            (void) strcpy(filename,p);
+          else
+            {
+              (void) strncpy(filename,p,q-p);
+              filename[q-p]='\0';
+            }
+          i=strlen(filename);
+          if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
+            (void) strcat(filename,DirectorySeparator);
+          (void) strcat(filename,annotate_info->font);
+          status=FT_New_Face(library,filename,0,&face);
+          if (!status || (q == (char *) NULL) || (*q == '\0'))
+            break;
+          p=q+1;
+        }
+      if (status)
+        status=FT_New_Face(library,annotate_info->font,0,&face);
+      if (status)
+        ThrowBinaryException(DelegateWarning,"Unable to read font",
+          annotate_info->font);
+    }
+  resolution.x=72.0;
+  resolution.y=72.0;
+  if (annotate_info->density != (char *) NULL)
+    {
+      int
+        count;
+
+      count=sscanf(annotate_info->density,"%lfx%lf",&resolution.x,
+        &resolution.y);
+      if (count != 2)
+        resolution.y=resolution.x;
+    }
+  (void) FT_Set_Char_Size(face,(long int) (64.0*annotate_info->pointsize),
+    (long int) (64.0*annotate_info->pointsize),(unsigned int) resolution.x,
+    (unsigned int) resolution.y);
+  /*
+    Convert to Unicode.
+  */
+  unicode=ConvertTextToUnicode(annotate_info->text,&length);
+  glyphs=(TGlyph *) AcquireMemory((length+1)*sizeof(TGlyph));
+  if ((unicode == (unsigned short *) NULL) || (glyphs == (TGlyph *) NULL))
+    {
+      FT_Done_FreeType(library);
+      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+        "Memory allocation failed");
+    }
+  /*
+    Compute bounding box.
+  */
+  origin.x=0;
+  origin.y=0;
+  extent.x1=32000;
+  extent.x2=(-32000);
+  extent.y1=32000;
+  extent.y2=(-32000);
+  affine.xx=(FT_Fixed) (65536.0*annotate_info->affine.sx);
+  affine.yx=(FT_Fixed) (-65536.0*annotate_info->affine.rx);
+  affine.xy=(FT_Fixed) (-65536.0*annotate_info->affine.ry);
+  affine.yy=(FT_Fixed) (65536.0*annotate_info->affine.sy);
+  glyph=glyphs;
+  for (i=0; i < length; i++)
+  {
+    glyph->id=FT_Get_Char_Index(face,unicode[i]);
+    if ((glyph > glyphs) && glyph->id && FT_HAS_KERNING(face))
+      {
+        FT_Get_Kerning(face,(glyph-1)->id,glyph->id,ft_kerning_default,&delta);
+        origin.x+=delta.x;
+      }
+    glyph->origin=origin;
+    status=FT_Load_Glyph(face,glyph->id,FT_LOAD_DEFAULT);
+    if (status != False)
+      continue;
+    status=FT_Get_Glyph(face->glyph,&glyph->image);
+    if (status != False)
+      continue;
+    FT_Vector_Transform(&glyph->origin,&affine);
+    FT_Glyph_Transform(glyph->image,&affine,&glyph->origin);
+    FT_Glyph_Get_CBox(glyph->image,ft_glyph_bbox_pixels,&bounding_box);
+    if (bounding_box.xMin < extent.x1)
+      extent.x1=bounding_box.xMin;
+    if (bounding_box.xMax > extent.x2)
+      extent.x2=bounding_box.xMax;
+    if (bounding_box.yMin < extent.y1)
+      extent.y1=bounding_box.yMin;
+    if (bounding_box.yMax > extent.y2)
+      extent.y2=bounding_box.yMax;
+    origin.x+=face->glyph->advance.x;
+    glyph++;
+  }
+  glyph->id=0;
+  LiberateMemory((void **) &unicode);
+  metrics->pixels_per_em.x=face->size->metrics.x_ppem;
+  metrics->pixels_per_em.y=face->size->metrics.y_ppem;
+  metrics->ascent=face->size->metrics.ascender >> 6;
+  metrics->descent=face->size->metrics.descender >> 6;
+  metrics->width=Max(origin.x >> 6,extent.x2);
+  metrics->height=face->size->metrics.height >> 6;
+  metrics->max_advance=face->size->metrics.max_advance >> 6;
+  if (!render)
+    {
+      for (glyph=glyphs; glyph->id != 0; glyph++)
+        FT_Done_Glyph(glyph->image);
+      LiberateMemory((void **) &glyphs);
+      return(True);
+    }
+  /*
+    Render text.
+  */
+  origin.x=0;
+  origin.y=0;
+  image->storage_class=DirectClass;
+  fill_color=annotate_info->fill;
+  for (glyph=glyphs; glyph->id != 0; glyph++)
+  {
+    if (glyph->image == (FT_Glyph) NULL)
+      continue;
+    status=FT_Glyph_To_Bitmap(&glyph->image,ft_render_mode_normal,
+      (FT_Vector *) NULL,False);
+    if (status != False)
+      continue;
+    bitmap=(FT_BitmapGlyph) glyph->image;
+    point.x=offset->x+bitmap->left;
+    point.y=offset->y-bitmap->top;
+    if ((annotate_info->fill.opacity != TransparentOpacity) &&
+        (bitmap->bitmap.width != 0) && (bitmap->bitmap.rows != 0))
+      {
+        p=bitmap->bitmap.buffer;
+        for (y=0; y < bitmap->bitmap.rows; y++)
+        {
+          if ((ceil(point.y+y-0.5) < 0) || (ceil(point.y+y-0.5) >= image->rows))
+            {
+              p+=bitmap->bitmap.width;
+              continue;
+            }
+          for (x=0; x < bitmap->bitmap.width; x++)
+          {
+            if ((ceil(point.x+x-0.5) < 0) ||
+                (ceil(point.x+x-0.5) >= image->columns) || (*p == 0))
+              {
+                p++;
+                continue;
+              }
+            q=GetImagePixels(image,(int) ceil(point.x+x-0.5),
+              (int) ceil(point.y+y-0.5),1,1);
+            if (q == (PixelPacket *) NULL)
+              {
+                p++;
+                continue;
+              }
+            opacity=MaxRGB-((unsigned long) (UpScale(*p)*
+              (MaxRGB-fill_color.opacity))/MaxRGB);
+            q->red=((unsigned long) (fill_color.red*(MaxRGB-opacity)+
+              q->red*opacity)/MaxRGB);
+            q->green=((unsigned long) (fill_color.green*(MaxRGB-opacity)+
+              q->green*opacity)/MaxRGB);
+            q->blue=((unsigned long) (fill_color.blue*(MaxRGB-opacity)+
+              q->blue*opacity)/MaxRGB);
+            q->opacity=((unsigned long) (opacity*(MaxRGB-opacity)+
+              q->opacity*opacity)/MaxRGB);
+            p++;
+            if (!SyncImagePixels(image))
+              continue;
+          }
+        }
+      }
+    if (annotate_info->stroke.opacity == TransparentOpacity)
+      continue;
+    if ((glyph > glyphs) && glyph->id && FT_HAS_KERNING(face))
+      {
+        FT_Get_Kerning(face,(glyph-1)->id,glyph->id,ft_kerning_default,&delta);
+        origin.x+=delta.x;
+      }
+    glyph->origin=origin;
+    status=FT_Load_Glyph(face,glyph->id,FT_LOAD_DEFAULT);
+    if (status != False)
+      continue;
+    status=FT_Get_Glyph(face->glyph,&glyph->image);
+    if (status != False)
+      continue;
+    if (glyph->image->format != ft_glyph_format_outline)
+     continue;
+    draw_info=CloneDrawInfo((ImageInfo *) NULL,(DrawInfo *) NULL);
+    draw_info->affine.tx=offset->x+(origin.x >> 6);
+    origin.x+=face->glyph->advance.x;
+    draw_info->affine.ty=offset->y;
+    draw_info->stroke=annotate_info->stroke;
+    draw_info->stroke_width=annotate_info->stroke_width;
+    draw_info->primitive=AllocateString("path '");
+    outline=(FT_OutlineGlyph) glyph->image;
+    status=FT_Outline_Decompose(&outline->outline,&OutlineMethods,draw_info);
+    if (status != False)
+      continue;
+    ConcatenateString(&draw_info->primitive,"'");
+    if (!status)
+      DrawImage(image,draw_info);
+    DestroyDrawInfo(draw_info);
+  }
+  /*
+    Free resources.
+  */
+  for (glyph=glyphs; glyph->id != 0; glyph++)
+    FT_Done_Glyph(glyph->image);
+  LiberateMemory((void **) &glyphs);
+  return(True);
+}
+#else
+static unsigned int RenderTruetype(Image *image,
+  const AnnotateInfo *annotate_info,const PointInfo *offset,
+  const unsigned int render,FontMetrics *metrics)
+{
+  ThrowBinaryException(MissingDelegateWarning,
+    "FreeType library is not available",annotate_info->font);
+}
+#endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e n d e r X 1 1                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RenderX11 renders text on the image with an X11 font.  It also
+%  returns the bounding box of the text relative to the image.
+%
+%  The format of the RenderX11 method is:
+%
+%      unsigned int RenderX11(Image *image,AnnotateInfo *annotate_info,
+%        const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method RenderX11 returns True if the text is rendered on the
+%      image, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o annotate_info: The address of a AnnotateInfo structure.
+%
+%    o offset: (x,y) location of text relative to image.
+%
+%    o render: a value other than zero renders the text otherwise just the
+%      font metric is returned.
+%
+%    o metrics: bounding box of text.
+%
+%
+*/
 #if defined(HasX11)
 static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
   const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
@@ -1309,45 +1551,3 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
     "X11 library is not available",annotate_info->font);
 }
 #endif
-
-static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
-  const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
-{
-  AnnotateInfo
-    *clone_info;
-
-  ImageInfo
-    *image_info;
-
-  unsigned int
-    status;
-
-  if (annotate_info->font == (char *) NULL)
-    return(RenderPostscript(image,annotate_info,offset,render,metrics));
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,annotate_info->font);
-  (void) strcpy(image_info->magick,"PS");
-  if (*image_info->filename == '@')
-    (void) strcpy(image_info->magick,"TTF");
-  if (*image_info->filename == '-')
-    (void) strcpy(image_info->magick,"X");
-  (void) SetImageInfo(image_info,False);
-  clone_info=CloneAnnotateInfo(image_info,annotate_info);
-  if (*image_info->filename != '@')
-    CloneString(&clone_info->font,image_info->filename);
-  else
-    CloneString(&clone_info->font,image_info->filename+1);
-  if (LocaleCompare(image_info->magick,"ps") == 0)
-    status=RenderPostscript(image,clone_info,offset,render,metrics);
-  else
-    if (LocaleCompare(image_info->magick,"ttf") == 0)
-      status=RenderTruetype(image,clone_info,offset,render,metrics);
-    else
-      if (LocaleCompare(image_info->magick,"x") == 0)
-        status=RenderX11(image,clone_info,offset,render,metrics);
-      else
-        status=RenderPostscript(image,clone_info,offset,render,metrics);
-  DestroyAnnotateInfo(clone_info);
-  DestroyImageInfo(image_info);
-  return(status);
-}

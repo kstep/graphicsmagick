@@ -590,7 +590,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
         resolution.y=resolution.x;
     }
   mid=(resolution.x/72.0)*ExpandAffine(&clone_info->affine)*
-    clone_info->linewidth/2.0;
+    clone_info->stroke_width/2.0;
   if (polygon_info != (PolygonInfo *) NULL)
     {
       bounds=polygon_info->edges[0].bounds;
@@ -1430,7 +1430,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
-            graphic_context[n]->linewidth=strtod(q,&q);
+            graphic_context[n]->stroke_width=strtod(q,&q);
             continue;
           }
         status=False;
@@ -2091,7 +2091,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   fill=(primitive_info->method == FillToBorderMethod) ||
     (primitive_info->method == FloodfillMethod);
   fill_color=draw_info->fill;
-  mid=ExpandAffine(&draw_info->affine)*draw_info->linewidth/2.0;
+  mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   stroke_color=draw_info->stroke;
   bounds=polygon_info->edges[0].bounds;
   for (i=1; i < polygon_info->number_edges; i++)
@@ -2927,6 +2927,8 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
         clone_info->server_name=AllocateString(draw_info->server_name);
       annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
       DestroyImageInfo(clone_info);
+      annotate->stroke_width=draw_info->stroke_width;
+      annotate->pointsize=draw_info->pointsize;
       annotate->gravity=draw_info->gravity;
       annotate->decorate=draw_info->decorate;
       annotate->geometry=AllocateString((char *) NULL);
@@ -3044,14 +3046,14 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
 #endif
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (unsigned *) NULL) &&
-          (scale*draw_info->linewidth > MagickEpsilon) &&
+          (scale*draw_info->stroke_width > MagickEpsilon) &&
           (draw_info->stroke.opacity != TransparentOpacity))
         {
           /*
             Draw dash polygon.
           */
           clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-          clone_info->linewidth=0.0;
+          clone_info->stroke_width=0.0;
           clone_info->stroke.opacity=TransparentOpacity;
           DrawPolygonPrimitive(clone_info,primitive_info,polygon_info,image);
           DestroyDrawInfo(clone_info);
@@ -3059,7 +3061,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
           DrawDashPolygon(draw_info,primitive_info,image);
           break;
         }
-      mid=ExpandAffine(&draw_info->affine)*draw_info->linewidth/2.0;
+      mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
       if ((mid > 1.0) && (draw_info->stroke.opacity != TransparentOpacity))
         {
           unsigned int
@@ -3082,7 +3084,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
               break;
             }
           clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-          clone_info->linewidth=0.0;
+          clone_info->stroke_width=0.0;
           clone_info->stroke.opacity=TransparentOpacity;
           DrawPolygonPrimitive(clone_info,primitive_info,polygon_info,image);
           DestroyDrawInfo(clone_info);
@@ -3284,7 +3286,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
       (left_strokes == (PointInfo *) NULL))
     MagickError(ResourceLimitWarning,"Unable to draw image",
       "Memory allocation failed");
-  mid=ExpandAffine(&draw_info->affine)*draw_info->linewidth/2.0;
+  mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   miterlimit=draw_info->miterlimit*draw_info->miterlimit*mid*mid;
   if ((draw_info->linecap == SquareCap) && !closed_path)
     TraceSquareLinecap(polygon_primitive,number_vertices,mid);
@@ -3691,7 +3693,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->fill=draw_info->stroke;
   clone_info->stroke.opacity=TransparentOpacity;
-  clone_info->linewidth=0.0;
+  clone_info->stroke_width=0.0;
   clone_info->fill_rule=NonZeroRule;
   DrawPolygonPrimitive(clone_info,stroke_polygon,polygon_info,image);
   DestroyDrawInfo(clone_info);
@@ -3747,7 +3749,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->fill=clone_info->fill;
   draw_info->stroke=clone_info->stroke;
   draw_info->stroke_antialias=clone_info->antialias;
-  draw_info->linewidth=1.0;
+  draw_info->stroke_width=1.0;
   draw_info->fill_rule=EvenOddRule;
   draw_info->linecap=ButtCap;
   draw_info->linejoin=MiterJoin;

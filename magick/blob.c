@@ -797,8 +797,8 @@ MagickExport void *MapBlob(int file,const MapMode mode,size_t *length)
     }
     case IOMode:
     {
-      map=(void *) mmap((char *) NULL,*length,PROT_READ | PROT_WRITE,
-        MAP_SHARED,file,0);
+      map=(void *) mmap((char *) NULL,*length,PROT_READ | PROT_WRITE,MAP_SHARED,
+        file,0);
       break;
     }
   }
