@@ -108,12 +108,6 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
       status=resource_info.memory > 0;
       break;
     }
-    case CacheResource:
-    {
-      resource_info.cache-=size;
-      status=resource_info.cache > 0;
-      break;
-    }
     case DiskResource:
     {
       resource_info.disk-=size;
@@ -194,7 +188,6 @@ MagickExport off_t GetMagickResources(const ResourceType type)
   switch (type)
   {
     case MemoryResource: size=resource_info.memory; break;
-    case CacheResource: size=resource_info.cache; break;
     case DiskResource: size=resource_info.disk; break;
     case MemoryMapResource: size=resource_info.memory_map; break;
 		default: size=0; break;
@@ -235,7 +228,6 @@ MagickExport void LiberateMagickResource(const ResourceType type,
   switch (type)
   {
     case MemoryResource: resource_info.memory+=size; break;
-    case CacheResource: resource_info.cache+=size; break;
     case DiskResource: resource_info.disk+=size; break;
     case MemoryMapResource: resource_info.memory_map+=size; break;
 		default: break;
@@ -274,7 +266,6 @@ MagickExport void SetMagickResources(const ResourceType type,const off_t limit)
   switch (type)
   {
     case MemoryResource: resource_info.memory=1024*1024*limit; break;
-    case CacheResource: resource_info.cache=1024*1024*limit; break;
     case DiskResource: resource_info.disk=1024*1024*limit; break;
     case MemoryMapResource: resource_info.memory_map=1024*1024*limit; break;
 		default: break;

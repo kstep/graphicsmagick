@@ -24,7 +24,6 @@ typedef struct _ResourceInfo
 {
   off_t
     memory,
-    cache,
     disk,
     memory_map;
 } ResourceInfo;
