@@ -175,7 +175,7 @@ typedef enum
   XServerError = 485,
   RegistryError = 490,
   ConfigurationError = 495,
-  FatalException = 700,
+  FatalErrorException = 700,
   ResourceLimitFatalError = 700,
   TypeFatalError = 705,
   OptionFatalError = 710,

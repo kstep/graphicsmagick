@@ -86,13 +86,12 @@ static WarningHandler
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CatchException() returns if no exceptions is found otherwise it determines
-%  the most severe exception and reports it as a warning or error depending on
-%  the severity.
+%  CatchException() returns if no exceptions is found otherwise it reports
+%  the  exception as a warning, error, or fatal depending on the severity.
 %
 %  The format of the CatchException method is:
 %
-%      CatchException(ExceptionInfo *exception)
+%      CatchException(const ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -103,6 +102,8 @@ static WarningHandler
 MagickExport void CatchException(const ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
+  if (exception->severity == UndefinedException)
+    return;
   if ((exception->severity >= WarningException) &&
       (exception->severity < ErrorException))
     {
@@ -111,12 +112,12 @@ MagickExport void CatchException(const ExceptionInfo *exception)
       return;
     }
   if ((exception->severity >= ErrorException) &&
-      (exception->severity < FatalException))
+      (exception->severity < FatalErrorException))
     {
       MagickError(exception->severity,exception->reason,exception->description);
       return;
     }
-  if (exception->severity >= FatalException)
+  if (exception->severity >= FatalErrorException)
     {
       MagickFatalError(exception->severity,exception->reason,
         exception->description);

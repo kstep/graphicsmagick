@@ -2178,7 +2178,7 @@ Append(ref,...)
       }
     }
     next=AppendImages(image,stack,&image->exception);
-    CatchImageException(image);
+    (void) CatchImageException(image);
     for ( ; next; next=next->next)
     {
       sv=newSViv((IV) next);
@@ -2270,7 +2270,7 @@ Average(ref)
         goto MethodException;
       }
     next=AverageImages(image,&image->exception);
-    CatchImageException(image);
+    (void) CatchImageException(image);
     /*
       Create blessed Perl array for the returned image.
     */
@@ -2618,7 +2618,7 @@ Copy(ref)
     for (next=image; next; next=next->next)
     {
       image=CloneImage(next,0,0,True,&next->exception);
-      CatchImageException(next);
+      (void) CatchImageException(next);
       sv=newSViv((IV) image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
@@ -3944,7 +3944,7 @@ ImageToBlob(ref,...)
     {
       length=0;
       blob=ImageToBlob(package_info->image_info,next,&length,&next->exception);
-      CatchImageException(next);
+      (void) CatchImageException(next);
       if (blob != (char *) NULL)
         {
           PUSHs(sv_2mortal(newSVpv(blob,length)));
@@ -7636,7 +7636,7 @@ Transform(ref,...)
     for (next=image; next; next=next->next)
     {
       clone=CloneImage(next,0,0,True,&next->exception);
-      CatchImageException(next);
+      (void) CatchImageException(next);
       TransformImage(&clone,crop_geometry,geometry);
       for (image=clone; image; image=image->next)
       {
