@@ -359,23 +359,62 @@ MagickExport void InitializeMagick(const char *path)
   *execution_path='\0';
 #if !defined(UseInstalledImageMagick)
 #if defined(POSIX) || defined(WIN32)
-  if ((path == (const char *) NULL) ||
-      (strchr(path,*DirectorySeparator) == (char *) NULL) ||
+  /* passing NULL means that we want the code to try to figure it out via
+     askging the operating system
+   */
+  if (path == (const char *) NULL)
+    {
+      (void) GetExecutionPath(execution_path);
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+        "Path to app is NULL - OS says: \"%s\"",execution_path);
+    }
+  /* we also check to see if the path seems to be a path by looking for
+     the presence of directory seperators and some reasonable length
+   */
+  else if ((strchr(path,*DirectorySeparator) == (char *) NULL) ||
       (strlen(path) <= 2))
-    (void) GetExecutionPath(execution_path);
+    {
+      (void) GetExecutionPath(execution_path);
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+        "Path to app \"%s\" is bad - OS says: \"%s\"",path,
+          execution_path);
+    }
+  /* We get here if the caller seems to have called us with a legit path
+     to the application.
+   */
   else
     {
 #if defined(POSIX)
+      /* For POSIX we check the first character to see of it is a file
+         system path seperator. If not then we ignore the passed data
+       */
       if (*path == *DirectorySeparator)
+        {
+          (void) strncpy(execution_path,path,MaxTextExtent-1);
+        }
 #elif defined(WIN32)
+      /* For Windows we check to see if the path passed seems to be a UNC
+         path or one with a drive letter spec in it: \\Server\share, C:\
+       */
       if (((*path == *DirectorySeparator) &&
            (*(path+1) == *DirectorySeparator)) || (*(path+1) == ':'))
+        {
+          (void) strncpy(execution_path,path,MaxTextExtent-1);
+        }
 #else
+      /* In any other case, we just let it go right through unscathed */
       if (1)
+        {
+          (void) strncpy(execution_path,path,MaxTextExtent-1);
+        }
 #endif
-        (void) strncpy(execution_path,path,MaxTextExtent-1);
       else
         {
+          /* This logic is UNIX only and tries for figure out the path to
+             application using a call to getcwd and then assuming that the
+             passed string is just the name of the application. It then
+             combines those two things.
+           */
           (void) getcwd(execution_path,MaxTextExtent-2);
           (void) strcat(execution_path,DirectorySeparator);
           if((*path == '.') && (*(path+1) == *DirectorySeparator))
@@ -384,9 +423,14 @@ MagickExport void InitializeMagick(const char *path)
           else
             (void) strncat(execution_path,path,MaxTextExtent-
               strlen(execution_path)-1);
+          (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+            "Path to app \"%s\" is bad - getcwd says: \"%s\"",path,
+              execution_path);
         }
     }
 #endif
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+    "Path to the app set to: \"%s\"",execution_path);
 #endif
   if (*execution_path == '\0')
     {
@@ -406,7 +450,7 @@ MagickExport void InitializeMagick(const char *path)
 #if defined(WIN32)
     InitializeTracingCriticalSection();
 #if defined(_DEBUG)
-    if (IsEventLogging())
+    /* if (IsEventLogging()) */
       {
         int
           debug;
