@@ -1,5 +1,16 @@
 This file records noteworthy changes in Magick++
 
+(5.2.6)
+  * Released with ImageMagick 5.2.6.
+  * Added support for a SVG-style dash array and dash offset
+    parameters (for drawing dashed lines).
+  * Added support for setting the shape to be used at the end of open
+    subpaths when they are stroked.
+  * Added support for setting the shape to be used at the corners of
+    paths (or other vector shapes) when they are stroked.
+  * Added support for setting extension limit for miter joins.
+  * Rotate text the proper way using an affine transform.
+
 (5.2.5)
   * Released with ImageMagick 5.2.5.
   * Completely re-wrote drawable object classes in order to support
