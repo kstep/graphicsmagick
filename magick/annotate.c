@@ -211,6 +211,23 @@ MagickExport unsigned int AnnotateImage(Image *image,
     annotate_image=ReadImage(image_info,&image->exception);
     if (annotate_image == (Image *) NULL)
       break;
+    if (annotate_info->degrees != 0.0)
+      {
+        Image
+          *rotated_image;
+
+        /*
+          Rotate text.
+        */
+        rotated_image=RotateImage(annotate_image,annotate_info->degrees,
+          &annotate_image->exception);
+        if (rotated_image != (Image *) NULL)
+          {
+            DestroyImage(annotate_image);
+            annotate_image=rotated_image;
+          }
+        clone_info->bounds.height=annotate_image->rows;
+      }
     /*
       Composite text onto the image.
     */
