@@ -524,10 +524,12 @@ if(palette==NULL)
          {
    for (i=0; i < (long)image->colors; i++)
      {
-     j=ScaleCharToQuantum(i);
-     if(image->colormap[i].red!=(Quantum) j) goto Finish;
-     if(image->colormap[i].green!=(Quantum) j) goto Finish;
-     if(image->colormap[i].blue!=(Quantum) j) goto Finish;
+     register Quantum
+       sample;
+     sample=ScaleCharToQuantum(i);
+     if(image->colormap[i].red!=sample) goto Finish;
+     if(image->colormap[i].green!=sample) goto Finish;
+     if(image->colormap[i].blue!=sample) goto Finish;
      }
      
    image->colormap[1].red=image->colormap[1].green=image->colormap[1].blue=MaxRGB;

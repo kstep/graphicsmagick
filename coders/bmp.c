@@ -792,6 +792,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if ((bmp_info.bits_per_pixel == 16) || (bmp_info.bits_per_pixel == 32))
       {
+        register unsigned long
+          sample;
+
         /*
           Get shift and quantum bits info from bitfield masks.
         */
@@ -809,22 +812,22 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (bmp_info.alpha_mask != 0)
           while (((bmp_info.alpha_mask << shift.opacity) & 0x80000000UL) == 0)
             shift.opacity++;
-        i=shift.red;
-        while (((bmp_info.red_mask << i) & 0x80000000UL) != 0)
-          i++;
-        quantum_bits.red=(Quantum) (i-shift.red);
-        i=shift.green;
-        while (((bmp_info.green_mask << i) & 0x80000000UL) != 0)
-          i++;
-        quantum_bits.green=(Quantum) (i-shift.green);
-        i=shift.blue;
-        while (((bmp_info.blue_mask << i) & 0x80000000UL) != 0)
-          i++;
-        quantum_bits.blue=(Quantum) (i-shift.blue);
-        i=shift.opacity;
-        while (((bmp_info.alpha_mask << i) & 0x80000000UL) != 0)
-          i++;
-        quantum_bits.opacity=(Quantum) (i-shift.opacity);
+        sample=shift.red;
+        while (((bmp_info.red_mask << sample) & 0x80000000UL) != 0)
+          sample++;
+        quantum_bits.red=(Quantum) (sample-shift.red);
+        sample=shift.green;
+        while (((bmp_info.green_mask << sample) & 0x80000000UL) != 0)
+          sample++;
+        quantum_bits.green=(Quantum) (sample-shift.green);
+        sample=shift.blue;
+        while (((bmp_info.blue_mask << sample) & 0x80000000UL) != 0)
+          sample++;
+        quantum_bits.blue=(Quantum) (sample-shift.blue);
+        sample=shift.opacity;
+        while (((bmp_info.alpha_mask << sample) & 0x80000000UL) != 0)
+          sample++;
+        quantum_bits.opacity=(Quantum) (sample-shift.opacity);
       }
     switch (bmp_info.bits_per_pixel)
     {

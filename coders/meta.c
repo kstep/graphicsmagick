@@ -1847,18 +1847,19 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
             if (status == False)
               ThrowWriterException(FileOpenError,"Unable to open file",image);
             p=(unsigned char *) image->generic_profile[i].info;
-            /* We used to do lossless embedding of IPTC into JPEG's at the point of
-               writing out the data using the APP1 mechanism, but changed it to the
-               read side instead since it was easier to figure out how to access it
-               at that point
+            /* We used to do lossless embedding of IPTC into JPEG's at the
+               point of writing out the data using the APP1 mechanism, but
+               changed it to the read side instead since it was easier to
+               figure out how to access it at that point
              */
+#if 1
             /* if (p[0]!=0xff || p[1]!=M_SOI || p[2]!=0xff) */
-            if (1)
               {
                 (void) WriteBlob(image,(int) image->generic_profile[i].length,
                   (char *)p);
               }
-            else
+#else
+            /* else */
               {
                 Image
                   *jpeg,
@@ -1888,6 +1889,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
                 if (result == 0)
                   ThrowWriterException(FileOpenError,"jpeg embedding failed",image);
               }
+#endif
             CloseBlob(image);
             return(True);
           }

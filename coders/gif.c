@@ -1307,7 +1307,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             {
               if (p->opacity == TransparentOpacity)
                 {
-                  opacity=indexes[x];
+                  opacity=(long) indexes[x];
                   break;
                 }
               p++;
