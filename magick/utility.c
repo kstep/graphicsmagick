@@ -1059,6 +1059,12 @@ MagickExport void GetToken(const char *start,char **end,char *token)
     break;
   }
   token[i]='\0';
+  if (LocaleNCompare(token,"url(#",5) == 0)
+    {
+      i=Extent(token);
+      (void) strcpy(token,token+5);
+      token[i-6]='\0';
+    }
   if (end != (char **) NULL)
     *end=p;
 }

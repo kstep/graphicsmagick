@@ -1758,6 +1758,11 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       case 'g':
       case 'G':
       {
+        if (LocaleCompare("gradient-units",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            break;
+          }
         if (LocaleCompare("gravity",keyword) == 0)
           {
             GetToken(q,&q,token);
@@ -1940,6 +1945,11 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       case 'o':
       case 'O':
       {
+        if (LocaleCompare("offset",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            break;
+          }
         if (LocaleCompare("opacity",keyword) == 0)
           {
             GetToken(q,&q,token);
@@ -1999,6 +2009,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                     "unbalanced graphic context push/pop",token);
                 break;
               }
+            if (LocaleCompare("linear-gradient",token) == 0)
+              break;
             status=False;
             break;
           }
@@ -2045,6 +2057,11 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               }
             if (LocaleCompare("defs",token) == 0)
               break;
+            if (LocaleCompare("linear-gradient",token) == 0)
+              {
+                GetToken(q,&q,token);
+                break;
+              }
             status=False;
             break;
           }
@@ -2102,6 +2119,11 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             GetToken(q,&q,token);
             angle=atof(token);
             affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
+            break;
+          }
+        if (LocaleCompare("stop-color",keyword) == 0)
+          {
+            GetToken(q,&q,token);
             break;
           }
         if (LocaleCompare("stroke",keyword) == 0)

@@ -710,7 +710,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
     *font_family,
     *font_style,
     *font_weight,
-    *id,
     *p,
     token[MaxTextExtent],
     **tokens,
@@ -736,22 +735,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"  SAX.startElement(%.1024s",(char *) name);
-  id=AllocateString("*");
   if (attributes != (const xmlChar **) NULL)
     for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
     {
       keyword=(const char *) attributes[i];
       value=(const char *) attributes[i+1];
       if (LocaleCompare(keyword,"id") == 0)
-        {
-          CloneString(&id,value);
-          if ((LocaleNCompare(id,"url(#",5) == 0))
-            {
-              (void) strcpy(id,id+5);
-              id[Extent(id)-1]='\0';
-            }
-          break;
-        }
+        break;
     }
   switch (*name)
   {
@@ -765,7 +755,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((char *) name,"clipPath") == 0)
         {
-          (void) fprintf(svg_info->file,"push clip-path %s\n",id);
+          (void) fprintf(svg_info->file,"push clip-path %s\n",value);
           break;
         }
       break;
@@ -816,6 +806,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((char *) name,"line") == 0)
         {
           (void) fprintf(svg_info->file,"push graphic-context\n");
+          break;
+        }
+      if (LocaleCompare((char *) name,"linearGradient") == 0)
+        {
+          (void) fprintf(svg_info->file,"push linear-gradient %s\n",value);
           break;
         }
       break;
@@ -912,13 +907,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"clip-path") == 0)
             {
-              CloneString(&id,value);
-              if ((LocaleNCompare(id,"url(#",5) == 0))
-                {
-                  (void) strcpy(id,id+4);
-                  id[Extent(id)-1]='\0';
-                }
-              (void) fprintf(svg_info->file,"clip-path %s\n",id);
+              (void) fprintf(svg_info->file,"clip-path %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"clip-rule") == 0)
@@ -1053,6 +1042,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
         case 'O':
         case 'o':
         {
+          if (LocaleCompare(keyword,"offset") == 0)
+            {
+              (void) fprintf(svg_info->file,"offset %g\n",
+                GetUserSpaceCoordinateValue(svg_info,value));
+              break;
+            }
           if (LocaleCompare(keyword,"opacity") == 0)
             {
               (void) fprintf(svg_info->file,"opacity %s\n",value);
@@ -1109,6 +1104,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
         case 'S':
         case 's':
         {
+          if (LocaleCompare(keyword,"stop-color") == 0)
+            {
+              (void) fprintf(svg_info->file,"stop-color %s\n",value);
+              break;
+            }
           if (LocaleCompare(keyword,"stroke") == 0)
             {
               if (LocaleCompare(value,"currentColor") == 0)
@@ -1179,13 +1179,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                      if (LocaleCompare(keyword,"clip-path") == 0)
                        {
-                         CloneString(&id,value);
-                         if ((LocaleNCompare(id,"url(#",5) == 0))
-                           {
-                             (void) strcpy(id,id+5);
-                             id[Extent(id)-1]='\0';
-                           }
-                         (void) fprintf(svg_info->file,"clip-path %s\n",id);
+                         (void) fprintf(svg_info->file,"clip-path %s\n",value);
                          break;
                        }
                     if (LocaleCompare(keyword,"clip-rule") == 0)
@@ -1269,6 +1263,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   case 'O':
                   case 'o':
                   {
+                    if (LocaleCompare(keyword,"offset") == 0)
+                      {
+                        (void) fprintf(svg_info->file,"offset %g\n",
+                          GetUserSpaceCoordinateValue(svg_info,value));
+                        break;
+                      }
                     if (LocaleCompare(keyword,"opacity") == 0)
                       {
                         (void) fprintf(svg_info->file,"opacity %s\n",value);
@@ -1279,6 +1279,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   case 'S':
                   case 's':
                   {
+                    if (LocaleCompare(keyword,"stop-color") == 0)
+                      {
+                        (void) fprintf(svg_info->file,"stop-color %s\n",value);
+                        break;
+                      }
                     if (LocaleCompare(keyword,"stroke") == 0)
                       {
                          if (LocaleCompare(value,"currentColor") == 0)
@@ -1500,8 +1505,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->affine.sx;
                         affine.ry=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,value),
-                          360.0)));
+                          GetUserSpaceCoordinateValue(svg_info,value),360.0)));
                         affine.sy=svg_info->affine.sy;
                         break;
                       }
@@ -1713,7 +1717,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
     }
   if (svg_info->verbose)
     (void) fprintf(stdout,"  )\n");
-  LiberateMemory((void **) &id);
   LiberateMemory((void **) &units);
   if (color != (char *) NULL)
     LiberateMemory((void **) &color);
@@ -1827,6 +1830,11 @@ static void SVGEndElement(void *context,const xmlChar *name)
             svg_info->segment.x1,svg_info->segment.y1,svg_info->segment.x2,
             svg_info->segment.y2);
           (void) fprintf(svg_info->file,"pop graphic-context\n");
+          break;
+        }
+      if (LocaleCompare((char *) name,"linearGradient") == 0)
+        {
+          (void) fprintf(svg_info->file,"pop linear-gradient\n");
           break;
         }
       break;
@@ -2880,6 +2888,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       case 'g':
       case 'G':
       {
+        if (LocaleCompare("gradient-units",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            FormatString(message,"gradientUnits=%.1024s;",token);
+            WriteBlobString(image,message);
+            break;
+          }
         if (LocaleCompare("gravity",keyword) == 0)
           {
             GetToken(q,&q,token);
@@ -2984,6 +2999,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                   ThrowWriterException(CorruptImageWarning,
                     "unbalanced graphic context push/pop",image);
               }
+            if (LocaleCompare("linear-gradient",token) == 0)
+              {
+                (void) WriteBlobString(image,"</linearGradient>\n");
+                break;
+              }
             (void) WriteBlobString(image,"</g>\n");
             break;
           }
@@ -3009,6 +3029,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                   (void) WriteBlobString(image,"\">\n");
                 (void) WriteBlobString(image,"<g style=\"");
                 active=True;
+              }
+            if (LocaleCompare("linear-gradient",token) == 0)
+              {
+                GetToken(q,&q,token);
+                FormatString(message,"<linearGradient id=\"%s\">\n",token);
+                (void) WriteBlobString(image,message);
+                break;
               }
             break;
           }
@@ -3430,8 +3457,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         GetToken(q,&q,token);
         number_attributes=1;
         for (p=token; *p != '\0'; p++)
-	  if (isalpha((int) *p))
-	    number_attributes++;
+          if (isalpha((int) *p))
+            number_attributes++;
         if (i > (number_points-6*BezierQuantum*number_attributes-1))
           {
             number_points+=6*BezierQuantum*number_attributes;
