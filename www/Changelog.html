@@ -53,6 +53,22 @@
 </tr>
 </table>
 <p>
+2003-06-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/log.c (ReadConfigureFile): Move event parsing to
+        ParseEvents funtion.<BR>
+        (SetLogEventMask): Move event parsing to
+        ParseEvents funtion.<BR>
+  <LI> magick/utility.c (GetGeometry): Validate that the geometry
+        string only contains valid characters.
+  <LI> PerlMagick/t/subroutines.pl (testMontage): It seems that passing
+        an empty set of options to the SetImage method corrupts the image
+        options (surely a PerlMagick bug), so don't invoke SetImage unless
+        there are options to set.
+
+</UL>
+<p>
 2003-06-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -60,6 +76,21 @@
         version output.<BR>
   <LI> configure.ac: Save configure/build parameters for later use in
         version output.
+
+</UL>
+<p>
+2003-06-04  William Radcliffe  &lt;billr@corbis.com&gt;
+
+<UL>
+  <LI> coders/meta.c: Added some casts to make things compile better.
+
+</UL>
+<p>
+2003-06-03  William Radcliffe  &lt;billr@corbis.com&gt;
+
+<UL>
+  <LI> coders/meta.c: Was broken due to editing mistakes as well
+        as inherent incompatability with MagickReallocMemory macro.
 
 </UL>
 <p>

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Implementation of Exception and derived classes
 //
@@ -87,6 +87,11 @@ Magick::WarningMissingDelegate::WarningMissingDelegate ( const std::string& what
 {
 }
 
+Magick::WarningModule::WarningModule ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
 Magick::WarningCorruptImage::WarningCorruptImage ( const std::string& what_ )
   : Warning(what_)
 {
@@ -142,6 +147,11 @@ Magick::ErrorDelegate::ErrorDelegate ( const std::string& what_ )
 }
 
 Magick::ErrorMissingDelegate::ErrorMissingDelegate ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorModule::ErrorModule ( const std::string& what_ )
   : Error(what_)
 {
 }
@@ -217,6 +227,8 @@ MagickDLLDecl void Magick::throwException( ExceptionInfo &exception_ )
       throw WarningDelegate( message );
     case MissingDelegateWarning :
       throw WarningMissingDelegate( message );
+    case ModuleWarning :
+      throw WarningModule( message );
     case CorruptImageWarning :
       throw WarningCorruptImage( message );
     case FileOpenWarning :
@@ -237,6 +249,8 @@ MagickDLLDecl void Magick::throwException( ExceptionInfo &exception_ )
       throw ErrorDelegate( message );
     case MissingDelegateError :
       throw ErrorMissingDelegate( message );
+    case ModuleError :
+      throw ErrorModule( message );
     case CorruptImageError :
       throw ErrorCorruptImage( message );
     case FileOpenError :

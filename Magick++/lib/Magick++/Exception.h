@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Definition of Magick::Exception and derived classes
 // Magick::Warning* and Magick::Error*.  Derived from C++ STD
@@ -77,7 +77,13 @@ namespace Magick
   public:
     explicit WarningMissingDelegate ( const std::string& what_ );
   };
-  
+
+  class MagickDLLDecl WarningModule : public Warning
+  {
+  public:
+    explicit WarningModule ( const std::string& what_ );
+  };
+
   class MagickDLLDecl WarningCorruptImage: public Warning
   {
   public:
@@ -146,6 +152,12 @@ namespace Magick
   {
   public:
     explicit ErrorMissingDelegate ( const std::string& what_ );
+  };
+
+  class MagickDLLDecl ErrorModule : public Error
+  {
+  public:
+    explicit ErrorModule ( const std::string& what_ );
   };
   
   class MagickDLLDecl ErrorCorruptImage: public Error

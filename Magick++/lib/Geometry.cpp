@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Geometry implementation
 //
@@ -204,8 +204,15 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
   long y = 0;
   unsigned long width_val = 0;
   unsigned long height_val = 0;
-  int flags = GetGeometry ( geom,
-			    &x, &y, &width_val, &height_val );
+  int flags = GetGeometry (geom, &x, &y, &width_val, &height_val );
+
+  if (flags == NoValue)
+    {
+      // Total failure!
+      *this=Geometry();
+      isValid( false );
+      return *this;
+    }
 
   if ( ( flags & WidthValue ) != 0 )
     {

@@ -1,3 +1,16 @@
+2003-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/log.c (ReadConfigureFile): Move event parsing to
+	ParseEvents funtion.
+	(SetLogEventMask): Move event parsing to
+	ParseEvents funtion.
+	* magick/utility.c (GetGeometry): Validate that the geometry
+	string only contains valid characters.
+	* PerlMagick/t/subroutines.pl (testMontage): It seems that passing
+	an empty set of options to the SetImage method corrupts the image
+	options (surely a PerlMagick bug), so don't invoke SetImage unless
+	there are options to set.
+
 2003-06-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (VersionCommand): Add build information to

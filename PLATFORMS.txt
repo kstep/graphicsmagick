@@ -12,6 +12,31 @@ belong in README.txt. Usually GraphicsMagick compiles fine according to the
 procedures described in README.txt, but sometimes a platform related
 oddity causes a failure.
 
+Cygwin
+======
+
+  Problem
+
+    PerlMagick fails to link.
+
+  Indications
+
+    libperl.a is not found.
+
+  Solution
+
+    Configure like
+
+      ./configure --enable-shared
+
+    or
+
+      ./configure --enable-shared --with-modules
+
+    Cygwin doesn't normally come with a libperl.a but it does come with the
+    equivalent DLL.  Using a shared build gets PerlMagick over the hurdle.
+    
+
 SGI Irix
 =========
 

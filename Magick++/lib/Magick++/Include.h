@@ -603,10 +603,13 @@ namespace Magick
   using MagickLib::MissingDelegateError;
   using MagickLib::MissingDelegateWarning;
   using MagickLib::ModulateImage;
+  using MagickLib::ModuleError;
+  using MagickLib::ModuleWarning;
   using MagickLib::MontageInfo;
   using MagickLib::NegateImage;
   using MagickLib::NoiseType;
   using MagickLib::NormalizeImage;
+  using MagickLib::NoValue;
   using MagickLib::OilPaintImage;
   using MagickLib::OpaqueImage;
   using MagickLib::OpenCacheView;

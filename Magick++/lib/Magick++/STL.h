@@ -1863,8 +1863,8 @@ namespace Magick
           // Append matches to container
           container_->push_back( coderInfo );
         }
-        // Intentionally ignore missing delegate errors
-        catch ( Magick::ErrorMissingDelegate )
+        // Intentionally ignore missing module errors
+        catch ( Magick::ErrorModule )
           {
             continue;
           }

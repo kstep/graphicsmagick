@@ -1,3 +1,16 @@
+2003-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Geometry.cpp (operator =): If GetGeometry returns NoValue,
+	then assign an invalid geometry object to cause an exception if
+	the geometry is then used.
+
+2003-06-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Exception.h (ErrorModule): Added class to handle
+	module errors.
+	* lib/Magick++/Exception.h (WarningModule) Added class to handle
+	module warnings.
+
 2003-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (coderInfoList): Use GetMagickInfoArray to

@@ -52,7 +52,7 @@
 static const char
   Base64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-static unsigned char
+static const unsigned char
   AsciiMap[] =
   {
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
@@ -1190,6 +1190,9 @@ MagickExport unsigned int GetExecutionPath(char *path)
 MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
   unsigned long *width,unsigned long *height)
 {
+  const char
+    *c;
+
   char
     geometry[MaxTextExtent],
     *p,
@@ -1208,59 +1211,83 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
   assert(y != (long *) NULL);
   assert(width != (unsigned long *) NULL);
   assert(height != (unsigned long *) NULL);
-  if ((image_geometry == (char *) NULL) || (*image_geometry == '\0'))
+  if ((image_geometry == (char *) NULL) || (*image_geometry == '\0') ||
+      (strlen(image_geometry) > MaxTextExtent-1))
     return(NoValue);
+
   /*
-    Remove whitespaces and % and ! characters from geometry specification.
+    Transfer base geometry while recording and stripping flags
   */
-  (void) strncpy(geometry,image_geometry,MaxTextExtent-1);
+  q=geometry;
   flags=NoValue;
-  p=geometry;
-  while (strlen(p) != 0)
-  {
-    if (isspace((int) (*p)))
-      (void) strcpy(p,p+1);
-    else
-      switch (*p)
-      {
-        case '%':
+
+  for (c=image_geometry; *c != 0 ; c++)
+    {
+      if (isspace((int) (*c)))
         {
-          flags|=PercentValue;
-          (void) strcpy(p,p+1);
-          break;
+          continue;
         }
-        case '!':
-        {
-          flags|=AspectValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        case '<':
-        {
-          flags|=LessValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        case '>':
-        {
-          flags|=GreaterValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        case '@':
-        {
-          flags|=AreaValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        default:
-          p++;
-      }
-  }
+      else
+        switch (*c)
+          {
+          case '%':
+            {
+              flags|=PercentValue;
+              break;
+            }
+          case '!':
+            {
+              flags|=AspectValue;
+              break;
+            }
+          case '<':
+            {
+              flags|=LessValue;
+              break;
+            }
+          case '>':
+            {
+              flags|=GreaterValue;
+              break;
+            }
+          case '@':
+            {
+              flags|=AreaValue;
+              break;
+            }
+          case '+':
+          case '-':
+          case '.':
+          case '0':
+          case '1':
+          case '2':
+          case '3':
+          case '4':
+          case '5':
+          case '6':
+          case '7':
+          case '8':
+          case '9':
+          case 'X':
+          case 'x':
+            {
+              *q=*c;
+              q++;
+              break;
+            }
+          default:
+            {
+              /* Illegal character fails entire geometry translation */
+              return NoValue;
+            }
+          }
+    }
+  *q='\0';
+
   /*
     Parse width/height/x/y.
   */
-  p=(char *) geometry;
+  p=geometry;
   while (isspace((int) *p))
     p++;
   if (*p == '\0')
@@ -2647,9 +2674,8 @@ MagickExport int LocaleCompare(const char *p,const char *q)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LocaleLower copies a null terminated string from source to
-%  destination (including the null), changing all uppercase letters to
-%  lowercase.
+%  Method LocaleLower transforms all of the characters in the supplied
+%  null-terminated string, changing all uppercase letters to lowercase.
 %
 %  The format of the LocaleLower method is:
 %
@@ -2683,7 +2709,7 @@ MagickExport void LocaleLower(char *string)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method LocaleNCompare compares two strings byte-by-byte, according to
-%  the ordering of the currnet locale encoding. LocaleNCompare returns an
+%  the ordering of the current locale encoding. LocaleNCompare returns an
 %  integer greater than, equal to, or less than 0, if the string pointed
 %  to by p is greater than, equal to, or less than the string pointed to
 %  by q respectively.  The sign of a non-zero return value is determined
@@ -2744,9 +2770,8 @@ MagickExport int LocaleNCompare(const char *p,const char *q,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LocaleUpper copies a null terminated string from source to
-%  destination (including the null), changing all lowercase letters to
-%  uppercase.
+%  Method LocaleUpper transforms all of the characters in the supplied
+%  null-terminated string, changing all lowercase letters to uppercase.
 %
 %  The format of the LocaleUpper method is:
 %
@@ -3449,7 +3474,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
 %    o token: A single unit of information in the form of a group of
 %      characters.
 %
-%    o white space: Apace that gets ignored (except within quotes or when
+%    o white space: Space that gets ignored (except within quotes or when
 %      escaped), like blanks and tabs. in addition, white space terminates a
 %      non-quoted token.
 %
