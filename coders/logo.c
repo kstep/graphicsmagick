@@ -51,6 +51,7 @@
 #define LogoImageExtent  33639
 #define NetscapeImageExtent  9788
 #define RoseImageExtent  9673
+#define TransparentBackgroundImageExtent  107
 
 static const unsigned char
   GraniteImage[]=
@@ -5078,6 +5079,18 @@ static const unsigned char
     0x35, 0x35, 0x3d, 0x36, 0x36, 0x44, 0x2f, 0x47, 0x60, 0x35, 0x47, 0x62,
     0x3c, 0x3a, 0x4d, 0x38, 0x40, 0x52, 0x3a, 0x48, 0x5c, 0x41, 0x34, 0x42,
     0x31,
+  },
+  TransparentBackgroundImage[]=
+  {
+    0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x1E, 0x00, 0x1E, 0x00, 0xF0, 0x01, 
+    0x00, 0x66, 0x66, 0x66, 0x99, 0x99, 0x99, 0x21, 0xF9, 0x04, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x2C, 0x00, 0x00, 0x00, 0x00, 0x1E, 0x00, 0x1E, 0x00, 
+    0x00, 0x02, 0x42, 0x8C, 0x8F, 0x09, 0xCB, 0xED, 0x09, 0x91, 0x9B, 0x2D, 
+    0x5A, 0x8A, 0x6D, 0xC4, 0x54, 0x43, 0x3E, 0x79, 0x0A, 0x58, 0x89, 0x07, 
+    0x59, 0x9A, 0x01, 0xCA, 0xA8, 0x06, 0xBB, 0xB8, 0x2B, 0x2C, 0xC3, 0x40, 
+    0x4D, 0xBB, 0x36, 0xCE, 0xF2, 0xA8, 0x6F, 0xFB, 0xA9, 0x82, 0xBA, 0xDD, 
+    0xD0, 0x68, 0x22, 0x1E, 0x73, 0x49, 0xA4, 0x48, 0xD9, 0x64, 0x3E, 0x9D, 
+    0x1E, 0xE8, 0x54, 0x5A, 0xA5, 0x6A, 0xAC, 0x9E, 0x02, 0x00, 0x3B, 
   };
 
 /*
@@ -5127,24 +5140,48 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
+  const void
+    *blob;
+
+  size_t
+    extent;
+
   clone_info=CloneImageInfo(image_info);
-  if (LocaleCompare(image_info->magick,"ROSE") == 0)
+  image=(Image *) NULL;
+  blob=NULL;
+  extent=0;
+
+  (void) strcpy(clone_info->magick,"GIF");
+  if (LocaleCompare(image_info->magick,"LOGO") == 0)
+    {
+      blob=LogoImage;
+      extent=LogoImageExtent;
+    }
+  else if (LocaleCompare(image_info->magick,"GRANITE") == 0)
+    {
+      blob=GraniteImage;
+      extent=GraniteImageExtent;
+    }
+  else if (LocaleCompare(image_info->magick,"NETSCAPE") == 0)
+    {
+      blob=NetscapeImage;
+      extent=NetscapeImageExtent;
+    }
+  else if (LocaleCompare(image_info->magick,"ROSE") == 0)
     {
       (void) strcpy(clone_info->magick,"PPM");
-      image=BlobToImage(clone_info,RoseImage,RoseImageExtent,exception);
+      blob=RoseImage;
+      extent=RoseImageExtent;
     }
-  else
+  else if (LocaleCompare(image_info->magick,"TRANSPARENT") == 0)
     {
-      (void) strcpy(clone_info->magick,"GIF");
-      if (LocaleCompare(image_info->magick,"GRANITE") == 0)
-        image=BlobToImage(clone_info,GraniteImage,GraniteImageExtent,exception);
-      else
-        if (LocaleCompare(image_info->magick,"NETSCAPE") != 0)
-          image=BlobToImage(clone_info,LogoImage,LogoImageExtent,exception);
-        else
-          image=BlobToImage(clone_info,NetscapeImage,NetscapeImageExtent,
-            exception);
+      blob=TransparentBackgroundImage;
+      extent=TransparentBackgroundImageExtent;
     }
+
+  if (blob)
+    image=BlobToImage(clone_info,blob,extent,exception);
+
   DestroyImageInfo(clone_info);
   return(image);
 }
@@ -5183,6 +5220,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry->description=AcquireString("Granite texture");
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("H");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->encoder=(EncoderHandler) WriteLOGOImage;
@@ -5191,6 +5229,7 @@ ModuleExport void RegisterLOGOImage(void)
   entry->description=AcquireString("Internal format");
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("LOGO");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->encoder=(EncoderHandler) WriteLOGOImage;
@@ -5198,18 +5237,27 @@ ModuleExport void RegisterLOGOImage(void)
   entry->description=AcquireString("GraphicsMagick Logo");
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("NETSCAPE");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
   entry->adjoin=False;
   entry->description=AcquireString("Netscape 216 color cube");
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("ROSE");
   entry->decoder=(DecoderHandler) ReadLOGOImage;
-  entry->encoder=(EncoderHandler) WriteLOGOImage;
   entry->adjoin=False;
   entry->stealth=True;
   entry->description=AcquireString("70x46 Truecolor rose");
+  entry->module=AcquireString("LOGO");
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("TRANSPARENT");
+  entry->decoder=(DecoderHandler) ReadLOGOImage;
+  entry->adjoin=False;
+  entry->stealth=True;
+  entry->description=AcquireString("30x30 Transparent background pattern");
   entry->module=AcquireString("LOGO");
   (void) RegisterMagickInfo(entry);
 }
@@ -5240,6 +5288,7 @@ ModuleExport void UnregisterLOGOImage(void)
   (void) UnregisterMagickInfo("LOGO");
   (void) UnregisterMagickInfo("NETSCAPE");
   (void) UnregisterMagickInfo("ROSE");
+  (void) UnregisterMagickInfo("TRANSPARENT");
 }
 
 /*

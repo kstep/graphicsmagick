@@ -40,7 +40,6 @@
 #include "magick/magick.h"
 #include "magick/shear.h"
 #include "magick/transform.h"
-#include "magick/static.h"
 #include "magick/utility.h"
 
 /* Auto coloring method, sorry this creates some artefact inside data

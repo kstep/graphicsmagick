@@ -1,3 +1,9 @@
+2003-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/logo.c (ReadLOGOImage): Added a "TRANSPARENT:" pattern
+	image which can be tiled to form the background of transparent
+	images.
+
 2003-05-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/meta.c : Add or fix commenting of DebugString so that
