@@ -864,8 +864,8 @@ main ()
 	       [gm_cv_func_mmap_fileio=no],
 	       [gm_cv_func_mmap_fileio=no])])
 if test $gm_cv_func_mmap_fileio = yes; then
-  AC_DEFINE(HAVE_MMAP, 1,
-	    [Define to 1 if you have a working `mmap' system call.])
+  AC_DEFINE(HAVE_MMAP_FILEIO, 1,
+	    [Define to 1 if you have a `mmap' system call which handles coherent file I/O.])
 fi
 rm -f conftest.mmap
 ])# GM_FUNC_MMAP_FILEIO

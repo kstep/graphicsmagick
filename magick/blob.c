@@ -80,7 +80,7 @@
 #  define putc putc_unlocked
 #endif
 
-#if defined(HAVE_MMAP)
+#if defined(HAVE_MMAP_FILEIO)
 static const char *BlobMapModeToString(MapMode map_mode)
 {
   char
@@ -100,7 +100,7 @@ static const char *BlobMapModeToString(MapMode map_mode)
   }
   return mode_string;
 }
-#endif /* defined(HAVE_MMAP) */
+#endif /* defined(HAVE_MMAP_FILEIO) */
 
 static const char *BlobModeToString(BlobMode blob_mode)
 {
@@ -1185,7 +1185,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   AddConfigurePath(path_map,&path_index,MagickShareConfigPath,exception);
 # endif /* defined(MagickShareConfigPath) */
 
-# if defined(WIN32)
+# if defined(WIN32) && !(defined(MagickLibConfigPath) || defined(MagickShareConfigPath))
   {
     char
       *registry_key,
@@ -1637,7 +1637,7 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
 MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
   size_t length)
 {
-#if defined(HAVE_MMAP)
+#if defined(HAVE_MMAP_FILEIO)
   void
     *map;
 
@@ -1669,7 +1669,12 @@ MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
     }
   }
   if (map == (void *) MAP_FAILED)
-    return((void *) NULL);
+    {
+      (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+        "Failed to mmap FD %d using %s mode at offset %lu and length %lu.",
+           file,BlobMapModeToString(mode),(unsigned long)offset,(unsigned long)length);
+      return((void *) NULL);
+    }
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
     "Mmapped FD %d using %s mode at offset %lu and length %lu to address 0x%p",
     file,BlobMapModeToString(mode),(unsigned long)offset,(unsigned long)length,
@@ -3040,7 +3045,7 @@ MagickExport magick_off_t TellBlob(const Image *image)
 */
 MagickExport unsigned int UnmapBlob(void *map,const size_t length)
 {
-#if defined(HAVE_MMAP)
+#if defined(HAVE_MMAP_FILEIO)
   int
     status;
 

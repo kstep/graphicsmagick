@@ -53,6 +53,23 @@
 </tr>
 </table>
 <p>
+2004-01-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (GetConfigureBlob): Don't check Windows registry
+        if MagickLibConfigPath or MagickShareConfigPath is defined.
+  <LI> magick/locale.c: Use a Unix-style message database for MinGW.
+  <LI> rungm.sh.in: Translate environment paths to Windows format when
+        running under MinGW.<BR>
+  <LI> magick/nt_base.c (mmap): Re-wrote mmap emulation to support
+        64-bit file offsets and to support anonymous mapping.
+        (msync): A crude emulation of Unix msync().
+  <LI> acinclude.m4 (GM_FUNC_MMAP_FILEIO): Change result define from
+        HAVE_MMAP to HAVE_MMAP_FILEIO so that it doesn't conflict with
+        Autoconf standard definition.
+
+</UL>
+<p>
 2004-01-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -2286,7 +2286,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
                             cache_info->cache_filename);
       LiberateMagickResource(DiskResource,cache_info->length);
       ThrowBinaryException(CacheError,UnableToExtendCache,image->filename)
-        }
+    }
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;

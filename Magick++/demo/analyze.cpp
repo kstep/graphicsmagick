@@ -2,7 +2,7 @@
 // Demonstrate using the 'analyze' process module to compute
 // image statistics.
 //
-// Copyright Bob Friesenhahn, 2003
+// Copyright Bob Friesenhahn, 2003, 2004
 //
 // Usage: analyze file...
 //
@@ -24,7 +24,7 @@ int main(int argc,char **argv)
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
 
-  list<std::string> attributes;
+  std::list<std::string> attributes;
 
   attributes.push_back("TopLeftColor");
   attributes.push_back("TopRightColor");
@@ -49,8 +49,8 @@ int main(int argc,char **argv)
         list<std::string>::iterator pos = attributes.begin();
         while(pos != attributes.end())
           {
-            cout << "  " << setw(16) << setfill(' ') << left << *pos
-                 << " = " << image.attribute(*pos) << endl;
+            cout << "  " << setw(16) << setfill(' ') << setiosflags(ios::left)
+                 << *pos << " = " << image.attribute(*pos) << endl;
             pos++;
           }
       }

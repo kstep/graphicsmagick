@@ -1,3 +1,9 @@
+2004-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* demo/analyze.cpp (main): Fix a GNU C++ library portability
+	problem noticed under MinGW. The 'left' iostream manipulator seems
+	to be missing.
+
 2004-01-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* tests/Makefile.am: coderInfo test is expected to fail for moby

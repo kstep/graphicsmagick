@@ -22894,7 +22894,7 @@ echo "${ECHO_T}$gm_cv_func_mmap_fileio" >&6
 if test $gm_cv_func_mmap_fileio = yes; then
 
 cat >>confdefs.h <<\_ACEOF
-#define HAVE_MMAP 1
+#define HAVE_MMAP_FILEIO 1
 _ACEOF
 
 fi

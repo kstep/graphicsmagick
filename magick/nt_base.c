@@ -283,7 +283,11 @@ MagickExport int ftruncate(int filedes, off_t length)
     A way to support more than 2GB is to use SetFilePointerEx()
     to set the file position followed by SetEndOfFile() to set
     the file EOF to the current file position. This approach does
-    not ensure that bytes in the extended portion are null
+    not ensure that bytes in the extended portion are null.
+
+    The CreateFileMapping() function may also be used to extend a
+    file's length. The filler byte values are not defined in the
+    documentation.
   */ 
   status=chsize(filedes,length);
 
@@ -610,63 +614,130 @@ void *lt_dlsym(void *h,const char *s)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method mmap emulates the Unix method of the same name.
+%  Method mmap emulates the Unix method of the same name. Supports PROT_READ,
+%  PROT_WRITE protection options, and MAP_SHARED, MAP_PRIVATE, MAP_ANON flags.
+%  Passing a file descriptor of -1 along with the MAP_ANON flag option returns
+%  a memory allocation from the system page file with the specified allocated
+%  length.
 %
 %  The format of the mmap method is:
 %
-%    MagickExport void *mmap(char *address,size_t length,int protection,
-%      int access,int file,off_t offset)
+%    MagickExport void *mmap(char *address, size_t length, int protection,
+%      int flags, int file, magick_off_t offset)
 %
 %
 */
-MagickExport void *mmap(char *address,size_t length,int protection,int access,
-  int file,off_t offset)
+MagickExport void *mmap(char *address,size_t length,int protection,int flags,
+  int file,magick_off_t offset)
 {
   void
     *map;
 
   HANDLE
-    handle;
+    file_handle,
+    shmem_handle;
+
+  DWORD
+    length_low,
+    length_high,
+    offset_low,
+    offset_high;
+
+  DWORD
+    access_mode=0,
+    protection_mode=0;
 
   map=(void *) NULL;
-  handle=INVALID_HANDLE_VALUE;
-  switch (protection)
-  {
-    case PROT_READ:
-    default:
+  shmem_handle=INVALID_HANDLE_VALUE;
+  file_handle=INVALID_HANDLE_VALUE;
+
+  offset_low=(DWORD) (offset & 0xFFFFFFFFUL);
+  offset_high=(DWORD) ((offset >> 32) & 0xFFFFFFFFUL);
+
+  length_low=(DWORD) (length & 0xFFFFFFFFUL);
+  length_high=(DWORD) ((((magick_off_t) length) >> 32) & 0xFFFFFFFFUL);
+
+  if (protection & PROT_WRITE)
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,PAGE_READONLY,0,
-        length,0);
-      if (!handle)
-        break;
-      map=(void *) MapViewOfFile(handle,FILE_MAP_READ,0,offset,length);
-      CloseHandle(handle);
-      break;
+      access_mode=FILE_MAP_WRITE;
+      if (flags & MAP_PRIVATE)
+        {
+          // Copy on write (updates are private)
+          access_mode=FILE_MAP_COPY;
+          protection_mode=PAGE_WRITECOPY;
+        }
+      else
+        {
+          // Updates are shared
+          protection_mode=PAGE_READWRITE;
+        }
     }
-    case PROT_WRITE:
+  else if (protection & PROT_READ)
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,PAGE_READWRITE,0,
-        length,0);
-      if (!handle)
-        break;
-      map=(void *) MapViewOfFile(handle,FILE_MAP_WRITE,0,offset,length);
-      CloseHandle(handle);
-      break;
+      access_mode=FILE_MAP_READ;
+      protection_mode=PAGE_READONLY;
     }
-    case PROT_READWRITE:
+
+  if ((file == -1) && (flags & MAP_ANON))
+    // Similar to using mmap on /dev/zero to allocate memory from paging area.
+    file_handle=INVALID_HANDLE_VALUE;
+  else
+    file_handle=(HANDLE) _get_osfhandle(file);
+
+  shmem_handle=CreateFileMapping(file_handle,0,protection_mode,length_high,
+                                 length_low,0);
+  if (shmem_handle)
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,PAGE_READWRITE,0,
-        length,0);
-      if (!handle)
-        break;
-      map=(void *) MapViewOfFile(handle,FILE_MAP_ALL_ACCESS,0,offset,length);
-      CloseHandle(handle);
-      break;
+      map=(void *) MapViewOfFile(shmem_handle,access_mode,offset_high,
+                                 offset_low,length);
+      CloseHandle(shmem_handle);
     }
-  }
+
   if (map == (void *) NULL)
     return((void *) MAP_FAILED);
   return((void *) ((char *) map));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  m s y n c                                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method msync emulates the Unix msync function except that the flags
+%  argument is ignored. Windows page sync behaves mostly like MS_SYNC
+%  except that if the file is accessed over a network, the updates are not
+%  fully synchronous unless a special flag is provided when the file is
+%  opened.  It is not clear if flushing a range invalidates copy pages
+%  like Unix msync does.
+%
+%  The format of the msync method is:
+%
+%      int msync(void *addr, size_t len, int flags)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method munmap returns 0 on success; otherwise, it
+%      returns -1 and sets errno to indicate the error.
+%
+%    o addr: The address of the binary large object.
+%
+%    o len: The length of the binary large object.
+%
+%    o flags: Option flags (ignored for Windows)
+%
+%
+*/
+MagickExport int msync(void *addr, size_t len, int flags)
+{
+  if (!FlushViewOfFile(addr,len))
+    return(-1);
+  return(0);
 }
 
 /*

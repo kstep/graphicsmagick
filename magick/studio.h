@@ -226,7 +226,7 @@ extern "C" {
 #if defined(vms)
 # include "magick/vms.h"
 #endif
-#if defined(HAVE_MMAP) && !defined(WIN32)
+#if defined(HAVE_MMAP_FILEIO) && !defined(WIN32)
 # include <sys/mman.h>
 #endif
 #if defined(HAVE_PTHREAD)

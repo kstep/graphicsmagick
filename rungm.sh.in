@@ -1,5 +1,5 @@
 # !/bin/sh
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003, 2004 GraphicsMagick Group
 #
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -11,13 +11,33 @@
 #
 # Written by Bob Friesenhahn <bfriesen@simple.dallas.tx.us> December 2003
 #
+WinPathScript=@WinPathScript@
+
 top_srcdir='@abs_top_srcdir@'
 top_builddir='@abs_top_builddir@'
+MAGICK_CODER_MODULE_PATH="${top_builddir}/coders"
+MAGICK_CONFIGURE_SRC_PATH="${top_srcdir}/config"
+MAGICK_CONFIGURE_BUILD_PATH="${top_builddir}/config"
+MAGICK_FILTER_MODULE_PATH="${top_builddir}/filters"
+PATH="${top_builddir}/utilities:${PATH}"
+
+dirsep=':'
+case @host_os@
+in
+  mingw32)
+   dirsep=';'
+   MAGICK_CODER_MODULE_PATH=`$WinPathScript "${MAGICK_CODER_MODULE_PATH}" 0`
+   MAGICK_CONFIGURE_SRC_PATH=`$WinPathScript "${MAGICK_CONFIGURE_SRC_PATH}" 0`
+   MAGICK_CONFIGURE_BUILD_PATH=`$WinPathScript "${MAGICK_CONFIGURE_BUILD_PATH}" 0`
+   MAGICK_FILTER_MODULE_PATH=`$WinPathScript "${MAGICK_FILTER_MODULE_PATH}" 0`
+   ;;
+esac
+
 echo "$@"
 env \
   LD_LIBRARY_PATH="${top_builddir}/magick/.libs:${LD_LIBRARY_PATH}" \
-  MAGICK_CODER_MODULE_PATH="${top_builddir}/coders" \
-  MAGICK_CONFIGURE_PATH="${top_srcdir}/config:${top_builddir}/config" \
-  MAGICK_FILTER_MODULE_PATH="${top_builddir}/filters" \
-  PATH="${top_builddir}/utilities:${PATH}" \
+  MAGICK_CODER_MODULE_PATH="${MAGICK_CODER_MODULE_PATH}" \
+  MAGICK_CONFIGURE_PATH="${MAGICK_CONFIGURE_BUILD_PATH}${dirsep}${MAGICK_CONFIGURE_SRC_PATH}" \
+  MAGICK_FILTER_MODULE_PATH="${MAGICK_FILTER_MODULE_PATH}" \
+  PATH="${PATH}" \
   "$@"

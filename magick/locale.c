@@ -37,7 +37,7 @@
 #define _INCLUDE_CATEGORYMAP_TABLE_
 #define _INCLUDE_SEVERITYMAP_TABLE_
 #define _INCLUDE_TAGMAP_TABLE_
-#if !defined(WIN32)
+#if !defined(WIN32) || defined(__MINGW32__)
 #define _INCLUDE_MESSAGE_TABLE_
 #endif
 #include "locale_c.h"
@@ -70,7 +70,7 @@ AllocateManagedString(const char *s)
   return cs;
 }
 
-#if defined(WIN32)
+#if defined(WIN32) && !defined(__MINGW32__)
 static const char *
 NTFormatMessage(DWORD id, ...)
 {
@@ -212,7 +212,7 @@ GetLocaleMessageFromTag(const char *tag)
 #if defined(_INCLUDE_MESSAGE_TABLE_)
                     return message_dat[message_map[i].messageid];
 #else
-#if defined(WIN32)
+#if defined(WIN32) && !defined(__MINGW32__)
                     return NTFormatMessage(message_map[i].messageid);
 #else
                     return tag;
@@ -314,7 +314,7 @@ GetLocaleMessageFromID(const int id)
 {
   if ((id > 0) && (id <= MAX_LOCALE_MSGS))
     {
-#if defined(WIN32)
+#if defined(WIN32) && !defined(__MINGW32__)
       return NTFormatMessage(id);
 #else
       return message_dat[id];

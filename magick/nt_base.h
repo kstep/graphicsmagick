@@ -32,11 +32,22 @@ extern "C" {
 /*
   Define declarations.
 */
-#define PROT_READ  1
-#define PROT_WRITE  2
-#define PROT_READWRITE  3
-#define MAP_SHARED  1
-#define MAP_PRIVATE  2
+
+/* Memory mapping support */
+#define PROT_NONE       0x0  // pages can not be accessed
+#define PROT_READ       0x1  // pages can be read
+#define PROT_WRITE      0x2  // pages can be written
+#define MAP_SHARED      0x1  // share changes
+#define MAP_PRIVATE     0x2  // changes are private
+#define MAP_NORESERVE   0x4  // do not reserve paging space
+#define MAP_ANON        0x8  // anonymous mapping
+#if !defined(MAP_FAILED)
+#  define MAP_FAILED      ((void *) -1) // returned on error by mmap
+#endif
+#define MS_ASYNC        0x0  // asynchronous page sync
+#define MS_SYNC         0x1  // synchronous page sync
+
+
 #define F_OK 0
 #define R_OK 4
 #define W_OK 2
@@ -46,7 +57,7 @@ extern "C" {
 #define HAVE_RAISE 1
 
 // Define to support memory mapping files for improved performance
-#define HAVE_MMAP 1
+#define HAVE_MMAP_FILEIO 1
 
 // Use Visual C++ C inline method extension to improve performance
 #define inline __inline
@@ -153,7 +164,8 @@ extern MagickExport int
   lt_dlinit(void),
   lt_dlsetsearchpath(const char *),
 #endif /* !HasLTDL */
-  munmap(void *,size_t);
+  msync(void *addr, size_t len, int flags),
+  munmap(void *addr, size_t len);
 
 extern MagickExport long
   telldir(DIR *);
@@ -174,7 +186,8 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   closedir(DIR *),
-  *mmap(char *,size_t,int,int,int,off_t),
+  *mmap(char *address,size_t length,int protection,int access,int file,
+    magick_off_t offset),
   NTErrorHandler(const ExceptionType,const char *,const char *),
   NTWarningHandler(const ExceptionType,const char *,const char *),
   seekdir(DIR *,long)
