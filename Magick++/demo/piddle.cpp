@@ -124,14 +124,15 @@ int main( int /*argc*/, char ** argv)
     //
     // Draw rectangle.
     //
-    drawList.push_back(DrawableStrokeColor("yellow"));
     drawList.push_back(DrawableStrokeWidth(5));
-    drawList.push_back(DrawableFillColor(Color()));
-    drawList.push_back(DrawableRectangle(200,200, 260,260));
-    drawList.push_back(DrawableStrokeColor("green"));
-    drawList.push_back(DrawableLine(200,260, 260,260));
+    drawList.push_back(DrawableFillColor(Color())); // No fill
+    drawList.push_back(DrawableStrokeColor("yellow"));
+    drawList.push_back(DrawableLine(200,260, 200,200));
+    drawList.push_back(DrawableLine(200,200, 260,200));
     drawList.push_back(DrawableStrokeColor("red"));
     drawList.push_back(DrawableLine(260,200, 260,260));
+    drawList.push_back(DrawableStrokeColor("green"));
+    drawList.push_back(DrawableLine(200,260, 260,260));
 
     //
     // Draw text.
