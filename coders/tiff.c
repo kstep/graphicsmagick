@@ -370,6 +370,9 @@ static unsigned int TIFFErrors(const char *module,const char *format,
     message[MaxTextExtent];
 
   (void) vsprintf(message,format,warning);
+
+  (void) vsnprintf(message,MaxTextExtent-2,format,warning);
+  message[MaxTextExtent-2]='\0';
   (void) strcat(message,".");
   ThrowException2(tiff_exception,CoderError,message,module);
   return(True);
@@ -434,7 +437,8 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
   char
     message[MaxTextExtent];
 
-  (void) vsprintf(message,format,warning);
+  (void) vsnprintf(message,MaxTextExtent-2,format,warning);
+  message[MaxTextExtent-2]='\0';
   (void) strcat(message,".");
   ThrowException2(tiff_exception,CoderWarning,message,module);
   return(True);

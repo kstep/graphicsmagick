@@ -1,3 +1,9 @@
+2004-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (TIFFErrors): Prevent possible stack overflow on
+	error.
+	(TIFFWarnings): Prevent possible stack overflow on error.
+
 2004-08-24  Glenn Randers-Pehrson <glennrp@glennrp.com>
 	* coders/png.c: fixed call to png_set_keep_unknown_chunks()
 	and deleted tEXt and zTXt from list of unused chunks.
