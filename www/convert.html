@@ -293,6 +293,10 @@ image is specified, it is composited into a single multi-image file. Use
 <strong>+adjoin</strong>
 if you want a single image produced for each frame.</p>
 <p>
+Your installation might not support all of the formats in the list.  To get
+an up-to-date listing of the formats supported by your particular
+configuration, run <tt>"convert -list format"</tt>.
+<p>
 Raw images are expected to have one byte per pixel unless <strong>ImageMagick</strong>
 is compiled in 16-bit mode. Here, the raw data is expected to be stored
 two bytes per pixel in most-significant-byte-first order.
@@ -334,14 +338,12 @@ the lower left-hand corner, use:</p>
 To convert a raw Gray image with a 128 byte header to a portable graymap,
 use:</p>
 <pre>
-    convert -depth 8 -size 768x512+128   \
-            gray:raw image.pgm
+    convert -depth 8 -size 768x512+128 gray:raw image.pgm
 </pre>
 <p>
 To convert a Photo CD image to a TIFF image, use:</p>
 <pre>
-    convert -size 1536x1024 img0009.pcd  \
-            image.tiff
+    convert -size 1536x1024 img0009.pcd image.tiff
     convert img0009.pcd[4] image.tiff
 </pre>
 <p>
@@ -353,21 +355,17 @@ To create a visual image directory of all your JPEG images, use:</p>
 To annotate an image with blue text using font 12x24 at position (100,100),
 use:</p>
 <pre>
-    convert -font helvetica -fill blue    \
-            -draw "text 100,100 Cockatoo" \
-            bird.jpg bird.miff
+    convert -font helvetica -fill blue -draw "text 100,100 Cockatoo" bird.jpg bird.miff
 </pre>
 <p>
 To tile a 640x480 image with a JPEG texture with bumps use:</p>
 <pre>
-    convert -size 640x480 tile:bumps.jpg  \
-            tiled.png
+    convert -size 640x480 tile:bumps.jpg tiled.png
 </pre>
 <p>
 To surround an icon with an ornamental border to use with Mosaic(1), use:</p>
 <pre>
-    convert -mattecolor "#697B8F" -frame  \
-            6x6 bird.jpg icon.png
+    convert -mattecolor "#697B8F" -frame 6x6 bird.jpg icon.png
 </pre>
 <p>
 To create a MNG animation from a DNA molecule sequence, use:</p>

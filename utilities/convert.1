@@ -198,6 +198,10 @@ image is specified, it is composited into a single multi-image file. Use
 \fB+adjoin\fP
 if you want a single image produced for each frame.
 
+Your installation might not support all of the formats in the list.  To get
+an up-to-date listing of the formats supported by your particular
+configuration, run "convert -list format".
+
 Raw images are expected to have one byte per pixel unless \fBImageMagick\fP
 is compiled in 16-bit mode. Here, the raw data is expected to be stored
 two bytes per pixel in most-significant-byte-first order.
@@ -223,13 +227,11 @@ the lower left-hand corner, use:
 To convert a raw Gray image with a 128 byte header to a portable graymap,
 use:
 
-    convert -depth 8 -size 768x512+128   \\
-            gray:raw image.pgm
+    convert -depth 8 -size 768x512+128 gray:raw image.pgm
 
 To convert a Photo CD image to a TIFF image, use:
 
-    convert -size 1536x1024 img0009.pcd  \\
-            image.tiff
+    convert -size 1536x1024 img0009.pcd image.tiff
     convert img0009.pcd[4] image.tiff
 
 To create a visual image directory of all your JPEG images, use:
@@ -245,13 +247,12 @@ use:
 
 To tile a 640x480 image with a JPEG texture with bumps use:
 
-    convert -size 640x480 tile:bumps.jpg  \\
-            tiled.png
+    convert -size 640x480 tile:bumps.jpg tiled.png
 
 To surround an icon with an ornamental border to use with Mosaic(1), use:
 
-    convert -mattecolor "#697B8F" -frame  \\
-            6x6 bird.jpg icon.png
+    convert -mattecolor "#697B8F" -frame 6x6 bird.jpg \\
+            icon.png
 
 To create a MNG animation from a DNA molecule sequence, use:
 

@@ -115,31 +115,27 @@ To composite an image of a cockatoo with a perch, use:</p>
 <p>
 To compute the difference between images in a series, use:</p>
 <pre>
-    composite -compose difference series.1 series.2 \
-              difference.miff
+    composite -compose difference series.1 series.2 difference.miff
 </pre>
 <p>
 To composite an image of a cockatoo with a perch starting at location (100,150),
 use:</p>
 <pre>
-    composite -geometry +100+150 cockatoo.miff \
-              perch.ras composite.miff
+    composite -geometry +100+150 cockatoo.miff perch.ras composite.miff
 </pre>
 <p>
 To tile a logo across your image of a cockatoo, use</p>
 <pre>
     convert +shade 30x60 cockatoo.miff mask.miff
-    composite -compose bumpmap -tile logo.png \
-              cockatoo.miff mask.miff composite.miff
+    composite -compose bumpmap -tile logo.png cockatoo.miff \
+              mask.miff composite.miff
 </pre>
 <p>
 To composite a red, green, and blue color plane into a single composite image,
 try</p>
 <pre>
-    composite -compose CopyGreen red.png green.png \
-              red-green.png
-    composite -compose CopyBlue red-green.png blue.png \
-              composite.png
+    composite -compose CopyGreen red.png green.png red-green.png
+    composite -compose CopyBlue red-green.png blue.png composite.png
 </pre>
 </td></tr></table>
      <p>

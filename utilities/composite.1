@@ -28,8 +28,8 @@ use:
 To tile a logo across your image of a cockatoo, use
 
     convert +shade 30x60 cockatoo.miff mask.miff
-    composite -compose bumpmap -tile logo.png \\
-              cockatoo.miff mask.miff composite.miff
+    composite -compose bumpmap -tile logo.png cockatoo.miff \\
+              mask.miff composite.miff
 
 To composite a red, green, and blue color plane into a single composite image,
 try
