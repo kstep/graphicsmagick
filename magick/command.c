@@ -334,7 +334,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   composite_image=NewImageList();
   option_info.displace_geometry=(char *) NULL;
   filename=(char *) NULL;
-  format=(char *) "%w,%h,%m";
+  format=(char *) NULL;
   option_info.geometry=(char *) NULL;
   image=NewImageList();
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
@@ -1055,12 +1055,13 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("quality",option+1) == 0)
           {
-            image_info->quality=75;
+            image_info->quality=DefaultCompressionQuality;
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowCompositeException(OptionError,"Missing quality",option);
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowCompositeException(OptionError,
+                    "MissingCompressionQuality",option);
                 image_info->quality=atol(argv[i]);
               }
             break;
@@ -1355,12 +1356,13 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       char
         *text;
 
-      text=TranslateText(image_info,image,format);
+      text=TranslateText(image_info,image,(format != (char *) NULL) ? format : "%w,%h,%m");
       if (text == (char *) NULL)
         ThrowCompositeException(ResourceLimitError,"MemoryAllocationFailed",
           "UnableToFormatImageMetadata");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
+      LiberateMemory((void **) &text);
     }
   LiberateCompositeOptions(&option_info);
   DestroyImageList(composite_image);
@@ -1488,7 +1490,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   status=True;
   filename=(char *) NULL;
-  format=(char *) "%w,%h,%m";
+  format=(char *) NULL;
   image=NewImageList();
   image_list=(Image *) NULL;
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
@@ -2713,11 +2715,11 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("quality",option+1) == 0)
           {
-            image_info->quality=75;
+            image_info->quality=DefaultCompressionQuality;
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,"MissingCompressionQuality",
                     option);
                 image_info->quality=atol(argv[i]);
@@ -3197,12 +3199,13 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       char
         *text;
 
-      text=TranslateText(image_info,image_list,format);
+      text=TranslateText(image_info,image_list,(format != (char *) NULL) ? format : "%w,%h,%m");
       if (text == (char *) NULL)
         ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
           "UnableToFormatImageMetadata");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
+      LiberateMemory((void **) &text);
     }
   DestroyImageList(image_list);
   return(status);
@@ -3348,6 +3351,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                   "MemoryAllocationFailed","UnableToFormatImageMetadata");
               (void) ConcatenateString(&(*metadata),text);
               (void) ConcatenateString(&(*metadata),"\n");
+              LiberateMemory((void **) &text);
             }
         }
         DestroyImageList(image);
@@ -4767,12 +4771,13 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("quality",option+1) == 0)
           {
-            image_info->quality=75;
+            image_info->quality=DefaultCompressionQuality;
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,"Missing quality",option);
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowMogrifyException(OptionError,"MissingCompressionQuality",
+                    option);
                 image_info->quality=atol(argv[i]);
               }
             break;
@@ -5318,7 +5323,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   /*
     Set defaults.
   */
-  format=(char *) "%w,%h,%m";
+  format=(char *) NULL;
   first_scene=0;
   image=NewImageList();
   image_list=(Image *) NULL;
@@ -6162,12 +6167,12 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("quality",option+1) == 0)
           {
-            image_info->quality=75;
+            image_info->quality=DefaultCompressionQuality;
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMontageException(OptionError,"MissingImageQuality",
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowMontageException(OptionError,"MissingCompressionQuality",
                     option);
                 image_info->quality=atol(argv[i]);
               }
@@ -6486,12 +6491,13 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       char
         *text;
 
-      text=TranslateText(image_info,montage_image,format);
+      text=TranslateText(image_info,montage_image,(format != (char *) NULL) ? format : "%w,%h,%m");
       if (text == (char *) NULL)
         ThrowMontageException(ResourceLimitError,"MemoryAllocationFailed",
           "UnableToFormatImageMetadata");
       (void) ConcatenateString(&(*metadata),text);
       (void) ConcatenateString(&(*metadata),"\n");
+      LiberateMemory((void **) &text);
     }
   DestroyImageList(montage_image);
   DestroyMontageInfo(montage_info);
