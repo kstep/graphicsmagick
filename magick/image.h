@@ -603,8 +603,17 @@ extern MagickExport PixelPacket
   *SetImagePixels(Image *,const long,const long,const unsigned long,
     const unsigned long);
 
+extern MagickExport Quantum
+  ScaleCharToQuantum(const unsigned char),
+  ScaleIntToQuantum(const unsigned itn),
+  ScaleIntensityToQuantum(const PixelPacket *),
+  ScaleShortToQuantum(const unsigned short);
+
 extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
+
+extern MagickExport unsigned char
+  ScaleQuantumToChar(const Quantum);
 
 extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned long),
@@ -649,6 +658,7 @@ extern MagickExport unsigned int
     ExceptionInfo *),
   RaiseImage(Image *,const RectangleInfo *,const int),
   RGBTransformImage(Image *,const ColorspaceType),
+  ScaleQuantumToInt(const Quantum),
   SetImageClipMask(Image *,Image *),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
@@ -663,6 +673,9 @@ extern MagickExport unsigned int
   WriteImages(ImageInfo *,Image *,const char *,ExceptionInfo *),
   WriteStream(const ImageInfo *,Image *,
     int (*)(const Image *,const void *,const size_t));
+
+extern MagickExport unsigned short
+  ScaleQuantumToShort(const Quantum);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *),

@@ -184,7 +184,8 @@ extern MagickExport unsigned int
   SyncCacheNexus(Image *,const unsigned long);
 
 extern MagickExport unsigned long
-  GetNexus(Cache);
+  GetNexus(Cache),
+  GetPixelCacheArea(const Image *);
 
 extern MagickExport void
   AllocateCacheNexus(CacheInfo *),
