@@ -3095,6 +3095,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 if (n < 0)
                   ThrowWriterException(CorruptImageWarning,
                     "unbalanced graphic context push/pop",image);
+                (void) WriteBlobString(image,"</g>\n");
               }
             if (LocaleCompare("linear-gradient",token) == 0)
               {
