@@ -694,6 +694,9 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   complete build:
 
     VisualMagick.dsw : The one used to build everything as DLL's
+    VisualMagickX11.dsw : The one used to build everything as DLL's
+                          but enabling X11 support using the DLL's
+                          and libraries supplied with the distribution
     VisualMagickStatic.dsw: The one used to build everything as
                             static standalone executable
 
@@ -713,13 +716,12 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   move anything to any of the global SYSTEM or SYSTEM32 areas in the
   operating system installation.
 
-  NOTE: The two utilities "display" and "animate" will compile and
-  link but not function in the default build environment. This is due
-  to the fact that the default build environment uses the X11 stubs
-  to supply non-functional stubs for X-Window functionality. This is
-  due to the lack of a high need for this on a Windows NT or Win95
-  only system. Work is underway to add X11 libraries to the standard
-  distribution in the neat future.
+  NOTE: The two utilities "display" and "animate" will only be compiled
+  when using the VisualMagickX11 workspace. The other build environments
+  uses the X11 stubs to supply non-functional stubs for the X-Window
+  functionality. There is no support for a "static" build of the X11
+  support because the build procedures for the X11 libraries do not seem
+  to support this.
 
   To view any image in a Microsoft window, type
 
