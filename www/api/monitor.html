@@ -32,7 +32,10 @@ monitor - ImageMagick Progress Monitor Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-MonitorHandler <STRONG>SetMonitorHandler</STRONG>(MonitorHandlerhandler)
+void  <STRONG>ProgressMonitor</STRONG>( const char *text, const unsigned int quantum, const unsigned int span );
+
+<P>
+MonitorHandler  <STRONG>SetMonitorHandler</STRONG>( MonitorHandler handler );
 
 <P>
 <HR>
@@ -47,10 +50,8 @@ that describes the task and a measure of completion.
 <P>
 The format of the ProgressMonitor method is:
 
-<P>
-<PRE>    void ProgressMonitor(const char *text,const unsigned int quantum,
-      const unsigned int span)
-</PRE>
+<blockquote>void ProgressMonitor ( const char *text, const unsigned int quantum, const unsigned int span ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -76,7 +77,7 @@ and returns the previous monitor handler.
 <P>
 The format of the SetMonitorHandler method is:
 
-<blockquote>MonitorHandler SetMonitorHandler (MonitorHandler handler) </blockquote>
+<blockquote>MonitorHandler SetMonitorHandler ( MonitorHandler handler ) ; </blockquote>
 
 <P>
 

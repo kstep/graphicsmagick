@@ -37,22 +37,25 @@ transform - Methods to Transform an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-Image* <STRONG>ChopImage</STRONG>(constImage*image,constRectangleInfo*chop_info)
+Image * <STRONG>ChopImage</STRONG>( const Image *image, const RectangleInfo <CODE>*chop_info</CODE> );
 
 <P>
-void <STRONG>CoalesceImages</STRONG>(Image*images)
+void  <STRONG>CoalesceImages</STRONG>( Image <CODE>*images</CODE> );
 
 <P>
-Image* <STRONG>CropImage</STRONG>(constImage*image,constRectangleInfo*crop_info)
+Image * <STRONG>CropImage</STRONG>( const Image *image, const RectangleInfo <CODE>*crop_info</CODE> );
 
 <P>
-void <STRONG>DeconstructImages</STRONG>(Image*images)
+void  <STRONG>DeconstructImages</STRONG>( Image <CODE>*images</CODE> );
 
 <P>
-Image* <STRONG>FlipImage</STRONG>(constImage*image)
+Image * <STRONG>FlipImage</STRONG>( const Image <CODE>*image</CODE> );
 
 <P>
-Image* <STRONG>FlopImage</STRONG>(constImage*image)
+Image * <STRONG>FlopImage</STRONG>( const Image <CODE>*image</CODE> );
+
+<P>
+Image * <STRONG>RollImage</STRONG>( const Image *image, const int x_offset, const int y_offset );
 
 <P>
 <HR>
@@ -68,7 +71,7 @@ returns a pointer to the new image.
 <P>
 The format of the ChopImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ChopImage (const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ChopImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info ) ; </blockquote>
 
 <P>
 
@@ -103,7 +106,7 @@ Method CoalesceImages merges a sequence of images. This is useful for
 <P>
 The format of the CoalesceImages method is:
 
-<blockquote>void CoalesceImages (<A HREF="types/Image.html">Image</A> *images) </blockquote>
+<blockquote>void CoalesceImages ( <A HREF="types/Image.html">Image</A> *images ) ; </blockquote>
 
 <P>
 
@@ -129,7 +132,7 @@ memory than the original.
 <P>
 The format of the CropImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *CropImage (const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info ) ; </blockquote>
 
 <P>
 
@@ -164,7 +167,7 @@ Method DeconstructImages breaks down an image sequence into constituent parts. T
 <P>
 The format of the DeconstructImages method is:
 
-<blockquote>void DeconstructImages (<A HREF="types/Image.html">Image</A> *images) </blockquote>
+<blockquote>void DeconstructImages ( <A HREF="types/Image.html">Image</A> *images ) ; </blockquote>
 
 <P>
 
@@ -188,7 +191,7 @@ structure and returns a pointer to the new image.
 <P>
 The format of the FlipImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *FlipImage (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -217,7 +220,7 @@ structure and returns a pointer to the new image.
 <P>
 The format of the FlopImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *FlopImage (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -246,10 +249,8 @@ the new image.
 <P>
 The format of the RollImage method is:
 
-<P>
-<PRE>    Image *RollImage(const Image *image,const int x_offset,
-      const int y_offset)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( const <A HREF="types/Image.html">Image</A> *image, const int x_offset, const int y_offset ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:

@@ -32,7 +32,11 @@ display - Methods to Interactively Display and Edit an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-status= <STRONG>XDisplayBackgroundImage</STRONG>(display,resource_info,image)
+status= <STRONG>XDisplayBackgroundImage</STRONG>( display, resource_info, image );
+
+<P>
+Image * <STRONG>XDisplayImage</STRONG>( Display *display, XResourceInfo *resource_info, char ** argv, int argc,
+Image ** image, unsigned long <CODE>*state</CODE> );
 
 <P>
 <HR>
@@ -47,7 +51,7 @@ window.
 <P>
 The format of the XDisplayBackgroundImage method is:
 
-<blockquote>status=XDisplayBackgroundImage (display, resource_info,image) </blockquote>
+<blockquote>status=XDisplayBackgroundImage ( display, resource_info, image ) ; </blockquote>
 
 <P>
 
@@ -86,10 +90,8 @@ Method XDisplayImage displays an image via
 <P>
 The format of the XDisplayImage method is:
 
-<P>
-<PRE>    Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
-      char **argv,int argc,Image **image,unsigned long *state)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *XDisplayImage ( Display *display, XResourceInfo *resource_info, char **argv, int argc, <A HREF="types/Image.html">Image</A> **image, unsigned long *state ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:

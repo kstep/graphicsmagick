@@ -33,10 +33,13 @@ decorate - ImageMagick Image Decoration Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-Image* <STRONG>BorderImage</STRONG>(constImage*image,constRectangleInfo*border_info)
+Image * <STRONG>BorderImage</STRONG>( const Image *image, const RectangleInfo <CODE>*border_info</CODE> );
 
 <P>
-Image* <STRONG>FrameImage</STRONG>(constImage*image,constFrameInfo*frame_info)
+Image * <STRONG>FrameImage</STRONG>( const Image *image, const FrameInfo <CODE>*frame_info</CODE> );
+
+<P>
+void  <STRONG>RaiseImage</STRONG>( Image *image, const RectangleInfo *raise_info, const int raised );
 
 <P>
 <HR>
@@ -52,7 +55,7 @@ structure and returns a pointer to the new image.
 <P>
 The format of the BorderImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *BorderImage (const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *border_info) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *BorderImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *border_info ) ; </blockquote>
 
 <P>
 
@@ -86,7 +89,7 @@ returns a pointer to the new image.
 <P>
 The format of the FrameImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *FrameImage (const <A HREF="types/Image.html">Image</A> *image, const FrameInfo *frame_info) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *FrameImage ( const <A HREF="types/Image.html">Image</A> *image, const FrameInfo *frame_info ) ; </blockquote>
 
 <P>
 
@@ -119,10 +122,8 @@ Method RaiseImage lightens and darkens the edges of an image to give a
 <P>
 The format of the RaiseImage method is:
 
-<P>
-<PRE>    void RaiseImage(Image *image,const RectangleInfo *raise_info,
-      const int raised)
-</PRE>
+<blockquote>void RaiseImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *raise_info, const int raised ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:

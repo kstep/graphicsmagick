@@ -76,115 +76,144 @@ image - ImageMagick Image Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-Image* <STRONG>AllocateImage</STRONG>(constImageInfo*image_info)
+Image * <STRONG>AllocateImage</STRONG>( const ImageInfo <CODE>*image_info</CODE> );
 
 <P>
-void <STRONG>AllocateNextImage</STRONG>(constImageInfo*image_info,Image*image)
+void  <STRONG>AllocateNextImage</STRONG>( const ImageInfo *image_info, Image <CODE>*image</CODE> );
 
 <P>
-unsigned int <STRONG>AnimateImages</STRONG>(constImageInfo*image_info,Image*image)
+unsigned int  <STRONG>AnimateImages</STRONG>( const ImageInfo *image_info, Image <CODE>*image</CODE> );
 
 <P>
-Image* <STRONG>AppendImages</STRONG>(Image*images,constunsigned intstack)
+Image * <STRONG>AppendImages</STRONG>( Image *images, const unsigned int stack );
 
 <P>
-Image* <STRONG>AverageImages</STRONG>(constImage*images)
+Image * <STRONG>AverageImages</STRONG>( const Image <CODE>*images</CODE> );
 
 <P>
-ImageInfo* <STRONG>CloneImageInfo</STRONG>(constImageInfo*image_info)
+Image * <STRONG>CloneImage</STRONG>( const Image *image, const unsigned int columns, const unsigned int rows,
+const unsigned int clone_pixels );
 
 <P>
-void <STRONG>CommentImage</STRONG>(Image*image,constchar*comments)
+ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo <CODE>*image_info</CODE> );
 
 <P>
-void <STRONG>CondenseImage</STRONG>(Image*image)
+void  <STRONG>CommentImage</STRONG>( Image *image, const char <CODE>*comments</CODE> );
 
 <P>
-<PRE> B&lt;CycleColormapImage&gt;(image,amount)
+void  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, Image *composite_image,
+const int x_offset, const int y_offset );
+
+<P>
+void  <STRONG>CondenseImage</STRONG>( Image <CODE>*image</CODE> );
+
+<P>
+Image * <STRONG>CreateImage</STRONG>( const unsigned int width, const unsigned int height, const float *red,
+const float *green, const float *blue, const float <CODE>*opacity</CODE> );
+
+<P>
+<PRE> B&lt;CycleColormapImage&gt;( image, amount );
 </PRE>
 <P>
-void <STRONG>DescribeImage</STRONG>(Image*image,FILE*file,constunsigned intverbose)
+void  <STRONG>DescribeImage</STRONG>( Image *image, 
+<FONT SIZE=-1>FILE</FONT> *file, const unsigned int verbose );
 
 <P>
-void <STRONG>DestroyImage</STRONG>(Image*image)
+void  <STRONG>DestroyImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-void <STRONG>DestroyImageInfo</STRONG>(ImageInfo*image_info)
+void  <STRONG>DestroyImageInfo</STRONG>( ImageInfo <CODE>*image_info</CODE> );
 
 <P>
-void <STRONG>DestroyImages</STRONG>(Image*image)
+void  <STRONG>DestroyImages</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-unsigned int <STRONG>DisplayImages</STRONG>(constImageInfo*image_info,Image*image)
+unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image <CODE>*image</CODE> );
 
 <P>
-void <STRONG>GetImageInfo</STRONG>(ImageInfo*image_info)
+void  <STRONG>GetImageInfo</STRONG>( ImageInfo <CODE>*image_info</CODE> );
 
 <P>
-ImageType <STRONG>GetImageType</STRONG>(Image*image)
+ImageType  <STRONG>GetImageType</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-unsigned int <STRONG>GetNumberScenes</STRONG>(constImage*image)
+unsigned int  <STRONG>GetNumberScenes</STRONG>( const Image <CODE>*image</CODE> );
 
 <P>
-unsigned int <STRONG>IsGeometry</STRONG>(constchar*geometry)
+unsigned int  <STRONG>IsGeometry</STRONG>( const char <CODE>*geometry</CODE> );
 
 <P>
-unsigned int <STRONG>IsGrayImage</STRONG>(Image*image)
+unsigned int  <STRONG>IsGrayImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-unsigned int <STRONG>IsSubimage</STRONG>(constchar*geometry,constunsigned intpedantic)
+unsigned int  <STRONG>IsSubimage</STRONG>( const char *geometry, const unsigned int pedantic );
 
 <P>
-unsigned int <STRONG>IsTainted</STRONG>(constImage*image)
+unsigned int  <STRONG>IsTainted</STRONG>( const Image <CODE>*image</CODE> );
 
 <P>
-void <STRONG>LabelImage</STRONG>(Image*image,constchar*label)
+void  <STRONG>LabelImage</STRONG>( Image *image, const char <CODE>*label</CODE> );
 
 <P>
-void <STRONG>LayerImage</STRONG>(Image*image,constLayerTypelayer)
+void  <STRONG>LayerImage</STRONG>( Image *image, const LayerType layer );
 
 <P>
-Image** <STRONG>ListToGroupImage</STRONG>(constImage*image,unsigned int*number_images)
+Image **  <STRONG>ListToGroupImage</STRONG>( const Image *image, unsigned int <CODE>*number_images</CODE> );
 
 <P>
-void <STRONG>MatteImage</STRONG>(Image*image)
+void  <STRONG>MatteImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-Image* <STRONG>PingImage</STRONG>(constImageInfo*image_info)
+void  <STRONG>MogrifyImage</STRONG>( const ImageInfo *image_info, const int argc, char ** argv, Image ** image
+);
 
 <P>
-void <STRONG>RGBTransformImage</STRONG>(Image*image,constColorspaceTypecolorspace)
+void  <STRONG>MogrifyImages</STRONG>( const ImageInfo *image_info, const int argc, char ** argv, Image **
+images );
 
 <P>
-Image* <STRONG>ReadImage</STRONG>(ImageInfo*image_info)
+int  <STRONG>ParseImageGeometry</STRONG>( const char *geometry, int *x, int *y, unsigned int *width, unsigned int
+<CODE>*height</CODE> );
 
 <P>
-Image* <STRONG>ReadImages</STRONG>(ImageInfo*image_info)
+Image * <STRONG>PingImage</STRONG>( const ImageInfo <CODE>*image_info</CODE> );
 
 <P>
-void <STRONG>SetImage</STRONG>(Image*image)
+void  <STRONG>RGBTransformImage</STRONG>( Image *image, const ColorspaceType colorspace );
 
 <P>
-void <STRONG>SetImageInfo</STRONG>(ImageInfo*image_info,constunsigned intrectify)
+Image * <STRONG>ReadImage</STRONG>( ImageInfo <CODE>*image_info</CODE> );
 
 <P>
-void <STRONG>SyncImage</STRONG>(Image*image)
+Image * <STRONG>ReadImages</STRONG>( ImageInfo <CODE>*image_info</CODE> );
 
 <P>
-void <STRONG>TextureImage</STRONG>(Image*image,Image*texture)
+void  <STRONG>SetImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-void <STRONG>TransformRGBImage</STRONG>(Image*image,constColorspaceTypecolorspace)
+void  <STRONG>SetImageInfo</STRONG>( ImageInfo *image_info, const unsigned int rectify );
 
 <P>
-void <STRONG>TransparentImage</STRONG>(Image*image,constchar*color)
+void  <STRONG>SyncImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-unsigned int <STRONG>UncondenseImage</STRONG>(Image*image)
+void  <STRONG>TextureImage</STRONG>( Image *image, Image <CODE>*texture</CODE> );
 
 <P>
-unsigned int <STRONG>WriteImage</STRONG>(constImageInfo*image_info,Image*image)
+void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char
+<CODE>*image_geometry</CODE> );
+
+<P>
+void  <STRONG>TransformRGBImage</STRONG>( Image *image, const ColorspaceType colorspace );
+
+<P>
+void  <STRONG>TransparentImage</STRONG>( Image *image, const char <CODE>*color</CODE> );
+
+<P>
+unsigned int  <STRONG>UncondenseImage</STRONG>( Image <CODE>*image</CODE> );
+
+<P>
+unsigned int  <STRONG>WriteImage</STRONG>( const ImageInfo *image_info, Image <CODE>*image</CODE> );
 
 <P>
 <HR>
@@ -199,7 +228,7 @@ field to a default value.
 <P>
 The format of the AllocateImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *AllocateImage (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *AllocateImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ) ; </blockquote>
 
 <P>
 
@@ -227,7 +256,7 @@ field to a default value.
 <P>
 The format of the AllocateNextImage method is:
 
-<blockquote>void AllocateNextImage (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>void AllocateNextImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -253,7 +282,7 @@ Method AnimateImages displays one or more images to an
 <P>
 The format of the AllocateNextImage method is:
 
-<blockquote>unsigned int AnimateImages (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>unsigned int AnimateImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -287,7 +316,7 @@ top-to-bottom.
 <P>
 The format of the AppendImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *AppendImages (<A HREF="types/Image.html">Image</A> *images, const unsigned int stack) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *AppendImages ( <A HREF="types/Image.html">Image</A> *images, const unsigned int stack ) ; </blockquote>
 
 <P>
 
@@ -314,7 +343,7 @@ the same size in pixels.
 <P>
 The format of the AverageImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *AverageImages (const <A HREF="types/Image.html">Image</A> *images) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *AverageImages ( const <A HREF="types/Image.html">Image</A> *images ) ; </blockquote>
 
 <P>
 
@@ -340,10 +369,8 @@ pixel memory is allocated but the pixel data is not copied.
 <P>
 The format of the CloneImage method is:
 
-<P>
-<PRE>    Image *CloneImage(const Image *image,const unsigned int columns,
-      const unsigned int rows,const unsigned int clone_pixels)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const unsigned int clone_pixels ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -383,7 +410,7 @@ Method CloneImageInfo makes a duplicate of the given image info, or if image inf
 <P>
 The format of the CloneImageInfo method is:
 
-<blockquote><A HREF="types/ImageInfo.html">ImageInfo</A> *CloneImageInfo (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+<blockquote><A HREF="types/ImageInfo.html">ImageInfo</A> *CloneImageInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ) ; </blockquote>
 
 <P>
 
@@ -412,7 +439,7 @@ embedding special format characters.
 <P>
 The format of the CommentImage method is:
 
-<blockquote>void CommentImage (<A HREF="types/Image.html">Image</A> *image, const char *comments) </blockquote>
+<blockquote>void CommentImage ( <A HREF="types/Image.html">Image</A> *image, const char *comments ) ; </blockquote>
 
 <P>
 
@@ -438,10 +465,8 @@ the specified offsets.
 <P>
 The format of the CompositeImage method is:
 
-<P>
-<PRE>    void CompositeImage(Image *image,const CompositeOperator compose,
-      Image *composite_image,const int x_offset,const int y_offset)
-</PRE>
+<blockquote>void CompositeImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#CompositeOperator">CompositeOperator</A> compose, <A HREF="types/Image.html">Image</A> *composite_image, const int x_offset, const int y_offset ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -478,7 +503,7 @@ runlength-encoded packets.
 <P>
 The format of the CondenseImage method is:
 
-<blockquote>void CondenseImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>void CondenseImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -501,11 +526,8 @@ structure and returns a pointer to the new image.
 <P>
 The format of the CreateImage method is:
 
-<P>
-<PRE>    Image *CreateImage(const unsigned int width,const unsigned int height,
-      const float *red,const float *green,const float *blue,
-      const float *opacity)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *CreateImage ( const unsigned int width, const unsigned int height, const float *red, const float *green, const float *blue, const float *opacity ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -541,7 +563,7 @@ Method CycleColormapImage cycles the image colormap by a specified amount.
 <P>
 The format of the CycleColormapImage method is:
 
-<blockquote>CycleColormapImage (image, amount) </blockquote>
+<blockquote>CycleColormapImage ( image, amount ) ; </blockquote>
 
 <P>
 
@@ -567,7 +589,7 @@ stdout.
 <P>
 The format of the DescribeImage method is:
 
-<blockquote>void DescribeImage (<A HREF="types/Image.html">Image</A> *image, FILE *file,const unsigned int verbose) </blockquote>
+<blockquote>void DescribeImage ( <A HREF="types/Image.html">Image</A> *image, FILE *file, const unsigned int verbose ) ; </blockquote>
 
 <P>
 
@@ -597,7 +619,7 @@ Method DestroyImage deallocates memory associated with an image.
 <P>
 The format of the DestroyImage method is:
 
-<blockquote>void DestroyImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>void DestroyImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -619,7 +641,7 @@ structure.
 <P>
 The format of the DestroyImageInfo method is:
 
-<blockquote>void DestroyImageInfo (<A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+<blockquote>void DestroyImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ) ; </blockquote>
 
 <P>
 
@@ -641,7 +663,7 @@ images.
 <P>
 The format of the DestroyImages method is:
 
-<blockquote>void DestroyImages (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>void DestroyImages ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -663,7 +685,7 @@ Method DisplayImages displays one or more images to an
 <P>
 The format of the AllocateNextImage method is:
 
-<blockquote>unsigned int DisplayImages (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>unsigned int DisplayImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -693,7 +715,7 @@ Method GetImageInfo initializes the ImageInfo structure.
 <P>
 The format of the GetImageInfo method is:
 
-<blockquote>void GetImageInfo (<A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+<blockquote>void GetImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ) ; </blockquote>
 
 <P>
 
@@ -714,7 +736,7 @@ Method GetImageType returns the type of image (e.g. bilevel, palette, etc).
 <P>
 The format of the GetImageType method is:
 
-<blockquote><A HREF="types/Enumerations.html#ImageType">ImageType</A> GetImageType (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote><A HREF="types/Enumerations.html#ImageType">ImageType</A> GetImageType ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -740,7 +762,7 @@ Method GetNumberScenes returns the number of scenes in an image sequence.
 <P>
 The format of the GetNumberScenes method is:
 
-<blockquote>unsigned int GetNumberScenes (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>unsigned int GetNumberScenes ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -795,7 +817,7 @@ determined by ParseGeometry.
 <P>
 The format of the IsGeometry method is:
 
-<blockquote>unsigned int IsGeometry (const char *geometry) </blockquote>
+<blockquote>unsigned int IsGeometry ( const char *geometry ) ; </blockquote>
 
 <P>
 
@@ -823,7 +845,7 @@ PseudoClass.
 <P>
 The format of the IsGrayImage method is:
 
-<blockquote>unsigned int IsGrayImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>unsigned int IsGrayImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -850,7 +872,7 @@ specification (e.g. [1], [1-9], [1,7,4]).
 <P>
 The format of the IsSubimage method is:
 
-<blockquote>unsigned int IsSubimage (const char *geometry, const unsigned int pedantic) </blockquote>
+<blockquote>unsigned int IsSubimage ( const char *geometry, const unsigned int pedantic ) ; </blockquote>
 
 <P>
 
@@ -884,7 +906,7 @@ filename.
 <P>
 The format of the IsTainted method is:
 
-<blockquote>unsigned int IsTainted (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>unsigned int IsTainted ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -912,7 +934,7 @@ embedding special format characters.
 <P>
 The format of the LabelImage method is:
 
-<blockquote>void LabelImage (<A HREF="types/Image.html">Image</A> *image, const char *label) </blockquote>
+<blockquote>void LabelImage ( <A HREF="types/Image.html">Image</A> *image, const char *label ) ; </blockquote>
 
 <P>
 
@@ -937,7 +959,7 @@ Method LayerImage extracts the specified layer from the references image.
 <P>
 The format of the LayerImage method is:
 
-<blockquote>void LayerImage (<A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#LayerType">LayerType</A> layer) </blockquote>
+<blockquote>void LayerImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#LayerType">LayerType</A> layer ) ; </blockquote>
 
 <P>
 
@@ -965,7 +987,7 @@ array.
 <P>
 The format of the ListToGroupImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage (const <A HREF="types/Image.html">Image</A> *image, unsigned int *number_images) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage ( const <A HREF="types/Image.html">Image</A> *image, unsigned int *number_images ) ; </blockquote>
 
 <P>
 
@@ -998,7 +1020,7 @@ opaque.
 <P>
 The format of the MatteImage method is:
 
-<blockquote>void MatteImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>void MatteImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -1020,10 +1042,8 @@ prescribed by command line options.
 <P>
 The format of the MogrifyImage method is:
 
-<P>
-<PRE>    void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
-      Image **image)
-</PRE>
+<blockquote>void MogrifyImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const int argc, char **argv, <A HREF="types/Image.html">Image</A> **image ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1057,10 +1077,8 @@ images as prescribed by command line options.
 <P>
 The format of the MogrifyImage method is:
 
-<P>
-<PRE>    void MogrifyImages(const ImageInfo *image_info,const int argc,
-      char **argv,Image **images)
-</PRE>
+<blockquote>void MogrifyImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const int argc, char **argv, <A HREF="types/Image.html">Image</A> **images ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1096,10 +1114,8 @@ string, and whether the x and y values are negative. In addition,
 <P>
 The format of the ParseImageGeometry method is:
 
-<P>
-<PRE>    int ParseImageGeometry(const char *geometry,int *x,int *y,
-      unsigned int *width,unsigned int *height)
-</PRE>
+<blockquote>int ParseImageGeometry ( const char *geometry, int *x, int *y, unsigned int *width, unsigned int *height ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1138,7 +1154,7 @@ image file is pinged.
 <P>
 The format of the PingImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *PingImage (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ) ; </blockquote>
 
 <P>
 
@@ -1169,7 +1185,7 @@ image format name and a colon (i.e. ps:image) or as the filename suffix
 <P>
 The format of the ReadImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImage (<A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ) ; </blockquote>
 
 <P>
 
@@ -1197,7 +1213,7 @@ the images as a linked list.
 <P>
 The format of the ReadImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImages (<A HREF="types/ImageInfo.html">ImageInfo</A> *image_info) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ReadImages ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ) ; </blockquote>
 
 <P>
 
@@ -1227,7 +1243,7 @@ the range of the transformed values to be [0..MaxRGB].
 <P>
 The format of the RGBTransformImage method is:
 
-<blockquote>void RGBTransformImage (<A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ColorspaceType">ColorspaceType</A> colorspace) </blockquote>
+<blockquote>void RGBTransformImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ColorspaceType">ColorspaceType</A> colorspace ) ; </blockquote>
 
 <P>
 
@@ -1253,7 +1269,7 @@ Method SetImage initializes the reference image to the background color.
 <P>
 The format of the SetImage method is:
 
-<blockquote>void SetImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>void SetImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -1278,7 +1294,7 @@ Method SetImageInfo initializes the `magick' field of the ImageInfo structure. I
 <P>
 The format of the SetImageInfo method is:
 
-<blockquote>void SetImageInfo (<A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const unsigned int rectify) </blockquote>
+<blockquote>void SetImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const unsigned int rectify ) ; </blockquote>
 
 <P>
 
@@ -1329,7 +1345,7 @@ pixel as defined by the colormap index.
 <P>
 The format of the SyncImage method is:
 
-<blockquote>void SyncImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>void SyncImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -1350,7 +1366,7 @@ Method TextureImage layers a texture onto the background of an image.
 <P>
 The format of the TextureImage method is:
 
-<blockquote>void TextureImage (<A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *texture) </blockquote>
+<blockquote>void TextureImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *texture ) ; </blockquote>
 
 <P>
 
@@ -1389,10 +1405,8 @@ specified image size with pixel replication.
 <P>
 The format of the TransformImage method is:
 
-<P>
-<PRE>    void TransformImage(Image **image,const char *crop_geometry,
-      const char *image_geometry)
-</PRE>
+<blockquote>void TransformImage ( <A HREF="types/Image.html">Image</A> **image, const char *crop_geometry, const char *image_geometry ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -1426,7 +1440,7 @@ be [0..MaxRGB].
 <P>
 The format of the TransformRGBImage method is:
 
-<blockquote>void TransformRGBImage (<A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ColorspaceType">ColorspaceType</A> colorspace) </blockquote>
+<blockquote>void TransformRGBImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ColorspaceType">ColorspaceType</A> colorspace ) ; </blockquote>
 
 <P>
 
@@ -1455,7 +1469,7 @@ specified color are set to transparent.
 <P>
 The format of the TransparentImage method is:
 
-<blockquote>void TransparentImage (<A HREF="types/Image.html">Image</A> *image, const char *color) </blockquote>
+<blockquote>void TransparentImage ( <A HREF="types/Image.html">Image</A> *image, const char *color ) ; </blockquote>
 
 <P>
 
@@ -1484,7 +1498,7 @@ rectangular array of pixels.
 <P>
 The format of the UncondenseImage method is:
 
-<blockquote>unsigned int UncondenseImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>unsigned int UncondenseImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -1512,7 +1526,7 @@ Method WriteImage writes an image to a file as defined by image-&gt;filename. Yo
 <P>
 The format of the WriteImage method is:
 
-<blockquote>unsigned int WriteImage (const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>unsigned int WriteImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 

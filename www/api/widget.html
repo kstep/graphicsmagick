@@ -44,7 +44,55 @@ widget -
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-void <STRONG>XInfoWidget</STRONG>(Display*display,XWindows*windows,constchar*activity)
+void  <STRONG>XColorBrowserWidget</STRONG>( Display *display, XWindows *windows, const char *action, char
+<CODE>*reply</CODE> );
+
+<P>
+int  <STRONG>XCommandWidget</STRONG>( Display *display, XWindows *windows, const char ** selections, XEvent
+<CODE>*event</CODE> );
+
+<P>
+int  <STRONG>XConfirmWidget</STRONG>( Display *display, XWindows *windows, const char *message, const char
+<CODE>*qualifier</CODE> );
+
+<P>
+int  <STRONG>XDialogWidget</STRONG>( Display *display, XWindows *windows, const char *action, const char
+*query, char <CODE>*reply</CODE> );
+
+<P>
+void  <STRONG>XFileBrowserWidget</STRONG>( Display *display, XWindows *windows, const char *action, char
+<CODE>*reply</CODE> );
+
+<P>
+void  <STRONG>XFontBrowserWidget</STRONG>( Display *display, XWindows *windows, const char *action, char
+<CODE>*reply</CODE> );
+
+<P>
+void  <STRONG>XInfoWidget</STRONG>( Display *display, XWindows *windows, const char <CODE>*activity</CODE> );
+
+<P>
+void  <STRONG>XListBrowserWidget</STRONG>( Display *display, XWindows *windows, XWindowInfo *window_info, char const
+** list, const char *action, const char *query, char <CODE>*reply</CODE> );
+
+<P>
+int  <STRONG>XMenuWidget</STRONG>( Display *display, XWindows *windows, const char *title, const char **
+selections, char <CODE>*item</CODE> );
+
+<P>
+void  <STRONG>XMonitorWidget</STRONG>( Display *display, XWindows *windows, const char *task, const unsigned int
+quantum, const unsigned int span );
+
+<P>
+void  <STRONG>XNoticeWidget</STRONG>( Display *display, XWindows *windows, const char *message, const char
+<CODE>*qualifier</CODE> );
+
+<P>
+unsigned int  <STRONG>XPreferencesWidget</STRONG>( Display *display, XResourceInfo *resource_info, XWindows
+<CODE>*windows</CODE> );
+
+<P>
+void  <STRONG>XTextViewWidget</STRONG>( Display *display, const XResourceInfo *resource_info, XWindows *windows,
+const unsigned int mono, const char *title, char const ** textlist );
 
 <P>
 <HR>
@@ -60,10 +108,8 @@ button to exit. The typed text is returned as the reply function parameter.
 <P>
 The format of the XColorBrowserWidget method is:
 
-<P>
-<PRE>    void XColorBrowserWidget(Display *display,XWindows *windows,
-      const char *action,char *reply)
-</PRE>
+<blockquote>void XColorBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -97,10 +143,8 @@ user when the button is released.
 <P>
 The format of the XCommandWidget method is:
 
-<P>
-<PRE>    int XCommandWidget(Display *display,XWindows *windows,
-      const char **selections,XEvent *event)
-</PRE>
+<blockquote>int XCommandWidget ( Display *display, XWindows *windows, const char **selections, XEvent *event ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -140,10 +184,8 @@ The function returns -1 if Dismiss is pressed, 0 for Cancel, and 1 for Yes.
 <P>
 The format of the XConfirmWidget method is:
 
-<P>
-<PRE>    int XConfirmWidget(Display *display,XWindows *windows,
-      const char *message,const char *qualifier)
-</PRE>
+<blockquote>int XConfirmWidget ( Display *display, XWindows *windows, const char *message, const char *qualifier ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -183,10 +225,8 @@ text is returned as the reply function parameter.
 <P>
 The format of the XDialogWidget method is:
 
-<P>
-<PRE>    int XDialogWidget(Display *display,XWindows *windows,const char *action,
-      const char *query,char *reply)
-</PRE>
+<blockquote>int XDialogWidget ( Display *display, XWindows *windows, const char *action, const char *query, char *reply ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -225,10 +265,8 @@ to exit. The typed text is returned as the reply function parameter.
 <P>
 The format of the XFileBrowserWidget method is:
 
-<P>
-<PRE>    void XFileBrowserWidget(Display *display,XWindows *windows,
-      const char *action,char *reply)
-</PRE>
+<blockquote>void XFileBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -263,10 +301,8 @@ to exit. The typed text is returned as the reply function parameter.
 <P>
 The format of the XFontBrowserWidget method is:
 
-<P>
-<PRE>    void XFontBrowserWidget(Display *display,XWindows *windows,
-      const char *action,char *reply)
-</PRE>
+<blockquote>void XFontBrowserWidget ( Display *display, XWindows *windows, const char *action, char *reply ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -301,7 +337,7 @@ reading an image, rotating an image, etc.).
 <P>
 The format of the XInfoWidget method is:
 
-<blockquote>void XInfoWidget (Display *display, XWindows *windows,const char *activity) </blockquote>
+<blockquote>void XInfoWidget ( Display *display, XWindows *windows, const char *activity ) ; </blockquote>
 
 <P>
 
@@ -335,11 +371,8 @@ returned as the reply function parameter.
 <P>
 The format of the XListBrowserWidget method is:
 
-<P>
-<PRE>    void XListBrowserWidget(Display *display,XWindows *windows,
-      XWindowInfo *window_info,char const **list,const char *action,
-      const char *query,char *reply)
-</PRE>
+<blockquote>void XListBrowserWidget ( Display *display, XWindows *windows, XWindowInfo *window_info, char const **list, const char *action, const char *query, char *reply ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -382,10 +415,8 @@ user when the button is released.
 <P>
 The format of the XMenuWidget method is:
 
-<P>
-<PRE>    int XMenuWidget(Display *display,XWindows *windows,const char *title,
-      const char **selections,char *item)
-</PRE>
+<blockquote>int XMenuWidget ( Display *display, XWindows *windows, const char *title, const char **selections, char *item ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -430,10 +461,8 @@ Method XMonitorWidget displays the progress a task is making in completing a tas
 <P>
 The format of the XMonitorWidget method is:
 
-<P>
-<PRE>    void XMonitorWidget(Display *display,XWindows *windows,const char *task,
-      const unsigned int quantum,const unsigned int span)
-</PRE>
+<blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const unsigned int quantum, const unsigned int span ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -472,10 +501,8 @@ The function returns when the user presses the ``Dismiss'' button.
 <P>
 The format of the XNoticeWidget method is:
 
-<P>
-<PRE>    void XNoticeWidget(Display *display,XWindows *windows,
-      const char *message,const char *qualifier)
-</PRE>
+<blockquote>void XNoticeWidget ( Display *display, XWindows *windows, const char *message, const char *qualifier ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -510,10 +537,8 @@ stored in a configuration file in the users' home directory.
 <P>
 The format of the XPreferencesWidget method is:
 
-<P>
-<PRE>    unsigned int XPreferencesWidget(Display *display,
-      XResourceInfo *resource_info,XWindows *windows)
-</PRE>
+<blockquote>unsigned int XPreferencesWidget ( Display *display, XResourceInfo *resource_info, XWindows *windows ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -543,11 +568,8 @@ Method XTextViewWidget displays text in a Text View widget.
 <P>
 The format of the XTextViewWidget method is:
 
-<P>
-<PRE>    void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
-      XWindows *windows,const unsigned int mono,const char *title,
-      char const **textlist)
-</PRE>
+<blockquote>void XTextViewWidget ( Display *display, const XResourceInfo *resource_info, XWindows *windows, const unsigned int mono, const char *title, char const **textlist ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:

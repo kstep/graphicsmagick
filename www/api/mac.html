@@ -51,31 +51,31 @@ mac - Macintosh Utility Methods for ImageMagick
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<PRE> B&lt;Exit&gt;(status)
+<PRE> B&lt;Exit&gt;( status );
 </PRE>
 <P>
-<PRE> B&lt;FilenameToFSSpec&gt;(filename,fsspec)
+<PRE> B&lt;FilenameToFSSpec&gt;( filename, fsspec );
 </PRE>
 <P>
-status= <STRONG>ImageFormatConflict</STRONG>(magick)
+status= <STRONG>ImageFormatConflict</STRONG>( magick );
 
 <P>
-<PRE> B&lt;ProcessPendingEvents&gt;(text)
+<PRE> B&lt;ProcessPendingEvents&gt;( text );
 </PRE>
 <P>
-<PRE> B&lt;SetApplicationType&gt;(filename,magick,application)
+<PRE> B&lt;SetApplicationType&gt;( filename, magick, application );
 </PRE>
 <P>
-<PRE> B&lt;closedir&gt;(entry)
+<PRE> B&lt;closedir&gt;( entry );
 </PRE>
 <P>
-<PRE> B&lt;readdir&gt;(entry)
+<PRE> B&lt;readdir&gt;( entry );
 </PRE>
 <P>
-<PRE> B&lt;seekdir&gt;(entry,position)
+<PRE> B&lt;seekdir&gt;( entry, position );
 </PRE>
 <P>
-<PRE> B&lt;telldir&gt;(entry)
+<PRE> B&lt;telldir&gt;( entry );
 </PRE>
 <P>
 <HR>
@@ -125,7 +125,7 @@ Method closedir closes the named directory stream and frees the
 <P>
 The format of the closedir method is:
 
-<blockquote>closedir (entry) </blockquote>
+<blockquote>closedir ( entry ) ; </blockquote>
 
 <P>
 
@@ -147,7 +147,7 @@ Method Exit exits the process.
 <P>
 The format of the Exit method is:
 
-<blockquote>Exit (status) </blockquote>
+<blockquote>Exit ( status ) ; </blockquote>
 
 <P>
 
@@ -168,7 +168,7 @@ Method FilenameToFSSpec sets the file type of an image.
 <P>
 The format of the FilenameToFSSpec method is:
 
-<blockquote>FilenameToFSSpec (filename, fsspec) </blockquote>
+<blockquote>FilenameToFSSpec ( filename, fsspec ) ; </blockquote>
 
 <P>
 
@@ -199,7 +199,7 @@ Contributed by Mark Gavin of Digital Applications, Inc.
 <P>
 The format of the ImageFormatConflict method is:
 
-<blockquote>status=ImageFormatConflict (magick) </blockquote>
+<blockquote>status=ImageFormatConflict ( magick ) ; </blockquote>
 
 <P>
 
@@ -320,7 +320,7 @@ ImageMagick from monopolizing the processor.
 <P>
 The format of the ProcessPendingEvents method is:
 
-<blockquote>ProcessPendingEvents (text) </blockquote>
+<blockquote>ProcessPendingEvents ( text ) ; </blockquote>
 
 <P>
 
@@ -344,7 +344,7 @@ refers.
 <P>
 The format of the readdir
 
-<blockquote>readdir (entry) </blockquote>
+<blockquote>readdir ( entry ) ; </blockquote>
 
 <P>
 
@@ -409,7 +409,7 @@ operation on the directory stream.
 <P>
 The format of the seekdir method is:
 
-<blockquote>seekdir (entry, position) </blockquote>
+<blockquote>seekdir ( entry, position ) ; </blockquote>
 
 <P>
 
@@ -435,7 +435,7 @@ Method SetApplicationType sets the file type of an image.
 <P>
 The format of the SetApplicationType method is:
 
-<blockquote>SetApplicationType (filename, magick,application) </blockquote>
+<blockquote>SetApplicationType ( filename, magick, application ) ; </blockquote>
 
 <P>
 
@@ -465,7 +465,7 @@ Specifies the type of the application.
 <P>
 The format of the telldir method is:
 
-<blockquote>telldir (entry) </blockquote>
+<blockquote>telldir ( entry ) ; </blockquote>
 
 <P>
 

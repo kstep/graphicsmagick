@@ -35,10 +35,21 @@ zoom - Methods to Resize an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-magnified_image= <STRONG>MagnifyImage</STRONG>(image)
+magnified_image= <STRONG>MagnifyImage</STRONG>( image );
 
 <P>
-Image* <STRONG>MinifyImage</STRONG>(Image*image)
+Image * <STRONG>MinifyImage</STRONG>( Image <CODE>*image</CODE> );
+
+<P>
+Image * <STRONG>SampleImage</STRONG>( const Image *image, const unsigned int columns, const unsigned int rows
+);
+
+<P>
+Image * <STRONG>ScaleImage</STRONG>( const Image *image, const unsigned int columns, const unsigned int rows
+);
+
+<P>
+Image * <STRONG>ZoomImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows );
 
 <P>
 <HR>
@@ -62,7 +73,7 @@ bilinear interpolation. The magnified image columns and rows become:
 <P>
 The format of the MagnifyImage method is:
 
-<blockquote>magnified_image=MagnifyImage (image) </blockquote>
+<blockquote>magnified_image=MagnifyImage ( image ) ; </blockquote>
 
 <P>
 
@@ -110,7 +121,7 @@ the scan.
 <P>
 The format of the MinifyImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *MinifyImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *MinifyImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -139,10 +150,8 @@ Image structure and returns a pointer to the new image.
 <P>
 The format of the SampleImage method is:
 
-<P>
-<PRE>    Image *SampleImage(const Image *image,const unsigned int columns,
-      const unsigned int rows)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -187,10 +196,8 @@ The scaling algorithm was suggested by <A HREF="mailto:rjohnson@shell.com">rjohn
 <P>
 The format of the ScaleImage method is:
 
-<P>
-<PRE>    Image *ScaleImage(const Image *image,const unsigned int columns,
-      const unsigned int rows)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -231,10 +238,8 @@ sharp.
 <P>
 The format of the ZoomImage method is:
 
-<P>
-<PRE>    Image *ZoomImage(Image *image,const unsigned int columns,
-      const unsigned int rows)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *ZoomImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:

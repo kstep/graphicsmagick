@@ -43,35 +43,42 @@ nt - Windows
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-int <STRONG>Exit</STRONG>(intstatus)
+int  <STRONG>Exit</STRONG>( int status );
 
 <P>
-int <STRONG>ImageFormatConflict</STRONG>(constchar*magick)
+int  <STRONG>ImageFormatConflict</STRONG>( const char <CODE>*magick</CODE> );
 
 <P>
-int <STRONG>IsWindows95</STRONG>()
+int  <STRONG>IsWindows95</STRONG>( );
 
 <P>
-int <STRONG>NTSystemCommand</STRONG>(constchar*command)
+int  <STRONG>NTSystemCommand</STRONG>( const char <CODE>*command</CODE> );
 
 <P>
-int <STRONG>NTTemporaryFilename</STRONG>(char*filename)
+int  <STRONG>NTTemporaryFilename</STRONG>( char <CODE>*filename</CODE> );
 
 <P>
-void <STRONG>closedir</STRONG>(DIR*entry)
+void  <STRONG>NTWarningHandler</STRONG>( const unsigned int warning, const char *message, const char
+<CODE>*qualifier</CODE> );
+
+<P>
+void  <STRONG>closedir</STRONG>( 
+<FONT SIZE=-1>DIR</FONT> <CODE>*entry</CODE> );
 
 <P>
 
-<FONT SIZE=-1>DIR*</FONT> <STRONG>opendir</STRONG>(char*path)
+<FONT SIZE=-1>DIR</FONT> * <STRONG>opendir</STRONG>( char <CODE>*path</CODE> );
 
 <P>
-<PRE> B&lt;readdir&gt;(entry)
+<PRE> B&lt;readdir&gt;( entry );
 </PRE>
 <P>
-void <STRONG>seekdir</STRONG>(DIR*entry,longposition)
+void  <STRONG>seekdir</STRONG>( 
+<FONT SIZE=-1>DIR</FONT> *entry, long position );
 
 <P>
-long <STRONG>telldir</STRONG>(DIR*entry)
+long  <STRONG>telldir</STRONG>( 
+<FONT SIZE=-1>DIR</FONT> <CODE>*entry</CODE> );
 
 <P>
 <HR>
@@ -86,7 +93,7 @@ Method closedir closes the named directory stream and frees the
 <P>
 The format of the closedir method is:
 
-<blockquote>void closedir (DIR *entry) </blockquote>
+<blockquote>void closedir ( DIR *entry ) ; </blockquote>
 
 <P>
 
@@ -108,7 +115,7 @@ Method Exit calls TerminateProcess for Win95.
 <P>
 The format of the Exit method is:
 
-<blockquote>int Exit (int status) </blockquote>
+<blockquote>int Exit ( int status ) ; </blockquote>
 
 <P>
 
@@ -131,7 +138,7 @@ Method ImageFormatConflict returns true if the image format conflicts with a log
 <P>
 The format of the ImageFormatConflict method is:
 
-<blockquote>int ImageFormatConflict (const char *magick) </blockquote>
+<blockquote>int ImageFormatConflict ( const char *magick ) ; </blockquote>
 
 <P>
 
@@ -157,7 +164,7 @@ Method IsWindows95 returns true if the system is Windows 95.
 <P>
 The format of the IsWindows95 method is:
 
-<blockquote>int IsWindows95 () </blockquote>
+<blockquote>int IsWindows95 ( ) ; </blockquote>
 
 <P>
 
@@ -179,7 +186,7 @@ an integer value representing the status of the terminating process.
 <P>
 The format of the NTSystemCommand method is:
 
-<blockquote>int NTSystemCommand (const char *command) </blockquote>
+<blockquote>int NTSystemCommand ( const char *command ) ; </blockquote>
 
 <P>
 
@@ -201,7 +208,7 @@ This string is the command to execute.
 <P>
 The format of the TemporaryFilename method is:
 
-<blockquote>int NTTemporaryFilename (char *filename) </blockquote>
+<blockquote>int NTTemporaryFilename ( char *filename ) ; </blockquote>
 
 <P>
 
@@ -222,10 +229,8 @@ Method NTWarningHandler displays a warning message.
 <P>
 The format of the NTWarningHandler method is:
 
-<P>
-<PRE>    void NTWarningHandler(const unsigned int warning,const char *message,
-      const char *qualifier)
-</PRE>
+<blockquote>void NTWarningHandler ( const unsigned int warning, const char *message, const char *qualifier ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -254,7 +259,7 @@ directory stream with it.
 <P>
 The format of the opendir method is:
 
-<blockquote>DIR *opendir (char *path) </blockquote>
+<blockquote>DIR *opendir ( char *path ) ; </blockquote>
 
 <P>
 
@@ -278,7 +283,7 @@ refers.
 <P>
 The format of the readdir
 
-<blockquote>readdir (entry) </blockquote>
+<blockquote>readdir ( entry ) ; </blockquote>
 
 <P>
 
@@ -301,7 +306,7 @@ Specifies a pointer to a
 <P>
 The format of the seekdir method is:
 
-<blockquote>void seekdir (DIR *entry, long position) </blockquote>
+<blockquote>void seekdir ( DIR *entry, long position ) ; </blockquote>
 
 <P>
 
@@ -328,7 +333,7 @@ specifies the position associated with the directory stream.
 <P>
 The format of the telldir method is:
 
-<blockquote>long telldir (DIR *entry) </blockquote>
+<blockquote>long telldir ( DIR *entry ) ; </blockquote>
 
 <P>
 

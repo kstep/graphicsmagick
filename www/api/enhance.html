@@ -36,22 +36,22 @@ enhance - Methods to Enhance an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-void <STRONG>ContrastImage</STRONG>(Image*image,constunsigned intsharpen)
+void  <STRONG>ContrastImage</STRONG>( Image *image, const unsigned int sharpen );
 
 <P>
-void <STRONG>EqualizeImage</STRONG>(Image*image)
+void  <STRONG>EqualizeImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-void <STRONG>GammaImage</STRONG>(Image*image,constchar*gamma)
+void  <STRONG>GammaImage</STRONG>( Image *image, const char <CODE>*gamma</CODE> );
 
 <P>
-void <STRONG>ModulateImage</STRONG>(Image*image,constchar*modulate)
+void  <STRONG>ModulateImage</STRONG>( Image *image, const char <CODE>*modulate</CODE> );
 
 <P>
-void <STRONG>NegateImage</STRONG>(Image*image,constunsigned intgrayscale)
+void  <STRONG>NegateImage</STRONG>( Image *image, const unsigned int grayscale );
 
 <P>
-void <STRONG>NormalizeImage</STRONG>(Image*image)
+void  <STRONG>NormalizeImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
 <HR>
@@ -66,7 +66,7 @@ and darker elements of the image.
 <P>
 The format of the ContrastImage method is:
 
-<blockquote>void ContrastImage (<A HREF="types/Image.html">Image</A> *image, const unsigned int sharpen) </blockquote>
+<blockquote>void ContrastImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int sharpen ) ; </blockquote>
 
 <P>
 
@@ -92,7 +92,7 @@ image.
 <P>
 The format of the EqualizeImage method is:
 
-<blockquote>void EqualizeImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>void EqualizeImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -113,7 +113,7 @@ Method GammaImage converts the reference image to gamma corrected colors.
 <P>
 The format of the GammaImage method is:
 
-<blockquote>void GammaImage (<A HREF="types/Image.html">Image</A> *image, const char *gamma) </blockquote>
+<blockquote>void GammaImage ( <A HREF="types/Image.html">Image</A> *image, const char *gamma ) ; </blockquote>
 
 <P>
 
@@ -141,7 +141,7 @@ image.
 <P>
 The format of the ModulateImage method is:
 
-<blockquote>void ModulateImage (<A HREF="types/Image.html">Image</A> *image, const char *modulate) </blockquote>
+<blockquote>void ModulateImage ( <A HREF="types/Image.html">Image</A> *image, const char *modulate ) ; </blockquote>
 
 <P>
 
@@ -170,7 +170,7 @@ option means that only grayscale values within the image are negated.
 <P>
 The format of the NegateImage method is:
 
-<blockquote>void NegateImage (<A HREF="types/Image.html">Image</A> *image, const unsigned int grayscale) </blockquote>
+<blockquote>void NegateImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int grayscale ) ; </blockquote>
 
 <P>
 
@@ -192,7 +192,7 @@ color values. This is a contrast enhancement technique.
 <P>
 The format of the NormalizeImage method is:
 
-<blockquote>void NormalizeImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>void NormalizeImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 

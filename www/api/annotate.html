@@ -34,10 +34,17 @@ annotate - Methods to Annotate an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-void <STRONG>AnnotateImage</STRONG>(Image*image,constAnnotateInfo*annotate_info)
+void  <STRONG>AnnotateImage</STRONG>( Image *image, const AnnotateInfo <CODE>*annotate_info</CODE> );
 
 <P>
-void <STRONG>DestroyAnnotateInfo</STRONG>(AnnotateInfo*annotate_info)
+AnnotateInfo * <STRONG>CloneAnnotateInfo</STRONG>( const ImageInfo *image_info, const AnnotateInfo
+<CODE>*annotate_info</CODE> );
+
+<P>
+void  <STRONG>DestroyAnnotateInfo</STRONG>( AnnotateInfo <CODE>*annotate_info</CODE> );
+
+<P>
+void  <STRONG>GetAnnotateInfo</STRONG>( const ImageInfo *image_info, AnnotateInfo <CODE>*annotate_info</CODE> );
 
 <P>
 <HR>
@@ -53,7 +60,7 @@ number by embedding special format characters.
 <P>
 The format of the AnnotateImage method is:
 
-<blockquote>void AnnotateImage (<A HREF="types/Image.html">Image</A> *image, const AnnotateInfo *annotate_info) </blockquote>
+<blockquote>void AnnotateImage ( <A HREF="types/Image.html">Image</A> *image, const AnnotateInfo *annotate_info ) ; </blockquote>
 
 <P>
 
@@ -80,10 +87,8 @@ Method CloneAnnotateInfo makes a duplicate of the given annotate info, or if ann
 <P>
 The format of the CloneAnnotateInfo method is:
 
-<P>
-<PRE>    AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
-      const AnnotateInfo *annotate_info)
-</PRE>
+<blockquote>AnnotateInfo *CloneAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const AnnotateInfo *annotate_info ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -114,7 +119,7 @@ AnnotateInfo structure.
 <P>
 The format of the DestroyAnnotateInfo method is:
 
-<blockquote>void DestroyAnnotateInfo (AnnotateInfo *annotate_info) </blockquote>
+<blockquote>void DestroyAnnotateInfo ( AnnotateInfo *annotate_info ) ; </blockquote>
 
 <P>
 
@@ -135,10 +140,8 @@ Method GetAnnotateInfo initializes the AnnotateInfo structure.
 <P>
 The format of the GetAnnotateInfo method is:
 
-<P>
-<PRE>    void GetAnnotateInfo(const ImageInfo *image_info,
-      AnnotateInfo *annotate_info)
-</PRE>
+<blockquote>void GetAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, AnnotateInfo *annotate_info ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:

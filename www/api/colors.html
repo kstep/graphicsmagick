@@ -36,22 +36,22 @@ colors - Methods to Count the Colors in an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-void <STRONG>CompressColormap</STRONG>(Image*image)
+void  <STRONG>CompressColormap</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-number_colors= <STRONG>GetNumberColors</STRONG>(image,file)
+number_colors= <STRONG>GetNumberColors</STRONG>( image, file );
 
 <P>
-status= <STRONG>IsMonochromeImage</STRONG>(image)
+status= <STRONG>IsMonochromeImage</STRONG>( image );
 
 <P>
-unsigned int <STRONG>IsPseudoClass</STRONG>(Image*image)
+unsigned int  <STRONG>IsPseudoClass</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-unsigned int <STRONG>QueryColorDatabase</STRONG>(constchar*target,ColorPacket*color)
+unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *target, ColorPacket <CODE>*color</CODE> );
 
 <P>
-unsigned int <STRONG>QueryColorName</STRONG>(constColorPacket*color,char*name)
+unsigned int  <STRONG>QueryColorName</STRONG>( const ColorPacket *color, char <CODE>*name</CODE> );
 
 <P>
 <HR>
@@ -66,7 +66,7 @@ and unused color entries.
 <P>
 The format of the CompressColormap method is:
 
-<blockquote>void CompressColormap (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>void CompressColormap ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -87,7 +87,7 @@ Method GetNumberColors returns the number of unique colors in an image.
 <P>
 The format of the GetNumberColors method is:
 
-<blockquote>number_colors=GetNumberColors (image, file) </blockquote>
+<blockquote>number_colors=GetNumberColors ( image, file ) ; </blockquote>
 
 <P>
 
@@ -139,7 +139,7 @@ demoted to PseudoClass.
 <P>
 The format of the IsMonochromeImage method is:
 
-<blockquote>status=IsMonochromeImage (image) </blockquote>
+<blockquote>status=IsMonochromeImage ( image ) ; </blockquote>
 
 <P>
 
@@ -167,7 +167,7 @@ or less, the image is demoted to PseudoClass.
 <P>
 The format of the IsPseudoClass method is:
 
-<blockquote>unsigned int IsPseudoClass (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote>unsigned int IsPseudoClass ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -196,7 +196,7 @@ Method QueryColorDatabase looks up a
 <P>
 The format of the QueryColorDatabase method is:
 
-<blockquote>unsigned int QueryColorDatabase (const char *target, <A HREF="types/ColorPacket.html">ColorPacket</A> *color) </blockquote>
+<blockquote>unsigned int QueryColorDatabase ( const char *target, <A HREF="types/ColorPacket.html">ColorPacket</A> *color ) ; </blockquote>
 
 <P>
 
@@ -233,7 +233,7 @@ Method QueryColorName returns the name of the color that is closest to the suppl
 <P>
 The format of the QueryColorName method is:
 
-<blockquote>unsigned int QueryColorName (const <A HREF="types/ColorPacket.html">ColorPacket</A> *color, char *name) </blockquote>
+<blockquote>unsigned int QueryColorName ( const <A HREF="types/ColorPacket.html">ColorPacket</A> *color, char *name ) ; </blockquote>
 
 <P>
 

@@ -51,55 +51,69 @@ effects - ImageMagick Image Effects Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-Image* <STRONG>AddNoiseImage</STRONG>(constImage*image,constNoiseTypenoise_type)
+Image * <STRONG>AddNoiseImage</STRONG>( const Image *image, const NoiseType noise_type );
 
 <P>
-Image* <STRONG>BlurImage</STRONG>(constImage*image,constdoublefactor)
+Image * <STRONG>BlurImage</STRONG>( const Image *image, const double factor );
 
 <P>
-Image* <STRONG>DespeckleImage</STRONG>(Image*image)
+void  <STRONG>ColorizeImage</STRONG>( Image *image, const char *opacity, const char <CODE>*pen_color</CODE> );
 
 <P>
-Image* <STRONG>EdgeImage</STRONG>(constImage*image,constdoublefactor)
+Image * <STRONG>DespeckleImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-Image* <STRONG>EmbossImage</STRONG>(constImage*image)
+Image * <STRONG>EdgeImage</STRONG>( const Image *image, const double factor );
 
 <P>
-Image* <STRONG>EnhanceImage</STRONG>(constImage*image)
+Image * <STRONG>EmbossImage</STRONG>( const Image <CODE>*image</CODE> );
 
 <P>
-Image* <STRONG>ImplodeImage</STRONG>(Image*image,constdoublefactor)
+Image * <STRONG>EnhanceImage</STRONG>( const Image <CODE>*image</CODE> );
 
 <P>
-Image* <STRONG>MorphImages</STRONG>(Image*images,constunsigned intnumber_frames)
+Image * <STRONG>ImplodeImage</STRONG>( Image *image, const double factor );
 
 <P>
-Image* <STRONG>OilPaintImage</STRONG>(Image*image,constunsigned intradius)
+Image * <STRONG>MorphImages</STRONG>( Image *images, const unsigned int number_frames );
 
 <P>
-Image* <STRONG>ReduceNoiseImage</STRONG>(constImage*image)
+Image * <STRONG>OilPaintImage</STRONG>( Image *image, const unsigned int radius );
 
 <P>
-Image* <STRONG>SharpenImage</STRONG>(constImage*image,constdoublefactor)
+unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment_info, int attenuate, int depth
+);
 
 <P>
-void <STRONG>SolarizeImage</STRONG>(Image*image,constdoublefactor)
+Image * <STRONG>ReduceNoiseImage</STRONG>( const Image <CODE>*image</CODE> );
 
 <P>
-Image* <STRONG>SpreadImage</STRONG>(Image*image,constunsigned intamount)
+Image * <STRONG>ShadeImage</STRONG>( Image *image, const unsigned int color_shading, double azimuth, double
+elevation );
 
 <P>
-Image* <STRONG>SteganoImage</STRONG>(Image*image,Image*watermark)
+Image * <STRONG>SharpenImage</STRONG>( const Image *image, const double factor );
 
 <P>
-Image* <STRONG>StereoImage</STRONG>(Image*left_image,constImage*right_image)
+void  <STRONG>SolarizeImage</STRONG>( Image *image, const double factor );
 
 <P>
-Image* <STRONG>SwirlImage</STRONG>(Image*image,doubledegrees)
+Image * <STRONG>SpreadImage</STRONG>( Image *image, const unsigned int amount );
 
 <P>
-void <STRONG>ThresholdImage</STRONG>(Image*image,constdoublethreshold)
+Image * <STRONG>SteganoImage</STRONG>( Image *image, Image <CODE>*watermark</CODE> );
+
+<P>
+Image * <STRONG>StereoImage</STRONG>( Image *left_image, const Image <CODE>*right_image</CODE> );
+
+<P>
+Image * <STRONG>SwirlImage</STRONG>( Image *image, double degrees );
+
+<P>
+void  <STRONG>ThresholdImage</STRONG>( Image *image, const double threshold );
+
+<P>
+Image * <STRONG>WaveImage</STRONG>( Image *image, const double amplitude, const double wavelength );
 
 <P>
 <HR>
@@ -115,7 +129,7 @@ structure and returns a pointer to the new image.
 <P>
 The format of the AddNoiseImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage (const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type ) ; </blockquote>
 
 <P>
 
@@ -162,7 +176,7 @@ the scan.
 <P>
 The format of the BlurImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *BlurImage (const <A HREF="types/Image.html">Image</A> *image, const double factor) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double factor ) ; </blockquote>
 
 <P>
 
@@ -195,10 +209,8 @@ the coloring is controlled with the opacity levels.
 <P>
 The format of the ColorizeImage method is:
 
-<P>
-<PRE>    void ColorizeImage(Image *image,const char *opacity,
-      const char *pen_color)
-</PRE>
+<blockquote>void ColorizeImage ( <A HREF="types/Image.html">Image</A> *image, const char *opacity, const char *pen_color ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -227,7 +239,7 @@ Method DespeckleImage creates a new image that is a copy of an existing one with
 <P>
 The format of the DespeckleImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage (<A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *DespeckleImage ( <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -269,7 +281,7 @@ the scan.
 <P>
 The format of the EdgeImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *EdgeImage (const <A HREF="types/Image.html">Image</A> *image, const double factor) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( const <A HREF="types/Image.html">Image</A> *image, const double factor ) ; </blockquote>
 
 <P>
 
@@ -316,7 +328,7 @@ the scan.
 <P>
 The format of the EmbossImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *EmbossImage (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -359,7 +371,7 @@ the scan.
 <P>
 The format of the EnhanceImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -389,7 +401,7 @@ pointer to the new image.
 <P>
 The format of the ImplodeImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage (<A HREF="types/Image.html">Image</A> *image, const double factor) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ImplodeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ) ; </blockquote>
 
 <P>
 
@@ -424,7 +436,7 @@ one image to the next.
 <P>
 The format of the MorphImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *MorphImages (<A HREF="types/Image.html">Image</A> *images, const unsigned int number_frames) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( <A HREF="types/Image.html">Image</A> *images, const unsigned int number_frames ) ; </blockquote>
 
 <P>
 
@@ -457,7 +469,7 @@ a circular neighborhood.
 <P>
 The format of the OilPaintImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *OilPaintImage (<A HREF="types/Image.html">Image</A> *image, const unsigned int radius) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *OilPaintImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int radius ) ; </blockquote>
 
 <P>
 
@@ -490,10 +502,8 @@ seeded before this method is called.
 <P>
 The format of the PlasmaImage method is:
 
-<P>
-<PRE>    unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
-      int attenuate,int depth)
-</PRE>
+<blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment_info, int attenuate, int depth ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -539,7 +549,7 @@ The principal function of noise peak elimination filter is to smooth the objects
 <P>
 The format of the ReduceNoiseImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage (const <A HREF="types/Image.html">Image</A> *image) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( const <A HREF="types/Image.html">Image</A> *image ) ; </blockquote>
 
 <P>
 
@@ -569,10 +579,8 @@ the new image.
 <P>
 The format of the ShadeImage method is:
 
-<P>
-<PRE>    Image *ShadeImage(Image *image,const unsigned int color_shading,
-      double azimuth,double elevation)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *ShadeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int color_shading, double azimuth, double elevation ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -625,7 +633,7 @@ the scan.
 <P>
 The format of the SharpenImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *SharpenImage (const <A HREF="types/Image.html">Image</A> *image, const double factor) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( const <A HREF="types/Image.html">Image</A> *image, const double factor ) ; </blockquote>
 
 <P>
 
@@ -658,7 +666,7 @@ photographic film to light during the development process.
 <P>
 The format of the SolarizeImage method is:
 
-<blockquote>void SolarizeImage (<A HREF="types/Image.html">Image</A> *image, const double factor) </blockquote>
+<blockquote>void SolarizeImage ( <A HREF="types/Image.html">Image</A> *image, const double factor ) ; </blockquote>
 
 <P>
 
@@ -685,7 +693,7 @@ for the new Image structure and returns a pointer to the new image.
 <P>
 The format of the SpreadImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *SpreadImage (<A HREF="types/Image.html">Image</A> *image, const unsigned int amount) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int amount ) ; </blockquote>
 
 <P>
 
@@ -717,7 +725,7 @@ Method SteganoImage hides a digital watermark within the image.
 <P>
 The format of the SteganoImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *SteganoImage (<A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark ) ; </blockquote>
 
 <P>
 
@@ -753,7 +761,7 @@ create a stereo effect.
 <P>
 The format of the StereoImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *StereoImage (<A HREF="types/Image.html">Image</A> *left_image, const <A HREF="types/Image.html">Image</A> *right_image) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *StereoImage ( <A HREF="types/Image.html">Image</A> *left_image, const <A HREF="types/Image.html">Image</A> *right_image ) ; </blockquote>
 
 <P>
 
@@ -787,7 +795,7 @@ new image.
 <P>
 The format of the SwirlImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *SwirlImage (<A HREF="types/Image.html">Image</A> *image, double degrees) </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *SwirlImage ( <A HREF="types/Image.html">Image</A> *image, double degrees ) ; </blockquote>
 
 <P>
 
@@ -818,7 +826,7 @@ Method ThresholdImage thresholds the reference image.
 <P>
 The format of the ThresholdImage method is:
 
-<blockquote>void ThresholdImage (<A HREF="types/Image.html">Image</A> *image, const double threshold) </blockquote>
+<blockquote>void ThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ) ; </blockquote>
 
 <P>
 
@@ -847,10 +855,8 @@ image.
 <P>
 The format of the WaveImage method is:
 
-<P>
-<PRE>    Image *WaveImage(Image *image,const double amplitude,
-      const double wavelength)
-</PRE>
+<blockquote><A HREF="types/Image.html">Image</A> *WaveImage ( <A HREF="types/Image.html">Image</A> *image, const double amplitude, const double wavelength ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:

@@ -38,7 +38,31 @@ gems - Graphic Gems - Graphic Support Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-Quantum <STRONG>GenerateNoise</STRONG>(constQuantumpixel,constNoiseTypenoise_type)
+Quantum  <STRONG>GenerateNoise</STRONG>( const Quantum pixel, const NoiseType noise_type );
+
+<P>
+void  <STRONG>HSLTransform</STRONG>( const double hue, const double saturation, const double luminosity,
+Quantum *red, Quantum *green, Quantum <CODE>*blue</CODE> );
+
+<P>
+void  <STRONG>Hull</STRONG>( const int x_offset, const int y_offset, const int polarity, const
+unsigned int columns, const unsigned int rows, Quantum *f, Quantum
+<CODE>*g</CODE> );
+
+<P>
+ColorPacket  <STRONG>InterpolateColor</STRONG>( Image *image, const double x_offset, const double y_offset );
+
+<P>
+void  <STRONG>Modulate</STRONG>( double percent_hue, double percent_saturation, double percent_brightness,
+Quantum *red, Quantum *green, Quantum <CODE>*blue</CODE> )blue );
+
+<P>
+void  <STRONG>TransformHSL</STRONG>( const Quantum red, const Quantum green, const Quantum blue, double *hue,
+double *saturation, double <CODE>*luminosity</CODE> );
+
+<P>
+void  <STRONG>Upsample</STRONG>( const unsigned int width, const unsigned int height, const unsigned int
+scaled_width, unsigned char <CODE>*pixels</CODE> );
 
 <P>
 <HR>
@@ -82,7 +106,7 @@ Method GenerateNoise adds noise to a pixel.
 <P>
 The format of the GenerateNoise method is:
 
-<blockquote>Quantum GenerateNoise (const Quantum pixel, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type) </blockquote>
+<blockquote>Quantum GenerateNoise ( const Quantum pixel, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type ) ; </blockquote>
 
 <P>
 
@@ -110,10 +134,8 @@ green, blue) triple.
 <P>
 The format of the HSLTransformImage method is:
 
-<P>
-<PRE>    void HSLTransform(const double hue,const double saturation,
-      const double luminosity,Quantum *red,Quantum *green,Quantum *blue)
-</PRE>
+<blockquote>void HSLTransform ( const double hue, const double saturation, const double luminosity, Quantum *red, Quantum *green, Quantum *blue ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -143,10 +165,8 @@ Method Hull implements the eight hull algorithm described in Applied Optics, Vol
 <P>
 The format of the Hull method is:
 
-<P>
-<PRE>    void Hull(const int x_offset,const int y_offset,const int polarity,
-      const unsigned int columns,const unsigned int rows,Quantum *f,Quantum *g)
-</PRE>
+<blockquote>void Hull ( const int x_offset, const int y_offset, const int polarity, const unsigned int columns, const unsigned int rows, Quantum *f, Quantum *g ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -181,10 +201,8 @@ it's neighbors.
 <P>
 The format of the InterpolateColor method is:
 
-<P>
-<PRE>    ColorPacket InterpolateColor(Image *image,const double x_offset,
-      const double y_offset)
-</PRE>
+<blockquote><A HREF="types/ColorPacket.html">ColorPacket</A> InterpolateColor ( <A HREF="types/Image.html">Image</A> *image, const double x_offset, const double y_offset ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -210,11 +228,8 @@ Method Modulate modulates the hue, saturation, and brightness of an image.
 <P>
 The format of the ModulateImage method is:
 
-<P>
-<PRE>    void Modulate(double percent_hue,double percent_saturation,
-      double percent_brightness,Quantum *red,Quantum *green,Quantum *blue)
-      blue)
-</PRE>
+<blockquote>void Modulate ( double percent_hue, double percent_saturation, double percent_brightness, Quantum *red, Quantum *green, Quantum *blue ) blue ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -243,10 +258,8 @@ luminosity) triple.
 <P>
 The format of the TransformHSL method is:
 
-<P>
-<PRE>    void TransformHSL(const Quantum red,const Quantum green,
-      const Quantum blue,double *hue,double *saturation,double *luminosity)
-</PRE>
+<blockquote>void TransformHSL ( const Quantum red, const Quantum green, const Quantum blue, double *hue, double *saturation, double *luminosity ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
@@ -275,10 +288,8 @@ Method Upsample doubles the size of the image.
 <P>
 The format of the UpSample method is:
 
-<P>
-<PRE>    void Upsample(const unsigned int width,const unsigned int height,
-      const unsigned int scaled_width,unsigned char *pixels)
-</PRE>
+<blockquote>void Upsample ( const unsigned int width, const unsigned int height, const unsigned int scaled_width, unsigned char *pixels ) ; </blockquote>
+
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
