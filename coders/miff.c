@@ -1166,8 +1166,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 #endif
 
   char
-    buffer[MaxTextExtent],
-    color[MaxTextExtent];
+    buffer[MaxTextExtent];
 
   CompressionType
     compression;
