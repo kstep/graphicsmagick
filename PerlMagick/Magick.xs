@@ -4145,7 +4145,7 @@ Mogrify(ref,...)
             (void) QueryColorDatabase(argument_list[0].string_reference,
               &target);
           if (!attribute_flag[1])
-            argument_list[1].string_reference="100";
+            argument_list[1].string_reference=AllocateString("100");
           image=ColorizeImage(image,argument_list[1].string_reference,target,
             &exception);
           break;
@@ -4222,7 +4222,7 @@ Mogrify(ref,...)
           if (attribute_flag[0])
             image->fuzz=argument_list[0].double_reference;
           attribute_flag[0]++;
-          argument_list[0].string_reference="0x0";
+          argument_list[0].string_reference=AllocateString("0x0");
         }
         case 8:  /* Crop */
         {
@@ -5030,7 +5030,7 @@ Mogrify(ref,...)
                     argument_list[1].double_reference,
                     argument_list[2].double_reference,
                     argument_list[3].double_reference);
-                  argument_list[0].string_reference=message;
+                  argument_list[0].string_reference=AllocateString(message);
                 }
             }
           GammaImage(image,argument_list[0].string_reference);
@@ -5104,7 +5104,7 @@ Mogrify(ref,...)
                 argument_list[2].double_reference,
                 argument_list[3].double_reference);
               if (!attribute_flag[0])
-                argument_list[0].string_reference=message;
+                argument_list[0].string_reference=AllocateString(message);
             }
           ModulateImage(image,argument_list[0].string_reference);
           break;
@@ -5409,7 +5409,7 @@ Mogrify(ref,...)
           if (!attribute_flag[0])
             argument_list[0].string_reference=(char *) NULL;
           if (!attribute_flag[1])
-            argument_list[1].string_reference=(char *) NULL;
+            argument_list[1].string_reference=AllocateString("ICM");
           (void) ProfileImage(image,argument_list[1].string_reference,
             argument_list[0].string_reference);
         }
