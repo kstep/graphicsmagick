@@ -1052,7 +1052,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
+          exception);
+        if (status == False)
           break;
       }
   } while (c != EOF);

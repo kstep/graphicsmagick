@@ -208,7 +208,9 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
+          exception);
+        if (status == False)
           break;
       }
   } while ((width != (unsigned long) ~0) && (height != (unsigned long) ~0));
@@ -365,7 +367,8 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(MaxRGB-(image->matte ? p->opacity : OpaqueOpacity));
+        *q++=ScaleQuantumToChar(
+          MaxRGB-(image->matte ? p->opacity : OpaqueOpacity));
         *q++=ScaleQuantumToChar(p->red);
         *q++=ScaleQuantumToChar(p->green);
         *q++=ScaleQuantumToChar(p->blue);
@@ -381,7 +384,9 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+    status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
+      &image->exception);
+    if (status == False);
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)

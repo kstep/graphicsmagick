@@ -266,8 +266,12 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-              break;
+            {
+              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                exception);
+              if (status == False)
+                break;
+            }
         }
         break;
       }
@@ -288,8 +292,12 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-              break;
+            {
+              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                exception);
+              if (status == False)
+                break;
+            }
         }
         break;
       }
@@ -316,8 +324,12 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-              break;
+            {
+              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                exception);
+              if (status == False)
+                break;
+            }
         }
         break;
       }
@@ -342,8 +354,12 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-              break;
+            {
+              status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                exception);
+              if (status == False)
+                break;
+            }
         }
         break;
       }
@@ -371,7 +387,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
+          exception);
+        if (status == False)
           break;
       }
   } while (tim_info.id == 0x00000010);

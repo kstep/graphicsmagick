@@ -877,8 +877,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-                break;
+              {
+                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                  exception);
+                if (status == False)
+                  break;
+              }
         }
         break;
       }
@@ -915,8 +919,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-                break;
+              {
+                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                  exception);
+                if (status == False)
+                  break;
+              }
         }
         break;
       }
@@ -947,8 +955,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-                break;
+              {
+                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                  exception);
+                if (status == False)
+                  break;
+              }
         }
         break;
       }
@@ -1009,8 +1021,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-                break;
+              {
+                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                  exception);
+                if (status == False)
+                  break;
+              }
         }
         break;
       }
@@ -1037,8 +1053,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-                break;
+              {
+                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                  exception);
+                if (status == False)
+                  break;
+              }
         }
         break;
       }
@@ -1047,8 +1067,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert bitfield encoded DirectColor scanline.
         */
-        if (bmp_info.compression != BI_RGB &&
-            bmp_info.compression != BI_BITFIELDS)
+        if ((bmp_info.compression != BI_RGB) &&
+            (bmp_info.compression != BI_BITFIELDS))
           ThrowReaderException(CorruptImageError,
             "Compression mode != 0 or 3 in 32-bit BMP image file",image)
         bytes_per_line=4*(image->columns);
@@ -1092,8 +1112,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
-                break;
+              {
+                status=MagickMonitor(LoadImageText,image->rows-y-1,image->rows,
+                  exception);
+                if (status == False)
+                  break;
+              }
         }
         break;
       }
@@ -1142,7 +1166,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
+          exception);
+        if (status == False)
           break;
       }
   } while (IsBMP(magick,2));
@@ -1622,7 +1648,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+    status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
+      &image->exception);
+    if (status == False);
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)
