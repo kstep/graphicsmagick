@@ -105,7 +105,7 @@ BOOL CIMDisplayDoc::DoReadImage( void )
     // Read the image and handle any exceptions
     try
     {
-	m_pImage->read(m_szFile.GetBuffer(MAX_PATH+1));
+	m_pImage.read(m_szFile.GetBuffer(MAX_PATH+1));
     }
 
     // Image may still be usable if there is a warning

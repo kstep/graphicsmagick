@@ -61,7 +61,7 @@ END_MESSAGE_MAP()
 CIMDisplayView::CIMDisplayView()
   : mOffscreenDC( NULL ),
     mViewDirty( true ),
-    mUndoImage( )
+    mUndoImage( Image() )
 {
 	// setup the CRectTracker styles
 	//		I want a simple dotted line, with resize handles outside
@@ -616,7 +616,7 @@ void CIMDisplayView::SetViewSize()
     CSize sizeTotal;
     CIMDisplayDoc* pDoc = GetDocument();
     ASSERT_VALID(pDoc);
-    if ( pDoc->GetImage() ) {
+    if ( pDoc->GetImage().isValid() ) {
 	sizeTotal.cx = pDoc->GetImage().columns();
 	sizeTotal.cy = pDoc->GetImage().rows();
     } else {

@@ -41,7 +41,7 @@ public:
 
 	// these are the custom functions and vars we've added!
 	Image&	GetImage( void )	    { return m_pImage; }
-	void	SetImage( Image &inImage )  { m_pImage = inImage }
+	void	SetImage( Image &inImage )  { m_pImage = inImage; }
 
 	BOOL	DoReadImage( void );
 
