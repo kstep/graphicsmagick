@@ -781,7 +781,7 @@ extern Export void
   Register8BIMImage(void),
   RegisterAVSImage(void),
   RegisterBIEImage(void),
-  RegisterCacheImage(void),
+  RegisterCACHEImage(void),
   RegisterBMPImage(void),
   RegisterBMP24Image(void),
   RegisterCACHEImage(void),

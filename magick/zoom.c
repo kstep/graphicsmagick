@@ -1318,6 +1318,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       support=0.5;
       scale_factor=1.0;
     }
+  support+=1.0e-7;
   for (x=0; x < (int) destination->columns; x++)
   {
     density=0.0;
@@ -1425,6 +1426,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       support=0.5;
       scale_factor=1.0;
     }
+  support+=1.0e-7;
   for (y=0; y < (int) destination->rows; y++)
   {
     density=0.0;

@@ -12,7 +12,7 @@
 /* Location of coder modules */
 #undef CoderModuleDirectory
 
-/* Define directory where ImageMagick/delegates.h lives. */
+/* Define directory where ImageMagick/delegates.mgk lives. */
 #undef DelegatePath
 
 /* Define if you have the <dirent.h> header file. */

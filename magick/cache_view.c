@@ -59,7 +59,7 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "cache.h"
+#include "stash.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -4723,7 +4723,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       if (undo_image != (Image *) NULL)
         {
           /*
-            Ensure the undo cache has enough memory available.
+            Ensure the undo stash.has enough memory available.
           */
           previous_image=undo_image;
           while (previous_image != (Image *) NULL)

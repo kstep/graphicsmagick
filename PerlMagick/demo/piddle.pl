@@ -33,19 +33,14 @@ $image->Draw(primitve=>'bezier',points=>'20,20, 100,50, 50,100, 160,160',
 #
 $image->Draw(primitive=>'line',points=>"10,200 20,190",pen=>red);
 #
-# Draw circle.
+# Draw arc within a circle.
 #
-$image->Draw(primitive=>'fillcircle',points=>"165,70 200,70",pen=>yellow);
-$image->Draw(primitive=>'circle',points=>"165,70 200,70",pen=>black,
+$image->Draw(primitive=>'fillcircle',points=>"160,70 200,70",pen=>yellow);
+$image->Draw(primitve=>'fillArc',points=>'120,30 200,100 45,90',pen=>blue);
+$image->Draw(primitve=>'Arc',points=>'120,30 200,100 45,90',pen=>navy,
   linewidth=>4);
-#
-# Draw Arc.
-#
-$image->Draw(primitve=>'line',points=>'165,65 165,35',pen=>blue);
-$image->Draw(primitve=>'line',points=>'165,65 190,45',pen=>blue);
-$image->Set(fuzz=>80);
-$image->Draw(primitive=>'color',points=>'170,55',pen=>blue,method=>'floodfill');
-$image->Set(fuzz=>0);
+$image->Draw(primitive=>'circle',points=>"160,70 200,70",pen=>black,
+  linewidth=>4);
 #
 # Draw pentogram.
 #

@@ -44,11 +44,11 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>DrawInfo * <STRONG>CloneDrawInfo</STRONG>( const ImageInfo *image_info, const DrawInfo *draw_info );</P>
-<P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const PixelPacket *target, Image *tile, const int x_offset, const int y_offset, const PaintMethod method );</P>
+<P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const PixelPacket target, Image *tile, const int x_offset, const int y_offset, const PaintMethod method );</P>
 <P>void  <STRONG>DestroyDrawInfo</STRONG>( DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>DrawImage</STRONG>( Image *image, const DrawInfo *draw_info );</P>
 <P>void  <STRONG>GetDrawInfo</STRONG>( const ImageInfo *image_info, DrawInfo *draw_info );</P>
-<P>unsigned int  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket *target, const unsigned int matte, const int x_offset, const int y_offset, const PaintMethod method );</P>
+<P>unsigned int  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket target, const unsigned int matte, const int x_offset, const int y_offset, const PaintMethod method );</P>
 <P>unsigned int  <STRONG>OpaqueImage</STRONG>( Image *image, const PixelPacket target, const PixelPacket pen_color );</P>
 <P>unsigned int  <STRONG>TransparentImage</STRONG>( Image *image, const PixelPacket target );</P>
 <P>
@@ -82,7 +82,7 @@ a structure of type DrawInfo.
 <H2><A NAME="colorfloodfillimage">ColorFloodfillImage</A></H2>
 <P>Method ColorFloodfillImage floodfills the designated area with a color.  The floodfill algorithm is strongly based on a similar algorithm in ``Graphics Gems'' by Paul Heckbert.</P>
 <P>The format of the ColorFloodfillImage method is:</P>
-<blockquote>unsigned int ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *target, <A HREF="types/Image.html">Image</A> *tile, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
+<blockquote>unsigned int ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, <A HREF="types/Image.html">Image</A> *tile, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -152,7 +152,7 @@ Specifies a pointer to a DrawInfo structure.
 <H2><A NAME="mattefloodfillimage">MatteFloodfillImage</A></H2>
 <P>Method MatteFloodfillImage floodfills the designated area with a matte value.  The floodfill algorithm is strongly based on a similar algorithm in ``Graphics Gems'' by Paul Heckbert.</P>
 <P>The format of the MatteFloodfillImage method is:</P>
-<blockquote>unsigned int MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *target, const unsigned int matte, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
+<blockquote>unsigned int MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const unsigned int matte, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
