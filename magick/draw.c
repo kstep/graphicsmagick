@@ -61,7 +61,6 @@
 #define BezierQuantum  200
 #define MatteMatch(color,target,delta) \
   (ColorMatch(color,target,delta) && ((color).opacity == (target).opacity))
-#define MaxDashPatterns  256
 #define MaxStacksize  (1 << 15)
 #define Push(up,left,right,delta) \
   if ((s < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
@@ -191,13 +190,17 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     cloned_info->primitive=AllocateString(draw_info->primitive);
   if (draw_info->dash_pattern != (unsigned int *) NULL)
     {
+      register int
+        x;
+
+      for (x=0; draw_info->dash_pattern[x]; x++);
       cloned_info->dash_pattern=(unsigned int *)
-        AcquireMemory(MaxDashPatterns*sizeof(unsigned int));
+        AcquireMemory(x*sizeof(unsigned int));
       if (cloned_info->dash_pattern == (unsigned int *) NULL)
         MagickError(ResourceLimitError,"Unable to clone dash pattern",
           "Memory allocation failed");
       memcpy(cloned_info->dash_pattern,draw_info->dash_pattern,
-        MaxDashPatterns*sizeof(unsigned int));
+        x*sizeof(unsigned int));
     }
   if (draw_info->font != (char *) NULL)
     cloned_info->font=AllocateString(draw_info->font);
@@ -1059,15 +1062,22 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             if (IsGeometry(q))
               {
+                char
+                  *r;
+
+                r=q;
+                for (x=0; IsGeometry(r); x++)
+                  graphic_context[n]->dash_pattern[x]=
+                    (unsigned int) strtod(r,&r);
                 graphic_context[n]->dash_pattern=(unsigned int *)
-                  AcquireMemory(MaxDashPatterns*sizeof(unsigned int));
+                  AcquireMemory((x+1)*sizeof(unsigned int));
                 if (graphic_context[n]->dash_pattern == (unsigned int *) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitWarning,
                       "Unable to draw image","Memory allocation failed");
                     break;
                   }
-                for (x=0; IsGeometry(q) && (x < (MaxDashPatterns-1)); x++)
+                for (x=0; IsGeometry(q); x++)
                   graphic_context[n]->dash_pattern[x]=
                     (unsigned int) strtod(q,&q);
                 graphic_context[n]->dash_pattern[x]=0;
@@ -1770,7 +1780,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   fill=(primitive_info->method == FillToBorderMethod) ||
     (primitive_info->method == FloodfillMethod);
   fill_color=draw_info->fill;
-  mid=draw_info->linewidth/2.0;
+  mid=AffineExpansion(&draw_info->affine)*draw_info->linewidth/2.0;
   stroke_color=draw_info->stroke;
   bounds=polygon_info->edges[0].bounds;
   for (i=1; i < polygon_info->number_edges; i++)
@@ -2334,7 +2344,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       if (count != 2)
         resolution.y=resolution.x;
     }
-  mid=(resolution.x/72.0)*clone_info->linewidth/2.0;
+  mid=(resolution.x/72.0)*ffineExpansion(&clone_info->affine)*
+    clone_info->linewidth/2.0;
   if (polygon_info != (PolygonInfo *) NULL)
     {
       bounds=polygon_info->edges[0].bounds;
