@@ -102,7 +102,7 @@
 %    -modulate value      vary the brightness, saturation and hue
 %    -monochrome          transform image to black and white
 %    -morph value         morph an image sequence
-%    -negate              apply color inversion to image
+%    -negate              replace every pixel with its complementary color 
 %    -noise               add or reduce noise in an image
 %    -normalize           transform image to span the full range of colors
 %    -opaque color        change this color to the pen color
@@ -292,7 +292,7 @@ static void Usage(const char *client_name)
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-morph value         morph an image sequence",
-      "-negate              apply color inversion to image",
+      "-negate              replace every pixel with its complementary color ",
       "-noise               add or reduce noise in an image",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the pen color",

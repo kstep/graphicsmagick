@@ -458,7 +458,7 @@ static unsigned int Classify(Image *image,short **extrema,
   if (squares == (unsigned int *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-	(char *) NULL);
+        (char *) NULL);
       return(False);
     }
   squares+=MaxRGB;
@@ -472,7 +472,7 @@ static unsigned int Classify(Image *image,short **extrema,
   if (colormap == (ColorPacket *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-	(char *) NULL);
+        (char *) NULL);
       return(False);
     }
   image->matte=False;
@@ -1361,7 +1361,15 @@ static void ZeroCrossHistogram(double *second_derivative,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SegmentImage analyzes the colors within a reference image and
+%  Method SegmentImage segment an image by analyzing the histograms of the
+%  color components and identifying units that are homogeneous with the fuzzy
+%  c-means technique.
+%
+%  Specify Icluster threshold as the number of pixels in each cluster must
+%  exceed the the cluster threshold to be considered valid.  Smoothing
+%  threshold eliminates noise in the second derivative of the histogram.
+%  As the value is increased, you can expect a smoother second derivative.
+%  The default is 1.5.
 %
 %  The format of the SegmentImage routine is:
 %

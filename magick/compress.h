@@ -15,6 +15,7 @@ extern Export unsigned int
   HuffmanEncodeImage(ImageInfo *,Image *),
   Huffman2DEncodeImage(ImageInfo *,Image *),
   LZWEncodeImage(FILE *,unsigned char *,const unsigned int),
+  PackbitsDecodeImage(Image *,int),
   PackbitsEncodeImage(FILE *,unsigned char *,unsigned int),
   PCDDecodeImage(Image *,unsigned char *,unsigned char *,unsigned char *),
   PICTEncodeImage(Image *,unsigned char *,unsigned char *),
@@ -29,6 +30,5 @@ extern Export void
   Ascii85Encode(const unsigned int,FILE *),
   Ascii85Flush(FILE *),
   Ascii85Initialize(void),
-  PackbitsDecodeImage(Image *,int),
   SetRunlengthEncoder(RunlengthPacket *),
   SetRunlengthPackets(Image *,unsigned long);

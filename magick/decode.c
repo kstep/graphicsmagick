@@ -5030,11 +5030,11 @@ static boolean IPTCProfileHandler(j_decompress_ptr jpeg_info)
   if (image->iptc_profile.length != 0)
     image->iptc_profile.info=(unsigned char *) ReallocateMemory((char *)
       image->iptc_profile.info,(unsigned int) (image->iptc_profile.length+
-      length)*sizeof(unsigned char));
+      length+2)*sizeof(unsigned char));
   else
     {
       image->iptc_profile.info=(unsigned char *)
-        AllocateMemory((unsigned int) length*sizeof(unsigned char));
+        AllocateMemory((unsigned int) (length+2)*sizeof(unsigned char));
       if (image->iptc_profile.info != (unsigned char *) NULL)
         image->iptc_profile.length=0;
     }
@@ -11094,7 +11094,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
       for (i=0; i < number_layers; i++)
       {
         /*
-          Convert pixels to Runlength encoded.
+          Allocate layered image.
         */
         layer_info[i].image=AllocateImage(image_info);
         if (layer_info[i].image == (Image *) NULL)
@@ -11108,13 +11108,27 @@ Image *ReadPSDImage(const ImageInfo *image_info)
         layer_info[i].image->class=image->class;
         if (psd_header.mode != CMYKMode)
           layer_info[i].image->matte=layer_info[i].channels >= 4;
-        layer_info[i].image->colormap=image->colormap;
+        if (image->colormap != (ColorPacket *) NULL)
+          {
+            /*
+              Convert pixels to Runlength encoded.
+            */
+            layer_info[i].image->colormap=(ColorPacket *)
+              AllocateMemory(image->colors*sizeof(ColorPacket));
+            if (layer_info[i].image->colormap == (ColorPacket *) NULL)
+              {
+                for (j=0; j < i; j++)
+                  DestroyImage(layer_info[j].image);
+                PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+                  image);
+              }
+          }
         layer_info[i].image->columns=layer_info[i].width;
         layer_info[i].image->rows=layer_info[i].height;
         layer_info[i].image->packets=
           layer_info[i].image->columns*layer_info[i].image->rows;
-        layer_info[i].image->pixels=(RunlengthPacket *)
-          AllocateMemory(layer_info[i].image->packets*sizeof(RunlengthPacket));
+        layer_info[i].image->pixels=(RunlengthPacket *) AllocateMemory(
+          (layer_info[i].image->packets+256)*sizeof(RunlengthPacket));
         if (layer_info[i].image->pixels == (RunlengthPacket *) NULL)
           {
             for (j=0; j < i; j++)
@@ -11123,6 +11137,9 @@ Image *ReadPSDImage(const ImageInfo *image_info)
               image);
           }
         SetImage(layer_info[i].image);
+        /*
+          Convert pixels to Runlength encoded packets.
+        */
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
           compression=MSBFirstReadShort(layer_info[i].image->file);
@@ -11130,7 +11147,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
             {
               for (k=0; k < (int) layer_info[i].image->rows; k++)
                 (void) MSBFirstReadShort(image->file);
-              PackbitsDecodeImage(layer_info[i].image,
+              (void) PackbitsDecodeImage(layer_info[i].image,
                 layer_info[i].channel_info[j].type);
             }
           else
@@ -11170,9 +11187,9 @@ Image *ReadPSDImage(const ImageInfo *image_info)
                 q++;
               }
             }
-          if (layer_info[i].image->class == PseudoClass)
-            SyncImage(layer_info[i].image);
         }
+        if (layer_info[i].image->class == PseudoClass)
+          SyncImage(layer_info[i].image);
         CondenseImage(layer_info[i].image);
         if (layer_info[i].opacity != Opaque)
           {
@@ -11213,7 +11230,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
   compression=MSBFirstReadShort(image->file);
   image->packets=image->columns*image->rows;
   image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
+    AllocateMemory((image->packets+256)*sizeof(RunlengthPacket));
   if (image->pixels == (RunlengthPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   SetImage(image);
@@ -11225,7 +11242,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
       for (i=0; i < (int) (image->rows*psd_header.channels); i++)
         (void) MSBFirstReadShort(image->file);
       for (i=0; i < (int) psd_header.channels; i++)
-        PackbitsDecodeImage(image,i);
+        (void) PackbitsDecodeImage(image,i);
     }
   else
     {
@@ -11285,7 +11302,6 @@ Image *ReadPSDImage(const ImageInfo *image_info)
       }
       TransformRGBImage(image,CMYKColorspace);
     }
-  CondenseImage(image);
   for (i=0; i < number_layers; i++)
   {
     /*
@@ -11299,6 +11315,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
   image->matte=False;
   if (psd_header.mode != CMYKMode)
    image->matte=psd_header.channels >= 4;
+  CondenseImage(image);
   return(image);
 }
 

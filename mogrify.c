@@ -97,7 +97,7 @@
 %    -matte               store matte channel if the image has one
 %    -modulate value      vary the brightness, saturation, and hue
 %    -monochrome          transform image to black and white
-%    -negate              apply color inversion to image
+%    -negate              replace every pixel with its complementary color 
 %    -noise               add or reduce noise in an image
 %    -normalize           transform image to span the full range of colors
 %    -opaque color        change this color to the pen color
@@ -218,7 +218,7 @@ static void Usage(const char *client_name)
       "-matte               store matte channel if the image has one",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
-      "-negate              apply color inversion to image",
+      "-negate              replace every pixel with its complementary color ",
       "-noise               add or reduce noise in an image.",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the pen color",

@@ -197,7 +197,7 @@ extern "C" {
   SetWarningHandler(MACWarningHandler)
 #endif
 #if defined(WIN32)
-#define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
+#define ApplicationDefaults  "c:\\ImageMagick\\"
 #define EditorOptions ""
 #undef isatty
 #define isatty(filedes)  1
@@ -205,7 +205,7 @@ extern "C" {
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
 #if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "c:\ImageMagick\rgb.txt"
+#define RGBColorDatabase  "c:\\ImageMagick\\rgb.txt"
 #endif
 #define SetNotifyHandlers \
   SetErrorHandler(NTErrorHandler); \

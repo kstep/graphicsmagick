@@ -94,7 +94,7 @@
 %    -map type          display image using this Standard Colormap
 %    -matte             store matte channel if the image has one
 %    -monochrome        transform image to black and white
-%    -negate            apply color inversion to image
+%    -negate            replace every pixel with its complementary color 
 %    -page geometry     size and location of an image canvas
 %    -quality value     JPEG/MIFF/PNG compression level
 %    -raise value       lighten/darken image edges to create a 3-D effect
@@ -206,7 +206,7 @@ static void Usage(const char *client_name)
       "-map type          display image using this Standard Colormap",
       "-matte             store matte channel if the image has one",
       "-monochrome        transform image to black and white",
-      "-negate            apply color inversion to image",
+      "-negate            replace every pixel with its complementary color ",
       "-page geometry     size and location of an image canvas",
       "-quality value     JPEG/MIFF/PNG compression level",
       "-raise value       lighten/darken image edges to create a 3-D effect",

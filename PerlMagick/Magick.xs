@@ -4572,26 +4572,12 @@ Mogrify(ref,...)
         }
         case 58:  /* Charcoal */
         {
-          if (first)
-            {
-              package_info=ClonePackageInfo(info);
-              if (!attribute_flag[0])
-                argument_list[0].string_reference="50";
-              GetQuantizeInfo(&package_info->quantize_info);
-             if (info)
-               package_info->quantize_info.dither=info->quantize_info.dither;
-             package_info->quantize_info.colorspace=GRAYColorspace;
-             commands[0]=client_name;
-             commands[1]="-edge";
-             commands[2]=argument_list[0].string_reference;
-             commands[3]="-blur";
-             commands[4]=argument_list[0].string_reference;
-             commands[5]="-normalize";
-             commands[6]="-negate";
-           }
-          QuantizeImage(&package_info->quantize_info,image);
-          SyncImage(image);
-          MogrifyImage(&info->image_info,7,commands,&image);
+          if (!attribute_flag[0])
+            argument_list[0].string_reference="50";
+          commands[0]=client_name;
+          commands[1]="-charcoal";
+          commands[2]=argument_list[0].string_reference;
+          MogrifyImage(&info->image_info,3,commands,&image);
           if (next != image)
             next=NULL;  /* 'cause it's been blown away */
           break;

@@ -77,7 +77,7 @@
 %    -interlace type     None, Line, Plane, or Partition
 %    -label name         assign a label to an image
 %    -monochrome         transform image to black and white
-%    -negate             apply color inversion to image
+%    -negate             replace every pixel with its complementary color 
 %    -page geometry      size and location of an image canvas
 %    -ping               efficiently determine image width and height
 %    -pointsize value    pointsize of Postscript font
@@ -153,7 +153,7 @@ static void Usage(const char *client_name)
       "-interlace type     None, Line, Plane, or Partition",
       "-label name         assign a label to an image",
       "-monochrome         transform image to black and white",
-      "-negate             apply color inversion to image",
+      "-negate             replace every pixel with its complementary color ",
       "-page geometry      size and location of an image canvas",
       "-ping               efficiently determine image width and height",
       "-pointsize value    pointsize of Postscript font",

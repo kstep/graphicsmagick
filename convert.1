@@ -840,7 +840,7 @@ vary the brightness, saturation, and hue of an image.
 Specify the percent change in brightness, the color saturation, and the color
 hue separated by commas.  For example, to increase the color brightness
 by 20% and decrease the color saturation by 10% and leave the hue unchanged,
-use: \fB-modulate 20/-10\fP.
+use: \fB-modulate 20,-10\fP.
 .TP
 .B "-monochrome"
 transform the image to black and white.
@@ -852,7 +852,8 @@ Both the image pixels and size are linearly interpolated to give the
 appearance of a meta-morphosis from one image to the next.
 .TP
 .B "-negate"
-apply color inversion to image.
+replace every pixel with its complementary color (white becomes black, yellow
+becomes blue, etc.).
 
 The red, green, and blue intensities of an image are negated.  Use
 \fB+negate\fP to only negate the grayscale pixels of the image.

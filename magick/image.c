@@ -961,8 +961,8 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
   assert(chop_info != (RectangleInfo *) NULL);
   if (((chop_info->x+(int) chop_info->width) < 0) ||
       ((chop_info->y+(int) chop_info->height) < 0) ||
-      (chop_info->x > (int) image->columns) ||
-      (chop_info->y > (int) image->rows))
+      (chop_info->x >= (int) image->columns) ||
+      (chop_info->y >= (int) image->rows))
     {
       MagickWarning(OptionWarning,"Unable to chop image",
         "geometry does not contain image");
@@ -2804,7 +2804,7 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     C y c l e I m a g e                                                     %
+%     C y c l e C o l o r m a p I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5942,8 +5942,9 @@ Export Image *MinifyImage(Image *image)
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o modulate: A character string indicating the percent change in hue,
-%      saturation, and brightness.
+%    o modulate: A character string indicating the percent change in brightness,
+%      saturation, and hue in floating point notation separated by commas
+%      (e.g. 10.1,0.0,3.1). 
 %
 %
 */

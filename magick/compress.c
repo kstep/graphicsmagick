@@ -1960,9 +1960,12 @@ Export unsigned int LZWEncodeImage(FILE *file,unsigned char *pixels,
 %
 %  The format of the PackbitsDecodeImage routine is:
 %
-%      PackbitsDecodeImage(image,channel)
+%      status=PackbitsDecodeImage(image,channel)
 %
 %  A description of each parameter follows:
+%
+%    o status: Method PackbitsDecodeImage return True if the image is
+%      decoded.  False is returned if there is an error occurs.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -1971,7 +1974,7 @@ Export unsigned int LZWEncodeImage(FILE *file,unsigned char *pixels,
 %
 %
 */
-Export void PackbitsDecodeImage(Image *image,int channel)
+Export unsigned int PackbitsDecodeImage(Image *image,int channel)
 {
   int
     count,
@@ -2068,6 +2071,23 @@ Export void PackbitsDecodeImage(Image *image,int channel)
       length--;
     }
   }
+  /*
+    Guarentee the correct number of pixel packets.
+  */
+  if (length > 0)
+    {
+      MagickWarning(CorruptImageWarning,"insufficient image data in file",
+        image->filename);
+      return(False);
+    }
+  else
+    if (length < 0)
+      {
+        MagickWarning(CorruptImageWarning,"too much image data in file",
+          image->filename);
+        return(False);
+      }
+  return(True);
 }
 
 /*

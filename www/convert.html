@@ -495,7 +495,7 @@ a <I>PostScript</I> or Portable Document page.  The default
 is 72 dots per inch in the horizontal and vertical
 direction.  This option is used in concert with <b>-page</b>.
 <p>
-<DT><B>-depth<B> <I>value</I>
+<DT><B>-depth</B> <I>value</I>
 <DD> depth of the image.  This is the number of bits in a pixel.  The only
 acceptable values are 8 or 16.
 <P>
@@ -847,7 +847,7 @@ optimal set of colors that best represent all the images.
 saturation, and the hue separated by commas.
 For example, to increase the color brightness by 20% and
 decrease the color saturation by 10% and leave the
-hue unchanged, use: <B>-modulate 20/-10</B>.
+hue unchanged, use: <B>-modulate 20,-10</B>.
 <P>
 <DT><B>-monochrome</B>
 <DD>transform the image to black and white.
@@ -859,7 +859,8 @@ hue unchanged, use: <B>-modulate 20/-10</B>.
 appearance of a meta-morphosis from one image to the next.
 <P> 
 <DT><B>-negate</B>
-<DD>apply color inversion to image.
+<DD>replace every pixel with its complementary color (white becomes black,
+yellow becomes blue, etc.).
 <P>
 <DD>The red, green, and blue intensities of an image are
 negated.  Use <b>+negate</b> to only negate the grayscale pixels of the

@@ -811,7 +811,9 @@ ACKNOWLEDGEMENT
   individuals:
 
       Bob Friesenhahn <bfriesen@simple.dallas.tx.us>:  Configure scripts,
-        and Gperf magic handling routine.
+        regression tests, and Gperf magic handling routine.
+      Rick Mabry" <rmabry@server1.softdisk.com>:  Numerous bug alerts
+        and fixes
       Bill Radcliffe <BillR@corbis.com>:  FlashPix support
 
   And thanks to the hundreds of people that have sent e-mail with bug
