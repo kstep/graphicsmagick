@@ -238,7 +238,7 @@ Export char *BaseFilename(const char *name)
 %  Method CloneString allocates memory for the destination string and copies
 %  the source string to that memory location.
 %
-%  The format of the (void) CloneString method is:
+%  The format of the CloneString method is:
 %
 %      unsigned int CloneString(char **destination,const char *source)
 %
@@ -260,6 +260,52 @@ Export unsigned int CloneString(char **destination,const char *source)
   if (source == (const char *) NULL)
     return(True);
   *destination=AllocateString(source);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n c a t e n a t e S t r i n g                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ConcatenateString appends a copy of string source, including
+%  the terminating null character, to the end of string destination.
+%
+%  The format of the ConcatenateString method is:
+%
+%      char *ConcatenateString(char **destination,const char *source)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method ConcatenateString returns True is the string is cloned,
+%      otherwise False is returned.
+%
+%    o destination:  A pointer to a character string.
+%
+%    o source: A character string.
+%
+%
+*/
+Export unsigned int ConcatenateString(char **destination,const char *source)
+{
+  char
+    *string;
+
+  assert(destination != (char **) NULL);
+  if (source == (const char *) NULL)
+    return(True);
+  *destination=(char *)
+    ReallocateMemory(*destination,Extent(*destination)+Extent(source)+1);
+  if (*destination == (char *) NULL)
+    MagickError(ResourceLimitError,"Unable to concatenate string",
+      "Memory allocation failed");
+  (void) strcat(*destination,source);
   return(True);
 }
 
@@ -2015,7 +2061,7 @@ Export char **StringToArgv(const char *text,int *argc)
   (*argc)++;
   argv=(char **) AllocateMemory((*argc+1)*sizeof(char *));
   if (argv == (char **) NULL)
-    MagickError(ResourceLimitError,"Unable to convert text",
+    MagickError(ResourceLimitError,"Unable to convert string to argv",
       "Memory allocation failed");
   /*
     Convert string to an ASCII list.
@@ -2043,7 +2089,7 @@ Export char **StringToArgv(const char *text,int *argc)
           q++;
     argv[i]=(char *) AllocateMemory(q-p+1);
     if (argv[i] == (char *) NULL)
-      MagickError(ResourceLimitError,"Unable to convert text",
+      MagickError(ResourceLimitError,"Unable to convert string to argv",
         "Memory allocation failed");
     (void) strncpy(argv[i],p,q-p);
     argv[i][q-p]='\0';

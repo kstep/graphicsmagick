@@ -869,7 +869,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       case FillPolygonPrimitive:
       {
         if (primitive_info[j].coordinates < 3)
-          primitive_type=UndefinedPrimitive;
+          primitive_type=LinePrimitive;
         break;
       }
       case BezierPrimitive:

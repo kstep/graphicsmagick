@@ -157,6 +157,8 @@ Export void *ReallocateMemory(void *memory,const size_t size)
   void
     *new_memory;
 
+  if (memory == (void *) NULL)
+    return(AllocateMemory(size));
   new_memory=(void *) NULL;
   if (size)
     new_memory=realloc(memory,size);

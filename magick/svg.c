@@ -134,6 +134,61 @@ static unsigned int IsSVG(const unsigned char *magick,
 %
 %
 */
+
+static unsigned int GetToken(Image *image,char **token,int *c,
+  ExceptionInfo *exception)
+{
+  register char
+    *p;
+
+  unsigned int
+    length,
+    quote;
+
+  length=1;
+  p=(*token);
+  for (*p='\0'; *c != EOF; )
+  {
+    while (isspace(*c))
+      *c=ReadByte(image);
+    quote=(*c) == '"';
+    for ( ; ; )
+    {
+      if (Extent(*token) >= (length-1))
+        {
+          length=(length << 1)+MaxTextExtent;
+          *token=(char *) ReallocateMemory(*token,length);
+          if (*token == (char *) NULL)
+            ThrowBinaryException(ResourceLimitWarning,"Unable to get token",
+              "Memory allocation failed");
+          p=(*token)+Extent(*token);
+        }
+      if (*c != '"')
+        *p++=(*c);
+      *p='\0';
+      *c=ReadByte(image);
+      if (!quote)
+        break;
+      if ((*c == '"') || (*c == EOF))
+        break;
+    }
+    if (quote)
+      {
+        *c=ReadByte(image);
+        break;
+      }
+    p--;
+    if (!isalnum(*p) && (*p != '-') && (*p != '/') && (*p != '>'))
+      break;
+    p++;
+    if (!isalnum(*c) && (*c != '-') && (*c != '/') && (*c != '>'))
+      break;
+  }
+  if (*c == EOF)
+    return(False);
+  return(True);
+}
+
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 typedef struct _EllipseInfo
@@ -147,12 +202,13 @@ typedef struct _EllipseInfo
 } EllipseInfo;
 
   char
-    keyword[MaxTextExtent],
+    *keyword,
     points[MaxTextExtent],
     *primitive,
     *text,
+    *token,
     **tokens,
-    *values,
+    *value,
     *vertices;
 
   DrawInfo
@@ -205,292 +261,223 @@ typedef struct _EllipseInfo
   canvas=ReadImage(clone_info,exception);
   if (canvas == (Image *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  (void) strcpy(canvas->filename,image->filename);
   canvas->colormap[0]=image->background_color;
   /*
     Interpret SVG language.
   */
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  c=ReadByte(image);
-  if (c == EOF)
-    {
-      DestroyImage(image);
-      return((Image *) NULL);
-    }
   GetPageInfo(&page_info);
   primitive=(char *) NULL;
   fill=False;
-  vertices=(char *) NULL;
+  token=AllocateString(" ");
+  value=AllocateString(" ");
+  vertices=AllocateString(" ");
   /*
-    Decode image header;  header terminates one character beyond a ':'.
+    Parse SVG drawing primitives.
   */
   length=MaxTextExtent;
-  values=(char *) AllocateMemory(length);
-  if (values == (char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
-      image);
-  while (c != EOF)
+  c=ReadByte(image);
+  while (GetToken(image,&token,&c,exception))
   {
-    register char
-      *p;
-
-    if (!isalnum(c) && (c != '/') && (c != '>'))
-      c=ReadByte(image);
-    else
+puts(token);
+    if (Latin1Compare(token,"=") == 0)
+      (void) GetToken(image,&value,&c,exception);
+    /*
+      Interpret the SVG tokens.
+    */
+    if (Latin1Compare(keyword,"angle") == 0)
+      (void) sscanf(value,"%d",&ellipse.angle);
+    if (Latin1Compare(keyword,"circle") == 0)
+      primitive=fill ? "CircleEllipse" : "circle";
+    if (Latin1Compare(keyword,"cx") == 0)
+      (void) sscanf(value,"%d",&ellipse.cx);
+    if (Latin1Compare(keyword,"cy") == 0)
+      (void) sscanf(value,"%d",&ellipse.cy);
+    if (Latin1Compare(keyword,"d") == 0)
       {
-        /*
-          Find a keyword.
-        */
-        p=keyword;
-        do
+        (void) ConcatenateString(&vertices," ");
+        (void) ConcatenateString(&vertices,value);
+        if (strchr(value,'M') != (char *) NULL)
+          primitive=(char *) NULL;
+      }
+    if (Latin1Compare(keyword,"ellipse") == 0)
+      primitive=fill ? "fillEllipse" : "ellipse";
+    if (Latin1Compare(keyword,"g") == 0)
+      {
+         primitive=(char *) NULL;
+         fill=False;
+      }
+    if (Latin1Compare(keyword,"height") == 0)
+      {
+        (void) sscanf(value,"%u",&page_info.height);
+        if (Latin1Compare(value+strlen(value)-2,"cm") == 0)
+          page_info.height=72*page_info.height/2.5;
+        if (Latin1Compare(value+strlen(value)-2,"in") == 0)
+          page_info.height=72*page_info.height;
+      }
+    if (Latin1Compare(keyword,"line") == 0)
+      primitive="line";
+    if (Latin1Compare(keyword,"major") == 0)
+      (void) sscanf(value,"%d",&ellipse.major);
+    if (Latin1Compare(keyword,"minor") == 0)
+      (void) sscanf(value,"%d",&ellipse.minor);
+    if (Latin1Compare(keyword,"polygon") == 0)
+      primitive=fill ? "fillPolygon" : "polygon";
+    if (Latin1Compare(keyword,"polyline") == 0)
+      primitive=fill ? "fillPolygon" : "polygon";
+    if (Latin1Compare(keyword,"path") == 0)
+      primitive=fill ? "fillPolygon" : "polygon";
+    if (Latin1Compare(keyword,"points") == 0)
+      (void) CloneString(&vertices,value);
+    if (Latin1Compare(keyword,"r") == 0)
+      {
+        (void) sscanf(value,"%d",&ellipse.major);
+        (void) sscanf(value,"%d",&ellipse.minor);
+      }
+    if (Latin1Compare(keyword,"rect") == 0)
+      primitive=fill ? "fillRectangle" : "rectangle";
+    if (Latin1Compare(keyword,"style") == 0)
+      {
+        tokens=StringToArgv(value,&number_tokens);
+        for (i=1; i < number_tokens; i++)
         {
-          if ((p-keyword) < (MaxTextExtent-1))
-            *p++=c;
-          c=ReadByte(image);
-        } while (isalnum(c) || (c == '/') || (c == '>'));
-        *p='\0';
-        while (isspace(c))
-          c=ReadByte(image);
-        *values='\0';
-        if (c == '=')
-          {
-            /*
-              Find a value.
-            */
-            c=ReadByte(image);
-            while (isspace(c))
-              c=ReadByte(image);
-            quote=c == '"';
-            if (quote)
-              c=ReadByte(image);
-            p=values;
-            while (c != EOF)
+          if (Latin1Compare(tokens[i],"fill:") == 0)
             {
-              if ((p-values+1) >= (int) length)
-                {
-                  *p='\0';
-                  length<<=1;
-                  values=(char *) ReallocateMemory(values,length);
-                  if (values == (char *) NULL)
-                    break;
-                  p=values+Extent(values);
-                }
-              if (values == (char *) NULL)
-                ThrowReaderException(ResourceLimitWarning,
-                  "Memory allocation failed",image);
-              *p++=c;
-              if (quote)
-                {
-                  if (c == '"')
-                    {
-                      p--;
-                      break;
-                    }
-                }
-              else
-                if (isspace(c))
-                  break;
-              c=ReadByte(image);
+              fill=True;
+              (void) CloneString(&draw_info->pen,tokens[i+1]);
+              (void) FormatString(clone_info->filename,"xc:%.1024s",
+                draw_info->pen);
+              if (draw_info->tile != (Image *) NULL)
+                DestroyImage(draw_info->tile);
+              draw_info->tile=ReadImage(clone_info,exception);
             }
-            *p='\0';
-          }
-        /*
-          Interpret the SVG keywords.
-        */
-printf("%s : %s\n",keyword,values);
-        if (Latin1Compare(keyword,"angle") == 0)
-          (void) sscanf(values,"%d",&ellipse.angle);
-        if (Latin1Compare(keyword,"circle") == 0)
-          primitive=fill ? "CircleEllipse" : "circle";
-        if (Latin1Compare(keyword,"cx") == 0)
-          (void) sscanf(values,"%d",&ellipse.cx);
-        if (Latin1Compare(keyword,"cy") == 0)
-          (void) sscanf(values,"%d",&ellipse.cy);
-        if (Latin1Compare(keyword,"d") == 0)
-          CloneString(&vertices,values);
-        if (Latin1Compare(keyword,"ellipse") == 0)
-          primitive=fill ? "fillEllipse" : "ellipse";
-        if (Latin1Compare(keyword,"g") == 0)
-          {
-             primitive=(char *) NULL;
-             fill=False;
-          }
-        if (Latin1Compare(keyword,"height") == 0)
-          {
-            (void) sscanf(values,"%u",&page_info.height);
-            if (Latin1Compare(values+strlen(values)-2,"cm") == 0)
-              page_info.height=72*page_info.height/2.5;
-            if (Latin1Compare(values+strlen(values)-2,"in") == 0)
-              page_info.height=72*page_info.height;
-            if (canvas->rows == 1)
-              {
-                clone_image=SampleImage(canvas,canvas->columns,
-                  page_info.height,exception);
-                if (clone_image == (Image *) NULL)
-                  return((Image *) NULL);
-                DestroyImage(canvas);
-                canvas=clone_image;
-              }
-          }
-        if (Latin1Compare(keyword,"line") == 0)
-          primitive="line";
-        if (Latin1Compare(keyword,"major") == 0)
-          (void) sscanf(values,"%d",&ellipse.major);
-        if (Latin1Compare(keyword,"minor") == 0)
-          (void) sscanf(values,"%d",&ellipse.minor);
-        if (Latin1Compare(keyword,"polygon") == 0)
-          primitive=fill ? "fillPolygon" : "polygon";
-        if (Latin1Compare(keyword,"polyline") == 0)
-          primitive=fill ? "fillPolygon" : "polygon";
-        if (Latin1Compare(keyword,"path") == 0)
-          primitive=fill ? "fillPolygon" : "polygon";
-        if (Latin1Compare(keyword,"points") == 0)
-          CloneString(&vertices,values);
-        if (Latin1Compare(keyword,"r") == 0)
-          {
-            (void) sscanf(values,"%d",&ellipse.major);
-            (void) sscanf(values,"%d",&ellipse.minor);
-          }
-        if (Latin1Compare(keyword,"rect") == 0)
-          primitive=fill ? "fillRectangle" : "rectangle";
-        if (Latin1Compare(keyword,"style") == 0)
-          {
-            tokens=StringToArgv(values,&number_tokens);
-            for (i=0; i < number_tokens; i++)
-            {
-              if (Latin1Compare(tokens[i],"fill:") == 0)
-                fill=True;
-              if (Latin1Compare(tokens[i],"stroke-width:") == 0)
-                (void) sscanf(tokens[i+1],"%d",&draw_info->linewidth);
-              if (*tokens[i] == '#')
-                {
-                  (void) CloneString(&draw_info->pen,tokens[i]);
-                  (void) FormatString(clone_info->filename,"xc:%.1024s",
-                    draw_info->pen);
-                  if (draw_info->tile != (Image *) NULL)
-                    DestroyImage(draw_info->tile);
-                  draw_info->tile=ReadImage(clone_info,exception);
-                }
-              FreeMemory((void *) &tokens[i]);
-            }
-            FreeMemory((void *) &tokens);
-          }
-        if (Latin1Compare(keyword,"text") == 0)
-          primitive="text";
-        if (Latin1Compare(keyword,"verts") == 0)
-          CloneString(&vertices,values);
-        if (Latin1Compare(keyword,"width") == 0)
-          {
-            (void) sscanf(values,"%u",&page_info.width);
-            if (Latin1Compare(values+strlen(values)-2,"cm") == 0)
-              page_info.width=72*page_info.width/2.5;
-            if (Latin1Compare(values+strlen(values)-2,"in") == 0)
-              page_info.width=72*page_info.width;
-            if (canvas->columns == 1)
-              {
-                clone_image=
-                  SampleImage(canvas,page_info.width,canvas->rows,exception);
-                if (clone_image == (Image *) NULL)
-                  return((Image *) NULL);
-                DestroyImage(canvas);
-                canvas=clone_image;
-              }
-          }
-        if (Latin1Compare(keyword,"x") == 0)
-          (void) sscanf(values,"%u",&page_info.x);
-        if (Latin1Compare(keyword,"x1") == 0)
-          (void) sscanf(values,"%f",&segment.x1);
-        if (Latin1Compare(keyword,"x2") == 0)
-          (void) sscanf(values,"%f",&segment.x2);
-        if (Latin1Compare(keyword,"y") == 0)
-          (void) sscanf(values,"%u",&page_info.y);
-        if (Latin1Compare(keyword,"y1") == 0)
-          (void) sscanf(values,"%f",&segment.y1);
-        if (Latin1Compare(keyword,"y2") == 0)
-          (void) sscanf(values,"%f",&segment.y2);
-        if (((Latin1Compare(keyword,"/>") == 0) ||
-             (Latin1Compare(keyword,"/text>") == 0)) &&
-            (primitive != (char *) NULL))
+          if (Latin1Compare(tokens[i],"stroke-width:") == 0)
+            (void) sscanf(tokens[i+1],"%d",&draw_info->linewidth);
+          FreeMemory((void *) &tokens[i]);
+        }
+        FreeMemory((void *) &tokens);
+      }
+    if (Latin1Compare(keyword,"text") == 0)
+      primitive="text";
+    if (Latin1Compare(keyword,"verts") == 0)
+      (void) CloneString(&vertices,value);
+    if (Latin1Compare(keyword,"viewBox") == 0)
+      (void) sscanf(value,"%d %d %u %u",&page_info.x,&page_info.y,
+        &page_info.width,&page_info.height);
+    if (Latin1Compare(keyword,"width") == 0)
+      {
+        (void) sscanf(value,"%u",&page_info.width);
+        if (Latin1Compare(value+strlen(value)-2,"cm") == 0)
+          page_info.width=72*page_info.width/2.5;
+        if (Latin1Compare(value+strlen(value)-2,"in") == 0)
+          page_info.width=72*page_info.width;
+      }
+    if (Latin1Compare(keyword,"x") == 0)
+      (void) sscanf(value,"%u",&page_info.x);
+    if (Latin1Compare(keyword,"x1") == 0)
+      (void) sscanf(value,"%f",&segment.x1);
+    if (Latin1Compare(keyword,"x2") == 0)
+      (void) sscanf(value,"%f",&segment.x2);
+    if (Latin1Compare(keyword,"y") == 0)
+      (void) sscanf(value,"%u",&page_info.y);
+    if (Latin1Compare(keyword,"y1") == 0)
+      (void) sscanf(value,"%f",&segment.y1);
+    if (Latin1Compare(keyword,"y2") == 0)
+      (void) sscanf(value,"%f",&segment.y2);
+    if (((Latin1Compare(keyword,"/>") == 0) ||
+         (Latin1Compare(keyword,"/text>") == 0)) &&
+        (primitive != (char *) NULL))
+      {
+        char
+          *command;
+
+        unsigned int
+          length;
+
+        if ((canvas->columns < page_info.width) ||
+            (canvas->rows < page_info.height))
           {
             char
-              *command;
+              geometry[MaxTextExtent];
 
-            unsigned int
-              length;
-
-            /*
-              Render graphic primitive.
-            */
-            length=strlen(primitive)+MaxTextExtent;
-            if (vertices != (char *) NULL)
-              length+=strlen(vertices);
-            command=(char *) AllocateMemory(length);
-            if (command == (char *) NULL)
-              ThrowReaderException(ResourceLimitWarning,
-                "Unable to allocate memory",image);
-            (void) strcpy(command,primitive);
-            (void) strcat(command," ");
-            if ((Latin1Compare(primitive,"Circle") == 0) ||
-                (Latin1Compare(primitive,"fillCircle") == 0))
-              {
-                FormatString(points,"%d,%d %d,%d",ellipse.cx,ellipse.cy,
-                  ellipse.cx+ellipse.major,ellipse.cy+ellipse.minor);
-                (void) strcat(command,points);
-              }
-            if ((Latin1Compare(primitive,"ellipse") == 0) ||
-                (Latin1Compare(primitive,"fillEllipse") == 0))
-              {
-                FormatString(points,"%d,%d %d,%d 0,360",ellipse.cx,ellipse.cy,
-                  ellipse.angle == 0 ? ellipse.major: ellipse.minor,
-                  ellipse.angle == 0 ? ellipse.minor: ellipse.major);
-                (void) strcat(command,points);
-              }
-            if (Latin1Compare(primitive,"line") == 0)
-              {
-                FormatString(points,"%f,%f %f,%f",segment.x1,segment.y1,
-                  segment.x2, segment.y2);
-                (void) strcat(command,points);
-              }
-            if ((Latin1Compare(primitive,"polygon") == 0) ||
-                (Latin1Compare(primitive,"fillPolygon") == 0))
-              {
-                for (i=0; i < strlen(vertices); i++)
-                  if (!isdigit(vertices[i]) && (vertices[i] != ','))
-                    vertices[i]=' ';
-                (void) strcat(command,vertices);
-              }
-            if ((Latin1Compare(primitive,"rectangle") == 0) ||
-                (Latin1Compare(primitive,"fillRectangle") == 0))
-              {
-                FormatString(points,"%d,%d %d,%d",page_info.x,page_info.y,
-                  page_info.x+page_info.width,page_info.y+page_info.height);
-                (void) strcat(command,points);
-              }
-            if (Latin1Compare(primitive,"text") == 0)
-              {
-                FormatString(points,"%d,%d",page_info.x,page_info.y);
-                (void) strcat(command,points);
-                (void) strcat(command," ");
-                (void) strcat(command,text);
-              }
-puts(command);
-            (void) CloneString(&draw_info->primitive,command);
-            FreeMemory((void *) &command);
-            status=DrawImage(canvas,draw_info);
-            if (status == False)
-              ThrowReaderException(ResourceLimitWarning,
-                "Unable to draw primitive",image);
+            FormatString(geometry,"%ux%u!",page_info.width,
+              page_info.height);
+            TransformImage(&canvas,(char *) NULL,geometry);
           }
-        if (*keyword == '>')
-          text=AllocateString(keyword+1);
+        /*
+          Render graphic primitive.
+        */
+        length=strlen(primitive)+MaxTextExtent;
+        if (vertices != (char *) NULL)
+          length+=strlen(vertices);
+        command=(char *) AllocateMemory(length);
+        if (command == (char *) NULL)
+          ThrowReaderException(ResourceLimitWarning,
+            "Unable to allocate memory",image);
+        (void) strcpy(command,primitive);
+        (void) strcat(command," ");
+        if ((Latin1Compare(primitive,"Circle") == 0) ||
+            (Latin1Compare(primitive,"fillCircle") == 0))
+          {
+            FormatString(points,"%d,%d %d,%d",ellipse.cx,ellipse.cy,
+              ellipse.cx+ellipse.major,ellipse.cy+ellipse.minor);
+            (void) strcat(command,points);
+          }
+        if ((Latin1Compare(primitive,"ellipse") == 0) ||
+            (Latin1Compare(primitive,"fillEllipse") == 0))
+          {
+            FormatString(points,"%d,%d %d,%d 0,360",ellipse.cx,ellipse.cy,
+              ellipse.angle == 0 ? ellipse.major: ellipse.minor,
+              ellipse.angle == 0 ? ellipse.minor: ellipse.major);
+            (void) strcat(command,points);
+          }
+        if (Latin1Compare(primitive,"line") == 0)
+          {
+            FormatString(points,"%f,%f %f,%f",segment.x1,segment.y1,
+              segment.x2, segment.y2);
+            (void) strcat(command,points);
+          }
+        if ((Latin1Compare(primitive,"polygon") == 0) ||
+            (Latin1Compare(primitive,"fillPolygon") == 0))
+          {
+            for (i=0; i < strlen(vertices); i++)
+              if (!isdigit(vertices[i]) && (vertices[i] != ','))
+                vertices[i]=' ';
+            (void) strcat(command,vertices);
+          }
+        if ((Latin1Compare(primitive,"rectangle") == 0) ||
+            (Latin1Compare(primitive,"fillRectangle") == 0))
+          {
+            FormatString(points,"%d,%d %d,%d",page_info.x,page_info.y,
+              page_info.x+page_info.width,page_info.y+page_info.height);
+            (void) strcat(command,points);
+          }
+        if (Latin1Compare(primitive,"text") == 0)
+          {
+            FormatString(points,"%d,%d",page_info.x,page_info.y);
+            (void) strcat(command,points);
+            (void) strcat(command," ");
+            (void) strcat(command,text);
+          }
+puts(command);
+        (void) CloneString(&draw_info->primitive,command);
+        FreeMemory((void *) &command);
+        status=DrawImage(canvas,draw_info);
+        if (status == False)
+          ThrowReaderException(ResourceLimitWarning,
+            "Unable to draw primitive",image);
+        primitive=(char *) NULL;
       }
-    while (isspace(c))
-      c=ReadByte(image);
+    if (*keyword == '>')
+      text=AllocateString(keyword+1);
+    (void) CloneString(&keyword,token);
   }
-  FreeMemory((void *) &values);
-  if (vertices != (char *) NULL)
-    FreeMemory((void *) &vertices);
   DestroyDrawInfo(draw_info);
   DestroyImage(image);
+  FreeMemory((void *) &token);
+  FreeMemory((void *) &value);
+  FreeMemory((void *) &vertices);
   return(canvas);
 }
 
