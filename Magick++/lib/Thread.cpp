@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Implementation of thread support
 //
@@ -24,7 +24,7 @@ Magick::MutexLock::MutexLock(void)
         ::pthread_mutexattr_destroy( &attr );
         return;
       }
-  throw Magick::ErrorOption( "mutex initialization failed" );
+  throwExceptionExplicit( OptionError, "mutex initialization failed" );
 }
 #else
 #if defined(_VISUALC_) && defined(_MT)
@@ -42,7 +42,7 @@ Magick::MutexLock::MutexLock(void)
   _mutex.id = ::CreateSemaphore(&security, 1, MAXSEMLEN, NULL);
   if ( _mutex.id != NULL )
     return;
-  throw Magick::ErrorOption( "mutex initialization failed" );
+  throwExceptionExplicit( OptionError, "mutex initialization failed" );
 }
 #else
 // Threads not supported
@@ -57,12 +57,12 @@ Magick::MutexLock::~MutexLock(void)
 #if defined(HasPTHREADS)
   if ( ::pthread_mutex_destroy( &_mutex ) == 0 )
     return;
-  throw Magick::ErrorOption( "mutex destruction failed" );
+  throwExceptionExplicit( OptionError, "mutex destruction failed" );
 #endif
 #if defined(_MT) && defined(_VISUALC_)
   if ( ::CloseHandle(_mutex.id) != 0 )
     return;
-  throw Magick::ErrorOption( "mutex destruction failed" );
+  throwExceptionExplicit( OptionError, "mutex destruction failed" );
 #endif
 }
 
@@ -72,12 +72,12 @@ void Magick::MutexLock::lock(void)
 #if defined(HasPTHREADS)
   if ( ::pthread_mutex_lock( &_mutex ) == 0)
     return;
-  throw Magick::ErrorOption( "mutex lock failed" );
+  throwExceptionExplicit( OptionError, "mutex lock failed" );
 #endif
 #if defined(_MT) && defined(_VISUALC_)
   if ( WaitForSingleObject(_mutex.id, INFINITE) != WAIT_FAILED )
     return;
-  throw Magick::ErrorOption( "mutex lock failed" );
+  throwExceptionExplicit( OptionError, "mutex lock failed" );
 #endif
 }
 
@@ -87,11 +87,11 @@ void Magick::MutexLock::unlock(void)
 #if defined(HasPTHREADS)
   if ( ::pthread_mutex_unlock( &_mutex ) == 0)
     return;
-  throw Magick::ErrorOption( "mutex unlock failed" );
+  throwExceptionExplicit( OptionError, "mutex unlock failed" );
 #endif
 #if defined(_MT) && defined(_VISUALC_)
   if ( ReleaseSemaphore(_mutex.id, 1, NULL) == TRUE )
     return;
-  throw Magick::ErrorOption( "mutex unlock failed" );
+  throwExceptionExplicit( OptionError, "mutex unlock failed" );
 #endif
 }

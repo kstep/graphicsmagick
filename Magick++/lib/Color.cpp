@@ -122,7 +122,7 @@ const Magick::Color& Magick::Color::operator = ( const std::string &x11color_ )
       std::string message = "Color \"";
       message += x11color_;
       message += "\" not valid";
-      throw ErrorOption( message );
+      throwExceptionExplicit( OptionError, message.c_str() );
     }
 
   return *this;
