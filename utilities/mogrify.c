@@ -1570,7 +1570,14 @@ int main(int argc,char **argv)
           if (LocaleCompare(image_info->filename,"-") != 0)
             {
               (void) strcpy(filename,image->filename);
-              TemporaryFilename(image->filename);
+              AppendImageFormat("mgk",image->filename);
+              if (IsAccessible(image->filename))
+                {
+                  (void) strcat(image->filename,"~");
+                  if (IsAccessible(image->filename))
+                    MagickError(FileOpenError,"Unable to create temporary file",
+                      filename);
+                }
             }
         for (p=image; p != (Image *) NULL; p=p->next)
         {
