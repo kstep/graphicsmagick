@@ -329,12 +329,12 @@ ps_la_LIBADD        = ../magick/libMagick.la @LIB_GS@ $(LIB_MATH)
 # PS2 module
 ps2_la_SOURCES      = ps2.c
 ps2_la_LDFLAGS      = -no-undefined -module -avoid-version
-ps2_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ $(LIB_MATH)
+ps2_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ @LIB_JPEG@ @LIB_ZLIB@ $(LIB_MATH)
 
 # PS3 module
 ps3_la_SOURCES      = ps3.c
 ps3_la_LDFLAGS      = -no-undefined -module -avoid-version
-ps3_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ $(LIB_MATH)
+ps3_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ @LIB_JPEG@ @LIB_ZLIB@ $(LIB_MATH)
 
 # PSD module
 psd_la_SOURCES      = psd.c
@@ -399,7 +399,7 @@ tga_la_LIBADD       = ../magick/libMagick.la
 # TIFF module
 tiff_la_SOURCES     = tiff.c
 tiff_la_LDFLAGS     = -no-undefined -module -avoid-version
-tiff_la_LIBADD      = ../magick/libMagick.la @LIB_TIFF@ @LIB_ZLIB@
+tiff_la_LIBADD      = ../magick/libMagick.la @LIB_TIFF@ @LIB_JPEG@ @LIB_ZLIB@
 
 # TILE module
 tile_la_SOURCES     = tile.c

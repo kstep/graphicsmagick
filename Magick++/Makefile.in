@@ -187,9 +187,6 @@ AUTOMAKE_OPTIONS = 1.4 dist-zip
 EXTRA_DIST = 
 
 SUBDIRS = bin lib tests demo
-
-# Non-Automake subdirectories to distribute
-DISTDIRS = doc
 subdir = Magick++
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
@@ -350,9 +347,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-	$(MAKE) $(AM_MAKEFLAGS) \
-	  top_distdir="${top_distdir}" distdir="$(distdir)" \
-	  dist-hook
 check-am: all-am
 check: check-recursive
 all-am: Makefile
@@ -436,16 +430,19 @@ uninstall-info: uninstall-info-recursive
 	tags tags-recursive uninstall uninstall-am uninstall-info-am \
 	uninstall-info-recursive uninstall-recursive
 
-dist-hook:
-	( \
-	  builddir=`pwd` ; \
-	  cd $(srcdir) && \
-	  ( \
-	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(\.bak$$)|(/CVS)|(/\.#)|(/\.deps)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
-	    done \
-	  ) \
-	)
+
+# Non-Automake subdirectories to distribute
+#DISTDIRS = doc
+#dist-hook:
+#	( \
+#	  builddir=`pwd` ; \
+#	  cd $(srcdir) && \
+#	  ( \
+#	    for dir in $(DISTDIRS) ; do \
+#	      find $$dir -depth -print | egrep -v '(~$$)|(\.bak$$)|(/CVS)|(/\.#)|(/\.deps)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
+#	    done \
+#	  ) \
+#	)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
