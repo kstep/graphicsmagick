@@ -1,5 +1,8 @@
 2003-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/links.html: Added link to Nathan Day's MagickDocs
+	"ImageMagick and GraphicsMagick documentation project"
+	site.
 	* coders/icon.c (ReadIconImage): Add support for Windows
 	.CUR format based on advice from Jean Piquemal.
 	* magick/image.c (SetImageInfo): Added missing CloseBlob
