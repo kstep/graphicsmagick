@@ -794,6 +794,7 @@ extern MagickExport void
   RegisterBMP24Image(void),
   RegisterCACHEImage(void),
   RegisterCMYKImage(void),
+  RegisterCUTImage(void),
   RegisterDCMImage(void),
   RegisterDCXImage(void),
   RegisterDIBImage(void),
