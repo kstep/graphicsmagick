@@ -1007,7 +1007,8 @@ Optional Features:
   --enable-fast-install[=PKGS]
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
-  --enable-delegate-build  enable using delegate libs in subdirectories (default disabled)
+  --enable-delegate-build enable using delegate libs in subdirectories
+                          (default disabled)
   --enable-libtool-verbose enable verbose libtool output (default disabled)
   --enable-maintainer-mode enable make rules and dependencies not useful
                           (and sometimes confusing) to the casual installer
@@ -1026,7 +1027,7 @@ Optional Packages:
                           both]
   --with-tags=TAGS        include additional configurations [CXX,GCJ]
   --with-modules          enable support for dynamically loadable modules
-  --with-cache            set pixel cache threshhold (defaults to available memory)
+  --with-cache            set pixel cache threshhold (default available memory)
   --without-threads       disable threads support
   --without-frozenpaths   disable frozen delegate paths
   --without-magick-plus-plus disable build/install of Magick++
@@ -3625,7 +3626,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3628 "configure"' > conftest.$ac_ext
+  echo '#line 3629 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7493,7 +7494,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7496 "configure"
+#line 7497 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7591,7 +7592,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7594 "configure"
+#line 7595 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10694,7 +10695,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10697 "configure"
+#line 10698 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10792,7 +10793,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10795 "configure"
+#line 10796 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13415,7 +13416,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13418 "configure"
+#line 13419 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13513,7 +13514,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13516 "configure"
+#line 13517 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H

@@ -119,7 +119,8 @@ fi
 # Enable build using delegate libraries built in subdirectories rather than installed
 # delegate libraries (bzlib fpx hdf jasper jbig jpeg lcms mpeg2 png tiff ttf wmf xml zlib)
 AC_ARG_ENABLE(delegate_build,
-	      [  --enable-delegate-build  enable using delegate libs in subdirectories (default disabled)],
+	      [  --enable-delegate-build enable using delegate libs in subdirectories
+                          (default disabled)],
 	      [with_delegate_build=$enableval],
 	      [with_delegate_build='no'])
 
@@ -193,7 +194,7 @@ AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum
 # Set pixel cache threshold
 with_cache=''
 AC_ARG_WITH(cache,
-	      [  --with-cache            set pixel cache threshhold (defaults to available memory)],
+	      [  --with-cache            set pixel cache threshhold (default available memory)],
 	      [with_cache=$withval],
 	      [with_cache=''])
 if test "$with_cache" != ''
