@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR"
+ content="Mozilla/4.78 [en] (Windows NT 5.0; U) [Netscape]">
+  <title>tclMagick</title>
+</head>
+<body>
+<h2> TclMagick: A Tcl interface to ImageMagick<br>
+</h2>
+<hr width="100%">Version 0.2: July 2003 (alpha)<br>
+<p><b><i>TclMagick</i></b> is a&nbsp; <a href="http://www.tcltk.com">Tcl</a>-extension
+for to access the <a href="http://www.imagemagick.org">ImageMagick</a>
+C-API with simple Tcl-commands.<br>
+With <b><i>TclMagick</i></b> it's easy to automate image manipulation.
+<br>
+<br>
+<b><i>TclMagick</i></b> knows three types of objects: <span
+ style="font-weight: bold;">wand, drawing, pixel</span>. For each
+object a Tcl command of the same name is created (analog to Tcl's <span
+ style="font-style: italic;">image</span> command). The subcommands of
+those object commands are mainly a one-to-one mapping of the
+corresponding ImageMagick's Wand API functions. For a detailed
+description of the separate functions see the <a
+ href="http://www.imagemagick.org/www/api.html">Wand API documentation</a>.<br>
+</p>
+<p>A list of the supported functions and a complete change log can be
+found here: <a href="TclMagick.txt">TclMagick.txt</a>,&nbsp; <a
+ href="Changes.txt">Changes.txt</a><br>
+<span style="font-weight: bold; text-decoration: underline;"><br>
+Note:</span>
+<b><i><br>
+</i></b>ImageMagick's new high-level <a
+ href="http://www.imagemagick.org/www/api.html">Wand API</a> is still
+under development and will be stable at the end of 2003. Therefore <b><i>TclMagick</i></b>
+may need an update with every new ImageMagick version.<br>
+</p>
+<p><span style="text-decoration: underline;"><span
+ style="font-weight: bold;">Bug reports and comments:</span></span> <br>
+Any comments, suggestions and bug reports for TclMagick are welcome. If
+you are sure that you found a bug in ImageMagick than you may report it
+directly to the <a
+ href="http://studio.imagemagick.org/magick/viewforum.php?f=6">ImageMagick
+MagickWand board</a>.<br>
+</p>
+<p><span style="font-weight: bold; text-decoration: underline;">Sample
+code:</span><br>
+</p>
+<pre style="margin-left: 40px;"># Load the tclMagick module<br>#<br>load TclMagick.dll<br><br># Create wand &amp; draw objects<br>#<br>set wand [magick create wand]<br>set draw [magick create draw]<br><br># Load &amp; enlarge a PNG<br>#<br>$wand ReadImage sample.png<br>$wand ResizeImage 500 500 cubic<br><br># Draw a red "Tcl/Tk" rotated by 45&deg;<br>#<br>$draw push graph<br>&nbsp;&nbsp;&nbsp; $draw SetStrokeWidth 1<br>&nbsp;&nbsp;&nbsp; $draw SetStrokeColorString "red"<br>&nbsp;&nbsp;&nbsp; $draw SetFillColorString "red"<br>&nbsp;&nbsp;&nbsp; $draw SetFontSize 18<br>&nbsp;&nbsp;&nbsp; $draw Annotation -97 170 "Tcl/Tk"<br>$draw pop graph<br>$draw Rotate -45<br><br>$wand DrawImage $draw<br><br># Write the image in different file formats<br>#<br>$wand WriteImage sample.jpg<br>$wand WriteImage sample.gif<br>$wand WriteImage sample.pdf<br><br># Delete wand &amp; draw objects<br>#<br>magick delete $draw<br>magick delete $wand<br></pre>
+<p>Download source:&nbsp; <a href="TclMagick-Source-5.5.8a2.zip">TclMagick-Source-5.5.8a2.zip</a><br>
+Source incl. compiled Windows-DLL: <a
+ href="TclMagick-Windows-Bin-5.5.8a2.zip">TclMagick-Windows-Bin-5.5.8a2.zip</a>
+<br>
+Image magick Windows binary: <a
+ href="ImageMagick-5.5.8-noX11-Q16-windows-dll.exe">ImageMagick-5.5.8-noX11-Q16-windows-dll.exe</a>
+(~4.1 MBytes), needs ghostscript (fonts): <a href="gs706w32.exe">gs706w32.exe</a>
+(5.2 MByte)</p>
+<p> </p>
+<hr width="100%">Contact:&nbsp; <a href="mailto:Rolf.Schroedter@dlr.de">Rolf.Schroedter@dlr.de</a>
+</body>
+</html>
