@@ -156,9 +156,6 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   Image
     *matte_image;
 
-  register int
-    i;
-
   unsigned int
     status;
 

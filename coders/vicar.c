@@ -157,7 +157,6 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket

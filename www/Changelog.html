@@ -11,118 +11,84 @@
 <body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
 <center><img SRC="../images/magick_small.png" width=129 height=133></center>
+<p>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 wid
+th=15>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Changes
+Changes in ImageMagick Version 5.2.0</font></font></font></b></td>
+</tr>
+</table>
+<dl>
+<p>
+<dd>Under Unix and Windows, dynamically-loaded format <i>coder</i> modules are
+supported. There are currently 72 loadable modules. Support for
+loadable modules allows the user to add or remove formats from
+ImageMagick by simply adding or removing a file. New modules are
+automatically detected so users may add their own modules. This support
+is proven to work for Sun Solaris, Linux, and SGI IRIX.  Please let us
+know about other operating systems they work on.  Building a modular
+ImageMagick is enabled by specifing the configure options
+<tt>--enable-shared --with-modules</tt>.
+</dd>
+<p>
 
-<h3>
-<a href="../ImageMagick.html">ImageMagick</a> 5.2.0, June 1, 2000</h3>
-<h4>
-&nbsp;<a NAME="User Visible Changes"></a>User Visible Changes</h4>
+<dd>Image format identification (based on the file header) is now
+configured via an external text file. This allows the user to add
+automatic file identification for new formats added via a coder module,
+or via a delegate (external program).</dd>
+<p>
 
-<blockquote>
-<li>
-Under Unix, format "coder" modules may be built and installed (by default)
-to <tt>/usr/local/lib/ImageMagick/modules/coders</tt> when <i>configure</i>
-option '<tt>--with-modules</tt>' is specified. Coder modules are detected
-and loaded at run-time. Use of coder modules removes knowledge of specific
-image formats from the ImageMagick library, decreases installation dependencies,
-and allows users to add support for new formats without re-compiling ImageMagick.
-ImageMagick currently has a total of 72 coder modules. ImageMagick looks
-for modules in its installation directory, in the sub-directory ".<tt>magick</tt>"
-in the user's home directory, and in the list of directories specified
-by the environment variable <tt>MAGICK_MODULE_PATH</tt>.</li>
+<dd>XML files conforming to the W3C SVG DTD are now rendered directly by
+ImageMagick.  The support is incomplete but still useful.</dd>
+<p>
 
-<li>
-Module loading is also fully supported under Microsoft Windows.</li>
+<dd>The Pilot Image Format (PDB) is now supported.</dd>
+<p>
 
-<li>
-Image file identification based on the file header (magic) is now programmed
-via a text file (magic.mgk) rather than embedded in the C code. This allows
-extending ImageMagick's knowledge of file types without modifying ImageMagick
-itself.</li>
+<dd>The drawing primitives have been extended to support drawing bezier
+curves, rounded rectangles, and arcs. There is now support for drawing
+compound objects (a sequence of objects) using drawing paths.  The
+concept of a drawing <tt>pen</tt> has been split into <tt>stroke</tt> (for the
+outline) and <tt>fill</tt> (for the objects internal color). If fill is not
+defined, then only the object outline is drawn. This substantial change
+results in the existing drawing commands for filled objects
+(fillEllipse, fillRectangle, fillCircle, and fillPolygon) being
+deprecated.</dd>
+<p>
 
-<li>
-XML files conforming to the <a href="http://www.w3.org/Graphics/SVG/">W3C
-SVG DTD</a> are now rendered directly by ImageMagick. Support is exploratory
-at this time, and will likely be re-implemented later.</li>
+<dd>A <i>cache</i> file format is now supported which is a snapshot of an
+image's pixel cache as it appears on disk. Images stored in this format
+(large) may be loaded <i>instantly</i> by ImageMagick since decoding is not
+required. In order to write this format , the argument <tt>-cache 0</tt> must
+be supplied (e.g. <tt>convert -cache 0 file.jpg file.cache</tt>).</dd>
+<p>
 
-<li>
-The drawing primitives have been extended to support drawing bezier curves,
-rounded rectangles, and arcs. There is now support for drawing compound
-objects (a sequence of objects) using drawing paths. The concept of a drawing
-"<i>pen</i>" has been split into "<i>stroke</i>" (for the outline) and
-"<i>fill</i>" for the objects internal color. If <i>fill</i> is not defined,
-then only the object outline is drawn. This substantial change results
-in the existing drawing commands for filled objects (<i>fillEllipse</i>,
-<i>fillRectangle</i>, <i>fillCircle</i>, and <i>fillPolygon</i>) being
-deprecated.</li>
-
-<li>
-ImageMagick now supports writing a "cache" format which is a snapshot of
-ImageMagick's disk-backed pixel cache (disk usage is approximately&nbsp;
-rows x columns x 4 x sizeof(Quantum)). Use of the native cache format avoids
-the image decode step entirely (image pixels are memory-mapped, and accessed
-as required) and can be used to&nbsp; accelerate repeated accesses to a
-large image.</li>
-
-<li>
-The build environment for Windows NT is entirely re-done.&nbsp; There is
-now a "configure" program which generates a set of Visual C++ project files
+<dd>The build environment for Windows NT is entirely re-done. There is now
+a <tt>configure</tt> program which generates a set of Visual C++ project files
 which satisfy a set of reqirements (e.g. DLL, multi-thread, X11). These
-project files are then used to build ImageMagick.</li>
-</blockquote>
+project files are then used to build ImageMagick.</dd>
+<p>
 
-<h4>
-&nbsp;<a NAME="C API Changes"></a>C API Changes</h4>
+<dd>The C API is significantly modified in order to provide thread-safe
+operation via function re-entrancy. ImageMagick is believed to be
+thread-safe when used with POSIX threads. It is not yet completely
+thread safe under Windows or the Mac. Errors (of type ExceptionInfo)
+are now reported by a function argument, or via a member of the current
+image.</dd>
+<p>
 
-<blockquote>There have been substantial C API changes in order to support
-thread-safety through API reentrancy, improvements to the interface, and
-support for multiple pixel views.
-<p>API changes include:</blockquote>
+<dd>The GaussianBlurImage() function (contributed by
+<tt>runger@cs.mcgill.ca</tt>) supports Gaussian bluring an image.</dd>
+<p>
 
-<ul>
-<ul>
-<li>
-The addition of an <i>ExceptionInfo</i> parameter for methods which return
-an image, which records any reported error.</li>
+<dd>Functions (OpenCacheView(), CloseCacheView(), GetCacheView(),
+SetCacheView(), and SyncCacheView()) are provided in order to support
+manipulating multiple pixel views.</dd>
+</dl>
+<p>
 
-<li>
-The addition of an exception member (of type <i>ExceptionInfo</i>) to the
-Image structure to record any reported error for methods which update the
-image.</li>
-
-<li>
-New method <i>GetImageException()</i> supports retrieving any reported
-errors from an Image sequence.</li>
-
-<li>
-Existing methods <i>BlurImage()</i>, <i>EdgeImage()</i>, <i>EmbossImage()</i>,
-<i>ReduceNoiseImage()</i>,
-and <i>SharpenImage()</i> take an entirely different form of specifying
-the degree of sharpening or blurring (based on the radius of the pixel
-region rather than a meaningless percentage).</li>
-
-<li>
-New method <i>GaussianBlurImage()</i> added to Gaussian blur an image.</li>
-
-<li>
-New methods <i>OpenCacheView()</i>, <i>CloseCacheView()</i>, <i>GetCacheView()</i>,
-<i>SetCacheView()</i>,
-and <i>SyncCacheView()</i> added in order to support manipulating multiple
-pixel views.</li>
-</ul>
-</ul>
-
-<h4>
-<a NAME="Implementation Changes"></a>Implementation Changes</h4>
-
-<ul>
-<li>
-The Image cache subsystem is re-worked in order to improve performance
-and to support multiple pixel views.</li>
-
-<li>
-The primary mechanism for reporting errors is different in order to support
-thread safety via re-entrancy.</li>
-</ul>
 
 <br>&nbsp;
 <p>

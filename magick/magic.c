@@ -57,6 +57,12 @@
 #include "magic.h"
 
 /*
+  Constant declaractions.
+*/
+const char
+  *MagicFilename = "magic.mgk";
+
+/*
   Global declarations.
 */
 static MagicInfo
@@ -163,13 +169,13 @@ static int ReadMagicConfigurationFile(const char *filename)
   file=fopen(filename,"r");
   if (file == (FILE *) NULL)
     return(False);
-  i=0;
   magic_list=(MagicInfo **)
     AllocateMemory(MagicInfoListExtent*sizeof(MagicInfo *));
   if (magic_list == (MagicInfo **) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
   line_number=0;
+  i=0;
   magic_list[i]=(MagicInfo *) NULL;
   while ((i < MagicInfoListExtent-1) && !feof(file))
   {
@@ -402,13 +408,13 @@ static unsigned int InitializeMagic(void)
     {
       (void) strcpy(path,getenv("MAGICK_DELEGATE_PATH"));
       (void) strcat(path,DirectorySeparator);
-      (void) strcat(path,"magic.mgk");
+      (void) strcat(path,MagicFilename);
       if (ReadMagicConfigurationFile(path) == True)
         return(True);
     }
   (void) strcpy(path,DelegatePath);
   (void) strcat(path,DirectorySeparator);
-  (void) strcat(path,"magic.mgk");
+  (void) strcat(path,MagicFilename);
   return(ReadMagicConfigurationFile(path));
 }
 
@@ -421,15 +427,27 @@ MagickExport unsigned int SetImageMagic(const unsigned char *magick,
   register int
     i;
 
+  register MagickInfo
+    *q;
+
   register StringMethodArgument
     *p;
 
   *magic='\0';
+  for (q=GetMagickInfo((char *) NULL); q != (MagickInfo *) NULL; q=q->next)
+    if (q->magick)
+      if (q->magick((unsigned char *) magick,MaxTextExtent))
+        {
+          (void) strcpy(magic,q->tag);
+          return(True);
+        }
   if (magic_list == (MagicInfo **) NULL)
     if (InitializeMagic() == False)
-      return(False);
-  if (magic_list == (MagicInfo **) NULL)
-    MagickError(FileOpenError,"Unable to read file","magic.mgk");
+      {
+        MagickWarning(FileOpenWarning,"no magic configuration file found",
+          MagicFilename);
+        return(False);
+      }
   for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
   {
     switch (magic_list[i]->member->method)

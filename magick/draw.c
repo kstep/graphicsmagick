@@ -1615,25 +1615,28 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        pixels[0]=point;
-        for (i=1; i < 4; i++)
+        do
         {
-          x=strtod(p,&p);
-          if (*p == ',')
-            p++;
-          y=strtod(p,&p);
-          if (*p == ',')
-            p++;
-          last.x=attribute == 'C' ? x : point.x+x;
-          last.y=attribute == 'C' ? y : point.y+y;
-          pixels[i]=last;
-        }
-        point=last;
-        for (i=0; i < 4; i++)
-          (q+i)->pixel=pixels[i];
-        q->coordinates=4;
-        GenerateBezier(q);
-        q+=q->coordinates;
+          pixels[0]=point;
+          for (i=1; i < 4; i++)
+          {
+            x=strtod(p,&p);
+            if (*p == ',')
+              p++;
+            y=strtod(p,&p);
+            if (*p == ',')
+              p++;
+            last.x=attribute == 'C' ? x : point.x+x;
+            last.y=attribute == 'C' ? y : point.y+y;
+            pixels[i]=last;
+          }
+          point=last;
+          for (i=0; i < 4; i++)
+            (q+i)->pixel=pixels[i];
+          q->coordinates=4;
+          GenerateBezier(q);
+          q+=q->coordinates;
+        } while (IsGeometry(p));
         break;
       }
       case 'H':
@@ -1681,25 +1684,28 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        pixels[0]=point;
-        for (i=1; i < 3; i++)
+        do
         {
-          x=strtod(p,&p);
-          if (*p == ',')
-            p++;
-          y=strtod(p,&p);
-          if (*p == ',')
-            p++;
-          last.x=attribute == 'Q' ? x : point.x+x;
-          last.y=attribute == 'Q' ? y : point.y+y;
-          pixels[i]=last;
-        }
-        point=last;
-        for (i=0; i < 3; i++)
-          (q+i)->pixel=pixels[i];
-        q->coordinates=3;
-        GenerateBezier(q);
-        q+=q->coordinates;
+          pixels[0]=point;
+          for (i=1; i < 3; i++)
+          {
+            x=strtod(p,&p);
+            if (*p == ',')
+              p++;
+            y=strtod(p,&p);
+            if (*p == ',')
+              p++;
+            last.x=attribute == 'Q' ? x : point.x+x;
+            last.y=attribute == 'Q' ? y : point.y+y;
+            pixels[i]=last;
+          }
+          point=last;
+          for (i=0; i < 3; i++)
+            (q+i)->pixel=pixels[i];
+          q->coordinates=3;
+          GenerateBezier(q);
+          q+=q->coordinates;
+        } while (IsGeometry(p));
         break;
       }
       case 's':
@@ -1708,46 +1714,49 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        reflected_pixels[0]=pixels[3];
-        for (i=2; i < 4; i++)
+        do
         {
-          x=strtod(p,&p);
-          if (*p == ',')
-            p++;
-          y=strtod(p,&p);
-          if (*p == ',')
-            p++;
-          last.x=attribute == 'S' ? x : point.x+x;
-          last.y=attribute == 'S' ? y : point.y+y;
-          reflected_pixels[i]=last;
-        }
-        point=last;
-        /*
-          Reflect the x control pixel.
-        */
-        reflect=pixels[3].x-pixels[0].x;
-        if (!reflect)
-          reflect=1.0;
-        reflect=(pixels[3].x-pixels[2].x)/reflect;
-        reflect=reflect*(reflected_pixels[3].x-pixels[3].x);
-        reflected_pixels[1].x=reflect+pixels[3].x;
-        /*
-          Reflect the y control pixel.
-        */
-        reflect=pixels[3].y-pixels[0].y;
-        if (!reflect)
-          reflect=1.0;
-        reflect=(pixels[3].y-pixels[2].y)/reflect;
-        reflect=reflect*(reflected_pixels[3].y-pixels[3].y);
-        reflected_pixels[1].y=reflect+pixels[3].y;
-        for (i=0; i < 4; i++)
-        {
-          pixels[i]=reflected_pixels[i];
-          (q+i)->pixel=pixels[i];
-        }
-        q->coordinates=4;
-        GenerateBezier(q);
-        q+=q->coordinates;
+          reflected_pixels[0]=pixels[3];
+          for (i=2; i < 4; i++)
+          {
+            x=strtod(p,&p);
+            if (*p == ',')
+              p++;
+            y=strtod(p,&p);
+            if (*p == ',')
+              p++;
+            last.x=attribute == 'S' ? x : point.x+x;
+            last.y=attribute == 'S' ? y : point.y+y;
+            reflected_pixels[i]=last;
+          }
+          point=last;
+          /*
+            Reflect the x control pixel.
+          */
+          reflect=pixels[3].x-pixels[0].x;
+          if (!reflect)
+            reflect=1.0;
+          reflect=(pixels[3].x-pixels[2].x)/reflect;
+          reflect=reflect*(reflected_pixels[3].x-pixels[3].x);
+          reflected_pixels[1].x=reflect+pixels[3].x;
+          /*
+            Reflect the y control pixel.
+          */
+          reflect=pixels[3].y-pixels[0].y;
+          if (!reflect)
+            reflect=1.0;
+          reflect=(pixels[3].y-pixels[2].y)/reflect;
+          reflect=reflect*(reflected_pixels[3].y-pixels[3].y);
+          reflected_pixels[1].y=reflect+pixels[3].y;
+          for (i=0; i < 4; i++)
+          {
+            pixels[i]=reflected_pixels[i];
+            (q+i)->pixel=pixels[i];
+          }
+          q->coordinates=4;
+          GenerateBezier(q);
+          q+=q->coordinates;
+        } while (IsGeometry(p));
         break;
       }
       case 't':
@@ -1756,46 +1765,49 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        reflected_pixels[0]=pixels[2];
-        for (i=2; i < 3; i++)
+        do
         {
-          x=strtod(p,&p);
-          if (*p == ',')
-            p++;
-          y=strtod(p,&p);
-          if (*p == ',')
-            p++;
-          last.x=attribute == 'T' ? x : point.x+x;
-          last.y=attribute == 'T' ? y : point.y+y;
-          reflected_pixels[i]=last;
-        }
-        point=last;
-        /*
-          Reflect the x control pixel.
-        */
-        reflect=pixels[2].x-pixels[0].x;
-        if (!reflect)
-          reflect=1.0;
-        reflect=(pixels[2].x-pixels[1].x)/reflect;
-        reflect=reflect*(reflected_pixels[2].x-pixels[2].x);
-        reflected_pixels[1].x=reflect+pixels[2].x;
-        /*
-          Reflect the y control pixel.
-        */
-        reflect=pixels[2].y-pixels[0].y;
-        if (!reflect)
-          reflect=1.0;
-        reflect=(pixels[2].y-pixels[1].y)/reflect;
-        reflect=reflect*(reflected_pixels[2].y-pixels[2].y);
-        reflected_pixels[1].y=reflect+pixels[2].y;
-        for (i=0; i < 3; i++)
-        {
-          pixels[i]=reflected_pixels[i];
-          (q+i)->pixel=pixels[i];
-        }
-        q->coordinates=3;
-        GenerateBezier(q);
-        q+=q->coordinates;
+          reflected_pixels[0]=pixels[2];
+          for (i=2; i < 3; i++)
+          {
+            x=strtod(p,&p);
+            if (*p == ',')
+              p++;
+            y=strtod(p,&p);
+            if (*p == ',')
+              p++;
+            last.x=attribute == 'T' ? x : point.x+x;
+            last.y=attribute == 'T' ? y : point.y+y;
+            reflected_pixels[i]=last;
+          }
+          point=last;
+          /*
+            Reflect the x control pixel.
+          */
+          reflect=pixels[2].x-pixels[0].x;
+          if (!reflect)
+            reflect=1.0;
+          reflect=(pixels[2].x-pixels[1].x)/reflect;
+          reflect=reflect*(reflected_pixels[2].x-pixels[2].x);
+          reflected_pixels[1].x=reflect+pixels[2].x;
+          /*
+            Reflect the y control pixel.
+          */
+          reflect=pixels[2].y-pixels[0].y;
+          if (!reflect)
+            reflect=1.0;
+          reflect=(pixels[2].y-pixels[1].y)/reflect;
+          reflect=reflect*(reflected_pixels[2].y-pixels[2].y);
+          reflected_pixels[1].y=reflect+pixels[2].y;
+          for (i=0; i < 3; i++)
+          {
+            pixels[i]=reflected_pixels[i];
+            (q+i)->pixel=pixels[i];
+          }
+          q->coordinates=3;
+          GenerateBezier(q);
+          q+=q->coordinates;
+        } while (IsGeometry(p));
         break;
       }
       case 'v':

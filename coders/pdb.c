@@ -266,7 +266,6 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket

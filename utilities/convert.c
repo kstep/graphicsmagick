@@ -1398,12 +1398,9 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("profile",option+1,4) == 0)
             {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing profile",option);
-                }
+              i++;
+              if (i == argc)
+                MagickError(OptionError,"Missing profile",option);
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
