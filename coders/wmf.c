@@ -2289,52 +2289,40 @@ static int util_append_mvg(wmfAPI * API, char *format, ...)
 
   /* Write to end of existing MVG string */
   {
-    char
-      buffer[MaxTextExtent];
-
     long
       str_length;
-
 
     va_list
       argp;
 
-    va_start(argp, format);
-#if !defined(HAVE_VSNPRINTF)
-    str_length = vsprintf(buffer, format, argp);
-#else
-    str_length = vsnprintf(buffer, ddata->mvg_alloc-ddata->mvg_length-1, format, argp);
-#endif
-    va_end(argp);
-    if(str_length > 0 && str_length < (MaxTextExtent - 1))
+    /* Pretty-print indentation */
+    if( *(ddata->mvg+ddata->mvg_length - 1) == '\n' )
       {
-        /* Pretty-print indentation */
-        if( *(ddata->mvg+ddata->mvg_length - 1) == '\n' )
+        long
+          i;
+
+        for( i=0; i< ddata->push_depth; i++)
           {
-            long
-              i;
-
-            char
-              buff[MaxTextExtent+1];
-
-            for( i=0; i< ddata->push_depth; i++)
-              buff[i]=' ';
-            buff[i]=0;
-            strcpy(ddata->mvg+ddata->mvg_length, buff);
-            ddata->mvg_length += strlen(buff);
+            *(ddata->mvg+ddata->mvg_length)=' ';
+            ++ddata->mvg_length;
           }
-
-        strcpy(ddata->mvg+ddata->mvg_length, buffer);
-        ddata->mvg_length += str_length;
-
-        assert(ddata->mvg_length+1<ddata->mvg_alloc);
-
-        return str_length;
+        *(ddata->mvg+ddata->mvg_length)=0;
       }
 
-    printf("vsnprintf return out of bounds (%ld)!\n", str_length);
-    
-    return -1;
+    va_start(argp, format);
+#if !defined(HAVE_VSNPRINTF)
+    str_length = vsprintf(ddata->mvg+ddata->mvg_length, format, argp);
+#else
+    str_length = vsnprintf(ddata->mvg+ddata->mvg_length, ddata->mvg_alloc-ddata->mvg_length-1, format, argp);
+#endif
+    va_end(argp);
+
+    ddata->mvg_length += str_length;
+    *(ddata->mvg+ddata->mvg_length)=0;
+
+    assert(ddata->mvg_length+1<ddata->mvg_alloc);
+
+    return str_length;
   }
 }
 
