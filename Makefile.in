@@ -635,6 +635,10 @@ dist-all: distdir
 	-chmod -R a+r $(distdir)
 	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
 	-rm -rf $(distdir)
+dist-zip: distdir
+	-chmod -R a+r $(distdir)
+	zip -rq $(distdir).zip $(distdir)
+	-rm -rf $(distdir)
 distdir: $(DISTFILES)
 	-rm -rf $(distdir)
 	mkdir $(distdir)

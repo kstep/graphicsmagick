@@ -557,11 +557,15 @@ extern const ColorlistInfo
 extern Export AnnotateInfo
   *CloneAnnotateInfo(const ImageInfo *,const AnnotateInfo *);
 
+extern Export char
+  *ImageToBlob(const ImageInfo *,Image *,unsigned int *);
+
 extern Export Image
   *AddNoiseImage(const Image *,const NoiseType),
   *AllocateImage(const ImageInfo *),
   *AppendImages(Image *,const unsigned int),
   *AverageImages(const Image *),
+  *BlobToImage(const ImageInfo *,const char *,const unsigned int),
   *BlurImage(const Image *,const double),
   *BorderImage(const Image *,const RectangleInfo *),
   *ChopImage(const Image *,const RectangleInfo *),
@@ -746,7 +750,6 @@ extern Export unsigned int
 extern Export void
   AllocateNextImage(const ImageInfo *,Image *),
   AnnotateImage(Image *,const AnnotateInfo *),
-  *BlobImage(const ImageInfo *,Image *,unsigned int *),
   CloseImage(Image *),
   CoalesceImages(Image *),
   ColorFloodfillImage(Image *,const RunlengthPacket *,Image *,const int x,

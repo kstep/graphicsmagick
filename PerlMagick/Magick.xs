@@ -1179,8 +1179,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (strEQcase(attribute,"interla"))
         {
-          sp=SvPOK(sval) ? LookupStr(InterlaceTypes,SvPV(sval,na)) :
-            SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(InterlaceTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid interlace value",
@@ -1482,8 +1481,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     {
       if (strEQcase(attribute,"verbose"))
         {
-          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) :
-            SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid verbose type",
@@ -2036,95 +2034,135 @@ Average(ref)
 #                                                                             #
 #                                                                             #
 #                                                                             #
-#   B l o b                                                                   #
+#   B l o b T o I m a g e                                                     #
 #                                                                             #
 #                                                                             #
 #                                                                             #
 ###############################################################################
 #
-#  Blobs are not very interesting until ImageMagick implements direct to memory
-#  image formats (via memory-mapped I/O).
 #
 void
-Blob(ref,...)
+BlobToImage(ref,...)
   Image::Magick ref=NO_INIT
   ALIAS:
-    BlobImage    = 1
-    blob         = 2
-    blobimage    = 3
+    BlobToImage  = 1
+    blobtoimage  = 2
+    blobto       = 3
   PPCODE:
   {
+    AV
+      *av;
+
     char
-      filename[MaxTextExtent];
+      **keep,
+      **list;
+
+    HV
+      *hv;
 
     Image
-      *image,
-      *next;
+      *image;
 
     int
-      scene;
-
-    register int
-      i;
+      ac,
+      n;
 
     jmp_buf
       error_jmp;
 
+    register char
+      **p;
+
+    register int
+      i;
+
     struct PackageInfo
-      *info,
-      *package_info;
+      *info;
+
+    STRLEN
+      *length;
 
     SV
-      *reference;
+      *reference,
+      *rv,
+      *sv;
 
-    unsigned int
-      length;
+    volatile int
+      number_images;
 
-    void
-      *blob;
-
-    package_info=(struct PackageInfo *) NULL;
+    number_images=0;
     error_list=newSVpv("",0);
+    ac=(items < 2) ? 1 : items-1;
+    list=(char **) safemalloc((ac+1)*sizeof(*list));
+    length=(STRLEN *) safemalloc((ac+1)*sizeof(length));
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
-        goto MethodError;
+        goto ReturnIt;
       }
     reference=SvRV(ST(0));
+    hv=SvSTASH(reference);
+    if (SvTYPE(reference) != SVt_PVAV)
+      {
+        MagickWarning(OptionWarning,"Unable to read into a single image",NULL);
+        goto ReturnIt;
+      }
+    av=(AV *) reference;
+    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    n=1;
+    if (items <= 1)
+      {
+        MagickWarning(OptionWarning,"no blobs to convert",NULL);
+        goto ReturnIt;
+      }
+    for (n=0, i=0; i < ac; i++)
+    {
+      list[n]=(char *) (SvPV(ST(i+1),length[n]));
+      if ((items >= 3) && strEQcase((char *) SvPV(ST(i+1),na),"blob"))
+        {
+          list[n]=(char *) (SvPV(ST(i+2),length[n]));
+          continue;
+        }
+      n++;
+    }
+    list[n]=(char *) NULL;
+    keep=list;
     error_jump=(&error_jmp);
     if (setjmp(error_jmp))
-      goto MethodError;
-    image=SetupList(reference,&info,(SV ***) NULL);
-    if (!image)
+      goto ReturnIt;
+    ExpandFilenames(&n,&list);
+    for (i=number_images=0; i < n; i++)
+    {
+      for (image=BlobToImage(info->image_info,list[i],length[i]); image;
+           image=image->next)
       {
-        MagickWarning(OptionWarning,"No images to blob",NULL);
-        goto MethodError;
+        sv=newSViv((IV) image);
+        rv=newRV(sv);
+        av_push(av,sv_bless(rv,hv));
+        SvREFCNT_dec(sv);
+        number_images++;
       }
-    package_info=ClonePackageInfo(info);
-    for (i=2; i < items; i+=2)
-      SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
-    (void) strcpy(filename,package_info->image_info->filename);
-    scene=0;
-    for (next=image; next; next=next->next)
-    {
-      (void) strcpy(next->filename,filename);
-      next->scene=scene++;
     }
-    SetImageInfo(package_info->image_info,True);
-    for (next=image; next; next=next->next)
-    {
-      blob=BlobImage(package_info->image_info,next,&length);
-      PUSHs(sv_2mortal(newSVpv(blob,length)));
-      safefree((char *) blob);
-      if (package_info->image_info->adjoin)
-        break;
-    }
+    /*
+      Free resources.
+    */
+    for (i=0; i < n; i++)
+      if (list[i])
+        for (p=keep; list[i] != *p++; )
+          if (*p == NULL)
+            {
+              free(list[i]);
+              break;
+            }
 
-  MethodError:
-    if (package_info)
-      DestroyPackageInfo(package_info);
-    SvREFCNT_dec(error_list);  /* throw away all errors */
+  ReturnIt:
+    safefree((char *) list);
+    sv_setiv(error_list,(IV) number_images);
+    SvPOK_on(error_list);
+    ST(0)=sv_2mortal(error_list);
     error_list=NULL;
+    error_jump=NULL;
+    XSRETURN(1);
   }
 
 #
@@ -3195,6 +3233,106 @@ Get(ref,...)
       }
       PUSHs(s ? sv_2mortal(s) : &sv_undef);
     }
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
+#   I m a g e T o B l o b                                                     #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#  Blobs are not very interesting until ImageMagick implements direct to memory
+#  image formats (via memory-mapped I/O).
+#
+void
+ImageToBlob(ref,...)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    ImageToBlob  = 1
+    imagetoblob  = 2
+    toblob       = 3
+    blob         = 4
+  PPCODE:
+  {
+    char
+      filename[MaxTextExtent];
+
+    Image
+      *image,
+      *next;
+
+    int
+      scene;
+
+    register int
+      i;
+
+    jmp_buf
+      error_jmp;
+
+    struct PackageInfo
+      *info,
+      *package_info;
+
+    SV
+      *reference;
+
+    unsigned int
+      length;
+
+    void
+      *blob;
+
+    package_info=(struct PackageInfo *) NULL;
+    error_list=newSVpv("",0);
+    if (!sv_isobject(ST(0)))
+      {
+        MagickWarning(OptionWarning,"Reference is not my type",PackageName);
+        goto MethodError;
+      }
+    reference=SvRV(ST(0));
+    error_jump=(&error_jmp);
+    if (setjmp(error_jmp))
+      goto MethodError;
+    image=SetupList(reference,&info,(SV ***) NULL);
+    if (!image)
+      {
+        MagickWarning(OptionWarning,"No images to blob",NULL);
+        goto MethodError;
+      }
+    package_info=ClonePackageInfo(info);
+    for (i=2; i < items; i+=2)
+      SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
+    (void) strcpy(filename,package_info->image_info->filename);
+    scene=0;
+    for (next=image; next; next=next->next)
+    {
+      (void) strcpy(next->filename,filename);
+      next->scene=scene++;
+    }
+    SetImageInfo(package_info->image_info,True);
+    for (next=image; next; next=next->next)
+    {
+      blob=ImageToBlob(package_info->image_info,next,&length);
+      if (blob != (char *) NULL)
+        {
+          PUSHs(sv_2mortal(newSVpv(blob,length)));
+          FreeMemory(blob);
+        }
+      if (package_info->image_info->adjoin)
+        break;
+    }
+
+  MethodError:
+    if (package_info)
+      DestroyPackageInfo(package_info);
+    SvREFCNT_dec(error_list);  /* throw away all errors */
+    error_list=NULL;
   }
 
 #
@@ -5241,7 +5379,7 @@ Read(ref,...)
       *sv;
 
     volatile int
-       number_images;
+      number_images;
 
     number_images=0;
     error_list=newSVpv("",0);

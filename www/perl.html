@@ -35,6 +35,7 @@
 <LI><A HREF="#mont">Create an Image Montage</A>
 <LI><A HREF="#misc">Miscellaneous Methods</A>
 <LI><A HREF="#erro">Handling Errors</A>
+<LI><A HREF="#blobs">Working with Blobs</A>
 <LI><A HREF="#copy">Copyright</A>
 </UL>
 <dl>
@@ -323,12 +324,6 @@ Read or Write Methods
   <td>write an image or image sequence</td>
 </tr>
 <tr>
-  <td>Blob</td>
-  <td></td>
-  <td>an array of image data in the respective image format</td>
-  <td>convert an image or image sequence to an array of binary data</td>
-</tr>
-<tr>
   <td>Display</td>
   <td>server name</td>
   <td>the number of images displayed </td>
@@ -342,9 +337,9 @@ Read or Write Methods
 </tr>
 </table>
 <p>
-For convenience, methods <tt>Write</tt>, <tt>Blob</tt>, <tt>Display</tt>,
-and <tt>Animate</tt> can take any parameter that
-<A HREF="#seta">SetAttribute</A> knows about.  For example, 
+For convenience, methods <tt>Write</tt>, <tt>Display</tt>, and
+<tt>Animate</tt> can take any parameter that <A HREF="#seta">SetAttribute</A>
+knows about.  For example, 
 <p>
 <pre>
     $image-&gt;Write(filename=&gt;'image.png', compress=&gt;'None');
@@ -365,6 +360,7 @@ To read an image in the GIF format from a PERL filehandle, use:
     $image-&gt;Read(file=&gt;DATA);
     close(DATA);
 </pre>
+<p>
 To write an image in the PNG format to a PERL filehandle, use:
 <p>
 <pre>
@@ -373,19 +369,6 @@ To write an image in the PNG format to a PERL filehandle, use:
     $image-&gt;Write(file=&gt;DATA, filename=&gt;$filename);
     close(DATA);
 </pre>
-<p>
-<tt>Blob</tt> returns the image data in their respective formats.  You can
-then print it, save it to an ODBC database, write it to a file, or pipe it
-to a display program:
-<p>
-<pre>
-    @blobs = $image-&gt;Blob();
-    open(DISPLAY,"| display -") || die;
-    binmode DISPLAY;
-    print DISPLAY $blobs[0];
-    close DISPLAY;
-</pre>
-<p>
 <p>
 You can optionally add <tt>Image</tt> to any method name.  For example, 
 <tt>ReadImage</tt> is an alias for method <tt>Read</tt>.
@@ -1691,7 +1674,62 @@ The following illustrates how you can use a numeric status code:
 </dl>
 <p><hr><p>
 <DL>
-<H2>
+<h2>
+<a name="blobs">Working with Blobs
+<dt>
+</h2>
+<dd>A blob contains data that directly represent a particular image format
+in memory instead of on disk.  <b>PerlMagick</b> supports blobs in any of
+these image <A HREF="../www/formats.html">formats</A> and provides
+methods to convert a blob to or from a particular image format.
+<p>
+<table border>
+<caption>
+Blob Methods
+</caption>
+<tr>
+    <th>Method</th>
+    <th>Parameters</th>
+    <th>Return Value</th>
+    <th>Description</th>
+</tr>
+<tr>
+  <td>ImageToBlob</td>
+  <td>any image <A HREF="#seta">attribute</A></td>
+  <td>an array of image data in the respective image format</td>
+  <td>convert an image or image sequence to an array of blobs</td>
+</tr>
+<tr>
+  <td>BlobToImage</td>
+  <td>one or more blobs</td>
+  <td>the number of blobs converted to an image</td>
+  <td>convert one or more blobs to an image</td>
+</tr>
+</table>
+<p>
+<tt>ImageToBlob</tt> returns the image data in their respective formats.  You
+can then print it, save it to an ODBC database, write it to a file, or pipe it
+to a display program:
+<p>
+<pre>
+    @blobs = $image-&gt;ImageToBlob();
+    open(DISPLAY,"| display -") || die;
+    binmode DISPLAY;
+    print DISPLAY $blobs[0];
+    close DISPLAY;
+</pre>
+<p>
+Method <tt>BlobToImage</tt> returns an image or image sequence converted from
+the supplied blob:
+<p>
+<pre>
+    $blob=$db->GetImage();
+    $image-&gt;BlobToImage($blob);
+</pre>
+<p>
+</dl>
+<p><hr><p>
+<DL>
 <A NAME="copy">
 <DT>Copyright
 </A>

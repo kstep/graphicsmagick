@@ -22,12 +22,17 @@
 </pre>
 <h3><A HREF="../ImageMagick.html">ImageMagick</A> 4.2.7, July 1, 1999</h3>
 <ul>
+<li> Global colormap was failing when the number of requested colors
+was small (bug report provided by
+<a href="mailto:philip@alum.mit.edu">philip@alum.mit.edu</a>).
+<p>
 <li> Added KDE Drag-n-Drop protocol (patch provided by
 <a href="mailto:Alexander.Zimmermann@fmi.uni-passau.de">Dr. Alexander
 Zimmermann</a>).
 <p>
 <li> Added <tt>BlobImage()</tt> method.  Right now it is a convenience
-method until we can implement direct to memory image blobs.
+method until we can implement direct to memory image blobs.  You can
+also read a blob: <tt>ReadImage(blob=>$blob)</tt>
 <p>
 <li> Added <tt>-deconstruct</tt> to 
 <A HREF="../www/convert.html"><I>convert</I></A> to
