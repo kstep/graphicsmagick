@@ -566,7 +566,9 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     (void) RGBTransformImage(chroma_image,YCbCrColorspace);
     if (interlace == NoInterlace)
       {
-        /* Write noninterlaced YUV. */
+        /*
+          Write noninterlaced YUV.
+        */
         for (y=0; y < (long) yuv_image->rows; y++)
         {
           p=AcquireImagePixels(yuv_image,0,y,yuv_image->columns,1,
@@ -622,7 +624,8 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
           {
             CloseBlob(image);
             AppendImageFormat("U",image->filename);
-            status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+            status=OpenBlob(image_info,image,WriteBinaryBlobMode,
+              &image->exception);
             if (status == False)
               ThrowWriterException(FileOpenError,"Unable to open file",image);
           }
@@ -645,7 +648,8 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
           {
             CloseBlob(image);
             AppendImageFormat("V",image->filename);
-            status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+            status=OpenBlob(image_info,image,WriteBinaryBlobMode,
+              &image->exception);
             if (status == False)
               ThrowWriterException(FileOpenError,"Unable to open file",image);
           }
