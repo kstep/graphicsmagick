@@ -3,19 +3,22 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
 	<TITLE>Magick::Drawable Class</TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
 	<META NAME="CREATED" CONTENT="20020805;15043598">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020805;15093355">
+	<META NAME="CHANGED" CONTENT="20020819;15052100">
 	<META NAME="DESCRIPTION" CONTENT="Documentation for Magick::Drawable class">
 	<STYLE>
 	<!--
 		TD P { color: #000000 }
+		TD P.western { font-size: 11pt }
 		H1 { color: #000000 }
 		P { color: #000000 }
 		H2 { color: #000000 }
 		H3 { color: #000000 }
+		TH P { color: #000000 }
+		TH P.western { font-size: 11pt }
 		A:link { color: #0000ee }
 		A:visited { color: #551a8b }
 	-->
@@ -37,7 +40,7 @@ sophistication.
 <P>The following is an example using the Drawable subclasses with a
 one-by-one approach to draw the following figure: 
 </P>
-<P><FONT COLOR="#000000"><IMG SRC="Drawable_example_1.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=300 HEIGHT=200 BORDER=3></FONT>
+<P><FONT COLOR="#000000"><FONT COLOR="#000000"><IMG SRC="Drawable_example_1.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=300 HEIGHT=200 BORDER=3></FONT></FONT>
 </P>
 <P><TT><FONT COLOR="#000066">#include &lt;string&gt;</FONT></TT>
 <BR><TT><FONT COLOR="#000066">#include &lt;iostream&gt;</FONT></TT>
@@ -134,554 +137,548 @@ return 1;</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
 </P>
 <P><TT><FONT COLOR="#000066">&nbsp; return 0;</FONT></TT> <BR><TT><FONT COLOR="#000066">}</FONT></TT>
 </P>
-<P STYLE="margin-bottom: 0cm"><FONT COLOR="#000000">Drawable depends
+<P STYLE="margin-bottom: 0in"><FONT COLOR="#000000">Drawable depends
 on the simple Coordinate structure which represents a pair of x,y
 coodinates. The methods provided by the Coordinate structure are
-shown in the following table:</FONT> <BR><BR>
+shown in the following table:</FONT> 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Coordinate Structure
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Coordinate Structure
 Methods</B></P>
 <TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Method/Member</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Signature</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Description</B></P>
-		</TD>
+		<TH>
+			<P CLASS="western">Method/Member</P>
+		</TH>
+		<TH>
+			<P CLASS="western">Signature</P>
+		</TH>
+		<TH>
+			<P CLASS="western">Description</P>
+		</TH>
 	</TR>
 	<TR>
 		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><FONT SIZE=2>Coordinate</FONT></P>
+			<P CLASS="western" ALIGN=CENTER>Coordinate</P>
 		</TD>
 		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
+			<P CLASS="western">void</P>
 		</TD>
 		<TD>
-			<P><FONT SIZE=2>Default Constructor</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>double x_, double y_</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>Constructor, setting <I>first</I> &amp; <I>second</I></FONT></P>
+			<P CLASS="western">Default Constructor</P>
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-			<P ALIGN=CENTER><FONT SIZE=2>x</FONT></P>
+			<P CLASS="western">double x_, double y_</P>
 		</TD>
 		<TD>
-			<P><FONT SIZE=2>double x_</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>x coordinate member</FONT></P>
+			<P CLASS="western">Constructor, setting <I>first</I> &amp; <I>second</I></P>
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-			<P ALIGN=CENTER><FONT SIZE=2>y</FONT></P>
+			<P CLASS="western" ALIGN=CENTER>x</P>
 		</TD>
 		<TD>
-			<P><FONT SIZE=2>double y_</FONT></P>
+			<P CLASS="western">double x_</P>
 		</TD>
 		<TD>
-			<P><FONT SIZE=2>y coordinate member</FONT></P>
+			<P CLASS="western">x coordinate member</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P CLASS="western" ALIGN=CENTER>y</P>
+		</TD>
+		<TD>
+			<P CLASS="western">double y_</P>
+		</TD>
+		<TD>
+			<P CLASS="western">y coordinate member</P>
 		</TD>
 	</TR>
 </TABLE>
-<P STYLE="margin-bottom: 0cm"><FONT COLOR="#000000">The Drawable
+<P STYLE="margin-bottom: 0in"><FONT COLOR="#000000">The Drawable
 classes are shown in the following table. Only constructor signatures
 are documented here. Each Drawable class also provides methods by
-which each individual parameter may be adjusted.</FONT> <BR><BR>
+which each individual parameter may be adjusted.</FONT> 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Drawable Classes</B></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Drawable Classes</B></P>
 <TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
-	<COL WIDTH=47*>
-	<COL WIDTH=50*>
-	<COL WIDTH=159*>
+	<COL WIDTH=68*>
+	<COL WIDTH=55*>
+	<COL WIDTH=133*>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><B>Sub-Class</B></P>
-		</TD>
-		<TD WIDTH=19%>
-			<P ALIGN=CENTER><B>Constructor Signature</B></P>
-		</TD>
-		<TD WIDTH=62%>
-			<P ALIGN=CENTER><B>Description</B></P>
-		</TD>
+		<TH WIDTH=27%>
+			<P CLASS="western">Sub-Class</P>
+		</TH>
+		<TH WIDTH=21%>
+			<P CLASS="western">Constructor Signature</P>
+		</TH>
+		<TH WIDTH=52%>
+			<P CLASS="western">Description</P>
+		</TH>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2 WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableAffine"></A><FONT SIZE=2>DrawableAffine</FONT></P>
+		<TD ROWSPAN=2 WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableAffine</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double sx_, double sy_, double rx_, double ry_,
-			double tx_, double ty_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double sx_, double sy_, double rx_, double ry_,
+			double tx_, double ty_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify a transformation matrix to adjust scaling,
-			rotation, and translation (coordinate transformation) for
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify a transformation matrix to adjust
+			scaling, rotation, and translation (coordinate transformation) for
 			subsequently drawn objects in the same or decendent drawing
 			context.&nbsp; The sx_ &amp; sy_ parameters represent the x &amp;
 			y scale factors, the rx_ &amp; ry_ parameters represent the x &amp;
 			y rotation, and the tx_ &amp; ty_ parameters represent the x &amp;
-			y translation.</FONT></P>
+			y translation.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>void</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">void</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify a transformation matrix to adjust scaling,
-			rotation, and translation (coordinate transformation) for
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify a transformation matrix to adjust
+			scaling, rotation, and translation (coordinate transformation) for
 			subsequently drawn objects in the same or decendent drawing
 			context. Initialized to unity (no effect) affine values. Use class
 			methods (not currently documented) to adjust individual parameters
-			from their unity values.</FONT></P>
+			from their unity values.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableAngle"></A><FONT SIZE=2>DrawableAngle</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableAngle</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double angle_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double angle_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Set drawing angle</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Set drawing angle</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableArc"></A><FONT SIZE=2>DrawableArc</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableArc</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double startX_, double startY_, double endX_,
-			double endY_, double startDegrees, double endDegrees_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double startX_, double startY_, double endX_,
+			double endY_, double startDegrees, double endDegrees_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw an arc using the <I>stroke</I> color and
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw an arc using the <I>stroke</I> color and
 			based on the circle starting at coordinates <I>startX_</I>,<I>startY_,</I>
 			and ending with coordinates <I>endX_,</I>endY_, and bounded by the
-			rotational arc <I>startDegrees_,endDegrees_</I></FONT></P>
+			rotational arc <I>startDegrees_,endDegrees_</I></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableBezier"></A><FONT SIZE=2>DrawableBezier</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableBezier</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>const std::list&lt;Magick::Coordinate&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw a bezier curve using the <I>stroke</I> color
-			and based on the coordinates specified by the <I>coordinates_
-			</I>list.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw a bezier curve using the <I>stroke</I>
+			color and based on the coordinates specified by the <I>coordinates_
+			</I>list.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableCircle"></A><FONT SIZE=2>DrawableCircle</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableCircle</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double originX_, double originY_, double perimX_,
-			double perimY_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double originX_, double originY_, double
+			perimX_, double perimY_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw a circle using the <I>stroke</I> color and
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw a circle using the <I>stroke</I> color and
 			thickness using specified origin and perimeter coordinates. If a
-			<I>fill</I> color is specified, then the object is filled.</FONT></P>
+			<I>fill</I> color is specified, then the object is filled.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableColor"></A><FONT SIZE=2>DrawableColor</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableColor</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_, <A HREF="Enumerations.html#PaintMethod">PaintMethod</A>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2>double x_, double y_, <A HREF="Enumerations.html#PaintMethod">PaintMethod</A>
 			paintMethod_</FONT></P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Color image according to paintMethod. The point
+		<TD WIDTH=52%>
+			<P CLASS="western">Color image according to paintMethod. The point
 			method recolors the target pixel.&nbsp; The replace method
 			recolors any pixel that matches the color of the target pixel.&nbsp;
 			Floodfill recolors any pixel that matches the color of the target
 			pixel and is a neighbor,&nbsp; whereas filltoborder recolors any
 			neighbor pixel that is not the border color. Finally, reset
-			recolors all pixels.</FONT></P>
+			recolors all pixels.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=6 WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableCompositeImage"></A><FONT SIZE=2>DrawableCompositeImage</FONT></P>
+		<TD ROWSPAN=6 WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableCompositeImage</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_, const std::string &amp;filename_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double x_, double y_, const std::string
+			&amp;filename_</P>
 		</TD>
-		<TD ROWSPAN=2 WIDTH=62%>
-			<P><FONT SIZE=2>Composite current image with contents of specified
-			image, at specified coordinates. If the <I>matte</I> attribute is
-			set to <I>true</I>, then the image composition will consider an
-			alpha channel, or transparency, present in the image file so that
-			non-opaque portions allow part (or all) of the composite image to
-			show through.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_, const Image &amp;image_</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_, double width_, double
-			height_, const std::string &amp;filename_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2 WIDTH=62%>
-			<P><FONT SIZE=2>Composite current image with contents of specified
-			image, rendered with specified width and height, at specified
-			coordinates. If the <I>matte</I> attribute is set to <I>true</I>,
-			then the image composition will consider an alpha channel, or
-			transparency, present in the image file so that non-opaque
-			portions allow part (or all) of the composite image to show
-			through. If the specified <I>width</I> or <I>height</I> is zero,
-			then the image is composited at its natural size, without
-			enlargement or reduction.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_, double width_, double
-			height_, const Image &amp;image_</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_, double width_, double
-			height_, const std::string &amp;filename_, <A HREF="Enumerations.html#CompositeOperator">CompositeOperator</A>
-			composition_</FONT></P>
-		</TD>
-		<TD ROWSPAN=2 WIDTH=62%>
-			<P><FONT SIZE=2>Composite current image with contents of specified
-			image, rendered with specified width and height, using specified
-			composition algorithm, at specified coordinates. If the <I>matte</I>
+		<TD ROWSPAN=2 WIDTH=52%>
+			<P CLASS="western">Composite current image with contents of
+			specified image, at specified coordinates. If the <I>matte</I>
 			attribute is set to <I>true</I>, then the image composition will
 			consider an alpha channel, or transparency, present in the image
 			file so that non-opaque portions allow part (or all) of the
-			composite image to show through. If the specified <I>width</I> or
-			<I>height</I> is zero, then the image is composited at its natural
-			size, without enlargement or reduction.</FONT></P>
+			composite image to show through.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_, double width_, double
-			height_, const Image &amp;image_, <A HREF="Enumerations.html#CompositeOperator">CompositeOperator</A>
+		<TD WIDTH=21%>
+			<P CLASS="western">double x_, double y_, const Image &amp;image_</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=21%>
+			<P CLASS="western">double x_, double y_, double width_, double
+			height_, const std::string &amp;filename_</P>
+		</TD>
+		<TD ROWSPAN=2 WIDTH=52%>
+			<P CLASS="western">Composite current image with contents of
+			specified image, rendered with specified width and height, at
+			specified coordinates. If the <I>matte</I> attribute is set to
+			<I>true</I>, then the image composition will consider an alpha
+			channel, or transparency, present in the image file so that
+			non-opaque portions allow part (or all) of the composite image to
+			show through. If the specified <I>width</I> or <I>height</I> is
+			zero, then the image is composited at its natural size, without
+			enlargement or reduction.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=21%>
+			<P CLASS="western">double x_, double y_, double width_, double
+			height_, const Image &amp;image_</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2>double x_, double y_, double
+			width_, double height_, const std::string &amp;filename_,
+			<A HREF="Enumerations.html#CompositeOperator">CompositeOperator</A>
+			composition_</FONT></P>
+		</TD>
+		<TD ROWSPAN=2 WIDTH=52%>
+			<P CLASS="western">Composite current image with contents of
+			specified image, rendered with specified width and height, using
+			specified composition algorithm, at specified coordinates. If the
+			<I>matte</I> attribute is set to <I>true</I>, then the image
+			composition will consider an alpha channel, or transparency,
+			present in the image file so that non-opaque portions allow part
+			(or all) of the composite image to show through. If the specified
+			<I>width</I> or <I>height</I> is zero, then the image is
+			composited at its natural size, without enlargement or reduction.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2>double x_, double y_, double
+			width_, double height_, const Image &amp;image_, <A HREF="Enumerations.html#CompositeOperator">CompositeOperator</A>
 			composition_</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableTextDecoration"></A><FONT SIZE=2>DrawableTextDecoration</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableDashArray</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2><A HREF="Enumerations.html#DecorationType">DecorationType</A>
-			decoration_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">const double* dasharray_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify decoration to apply to text.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableDashArray"></A><FONT SIZE=2>DrawableDashArray</FONT></P>
-		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>const double* dasharray_</FONT></P>
-		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify the pattern of dashes and gaps used to
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify the pattern of dashes and gaps used to
 			stroke paths. The strokeDashArray represents a zero-terminated
 			array of numbers that specify the lengths of alternating dashes
 			and gaps in pixels. If an odd number of values is provided, then
 			the list of values is repeated to yield an even number of values.&nbsp;
 			A typical strokeDashArray_ array might contain the members 5 3 2
-			0, where the zero value indicates the end of the pattern array.</FONT></P>
+			0, where the zero value indicates the end of the pattern array.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableDashOffset"></A><FONT SIZE=2>DrawableDashOffset</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableDashOffset</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double offset_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double offset_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify the distance into the dash pattern to
-			start the dash. See documentation on SVG's <A HREF="http://www.w3.org/TR/SVG/painting.html#StrokeDashoffsetProperty">stroke-dashoffset</A>
+		<TD WIDTH=52%>
+			<P CLASS="western"><FONT SIZE=2>Specify the distance into the dash
+			pattern to start the dash. See documentation on SVG's
+			<A HREF="http://www.w3.org/TR/SVG/painting.html#StrokeDashoffsetProperty">stroke-dashoffset</A>
 			property for usage details.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableEllipse"></A><FONT SIZE=2>DrawableEllipse</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableEllipse</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double originX_, double originY_, double radiusX_,
-			double radiusY_, double arcStart_, double arcEnd_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double originX_, double originY_, double
+			radiusX_, double radiusY_, double arcStart_, double arcEnd_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw an ellipse using the <I>stroke</I> color and
-			thickness, specified origin, x &amp; y radius, as well as
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw an ellipse using the <I>stroke</I> color
+			and thickness, specified origin, x &amp; y radius, as well as
 			specified start and end of arc in degrees. If a <I>fill</I> color
-			is specified, then the object is filled.</FONT></P>
+			is specified, then the object is filled.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableFillColor"></A><FONT SIZE=2>DrawableFillColor</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableFillColor</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>const <A HREF="Color.html">Color</A> &amp;color_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2>const <A HREF="Color.html">Color</A>
+			&amp;color_</FONT></P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify drawing object fill color.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify drawing object fill color.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableFillRule"></A><FONT SIZE=2>DrawableFillRule</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableFillRule</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2><A HREF="Enumerations.html#FillRule">FillRule</A>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2><A HREF="Enumerations.html#FillRule">FillRule</A>
 			fillRule_</FONT></P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify the algorithm which is to be used to
-			determine what parts of the canvas are included inside the shape.
-			See documentation on SVG's <A HREF="http://www.w3.org/TR/SVG/painting.html#FillRuleProperty">fill-rule</A>&nbsp;
+		<TD WIDTH=52%>
+			<P CLASS="western"><FONT SIZE=2>Specify the algorithm which is to
+			be used to determine what parts of the canvas are included inside
+			the shape. See documentation on SVG's <A HREF="http://www.w3.org/TR/SVG/painting.html#FillRuleProperty">fill-rule</A>&nbsp;
 			property for usage details.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableFillOpacity"></A><FONT SIZE=2>DrawableFillOpacity</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableFillOpacity</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double opacity_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double opacity_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify opacity to use when drawing using fill
-			color.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2 WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableFont"></A><FONT SIZE=2>DrawableFont</FONT></P>
-		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>const std::string &amp;font_</FONT></P>
-		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify font name to use when drawing text.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify opacity to use when drawing using fill
+			color.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>const std::string &amp;family_,</FONT> <BR><FONT SIZE=2><A HREF="Enumerations.html#StyleType">StyleType</A>
+		<TD ROWSPAN=2 WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableFont</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western">const std::string &amp;font_</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify font name to use when drawing text.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2>const std::string &amp;family_,</FONT>
+			<BR><FONT SIZE=2><A HREF="Enumerations.html#StyleType">StyleType</A>
 			style_,</FONT> <BR><FONT SIZE=2>unsigned long weight_,</FONT>
 			<BR><FONT SIZE=2><A HREF="Enumerations.html#StretchType">StretchType</A>
 			stretch_</FONT></P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify font family, style, weight (one of the set
-			{ 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 } with 400
-			being the normal size), and stretch to be used to select the font
-			used when drawing text. Wildcard matches may be applied to style
-			via the AnyStyle enumeration, applied to weight if weight is zero,
-			and applied to stretch via the AnyStretch enumeration.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify font family, style, weight (one of the
+			set { 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 } with
+			400 being the normal size), and stretch to be used to select the
+			font used when drawing text. Wildcard matches may be applied to
+			style via the AnyStyle enumeration, applied to weight if weight is
+			zero, and applied to stretch via the AnyStretch enumeration.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableGravity"></A><FONT SIZE=2>DrawableGravity</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableGravity</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2><A HREF="Enumerations.html#GravityType">GravityType</A>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2><A HREF="Enumerations.html#GravityType">GravityType</A>
 			gravity_</FONT></P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify text positioning gravity.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify text positioning gravity.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableLine"></A><FONT SIZE=2>DrawableLine</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableLine</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double startX_, double startY_, double endX_,
-			double endY_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double startX_, double startY_, double endX_,
+			double endY_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw a line using <I>stroke</I> color and
-			thickness using starting and ending coordinates</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw a line using <I>stroke</I> color and
+			thickness using starting and ending coordinates</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableMatte"></A><FONT SIZE=2>DrawableMatte</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableMatte</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_, <A HREF="Enumerations.html#PaintMethod">PaintMethod</A>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2>double x_, double y_, <A HREF="Enumerations.html#PaintMethod">PaintMethod</A>
 			paintMethod_</FONT></P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Change the pixel matte value to transparent. The
-			point method changes the matte value of the target pixel.&nbsp;
+		<TD WIDTH=52%>
+			<P CLASS="western">Change the pixel matte value to transparent.
+			The point method changes the matte value of the target pixel.&nbsp;
 			The replace method changes the matte value of any pixel that
 			matches the color of the target pixel. Floodfill changes the matte
 			value of any pixel that matches the color of the target pixel and
 			is a neighbor, whereas filltoborder changes the matte value of any
 			neighbor pixel that is not the border color, Finally reset changes
-			the matte value of all pixels.</FONT></P>
+			the matte value of all pixels.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableMiterLimit"></A><FONT SIZE=2>DrawableMiterLimit</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableMiterLimit</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>unsigned int miterLimit_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">unsigned int miterLimit_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify miter limit. When two line segments meet
-			at a sharp angle and miter joins have been specified for
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify miter limit. When two line segments
+			meet at a sharp angle and miter joins have been specified for
 			'lineJoin', it is possible for the miter to extend far beyond the
 			thickness of the line stroking the path. The miterLimit' imposes a
 			limit on the ratio of the miter length to the 'lineWidth'. The
-			default value of this parameter is 4.</FONT></P>
+			default value of this parameter is 4.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawablePath"></A><FONT SIZE=2>DrawablePath</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePath</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>const std::list&lt;Magick::VPath&gt; &amp;path_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">const std::list&lt;Magick::VPath&gt; &amp;path_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw on image using vector path.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawablePoint"></A><FONT SIZE=2>DrawablePoint</FONT></P>
-		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_</FONT></P>
-		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw a point using <I>stroke</I> color and
-			thickness at coordinate</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw on image using vector path.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawablePointSize"></A><FONT SIZE=2>DrawablePointSize</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePoint</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double pointSize_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double x_, double y_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Set font point size.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw a point using <I>stroke</I> color and
+			thickness at coordinate</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawablePolygon"></A><FONT SIZE=2>DrawablePolygon</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePointSize</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>const std::list&lt;Magick::Coordinate&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double pointSize_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw an arbitrary polygon using <I>stroke</I>
+		<TD WIDTH=52%>
+			<P CLASS="western">Set font point size.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePolygon</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw an arbitrary polygon using <I>stroke</I>
 			color and thickness consisting of three or more coordinates
 			contained in an STL list. If a <I>fill</I> color is specified,
-			then the object is filled.</FONT></P>
+			then the object is filled.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawablePolyline"></A><FONT SIZE=2>DrawablePolyline</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePolyline</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>const std::list&lt;Magick::Coordinate&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw an arbitrary polyline using <I>stroke</I>
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw an arbitrary polyline using <I>stroke</I>
 			color and thickness consisting of three or more coordinates
 			contained in an STL list. If a <I>fill</I> color is specified,
-			then the object is filled.</FONT></P>
+			then the object is filled.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawablePopGraphicContext"></A><FONT SIZE=2>DrawablePopGraphicContext</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePopGraphicContext</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>void</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">void</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Pop Graphic Context. Removing the current graphic
-			context from the graphic context stack restores the options to the
-			values they had prior to the preceding <A HREF="#DrawablePushGraphicContext"><I>DrawablePushGraphicContext</I></A>
+		<TD WIDTH=52%>
+			<P CLASS="western"><FONT SIZE=2>Pop Graphic Context. Removing the
+			current graphic context from the graphic context stack restores
+			the options to the values they had prior to the preceding
+			<A HREF="#DrawablePushGraphicContext"><I>DrawablePushGraphicContext</I></A>
 			operation.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawablePushGraphicContext"></A><FONT SIZE=2>DrawablePushGraphicContext</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePushGraphicContext</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>void</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">void</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Push Graphic Context.&nbsp; When a graphic context
-			is pushed, options set after the context is pushed (such as
-			coordinate transformations, color settings, etc.) are saved to a
-			new graphic context. This allows related options to be saved on a
-			graphic context &quot;stack&quot; in order to support heirarchical
-			nesting of options. When <A HREF="#DrawablePopGraphicContext"><I>DrawablePopGraphicContext</I></A>
+		<TD WIDTH=52%>
+			<P CLASS="western"><FONT SIZE=2>Push Graphic Context.&nbsp; When a
+			graphic context is pushed, options set after the context is pushed
+			(such as coordinate transformations, color settings, etc.) are
+			saved to a new graphic context. This allows related options to be
+			saved on a graphic context &quot;stack&quot; in order to support
+			heirarchical nesting of options. When <A HREF="#DrawablePopGraphicContext"><I>DrawablePopGraphicContext</I></A>
 			is used to pop the current graphic context, the options in effect
 			during the last <I>DrawablePushGraphicContext</I> operation are
 			restored.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawablePushPattern"></A><FONT SIZE=2>DrawablePushPattern</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePushPattern</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>std::string &amp;id_, long x_, long y_, long
-			width_, long height_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">std::string &amp;id_, long x_, long y_, long
+			width_, long height_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Start a pattern definition with arbitrary pattern
-			name specified by <I>id_</I>, pattern offset specified by <I>x_</I>
-			and <I>y_</I>, and pattern size specified by <I>width_</I> and
-			<I>height_</I>. The pattern is defined within the coordinate
-			system defined by the specified offset and size. Arbitrary drawing
-			objects (including <A HREF="#DrawableCompositeImage">DrawableCompositeImage</A>)
+		<TD WIDTH=52%>
+			<P CLASS="western"><FONT SIZE=2>Start a pattern definition with
+			arbitrary pattern name specified by <I>id_</I>, pattern offset
+			specified by <I>x_</I> and <I>y_</I>, and pattern size specified
+			by <I>width_</I> and <I>height_</I>. The pattern is defined within
+			the coordinate system defined by the specified offset and size.
+			Arbitrary drawing objects (including <A HREF="#DrawableCompositeImage">DrawableCompositeImage</A>)
 			may be specified between <A HREF="#DrawablePushPattern">DrawablePushPattern</A>
 			and <A HREF="#DrawablePopPattern">DrawablePopPattern</A> in order
 			to draw the pattern. Normally the pair <A HREF="#DrawablePushGraphicContext">DrawablePushGraphicContext</A>
@@ -692,242 +689,278 @@ which each individual parameter may be adjusted.</FONT> <BR><BR>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawablePopPattern"></A><FONT SIZE=2>DrawablePopPattern</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePopPattern</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>void</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">void</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Terminate a pattern definition started via
-			<A HREF="#DrawablePushPattern">DrawablePushPattern</A>.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western"><FONT SIZE=2>Terminate a pattern definition
+			started via <A HREF="#DrawablePushPattern">DrawablePushPattern</A>.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableRectangle"></A><FONT SIZE=2>DrawableRectangle</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableRectangle</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double upperLeftX_, double upperLeftY_, double
-			lowerRightX_, double lowerRightY</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double upperLeftX_, double upperLeftY_, double
+			lowerRightX_, double lowerRightY</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw a rectangle using <I>stroke</I> color and
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw a rectangle using <I>stroke</I> color and
 			thickness from upper-left coordinates to lower-right coordinates.&nbsp;
-			If a <I>fill</I> color is specified, then the object is filled.</FONT></P>
+			If a <I>fill</I> color is specified, then the object is filled.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableRotation"></A><FONT SIZE=2>DrawableRotation</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableRotation</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double angle_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double angle_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Set rotation to use when drawing (coordinate
-			transformation).</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableRoundRectangle"></A><FONT SIZE=2>DrawableRoundRectangle</FONT></P>
-		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double centerX_, double centerY_, double width_,
-			double hight_, double cornerWidth_, double cornerHeight_</FONT></P>
-		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw a rounded rectangle using <I>stroke</I> color
-			and thickness, with specified center coordinate, specified width
-			and height, and specified corner width and height.&nbsp; If a <I>fill</I>
-			color is specified, then the object is filled.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Set rotation to use when drawing (coordinate
+			transformation).</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableScaling"></A><FONT SIZE=2>DrawableScaling</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableRoundRectangle</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double centerX_, double centerY_, double
+			width_, double hight_, double cornerWidth_, double cornerHeight_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Apply scaling in x and y direction while drawing
-			objects (coordinate transformation).</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableSkewX"></A><FONT SIZE=2>DrawableSkewX</FONT></P>
-		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double angle_</FONT></P>
-		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Apply Skew in X direction (coordinate
-			transformation)</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw a rounded rectangle using <I>stroke</I>
+			color and thickness, with specified center coordinate, specified
+			width and height, and specified corner width and height.&nbsp; If
+			a <I>fill</I> color is specified, then the object is filled.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableSkewY"></A><FONT SIZE=2>DrawableSkewY</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableScaling</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double angle_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double x_, double y_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Apply Skew in Y direction</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableStrokeAntialias"></A><FONT SIZE=2>DrawableStrokeAntialias</FONT></P>
-		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>bool flag_</FONT></P>
-		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Antialias while drawing lines or object outlines.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Apply scaling in x and y direction while
+			drawing objects (coordinate transformation).</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableStrokeColor"></A><FONT SIZE=2>DrawableStrokeColor</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableSkewX</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>const <A HREF="Color.html">Color</A> &amp;color_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double angle_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Set color to use when drawing lines or object
-			outlines.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Apply Skew in X direction (coordinate
+			transformation)</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableStrokeLineCap"></A><FONT SIZE=2>DrawableStrokeLineCap</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableSkewY</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2><A HREF="Enumerations.html#LineCap">LineCap</A>
+		<TD WIDTH=21%>
+			<P CLASS="western">double angle_</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western">Apply Skew in Y direction</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableStrokeAntialias</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western">bool flag_</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western">Antialias while drawing lines or object
+			outlines.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableStrokeColor</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2>const <A HREF="Color.html">Color</A>
+			&amp;color_</FONT></P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western">Set color to use when drawing lines or object
+			outlines.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableStrokeLineCap</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2><A HREF="Enumerations.html#LineCap">LineCap</A>
 			linecap_</FONT></P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify the shape to be used at the end of open
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify the shape to be used at the end of open
 			subpaths when they are stroked. Values of LineCap are
-			UndefinedCap, ButtCap, RoundCap, and SquareCap.</FONT></P>
+			UndefinedCap, ButtCap, RoundCap, and SquareCap.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableStrokeLineJoin"></A><FONT SIZE=2>DrawableStrokeLineJoin</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableStrokeLineJoin</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2><A HREF="Enumerations.html#LineJoin">LineJoin</A>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2><A HREF="Enumerations.html#LineJoin">LineJoin</A>
 			linejoin_</FONT></P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Specify the shape to be used at the corners of
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify the shape to be used at the corners of
 			paths (or other vector shapes) when they are stroked. Values of
-			LineJoin are UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</FONT></P>
+			LineJoin are UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableStrokeOpacity"></A><FONT SIZE=2>DrawableStrokeOpacity</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableStrokeOpacity</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double opacity_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double opacity_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Opacity to use when drawing lines or object
-			outlines.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableStrokeWidth"></A><FONT SIZE=2>DrawableStrokeWidth</FONT></P>
-		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double width_</FONT></P>
-		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Set width to use when drawing lines or object
-			outlines.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Opacity to use when drawing lines or object
+			outlines.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableText"></A><FONT SIZE=2>DrawableText</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableStrokeWidth</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_, std::string text_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">double width_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Annotate image with text using <I>stroke</I>
+		<TD WIDTH=52%>
+			<P CLASS="western">Set width to use when drawing lines or object
+			outlines.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2 WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableText</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western">double x_, double y_, std::string text_</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western"><FONT SIZE=2>Annotate image with text using
+			<I>stroke</I> color, font, font pointsize, and <I>box</I> color
+			(text background color), at specified coordinates. If text
+			contains <A HREF="FormatCharacters.html">special format characters</A>
+			the image filename, type, width, height, or other image attributes
+			may be incorporated in the text (see label()).</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=21%>
+			<P CLASS="western">const double x_, const double y_, const
+			std::string &amp;text_, const std::string &amp;encoding_</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western"><FONT SIZE=2>Annotate image with text
+			represented with text encoding, using current  <I>stroke</I>
 			color, font, font pointsize, and <I>box</I> color (text background
 			color), at specified coordinates. If text contains <A HREF="FormatCharacters.html">special
 			format characters</A> the image filename, type, width, height, or
 			other image attributes may be incorporated in the text (see
 			label()).</FONT></P>
+			<P CLASS="western"><FONT SIZE=2>The text encoding specifies the
+			code set to use for text annotations. The only character encoding
+			which may be specified at this time is &quot;<FONT FACE="Courier, monospace">UTF-8</FONT>&quot;
+			for representing <A HREF="http://www.unicode.org/">Unicode</A> as
+			a sequence of bytes. Specify an empty string to set text encoding
+			to the system's default. Successful text annotation using Unicode
+			may require fonts designed to support Unicode.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableTextAntialias"></A><FONT SIZE=2>DrawableTextAntialias</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableTextAntialias</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>bool flag_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">bool flag_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Antialias while drawing text (default true). The
-			main reason to disable text antialiasing is to avoid adding new
-			colors to the image.</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableTextUnderColor"></A><FONT SIZE=2>DrawableTextUnderColor</FONT></P>
-		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>const Color &amp;color_</FONT></P>
-		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Draw a box under rendered text using the specified
-			color.</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Antialias while drawing text (default true).
+			The main reason to disable text antialiasing is to avoid adding
+			new colors to the image.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableTranslation"></A><FONT SIZE=2>DrawableTranslation</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="DrawableTextDecoration"></A>
+			DrawableTextDecoration</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>double x_, double y_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western"><FONT SIZE=2><A HREF="Enumerations.html#DecorationType">DecorationType</A>
+			decoration_</FONT></P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Apply coordinate translation (set new coordinate
-			origin).</FONT></P>
+		<TD WIDTH=52%>
+			<P CLASS="western">Specify decoration (e.g. UnderlineDecoration)
+			to apply to text.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD WIDTH=18%>
-			<P ALIGN=CENTER><A NAME="DrawableViewbox"></A><FONT SIZE=2>DrawableViewbox</FONT></P>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableTextUnderColor</P>
 		</TD>
-		<TD WIDTH=19%>
-			<P><FONT SIZE=2>unsigned long x1_, unsigned long y1_, unsigned
-			long x2_, unsigned long y2_</FONT></P>
+		<TD WIDTH=21%>
+			<P CLASS="western">const Color &amp;color_</P>
 		</TD>
-		<TD WIDTH=62%>
-			<P><FONT SIZE=2>Dimensions of the output viewbox. If the image is
-			to be written to a vector format (e.g. MVG or SVG), then a
+		<TD WIDTH=52%>
+			<P CLASS="western">Draw a box under rendered text using the
+			specified color.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableTranslation</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western">double x_, double y_</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western">Apply coordinate translation (set new
+			coordinate origin).</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableViewbox</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western">unsigned long x1_, unsigned long y1_, unsigned
+			long x2_, unsigned long y2_</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western">Dimensions of the output viewbox. If the image
+			is to be written to a vector format (e.g. MVG or SVG), then a
 			DrawablePushGraphicContext() object should be pushed to the head
 			of the list, followed by a DrawableViewbox() statement to
 			establish the output canvas size. A matching
 			DrawablePopGraphicContext() object should be pushed to the tail of
-			the list.</FONT></P>
+			the list.</P>
 		</TD>
 	</TR>
 </TABLE>
-<P><BR><BR>
-</P>
 <H2 ALIGN=CENTER>Vector Path Classes</H2>
 <P>The vector paths supported by Magick++ are based on those
 supported by the <A HREF="http://www.w3.org/TR/SVG/paths.html">SVG
@@ -945,197 +978,210 @@ it, <A HREF="#DrawableSkewX">skew</A> it, or <A HREF="#DrawableScaling">scale</A
 it. 
 </P>
 <H3>The &quot;moveto&quot; commands</H3>
-<P STYLE="margin-bottom: 0cm">The &quot;moveto&quot; commands
+<P STYLE="margin-bottom: 0in">The &quot;moveto&quot; commands
 establish a new current point. The effect is as if the &quot;pen&quot;
 were lifted and moved to a new location. A path data segment must
 begin with either one of the &quot;moveto&quot; commands or one of
 the &quot;arc&quot; commands. Subsequent &quot;moveto&quot; commands
 (i.e., when the &quot;moveto&quot; is not the first command)
-represent the start of a new subpath: <BR><BR>
+represent the start of a new subpath: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Moveto Classes</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Moveto Classes</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<COL WIDTH=37*>
+	<COL WIDTH=43*>
+	<COL WIDTH=177*>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Sub-Class</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Constructor Signature</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Description</B></P>
-		</TD>
+		<TH WIDTH=14%>
+			<P CLASS="western">Sub-Class</P>
+		</TH>
+		<TH WIDTH=17%>
+			<P CLASS="western">Constructor Signature</P>
+		</TH>
+		<TH WIDTH=69%>
+			<P CLASS="western">Description</P>
+		</TH>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathMovetoAbs"></A><FONT SIZE=2>PathMovetoAbs</FONT></P>
+		<TD ROWSPAN=2 WIDTH=14%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathMovetoAbs"></A>PathMovetoAbs</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Magick::Coordinate &amp;coordinate_</FONT></P>
+		<TD WIDTH=17%>
+			<P CLASS="western">const Magick::Coordinate &amp;coordinate_</P>
 		</TD>
-		<TD ROWSPAN=4>
-			<P><FONT SIZE=2>Start a new sub-path at the given coordinate.
+		<TD ROWSPAN=4 WIDTH=69%>
+			<P CLASS="western">Start a new sub-path at the given coordinate.
 			<I>PathMovetoAbs</I> indicates that absolute coordinates will
 			follow; <I>PathMovetoRel</I> indicates that relative coordinates
 			will follow. If a relative moveto appears as the first element of
 			the path, then it is treated as a pair of absolute coordinates. If
 			a moveto is followed by multiple pairs of coordinates, the
-			subsequent pairs are treated as implicit lineto commands.</FONT></P>
+			subsequent pairs are treated as implicit lineto commands.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P><FONT SIZE=2>const std::list&lt;Magick::Coordinate&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=17%>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathMovetoRel"></A><FONT SIZE=2>PathMovetoRel</FONT></P>
+		<TD ROWSPAN=2 WIDTH=14%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathMovetoRel"></A>PathMovetoRel</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Magick::Coordinate &amp;coordinate_</FONT></P>
+		<TD WIDTH=17%>
+			<P CLASS="western">const Magick::Coordinate &amp;coordinate_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P><FONT SIZE=2>const std::list&lt;Magick::Coordinate&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=17%>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
 		</TD>
 	</TR>
 </TABLE>
 <H3>The &quot;closepath&quot; command</H3>
-<P STYLE="margin-bottom: 0cm">The &quot;closepath&quot; command
+<P STYLE="margin-bottom: 0in">The &quot;closepath&quot; command
 causes an automatic straight line to be drawn from the current point
-to the initial point of the current subpath: <BR><BR>
+to the initial point of the current subpath: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Closepath Classes</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Closepath Classes</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<COL WIDTH=37*>
+	<COL WIDTH=41*>
+	<COL WIDTH=178*>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Sub-Class</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Constructor Signature</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Description</B></P>
-		</TD>
+		<TH WIDTH=14%>
+			<P CLASS="western">Sub-Class</P>
+		</TH>
+		<TH WIDTH=16%>
+			<P CLASS="western">Constructor Signature</P>
+		</TH>
+		<TH WIDTH=69%>
+			<P CLASS="western">Description</P>
+		</TH>
 	</TR>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><A NAME="PathClosePath"></A><FONT SIZE=2>PathClosePath</FONT></P>
+		<TD WIDTH=14%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathClosePath"></A>PathClosePath</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>void</FONT></P>
+		<TD WIDTH=16%>
+			<P CLASS="western">void</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>Close the current subpath by drawing a straight
+		<TD WIDTH=69%>
+			<P CLASS="western">Close the current subpath by drawing a straight
 			line from the current point to current subpath's most recent
-			starting point (usually, the most recent moveto point).</FONT></P>
+			starting point (usually, the most recent moveto point).</P>
 		</TD>
 	</TR>
 </TABLE>
 <H3>The &quot;lineto&quot; commands</H3>
-<P STYLE="margin-bottom: 0cm">The various &quot;lineto&quot; commands
-draw straight lines from the current point to a new point: <BR><BR>
+<P STYLE="margin-bottom: 0in">The various &quot;lineto&quot; commands
+draw straight lines from the current point to a new point: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Lineto Classes</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Lineto Classes</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<COL WIDTH=56*>
+	<COL WIDTH=39*>
+	<COL WIDTH=161*>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Sub-Class</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Constructor Signature</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Description</B></P>
-		</TD>
+		<TH WIDTH=22%>
+			<P CLASS="western">Sub-Class</P>
+		</TH>
+		<TH WIDTH=15%>
+			<P CLASS="western">Constructor Signature</P>
+		</TH>
+		<TH WIDTH=63%>
+			<P CLASS="western">Description</P>
+		</TH>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathLinetoAbs"></A><FONT SIZE=2>PathLinetoAbs</FONT></P>
+		<TD ROWSPAN=2 WIDTH=22%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathLinetoAbs"></A>PathLinetoAbs</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Magick::Coordinate&amp; coordinate_</FONT></P>
+		<TD WIDTH=15%>
+			<P CLASS="western">const Magick::Coordinate&amp; coordinate_</P>
 		</TD>
-		<TD ROWSPAN=4>
-			<P><FONT SIZE=2>Draw a line from the current point to the given
+		<TD ROWSPAN=4 WIDTH=63%>
+			<P CLASS="western">Draw a line from the current point to the given
 			coordinate which becomes the new current point.&nbsp;
 			<I>PathLinetoAbs</I> indicates that absolute coordinates are used;
 			<I>PathLinetoRel</I> indicates that relative coordinates are used.
 			A number of coordinates pairs may be specified in a list to draw a
 			polyline. At the end of the command, the new current point is set
-			to the final set of coordinates provided.</FONT></P>
+			to the final set of coordinates provided.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P><FONT SIZE=2>const std::list&lt;Magick::Coordinate&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=15%>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathLinetoRel"></A><FONT SIZE=2>PathLinetoRel</FONT></P>
+		<TD ROWSPAN=2 WIDTH=22%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathLinetoRel"></A>PathLinetoRel</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Magick::Coordinate&amp; coordinate_</FONT></P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P><FONT SIZE=2>const std::list&lt;Magick::Coordinate&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=15%>
+			<P CLASS="western">const Magick::Coordinate&amp; coordinate_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><A NAME="PathLinetoHorizontalAbs"></A><FONT SIZE=2>PathLinetoHorizontalAbs</FONT></P>
+		<TD WIDTH=15%>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>double x_</FONT></P>
+	</TR>
+	<TR>
+		<TD WIDTH=22%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathLinetoHorizontalAbs"></A>
+			PathLinetoHorizontalAbs</P>
 		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Draws a horizontal line from the current point
+		<TD WIDTH=15%>
+			<P CLASS="western">double x_</P>
+		</TD>
+		<TD ROWSPAN=2 WIDTH=63%>
+			<P CLASS="western">Draws a horizontal line from the current point
 			(cpx, cpy) to (x, cpy). <I>PathLinetoHorizontalAbs</I> indicates
 			that absolute coordinates are supplied; <I>PathLinetoHorizontalRel</I>
 			indicates that relative coordinates are supplied. At the end of
 			the command, the new current point becomes (x, cpy) for the final
-			value of x.</FONT></P>
+			value of x.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><A NAME="PathLinetoHorizontalRel"></A><FONT SIZE=2>PathLinetoHorizontalRel</FONT></P>
+		<TD WIDTH=22%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathLinetoHorizontalRel"></A>
+			PathLinetoHorizontalRel</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>double x_</FONT></P>
+		<TD WIDTH=15%>
+			<P CLASS="western">double x_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><A NAME="PathLinetoVerticalAbs"></A><FONT SIZE=2>PathLinetoVerticalAbs</FONT></P>
+		<TD WIDTH=22%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathLinetoVerticalAbs"></A>
+			PathLinetoVerticalAbs</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>double y_</FONT></P>
+		<TD WIDTH=15%>
+			<P CLASS="western">double y_</P>
 		</TD>
-		<TD ROWSPAN=2>
-			<P><FONT SIZE=2>Draws a vertical line from the current point (cpx,
-			cpy) to (cpx, y). <I>PathLinetoVerticalAbs</I> indicates that
-			absolute coordinates are supplied; <I>PathLinetoVerticalRel</I>
+		<TD ROWSPAN=2 WIDTH=63%>
+			<P CLASS="western">Draws a vertical line from the current point
+			(cpx, cpy) to (cpx, y). <I>PathLinetoVerticalAbs</I> indicates
+			that absolute coordinates are supplied; <I>PathLinetoVerticalRel</I>
 			indicates that relative coordinates are supplied.&nbsp; At the end
 			of the command, the new current point becomes (cpx, y) for the
-			final value of y.</FONT></P>
+			final value of y.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><A NAME="PathLinetoVerticalRel"></A><FONT SIZE=2>PathLinetoVerticalRel</FONT></P>
+		<TD WIDTH=22%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathLinetoVerticalRel"></A>
+			PathLinetoVerticalRel</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>double y_</FONT></P>
+		<TD WIDTH=15%>
+			<P CLASS="western">double y_</P>
 		</TD>
 	</TR>
 </TABLE>
@@ -1143,11 +1189,11 @@ draw straight lines from the current point to a new point: <BR><BR>
 <P>These three groups of commands draw curves: 
 </P>
 <UL>
-	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#cubic Bezier">Cubic
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#cubic Bezier">Cubic
 	B&eacute;zier commands.</A> A cubic B&eacute;zier segment is defined
 	by a start point, an end point, and two control points. 
 	</P>
-	<LI><P STYLE="margin-bottom: 0cm"><A HREF="#quadratic Bezier">Quadratic
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#quadratic Bezier">Quadratic
 	B&eacute;zier commands.</A> A quadratic B&eacute;zier segment is
 	defined by a start point, an end point, and one control point. 
 	</P>
@@ -1165,72 +1211,76 @@ argument class, which has the constructor signature
 double x2_, double y2_,</TT> <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 double x_, double y_ );</TT> 
 </P>
-<P STYLE="margin-bottom: 0cm">The commands are as follows: <BR><BR>
+<P STYLE="margin-bottom: 0in">The commands are as follows: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Cubic B&eacute;zier
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Cubic B&eacute;zier
 Curve Classes</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<COL WIDTH=54*>
+	<COL WIDTH=58*>
+	<COL WIDTH=144*>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Sub-Class</B></P>
+		<TH WIDTH=21%>
+			<P CLASS="western">Sub-Class</P>
+		</TH>
+		<TH WIDTH=23%>
+			<P CLASS="western">Constructor Signature</P>
+		</TH>
+		<TH WIDTH=56%>
+			<P CLASS="western">Description</P>
+		</TH>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2 WIDTH=21%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathCurvetoAbs"></A>PathCurvetoAbs</P>
 		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Constructor Signature</B></P>
+		<TD WIDTH=23%>
+			<P CLASS="western">const Magick::PathCurvetoArgs &amp;args_</P>
 		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Description</B></P>
+		<TD ROWSPAN=4 WIDTH=56%>
+			<P CLASS="western">Draws a cubic B&eacute;zier curve from the
+			current point to (x,y) using (x1,y1) as the control point at the
+			beginning of the curve and (x2,y2) as the control point at the end
+			of the curve. <I>PathCurvetoAbs</I> indicates that
+			absolutecoordinates will follow; <I>PathCurvetoRel</I> indicates
+			that relative coordinates will follow. Multiple sets of
+			coordinates may be specified to draw a polybezier. At the end of
+			the command, the new current point becomes the final (x,y)
+			coordinate pair used in the polybezier.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathCurvetoAbs"></A><FONT SIZE=2>PathCurvetoAbs</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Magick::PathCurvetoArgs &amp;args_</FONT></P>
-		</TD>
-		<TD ROWSPAN=4>
-			<P><FONT SIZE=2>Draws a cubic B&eacute;zier curve from the current
-			point to (x,y) using (x1,y1) as the control point at the beginning
-			of the curve and (x2,y2) as the control point at the end of the
-			curve. <I>PathCurvetoAbs</I> indicates that absolutecoordinates
-			will follow; <I>PathCurvetoRel</I> indicates that relative
-			coordinates will follow. Multiple sets of coordinates may be
-			specified to draw a polybezier. At the end of the command, the new
-			current point becomes the final (x,y) coordinate pair used in the
-			polybezier.</FONT></P>
+		<TD WIDTH=23%>
+			<P CLASS="western">const std::list&lt;Magick::PathCurvetoArgs&gt;
+			&amp;args_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P><FONT SIZE=2>const std::list&lt;Magick::PathCurvetoArgs&gt;
-			&amp;args_</FONT></P>
+		<TD ROWSPAN=2 WIDTH=21%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathCurvetoRel"></A>PathCurvetoRel</P>
+		</TD>
+		<TD WIDTH=23%>
+			<P CLASS="western">const Magick::PathCurvetoArgs &amp;args_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathCurvetoRel"></A><FONT SIZE=2>PathCurvetoRel</FONT></P>
-		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Magick::PathCurvetoArgs &amp;args_</FONT></P>
+		<TD WIDTH=23%>
+			<P CLASS="western">const std::list&lt;Magick::PathCurvetoArgs&gt;
+			&amp;args_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P><FONT SIZE=2>const std::list&lt;Magick::PathCurvetoArgs&gt;
-			&amp;args_</FONT></P>
+		<TD ROWSPAN=2 WIDTH=21%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathSmoothCurvetoAbs"></A>
+			PathSmoothCurvetoAbs</P>
 		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathSmoothCurvetoAbs"></A><FONT SIZE=2>PathSmoothCurvetoAbs</FONT></P>
+		<TD WIDTH=23%>
+			<P CLASS="western">const Magick::Coordinate &amp;coordinates_</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Magick::Coordinate &amp;coordinates_</FONT></P>
-		</TD>
-		<TD ROWSPAN=4>
-			<P><FONT SIZE=2>Draws a cubic B&eacute;zier curve from the current
-			point to (x,y). The first control point is assumed to be the
-			reflection of the second control point on the previous command
+		<TD ROWSPAN=4 WIDTH=56%>
+			<P CLASS="western">Draws a cubic B&eacute;zier curve from the
+			current point to (x,y). The first control point is assumed to be
+			the reflection of the second control point on the previous command
 			relative to the current point. (If there is no previous command or
 			if the previous command was not an <I>PathCurvetoAbs</I>,
 			<I>PathCurvetoRel</I>, <I>PathSmoothCurvetoAbs</I> or
@@ -1242,32 +1292,33 @@ Curve Classes</B></P>
 			relative coordinates will follow. Multiple sets of coordinates may
 			be specified to draw a polybezier. At the end of the command, the
 			new current point becomes the final (x,y) coordinate pair used in
-			the polybezier.</FONT></P>
+			the polybezier.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P><FONT SIZE=2>const std::list&lt;Magick::Coordinate&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=23%>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathSmoothCurvetoRel"></A><FONT SIZE=2>PathSmoothCurvetoRel</FONT></P>
+		<TD ROWSPAN=2 WIDTH=21%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathSmoothCurvetoRel"></A>
+			PathSmoothCurvetoRel</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Magick::Coordinate &amp;coordinates_</FONT></P>
+		<TD WIDTH=23%>
+			<P CLASS="western">const Magick::Coordinate &amp;coordinates_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P><FONT SIZE=2>const std::list&lt;Magick::Coordinate&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=23%>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
 		</TD>
 	</TR>
 </TABLE>
-<H3><A NAME="quadratic Bezier"></A>The&nbsp;quadratic B&eacute;zier
-curve commands</H3>
+<H3><A NAME="quadratic Bezier"></A>The quadratic B&eacute;zier curve
+commands</H3>
 <P>The quadratic B&eacute;zier commands depend on the
 <I>PathQuadraticCurvetoArgs</I> argument class, which has the
 constructor signature: 
@@ -1276,97 +1327,106 @@ constructor signature:
 <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 double x_, double y_ );</TT> 
 </P>
-<P STYLE="margin-bottom: 0cm">The quadratic B&eacute;zier commands
-are as follows: <BR><BR>
+<P STYLE="margin-bottom: 0in">The quadratic B&eacute;zier commands
+are as follows: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Quadratic B&eacute;zier
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Quadratic B&eacute;zier
 Curve Classes</B></P>
 <TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Sub-Class</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Constructor Signature</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Description</B></P>
-		</TD>
+		<TH>
+			<P CLASS="western">Sub-Class</P>
+		</TH>
+		<TH>
+			<P CLASS="western">Constructor Signature</P>
+		</TH>
+		<TH>
+			<P CLASS="western">Description</P>
+		</TH>
 	</TR>
 	<TR>
 		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathQuadraticCurvetoAbs"></A>PathQuadraticCurvetoAbs</P>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathQuadraticCurvetoAbs"></A>
+			PathQuadraticCurvetoAbs</P>
 		</TD>
 		<TD>
-			<P>const Magick::PathQuadraticCurvetoArgs &amp;args_</P>
+			<P CLASS="western">const Magick::PathQuadraticCurvetoArgs &amp;args_</P>
 		</TD>
 		<TD ROWSPAN=4>
-			<P>Draws a quadratic B&eacute;zier curve from the current point to
-			(x,y) using (x1,y1) as the control point. <I>PathQuadraticCurvetoAbs</I>
-			indicates that absolute coordinates will follow;
-			<I>PathQuadraticCurvetoRel</I> indicates that relative coordinates
-			will follow. Multiple sets of coordinates may be specified to draw
-			a polybezier. At the end of the command, the new current point
-			becomes the final (x,y) coordinate pair used in the polybezier.</P>
+			<P CLASS="western">Draws a quadratic B&eacute;zier curve from the
+			current point to (x,y) using (x1,y1) as the control point.
+			<I>PathQuadraticCurvetoAbs</I> indicates that absolute coordinates
+			will follow; <I>PathQuadraticCurvetoRel</I> indicates that
+			relative coordinates will follow. Multiple sets of coordinates may
+			be specified to draw a polybezier. At the end of the command, the
+			new current point becomes the final (x,y) coordinate pair used in
+			the polybezier.</P>
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-			<P>const std::list&lt;Magick::PathQuadraticCurvetoArgs&gt; &amp;args_</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathQuadraticCurvetoRel"></A>PathQuadraticCurvetoRel</P>
-		</TD>
-		<TD>
-			<P>const Magick::PathQuadraticCurvetoArgs &amp;args_</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P>const std::list&lt;Magick::PathQuadraticCurvetoArgs&gt; &amp;args_</P>
+			<P CLASS="western">const
+			std::list&lt;Magick::PathQuadraticCurvetoArgs&gt; &amp;args_</P>
 		</TD>
 	</TR>
 	<TR>
 		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathSmoothQuadraticCurvetoAbs"></A>PathSmoothQuadraticCurvetoAbs</P>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathQuadraticCurvetoRel"></A>
+			PathQuadraticCurvetoRel</P>
 		</TD>
 		<TD>
-			<P>const Magick::Coordinate &amp;coordinate_</P>
+			<P CLASS="western">const Magick::PathQuadraticCurvetoArgs &amp;args_</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P CLASS="western">const
+			std::list&lt;Magick::PathQuadraticCurvetoArgs&gt; &amp;args_</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=2>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathSmoothQuadraticCurvetoAbs"></A>
+			PathSmoothQuadraticCurvetoAbs</P>
+		</TD>
+		<TD>
+			<P CLASS="western">const Magick::Coordinate &amp;coordinate_</P>
 		</TD>
 		<TD ROWSPAN=4>
-			<P>Draws a quadratic B&eacute;zier curve from the current point to
-			(x,y). The control point is assumed to be the reflection of the
-			control point on the previous <BR>command relative to the current
-			point. (If there is no previous command or if the previous command
-			was not a <I>PathQuadraticCurvetoAbs</I>, <I>PathQuadraticCurvetoRel</I>,
-			<I>PathSmoothQuadraticCurvetoAbs</I> or
-			<I>PathSmoothQuadraticCurvetoRel</I>, assume the control point is
-			coincident with the current point.) <I>PathSmoothQuadraticCurvetoAbs</I>
-			indicates that absolute coordinates will follow;
-			<I>PathSmoothQuadraticCurvetoRel</I> indicates that relative
-			coordinates will follow. At the end of the command, the new
-			current point becomes the final (x,y) coordinate pair used in the
-			polybezier.</P>
+			<P CLASS="western">Draws a quadratic B&eacute;zier curve from the
+			current point to (x,y). The control point is assumed to be the
+			reflection of the control point on the previous <BR>command
+			relative to the current point. (If there is no previous command or
+			if the previous command was not a <I>PathQuadraticCurvetoAbs</I>,
+			<I>PathQuadraticCurvetoRel</I>, <I>PathSmoothQuadraticCurvetoAbs</I>
+			or <I>PathSmoothQuadraticCurvetoRel</I>, assume the control point
+			is coincident with the current point.)
+			<I>PathSmoothQuadraticCurvetoAbs</I> indicates that absolute
+			coordinates will follow; <I>PathSmoothQuadraticCurvetoRel</I>
+			indicates that relative coordinates will follow. At the end of the
+			command, the new current point becomes the final (x,y) coordinate
+			pair used in the polybezier.</P>
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-			<P>const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</P>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
 		</TD>
 	</TR>
 	<TR>
 		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathSmoothQuadraticCurvetoRel"></A>PathSmoothQuadraticCurvetoRel</P>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathSmoothQuadraticCurvetoRel"></A>
+			PathSmoothQuadraticCurvetoRel</P>
 		</TD>
 		<TD>
-			<P>const Magick::Coordinate &amp;coordinate_</P>
+			<P CLASS="western">const Magick::Coordinate &amp;coordinate_</P>
 		</TD>
 	</TR>
 	<TR>
 		<TD>
-			<P>const std::list&lt;Magick::Coordinate&gt; &amp;coordinates_</P>
+			<P CLASS="western">const std::list&lt;Magick::Coordinate&gt;
+			&amp;coordinates_</P>
 		</TD>
 	</TR>
 </TABLE>
@@ -1379,34 +1439,37 @@ argument class, which has the constructor signature:
 double xAxisRotation_, bool largeArcFlag_,</TT> <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 bool sweepFlag_, double x_, double y_ );</TT> 
 </P>
-<P STYLE="margin-bottom: 0cm">The elliptical arc commands are as
-follows: <BR><BR>
+<P STYLE="margin-bottom: 0in">The elliptical arc commands are as
+follows: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Elliptical Arc Curve
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Elliptical Arc Curve
 Classes</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<COL WIDTH=35*>
+	<COL WIDTH=46*>
+	<COL WIDTH=175*>
 	<TR>
-		<TD>
-			<P ALIGN=CENTER><B>Sub-Class</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Constructor Signature</B></P>
-		</TD>
-		<TD>
-			<P ALIGN=CENTER><B>Description</B></P>
-		</TD>
+		<TH WIDTH=14%>
+			<P CLASS="western">Sub-Class</P>
+		</TH>
+		<TH WIDTH=18%>
+			<P CLASS="western">Constructor Signature</P>
+		</TH>
+		<TH WIDTH=68%>
+			<P CLASS="western">Description</P>
+		</TH>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathArcAbs"></A><FONT SIZE=2>PathArcAbs</FONT></P>
+		<TD ROWSPAN=2 WIDTH=14%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathArcAbs"></A>PathArcAbs</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Magick::PathArcArgs &amp;coordinates_</FONT></P>
+		<TD WIDTH=18%>
+			<P CLASS="western">const Magick::PathArcArgs &amp;coordinates_</P>
 		</TD>
-		<TD ROWSPAN=4>
-			<P><FONT SIZE=2>Draws an elliptical arc from the current point to
-			(x, y). The size and orientation of the ellipse are defined by two
-			radii (<I>radiusX</I>, <I>radiusY</I>) and an <I>xAxisRotation</I>,
+		<TD ROWSPAN=4 WIDTH=68%>
+			<P CLASS="western">Draws an elliptical arc from the current point
+			to (x, y). The size and orientation of the ellipse are defined by
+			two radii (<I>radiusX</I>, <I>radiusY</I>) and an <I>xAxisRotation</I>,
 			which indicates how the ellipse as a whole is rotated relative to
 			the current coordinate system. The center (cx, cy) of the ellipse
 			is calculated automatically to satisfy the constraints imposed by
@@ -1414,27 +1477,27 @@ Classes</B></P>
 			contribute to the automatic calculations and help determine how
 			the arc is drawn. If <I>largeArcFlag</I> is true then draw the
 			larger of the available arcs. If <I>sweepFlag</I> is true, then
-			draw the arc matching a clock-wise rotation.</FONT></P>
+			draw the arc matching a clock-wise rotation.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P><FONT SIZE=2>const std::list&lt;Magick::PathArcArgs&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=18%>
+			<P CLASS="western">const std::list&lt;Magick::PathArcArgs&gt;
+			&amp;coordinates_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
-			<P ALIGN=CENTER><A NAME="PathArcRel"></A><FONT SIZE=2>PathArcRel</FONT></P>
+		<TD ROWSPAN=2 WIDTH=14%>
+			<P CLASS="western" ALIGN=CENTER><A NAME="PathArcRel"></A>PathArcRel</P>
 		</TD>
-		<TD>
-			<P><FONT SIZE=2>const Magick::PathArcArgs &amp;coordinates_</FONT></P>
+		<TD WIDTH=18%>
+			<P CLASS="western">const Magick::PathArcArgs &amp;coordinates_</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
-			<P><FONT SIZE=2>const std::list&lt;Magick::PathArcArgs&gt;
-			&amp;coordinates_</FONT></P>
+		<TD WIDTH=18%>
+			<P CLASS="western">const std::list&lt;Magick::PathArcArgs&gt;
+			&amp;coordinates_</P>
 		</TD>
 	</TR>
 </TABLE>
