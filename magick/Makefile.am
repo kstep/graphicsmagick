@@ -47,16 +47,16 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
   display.c draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c \
-  html.c image.c label.c magick.c map.c matte.c memory.c modules.c monitor.c \
-  montage.c quantize.c segment.c shear.c signature.c stegano.c stream.c \
-  timer.c transform.c ttf.c utility.c widget.c xwindows.c zoom.c
+  html.c image.c magick.c memory.c modules.c monitor.c \
+  montage.c quantize.c segment.c shear.c signature.c stream.c \
+  timer.c transform.c utility.c widget.c xwindows.c zoom.c
 
 # Library coder sources
 MAGICK_CODER_SRCS=avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
-  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c \
-  miff.c mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c \
+  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c label.c logo.c \
+  map.c matte.c miff.c mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c \
   plasma.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c \
-  sct.c sfw.c sgi.c sun.c svg.c tga.c tiff.c tile.c tim.c txt.c uil.c uyvy.c \
+  sct.c sfw.c sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c uyvy.c \
   vicar.c vid.c viff.c wbmp.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
 
 # Library sources
@@ -98,10 +98,10 @@ pkgdir            = $(libdir)/ImageMagick/modules/coders
 if WITH_MODULES
 pkg_LTLIBRARIES   = avs.la bmp.la cmyk.la dcm.la dps.la ept.la fax.la fpx.la \
   fits.la gif.la gray.la hdf.la icc.la icon.la iptc.la jbig.la jpeg.la \
-  logo.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la \
+  label.la logo.la map.la matte.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la \
   png.la pix.la plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
-  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la sun.la svg.la tga.la \
-  tiff.la tile.la tim.la txt.la uil.la uyvy.la vicar.la vid.la viff.la wbmp.la \
+  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la \
+  tiff.la tile.la tim.la ttf.la txt.la uil.la uyvy.la vicar.la vid.la viff.la wbmp.la \
   x.la xbm.la xc.la xpm.la xwd.la yuv.la bim.la
 else
 pkg_LTLIBRARIES   =
@@ -197,10 +197,25 @@ jpeg_la_SOURCES     = jpeg.c
 jpeg_la_LDFLAGS     = -no-undefined -module -avoid-version
 jpeg_la_LIBADD      = libMagick.la @LIB_JPEG@
 
+# LABEL module
+label_la_SOURCES     = label.c
+label_la_LDFLAGS     = -no-undefined -module -avoid-version
+label_la_LIBADD      = libMagick.la @LIB_TTF@ @LIB_X11@
+
 # LOGO module
 logo_la_SOURCES     = logo.c
 logo_la_LDFLAGS     = -no-undefined -module -avoid-version
 logo_la_LIBADD      = libMagick.la
+
+# MAP module
+map_la_SOURCES      = map.c
+map_la_LDFLAGS      = -no-undefined -module -avoid-version
+map_la_LIBADD       = libMagick.la
+
+# MATTE module
+matte_la_SOURCES    = matte.c
+matte_la_LDFLAGS    = -no-undefined -module -avoid-version
+matte_la_LIBADD     = libMagick.la
 
 # MIFF module
 miff_la_SOURCES     = miff.c
@@ -327,6 +342,11 @@ sgi_la_SOURCES      = sgi.c
 sgi_la_LDFLAGS      = -no-undefined -module -avoid-version
 sgi_la_LIBADD       = libMagick.la
 
+# STEGANO module
+stegano_la_SOURCES  = stegano.c
+stegano_la_LDFLAGS  = -no-undefined -module -avoid-version
+stegano_la_LIBADD   = libMagick.la
+
 # SUN module
 sun_la_SOURCES      = sun.c
 sun_la_LDFLAGS      = -no-undefined -module -avoid-version
@@ -356,6 +376,11 @@ tile_la_LIBADD      = libMagick.la
 tim_la_SOURCES      = tim.c
 tim_la_LDFLAGS      = -no-undefined -module -avoid-version
 tim_la_LIBADD       = libMagick.la
+
+# TTF module
+ttf_la_SOURCES      = ttf.c
+ttf_la_LDFLAGS      = -no-undefined -module -avoid-version
+ttf_la_LIBADD       = libMagick.la @LIB_TTF@
 
 # TXT module
 txt_la_SOURCES      = txt.c
