@@ -4526,7 +4526,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-geometry",option,4) == 0)
       {
         Image
-          *zoomed_image;
+          *zoom_image;
 
         /*
           Resize image.
@@ -4537,11 +4537,11 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         y=0;
         (void) CloneString(&geometry,argv[++i]);
         (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-        zoomed_image=ZoomImage(*image,width,height);
-        if (zoomed_image != (Image *) NULL)
+        zoom_image=ZoomImage(*image,width,height);
+        if (zoom_image != (Image *) NULL)
           {
             DestroyImage(*image);
-            *image=zoomed_image;
+            *image=zoom_image;
           }
         continue;
       }
@@ -4955,6 +4955,28 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("sans",option+1,2) == 0)
       if (*option == '-')
         i++;
+    if (strncmp("-scale",option,4) == 0)
+      {
+        Image
+          *scale_image;
+
+        /*
+          Resize image.
+        */
+        width=(*image)->columns;
+        height=(*image)->rows;
+        x=0;
+        y=0;
+        (void) CloneString(&geometry,argv[++i]);
+        (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+        scale_image=ScaleImage(*image,width,height);
+        if (scale_image != (Image *) NULL)
+          {
+            DestroyImage(*image);
+            *image=scale_image;
+          }
+        continue;
+      }
     if (Latin1Compare("-scene",option) == 0)
       {
         (*image)->scene=atoi(argv[++i]);
