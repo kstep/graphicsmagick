@@ -20,7 +20,7 @@ EXTRA_DIST =
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
-  compress.h corr_lut.h cp32to24.h cp_jpeg.h cpqtime.h fn_srch.h \
+  fpxcompress.h corr_lut.h cp32to24.h cp_jpeg.h cpqtime.h fn_srch.h \
   matrix.h ph_image.h pimgfile.h pr_level.h priimage.h ptile.h \
   ri_imgvw.h ri_lib.h ri_libio.h ri_page.h ri_sys.h viewimg.h
 
