@@ -225,9 +225,6 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %
 %
 */
-/* generates a 1-D convolution matrix to be used for each pass of 
- * a two-pass gaussian blur. Returns the length of the matrix.
- */
 #define KERNEL_RES 3
 int GenConvolveMatrix(int matrix_length,double std_dev, double **cmatrix_p)
 {
@@ -243,6 +240,9 @@ int GenConvolveMatrix(int matrix_length,double std_dev, double **cmatrix_p)
     sum,
     denom;
 
+  /* generates a 1-D convolution matrix to be used for each pass of 
+   * a two-pass gaussian blur. Returns the length of the matrix.
+   */
 	if (matrix_length <= 0)
     matrix_length = 3;
 
@@ -277,215 +277,6 @@ int GenConvolveMatrix(int matrix_length,double std_dev, double **cmatrix_p)
 	return matrix_length;
 }
 
-#ifdef _DEBUG
-void PrintConvolveMatrix(int matrix_length,double std_dev,double *cmatrix)
-{
-	int
-    i;
-
-  printf("length %d, stddev: %f\n",matrix_length,std_dev);
-	for (i=0; i<matrix_length; i++)
-    printf("%d) %.4f\n",i,cmatrix[i]);
-  printf("\n");
-}
-#endif
-
-#ifdef PREVIOUS_ALGORITHM
-MagickExport Image *BlurImage(Image *image,const double radius,
-  const double sigma,ExceptionInfo *exception)
-{
-#define BlurImageText  "  Blur image...  "
-
-  double
-    blue,
-    *cmatrix,
-    green,
-    *kernel,
-    *prev_cmatrix,
-    red;
-
-  Image
-    *blur_image;
-
-  int
-    j,
-    k,
-    width,
-    y;
-
-  PixelPacket
-    *scanline;
-
-  register int
-    i,
-    x;
-
-  register PixelPacket
-    *q;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  width=(int) (2.0*ceil(radius)+1.0);
-  if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(OptionWarning,"Unable to blur image",
-      "image is smaller than radius");
-  blur_image=CloneImage(image,image->columns,image->rows,False,exception);
-  if (blur_image == (Image *) NULL)
-    return((Image *) NULL);
-  blur_image->storage_class=DirectClass;
-
-  prev_cmatrix=cmatrix=NULL;
-  width=GenConvolveMatrix(width, sigma, &cmatrix);
-#ifdef _DEBUG
-	PrintConvolveMatrix(width, sigma, cmatrix);
-#endif
-  while ((int)(cmatrix[0]*MaxRGB) > 0)
-  {
-    if (prev_cmatrix != (double *)NULL)
-      LiberateMemory((void **) &prev_cmatrix);
-    prev_cmatrix=cmatrix;
-    cmatrix=NULL;
-    width+=2;
-    width=GenConvolveMatrix(width, sigma, &cmatrix);
-#ifdef _DEBUG
-	  PrintConvolveMatrix(width, sigma, cmatrix);
-#endif
-  }
-  if (prev_cmatrix != (double *)NULL)
-    {
-      LiberateMemory((void **) &cmatrix);
-      width-=2;
-      cmatrix=prev_cmatrix;
-    }
-
-  kernel=&cmatrix[width/2];
-  width=(width-1)/2; /* we only really want the radius */
-  scanline=(PixelPacket *) AcquireMemory(width*sizeof(PixelPacket));
-  if (scanline == (PixelPacket *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to blur image",
-      "Memory allocation failed");
-
-  /*
-    Blur each row.
-  */
-  for (y=0; y < (int) blur_image->rows; y++)
-  {
-    q=GetImagePixels(blur_image,0,y,blur_image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    j=0;
-    memcpy(scanline,q,width*sizeof(PixelPacket));
-    for (x=0; x < (int) blur_image->columns; x++)
-    {
-      /*
-        Convolve this pixel.
-      */
-      red=kernel[0]*q->red;
-      green=kernel[0]*q->green;
-      blue=kernel[0]*q->blue;
-      k=j-1;
-      if (k < 0)
-        k+=width;
-      for (i=1; i < (width+1); i++)
-      {
-        red+=kernel[i]*scanline[k].red;
-        green+=kernel[i]*scanline[k].green;
-        blue+=kernel[i]*scanline[k].blue;
-        k--;
-        if (k < 0)
-          k+=width;
-      }
-      k=1;
-      for (i=1; i < (width+1); i++)
-      {
-        if ((x+k) >= blur_image->columns)
-          k-=width;
-        red+=kernel[i]*q[k].red;
-        green+=kernel[i]*q[k].green;
-        blue+=kernel[i]*q[k].blue;
-        k++;
-      }
-      scanline[j]=(*q);
-      j++;
-      if (j >= width)
-        j-=width;
-      q->red=(Quantum) (red+0.5);
-      q->green=(Quantum) (green+0.5);
-      q->blue=(Quantum) (blue+0.5);
-      q++;
-    }
-    if (!SyncImagePixels(blur_image))
-      break;
-    if (QuantumTick(y,blur_image->rows+blur_image->columns))
-      MagickMonitor(BlurImageText,y,blur_image->rows+
-        blur_image->columns);
-  }
-  /*
-    Blur each column.
-  */
-  for (x=0; x < (int) blur_image->columns; x++)
-  {
-    q=GetImagePixels(blur_image,x,0,1,blur_image->rows);
-    if (q == (PixelPacket *) NULL)
-      break;
-    j=0;
-    memcpy(scanline,q,width*sizeof(PixelPacket));
-    for (y=0; y < (int) blur_image->rows; y++)
-    {
-      /*
-        Convolve this pixel.
-      */
-      red=kernel[0]*q->red;
-      green=kernel[0]*q->green;
-      blue=kernel[0]*q->blue;
-      k=j-1;
-      if (k < 0)
-        k+=width;
-      for (i=1; i < (width+1); i++)
-      {
-        red+=kernel[i]*scanline[k].red;
-        green+=kernel[i]*scanline[k].green;
-        blue+=kernel[i]*scanline[k].blue;
-        k--;
-        if (k < 0)
-          k+=width;
-      }
-      k=1;
-      for (i=1; i < (width+1); i++)
-      {
-        if ((y+k) >= blur_image->rows)
-          k-=width;
-        red+=kernel[i]*q[k].red;
-        green+=kernel[i]*q[k].green;
-        blue+=kernel[i]*q[k].blue;
-        k++;
-      }
-      scanline[j]=(*q);
-      j++;
-      if (j >= width)
-        j-=width;
-      q->red=(Quantum) (red+0.5);
-      q->green=(Quantum) (green+0.5);
-      q->blue=(Quantum) (blue+0.5);
-      q++;
-    }
-    if (!SyncImagePixels(blur_image))
-      break;
-    if (QuantumTick(blur_image->rows+x,blur_image->rows+blur_image->columns))
-      MagickMonitor(BlurImageText,blur_image->rows+x,blur_image->rows+
-        blur_image->columns);
-  }
-  /*
-    Free resources.
-  */
-  LiberateMemory((void **) &cmatrix);
-  LiberateMemory((void **) &scanline);
-  return(blur_image);
-}
-#endif
-
 void BlurOneScanline(double *cmatrix,int cmatrix_length,
   PixelPacket *cur_col, PixelPacket *dest_col, int cols)
 {
@@ -509,93 +300,93 @@ void BlurOneScanline(double *cmatrix,int cmatrix_length,
 	 * huge concern.
 	 */
 	if (cmatrix_length > cols)
-  {
-		for (col = 0; col < cols ; col++)
     {
-			scale1=0;
-			/* find the scale factor */
-			for (j = 0; j < cols ; j++)
+		  for (col = 0; col < cols ; col++)
       {
-				/* if the index is in bounds, add it to the scale counter */
-				if ((j + cmatrix_middle - col >= 0) &&
-				    (j + cmatrix_middle - col < cmatrix_length))
-					scale1 += cmatrix[j + cmatrix_middle - col];
-			}
-			rsum = gsum = bsum = 0.0;
-			for (j = 0; j < cols; j++)
+			  scale1=0;
+			  /* find the scale factor */
+			  for (j = 0; j < cols ; j++)
+        {
+				  /* if the index is in bounds, add it to the scale counter */
+				  if ((j + cmatrix_middle - col >= 0) &&
+				      (j + cmatrix_middle - col < cmatrix_length))
+					  scale1 += cmatrix[j + cmatrix_middle - col];
+			  }
+			  rsum = gsum = bsum = 0.0;
+			  for (j = 0; j < cols; j++)
+        {
+				  if ( (j >= col - cmatrix_middle) && (j <= col + cmatrix_middle) )
+            {
+              scale2=cmatrix[j];
+					    rsum += cur_col[j].red * scale2;
+					    gsum += cur_col[j].green * scale2;
+					    bsum += cur_col[j].blue * scale2;
+            }
+			  }
+			  dest_col[col].red = (Quantum)((rsum + 0.5)/scale1);
+			  dest_col[col].green = (Quantum)((gsum + 0.5)/scale1);
+			  dest_col[col].blue = (Quantum)((bsum + 0.5)/scale1);
+		  }
+	  }
+  else
+    {
+		  /* for the edge condition, we only use available info and scale to one */
+		  for (col = 0; col < cmatrix_middle; col++)
       {
-				if ( (j >= col - cmatrix_middle) && (j <= col + cmatrix_middle) )
+			  /* find scale factor */
+			  scale1=0;
+			  for (j = cmatrix_middle - col; j<cmatrix_length; j++)
+				  scale1+=cmatrix[j];
+			  rsum = gsum = bsum = 0.0;
+			  for (j = cmatrix_middle - col; j<cmatrix_length; j++)
         {
           scale2=cmatrix[j];
-					rsum += cur_col[j].red * scale2;
-					gsum += cur_col[j].green * scale2;
-					bsum += cur_col[j].blue * scale2;
-        }
-			}
-			dest_col[col].red = (Quantum)((rsum + 0.5)/scale1);
-			dest_col[col].green = (Quantum)((gsum + 0.5)/scale1);
-			dest_col[col].blue = (Quantum)((bsum + 0.5)/scale1);
-		}
-	}
-  else
-  {
-		/* for the edge condition, we only use available info and scale to one */
-		for (col = 0; col < cmatrix_middle; col++)
-    {
-			/* find scale factor */
-			scale1=0;
-			for (j = cmatrix_middle - col; j<cmatrix_length; j++)
-				scale1+=cmatrix[j];
-			rsum = gsum = bsum = 0.0;
-			for (j = cmatrix_middle - col; j<cmatrix_length; j++)
+          k=col+j-cmatrix_middle;
+          rsum+=cur_col[k].red * scale2;
+          gsum+=cur_col[k].green * scale2;
+          bsum+=cur_col[k].blue * scale2;
+			  }
+			  dest_col[col].red=(Quantum)((rsum + 0.5)/scale1);
+			  dest_col[col].green=(Quantum)((gsum + 0.5)/scale1);
+			  dest_col[col].blue=(Quantum)((bsum + 0.5)/scale1);
+		  }
+		  /* go through each and every pixel in each col */
+		  for ( ; col < cols-cmatrix_length/2; col++)
       {
-        scale2=cmatrix[j];
-        k=col+j-cmatrix_middle;
-        rsum+=cur_col[k].red * scale2;
-        gsum+=cur_col[k].green * scale2;
-        bsum+=cur_col[k].blue * scale2;
-			}
-			dest_col[col].red=(Quantum)((rsum + 0.5)/scale1);
-			dest_col[col].green=(Quantum)((gsum + 0.5)/scale1);
-			dest_col[col].blue=(Quantum)((bsum + 0.5)/scale1);
-		}
-		/* go through each and every pixel in each col */
-		for ( ; col < cols-cmatrix_length/2; col++)
-    {
-			rsum = gsum = bsum = 0.0;
-			for (j = 0; j<cmatrix_length; j++)
+			  rsum = gsum = bsum = 0.0;
+			  for (j = 0; j<cmatrix_length; j++)
+        {
+          scale2=cmatrix[j];
+          k=col+j-cmatrix_middle;
+          rsum+=cur_col[k].red * scale2;
+          gsum+=cur_col[k].green * scale2;
+          bsum+=cur_col[k].blue * scale2;
+			  }
+			  dest_col[col].red=(Quantum)(rsum + 0.5);
+			  dest_col[col].green=(Quantum)(gsum + 0.5);
+			  dest_col[col].blue=(Quantum)(bsum + 0.5);
+		  }
+		  /* for the edge condition only use available info, and scale to one */
+		  for ( ; col < cols; col++)
       {
-        scale2=cmatrix[j];
-        k=col+j-cmatrix_middle;
-        rsum+=cur_col[k].red * scale2;
-        gsum+=cur_col[k].green * scale2;
-        bsum+=cur_col[k].blue * scale2;
-			}
-			dest_col[col].red=(Quantum)(rsum + 0.5);
-			dest_col[col].green=(Quantum)(gsum + 0.5);
-			dest_col[col].blue=(Quantum)(bsum + 0.5);
-		}
-		/* for the edge condition only use available info, and scale to one */
-		for ( ; col < cols; col++)
-    {
-			/* find scale factor */
-			scale1=0;
-			for (j = 0; j< cols-col + cmatrix_middle; j++)
-				scale1 += cmatrix[j];
-			rsum = gsum = bsum = 0.0;
-			for (j = 0; j<cols-col + cmatrix_middle; j++)
-      {
-        scale2=cmatrix[j];
-        k=col+j-cmatrix_middle;
-        rsum+=cur_col[k].red * scale2;
-        gsum+=cur_col[k].green * scale2;
-        bsum+=cur_col[k].blue * scale2;
-			}
-			dest_col[col].red=(Quantum)((rsum + 0.5)/scale1);
-			dest_col[col].green=(Quantum)((gsum + 0.5)/scale1);
-			dest_col[col].blue=(Quantum)((bsum + 0.5)/scale1);
-		}
-	}
+			  /* find scale factor */
+			  scale1=0;
+			  for (j = 0; j< cols-col + cmatrix_middle; j++)
+				  scale1 += cmatrix[j];
+			  rsum = gsum = bsum = 0.0;
+			  for (j = 0; j<cols-col + cmatrix_middle; j++)
+        {
+          scale2=cmatrix[j];
+          k=col+j-cmatrix_middle;
+          rsum+=cur_col[k].red * scale2;
+          gsum+=cur_col[k].green * scale2;
+          bsum+=cur_col[k].blue * scale2;
+			  }
+			  dest_col[col].red=(Quantum)((rsum + 0.5)/scale1);
+			  dest_col[col].green=(Quantum)((gsum + 0.5)/scale1);
+			  dest_col[col].blue=(Quantum)((bsum + 0.5)/scale1);
+		  }
+	  }
 }
 
 MagickExport Image *BlurImage(Image *image,const double radius,
