@@ -546,26 +546,30 @@ MAGICK DELEGATES
       to read the TIFF image format.  It in turn optionally requires
       the JPEG and ZLIB libraries.
 
-    o ImageMagick requires libwmf or wmftopng available from
+    o ImageMagick requires libwmf 0.1.21 available from
 
           http://www.wvware.com/libwmf.html
 
       to read the Windows Meta File image format (16-bit WMF files only,
-      not 32-bit "EMF"). If libwmf is used, then WMF files are rendered
-      directly by ImageMagick otherwise the rendering is done by wmftopng.
+      not 32-bit "EMF"). This is the format used for most Windows clipart.
+      If ImageMagick is built using libwmf then WMF files are rendered
+      directly by ImageMagick otherwise the rendering is done by running
+      the wmftopng program.
 
       In order for text to be rendered when reading WMF files, a set of
-      Windows 3.1 compatible (filenames and outlines) TrueType fonts
-      must be available in the TrueType font search path (set via
-      TT_FONT_PATH). All font file names must be lower case. A set of
-      Windows 3.1 compatible TrueType fonts may be downloaded from
-      Microsoft's web site.
+      Windows 3.1 compatible (filenames and outlines) TrueType fonts must
+      be available in the TrueType font search path (set via TT_FONT_PATH).
+      All font file names must be lower case. Windows 3.1 compatible
+      TrueType fonts (Arial, Times New Roman, and Courier New) may be
+      downloaded from Microsoft's web site via the URL
+
+          http://www.microsoft.com/typography/fontpack/default.htm
 
     o ImageMagick requires an X server for display and animate to work
       properly.  There is a nearly free X server available for Windows
       and Macintosh at
 
-	http://www.microimages.com/freestuf/mix/
+	  http://www.microimages.com/freestuf/mix/
 
     o ImageMagick requires libxml available from
 
@@ -578,15 +582,6 @@ MAGICK DELEGATES
 	  http://ftp.freesoftware.com/pub/infozip/zlib/
 
       to read or write the PNG or Zip compressed MIFF images.
-
-    o ImageMagick requires SOCKS version 5 available via the Web at
-
-	  http://www.socks.nec.com/
-
-      in order for 'xtp' to work across a SOCKS5-based firewall. In
-      particular, 'xtp' makes use of SOCKS5 'rftp' as an external
-      program and supports use of the SOCKS5 library to perform DNS
-      lookups via the firewall rather than the internal DNS server.
 
     o ImageMagick requires a background texture for the TILE
       format and for the -texture option of montage(1).  You can use
