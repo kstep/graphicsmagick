@@ -1746,7 +1746,7 @@ MagickExport Image *XAnimateImages(Display *display,
                   {
                     if (!(state & RepeatAnimationState))
                       state&=(~PlayAnimationState);
-                    scene=number_scenes-1;
+                    scene=(long) number_scenes-1;
                   }
             }
           image=images[scene];
