@@ -193,6 +193,114 @@ static unsigned int IsXCF(const unsigned char *magick,const size_t length)
   return(False);
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e a d B l o b S t r i n g W i t h L o n g S i z e                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobStringWithLongSize reads characters from a blob or file
+%  starting with a long length byte and then characters to that length
+%
+%  The format of the ReadBlobStringWithLongSize method is:
+%
+%      char *ReadBlobStringWithLongSize(Image *image,char *string)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method ReadBlobString returns the string on success, otherwise,
+%      a null is returned.
+%
+%    o image: The image.
+%
+%    o string: The address of a character buffer.
+%
+%
+*/
+MagickExport char *ReadBlobStringWithLongSize(Image *image,char *string)
+{
+  int
+    c;
+
+  register int
+    i;
+
+  unsigned long
+	  length;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  length = ReadBlobMSBLong(image);
+  for (i=0; i < length; i++)
+  {
+    c=ReadBlobByte(image);
+    if (c == EOF)
+      return((char *) NULL);
+    string[i]=c;
+  }
+  string[i]='\0';
+  return(string);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e a d B l o b S t r i n g W i t h S h o r t S i z e                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadBlobStringWithShortSize reads characters from a blob or file
+%  starting with a long length byte and then characters to that length
+%
+%  The format of the ReadBlobStringWithShortSize method is:
+%
+%      char *ReadBlobStringWithShortSize(Image *image,char *string)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method ReadBlobString returns the string on success, otherwise,
+%      a null is returned.
+%
+%    o image: The image.
+%
+%    o string: The address of a character buffer.
+%
+%
+*/
+MagickExport char *ReadBlobStringWithShortSize(Image *image,char *string)
+{
+  int
+    c;
+
+  register int
+    i;
+
+  unsigned int
+	  length;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  length = ReadBlobMSBShort(image);
+  for (i=0; i < length; i++)
+  {
+    c=ReadBlobByte(image);
+    if (c == EOF)
+      return((char *) NULL);
+    string[i]=c;
+  }
+  string[i]='\0';
+  return(string);
+}
+
 static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo, 
 					  XCFLayerInfo*	inLayerInfo, int data_length)
 {
