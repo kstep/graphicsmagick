@@ -47,16 +47,16 @@ testSetAttribute('input.miff','compression','Zip');
 testSetAttribute('input.miff','density','72x72');
 
 ++$test;
-testSetAttribute('input.miff','dispose',1);
+testSetAttribute('input.miff','dispose','Undefined');
 
 ++$test;
-testSetAttribute('input.miff','dispose',2);
+testSetAttribute('input.miff','dispose','None');
 
 ++$test;
-testSetAttribute('input.miff','dispose',3);
+testSetAttribute('input.miff','dispose','Background');
 
 ++$test;
-testSetAttribute('input.miff','dispose',4);
+testSetAttribute('input.miff','dispose','Previous');
 
 ++$test;
 testSetAttribute('input.miff','delay',100);
