@@ -811,8 +811,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) x/x_factor;
-    start=Max((long) ceil(center-support-0.5),0L);
-    end=Min((long) floor(center+support+0.5),source->columns);
+    start=(long) Max(ceil(center-support-0.5),0L);
+    end=(long) Min(floor(center+support+0.5),source->columns);
     for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
@@ -948,8 +948,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) y/y_factor;
-    start=Max((long) ceil(center-support-0.5),0L);
-    end=Min((long) floor(center+support+0.5),source->rows);
+    start=(long) Max(ceil(center-support-0.5),0L);
+    end=(long) Min(floor(center+support+0.5),source->rows);
     for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
