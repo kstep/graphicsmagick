@@ -3085,11 +3085,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=ValidateColormapIndex(image,*p | *(p+1) << 8);
               if (element == 0x1201)
-                image->colormap[i].red=(Quantum) XDownscale(index);
+                image->colormap[i].red=XDownscale(index);
               if (element == 0x1202)
-                image->colormap[i].green=(Quantum) XDownscale(index);
+                image->colormap[i].green=XDownscale(index);
               if (element == 0x1203)
-                image->colormap[i].blue=(Quantum) XDownscale(index);
+                image->colormap[i].blue=XDownscale(index);
               p+=2;
             }
             break;

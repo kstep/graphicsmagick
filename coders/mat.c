@@ -111,9 +111,9 @@ register IndexPacket *indexes;
 	     break;
            for (x=0; x < (long) image->columns; x++)
               {
-              q->red=(Quantum) XDownscale(*(WORD *)p);
-              q->green=(Quantum) XDownscale(*(WORD *)p);
-              q->blue=(Quantum) XDownscale(*(WORD *)p);
+              q->red=XDownscale(*(WORD *) p);
+              q->green=XDownscale(*(WORD *) p);
+              q->blue=XDownscale(*(WORD *) p);
 	      p+=2;
               q++;
               }
@@ -142,9 +142,9 @@ register PixelPacket *q;
    for (x=0; x < (long) image->columns; x++)
           {
 	  f=(double)MaxRGB* (*p-Min)/(Max-Min);
-          q->red=(Quantum) XDownscale((unsigned long) f);
-          q->green=(Quantum) XDownscale((unsigned long) f);
-          q->blue=(Quantum) XDownscale((unsigned long) f);
+          q->red=XDownscale((unsigned long) f);
+          q->green=XDownscale((unsigned long) f);
+          q->blue=XDownscale((unsigned long) f);
           p++;
           q++;
           }

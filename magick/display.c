@@ -2008,9 +2008,9 @@ static unsigned int XColorEditImage(Display *display,
             q=GetImagePixels(*image,x_offset,y_offset,1,1);
             if (q == (PixelPacket *) NULL)
               break;
-            q->red=(Quantum) XDownscale(color.red);
-            q->green=(Quantum) XDownscale(color.green);
-            q->blue=(Quantum) XDownscale(color.blue);
+            q->red=XDownscale(color.red);
+            q->green=XDownscale(color.green);
+            q->blue=XDownscale(color.blue);
             (void) SyncImagePixels(*image);
             break;
           }
@@ -2034,9 +2034,9 @@ static unsigned int XColorEditImage(Display *display,
                   {
                     if (ColorMatch(q,&target,(*image)->fuzz))
                       {
-                        q->red=(Quantum) XDownscale(color.red);
-                        q->green=(Quantum) XDownscale(color.green);
-                        q->blue=(Quantum) XDownscale(color.blue);
+                        q->red=XDownscale(color.red);
+                        q->green=XDownscale(color.green);
+                        q->blue=XDownscale(color.blue);
                       }
                     q++;
                   }
@@ -2049,11 +2049,9 @@ static unsigned int XColorEditImage(Display *display,
                 for (i=0; i < (long) (*image)->colors; i++)
                   if (ColorMatch((*image)->colormap+i,&target,(*image)->fuzz))
                     {
-                      (*image)->colormap[i].red=(Quantum) XDownscale(color.red);
-                      (*image)->colormap[i].green=(Quantum)
-                        XDownscale(color.green);
-                      (*image)->colormap[i].blue=(Quantum)
-                        XDownscale(color.blue);
+                      (*image)->colormap[i].red=XDownscale(color.red);
+                      (*image)->colormap[i].green=XDownscale(color.green);
+                      (*image)->colormap[i].blue=XDownscale(color.blue);
                     }
                 SyncImage(*image);
               }
@@ -2074,9 +2072,9 @@ static unsigned int XColorEditImage(Display *display,
             target=GetOnePixel(*image,x_offset,y_offset);
             if (method == FillToBorderMethod)
               {
-                target.red=(Quantum) XDownscale(border_color.red);
-                target.green=(Quantum) XDownscale(border_color.green);
-                target.blue=(Quantum) XDownscale(border_color.blue);
+                target.red=XDownscale(border_color.red);
+                target.green=XDownscale(border_color.green);
+                target.blue=XDownscale(border_color.blue);
               }
             draw_info=
               CloneDrawInfo(resource_info->image_info,(DrawInfo *) NULL);
@@ -2100,9 +2098,9 @@ static unsigned int XColorEditImage(Display *display,
                 break;
               for (x=0; x < (long) (*image)->columns; x++)
               {
-                q->red=(Quantum) XDownscale(color.red);
-                q->green=(Quantum) XDownscale(color.green);
-                q->blue=(Quantum) XDownscale(color.blue);
+                q->red=XDownscale(color.red);
+                q->green=XDownscale(color.green);
+                q->blue=XDownscale(color.blue);
                 q++;
               }
               if (!SyncImagePixels(*image))
@@ -7808,9 +7806,9 @@ static unsigned int XMatteEditImage(Display *display,
             target=GetOnePixel(*image,x_offset,y_offset);
             if (method == FillToBorderMethod)
               {
-                target.red=(Quantum) XDownscale(border_color.red);
-                target.green=(Quantum) XDownscale(border_color.green);
-                target.blue=(Quantum) XDownscale(border_color.blue);
+                target.red=XDownscale(border_color.red);
+                target.green=XDownscale(border_color.green);
+                target.blue=XDownscale(border_color.blue);
               }
             (void) MatteFloodfillImage(*image,target,atoi(matte),x_offset,
               y_offset,method);
@@ -9971,11 +9969,11 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
     (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  (*image)->border_color.red=(Quantum)
+  (*image)->border_color.red=
     XDownscale(windows->pixel_info->pen_colors[pen_id].red);
-  (*image)->border_color.green=(Quantum)
+  (*image)->border_color.green=
     XDownscale(windows->pixel_info->pen_colors[pen_id].green);
-  (*image)->border_color.blue=(Quantum)
+  (*image)->border_color.blue=
     XDownscale(windows->pixel_info->pen_colors[pen_id].blue);
   (*image)->border_color.opacity=TransparentOpacity;
   rotate_image=RotateImage(*image,degrees,&(*image)->exception);

@@ -372,11 +372,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               index=(unsigned short) ((pixel >> red_shift) & red_mask);
-              q->red=(Quantum) XDownscale(colors[index].red);
+              q->red=XDownscale(colors[index].red);
               index=(unsigned short) ((pixel >> green_shift) & green_mask);
-              q->green=(Quantum) XDownscale(colors[index].green);
+              q->green=XDownscale(colors[index].green);
               index=(unsigned short) ((pixel >> blue_shift) & blue_mask);
-              q->blue=(Quantum) XDownscale(colors[index].blue);
+              q->blue=XDownscale(colors[index].blue);
               q++;
             }
             if (!SyncImagePixels(image))
@@ -394,11 +394,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               color=(pixel >> red_shift) & red_mask;
-              q->red=(Quantum) XDownscale((color*65535L)/red_mask);
+              q->red=XDownscale((color*65535L)/red_mask);
               color=(pixel >> green_shift) & green_mask;
-              q->green=(Quantum) XDownscale((color*65535L)/green_mask);
+              q->green=XDownscale((color*65535L)/green_mask);
               color=(pixel >> blue_shift) & blue_mask;
-              q->blue=(Quantum) XDownscale((color*65535L)/blue_mask);
+              q->blue=XDownscale((color*65535L)/blue_mask);
               q++;
             }
             if (!SyncImagePixels(image))
@@ -418,9 +418,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         for (i=0; i < (long) image->colors; i++)
         {
-          image->colormap[i].red=(Quantum) XDownscale(colors[i].red);
-          image->colormap[i].green=(Quantum) XDownscale(colors[i].green);
-          image->colormap[i].blue=(Quantum) XDownscale(colors[i].blue);
+          image->colormap[i].red=XDownscale(colors[i].red);
+          image->colormap[i].green=XDownscale(colors[i].green);
+          image->colormap[i].blue=XDownscale(colors[i].blue);
         }
         for (y=0; y < (long) image->rows; y++)
         {

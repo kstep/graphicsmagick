@@ -19,7 +19,7 @@ extern "C" {
 */
 #define Downscale(quantum)  ((Quantum) (quantum))
 #define Upscale(quantum)  ((Quantum) (quantum))
-#define XDownscale(color)  ((unsigned short) ((color)/257L))
+#define XDownscale(color)  ((Quantum) ((color)/257L))
 #define XUpscale(color)  ((unsigned short) (257L*(color)))
 
 typedef unsigned char Quantum;
@@ -29,7 +29,7 @@ typedef unsigned char Quantum;
 */
 #define Downscale(quantum)  ((Quantum) ((quantum)/257L))
 #define Upscale(quantum)  ((Quantum) (257L*(quantum)))
-#define XDownscale(color)  ((unsigned short) (color))
+#define XDownscale(color)  ((Quantum) (color))
 #define XUpscale(color)  ((unsigned short) (color))
 
 typedef unsigned short Quantum;
@@ -37,9 +37,9 @@ typedef unsigned short Quantum;
 # error "Specified value of QuantumDepth is not supported"
 #endif
 
-#define Intensity(color)  \
-  ((9798*(color)->red+19235*(color)->green+3735*(color)->blue)/32768L)
-#define MaxRGB  ((1L << QuantumDepth)-1L)
+#define Intensity(color)  ((Quantum) \
+  ((9798*(color)->red+19235*(color)->green+3735*(color)->blue)/32768L))
+#define MaxRGB  ((Quantum) ((1L << QuantumDepth)-1L))
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
 

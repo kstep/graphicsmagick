@@ -461,9 +461,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->red=(Quantum) XDownscale((*(p+0) << 8) | (*(p+1)));
-                q->green=(Quantum) XDownscale((*(p+2) << 8) | (*(p+3)));
-                q->blue=(Quantum) XDownscale((*(p+4) << 8) | (*(p+5)));
+                q->red=XDownscale((*(p+0) << 8) | (*(p+1)));
+                q->green=XDownscale((*(p+2) << 8) | (*(p+3)));
+                q->blue=XDownscale((*(p+4) << 8) | (*(p+5)));
                 q->opacity=(Quantum)
                   (MaxRGB-XDownscale((*(p+6) << 8) | (*(p+7))));
                 p+=8;
