@@ -786,7 +786,7 @@ Export void *MapBlob(const char *filename,const MapMode mode,size_t *length)
     case ReadMode:
     default:
     {
-      map=mmap((char *) NULL,*length,PROT_READ,MAP_SHARED,descriptor,0);
+      map=mmap((char *) NULL,*length,PROT_READ,MAP_PRIVATE,descriptor,0);
       break;
     }
     case WriteMode:
