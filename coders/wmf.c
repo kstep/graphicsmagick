@@ -1902,6 +1902,12 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   image->rows = (unsigned long)ceil(image_height);
   image->columns = (unsigned long)ceil(image_width);
 
+  if (image_info->ping)
+    {
+      wmf_api_destroy(API);
+      CloseBlob(image);
+      return(image);
+    }
   if (image_info->texture == (char *) NULL)
     {
       /*
@@ -1958,7 +1964,10 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       tile_image=ReadImage(tile_info,exception);
       DestroyImageInfo(tile_info);
       if(tile_image == (Image *) NULL)
-        return((Image *) NULL);
+        {
+          CloseBlob(image);
+          return((Image *) NULL);
+        }
 
       for (row=0; row < (long) image->rows; row+=tile_image->rows)
         {
@@ -1992,6 +2001,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   /* Cleanup allocated data */
   wmf_api_destroy(API);
+  CloseBlob(image);
 
   /* Return image */
   return image;
@@ -2031,7 +2041,7 @@ ModuleExport void RegisterWMFImage(void)
   entry = SetMagickInfo("WMF");
   entry->decoder = ReadWMFImage;
   entry->description = AllocateString("Windows Meta File");
-#if !defined(WIN32)
+#if defined(WIN32)
   entry->blob_support = False;
 #endif
   entry->module = AllocateString("WMF");
