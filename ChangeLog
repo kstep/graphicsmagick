@@ -1,5 +1,9 @@
 2003-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/effect.c (DespeckleImage): Put loops inside of case
+ 	statement rather than outside.
+	(SpreadImage): Improved algorithm so that -spread is 12X faster.
+
 	* magick/nt_feature.c (CropImageToHBITMAP): New function to return
  	a region of the image as a HBITMAP.
 

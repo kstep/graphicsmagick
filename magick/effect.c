@@ -798,19 +798,28 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       if (p == (const PixelPacket *) NULL)
         break;
       j++;
-      for (x=0; x < (long) image->columns; x++)
-      {
-        switch (layer)
+
+      switch (layer)
         {
-          case 0: pixels[j]=p->red; break;
-          case 1: pixels[j]=p->green; break;
-          case 2: pixels[j]=p->blue; break;
-          case 3: pixels[j]=p->opacity; break;
-          default: break;
+        case 0:
+          for (x=(long) image->columns; x > 0; x--)
+            pixels[j++]=p++->red;
+          break;
+        case 1:
+          for (x=(long) image->columns; x > 0; x--)
+            pixels[j++]=p++->green;
+          break;
+        case 2:
+          for (x=(long) image->columns; x > 0; x--)
+            pixels[j++]=p++->blue;
+          break;
+        case 3:
+          for (x=(long) image->columns; x > 0; x--)
+            pixels[j++]=p++->opacity;
+          break;
+        default: break;
         }
-        p++;
-        j++;
-      }
+
       j++;
     }
     (void) memset(buffer,0,length);
@@ -830,19 +839,28 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       if (q == (PixelPacket *) NULL)
         break;
       j++;
-      for (x=0; x < (long) image->columns; x++)
-      {
-        switch (layer)
+
+      switch (layer)
         {
-          case 0: q->red=pixels[j]; break;
-          case 1: q->green=pixels[j]; break;
-          case 2: q->blue=pixels[j]; break;
-          case 3: q->opacity=pixels[j]; break;
-          default: break;
+        case 0:
+          for (x=(long) image->columns; x > 0; x--)
+            q++->red=pixels[j++];
+          break;
+        case 1:
+          for (x=(long) image->columns; x > 0; x--)
+            q++->green=pixels[j++];
+          break;
+        case 2:
+          for (x=(long) image->columns; x > 0; x--)
+            q++->blue=pixels[j++];
+          break;
+        case 3:
+          for (x=(long) image->columns; x > 0; x--)
+            q++->opacity=pixels[j++];
+          break;
+        default: break;
         }
-        q++;
-        j++;
-      }
+
       if (!SyncImagePixels(despeckle_image))
         break;
       j++;
@@ -2202,9 +2220,13 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   ExceptionInfo *exception)
 {
 #define SpreadImageText  "  Spread image...  "
+#define OFFSETS_ENTRIES 5000
 
   Image
     *spread_image;
+
+  int
+    offsets_index;
 
   long
     quantum,
@@ -2215,8 +2237,14 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   register long
     x;
 
+  long
+    *offsets;
+
   register PixelPacket
     *q;
+
+  const PixelPacket
+    *neighbors;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2231,25 +2259,66 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   if (spread_image == (Image *) NULL)
     return((Image *) NULL);
   spread_image->storage_class=DirectClass;
+  offsets_index=0;
+
+  /*
+    Initialize random offsets cache
+  */
+  offsets=(long *)AcquireMemory(OFFSETS_ENTRIES*sizeof(long));
+  if (offsets == (long *) NULL)
+    {
+      ThrowException(exception,ResourceLimitError,
+                  "MemoryAllocationFailed",NULL);
+      return (Image *) NULL;
+    }
+  for (x=0; x < (OFFSETS_ENTRIES-1); x++)
+    offsets[x]=((((2*(double) radius+1)*rand())/RAND_MAX)-((long)radius));
+
   /*
     Convolve each row.
   */
-  quantum=(long) radius;
   for (y=0; y < (long) image->rows; y++)
   {
+    long
+      y_min,
+      y_max;
+
     q=SetImagePixels(spread_image,0,y,spread_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
+
+    if (radius > y)
+      y_min=0;
+    else
+      y_min=y-radius;
+    
+    if ((y+radius) >= image->rows)
+      y_max=image->rows-1;
+    else
+      y_max=y+radius;
+
+    neighbors=AcquireImagePixels(image,0,y_min,image->columns,y_max-y_min,exception);
+    if (neighbors == (PixelPacket *) NULL)
+      break;
+
     for (x=0; x < (long) image->columns; x++)
     {
       do
       {
-        x_distance=(long) ((((2*(double) radius+1)*rand())/RAND_MAX)-quantum);
-        y_distance=(long) ((((2*(double) radius+1)*rand())/RAND_MAX)-quantum);
-      } while (((x+x_distance) < 0) || ((y+y_distance) < 0) ||
-               ((x+x_distance) >= (long) image->columns) ||
+        x_distance=offsets[offsets_index++];
+        if (offsets_index==OFFSETS_ENTRIES)
+          offsets_index=0;
+      } while (((x+x_distance) < 0) ||
+               ((x+x_distance) >= (long) image->columns));
+      do
+      {
+        y_distance=offsets[offsets_index++];
+        if (offsets_index==OFFSETS_ENTRIES)
+          offsets_index=0;
+      } while (((y+y_distance) < 0) ||
                ((y+y_distance) >= (long) image->rows));
-      *q++=AcquireOnePixel(image,x+x_distance,y+y_distance,exception);
+      *q=*(neighbors+(x+x_distance)+((y+y_distance-y_min)*image->columns));
+      q++;
     }
     if (!SyncImagePixels(spread_image))
       break;
@@ -2257,6 +2326,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
       if (!MagickMonitor(SpreadImageText,y,image->rows,exception))
         break;
   }
+  LiberateMemory((void **)&offsets);
   return(spread_image);
 }
 
