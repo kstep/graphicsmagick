@@ -505,8 +505,8 @@ static void XShearImage(Image *image,const double degrees,
           if ((x_offset+i) < step)
             {
               p++;
-              q++;
               pixel=(*p);
+              q++;
               continue;
             }
           red=(double) (pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
@@ -767,14 +767,6 @@ static void YShearImage(Image *image,const double degrees,
         q=p-step;
         for (i=0; i < (long) height; i++)
         {
-if (0)
-          if ((y_offset+i) < step)
-            {
-              p++;
-              q++;
-          pixel=(*p);
-              continue;
-            }
           red=(double) (pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
           green=(double) (pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
           blue=(double) (pixel.blue*(MaxRGB-alpha)+p->blue*alpha)/MaxRGB;
@@ -987,8 +979,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
       height=image->columns;
     }
   y_width=(unsigned long) (width+ceil(fabs(shear.x)*height-0.5));
-  x_offset=(long) (width+2*ceil(fabs(shear.y)*height-0.5)-width)/2;
-  y_offset=(long) (height+ceil(fabs(shear.y)*y_width-0.5)-height)/2;
+  x_offset=(long) (width+2*ceil(fabs(shear.y)*height-0.5)-width);
+  y_offset=(long) (height+ceil(fabs(shear.y)*y_width-0.5)-height);
   /*
     Surround image with a border.
   */
