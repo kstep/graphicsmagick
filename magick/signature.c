@@ -386,7 +386,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
       i=SignatureSize-signature_info->offset;
       if (i > (long) length)
         i=length;
-      memcpy(signature_info->message+signature_info->offset,message,i);
+      (void) memcpy(signature_info->message+signature_info->offset,message,i);
       length-=i;
       message+=i;
       signature_info->offset+=i;
@@ -396,12 +396,12 @@ static void UpdateSignature(SignatureInfo *signature_info,
     }
   while (length >= SignatureSize)
   {
-    memcpy(signature_info->message,message,SignatureSize);
+    (void) memcpy(signature_info->message,message,SignatureSize);
     message+=SignatureSize;
     length-=SignatureSize;
     TransformSignature(signature_info);
   }
-  memcpy(signature_info->message,message,length);
+  (void) memcpy(signature_info->message,message,length);
   signature_info->offset=length;
 }
 

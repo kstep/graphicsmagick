@@ -144,10 +144,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        memcpy(q,p,image->columns*sizeof(PixelPacket));
+        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         if (indexes != (IndexPacket *) NULL)
-          memcpy(GetIndexes(rotate_image),indexes,
+          (void) memcpy(GetIndexes(rotate_image),indexes,
             image->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(rotate_image))
           break;
@@ -167,10 +167,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q=SetImagePixels(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        memcpy(q,p,image->columns*sizeof(PixelPacket));
+        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         if (indexes != (IndexPacket *) NULL)
-          memcpy(GetIndexes(rotate_image),indexes,
+          (void) memcpy(GetIndexes(rotate_image),indexes,
             image->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(rotate_image))
           break;
@@ -342,7 +342,7 @@ static void XShearImage(Image *image,const double degrees,
               break;
             p+=x_offset;
             q=p-step;
-            memcpy(q,p,width*sizeof(PixelPacket));
+            (void) memcpy(q,p,width*sizeof(PixelPacket));
             /*
               Set old row to border color.
             */
@@ -602,7 +602,7 @@ static void YShearImage(Image *image,const double degrees,
               break;
             p+=y_offset;
             q=p-step;
-            memcpy(q,p,height*sizeof(PixelPacket));
+            (void) memcpy(q,p,height*sizeof(PixelPacket));
             /*
               Set old column to border color.
             */

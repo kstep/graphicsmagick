@@ -1087,7 +1087,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
       */
       count=Min(length,image->blob->length-image->blob->offset);
       if (count > 0)
-        memcpy(data,image->blob->data+image->blob->offset,count);
+        (void) memcpy(data,image->blob->data+image->blob->offset,count);
       image->blob->offset+=count;
       if (count < length)
         image->blob->eof=True;
@@ -1795,7 +1795,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
           return(0);
         }
     }
-  memcpy(image->blob->data+image->blob->offset,data,length);
+  (void) memcpy(image->blob->data+image->blob->offset,data,length);
   image->blob->offset+=length;
   if (image->blob->offset > image->blob->length)
     image->blob->length=image->blob->offset;

@@ -422,10 +422,10 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     q=SetImagePixels(crop_image,0,y,crop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
+    (void) memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
     if (indexes != (IndexPacket *) NULL)
-      memcpy(GetIndexes(crop_image),indexes,
+      (void) memcpy(GetIndexes(crop_image),indexes,
         crop_image->columns*sizeof(IndexPacket));
     if (!SyncImagePixels(crop_image))
       break;
@@ -748,10 +748,10 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
     q=SetImagePixels(flip_image,0,flip_image->rows-y-1,flip_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
+    (void) memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
     if (indexes != (IndexPacket *) NULL)
-      memcpy(GetIndexes(flip_image),indexes,
+      (void) memcpy(GetIndexes(flip_image),indexes,
         image->columns*sizeof(IndexPacket));
     status=SyncImagePixels(flip_image);
     if (status == False)
