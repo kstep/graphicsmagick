@@ -677,11 +677,11 @@ MagickExport char *MagickToMime(const char *magick)
   {
     const char
       *magick,
-      *type;
+      *media;
   } MediaTypes;
 
   char
-    mime[MaxTextExtent];
+    media[MaxTextExtent];
 
   MediaTypes
     *entry;
@@ -721,9 +721,9 @@ MagickExport char *MagickToMime(const char *magick)
 
   for (entry=MediaList; entry->magick != (char *) NULL; entry++)
     if (LocaleCompare(entry->magick,magick) == 0)
-      return(AllocateString(entry->type));
-  FormatString(mime,"image/x-%.1024s",magick);
-  return(AllocateString(mime));
+      return(AllocateString(entry->media));
+  FormatString(media,"image/x-%.1024s",magick);
+  return(AllocateString(media));
 }
 
 /*
