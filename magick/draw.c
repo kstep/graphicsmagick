@@ -3966,8 +3966,8 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   stroke_polygon[i].coordinates=1;
   stroke_polygon[i]=polygon_primitive[0];
   stroke_polygon[i].point=stroke_polygon[0].point;
-  stroke_polygon[0].coordinates=p+q+2*closed_path+1;
   stroke_polygon[i+1].primitive=UndefinedPrimitive;
+  stroke_polygon[0].coordinates=p+q+2*closed_path+1;
   LiberateMemory((void **) &path_p);
   LiberateMemory((void **) &path_q);
   /*
