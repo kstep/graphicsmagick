@@ -1,4 +1,9 @@
 2002-12-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/color.c: Added VerifyColormapIndex macro to
+	verify range of color index without a function call.
+	* coders/bmp.c: Updated to use VerifyColormapIndex macro.
+
+2002-12-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* coders/bmp.c: Sped up RLE expansion and sped up byte-size
 	PseudoColor scanline conversion.  Results in 50% speed-up
 	when running on SPARC.

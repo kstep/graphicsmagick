@@ -8,6 +8,16 @@
 extern "C" {
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
+#define VerifyColormapIndex(image,index) \
+{ \
+  if (index >= image->colors) \
+    { \
+      index=0; \
+      ThrowException(&image->exception,CorruptImageError, \
+                     "InvalidColormapIndex",image->filename); \
+    } \
+}
+
 extern MagickExport char
   **GetColorList(const char *,unsigned long *);
 

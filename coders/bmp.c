@@ -1023,17 +1023,20 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < ((long) image->columns-1); x+=2)
           {
-            index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
+            index=(IndexPacket) ((*p >> 4) & 0xf);
+            VerifyColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
-            index=ConstrainColormapIndex(image,*p & 0xf);
+            index=(IndexPacket) (*p & 0xf);
+            VerifyColormapIndex(image,index);
             indexes[x+1]=index;
             *q++=image->colormap[index];
             p++;
           }
           if ((image->columns % 2) != 0)
             {
-              index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
+              index=(IndexPacket) ((*p >> 4) & 0xf);
+              VerifyColormapIndex(image,index);
               indexes[x]=index;
               *q++=image->colormap[index];
               p++;
@@ -1069,12 +1072,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x = (long)image->columns; x != 0; --x)
           {
             index=(IndexPacket)*p;
-            if (index >= image->colors)
-              {
-                index=0;
-                ThrowException(&image->exception,CorruptImageError,
-                               "InvalidColormapIndex",image->filename);
-              }
+            VerifyColormapIndex(image,index);
             *indexes++=index;
             *q=image->colormap[index];
             p++;
