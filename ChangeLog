@@ -1,3 +1,7 @@
+2003-06-04  William Radcliffe  <billr@corbis.com>
+
+	* coders/meta.c: Added some casts to make things compile better.
+
 2003-06-03  William Radcliffe  <billr@corbis.com>
 
 	* coders/meta.c: Was broken due to editing mistakes as well

@@ -232,7 +232,7 @@ static char *super_fgets(char **b, int *blen, Image *file)
     *q;
 
   len=*blen;
-  p = (*b);
+  p=(unsigned char *) (*b);
   for (q=p; ; q++)
   {
     c=ReadBlobByte(file);
@@ -246,7 +246,7 @@ static char *super_fgets(char **b, int *blen, Image *file)
         tlen=q-p;
         len<<=1;
         MagickReallocMemory(p,(len+2));
-        *b = (char *) p;
+        *b=(char *) p;
         if (p == (char *) NULL)
           break;
         q=p+tlen;
@@ -493,8 +493,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
     *q;
 
   len=*blen;
-  p=(*b);
-  /* DebugString("META CODER super_fgets_w #1\n"); */
+  p=(unsigned char *) (*b);
   for (q=p; ; q++)
   {
     c=ReadBlobLSBShort(file);
@@ -510,14 +509,13 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
         tlen=q-p;
         len<<=1;
         MagickReallocMemory(p,(len+2));
-        *b=p;
+        *b=(char *) p;
         if (p == (char *) NULL)
           break;
         q=p+tlen;
       }
     *q=(unsigned char) c;
   }
-  /* DebugString("META CODER super_fgets_w #2\n"); */
   *blen=0;
   if ((*b) != (char *) NULL)
     {
@@ -530,7 +528,6 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
       p[tlen] = '\0';
       *blen=++tlen;
     }
-  /* DebugString("META CODER super_fgets_w #3\n"); */
   return p;
 }
 
@@ -1161,8 +1158,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
                 image)
             }
           AttachBlob(iptc->blob,pinfo->info,pinfo->length);
-          /* DebugString("META CODER APP1JPEG embed: 0x%08lx (%d)\n", */
-/*             (unsigned long)pinfo->info, pinfo->length); */
+          /* DebugString("META CODER APP1JPEG embed: 0x%08lx (%d)\n",
+               (unsigned long)pinfo->info, pinfo->length); */
           result=jpeg_embed(image,buff,iptc);
           DetachBlob(iptc->blob);
           DestroyImage(iptc);
