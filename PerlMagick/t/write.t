@@ -241,6 +241,7 @@ print("CMYK format ...\n");
 testReadWriteSized( 'CMYK:input_70x46.cmyk',
 		    'CMYK:output_70x46.cmyk',
 		    '70x46',
+		    8,
 		    q//,
 		    'a69ea409ec1962729ed7b5c6985619b6',
                     '840c11bcfa1e39cb97589813dc139c28' );
@@ -251,6 +252,7 @@ print("GRAY format ...\n");
 testReadWriteSized( 'GRAY:input_70x46.gray',
 		    'GRAY:output_70x46.gray',
 		    '70x46',
+		    8,
 		    q//,
 		    'f0ad0e33df6ed019b9e15ee5e1741d16',
                     'e62f2cea7aa5bf01fcb9417b0626dc2f' );
@@ -260,6 +262,7 @@ print("RGB format ...\n");
 testReadWriteSized( 'RGB:input_70x46.rgb',
 		    'RGB:output_70x46.rgb',
 		    '70x46',
+		    8,
 		    q//,
 		    'eb4d6e084afe2835a1ad28ad7fc12ced',
                     '35ce65f982f803221d4417a403effa2e' );
@@ -270,6 +273,7 @@ print("RGBA format ...\n");
 testReadWriteSized( 'RGBA:input_70x46.rgba',
 		    'RGBA:output_70x46.rgba',
 		    '70x46',
+		    8,
 		    q//,
 		    'eb4d6e084afe2835a1ad28ad7fc12ced',
                     '97558e5d40363309da60696286664df1' );

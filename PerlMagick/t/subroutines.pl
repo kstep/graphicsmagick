@@ -220,19 +220,24 @@ sub testReadWriteNoVerify {
 # Test writing a file by first reading a source image, writing to a new image,
 # reading the written image, and comparing with expected MD5.
 #
-# Usage: testReadWriteSized( read filename, write filename, read filename size,
-#                            write options, expected md5 [,expected md5_16] );
+# Usage: testReadWriteSized( read filename,
+#                            write filename,
+#                            read filename size,
+#                            read filename depth,
+#                            write options,
+#                            expected md5 [,expected md5_16] );
 #
 # .e.g
 #
-# testReadWrite( 'input.jpg', 'output.jpg', '70x46', q/quality=>80,
-#                'interlace'=>'None'/, 'dc0a144a0b9480cd1e93757a30f01ae3' );
+# testReadWriteSized( 'input.jpg', 'output.jpg', '70x46', 8, q/quality=>80,
+#                     'interlace'=>'None'/, 'dc0a144a0b9480cd1e93757a30f01ae3' );
 #
 # If the MD5 of the written image is not what is expected, the written
-# image is preserved.  Otherwise, the written image is removed.
+# image is preserved.  Otherwise, the written image is removed.  A depth of 0 is
+# ignored.
 #
 sub testReadWriteSized {
-  my( $infile, $outfile, $size, $writeoptions, $md5, $md5_16 ) = @_;
+  my( $infile, $outfile, $size, $readdepth, $writeoptions, $md5, $md5_16 ) = @_;
   
   my($image);
   
@@ -242,8 +247,13 @@ sub testReadWriteSized {
   $status=$image->SetAttribute(size=>"$size");
   warn "$status" if "$status";
 
-  $status=$image->ReadImage("$infile");
+  # If read depth is not zero, then set it
+  if ( $readdepth != 0 ) {
+    $status=$image->SetAttribute(depth=>$readdepth);
+    warn "$status" if "$status";
+  }
 
+  $status=$image->ReadImage("$infile");
   if( "$status" ) {
     print "ReadImage $infile: $status\n";
     print "not ok $test\n";
@@ -261,7 +271,7 @@ sub testReadWriteSized {
       print "WriteImage $outfile: $status\n";
       print "not ok $test\n";
     } else {
-       my($image);
+      my($image);
 
       $image=Image::Magick->new;
 
@@ -285,8 +295,10 @@ sub testReadWriteSized {
              print "   if 16-bit: $md5_16\n";
           }
 	  print "not ok $test\n";
+          #$image->Display();
 	} else {
 	  print "ok $test\n";
+	  #$image->Display();
 	  ($file = $outfile) =~ s/.*://g;
 	  unlink "$file";
 	}
