@@ -1593,7 +1593,7 @@ int main(int argc,char **argv)
           if (LocaleNCompare("unsharp",option+1,5) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+              if ((i == argc) || !sscanf(argv[i],"%lf",&sans)
                 MagickError(OptionError,"Missing geometry",option);
               break;
             }

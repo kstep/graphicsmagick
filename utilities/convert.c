@@ -2112,15 +2112,8 @@ int main(int argc,char **argv)
             {
               if (*option == '-')
                 {
-                  double
-                    amount,
-                    radius,
-                    sigma,
-                    threshold;
-
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lfx%lfx%lfx%lf",
-                      &radius,&sigma,&amount,&threshold))
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans)
                     MagickError(OptionError,"Missing geometry",option);
                 }
               break;
