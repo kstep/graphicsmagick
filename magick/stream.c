@@ -76,7 +76,6 @@ static PixelPacket
 static unsigned int
   SyncPixelStream(Image *);
 
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
