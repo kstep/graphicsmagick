@@ -82,6 +82,7 @@ extern MagickExport unsigned long
 extern MagickExport void
   *AcquireMemory(const size_t),
   AppendImageFormat(const char *,char *),
+  ChopPathComponents(char *,const unsigned long,const unsigned int),
   *CloneMemory(void *,const void *,const size_t),
   ExpandFilename(char *),
   GetPathComponent(const char *,PathType,char *),
@@ -92,8 +93,7 @@ extern MagickExport void
   ReacquireMemory(void **,const size_t),
   Strip(char *),
   SetGeometry(const Image *,RectangleInfo *),
-  TemporaryFilename(char *),
-  TruncatePathElements(char *,const unsigned long,const unsigned int);
+  TemporaryFilename(char *);
 
 extern MagickExport void
 #if defined(__GNUC__)

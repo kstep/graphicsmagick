@@ -1093,7 +1093,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       continue;
     GetToken(q,&q,token);
     GetToken(q,&q,token);
-    switch (*keyword) 
+    switch (*keyword)
     {
       case 'M':
       case 'm':
