@@ -39,11 +39,11 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
     DrawSetScale(context,1.101,1.08);
     DrawSetTranslate(context,-23.69,-22.97);
     DrawSetRotate(context,0);
-    DrawSetFillString(context,"#ffffff");
+    DrawSetFillColorString(context,"#ffffff");
     DrawRectangle(context,23.69,22.97,564.6,802.2);
     DrawSetFillOpacity(context,1.0);
-    DrawSetFillString(context,"none");
-    DrawSetStrokeString(context,"none");
+    DrawSetFillColorString(context,"none");
+    DrawSetStrokeColorString(context,"none");
 
     DrawSetStrokeAntialias(context,True);
     DrawSetStrokeLineCap(context,RoundCap);
@@ -74,9 +74,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#ff0000");
+        DrawSetStrokeColorString(context,"#ff0000");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#ff00ff");
+        DrawSetFillColorString(context,"#ff00ff");
         DrawRectangle(context,72,72,144,144);
       }
       DrawPopGraphicContext(context);
@@ -88,9 +88,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#00ff00");
+        DrawSetStrokeColorString(context,"#00ff00");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#0080ff");
+        DrawSetFillColorString(context,"#0080ff");
         DrawRoundRectangle(context,72,216,360,432,9,9);
       }
       DrawPopGraphicContext(context);
@@ -116,9 +116,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#000080");
+        DrawSetStrokeColorString(context,"#000080");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#c2c280");
+        DrawSetFillColorString(context,"#c2c280");
         DrawPolygon(context,37,points);
       }
       DrawPopGraphicContext(context);
@@ -130,9 +130,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#000080");
+        DrawSetStrokeColorString(context,"#000080");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#00ffff");
+        DrawSetFillColorString(context,"#00ffff");
         DrawEllipse(context,489.6,424.8,72,129.6,0,360);
       }
       DrawPopGraphicContext(context);
@@ -160,9 +160,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#ff8000");
+        DrawSetStrokeColorString(context,"#ff8000");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#00ffff");
+        DrawSetFillColorString(context,"#00ffff");
         DrawPolygon(context,48,points);
       }
       DrawPopGraphicContext(context);
@@ -174,8 +174,8 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#4000c2");
-        DrawSetFillString(context,"none");
+        DrawSetStrokeColorString(context,"#4000c2");
+        DrawSetFillColorString(context,"none");
         DrawArc(context,360,554.4,187.2,237.6,0,90);
       }
       DrawPopGraphicContext(context);
@@ -187,9 +187,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#4000c2");
+        DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#800000");
+        DrawSetFillColorString(context,"#800000");
         DrawEllipse(context,388.8,626.4,100.8,122.4,0,90);
       }
       DrawPopGraphicContext(context);
@@ -207,9 +207,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#4000c2");
+        DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#800000");
+        DrawSetFillColorString(context,"#800000");
         DrawPolygon(context,6,points);
       }
       DrawPopGraphicContext(context);
@@ -228,9 +228,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#4000c2");
+        DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#800000");
+        DrawSetFillColorString(context,"#800000");
         DrawPolygon(context,11,points);
       }
       DrawPopGraphicContext(context);
@@ -250,9 +250,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#4000c2");
+        DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#ffff00");
+        DrawSetFillColorString(context,"#ffff00");
         DrawPolygon(context,15,points);
       }
       DrawPopGraphicContext(context);
@@ -270,9 +270,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#4000c2");
+        DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#ffff00");
+        DrawSetFillColorString(context,"#ffff00");
         DrawPolygon(context,7,points);
       }
       DrawPopGraphicContext(context);
@@ -337,9 +337,9 @@ static void ScribbleImage ( ImageInfo* image_info, Image *image)
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
         DrawSetStrokeDashArray(context,(const double *)NULL);
-        DrawSetStrokeString(context,"#4000c2");
+        DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
-        DrawSetFillString(context,"#ffff00");
+        DrawSetFillColorString(context,"#ffff00");
         DrawPolygon(context,193,points);
       }
       DrawPopGraphicContext(context);
