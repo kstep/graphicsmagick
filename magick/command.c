@@ -5176,7 +5176,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
     }
   }
   if ((i != argc) || (image == (Image *) NULL))
-    ThrowMogrifyException(OptionError,"MissingAnImageFilename",(char *) NULL);
+    {
+      if (exception->severity == UndefinedException)
+        ThrowMogrifyException(OptionError,"MissingAnImageFilename",
+          (char *) NULL);
+      return(False);
+    }
   return(status);
 }
 
