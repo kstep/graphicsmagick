@@ -1031,8 +1031,8 @@ static unsigned int RenderTruetype(Image *image,
       (FT_Outline_LineTo_Func) LineTo,
       (FT_Outline_ConicTo_Func) QuadraticBezier,
       (FT_Outline_CubicTo_Func) CubicBezier,
-      NULL,
-      NULL
+      0,
+      0
     };
 
   FT_OutlineGlyph
