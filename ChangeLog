@@ -2,7 +2,7 @@
 
 	* magick/command.c: Added support for -operator command with
 	syntax "-operator channel operator rvalue" which applies a
-	mathematical or bitwise operator to a specified image channel
+	arithmetic or bitwise operator to a specified image channel
 	or all channels.
 
 2004-03-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
