@@ -1,3 +1,9 @@
+2004-06-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): For -units, don't reset
+	resolution if units are undefined. Report an error if the -units
+	argument is not supported.
+
 2004-06-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): When setting image units, also

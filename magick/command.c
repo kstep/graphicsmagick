@@ -9236,26 +9236,30 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 option=argv[++i];
                 if (LocaleCompare("PixelsPerInch",option) == 0)
                   resolution_type=PixelsPerInchResolution;
-                if (LocaleCompare("PixelsPerCentimeter",option) == 0)
+                else if (LocaleCompare("PixelsPerCentimeter",option) == 0)
                   resolution_type=PixelsPerCentimeterResolution;
-              }
+                else
+                  {
+                    ThrowException(&(*image)->exception,OptionError,
+                                   UnrecognizedUnitsType,option);
+                    continue;
+                  }
 
-            if ( (resolution_type == PixelsPerInchResolution) &&
-                 ((*image)->units == PixelsPerCentimeterResolution) )
-              {
-                (*image)->x_resolution /= 2.54;
-                (*image)->y_resolution /= 2.54;
-              }
-            else if ( (resolution_type == PixelsPerCentimeterResolution) &&
-                      ((*image)->units == PixelsPerInchResolution) )
-              {
-                (*image)->x_resolution *= 2.54;
-                (*image)->y_resolution *= 2.54;
-              }
-            else if ( resolution_type == UndefinedResolution )
-              {
-                (*image)->x_resolution = 0.0;
-                (*image)->y_resolution = 0.0;
+                /*
+                  Adjust resolution values if necessary.
+                */
+                if ( (resolution_type == PixelsPerInchResolution) &&
+                     ((*image)->units == PixelsPerCentimeterResolution) )
+                  {
+                    (*image)->x_resolution /= 2.54;
+                    (*image)->y_resolution /= 2.54;
+                  }
+                else if ( (resolution_type == PixelsPerCentimeterResolution) &&
+                          ((*image)->units == PixelsPerInchResolution) )
+                  {
+                    (*image)->x_resolution *= 2.54;
+                    (*image)->y_resolution *= 2.54;
+                  }
               }
             
             (*image)->units=resolution_type;

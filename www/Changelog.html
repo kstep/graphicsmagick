@@ -21,12 +21,23 @@
 </tr>
 </table>
 <p>
+2004-06-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (MogrifyImage): For -units, don't reset
+        resolution if units are undefined. Report an error if the -units
+        argument is not supported.
+
+</UL>
+<p>
 2004-06-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> magick/command.c (MogrifyImage): When setting image units, also
         adjust existing image x_resolution and y_resolution so that
         existing image resolution is not trashed.
+        (MogrifyImage): When re-sampling an image, report an error if the
+        image does not contain a valid resolution.
 
 </UL>
 <p>
