@@ -83,8 +83,10 @@
 /*
   Forward declarations.
 */
+#if defined(HasJP2)
 static unsigned int
   WriteJP2Image(const ImageInfo *,Image *);
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -493,6 +495,7 @@ ModuleExport void UnregisterJP2Image(void)
   (void) UnregisterMagickInfo("JPC");
 }
 
+#if defined(HasJP2)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -524,7 +527,6 @@ ModuleExport void UnregisterJP2Image(void)
 %
 %
 */
-#if defined(HasJP2)
 static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
   char

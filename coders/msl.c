@@ -3243,7 +3243,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       else if (LocaleCompare((char *) name,"solarize") == 0)
       {
         /* init the values */
-        int  threshold = 0;
+        double  threshold = 0;
 
         if (msl_info->image[n] == (Image *) NULL)
         {
@@ -3265,7 +3265,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           if (LocaleCompare(keyword,"threshold") == 0)
             {
-            threshold = atoi( value );
+            threshold = atof( value );
             break;
             }
           ThrowException(msl_info->exception,OptionError,
@@ -3632,7 +3632,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       else if (LocaleCompare((char *) name,"threshold") == 0)
       {
         /* init the values */
-        int  threshold = 0;
+        double  threshold = 0;
 
         if (msl_info->image[n] == (Image *) NULL)
         {
@@ -3654,7 +3654,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           if (LocaleCompare(keyword,"threshold") == 0)
             {
-            threshold = atoi( value );
+            threshold = atof( value );
             break;
             }
           ThrowException(msl_info->exception,OptionError,
