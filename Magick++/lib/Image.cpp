@@ -615,7 +615,10 @@ void Magick::Image::draw ( const Magick::Drawable &drawable_ )
 
   DrawContext context = DrawAllocateContext( options()->drawInfo(), image());
   drawable_.operator()(context);
-  DrawRender(context);
+
+  if( constImage()->exception.severity == UndefinedException)
+    DrawRender(context);
+
   DrawDestroyContext(context);
 
   throwImageException();
@@ -631,9 +634,13 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
        p != drawable_.end(); p++ )
     {
       p->operator()(context);
-      throwImageException();
+      if( constImage()->exception.severity != UndefinedException)
+        break;
     }
-  DrawRender(context);
+
+  if( constImage()->exception.severity == UndefinedException)
+    DrawRender(context);
+
   DrawDestroyContext(context);
 
   throwImageException();
