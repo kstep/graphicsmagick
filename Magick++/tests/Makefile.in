@@ -218,6 +218,7 @@ check_PROGRAMS = \
 	coalesceImages \
 	coderInfo \
 	color \
+	exceptions \
 	montageImages \
 	morphImages \
 	readWriteBlob \
@@ -232,6 +233,7 @@ averageImages_SOURCES = averageImages.cpp
 coalesceImages_SOURCES = coalesceImages.cpp
 coderInfo_SOURCES = coderInfo.cpp
 color_SOURCES = color.cpp
+exceptions_SOURCES = exceptions.cpp
 montageImages_SOURCES = montageImages.cpp
 morphImages_SOURCES = morphImages.cpp
 readWriteBlob_SOURCES = readWriteBlob.cpp
@@ -248,9 +250,9 @@ CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = appendImages$(EXEEXT) attributes$(EXEEXT) \
 	averageImages$(EXEEXT) coalesceImages$(EXEEXT) \
-	coderInfo$(EXEEXT) color$(EXEEXT) montageImages$(EXEEXT) \
-	morphImages$(EXEEXT) readWriteBlob$(EXEEXT) \
-	readWriteImages$(EXEEXT)
+	coderInfo$(EXEEXT) color$(EXEEXT) exceptions$(EXEEXT) \
+	montageImages$(EXEEXT) morphImages$(EXEEXT) \
+	readWriteBlob$(EXEEXT) readWriteImages$(EXEEXT)
 am_appendImages_OBJECTS = appendImages.$(OBJEXT)
 appendImages_OBJECTS = $(am_appendImages_OBJECTS)
 appendImages_LDADD = $(LDADD)
@@ -281,6 +283,11 @@ color_OBJECTS = $(am_color_OBJECTS)
 color_LDADD = $(LDADD)
 color_DEPENDENCIES = ../lib/libMagick++.la
 color_LDFLAGS =
+am_exceptions_OBJECTS = exceptions.$(OBJEXT)
+exceptions_OBJECTS = $(am_exceptions_OBJECTS)
+exceptions_LDADD = $(LDADD)
+exceptions_DEPENDENCIES = ../lib/libMagick++.la
+exceptions_LDFLAGS =
 am_montageImages_OBJECTS = montageImages.$(OBJEXT)
 montageImages_OBJECTS = $(am_montageImages_OBJECTS)
 montageImages_LDADD = $(LDADD)
@@ -314,6 +321,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/averageImages.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/coalesceImages.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/coderInfo.Po ./$(DEPDIR)/color.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/exceptions.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/montageImages.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/morphImages.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/readWriteBlob.Po \
@@ -329,11 +337,11 @@ CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 CXXFLAGS = @CXXFLAGS@
 DIST_SOURCES = $(appendImages_SOURCES) $(attributes_SOURCES) \
 	$(averageImages_SOURCES) $(coalesceImages_SOURCES) \
-	$(coderInfo_SOURCES) $(color_SOURCES) $(montageImages_SOURCES) \
-	$(morphImages_SOURCES) $(readWriteBlob_SOURCES) \
-	$(readWriteImages_SOURCES)
+	$(coderInfo_SOURCES) $(color_SOURCES) $(exceptions_SOURCES) \
+	$(montageImages_SOURCES) $(morphImages_SOURCES) \
+	$(readWriteBlob_SOURCES) $(readWriteImages_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(appendImages_SOURCES) $(attributes_SOURCES) $(averageImages_SOURCES) $(coalesceImages_SOURCES) $(coderInfo_SOURCES) $(color_SOURCES) $(montageImages_SOURCES) $(morphImages_SOURCES) $(readWriteBlob_SOURCES) $(readWriteImages_SOURCES)
+SOURCES = $(appendImages_SOURCES) $(attributes_SOURCES) $(averageImages_SOURCES) $(coalesceImages_SOURCES) $(coderInfo_SOURCES) $(color_SOURCES) $(exceptions_SOURCES) $(montageImages_SOURCES) $(morphImages_SOURCES) $(readWriteBlob_SOURCES) $(readWriteImages_SOURCES)
 
 all: all-am
 
@@ -374,6 +382,9 @@ coderInfo$(EXEEXT): $(coderInfo_OBJECTS) $(coderInfo_DEPENDENCIES)
 color$(EXEEXT): $(color_OBJECTS) $(color_DEPENDENCIES) 
 	@rm -f color$(EXEEXT)
 	$(CXXLINK) $(color_LDFLAGS) $(color_OBJECTS) $(color_LDADD) $(LIBS)
+exceptions$(EXEEXT): $(exceptions_OBJECTS) $(exceptions_DEPENDENCIES) 
+	@rm -f exceptions$(EXEEXT)
+	$(CXXLINK) $(exceptions_LDFLAGS) $(exceptions_OBJECTS) $(exceptions_LDADD) $(LIBS)
 montageImages$(EXEEXT): $(montageImages_OBJECTS) $(montageImages_DEPENDENCIES) 
 	@rm -f montageImages$(EXEEXT)
 	$(CXXLINK) $(montageImages_LDFLAGS) $(montageImages_OBJECTS) $(montageImages_LDADD) $(LIBS)
@@ -399,6 +410,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coalesceImages.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coderInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/color.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exceptions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/montageImages.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/morphImages.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readWriteBlob.Po@am__quote@
@@ -579,6 +591,7 @@ check:
 	env srcdir=$(srcdir) ./morphImages
 	env srcdir=$(srcdir) ./readWriteBlob
 	env srcdir=$(srcdir) ./readWriteImages
+	env srcdir=$(srcdir) ./exceptions
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

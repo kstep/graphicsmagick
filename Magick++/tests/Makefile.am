@@ -17,6 +17,7 @@ check_PROGRAMS =  \
 	coalesceImages \
 	coderInfo \
 	color \
+	exceptions \
 	montageImages \
 	morphImages \
 	readWriteBlob \
@@ -30,6 +31,7 @@ averageImages_SOURCES	= averageImages.cpp
 coalesceImages_SOURCES	= coalesceImages.cpp
 coderInfo_SOURCES	= coderInfo.cpp
 color_SOURCES		= color.cpp
+exceptions_SOURCES	= exceptions.cpp
 montageImages_SOURCES	= montageImages.cpp
 morphImages_SOURCES	= morphImages.cpp
 readWriteBlob_SOURCES	= readWriteBlob.cpp
@@ -51,4 +53,5 @@ check:
 	env srcdir=$(srcdir) ./morphImages
 	env srcdir=$(srcdir) ./readWriteBlob
 	env srcdir=$(srcdir) ./readWriteImages
+	env srcdir=$(srcdir) ./exceptions
 
