@@ -52,7 +52,7 @@ EXTRA_DIST = Copyright.txt TODO.txt ImageMagick.html Magickshr.opt Make.com \
 	Manifest.ps PLATFORMS.txt QuickStart.txt README.txt lndir.sh winpath.sh
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = guide images messages scenes scripts www PerlMagick
+DISTDIRS = guide images locale scenes scripts www PerlMagick
 dist-hook:
 	( \
 	  builddir=`pwd` ; \

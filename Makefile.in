@@ -261,7 +261,7 @@ EXTRA_DIST = Copyright.txt TODO.txt ImageMagick.html Magickshr.opt Make.com \
 
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = guide images messages scenes scripts www PerlMagick
+DISTDIRS = guide images locale scenes scripts www PerlMagick
 
 #
 # Additional install rules
