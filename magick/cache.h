@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 #if !defined(PixelCacheThreshold)
-#define PixelCacheThreshold  2000  /* megabytes */
+#define PixelCacheThreshold  2047  /* megabytes */
 #endif
 
 /*

@@ -264,7 +264,7 @@
 /* Name of package */
 #undef PACKAGE
 
-/* Pixel cache threshold (default 2000MB) */
+/* Pixel cache threshold (default 2047MB) */
 #undef PixelCacheThreshold
 
 /* Increase max color value from 255 to 65535 */
