@@ -924,105 +924,15 @@ static void
 */
 Export void CompressColormap(Image *image)
 {
-  int
-    number_colors,
-    y;
+  QuantizeInfo
+    quantize_info;
 
-  PixelPacket
-    *colormap;
-
-  register IndexPacket
-    index;
-
-  register int
-    i,
-    x;
-
-  unsigned char
-    *marker;
-
-  /*
-    Determine if colormap can be compressed.
-  */
-  assert(image != (Image *) NULL);
-  if (image->class != PseudoClass)
+  if (!IsPseudoClass(image))
     return;
-  marker=(unsigned char *) AllocateMemory(image->colors*sizeof(unsigned char));
-  if (marker == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
-        "Memory allocation failed");
-      return;
-    }
-  number_colors=image->colors;
-  for (i=0; i < (int) image->colors; i++)
-    marker[i]=False;
-  image->colors=0;
-  for (y=0; y < (int) image->rows; y++)
-  {
-    if (!GetPixelCache(image,0,y,image->columns,1))
-      break;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      index=image->indexes[x];
-      if (!marker[index])
-        {
-          /*
-            Eliminate duplicate colors.
-          */
-          for (i=0; i < number_colors; i++)
-            if ((i != index) && marker[i])
-              if (ColorMatch(image->colormap[index],image->colormap[i],0))
-                break;
-          if (i != number_colors)
-            image->colormap[index].opacity=image->colormap[i].opacity;
-          else
-            image->colormap[index].opacity=image->colors++;
-          marker[index]=True;
-        }
-    }
-  }
-  if ((int) image->colors == number_colors)
-    return;  /* no duplicate or unused entries */
-  /*
-    Compress colormap.
-  */
-  colormap=(PixelPacket *) AllocateMemory(image->colors*sizeof(PixelPacket));
-  if (colormap == (PixelPacket *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
-        "Memory allocation failed");
-      FreeMemory(marker);
-      image->colors=number_colors;
-      return;
-    }
-  /*
-    Eliminate unused colormap entries.
-  */
-  for (i=0; i < number_colors; i++)
-    if (marker[i])
-      {
-        index=image->colormap[i].opacity;
-        colormap[index]=image->colormap[i];
-      }
-  FreeMemory(marker);
-  /*
-    Remap pixels.
-  */
-  for (y=0; y < (int) image->rows; y++)
-  {
-    if (!GetPixelCache(image,0,y,image->columns,1))
-      break;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      index=image->indexes[x];
-      image->indexes[x]=image->colormap[index].opacity;
-    }
-    if (!SyncPixelCache(image))
-      break;
-  }
-  FreeMemory(image->colormap);
-  image->colormap=colormap;
+  GetQuantizeInfo(&quantize_info);
+  quantize_info.number_colors=image->colors;
+  quantize_info.tree_depth=8;
+  (void) QuantizeImage(&quantize_info,image);
 }
 
 /*
