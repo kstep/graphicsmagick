@@ -1029,13 +1029,15 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
     ThrowBinaryException(DelegateError,"Unable to open freetype library",
       draw_info->font);
   status=FT_New_Face(library,draw_info->font,0,&face);
-  if (status)
+  if (status != 0)
     {
       (void) FT_Done_FreeType(library);
       ThrowBinaryException(DelegateError,"Unable to read font",
         draw_info->font)
     }
   (void) strncpy(font,draw_info->font,MaxTextExtent-1);
+  if (face->num_charmaps != 0))
+    status=FT_Set_Charmap(face,face->charmaps[0]);
   encoding_type=ft_encoding_none;
   if (draw_info->encoding != (char *) NULL)
     {
@@ -1051,6 +1053,8 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_big5;
       if (LocaleCompare(draw_info->encoding,"GB2312") == 0)
         encoding_type=ft_encoding_gb2312;
+      if (LocaleCompare(draw_info->encoding,"Latin 1") == 0)
+        encoding_type=ft_encoding_latin_1;
       if (LocaleCompare(draw_info->encoding,"Latin 2") == 0)
         encoding_type=ft_encoding_latin_2;
       if (LocaleCompare(draw_info->encoding,"None") == 0)
@@ -1064,7 +1068,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
       if (LocaleCompare(draw_info->encoding,"Wansung") == 0)
         encoding_type=ft_encoding_wansung;
       status=FT_Select_Charmap(face,encoding_type);
-      if (status)
+      if (status != 0)
         ThrowBinaryException(DelegateError,"Unrecognized encoding",
           draw_info->encoding);
     }
