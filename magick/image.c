@@ -852,7 +852,8 @@ MagickExport unsigned int ClipImage(Image *image)
   assert(image->signature == MagickSignature);
   attribute=GetImageAttribute(image,"8BIM:1999,2998");
   if (attribute == (const ImageAttribute *) NULL)
-    return(False);
+    ThrowBinaryException(CorruptImageWarning,
+		  "no clipping path information available",image->filename);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) QueryColorDatabase("none",&image_info->background_color);
   clip_mask=BlobToImage(image_info,attribute->value,strlen(attribute->value),
