@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Definition of Options
 //
@@ -21,14 +21,13 @@
 
 namespace Magick
 {
-  using MagickLib::ImageInfo;
-  using MagickLib::QuantizeInfo;
 
   class Image;
 
   class Options
   {
     friend class Image;
+
   public:
     Options( void );
     Options( const Options& options_ );
@@ -188,12 +187,10 @@ namespace Magick
     // Internal implementation methods.  Please do not use.
     //
 
-    // Construct using pointers to external structures
-    // Must not delete pointers!
-//     Options( ImageInfo* imageInfo_, QuantizeInfo* quantizeInfo_ );
-    
-    ImageInfo *     imageInfo( void );
-    QuantizeInfo *  quantizeInfo( void );
+    MagickLib::AnnotateInfo *  annotateInfo( void );
+    MagickLib::DrawInfo*       drawInfo( void );
+    MagickLib::ImageInfo *     imageInfo( void );
+    MagickLib::QuantizeInfo *  quantizeInfo( void );
 
   protected:
 
@@ -202,9 +199,13 @@ namespace Magick
     // Assignment not supported
     Options operator= ( const Options& );
 
-    ImageInfo*        _imageInfo;
-    QuantizeInfo*     _quantizeInfo;
-    MagickLib::Image* _penTexture;
+    // Update annotation info
+    void updateAnnotateInfo( void );
+
+    MagickLib::ImageInfo*        _imageInfo;
+    MagickLib::QuantizeInfo*     _quantizeInfo;
+    MagickLib::AnnotateInfo*     _annotateInfo;
+    MagickLib::DrawInfo*         _drawInfo;
   };
 } // namespace Magick
 
@@ -218,12 +219,7 @@ inline void Magick::Options::antiAlias( bool flag_ )
 }
 inline bool Magick::Options::antiAlias( void )
 {
-  // Manually cast to bool to avoid warnings
-  // and in case bool is only emulated.
-  if ( _imageInfo->antialias )
-    return true;
-
-  return false;
+  return (bool)_imageInfo->antialias;
 }
 
 inline void Magick::Options::adjoin ( bool flag_ )
@@ -232,10 +228,7 @@ inline void Magick::Options::adjoin ( bool flag_ )
 }
 inline bool Magick::Options::adjoin ( void ) const
 {
-  if ( _imageInfo->adjoin )
-    return true;
-  else
-    return false;
+  return (bool)_imageInfo->adjoin;
 }
 
 inline void Magick::Options::colorFuzz ( unsigned int fuzz_ )
@@ -268,6 +261,7 @@ inline unsigned int Magick::Options::depth ( void ) const
 inline void Magick::Options::fontPointsize ( double pointSize_ )
 {
   _imageInfo->pointsize = pointSize_;
+  updateAnnotateInfo();
 }
 inline double Magick::Options::fontPointsize ( void ) const
 {
@@ -287,11 +281,11 @@ inline Magick::InterlaceType Magick::Options::interlaceType ( void ) const
 // Linewidth for drawing lines, circles, ellipses, etc.
 inline void Magick::Options::lineWidth ( unsigned int lineWidth_ )
 {
-  _imageInfo->linewidth = lineWidth_;
+  _drawInfo->linewidth = lineWidth_;
 }
 inline unsigned int Magick::Options::lineWidth ( void ) const
 {
-  return _imageInfo->linewidth;
+  return _drawInfo->linewidth;
 }
 
 inline void Magick::Options::monochrome ( bool monochromeFlag_ )
@@ -300,10 +294,7 @@ inline void Magick::Options::monochrome ( bool monochromeFlag_ )
 }
 inline bool Magick::Options::monochrome ( void ) const
 {
-  if ( _imageInfo->monochrome )
-    return true;
-
-    return false;
+  return (bool)_imageInfo->monochrome;
 }
 
 inline void Magick::Options::quantizeColors ( unsigned int colors_ )
@@ -331,10 +322,7 @@ inline void Magick::Options::quantizeDither ( bool ditherFlag_ )
 }
 inline bool Magick::Options::quantizeDither ( void ) const
 {
-  if ( _imageInfo->dither )
-    return true;
-
-    return false;
+  return (bool)_imageInfo->dither;
 }
 
 inline void Magick::Options::quantizeTreeDepth ( unsigned int treeDepth_ )
@@ -379,10 +367,17 @@ inline void Magick::Options::verbose ( bool verboseFlag_ )
 }
 inline bool Magick::Options::verbose ( void ) const
 {
-  if ( _imageInfo->verbose )
-    return true;
+  return (bool)_imageInfo->verbose;
+}
 
-  return false;
+inline MagickLib::AnnotateInfo * Magick::Options::annotateInfo( void )
+{
+  return _annotateInfo;
+}
+
+inline MagickLib::DrawInfo * Magick::Options::drawInfo( void )
+{
+  return _drawInfo;
 }
 
 inline MagickLib::ImageInfo * Magick::Options::imageInfo( void )

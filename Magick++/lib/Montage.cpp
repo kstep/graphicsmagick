@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Implementation of Montage
 //
@@ -13,7 +13,7 @@
 #include "Magick++/Functions.h"
 
 
-void Magick::Montage::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ ) const
+void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
 {
   if ( _backgroundColor.isValid() )
     montageInfo_.background_color = _backgroundColor;
@@ -62,7 +62,7 @@ void Magick::Montage::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ )
 
 
 /* virtual */ void
-Magick::MontageFramed::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ ) const
+Magick::MontageFramed::updateMontageInfo ( MontageInfo &montageInfo_ ) const
 {
   // Do base updates
   Montage::updateMontageInfo ( montageInfo_ );

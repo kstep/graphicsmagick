@@ -221,6 +221,12 @@ namespace Magick
     void            gamma ( double gammaRed_,
 			    double gammaGreen_,
 			    double gammaBlue_ );
+
+    // Gaussian blur image
+    // The number of neighbor pixels to be included in the convolution
+    // mask is specified by 'width_'. The standard deviation of the
+    // gaussian bell curve is specified by 'sigma_'.
+    void            gaussianBlur ( double width_, double sigma_ );
     
     // Implode image (special effect)
     void            implode ( double factor_ );

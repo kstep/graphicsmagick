@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Implementation of Drawable (Graphic objects)
 //
@@ -17,7 +17,8 @@ using namespace std;
 #include "Magick++/Drawable.h"
 
 
-std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::Coordinate& coordinate_)
+std::ostream& Magick::operator<<( std::ostream& stream_,
+				  const Magick::Coordinate& coordinate_)
 {
   stream_ << coordinate_._x << "," << coordinate_._y;
   return stream_;
@@ -57,7 +58,8 @@ void Magick::Drawable::rectangle ( Magick::Coordinate upperLeftCoordinate_,
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "rectangle " << upperLeftCoordinate_ << " " << lowerRightCoordinate_ << ends;
+  buffstr << "rectangle " << upperLeftCoordinate_ << " "
+	  << lowerRightCoordinate_ << ends;
   _primitive.assign( buffer );
 }
 
@@ -67,7 +69,8 @@ void Magick::Drawable::fillRectangle ( Magick::Coordinate upperLeftCoordinate_,
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "fillRectangle " << upperLeftCoordinate_ << " " << lowerRightCoordinate_ << ends;
+  buffstr << "fillRectangle " << upperLeftCoordinate_ << " "
+	  << lowerRightCoordinate_ << ends;
   _primitive.assign( buffer );
 }
 
@@ -124,18 +127,14 @@ void Magick::Drawable::polygon ( const std::list<Magick::Coordinate> &coordinate
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
-
   buffstr << "polygon";
-
   list<Magick::Coordinate>::const_iterator p = coordinates_.begin();
-
   while ( p != coordinates_.end() )
     {
       buffstr << " "
 	      << *p;
       p++;
     }
-
   buffstr << ends;
   _primitive.assign( buffer );
 }
@@ -239,7 +238,16 @@ void Magick::Drawable::text ( Magick::Coordinate coordinate_,
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "text " << coordinate_ << text_ << ends;
+  buffstr << "text " << coordinate_
+	  << " \"";
+  for ( unsigned int i = 0; i < text_.length(); ++i )
+    {
+      if ( text_[i] == '"' )
+	buffstr << "\\";
+      buffstr << text_[i];
+    }
+  buffstr << "\"" << ends;
+
   _primitive.assign( buffer );
 }
 
@@ -249,6 +257,13 @@ void Magick::Drawable::image ( Magick::Coordinate coordinate_,
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "image " << coordinate_ << image_ << ends;
+  buffstr << "image " << coordinate_ << " \"";
+  for ( unsigned int i = 0; i < image_.length(); ++i )
+    {
+      if ( image_[i] == '"' )
+	buffstr << "\\";
+      buffstr << image_[i];
+    }
+  buffstr  << "\"" << ends;
   _primitive.assign( buffer );
 }

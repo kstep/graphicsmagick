@@ -136,7 +136,7 @@ Magick::BlobRef::BlobRef ( const void* data_,
     {
       // Use ImageMagick's allocator to avoid possible problems from mixed
       // allocators
-      _data = MagickLib::AllocateMemory( length_ );
+      _data = AllocateMemory( length_ );
       
       if ( _data == 0 )
 	throw std::bad_alloc();
@@ -149,7 +149,7 @@ Magick::BlobRef::BlobRef ( const void* data_,
 Magick::BlobRef::~BlobRef ( void )
 {
   if ( _data )
-    MagickLib::FreeMemory( _data );
+    FreeMemory( _data );
 
   _data = 0;
   _length = 0;

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Implementation of Exception and derived classes
 //
@@ -154,16 +154,16 @@ Magick::ErrorCache::ErrorCache ( const std::string& what_ )
 }
 
 // Format and throw exception
-void Magick::throwException( MagickLib::ExceptionType severity_,
+void Magick::throwException( ExceptionType severity_,
 			     const char* message_,
 			     const char* qualifier_)
 {
   // Just return if there is no reported error
-  if ( severity_ == MagickLib::UndefinedException )
+  if ( severity_ == UndefinedException )
     return;
 
   // Format error message ImageMagick-style
-  std::string message = MagickLib::SetClientName((char *) NULL);
+  std::string message = SetClientName((char *) NULL);
   if ( message_ )
     {
       message += std::string(": ");
@@ -176,56 +176,56 @@ void Magick::throwException( MagickLib::ExceptionType severity_,
   switch ( severity_ )
     {
       // Warnings
-    case MagickLib::ResourceLimitWarning :
+    case ResourceLimitWarning :
       throw WarningResourceLimit( message );
-    case MagickLib::XServerWarning :
+    case XServerWarning :
       throw WarningXServer( message );
-    case MagickLib::OptionWarning :
+    case OptionWarning :
       throw WarningOption( message );
-    case MagickLib::DelegateWarning :
+    case DelegateWarning :
       throw WarningDelegate( message );
-    case MagickLib::MissingDelegateWarning :
+    case MissingDelegateWarning :
       throw WarningMissingDelegate( message );
-    case MagickLib::CorruptImageWarning :
+    case CorruptImageWarning :
       throw WarningCorruptImage( message );
-    case MagickLib::FileOpenWarning :
+    case FileOpenWarning :
       throw WarningFileOpen( message );
-    case MagickLib::BlobWarning :
+    case BlobWarning :
       throw WarningBlob ( message );
-    case MagickLib::CacheWarning :
+    case CacheWarning :
       throw WarningCache ( message );
       // Errors
       // FIXME: FatalException missing
-    case MagickLib::ResourceLimitError :
+    case ResourceLimitError :
       throw ErrorResourceLimit( message );
-    case MagickLib::XServerError :
+    case XServerError :
       throw ErrorXServer( message );
-    case MagickLib::OptionError :
+    case OptionError :
       throw ErrorOption( message );
-    case MagickLib::DelegateError :
+    case DelegateError :
       throw ErrorDelegate( message );
-    case MagickLib::MissingDelegateError :
+    case MissingDelegateError :
       throw ErrorMissingDelegate( message );
-    case MagickLib::CorruptImageError :
+    case CorruptImageError :
       throw ErrorCorruptImage( message );
-    case MagickLib::FileOpenError :
+    case FileOpenError :
       throw ErrorFileOpen( message );
-    case MagickLib::BlobError :
+    case BlobError :
       throw ErrorBlob ( message );
-    case MagickLib::CacheError :
+    case CacheError :
       throw ErrorCache ( message );
-    case MagickLib::UndefinedException :
+    case UndefinedException :
     default :
       throw ErrorUndefined( message );
     }
 }
 
 // Format and throw exception
-void Magick::throwException( const MagickLib::ExceptionInfo &exception_ )
+void Magick::throwException( const ExceptionInfo &exception_ )
 {
 
   // Just return if there is no reported error
-  if ( exception_.severity == MagickLib::UndefinedException )
+  if ( exception_.severity == UndefinedException )
     return;
 
   throwException( exception_.severity,

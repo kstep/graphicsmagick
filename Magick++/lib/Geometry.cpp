@@ -160,43 +160,43 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
   unsigned int height_val = 0;
   int flags = Magick::GetGeometry ( geometry, x, y, width_val, height_val );
 
-  if ( ( flags & MagickLib::WidthValue ) != 0 )
+  if ( ( flags & WidthValue ) != 0 )
     {
       _width = width_val;
       isValid( true );
     }
 
-  if ( ( flags & MagickLib::HeightValue ) != 0 )
+  if ( ( flags & HeightValue ) != 0 )
     _height = height_val;
 
-  if ( ( flags & MagickLib::XValue ) != 0 )
+  if ( ( flags & XValue ) != 0 )
     {
       _xOff = ::abs(x);
       isValid( true );
     }
 
-  if ( ( flags & MagickLib::YValue ) != 0 )
+  if ( ( flags & YValue ) != 0 )
     {
       _yOff = ::abs(y);
       isValid( true );
     }
 
-  if ( ( flags & MagickLib::XNegative ) != 0 )	
+  if ( ( flags & XNegative ) != 0 )	
     _xNegative = true;
 
-  if ( ( flags & MagickLib::YNegative ) != 0 )
+  if ( ( flags & YNegative ) != 0 )
     _yNegative = true;
 
-  if ( ( flags & MagickLib::PercentValue ) != 0 )
+  if ( ( flags & PercentValue ) != 0 )
     _percent = true;
 
-  if ( ( flags & MagickLib::AspectValue ) != 0 )
+  if ( ( flags & AspectValue ) != 0 )
     _aspect = true;
 
-  if ( ( flags & MagickLib::LessValue ) != 0 )
+  if ( ( flags & LessValue ) != 0 )
     _less = true;
 
-  if ( ( flags & MagickLib::GreaterValue ) != 0 )
+  if ( ( flags & GreaterValue ) != 0 )
     _greater = true;
 
   return *this;
@@ -267,7 +267,7 @@ ostream& operator<<(ostream& stream_, const Magick::Geometry& geometry_)
 // Return an ImageMagick RectangleInfo struct
 Magick::Geometry::operator MagickLib::RectangleInfo() const
 {
-  MagickLib::RectangleInfo rectangle;
+  RectangleInfo rectangle;
   rectangle.width  = width();
   rectangle.height = height();;
   rectangle.x      = xOff();

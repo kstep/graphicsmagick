@@ -1,10 +1,10 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Implementation of Options
 //
-// A wrapper around ImageInfo and QuantizeInfo
+// A wrapper around AnnotateInfo, ImageInfo, and QuantizeInfo
 //
 
 #define MAGICK_IMPLEMENTATION
@@ -14,57 +14,52 @@
 #include <iostream>
 #include "Magick++/Options.h"
 #include "Magick++/Functions.h"
+#include "Magick++/Exception.h"
 #include "Magick++/Include.h"
 
 // Constructor
 Magick::Options::Options( void )
-  : _imageInfo((MagickLib::ImageInfo*)MagickLib::AllocateMemory( sizeof(MagickLib::ImageInfo) ) ),
-    _quantizeInfo((MagickLib::QuantizeInfo*)MagickLib::AllocateMemory( sizeof(MagickLib::QuantizeInfo) )),
-    _penTexture(0)
+  : _imageInfo((ImageInfo*)AllocateMemory( sizeof(ImageInfo) ) ),
+    _quantizeInfo((QuantizeInfo*)AllocateMemory( sizeof(QuantizeInfo) )),
+    _annotateInfo((AnnotateInfo*)AllocateMemory( sizeof(AnnotateInfo) )),
+    _drawInfo((DrawInfo*)AllocateMemory( sizeof(DrawInfo) ))
 {
   // Initialize image info with defaults
-  MagickLib::GetImageInfo( _imageInfo );
+  GetImageInfo( _imageInfo );
   
   // Initialize quantization info
-  MagickLib::GetQuantizeInfo( _quantizeInfo );
+  GetQuantizeInfo( _quantizeInfo );
+
+  // Initialize annotate info
+  GetAnnotateInfo( _imageInfo, _annotateInfo );
+
+  // Initialize drawing info
+  GetDrawInfo( _imageInfo, _drawInfo );
 }
 
 // Copy constructor
 Magick::Options::Options( const Magick::Options& options_ )
-  : _imageInfo(MagickLib::CloneImageInfo( options_._imageInfo )),
-    _quantizeInfo(MagickLib::CloneQuantizeInfo(options_._quantizeInfo)),
-    _penTexture(0)
+  : _imageInfo(CloneImageInfo( options_._imageInfo )),
+    _quantizeInfo(CloneQuantizeInfo(options_._quantizeInfo)),
+    _annotateInfo(CloneAnnotateInfo(_imageInfo, options_._annotateInfo)),
+    _drawInfo(CloneDrawInfo(_imageInfo, options_._drawInfo))
 {
-  // Copy pen texture
-  if ( options_._penTexture )
-    {
-      MagickLib::ExceptionInfo exceptionInfo;
-      MagickLib::GetExceptionInfo( &exceptionInfo );
-      _penTexture = MagickLib::CloneImage( options_._penTexture,
-					   options_._penTexture->columns,
-					   options_._penTexture->rows,
-					   (int)true,
-					   &exceptionInfo);
-    }
 }
 
 // Destructor
 Magick::Options::~Options()
 {
   // Destroy image info
-  MagickLib::DestroyImageInfo( _imageInfo );
-  _imageInfo = (MagickLib::ImageInfo*)NULL;
+  DestroyImageInfo( _imageInfo );
   
   // Destroy quantization info
-  MagickLib::DestroyQuantizeInfo( _quantizeInfo );
-  _quantizeInfo = (MagickLib::QuantizeInfo*)NULL;
+  DestroyQuantizeInfo( _quantizeInfo );
 
-  // Destroy pen texture
-  if ( _penTexture )
-    {
-      MagickLib::DestroyImage( _penTexture );
-      _penTexture = (MagickLib::Image *)NULL;
-    }
+  // Destroy annotation info
+  DestroyAnnotateInfo( _annotateInfo );
+
+  // Destroy drawing info
+  DestroyDrawInfo( _drawInfo );
 }
 
 /*
@@ -75,7 +70,7 @@ Magick::Options::~Options()
 void Magick::Options::animationDelay ( unsigned int delay_ )
 {
   char tmpbuff[MaxTextExtent + 1];
-  MagickLib::FormatString( tmpbuff, "%u", delay_ );
+  FormatString( tmpbuff, "%u", delay_ );
   Magick::CloneString( &_imageInfo->delay, tmpbuff );
 }
 unsigned int Magick::Options::animationDelay ( void ) const
@@ -89,7 +84,7 @@ unsigned int Magick::Options::animationDelay ( void ) const
 void Magick::Options::animationIterations ( unsigned int iterations_ )
 {
   char tmpbuff[MaxTextExtent + 1];
-  MagickLib::FormatString( tmpbuff, "%u", iterations_ );
+  FormatString( tmpbuff, "%u", iterations_ );
   Magick::CloneString( &_imageInfo->iterations, tmpbuff );
 }
 unsigned int Magick::Options::animationIterations ( void ) const
@@ -113,15 +108,11 @@ void Magick::Options::backgroundTexture ( const std::string &backgroundTexture_ 
 {
   if ( backgroundTexture_.length() == 0 )
     {
-      if ( _imageInfo->texture )
-	{
-	  MagickLib::FreeMemory( _imageInfo->texture );
-	  _imageInfo->texture = (char *)NULL;
-	}
-      return;
+      FreeMemory( _imageInfo->texture );
+      _imageInfo->texture = 0;
     }
-
-  Magick::CloneString( &_imageInfo->texture, backgroundTexture_ );
+  else
+      Magick::CloneString( &_imageInfo->texture, backgroundTexture_ );
 }
 std::string Magick::Options::backgroundTexture ( void ) const
 {
@@ -143,22 +134,21 @@ Magick::Color Magick::Options::borderColor ( void ) const
 // Text bounding-box base color
 void Magick::Options::boxColor ( const Magick::Color &boxColor_ )
 {
-  if ( !boxColor_.isValid() )
-    {
-      if ( _imageInfo->box )
-	{
-	  MagickLib::FreeMemory( _imageInfo->box );
-	  _imageInfo->box = (char *)NULL;
-	}
-      return;
-    }
+  FreeMemory( _drawInfo->box );
+  _drawInfo->box = 0;
+  FreeMemory( _annotateInfo->box );
+  _annotateInfo->box = 0;
 
-  Magick::CloneString( &_imageInfo->box, boxColor_ );
+  if ( boxColor_.isValid() )
+    {
+      Magick::CloneString( &_drawInfo->box, boxColor_ );
+      Magick::CloneString( &_annotateInfo->box, boxColor_ );
+    }
 }
 Magick::Color Magick::Options::boxColor ( void ) const
 {
-  if ( _imageInfo->box )
-    return Magick::Color( _imageInfo->box );
+  if ( _annotateInfo->box )
+    return Magick::Color( _annotateInfo->box );
 
   return Magick::Color();
 }
@@ -167,15 +157,13 @@ void Magick::Options::density ( const Magick::Geometry &density_ )
 {
   if ( !density_.isValid() )
     {
-      if ( _imageInfo->density )
-	{
-	  MagickLib::FreeMemory( _imageInfo->density );
-	  _imageInfo->density = (char *)NULL;
-	}
-      return;
+      FreeMemory( _imageInfo->density );
+      _imageInfo->density = 0;
     }
+  else
+    Magick::CloneString( &_imageInfo->density, density_ );
 
-  Magick::CloneString( &_imageInfo->density, density_ );
+  updateAnnotateInfo();
 }
 Magick::Geometry Magick::Options::density ( void ) const
 {
@@ -200,15 +188,13 @@ void Magick::Options::font ( const std::string &font_ )
 {
   if ( font_.length() == 0 )
     {
-      if ( _imageInfo->font )
-	{
-	  MagickLib::FreeMemory( _imageInfo->font );
-	  _imageInfo->font = (char *)NULL;
-	}
-      return;
+      FreeMemory( _imageInfo->font );
+      _imageInfo->font = 0;
     }
-      
-  Magick::CloneString( &_imageInfo->font, font_ );
+  else
+      Magick::CloneString( &_imageInfo->font, font_ );
+
+  updateAnnotateInfo();
 }
 std::string Magick::Options::font ( void ) const
 {
@@ -220,11 +206,11 @@ std::string Magick::Options::font ( void ) const
 
 std::string Magick::Options::format ( void ) const
 {
-  const MagickLib::MagickInfo * magick_info = 0;
+  const MagickInfo * magick_info = 0;
   if ( _imageInfo->magick && ( *_imageInfo->magick != '\0' ))
-    magick_info = MagickLib::GetMagickInfo( _imageInfo->magick );
+    magick_info = GetMagickInfo( _imageInfo->magick );
   
-  if (( magick_info != (MagickLib::MagickInfo *)0 ) && 
+  if (( magick_info != (MagickInfo *)0 ) && 
       ( *magick_info->description != '\0' ))
     return std::string( magick_info->description );
   
@@ -234,7 +220,7 @@ std::string Magick::Options::format ( void ) const
 void Magick::Options::gifDisposeMethod ( unsigned int disposeMethod_ )
 {
   char tmpbuff[MaxTextExtent + 1];
-  MagickLib::FormatString( tmpbuff, "%u", disposeMethod_ );
+  FormatString( tmpbuff, "%u", disposeMethod_ );
   Magick::CloneString( &_imageInfo->dispose, tmpbuff );
 }
 unsigned int Magick::Options::gifDisposeMethod ( void ) const
@@ -248,11 +234,12 @@ unsigned int Magick::Options::gifDisposeMethod ( void ) const
 
 void Magick::Options::magick ( const std::string &magick_ )
 {
-  MagickLib::FormatString( _imageInfo->filename, "%.1024s:", magick_.c_str() );
-  MagickLib::SetImageInfo( _imageInfo, 1 );
+  FormatString( _imageInfo->filename, "%.1024s:", magick_.c_str() );
+  SetImageInfo( _imageInfo, 1 );
   if ( _imageInfo->magick == '\0' )
-    MagickLib::MagickWarning( MagickLib::OptionWarning, "Unrecognized image format",
-			      magick_.c_str() );
+    throwException( OptionWarning,
+		    "Unrecognized image format",
+		    magick_.c_str() );
 }
 std::string Magick::Options::magick ( void ) const
 {
@@ -275,15 +262,11 @@ void Magick::Options::page ( const Magick::Geometry &pageSize_ )
 {
   if ( !pageSize_.isValid() )
     {
-      if ( _imageInfo->page )
-	{
-	  MagickLib::FreeMemory( _imageInfo->page );
-	  _imageInfo->page = (char *)NULL;
-	}
-      return;
+      FreeMemory( _imageInfo->page );
+      _imageInfo->page = 0;
     }
-
-  Magick::CloneString( &_imageInfo->page, pageSize_ );
+  else
+    Magick::CloneString( &_imageInfo->page, pageSize_ );
 }
 Magick::Geometry Magick::Options::page ( void ) const
 {
@@ -295,17 +278,33 @@ Magick::Geometry Magick::Options::page ( void ) const
 
 void Magick::Options::penColor ( const Color &penColor_ )
 {
+  ImageInfo *clone_info = CloneImageInfo( _imageInfo );
+
   if ( !penColor_.isValid() )
     {
-      if ( _imageInfo->pen )
-	{
-	  MagickLib::FreeMemory( _imageInfo->pen );
-	  _imageInfo->pen = (char *)NULL;
-	}
-      return;
+      FreeMemory( _imageInfo->pen );
+      _imageInfo->pen = 0;
+      FreeMemory( _annotateInfo->pen );
+      _annotateInfo->pen = 0;
+      FreeMemory( _drawInfo->pen );
+      _drawInfo->pen = 0;
+      strcpy( clone_info->filename,"xc:black" );
+    }
+  else
+    {
+      Magick::CloneString( &_imageInfo->pen, penColor_ );
+      CloneString( &_annotateInfo->pen, _imageInfo->pen );
+      CloneString( &_drawInfo->pen,  _imageInfo->pen );
+      FormatString(clone_info->filename,"xc:%.1024s",_drawInfo->pen);
     }
 
-  Magick::CloneString( &_imageInfo->pen, penColor_ );
+  ExceptionInfo error;
+  GetExceptionInfo( &error );
+  CloneString( &clone_info->size, "1x1");
+  if ( _drawInfo->tile )
+    DestroyImage( _drawInfo->tile );
+  _drawInfo->tile=ReadImage(clone_info,&error);
+  DestroyImageInfo(clone_info);
 }
 Magick::Color Magick::Options::penColor ( void  ) const
 {
@@ -317,25 +316,25 @@ Magick::Color Magick::Options::penColor ( void  ) const
 
 void Magick::Options::penTexture ( const MagickLib::Image *penTexture_ )
 {
-  if ( _penTexture )
-    MagickLib::DestroyImage( _penTexture );
-
-  _penTexture = (MagickLib::Image *)NULL;
+  if ( _drawInfo->tile )
+    DestroyImage( _drawInfo->tile );
 
   if ( penTexture_ )
     {
-      MagickLib::ExceptionInfo exceptionInfo;
-      MagickLib::GetExceptionInfo( &exceptionInfo );
-      _penTexture = MagickLib::CloneImage( const_cast<MagickLib::Image*>(penTexture_),
-					   penTexture_->columns,
-					   penTexture_->rows,
-					   (int)true,
-					   &exceptionInfo );
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      _drawInfo->tile =
+	CloneImage( const_cast<MagickLib::Image*>(penTexture_),
+		    penTexture_->columns,
+		    penTexture_->rows,
+		    (int)true,
+		    &exceptionInfo );
+      throwException( exceptionInfo );
     }
 }
 const MagickLib::Image* Magick::Options::penTexture ( void  ) const
 {
-  return _penTexture;
+  return _drawInfo->tile;
 }
 
 void Magick::Options::resolutionUnits ( Magick::ResolutionType resolutionUnits_ )
@@ -349,11 +348,8 @@ Magick::ResolutionType Magick::Options::resolutionUnits ( void ) const
 
 void Magick::Options::size ( const Geometry &geometry_ )
 {
-  if ( _imageInfo->size )
-    {
-      MagickLib::FreeMemory( _imageInfo->size );
-      _imageInfo->size = (char *)NULL;
-    }
+  FreeMemory( _imageInfo->size );
+  _imageInfo->size = 0;
 
   if ( geometry_.isValid() )
     Magick::CloneString( &_imageInfo->size, geometry_ );
@@ -370,15 +366,11 @@ void Magick::Options::tileName ( const std::string &tileName_ )
 {
   if ( tileName_.length() == 0 )
     {
-      if ( _imageInfo->tile )
-	{
-	  MagickLib::FreeMemory( _imageInfo->tile );
-	  _imageInfo->tile = (char *)NULL;
-	}
-      return;
+      FreeMemory( _imageInfo->tile );
+      _imageInfo->tile = 0;
     }
-
-  Magick::CloneString( &_imageInfo->tile, tileName_ );
+  else
+      Magick::CloneString( &_imageInfo->tile, tileName_ );
 }
 std::string Magick::Options::tileName ( void ) const
 {
@@ -392,15 +384,11 @@ void Magick::Options::view ( const std::string &view_ )
 {
   if ( view_.length() == 0 )
     {
-      if ( _imageInfo->view )
-	{
-	  MagickLib::FreeMemory( _imageInfo->view );
-	  _imageInfo->view = (char *)NULL;
-	}
-      return;
+      FreeMemory( _imageInfo->view );
+      _imageInfo->view = 0;
     }
-
-  Magick::CloneString( &_imageInfo->view, view_ );
+  else
+    Magick::CloneString( &_imageInfo->view, view_ );
 }
 std::string Magick::Options::view ( void ) const
 {
@@ -414,15 +402,11 @@ void Magick::Options::x11Display ( const std::string &display_ )
 {
   if ( display_.length() == 0 )
     {
-      if ( _imageInfo->server_name )
-	{
-	  MagickLib::FreeMemory( _imageInfo->server_name );
-	  _imageInfo->server_name = (char *)NULL;
-	}
-      return;
+      FreeMemory( _imageInfo->server_name );
+      _imageInfo->server_name = 0;
     }
-
-  Magick::CloneString( &_imageInfo->server_name, display_ );
+  else
+    Magick::CloneString( &_imageInfo->server_name, display_ );
 }
 std::string Magick::Options::x11Display ( void ) const
 {
@@ -432,3 +416,16 @@ std::string Magick::Options::x11Display ( void ) const
     return std::string();
 }
 
+// Update annotation info based on current ImageInfo
+void Magick::Options::updateAnnotateInfo( void )
+{
+  // Update _annotateInfo
+  AnnotateInfo* annotate_info =
+    (AnnotateInfo*)AllocateMemory( sizeof(AnnotateInfo) );
+  if ( annotate_info )
+    {
+      GetAnnotateInfo( _imageInfo, annotate_info );
+      DestroyAnnotateInfo( _annotateInfo );
+      _annotateInfo=annotate_info;
+    }
+}

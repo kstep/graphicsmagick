@@ -69,6 +69,12 @@ int main( int /*argc*/, char ** /*argv*/)
     example.blur( 60 );
     images.push_back( example );
 
+    cout << "  gaussian blur ..." << endl;
+    example = model;
+    example.label( "Gaussian Blur" );
+    example.gaussianBlur( 2, 2 );
+    images.push_back( example );
+
     cout << "  border ..." << endl;
     example = model;
     example.label( "Border" );

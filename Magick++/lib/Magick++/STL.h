@@ -643,6 +643,26 @@ namespace Magick
     double _gammaBlue;
   };
 
+  // Gaussian blur image
+  // The number of neighbor pixels to be included in the convolution
+  // mask is specified by 'width_'. The standard deviation of the
+  // gaussian bell curve is specified by 'sigma_'.
+  class gaussianBlurImage : public std::unary_function<Image&,void>
+  {
+  public:
+    gaussianBlurImage( double width_, double sigma_ )
+      : _width( width_ ),
+	_sigma( sigma_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.gaussianBlur( _width, _sigma );
+      }
+  private:
+    double _width;
+    double _sigma;
+  };
+
   // Implode image (special effect)
   class implodeImage : public std::unary_function<Image&,void>
   {

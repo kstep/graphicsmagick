@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Definition of Drawable (Graphic objects)
 //
@@ -139,7 +139,7 @@ namespace Magick
     //
     // Following accessors are for internal use only
     //
-    void        primitive ( std::string primitive_ );
+    void        primitive ( const std::string &primitive_ );
     std::string primitive ( void ) const;
     
   private:
@@ -212,7 +212,7 @@ inline Magick::Drawable::~Drawable( void )
 }
 
 // Completed draw primitive (for ImageMagick)
-inline void Magick::Drawable::primitive ( std::string primitive_ )
+inline void Magick::Drawable::primitive ( const std::string &primitive_ )
 {
   _primitive = primitive_;
 }

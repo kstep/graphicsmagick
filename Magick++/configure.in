@@ -33,6 +33,8 @@ then
 fi
 
 AC_CANONICAL_SYSTEM
+# Check to see if cache was generated on this OS version
+# AC_VALIDATE_CACHED_SYSTEM_TUPLE
 AM_INIT_AUTOMAKE(Magick++, $MAGICK_RELEASE, ' ')
 
 AC_SUBST(INTERFACE_CURRENT)dnl
@@ -82,8 +84,9 @@ AC_MSG_CHECKING(linker flags)
 LDFLAGS="$LDFLAGS "`Magick-config --ldflags`
 AC_MSG_RESULT("$LDFLAGS")
 
-AC_MSG_CHECKING(libraries)
-LIBS="$LIBS "`Magick-config --libs`
-AC_MSG_RESULT("$LIBS")
+#AC_MSG_CHECKING(libraries)
+#LIBS="$LIBS "`Magick-config --libs`
+#AC_MSG_RESULT("$LIBS")
+LIBS="$LIBS -lMagick"
 
 AC_OUTPUT(Makefile lib/Makefile lib/Magick++/Makefile demo/Makefile tests/Makefile)
