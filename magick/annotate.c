@@ -497,7 +497,7 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
       {
         *count=strlen(text);
         for (i=0; i < *count; i++)
-          unicode[i]=text[i];
+          unicode[i]=(unsigned char) text[i];
         return(unicode);
       }
     *q=c;
