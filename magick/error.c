@@ -696,13 +696,19 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   assert(exception->signature == MagickSignature);
   exception->severity=(ExceptionType) severity;
   if (reason == (char *) NULL)
-    LiberateMemory((void **) &exception->reason);
+    {
+      if (exception->reason != (char *) NULL)
+        LiberateMemory((void **) &exception->reason);
+    }
   else
     (void) CloneString(&exception->reason,
       GetLocaleExceptionMessage(severity,reason));
   if (description == (char *) NULL)
-    LiberateMemory((void **) &exception->description);
-  else
-    (void) CloneString(&exception->description,
-      GetLocaleExceptionMessage(severity,description));
+    {
+      if (exception->description != (char *) NULL)
+        LiberateMemory((void **) &exception->description);
+      return;
+    }
+  (void) CloneString(&exception->description,
+    GetLocaleExceptionMessage(severity,description));
 }
