@@ -1539,7 +1539,7 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
       break;
     }
   }
-  if (image->blob->offset < image->blob->length)
+  if (image->blob->offset <= image->blob->length)
     image->blob->eof=False;
   else
     {
