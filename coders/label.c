@@ -134,7 +134,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     ExpandAffine(&annotate_info->affine)*annotate_info->pointsize-0.5);
   image->columns=ceil(bounds.x2-bounds.x1-0.5);
   image->rows=ceil(Max(bounds.y2-bounds.y1,font_height)-0.5);
-  SetImage(image,OpaqueOpacity);
+  SetImage(image,TransparentOpacity);
   (void) AnnotateImage(image,annotate_info);
   DestroyAnnotateInfo(annotate_info);
   return(image);
