@@ -751,7 +751,6 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       */
       image->fifo=image_info->fifo;
       image->exempt=True;
-      return(True);
     }
   if (image_info->file != (FILE *) NULL)
     {

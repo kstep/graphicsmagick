@@ -451,6 +451,9 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   assert(stream_info->signature == MagickSignature);
   if (image->storage_class != GetCacheClassType(image->cache))
     {
+      if (GetCacheClassType(image->cache) == UndefinedClass)
+        (void) image->fifo(image,(void *) NULL,stream_info->columns);
+      stream_info->class=image->storage_class;
       stream_info->columns=image->columns;
       stream_info->rows=image->rows;
       image->cache=stream_info;
@@ -511,7 +514,7 @@ static unsigned int SyncPixelStream(Image *image)
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  return(image->fifo(image,stream_info->pixels,image->columns));
+  return(image->fifo(image,stream_info->pixels,stream_info->columns));
 }
 
 /*
