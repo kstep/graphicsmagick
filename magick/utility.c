@@ -579,6 +579,88 @@ MagickExport unsigned int ConcatenateString(char **destination,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e f i n e C l i e n t N a m e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DefineClientName() this is a helper function that parses the passed string
+%    in order to define the name of the client application.
+%
+%  The format of the DefineClientName method is:
+%
+%      void DefineClientName(const char *path)
+%
+%  A description of each parameter follows:
+%
+%    o path: A string that can also be a full path that contains the name of
+%            application
+%
+*/
+MagickExport void DefineClientName(const char *path)
+{
+  if ((path != (char *) NULL) && (*path != '\0'))
+    {
+      char
+        component[MaxTextExtent];
+
+      GetPathComponent(path,BasePath,component);
+      (void) SetClientName(component);
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e f i n e C l i e n t P a t h A n d N a m e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DefineClientPathAndName() this is a helper function that parses the passed
+%  string in order to define several global settings relatd to the location of
+%  the application. It sets the path, the filename, and the display name of the
+%  client application based on the input string which is assumed to be the full
+%  and valid path to the client.
+%
+%  The format of the DefineClientPathAndName method is:
+%
+%      void DefineClientPathAndName(const char *path)
+%
+%  A description of each parameter follows:
+%
+%    o path: A string that must be a full path that contains the name of
+%            application
+%
+*/
+MagickExport void DefineClientPathAndName(const char *path)
+{
+  if ((path != (char *) NULL) && (*path != '\0'))
+    {
+      char
+        component[MaxTextExtent];
+
+      /* This is the path only - inluding the parent folder */
+      GetPathComponent(path,HeadPath,component);
+      (void) SetClientPath(component);
+      /* This is the file name AND the extension - of present */
+      GetPathComponent(path,TailPath,component);
+      (void) SetClientFilename(component);
+      /* The last step is to define a human readable name for
+         the help and error logging systems. */
+      DefineClientName(component);
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   E s c a p e S t r i n g                                                   %
 %                                                                             %
 %                                                                             %
@@ -1147,6 +1229,54 @@ MagickExport unsigned int GetExecutionPath(char *path)
   }
 #endif
   return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t E x e c u t i o n P a t h U s i n g N a m e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetExecutionPathUsingName() returns the pathname of the executable that
+%  started the process.  On success True is returned, otherwise False.
+%
+%  The format of the GetExecutionPathUsingName method is:
+%
+%      unsigned int GetExecutionPathUsingName(char *path)
+%
+%  A description of each parameter follows:
+%
+%    o name: The name of the executable that started the process.
+%
+*/
+MagickExport unsigned int GetExecutionPathUsingName(char *name)
+{
+  char
+    filename[MaxTextExtent],
+    execution_path[MaxTextExtent];
+
+  *execution_path='\0';
+  (void) getcwd(execution_path,MaxTextExtent-2);
+  (void) strcat(execution_path,DirectorySeparator);
+  /* we do some extra work to cleanup the name - just in case */
+  GetPathComponent(filename,BasePath,name);
+  (void) strncat(execution_path,filename,MaxTextExtent-
+    strlen(execution_path)-1);
+  /* test to see if this is a real path and pitch it if it fails
+      the simple accesability test
+   */
+  if (!IsAccessible(execution_path))
+    {
+      *name='\0';
+      return(False);
+    }
+  (void) strncpy(name,execution_path,MaxTextExtent-1);
+  return(True);
 }
 
 /*
@@ -1793,6 +1923,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   (void) strncpy(component,path,MaxTextExtent-1);
   if (*path == '\0')
     return;
+  /* first locate the spot were the filename begins */
   for (p=component+(strlen(component)-1); p > component; p--)
     if (IsBasenameSeparator(*p))
       break;
@@ -1800,6 +1931,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
   {
     case RootPath:
     {
+      /* this returns that path as well as the name of the file */
       for (p=component+(strlen(component)-1); p > component; p--)
         if (*p == '.')
           break;
@@ -1809,17 +1941,20 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     }
     case HeadPath:
     {
+      /* this returns the path only with no trailing separator */
       *p='\0';
       break;
     }
     case TailPath:
     {
+      /* this returns the filename and extension only */
       if (IsBasenameSeparator(*p))
         (void) CloneMemory(component,p+1,strlen(p+1)+1);
       break;
     }
     case BasePath:
     {
+      /* this returns just the filename with no extension */
       if (IsBasenameSeparator(*p))
         (void) strncpy(component,p+1,MaxTextExtent-1);
       for (p=component+(strlen(component)-1); p > component; p--)
@@ -1832,6 +1967,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     }
     case ExtensionPath:
     {
+      /* this returns the file extension only */
       if (IsBasenameSeparator(*p))
         (void) strncpy(component,p+1,MaxTextExtent-1);
       for (p=component+(strlen(component)-1); p > component; p--)
@@ -2270,6 +2406,50 @@ MagickExport unsigned int IsAccessible(const char *filename)
     (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
       "Tried: %.1024s [not a regular file]",filename);
 
+  return(S_ISREG(file_info.st_mode));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  I s A c c e s s i b l e N o L o g g i n g                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsAccessibleNoLogging() returns True if the file as defined by filename
+%  exists and is a regular file. This version is used internally to avoid
+%  using the error logging of the normal version.
+%
+%  The format of the IsAccessibleNoLogging method is:
+%
+%      unsigned int IsAccessibleNoLogging(const char *filename)
+%
+%  A description of each parameter follows.
+%
+%    o status:  Method IsAccessibleNoLogging returns True if the file as defined by
+%      filename exists and is a regular file, otherwise False is returned.
+%
+%    o filename:  A pointer to an array of characters containing the filename.
+%
+%
+*/
+MagickExport unsigned int IsAccessibleNoLogging(const char *path)
+{
+  int
+    status;
+
+  struct stat
+    file_info;
+
+  if ((path == (const char *) NULL) || (*path == '\0'))
+    return(False);
+  status=stat(path,&file_info);
+  if ((status != 0))
+    return(False);
   return(S_ISREG(file_info.st_mode));
 }
 
@@ -2840,6 +3020,53 @@ MagickExport unsigned long MultilineCensus(const char *label)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S e t C l i e n t F i l e n a m e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetClientFilename sets the client filename if the name is specified.
+%  Otherwise the current client filename is returned. On a UNIX system the
+%  client name and filename are often the same since file extensions are not
+%  very important, but on windows the distinction if very important.
+%
+%  The format of the SetClientFilename method is:
+%
+%      char *SetClientFilname(const char *name)
+%
+%  A description of each parameter follows:
+%
+%    o client_name: Method SetClientFilename returns the current client name.
+%
+%    o status: Specifies the new client name.
+%
+%
+*/
+MagickExport const char *GetClientFilename(void)
+{
+  return(SetClientFilename((char *) NULL));
+}
+
+MagickExport const char *SetClientFilename(const char *name)
+{
+  static char
+    client_filename[MaxTextExtent] = "gm.exe";
+
+  if ((name != (char *) NULL) && (*name != '\0'))
+    {
+      (void) strncpy(client_filename,name,MaxTextExtent-1);
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+        "Client Filename was set to: %s",client_filename);
+    }
+  return(client_filename);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t C l i e n t N a m e                                                 %
 %                                                                             %
 %                                                                             %
@@ -2861,13 +3088,22 @@ MagickExport unsigned long MultilineCensus(const char *label)
 %
 %
 */
+MagickExport const char *GetClientName(void)
+{
+  return(SetClientName((char *) NULL));
+}
+
 MagickExport char *SetClientName(const char *name)
 {
   static char
     client_name[MaxTextExtent] = "Magick";
 
   if ((name != (char *) NULL) && (*name != '\0'))
-    (void) strncpy(client_name,name,MaxTextExtent-1);
+    {
+      (void) strncpy(client_name,name,MaxTextExtent-1);
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+        "Client Name was set to: %s",client_name);
+    }
   return(client_name);
 }
 
@@ -2898,13 +3134,22 @@ MagickExport char *SetClientName(const char *name)
 %
 %
 */
+MagickExport const char *GetClientPath(void)
+{
+  return(SetClientPath((char *) NULL));
+}
+
 MagickExport const char *SetClientPath(const char *path)
 {
   static char
     client_path[MaxTextExtent] = "";
 
   if ((path != (char *) NULL) && (*path != '\0'))
-    (void) strncpy(client_path,path,MaxTextExtent-1);
+    {
+      (void) strncpy(client_path,path,MaxTextExtent-1);
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+        "Client Path was set to: %s",path);
+    }
   return(client_path);
 }
 

@@ -62,6 +62,10 @@ extern MagickExport char
   *TranslateText(const ImageInfo *,Image *,const char *);
 
 extern MagickExport const char
+  *GetClientFilename(void),
+  *SetClientFilename(const char *),
+  *GetClientName(void),
+  *GetClientPath(void),
   *SetClientPath(const char *);
 
 extern MagickExport double
@@ -86,7 +90,9 @@ extern MagickExport unsigned int
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),
   GetExecutionPath(char *),
+  GetExecutionPathUsingName(char *),
   IsAccessible(const char *),
+  IsAccessibleNoLogging(const char *),
   IsAccessibleAndNotEmpty(const char *),
   IsGeometry(const char *),
   IsGlob(const char *);
@@ -98,6 +104,8 @@ extern MagickExport void
   *AcquireMemory(const size_t),
   AppendImageFormat(const char *,char *),
   *CloneMemory(void *,const void *,const size_t),
+  DefineClientName(const char *),
+  DefineClientPathAndName(const char *),
   ExpandFilename(char *),
   FormatSize(const magick_int64_t size,char *format),
   GetPathComponent(const char *,PathType,char *),
