@@ -517,7 +517,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     count,
     length,
-	combinedlength = 0,
+	combinedlength,
     size;
 
   off_t
@@ -696,6 +696,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].flags=ReadBlobByte(image);
         layer_info[i].visible=!(layer_info[i].flags & 0x02);
         (void) ReadBlobByte(image);  /* filler */
+		combinedlength = 0;
         size=ReadBlobMSBLong(image);
         if (size != 0)
           {
