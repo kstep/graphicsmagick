@@ -2240,7 +2240,7 @@ else
 fi
 if test "${ghostscript_font_dir}x" != 'x'
 then
-  type_include_files="${type_include_files} "'<include file="type-ghostscript.mgk"/>'
+  type_include_files="${type_include_files} "'<include file="type-ghostscript.mgk" />'
   AC_MSG_RESULT($ghostscript_font_dir)
 else
   AC_MSG_RESULT(not found!);

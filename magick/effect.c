@@ -2552,7 +2552,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,NULL);
       return (Image *) NULL;
     }
-  for (x=0; x < (OFFSETS_ENTRIES-1); x++)
+  for (x=0; x < OFFSETS_ENTRIES; x++)
     offsets[x]=((((2*(double) radius+1)*rand())/RAND_MAX)-((long)radius));
 
   /*

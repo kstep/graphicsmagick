@@ -1,3 +1,14 @@
+2004-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/type.c (ReadTypeConfigureFile): Fix problem with parsing
+	<include> directive.
+	* configure.ac: The type.mgk generated had a syntax error.
+	* magick/effect.c (SpreadImage): Eliminate read from uninitialized
+	memory.
+	* magick/quantize.c (NodeInfo): Store nodes in a list similar to
+	ImageMagick.
+	(DestroyCubeInfo): Eliminate a small memory leak.
+
 2004-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/montage.c (MontageImages): Free thumbnails once they are
@@ -31,10 +42,10 @@
 	make C++ Happy.
 	* coders/tiff.c: Adjust for bitstream API function renaming.
 	* magick/bit_stream.h: Rename BitStreamRead() to
-	BitStreamMSBRead() to indicate that it reads most significant bits
+	BitStreamMSBRead() to indicate that it reads most significant bytes
 	first ("big endian" order).  Rename BitStreamWrite() to
 	BitStreamMSBWrite() to indicate that it writes most significant
-	bits first ("big endian" order).
+	bytes first ("big endian" order).
 	* wand/magick_wand.c: Updated to lastest ImageMagick API.
 
 2004-01-26  Mike Chiarappa  <mikechiarappa@libero.it>

@@ -71,10 +71,6 @@ static TypeInfo
 /*
   Forward declarations.
 */
-static void
-  *GetTypeBlob(const char *filename,char *path,size_t *length,
-    ExceptionInfo *exception);
-
 static unsigned int
   ReadTypeConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
@@ -638,11 +634,25 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
   */
   (void) strcpy(path,basename);
   if (depth == 0)
-    xml=(char *) GetConfigureBlob(basename,path,&length,exception);
+    {
+      /*
+        Load top configuration file based on configure search path.
+      */
+      xml=(char *) GetConfigureBlob(basename,path,&length,exception);
+      if (xml == (char *) NULL)
+        xml=AllocateString(TypeMap);
+    }
   else
-    xml=(char *) FileToBlob(basename,&length,exception);
-  if (xml == (char *) NULL)
-    xml=AllocateString(TypeMap);
+    {
+      /*
+        Load subordinate configuration file based on path specified
+        by parent configuration file.
+      */
+      xml=(char *) FileToBlob(basename,&length,exception);
+      if (xml == (char *) NULL)
+        return (False);
+    }
+
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -667,11 +677,10 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
         /*
           Include element.
         */
-        while ((*token != '>') && (*q != '\0'))
+        while ( (*token != '/' && *(token+1)  != '>') && (*q != '\0'))
         {
           (void) strncpy(keyword,token,MaxTextExtent-1);
           GetToken(q,&q,token);
-          /* FIXME, valgrind invalid read here. */
           if (*token != '=')
             continue;
           GetToken(q,&q,token);
@@ -718,6 +727,11 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
             type_list=type_info;
             continue;
           }
+        /*
+          Append entry to end of type list
+        */
+        while (type_list->next != (TypeInfo *) NULL)
+          type_list=type_list->next;
         type_list->next=type_info;
         type_info->previous=type_list;
         type_list=type_list->next;
@@ -801,8 +815,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
             char
               *metrics;
 
-            metrics=(char *) NULL;
-            CloneString(&metrics,token);
+            metrics=AcquireString(token);
 #if defined(WIN32)
             if (strchr(metrics,'@') != (char *) NULL)
               {

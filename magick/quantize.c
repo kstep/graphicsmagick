@@ -185,6 +185,8 @@
 #define CacheShift  (QuantumDepth-6)
 #define ExceptionQueueLength  16
 #define MaxNodes  266817
+#define MaxTreeDepth  8
+#define NodesInAList  1536
 
 #define ColorToNodeId(red,green,blue,index) ((unsigned int) \
             (((ScaleQuantumToChar(red) >> index) & 0x01) << 2 | \
@@ -204,7 +206,7 @@ typedef struct _NodeInfo
 {
   struct _NodeInfo
     *parent,
-    *child[8];
+    *child[MaxTreeDepth];
 
   double
     number_unique;
@@ -222,14 +224,13 @@ typedef struct _NodeInfo
 
   unsigned char
     id,
-    level,
-    census;
+    level;
 } NodeInfo;
 
 typedef struct _Nodes
 {
   NodeInfo
-    nodes[NodesInAList];
+    *nodes;
 
   struct _Nodes
     *next;
@@ -413,7 +414,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
         for (index=MaxTreeDepth-1; (long) index > 0; index--)
         {
           id=ColorToNodeId(q->red,q->green,q->blue,index);
-          if ((node_info->census & (1 << id)) == 0)
+          if (node_info->child[id] == (NodeInfo *) NULL)
             break;
           node_info=node_info->child[id];
         }
@@ -611,12 +612,11 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
             /*
               Set colors of new node to contain pixel.
             */
-            node_info->census|=(1 << id);
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
               ThrowException3(exception,ResourceLimitError,
                 MemoryAllocationFailed,UnableToQuantizeImage);
-            if (level == 8)
+            if (level == MaxTreeDepth)
               cube_info->colors++;
           }
         /*
@@ -689,7 +689,6 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
             /*
               Set colors of new node to contain pixel.
             */
-            node_info->census|=(1 << id);
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
               ThrowException3(exception,ResourceLimitError,
@@ -811,10 +810,9 @@ static void ClosestColor(Image *image,CubeInfo *cube_info,
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        ClosestColor(image,cube_info,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      ClosestColor(image,cube_info,node_info->child[id]);
   if (node_info->number_unique != 0)
     {
       double
@@ -885,7 +883,7 @@ MagickExport void CompressImageColormap(Image *image)
     return;
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=image->colors;
-  quantize_info.tree_depth=8;
+  quantize_info.tree_depth=MaxTreeDepth;
   (void) QuantizeImage(&quantize_info,image);
 }
 
@@ -925,10 +923,9 @@ static void DefineImageColormap(Image *image,NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        DefineImageColormap(image,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      DefineImageColormap(image,node_info->child[id]);
   if (node_info->number_unique != 0)
     {
       register double
@@ -982,12 +979,12 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   do
   {
     nodes=cube_info->node_queue->next;
+    MagickFreeMemory(cube_info->node_queue->nodes);
     MagickFreeMemory(cube_info->node_queue);
     cube_info->node_queue=nodes;
   } while (cube_info->node_queue != (Nodes *) NULL);
-  if (!cube_info->quantize_info->dither)
-    return;
-  MagickFreeMemory(cube_info->cache);
+  if (cube_info->quantize_info->dither)
+    MagickFreeMemory(cube_info->cache);
   MagickFreeMemory(cube_info);
 }
 
@@ -1119,7 +1116,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           for (index=MaxTreeDepth-1; (long) index > 0; index--)
           {
             id=ColorToNodeId(pixel.red,pixel.green,pixel.blue,index);
-            if ((node_info->census & (1 << id)) == 0)
+            if (node_info->child[id] == (NodeInfo *) NULL)
               break;
             node_info=node_info->child[id];
           }
@@ -1199,7 +1196,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
 */
 static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
 {
-  register long
+  register unsigned long
     i;
 
   unsigned long
@@ -1219,7 +1216,7 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
   */
   cube_info->x=0;
   cube_info->y=0;
-  i=(long) (image->columns > image->rows ? image->columns : image->rows);
+  i=image->columns > image->rows ? image->columns : image->rows;
   for (depth=1; i != 0; depth++)
     i>>=1;
   HilbertCurve(cube_info,image,depth-1,NorthGravity);
@@ -1378,6 +1375,9 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
       */
       nodes=MagickAllocateMemory(Nodes *,sizeof(Nodes));
       if (nodes == (Nodes *) NULL)
+        return((NodeInfo *) NULL);
+      nodes->nodes=MagickAllocateMemory(NodeInfo *,(NodesInAList*sizeof(NodeInfo)));
+      if (nodes->nodes == (NodeInfo *) NULL)
         return((NodeInfo *) NULL);
       nodes->next=cube_info->node_queue;
       cube_info->node_queue=nodes;
@@ -1720,7 +1720,7 @@ MagickExport unsigned int MapImage(Image *image,const Image *map_image,
   quantize_info.dither=dither;
   quantize_info.colorspace=
     image->matte ? TransparentColorspace : RGBColorspace;
-  cube_info=GetCubeInfo(&quantize_info,8);
+  cube_info=GetCubeInfo(&quantize_info,MaxTreeDepth);
   if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
       UnableToMapImage);
@@ -1956,19 +1956,18 @@ static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        PruneChild(cube_info,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      PruneChild(cube_info,node_info->child[id]);
   /*
     Merge color statistics into parent.
   */
   parent=node_info->parent;
-  parent->census&=~(1 << node_info->id);
   parent->number_unique+=node_info->number_unique;
   parent->total_red+=node_info->total_red;
   parent->total_green+=node_info->total_green;
   parent->total_blue+=node_info->total_blue;
+  parent->child[node_info->id]=(NodeInfo *) NULL;
   cube_info->nodes--;
 }
 
@@ -2006,10 +2005,9 @@ static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        PruneLevel(cube_info,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      PruneLevel(cube_info,node_info->child[id]);
   if (node_info->level == cube_info->depth)
     PruneChild(cube_info,node_info);
 }
@@ -2049,10 +2047,9 @@ static void PruneToCubeDepth(CubeInfo *cube_info,const NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        PruneToCubeDepth(cube_info,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      PruneToCubeDepth(cube_info,node_info->child[id]);
   if (node_info->level > cube_info->depth)
     PruneChild(cube_info,node_info);
 }
@@ -2346,10 +2343,9 @@ static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        Reduce(cube_info,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      Reduce(cube_info,node_info->child[id]);
   if (node_info->quantize_error <= cube_info->pruning_threshold)
     PruneChild(cube_info,node_info);
   else

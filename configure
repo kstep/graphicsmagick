@@ -35234,7 +35234,7 @@ else
 fi
 if test "${ghostscript_font_dir}x" != 'x'
 then
-  type_include_files="${type_include_files} "'<include file="type-ghostscript.mgk"/>'
+  type_include_files="${type_include_files} "'<include file="type-ghostscript.mgk" />'
   echo "$as_me:$LINENO: result: $ghostscript_font_dir" >&5
 echo "${ECHO_T}$ghostscript_font_dir" >&6
 else
