@@ -1806,13 +1806,13 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if (!ExtendCache(file,cache_info->offset+cache_info->length))
     {
       close(file);
-      ThrowBinaryException(CacheError,"Unable to extend cache",
-        image->filename)
+      ThrowBinaryException(CacheError,"Unable to extend cache",image->filename)
     }
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
-  if (cache_info->length == (size_t) cache_info->length)
+  if ((cache_info->length > MinBlobExtent) &&
+      (cache_info->length == (size_t) cache_info->length))
     {
       pixels=(PixelPacket *)
         MapBlob(file,mode,cache_info->offset,cache_info->length);

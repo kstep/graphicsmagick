@@ -59,7 +59,6 @@
   Define declarations.
 */
 #define DefaultBlobQuantum  65540
-#define MinBlobExtent  102400
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1200,6 +1199,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             if ((magick_info != (const MagickInfo *) NULL) &&
                 magick_info->blob_support)
               if ((fstat(fileno(image->blob->file),&attributes) >= 0) &&
+                  (attributes.st_size > MinBlobExtent) &&
                   (attributes.st_size == (size_t) attributes.st_size))
                 {
                   size_t
@@ -1208,10 +1208,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   void
                     *blob;
 
-                  blob=(void *) NULL;
                   length=(size_t) attributes.st_size;
-                  if (length > MinBlobExtent)
-                    blob=MapBlob(fileno(image->blob->file),ReadMode,0,length);
+                  blob=MapBlob(fileno(image->blob->file),ReadMode,0,length);
                   if (blob != (void *) NULL)
                     {
                       /*
