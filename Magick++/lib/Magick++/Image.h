@@ -293,27 +293,27 @@ namespace Magick
 			   const std::string &imageSpec_ );
 
     // Read image from in-memory BLOB
-    void            read ( const Blob     &blob_ );
+    void            read ( const Blob       &blob_ );
 
     // Read image of specified size from in-memory BLOB
-    void            read ( const Blob     &blob_,
-			   const Geometry &size_ );
+    void            read ( const Blob        &blob_,
+			   const Geometry    &size_ );
 
     // Read image of specified size and depth from in-memory BLOB
-    void            read ( const Blob     &blob_,
-			   const Geometry &size_,
-			   unsigned short depth_ );
+    void            read ( const Blob        &blob_,
+			   const Geometry    &size_,
+			   unsigned short    depth_ );
 
     // Read image of specified size, depth, and format from in-memory BLOB
-    void            read ( const Blob     &blob_,
-			   const Geometry &size_,
-			   unsigned short depth_,
-			   const std::string   &magick_ );
+    void            read ( const Blob        &blob_,
+			   const Geometry    &size_,
+			   unsigned short    depth_,
+			   const std::string &magick_ );
 
     // Read Image of specified size, and format from in-memory BLOB
-    void            read ( const Blob     &blob_,
-			   const Geometry &size_,
-			   const std::string   &magick_ );
+    void            read ( const Blob        &blob_,
+			   const Geometry    &size_,
+			   const std::string &magick_ );
 
     // Reduce noise in image using a noise peak elimination filter
     void            reduceNoise ( void );
@@ -399,10 +399,10 @@ namespace Magick
     void            write ( Blob *blob_,
 			    size_t lengthEstimate_ = 1664 );
     void            write ( Blob *blob_,
-			    std::string &magick_,
+			    const std::string &magick_,
 			    size_t lengthEstimate_ = 1664 );
     void            write ( Blob *blob_,
-			    std::string &magick_,
+			    const std::string &magick_,
 			    unsigned short depth_,
 			    size_t lengthEstimate_ = 1664 );
     

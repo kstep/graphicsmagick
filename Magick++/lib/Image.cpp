@@ -1192,7 +1192,7 @@ void Magick::Image::write ( Blob *blob_,
   throwMagickError();
 }
 void Magick::Image::write ( Blob *blob_,
-			    std::string &magick_,
+			    const std::string &magick_,
 			    size_t lengthEstimate_ = 1664 )
 {
   magick(magick_);
@@ -1204,7 +1204,7 @@ void Magick::Image::write ( Blob *blob_,
   throwMagickError();
 }
 void Magick::Image::write ( Blob *blob_,
-			    std::string &magick_,
+			    const std::string &magick_,
 			    unsigned short depth_,
 			    size_t lengthEstimate_ = 1664 )
 {
