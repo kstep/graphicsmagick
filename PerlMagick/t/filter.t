@@ -185,7 +185,7 @@ testFilter('input.miff', 'Roll',
 testFilter('input.miff', 'Rotate',
   q/10/,
   'defd7e32e835b6e6cf015ae566bbf3f0b0c65448678cf958991e398b25bdef89',
-  '59f6dcf68340ccafcec5f260cc58eeaf4084d72f6ab71c7ebecdd1bfcb6aec82');
+  '1641865f619d3b37b60967233d5841554ba79a9e58622a88bc5fb0c04961f3f1');
 
 ++$test;
 testFilter('input.miff', 'Sample',
