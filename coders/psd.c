@@ -523,7 +523,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (data == (unsigned char *) NULL)
             ThrowReaderException(ResourceLimitWarning,
               "Resource memory allocation failed",image);
-          ReadBlob(image,length,tmpdata);
+          ReadBlob(image,length,data);
           LiberateMemory((void **) &data);
         }
       else
