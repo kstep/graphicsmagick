@@ -22,8 +22,8 @@ Installation
 
     Get the PerlMagick distribution and type the following: 
 
-        gunzip PerlMagick-5.27.tar.gz
-        tar xvf PerlMagick-5.27.tar
+        gunzip PerlMagick-5.31.tar.gz
+        tar xvf PerlMagick-5.31.tar
         cd Magick
 
     Next, edit Makefile.PL and change LIBS and INC to include the
