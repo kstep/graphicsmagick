@@ -34,6 +34,8 @@ extern "C" {
 #define R_OK 4
 #define W_OK 2
 #define RW_OK 6
+#define HAVE_VSNPRINTF 1
+#define vsnprintf _vsnprintf 
 #if !defined(HasLTDL)
 #  define lt_dlerror NTGetLastError
 #endif
