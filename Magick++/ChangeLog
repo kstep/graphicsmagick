@@ -1,3 +1,10 @@
+2003-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h: If _VISUALC_ is defined,
+	include <sys/types.h>. This ensures that this necessary
+	header is included even if HAVE_SYS_TYPES_H is not defined
+	in magick_config.h.
+
 2003-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (InitializeMagick): InitializeMagick is
