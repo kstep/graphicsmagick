@@ -1417,7 +1417,7 @@ int main(int argc,char **argv)
                 (void) strcpy(image->filename,resource_info.write_filename);
                 SetImageInfo(image_info,True);
                 status=WriteImage(image_info,image);
-                if (status == False)
+                if (status != False)
                   CatchImageException(image);
               }
             if (image_info->verbose)
