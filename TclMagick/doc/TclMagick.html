@@ -316,23 +316,6 @@ magick library -versionstr</td>
   </tr>
   <tr>
     <td><div align="left"></div>
-        <div align="left">wandName channel channelType <br>
-          wandName ChannelImage channelType<br>
-        </div></td>
-    <td><div align="left">MagickChannelImage<br>
-      MagickChannelImage<br>
-    </div></td>
-  </tr>
-  <tr>
-    <td><div align="left">
-      <ul><li>string channelType
-  = &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
-        </ul>
-    </div></td>
-    <td><div align="left"></div></td>
-  </tr>
-  <tr>
-    <td><div align="left"></div>
         <div align="left">wandName charcoal ?radius? ?sigma? <br>
           wandName CharcoalImage ?radius? ?sigma? <br>
         </div></td>
@@ -832,8 +815,25 @@ MagickClipImage</div></td>
   </tr>
   <tr>
     <td><div align="left"></div>
-        <div align="left">wandname fxchannel fxWand channelType expr <br>
-          wandname fxImageChannel fxWand channelType expr<br>
+        <div align="left">wandname fx expr <br>
+          wandname fxImage expr<br>
+        </div></td>
+    <td><div align="left">MagickFxImage<br>
+      MagickFxImage<br>
+    </div></td>
+  </tr>
+  <tr>
+    <td><div align="left">
+        <ul>
+          <li> string expr          </li>
+        </ul>
+    </div></td>
+    <td><div align="left"></div></td>
+  </tr>
+  <tr>
+    <td><div align="left"></div>
+        <div align="left">wandname fxchannel channelType expr <br>
+          wandname fxImageChannel channelType expr<br>
         </div></td>
     <td><div align="left">MagickFxImageChannel<br>
       MagickFxImageChannel<br>
@@ -842,7 +842,6 @@ MagickClipImage</div></td>
   <tr>
     <td><div align="left">
         <ul>
-          <li>MagickWand fxWand</li>
           <li>string channelType = &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
           <li> string expr          </li>
         </ul>
@@ -2324,6 +2323,23 @@ MagickRollImage</div></td>
     <td><div align="left">
         <ul>
           <li>int x,y</li>
+        </ul>
+    </div></td>
+    <td><div align="left"></div></td>
+  </tr>
+  <tr>
+    <td><div align="left"></div>
+        <div align="left">wandName separate channelType <br>
+          wandName SeparateImageChannel channelType<br>
+        </div></td>
+    <td><div align="left">MagickSeparateImageChannel<br>
+      MagickSeparateImageChannel<br>
+    </div></td>
+  </tr>
+  <tr>
+    <td><div align="left">
+      <ul><li>string channelType
+  = &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
         </ul>
     </div></td>
     <td><div align="left"></div></td>

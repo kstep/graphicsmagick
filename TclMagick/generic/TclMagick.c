@@ -666,7 +666,6 @@ static int wandObjCmd(
         "blackthreshold",   "BlackThresholdImage",
         "blur",             "BlurImage",
         "border",           "BorderImage",
-        "channel",          "ChannelImage",
         "charcoal",         "CharcoalImage",
         "chop",             "ChopImage",
         "clip",             "ClipImage",
@@ -695,6 +694,7 @@ static int wandObjCmd(
         "flip",             "FlipImage",
         "flop",             "FlopImage",
         "frame",            "FrameImage",
+        "fx",               "FxImage",
         "fxchannel",        "FxImageChannel",
         "gammaimage",       "GammaImage",
         "gammachannel",     "GammaImageChannel",
@@ -780,6 +780,7 @@ static int wandObjCmd(
         "rotate",           "RotateImage",
         "sample",           "SampleImage",
         "scale",            "ScaleImage",
+        "separate",         "SeparateImageChannel",
         "setimage",         "SetImage",
         "setoption",        "SetOption",
         "passphrase",       "SetPassphrase",
@@ -817,7 +818,6 @@ static int wandObjCmd(
         TM_BLACK_THRESHOLD, TM_BLACK_THRESHOLD_IMAGE,
         TM_BLUR,            TM_BLUR_IMAGE,
         TM_BORDER,          TM_BORDER_IMAGE,
-        TM_CHANNEL,         TM_CHANNEL_IMAGE,
         TM_CHARCOAL,        TM_CHARCOAL_IMAGE,
         TM_CHOP,            TM_CHOP_IMAGE,
         TM_CLIP,            TM_CLIP_IMAGE,
@@ -846,6 +846,7 @@ static int wandObjCmd(
         TM_FLIP,            TM_FLIP_IMAGE,
         TM_FLOP,            TM_FLOP_IMAGE,
         TM_FRAME,           TM_FRAME_IMAGE,
+        TM_FX,              TM_FX_IMAGE,
         TM_FX_CHANNEL,      TM_FX_IMAGE_CHANNEL,
         TM_GAMMAIMAGE,      TM_GAMMA_IMAGE,
         TM_GAMMACHANNEL,    TM_GAMMA_IMAGE_CHANNEL,
@@ -931,6 +932,7 @@ static int wandObjCmd(
         TM_ROTATE,          TM_ROTATE_IMAGE,
         TM_SAMPLE,          TM_SAMPLE_IMAGE,
         TM_SCALE,           TM_SCALE_IMAGE,
+        TM_SEPARATE,        TM_SEPARATE_CHANNEL,
         TM_SETIMAGE,        TM_SET_IMAGE,
         TM_SETOPTION,       TM_SET_OPTION,
         TM_PASSPHRASE,      TM_SET_PASSPHRASE,
@@ -1398,8 +1400,8 @@ static int wandObjCmd(
 	break;
     }
 
-    case TM_CHANNEL:       /* channel channelType */
-    case TM_CHANNEL_IMAGE: /* ChannelImage channelType */
+    case TM_SEPARATE:         /* separate channelType */
+    case TM_SEPARATE_CHANNEL: /* SeparateImageChannel channelType */
     {
 	int chanIdx;
 
@@ -1410,7 +1412,7 @@ static int wandObjCmd(
 	if (Tcl_GetIndexFromObj(interp, objv[2], chanNames, "channelType", 0, &chanIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	result = MagickChannelImage(wandPtr, chanTypes[chanIdx]);
+	result = MagickSeparateImageChannel(wandPtr, chanTypes[chanIdx]);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -2066,26 +2068,39 @@ static int wandObjCmd(
 	break;
     }
 
-    case TM_FX_CHANNEL:         /* fxchannel fxWand channelType expr */
-    case TM_FX_IMAGE_CHANNEL:   /* fxImageChannel fxWand channelType expr */
+    case TM_FX:         /* fx expr */
+    case TM_FX_IMAGE:   /* fxImage expr */
+    {
+        char	    *expr;
+
+	if( objc != 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "expr");
+	    return TCL_ERROR;
+	}
+	expr = Tcl_GetString(objv[2]);
+	result = MagickFxImage(wandPtr, expr);
+	if (!result) {
+	    return myMagickError(interp, wandPtr);
+	}
+
+	break;
+    }
+
+    case TM_FX_CHANNEL:         /* fxchannel channelType expr */
+    case TM_FX_IMAGE_CHANNEL:   /* fxImageChannel channelType expr */
     {
 	int         chanIdx;
-        char	    *name, *expr;
-	MagickWand  *fxPtr;
+        char	    *expr;
 
-	if( objc != 5 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "fxWand channelType expr");
+	if( objc != 4 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "channelType expr");
 	    return TCL_ERROR;
 	}
-	name = Tcl_GetString(objv[2]);
-	if( (fxPtr = findMagickWand(interp, name)) == NULL ) {
+	if (Tcl_GetIndexFromObj(interp, objv[2], chanNames, "channelType", 0, &chanIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	if (Tcl_GetIndexFromObj(interp, objv[3], chanNames, "channelType", 0, &chanIdx) != TCL_OK) {
-	    return TCL_ERROR;
-	}
-	expr = Tcl_GetString(objv[4]);
-	result = MagickFxImageChannel(wandPtr, fxPtr, chanTypes[chanIdx], expr);
+	expr = Tcl_GetString(objv[3]);
+	result = MagickFxImageChannel(wandPtr, chanTypes[chanIdx], expr);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}

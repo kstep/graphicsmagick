@@ -53,7 +53,6 @@ set TestFunctions {
     BlackThresholdImage         img     1
     BlurImage                   img     1
     BorderImage                 img     1
-    ChannelImage                img     1
     CharcoalImage               img     1
     ChopImage                   img     1
     ???-how-to-ClipImage        img     0
@@ -81,6 +80,7 @@ set TestFunctions {
     FlipImage                   img     1
     FlopImage                   img     1
     FrameImage                  img     1
+    FxImage                     img     1
     FxImageChannel              img     1
     GammaImage                  img     1
     GammaImageChannel           img     1
@@ -162,6 +162,7 @@ set TestFunctions {
     RotateImage                 img     1
     SampleImage                 img     1
     ScaleImage                  img     1
+    SeparateImageChannel        img     1
 
     SetOption                   img     1
     SetPassphrase               img     1
@@ -311,15 +312,6 @@ proc BorderImage {img} {
     $wand WriteImage "$::TMP/x-Border.jpg"
 
     magick delete $pix $wand
-}
-proc ChannelImage {img} {
-    foreach chan {red green yellow} {
-        set wand [$img clone imgX]
-        debug $wand    
-        $wand ChannelImage $chan
-        $wand WriteImage "$::TMP/x-Channel-$chan.jpg"
-        magick delete $wand
-    }
 }
 proc CharcoalImage {img} {
     set wand [$img clone imgX]
@@ -564,11 +556,18 @@ proc FrameImage {img} {
     $wand WriteImage "$::TMP/x-Frame.jpg"
     magick delete $frm $wand
 }
+proc FxImage {img} {
+    set wand [$img clone imgX]
+    debug $wand
+    $wand FxImage "x/4"
+    $wand WriteImage "$::TMP/x-Fx.jpg"
+    magick delete $wand
+}
 proc FxImageChannel {img} {
     set wand [$img clone imgX]
     debug $wand
-    $wand FxImageChannel $img blue "x/4"
-    $wand WriteImage "$::TMP/x-Fx.jpg"
+    $wand FxImageChannel blue "x/4"
+    $wand WriteImage "$::TMP/x-FxChannel.jpg"
     magick delete $wand
 }
 proc GammaImage {img} {
@@ -1272,6 +1271,15 @@ proc ScaleImage {img} {
     $wand ScaleImage 300 200
     $wand WriteImage "$::TMP/x-Scale.jpg"
     magick delete $wand 
+}
+proc SeparateImageChannel {img} {
+    foreach chan {red green yellow} {
+        set wand [$img clone imgX]
+        debug $wand    
+        $wand SeparateImageChannel $chan
+        $wand WriteImage "$::TMP/x-Separate-$chan.jpg"
+        magick delete $wand
+    }
 }
 proc SetOption {img} {
     set wand [$img clone imgX]
