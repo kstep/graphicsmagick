@@ -633,7 +633,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
     Read the type configure file.
   */
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "File path=\"%0.1024s\", recursion depth=%lu",basename,depth);
+    "File path=\"%.1024s\", recursion depth=%lu",basename,depth);
   (void) strcpy(path,basename);
   if (depth == 0)
     {

@@ -1854,7 +1854,9 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
 %    o path: Specifies a pointer to a character array that contains the
 %      file path.
 %
-%    o type: Specififies which file path component to return.
+%    o type: Specififies which file path component to return (RootPath,
+%              HeadPath, TailPath, BasePath, ExtensionPath, MagickPath,
+%              SubImagePath, or FullPath).
 %
 %    o component: The selected file path component is returned here.
 %

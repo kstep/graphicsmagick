@@ -1,5 +1,7 @@
 2004-04-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/bin/log.mgk: Add comments to help document usage.
+	* config/log.mgk: Add comments to help document usage.
 	* magick/utility.c (IsAccessible): Use access() rather than stat().
 	(IsAccessibleNoLogging): Use access() rather than stat().
 	(IsDirectory): Implemented return status according to existing API
