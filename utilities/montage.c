@@ -119,6 +119,7 @@
 %    -page geometry      size and location of an image canvas
 %    -pointsize value    pointsize of Postscript font
 %    -quality value      JPEG/MIFF/PNG compression level
+%    -resize geometry    preferred tile and border sizes
 %    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        image scene number
 %    -shadow             add a shadow beneath a tile to simulate depth
@@ -209,6 +210,7 @@ static void Usage(void)
       "-page geometry      size and location of an image canvas",
       "-pointsize value    pointsize of Postscript font",
       "-quality value      JPEG/MIFF/PNG compression level",
+      "-resize geometry    preferred tile and border sizes",
       "-rotate degrees     apply Paeth rotation to the image",
       "-scene value        image scene number",
       "-shadow             add a shadow beneath a tile to simulate depth",
@@ -988,6 +990,16 @@ int main(int argc,char **argv)
         }
         case 'r':
         {
+          if (LocaleCompare("resize",option+1) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !IsGeometry(argv[i]))
+                    MagickError(OptionError,"Missing geometry",option);
+                }
+              break;
+            }
           if (LocaleCompare("rotate",option+1) == 0)
             {
               i++;

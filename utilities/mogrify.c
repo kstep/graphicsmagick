@@ -121,6 +121,7 @@
 %    -quality value       JPEG/MIFF/PNG compression level
 %    -raise value         lighten/darken image edges to create a 3-D effect
 %    -region geometry     apply options to a portion of the image
+%    -resize geometry     perferred size or location of the image
 %    -roll geometry       roll an image vertically or horizontally
 %    -rotate degrees      apply Paeth rotation to the image
 %    -sample geometry     scale image with pixel sampling
@@ -255,6 +256,7 @@ static void Usage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-region geometry     apply options to a portion of the image",
+      "-resize geometry     perferred size or location of the image",
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
@@ -1322,6 +1324,16 @@ int main(int argc,char **argv)
               break;
             }
           if (LocaleCompare("region",option+1) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !IsGeometry(argv[i]))
+                    MagickError(OptionError,"Missing geometry",option);
+                }
+              break;
+            }
+          if (LocaleCompare("resize",option+1) == 0)
             {
               if (*option == '-')
                 {
