@@ -88,4 +88,14 @@
 #define HasZLIB
 #endif
 
+#if defined(VMS)
+#define HasJPEG
+#define HasLZW
+#define HasPNG
+#define HasTIFF
+#define HasTTF
+#define HasX11
+#define HasZLIB
+#endif
+
 #endif

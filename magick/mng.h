@@ -53,6 +53,14 @@ extern "C" {
 */
 
 /*
+  Maximum valid unsigned long in PNG/MNG chunks is (2^31)-1
+  This macro is only defined in libpng-1.0.3a and later.
+*/
+#ifndef PNG_MAX_UINT
+#define PNG_MAX_UINT (png_uint_32) 0x7fffffffL
+#endif
+
+/*
   Constant strings for known chunk types.  If you need to add a chunk,
   add a string holding the name here.   To make the code more
   portable, we use ASCII numbers like this, not characters.
