@@ -1,3 +1,11 @@
+2003-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xpm.c (RegisterXPMImage): Module registration for PICON
+	should have been XPM.  Thanks to John Cristy for noticing this
+	bug.
+	* coders/psd.c (ReadPSDImage): Applied John Cristy's patch to fix
+	a index calculation bug which is evident when QuantumDepth>8.
+
 2003-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/meta.c: Eliminated some compiler warnings.

@@ -427,7 +427,7 @@ ModuleExport void RegisterXPMImage(void)
   entry->encoder=(EncoderHandler) WritePICONImage;
   entry->adjoin=False;
   entry->description=AcquireString("Personal Icon");
-  entry->module=AcquireString("PICON");
+  entry->module=AcquireString("XPM");
   (void) RegisterMagickInfo(entry);
 
   entry=SetMagickInfo("PM");
