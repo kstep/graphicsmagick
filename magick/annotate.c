@@ -796,13 +796,13 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
       status=RenderFreetype(image,clone_info,encoding,offset,metrics);
     }
   else
-    if (*draw_info->font == '@')
+    if ((clone_info->font != (char *) NULL) && (*clone_info->font == '@'))
       {
-        (void) CloneString(&clone_info->font,draw_info->font+1);
+        (void) CloneString(&clone_info->font,clone_info->font+1);
         status=RenderFreetype(image,clone_info,encoding,offset,metrics);
       }
     else
-      if (*draw_info->font == '-')
+      if ((clone_info->font != (char *) NULL) && (*clone_info->font == '-'))
         status=RenderX11(image,clone_info,offset,metrics);
       else
         if (IsAccessible(clone_info->font))
