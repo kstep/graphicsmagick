@@ -369,8 +369,8 @@ static unsigned int TIFFErrors(const char *module,const char *format,
   char
     message[MaxTextExtent];
 
+  errno=0;
   (void) vsprintf(message,format,warning);
-
   (void) vsnprintf(message,MaxTextExtent-2,format,warning);
   message[MaxTextExtent-2]='\0';
   (void) strcat(message,".");
@@ -437,6 +437,7 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
   char
     message[MaxTextExtent];
 
+  errno=0;
   (void) vsnprintf(message,MaxTextExtent-2,format,warning);
   message[MaxTextExtent-2]='\0';
   (void) strcat(message,".");
@@ -2546,6 +2547,17 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                       }
                   }
               }
+#if !defined(WORDS_BIGENDIAN)
+            if (bits_per_sample >= 16)
+                {
+                  /*
+                    On little-endian machines, words in the scanline
+                    must be converted to little-endian format for libtiff.
+                  */
+                  TIFFSwabArrayOfShort((uint16*) scanline,
+                                       (TIFFScanlineSize(tiff)+1)/sizeof(uint16));
+                }
+#endif /* !defined(WORDS_BIGENDIAN) */
             if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
               {
                 status=MagickFail;

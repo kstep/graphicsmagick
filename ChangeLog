@@ -1,3 +1,9 @@
+2004-11-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Ensure that words in the
+	scanline are converted to little-endian format on little-endian
+	CPUs.
+
 2004-10-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/gif.c (DecodeImage): Improve handling of corrupt GIF
