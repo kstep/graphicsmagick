@@ -2750,7 +2750,7 @@ MagickExport unsigned long GetImageDepth(const Image *image,
 %    o flags:  Method GetImageGeometry returns a bitmask that indicates
 %      which of the four values were located in the geometry string.
 %
-%    o geometry:  The geometry  (e.g. 100x100+10+10).
+%    o geometry:  The geometry (e.g. 100x100+10+10).
 %
 %    o size_to_fit:  A value other than 0 means to scale the region so it
 %      fits within the specified width and height.

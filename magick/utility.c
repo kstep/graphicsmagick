@@ -750,11 +750,9 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetMagickGeometry parses a geometry specification and returns the
-%  width, height, x, and y values.  It also returns flags that indicates
-%  which of the four values (width, height, xoffset, yoffset) were located
-%  in the string, and whether the x and y values are negative.  In addition,
-%  there are flags to report any meta characters (%, !, <, and >).
+%  GetMagickGeometry() is similar to GetGeometry() except the returned
+%  geometry is modified as determined by the meta characters:  %, !, <,
+%  and >.
 %
 %  The format of the GetMagickGeometry method is:
 %
