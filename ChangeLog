@@ -1,5 +1,7 @@
 2004-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/constitute.c (MapQuantumType): Fix spurious comma in
+	enum definition.
 	* magick/blob.c (GetBlobStreamHandler): Apparently return type can
 	not be const.
 

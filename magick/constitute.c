@@ -58,7 +58,7 @@ typedef enum
   BlueMapQuanum,
   OpacityMapQuantum,
   IntensityMapQuantum,
-  PadMapQuantum,
+  PadMapQuantum
 } MapQuantumType;
 
 static SemaphoreInfo
