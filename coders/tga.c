@@ -340,9 +340,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Gray scale.
               */
-              index=ConstrainColormapIndex(image,ReadBlobByte(image));
+              index=ReadBlobByte(image);
               if (tga_info.colormap_type != 0)
-                pixel=image->colormap[index];
+                pixel=image->colormap[ConstrainColormapIndex(image,index)];
               else
                 {
                   pixel.red=ScaleCharToQuantum(index);
