@@ -59,6 +59,7 @@
 */
 #include "studio.h"
 #include "command.h"
+#include "log.h"
 #include "utility.h"
 #include "version.h"
 

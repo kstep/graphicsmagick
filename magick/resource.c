@@ -274,7 +274,7 @@ MagickExport unsigned long GetMagickResource(const ResourceType type)
 MagickExport void LiberateMagickResource(const ResourceType type,
   const off_t size)
 {
-  LiberateSemaphoreInfo(&resource_semaphore);
+  AcquireSemaphoreInfo(&resource_semaphore);
   switch (type)
   {
     case MemoryResource:
