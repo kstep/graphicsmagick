@@ -83,6 +83,7 @@ int main( int /*argc*/, char ** argv)
       cout << failures << " failures" << endl;
       return 1;
     }
+  cout << "passed!" << endl;
 
   return 0;
 }
