@@ -513,9 +513,9 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
   assert(image->signature == MagickSignature);
   if (modulate == (char *) NULL)
     return(False);
-  percent_hue=0.0;
-  percent_brightness=0.0;
-  percent_saturation=0.0;
+  percent_hue=100.0;
+  percent_brightness=100.0;
+  percent_saturation=100.0;
   (void) sscanf(modulate,"%lf,%lf,%lf",&percent_brightness,&percent_saturation,
     &percent_hue);
   (void) sscanf(modulate,"%lf/%lf/%lf",&percent_brightness,&percent_saturation,
