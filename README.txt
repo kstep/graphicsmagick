@@ -550,13 +550,6 @@ MAGICK DELEGATES
       not 32-bit WMF). If libwmf is used, then WMF files are rendered
       directly by ImageMagick otherwise the rendering is done by wmftopng.
 
-    o ImageMagick requires wget available via the Web as
-
-	  http://www.gnu.org/software/wget/wget.html
-
-      to read images specified with a World Wide Web (WWW) uniform
-      resource locator (URL).
-
     o ImageMagick requires an X server for display and animate to work
       properly.  There is a nearly free X server available for Windows
       and Macintosh at
