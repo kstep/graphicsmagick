@@ -1,5 +1,9 @@
 2003-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/formats.html: Documented embedded gray intensity images.
+	* coders/logo.c: Added the embedded dithered gray intensity images
+	gray0, gray5, ..., through gray100 to support bilevel filling and
+	painting with an intensity resolution of 5%.
 	* www/formats.html: Added description of images available via
 	"IMAGE:" format tag, as well as providing a tiled preview.
 	* coders/logo.c: Renamed "transparent" image to "checkerboard"
