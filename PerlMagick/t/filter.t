@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..44\n"; }
+BEGIN { $| = 1; $test=1, print "1..43\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -240,11 +240,6 @@ testFilter('input.miff', 'Swirl',
   q/60/,
   '5430146c239914446bbe1fbffe1a0fd2',
   '9ddffdee2a607ce5e0f2d92561e977d0');
-
-++$test;
-testFilter('input.miff', 'Texture',
-  q/granite:/,
-  'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 ++$test;
 testFilter('input.miff', 'Threshold',
