@@ -1,5 +1,6 @@
 2002-02-21  Cristy  <cristy@mystic.es.dupont.com>
   * MPEG multi-part filenames require an embedded %d, not %lu.
+  * WriteStream() did not write to fifo (thanks to William Radcliffe).
 
 2002-02-20  Cristy  <cristy@mystic.es.dupont.com>
   * Annotation did not support SJIS properly (patch provided by
