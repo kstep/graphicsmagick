@@ -29,7 +29,6 @@
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A></LI>
 		<LI><A HREF="#magickincarnate">MagickIncarnate</A></LI>
 		<LI><A HREF="#registermagickinfo">RegisterMagickInfo</A></LI>
-		<LI><A HREF="#setimageinfo">SetImageInfo</A></LI>
 		<LI><A HREF="#setmagickinfo">SetMagickInfo</A></LI>
 		<LI><A HREF="#unregistermagickinfo">UnregisterMagickInfo</A></LI>
 	</UL>
@@ -56,7 +55,6 @@
 <FONT SIZE=-1>FILE</FONT> *file, ExceptionInfo *exception );</P>
 <P><STRONG>MagickIncarnate</STRONG>( const char *path );</P>
 <P>MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( MagickInfo *magick_info );</P>
-<P>unsigned int  <STRONG>SetImageInfo</STRONG>( ImageInfo *image_info, const unsigned int rectify, ExceptionInfo *exception );</P>
 <P>MagickInfo * <STRONG>SetMagickInfo</STRONG>( const char *tag );</P>
 <P>unsigned int  <STRONG>UnregisterMagickInfo</STRONG>( const char *tag );</P>
 <P>
@@ -131,7 +129,7 @@ a character string that represents the image format we are looking for.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickversion">GetMagickVersion</A></H2>
@@ -180,7 +178,7 @@ Specifies the image format.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="magickincarnate">MagickIncarnate</A></H2>
@@ -209,28 +207,6 @@ Method RegisterMagickInfo returns a pointer MagickInfo structure that contains t
 <DD>
 
 <FONT SIZE=-1>A</FONT> pointer to a structure of type MagickInfo.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="setimageinfo">SetImageInfo</A></H2>
-<P>Method SetImageInfo initializes the `magick' field of the ImageInfo structure.  It is set to a type of image format based on the prefix or suffix of the filename.  For example, `ps:image' returns 
-<FONT SIZE=-1>PS</FONT> indicating a Postscript image.  
-<FONT SIZE=-1>JPEG</FONT> is returned for this filename: `image.jpg'. The filename prefix has precendence over the suffix.  Use an optional index enclosed in brackets after a file name to specify a desired subimage of a multi-resolution image format like Photo 
-<FONT SIZE=-1>CD</FONT> (e.g.  img0001.pcd[4]).</P>
-<P>The format of the SetImageInfo method is:</P>
-<blockquote>unsigned int SetImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const unsigned int rectify, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_rectify%3A">rectify:</A></STRONG><BR>
-<DD>
-an unsigned value other than zero rectifies the attribute for multi-frame support (user may want multi-frame but image format may not support it).
-<P></P>
-<p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setmagickinfo">SetMagickInfo</A></H2>

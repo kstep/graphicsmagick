@@ -25,7 +25,6 @@
 		<LI><A HREF="#resizeimage">ResizeImage</A></LI>
 		<LI><A HREF="#sampleimage">SampleImage</A></LI>
 		<LI><A HREF="#scaleimage">ScaleImage</A></LI>
-		<LI><A HREF="#zoomimage">ZoomImage</A></LI>
 	</UL>
 
 </UL>
@@ -40,12 +39,11 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>magnify_image= <STRONG>MagnifyImage</STRONG>( image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MagnifyImage</STRONG>( image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MinifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ResizeImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, const FilterType filter, const double blur, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>SampleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ScaleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ZoomImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -53,178 +51,113 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="magnifyimage">MagnifyImage</A></H2>
-<P>Method MagnifyImage creates a new image that is a integral size greater than an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>MagnifyImage scans the reference image to create a magnify image by bilinear interpolation.  The magnify image columns and rows become:</P>
-<PRE>
-  number_columns &lt;&lt; 1
-  number_rows &lt;&lt; 1</PRE>
-<P>The format of the MagnifyImage method is:</P>
-<blockquote>magnify_image=MagnifyImage ( image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>MagnifyImage ( ) is a convenience method that scales an image proportionallyto twice its size. If a NULL image is returned, check the exception memberof image to determine why the image failed to magnify.; </blockquote><P>The format of the MagnifyImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *MagnifyImage ( image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_magnify_image%3A">magnify_image:</A></STRONG><BR>
-<DD>
-Method MagnifyImage returns a pointer to the image after magnification.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="minifyimage">MinifyImage</A></H2>
-<P>Method MinifyImage creates a new image that is a integral size less than an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>MinifyImage scans the reference image to create a minified image by computing the weighted average of a 4x4 cell centered at each reference pixel.  The target pixel requires two columns and two rows of the reference pixels.  Therefore the minified image columns and rows become:</P>
-<PRE>
-  number_columns/2
-  number_rows/2</PRE>
-<P>Weights assume that the importance of neighboring pixels is negately proportional to the square of their distance from the target pixel.</P>
-<P>The scan only processes pixels that have a full set of neighbors.  Pixels in the top, bottom, left, and right pairs of rows and columns are omitted from the scan.</P>
-<P>The format of the MinifyImage method is:</P>
+<blockquote>MinifyImage ( ) is a convenience method that scales an image proportionallyto half its size. If a NULL image is returned, check the exception memberof image to determine why the image failed to minify.; </blockquote><P>The format of the MinifyImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MinifyImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_minify_image%3A">minify_image:</A></STRONG><BR>
-<DD>
-Method MinifyImage returns a pointer to the image after reducing.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image size is less than IconSize*2.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structur of type Image.
+The image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="resizeimage">ResizeImage</A></H2>
-<P>Method ResizeImage creates a new image that is a scaled size of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  The Point filter gives fast pixel replication, Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower, very high-quality results.  See Graphic Gems 
-<FONT SIZE=-1>III</FONT> for details on this algorithm.</P>
+<blockquote>ResizeImage ( ) scales an image to the desired dimensions with one of thesefilters:; </blockquote><PRE>
+  Bessel   Blackman   Box
+  Catrom   Cubic      Gaussian
+  Hanning  Hermite    Lanczos
+  Mitchell Point      Quandratic
+  Sinc     Triangle</PRE>
+<P>If a 
+<FONT SIZE=-1>NULL</FONT> image is returned, check exception to determine why the image failed to scale.</P>
 <P>The format of the ResizeImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ResizeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const <A HREF="types/Enumerations.html#FilterType">FilterType</A> filter, const double blur, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_resize_image%3A">resize_image:</A></STRONG><BR>
-<DD>
-Method ResizeImage returns a pointer to the image after scaling.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-the address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_columns%3A">columns:</A></STRONG><BR>
 <DD>
-an integer that specifies the number of columns in the resize image.
+The number of columns in the scaled image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_rows%3A">rows:</A></STRONG><BR>
 <DD>
-an integer that specifies the number of rows in the scaled image.
+The number of rows in the scaled image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_filter%3A">filter:</A></STRONG><BR>
 <DD>
-specifies which image filter to use.
+Image filter to use.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_blur%3A">blur:</A></STRONG><BR>
 <DD>
-specifies the blur factor where &gt; 1 is blurry, &lt; 1 is sharp.
+The blur factor where &gt; 1 is blurry, &lt; 1 is sharp.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="sampleimage">SampleImage</A></H2>
-<P>Method SampleImage creates a new image that is a scaled size of an existing one using pixel sampling.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the SampleImage method is:</P>
+<blockquote>SampleImage ( ) scales an image to the desired dimensions with pixelsampling. Unlike other scaling methods, this method does not introduceany additional color into the scaled image. If a NULL image isreturned, check exception to determine why the image failed to scale.; </blockquote><P>The format of the SampleImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_sample_image%3A">sample_image:</A></STRONG><BR>
-<DD>
-Method SampleImage returns a pointer to the image after scaling.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG>columns:</STRONG><BR>
 <DD>
-An integer that specifies the number of columns in the sampled image.
+The number of columns in the sampled image.
 <P></P>
 <p><dt><STRONG>rows:</STRONG><BR>
 <DD>
-An integer that specifies the number of rows in the sampled image.
+The number of rows in the sampled image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="scaleimage">ScaleImage</A></H2>
-<P>Method ScaleImage creates a new image that is a scaled size of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  To scale a scanline from x pixels to y pixels, each new pixel represents x/y old pixels.  To read x/y pixels, read (x/y rounded up) pixels but only count the required fraction of the last old pixel read in your new pixel.  The remainder of the old pixel will be counted in the next new pixel.</P>
-<P>The scaling algorithm was suggested by <A HREF="mailto:rjohnson@shell.com">rjohnson@shell.com</A> and is adapted from <CODE>pnmscale(1)</CODE> of 
-<FONT SIZE=-1>PBMPLUS</FONT> by Jef Poskanzer.</P>
-<P>The format of the ScaleImage method is:</P>
+<blockquote>ScaleImage ( ) changes the size of an image to the given dimensions. Ifa NULL image is returned, check exception to determine why the image failedto scale.; </blockquote><P>The format of the ScaleImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_scale_image%3A">scale_image:</A></STRONG><BR>
-<DD>
-Method ScaleImage returns a pointer to the image after scaling.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG>columns:</STRONG><BR>
 <DD>
-An integer that specifies the number of columns in the scaled image.
+The number of columns in the scaled image.
 <P></P>
 <p><dt><STRONG>rows:</STRONG><BR>
 <DD>
-An integer that specifies the number of rows in the scaled image.
+The number of rows in the scaled image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="zoomimage">ZoomImage</A></H2>
-<P>Method ZoomImage creates a new image that is a scaled size of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  The Point filter gives fast pixel replication, Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower, very high-quality results.  See Graphic Gems 
-<FONT SIZE=-1>III</FONT> for details on this algorithm.</P>
-<P>The filter member of the Image structure specifies which image filter to use.  Blur specifies the blur factor where &gt; 1 is blurry, &lt; 1 is sharp.</P>
-<P>The format of the ZoomImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ZoomImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_zoom_image%3A">zoom_image:</A></STRONG><BR>
-<DD>
-Method ZoomImage returns a pointer to the image after scaling.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image.
-<P></P>
-<p><dt><STRONG>columns:</STRONG><BR>
-<DD>
-An integer that specifies the number of columns in the zoom image.
-<P></P>
-<p><dt><STRONG>rows:</STRONG><BR>
-<DD>
-An integer that specifies the number of rows in the scaled image.
-<P></P>
-<p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 </DL></DL>
 
 </BODY>

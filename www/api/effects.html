@@ -105,7 +105,7 @@ Method AddNoiseImage returns a pointer to the image after the noise is minified.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_noise_type%3A">noise_type:</A></STRONG><BR>
 <DD>
@@ -113,7 +113,7 @@ The type of noise: Gaussian, multiplicative Gaussian, impulse, laplacian, or Poi
 <P></P>
 <p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="blurimage">BlurImage</A></H2>
@@ -144,7 +144,7 @@ The standard deviation of the Gaussian, in pixels.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="colorizeimage">ColorizeImage</A></H2>
@@ -155,7 +155,7 @@ return any errors or warnings in this structure.
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_opacity%3A">opacity:</A></STRONG><BR>
 <DD>
@@ -169,7 +169,7 @@ The address of a structure of type Image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="convolveimage">ConvolveImage</A></H2>
@@ -185,7 +185,7 @@ Method ConvolveImage returns a pointer to the image after it is convolved.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_order%3A">order:</A></STRONG><BR>
 <DD>
@@ -197,7 +197,7 @@ An array of double representing the convolution kernel.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="despeckleimage">DespeckleImage</A></H2>
@@ -214,11 +214,11 @@ Method DespeckleImage returns a pointer to the image after it is despeckled.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="edgeimage">EdgeImage</A></H2>
@@ -242,7 +242,7 @@ the radius of the pixel neighborhood.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="embossimage">EmbossImage</A></H2>
@@ -258,7 +258,7 @@ Method EmbossImage returns a pointer to the image after it is embossed.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
 <DD>
@@ -270,7 +270,7 @@ The standard deviation of the Gaussian, in pixels.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="enhanceimage">EnhanceImage</A></H2>
@@ -290,11 +290,11 @@ Method EnhanceImage returns a pointer to the image after it is enhanced.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="gaussianblurimage">GaussianBlurImage</A></H2>
@@ -318,7 +318,7 @@ the standard deviation of the Gaussian, in pixels.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="implodeimage">ImplodeImage</A></H2>
@@ -334,7 +334,7 @@ Method ImplodeImage returns a pointer to the image after it is implode.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_amount%3A">amount:</A></STRONG><BR>
 <DD>
@@ -343,7 +343,7 @@ The address of a structure of type Image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="medianfilterimage">MedianFilterImage</A></H2>
@@ -367,7 +367,7 @@ the radius of the pixel neighborhood.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="morphimages">MorphImages</A></H2>
@@ -382,7 +382,7 @@ Method MorphImages returns an next sequence that has linearly interpolated pixel
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_number_frames%3A">number_frames:</A></STRONG><BR>
 <DD>
@@ -390,7 +390,7 @@ This unsigned integer reflects the number of in-between image to generate.  The 
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="motionblurimage">MotionBlurImage</A></H2>
@@ -419,7 +419,7 @@ Apply the effect along this angle.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="oilpaintimage">OilPaintImage</A></H2>
@@ -435,7 +435,7 @@ Method OilPaintImage returns a pointer to the image after it is `painted'.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG>radius:</STRONG><BR>
 <DD>
@@ -443,7 +443,7 @@ The radius of the circular neighborhood.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="plasmaimage">PlasmaImage</A></H2>
@@ -458,7 +458,7 @@ Method PlasmaImage returns True when the fractal process is complete.  Otherwise
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_segment%3A">segment:</A></STRONG><BR>
 <DD>
@@ -496,7 +496,7 @@ the radius of the pixel neighborhood.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="shadeimage">ShadeImage</A></H2>
@@ -512,7 +512,7 @@ Method ShadeImage returns a pointer to the image after it is shaded.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_color_shading%3A">color_shading:</A></STRONG><BR>
 <DD>
@@ -526,7 +526,7 @@ The address of a structure of type Image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="sharpenimage">SharpenImage</A></H2>
@@ -550,7 +550,7 @@ The standard deviation of the Laplacian, in pixels.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="solarizeimage">SolarizeImage</A></H2>
@@ -561,7 +561,7 @@ return any errors or warnings in this structure.
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_threshold%3A">threshold:</A></STRONG><BR>
 <DD>
@@ -581,7 +581,7 @@ Method SpreadImage returns a pointer to the image after it is spread.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG>amount:</STRONG><BR>
 <DD>
@@ -589,7 +589,7 @@ An unsigned value constraining the ``vicinity'' for choosing a random pixel to s
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="steganoimage">SteganoImage</A></H2>
@@ -605,15 +605,15 @@ Method SteganoImage returns a pointer to the steganographic image with the water
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_watermark%3A">watermark:</A></STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="stereoimage">StereoImage</A></H2>
@@ -629,15 +629,15 @@ Method StereoImage returns a pointer to the stereo image.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_offset_image%3A">offset_image:</A></STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="swirlimage">SwirlImage</A></H2>
@@ -653,7 +653,7 @@ Method SwirlImage returns a pointer to the image after it is swirl.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_degrees%3A">degrees:</A></STRONG><BR>
 <DD>
@@ -661,7 +661,7 @@ An double value that defines the tightness of the swirling.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="thresholdimage">ThresholdImage</A></H2>
@@ -672,7 +672,7 @@ return any errors or warnings in this structure.
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG>threshold:</STRONG><BR>
 <DD>
@@ -709,7 +709,7 @@ The threshold in pixels needed to apply the diffence amount.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="waveimage">WaveImage</A></H2>
@@ -725,7 +725,7 @@ Method WaveImage returns a pointer to the image after it is waved.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_amplitude%2C_frequency%3A">amplitude, frequency:</A></STRONG><BR>
 <DD>
@@ -734,7 +734,7 @@ The address of a structure of type Image; returned from ReadImage.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 </DL></DL>
 
 </BODY>

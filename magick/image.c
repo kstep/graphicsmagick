@@ -223,7 +223,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AllocateImageColormap() allocates an image colormap and initializes
-%  it to a linear gray colorspace.  If the image already has a colormap, 
+%  it to a linear gray colorspace.  If the image already has a colormap,
 %  it is replaced.  AllocateImageColormap() returns True if successful,
 %  otherwise False if there is not enough memory.
 %
@@ -334,7 +334,7 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AnimateImages() repeatedly displays an image sequence to any X window 
+%  AnimateImages() repeatedly displays an image sequence to any X window
 %  screen.  It returns a value other than 0 if successful.  Check the
 %  exception member of image to determine the reason for any failure.
 %
@@ -810,7 +810,7 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneImage() copies an image and returns the copy as a new image object.  
+%  CloneImage() copies an image and returns the copy as a new image object.
 %  If the specified columns and rows is 0, an exact copy of the image is
 %  returned, otherwise the pixel data is undefined and must be initialized
 %  with the SetImagePixels() and SyncImagePixels() methods.  A NULL image
@@ -4846,7 +4846,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     *mogrify_images;
 
   int
-    scene; 
+    scene;
 
   MonitorHandler
     handler;

@@ -41,26 +41,14 @@
 		<LI><A HREF="#getimagetype">GetImageType</A></LI>
 		<LI><A HREF="#getnextimage">GetNextImage</A></LI>
 		<LI><A HREF="#getnumberscenes">GetNumberScenes</A></LI>
-		<LI><A HREF="#getpixelpacket">GetPixelPacket</A></LI>
-		<LI><A HREF="#isgeometry">IsGeometry</A></LI>
 		<LI><A HREF="#isimagesequal">IsImagesEqual</A></LI>
 		<LI><A HREF="#isimagetainted">IsImageTainted</A></LI>
-		<LI><A HREF="#issubimage">IsSubimage</A></LI>
 		<LI><A HREF="#listtogroupimage">ListToGroupImage</A></LI>
-		<LI><A HREF="#mogrifyimage">MogrifyImage</A></LI>
-		<LI><A HREF="#mogrifyimages">MogrifyImages</A></LI>
-		<LI><A HREF="#mosaicimages">MosaicImages</A></LI>
-		<LI><A HREF="#parseimagegeometry">ParseImageGeometry</A></LI>
-		<LI><A HREF="#rgbtransformimage">RGBTransformImage</A></LI>
 		<LI><A HREF="#setimage">SetImage</A></LI>
 		<LI><A HREF="#setimagedepth">SetImageDepth</A></LI>
 		<LI><A HREF="#setimageopacity">SetImageOpacity</A></LI>
 		<LI><A HREF="#setimagetype">SetImageType</A></LI>
-		<LI><A HREF="#sortcolormapbyintentsity">SortColormapByIntentsity</A></LI>
-		<LI><A HREF="#syncimage">SyncImage</A></LI>
 		<LI><A HREF="#textureimage">TextureImage</A></LI>
-		<LI><A HREF="#transformrgbimage">TransformRGBImage</A></LI>
-		<LI><A HREF="#transmitimage">TransmitImage</A></LI>
 	</UL>
 
 </UL>
@@ -97,25 +85,14 @@
 <P>ImageType  <STRONG>GetImageType</STRONG>( Image *image );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>GetNumberScenes</STRONG>( const Image *image );</P>
-<P>void  <STRONG>GetPixelPacket</STRONG>( PixelPacket *pixel );</P>
-<P>unsigned int  <STRONG>IsGeometry</STRONG>( const char *geometry );</P>
 <P>unsigned int  <STRONG>IsImageTainted</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
-<P>unsigned int  <STRONG>IsSubimage</STRONG>( const char *geometry, const unsigned int pedantic );</P>
 <P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned int *number_images );</P>
-<P>unsigned int  <STRONG>MogrifyImage</STRONG>( const ImageInfo *image_info, const int argc, char ** argv, Image ** image );</P>
-<P>unsigned int  <STRONG>MogrifyImages</STRONG>( const ImageInfo *image_info, const int argc, char ** argv, Image ** images );</P>
-<P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
-<P>int  <STRONG>ParseImageGeometry</STRONG>( const char *geometry, int *x, int *y, unsigned int *width, unsigned int *height );</P>
-<P>unsigned int  <STRONG>RGBTransformImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
-<P>void  <STRONG>SetImage</STRONG>( Image *image, opacity );</P>
-<P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned int );</P>
+<P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
+<P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned int depth );</P>
 <P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
 <P><STRONG>SetImageType</STRONG>( Image *image, const ImageType image_type );</P>
-<P>void  <STRONG>SyncImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>TextureImage</STRONG>( Image *image, Image *texture );</P>
-<P>unsigned int  <STRONG>TransformRGBImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
-<P>unsigned int  <STRONG>TransmitImage</STRONG>( Image *image, ImageInfo *image_info, const TransmitType sendmode, void *param1, void *param2 );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -431,368 +408,131 @@ The image.
 The image.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="getpixelpacket">GetPixelPacket</A></H2>
-<P>Method GetPixelPacket initializes the PixelPacket structure.</P>
-<P>The format of the GetPixelPacket method is:</P>
-<blockquote>void GetPixelPacket ( <A HREF="types/PixelPacket.html">PixelPacket</A> *pixel ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_pixel%3A">pixel:</A></STRONG><BR>
-<DD>
-Specifies a pointer to a PixelPacket structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="isgeometry">IsGeometry</A></H2>
-<P>Method IsGeometry returns True if the geometry specification is valid as determined by ParseGeometry.</P>
-<P>The format of the IsGeometry method is:</P>
-<blockquote>unsigned int IsGeometry ( const char *geometry ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method IsGeometry returns True if the geometry specification is valid otherwise False is returned.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_geometry%3A">geometry:</A></STRONG><BR>
-<DD>
-This string is the geometry specification.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="isimagesequal">IsImagesEqual</A></H2>
-<P>Method IsImagesEqual measures the difference between two images.  The error is computed by summing over all pixels in an image the distance squared in 
-<FONT SIZE=-1>RGB</FONT> space between each image pixel and its corresponding pixel in the reference image.  These values are computed:</P>
-<DL><DL>
+<blockquote>IsImagesEqual ( ) measures the difference between colors at each pixellocation of two images. A value other than 0 means the colors matchexactly. Otherwise an error measure is computed by summing over allpixels in an image the distance squared in RGB space between each imagepixel and its corresponding pixel in the reference image. The errormeasure is assigned to these image members:; </blockquote><DL><DL>
 <p><dt><STRONG><A NAME="item_o_mean_error_per_pixel%3A">mean_error_per_pixel:</A></STRONG><BR>
 <DD>
 This value is the mean error for any single pixel in the image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_normalized_mean_square_error%3A">normalized_mean_square_error:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_normalized_mean_error%3A">normalized_mean_error:</A></STRONG><BR>
 <DD>
 This value is the normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_normalized_maximum_square_error%3A">normalized_maximum_square_error:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_normalized_maximum_error%3A">normalized_maximum_error:</A></STRONG><BR>
 <DD>
 Thsi value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.
 <P></P></DL></DL>
+<P>
+<FONT SIZE=-1>A</FONT> small normalized mean square error, accessed as image-&gt;normalized_mean_error, suggests the images are very similiar in spatial layout and color.</P>
 <P>The format of the IsImagesEqual method is:</P>
 <blockquote>unsigned int IsImagesEqual ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *reference ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-Specifies a pointer to an Image structure.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_reference%3A">reference:</A></STRONG><BR>
 <DD>
-Specifies a pointer to an Image structure.
+The reference image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="isimagetainted">IsImageTainted</A></H2>
-<P>Method IsImageTainted returns True if the image has been altered since it was first read or if any image in the sequence has a difference magic or filename.</P>
-<P>The format of the IsImageTainted method is:</P>
+<blockquote>IsImageTainted ( ) returns a value other than 0 if any pixel in an imagehas been altered since it was first constituted.; </blockquote><P>The format of the IsImageTainted method is:</P>
 <blockquote>unsigned int IsImageTainted ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method IsImageTainted returns True if the image has been altered since it was first read.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="issubimage">IsSubimage</A></H2>
-<P>Method IsSubimage returns True if the geometry is a valid subimage specification (e.g.  [1], [1-9], [1,7,4]).</P>
-<P>The format of the IsSubimage method is:</P>
-<blockquote>unsigned int IsSubimage ( const char *geometry, const unsigned int pedantic ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method IsSubimage returns True if the geometry is a valid subimage specification otherwise False is returned.
-<P></P>
-<p><dt><STRONG>geometry:</STRONG><BR>
-<DD>
-This string is the geometry specification.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_pedantic%3A">pedantic:</A></STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> value other than 0 invokes a more restriction set of conditions for a valid specification (e.g.  [1], [1-4], [4-1]).
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listtogroupimage">ListToGroupImage</A></H2>
-<P>Method ListToGroupImage converts a linked list of images to a sequential array.</P>
-<P>The format of the ListToGroupImage method is:</P>
+<blockquote>ListToGroupImage ( ) is a convenience method that converts a linked list ofimages to a sequential array. For example, ; </blockquote><blockquote>images = ListToGroupImage ( image_list, \&n ); for ( i=0; i < n; i++ ) puts ( images[i]->filename ) ;; </blockquote><P>The format of the ListToGroupImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage ( <A HREF="types/Image.html">Image</A> *image, unsigned int *number_images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_images%3A">images:</A></STRONG><BR>
+<p><dt><STRONG>image:</STRONG><BR>
 <DD>
-Method ListToGroupImage converts a linked list of images to a sequential array and returns the array..
-<P></P>
-<p><dt><STRONG>images:</STRONG><BR>
-<DD>
-The address of a structure of type Image; returned from ReadImage.
+The image list.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_number_images%3A">number_images:</A></STRONG><BR>
 <DD>
-
-<FONT SIZE=-1>A</FONT> pointer to an unsigned integer.  The number of images in the image array is returned here.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="mogrifyimage">MogrifyImage</A></H2>
-<P>Method MogrifyImage applies image processing options to an image as prescribed by command line options.</P>
-<P>The format of the MogrifyImage method is:</P>
-<blockquote>unsigned int MogrifyImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const int argc, char **argv, <A HREF="types/Image.html">Image</A> **image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_argc%3A">argc:</A></STRONG><BR>
-<DD>
-Specifies a pointer to an integer describing the number of elements in the argument vector.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_argv%3A">argv:</A></STRONG><BR>
-<DD>
-Specifies a pointer to a text array containing the command line arguments.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image; returned from ReadImage.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="mogrifyimages">MogrifyImages</A></H2>
-<P>Method MogrifyImages applies next processing options to a sequence of images as prescribed by command line options.</P>
-<P>The format of the MogrifyImage method is:</P>
-<blockquote>unsigned int MogrifyImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const int argc, char **argv, <A HREF="types/Image.html">Image</A> **images ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P>
-<p><dt><STRONG>argc:</STRONG><BR>
-<DD>
-Specifies a pointer to an integer describing the number of elements in the argument vector.
-<P></P>
-<p><dt><STRONG>argv:</STRONG><BR>
-<DD>
-Specifies a pointer to a text array containing the command line arguments.
-<P></P>
-<p><dt><STRONG>images:</STRONG><BR>
-<DD>
-The address of a structure of type Image; returned from ReadImage.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="mosaicimages">MosaicImages</A></H2>
-<P>Method MosaicImages inlays a number of image to form a single coherent picture.</P>
-<P>The format of the MosaicImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *MosaicImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image; returned from ReadImage.
-<P></P>
-<p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="parseimagegeometry">ParseImageGeometry</A></H2>
-<P>Method ParseImageGeometry parses a geometry specification and returns the width, height, x, and y values.  It also returns flags that indicates which of the four values (width, height, xoffset, yoffset) were located in the string, and whether the x and y values are negative.  In addition,</P>
-<P>The format of the ParseImageGeometry method is:</P>
-<blockquote>int ParseImageGeometry ( const char *geometry, int *x, int *y, unsigned int *width, unsigned int *height ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_flags%3A">flags:</A></STRONG><BR>
-<DD>
-Method ParseImageGeometry returns a bitmask that indicates which of the four values were located in the geometry string.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_image_geometry%3A">image_geometry:</A></STRONG><BR>
-<DD>
-Specifies a character string representing the geometry specification.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_x%2Cy%3A">x,y:</A></STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> pointer to an integer.  The x and y offset as determined by the geometry specification is returned here.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_width%2Cheight%3A">width,height:</A></STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> pointer to an unsigned integer.  The width and height as determined by the geometry specification is returned here.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="rgbtransformimage">RGBTransformImage</A></H2>
-<P>Method RGBTransformImage converts the reference image from 
-<FONT SIZE=-1>RGB</FONT> to an alternate colorspace.  The transformation matrices are not the standard ones: the weights are rescaled to normalized the range of the transformed values to be [0..MaxRGB].</P>
-<P>The format of the RGBTransformImage method is:</P>
-<blockquote>unsigned int RGBTransformImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ColorspaceType">ColorspaceType</A> colorspace ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image; returned from ReadImage.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_colorspace%3A">colorspace:</A></STRONG><BR>
-<DD>
-An unsigned integer value that indicates which colorspace to transform the image.
+The length of the image array is returned here.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimage">SetImage</A></H2>
-<P>Method SetImage initializes the reference image to the background color.</P>
-<P>The format of the SetImage method is:</P>
-<blockquote>void SetImage ( <A HREF="types/Image.html">Image</A> *image, opacity ); </blockquote><P>
+<blockquote>SetImage ( ) sets the red, green, and blue components of each pixel tothe image background color and the opacity component to the specifiedlevel of transparency. The background color is defined by thebackground_color member of the image.; </blockquote><P>The format of the SetImage method is:</P>
+<blockquote>void SetImage ( <A HREF="types/Image.html">Image</A> *image, const Quantum opacity ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_opacity%3A">opacity:</A></STRONG><BR>
 <DD>
-The transparency of the background color.
+Set each pixel to this level of transparency.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimagedepth">SetImageDepth</A></H2>
-<P>Method SetImageDepth sets the depth of the image.</P>
-<P>The format of the SetImageDepth method is:</P>
-<blockquote>unsigned int SetImageDepth ( <A HREF="types/Image.html">Image</A> *image, const unsigned int ); </blockquote><P>
+<blockquote>SetImageDepth ( ) sets the depth of the image, either 8 or 16. Some imageformats support both 8 and 16-bits per color component ( e.g. PNG ) . UseSetImageDepth ( ) to specify your preference. A value other than 0 isreturned if the depth is set.; </blockquote><P>The format of the SetImageDepth method is:</P>
+<blockquote>unsigned int SetImageDepth ( <A HREF="types/Image.html">Image</A> *image, const unsigned int depth ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method SetImageDepth returns True if the image depth is set.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_depth%3A">depth:</A></STRONG><BR>
 <DD>
-specified the image depth.
+The image depth.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimageopacity">SetImageOpacity</A></H2>
-<P>Method SetImageOpacity initializes the opacity channel of the reference image to the specified value.  If the image already has a matte channel it is attenuated with the opacity value.</P>
-<P>The format of the SetImageOpacity method is:</P>
+<blockquote>SetImageOpacity ( ) attenuates the opacity channel of an image. If theimage pixels are opaque, they are set to the specified opacity level.Otherwise, the pixel oapcity values are blended with the suppliedtransparency value.; </blockquote><P>The format of the SetImageOpacity method is:</P>
 <blockquote>void SetImageOpacity ( <A HREF="types/Image.html">Image</A> *image, const unsigned int opacity ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG>opacity:</STRONG><BR>
 <DD>
-The level of transparency.
+The level of transparency: 0 is fully opaque and MaxRGB is fully transparent.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimagetype">SetImageType</A></H2>
-<P>Method SetImageType sets the type of the image.</P>
+<blockquote>SetImageType ( ) sets the type of image. Choose from these types:; </blockquote><PRE>
+      Bilevel        Grayscale       GrayscaleMatte
+      Palette        PaletteMatte    TrueColor
+      TrueColorMatte ColorSeparation ColorSeparationMatte</PRE>
 <P>The format of the SetImageType method is:</P>
 <blockquote>SetImageType ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ImageType">ImageType</A> image_type ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method SetImageDepth returns True if the image depth is set.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_image_type%3A">image_type:</A></STRONG><BR>
 <DD>
-specified the image type.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="sortcolormapbyintentsity">SortColormapByIntentsity</A></H2>
-<P>Method SortColormapByIntensity sorts the colormap of a PseudoClass image by decreasing color intensity.</P>
-<P>The format of the SortColormapByIntensity method is:</P>
-<PRE>
-    unsigned int SortColormapByIntensity(Image *image)</PRE>
-<P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> pointer to a Image structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="syncimage">SyncImage</A></H2>
-<P>Method SyncImage initializes the red, green, and blue intensities of each pixel as defined by the colormap index.</P>
-<P>The format of the SyncImage method is:</P>
-<blockquote>void SyncImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image.
+Image type.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="textureimage">TextureImage</A></H2>
-<P>Method TextureImage layers a texture onto the background of an image.</P>
-<P>The format of the TextureImage method is:</P>
+<blockquote>TextureImage ( ) repeatedly tiles the texture image across and down the imagecanvas.; </blockquote><P>The format of the TextureImage method is:</P>
 <blockquote>void TextureImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *texture ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_texture%3A">texture:</A></STRONG><BR>
 <DD>
-This image contains the texture to layer on the background.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="transformrgbimage">TransformRGBImage</A></H2>
-<P>Method TransformRGBImage converts the reference image from an alternate colorspace.  The transformation matrices are not the standard ones: the weights are rescaled to normalize the range of the transformed values to be [0..MaxRGB].</P>
-<P>The format of the TransformRGBImage method is:</P>
-<blockquote>unsigned int TransformRGBImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ColorspaceType">ColorspaceType</A> colorspace ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image; returned from ReadImage.
-<P></P>
-<p><dt><STRONG>colorspace:</STRONG><BR>
-<DD>
-An unsigned integer value defines which colorspace to transform the image to.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="transmitimage">TransmitImage</A></H2>
-<P>Method TransmitImage transmit an image to a variety of destinations.  It is used primarily in 
-<FONT SIZE=-1>CGI</FONT> and 
-<FONT SIZE=-1>ISAPI</FONT> programs to send an image to a client using either disk, blobs, streaming, or via the normal in memory image structure.</P>
-<P>The format of the TransmitImage method is:</P>
-<blockquote>unsigned int TransmitImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const TransmitType sendmode, void *param1, void *param2 ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image; returned from ReadImage.
-<P></P>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_sendmode%3A">sendmode:</A></STRONG><BR>
-<DD>
-An unsigned integer value defines which transmit mode to send the image with.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_param1%3A">param1:</A></STRONG><BR>
-<DD>
-An void pointer whose meaning depends on the transmit mode.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_param2%3A">param2:</A></STRONG><BR>
-<DD>
-An void pointer whose meaning depends on the transmit mode.
+This image is the texture to layer on the background.
 </DL></DL>
 
 </BODY>

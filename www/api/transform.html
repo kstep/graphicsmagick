@@ -27,6 +27,7 @@
 		<LI><A HREF="#flattenimage">FlattenImage</A></LI>
 		<LI><A HREF="#flipimage">FlipImage</A></LI>
 		<LI><A HREF="#flopimage">FlopImage</A></LI>
+		<LI><A HREF="#mosaicimages">MosaicImages</A></LI>
 		<LI><A HREF="#profileimage">ProfileImage</A></LI>
 		<LI><A HREF="#rollimage">RollImage</A></LI>
 		<LI><A HREF="#shaveimage">ShaveImage</A></LI>
@@ -52,6 +53,7 @@
 <P>Image * <STRONG>FlattenImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlipImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlopImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *profile_name, const char *filename );</P>
 <P>Image * <STRONG>RollImage</STRONG>( Image *image, const int x_offset, const int y_offset, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ShaveImage</STRONG>( Image *image, const RectangleInfo *shave_info, ExceptionInfo *exception );</P>
@@ -63,87 +65,75 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="chopimage">ChopImage</A></H2>
-<P>Method ChopImage creates a new image that is a subregion of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P><CODE>Chop()</CODE> removes a region of an image and collapses the image to occupy the removed portion.  If a 
+<FONT SIZE=-1>NULL</FONT> image is returned, check exception to determine why the operation failed.</P>
 <P>The format of the ChopImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ChopImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info ); </blockquote><PRE>
       ExceptionInfo *exception)</PRE>
 <P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_chop_image%3A">chop_image:</A></STRONG><BR>
-<DD>
-Method ChopImage returns a pointer to the chop image.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image width or height is zero.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_chop_info%3A">chop_info:</A></STRONG><BR>
 <DD>
-Specifies a pointer to a RectangleInfo which defines the region of the image to crop.
+Defines the region of the image to chop.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="coalesceimages">CoalesceImages</A></H2>
-<P>Method CoalesceImages merges a sequence of images.  This is useful for 
-<FONT SIZE=-1>GIF</FONT> and 
-<FONT SIZE=-1>MNG</FONT> animation sequences that have page offsets and disposal methods.</P>
+<P>This method composites a set of images while respecting any page offsets and disposal methods.  
+<FONT SIZE=-1>GIF,</FONT> 
+<FONT SIZE=-1>MIFF,</FONT> and 
+<FONT SIZE=-1>MNG</FONT> animation sequences typically start with an image background and each subsequent image varies in size and offset.  <CODE>Coalesce()</CODE> returns a new sequence where each image in the sequence is the same size as the first and composited with the next image in the sequence.  On failure, check exception to determine the reason why the operation failed.</P>
 <P>The format of the CoalesceImages method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.  It points to the first image in the group to be coalesced.
+The image sequence.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cropimage">CropImage</A></H2>
-<P>Method CropImage creates a new image that is a subregion of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the CropImage method is:</P>
+<blockquote>CropImage ( ) extracts a region of the image starting at the offset defined bycrop_info. If a NULL image is returned, check exception to determine thereason why the operation failed.; </blockquote><P>The format of the CropImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CropImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_crop_image%3A">crop_image:</A></STRONG><BR>
-<DD>
-Method CropImage returns a pointer to the cropped image.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image width or height is zero.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_crop_info%3A">crop_info:</A></STRONG><BR>
 <DD>
-Specifies a pointer to a RectangleInfo which defines the region of the image to crop.
+Defines the region of the image to crop with members x, y, width, and height.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="deconstructimages">DeconstructImages</A></H2>
-<P>Method DeconstructImages breaks down an image sequence into constituent parts.  This is useful for creating 
-<FONT SIZE=-1>GIF</FONT> or 
-<FONT SIZE=-1>MNG</FONT> animation sequences.</P>
-<P>The format of the DeconstructImages method is:</P>
+<blockquote>DeconstructImages ( ) returns a new sequence that consists of the first imagein the sequence followed by the maximum bounding region of any differencesin subsequent images. This method can undo a coalesced sequence returnedby CoalesceImages ( ) .; </blockquote><P>The format of the DeconstructImages method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.  It points to the first image in the group to be deconstructed.
+The image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="flattenimage">FlattenImage</A></H2>
@@ -154,106 +144,95 @@ return any errors or warnings in this structure.
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.  It points to the first image in the group to be coalesced.
+The image; returned from ReadImage.  It points to the first image in the group to be coalesced.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="flipimage">FlipImage</A></H2>
-<P>Method FlipImage creates a new image that reflects each scanline in the vertical direction It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the FlipImage method is:</P>
+<blockquote>FlipImage ( ) creates a vertical mirror image by reflecting the pixelsaround the central x-axis. If a NULL image is returned, checkexception to determine the reason why the operation failed.; </blockquote><P>The format of the FlipImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_flip_image%3A">flip_image:</A></STRONG><BR>
-<DD>
-Method FlipImage returns a pointer to the image after reflecting.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="flopimage">FlopImage</A></H2>
-<P>Method FlopImage creates a new image that reflects each scanline in the horizontal direction It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the FlopImage method is:</P>
+<blockquote>FlopImage ( ) creates a horizontal mirror image by reflecting the pixelsaround the central y-axis. If a NULL image is returned, checkexception to determine the reason why the operation failed.; </blockquote><P>The format of the FlopImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_flop_image%3A">flop_image:</A></STRONG><BR>
-<DD>
-Method FlopImage returns a pointer to the image after reflecting.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="mosaicimages">MosaicImages</A></H2>
+<blockquote>The MosaicImages ( ) method takes a set of images and inlays them to forma single coherent pictiure. MosaicImages ( ) returns a single image witheach image in the sequence inlayed in the image canvas at an offset asdefined in the image. If a NULL image is returned, checkexception to determine the reason why the operation failed.; </blockquote><P>The format of the MosaicImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *MosaicImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="profileimage">ProfileImage</A></H2>
-<P>Method ProfileImage removes or adds a 
-<FONT SIZE=-1>ICM,</FONT> 
-<FONT SIZE=-1>IPTC,</FONT> or generic profile to an image.  If the profile name is specified it is deleted from the image.  If a filename is specified, one or more profiles are read and added to the image.  If the profile name is ``*'' then all profiles are deleted from the image.</P>
-<P>The format of the ProfileImage method is:</P>
+<blockquote>ProfileImage ( ) adds or removes a ICM, IPTC, or generic profile to animage. If the profile name is defined it is deleted from the image.If a filename is given, one or more profiles are read and added to theimage. ProfileImage ( ) returns a value other than 0 if the profile issuccessfully added or removed from the image.; </blockquote><P>The format of the ProfileImage method is:</P>
 <blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *profile_name, const char *filename ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method ProfileImage returns True if the profile is successfully added or removed from the image, otherwise False.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_profile_name%3A">profile_name:</A></STRONG><BR>
 <DD>
-Specifies the type of profile to add or remove.
+Type of profile to add or remove.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
 <DD>
-Specifies the filename of the 
-<FONT SIZE=-1>ICM</FONT> or 
-<FONT SIZE=-1>IPTC</FONT> profile.
+Filename of the 
+<FONT SIZE=-1>ICM,</FONT> 
+<FONT SIZE=-1>IPTC,</FONT> or generic profile.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="rollimage">RollImage</A></H2>
-<P>Method RollImage rolls an image vertically and horizontally.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>The format of the RollImage method is:</P>
+<blockquote>RollImage ( ) offsets an image as defined by x and y. If a NULL image isreturned, check exception to determine the reason why the operation failed.; </blockquote><P>The format of the RollImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *RollImage ( <A HREF="types/Image.html">Image</A> *image, const int x_offset, const int y_offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_roll_image%3A">roll_image:</A></STRONG><BR>
-<DD>
-Method RollImage returns a pointer to the image after rolling.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_x_offset%3A">x_offset:</A></STRONG><BR>
 <DD>
-An integer that specifies the number of columns to roll in the horizontal direction.
+The number of columns to roll in the horizontal direction.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_y_offset%3A">y_offset:</A></STRONG><BR>
 <DD>
-An integer that specifies the number of rows to roll in the vertical direction.
+The number of rows to roll in the vertical direction.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="shaveimage">ShaveImage</A></H2>
@@ -269,7 +248,7 @@ Method ShaveImage returns a pointer to the shaved image.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_shave_info%3A">shave_info:</A></STRONG><BR>
 <DD>
@@ -277,27 +256,26 @@ Specifies a pointer to a RectangleInfo which defines the region of the image to 
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="transformimage">TransformImage</A></H2>
-<P>Method TransformImage creates a new image that is a transformed size of of existing one as specified by the crop and image geometries.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
-<P>If a crop geometry is specified a subregion of the image is obtained.  If the specified image size, as defined by the image and scale geometries, is smaller than the actual image size, the image is first minified to an integral of the specified image size with an antialias digital filter.  The image is then scaled to the exact specified image size with pixel replication.  If the specified image size is greater than the actual image size, the image is first enlarged to an integral of the specified image size with bilinear interpolation.  The image is then scaled to the exact specified image size with pixel replication.</P>
-<P>The format of the TransformImage method is:</P>
+<blockquote>TransformImage ( ) is a convenience method that behaves like ResizeImage ( ) orCropImage ( ) but accepts scaling and/or cropping information as a regiongeometry specification. If the operation fails, the original image handleis returned.; </blockquote><P>The format of the TransformImage method is:</P>
 <blockquote>void TransformImage ( <A HREF="types/Image.html">Image</A> **image, const char *crop_geometry, const char *image_geometry ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of an address of a structure of type Image.  The transformed image is returned as this parameter.
+The image The transformed image is returned as this parameter.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_crop_geometry%3A">crop_geometry:</A></STRONG><BR>
 <DD>
-Specifies a pointer to a crop geometry string.  This geometry defines a subregion of the image.
+
+<FONT SIZE=-1>A</FONT> crop geometry string.  This geometry defines a subregion of the image to crop.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_image_geometry%3A">image_geometry:</A></STRONG><BR>
 <DD>
-Specifies a pointer to a image geometry string.  The specified width and height of this geometry string are absolute.
+An image geometry string.  This geometry defines the final size if the image.
 </DL></DL>
 
 </BODY>
