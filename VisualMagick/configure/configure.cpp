@@ -805,8 +805,7 @@ void CConfigureApp::process_library(ofstream &dsw,
   string basename = filename;
   string name = LocalGetField(basename,'.',0);
   string extn = LocalGetField(basename,'.',1);
-//   if(extn.length() > 3)
-//     return;
+  // filename is not a source file name so don't check extension length!
   string prefix = "CORE_";
   string staging = root;
   int levels;
