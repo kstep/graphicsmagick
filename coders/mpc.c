@@ -1147,7 +1147,6 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
         FormatString(buffer,"montage=%.1024s\n",image->montage);
         (void) WriteBlobString(image,buffer);
       }
-    (void) SignatureImage(image);
     attribute=GetImageAttribute(image,(char *) NULL);
     for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
     {

@@ -1824,7 +1824,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   assert(filename != (const char *) NULL);
   assert(offset != (off_t *) NULL);
   pagesize=8192;
-#if defined(HAVE_SYSCONF)
+#if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
   pagesize=sysconf(_SC_PAGE_SIZE);
 #endif
   if (attach)
