@@ -850,6 +850,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
     (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
     attribute=attribute->next;
   }
+  GetExceptionInfo(&clone_image->exception);
   if (clone_image->orphan || orphan)
     {
       clone_image->orphan=False;
