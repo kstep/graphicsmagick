@@ -693,7 +693,12 @@ if test "x$acx_pthread_ok" = xyes; then
         CFLAGS="$save_CFLAGS"
 
         # More AIX lossage: must compile with cc_r
-        AC_CHECK_PROG(PTHREAD_CC, cc_r, cc_r, ${CC})
+        case "$CC" in
+          *xlc )
+           AC_CHECK_PROG(PTHREAD_CC, xlc_r, xlc_r, ${CC}) ;;
+          * )
+           AC_CHECK_PROG(PTHREAD_CC, cc_r, cc_r, ${CC}) ;;
+        esac
 else
         PTHREAD_CC="$CC"
 fi

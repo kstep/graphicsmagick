@@ -1,5 +1,10 @@
 2003-09-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Move multithread tests prior to libtool
+	configuration in case value of CC is changed.  Otherwise libtool
+	gets confused and refuses to run.
+	* acinclude.m4 (ACX_PTHREAD): If using AIX CC 'xlc' use 'xlc_r'
+	for multithread compiler.
 	* coders/jpeg.c: Undef HAVE_STDLIB_H before including the
 	jpeg headers or else we get an already defined error/warning.
 

@@ -183,6 +183,37 @@ else
 fi
 
 #
+# Determine Posix threads settings
+#
+# Enable support for threads
+AC_ARG_WITH(threads,
+	      [  --without-threads       disable threads support],
+	      [with_threads=$withval],
+	      [with_threads='yes'])
+
+have_threads=no
+if test "$with_threads" != 'no'
+then
+
+  ACX_PTHREAD()
+  if test "$acx_pthread_ok" = yes
+  then
+    have_threads=yes
+
+    DEF_THREAD="$PTHREAD_CFLAGS"
+    CFLAGS="$CFLAGS $DEF_THREAD"
+    CXXFLAGS="$CXXFLAGS $DEF_THREAD"
+
+    if test "$CC" != "$PTHREAD_CC"
+    then
+      AC_MSG_WARN([Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads.])
+      CC="$PTHREAD_CC"
+    fi
+  fi
+
+fi
+
+#
 # Configure libtool & libltdl
 #
 
@@ -360,12 +391,6 @@ if test "$with_cache" != ''
 then
   AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,[Pixel cache threshold in MB (defaults to available memory)])
 fi
-
-# Enable support for threads
-AC_ARG_WITH(threads,
-	      [  --without-threads       disable threads support],
-	      [with_threads=$withval],
-	      [with_threads='yes'])
 
 # Disable/Enable support for full delegate paths
 if test "$native_win32_build" = 'yes'
@@ -1014,43 +1039,26 @@ AC_DEFINE_UNQUOTED(X11ConfigurePath,"X11ConfigurePath",Location of X11 configure
 # Find Posix threads library
 #
 LIB_THREAD=''
-have_threads=no
-if test "$with_threads" != 'no'
+if test "$with_threads" != 'no' && test "$have_threads" = 'yes'
 then
 
-  ACX_PTHREAD()
-  if test "$acx_pthread_ok" = yes
+  if test "x$PTHREAD_LIBS" = "x"
   then
-    have_threads=yes
-
-    DEF_THREAD="$PTHREAD_CFLAGS"
-    CFLAGS="$CFLAGS $DEF_THREAD"
-    CXXFLAGS="$CXXFLAGS $DEF_THREAD"
-
-    if test "x$PTHREAD_LIBS" = "x" ; then
-      case "${host_cpu}-${host_os}" in
-        *-freebsd*)
-           MAGICK_CHECK_PTHREAD_LIB(c_r,PTHREAD_LIBS=-lc_r) ;;
-      esac
-    fi
-
-    for lib in pthread pthreads
-    do
-      if test "x$PTHREAD_LIBS" = "x" ; then
-        MAGICK_CHECK_PTHREAD_LIB([$lib],[PTHREAD_LIBS=-l$lib])
-      fi
-    done
-
-    LIB_THREAD="$PTHREAD_LIBS"
-    LIBS="$LIBS $LIB_THREAD"
-
-    if test "$CC" != "$PTHREAD_CC"
-    then
-      AC_MSG_WARN([Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads.])
-      CC="$PTHREAD_CC"
-    fi
+    case "${host_cpu}-${host_os}" in
+      *-freebsd*)
+        MAGICK_CHECK_PTHREAD_LIB(c_r,PTHREAD_LIBS=-lc_r) ;;
+    esac
   fi
 
+  for lib in pthread pthreads
+  do
+    if test "x$PTHREAD_LIBS" = "x" ; then
+      MAGICK_CHECK_PTHREAD_LIB([$lib],[PTHREAD_LIBS=-l$lib])
+    fi
+  done
+
+  LIB_THREAD="$PTHREAD_LIBS"
+  LIBS="$LIBS $LIB_THREAD"
 fi
 AC_SUBST(LIB_THREAD)
 

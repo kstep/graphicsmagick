@@ -53,6 +53,27 @@
 </tr>
 </table>
 <p>
+2003-09-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Move multithread tests prior to libtool
+        configuration in case value of CC is changed.  Otherwise libtool
+        gets confused and refuses to run.
+  <LI> acinclude.m4 (ACX_PTHREAD): If using AIX CC 'xlc' use 'xlc_r'
+        for multithread compiler.<BR>
+  <LI> coders/jpeg.c: Undef HAVE_STDLIB_H before including the
+        jpeg headers or else we get an already defined error/warning.
+
+</UL>
+<p>
+2003-09-04  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick : Updated whole directory tree to achieve correct
+        compilation with Borland C++ Buider 6.0.
+
+</UL>
+<p>
 2003-09-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
