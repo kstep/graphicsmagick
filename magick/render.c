@@ -623,7 +623,7 @@ static void LogPolygonInfo(const PolygonInfo *polygon_info)
     LogMagickEvent(RenderEvent,"      direction: %s",
       p->direction ? "down" : "up");
     LogMagickEvent(RenderEvent,"      ghostline: %s",
-			p->ghostline ? "transparent" : "opaque");
+      p->ghostline ? "transparent" : "opaque");
     LogMagickEvent(RenderEvent,"       bounds: %g,%g - %g,%g",
       p->bounds.x1,p->bounds.y1,p->bounds.x2,p->bounds.y2);
     for (j=0; j < p->number_points; j++)
