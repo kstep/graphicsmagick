@@ -92,7 +92,6 @@ static void GMUsage(void)
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
-  Exit(0);
 }
 
 /*
@@ -127,9 +126,11 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
+    help_wanted,
     status;
 
   InitializeMagick(*argv);
+  help_wanted=False;
   ReadCommandlLine(argc,&argv);
   for (i=1; i < argc; i++)
   {
@@ -143,12 +144,31 @@ int main(int argc,char **argv)
         (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
         Exit(0);
       }
-    if (LocaleCompare("?",option+1) == 0)
-      GMUsage();
+    if (LocaleCompare("debug",option+1) == 0)
+      {
+        (void) SetLogEventMask("None");
+        if (*option == '-')
+          {
+            i++;
+            if (i == argc)
+               MagickFatalError(OptionFatalError,"MissingEventMask",option);
+            (void) SetLogEventMask(argv[i]);
+          }
+        break;
+      }
+    if (LocaleCompare("help",option+1) == 0 ||
+        LocaleCompare("?",option+1) == 0)
+      {
+        help_wanted=True;
+        GMUsage();
+      }
   }
 
   if (argc < 2)
-    GMUsage();
+    {
+      GMUsage();
+      Exit(0);
+    }
 
   argc--;
   argv++;
@@ -194,35 +214,47 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
 
-  if (LocaleCompare("version",option) == 0 ||
-      LocaleCompare("version",option+1) == 0)
+  if (LocaleCompare("composite",option) == 0 ||
+      LocaleCompare("composite",option+1) == 0)
     {
-      (void) fprintf(stdout,"Version: %.1024s\n",
-        GetMagickVersion((unsigned long *) NULL));
-      (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
-      Exit(0);
+      if (help_wanted)
+        CompositeUsage();
+      status=CompositeImageCommand(image_info,argc,argv,(char **) NULL,
+          &exception);
     }
-
-  else if (LocaleCompare("composite",option) == 0 ||
-      LocaleCompare("conmposite",option+1) == 0)
-    status=CompositeImageCommand(image_info,argc,argv,(char **) NULL,&exception);
 
   else if (LocaleCompare("convert",option) == 0 ||
       LocaleCompare("convert",option+1) == 0)
-    status=ConvertImageCommand(image_info,argc,argv,(char **) NULL,&exception);
+    {
+      if (help_wanted)
+        ConvertUsage();
+      status=ConvertImageCommand(image_info,argc,argv,(char **) NULL,
+          &exception);
+    }
 
   else if (LocaleCompare("mogrify",option) == 0 ||
       LocaleCompare("mogrify",option+1) == 0)
-    status=MogrifyImageCommand(image_info,argc,argv,(char **) NULL,
-      &exception);
+    {
+      if (help_wanted)
+        MogrifyUsage();
+      status=MogrifyImageCommand(image_info,argc,argv,(char **) NULL,
+        &exception);
+    }
 
   else if (LocaleCompare("montage",option) == 0 ||
       LocaleCompare("montage",option+1) == 0)
-    status=MontageImageCommand(image_info,argc,argv,(char **) NULL,&exception);
+    {
+      if (help_wanted)
+        MontageUsage();
+      status=MontageImageCommand(image_info,argc,argv,(char **) NULL,
+          &exception);
+    }
 
   else if (LocaleCompare("identify",option) == 0 ||
       LocaleCompare("identify",option+1) == 0)
     {
+      if (help_wanted)
+        IdentifyUsage();
       status=IdentifyImageCommand(image_info,argc,argv,&text,&exception);
       if (text != (char *) NULL)
         {

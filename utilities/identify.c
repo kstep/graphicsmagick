@@ -67,62 +67,6 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I d e n t i f y U s a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IdentifyUsage() displays the program command syntax.
-%
-%  The format of the IdentifyUsage method is:
-%
-%      void IdentifyUsage()
-%
-%
-*/
-static void IdentifyUsage(void)
-{
-  const char
-    **p;
-
-  static const char
-    *options[]=
-    {
-      "-authenticate value  decrypt image with this password",
-      "-debug events        display copious debugging information",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-format \"string\"   output formatted image characteristics",
-      "-help                print program options",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-limit type value    Disk, Map, or Memory resource limit",
-      "-log format          format of debugging information",
-      "-size geometry       width and height of image",
-      "-sampling-factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-verbose             print detailed information about the image",
-      "-version             print version information",
-      "-virtual-pixel method",
-      "                     Constant, Edge, Mirror, or Tile",
-      (char *) NULL
-    };
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
-    "file ... ]\n",SetClientName((char *) NULL));
-  (void) printf("\nWhere options include:\n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  Exit(0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %  M a i n                                                                    %
 %                                                                             %
 %                                                                             %
