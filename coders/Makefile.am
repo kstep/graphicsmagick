@@ -358,9 +358,9 @@ pwp_la_LDFLAGS      = -no-undefined -module -avoid-version
 pwp_la_LIBADD       = ../magick/libMagick.la
 
 # REGISTRY module
-registry_la_SOURCES      = registry.c
-registry_la_LDFLAGS      = -no-undefined -module -avoid-version
-registry_la_LIBADD       = ../magick/libMagick.la
+registry_la_SOURCES = registry.c
+registry_la_LDFLAGS = -no-undefined -module -avoid-version
+registry_la_LIBADD  = ../magick/libMagick.la
 
 # RGB module
 rgb_la_SOURCES      = rgb.c
