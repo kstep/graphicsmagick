@@ -1,5 +1,7 @@
 2002-04-10  Cristy  <cristy@mystic.es.dupont.com>
   * Fixed PingImage() memory leak (thanks to Timo Vogel).
+  * Added encoding and unicode attributes to PerlMagick (patch provided
+    by Youki Kadobayashi).
 
 2002-04-08  Cristy  <cristy@mystic.es.dupont.com>
   * Added reference counted blobs.
