@@ -547,10 +547,11 @@ static char *EscapeParenthesis(const char *text)
   register int
     i;
 
-  static char
-    buffer[MaxTextExtent];
+  char
+    *buffer;
 
   escapes=0;
+  buffer=AllocateString(text);
   p=buffer;
   for (i=0; i < Min((int) strlen(text),(MaxTextExtent-escapes-1)); i++)
   {
@@ -570,7 +571,8 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
 {
   char
     filename[MaxTextExtent],
-    geometry[MaxTextExtent];
+    geometry[MaxTextExtent],
+    *text;
 
   FILE
     *file;
@@ -650,10 +652,12 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",draw_info->affine.sx,
     -draw_info->affine.rx,-draw_info->affine.ry,
     draw_info->affine.sy);
+  text=EscapeParenthesis(draw_info->text);
   if (!identity)
     (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
-      EscapeParenthesis(draw_info->text));
-  (void) fprintf(file,"(%.1024s) show\n",EscapeParenthesis(draw_info->text));
+      text);
+  (void) fprintf(file,"(%.1024s) show\n",text);
+  LiberateMemory((void **) &text);
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   FormatString(geometry,"%dx%d+0+0!",(int) ceil(extent.x-0.5),
@@ -847,7 +851,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   } GlyphInfo;
 
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    font[MaxTextExtent];
 
   DrawInfo
     *clone_info;
@@ -860,6 +865,12 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 
   FT_Error
     status;
+
+  FT_Face
+    face;
+
+  FT_Library
+    library;
 
   FT_Matrix
     affine;
@@ -895,15 +906,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   SegmentInfo
     extent;
 
-  static char
-    font[MaxTextExtent];
-
-  static FT_Face
-    face = (FT_Face) NULL;
-
-  static FT_Library
-    library = (FT_Library) NULL;
-
   static FT_Outline_Funcs
     OutlineMethods =
     {
@@ -924,60 +926,54 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   /*
     Initialize Truetype library.
   */
-  if (library == (FT_Library) NULL)
-    {
-      status=FT_Init_FreeType(&library);
-      if (status)
-        ThrowBinaryException(DelegateWarning,"Unable to open freetype library",
-          draw_info->font);
-    }
-  if ((face == (FT_Face) NULL) || (LocaleCompare(draw_info->font,font) != 0))
-    {
-      register char
-        *p,
-        *q;
+  status=FT_Init_FreeType(&library);
+  if (status)
+    ThrowBinaryException(DelegateWarning,"Unable to open freetype library",
+      draw_info->font);
+  {
+    register char
+      *p,
+      *q;
 
-      /*
-        Search for Truetype font filename.
-      */
-      if (face != (FT_Face) NULL)
-        FT_Done_Face(face);
-      status=True;
-      p=getenv("TT_FONT_PATH");
+    /*
+      Search for Truetype font filename.
+    */
+    status=True;
+    p=getenv("TT_FONT_PATH");
 #if defined(TT_FONT_PATH)
-      if (p == (char *) NULL)
-        p=TT_FONT_PATH;
+    if (p == (char *) NULL)
+      p=TT_FONT_PATH;
 #endif
-      if (p != (char *) NULL)
-        for ( ; ; )
-        {
-          /*
-            Environment variable TT_FONT_PATH.
-          */
-          q=strchr(p,DirectoryListSeparator);
-          if (q == (char *) NULL)
-            (void) strcpy(filename,p);
-          else
-            {
-              (void) strncpy(filename,p,q-p);
-              filename[q-p]='\0';
-            }
-          i=strlen(filename);
-          if ((i > 0) && (filename[i-1] != *DirectorySeparator))
-            (void) strcat(filename,DirectorySeparator);
-          (void) strcat(filename,draw_info->font);
-          status=FT_New_Face(library,filename,0,&face);
-          if (!status || (q == (char *) NULL) || (*q == '\0'))
-            break;
-          p=q+1;
-        }
-      if (status)
-        status=FT_New_Face(library,draw_info->font,0,&face);
-      if (status)
-        ThrowBinaryException(DelegateWarning,"Unable to read font",
-          draw_info->font);
-      (void) strcpy(font,draw_info->font);
-    }
+    if (p != (char *) NULL)
+      for ( ; ; )
+      {
+        /*
+          Environment variable TT_FONT_PATH.
+        */
+        q=strchr(p,DirectoryListSeparator);
+        if (q == (char *) NULL)
+          (void) strcpy(filename,p);
+        else
+          {
+            (void) strncpy(filename,p,q-p);
+            filename[q-p]='\0';
+          }
+        i=strlen(filename);
+        if ((i > 0) && (filename[i-1] != *DirectorySeparator))
+          (void) strcat(filename,DirectorySeparator);
+        (void) strcat(filename,draw_info->font);
+        status=FT_New_Face(library,filename,0,&face);
+        if (!status || (q == (char *) NULL) || (*q == '\0'))
+          break;
+        p=q+1;
+      }
+    if (status)
+      status=FT_New_Face(library,draw_info->font,0,&face);
+    if (status)
+      ThrowBinaryException(DelegateWarning,"Unable to read font",
+        draw_info->font);
+    (void) strcpy(font,draw_info->font);
+  }
   /*
     Set text size.
   */
@@ -998,6 +994,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   unicode=ConvertTextToUnicode(draw_info->text,&length);
   if (unicode == (unsigned short *) NULL)
     {
+      FT_Done_Face(face);
       FT_Done_FreeType(library);
       ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
         "Memory allocation failed");
@@ -1156,6 +1153,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   */
   LiberateMemory((void **) &unicode);
   DestroyDrawInfo(clone_info);
+  FT_Done_Face(face);
+  FT_Done_FreeType(library);
   return(True);
 }
 #else
