@@ -29,6 +29,8 @@
 
 AUTOMAKE_OPTIONS = 1.6.2 no-dependencies foreign
 
+if WITH_MODULES
+
 if INSTALL_LTDL
 include_HEADERS = ltdl.h
 lib_LTLIBRARIES = libltdl.la
@@ -39,6 +41,8 @@ endif
 if CONVENIENCE_LTDL
 noinst_LTLIBRARIES = libltdlc.la
 endif
+
+endif # WITH_MODULES
 
 ## Make sure these will be cleaned even when they're not built by
 ## default.
