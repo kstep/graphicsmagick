@@ -245,6 +245,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   assert(exception != (ExceptionInfo *) NULL);
 
   path=AllocateString(filename);
+  search_path=AllocateString(path);
 
 #if defined(WIN32)
   {
@@ -295,7 +296,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   /*
     Search executable directory.
   */
-  search_path=AllocateString(path);
   FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
     DirectorySeparator,filename);
   if (IsAccessible(path))
