@@ -267,8 +267,9 @@ Export ViewInfo *OpenCacheView(Image *image)
     *view;
 
   assert(image != (Image *) NULL);
-  if ((image->cache == (Cache) NULL) ||
-      (image->class != GetCacheClassType(image->cache)))
+  if (image->cache == (Cache) NULL)
+    GetCacheInfo(&image->cache);
+  if (image->class != GetCacheClassType(image->cache))
     {
       /*
         Allocate pixel cache.
