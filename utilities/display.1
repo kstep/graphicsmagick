@@ -379,7 +379,7 @@ Use \fB+gamma\fP to set the image gamma level without actually adjusting
 the image pixels.  This option is useful if the image is of a known
 gamma but not set as an image attribute (e.g. PNG images).
 .TP
-.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
+.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{@}{!}{<}{>}\fP"
 preferred size and location of the image window.  See \fBX(1)\fP for details
 about the geometry specification.  By default, the window size is the image
 size and the location is chosen by you when it is mapped.
@@ -397,6 +397,8 @@ image size is multiplied by the width and height percentages to obtain
 the final image dimensions.  To increase the size of an image, use a
 value greater than 100 (e.g. 125%).  To decrease an image's size, use a
 percentage less than 100.
+
+Use \fB@\fP to specify the maximum area in pixels of an image.
 
 Use \fB>\fP to change the dimensions of the image \fIonly\fP
 if its size exceeds the geometry specification.  \fB<\fP resizes

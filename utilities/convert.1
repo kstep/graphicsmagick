@@ -790,7 +790,7 @@ gamma but not set as an image attribute (e.g. PNG images).
 blur the image with a Gaussian operator of the given radius and
 standard deviation (sigma).
 .TP
-.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
+.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{@}{!}{<}{>}\fP"
 preferred size or location of the image when encoding.
 
 By default, the width and height are maximum values.  That is, the
@@ -806,6 +806,8 @@ image size is multiplied by the width and height percentages to obtain
 the final image dimensions.  To increase the size of an image, use a
 value greater than 100 (e.g. 125%).  To decrease an image's size, use a
 percentage less than 100.
+
+Use \fB@\fP to specify the maximum area in pixels of an image.
 
 Use \fB>\fP to change the dimensions of the image \fIonly\fP
 if its size exceeds the geometry specification.  \fB<\fP resizes

@@ -517,7 +517,7 @@ Use \fB+gamma\fP to set the image gamma level without actually adjusting
 the image pixels.  This option is useful if the image is of a known
 gamma but not set as an image attribute (e.g. PNG images).
 .TP
-.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{!}{<}{>}\fP"
+.B "-geometry \fI<width>x<height>{\+-}<x offset>{\+-}<y offset>{%}{@}{!}{<}{>}\fP"
 preferred tile and border size of each tile of the composite image.
 
 By default, the width and height are maximum values.  That is, the
@@ -527,6 +527,8 @@ to the geometry to force the image size to exactly the size you
 specify.  For example, if you specify \fB640x480!\fP the image width is
 set to 640 pixels and height to 480.  If only one factor is
 specified, both the width and height assume the value.
+
+Use \fB@\fP to specify the maximum area in pixels of an image.
 
 Use \fB>\fP to change the dimensions of the image \fIonly\fP
 if its size exceeds the geometry specification.  \fB<\fP resizes
