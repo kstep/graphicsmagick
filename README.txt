@@ -666,25 +666,17 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   and test files that can be found in ImageMagick\Magick++\demo, and
   ImageMagick\Magick++\tests.
 
-  None of these programs are configured to be built in the default
-  workspace created by the configure program. You can have any of these
-  programs added to your build configuration by simply dragging them into
-  their corresponding folder from:
+  All of these programs are configured to be built in the default
+  workspace created by the configure program. You can feel free to pick
+  any of these as the basis for a new program by copying them to the
+  top level...
 
-    ImageMagick\Magick++\demo, or ImageMagick\Magick++\tests
+    ImageMagick\demo, ImageMagick\tests or ImageMagick\utilities
 
-  to:
-  
-    ImageMagick\demos, or ImageMagick\Magick++\tests
-
-  After running the configure program, you should see projects for all
+  folders, renaming then to something unique and re-running configure.
+  After re-running the configure program, you should see projects for all
   of the programs you have added which will now be part of the entire
-  build procedure.
-
-  You can also use this technique for your own development if you wish.
-  When creating a new application, simply grab one of the demo or test
-  programs that is close to what you wish to do, rename it, and drop
-  it into the demos or tests folder to get an appropriate project file.
+  build procedure. This technique works equally well for C API programs.
 
   NOTE #2:
 
