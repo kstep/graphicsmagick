@@ -350,7 +350,7 @@ UNIX/Cygwin COMPILATION
   To confirm your build of the ImageMagick distribution was successful,
   type:
 
-      display
+      ./utilities/display
 
   If the program faults, ensure that you have not inadvertently linked
   to an older version of the libMagick library or used header files
@@ -364,7 +364,7 @@ UNIX/Cygwin COMPILATION
 
   If the image colors are not correct use this command:
 
-      display -visual default
+      ./utilities/display -visual default
 
   Be sure to read the manual pages for the display(1), animate(1),
   montage(1), import(1), mogrify(1), identify(1), combine(1), and
