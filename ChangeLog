@@ -1,5 +1,17 @@
 2003-08-06  William Radcliffe  <billr@corbis.com>
 
+	*  contrib\win32\ATL7\ImageMagickObject/ImageMagickObject.cpp, 
+	ImageMagickObject_.h, ImageMagickObject.def, ImageMagickObject.rc
+	gm.rc: Changes to get things compiling again since all windows
+	specific logging support has been eliminated. The special build
+	script BuildImageMagickObject.cmd now compiles the message file
+	for resource based messages. The result is in gm_messages.bin.
+	The script also generates a special version of gm.exe that uses
+	the COM dll as a regular DLL and links to it. This is the long
+	desired Moby DLL build idea.
+
+2003-08-06  William Radcliffe  <billr@corbis.com>
+
 	* magick/error.c, magick/error.h, magick/log.c, magick/log.h:
 	Upgrade of logging system to take over previous special logging
 	code for windows in nt_base.c. The new logic provides logging
