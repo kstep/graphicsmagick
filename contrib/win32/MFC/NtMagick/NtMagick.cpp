@@ -77,7 +77,7 @@ BOOL CNtMagickApp::InitInstance()
                 RUNTIME_CLASS(CNtMagickView));
         AddDocTemplate(pDocTemplate);
 
-        MagickLib::InitializeMagick(__targv[0]);
+        MagickLib::InitializeMagick("C:\\ImageMagickStudio\\ImageMagick\\VisualMagick\\bin\\" /*__targv[0]*/);
 
         // Parse command line for standard shell commands, DDE, file open
         CCommandLineInfo cmdInfo;
