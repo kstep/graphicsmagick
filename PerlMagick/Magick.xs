@@ -6347,9 +6347,7 @@ QueryColor(ref,...)
                 PUSHs(sv_2mortal(newSVpv(p->name,0)));
             }
           }
-        SvREFCNT_dec(error_list);
-        error_list=NULL;
-        return;
+        goto MethodException;
       }
     EXTEND(sp,4*items);
     for (i=1; i < items; i++)
@@ -6369,6 +6367,8 @@ QueryColor(ref,...)
       FormatString(message,"%u",color.opacity);
       PUSHs(sv_2mortal(newSVpv(message,0)));
     }
+
+  MethodException:
     SvREFCNT_dec(error_list);
     error_list=NULL;
   }
@@ -6487,9 +6487,7 @@ QueryFont(ref,...)
                 PUSHs(sv_2mortal(newSVpv(p->name,0)));
             }
           }
-        SvREFCNT_dec(error_list);
-        error_list=NULL;
-        return;
+        goto MethodException;
       }
     EXTEND(sp,8*items);
     for (i=1; i < items; i++)
@@ -6534,6 +6532,8 @@ QueryFont(ref,...)
       else
         PUSHs(sv_2mortal(newSVpv(font_info->version,0)));
     }
+
+  MethodException:
     SvREFCNT_dec(error_list);
     error_list=NULL;
   }
@@ -6787,10 +6787,10 @@ QueryFontMetrics(ref,...)
 #
 #
 void
-QueryMagick(ref,...)
+QueryFormat(ref,...)
   Image::Magick ref=NO_INIT
   ALIAS:
-    querymagick = 1
+    queryformat = 1
   PPCODE:
   {
     char
@@ -6833,9 +6833,7 @@ QueryMagick(ref,...)
                 PUSHs(sv_2mortal(newSVpv(p->name,0)));
             }
           }
-        SvREFCNT_dec(error_list);
-        error_list=NULL;
-        return;
+        goto MethodException;
       }
     EXTEND(sp,8*items);
     for (i=1; i < items; i++)
@@ -6861,6 +6859,8 @@ QueryMagick(ref,...)
       else
         PUSHs(sv_2mortal(newSVpv(magick_info->module,0)));
     }
+
+  MethodException:
     SvREFCNT_dec(error_list);
     error_list=NULL;
   }
