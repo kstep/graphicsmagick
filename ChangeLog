@@ -1,3 +1,10 @@
+2003-10-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+        * Revised ScaleColor5to8 and ScaleColor6to8 macros to fill in
+	the low bytes.
+	* coders/bmp.c (ReadBMPImage): scaling of 5-5-5-bit, 5-6-5-bit
+	and 8-8-8-8-bit images was slightly incorrect.
+
 2003-10-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/log.c (LogToBlob): Since MagickSeek(file,0,SEEK_END) is
