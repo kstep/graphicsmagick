@@ -275,8 +275,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case RollPreview:
       {
-        x+=preview_image->columns/(NumberTiles-1);
-        y+=preview_image->rows/(NumberTiles-1);
+        x=((i+1)*preview_image->columns)/NumberTiles;
+        y=((i+1)*preview_image->rows)/NumberTiles;
         FormatString(factor,"%+ld%+ld",x,y);
         FormatString(label,"roll %.1024s",factor);
         commands[argc++]=(char *) "-roll";
