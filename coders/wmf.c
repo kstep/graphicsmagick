@@ -16,7 +16,7 @@
 %                              Software Design                                %
 %                              Bob Friesenhahn                                %
 %                            Dec 2000 - May 2001                              %
-%                            Oct 2001 - Feb 2002                              %
+%                            Oct 2001 - Mar 2002                              %
 %                                                                             %
 %                           Port to libwmf 0.2 API                            %
 %                            Francis J. Franklin                              %
@@ -237,62 +237,6 @@ static void         util_render_mvg(wmfAPI * API);
 static void         util_set_brush(wmfAPI * API, wmfDC * dc);
 static void         util_set_pen(wmfAPI * API, wmfDC * dc);
 
-static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
-{
-  if (!TO_FILL(rop_draw))
-    return;
-
-  /* Save graphic context */
-  util_context_push(API);
-
-  /* FIXME: finish implementing (once we know what it is supposed to do!)*/
-
-  util_set_brush(API, rop_draw->dc);
-
-  switch (rop_draw->ROP) /* Ternary raster operations */
-    {
-    case SRCCOPY: /* dest = source */
-      break;
-    case SRCPAINT: /* dest = source OR dest */
-      break;
-    case SRCAND: /* dest = source AND dest */
-      break;
-    case SRCINVERT: /* dest = source XOR dest */
-      break;
-    case SRCERASE: /* dest = source AND (NOT dest) */
-      break;
-    case NOTSRCCOPY: /* dest = (NOT source) */
-      break;
-    case NOTSRCERASE: /* dest = (NOT src) AND (NOT dest) */
-      break;
-    case MERGECOPY: /* dest = (source AND pattern) */
-      break;
-    case MERGEPAINT: /* dest = (NOT source) OR dest */
-      break;
-    case PATCOPY: /* dest = pattern */
-      break;
-    case PATPAINT: /* dest = DPSnoo */
-      break;
-    case PATINVERT: /* dest = pattern XOR dest */
-      break;
-    case DSTINVERT: /* dest = (NOT dest) */
-      break;
-    case BLACKNESS: /* dest = BLACK */
-      break;
-    case WHITENESS: /* dest = WHITE */
-      break;
-    default:
-      break;
-    }
-
-  util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                    XC(rop_draw->TL.x), YC(rop_draw->TL.y),
-                    XC(rop_draw->BR.x), YC(rop_draw->BR.y));
-
-  /* Restore graphic context */
-  util_context_pop(API);
-}
-
 static void util_clip_pop( wmfAPI* API )
 {
   wmf_magick_t
@@ -414,6 +358,77 @@ static const Image* util_registry_get(wmfAPI * API, const long id,
     type;
 
   return (const Image*)GetMagickRegistry(id,&type,&length,exception);
+}
+
+static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
+{
+  if (!TO_FILL(rop_draw))
+    return;
+
+  /* Save graphic context */
+  util_context_push(API);
+
+  /* FIXME: finish implementing (once we know what it is supposed to do!)*/
+
+  util_set_brush(API, rop_draw->dc);
+
+  switch (rop_draw->ROP) /* Ternary raster operations */
+    {
+    case SRCCOPY: /* dest = source */
+      printf("ipa_rop_draw SRCCOPY ROP mode not implemented\n");
+      break;
+    case SRCPAINT: /* dest = source OR dest */
+      printf("ipa_rop_draw SRCPAINT ROP mode not implemented\n");
+      break;
+    case SRCAND: /* dest = source AND dest */
+      printf("ipa_rop_draw SRCAND ROP mode not implemented\n");
+      break;
+    case SRCINVERT: /* dest = source XOR dest */
+      printf("ipa_rop_draw SRCINVERT ROP mode not implemented\n");
+      break;
+    case SRCERASE: /* dest = source AND (NOT dest) */
+      printf("ipa_rop_draw SRCERASE ROP mode not implemented\n");
+      break;
+    case NOTSRCCOPY: /* dest = (NOT source) */
+      printf("ipa_rop_draw NOTSRCCOPY ROP mode not implemented\n");
+      break;
+    case NOTSRCERASE: /* dest = (NOT src) AND (NOT dest) */
+      printf("ipa_rop_draw NOTSRCERASE ROP mode not implemented\n");
+      break;
+    case MERGECOPY: /* dest = (source AND pattern) */
+      printf("ipa_rop_draw MERGECOPY ROP mode not implemented\n");
+      break;
+    case MERGEPAINT: /* dest = (NOT source) OR dest */
+      printf("ipa_rop_draw MERGEPAINT ROP mode not implemented\n");
+      break;
+    case PATCOPY: /* dest = pattern */
+      printf("ipa_rop_draw PATCOPY ROP mode not implemented\n");
+      break;
+    case PATPAINT: /* dest = DPSnoo */
+      printf("ipa_rop_draw PATPAINT ROP mode not implemented\n");
+      break;
+    case PATINVERT: /* dest = pattern XOR dest */
+      printf("ipa_rop_draw PATINVERT ROP mode not implemented\n");
+      break;
+    case DSTINVERT: /* dest = (NOT dest) */
+      printf("ipa_rop_draw DSTINVERT ROP mode not implemented\n");
+      break;
+    case BLACKNESS: /* dest = BLACK */
+      printf("ipa_rop_draw BLACKNESS ROP mode not implemented\n");
+      break;
+    case WHITENESS: /* dest = WHITE */
+      printf("ipa_rop_draw WHITENESS ROP mode not implemented\n");
+      break;
+    default:
+      break;
+    }
+
+  util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                    XC(rop_draw->TL.x), YC(rop_draw->TL.y),
+                    XC(rop_draw->BR.x), YC(rop_draw->BR.y));
+
+  /* Restore graphic context */
+  util_context_pop(API);
 }
 
 static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
@@ -629,7 +644,7 @@ static void ipa_device_begin(wmfAPI * API)
   util_append_mvg(API, "viewbox 0 0 %u %u\n", ddata->image->columns,
         ddata->image->rows);
 
-  util_append_mvg(API, "#Created by ImageMagick %s http://www.imagemagick.org\n",
+  util_append_mvg(API, "#Created by ImageMagick %s (http://www.imagemagick.org/)\n",
                     MagickLibVersionText);
 
   /* Scale width and height to image */
@@ -1030,6 +1045,8 @@ static void ipa_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
 
   /* FIXME: rectangle outine is supposed to be drawn with brush, not
      pen! */
+
+  printf("ipa_region_frame not properly implemented\n");
 
   if (TO_FILL(poly_rect) || TO_DRAW(poly_rect))
     {
@@ -1663,35 +1680,48 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
                 mode = "Copy";
                 break;
               case SRCPAINT:  /* dest = source OR dest */
+                printf("util_set_brush SRCPAINT ROP mode not supported!\n");
                 break;
               case SRCAND:  /* dest = source AND dest */
+                printf("util_set_brush SRCAND ROP mode not supported!\n");
                 break;
               case SRCINVERT:  /* dest = source XOR dest */
                 mode = "Xor";
                 break;
               case SRCERASE:  /* dest = source AND (NOT dest) */
+                printf("util_set_brush SRCERASE ROP mode not supported!\n");
                 break;
               case NOTSRCCOPY:  /* dest = (NOT source) */
                 /*                 NegateImage(image, False); */
                 /* mode = "Copy"; */
+                printf("util_set_brush NOTSRCCOPY ROP mode not supported!\n");
                 break;
               case NOTSRCERASE:  /* dest = (NOT source) AND (NOT dest) */
+                printf("util_set_brush NOTSRCERASE ROP mode not supported!\n");
                 break;
               case MERGECOPY:  /* dest = (source AND pattern) */
+                printf("util_set_brush MERGECOPY ROP mode not supported!\n");
                 break;
               case MERGEPAINT:  /* dest = (NOT source) OR dest */
+                printf("util_set_brush MERGEPAINT ROP mode not supported!\n");
                 break;
               case PATCOPY:  /* dest = pattern */
+                printf("util_set_brush PATCOPY ROP mode not supported!\n");
                 break;
               case PATPAINT:  /* dest = DPSnoo */
+                printf("util_set_brush PATPAINT ROP mode not supported!\n");
                 break;
               case PATINVERT:  /* dest = pattern XOR dest */
+                printf("util_set_brush PATINVERT ROP mode not supported!\n");
                 break;
               case DSTINVERT:  /* dest = (NOT dest) */
+                printf("util_set_brush DSTINVERT ROP mode not supported!\n");
                 break;
               case BLACKNESS:  /* dest = BLACK bits */
+                printf("util_set_brush BLACKNESS ROP mode not supported!\n");
                 break;
               case WHITENESS:  /* dest = WHITE bits */
+                printf("util_set_brush WHITENESS ROP mode not supported!\n");
                 break;
               default:
                 {
@@ -1774,7 +1804,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
 
   /* Don't allow pen_width to be much less than pixel_width in order
      to avoid dissapearing or spider-web lines */
-   pen_width = Max(pen_width, pixel_width*0.7);
+   pen_width = Max(pen_width, pixel_width*0.8);
 
   pen_style = (unsigned int) WMF_PEN_STYLE(pen);
   pen_endcap = (unsigned int) WMF_PEN_ENDCAP(pen);
@@ -2301,7 +2331,7 @@ static int util_append_mvg(wmfAPI * API, char *format, ...)
         long
           i;
 
-        for( i=0; i< ddata->push_depth; i++)
+        for( i=ddata->push_depth; i; i--)
           {
             *(ddata->mvg+ddata->mvg_length)=' ';
             ++ddata->mvg_length;
