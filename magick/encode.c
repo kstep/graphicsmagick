@@ -3386,7 +3386,9 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         jpeg_info.input_components=1;
         jpeg_info.in_color_space=JCS_GRAYSCALE;
       }
-  if (image_info->colorspace == CMYKColorspace)
+  if (((image_info->colorspace == UndefinedColorspace) &&
+       (image->colorspace == CMYKColorspace)) ||
+       (image_info->colorspace == CMYKColorspace))
     {
       jpeg_info.input_components=4;
       jpeg_info.in_color_space=JCS_CMYK;
@@ -11402,7 +11404,9 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       compress_tag=COMPRESSION_PACKBITS;
     if (compression == ZipCompression)
       compress_tag=COMPRESSION_DEFLATE;
-    if (image_info->colorspace == CMYKColorspace)
+    if (((image_info->colorspace == UndefinedColorspace) &&
+         (image->colorspace == CMYKColorspace)) ||
+         (image_info->colorspace == CMYKColorspace))
       {
         photometric=PHOTOMETRIC_SEPARATED;
         TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,4);

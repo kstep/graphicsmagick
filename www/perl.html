@@ -259,20 +259,20 @@ images of a sequence.  The next example illustrates how this is done:
       undef $image-&gt;[x] if $image-&gt;[x]-&gt;Get('columns') &lt; 100;
     }
     $p = $image-&gt;[1];
-    $p-&gt;Draw(pen=&gt;'red', primitive=&gt;'rectangle', points=&gt;20, 20 100, 100');
+    $p-&gt;Draw(pen=&gt;'red', primitive=&gt;'rectangle', points=&gt;20,20 100,100');
     $q = $p-&gt;Montage();
     undef $image;
     $q-&gt;Write('x.miff');
 </pre>
 <p>
-Suppose you want to start out with a 100 by 100 pixel black canvas with
+Suppose you want to start out with a 100 by 100 pixel white canvas with
 a red pixel in the center.  Try
 <p>
 <pre>
     $image = Image::Magick-&gt;new;
     $image-&gt;Set(size=&gt;'100x100');
     $image-&gt;ReadImage('xc:white');
-    $image-&gt;Set('pixel[49, 49]'=&gt;'red');
+    $image-&gt;Set('pixel[49,49]'=&gt;'red');
 </pre>
 <p>
 Or suppose you want to convert your color image to grayscale:
@@ -797,7 +797,7 @@ For example,
 <p>
 <pre>
    $image-&gt;Draw(pen=&gt;'red', primitive=&gt;'rectangle', 
-     points=&gt;'20, 20 100, 100  40, 40 200, 200  60, 60 300, 300');
+     points=&gt;'20,20 100,100  40,40 200,200  60,60 300,300');
 </pre>
 <p>
 Is eqivalent to

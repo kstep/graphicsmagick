@@ -663,6 +663,9 @@ typedef struct _Image
   unsigned int
     colors;
 
+  ColorspaceType
+    colorspace;
+
   RenderingIntent
     rendering_intent;
 

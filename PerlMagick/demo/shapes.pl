@@ -19,7 +19,8 @@ $image->Draw(pen=>'red',primitive=>'FillEllipse',
 $image->Draw(pen=>'black',primitive=>'Ellipse',
   points=>'100,100 100,150 0,360',linewidth=>5);
 $image->Draw(pen=>'black',primitive=>'Polygon',
-  points=>'30,30 100,10 190,290 30,290',linewidth=>5);
+  points=>'30,30 100,10 190,290 30,290 30,30',linewidth=>5);
+$image->Set(fuzz=>40);
 $image->ColorFloodfill(geometry=>'+132+62',pen=>'blue');
 $image->Annotate(pen=>'red',geometry=>'+150+10',font=>'@Generic.ttf',
   pointsize=>12,text=>'Hello world!');

@@ -5400,11 +5400,30 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
       ProgressMonitor(LoadImageText,y,image->rows);
   }
   SetRunlengthPackets(image,packets);
-  if (jpeg_info.out_color_space == JCS_CMYK)
-    TransformRGBImage(image,CMYKColorspace);
+  if (jpeg_info.out_color_space != JCS_CMYK)
+    {
+      if (image->class == PseudoClass)
+        SyncImage(image);
+    }
   else
-    if (image->class == PseudoClass)
-      SyncImage(image);
+    {
+      /*
+        Convert CMYK to RGB.
+      */
+      if (jpeg_info.saw_Adobe_marker)
+        {
+          q=image->pixels;
+          for (i=0; i < (int) image->packets; i++)
+          {
+            q->red=MaxRGB-q->red;
+            q->green=MaxRGB-q->green;
+            q->blue=MaxRGB-q->blue;
+            q->index=MaxRGB-q->index;
+            q++;
+          }
+        }
+      TransformRGBImage(image,CMYKColorspace);
+    }
   /*
     Free jpeg resources..
   */
@@ -10089,11 +10108,11 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
             length=p-image->comments;
           }
         else
-	  {
+          {
             length=MaxTextExtent;
             image->comments=(char *) AllocateMemory(length*sizeof(char));
             p=image->comments;
-	  }
+          }
         q=p;
         if (image->comments != (char *) NULL)
           for ( ; (c != EOF) && (c != '\n'); p++)
@@ -14165,6 +14184,8 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
     TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value);
     TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
     TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
+    if (photometric == PHOTOMETRIC_SEPARATED)
+      image->colorspace=CMYKColorspace;
     TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
     TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
     TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&image->x_resolution);

@@ -140,6 +140,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->directory=(char *) NULL;
   allocated_image->colormap=(ColorPacket *) NULL;
   allocated_image->colors=0;
+  allocated_image->colorspace=RGBColorspace;
   allocated_image->rendering_intent=UndefinedIntent;
   allocated_image->gamma=0.0;
   allocated_image->chromaticity.red_primary.x=0.0;
@@ -3163,6 +3164,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     case PaletteType: (void) fprintf(file,"palette"); break;
     case TrueColorType: (void) fprintf(file,"true color"); break;
     case MatteType: (void) fprintf(file,"true color with transparency"); break;
+    case ColorSeparationType: (void) fprintf(file,"color separated"); break;
     default: (void) fprintf(file,"undefined"); break;
   }
   (void) fprintf(file,"\n");
@@ -5292,7 +5294,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->fuzz=0;
   image_info->quality=atoi(DefaultImageQuality);
   image_info->verbose=False;
-  image_info->colorspace=RGBColorspace;
+  image_info->colorspace=UndefinedColorspace;
   image_info->compression=UndefinedCompression;
   image_info->interlace=DefaultInterlace;
   image_info->units=UndefinedResolution;
@@ -5339,8 +5341,7 @@ Export void GetImageInfo(ImageInfo *image_info)
 Export ImageType GetImageType(const ImageInfo *image_info,Image *image)
 {
   assert(image != (Image *) NULL);
-  if ((image_info != (ImageInfo *) NULL) &&
-      (image_info->colorspace == CMYKColorspace))
+  if (image->colorspace == CMYKColorspace)
     return(ColorSeparationType);
   if (IsMonochromeImage(image))
     return(BilevelType);
@@ -11861,6 +11862,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       /*
         Transform image from CMYK to RGB.
       */
+      image->colorspace=CMYKColorspace;
       p=image->pixels;
       for (i=0; i < (int) image->packets; i++)
       {
