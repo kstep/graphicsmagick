@@ -1,44 +1,31 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.3.8.  Version 5.3.8 is a bug-fix release to resolve bugs
-reported against 5.3.7.
+ImageMagick 5.3.9.  Version 5.3.9 is a bug-fix release to resolve bugs
+reported against 5.3.8.
 
-ImageMagick is a robust collection of tools and libraries to read, write,
-and manipulate an image in many image formats (over 71 major formats)
-including popular formats like FlashPIX, GIF, JPEG, PDF, PNG, Photo CD,
-SVG, TIFF, and WMF.  With ImageMagick you can create images dynamically,
-making it suitable for Web applications.  You can also resize, rotate,
-sharpen, color reduce, or add special effects to an image and save your
-completed work in the same or differing image format.  Image processing
-operations are available from the command line, as well as through C,
-C++, and PERL-based programming interfaces.
+ImageMagick is a robust collection of tools and libraries to read,
+write, and manipulate an image in many image formats (over 71 major
+formats) including popular formats like FlashPIX, GIF, JPEG, PDF, PNG,
+Photo CD, SVG, TIFF, and WMF.  With ImageMagick you can create images
+dynamically, making it suitable for Web applications.  You can also
+resize, rotate, sharpen, color reduce, or add special effects to an
+image and save your completed work in the same or differing image
+format.  Image processing operations are available from the command
+line, as well as through C, C++, and PERL-based programming
+interfaces.
 
-ImageMagick is copyrighted by ImageMagick Studio, a nonprofit organization
-dedicated to making software imaging solutions freely available.
-ImageMagick is available for free, may be used to support both open and
-proprietary applications, and may be redistributed without fee.
-
-Changes from last release:
-
-   o Many bugs fixed which were reported via the ImageMagick bug
-     tracking system, or via the mailing lists.
-
-   o C API support (SetImageClipMask) added for registering a
-     clipping mask image.  Masked areas of the image (corresponding to
-     transparent pixels in the clipping mask) are not modified by image
-     processing or drawing operations.
-
-   o C API support added to support Image reference counting.
-
-   o The image signature algorithm has been upgraded from MD5 to the
-     NIST SHA-256 algorithm.
+ImageMagick is copyrighted by ImageMagick Studio, a nonprofit
+organization dedicated to making software imaging solutions freely
+available.  ImageMagick is available for free, may be used to support
+both open and proprietary applications, and may be redistributed
+without fee.
 
 The ImageMagick WWW page is
 
    http://www.imagemagick.org/
  
-ImageMagick 5.3.8 is available via ftp as
+ImageMagick 5.3.9 is available via ftp as
 
-   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.8.tar.gz
+   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.9.tar.gz
 
 If ftp.imagemagick.org is overloaded (very likely), check the list of
 mirrors at http://www.imagemagick.org/www/archives.html for other
@@ -47,18 +34,18 @@ mirrors.
 ImageMagick is developed by the members of the ImageMagick Studio
 team:
 
-John Cristy           - Principal designer and author.
+John Cristy           - Principal designer and author
 Bob Friesenhahn       - Magick++, Unix modules, magic, configure, CVS,
                         tests, bug tracking, WMF.
 William Radcliffe     - VisualMagick, FlashPix, TIFF, timers, watermarking,
                         Windows modules, fast polygon renderer.
-Glenn Randers-Pehrson - PNG, MNG, and test script improvements.
-Leonard Rosenthol     - Mac support.  Drawing enhancements.
+Glenn Randers-Pehrson - PNG, MNG, and test script improvements
+Leonard Rosenthol     - Mac support. Drawing enhancements.
 
 We would like to give special thanks to several people who assist with
 ImageMagick:
 
-Alexander Zimmermann  - Builds the Linux distributions.
+Alexander Zimmermann  - Builds the Linux distributions
 Jaroslav Fojtik       - Has contributed several coder modules.
 
 There are many other individual contributors, some of whom made

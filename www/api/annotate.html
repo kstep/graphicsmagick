@@ -37,7 +37,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>unsigned int  <STRONG>AnnotateImage</STRONG>( Image *image, DrawInfo *draw_info );</P>
-<P>unsigned int  <STRONG>GetTypeMetrics</STRONG>( Image *image, const DrawInfo *draw_info, TypeMetric metrics );</P>
+<P>unsigned int  <STRONG>GetTypeMetrics</STRONG>( Image *image, const DrawInfo *draw_info, TypeMetric *metrics );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -71,7 +71,7 @@ The draw info.
 character width, expressed in integer pixels o character height, expressed in integer pixels o ascent, expressed in 26.6 fixed point pixels o descent, expressed in 26.6 fixed point pixels o text width, expressed in 26.6 fixed point pixels o text height, expressed in 26.6 fixed point pixels o maximum horizontal advance, expressed in 26.6 fixed point pixels
 <P></P></DL></DL>
 <P>The format of the GetTypeMetrics method is:</P>
-<blockquote>unsigned int GetTypeMetrics ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, TypeMetric metrics ); </blockquote><P>
+<blockquote>unsigned int GetTypeMetrics ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, TypeMetric *metrics ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>
@@ -88,7 +88,7 @@ The draw info.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_metrics%3A">metrics:</A></STRONG><BR>
 <DD>
-Method GetTypeMetrics returns the font metrics.
+Updated with font metrics.
 </DL></DL>
 
 </BODY>

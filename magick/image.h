@@ -696,7 +696,7 @@ extern MagickExport ImageType
   GetImageType(Image *);
 
 extern MagickExport IndexPacket
-  *(*GetIndexes)(const Image *),
+  *GetIndexes(const Image *),
   ValidateColormapIndex(Image *,const int);
 
 extern MagickExport int
@@ -712,12 +712,12 @@ extern MagickExport MontageInfo
   *CloneMontageInfo(const ImageInfo *,const MontageInfo *);
 
 extern MagickExport PixelPacket
-  *(*GetImagePixels)
-    (Image *,const int,const int,const unsigned int,const unsigned int),
-  (*GetOnePixel)(Image *,const int,const int),
-  *(*GetPixels)(const Image *),
-  *(*SetImagePixels)
-    (Image *,const int,const int,const unsigned int,const unsigned int);
+  *GetImagePixels(Image *,const int,const int,const unsigned int,
+    const unsigned int),
+  GetOnePixel(Image *,const int,const int),
+  *GetPixels(const Image *),
+  *SetImagePixels(Image *,const int,const int,const unsigned int,
+    const unsigned int);
 
 extern MagickExport RectangleInfo
   GetImageBoundingBox(Image *);
@@ -770,7 +770,7 @@ extern MagickExport unsigned int
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SignatureImage(Image *),
   SortColormapByIntensity(Image *),
-  (*SyncImagePixels)(Image *),
+  SyncImagePixels(Image *),
   ThresholdImage(Image *,const double),
   TransformRGBImage(Image *,const ColorspaceType),
   TransmitImage(Image *,ImageInfo *,const TransmitType,void *,void *),
@@ -782,7 +782,7 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),
-  (*CloseImagePixels)(Image *),
+  CloseImagePixels(Image *),
   CompressColormap(Image *),
   CycleColormapImage(Image *,const int),
   DescribeImage(Image *,FILE *,const unsigned int),
@@ -790,7 +790,7 @@ extern MagickExport void
   DestroyConstitute(void),
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
-  (*DestroyImagePixels)(Image *),
+  DestroyImagePixels(Image *),
   DestroyImages(Image *),
   DestroyMagick(void),
   DestroyMagickInfo(void),

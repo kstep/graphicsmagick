@@ -37,12 +37,12 @@ Unix/Linux/Cygwin Install:
 
   Download
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.8.tar.gz
+      ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.9.tar.gz
 
   and type
 
-      gunzip -c ImageMagick-5.3.8.tar.gz | tar xvf -
-      cd ImageMagick-5.3.8
+      gunzip -c ImageMagick-5.3.9.tar.gz | tar xvf -
+      cd ImageMagick-5.3.9
       ./configure -prefix=/usr/local
       make
       make install
@@ -80,7 +80,7 @@ Win2K, WinME, NT, Win98, Win95 Install:
 
   Alternatively, download the ImageMagick NT source
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/win2k/ImageMagick-5.3.8.zip
+      ftp://ftp.imagemagick.org/pub/ImageMagick/win2k/ImageMagick-5.3.9.zip
 
   and read README.txt for detailed instructions on compiling the ImageMagick
   source as well as additional details on ways to tell ImageMagick how to
@@ -94,7 +94,7 @@ MAC Install:
       ftp://ftp.imagemagick.org/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
 
   and double click on it to extract the distribution.   Move to the
-  ImageMagick-5.3.8 directory and double click on the identify program
+  ImageMagick-5.3.9 directory and double click on the identify program
   icon.  Next, type
 
       -verbose logo:
@@ -103,7 +103,7 @@ MAC Install:
 
   Alternatively, download the ImageMagick MAC source
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/mac/ImageMagick-5.3.8.sit.hqx
+      ftp://ftp.imagemagick.org/pub/ImageMagick/mac/ImageMagick-5.3.9.sit.hqx
 
   and double click on the Make AppleScript script to build from the source.
 
@@ -112,7 +112,7 @@ VMS Install:
 
   Type
 
-      unzip ImageMagick-5.3.8.zip
+      unzip ImageMagick-5.3.9.zip
       set default [.imagemagick]
       @make
       identify -verbose logo:

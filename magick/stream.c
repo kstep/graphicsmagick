@@ -362,33 +362,22 @@ MagickExport unsigned int ReadStream(const ImageInfo *image_info,
     *clone_info;
 
   /*
-    Replace image pixel methods with streaming methods.
+    Stream image pixels.
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  CloseImagePixels=ClosePixelStream;
-  DestroyImagePixels=DestroyPixelStream;
-  GetImagePixels=GetPixelStream;
-  GetIndexes=GetIndexesFromStream;
-  GetOnePixel=GetOnePixelFromStream;
-  GetPixels=GetPixelsFromStream;
-  SetImagePixels=SetPixelStream;
-  SyncImagePixels=SyncPixelStream;
-  /*
-    Stream image pixels.
-  */
+  SetPixelCacheMethods(GetPixelStream,SetPixelStream,SyncPixelStream,
+    GetPixelsFromStream,GetIndexesFromStream,GetOnePixelFromStream,
+    ClosePixelStream,DestroyPixelStream);
   clone_info=CloneImageInfo(image_info);
   clone_info->fifo=fifo;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   if (image != (Image *) NULL)
     DestroyImage(image);
-  /*
-    Restore pixel cache methods.
-  */
-  SetPixelCacheMethods();
+  ResetPixelCacheMethods();
   return(exception->severity == UndefinedException);
 }
 

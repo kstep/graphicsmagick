@@ -96,25 +96,31 @@ static void
   DestroyPixelCache(Image *);
 
 /*
-  Initialize the image pixel methods.
+  Preload the image pixel methods.
 */
-MagickExport IndexPacket
-  *(*GetIndexes)(const Image *) = GetIndexesFromCache;
+static ClosePixelHandler
+  close_pixel_handler = ClosePixelCache;
 
-MagickExport PixelPacket
-  *(*GetImagePixels)(Image *,const int,const int,const unsigned int,
-    const unsigned int) = GetPixelCache,
-  (*GetOnePixel)(Image *,const int,const int) = GetOnePixelFromCache,
-  *(*GetPixels)(const Image *) = GetPixelsFromCache,
-  *(*SetImagePixels)(Image *,const int,const int,const unsigned int,
-    const unsigned int) = SetPixelCache;
+static DestroyPixelHandler
+  destroy_pixel_handler = DestroyPixelCache;
 
-MagickExport unsigned int
-  (*SyncImagePixels)(Image *) = SyncPixelCache;
+static GetIndexesFromHandler
+  get_indexes_from_handler = GetIndexesFromCache;
 
-MagickExport void
-  (*CloseImagePixels)(Image *) = ClosePixelCache,
-  (*DestroyImagePixels)(Image *) = DestroyPixelCache;
+static GetOnePixelFromHandler
+  get_one_pixel_from_handler = GetOnePixelFromCache;
+
+static GetPixelHandler
+  get_pixel_handler = GetPixelCache;
+
+static GetPixelsFromHandler
+  get_pixels_from_handler = GetPixelsFromCache;
+
+static SetPixelHandler
+  set_pixel_handler = SetPixelCache;
+
+static SyncPixelHandler
+  sync_pixel_handler = SyncPixelCache;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -150,6 +156,38 @@ static void CloseCache(Cache cache)
   if (cache_info->file != -1)
     (void) close(cache_info->file);
   cache_info->file=(-1);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C l o s e I m a g e P i x e l s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloseImagePixels closes the pixel cache.  Use this method to prevent
+%  too many file descriptors from being allocated when reading an image
+%  sequence.  File descriptors are only used for a disk-based cache.  This is
+%  essentially a no-op for a memory-based cache.
+%
+%  The format of the CloseImagePixels method is:
+%
+%      void CloseImagePixels(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport void CloseImagePixels(Image *image)
+{
+  if (close_pixel_handler != (ClosePixelHandler) NULL)
+    (close_pixel_handler)(image);
 }
 
 /*
@@ -432,6 +470,36 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned int id)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y I m a g e P i x e l s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyImagePixels deallocates memory associated with the pixel
+%  cache.
+%
+%  The format of the DestroyImagePixels method is:
+%
+%      void DestroyImagePixels(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport void DestroyImagePixels(Image *image)
+{
+  if (destroy_pixel_handler != (DestroyPixelHandler) NULL)
+    (*destroy_pixel_handler)(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y P i x e l C a c h e                                         %
 %                                                                             %
 %                                                                             %
@@ -663,6 +731,79 @@ MagickExport unsigned int GetCacheNexus(Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e P i x e l s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImagePixels() gets pixels from the in-memory or disk pixel cache
+%  as defined by the geometry parameters.   A pointer to the pixels is returned
+%  if the pixels are transferred, otherwise a NULL is returned.
+%
+%  The format of the GetImagePixels method is:
+%
+%      PixelPacket *GetImagePixels(Image *image,const int x,const int y,
+%        const unsigned int columns,const unsigned int rows)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method GetImagePixels() returns a pointer to the pixels is
+%      returned if the pixels are transferred, otherwise a NULL is returned.
+%
+%    o image: The image.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%
+*/
+MagickExport PixelPacket *GetImagePixels(Image *image,const int x,const int y,
+  const unsigned int columns,const unsigned int rows)
+{
+  if (get_pixel_handler != (GetPixelHandler) NULL)
+    return((*get_pixel_handler)(image,x,y,columns,rows));
+  return((PixelPacket *) NULL);
+}
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I n d e x e s                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetIndexes() returns the colormap indexes associated with the last
+%  call to the SetImagePixels() or GetImagePixels() methods.
+%
+%  The format of the GetIndexes method is:
+%
+%      IndexPacket *GetIndexes(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o indexes: Method GetIndexes() returns the colormap indexes associated
+%      with the last call to the SetImagePixels() or GetImagePixels() methods.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport IndexPacket *GetIndexes(const Image *image)
+{
+  if (get_indexes_from_handler != (GetIndexesFromHandler) NULL)
+    return((*get_indexes_from_handler)(image));
+  return((IndexPacket *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I n d e x e s F r o m C a c h e                                     %
 %                                                                             %
 %                                                                             %
@@ -678,7 +819,7 @@ MagickExport unsigned int GetCacheNexus(Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o indexes: Method GetIndexesFromCache returns the colormap indexes
+%    o indexes: Method GetIndexesFromCache() returns the colormap indexes
 %      associated with the last call to the SetPixelCache() or GetPixelCache()
 %      methods.
 %
@@ -793,6 +934,41 @@ MagickExport PixelPacket *GetNexusPixels(const Cache cache,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t O n e P i x e l                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetOnePixel() returns a single pixel at the specified (x,y) location.
+%  The image background color is returned if an error occurs.
+%
+%  The format of the GetOnePixel method is:
+%
+%      PixelPacket *GetOnePixel(const Image image,const int x,const int y)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetOnePixel() returns a pixel at the specified (x,y)
+%      location.
+%
+%    o image: The image.
+%
+%    o x,y:  These values define the location of the pixel to return.
+%
+*/
+MagickExport PixelPacket GetOnePixel(Image *image,const int x,const int y)
+{
+  if (get_one_pixel_from_handler != (GetOnePixelFromHandler) NULL)
+    return((*get_one_pixel_from_handler)(image,x,y));
+  return(image->background_color);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t O n e P i x e l F r o m C a c h e                                   %
 %                                                                             %
 %                                                                             %
@@ -828,6 +1004,40 @@ static PixelPacket GetOnePixelFromCache(Image *image,const int x,const int y)
   if (pixel != (PixelPacket *) NULL)
     return(*pixel);
   return(image->background_color);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P i x e l s                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetPixels() returns the pixels associated with the last call to the
+%  SetImagePixels() or GetImagePixels() methods.
+%
+%  The format of the GetPixels method is:
+%
+%      PixelPacket *GetPixels(const Image image)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetPixels() returns the pixels associated with
+%      the last call to the SetImagePixels() or GetImagePixels() methods.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport PixelPacket *GetPixels(const Image *image)
+{
+  if (get_pixels_from_handler != (GetPixelsFromHandler) NULL)
+    return((*get_pixels_from_handler)(image));
+  return((PixelPacket *) NULL);
 }
 
 /*
@@ -1289,7 +1499,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadCachePixels reads pixels from the specified region of the pixel
+%  Method ReadCachePixels() reads pixels from the specified region of the pixel
 %  cache.
 %
 %  The format of the ReadCachePixels method is:
@@ -1298,7 +1508,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadCachePixels returns True if the pixels are
+%    o status: Method ReadCachePixels() returns True if the pixels are
 %      successfully read from the pixel cache, otherwise False.
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
@@ -1371,6 +1581,37 @@ MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
     offset+=cache_info->columns;
   }
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e s e t P i x e l C a c h e M e t h o d s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ResetPixelCacheMethods sets the default image pixel methods to
+%  use the pixel cache.
+%
+%
+*/
+MagickExport void ResetPixelCacheMethods(void)
+{
+  /*
+    Reset image pixel methods.
+  */
+  close_pixel_handler=ClosePixelCache;
+  destroy_pixel_handler=DestroyPixelCache;
+  get_pixel_handler=GetPixelCache;
+  get_indexes_from_handler=GetIndexesFromCache;
+  get_one_pixel_from_handler=GetOnePixelFromCache;
+  get_pixels_from_handler=GetPixelsFromCache;
+  set_pixel_handler=SetPixelCache;
+  sync_pixel_handler=SyncPixelCache;
 }
 
 /*
@@ -1513,6 +1754,48 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const unsigned int id,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S e t I m a g e P i x e l s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetImagePixels allocates an area to store image pixels as defined
+%  by the region rectangle and returns a pointer to the area.  This area is
+%  subsequently transferred from the pixel cache with method SyncImagePixels.
+%  A pointer to the pixels is returned if the pixels are transferred,
+%  otherwise a NULL is returned.
+%
+%  The format of the SetImagePixels method is:
+%
+%      PixelPacket *SetImagePixels(Image *image,const int x,const int y,
+%        const unsigned int columns,const unsigned int rows)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method SetImagePixels returns a pointer to the pixels is
+%      returned if the pixels are transferred, otherwise a NULL is returned.
+%
+%    o image: The image.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%
+*/
+MagickExport PixelPacket *SetImagePixels(Image *image,const int x,const int y,
+  const unsigned int columns,const unsigned int rows)
+{
+  if (set_pixel_handler != (SetPixelHandler) NULL)
+    return((*set_pixel_handler)(image,x,y,columns,rows));
+  return((PixelPacket *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t P i x e l C a c h e                                                 %
 %                                                                             %
 %                                                                             %
@@ -1605,24 +1888,70 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetPixelCacheMethods set the default image pixel methods to
-%  use the pixel cache.
+%  Method SetPixelCacheMethods sets the image pixel methods to the specified
+%  ones.
+%
+%      SetPixelCacheMethods(GetPixelHandler get_pixel,
+%        SetPixelHandler set_pixel,SyncPixelHandler sync_pixel,
+%        GetPixelsFromHandler get_pixels_from,
+%        GetIndexesFromHandler get_indexes_from,
+%        GetOnePixelFromHandler get_one_pixel_from,
+%        ClosePixelHandler close_pixel,DestroyPixelHandler destroy_pixel)
 %
 %
 */
-MagickExport void SetPixelCacheMethods(void)
+MagickExport void SetPixelCacheMethods(GetPixelHandler get_pixel,
+  SetPixelHandler set_pixel,SyncPixelHandler sync_pixel,
+  GetPixelsFromHandler get_pixels_from,GetIndexesFromHandler get_indexes_from,
+  GetOnePixelFromHandler get_one_pixel_from,ClosePixelHandler close_pixel,
+  DestroyPixelHandler destroy_pixel)
 {
   /*
     Reset image pixel methods.
   */
-  CloseImagePixels=ClosePixelCache;
-  DestroyImagePixels=DestroyPixelCache;
-  GetImagePixels=GetPixelCache;
-  GetIndexes=GetIndexesFromCache;
-  GetOnePixel=GetOnePixelFromCache;
-  GetPixels=GetPixelsFromCache;
-  SetImagePixels=SetPixelCache;
-  SyncImagePixels=SyncPixelCache;
+  close_pixel_handler=close_pixel;
+  destroy_pixel_handler=destroy_pixel;
+  get_pixel_handler=get_pixel;
+  get_indexes_from_handler=get_indexes_from;
+  get_one_pixel_from_handler=get_one_pixel_from;
+  get_pixels_from_handler=get_pixels_from;
+  set_pixel_handler=set_pixel;
+  sync_pixel_handler=sync_pixel;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S y n c I m a g e P i x e l s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SyncImagePixels() saves the image pixels to the in-memory or disk
+%  cache.  The method returns True if the pixel region is synced, otherwise
+%  False.
+%
+%  The format of the SyncImagePixels method is:
+%
+%      unsigned int SyncImagePixels(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method SyncImagePixels returns True if the image pixels are
+%      transferred to the in-memory or disk cache otherwise False.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport unsigned int SyncImagePixels(Image *image)
+{
+  if (sync_pixel_handler != (SyncPixelHandler) NULL)
+    return((*sync_pixel_handler)(image));
+  return(False);
 }
 
 /*

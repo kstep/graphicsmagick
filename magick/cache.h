@@ -15,7 +15,8 @@ extern "C" {
 /*
   Typedef declaractions.
 */
-typedef void* Cache;
+typedef IndexPacket
+  *(*GetIndexesFromHandler)(const Image *);
 
 typedef struct _NexusInfo
 {
@@ -78,6 +79,22 @@ typedef struct _CacheInfo
   unsigned long
     signature;
 } CacheInfo;
+
+typedef PixelPacket
+  *(*GetPixelHandler)(Image *,const int,const int,const unsigned int,
+    const unsigned int),
+  (*GetOnePixelFromHandler)(Image *,const int,const int),
+  *(*GetPixelsFromHandler)(const Image *),
+  *(*SetPixelHandler)(Image *,const int,const int,const unsigned int,
+    const unsigned int);
+
+typedef unsigned int
+  (*SyncPixelHandler)(Image *);
+
+typedef void
+  *Cache,
+  (*ClosePixelHandler)(Image *),
+  (*DestroyPixelHandler)(Image *);
 
 /*
   MagickExported interfaces.
@@ -110,8 +127,11 @@ extern MagickExport void
   DestroyCache(void),
   DestroyCacheNexus(Cache,const unsigned int),
   GetCacheInfo(Cache *),
+  ResetPixelCacheMethods(void),
   SetCacheThreshold(const off_t),
-  SetPixelCacheMethods(void);
+  SetPixelCacheMethods(GetPixelHandler,SetPixelHandler,SyncPixelHandler,
+    GetPixelsFromHandler,GetIndexesFromHandler,GetOnePixelFromHandler,
+    ClosePixelHandler,DestroyPixelHandler);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -44,6 +44,8 @@
 		<LI><A HREF="#isimagesequal">IsImagesEqual</A></LI>
 		<LI><A HREF="#isimagetainted">IsImageTainted</A></LI>
 		<LI><A HREF="#listtogroupimage">ListToGroupImage</A></LI>
+		<LI><A HREF="#modifyimage">ModifyImage</A></LI>
+		<LI><A HREF="#referenceimage">ReferenceImage</A></LI>
 		<LI><A HREF="#setimage">SetImage</A></LI>
 		<LI><A HREF="#setimageclipmask">SetImageClipMask</A></LI>
 		<LI><A HREF="#setimagedepth">SetImageDepth</A></LI>
@@ -89,6 +91,8 @@
 <P>unsigned int  <STRONG>IsImageTainted</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
 <P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned int *number_images );</P>
+<P>Image * <STRONG>ModifyImage</STRONG>( Image *image );</P>
+<P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
 <P>unsigned int  <STRONG>SetImageClipMask</STRONG>( Image *image, Image *clip_mask );</P>
 <P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned int depth );</P>
@@ -312,7 +316,7 @@ The file, typically stdout.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimage">DestroyImage</A></H2>
-<blockquote>DestroyImage ( ) deallocates memory associated with an image.; </blockquote><P>The format of the DestroyImage method is:</P>
+<blockquote>DestroyImage ( ) dereferences an image, deallocating memory associated withthe image if the reference count becomes zero.; </blockquote><P>The format of the DestroyImage method is:</P>
 <blockquote>void DestroyImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -461,6 +465,26 @@ The image list.
 <p><dt><STRONG><A NAME="item_o_number_images%3A">number_images:</A></STRONG><BR>
 <DD>
 The length of the image array is returned here.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="modifyimage">ModifyImage</A></H2>
+<blockquote>ModifyImage ( ) ensures that there is only a single reference to the imageto be modified, updating the provided image pointer to point to a clone ofthe original image if necessary.; </blockquote><P>The format of the ModifyImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ModifyImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="referenceimage">ReferenceImage</A></H2>
+<blockquote>ReferenceImage ( ) increments the reference count associated with an imagereturning a pointer to the image.; </blockquote><P>The format of the ReferenceImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReferenceImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimage">SetImage</A></H2>
