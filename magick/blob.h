@@ -12,7 +12,7 @@ extern "C" {
   Define declarations.
 */
 #define MinBlobExtent  32768L
-#define MaxBlobExtent  262144L
+#define MaxBlobExtent  524288L
 
 /*
   Enum declarations.

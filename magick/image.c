@@ -1523,7 +1523,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         (void) fprintf(file,"  Rendering-Intent: relative\n");
   if (image->gamma != 0.0)
     (void) fprintf(file,"  Gamma: %g\n",image->gamma);
-  if (image->chromaticity.white_point.x != 0.0)
+  if ((image->chromaticity.red_primary.x != 0.0) ||
+      (image->chromaticity.green_primary.x != 0.0) ||
+      (image->chromaticity.blue_primary.x != 0.0) ||
+      (image->chromaticity.white_point.x != 0.0))
     {
       /*
         Display image chromaticity.
@@ -3062,13 +3065,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             if (*option == '+')
               {
-                (*image)->chromaticity.blue_primary.x=0.1500f;
-                (*image)->chromaticity.blue_primary.y=0.0600f;
+                (*image)->chromaticity.blue_primary.x=0.0;
+                (*image)->chromaticity.blue_primary.y=0.0;
+                (*image)->chromaticity.blue_primary.z=0.0;
                 continue;
               }
-            (void) sscanf(argv[++i],"%lf%*[, ]%lf",
+            (void) sscanf(argv[++i],"%lf%*[, ]%lf%*[, ]%lf",
               &(*image)->chromaticity.blue_primary.x,
-              &(*image)->chromaticity.blue_primary.y);
+              &(*image)->chromaticity.blue_primary.y,
+              &(*image)->chromaticity.blue_primary.z);
             continue;
           }
         if (LocaleCompare("blur",option+1) == 0)
@@ -3804,13 +3809,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             if (*option == '+')
               {
-                (*image)->chromaticity.green_primary.x=0.3000f;
-                (*image)->chromaticity.green_primary.y=0.6000f;
+                (*image)->chromaticity.green_primary.x=0.0;
+                (*image)->chromaticity.green_primary.y=0.0;
+                (*image)->chromaticity.green_primary.z=0.0;
                 continue;
               }
-            (void) sscanf(argv[++i],"%lf%*[, ]%lf",
+            (void) sscanf(argv[++i],"%lf%*[, ]%lf%*[, ]%lf",
               &(*image)->chromaticity.green_primary.x,
-              &(*image)->chromaticity.green_primary.y);
+              &(*image)->chromaticity.green_primary.y,
+              &(*image)->chromaticity.green_primary.z);
             continue;
           }
         break;
@@ -4209,13 +4216,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             if (*option == '+')
               {
-                (*image)->chromaticity.red_primary.x=0.6400f;
-                (*image)->chromaticity.red_primary.y=0.3300f;
+                (*image)->chromaticity.red_primary.x=0.0;
+                (*image)->chromaticity.red_primary.y=0.0;
+                (*image)->chromaticity.red_primary.z=0.0;
                 continue;
               }
-            (void) sscanf(argv[++i],"%lf%*[, ]%lf",
+            (void) sscanf(argv[++i],"%lf%*[, ]%lf%*[, ]%lf",
               &(*image)->chromaticity.red_primary.x,
-              &(*image)->chromaticity.red_primary.y);
+              &(*image)->chromaticity.red_primary.y,
+              &(*image)->chromaticity.red_primary.z);
             continue;
           }
         if (LocaleCompare("region",option+1) == 0)
@@ -4752,13 +4761,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             if (*option == '+')
               {
-                (*image)->chromaticity.white_point.x=0.3127f;
-                (*image)->chromaticity.white_point.y=0.3290f;
+                (*image)->chromaticity.white_point.x=0.0;
+                (*image)->chromaticity.white_point.y=0.0;
+                (*image)->chromaticity.white_point.z=0.0;
                 continue;
               }
-            (void) sscanf(argv[++i],"%lf%*[, ]%lf",
+            (void) sscanf(argv[++i],"%lf%*[, ]%lf%*[, ]%lf",
               &(*image)->chromaticity.white_point.x,
-              &(*image)->chromaticity.white_point.y);
+              &(*image)->chromaticity.white_point.y,
+              &(*image)->chromaticity.white_point.z);
             continue;
           }
         break;
