@@ -8,6 +8,10 @@
 extern "C" {
 #endif
 
+#if !defined(QuantumDepth)
+# define QuantumDepth 16
+#endif
+
 #if QuantumDepth == 8
 /*
   Color quantum is [0..255].
@@ -22,6 +26,7 @@ typedef unsigned char Quantum;
 /*
   Color quantum is [0..65535].
 */
+#define QuantumLeap
 #define DownScale(quantum)  ((quantum)/257)
 #define UpScale(quantum)  (257*(quantum))
 #define XDownScale(color)  (color)
