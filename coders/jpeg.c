@@ -1544,23 +1544,31 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if (image_info->sampling_factor != (char *) NULL)
     {
       double
-        horizontal_factor,
-        vertical_factor;
+        hs[4]={1.0, 1.0, 1.0, 1.0}, 
+        vs[4]={1.0, 1.0, 1.0, 1.0};
 
       long
         count;
 
       /*
-        Set sampling factor.
+        Set sampling factors.
       */
-      count=sscanf(image_info->sampling_factor,"%lfx%lf",&horizontal_factor,
-        &vertical_factor);
-      if (count != 2)
-        vertical_factor=horizontal_factor;
-      for (i=0; i < MAX_COMPONENTS; i++)
+      count=sscanf(image_info->sampling_factor,
+        "%lfx%lf,%lfx%lf,%lfx%lf,%lfx%lf",
+        &hs[0],&vs[0],&hs[1],&vs[1],&hs[2],&vs[2],&hs[3],&vs[3]);
+
+      if (count%2 == 1)
+        vs[count/2]=hs[count/2];
+
+      for (i=0; i < 4; i++)
       {
-        jpeg_info.comp_info[i].h_samp_factor=(int) horizontal_factor;
-        jpeg_info.comp_info[i].v_samp_factor=(int) vertical_factor;
+        jpeg_info.comp_info[i].h_samp_factor=(int) hs[i];
+        jpeg_info.comp_info[i].v_samp_factor=(int) vs[i];
+      }
+      for (; i < MAX_COMPONENTS; i++)
+      {
+        jpeg_info.comp_info[i].h_samp_factor=1;
+        jpeg_info.comp_info[i].v_samp_factor=1;
       }
     }
    else
