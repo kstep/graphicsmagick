@@ -209,7 +209,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             */
             x=0;
             y++;
-            q=pixels+y*image->columns;
+            q=pixels+y*bytes_per_line;
             break;
           }
           case 0x02:
@@ -219,7 +219,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             */
             x+=ReadBlobByte(image);
             y+=ReadBlobByte(image);
-            q=pixels+y*image->columns+x;
+            q=pixels+y*bytes_per_line+x;
             break;
           }
           default:
