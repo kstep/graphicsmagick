@@ -144,6 +144,10 @@ struct _wmf_magick_t
   /* Pattern ID */
   unsigned long
     pattern_id;
+
+  /* Clip path flag */
+  unsigned int
+    clipping;
 };
 
 #define WMF_MAGICK_GetData(Z) ((wmf_magick_t*)((Z)->device_data))
@@ -331,8 +335,15 @@ static void wmf_magick_bmp_free(wmfAPI * API, wmfBMP * bmp)
  */
 static void wmf_magick_device_open(wmfAPI * API)
 {
-/*   wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
+  wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
 
+  /* Initialize ddata */
+  ddata->max_temp_file_index = 2048;
+  ddata->cur_temp_file_index = 0;
+  ddata->temp_images =
+    (long *) AcquireMemory(ddata->max_temp_file_index * sizeof(long));
+  ddata->pattern_id = 0;
+  ddata->clipping = False;
 }
 
 /*
@@ -378,21 +389,6 @@ static void wmf_magick_device_begin(wmfAPI * API)
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
 
-  if ((ddata->bbox.BR.x <= ddata->bbox.TL.x) ||
-      (ddata->bbox.BR.y <= ddata->bbox.TL.y))
-  {
-    WMF_ERROR(API, "~~~~~~~~wmf_[magick_]device_begin: "
-	      "bounding box has null or negative size!");
-    API->err = wmf_E_Glitch;
-    return;
-  }
-
-  ddata->max_temp_file_index = 2048;
-  ddata->cur_temp_file_index = 0;
-  ddata->temp_images =
-    (long *) AcquireMemory(ddata->max_temp_file_index * sizeof(long));
-  ddata->pattern_id = 0;
-
   /* Make SVG output happy */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -415,6 +411,14 @@ static void wmf_magick_device_begin(wmfAPI * API)
  */
 static void wmf_magick_device_end(wmfAPI * API)
 {
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+
+  /* Reset any existing clip paths by popping context */
+  if(ddata->clipping)
+    magick_mvg_printf(API, "pop graphic-context\n");
+  ddata->clipping = False;
+
   /* Make SVG output happy */
   magick_mvg_printf(API, "pop graphic-context\n");
 }
@@ -688,8 +692,6 @@ static void wmf_magick_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
 
 static void wmf_magick_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
 {
-  magick_mvg_printf(API, "# wmf_magick_draw_rectangle\n");
-
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -741,21 +743,44 @@ static void wmf_magick_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect
   magick_mvg_printf(API, "pop graphic-context\n");
 }
 
-static void wmf_magick_region_clip(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
+static void wmf_magick_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
 {
+  unsigned int
+    i;
+
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData (API);
+
   magick_mvg_printf(API, "# wmf_magick_region_clip\n");
 
-  /* Save graphic context */
-  magick_mvg_printf(API, "push graphic-context\n");
+  /* Reset any existing clip paths by popping context */
+  if(ddata->clipping)
+    magick_mvg_printf(API, "pop graphic-context\n");
+  ddata->clipping = False;
 
-  /* FIXME: implement */
-  printf("wmf_magick_region_clip not implemented\n");
+  if(poly_rect->count > 0)
+    {
+      /* Push context for new clip paths */
+      magick_mvg_printf(API, "push graphic-context\n");
 
-  /* Restore graphic context */
-  magick_mvg_printf(API, "pop graphic-context\n");
+      magick_mvg_printf(API, "push clip-path whatever\n");
+      magick_mvg_printf(API, "push graphic-context\n");
+      magick_mvg_printf(API, "fill black\n");
+      magick_mvg_printf(API, "stroke none\n");
+      magick_mvg_printf(API, "stroke-width 1\n");
+      for (i = 0; i < poly_rect->count; i++)
+        {
+          magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                            (double)poly_rect->TL[i].x, (double)poly_rect->TL[i].y,
+                            (double)poly_rect->BR[i].x, (double)poly_rect->BR[i].y);
+        }
+      magick_mvg_printf(API, "pop graphic-context\n");
+      magick_mvg_printf(API, "pop clip-path\n");
+      ddata->clipping = True;
+    }
 }
 
-static void wmf_magick_function(wmfAPI * API)
+static void wmf_magick_function(wmfAPI *API)
 {
   wmf_magick_t
     *ddata = 0;
@@ -802,12 +827,12 @@ static void wmf_magick_function(wmfAPI * API)
   if (ERR(API))
     return;
 
+  memset((void *) ddata, 0, sizeof(wmf_magick_t));
   API->device_data = (void *) ddata;
 
   /*
      Device data defaults
    */
-  memset((void *) ddata, 0, sizeof(wmf_magick_t));
   ddata->bbox.TL.x = 0;
   ddata->bbox.TL.y = 0;
   ddata->bbox.BR.x = 0;
