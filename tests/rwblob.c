@@ -104,8 +104,8 @@ int main ( int argc, char **argv )
   strcpy( infile, argv[1] );
   strcpy( format, argv[2] );
 
-  printf( "R/W Blob: original \"%s\"; format \"%s\" ...\n",
-	  infile, format );
+  printf("%s %s %s\n",
+	  argv[0],infile, format );
   fflush(stdout);
 
   /*

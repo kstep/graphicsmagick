@@ -104,7 +104,6 @@ int main ( int argc, char **argv )
   strcpy( infile, argv[1] );
   strcpy( format, argv[2] );
 
-  /*  printf( "R/W file: original \"%s\"; format \"%s\" ...\n", */
   printf("%s %s %s\n",
 	  argv[0], infile, format );
   fflush(stdout);
