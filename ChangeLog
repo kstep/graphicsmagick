@@ -1,5 +1,18 @@
+2003-03-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (IdentifyImageCommand): For identify, when
+	%q format specifier is present, image must be read rather than
+	pinged.  If not, either the value 8 is returned, or there is a
+	crash due to reading an uninitialized image.
+
 2003-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/mat.c: Incorporate fixes from Jaroslav Fojtik.  Close
+	Blob before rotating image.
+	* PerlMagick/README.txt: Update to reflect that PerlMagick is
+	part of GraphicsMagick.
+	* PerlMagick/t/input.mat: Added test image for Matlab format.
+	* PerlMagick/t/input.wpg: Added test image for WordPerfect Graphics Format.
 	* utilities/Makefile.am (ALLMANPAGES): Install gm.1 rather than
 	old utility manual pages.
 

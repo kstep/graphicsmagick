@@ -3355,7 +3355,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
         (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
         if (format != (char *) NULL)
           for (q=strchr(format,'%'); q != (char *) NULL; q=strchr(q+1,'%'))
-            if ((*(q+1) == 'k') || (*(q+1) == '#'))
+            if ((*(q+1) == 'k') || (*(q+1) == 'q') || (*(q+1) == '#'))
               {
                 ping=False;
                 break;
