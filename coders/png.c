@@ -1287,7 +1287,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitWarning,
                "Unable to allocate memory for chunk data",image);
             for (i=0; i < (int) length; i++)
-              chunk[i]=ReadBlobByte(image);
+              chunk[i]=ReadByte(image);
             p=chunk;
           }
         (void) ReadBlobMSBLong(image);  /* read crc word */
