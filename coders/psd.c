@@ -137,7 +137,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
               q->red=UpScale(pixel);
               if (image->storage_class == PseudoClass)
                 {
-                  *indexes=UpScale(pixel);
+                  *indexes=pixel;
                   *q=image->colormap[pixel];
                 }
               break;
@@ -184,7 +184,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
           q->red=UpScale(pixel);
           if (image->storage_class == PseudoClass)
             {
-              *indexes=UpScale(pixel);
+              *indexes=pixel;
               *q=image->colormap[pixel];
             }
           break;
@@ -550,7 +550,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
           compression=ReadBlobMSBShort(layer_info[i].image);
-          if (compression != 0)
+          if (compression == 0)
             {
               for (y=0; y < (int) layer_info[i].image->rows; y++)
                 (void) ReadBlobMSBShort(layer_info[i].image);
