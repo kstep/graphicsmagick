@@ -1,3 +1,17 @@
+Major changes associated with GraphicsMagick 1.0.4 (Released December 6, 2003)
+
+  Bug Fixes:
+
+    * Fixed handling of arc drawing primitive.
+    * Eliminated two memory leaks.
+    * Fixed PNG read problem when reading image.png[0].
+    * Correction for scaling of 5-5-5-bit, 5-6-5-bit, and 8-8-8-8-bit, BMP
+      images, and TIM images.
+
+  Delegate upgrades:
+
+    * Updated to use LCMS 1.11.
+
 Major changes associated with GraphicsMagick 1.0.3 (Released August 23, 2003)
 
   Bug Fixes:

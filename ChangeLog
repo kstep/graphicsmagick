@@ -1,3 +1,8 @@
+2003-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lcms: Updated to LCMS 1.11.
+	* VisualMagick/installer: Update to use new RTF files.
+
 2003-12-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/reference/read/input_tim.miff: Adjusted due to
