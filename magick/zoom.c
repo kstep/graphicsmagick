@@ -621,10 +621,6 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
 %
 */
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 static double Box(double x)
 {
   if ((x >= -0.5) && (x < 0.5))
@@ -756,10 +752,6 @@ static double Triangle(double x)
     return(1.0-x);
   return(0.0);
 }
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 static unsigned int HorizontalFilter(Image *source,Image *destination,
   double x_factor,const FilterInfo *filter_info,const double blur,

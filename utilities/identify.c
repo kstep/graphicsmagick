@@ -172,7 +172,7 @@ int main(int argc,char **argv)
         if (i == argc)
           MagickError(OptionError,"Missing format string",option);
         CloneString(&format,argv[i]);
-        argv[i]="";
+        argv[i]=(char *) "";
         break;
       }
   }

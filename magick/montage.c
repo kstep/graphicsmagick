@@ -236,6 +236,10 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int SceneCompare(const void *x,const void *y)
 {
   Image
@@ -246,6 +250,10 @@ static int SceneCompare(const void *x,const void *y)
   image_2=(Image **) y;
   return((int) (*image_1)->scene-(int) (*image_2)->scene);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   ExceptionInfo *exception)
@@ -357,8 +365,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     if (next_list[tile]->scene == 0)
       break;
   if (tile == number_images)
-    qsort((void *) next_list,number_images,sizeof(Image *),
-      (int (*)(const void *, const void *)) SceneCompare);
+    qsort((void *) next_list,number_images,sizeof(Image *),SceneCompare);
   /*
     Determine tiles per row and column.
   */

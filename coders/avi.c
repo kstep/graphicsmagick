@@ -401,6 +401,10 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  memset(&avi_info,0,sizeof(AVIInfo));
+  memset(&bmp_info,0,sizeof(BMPInfo));
+  colormap=(PixelPacket *) NULL;
+  number_colors=0;
   for ( ; ; )
   {
     count=ReadBlob(image,4,id);

@@ -4,10 +4,6 @@
 #ifndef _MAGIC_H
 #define _MAGIC_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 /*
   Define declaration.
 */
@@ -60,11 +56,19 @@ typedef struct _MagicInfo
 /*
   Magic method declarations.
 */
-extern MagickExport void
-  DestroyMagicInfo(void);
-
 extern MagickExport unsigned int
   SetImageMagic(const unsigned char *,const unsigned int,char *);
+
+/*
+  Language dependent method declarations.
+*/
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+extern MagickExport void
+  DestroyMagicInfo(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

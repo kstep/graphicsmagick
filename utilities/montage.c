@@ -532,6 +532,8 @@ int main(int argc,char **argv)
                     montage_info->compose=SubtractCompositeOp;
                   if (LocaleCompare("Difference",option) == 0)
                     montage_info->compose=DifferenceCompositeOp;
+                  if (LocaleCompare("Multiply",option) == 0)
+                    montage_info->compose=MultiplyCompositeOp;
                   if (LocaleCompare("Bumpmap",option) == 0)
                     montage_info->compose=BumpmapCompositeOp;
                   if (LocaleCompare("Replace",option) == 0)
@@ -696,7 +698,7 @@ int main(int argc,char **argv)
           if (LocaleNCompare("frame",option+1,2) == 0)
             {
               CloneString(&montage_info->frame,(char *) NULL);
-              argv[i]="+sans";
+              argv[i]=(char *) "+sans";
               if (*option == '-')
                 {
                   i++;

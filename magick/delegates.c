@@ -95,6 +95,11 @@ static SemaphoreInfo *
 %      DestroyDelegateInfo(void)
 %
 */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 MagickExport void DestroyDelegateInfo(void)
 {
   DelegateInfo
@@ -115,6 +120,10 @@ MagickExport void DestroyDelegateInfo(void)
   delegates=(DelegateInfo *) NULL;
   LiberateSemaphore(delegate_semaphore);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

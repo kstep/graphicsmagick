@@ -1237,6 +1237,7 @@ static void XHighlightWidget(Display *display,const XWindowInfo *window_info,
 %
 %
 */
+
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -3234,16 +3235,16 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
         cancel_info.x=windows->widget.width-cancel_info.width-QuantumMargin;
         cancel_info.y=windows->widget.height-(cancel_info.height << 1);
         dismiss_info=cancel_info;
-        dismiss_info.text=DismissButtonText;
+        dismiss_info.text=(char *) DismissButtonText;
         if (LocaleCompare(description,"Do you want to save it") == 0)
-          dismiss_info.text="Don't Save";
+          dismiss_info.text=(char *) "Don't Save";
         dismiss_info.width=QuantumMargin+
           XTextWidth(font_info,dismiss_info.text,Extent(dismiss_info.text));
         dismiss_info.x=(windows->widget.width >> 1)-(dismiss_info.width >> 1);
         yes_info=cancel_info;
-        yes_info.text=YesButtonText;
+        yes_info.text=(char *) YesButtonText;
         if (LocaleCompare(description,"Do you want to save it") == 0)
-          yes_info.text="Save";
+          yes_info.text=(char *) "Save";
         yes_info.width=QuantumMargin+
           XTextWidth(font_info,yes_info.text,Extent(yes_info.text));
         if (yes_info.width < cancel_info.width)
@@ -3673,15 +3674,15 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
         special_info.x=reply_info.x;
         special_info.y=action_info.y+action_info.height-special_info.height;
         if (LocaleCompare(action,"Background") == 0)
-          special_info.text="Backdrop";
+          special_info.text=(char *) "Backdrop";
         if (LocaleCompare(action,"New") == 0)
-          special_info.text="Gradation";
+          special_info.text=(char *) "Gradation";
         if (LocaleCompare(action,"Resize") == 0)
-          special_info.text="Constrain ratio";
+          special_info.text=(char *) "Constrain ratio";
         if (LocaleCompare(action,"Save") == 0)
-          special_info.text="Non-progressive";
+          special_info.text=(char *) "Non-progressive";
         if (LocaleCompare(action,"Shade") == 0)
-          special_info.text="Color shading";
+          special_info.text=(char *) "Color shading";
         /*
           Initialize text information.
         */
@@ -4354,7 +4355,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             register char
               *p;
 
-            special_info.text=FormatButtonText;
+            special_info.text=(char *) FormatButtonText;
             p=reply+Extent(reply)-1;
             while ((p > (reply+1)) && (*(p-1) != '.'))
               p--;
@@ -5322,6 +5323,10 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int FontCompare(const void *x,const void *y)
 {
   register char
@@ -5337,6 +5342,10 @@ static int FontCompare(const void *x,const void *y)
   }
   return(*p-(*q));
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
   const char *action,char *reply)
@@ -5449,8 +5458,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
     }
   for (i=0; i < fonts; i++)
     fontlist[i]=listhead[i];
-  qsort((void *) fontlist,fonts,sizeof(char **),
-    (int (*)(const void *, const void *)) FontCompare);
+  qsort((void *) fontlist,fonts,sizeof(char **),FontCompare);
   /*
     Determine Font Browser widget attributes.
   */
@@ -5726,8 +5734,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           }
         for (i=0; i < fonts; i++)
           fontlist[i]=listhead[i];
-        qsort((void *) fontlist,fonts,sizeof(char **),
-          (int (*)(const void *, const void *)) FontCompare);
+        qsort((void *) fontlist,fonts,sizeof(char **),FontCompare);
         slider_info.height=
           scroll_info.height-((slider_info.min_y-scroll_info.y+1) << 1)+1;
         if (fonts > (int) visible_fonts)
@@ -8329,13 +8336,13 @@ MagickExport unsigned int XPreferencesWidget(Display *display,
   static char
     *Preferences[] =
     {
-      "display image centered on a backdrop",
-      "confirm on program exit",
-      "correct image for display gamma",
-      "display warning messages",
-      "apply Floyd/Steinberg error diffusion to image",
-      "use a shared colormap for colormapped X visuals",
-      "display images as an X server pixmap"
+      (char *) "display image centered on a backdrop",
+      (char *) "confirm on program exit",
+      (char *) "correct image for display gamma",
+      (char *) "display warning messages",
+      (char *) "apply Floyd/Steinberg error diffusion to image",
+      (char *) "use a shared colormap for colormapped X visuals",
+      (char *) "display images as an X server pixmap"
     };
 
   char

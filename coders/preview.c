@@ -245,8 +245,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     argc=1;
     if (i == (NumberTiles >> 1))
       {
-        commands[argc++]="-mattecolor";
-        commands[argc++]="#dfdfdf";
+        commands[argc++]=(char *) "-mattecolor";
+        commands[argc++]=(char *) "#dfdfdf";
         MogrifyImage(clone_info,argc,commands,&images[i]);
         continue;
       }
@@ -257,7 +257,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",degrees+=45.0);
         FormatString(label,"rotate %.1024s",factor);
-        commands[argc++]="-rotate";
+        commands[argc++]=(char *) "-rotate";
         commands[argc++]=factor;
         break;
       }
@@ -266,7 +266,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         degrees+=10.0;
         FormatString(factor,"%.1fx%.1f",degrees,2.0*degrees);
         FormatString(label,"shear %.1024s",factor);
-        commands[argc++]="-shear";
+        commands[argc++]=(char *) "-shear";
         commands[argc++]=factor;
         break;
       }
@@ -276,7 +276,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         y+=preview_image->rows/NumberTiles;
         FormatString(factor,"%+d%+d",x,y);
         FormatString(label,"roll %.1024s",factor);
-        commands[argc++]="-roll";
+        commands[argc++]=(char *) "-roll";
         commands[argc++]=factor;
         break;
       }
@@ -284,7 +284,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"0,0,%.1f",percentage);
         FormatString(label,"modulate %.1024s",factor);
-        commands[argc++]="-modulate";
+        commands[argc++]=(char *) "-modulate";
         commands[argc++]=factor;
         break;
       }
@@ -292,7 +292,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"0,%.1f",percentage);
         FormatString(label,"modulate %.1024s",factor);
-        commands[argc++]="-modulate";
+        commands[argc++]=(char *) "-modulate";
         commands[argc++]=factor;
         break;
       }
@@ -300,7 +300,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",percentage);
         FormatString(label,"modulate %.1024s",factor);
-        commands[argc++]="-modulate";
+        commands[argc++]=(char *) "-modulate";
         commands[argc++]=factor;
         break;
       }
@@ -308,21 +308,21 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",gamma+=0.4f);
         FormatString(label,"gamma %.1024s",factor);
-        commands[argc++]="-gamma";
+        commands[argc++]=(char *) "-gamma";
         commands[argc++]=factor;
         break;
       }
       case SpiffPreview:
       {
         for (x=0; x < i; x++)
-          commands[argc++]="-contrast";
+          commands[argc++]=(char *) "-contrast";
         FormatString(label,"-contrast %d",i+1);
         break;
       }
       case DullPreview:
       {
         for (x=0; x < i; x++)
-          commands[argc++]="+contrast";
+          commands[argc++]=(char *) "+contrast";
         FormatString(label,"+contrast %d",i+1);
         break;
       }
@@ -331,9 +331,9 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         FormatString(factor,"%u",colors);
         colors<<=1;
         FormatString(label,"colors %.1024s",factor);
-        commands[argc++]="-colorspace";
-        commands[argc++]="gray";
-        commands[argc++]="-colors";
+        commands[argc++]=(char *) "-colorspace";
+        commands[argc++]=(char *) "gray";
+        commands[argc++]=(char *) "-colors";
         commands[argc++]=factor;
         break;
       }
@@ -341,21 +341,21 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%u",colors<<=1);
         FormatString(label,"colors %.1024s",factor);
-        commands[argc++]="-colors";
+        commands[argc++]=(char *) "-colors";
         commands[argc++]=factor;
         break;
       }
       case DespecklePreview:
       {
         for (x=0; x < i; x++)
-          commands[argc++]="-despeckle";
+          commands[argc++]=(char *) "-despeckle";
         FormatString(label,"despeckle %d",i+1);
         break;
       }
       case ReduceNoisePreview:
       {
         for (x=0; x < i; x++)
-          commands[argc++]="-noise";
+          commands[argc++]=(char *) "-noise";
         FormatString(label,"noise %d",i+1);
         break;
       }
@@ -373,7 +373,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         }
         x++;
         FormatString(label,"+noise %.1024s",factor);
-        commands[argc++]="+noise";
+        commands[argc++]=(char *) "+noise";
         commands[argc++]=factor;
         break;
       }
@@ -381,7 +381,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",percentage);
         FormatString(label,"sharpen %.1024s",factor);
-        commands[argc++]="-sharpen";
+        commands[argc++]=(char *) "-sharpen";
         commands[argc++]=factor;
         break;
       }
@@ -389,7 +389,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",percentage);
         FormatString(label,"-blur %.1024s",factor);
-        commands[argc++]="-blur";
+        commands[argc++]=(char *) "-blur";
         commands[argc++]=factor;
         break;
       }
@@ -397,7 +397,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%d",(int) ((percentage*(MaxRGB+1))/100));
         FormatString(label,"threshold %.1024s",factor);
-        commands[argc++]="-threshold";
+        commands[argc++]=(char *) "-threshold";
         commands[argc++]=factor;
         break;
       }
@@ -405,7 +405,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",percentage);
         FormatString(label,"edge %.1024s",factor);
-        commands[argc++]="-edge";
+        commands[argc++]=(char *) "-edge";
         commands[argc++]=factor;
         break;
       }
@@ -413,7 +413,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%d",i+1);
         FormatString(label,"spread %.1024s",factor);
-        commands[argc++]="-spread";
+        commands[argc++]=(char *) "-spread";
         commands[argc++]=factor;
         break;
       }
@@ -421,7 +421,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",percentage);
         FormatString(label,"solarize %.1024s",factor);
-        commands[argc++]="-solarize";
+        commands[argc++]=(char *) "-solarize";
         commands[argc++]=factor;
         break;
       }
@@ -431,14 +431,14 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
           {
             FormatString(factor,"30.0x30.0");
             FormatString(label,"+shade %.1024s",factor);
-            commands[argc++]="+shade";
+            commands[argc++]=(char *) "+shade";
             commands[argc++]=factor;
             break;
           }
         degrees+=10.0;
         FormatString(factor,"%.1fx%.1f",degrees,degrees);
         FormatString(label,"shade %.1024s",factor);
-        commands[argc++]="-shade";
+        commands[argc++]=(char *) "-shade";
         commands[argc++]=factor;
         break;
       }
@@ -446,7 +446,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%d",2*i+2);
         FormatString(label,"raise %.1024s",factor);
-        commands[argc++]="-raise";
+        commands[argc++]=(char *) "-raise";
         commands[argc++]=factor;
         break;
       }
@@ -455,7 +455,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         threshold+=0.4f;
         FormatString(factor,"%.1fx%.1f",threshold,threshold);
         FormatString(label,"segment %.1024s",factor);
-        commands[argc++]="-colors";
+        commands[argc++]=(char *) "-colors";
         commands[argc++]=factor;
         break;
       }
@@ -463,7 +463,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",degrees+=45.0);
         FormatString(label,"swirl %.1024s",factor);
-        commands[argc++]="-swirl";
+        commands[argc++]=(char *) "-swirl";
         commands[argc++]=factor;
         break;
       }
@@ -471,7 +471,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",percentage);
         FormatString(label,"implode %.1024s",factor);
-        commands[argc++]="-implode";
+        commands[argc++]=(char *) "-implode";
         commands[argc++]=factor;
         break;
       }
@@ -480,7 +480,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         degrees+=5.0;
         FormatString(factor,"%.1fx%.1f",0.5*degrees,2.0*degrees);
         FormatString(label,"wave %.1024s",factor);
-        commands[argc++]="-wave";
+        commands[argc++]=(char *) "-wave";
         commands[argc++]=factor;
         break;
       }
@@ -488,7 +488,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%i",i+1);
         FormatString(label,"paint %.1024s",factor);
-        commands[argc++]="-paint";
+        commands[argc++]=(char *) "-paint";
         commands[argc++]=factor;
         break;
       }
@@ -496,7 +496,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",percentage+5.0);
         FormatString(label,"charcoal %.1024s",factor);
-        commands[argc++]="-charcoal";
+        commands[argc++]=(char *) "-charcoal";
         commands[argc++]=factor;
         break;
       }
@@ -537,7 +537,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
     }
     percentage+=12.5;
-    commands[argc++]="-label";
+    commands[argc++]=(char *) "-label";
     commands[argc++]=label;
     MogrifyImage(clone_info,argc,commands,&images[i]);
     (void) SetMonitorHandler(handler);

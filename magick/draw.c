@@ -1989,6 +1989,10 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int CompareEdges(const void *x,const void *y)
 {
   register const EdgeInfo
@@ -2013,6 +2017,10 @@ static int CompareEdges(const void *x,const void *y)
     return(1);
   return(-1);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
 {
@@ -2344,7 +2352,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       if (count != 2)
         resolution.y=resolution.x;
     }
-  mid=(resolution.x/72.0)*ffineExpansion(&clone_info->affine)*
+  mid=(resolution.x/72.0)*AffineExpansion(&clone_info->affine)*
     clone_info->linewidth/2.0;
   if (polygon_info != (PolygonInfo *) NULL)
     {
@@ -2447,12 +2455,12 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
   char
     *methods[] =
     {
-      "point",
-      "replace",
-      "floodfill",
-      "filltoborder",
-      "reset",
-      "?"
+      (char *) "point",
+      (char *) "replace",
+      (char *) "floodfill",
+      (char *) "filltoborder",
+      (char *) "reset",
+      (char *) "?"
     };
 
   int

@@ -151,10 +151,6 @@ static unsigned int IsTIFF(const unsigned char *magick,
 %
 */
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #if defined(ICC_SUPPORT)
 static unsigned int ReadColorProfile(char *text,long int length,Image *image)
 {
@@ -274,10 +270,6 @@ static unsigned int TIFFWarningHandler(const char *module,const char *format,
     ThrowBinaryException(DelegateWarning,message,image->filename);
   return(True);
 }
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)

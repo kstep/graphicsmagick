@@ -4,10 +4,6 @@
 #ifndef _CACHEVIEW_H
 #define _CACHEVIEW_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 /*
   Typedef declarations.
 */
@@ -44,9 +40,5 @@ extern MagickExport ViewInfo
 
 extern MagickExport void
   CloseCacheView(ViewInfo *);
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 #endif

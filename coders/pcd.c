@@ -403,7 +403,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
   commands[0]=SetClientName((char *) NULL);
-  commands[1]="-label";
+  commands[1]=(char *) "-label";
   commands[2]=(char *) DefaultTileLabel;
   MogrifyImages(clone_info,3,commands,&image);
   DestroyImageInfo(clone_info);
@@ -1034,9 +1034,12 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   /*
     Write PCD tiles.
   */
-  status=WritePCDTile(image_info,pcd_image,"768x512>","192x128");
-  status|=WritePCDTile(image_info,pcd_image,"768x512>","384x256");
-  status|=WritePCDTile(image_info,pcd_image,"768x512>","768x512");
+  status=WritePCDTile(image_info,pcd_image,(char *) "768x512>",
+    (char *) "192x128");
+  status|=WritePCDTile(image_info,pcd_image,(char *) "768x512>",
+    (char *) "384x256");
+  status|=WritePCDTile(image_info,pcd_image,(char *) "768x512>",
+    (char *) "768x512");
   CloseBlob(pcd_image);
   if (image->columns < image->rows)
     DestroyImage(pcd_image);

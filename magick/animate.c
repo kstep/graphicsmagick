@@ -415,6 +415,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int SceneCompare(const void *x,const void *y)
 {
   Image
@@ -425,6 +429,10 @@ static int SceneCompare(const void *x,const void *y)
   image_2=(Image **) y;
   return((int) (*image_1)->scene-(int) (*image_2)->scene);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 MagickExport void XAnimateBackgroundImage(Display *display,
   XResourceInfo *resource_info, Image *image)
@@ -615,8 +623,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     if (images[scene]->scene == 0)
       break;
   if (scene == (int) number_scenes)
-    qsort((void *) images,number_scenes,sizeof(Image *),
-      (int (*)(const void *,const void *)) SceneCompare);
+    qsort((void *) images,number_scenes,sizeof(Image *),SceneCompare);
   /*
     Initialize Standard Colormap.
   */
@@ -1211,8 +1218,7 @@ MagickExport Image *XAnimateImages(Display *display,
     if (images[scene]->scene == 0)
       break;
   if (scene == (int) number_scenes)
-    qsort((void *) images,number_scenes,sizeof(Image *),
-      (int (*)(const void *,const void *)) SceneCompare);
+    qsort((void *) images,number_scenes,sizeof(Image *),SceneCompare);
   /*
     Initialize Standard Colormap.
   */
@@ -1246,8 +1252,8 @@ MagickExport Image *XAnimateImages(Display *display,
   windows->context.id=(Window) NULL;
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->context);
-  class_hints->res_name="superclass";
-  class_hints->res_class="Display";
+  class_hints->res_name=(char *) "superclass";
+  class_hints->res_class=(char *) "Display";
   manager_hints->flags=InputHint | StateHint;
   manager_hints->input=False;
   manager_hints->initial_state=WithdrawnState;
@@ -1294,7 +1300,7 @@ MagickExport Image *XAnimateImages(Display *display,
   windows->icon.attributes.colormap=
     XDefaultColormap(display,icon_visual->screen);
   windows->icon.attributes.event_mask=ExposureMask | StructureNotifyMask;
-  class_hints->res_name="icon";
+  class_hints->res_name=(char *) "icon";
   manager_hints->flags=InputHint | StateHint;
   manager_hints->input=False;
   manager_hints->initial_state=IconicState;
@@ -1370,7 +1376,7 @@ MagickExport Image *XAnimateImages(Display *display,
       */
       windows->backdrop.x=0;
       windows->backdrop.y=0;
-      windows->backdrop.name="ImageMagick Backdrop";
+      windows->backdrop.name=(char *) "ImageMagick Backdrop";
       windows->backdrop.flags=USSize | USPosition;
       windows->backdrop.width=XDisplayWidth(display,visual_info->screen);
       windows->backdrop.height=XDisplayHeight(display,visual_info->screen);
@@ -1381,7 +1387,7 @@ MagickExport Image *XAnimateImages(Display *display,
       windows->backdrop.attributes.event_mask=ButtonPressMask | KeyPressMask |
         StructureNotifyMask;
       windows->backdrop.attributes.override_redirect=True;
-      class_hints->res_name="backdrop";
+      class_hints->res_name=(char *) "backdrop";
       manager_hints->flags=IconWindowHint | InputHint | StateHint;
       manager_hints->icon_window=windows->icon.id;
       manager_hints->input=True;
@@ -1443,8 +1449,8 @@ MagickExport Image *XAnimateImages(Display *display,
   */
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->info);
-  windows->info.name="Info";
-  windows->info.icon_name="Info";
+  windows->info.name=(char *) "Info";
+  windows->info.icon_name=(char *) "Info";
   windows->info.border_width=1;
   windows->info.x=2;
   windows->info.y=2;
@@ -1452,7 +1458,7 @@ MagickExport Image *XAnimateImages(Display *display,
   windows->info.attributes.win_gravity=UnmapGravity;
   windows->info.attributes.event_mask=
     ButtonPressMask | ExposureMask | StructureNotifyMask;
-  class_hints->res_name="info";
+  class_hints->res_name=(char *) "info";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
   manager_hints->input=False;
   manager_hints->initial_state=NormalState;
@@ -1478,13 +1484,13 @@ MagickExport Image *XAnimateImages(Display *display,
   FormatString(resource_name,"%.1024s.command",resource_info->client_name);
   windows->command.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->command.name=MagickTitle;
+  windows->command.name=(char *) MagickTitle;
   windows->command.border_width=0;
   windows->command.flags|=PPosition;
   windows->command.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
     ButtonReleaseMask | EnterWindowMask | ExposureMask | LeaveWindowMask |
     OwnerGrabButtonMask | StructureNotifyMask;
-  class_hints->res_name="command";
+  class_hints->res_name=(char *) "command";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
   manager_hints->input=False;
   manager_hints->initial_state=NormalState;
@@ -1516,7 +1522,7 @@ MagickExport Image *XAnimateImages(Display *display,
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | OwnerGrabButtonMask |
     StructureNotifyMask;
-  class_hints->res_name="widget";
+  class_hints->res_name=(char *) "widget";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
   manager_hints->input=True;
   manager_hints->initial_state=NormalState;
@@ -1544,7 +1550,7 @@ MagickExport Image *XAnimateImages(Display *display,
   windows->popup.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | StructureNotifyMask;
-  class_hints->res_name="popup";
+  class_hints->res_name=(char *) "popup";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
   manager_hints->input=True;
   manager_hints->initial_state=NormalState;

@@ -4,10 +4,6 @@
 #ifndef _IMAGE_H
 #define _IMAGE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #if defined(QuantumLeap)
 /*
   Color quantum is [0..65535].
@@ -769,7 +765,6 @@ extern MagickExport void
   DestroyImageInfo(ImageInfo *),
   (*DestroyImagePixels)(Image *),
   DestroyImages(Image *),
-  DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),
@@ -1019,6 +1014,17 @@ extern MagickExport void
   UnregisterXVImage(void),
   UnregisterXWDImage(void),
   UnregisterYUVImage(void);
+
+/*
+  Language dependent methods.
+*/
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+extern MagickExport void
+  DestroyMagickInfo(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

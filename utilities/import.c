@@ -582,7 +582,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("frame",option+1,2) == 0)
             {
-              argv[i]="-ignore";  /* resolve option confict */
+              argv[i]=(char *) "-ignore";  /* resolve option confict */
               ximage_info.frame=(*option == '-');
               break;
             }
@@ -820,7 +820,7 @@ int main(int argc,char **argv)
       }
   }
   if (filename == (char *) NULL)
-    filename="magick.miff";
+    filename=(char *) "magick.miff";
   /*
     Read image from X server.
   */

@@ -1130,6 +1130,7 @@ MagickExport unsigned int CompositeImage(Image *image,
     case AddCompositeOp:
     case SubtractCompositeOp:
     case DifferenceCompositeOp:
+    case MultiplyCompositeOp:
     case BumpmapCompositeOp:
     case BlendCompositeOp:
     case ReplaceRedCompositeOp:
@@ -1485,6 +1486,15 @@ MagickExport unsigned int CompositeImage(Image *image,
               if (opacity < 0)
                 opacity+=(MaxRGB+1);
             }
+          break;
+        }
+        case MultiplyCompositeOp:
+        {
+          red=(p->red*q->red)/(MaxRGB+1);
+          green=(p->green*q->green)/(MaxRGB+1);
+          blue=(p->blue*q->blue)/(MaxRGB+1);
+          if (composite_image->matte)
+            opacity=q->opacity;
           break;
         }
         case DifferenceCompositeOp:
@@ -1995,59 +2005,59 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         i++;  /* skip record number */
         switch (image->iptc_profile.info[i])
         {
-          case 5: tag="Image Name"; break;
-          case 7: tag="Edit Status"; break;
-          case 10: tag="Priority"; break;
-          case 15: tag="Category"; break;
-          case 20: tag="Supplemental Category"; break;
-          case 22: tag="Fixture Identifier"; break;
-          case 25: tag="Keyword"; break;
-          case 30: tag="Release Date"; break;
-          case 35: tag="Release Time"; break;
-          case 40: tag="Special Instructions"; break;
-          case 45: tag="Reference Service"; break;
-          case 47: tag="Reference Date"; break;
-          case 50: tag="Reference Number"; break;
-          case 55: tag="Created Date"; break;
-          case 60: tag="Created Time"; break;
-          case 65: tag="Originating Program"; break;
-          case 70: tag="Program Version"; break;
-          case 75: tag="Object Cycle"; break;
-          case 80: tag="Byline"; break;
-          case 85: tag="Byline Title"; break;
-          case 90: tag="City"; break;
-          case 95: tag="Province State"; break;
-          case 100: tag="Country Code"; break;
-          case 101: tag="Country"; break;
-          case 103: tag="Original Transmission Reference"; break;
-          case 105: tag="Headline"; break;
-          case 110: tag="Credit"; break;
-          case 115: tag="Source"; break;
-          case 116: tag="Copyright String"; break;
-          case 120: tag="Caption"; break;
-          case 121: tag="Local Caption"; break;
-          case 122: tag="Caption Writer"; break;
-          case 200: tag="Custom Field 1"; break;
-          case 201: tag="Custom Field 2"; break;
-          case 202: tag="Custom Field 3"; break;
-          case 203: tag="Custom Field 4"; break;
-          case 204: tag="Custom Field 5"; break;
-          case 205: tag="Custom Field 6"; break;
-          case 206: tag="Custom Field 7"; break;
-          case 207: tag="Custom Field 8"; break;
-          case 208: tag="Custom Field 9"; break;
-          case 209: tag="Custom Field 10"; break;
-          case 210: tag="Custom Field 11"; break;
-          case 211: tag="Custom Field 12"; break;
-          case 212: tag="Custom Field 13"; break;
-          case 213: tag="Custom Field 14"; break;
-          case 214: tag="Custom Field 15"; break;
-          case 215: tag="Custom Field 16"; break;
-          case 216: tag="Custom Field 17"; break;
-          case 217: tag="Custom Field 18"; break;
-          case 218: tag="Custom Field 19"; break;
-          case 219: tag="Custom Field 20"; break;
-          default: tag="unknown"; break;
+          case 5: tag=(char *) "Image Name"; break;
+          case 7: tag=(char *) "Edit Status"; break;
+          case 10: tag=(char *) "Priority"; break;
+          case 15: tag=(char *) "Category"; break;
+          case 20: tag=(char *) "Supplemental Category"; break;
+          case 22: tag=(char *) "Fixture Identifier"; break;
+          case 25: tag=(char *) "Keyword"; break;
+          case 30: tag=(char *) "Release Date"; break;
+          case 35: tag=(char *) "Release Time"; break;
+          case 40: tag=(char *) "Special Instructions"; break;
+          case 45: tag=(char *) "Reference Service"; break;
+          case 47: tag=(char *) "Reference Date"; break;
+          case 50: tag=(char *) "Reference Number"; break;
+          case 55: tag=(char *) "Created Date"; break;
+          case 60: tag=(char *) "Created Time"; break;
+          case 65: tag=(char *) "Originating Program"; break;
+          case 70: tag=(char *) "Program Version"; break;
+          case 75: tag=(char *) "Object Cycle"; break;
+          case 80: tag=(char *) "Byline"; break;
+          case 85: tag=(char *) "Byline Title"; break;
+          case 90: tag=(char *) "City"; break;
+          case 95: tag=(char *) "Province State"; break;
+          case 100: tag=(char *) "Country Code"; break;
+          case 101: tag=(char *) "Country"; break;
+          case 103: tag=(char *) "Original Transmission Reference"; break;
+          case 105: tag=(char *) "Headline"; break;
+          case 110: tag=(char *) "Credit"; break;
+          case 115: tag=(char *) "Source"; break;
+          case 116: tag=(char *) "Copyright String"; break;
+          case 120: tag=(char *) "Caption"; break;
+          case 121: tag=(char *) "Local Caption"; break;
+          case 122: tag=(char *) "Caption Writer"; break;
+          case 200: tag=(char *) "Custom Field 1"; break;
+          case 201: tag=(char *) "Custom Field 2"; break;
+          case 202: tag=(char *) "Custom Field 3"; break;
+          case 203: tag=(char *) "Custom Field 4"; break;
+          case 204: tag=(char *) "Custom Field 5"; break;
+          case 205: tag=(char *) "Custom Field 6"; break;
+          case 206: tag=(char *) "Custom Field 7"; break;
+          case 207: tag=(char *) "Custom Field 8"; break;
+          case 208: tag=(char *) "Custom Field 9"; break;
+          case 209: tag=(char *) "Custom Field 10"; break;
+          case 210: tag=(char *) "Custom Field 11"; break;
+          case 211: tag=(char *) "Custom Field 12"; break;
+          case 212: tag=(char *) "Custom Field 13"; break;
+          case 213: tag=(char *) "Custom Field 14"; break;
+          case 214: tag=(char *) "Custom Field 15"; break;
+          case 215: tag=(char *) "Custom Field 16"; break;
+          case 216: tag=(char *) "Custom Field 17"; break;
+          case 217: tag=(char *) "Custom Field 18"; break;
+          case 218: tag=(char *) "Custom Field 19"; break;
+          case 219: tag=(char *) "Custom Field 20"; break;
+          default: tag=(char *) "unknown"; break;
         }
         i++;
         (void) fprintf(file,"    %.1024s:\n",tag);
@@ -3522,12 +3532,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.colorspace=GRAYColorspace;
             (void) QuantizeImage(&quantize_info,*image);
             commands[0]=SetClientName((char *) NULL);
-            commands[1]="-edge";
+            commands[1]=(char *) "-edge";
             commands[2]=argv[i];
-            commands[3]="-blur";
+            commands[3]=(char *) "-blur";
             commands[4]=argv[i];
-            commands[5]="-normalize";
-            commands[6]="-negate";
+            commands[5]=(char *) "-normalize";
+            commands[6]=(char *) "-negate";
             MogrifyImage(clone_info,7,commands,image);
             (void) QuantizeImage(&quantize_info,*image);
             continue;
@@ -4259,8 +4269,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               continue;
             next=0;
             arguments=argv[i];
-            status=Tokenizer(&token_info,0,token,length,arguments,"","=","\"",0,
-              &breaker,&next,&quote);
+            status=Tokenizer(&token_info,0,token,length,arguments,(char *) "",
+              (char *) "=",(char *) "\"",0,&breaker,&next,&quote);
             if (status == 0)
               {
                 char
@@ -5934,6 +5944,10 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int IntensityCompare(const void *x,const void *y)
 {
   PixelPacket
@@ -5944,6 +5958,10 @@ static int IntensityCompare(const void *x,const void *y)
   color_2=(PixelPacket *) y;
   return((int) Intensity(*color_2)-Intensity(*color_1));
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 MagickExport unsigned int SortColormapByIntensity(Image *image)
 {
@@ -5986,7 +6004,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
     Sort image colormap by decreasing color popularity.
   */
   qsort((void *) image->colormap,(int) image->colors,sizeof(PixelPacket),
-    (int (*)(const void *, const void *)) IntensityCompare);
+    IntensityCompare);
   /*
     Update image colormap indexes to sorted colormap order.
   */
@@ -6778,12 +6796,9 @@ MagickExport unsigned int TransmitImage(Image *image,ImageInfo *image_info,
     }
     case StreamTransmitType:
     {
-      int
-        (*fifo)(const Image *,const void *,const size_t);
-
-      fifo=(int (*)(const Image *,const void *,const size_t)) param1;
       image->client_data=param2;
-      status=WriteStream(image_info,image,fifo);
+      status=WriteStream(image_info,image,
+        (int(*)(const _Image*,const void*,const unsigned)) param1);
       break;
     }
     case ImageTransmitType:

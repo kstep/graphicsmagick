@@ -194,7 +194,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   /*
     Map Command widget.
   */
-  windows->command.name="Annotate";
+  windows->command.name=(char *) "Annotate";
   windows->command.data=4;
   (void) XCommandWidget(display,windows,AnnotateMenu,(XEvent *) NULL);
   XMapRaised(display,windows->command.id);
@@ -247,7 +247,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             */
             for (i=0; i < MaxNumberFonts; i++)
               FontMenu[i]=resource_info->font_name[i];
-            FontMenu[MaxNumberFonts-2]="Browser...";
+            FontMenu[MaxNumberFonts-2]=(char *) "Browser...";
             FontMenu[MaxNumberFonts-1]=(char *) NULL;
             /*
               Select a font name from the pop-up menu.
@@ -259,7 +259,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             if (font_number == (MaxNumberFonts-2))
               {
                 static char
-                  font_name[MaxTextExtent]="fixed";
+                  font_name[MaxTextExtent] = "fixed";
 
                 /*
                   Select a font name from a browser.
@@ -291,8 +291,8 @@ static unsigned int XAnnotateEditImage(Display *display,
             */
             for (i=0; i < (int) (MaxNumberPens-2); i++)
               ColorMenu[i]=resource_info->pen_colors[i];
-            ColorMenu[MaxNumberPens-2]="transparent";
-            ColorMenu[MaxNumberPens-1]="Browser...";
+            ColorMenu[MaxNumberPens-2]=(char *) "transparent";
+            ColorMenu[MaxNumberPens-1]=(char *) "Browser...";
             ColorMenu[MaxNumberPens]=(char *) NULL;
             /*
               Select a pen color from the pop-up menu.
@@ -335,8 +335,8 @@ static unsigned int XAnnotateEditImage(Display *display,
             */
             for (i=0; i < (int) (MaxNumberPens-2); i++)
               ColorMenu[i]=resource_info->pen_colors[i];
-            ColorMenu[MaxNumberPens-2]="transparent";
-            ColorMenu[MaxNumberPens-1]="Browser...";
+            ColorMenu[MaxNumberPens-2]=(char *) "transparent";
+            ColorMenu[MaxNumberPens-1]=(char *) "Browser...";
             ColorMenu[MaxNumberPens]=(char *) NULL;
             /*
               Select a pen color from the pop-up menu.
@@ -398,7 +398,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             /*
               Select a command from the pop-up menu.
             */
-            RotateMenu[8]="Dialog...";
+            RotateMenu[8]=(char *) "Dialog...";
             entry=XMenuWidget(display,windows,AnnotateMenu[id],RotateMenu,
               command);
             if (entry < 0)
@@ -572,7 +572,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   /*
     Begin annotating the image with text.
   */
-  windows->command.name="Text";
+  windows->command.name=(char *) "Text";
   windows->command.data=0;
   (void) XCommandWidget(display,windows,TextMenu,(XEvent *) NULL);
   state=DefaultState;
@@ -1195,7 +1195,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   /*
     Map Command widget.
   */
-  windows->command.name="Chop";
+  windows->command.name=(char *) "Chop";
   windows->command.data=1;
   (void) XCommandWidget(display,windows,ChopMenu,(XEvent *) NULL);
   XMapRaised(display,windows->command.id);
@@ -1624,7 +1624,7 @@ static unsigned int XColorEditImage(Display *display,
   /*
     Map Command widget.
   */
-  windows->command.name="Color Edit";
+  windows->command.name=(char *) "Color Edit";
   windows->command.data=4;
   (void) XCommandWidget(display,windows,ColorEditMenu,(XEvent *) NULL);
   XMapRaised(display,windows->command.id);
@@ -1705,7 +1705,7 @@ static unsigned int XColorEditImage(Display *display,
             */
             for (i=0; i < (int) (MaxNumberPens-2); i++)
               ColorMenu[i]=resource_info->pen_colors[i];
-            ColorMenu[MaxNumberPens-2]="Browser...";
+            ColorMenu[MaxNumberPens-2]=(char *) "Browser...";
             ColorMenu[MaxNumberPens-1]=(char *) NULL;
             /*
               Select a pen color from the pop-up menu.
@@ -1751,7 +1751,7 @@ static unsigned int XColorEditImage(Display *display,
             */
             for (i=0; i < (int) (MaxNumberPens-2); i++)
               ColorMenu[i]=resource_info->pen_colors[i];
-            ColorMenu[MaxNumberPens-2]="Browser...";
+            ColorMenu[MaxNumberPens-2]=(char *) "Browser...";
             ColorMenu[MaxNumberPens-1]=(char *) NULL;
             /*
               Select a pen color from the pop-up menu.
@@ -1800,7 +1800,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Select a command from the pop-up menu.
             */
-            FuzzMenu[5]="Dialog...";
+            FuzzMenu[5]=(char *) "Dialog...";
             entry=XMenuWidget(display,windows,ColorEditMenu[id],FuzzMenu,
               command);
             if (entry < 0)
@@ -2274,7 +2274,7 @@ static unsigned int XCompositeImage(Display *display,
   /*
     Map Command widget.
   */
-  windows->command.name="Composite";
+  windows->command.name=(char *) "Composite";
   windows->command.data=1;
   (void) XCommandWidget(display,windows,CompositeMenu,(XEvent *) NULL);
   XMapRaised(display,windows->command.id);
@@ -2343,6 +2343,7 @@ static unsigned int XCompositeImage(Display *display,
                 "Add",
                 "Subtract",
                 "Difference",
+                "Multiply",
                 "Bumpmap",
                 "Replace",
                 "ReplaceRed",
@@ -2915,17 +2916,17 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   {
     case CopyMode:
     {
-      windows->command.name="Copy";
+      windows->command.name=(char *) "Copy";
       break;
     }
     case CropMode:
     {
-      windows->command.name="Crop";
+      windows->command.name=(char *) "Crop";
       break;
     }
     case CutMode:
     {
-      windows->command.name="Cut";
+      windows->command.name=(char *) "Cut";
       break;
     }
   }
@@ -3179,7 +3180,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           state|=ExitState;
           if (LocaleCompare(windows->command.name,"Rectify") == 0)
             break;
-          windows->command.name="Rectify";
+          windows->command.name=(char *) "Rectify";
           windows->command.data=0;
           (void) XCommandWidget(display,windows,RectifyModeMenu,
             (XEvent *) NULL);
@@ -3685,7 +3686,7 @@ static unsigned int XDrawEditImage(Display *display,
   /*
     Map Command widget.
   */
-  windows->command.name="Draw";
+  windows->command.name=(char *) "Draw";
   windows->command.data=4;
   (void) XCommandWidget(display,windows,DrawMenu,(XEvent *) NULL);
   XMapRaised(display,windows->command.id);
@@ -3773,8 +3774,8 @@ static unsigned int XDrawEditImage(Display *display,
               */
               for (i=0; i < (int) (MaxNumberPens-2); i++)
                 ColorMenu[i]=resource_info->pen_colors[i];
-              ColorMenu[MaxNumberPens-2]="transparent";
-              ColorMenu[MaxNumberPens-1]="Browser...";
+              ColorMenu[MaxNumberPens-2]=(char *) "transparent";
+              ColorMenu[MaxNumberPens-1]=(char *) "Browser...";
               ColorMenu[MaxNumberPens]=(char *) NULL;
               /*
                 Select a pen color from the pop-up menu.
@@ -3842,7 +3843,7 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Select a command from the pop-up menu.
               */
-              StipplesMenu[7]="Open...";
+              StipplesMenu[7]=(char *) "Open...";
               entry=XMenuWidget(display,windows,DrawMenu[id],StipplesMenu,
                 command);
               if (entry < 0)
@@ -3948,7 +3949,7 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Select a command from the pop-up menu.
               */
-              WidthsMenu[5]="Dialog...";
+              WidthsMenu[5]=(char *) "Dialog...";
               entry=XMenuWidget(display,windows,DrawMenu[id],WidthsMenu,
                 command);
               if (entry < 0)
@@ -4858,7 +4859,7 @@ static CommandType XImageWindowCommand(Display *display,
     delta[MaxTextExtent] = "";
 
   static const char
-    Digits[]="01234567890";
+    Digits[] = "01234567890";
 
   static KeySym
     last_symbol = XK_0;
@@ -5368,7 +5369,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case NewCommand:
     {
       static char
-        *format = "gradient",
+        *format = (char *) "gradient",
         color[MaxTextExtent] = "gray",
         geometry[MaxTextExtent] = "640x480";
 
@@ -5380,7 +5381,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (*geometry == '\0')
         break;
       if (!status)
-        format="xc";
+        format=(char *) "xc";
       XColorBrowserWidget(display,windows,"Select",color);
       if (*color == '\0')
         break;
@@ -5610,7 +5611,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-flop";
+      argv[1]=(char *) "-flop";
       MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.crop_geometry != (char *) NULL)
@@ -5637,7 +5638,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-flip";
+      argv[1]=(char *) "-flip";
       MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.crop_geometry != (char *) NULL)
@@ -5720,9 +5721,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-bordercolor";
+      argv[1]=(char *) "-bordercolor";
       argv[2]=color;
-      argv[3]="-shear";
+      argv[3]=(char *) "-shear";
       argv[4]=geometry;
       MogrifyImage(resource_info->image_info,5,argv,image);
       XSetCursorState(display,windows,False);
@@ -5752,7 +5753,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-roll";
+      argv[1]=(char *) "-roll";
       argv[2]=geometry;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -5797,7 +5798,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       (void) strcpy(modulate_factors,"0.0/0.0/");
       (void) strcat(modulate_factors,hue_percent);
-      argv[1]="-modulate";
+      argv[1]=(char *) "-modulate";
       argv[2]=modulate_factors;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -5826,7 +5827,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       (void) strcpy(modulate_factors,"0.0/");
       (void) strcat(modulate_factors,saturation_percent);
-      argv[1]="-modulate";
+      argv[1]=(char *) "-modulate";
       argv[2]=modulate_factors;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -5854,7 +5855,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       (void) strcpy(modulate_factors,brightness_percent);
-      argv[1]="-modulate";
+      argv[1]=(char *) "-modulate";
       argv[2]=modulate_factors;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -5881,7 +5882,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-gamma";
+      argv[1]=(char *) "-gamma";
       argv[2]=factor;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -5898,7 +5899,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-contrast";
+      argv[1]=(char *) "-contrast";
       MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -5914,7 +5915,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="+contrast";
+      argv[1]=(char *) "+contrast";
       MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -5930,7 +5931,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-equalize";
+      argv[1]=(char *) "-equalize";
       MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -5946,7 +5947,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-normalize";
+      argv[1]=(char *) "-normalize";
       MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -5962,7 +5963,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-negate";
+      argv[1]=(char *) "-negate";
       MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -5978,8 +5979,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-colorspace";
-      argv[2]="gray";
+      argv[1]=(char *) "-colorspace";
+      argv[2]=(char *) "gray";
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6004,7 +6005,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-map";
+      argv[1]=(char *) "-map";
       argv[2]=filename;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6031,7 +6032,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-colors";
+      argv[1]=(char *) "-colors";
       argv[2]=colors;
       argv[3]=(char *) (status ? "-dither" : "+dither");
       MogrifyImage(resource_info->image_info,4,argv,image);
@@ -6049,7 +6050,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-despeckle";
+      argv[1]=(char *) "-despeckle";
       MogrifyImage(resource_info->image_info,2,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6075,7 +6076,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-emboss";
+      argv[1]=(char *) "-emboss";
       argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6102,7 +6103,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-noise";
+      argv[1]=(char *) "-noise";
       argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6126,7 +6127,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         break;
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="+noise";
+      argv[1]=(char *) "+noise";
       argv[2]=noise_type;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6153,7 +6154,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-sharpen";
+      argv[1]=(char *) "-sharpen";
       argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6180,7 +6181,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-blur";
+      argv[1]=(char *) "-blur";
       argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6207,7 +6208,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-threshold";
+      argv[1]=(char *) "-threshold";
       argv[2]=factor;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6234,7 +6235,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-edge";
+      argv[1]=(char *) "-edge";
       argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6261,7 +6262,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-spread";
+      argv[1]=(char *) "-spread";
       argv[2]=amount;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6315,7 +6316,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-raise";
+      argv[1]=(char *) "-raise";
       argv[2]=bevel_width;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6342,7 +6343,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-segment";
+      argv[1]=(char *) "-segment";
       argv[2]=threshold;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6369,7 +6370,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-solarize";
+      argv[1]=(char *) "-solarize";
       argv[2]=factor;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6396,7 +6397,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-swirl";
+      argv[1]=(char *) "-swirl";
       argv[2]=degrees;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6423,7 +6424,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-implode";
+      argv[1]=(char *) "-implode";
       argv[2]=factor;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6450,7 +6451,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-wave";
+      argv[1]=(char *) "-wave";
       argv[2]=geometry;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6477,7 +6478,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-paint";
+      argv[1]=(char *) "-paint";
       argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6505,7 +6506,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-charcoal";
+      argv[1]=(char *) "-charcoal";
       argv[2]=radius;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
@@ -6606,9 +6607,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-bordercolor";
+      argv[1]=(char *) "-bordercolor";
       argv[2]=color;
-      argv[3]="-border";
+      argv[3]=(char *) "-border";
       argv[4]=geometry;
       MogrifyImage(resource_info->image_info,5,argv,image);
       XSetCursorState(display,windows,False);
@@ -6641,9 +6642,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      argv[1]="-mattecolor";
+      argv[1]=(char *) "-mattecolor";
       argv[2]=color;
-      argv[3]="-frame";
+      argv[3]=(char *) "-frame";
       argv[4]=geometry;
       MogrifyImage(resource_info->image_info,5,argv,image);
       XSetCursorState(display,windows,False);
@@ -7365,7 +7366,7 @@ static unsigned int XMatteEditImage(Display *display,
   /*
     Map Command widget.
   */
-  windows->command.name="Matte Edit";
+  windows->command.name=(char *) "Matte Edit";
   windows->command.data=3;
   (void) XCommandWidget(display,windows,MatteEditMenu,(XEvent *) NULL);
   XMapRaised(display,windows->command.id);
@@ -7446,7 +7447,7 @@ static unsigned int XMatteEditImage(Display *display,
             */
             for (i=0; i < (int) (MaxNumberPens-2); i++)
               ColorMenu[i]=resource_info->pen_colors[i];
-            ColorMenu[MaxNumberPens-2]="Browser...";
+            ColorMenu[MaxNumberPens-2]=(char *) "Browser...";
             ColorMenu[MaxNumberPens-1]=(char *) NULL;
             /*
               Select a pen color from the pop-up menu.
@@ -7495,7 +7496,7 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Select a command from the pop-up menu.
             */
-            FuzzMenu[5]="Dialog...";
+            FuzzMenu[5]=(char *) "Dialog...";
             entry=XMenuWidget(display,windows,MatteEditMenu[id],FuzzMenu,
               command);
             if (entry < 0)
@@ -8281,7 +8282,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   /*
     Map Command widget.
   */
-  windows->command.name="Paste";
+  windows->command.name=(char *) "Paste";
   windows->command.data=1;
   (void) XCommandWidget(display,windows,PasteMenu,(XEvent *) NULL);
   XMapRaised(display,windows->command.id);
@@ -8350,6 +8351,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
                 "Add",
                 "Subtract",
                 "Difference",
+                "Multiply",
                 "Bumpmap",
                 "Replace",
                 "ReplaceRed",
@@ -8939,7 +8941,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
   /*
     Map Command widget.
   */
-  windows->command.name="ROI";
+  windows->command.name=(char *) "ROI";
   windows->command.data=0;
   (void) XCommandWidget(display,windows,ROIMenu,(XEvent *) NULL);
   XMapRaised(display,windows->command.id);
@@ -9154,7 +9156,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           state|=ExitState;
           if (LocaleCompare(windows->command.name,"Apply") == 0)
             break;
-          windows->command.name="Apply";
+          windows->command.name=(char *) "Apply";
           windows->command.data=ApplyMenus;
           (void) XCommandWidget(display,windows,ApplyMenu,(XEvent *) NULL);
           break;
@@ -9619,7 +9621,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
       /*
         Map Command widget.
       */
-      windows->command.name="Rotate";
+      windows->command.name=(char *) "Rotate";
       windows->command.data=2;
       (void) XCommandWidget(display,windows,RotateMenu,(XEvent *) NULL);
       XMapRaised(display,windows->command.id);
@@ -9672,7 +9674,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
                 */
                 for (i=0; i < (int) (MaxNumberPens-2); i++)
                   ColorMenu[i]=resource_info->pen_colors[i];
-                ColorMenu[MaxNumberPens-2]="Browser...";
+                ColorMenu[MaxNumberPens-2]=(char *) "Browser...";
                 ColorMenu[MaxNumberPens-1]=(char *) NULL;
                 /*
                   Select a pen color from the pop-up menu.
@@ -11198,9 +11200,9 @@ static Image *XVisualDirectoryImage(Display *display,
     return((Image *) NULL);
   image=(Image *) NULL;
   commands[0]=resource_info->client_name;
-  commands[1]="-label";
+  commands[1]=(char *) "-label";
   commands[2]=(char *) DefaultTileLabel;
-  commands[3]="-geometry";
+  commands[3]=(char *) "-geometry";
   commands[4]=(char *) DefaultTileGeometry;
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
@@ -12073,8 +12075,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->context.id=(Window) NULL;
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->context);
-  class_hints->res_name="superclass";
-  class_hints->res_class="Display";
+  class_hints->res_name=(char *) "superclass";
+  class_hints->res_class=(char *) "Display";
   manager_hints->flags=InputHint | StateHint;
   manager_hints->input=False;
   manager_hints->initial_state=WithdrawnState;
@@ -12121,7 +12123,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->icon.attributes.colormap=
     XDefaultColormap(display,icon_visual->screen);
   windows->icon.attributes.event_mask=ExposureMask | StructureNotifyMask;
-  class_hints->res_name="icon";
+  class_hints->res_name=(char *) "icon";
   manager_hints->flags=InputHint | StateHint;
   manager_hints->input=False;
   manager_hints->initial_state=IconicState;
@@ -12218,7 +12220,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       */
       windows->backdrop.x=0;
       windows->backdrop.y=0;
-      windows->backdrop.name="ImageMagick Backdrop";
+      windows->backdrop.name=(char *) "ImageMagick Backdrop";
       windows->backdrop.flags=USSize | USPosition;
       windows->backdrop.width=XDisplayWidth(display,visual_info->screen);
       windows->backdrop.height=XDisplayHeight(display,visual_info->screen);
@@ -12229,7 +12231,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       windows->backdrop.attributes.event_mask=ButtonPressMask | KeyPressMask |
         StructureNotifyMask;
       windows->backdrop.attributes.override_redirect=True;
-      class_hints->res_name="backdrop";
+      class_hints->res_name=(char *) "backdrop";
       manager_hints->flags=IconWindowHint | InputHint | StateHint;
       manager_hints->icon_window=windows->icon.id;
       manager_hints->input=True;
@@ -12291,8 +12293,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,resource_info,
     &windows->info);
-  windows->info.name="Info";
-  windows->info.icon_name="Info";
+  windows->info.name=(char *) "Info";
+  windows->info.icon_name=(char *) "Info";
   windows->info.border_width=1;
   windows->info.x=2;
   windows->info.y=2;
@@ -12300,7 +12302,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->info.attributes.win_gravity=UnmapGravity;
   windows->info.attributes.event_mask=
     ButtonPressMask | ExposureMask | StructureNotifyMask;
-  class_hints->res_name="info";
+  class_hints->res_name=(char *) "info";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
   manager_hints->input=False;
   manager_hints->initial_state=NormalState;
@@ -12326,13 +12328,13 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.command",resource_info->client_name);
   windows->command.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->command.name=MagickTitle;
+  windows->command.name=(char *) MagickTitle;
   windows->command.border_width=0;
   windows->command.flags|=PPosition;
   windows->command.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
     ButtonReleaseMask | EnterWindowMask | ExposureMask | LeaveWindowMask |
     OwnerGrabButtonMask | StructureNotifyMask;
-  class_hints->res_name="command";
+  class_hints->res_name=(char *) "command";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
   manager_hints->input=False;
   manager_hints->initial_state=NormalState;
@@ -12366,7 +12368,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | OwnerGrabButtonMask |
     StructureNotifyMask;
-  class_hints->res_name="widget";
+  class_hints->res_name=(char *) "widget";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
   manager_hints->input=True;
   manager_hints->initial_state=NormalState;
@@ -12394,7 +12396,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->popup.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | StructureNotifyMask;
-  class_hints->res_name="popup";
+  class_hints->res_name=(char *) "popup";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
   manager_hints->input=True;
   manager_hints->initial_state=NormalState;
@@ -12436,7 +12438,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->magnify.attributes.event_mask=ButtonPressMask | ButtonReleaseMask |
     ExposureMask | KeyPressMask | KeyReleaseMask | OwnerGrabButtonMask |
     StructureNotifyMask;
-  class_hints->res_name="magnify";
+  class_hints->res_name=(char *) "magnify";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
   manager_hints->input=True;
   manager_hints->initial_state=NormalState;
@@ -12451,7 +12453,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->pan);
-  windows->pan.name="Pan Icon";
+  windows->pan.name=(char *) "Pan Icon";
   windows->pan.width=windows->icon.width;
   windows->pan.height=windows->icon.height;
   FormatString(resource_name,"%.1024s.pan",resource_info->client_name);
@@ -12464,7 +12466,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->pan.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
     ButtonReleaseMask | ExposureMask | KeyPressMask | KeyReleaseMask |
     StructureNotifyMask;
-  class_hints->res_name="pan";
+  class_hints->res_name=(char *) "pan";
   manager_hints->flags=InputHint | StateHint | WindowGroupHint;
   manager_hints->input=True;
   manager_hints->initial_state=NormalState;
@@ -12780,7 +12782,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           {
             if (*event.xclient.data.l == (int) windows->im_update_widget)
               {
-                windows->command.name=MagickTitle;
+                windows->command.name=(char *) MagickTitle;
                 windows->command.data=MagickMenus;
                 (void) XCommandWidget(display,windows,CommandMenu,
                   (XEvent *) NULL);

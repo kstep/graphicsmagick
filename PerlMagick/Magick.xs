@@ -182,7 +182,7 @@ static char
   *CompositeTypes[] =
   {
     "Undefined", "Over", "In", "Out", "Atop", "Xor", "Plus", "Minus",
-    "Add", "Subtract", "Difference", "Bumpmap", "Replace",
+    "Add", "Subtract", "Difference", "Multiply", "Bumpmap", "Replace",
     "ReplaceRed", "ReplaceGreen", "ReplaceBlue", "ReplaceMatte",
     "Blend", "Displace", "Modulate", "Threshold", (char *) NULL
   },

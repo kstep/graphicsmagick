@@ -479,7 +479,7 @@ MagickExport void ExpandFilename(char *filename)
       */
       p=(char *) getenv("HOME");
       if (p == (char *) NULL)
-        p=".";
+        p=(char *) ".";
       (void) strcpy(expanded_filename,p);
       (void) strcat(expanded_filename,filename+1);
     }
@@ -1233,6 +1233,10 @@ MagickExport unsigned int IsDirectory(const char *filename)
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int FileCompare(const void *x,const void *y)
 {
   register char
@@ -1243,6 +1247,10 @@ static int FileCompare(const void *x,const void *y)
   q=(char **) y;
   return(LocaleCompare(*p,*q));
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 MagickExport char **ListFiles(const char *directory,const char *pattern,
   int *number_entries)
@@ -1345,8 +1353,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
   /*
     Sort filelist in ascending order.
   */
-  qsort((void *) filelist,*number_entries,sizeof(char **),
-    (int (*)(const void *, const void *)) FileCompare);
+  qsort((void *) filelist,*number_entries,sizeof(char **),FileCompare);
   return(filelist);
 }
 

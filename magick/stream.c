@@ -553,7 +553,7 @@ static unsigned int SyncPixelStream(Image *image)
 %  The format of the WriteStream method is:
 %
 %      unsigned int WriteStream(const ImageInfo *image_info,Image *,
-%        void (*Stream)(const Image *,const void *,const size_t))
+%        int (*Stream)(const Image *,const void *,const size_t))
 %
 %  A description of each parameter follows:
 %

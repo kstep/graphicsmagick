@@ -87,6 +87,11 @@ static MagicInfo
 %      void DestroyMagicInfo(void)
 %
 */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 MagickExport void DestroyMagicInfo(void)
 {
   MagicInfoMember
@@ -112,6 +117,10 @@ MagickExport void DestroyMagicInfo(void)
   }
   LiberateMemory((void **) &magic_list);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

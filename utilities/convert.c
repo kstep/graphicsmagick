@@ -192,7 +192,7 @@
 %
 %
 */
-void ConcatenateImages(int argc,char **argv)
+static void ConcatenateImages(int argc,char **argv)
 {
   FILE
     *input,

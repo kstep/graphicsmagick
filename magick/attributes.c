@@ -882,8 +882,8 @@ void StoreImageAttribute(Image *image,char *text)
   token=AllocateString((char *) NULL);
   for ( ; ; )
   {
-    status=Tokenizer(&token_info,0,token,MaxTextExtent,text,"","=","\'",0,
-      &breaker,&next,&quote);
+    status=Tokenizer(&token_info,0,token,MaxTextExtent,text,(char *) "",
+      (char *) "=",(char *) "\'",0,&breaker,&next,&quote);
     if (status != False)
       break;
     switch (state)

@@ -1548,6 +1548,10 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int BlueCompare(const void *x,const void *y)
 {
   PixelPacket
@@ -1591,6 +1595,10 @@ static int RedCompare(const void *x,const void *y)
   color_2=(PixelPacket *) y;
   return((int) color_1->red-color_2->red);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 MagickExport Image *MedianFilterImage(Image *image,const double radius,
   ExceptionInfo *exception)
@@ -1665,17 +1673,13 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
           *w++=s[u];
         s+=image->columns;
       }
-      qsort((void *) window,width*width,sizeof(PixelPacket),
-        (int (*)(const void *,const void *)) RedCompare);
+      qsort((void *) window,width*width,sizeof(PixelPacket),RedCompare);
       q->red=window[center].red;
-      qsort((void *) window,width*width,sizeof(PixelPacket),
-        (int (*)(const void *,const void *)) GreenCompare);
+      qsort((void *) window,width*width,sizeof(PixelPacket),GreenCompare);
       q->green=window[center].green;
-      qsort((void *) window,width*width,sizeof(PixelPacket),
-        (int (*)(const void *,const void *)) BlueCompare);
+      qsort((void *) window,width*width,sizeof(PixelPacket),BlueCompare);
       q->blue=window[center].blue;
-      qsort((void *) window,width*width,sizeof(PixelPacket),
-        (int (*)(const void *,const void *)) OpacityCompare);
+      qsort((void *) window,width*width,sizeof(PixelPacket),OpacityCompare);
       q->opacity=window[center].opacity;
       q++;
     }
@@ -2313,8 +2317,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
           *w++=s[u];
         s+=image->columns;
       }
-      qsort((void *) window,width*width,sizeof(PixelPacket),
-        (int (*)(const void *,const void *)) RedCompare);
+      qsort((void *) window,width*width,sizeof(PixelPacket),RedCompare);
       pixel=window[center];
       if (pixel.red == window[0].red)
         {
@@ -2332,8 +2335,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
             pixel=window[i];
           }
       q->red=pixel.red;
-      qsort((void *) window,width*width,sizeof(PixelPacket),
-        (int (*)(const void *,const void *)) GreenCompare);
+      qsort((void *) window,width*width,sizeof(PixelPacket),GreenCompare);
       pixel=window[center];
       if (pixel.green == window[0].green)
         {
@@ -2351,8 +2353,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
             pixel=window[i];
           }
       q->green=pixel.green;
-      qsort((void *) window,width*width,sizeof(PixelPacket),
-        (int (*)(const void *,const void *)) BlueCompare);
+      qsort((void *) window,width*width,sizeof(PixelPacket),BlueCompare);
       pixel=window[center];
       if (pixel.blue == window[0].blue)
         {
@@ -2370,8 +2371,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
             pixel=window[i];
           }
       q->blue=pixel.blue;
-      qsort((void *) window,width*width,sizeof(PixelPacket),
-        (int (*)(const void *,const void *)) OpacityCompare);
+      qsort((void *) window,width*width,sizeof(PixelPacket),OpacityCompare);
       pixel=window[center];
       if (pixel.opacity == window[0].opacity)
         {

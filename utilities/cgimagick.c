@@ -256,11 +256,12 @@ char *HttpUnescape(char *string,char *result)
 %               POST, or both (the most typical).
 %
 */
+
 typedef enum
 {
   CGI_GET,
   CGI_POST,
-  CGI_ANY,
+  CGI_ANY
 } CGIAccessType;
 
 char *CGIGetInput(CGIAccessType iMethod)
@@ -475,46 +476,46 @@ typedef struct _mime_spec
 } mime_spec;
 
 static mime_spec specs[] = {
-  ".", "text/plain",
-  ".htm", "text/html",
-  ".html", "text/html",
-  ".txt", "text/plain",
-  ".gif", "image/gif",
-  ".jpe", "image/jpeg",
-  ".jpeg", "image/jpeg",
-  ".jpg", "image/jpeg",
-  ".pbm", "image/x-portable-bitmap",
-  ".pgm", "image/x-portable-graymap",
-  ".png", "image/png",
-  ".pnm", "image/x-portable-anymap",
-  ".ppm", "image/x-portable-pixmap",
-  ".ras", "image/x-cmu-raster",
-  ".rgb", "image/x-rgb",
-  ".tif", "image/tiff",
-  ".tiff", "image/tiff",
-  ".xbm", "image/x-xbitmap",
-  ".xpm", "image/x-xpixmap",
-  ".xwd", "image/x-xwindowdump",
-  ".avi", "video/msvideo",
-  ".mov", "video/quicktime",
-  ".mpe", "video/mpeg",
-  ".mpeg", "video/mpeg",
-  ".mpg", "video/mpeg",
-  ".mp3", "audio/mpeg",
-  ".wav", "audio/wav",
-  ".bin", "application/octet-stream",
-  ".eps", "application/postscript",
-  ".exe", "application/octet-stream",
-  ".gtar", "application/x-gtar",
-  ".gz", "application/x-gzip",
-  ".hdf", "application/x-hdf",
-  ".jar", "application/java-archive",
-  ".lzh", "application/x-lzh",
-  ".pdf", "application/pdf",
-  ".ps", "application/postscript",
-  ".tar", "application/tar",
-  ".tgz", "application/x-gzip",
-  ".zip", "application/zip"
+  (char *) ".", (char *) "text/plain",
+  (char *) ".htm", (char *) "text/html",
+  (char *) ".html", (char *) "text/html",
+  (char *) ".txt", (char *) "text/plain",
+  (char *) ".gif", (char *) "image/gif",
+  (char *) ".jpe", (char *) "image/jpeg",
+  (char *) ".jpeg", (char *) "image/jpeg",
+  (char *) ".jpg", (char *) "image/jpeg",
+  (char *) ".pbm", (char *) "image/x-portable-bitmap",
+  (char *) ".pgm", (char *) "image/x-portable-graymap",
+  (char *) ".png", (char *) "image/png",
+  (char *) ".pnm", (char *) "image/x-portable-anymap",
+  (char *) ".ppm", (char *) "image/x-portable-pixmap",
+  (char *) ".ras", (char *) "image/x-cmu-raster",
+  (char *) ".rgb", (char *) "image/x-rgb",
+  (char *) ".tif", (char *) "image/tiff",
+  (char *) ".tiff", (char *) "image/tiff",
+  (char *) ".xbm", (char *) "image/x-xbitmap",
+  (char *) ".xpm", (char *) "image/x-xpixmap",
+  (char *) ".xwd", (char *) "image/x-xwindowdump",
+  (char *) ".avi", (char *) "video/msvideo",
+  (char *) ".mov", (char *) "video/quicktime",
+  (char *) ".mpe", (char *) "video/mpeg",
+  (char *) ".mpeg", (char *) "video/mpeg",
+  (char *) ".mpg", (char *) "video/mpeg",
+  (char *) ".mp3", (char *) "audio/mpeg",
+  (char *) ".wav", (char *) "audio/wav",
+  (char *) ".bin", (char *) "application/octet-stream",
+  (char *) ".eps", (char *) "application/postscript",
+  (char *) ".exe", (char *) "application/octet-stream",
+  (char *) ".gtar", (char *) "application/x-gtar",
+  (char *) ".gz", (char *) "application/x-gzip",
+  (char *) ".hdf", (char *) "application/x-hdf",
+  (char *) ".jar", (char *) "application/java-archive",
+  (char *) ".lzh", (char *) "application/x-lzh",
+  (char *) ".pdf", (char *) "application/pdf",
+  (char *) ".ps", (char *) "application/postscript",
+  (char *) ".tar", (char *) "application/tar",
+  (char *) ".tgz", (char *) "application/x-gzip",
+  (char *) ".zip", (char *) "application/zip"
 };
 
 void GetFileMimeType(const char *pszPath, char *pszType, unsigned long cbMax)
@@ -529,7 +530,7 @@ void GetFileMimeType(const char *pszPath, char *pszType, unsigned long cbMax)
   /*
     try to locate file extension
   */
-  pszExt = strrchr( pszPath, '.');    
+  pszExt = (char *) strrchr( pszPath, '.');    
   if (pszExt != NULL)
     {
 #ifdef USE_REGISTRY   
@@ -764,14 +765,14 @@ int main(int argc,char **argv)
                     {
                       i++;
                       LiberateMemory((void **) &(argv[i]));
-                      argv[i]=(char *)CGIFifo;
+                      argv[i]=(char *) CGIFifo;
                       mode=2;
                     }
                   else if (LocaleNCompare("-xctxt",option,6) == 0)
                     {
                       i++;
                       LiberateMemory((void **) &(argv[i]));
-                      argv[i]=(char *)NULL;
+                      argv[i]=(char *) NULL;
                       mode=2;
                     }
                   else if (LocaleNCompare("-xinfo",option,6) == 0)

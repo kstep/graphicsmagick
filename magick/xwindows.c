@@ -2225,6 +2225,11 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
 %
 %
 */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 MagickExport int XError(Display *display,XErrorEvent *error)
 {
   assert(display != (Display *) NULL);
@@ -2254,6 +2259,10 @@ MagickExport int XError(Display *display,XErrorEvent *error)
   }
   return(True);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3007,7 +3016,7 @@ MagickExport XrmDatabase XGetResourceDatabase(Display *display,
     Initialize resource database.
   */
   XrmInitialize();
-  XGetDefault(display,(char *) client_name,"dummy");
+  XGetDefault(display,(char *) client_name,(char *) "dummy");
   resource_database=XrmGetDatabase(display);
   /*
     Combine application database.
@@ -3097,15 +3106,18 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
   resource_info->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   resource_info->close_server=True;
   resource_info->client_name=client_name;
-  resource_value=XGetResourceClass(database,client_name,"backdrop","False");
+  resource_value=XGetResourceClass(database,client_name,(char *) "backdrop",
+    (char *) "False");
   resource_info->backdrop=IsTrue(resource_value);
   resource_info->background_color=XGetResourceInstance(database,client_name,
-    "background",BackgroundColor);
+    (char *) "background",BackgroundColor);
   resource_info->border_color=XGetResourceInstance(database,client_name,
-    "borderColor",BorderColor);
-  resource_value=XGetResourceClass(database,client_name,"borderWidth","2");
+    (char *) "borderColor",BorderColor);
+  resource_value=XGetResourceClass(database,client_name,(char *) "borderWidth",
+    (char *) "2");
   resource_info->border_width=atoi(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"colormap","shared");
+  resource_value=XGetResourceClass(database,client_name,(char *) "colormap",
+    (char *) "shared");
   resource_info->colormap=UndefinedColormap;
   if (LocaleCompare("private",resource_value) == 0)
     resource_info->colormap=PrivateColormap;
@@ -3113,53 +3125,58 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     resource_info->colormap=SharedColormap;
   if (resource_info->colormap == UndefinedColormap)
     MagickWarning(OptionWarning,"Unrecognized colormap type",resource_value);
-  resource_value=
-    XGetResourceClass(database,client_name,"colorRecovery","False");
+  resource_value=XGetResourceClass(database,client_name,
+    (char *) "colorRecovery",(char *) "False");
   resource_info->color_recovery=IsTrue(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"confirmExit","False");
+  resource_value=XGetResourceClass(database,client_name,(char *) "confirmExit",
+    (char *) "False");
   resource_info->confirm_exit=IsTrue(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"debug","False");
+  resource_value=XGetResourceClass(database,client_name,(char *) "debug",
+    (char *) "False");
   resource_info->debug=IsTrue(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"delay","0");
+  resource_value=XGetResourceClass(database,client_name,(char *) "delay",
+    (char *) "0");
   resource_info->delay=atoi(resource_value);
-  resource_info->display_gamma=
-    XGetResourceClass(database,client_name,"displayGamma","2.2");
-  resource_value=
-    XGetResourceClass(database,client_name,"displayWarnings","True");
+  resource_info->display_gamma=XGetResourceClass(database,client_name,
+    (char *) "displayGamma",(char *) "2.2");
+  resource_value=XGetResourceClass(database,client_name,
+    (char *) "displayWarnings",(char *) "True");
   resource_info->display_warnings=IsTrue(resource_value);
-  resource_info->font=
-    XGetResourceClass(database,client_name,"font",(char *) NULL);
-  resource_info->font=XGetResourceClass(database,client_name,"fontList",
-    resource_info->font);
-  resource_info->font_name[0]=
-    XGetResourceClass(database,client_name,"font1","fixed");
-  resource_info->font_name[1]=
-    XGetResourceClass(database,client_name,"font2","variable");
-  resource_info->font_name[2]=
-    XGetResourceClass(database,client_name,"font3","5x8");
-  resource_info->font_name[3]=
-    XGetResourceClass(database,client_name,"font4","6x10");
-  resource_info->font_name[4]=
-    XGetResourceClass(database,client_name,"font5","7x13bold");
-  resource_info->font_name[5]=
-    XGetResourceClass(database,client_name,"font6","8x13bold");
-  resource_info->font_name[6]=
-    XGetResourceClass(database,client_name,"font7","9x15bold");
-  resource_info->font_name[7]=
-    XGetResourceClass(database,client_name,"font8","10x20");
-  resource_info->font_name[8]=
-    XGetResourceClass(database,client_name,"font9","12x24");
-  resource_info->font_name[9]=
-    XGetResourceClass(database,client_name,"font0","fixed");
-  resource_info->font_name[10]=
-    XGetResourceClass(database,client_name,"font0","fixed");
+  resource_info->font=XGetResourceClass(database,client_name,(char *) "font",
+    (char *) NULL);
+  resource_info->font=XGetResourceClass(database,client_name,
+    (char *) "fontList",resource_info->font);
+  resource_info->font_name[0]=XGetResourceClass(database,client_name,
+    (char *) "font1",(char *) "fixed");
+  resource_info->font_name[1]=XGetResourceClass(database,client_name,
+    (char *) "font2",(char *) "variable");
+  resource_info->font_name[2]=XGetResourceClass(database,client_name,
+    (char *) "font3",(char *) "5x8");
+  resource_info->font_name[3]=XGetResourceClass(database,client_name,
+    (char *) "font4",(char *) "6x10");
+  resource_info->font_name[4]=XGetResourceClass(database,client_name,
+    (char *) "font5",(char *) "7x13bold");
+  resource_info->font_name[5]=XGetResourceClass(database,client_name,
+    (char *) "font6",(char *) "8x13bold");
+  resource_info->font_name[6]=XGetResourceClass(database,client_name,
+    (char *) "font7",(char *) "9x15bold");
+  resource_info->font_name[7]=XGetResourceClass(database,client_name,
+    (char *) "font8",(char *) "10x20");
+  resource_info->font_name[8]=XGetResourceClass(database,client_name,
+    (char *) "font9",(char *) "12x24");
+  resource_info->font_name[9]=XGetResourceClass(database,client_name,
+    (char *) "font0",(char *) "fixed");
+  resource_info->font_name[10]=XGetResourceClass(database,client_name,
+    (char *) "font0",(char *) "fixed");
   resource_info->foreground_color=XGetResourceInstance(database,client_name,
     "foreground",ForegroundColor);
-  resource_value=XGetResourceClass(database,client_name,"gammaCorrect","True");
+  resource_value=XGetResourceClass(database,client_name,(char *) "gammaCorrect",
+    (char *) "True");
   resource_info->gamma_correct=IsTrue(resource_value);
   resource_info->image_geometry=XGetResourceClass(database,client_name,
-    "geometry",(char *) NULL);
-  resource_value=XGetResourceClass(database,client_name,"gravity","Center");
+    (char *) "geometry",(char *) NULL);
+  resource_value=XGetResourceClass(database,client_name,(char *) "gravity",
+    (char *) "Center");
   resource_info->gravity=(-1);
   if (LocaleCompare("Forget",resource_value) == 0)
     resource_info->gravity=ForgetGravity;
@@ -3190,68 +3207,77 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     }
   (void) getcwd(resource_info->home_directory,MaxTextExtent-1);
   resource_info->icon_geometry=XGetResourceClass(database,client_name,
-    "iconGeometry",(char *) NULL);
-  resource_value=XGetResourceClass(database,client_name,"iconic","False");
+    (char *) "iconGeometry",(char *) NULL);
+  resource_value=XGetResourceClass(database,client_name,(char *) "iconic",
+    (char *) "False");
   resource_info->iconic=IsTrue(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"immutable",
-    (char *) (LocaleCompare(client_name,"PerlMagick") == 0 ? "True" : "False"));
+  resource_value=XGetResourceClass(database,client_name,(char *) "immutable",
+    LocaleCompare(client_name,(char *) "PerlMagick") == 0 ? (char *) "True" :
+    (char *) "False");
   resource_info->immutable=IsTrue(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"magnify","3");
+  resource_value=XGetResourceClass(database,client_name,(char *) "magnify",
+    (char *) "3");
   resource_info->magnify=atoi(resource_value);
-  resource_info->map_type=
-    XGetResourceClass(database,client_name,"map",(char *) NULL);
+  resource_info->map_type=XGetResourceClass(database,client_name,(char *) "map",
+    (char *) NULL);
   resource_info->matte_color=XGetResourceInstance(database,client_name,
-    "mattecolor",(char *) NULL);
-  resource_info->name=
-    XGetResourceClass(database,client_name,"name",(char *) NULL);
-  resource_info->pen_colors[0]=
-    XGetResourceClass(database,client_name,"pen1","black");
-  resource_info->pen_colors[1]=
-    XGetResourceClass(database,client_name,"pen2","blue");
-  resource_info->pen_colors[2]=
-    XGetResourceClass(database,client_name,"pen3","cyan");
-  resource_info->pen_colors[3]=
-    XGetResourceClass(database,client_name,"pen4","green");
-  resource_info->pen_colors[4]=
-    XGetResourceClass(database,client_name,"pen5","gray");
-  resource_info->pen_colors[5]=
-    XGetResourceClass(database,client_name,"pen6","red");
-  resource_info->pen_colors[6]=
-    XGetResourceClass(database,client_name,"pen7","magenta");
-  resource_info->pen_colors[7]=
-    XGetResourceClass(database,client_name,"pen8","yellow");
-  resource_info->pen_colors[8]=
-    XGetResourceClass(database,client_name,"pen9","white");
-  resource_info->pen_colors[9]=
-    XGetResourceClass(database,client_name,"pen0","gray");
-  resource_info->pen_colors[10]=
-    XGetResourceClass(database,client_name,"pen0","gray");
-  resource_value=XGetResourceClass(database,client_name,"pause","0");
+    (char *) "mattecolor",(char *) NULL);
+  resource_info->name=XGetResourceClass(database,client_name,(char *) "name",
+    (char *) NULL);
+  resource_info->pen_colors[0]=XGetResourceClass(database,client_name,
+    (char *) "pen1",(char *) "black");
+  resource_info->pen_colors[1]=XGetResourceClass(database,client_name,
+    (char *) "pen2",(char *) "blue");
+  resource_info->pen_colors[2]=XGetResourceClass(database,client_name,
+    (char *) "pen3",(char *) "cyan");
+  resource_info->pen_colors[3]=XGetResourceClass(database,client_name,
+    (char *) "pen4",(char *) "green");
+  resource_info->pen_colors[4]=XGetResourceClass(database,client_name,
+    (char *) "pen5",(char *) "gray");
+  resource_info->pen_colors[5]=XGetResourceClass(database,client_name,
+    (char *) "pen6",(char *) "red");
+  resource_info->pen_colors[6]=XGetResourceClass(database,client_name,
+    (char *) "pen7",(char *) "magenta");
+  resource_info->pen_colors[7]=XGetResourceClass(database,client_name,
+    (char *) "pen8",(char *) "yellow");
+  resource_info->pen_colors[8]=XGetResourceClass(database,client_name,
+    (char *) "pen9",(char *) "white");
+  resource_info->pen_colors[9]=XGetResourceClass(database,client_name,
+    (char *) "pen0",(char *) "gray");
+  resource_info->pen_colors[10]=XGetResourceClass(database,client_name,
+    (char *) "pen0",(char *) "gray");
+  resource_value=XGetResourceClass(database,client_name,(char *) "pause",
+    (char *) "0");
   resource_info->pause=atoi(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"quantum","1");
+  resource_value=XGetResourceClass(database,client_name,(char *) "quantum",
+    (char *) "1");
   resource_info->quantum=atoi(resource_value);
-  resource_info->text_font=
-    XGetResourceClass(database,client_name,"font",(char *) NULL);
   resource_info->text_font=XGetResourceClass(database,client_name,
-    "textFontList",resource_info->text_font);
-  resource_info->title=
-    XGetResourceClass(database,client_name,"title",(char *) NULL);
-  resource_value=XGetResourceClass(database,client_name,"undoCache","16");
+    (char *) "font",(char *) NULL);
+  resource_info->text_font=XGetResourceClass(database,client_name,
+    (char *) "textFontList",resource_info->text_font);
+  resource_info->title=XGetResourceClass(database,client_name,(char *) "title",
+    (char *) NULL);
+  resource_value=XGetResourceClass(database,client_name,(char *) "undoCache",
+    (char *) "16");
   resource_info->undo_cache=atoi(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"update","False");
+  resource_value=XGetResourceClass(database,client_name,(char *) "update",
+    (char *) "False");
   resource_info->update=IsTrue(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"usePixmap","False");
+  resource_value=XGetResourceClass(database,client_name,(char *) "usePixmap",
+    (char *) "False");
   resource_info->use_pixmap=IsTrue(resource_value);
-  resource_value=XGetResourceClass(database,client_name,"sharedMemory","True");
+  resource_value=XGetResourceClass(database,client_name,(char *) "sharedMemory",
+    (char *) "True");
   resource_info->use_shared_memory=IsTrue(resource_value);
-  resource_info->visual_type=
-    XGetResourceClass(database,client_name,"visual",(char *) NULL);
+  resource_info->visual_type=XGetResourceClass(database,client_name,
+    (char *) "visual",(char *) NULL);
   resource_info->window_group=XGetResourceClass(database,client_name,
-    "windowGroup",(char *) NULL);
-  resource_info->window_id=
-    XGetResourceClass(database,client_name,"window",(char *) NULL);
+    (char *) "windowGroup",(char *) NULL);
+  resource_info->window_id=XGetResourceClass(database,client_name,
+    (char *) "window",(char *) NULL);
   resource_info->write_filename=XGetResourceClass(database,client_name,
-    "writeFilename",(char *) NULL);
+    (char *) "writeFilename",(char *) NULL);
 }
 
 /*
@@ -4260,9 +4286,9 @@ MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   window->font_info=font_info;
   window->cursor=XCreateFontCursor(display,XC_left_ptr);
   window->busy_cursor=XCreateFontCursor(display,XC_watch);
-  window->name="\0";
+  window->name=(char *) "\0";
   window->geometry=(char *) NULL;
-  window->icon_name="\0";
+  window->icon_name=(char *) "\0";
   window->icon_geometry=resource_info->icon_geometry;
   window->crop_geometry=(char *) NULL;
   window->flags=PSize;
@@ -4839,7 +4865,7 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   */
   *windows->icon_resources=(*resource_info);
   windows->icon_resources->map_type=(char *) NULL;
-  windows->icon_resources->visual_type="default";
+  windows->icon_resources->visual_type=(char *) "default";
   windows->icon_resources->colormap=SharedColormap;
   windows->visual_info=
     XBestVisualInfo(display,windows->map_info,resource_info);
@@ -6977,6 +7003,10 @@ unsigned int XMakePixmap(Display *display,const XResourceInfo *resource_info,
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int IntensityCompare(const void *x,const void *y)
 {
   DiversityPacket
@@ -6998,6 +7028,10 @@ static int PopularityCompare(const void *x,const void *y)
   color_2=(DiversityPacket *) y;
   return((int) color_2->count-(int) color_1->count);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 MagickExport void XMakeStandardColormap(Display *display,
   XVisualInfo *visual_info,XResourceInfo *resource_info,Image *image,
@@ -7274,12 +7308,12 @@ MagickExport void XMakeStandardColormap(Display *display,
             Sort colors by decreasing intensity.
           */
           qsort((void *) diversity,image->colors,sizeof(DiversityPacket),
-            (int (*)(const void *, const void *)) IntensityCompare);
+            IntensityCompare);
           for (i=0; i < (int) image->colors; i+=Max(image->colors >> 4,2))
             diversity[i].count<<=4;  /* increase this colors popularity */
           diversity[image->colors-1].count<<=4;
           qsort((void *) diversity,image->colors,sizeof(DiversityPacket),
-            (int (*)(const void *, const void *)) PopularityCompare);
+            PopularityCompare);
           /*
             Allocate colors.
           */
@@ -8303,8 +8337,8 @@ MagickExport Window XSelectWindow(Display *display,RectangleInfo *crop_info)
   /*
     Grab the pointer using target cursor.
   */
-  target_cursor=XMakeCursor(display,root_window,
-    XDefaultColormap(display,XDefaultScreen(display)),"white","black");
+  target_cursor=XMakeCursor(display,root_window,XDefaultColormap(display,
+    XDefaultScreen(display)),(char *) "white",(char *) "black");
   status=XGrabPointer(display,root_window,False,(unsigned int)
     (ButtonPressMask | ButtonReleaseMask | ButtonMotionMask),GrabModeSync,
     GrabModeAsync,root_window,target_cursor,CurrentTime);
@@ -8422,6 +8456,11 @@ MagickExport Window XSelectWindow(Display *display,RectangleInfo *crop_info)
 %
 %
 */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 void XSignalHandler(int status)
 {
   XWindows
@@ -8444,6 +8483,10 @@ void XSignalHandler(int status)
 #endif
   Exit(status);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -8638,14 +8681,14 @@ MagickExport char *XVisualClassName(const int visual_class)
 {
   switch (visual_class)
   {
-    case StaticGray: return("StaticGray");
-    case GrayScale: return("GrayScale");
-    case StaticColor: return("StaticColor");
-    case PseudoColor: return("PseudoColor");
-    case TrueColor: return("TrueColor");
-    case DirectColor: return("DirectColor");
+    case StaticGray: return((char *) "StaticGray");
+    case GrayScale: return((char *) "GrayScale");
+    case StaticColor: return((char *) "StaticColor");
+    case PseudoColor: return((char *) "PseudoColor");
+    case TrueColor: return((char *) "TrueColor");
+    case DirectColor: return((char *) "DirectColor");
   }
-  return("unknown visual class");
+  return((char *) "unknown visual class");
 }
 
 /*

@@ -205,6 +205,11 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
 %      void ExitModules(void)
 %
 */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 MagickExport void ExitModules(void)
 {
   ModuleAliases
@@ -236,6 +241,10 @@ MagickExport void ExitModules(void)
     }
   module_list=(ModuleInfo *) NULL;
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

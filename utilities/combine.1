@@ -149,6 +149,7 @@ operation:
     Add
     Subtract
     Difference
+    Multiply
     Bumpmap
     Replace
     ReplaceRed
@@ -202,6 +203,10 @@ used to perform reversible transformations.
 .B Difference
 The result of abs(\fIcomposite image\fP \- \fIimage\fP).  This is useful for
 comparing two very similar images.
+.TP
+.B Multipy
+The result of \fIcomposite image\fP \* \fIimage\fP.  This is useful for
+the creation of drop-shadows.
 .TP
 .B Bumpmap
 The result \fIimage\fP shaded by \fIcomposite image\fP.

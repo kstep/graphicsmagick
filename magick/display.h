@@ -4,10 +4,6 @@
 #ifndef _DISPLAY_H
 #define _DISPLAY_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 /*
   Define declarations.
 */
@@ -325,6 +321,7 @@ const char
     "      Add",
     "      Subtract",
     "      Difference",
+    "      Multiply",
     "      Bumpmap",
     "      Replace",
     "      ReplaceRed",
@@ -383,6 +380,10 @@ const char
     "Difference",
     "         The result of abs(image - image window).  This is",
     "         useful for comparing two very similar images.",
+    "",
+    "Multiply",
+    "         The result of image * image window.  This is",
+    "         useful for the creation of drop-shadows.",
     "",
     "Bumpmap  The result of surface normals from image * image",
     "         window.",
@@ -1532,9 +1533,5 @@ static void
   XSetCropGeometry(Display *,XWindows *,RectangleInfo *,Image *),
   XScreenEvent(Display *,XWindows *,XEvent *),
   XTranslateImage(Display *,XWindows *,Image *,const KeySym);
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 #endif

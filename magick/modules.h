@@ -4,10 +4,6 @@
 #ifndef _MODULES_H
 #define _MODULES_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 /*
   Define declarations.
 */
@@ -90,9 +86,15 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   DestroyModuleInfo(void),
-  ExitModules(void),
   InitializeModules(void),
   ModuleToTag(const char *,const char *,char *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+extern MagickExport void
+  ExitModules(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -232,17 +232,17 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
   if (*p == '%')
     return(value*svg_info->width/svg_info->scale[n]/100.0);
   if (LocaleNCompare(p,"cm",2) == 0)
-    return(value*72.0/2.54/svg_info->scale[n]);
+    return(72.0/2.54*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"em",2) == 0)
-    return(value*svg_info->pointsize/svg_info->scale[n]);
+    return(svg_info->pointsize*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"ex",2) == 0)
-    return(value*svg_info->pointsize/svg_info->scale[n]/2.0);
+    return(svg_info->pointsize*value/svg_info->scale[n]/2.0);
   if (LocaleNCompare(p,"in",2) == 0)
-    return(value*72.0/svg_info->scale[n]);
+    return(72.0*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"mm",2) == 0)
-    return(value*72.0/25.4/svg_info->scale[n]);
+    return(72.0*25.4*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"pc",2) == 0)
-    return(value*72.0/6/svg_info->scale[n]);
+    return(72.0/6.0*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"pt",2) == 0)
     return(value/svg_info->scale[n]);
   if (LocaleNCompare(p,"px",2) == 0)
@@ -349,6 +349,10 @@ static char **GetTransformTokens(const char *text,int *number_tokens)
   tokens[i]=(char *) NULL;
   return(tokens);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 static int SVGIsStandalone(void *context)
 {
@@ -525,12 +529,13 @@ void SVGAttributeDeclaration(void *context,const xmlChar *element,
   fullname=(xmlChar *) xmlSplitQName(parser,name,&prefix);
   if (parser->inSubset == 1)
     (void) xmlAddAttributeDecl(&parser->vctxt,svg_info->document->intSubset,
-      element,fullname,prefix,(xmlAttributeType) type,value,default_value,tree);
+      element,fullname,prefix,(xmlAttributeType) type,
+      (xmlAttributeDefault) value,default_value,tree);
   else
     if (parser->inSubset == 2)
       (void) xmlAddAttributeDecl(&parser->vctxt,svg_info->document->extSubset,
-        element,fullname,prefix,(xmlAttributeType) type,value,default_value,
-        tree);
+        element,fullname,prefix,(xmlAttributeType) type,
+        (xmlAttributeDefault) value,default_value,tree);
   if (prefix != (xmlChar *) NULL)
     xmlFree(prefix);
   if (fullname != (xmlChar *) NULL)
@@ -1926,6 +1931,10 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   parser->inputMax=parser_context.inputMax;
   parser->inputTab=parser_context.inputTab;
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {

@@ -87,6 +87,11 @@ static SemaphoreInfo *
 %      void DestroyMagickInfo(void)
 %
 */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 MagickExport void DestroyMagickInfo(void)
 {
   MagickInfo
@@ -111,6 +116,10 @@ MagickExport void DestroyMagickInfo(void)
   magick_list=(MagickInfo *) NULL;
   LiberateSemaphore(magick_semaphore);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

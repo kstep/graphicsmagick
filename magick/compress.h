@@ -4,10 +4,6 @@
 #ifndef _COMPRESS_H
 #define _COMPRESS_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 extern MagickExport unsigned int
   HuffmanDecodeImage(Image *),
   HuffmanEncodeImage(const ImageInfo *,Image *),
@@ -21,9 +17,5 @@ extern MagickExport void
   Ascii85Encode(Image *,const unsigned int),
   Ascii85Flush(Image *),
   Ascii85Initialize(Image *);
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 #endif

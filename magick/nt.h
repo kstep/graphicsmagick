@@ -4,10 +4,6 @@
 #ifndef _NT_H
 #define _NT_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
@@ -106,10 +102,6 @@ extern MagickExport void
   lt_dlclose(void *),
   *lt_dlsym(void *, char *);
 
-#endif
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
 #endif
 
 #endif

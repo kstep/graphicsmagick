@@ -4,10 +4,6 @@
 #ifndef _VERSION_H
 #define _VERSION_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #define MagickCopyright  "Copyright (C) 2000 ImageMagick Studio"
 #define MagickLibVersion  0x0526
 #if defined(QuantumLeap)
@@ -16,10 +12,6 @@ extern "C" {
 #else
 #define MagickVersion  \
   "@(#)ImageMagick 5.2.6 00/12/01 Q:8 cristy@mystic.es.dupont.com"
-#endif
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
 #endif
 
 #endif

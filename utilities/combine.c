@@ -441,6 +441,8 @@ int main(int argc,char **argv)
                     compose=SubtractCompositeOp;
                   if (LocaleCompare("Difference",option) == 0)
                     compose=DifferenceCompositeOp;
+                  if (LocaleCompare("Multiply",option) == 0)
+                    compose=MultiplyCompositeOp;
                   if (LocaleCompare("Bumpmap",option) == 0)
                     compose=BumpmapCompositeOp;
                   if (LocaleCompare("Replace",option) == 0)

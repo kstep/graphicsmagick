@@ -450,9 +450,9 @@ int main(int argc,char **argv)
         break;
       else
         if (!isatty(STDIN_FILENO))
-          option="-";
+          option=(char *) "-";
         else
-          option="logo:Untitled";
+          option=(char *) "logo:Untitled";
     if ((Extent(option) > 1) && ((*option == '-') || (*option == '+')))
       switch (*(option+1))
       {
@@ -944,11 +944,11 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("map",option+1,3) == 0)
             {
-              argv[i]="+sans";
+              argv[i]=(char *) "+sans";
               resource_info.map_type=(char *) NULL;
               if (*option == '-')
                 {
-                  argv[i]="-sans";
+                  argv[i]=(char *) "-sans";
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing map type",option);

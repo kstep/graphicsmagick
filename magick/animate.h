@@ -4,10 +4,6 @@
 #ifndef _ANIMATE_H
 #define _ANIMATE_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 /*
   Animate state declarations.
 */
@@ -139,12 +135,5 @@ typedef enum
 static Image
   *XMagickCommand(Display *,XResourceInfo *,XWindows *,const CommandType,
     Image **,unsigned int *);
-
-static int
-  SceneCompare(const void *,const void *);
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 #endif

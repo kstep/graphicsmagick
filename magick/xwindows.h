@@ -4,10 +4,6 @@
 #ifndef _XWINDOWS_H
 #define _XWINDOWS_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #undef False
 #undef True
 #define XLIB_ILLEGAL_ACCESS  1
@@ -493,7 +489,7 @@ typedef struct _XWindows
 } XWindows;
 
 /*
-  X utilities routines.
+  X utilities methods.
 */
 extern MagickExport char
   *XGetResourceClass(XrmDatabase,const char *,const char *,char *),
@@ -511,9 +507,6 @@ extern MagickExport Image
   *XImportImage(const ImageInfo *,XImportInfo *),
   *XGetWindowImage(Display *,const Window,const unsigned int,
     const unsigned int);
-
-extern MagickExport int
-  XError(Display *,XErrorEvent *);
 
 extern MagickExport unsigned int
   IsTrue(const char *),
@@ -564,7 +557,6 @@ extern MagickExport void
   XRetainWindowColors(Display *,const Window),
   XUserPreferences(XResourceInfo *),
   XSetCursorState(Display *,XWindows *,const unsigned int),
-  XSignalHandler(int),
   XWarning(const ExceptionType,const char *,const char *);
 
 extern MagickExport Window
@@ -589,6 +581,23 @@ extern MagickExport XWindows
   *XSetWindows(XWindows *);
 
 /*
+  Language dependant methods.
+*/
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+extern MagickExport int
+  XError(Display *,XErrorEvent *);
+
+extern MagickExport void
+  XSignalHandler(int);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+/*
   Invoke pre-X11R6 ICCCM routines if XlibSpecificationRelease is not 6.
 */
 #if XlibSpecificationRelease < 6
@@ -609,9 +618,5 @@ extern MagickExport XWindows
 #define PRE_R4_ICCCM
 #endif
 #include "widget.h"
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
 
 #endif

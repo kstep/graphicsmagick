@@ -4,10 +4,6 @@
 #ifndef _DELEGATES_H
 #define _DELEGATES_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 /*
   Delegate structure definitions.
 */
@@ -30,7 +26,7 @@ typedef struct _DelegateInfo
 } DelegateInfo;
 
 /*
-  MagickExported delegate methods.
+  Magick delegate methods.
 */
 extern MagickExport char
   *GetDelegateCommand(const ImageInfo *,Image *,const char *,const char *);
@@ -42,6 +38,14 @@ extern MagickExport unsigned int
   GetDelegateInfo(const char *,const char *,DelegateInfo *),
   InvokeDelegate(const ImageInfo *,Image *,const char *,const char *),
   ListDelegateInfo(FILE *);
+
+/*
+  Language dependent  delegate methods.
+*/
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 extern MagickExport void
   DestroyDelegateInfo(void);
