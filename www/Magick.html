@@ -15,115 +15,117 @@
 <ol>
 <li>
 <a href="#C1">I received the following message, "?????? delegation failed
-...". What does it mean?</a></li>
+...". What does it mean?</a>
 
 <li>
 <a href="#C2">How can I improve the appearance of 24-bit images displayed
-on my colormapped <i>X server</i>?</a></li>
+on my colormapped <i>X server</i>?</a>
 
 <li>
 <a href="#C3">How do I set the transparency index in a GIF image so it
-displays properly within Mosaic?</a></li>
+displays properly within Mosaic?</a>
 
 <li>
 <a href="#C4">How can I stop the filenames from changing in the title bar
-of the animate(1) image window?</a></li>
+of the animate(1) image window?</a>
 
 <li>
 <a href="#C5">The image grabbed by import(1) does not look like the image
-on my <i>X server</i>. What's wrong</a></li>
+on my <i>X server</i>. What's wrong</a>
 
 <li>
-<a href="#C6">How do I animate a digital YUV image sequence?</a></li>
+<a href="#C6">How do I animate a digital YUV image sequence?</a>
 
 <li>
-<a href="#C7">How do I view only the red channel of an RGB image?</a></li>
+<a href="#C7">How do I view only the red channel of an RGB image?</a>
 
 <li>
-<a href="#C8">How do I change the default <i>PostScript</i> page size?</a></li>
+<a href="#C8">How do I change the default <i>PostScript</i> page size?</a>
 
 <li>
 <a href="#C9">When I display or convert an image, I get
 <i>Memory allocation
-error</i>. What can I do?</a></li>
+error</i>. What can I do?</a>
 
 <li>
 <a href="#C10">How do I concatenate three images left-to-right with no
-borders, frames, or text?</a></li>
+borders, frames, or text?</a>
 
 <li>
 <a href="#C11">How do I create a GIF animation sequence to display within
-Netscape?</a></li>
+Netscape?</a>
 
 <li>
 <a href="#C12">When I display a <i>PostScript</i> image it appears to be
-trimmed. I would like to display the entire page, including any white space.</a></li>
+trimmed. I would like to display the entire page, including any white space.</a>
 
 <li>
-<a href="#C13">What are visual image directories? How do I use them?</a></li>
+<a href="#C13">What are visual image directories? How do I use them?</a>
 
 <li>
 <a href="#C14">I have an HP. How do I take advantage of the Color Recovery
-option?</a></li>
+option?</a>
 
 <li>
 <a href="#C15">I use the window ID reported by
 <i>xwininfo(1)</i> with
 import and it does include the window manager frame as expected. How can
-I save the window with its frame?</a></li>
+I save the window with its frame?</a>
 
 <li>
 <a href="#C16">I displayed an image and it appears as one solid color.
-What did I do wrong?</a></li>
+What did I do wrong?</a>
 
 <li>
 <a href="#C17">I received the following message, "???? library is not available
-...". What does it mean?</a></li>
+...". What does it mean?</a>
 
 <li>
 <a href="#C18">I want to inspect the values of the matte channel within
-my image. How can I do that?</a></li>
+my image. How can I do that?</a>
 
 <li>
+<a href="#C19">Convert in.gif out.png" says "Invalid Parameter - out.png"</a>
+
 <li>
 <a href="#C20">How can I add one of those cool bevels to my image that
-I see used on the Web?</a></li>
+I see used on the Web?</a>
 
 <li>
 <a href="#C21">I try to launch display from my window manager and it fails.
-What's up?</a></li>
+What's up?</a>
 
 <li>
 <a href="#C22">When I convert Postscript to another format, how can I improve
-the appearance of the text?</a></li>
+the appearance of the text?</a>
 
 <li>
 <a href="#C23">How can I annotate an image with text that is 2 to 3 inches
-tall?</a></li>
+tall?</a>
 
 <li>
 <a href="#C24">How can I convert my GIF animation sequence to individual
-image files?</a></li>
+image files?</a>
 
 <li>
 <a href="#C25">How can I remove the background that prints around my image
-when I display it with Netscape?</a></li>
+when I display it with Netscape?</a>
 
 <li>
-<a href="#C26">How do I create a GIF image with Web safe colors?</a></li>
+<a href="#C26">How do I create a GIF image with Web safe colors?</a>
 
 <li>
 <a href="#C27">How come Adobe Acrobat 2.1 can't read ImageMagick's PDF
-format?</a></li>
+format?</a>
 
 <li>
-<a href="#C28">How can I add a matte layer to my image?</a></li>
+<a href="#C28">How can I add a matte layer to my image?</a>
 
 <li>
-<a href="#C29">How can I draw with text using 'convert' under Windows NT?</a></li>
+<a href="#C29">How can I draw with text using 'convert' under Windows NT?</a>
 
 <li>
-<a href="#C30">Why are my JPEG and GIF files larger than expected?</a></li>
+<a href="#C30">Why are my JPEG and GIF files larger than expected?</a>
 
 </ol>
 
@@ -515,6 +517,26 @@ Type:</dd>
 
 <hr size=5 width=325>
 <dt>
+<a NAME="C19"></a><b>19.
+"Convert in.gif out.png" says "Invalid Parameter - out.png"</b></dt>
+
+<dd>
+You have inadvertently run the MS Windows program called convert.exe,
+rather than the ImageMagick program of the same name.
+
+You can
+<ul>
+<li>rename either the MS convert.exe or the ImageMagick convert.exe
+<li>revise your PATH to put ImageMagick's convert.exe ahead of MS
+convert.exe
+<li>edit your Windows Registry as explained in
+<a href="http://savage.net.au/ImageMagick/html/install-convert.html">
+http://savage.net.au/ImageMagick/html/install-convert.html</a>
+</ul>
+</dd>
+
+<hr size=5 width=325>
+<dt>
 <a NAME="C20"></a><b>20. How can I add one of those cool bevels to my image
 that I see used on the Web?</b></dt>
 
@@ -528,7 +550,7 @@ image.</dd>
 <i>Surround the image with a border of color</i>: Use <tt>-border</tt>
 followed by the width and height of the border. Set the color of the border
 with <tt>-bordercolor</tt>. For example, to surround your image with a
-red border that is 25 pixels wide on each side, use:</li>
+red border that is 25 pixels wide on each side, use:
 
 <pre>&nbsp;&nbsp;&nbsp; convert -bordercolor red -border 25x25 image.jpg image.gif</pre>
 
@@ -536,7 +558,7 @@ red border that is 25 pixels wide on each side, use:</li>
 <i>Lighten or darken image edges to create a 3-D effect</i>: Use
 <tt>-raise</tt>
 followed by the width of the image edge. For example, to create a raised
-edge effect of 25 pixels, use:</li>
+edge effect of 25 pixels, use:
 
 <pre>&nbsp;&nbsp;&nbsp; convert -raise 25 image.jpg image.gif</pre>
 
@@ -544,7 +566,7 @@ edge effect of 25 pixels, use:</li>
 <i>Surround the image with an ornamental frame</i>: Use <tt>-frame</tt>
 followed by the width and height of the frame. Set the color of the border
 with <tt>-mattecolor</tt>. For example, to surround your image with a gray
-frame that is 25 pixels wide on each side, use:</li>
+frame that is 25 pixels wide on each side, use:
 
 <pre>&nbsp;&nbsp;&nbsp; convert -mattecolor gray -frame 25x25 image.jpg image.gif</pre>
 
@@ -555,7 +577,7 @@ followed by the width and height of the bevel. Set the color of the border
 with <tt>-mattecolor</tt>. This is just like the description above except
 you specify a bevel width that matches the frame width. For example, to
 surround your image with a gray bevel that is 25 pixels wide on each side,
-use:</li>
+use:
 
 <pre>&nbsp;&nbsp;&nbsp; convert -mattecolor gray -frame 25x25+0+25 image.jpg image.gif
 &nbsp;&nbsp;&nbsp; convert -mattecolor gray -frame 25x25+25+0 image.jpg image.gif</pre>
