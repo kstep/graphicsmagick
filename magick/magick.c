@@ -107,6 +107,7 @@ MagickExport void DestroyMagick(void)
   DestroyConstitute();
   DestroyMagickRegistry();
   DestroyMagickResources();
+  DestroyRandomReservoir();
   DestroySemaphore();
 #if defined(WIN32)
   DestroyTracingCriticalSection();

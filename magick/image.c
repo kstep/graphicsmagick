@@ -65,6 +65,7 @@
 #include "monitor.h"
 #include "quantize.h"
 #include "render.h"
+#include "signature.h"
 #include "utility.h"
 #include "xwindow.h"
 
