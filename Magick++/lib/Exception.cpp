@@ -162,7 +162,7 @@ Magick::ErrorCache::ErrorCache ( const std::string& what_ )
 }
 
 // Format and throw exception
-MagickPPExport void Magick::throwExceptionExplicit( const ExceptionType severity_,
+MagickDLLDecl void Magick::throwExceptionExplicit( const ExceptionType severity_,
 				     const char* reason_,
 				     const char* description_)
 {
@@ -178,7 +178,7 @@ MagickPPExport void Magick::throwExceptionExplicit( const ExceptionType severity
 }
 
 // Throw C++ exception, resetting exception argument to default state
-MagickPPExport void Magick::throwException( ExceptionInfo &exception_ )
+MagickDLLDecl void Magick::throwException( ExceptionInfo &exception_ )
 {
   // Just return if there is no reported error
   if ( exception_.severity == UndefinedException )

@@ -4,6 +4,10 @@
 //
 // Definition of Drawable (Graphic objects)
 //
+// The technique used for instantiating classes which derive from STL
+// templates is described in Microsoft MSDN Article ID: Q168958
+// "HOWTO: Exporting STL Components Inside & Outside of a Class".
+//
 
 #if !defined(Magick_Drawable_header)
 #define Magick_Drawable_header
@@ -17,13 +21,24 @@
 #include "Magick++/Color.h"
 #include "Magick++/Geometry.h"
 
+#if defined(MagickDLLBuild)
+#  if defined(MAGICK_DRAWABLE_IMPLEMENTATION)
+#    define MagickDrawableExtern
+#  else
+#   pragma warning( disable: 4231 ) // Disable warning regarding using extern
+#    define MagickDrawableExtern extern
+#  endif // MAGICK_DRAWABLE_IMPLEMENTATION
+#else
+#  define MagickDrawableExtern
+#endif // MagickDLLBuild
+
 namespace Magick
 {
 
   //
   // Representation of an x,y coordinate
   //
-  class MagickPPExport Coordinate
+  class MagickDLLDecl Coordinate
   {
   public:
     Coordinate ( void )
@@ -60,21 +75,31 @@ namespace Magick
     double _y;
   };
 
-  typedef class MagickPPExport std::list<Magick::Coordinate> CoordinateList;
+  typedef class std::list<Magick::Coordinate> CoordinateList;
+
+#if defined(MagickDLLBuild)
+  MagickDrawableExtern template class MagickDLLDecl std::list<Magick::Coordinate>;
+#endif // MagickDLLBuild
 
   // Compare two Coordinate objects regardless of LHS/RHS
-  extern MagickPPExport int operator == ( const Coordinate& left_, const Coordinate& right_ );
-  extern MagickPPExport int operator != ( const Coordinate& left_, const Coordinate& right_ );
-  extern MagickPPExport int operator >  ( const Coordinate& left_, const Coordinate& right_ );
-  extern MagickPPExport int operator <  ( const Coordinate& left_, const Coordinate& right_ );
-  extern MagickPPExport int operator >= ( const Coordinate& left_, const Coordinate& right_ );
-  extern MagickPPExport int operator <= ( const Coordinate& left_, const Coordinate& right_ );
+  extern MagickDLLDecl int operator == ( const Coordinate& left_,
+                                         const Coordinate& right_ );
+  extern MagickDLLDecl int operator != ( const Coordinate& left_,
+                                         const Coordinate& right_ );
+  extern MagickDLLDecl int operator >  ( const Coordinate& left_,
+                                         const Coordinate& right_ );
+  extern MagickDLLDecl int operator <  ( const Coordinate& left_,
+                                         const Coordinate& right_ );
+  extern MagickDLLDecl int operator >= ( const Coordinate& left_,
+                                         const Coordinate& right_ );
+  extern MagickDLLDecl int operator <= ( const Coordinate& left_,
+                                         const Coordinate& right_ );
 
   //
   // Base class for all drawable objects
   //
-  //struct MagickPPExport std::unary_function<MagickLib::DrawContext,void>;
-  class MagickPPExport DrawableBase: public std::unary_function<MagickLib::DrawContext,void>
+  //struct MagickDLLDecl std::unary_function<MagickLib::DrawContext,void>;
+  class MagickDLLDecl DrawableBase: public std::unary_function<MagickLib::DrawContext,void>
   {
   public:
     // Constructor
@@ -97,7 +122,7 @@ namespace Magick
   // Representation of a drawable surrogate object to manage drawable objects
   //
 #undef Drawable  // Conflict with <X11/Xproto.h>
-  class MagickPPExport Drawable
+  class MagickDLLDecl Drawable
   {
   public:
 
@@ -123,13 +148,31 @@ namespace Magick
     DrawableBase* dp;
   };
 
-  typedef class MagickPPExport std::list<Magick::Drawable> DrawableList;
+  // Compare two Drawable objects regardless of LHS/RHS
+  extern MagickDLLDecl int operator == ( const Drawable& left_,
+                                         const Drawable& right_ );
+  extern MagickDLLDecl int operator != ( const Drawable& left_,
+                                         const Drawable& right_ );
+  extern MagickDLLDecl int operator >  ( const Drawable& left_,
+                                         const Drawable& right_ );
+  extern MagickDLLDecl int operator <  ( const Drawable& left_,
+                                         const Drawable& right_ );
+  extern MagickDLLDecl int operator >= ( const Drawable& left_,
+                                         const Drawable& right_ );
+  extern MagickDLLDecl int operator <= ( const Drawable& left_,
+                                         const Drawable& right_ );
+
+  typedef class std::list<Magick::Drawable> DrawableList;
+
+#if defined(MagickDLLBuild)
+  MagickDrawableExtern template class MagickDLLDecl std::list<Magick::Drawable>;
+#endif // MagickDLLBuild
 
   //
   // Base class for all drawable path elements for use with
   // DrawablePath
   //
-  class MagickPPExport VPathBase
+  class MagickDLLDecl VPathBase
   {
   public:
     // Constructor
@@ -154,7 +197,7 @@ namespace Magick
   // manage drawable path elements so they may be passed as a list to
   // DrawablePath.
   //
-  class MagickPPExport VPath
+  class MagickDLLDecl VPath
   {
   public:
     // Constructor
@@ -179,14 +222,32 @@ namespace Magick
     VPathBase* dp;
   };
 
-  typedef class MagickPPExport std::list<Magick::VPath> VPathList;
+  // Compare two VPath objects regardless of LHS/RHS
+  extern MagickDLLDecl int operator == ( const VPath& left_,
+                                         const VPath& right_ );
+  extern MagickDLLDecl int operator != ( const VPath& left_,
+                                         const VPath& right_ );
+  extern MagickDLLDecl int operator >  ( const VPath& left_,
+                                         const VPath& right_ );
+  extern MagickDLLDecl int operator <  ( const VPath& left_,
+                                         const VPath& right_ );
+  extern MagickDLLDecl int operator >= ( const VPath& left_,
+                                         const VPath& right_ );
+  extern MagickDLLDecl int operator <= ( const VPath& left_,
+                                         const VPath& right_ );
+
+  typedef class std::list<Magick::VPath> VPathList;
+
+#if defined(MagickDLLBuild)
+  MagickDrawableExtern template class MagickDLLDecl std::list<Magick::VPath>;
+#endif // MagickDLLBuild
 
   //
   // Drawable Objects
   //
 
   // Affine (scaling, rotation, and translation)
-  class MagickPPExport DrawableAffine  : public DrawableBase
+  class MagickDLLDecl DrawableAffine  : public DrawableBase
   {
   public:
     DrawableAffine ( double sx_, double sy_,
@@ -263,7 +324,7 @@ namespace Magick
   };
 
   // Arc
-  class MagickPPExport DrawableArc : public DrawableBase
+  class MagickDLLDecl DrawableArc : public DrawableBase
   {
   public:
     DrawableArc ( double startX_, double startY_,
@@ -349,7 +410,7 @@ namespace Magick
   };
 
   // Bezier curve (Coordinate list must contain at least three members)
-  class MagickPPExport DrawableBezier : public DrawableBase
+  class MagickDLLDecl DrawableBezier : public DrawableBase
   {
   public:
     // Construct from coordinates
@@ -372,7 +433,7 @@ namespace Magick
   };
 
   // Circle
-  class MagickPPExport DrawableCircle : public DrawableBase
+  class MagickDLLDecl DrawableCircle : public DrawableBase
   {
   public:
     DrawableCircle ( double originX_, double originY_,
@@ -436,7 +497,7 @@ namespace Magick
   };
 
   // Colorize at point using PaintMethod
-  class MagickPPExport DrawableColor : public DrawableBase
+  class MagickDLLDecl DrawableColor : public DrawableBase
   {
   public:
     DrawableColor ( double x_, double y_,
@@ -488,8 +549,8 @@ namespace Magick
   };
 
   // Draw image at point, scaled to size specified by width and height
-  class MagickPPExport Image;
-  class MagickPPExport DrawableCompositeImage : public DrawableBase
+  class MagickDLLDecl Image;
+  class MagickDLLDecl DrawableCompositeImage : public DrawableBase
   {
   public:
     DrawableCompositeImage ( double x_, double y_,
@@ -596,7 +657,7 @@ namespace Magick
   };
 
   // Ellipse
-  class MagickPPExport DrawableEllipse : public DrawableBase
+  class MagickDLLDecl DrawableEllipse : public DrawableBase
   {
   public:
     DrawableEllipse ( double originX_, double originY_, 
@@ -682,7 +743,7 @@ namespace Magick
   };
 
   // Specify drawing fill color
-  class MagickPPExport DrawableFillColor : public DrawableBase
+  class MagickDLLDecl DrawableFillColor : public DrawableBase
   {
   public:
     DrawableFillColor ( const Color &color_ );
@@ -711,7 +772,7 @@ namespace Magick
   };
 
   // Specify fill rule (fill-rule)
-  class MagickPPExport DrawableFillRule : public DrawableBase
+  class MagickDLLDecl DrawableFillRule : public DrawableBase
   {
   public:
     DrawableFillRule ( const FillRule fillRule_ )
@@ -741,7 +802,7 @@ namespace Magick
   };
 
   // Specify drawing fill opacity
-  class MagickPPExport DrawableFillOpacity : public DrawableBase
+  class MagickDLLDecl DrawableFillOpacity : public DrawableBase
   {
   public:
     DrawableFillOpacity ( double opacity_ )
@@ -771,7 +832,7 @@ namespace Magick
   };
 
   // Specify text font
-  class MagickPPExport DrawableFont : public DrawableBase
+  class MagickDLLDecl DrawableFont : public DrawableBase
   {
   public:
     DrawableFont ( const std::string &font_ );
@@ -808,7 +869,7 @@ namespace Magick
   };
 
   // Specify text positioning gravity
-  class MagickPPExport DrawableGravity : public DrawableBase
+  class MagickDLLDecl DrawableGravity : public DrawableBase
   {
   public:
     DrawableGravity ( GravityType gravity_ )
@@ -838,7 +899,7 @@ namespace Magick
   };
 
   // Line
-  class MagickPPExport DrawableLine : public DrawableBase
+  class MagickDLLDecl DrawableLine : public DrawableBase
   {
   public:
     DrawableLine ( double startX_, double startY_,
@@ -901,7 +962,7 @@ namespace Magick
   };
 
   // Change pixel matte value to transparent using PaintMethod
-  class MagickPPExport DrawableMatte : public DrawableBase
+  class MagickDLLDecl DrawableMatte : public DrawableBase
   {
   public:
     DrawableMatte ( double x_, double y_,
@@ -953,7 +1014,7 @@ namespace Magick
   };
 
   // Drawable Path
-  class MagickPPExport DrawablePath : public DrawableBase
+  class MagickDLLDecl DrawablePath : public DrawableBase
   {
   public:
     DrawablePath ( const VPathList &path_ );
@@ -973,7 +1034,7 @@ namespace Magick
   };
 
   // Point
-  class MagickPPExport DrawablePoint : public DrawableBase
+  class MagickDLLDecl DrawablePoint : public DrawableBase
   {
   public:
     DrawablePoint ( double x_, double y_ )
@@ -1013,7 +1074,7 @@ namespace Magick
   };
 
   // Text pointsize
-  class MagickPPExport DrawablePointSize : public DrawableBase
+  class MagickDLLDecl DrawablePointSize : public DrawableBase
   {
   public:
     DrawablePointSize ( double pointSize_ )
@@ -1042,7 +1103,7 @@ namespace Magick
   };
 
   // Polygon (Coordinate list must contain at least three members)
-  class MagickPPExport DrawablePolygon : public DrawableBase
+  class MagickDLLDecl DrawablePolygon : public DrawableBase
   {
   public:
     DrawablePolygon ( const CoordinateList &coordinates_ );
@@ -1062,7 +1123,7 @@ namespace Magick
   };
 
   // Polyline (Coordinate list must contain at least three members)
-  class MagickPPExport DrawablePolyline : public DrawableBase
+  class MagickDLLDecl DrawablePolyline : public DrawableBase
   {
   public:
     DrawablePolyline ( const CoordinateList &coordinates_ );
@@ -1082,7 +1143,7 @@ namespace Magick
   };
 
   // Pop Graphic Context
-  class MagickPPExport DrawablePopGraphicContext : public DrawableBase
+  class MagickDLLDecl DrawablePopGraphicContext : public DrawableBase
   {
   public:
     DrawablePopGraphicContext ( void )
@@ -1103,7 +1164,7 @@ namespace Magick
   };
 
   // Push Graphic Context
-  class MagickPPExport DrawablePushGraphicContext : public DrawableBase
+  class MagickDLLDecl DrawablePushGraphicContext : public DrawableBase
   {
   public:
     DrawablePushGraphicContext ( void )
@@ -1124,7 +1185,7 @@ namespace Magick
   };
 
   // Pop (terminate) Pattern definition
-  class MagickPPExport DrawablePopPattern : public DrawableBase
+  class MagickDLLDecl DrawablePopPattern : public DrawableBase
   {
   public:
     DrawablePopPattern ( void )
@@ -1145,7 +1206,7 @@ namespace Magick
   };
 
   // Push (create) Pattern definition
-  class MagickPPExport DrawablePushPattern : public DrawableBase
+  class MagickDLLDecl DrawablePushPattern : public DrawableBase
   {
   public:
     DrawablePushPattern ( const std::string &id_, long x_, long y_,
@@ -1170,7 +1231,7 @@ namespace Magick
   };
 
   // Rectangle
-  class MagickPPExport DrawableRectangle : public DrawableBase
+  class MagickDLLDecl DrawableRectangle : public DrawableBase
   {
   public:
     DrawableRectangle ( double upperLeftX_, double upperLeftY_,
@@ -1233,7 +1294,7 @@ namespace Magick
   };
 
   // Apply Rotation
-  class MagickPPExport DrawableRotation : public DrawableBase
+  class MagickDLLDecl DrawableRotation : public DrawableBase
   {
   public:
     DrawableRotation ( double angle_ )
@@ -1262,7 +1323,7 @@ namespace Magick
   };
 
   // Round Rectangle
-  class MagickPPExport DrawableRoundRectangle : public DrawableBase
+  class MagickDLLDecl DrawableRoundRectangle : public DrawableBase
   {
   public:
     DrawableRoundRectangle ( double centerX_, double centerY_,
@@ -1348,7 +1409,7 @@ namespace Magick
   };
 
   // Apply Scaling
-  class MagickPPExport DrawableScaling : public DrawableBase
+  class MagickDLLDecl DrawableScaling : public DrawableBase
   {
   public:
     DrawableScaling ( double x_, double y_ )
@@ -1388,7 +1449,7 @@ namespace Magick
   };
 
   // Apply Skew in X direction
-  class MagickPPExport DrawableSkewX : public DrawableBase
+  class MagickDLLDecl DrawableSkewX : public DrawableBase
   {
   public:
     DrawableSkewX ( double angle_ )
@@ -1417,7 +1478,7 @@ namespace Magick
   };
 
   // Apply Skew in Y direction
-  class MagickPPExport DrawableSkewY : public DrawableBase
+  class MagickDLLDecl DrawableSkewY : public DrawableBase
   {
   public:
     DrawableSkewY ( double angle_ )
@@ -1446,7 +1507,7 @@ namespace Magick
   };
 
   // Stroke dasharray
-  class MagickPPExport DrawableDashArray : public DrawableBase
+  class MagickDLLDecl DrawableDashArray : public DrawableBase
   {
   public:
     DrawableDashArray( const double* dasharray_ );
@@ -1476,7 +1537,7 @@ namespace Magick
   };
 
   // Stroke dashoffset
-  class MagickPPExport DrawableDashOffset : public DrawableBase
+  class MagickDLLDecl DrawableDashOffset : public DrawableBase
   {
   public:
     DrawableDashOffset ( const double offset_ )
@@ -1505,7 +1566,7 @@ namespace Magick
   };
 
   // Stroke linecap
-  class MagickPPExport DrawableStrokeLineCap : public DrawableBase
+  class MagickDLLDecl DrawableStrokeLineCap : public DrawableBase
   {
   public:
     DrawableStrokeLineCap ( LineCap linecap_ )
@@ -1534,7 +1595,7 @@ namespace Magick
   };
 
   // Stroke linejoin
-  class MagickPPExport DrawableStrokeLineJoin : public DrawableBase
+  class MagickDLLDecl DrawableStrokeLineJoin : public DrawableBase
   {
   public:
     DrawableStrokeLineJoin ( LineJoin linejoin_ )
@@ -1563,7 +1624,7 @@ namespace Magick
   };
 
   // Stroke miterlimit
-  class MagickPPExport DrawableMiterLimit : public DrawableBase
+  class MagickDLLDecl DrawableMiterLimit : public DrawableBase
   {
   public:
     DrawableMiterLimit ( unsigned int miterlimit_ )
@@ -1593,7 +1654,7 @@ namespace Magick
 
 
   // Stroke antialias
-  class MagickPPExport DrawableStrokeAntialias : public DrawableBase
+  class MagickDLLDecl DrawableStrokeAntialias : public DrawableBase
   {
   public:
     DrawableStrokeAntialias ( bool flag_ )
@@ -1622,7 +1683,7 @@ namespace Magick
   };
 
   // Stroke color
-  class MagickPPExport DrawableStrokeColor : public DrawableBase
+  class MagickDLLDecl DrawableStrokeColor : public DrawableBase
   {
   public:
     DrawableStrokeColor ( const Color &color_ );
@@ -1651,7 +1712,7 @@ namespace Magick
   };
 
   // Stroke opacity
-  class MagickPPExport DrawableStrokeOpacity : public DrawableBase
+  class MagickDLLDecl DrawableStrokeOpacity : public DrawableBase
   {
   public:
     DrawableStrokeOpacity ( double opacity_ )
@@ -1681,7 +1742,7 @@ namespace Magick
   };
 
   // Stroke width
-  class MagickPPExport DrawableStrokeWidth : public DrawableBase
+  class MagickDLLDecl DrawableStrokeWidth : public DrawableBase
   {
   public:
     DrawableStrokeWidth ( double width_ )
@@ -1710,7 +1771,7 @@ namespace Magick
   };
 
   // Draw text at point
-  class MagickPPExport DrawableText : public DrawableBase
+  class MagickDLLDecl DrawableText : public DrawableBase
   {
   public:
     DrawableText ( const double x_, const double y_, const std::string &text_ );
@@ -1759,7 +1820,7 @@ namespace Magick
   };
 
   // Text antialias
-  class MagickPPExport DrawableTextAntialias : public DrawableBase
+  class MagickDLLDecl DrawableTextAntialias : public DrawableBase
   {
   public:
     DrawableTextAntialias ( bool flag_ )
@@ -1787,7 +1848,7 @@ namespace Magick
   };
 
   // Decoration (text decoration)
-  class MagickPPExport DrawableTextDecoration : public DrawableBase
+  class MagickDLLDecl DrawableTextDecoration : public DrawableBase
   {
   public:
     DrawableTextDecoration ( DecorationType decoration_ )
@@ -1816,7 +1877,7 @@ namespace Magick
   };
 
   // Text undercolor box
-  class MagickPPExport DrawableTextUnderColor : public DrawableBase
+  class MagickDLLDecl DrawableTextUnderColor : public DrawableBase
   {
   public:
     DrawableTextUnderColor ( const Color &color_ );
@@ -1845,7 +1906,7 @@ namespace Magick
   };
 
   // Apply Translation
-  class MagickPPExport DrawableTranslation : public DrawableBase
+  class MagickDLLDecl DrawableTranslation : public DrawableBase
   {
   public:
     DrawableTranslation ( double x_, double y_ )
@@ -1885,7 +1946,7 @@ namespace Magick
   };
 
   // Set the size of the viewbox
-  class MagickPPExport DrawableViewbox : public DrawableBase
+  class MagickDLLDecl DrawableViewbox : public DrawableBase
   {
   public:
     DrawableViewbox(unsigned long x1_, unsigned long y1_,
@@ -1950,7 +2011,7 @@ namespace Magick
   //
   // Path Element Classes To Support DrawablePath
   //
-  class MagickPPExport PathArcArgs
+  class MagickDLLDecl PathArcArgs
   {
   public:
     PathArcArgs( double radiusX_, double radiusY_,
@@ -2040,10 +2101,28 @@ namespace Magick
     double	_y;		// End-point Y
   };
 
-  typedef class MagickPPExport std::list<Magick::PathArcArgs> PathArcArgsList;
+  // Compare two PathArcArgs objects regardless of LHS/RHS
+  extern MagickDLLDecl int operator == ( const PathArcArgs& left_,
+                                         const PathArcArgs& right_ );
+  extern MagickDLLDecl int operator != ( const PathArcArgs& left_,
+                                         const PathArcArgs& right_ );
+  extern MagickDLLDecl int operator >  ( const PathArcArgs& left_,
+                                         const PathArcArgs& right_ );
+  extern MagickDLLDecl int operator <  ( const PathArcArgs& left_,
+                                         const PathArcArgs& right_ );
+  extern MagickDLLDecl int operator >= ( const PathArcArgs& left_,
+                                         const PathArcArgs& right_ );
+  extern MagickDLLDecl int operator <= ( const PathArcArgs& left_,
+                                         const PathArcArgs& right_ );
+
+  typedef class std::list<Magick::PathArcArgs> PathArcArgsList;
+
+#if defined(MagickDLLBuild)
+  MagickDrawableExtern template class MagickDLLDecl std::list<Magick::PathArcArgs>;
+#endif // MagickDLLBuild
 
   // Path Arc (Elliptical Arc)
-  class MagickPPExport PathArcAbs : public VPathBase
+  class MagickDLLDecl PathArcAbs : public VPathBase
   {
   public:
     // Draw a single arc segment
@@ -2067,7 +2146,7 @@ namespace Magick
   private:
     PathArcArgsList _coordinates;
   };
-  class MagickPPExport PathArcRel : public VPathBase
+  class MagickDLLDecl PathArcRel : public VPathBase
   {
   public:
     // Draw a single arc segment
@@ -2091,7 +2170,7 @@ namespace Magick
   };
 
   // Path Closepath
-  class MagickPPExport PathClosePath : public VPathBase
+  class MagickDLLDecl PathClosePath : public VPathBase
   {
   public:
     PathClosePath ( void )
@@ -2114,7 +2193,7 @@ namespace Magick
   //
   // Curveto (Cubic Bezier)
   //
-  class MagickPPExport PathCurvetoArgs
+  class MagickDLLDecl PathCurvetoArgs
   {
   public:
     PathCurvetoArgs( double x1_, double y1_,
@@ -2195,9 +2274,27 @@ namespace Magick
     double _y;
   };
 
-  typedef class MagickPPExport std::list<Magick::PathCurvetoArgs> PathCurveToArgsList;
+  // Compare two PathCurvetoArgs objects regardless of LHS/RHS
+  extern MagickDLLDecl int operator == ( const PathCurvetoArgs& left_,
+                                         const PathCurvetoArgs& right_ );
+  extern MagickDLLDecl int operator != ( const PathCurvetoArgs& left_,
+                                         const PathCurvetoArgs& right_ );
+  extern MagickDLLDecl int operator >  ( const PathCurvetoArgs& left_,
+                                         const PathCurvetoArgs& right_ );
+  extern MagickDLLDecl int operator <  ( const PathCurvetoArgs& left_,
+                                         const PathCurvetoArgs& right_ );
+  extern MagickDLLDecl int operator >= ( const PathCurvetoArgs& left_,
+                                         const PathCurvetoArgs& right_ );
+  extern MagickDLLDecl int operator <= ( const PathCurvetoArgs& left_,
+                                         const PathCurvetoArgs& right_ );
 
-  class MagickPPExport PathCurvetoAbs : public VPathBase
+  typedef class std::list<Magick::PathCurvetoArgs> PathCurveToArgsList;
+
+#if defined(MagickDLLBuild)
+  MagickDrawableExtern template class MagickDLLDecl std::list<Magick::PathCurvetoArgs>;
+#endif // MagickDLLBuild
+
+  class MagickDLLDecl PathCurvetoAbs : public VPathBase
   {
   public:
     // Draw a single curve
@@ -2221,7 +2318,7 @@ namespace Magick
   private:
     PathCurveToArgsList _args;
   };
-  class MagickPPExport PathCurvetoRel : public VPathBase
+  class MagickDLLDecl PathCurvetoRel : public VPathBase
   {
   public:
     // Draw a single curve
@@ -2244,7 +2341,7 @@ namespace Magick
   private:
     PathCurveToArgsList _args;
   };
-  class MagickPPExport PathSmoothCurvetoAbs : public VPathBase
+  class MagickDLLDecl PathSmoothCurvetoAbs : public VPathBase
   {
   public:
     // Draw a single curve
@@ -2268,7 +2365,7 @@ namespace Magick
   private:
     CoordinateList _coordinates;
   };
-  class MagickPPExport PathSmoothCurvetoRel : public VPathBase
+  class MagickDLLDecl PathSmoothCurvetoRel : public VPathBase
   {
   public:
     // Draw a single curve
@@ -2297,7 +2394,7 @@ namespace Magick
   //
   // Quadratic Curveto (Quadratic Bezier)
   //
-  class MagickPPExport PathQuadraticCurvetoArgs
+  class MagickDLLDecl PathQuadraticCurvetoArgs
   {
   public:
     PathQuadraticCurvetoArgs( double x1_, double y1_,
@@ -2356,9 +2453,21 @@ namespace Magick
     double _y;
   };
 
-  typedef class MagickPPExport std::list<Magick::PathQuadraticCurvetoArgs> PathQuadraticCurvetoArgsList;
+  // Compare two PathQuadraticCurvetoArgs objects regardless of LHS/RHS
+  extern MagickDLLDecl int operator == ( const PathQuadraticCurvetoArgs& left_, const PathQuadraticCurvetoArgs& right_ );
+  extern MagickDLLDecl int operator != ( const PathQuadraticCurvetoArgs& left_, const PathQuadraticCurvetoArgs& right_ );
+  extern MagickDLLDecl int operator >  ( const PathQuadraticCurvetoArgs& left_, const PathQuadraticCurvetoArgs& right_ );
+  extern MagickDLLDecl int operator <  ( const PathQuadraticCurvetoArgs& left_, const PathQuadraticCurvetoArgs& right_ );
+  extern MagickDLLDecl int operator >= ( const PathQuadraticCurvetoArgs& left_, const PathQuadraticCurvetoArgs& right_ );
+  extern MagickDLLDecl int operator <= ( const PathQuadraticCurvetoArgs& left_, const PathQuadraticCurvetoArgs& right_ );
 
-  class MagickPPExport PathQuadraticCurvetoAbs : public VPathBase
+  typedef class std::list<Magick::PathQuadraticCurvetoArgs> PathQuadraticCurvetoArgsList;
+
+#if defined(MagickDLLBuild)
+  MagickDrawableExtern template class MagickDLLDecl std::list<Magick::PathQuadraticCurvetoArgs>;
+#endif // MagickDLLBuild
+
+  class MagickDLLDecl PathQuadraticCurvetoAbs : public VPathBase
   {
   public:
     // Draw a single curve
@@ -2382,7 +2491,7 @@ namespace Magick
   private:
     PathQuadraticCurvetoArgsList _args;
   };
-  class MagickPPExport PathQuadraticCurvetoRel : public VPathBase
+  class MagickDLLDecl PathQuadraticCurvetoRel : public VPathBase
   {
   public:
     // Draw a single curve
@@ -2406,7 +2515,7 @@ namespace Magick
   private:
     PathQuadraticCurvetoArgsList _args;
   };
-  class MagickPPExport PathSmoothQuadraticCurvetoAbs : public VPathBase
+  class MagickDLLDecl PathSmoothQuadraticCurvetoAbs : public VPathBase
   {
   public:
     // Draw a single curve
@@ -2430,7 +2539,7 @@ namespace Magick
   private:
     CoordinateList _coordinates;
   };
-  class MagickPPExport PathSmoothQuadraticCurvetoRel : public VPathBase
+  class MagickDLLDecl PathSmoothQuadraticCurvetoRel : public VPathBase
   {
   public:
     // Draw a single curve
@@ -2458,7 +2567,7 @@ namespace Magick
   //
   // Path Lineto
   //
-  class MagickPPExport PathLinetoAbs : public VPathBase
+  class MagickDLLDecl PathLinetoAbs : public VPathBase
   {
   public:
     // Draw to a single point
@@ -2482,7 +2591,7 @@ namespace Magick
   private:
     CoordinateList _coordinates;
   };
-  class MagickPPExport PathLinetoRel : public VPathBase
+  class MagickDLLDecl PathLinetoRel : public VPathBase
   {
   public:
     // Draw to a single point
@@ -2508,7 +2617,7 @@ namespace Magick
   };
 
   // Path Horizontal Lineto
-  class MagickPPExport PathLinetoHorizontalAbs : public VPathBase
+  class MagickDLLDecl PathLinetoHorizontalAbs : public VPathBase
   {
   public:
     PathLinetoHorizontalAbs ( double x_ )
@@ -2536,7 +2645,7 @@ namespace Magick
   private:
     double _x;
   };
-  class MagickPPExport PathLinetoHorizontalRel : public VPathBase
+  class MagickDLLDecl PathLinetoHorizontalRel : public VPathBase
   {
   public:
     PathLinetoHorizontalRel ( double x_ )
@@ -2566,7 +2675,7 @@ namespace Magick
   };
 
   // Path Vertical Lineto
-  class MagickPPExport PathLinetoVerticalAbs : public VPathBase
+  class MagickDLLDecl PathLinetoVerticalAbs : public VPathBase
   {
   public:
     PathLinetoVerticalAbs ( double y_ )
@@ -2594,7 +2703,7 @@ namespace Magick
   private:
     double _y;
   };
-  class MagickPPExport PathLinetoVerticalRel : public VPathBase
+  class MagickDLLDecl PathLinetoVerticalRel : public VPathBase
   {
   public:
     PathLinetoVerticalRel ( double y_ )
@@ -2624,7 +2733,7 @@ namespace Magick
   };
 
   // Path Moveto
-  class MagickPPExport PathMovetoAbs : public VPathBase
+  class MagickDLLDecl PathMovetoAbs : public VPathBase
   {
   public:
     // Simple moveto
@@ -2648,7 +2757,7 @@ namespace Magick
   private:
     CoordinateList _coordinates;
   };
-  class MagickPPExport PathMovetoRel : public VPathBase
+  class MagickDLLDecl PathMovetoRel : public VPathBase
   {
   public:
     // Simple moveto

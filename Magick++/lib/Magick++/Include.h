@@ -54,18 +54,22 @@ namespace MagickLib
 // Provide appropriate DLL imports/exports for Visual C++ and MinGW builds
 //
 #if defined(WIN32) && !defined(__CYGWIN__)
+# define MagickWIN32
+#endif
+#if defined(MagickWIN32)
 #  if defined(_MT) && defined(_DLL) && !defined(_LIB)
+#    define MagickDLLBuild
 #    pragma warning( disable: 4273 )      /* Disable the stupid dll linkage warnings */
 #    if !defined(MAGICK_IMPLEMENTATION)
-#      define MagickPPExport __declspec(dllimport)
+#      define MagickDLLDecl __declspec(dllimport)
 #    else
-#      define MagickPPExport __declspec(dllexport)
+#      define MagickDLLDecl __declspec(dllexport)
 #    endif
 #  else
-#    define MagickPPExport
+#    define MagickDLLDecl
 #  endif
 #else
-#  define MagickPPExport
+#  define MagickDLLDecl
 #endif
 
 //

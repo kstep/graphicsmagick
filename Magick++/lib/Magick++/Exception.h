@@ -19,7 +19,7 @@
 
 namespace Magick
 {
-  class MagickPPExport Exception : public std::exception
+  class MagickDLLDecl Exception : public std::exception
   {
   public:
     Exception( const std::string& what_ );
@@ -36,67 +36,67 @@ namespace Magick
   // Warnings
   //
 
-  class MagickPPExport Warning : public Exception
+  class MagickDLLDecl Warning : public Exception
   {
   public:
     explicit Warning ( const std::string& what_ );
   };
   
-  class MagickPPExport WarningUndefined : public Warning
+  class MagickDLLDecl WarningUndefined : public Warning
   {
   public:
     explicit WarningUndefined ( const std::string& what_ );
   };
   
-  class MagickPPExport WarningResourceLimit : public Warning
+  class MagickDLLDecl WarningResourceLimit : public Warning
   {
   public:
     explicit WarningResourceLimit ( const std::string& what_ );
   };
   
-  class MagickPPExport WarningXServer : public Warning
+  class MagickDLLDecl WarningXServer : public Warning
   {
   public:
    explicit WarningXServer ( const std::string& what_ );
   };
   
-  class MagickPPExport WarningOption : public Warning
+  class MagickDLLDecl WarningOption : public Warning
   {
   public:
     explicit WarningOption ( const std::string& what_ );
   };
   
-  class MagickPPExport WarningDelegate : public Warning
+  class MagickDLLDecl WarningDelegate : public Warning
   {
   public:
     explicit WarningDelegate ( const std::string& what_ );
   };
   
-  class MagickPPExport WarningMissingDelegate : public Warning
+  class MagickDLLDecl WarningMissingDelegate : public Warning
   {
   public:
     explicit WarningMissingDelegate ( const std::string& what_ );
   };
   
-  class MagickPPExport WarningCorruptImage: public Warning
+  class MagickDLLDecl WarningCorruptImage: public Warning
   {
   public:
     explicit WarningCorruptImage ( const std::string& what_ );
   };
   
-  class MagickPPExport WarningFileOpen: public Warning
+  class MagickDLLDecl WarningFileOpen: public Warning
   {
   public:
     explicit WarningFileOpen ( const std::string& what_ );
   };
 
-  class MagickPPExport WarningBlob: public Warning
+  class MagickDLLDecl WarningBlob: public Warning
   {
   public:
     explicit WarningBlob ( const std::string& what_ );
   };
 
-  class MagickPPExport WarningCache: public Warning
+  class MagickDLLDecl WarningCache: public Warning
   {
   public:
     explicit WarningCache ( const std::string& what_ );
@@ -106,67 +106,67 @@ namespace Magick
   // Error exceptions
   //
 
-  class MagickPPExport Error : public Exception
+  class MagickDLLDecl Error : public Exception
   {
   public:
     explicit Error ( const std::string& what_ );
   };
 
-  class MagickPPExport ErrorUndefined : public Error
+  class MagickDLLDecl ErrorUndefined : public Error
   {
   public:
     explicit ErrorUndefined ( const std::string& what_ );
   };
   
-  class MagickPPExport ErrorResourceLimit : public Error
+  class MagickDLLDecl ErrorResourceLimit : public Error
   {
   public:
     explicit ErrorResourceLimit ( const std::string& what_ );
   };
   
-  class MagickPPExport ErrorXServer : public Error
+  class MagickDLLDecl ErrorXServer : public Error
   {
   public:
     explicit ErrorXServer ( const std::string& what_ );
   };
   
-  class MagickPPExport ErrorOption : public Error
+  class MagickDLLDecl ErrorOption : public Error
   {
   public:
     explicit ErrorOption ( const std::string& what_ );
   };
   
-  class MagickPPExport ErrorDelegate : public Error
+  class MagickDLLDecl ErrorDelegate : public Error
   {
   public:
     explicit ErrorDelegate ( const std::string& what_ );
   };
   
-  class MagickPPExport ErrorMissingDelegate : public Error
+  class MagickDLLDecl ErrorMissingDelegate : public Error
   {
   public:
     explicit ErrorMissingDelegate ( const std::string& what_ );
   };
   
-  class MagickPPExport ErrorCorruptImage: public Error
+  class MagickDLLDecl ErrorCorruptImage: public Error
   {
   public:
     explicit ErrorCorruptImage ( const std::string& what_ );
   };
   
-  class MagickPPExport ErrorFileOpen: public Error
+  class MagickDLLDecl ErrorFileOpen: public Error
   {
   public:
     explicit ErrorFileOpen ( const std::string& what_ );
   };
 
-  class MagickPPExport ErrorBlob: public Error
+  class MagickDLLDecl ErrorBlob: public Error
   {
   public:
     explicit ErrorBlob ( const std::string& what_ );
   };
 
-  class MagickPPExport ErrorCache: public Error
+  class MagickDLLDecl ErrorCache: public Error
   {
   public:
     explicit ErrorCache ( const std::string& what_ );
@@ -177,12 +177,12 @@ namespace Magick
   //
 
   // Throw exception based on raw data
-  extern MagickPPExport void throwExceptionExplicit( const MagickLib::ExceptionType severity_,
+  extern MagickDLLDecl void throwExceptionExplicit( const MagickLib::ExceptionType severity_,
                                                      const char* reason_,
                                                      const char* description_ = 0 );
 
   // Thow exception based on ImageMagick's ExceptionInfo
-  extern MagickPPExport void throwException( MagickLib::ExceptionInfo &exception_ );
+  extern MagickDLLDecl void throwException( MagickLib::ExceptionInfo &exception_ );
 
 } // namespace Magick
 

@@ -15,7 +15,7 @@
 namespace Magick
 {
   class Magick::Image;
-  class MagickPPExport Pixels
+  class MagickDLLDecl Pixels
   {
   public:
 

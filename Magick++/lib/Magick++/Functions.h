@@ -15,7 +15,7 @@
 
 namespace Magick
 {
-  void MagickPPExport CloneString( char **destination_, const std::string &source_ );
+  void MagickDLLDecl CloneString( char **destination_, const std::string &source_ );
 
 }
 #endif // Magick_Functions_header

@@ -6,6 +6,7 @@
 //
 
 #define MAGICK_IMPLEMENTATION
+#define MAGICK_DRAWABLE_IMPLEMENTATION
 
 #include <math.h>
 #include <string>
@@ -15,38 +16,35 @@
 
 using namespace std;
 
-#if defined(EXPLICIT_TEMPLATE_INSTANTIATION)
-// template class std::list <Magick::Coordinate>;
-// template class std::list<const Magick::Drawable>;
-// template class std::list<const Magick::PathArcArgs>;
-// template class std::list<const Magick::PathCurvetoArgs>;
-// template class std::list<const Magick::PathQuadraticCurvetoArgs>;
-// template class std::list<const Magick::VPath>;
-#endif
-
-extern MagickPPExport int Magick::operator == ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+MagickDLLDecl int Magick::operator == ( const Magick::Coordinate& left_,
+                      const Magick::Coordinate& right_ )
 {
   return ( ( left_.x() == right_.x() ) && ( left_.y() == right_.y() ) );
 }
-extern MagickPPExport int Magick::operator != ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+MagickDLLDecl int Magick::operator != ( const Magick::Coordinate& left_,
+                      const Magick::Coordinate& right_ )
 {
   return ( ! (left_ == right_) );
 }
-extern MagickPPExport int Magick::operator >  ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+MagickDLLDecl int Magick::operator >  ( const Magick::Coordinate& left_,
+                      const Magick::Coordinate& right_ )
 {
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
-extern MagickPPExport int Magick::operator <  ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+MagickDLLDecl int Magick::operator <  ( const Magick::Coordinate& left_,
+                                        const Magick::Coordinate& right_ )
 {
   // Based on distance from origin
   return  ( (sqrt(left_.x()*left_.x() + left_.y()*left_.y())) <
             (sqrt(right_.x()*right_.x() + right_.y()*right_.y())) );
 }
-extern MagickPPExport int Magick::operator >= ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+extern MagickDLLDecl int Magick::operator >= ( const Magick::Coordinate& left_,
+                                               const Magick::Coordinate& right_ )
 {
   return ( ( left_ > right_ ) || ( left_ == right_ ) );
 }
-extern MagickPPExport int Magick::operator <= ( const Magick::Coordinate& left_, const Magick::Coordinate& right_ )
+MagickDLLDecl int Magick::operator <= ( const Magick::Coordinate& left_,
+                                        const Magick::Coordinate& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
 }
@@ -99,6 +97,37 @@ void Magick::Drawable::operator()( MagickLib::DrawContext context_ ) const
     dp->operator()( context_ );
 }
 
+MagickDLLDecl int Magick::operator == ( const Magick::Drawable& left_,
+                                        const Magick::Drawable& right_ )
+{
+  return ( 1 );
+}
+MagickDLLDecl int Magick::operator != ( const Magick::Drawable& left_,
+                                        const Magick::Drawable& right_ )
+{
+  return ( 0 );
+}
+MagickDLLDecl int Magick::operator > ( const Magick::Drawable& left_,
+                                       const Magick::Drawable& right_ )
+{
+  return ( 0 );
+}
+MagickDLLDecl int Magick::operator <  ( const Magick::Drawable& left_,
+                                        const Magick::Drawable& right_ )
+{
+  return  ( 0 );
+}
+extern MagickDLLDecl int Magick::operator >= ( const Magick::Drawable& left_,
+                                               const Magick::Drawable& right_ )
+{
+  return ( ( left_ > right_ ) || ( left_ == right_ ) );
+}
+MagickDLLDecl int Magick::operator <= ( const Magick::Drawable& left_,
+                                        const Magick::Drawable& right_ )
+{
+  return ( ( left_ < right_ ) || ( left_ == right_ ) );
+}
+
 /*virtual*/
 Magick::VPathBase::~VPathBase ( void )
 {
@@ -145,6 +174,37 @@ void Magick::VPath::operator()( MagickLib::DrawContext context_ ) const
 {
   if(dp)
     dp->operator()( context_ );
+}
+
+MagickDLLDecl int Magick::operator == ( const Magick::VPath& left_,
+                                        const Magick::VPath& right_ )
+{
+  return ( 1 );
+}
+MagickDLLDecl int Magick::operator != ( const Magick::VPath& left_,
+                                        const Magick::VPath& right_ )
+{
+  return ( 0 );
+}
+MagickDLLDecl int Magick::operator > ( const Magick::VPath& left_,
+                                       const Magick::VPath& right_ )
+{
+  return ( 0 );
+}
+MagickDLLDecl int Magick::operator <  ( const Magick::VPath& left_,
+                                        const Magick::VPath& right_ )
+{
+  return  ( false );
+}
+extern MagickDLLDecl int Magick::operator >= ( const Magick::VPath& left_,
+                                               const Magick::VPath& right_ )
+{
+  return ( ( left_ > right_ ) || ( left_ == right_ ) );
+}
+MagickDLLDecl int Magick::operator <= ( const Magick::VPath& left_,
+                                        const Magick::VPath& right_ )
+{
+  return ( ( left_ < right_ ) || ( left_ == right_ ) );
 }
 
 //
@@ -1143,6 +1203,38 @@ Magick::DrawableBase* Magick::DrawableViewbox::copy() const
 // Path Classes
 //
 
+MagickDLLDecl int Magick::operator == ( const Magick::PathArcArgs& left_,
+                                        const Magick::PathArcArgs& right_ )
+{
+  return ( 1 );
+}
+MagickDLLDecl int Magick::operator != ( const Magick::PathArcArgs& left_,
+                                        const Magick::PathArcArgs& right_ )
+{
+  return ( 0 );
+}
+MagickDLLDecl int Magick::operator > ( const Magick::PathArcArgs& left_,
+                                       const Magick::PathArcArgs& right_ )
+{
+  return ( 0 );
+}
+MagickDLLDecl int Magick::operator <  ( const Magick::PathArcArgs& left_,
+                                        const Magick::PathArcArgs& right_ )
+{
+  return  ( false );
+}
+extern MagickDLLDecl int Magick::operator >= ( const Magick::PathArcArgs& left_,
+                                               const Magick::PathArcArgs& right_ )
+{
+  return ( ( left_ > right_ ) || ( left_ == right_ ) );
+}
+MagickDLLDecl int Magick::operator <= ( const Magick::PathArcArgs& left_,
+                                        const Magick::PathArcArgs& right_ )
+{
+  return ( ( left_ < right_ ) || ( left_ == right_ ) );
+}
+
+
 // Path Arc
 Magick::PathArcAbs::PathArcAbs ( const Magick::PathArcArgs &coordinates_ )
   : _coordinates(1,coordinates_)
@@ -1222,6 +1314,38 @@ Magick::VPathBase* Magick::PathClosePath::copy() const
 //
 // Path Curveto (Cubic Bezier)
 //
+MagickDLLDecl int Magick::operator == ( const Magick::PathCurvetoArgs& left_,
+                                        const Magick::PathCurvetoArgs& right_ )
+{
+  return ( 1 );
+}
+MagickDLLDecl int Magick::operator != ( const Magick::PathCurvetoArgs& left_,
+                                        const Magick::PathCurvetoArgs& right_ )
+{
+  return ( 0 );
+}
+MagickDLLDecl int Magick::operator > ( const Magick::PathCurvetoArgs& left_,
+                                       const Magick::PathCurvetoArgs& right_ )
+{
+  return ( 0 );
+}
+MagickDLLDecl int Magick::operator <  ( const Magick::PathCurvetoArgs& left_,
+                                        const Magick::PathCurvetoArgs& right_ )
+{
+  return  ( false );
+}
+extern MagickDLLDecl int Magick::operator >= ( const Magick::PathCurvetoArgs& left_,
+                                               const Magick::PathCurvetoArgs& right_ )
+{
+  return ( ( left_ > right_ ) || ( left_ == right_ ) );
+}
+MagickDLLDecl int Magick::operator <= ( const Magick::PathCurvetoArgs& left_,
+                                        const Magick::PathCurvetoArgs& right_ )
+{
+  return ( ( left_ < right_ ) || ( left_ == right_ ) );
+}
+
+
 Magick::PathCurvetoAbs::PathCurvetoAbs ( const Magick::PathCurvetoArgs &args_ )
   : _args(1,args_)
 {
@@ -1344,6 +1468,37 @@ Magick::VPathBase* Magick::PathSmoothCurvetoRel::copy() const
 //
 // Quadratic Curveto (Quadratic Bezier)
 //
+MagickDLLDecl int Magick::operator == ( const Magick::PathQuadraticCurvetoArgs& left_,
+                                        const Magick::PathQuadraticCurvetoArgs& right_ )
+{
+  return ( 1 );
+}
+MagickDLLDecl int Magick::operator != ( const Magick::PathQuadraticCurvetoArgs& left_,
+                                        const Magick::PathQuadraticCurvetoArgs& right_ )
+{
+  return ( 0 );
+}
+MagickDLLDecl int Magick::operator > ( const Magick::PathQuadraticCurvetoArgs& left_,
+                                       const Magick::PathQuadraticCurvetoArgs& right_ )
+{
+  return ( 0 );
+}
+MagickDLLDecl int Magick::operator <  ( const Magick::PathQuadraticCurvetoArgs& left_,
+                                        const Magick::PathQuadraticCurvetoArgs& right_ )
+{
+  return  ( 0 );
+}
+extern MagickDLLDecl int Magick::operator >= ( const Magick::PathQuadraticCurvetoArgs& left_,
+                                               const Magick::PathQuadraticCurvetoArgs& right_ )
+{
+  return ( ( left_ > right_ ) || ( left_ == right_ ) );
+}
+MagickDLLDecl int Magick::operator <= ( const Magick::PathQuadraticCurvetoArgs& left_,
+                                        const Magick::PathQuadraticCurvetoArgs& right_ )
+{
+  return ( ( left_ < right_ ) || ( left_ == right_ ) );
+}
+
 Magick::PathQuadraticCurvetoAbs::PathQuadraticCurvetoAbs ( const Magick::PathQuadraticCurvetoArgs &args_ )
   : _args(1,args_)
 {
@@ -1622,3 +1777,15 @@ Magick::VPathBase* Magick::PathMovetoRel::copy() const
 {
   return new PathMovetoRel(*this);
 }
+
+
+//template class MagickDLLDecl CoordinateList;
+
+#if defined(EXPLICIT_TEMPLATE_INSTANTIATION)
+// template class std::list<Magick::Coordinate>;
+// template class std::list<const Magick::Drawable>;
+// template class std::list<const Magick::PathArcArgs>;
+// template class std::list<const Magick::PathCurvetoArgs>;
+// template class std::list<const Magick::PathQuadraticCurvetoArgs>;
+// template class std::list<const Magick::VPath>;
+#endif

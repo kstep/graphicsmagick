@@ -13,18 +13,18 @@
 namespace Magick
 {
 
-  class MagickPPExport Color;
+  class MagickDLLDecl Color;
 
   // Compare two Color objects regardless of LHS/RHS
-  int MagickPPExport operator == ( const Magick::Color& left_, const Magick::Color& right_ );
-  int MagickPPExport operator != ( const Magick::Color& left_, const Magick::Color& right_ );
-  int MagickPPExport operator >  ( const Magick::Color& left_, const Magick::Color& right_ );
-  int MagickPPExport operator <  ( const Magick::Color& left_, const Magick::Color& right_ );
-  int MagickPPExport operator >= ( const Magick::Color& left_, const Magick::Color& right_ );
-  int MagickPPExport operator <= ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator == ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator != ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator >  ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator <  ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator >= ( const Magick::Color& left_, const Magick::Color& right_ );
+  int MagickDLLDecl operator <= ( const Magick::Color& left_, const Magick::Color& right_ );
 
   // Base color class stores RGB components scaled to fit Quantum
-  class MagickPPExport Color
+  class MagickDLLDecl Color
   {
   public:
     Color ( Quantum red_,
@@ -161,7 +161,7 @@ namespace Magick
   //
   // HSL Colorspace colors
   //
-  class MagickPPExport ColorHSL : public Color
+  class MagickDLLDecl ColorHSL : public Color
   {
   public:
     ColorHSL ( double hue_, double saturation_, double luminosity_ );
@@ -191,7 +191,7 @@ namespace Magick
   //
   // Grayscale is simply RGB with equal parts of red, green, and blue
   // All double arguments have a valid range of 0.0 - 1.0.
-  class MagickPPExport ColorGray : public Color
+  class MagickDLLDecl ColorGray : public Color
   {
   public:
     ColorGray ( double shade_ );
@@ -215,7 +215,7 @@ namespace Magick
   //
   // Color arguments are constrained to 'false' (black pixel) and 'true'
   // (white pixel)
-  class MagickPPExport ColorMono : public Color
+  class MagickDLLDecl ColorMono : public Color
   {
   public:
     ColorMono ( bool mono_ );
@@ -238,7 +238,7 @@ namespace Magick
   // RGB color
   //
   // All color arguments have a valid range of 0.0 - 1.0.
-  class MagickPPExport ColorRGB : public Color
+  class MagickDLLDecl ColorRGB : public Color
   {
   public:
     ColorRGB ( double red_, double green_, double blue_ );
@@ -270,7 +270,7 @@ namespace Magick
   //        Y:  0.0 through 1.0
   //        U: -0.5 through 0.5
   //        V: -0.5 through 0.5
-  class MagickPPExport ColorYUV : public Color
+  class MagickDLLDecl ColorYUV : public Color
   {
   public:
     ColorYUV ( double y_, double u_, double v_ );

@@ -15,9 +15,9 @@
 namespace Magick
 {
   // Forward decl
-  class MagickPPExport BlobRef;
+  class MagickDLLDecl BlobRef;
 
-  class MagickPPExport Blob
+  class MagickDLLDecl Blob
   {
 
     friend class Image;
@@ -84,7 +84,7 @@ namespace Magick
   // Reference counted access to Blob data
   // (Private implementation class)
   //
-  class MagickPPExport BlobRef {
+  class MagickDLLDecl BlobRef {
     friend class Blob;
   public:
     // There are no public methods in this class

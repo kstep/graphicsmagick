@@ -14,7 +14,7 @@
 
 namespace Magick
 {
-  class MagickPPExport TypeMetric
+  class MagickDLLDecl TypeMetric
   {
     friend class Image;
   public:

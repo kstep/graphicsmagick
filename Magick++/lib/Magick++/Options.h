@@ -23,9 +23,9 @@
 namespace Magick
 {
 
-  class MagickPPExport Image;
+  class MagickDLLDecl Image;
 
-  class MagickPPExport Options
+  class MagickDLLDecl Options
   {
     friend class Image;
 

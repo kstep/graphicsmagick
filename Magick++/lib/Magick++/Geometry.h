@@ -16,17 +16,17 @@
 namespace Magick
 {
 
-  class MagickPPExport Geometry;
+  class MagickDLLDecl Geometry;
 
   // Compare two Geometry objects regardless of LHS/RHS
-  int MagickPPExport operator == ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
-  int MagickPPExport operator != ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
-  int MagickPPExport operator >  ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
-  int MagickPPExport operator <  ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
-  int MagickPPExport operator >= ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
-  int MagickPPExport operator <= ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  int MagickDLLDecl operator == ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  int MagickDLLDecl operator != ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  int MagickDLLDecl operator >  ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  int MagickDLLDecl operator <  ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  int MagickDLLDecl operator >= ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
+  int MagickDLLDecl operator <= ( const Magick::Geometry& left_, const Magick::Geometry& right_ );
 
-  class MagickPPExport Geometry
+  class MagickDLLDecl Geometry
   {
     friend class Image;
   public:
