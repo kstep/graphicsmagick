@@ -21,7 +21,7 @@ testFilterSignature('input.miff', 'Blur',
 ++$test;
 testFilterSignature('input.miff', 'Border',
   q/10/,
-  '1308b50682539ba231501d336c0f688372becf093fab928c131c0c8e9dfbed87');
+  'b4956b654102b9af96956017f94c57d214110d91cb7be995e5ce19d29b0a3eba');
 
 ++$test;
 testFilterSignature('input.miff', 'Channel',

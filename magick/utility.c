@@ -1175,12 +1175,16 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
       */
       q=p;
       bounds.width=(unsigned long) floor(strtol(p,&q,10)+0.5);
+      bounds.height=bounds.width;
       if (p != q)
         flags|=WidthValue;
       if ((*q == 'x') || (*q == 'X'))
         p=q;
       else
-        bounds.width=(unsigned long) floor(strtod(p,&p)+0.5);
+        {
+          bounds.width=(unsigned long) floor(strtod(p,&p)+0.5);
+          flags|=HeightValue;
+        }
     }
   if ((*p == 'x') || (*p == 'X'))
     {
@@ -1318,8 +1322,6 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
   former_width=(*width);
   former_height=(*height);
   flags=GetGeometry(geometry,x,y,width,height);
-  if ((flags & WidthValue) && !(flags & HeightValue))
-    *height=(*width);
   if (flags & PercentValue)
     {
       double
