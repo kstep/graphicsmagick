@@ -652,7 +652,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
 
     int flag;
     struct locale_str *xl;
-    char *p, *field = "NEXT_FIELD";
+    char *p, *field = (char *) "NEXT_FIELD";
 
     if (!locstr)
     {
@@ -661,7 +661,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
     }
 
     if (elseflag < 0)
-        field = "locale", elseflag = 0;
+        field = (char *) "locale", elseflag = 0;
 
     if (!locstr->next)     /* output simpler code for a single case */
     {

@@ -255,6 +255,10 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
 }
 #endif
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static int TIFFCloseBlob(thandle_t image)
 {
   CloseBlob((Image *) image);
@@ -313,6 +317,10 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 {
   return((tsize_t) WriteBlob((Image *) image,(size_t) size,data));
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)

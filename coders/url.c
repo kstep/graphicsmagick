@@ -103,6 +103,10 @@
 %
 */
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static void GetFTPData(void *userdata,const char *data,int length)
 {
   FILE
@@ -115,6 +119,10 @@ static void GetFTPData(void *userdata,const char *data,int length)
     return;
   (void) fwrite(data,length,1,file);
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 
 static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -187,7 +195,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowException(exception,FileOpenError,"No data returned from:",filename);
   else
     {
-      *clone_info->magick=(MagickHandler) '\0';
+      *clone_info->magick='\0';
       image=ReadImage(clone_info,exception);
     }
   (void) remove(clone_info->filename);
@@ -198,7 +206,8 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   ThrowException(exception,MissingDelegateError,
-    "ImageMagick must be linked with XML library to support URLs",image_info->filename);
+    "ImageMagick must be linked with XML library to support URLs",
+    image_info->filename);
   return((Image *) NULL);
 }
 #endif

@@ -369,27 +369,27 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
   return(OverCompositeOp);
 }
 
-static char * CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
+static char *CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
 {
-  char*  outMode = "norm";
+  char*  outMode = (char *) "norm";
 
   switch ( inOp )
   {
-    case OverCompositeOp:    outMode = "norm";  break;
-    case MultiplyCompositeOp:  outMode = "mul ";  break;
-    case DissolveCompositeOp:  outMode = "diss";  break;
-    case DifferenceCompositeOp:  outMode = "diff";  break;
-    case DarkenCompositeOp:    outMode = "dark";  break;
-    case LightenCompositeOp:  outMode = "lite";  break;
-    case HueCompositeOp:    outMode = "hue ";  break;
-    case SaturateCompositeOp:  outMode = "sat ";  break;
-    case ColorizeCompositeOp:  outMode = "colr";  break;
-    case LuminizeCompositeOp:  outMode = "lum ";  break;
-    case ScreenCompositeOp:    outMode = "scrn";  break;
-    case OverlayCompositeOp:  outMode = "over";  break;
+    case OverCompositeOp:    outMode = (char *) "norm";  break;
+    case MultiplyCompositeOp:  outMode = (char *) "mul ";  break;
+    case DissolveCompositeOp:  outMode = (char *) "diss";  break;
+    case DifferenceCompositeOp:  outMode = (char *) "diff";  break;
+    case DarkenCompositeOp:    outMode = (char *) "dark";  break;
+    case LightenCompositeOp:  outMode = (char *) "lite";  break;
+    case HueCompositeOp:    outMode = (char *) "hue ";  break;
+    case SaturateCompositeOp:  outMode = (char *) "sat ";  break;
+    case ColorizeCompositeOp:  outMode = (char *) "colr";  break;
+    case LuminizeCompositeOp:  outMode = (char *) "lum ";  break;
+    case ScreenCompositeOp:    outMode = (char *) "scrn";  break;
+    case OverlayCompositeOp:  outMode = (char *) "over";  break;
 
     default:
-      outMode = "norm";
+      outMode = (char *) "norm";
 /*
 
   if (LocaleNCompare(mode,"hLit",4) == 0)
