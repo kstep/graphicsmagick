@@ -2673,7 +2673,8 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
       (image->interlace != reference->interlace) ||
       (image->colorspace != reference->colorspace) ||
       (image->matte != reference->matte))
-    return(False);
+    ThrowBinaryException(OptionError,"Unable to compare images",
+      "images differ in size, interlace, colorspace, or opacity");
   /*
     For each pixel, collect error statistics.
   */
