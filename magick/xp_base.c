@@ -1249,12 +1249,12 @@ MagickExport int NTGhostscriptEXE(char *path, int path_length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method NTGhostscriptFonts obtains the path to the Ghostscript fonts.
+%   Method XPGhostscriptFonts obtains the path to the Ghostscript fonts.
 %   The method returns False if a value is not obtained.
 %
-%  The format of the NTGhostscriptFonts method is:
+%  The format of the XPGhostscriptFonts method is:
 %
-%      int NTGhostscriptFonts(char *path, int path_length)
+%      int XPGhostscriptFonts(char *path, int path_length)
 %
 %  A description of each parameter follows:
 %
@@ -1263,7 +1263,7 @@ MagickExport int NTGhostscriptEXE(char *path, int path_length)
 %    o path_length: Length of buffer
 %
 */
-MagickExport int NTGhostscriptFonts(char *path, int path_length)
+MagickExport int XPGhostscriptFonts(char *path, int path_length)
 {
   int
     gsver;
@@ -1386,7 +1386,7 @@ MagickExport int NTGhostscriptUnLoadDLL(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTRegistryKeyLookup returns ImageMagick installation path settings
+%  Method XPRegistryKeyLookup returns ImageMagick installation path settings
 %  stored in the Windows Registry. Path settings are specific to the
 %  installed ImageMagick version so that multiple ImageMagick installations
 %  may coexist.
@@ -1394,9 +1394,9 @@ MagickExport int NTGhostscriptUnLoadDLL(void)
 %  Values are stored in the registry under a path path similar to
 %  "HKEY_LOCAL_MACHINE/SOFTWARE/ImageMagick/5.4.7/LibPath".
 %
-%  The format of the NTRegistryKeyLookup method is:
+%  The format of the XPRegistryKeyLookup method is:
 %
-%      char *NTRegistryKeyLookup(const char *key)
+%      char *XPRegistryKeyLookup(const char *key)
 %
 %  A description of each parameter follows:
 %
@@ -1405,7 +1405,7 @@ MagickExport int NTGhostscriptUnLoadDLL(void)
 %           "BinPath", "LibPath", "ModulesPath", and "SharePath".
 %
 */
-MagickExport char *NTRegistryKeyLookup(const char *key)
+MagickExport char *XPRegistryKeyLookup(const char *key)
 {
   static HKEY
     reg_key = (HKEY) INVALID_HANDLE_VALUE;

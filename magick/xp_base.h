@@ -83,7 +83,7 @@ extern MagickExport int
   IsWindows95(),
   NTGhostscriptDLL(char *path, int path_length),
   NTGhostscriptEXE(char *path, int path_length),
-  NTGhostscriptFonts(char *path, int path_length),
+  XPGhostscriptFonts(char *path, int path_length),
   NTGhostscriptLoadDLL(void),
   NTGhostscriptUnLoadDLL(void),
   NTSystemCommand(const char *);
