@@ -170,7 +170,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
     Read PPM files.
   */
   image=(Image *) NULL;
-  for (i=clone_info->subimage; ; i++)
+  for (i=(long) clone_info->subimage; ; i++)
   {
     FormatString(clone_info->filename,"%.1024s%d.ppm",clone_info->unique,i);
     if (!IsAccessible(clone_info->filename))
@@ -492,7 +492,9 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
 {
   char
     basename[MaxTextExtent],
+    *blob,
     filename[MaxTextExtent];
+
 
   Image
     *coalesce_image,
@@ -501,11 +503,17 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   ImageInfo
     *clone_info;
 
+  int
+    file;
+
   register Image
     *p;
 
   register long
     i;
+
+  size_t
+    length;
 
   unsigned int
     status;
@@ -559,16 +567,38 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   count=0;
   for (p=coalesce_image; p != (Image *) NULL; p=p->next)
   {
+    blob=(char *) NULL;
+    length=0;
     scene=p->scene;
     for (i=0; i < Max((p->delay+1)/3,1); i++)
     {
-      FormatString(p->filename,"%.1024s.%%lu.yuv",basename);
       p->scene=count++;
-      status=WriteImage(clone_info,p);
-      if (status == False)
-        break;
+      FormatString(p->filename,"%.1024s.%%lu.yuv",basename);
+      switch (i)
+      {
+        case 0:
+        {
+          status=WriteImage(clone_info,p);
+          FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
+          break;
+        }
+        case 1:
+          blob=(char *) FileToBlob(filename,&length,&image->exception);
+        default:
+        {
+          FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
+	  file=open(filename,O_WRONLY | O_BINARY,0777);
+          if (file == -1)
+            break;
+          (void) write(file,blob,length);
+          (void) close(file);
+          break;
+        }
+      }
     }
     p->scene=scene;
+    if (blob != (char *) NULL)
+      LiberateMemory((void **) &blob);
     if (status == False)
       break;
   }
