@@ -36,7 +36,7 @@
 AppName=ImageMagick
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick version 5.4.8 Q:16
+AppVerName=ImageMagick version 5.4.8 Q:16 (Beta 7/19/02)
 AppVersion=5.4.8
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
@@ -55,6 +55,12 @@ OutputBaseFilename=ImageMagick-5.4.8-win2k
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
+; Optional Tasks
+[Tasks]
+Name: desktop_icon; Description: "Create a &desktop icon"; MinVersion: 4,4
+Name: update_path; Description: "Update executable search path"
+Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.6.1 build 633"; Flags: unchecked
+
 ; Windows registry settings
 [Registry]
 ;
@@ -65,6 +71,15 @@ Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueN
 Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"; Flags: uninsdeletekey
+
+Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "Version"; ValueData: "5.4.8"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: dword; ValueName: "QuantumDepth"; ValueData: 16; Flags: uninsdeletekey
+
+Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"; Flags: uninsdeletekey
 
 ;
 ; Create file associations
@@ -512,6 +527,10 @@ Source: "..\magick\ImageMagick.ico"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; Path Tool
 Source: "..\contrib\win32\PathTool\PathTool.exe"; DestDir: "{app}\uninstall"; CopyMode: alwaysoverwrite
 Source: "..\contrib\win32\PathTool\PathTool.pdf"; DestDir: "{app}\uninstall"; CopyMode: alwaysoverwrite
+; PerlMagick Perl module
+Source: "..\PerlMagick\Image-Magick.ppd"; DestDir: "{tmp}\PerlMagick"; CopyMode: alwaysoverwrite
+Source: "..\PerlMagick\Image-Magick.tar.gz"; DestDir: "{tmp}\PerlMagick\x86"; CopyMode: alwaysoverwrite
+; Source: "..\PerlMagick\demo"; DestDir: "{app}\PerlMagick\demo"; CopyMode: alwaysoverwrite
 
 [Icons]
 Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
@@ -519,14 +538,16 @@ Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
 ; Name: "{group}\ImageMagick Quick Start"; Filename: "{app}\QuickStart.txt"
 ; Name: "{group}\ImageMagick License"; Filename: "{app}\Copyright.txt"
 Name: "{group}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"
-Name: "{userdesktop}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"; MinVersion: 4,4
+Name: "{userdesktop}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"; Tasks: desktop_icon; MinVersion: 4,4
 
 [Run]
 ; Add -debug to parameters to enable debugging
-Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -a:""{app}"""; StatusMsg: "Updating environment variables..."
+Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -a:""{app}"""; StatusMsg: "Updating environment variables..."; Tasks: update_path
+Filename: "ppm"; Parameters: "install Image-Magick.ppd"; WorkingDir: "{tmp}\PerlMagick"; StatusMsg: "Installing PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 
 [UninstallRun]
 ; Add -debug to parameters to enable debugging
-Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -r:""{app}"""; StatusMsg: "Restoring environment variables..."
+Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -r:""{app}"""; StatusMsg: "Restoring environment variables..."; Tasks: update_path
+Filename: "ppm"; Parameters: "remove Image-Magick"; StatusMsg: "Uninstalling PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 
 
