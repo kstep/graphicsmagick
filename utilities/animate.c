@@ -275,6 +275,7 @@ int main(int argc,char **argv)
   long
     first_scene,
     j,
+    k,
     last_scene,
     scene,
     x;
@@ -313,13 +314,12 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
   first_scene=0;
   image=(Image *) NULL;
-  j=1;
   last_scene=0;
+  server_name=(char *) NULL;
 	status=True;
   /*
     Check for server name specified on the command line.
   */
-  server_name=(char *) NULL;
   for (i=1; i < argc; i++)
   {
     /*
@@ -381,6 +381,8 @@ int main(int argc,char **argv)
   /*
     Parse command line.
   */
+  j=1;
+  k=0;
   for (i=1; i < argc; i++)
   {
     if (i < argc)
@@ -393,558 +395,12 @@ int main(int argc,char **argv)
           option=(char *) "-";
         else
           option=(char *) "logo:Untitled";
-    if ((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
-      switch (*(option+1))
-      {
-        case 'b':
-        {
-          if (LocaleCompare("backdrop",option+1) == 0)
-            {
-              resource_info.backdrop=(*option == '-');
-              break;
-            }
-          if (LocaleCompare("background",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing color",option);
-                  resource_info.background_color=argv[i];
-                  (void) QueryColorDatabase(argv[i],
-                    &image_info->background_color);
-                }
-              break;
-            }
-          if (LocaleCompare("bordercolor",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing color",option);
-                  resource_info.border_color=argv[i];
-                  (void) QueryColorDatabase(argv[i],&image_info->border_color);
-                }
-              break;
-            }
-          if (LocaleCompare("borderwidth",option+1) == 0)
-            {
-              resource_info.border_width=0;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing width",option);
-                  resource_info.border_width=atoi(argv[i]);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'c':
-        {
-          if (LocaleCompare("cache",option+1) == 0)
-            {
-              SetCacheThreshold(0);
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing threshold",option);
-                  SetCacheThreshold(atol(argv[i]));
-                }
-              break;
-            }
-          if (LocaleCompare("colormap",option+1) == 0)
-            {
-              resource_info.colormap=PrivateColormap;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  resource_info.colormap=UndefinedColormap;
-                  if (LocaleCompare("private",option) == 0)
-                    resource_info.colormap=PrivateColormap;
-                  if (LocaleCompare("shared",option) == 0)
-                    resource_info.colormap=SharedColormap;
-                  if (resource_info.colormap == UndefinedColormap)
-                    MagickError(OptionError,"Invalid colormap type",option);
-                }
-              break;
-            }
-          if (LocaleCompare("colors",option+1) == 0)
-            {
-              quantize_info->number_colors=0;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing colors",option);
-                  quantize_info->number_colors=atol(argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("colorspace",option+1) == 0)
-            {
-              quantize_info->colorspace=RGBColorspace;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  quantize_info->colorspace=UndefinedColorspace;
-                  if (LocaleCompare("cmyk",option) == 0)
-                    quantize_info->colorspace=CMYKColorspace;
-                  if (LocaleCompare("gray",option) == 0)
-                    {
-                      quantize_info->colorspace=GRAYColorspace;
-                      quantize_info->number_colors=256;
-                      quantize_info->tree_depth=8;
-                    }
-                  if (LocaleCompare("ohta",option) == 0)
-                    quantize_info->colorspace=OHTAColorspace;
-                  if (LocaleCompare("rgb",option) == 0)
-                    quantize_info->colorspace=RGBColorspace;
-                  if (LocaleCompare("srgb",option) == 0)
-                    quantize_info->colorspace=sRGBColorspace;
-                  if (LocaleCompare("transparent",option) == 0)
-                    quantize_info->colorspace=TransparentColorspace;
-                  if (LocaleCompare("xyz",option) == 0)
-                    quantize_info->colorspace=XYZColorspace;
-                  if (LocaleCompare("ycbcr",option) == 0)
-                    quantize_info->colorspace=YCbCrColorspace;
-                  if (LocaleCompare("ycc",option) == 0)
-                    quantize_info->colorspace=YCCColorspace;
-                  if (LocaleCompare("yiq",option) == 0)
-                    quantize_info->colorspace=YIQColorspace;
-                  if (LocaleCompare("ypbpr",option) == 0)
-                    quantize_info->colorspace=YPbPrColorspace;
-                  if (LocaleCompare("yuv",option) == 0)
-                    quantize_info->colorspace=YUVColorspace;
-                  if (quantize_info->colorspace == UndefinedColorspace)
-                    MagickError(OptionError,"Invalid colorspace type",option);
-                }
-              break;
-            }
-          if (LocaleCompare("crop",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !IsGeometry(argv[i]))
-                    MagickError(OptionError,"Missing geometry",option);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'd':
-        {
-          if (LocaleCompare("debug",option+1) == 0)
-            {
-              resource_info.debug=(*option == '-');
-              break;
-            }
-          if (LocaleCompare("delay",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing seconds",option);
-                }
-              break;
-            }
-          if (LocaleCompare("density",option+1) == 0)
-            {
-              (void) CloneString(&image_info->density,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !IsGeometry(argv[i]))
-                    MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&image_info->density,argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("depth",option+1) == 0)
-            {
-              image_info->depth=QuantumDepth;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing image depth",option);
-                  image_info->depth=atol(argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("display",option+1) == 0)
-            {
-              (void) CloneString(&image_info->server_name,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing server name",option);
-                  (void) CloneString(&image_info->server_name,argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("dither",option+1) == 0)
-            {
-              quantize_info->dither=(*option == '-');
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'f':
-        {
-          if (LocaleCompare("font",option+1) == 0)
-            {
-              (void) CloneString(&image_info->font,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing font name",option);
-                  (void) CloneString(&image_info->font,argv[i]);
-                }
-              if ((image_info->font == (char *) NULL) ||
-                  (*image_info->font != '@'))
-                resource_info.font=AllocateString(image_info->font);
-              break;
-            }
-          if (LocaleCompare("foreground",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing foreground",option);
-                  resource_info.foreground_color=argv[i];
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'g':
-        {
-          if (LocaleCompare("gamma",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                MagickError(OptionError,"Missing value",option);
-              break;
-            }
-          if (LocaleCompare("geometry",option+1) == 0)
-            {
-              resource_info.image_geometry=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !IsGeometry(argv[i]))
-                    MagickError(OptionError,"Missing geometry",option);
-                  resource_info.image_geometry=argv[i];
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'h':
-        {
-          if (LocaleCompare("help",option+1) == 0)
-            {
-              AnimateUsage();
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'i':
-        {
-          if (LocaleCompare("iconGeometry",option+1) == 0)
-            {
-              resource_info.icon_geometry=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !IsGeometry(argv[i]))
-                    MagickError(OptionError,"Missing geometry",option);
-                  resource_info.icon_geometry=argv[i];
-                }
-              break;
-            }
-          if (LocaleCompare("iconic",option+1) == 0)
-            {
-              resource_info.iconic=(*option == '-');
-              break;
-            }
-          if (LocaleCompare("interlace",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  image_info->interlace=UndefinedInterlace;
-                  if (LocaleCompare("None",option) == 0)
-                    image_info->interlace=NoInterlace;
-                  if (LocaleCompare("Line",option) == 0)
-                    image_info->interlace=LineInterlace;
-                  if (LocaleCompare("Plane",option) == 0)
-                    image_info->interlace=PlaneInterlace;
-                  if (LocaleCompare("Partition",option) == 0)
-                    image_info->interlace=PartitionInterlace;
-                  if (image_info->interlace == UndefinedInterlace)
-                    MagickError(OptionError,"Invalid interlace type",option);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'm':
-        {
-          if (LocaleCompare("map",option+1) == 0)
-            {
-              (void) strcpy(argv[i]+1,"sans");
-              resource_info.map_type=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing map type",option);
-                  resource_info.map_type=argv[i];
-                }
-              break;
-            }
-          if (LocaleCompare("matte",option+1) == 0)
-            break;
-          if (LocaleCompare("mattecolor",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing color",option);
-                  resource_info.matte_color=argv[i];
-                  (void) QueryColorDatabase(argv[i],&image_info->matte_color);
-                }
-              break;
-            }
-          if (LocaleCompare("monochrome",option+1) == 0)
-            {
-              image_info->monochrome=(*option == '-');
-              if (image_info->monochrome)
-                {
-                  quantize_info->number_colors=2;
-                  quantize_info->tree_depth=8;
-                  quantize_info->colorspace=GRAYColorspace;
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'n':
-        {
-          if (LocaleCompare("name",option+1) == 0)
-            {
-              resource_info.name=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing name",option);
-                  resource_info.name=argv[i];
-                }
-              break;
-            }
-          break;
-        }
-        case 'p':
-        {
-          if (LocaleCompare("pause",option+1) == 0)
-            {
-              resource_info.pause=0;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing seconds",option);
-                }
-              resource_info.pause=atoi(argv[i]);
-              break;
-            }
-          break;
-        }
-        case 'r':
-        {
-          if (LocaleCompare("remote",option+1) == 0)
-            {
-              i++;
-              if (i == argc)
-                MagickError(OptionError,"Missing command",option);
-              XRemoteCommand(display,resource_info.window_id,argv[i]);
-              Exit(0);
-            }
-          if (LocaleCompare("rotate",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) || !IsGeometry(argv[i]))
-                MagickError(OptionError,"Missing degrees",option);
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 's':
-        {
-          if (LocaleCompare("scenes",option+1) == 0)
-            {
-              first_scene=0;
-              last_scene=0;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing scene number",option);
-                  first_scene=atol(argv[i]);
-                  last_scene=first_scene;
-                  (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
-                }
-              break;
-            }
-          if (LocaleCompare("shared_memory",option+1) == 0)
-            {
-              resource_info.use_shared_memory=(*option == '-');
-              break;
-            }
-          if (LocaleCompare("size",option+1) == 0)
-            {
-              (void) CloneString(&image_info->size,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !IsGeometry(argv[i]))
-                    MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&image_info->size,argv[i]);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 't':
-        {
-          if (LocaleCompare("text_font",option+1) == 0)
-            {
-              resource_info.text_font=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing font name",option);
-                  resource_info.text_font=argv[i];
-                }
-              break;
-            }
-          if (LocaleCompare("title",option+1) == 0)
-            {
-              resource_info.title=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing title",option);
-                  resource_info.title=argv[i];
-                }
-              break;
-            }
-          if (LocaleCompare("treedepth",option+1) == 0)
-            {
-              quantize_info->tree_depth=0;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing depth",option);
-                  quantize_info->tree_depth=atoi(argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("trim",option+1) == 0)
-            break;
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'v':
-        {
-          if (LocaleCompare("verbose",option+1) == 0)
-            {
-              image_info->verbose=(*option == '-');
-              break;
-            }
-          if (LocaleCompare("visual",option+1) == 0)
-            {
-              resource_info.visual_type=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing visual class",option);
-                  resource_info.visual_type=argv[i];
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'w':
-        {
-          if (LocaleCompare("window",option+1) == 0)
-            {
-              resource_info.window_id=(char *) NULL;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing id, name, or 'root'",
-                      option);
-                  resource_info.window_id=argv[i];
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case '?':
-        {
-          AnimateUsage();
-          break;
-        }
-        default:
-        {
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-      }
-    else
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       {
         /*
           Option is a file name.
         */
+        k=i;
         for (scene=first_scene; scene <= last_scene ; scene++)
         {
           /*
@@ -972,29 +428,570 @@ int main(int argc,char **argv)
             MagickWarning(exception.severity,exception.reason,
               exception.description);
           status&=next_image != (Image *) NULL;
-          if (next_image != (Image *) NULL)
+          if (next_image == (Image *) NULL)
+            continue;
+          status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
+          (void) CatchImageException(next_image);
+          if (image == (Image *) NULL)
             {
-              status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
-              (void) CatchImageException(next_image);
-              if (image == (Image *) NULL)
-                image=next_image;
-              else
-                {
-                  /*
-                    Link image into image list.
-                  */
-                  for (p=image; p->next != (Image *) NULL; p=p->next);
-                  next_image->previous=p;
-                  p->next=next_image;
-                }
+              image=next_image;
+              continue;
             }
-          if (i < (argc-1))
-            option=argv[i+1];
-        if (((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
-						||((i+1) == argc))
-          j=i+1;
+          /*
+            Link image into image list.
+          */
+          for (p=image; p->next != (Image *) NULL; p=p->next);
+          next_image->previous=p;
+          p->next=next_image;
         }
+        continue;
       }
+    switch (*(option+1))
+    {
+      case 'b':
+      {
+        if (LocaleCompare("backdrop",option+1) == 0)
+          {
+            resource_info.backdrop=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("background",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing color",option);
+                resource_info.background_color=argv[i];
+                (void) QueryColorDatabase(argv[i],
+                  &image_info->background_color);
+              }
+            break;
+          }
+        if (LocaleCompare("bordercolor",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing color",option);
+                resource_info.border_color=argv[i];
+                (void) QueryColorDatabase(argv[i],&image_info->border_color);
+              }
+            break;
+          }
+        if (LocaleCompare("borderwidth",option+1) == 0)
+          {
+            resource_info.border_width=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing width",option);
+                resource_info.border_width=atoi(argv[i]);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'c':
+      {
+        if (LocaleCompare("cache",option+1) == 0)
+          {
+            SetCacheThreshold(0);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickError(OptionError,"Missing threshold",option);
+                SetCacheThreshold(atol(argv[i]));
+              }
+            break;
+          }
+        if (LocaleCompare("colormap",option+1) == 0)
+          {
+            resource_info.colormap=PrivateColormap;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                resource_info.colormap=UndefinedColormap;
+                if (LocaleCompare("private",option) == 0)
+                  resource_info.colormap=PrivateColormap;
+                if (LocaleCompare("shared",option) == 0)
+                  resource_info.colormap=SharedColormap;
+                if (resource_info.colormap == UndefinedColormap)
+                  MagickError(OptionError,"Invalid colormap type",option);
+              }
+            break;
+          }
+        if (LocaleCompare("colors",option+1) == 0)
+          {
+            quantize_info->number_colors=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing colors",option);
+                quantize_info->number_colors=atol(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("colorspace",option+1) == 0)
+          {
+            quantize_info->colorspace=RGBColorspace;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                quantize_info->colorspace=UndefinedColorspace;
+                if (LocaleCompare("cmyk",option) == 0)
+                  quantize_info->colorspace=CMYKColorspace;
+                if (LocaleCompare("gray",option) == 0)
+                  {
+                    quantize_info->colorspace=GRAYColorspace;
+                    quantize_info->number_colors=256;
+                    quantize_info->tree_depth=8;
+                  }
+                if (LocaleCompare("ohta",option) == 0)
+                  quantize_info->colorspace=OHTAColorspace;
+                if (LocaleCompare("rgb",option) == 0)
+                  quantize_info->colorspace=RGBColorspace;
+                if (LocaleCompare("srgb",option) == 0)
+                  quantize_info->colorspace=sRGBColorspace;
+                if (LocaleCompare("transparent",option) == 0)
+                  quantize_info->colorspace=TransparentColorspace;
+                if (LocaleCompare("xyz",option) == 0)
+                  quantize_info->colorspace=XYZColorspace;
+                if (LocaleCompare("ycbcr",option) == 0)
+                  quantize_info->colorspace=YCbCrColorspace;
+                if (LocaleCompare("ycc",option) == 0)
+                  quantize_info->colorspace=YCCColorspace;
+                if (LocaleCompare("yiq",option) == 0)
+                  quantize_info->colorspace=YIQColorspace;
+                if (LocaleCompare("ypbpr",option) == 0)
+                  quantize_info->colorspace=YPbPrColorspace;
+                if (LocaleCompare("yuv",option) == 0)
+                  quantize_info->colorspace=YUVColorspace;
+                if (quantize_info->colorspace == UndefinedColorspace)
+                  MagickError(OptionError,"Invalid colorspace type",option);
+              }
+            break;
+          }
+        if (LocaleCompare("crop",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'd':
+      {
+        if (LocaleCompare("debug",option+1) == 0)
+          {
+            resource_info.debug=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("delay",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing seconds",option);
+              }
+            break;
+          }
+        if (LocaleCompare("density",option+1) == 0)
+          {
+            (void) CloneString(&image_info->density,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->density,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("depth",option+1) == 0)
+          {
+            image_info->depth=QuantumDepth;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing image depth",option);
+                image_info->depth=atol(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("display",option+1) == 0)
+          {
+            (void) CloneString(&image_info->server_name,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing server name",option);
+                (void) CloneString(&image_info->server_name,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("dither",option+1) == 0)
+          {
+            quantize_info->dither=(*option == '-');
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'f':
+      {
+        if (LocaleCompare("font",option+1) == 0)
+          {
+            (void) CloneString(&image_info->font,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing font name",option);
+                (void) CloneString(&image_info->font,argv[i]);
+              }
+            if ((image_info->font == (char *) NULL) ||
+                (*image_info->font != '@'))
+              resource_info.font=AllocateString(image_info->font);
+            break;
+          }
+        if (LocaleCompare("foreground",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing foreground",option);
+                resource_info.foreground_color=argv[i];
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'g':
+      {
+        if (LocaleCompare("gamma",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+              MagickError(OptionError,"Missing value",option);
+            break;
+          }
+        if (LocaleCompare("geometry",option+1) == 0)
+          {
+            resource_info.image_geometry=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                resource_info.image_geometry=argv[i];
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'h':
+      {
+        if (LocaleCompare("help",option+1) == 0)
+          {
+            AnimateUsage();
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'i':
+      {
+        if (LocaleCompare("iconGeometry",option+1) == 0)
+          {
+            resource_info.icon_geometry=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                resource_info.icon_geometry=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("iconic",option+1) == 0)
+          {
+            resource_info.iconic=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("interlace",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->interlace=UndefinedInterlace;
+                if (LocaleCompare("None",option) == 0)
+                  image_info->interlace=NoInterlace;
+                if (LocaleCompare("Line",option) == 0)
+                  image_info->interlace=LineInterlace;
+                if (LocaleCompare("Plane",option) == 0)
+                  image_info->interlace=PlaneInterlace;
+                if (LocaleCompare("Partition",option) == 0)
+                  image_info->interlace=PartitionInterlace;
+                if (image_info->interlace == UndefinedInterlace)
+                  MagickError(OptionError,"Invalid interlace type",option);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'm':
+      {
+        if (LocaleCompare("map",option+1) == 0)
+          {
+            (void) strcpy(argv[i]+1,"sans");
+            resource_info.map_type=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing map type",option);
+                resource_info.map_type=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("matte",option+1) == 0)
+          break;
+        if (LocaleCompare("mattecolor",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing color",option);
+                resource_info.matte_color=argv[i];
+                (void) QueryColorDatabase(argv[i],&image_info->matte_color);
+              }
+            break;
+          }
+        if (LocaleCompare("monochrome",option+1) == 0)
+          {
+            image_info->monochrome=(*option == '-');
+            if (image_info->monochrome)
+              {
+                quantize_info->number_colors=2;
+                quantize_info->tree_depth=8;
+                quantize_info->colorspace=GRAYColorspace;
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'n':
+      {
+        if (LocaleCompare("name",option+1) == 0)
+          {
+            resource_info.name=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing name",option);
+                resource_info.name=argv[i];
+              }
+            break;
+          }
+        break;
+      }
+      case 'p':
+      {
+        if (LocaleCompare("pause",option+1) == 0)
+          {
+            resource_info.pause=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing seconds",option);
+              }
+            resource_info.pause=atoi(argv[i]);
+            break;
+          }
+        break;
+      }
+      case 'r':
+      {
+        if (LocaleCompare("remote",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              MagickError(OptionError,"Missing command",option);
+            XRemoteCommand(display,resource_info.window_id,argv[i]);
+            Exit(0);
+          }
+        if (LocaleCompare("rotate",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) || !IsGeometry(argv[i]))
+              MagickError(OptionError,"Missing degrees",option);
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 's':
+      {
+        if (LocaleCompare("scenes",option+1) == 0)
+          {
+            first_scene=0;
+            last_scene=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing scene number",option);
+                first_scene=atol(argv[i]);
+                last_scene=first_scene;
+                (void) sscanf(argv[i],"%ld-%ld",&first_scene,&last_scene);
+              }
+            break;
+          }
+        if (LocaleCompare("shared_memory",option+1) == 0)
+          {
+            resource_info.use_shared_memory=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("size",option+1) == 0)
+          {
+            (void) CloneString(&image_info->size,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->size,argv[i]);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 't':
+      {
+        if (LocaleCompare("text_font",option+1) == 0)
+          {
+            resource_info.text_font=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing font name",option);
+                resource_info.text_font=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("title",option+1) == 0)
+          {
+            resource_info.title=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing title",option);
+                resource_info.title=argv[i];
+              }
+            break;
+          }
+        if (LocaleCompare("treedepth",option+1) == 0)
+          {
+            quantize_info->tree_depth=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing depth",option);
+                quantize_info->tree_depth=atoi(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("trim",option+1) == 0)
+          break;
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'v':
+      {
+        if (LocaleCompare("verbose",option+1) == 0)
+          {
+            image_info->verbose=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("visual",option+1) == 0)
+          {
+            resource_info.visual_type=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing visual class",option);
+                resource_info.visual_type=argv[i];
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'w':
+      {
+        if (LocaleCompare("window",option+1) == 0)
+          {
+            resource_info.window_id=(char *) NULL;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing id, name, or 'root'",option);
+                resource_info.window_id=argv[i];
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case '?':
+      {
+        AnimateUsage();
+        break;
+      }
+      default:
+      {
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+    }
+    j=k+1;
   }
   if ((i != argc) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);

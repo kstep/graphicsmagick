@@ -478,7 +478,6 @@ unsigned int CompositeUtility(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
-  j=1;
   mask_image=(Image *) NULL;
   option_info.stegano=0;
   option_info.stereo=False;
@@ -490,6 +489,7 @@ unsigned int CompositeUtility(int argc,char **argv)
   /*
     Check command syntax.
   */
+  j=1;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
@@ -544,780 +544,777 @@ unsigned int CompositeUtility(int argc,char **argv)
             (void) CatchImageException(mask_image);
           }
         j=i+1;
+        continue;
       }
-    else
-      switch(*(option+1))
+    switch(*(option+1))
+    {
+      case 'b':
       {
-        case 'b':
-        {
-          if (LocaleCompare("background",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing background color",option);
-                  (void) QueryColorDatabase(argv[i],
-                    &image_info->background_color);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'c':
-        {
-          if (LocaleCompare("cache",option+1) == 0)
-            {
-              SetCacheThreshold(0);
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing threshold",option);
-                  SetCacheThreshold(atol(argv[i]));
-                }
-              break;
-            }
-          if (LocaleCompare("colors",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing colors",option);
-                }
-              break;
-            }
-          if (LocaleCompare("colorspace",option+1) == 0)
-            {
-              image_info->colorspace=RGBColorspace;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  image_info->colorspace=UndefinedColorspace;
-                  if (LocaleCompare("cmyk",option) == 0)
-                    image_info->colorspace=CMYKColorspace;
-                  if (LocaleCompare("gray",option) == 0)
-                    image_info->colorspace=GRAYColorspace;
-                  if (LocaleCompare("ohta",option) == 0)
-                    image_info->colorspace=OHTAColorspace;
-                  if (LocaleCompare("rgb",option) == 0)
-                    image_info->colorspace=RGBColorspace;
-                  if (LocaleCompare("srgb",option) == 0)
-                    image_info->colorspace=sRGBColorspace;
-                  if (LocaleCompare("transparent",option) == 0)
-                    image_info->colorspace=TransparentColorspace;
-                  if (LocaleCompare("xyz",option) == 0)
-                    image_info->colorspace=XYZColorspace;
-                  if (LocaleCompare("ycbcr",option) == 0)
-                    image_info->colorspace=YCbCrColorspace;
-                  if (LocaleCompare("ycc",option) == 0)
-                    image_info->colorspace=YCCColorspace;
-                  if (LocaleCompare("yiq",option) == 0)
-                    image_info->colorspace=YIQColorspace;
-                  if (LocaleCompare("ypbpr",option) == 0)
-                    image_info->colorspace=YPbPrColorspace;
-                  if (LocaleCompare("yuv",option) == 0)
-                    image_info->colorspace=YUVColorspace;
-                  if (image_info->colorspace == UndefinedColorspace)
-                    MagickError(OptionError,"Invalid colorspace type",option);
-                }
-              break;
-            }
-          if (LocaleCompare("comment",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing comment",option);
-                }
-              break;
-            }
-          if (LocaleCompare("compose",option+1) == 0)
-            {
-              option_info.compose=CopyCompositeOp;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  option_info.compose=UndefinedCompositeOp;
-                  if (LocaleCompare("Over",option) == 0)
-                    option_info.compose=OverCompositeOp;
-                  if (LocaleCompare("In",option) == 0)
-                    option_info.compose=InCompositeOp;
-                  if (LocaleCompare("Out",option) == 0)
-                    option_info.compose=OutCompositeOp;
-                  if (LocaleCompare("Atop",option) == 0)
-                    option_info.compose=AtopCompositeOp;
-                  if (LocaleCompare("Xor",option) == 0)
-                    option_info.compose=XorCompositeOp;
-                  if (LocaleCompare("Plus",option) == 0)
-                    option_info.compose=PlusCompositeOp;
-                  if (LocaleCompare("Minus",option) == 0)
-                    option_info.compose=MinusCompositeOp;
-                  if (LocaleCompare("Add",option) == 0)
-                    option_info.compose=AddCompositeOp;
-                  if (LocaleCompare("Subtract",option) == 0)
-                    option_info.compose=SubtractCompositeOp;
-                  if (LocaleCompare("Difference",option) == 0)
-                    option_info.compose=DifferenceCompositeOp;
-                  if (LocaleCompare("Multiply",option) == 0)
-                    option_info.compose=MultiplyCompositeOp;
-                  if (LocaleCompare("Bumpmap",option) == 0)
-                    option_info.compose=BumpmapCompositeOp;
-                  if (LocaleCompare("Copy",option) == 0)
-                    option_info.compose=CopyCompositeOp;
-                  if (LocaleCompare("CopyRed",option) == 0)
-                    option_info.compose=CopyRedCompositeOp;
-                  if (LocaleCompare("CopyGreen",option) == 0)
-                    option_info.compose=CopyGreenCompositeOp;
-                  if (LocaleCompare("CopyBlue",option) == 0)
-                    option_info.compose=CopyBlueCompositeOp;
-                  if (LocaleCompare("CopyOpacity",option) == 0)
-                    option_info.compose=CopyOpacityCompositeOp;
-                  if (LocaleCompare("Clear",option) == 0)
-                    option_info.compose=ClearCompositeOp;
-                  if (option_info.compose == UndefinedCompositeOp)
-                    MagickError(OptionError,"Invalid compose type",option);
-                }
-              break;
-            }
-          if (LocaleCompare("compress",option+1) == 0)
-            {
-              image_info->compression=NoCompression;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  image_info->compression=UndefinedCompression;
-                  if (LocaleCompare("None",option) == 0)
-                    image_info->compression=NoCompression;
-                  if (LocaleCompare("BZip",option) == 0)
-                    image_info->compression=BZipCompression;
-                  if (LocaleCompare("Fax",option) == 0)
-                    image_info->compression=FaxCompression;
-                  if (LocaleCompare("Group4",option) == 0)
-                    image_info->compression=Group4Compression;
-                  if (LocaleCompare("JPEG",option) == 0)
-                    image_info->compression=JPEGCompression;
-                  if (LocaleCompare("Lossless",option) == 0)
-                    image_info->compression=LosslessJPEGCompression;
-                  if (LocaleCompare("LZW",option) == 0)
-                    image_info->compression=LZWCompression;
-                  if (LocaleCompare("RLE",option) == 0)
-                    image_info->compression=RunlengthEncodedCompression;
-                  if (LocaleCompare("Zip",option) == 0)
-                    image_info->compression=ZipCompression;
-                  if (image_info->compression == UndefinedCompression)
-                    MagickError(OptionError,"Invalid compression type",option);
-                }
-              break;
-            }
-          if (LocaleCompare("copy",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  Image
-                    *clone_image;
-
-                  ImageInfo
-                    *clone_info;
-
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing output filename",
-                      option);
-                  if (image == (Image *) NULL)
-                    MagickError(OptionError,"Missing source image",
-                      (char *) NULL);
-                  clone_info=CloneImageInfo(image_info);
-                  clone_image=CloneImage(image,0,0,True,&image->exception);
-                  if (clone_image == (Image *) NULL)
-                    MagickError(OptionError,"Missing an image file name",
-                      (char *) NULL);
-                  status&=MogrifyImages(image_info,i-j,argv+j,&clone_image);
-                  (void) CatchImageException(clone_image);
-                  status&=CompositeImageList(clone_info,&clone_image,
-                    composite_image,mask_image,&option_info,argv[i],&exception);
-                  if (composite_image != (Image *) NULL)
-                    {
-                      DestroyImages(composite_image);
-                      composite_image=(Image *) NULL;
-                    }
-                  if (mask_image != (Image *) NULL)
-                    {
-                      DestroyImages(mask_image);
-                      mask_image=(Image *) NULL;
-                    }
-                  DestroyImages(clone_image);
-                  DestroyImageInfo(clone_info);
-                  j=i+1;
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'd':
-        {
-          if (LocaleCompare("debug",option+1) == 0)
-            {
-              image_info->debug=(*option == '-');
-              break;
-            }
-          if (LocaleCompare("density",option+1) == 0)
-            {
-              (void) CloneString(&image_info->density,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !IsGeometry(argv[i]))
-                    MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&image_info->density,argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("depth",option+1) == 0)
-            {
-              image_info->depth=QuantumDepth;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing image depth",option);
-                  image_info->depth=atol(argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("displace",option+1) == 0)
-            {
-              (void) CloneString(&option_info.displace_geometry,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&option_info.displace_geometry,argv[i]);
-                  option_info.compose=DisplaceCompositeOp;
-                }
-              break;
-            }
-          if (LocaleCompare("display",option+1) == 0)
-            {
-              (void) CloneString(&image_info->server_name,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing server name",option);
-                  (void) CloneString(&image_info->server_name,argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("dispose",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing method",option);
-                }
-              break;
-            }
-          if (LocaleCompare("dissolve",option+1) == 0)
-            {
-              option_info.dissolve=0.0;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing value",option);
-                  option_info.dissolve=atof(argv[i]);
-                  option_info.compose=DissolveCompositeOp;
-                }
-              break;
-            }
-          if (LocaleCompare("dither",option+1) == 0)
-            {
-              image_info->dither=(*option == '-');
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'f':
-        {
-          if (LocaleCompare("filter",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  FilterTypes
-                    filter;
-
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  filter=UndefinedFilter;
-                  if (LocaleCompare("Point",option) == 0)
-                    filter=PointFilter;
-                  if (LocaleCompare("Box",option) == 0)
-                    filter=BoxFilter;
-                  if (LocaleCompare("Triangle",option) == 0)
-                    filter=TriangleFilter;
-                  if (LocaleCompare("Hermite",option) == 0)
-                    filter=HermiteFilter;
-                  if (LocaleCompare("Hanning",option) == 0)
-                    filter=HanningFilter;
-                  if (LocaleCompare("Hamming",option) == 0)
-                    filter=HammingFilter;
-                  if (LocaleCompare("Blackman",option) == 0)
-                    filter=BlackmanFilter;
-                  if (LocaleCompare("Gaussian",option) == 0)
-                    filter=GaussianFilter;
-                  if (LocaleCompare("Quadratic",option) == 0)
-                    filter=QuadraticFilter;
-                  if (LocaleCompare("Cubic",option) == 0)
-                    filter=CubicFilter;
-                  if (LocaleCompare("Catrom",option) == 0)
-                    filter=CatromFilter;
-                  if (LocaleCompare("Mitchell",option) == 0)
-                    filter=MitchellFilter;
-                  if (LocaleCompare("Lanczos",option) == 0)
-                    filter=LanczosFilter;
-                  if (LocaleCompare("Bessel",option) == 0)
-                    filter=BesselFilter;
-                  if (LocaleCompare("Sinc",option) == 0)
-                    filter=SincFilter;
-                  if (filter == UndefinedFilter)
-                    MagickError(OptionError,"Invalid filter type",option);
-                }
-              break;
-            }
-          if (LocaleCompare("font",option+1) == 0)
-            {
-              (void) CloneString(&image_info->font,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing font name",option);
-                  (void) CloneString(&image_info->font,argv[i]);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'g':
-        {
-          if (LocaleCompare("geometry",option+1) == 0)
-            {
-              (void) CloneString(&option_info.geometry,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !IsGeometry(argv[i]))
-                    MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&option_info.geometry,argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("gravity",option+1) == 0)
-            {
-              option_info.gravity=ForgetGravity;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  if (LocaleCompare("Forget",option) == 0)
-                    option_info.gravity=ForgetGravity;
-                  if (LocaleCompare("NorthWest",option) == 0)
-                    option_info.gravity=NorthWestGravity;
-                  if (LocaleCompare("North",option) == 0)
-                    option_info.gravity=NorthGravity;
-                  if (LocaleCompare("NorthEast",option) == 0)
-                    option_info.gravity=NorthEastGravity;
-                  if (LocaleCompare("West",option) == 0)
-                    option_info.gravity=WestGravity;
-                  if (LocaleCompare("Center",option) == 0)
-                    option_info.gravity=CenterGravity;
-                  if (LocaleCompare("East",option) == 0)
-                    option_info.gravity=EastGravity;
-                  if (LocaleCompare("SouthWest",option) == 0)
-                    option_info.gravity=SouthWestGravity;
-                  if (LocaleCompare("South",option) == 0)
-                    option_info.gravity=SouthGravity;
-                  if (LocaleCompare("SouthEast",option) == 0)
-                    option_info.gravity=SouthEastGravity;
-                  if (option_info.gravity == ForgetGravity)
-                    MagickError(OptionError,"Invalid gravity type",option);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'h':
-        {
-          if (LocaleCompare("help",option+1) == 0)
-            {
-              CompositeUsage();
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'i':
-        {
-          if (LocaleCompare("interlace",option+1) == 0)
-            {
-              image_info->interlace=NoInterlace;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  image_info->interlace=UndefinedInterlace;
-                  if (LocaleCompare("None",option) == 0)
-                    image_info->interlace=NoInterlace;
-                  if (LocaleCompare("Line",option) == 0)
-                    image_info->interlace=LineInterlace;
-                  if (LocaleCompare("Plane",option) == 0)
-                    image_info->interlace=PlaneInterlace;
-                  if (LocaleCompare("Partition",option) == 0)
-                    image_info->interlace=PartitionInterlace;
-                  if (image_info->interlace == UndefinedInterlace)
-                    MagickError(OptionError,"Invalid interlace type",option);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'l':
-        {
-          if (LocaleCompare("label",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing label name",option);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'm':
-        {
-          if (LocaleCompare("matte",option+1) == 0)
+        if (LocaleCompare("background",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing background color",option);
+                (void) QueryColorDatabase(argv[i],
+                  &image_info->background_color);
+              }
             break;
-          if (LocaleCompare("monochrome",option+1) == 0)
-            break;
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'n':
-        {
-          if (LocaleCompare("negate",option+1) == 0)
-            break;
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'p':
-        {
-          if (LocaleCompare("page",option+1) == 0)
-            {
-              (void) CloneString(&image_info->page,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing page geometry",option);
-                  image_info->page=PostscriptGeometry(argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("process",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing argument",option);
-                }
-              break;
-            }
-          if (LocaleCompare("profile",option+1) == 0)
-            {
-              i++;
-              if (i == argc)
-                MagickError(OptionError,"Missing profile",option);
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'q':
-        {
-          if (LocaleCompare("quality",option+1) == 0)
-            {
-              image_info->quality=75;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing quality",option);
-                  image_info->quality=atol(argv[i]);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'r':
-        {
-          if (LocaleCompare("rotate",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) || !IsGeometry(argv[i]))
-                MagickError(OptionError,"Missing degrees",option);
-              break;
-            }
-          if (LocaleCompare("replace",option+1) == 0)
-            {
-              i++;
-              if (*option == '-')
-                {
-                  if (i == argc)
-                    MagickError(OptionError,"Missing output filename",option);
-                  if (image == (Image *) NULL)
-                    MagickError(OptionError,"Missing source image",
-                      (char *) NULL);
-                  status&=MogrifyImages(image_info,i-j,argv+j,&image);
-                  (void) CatchImageException(image);
-                  status&=CompositeImageList(image_info,&image,composite_image,
-                    mask_image,&option_info,argv[i],&exception);
-                  if (composite_image != (Image *) NULL)
-                    {
-                      DestroyImages(composite_image);
-                      composite_image=(Image *) NULL;
-                    }
-                  if (mask_image != (Image *) NULL)
-                    {
-                      DestroyImages(mask_image);
-                      mask_image=(Image *) NULL;
-                    }
-                  j=i+1;
-                }
-              break;
-            }
-          if (LocaleCompare("resize",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !IsGeometry(argv[i]))
-                    MagickError(OptionError,"Missing geometry",option);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 's':
-        {
-          if (LocaleCompare("scene",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing scene number",option);
-                }
-              break;
-            }
-          if (LocaleCompare("sharpen",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                MagickError(OptionError,"Missing geometry",option);
-              break;
-            }
-          if (LocaleCompare("size",option+1) == 0)
-            {
-              (void) CloneString(&image_info->size,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !IsGeometry(argv[i]))
-                    MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&image_info->size,argv[i]);
-                }
-              break;
-            }
-          if (LocaleCompare("stegano",option+1) == 0)
-            {
-              option_info.stegano=0;
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing offset",option);
-                  option_info.stegano=atol(argv[i])+1;
-                }
-              break;
-            }
-          if (LocaleCompare("stereo",option+1) == 0)
-            {
-              option_info.stereo=(*option == '-');
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 't':
-        {
-          if (LocaleCompare("tile",option+1) == 0)
-            {
-              option_info.tile=(*option == '-');
-              break;
-            }
-          if (LocaleCompare("treedepth",option+1) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                    MagickError(OptionError,"Missing depth",option);
-                }
-              break;
-            }
-          if (LocaleCompare("type",option+1) == 0)
-            {
-              image_info->type=UndefinedType;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  if (LocaleCompare("Bilevel",option) == 0)
-                    image_info->type=BilevelType;
-                  if (LocaleCompare("Grayscale",option) == 0)
-                    image_info->type=GrayscaleType;
-                  if (LocaleCompare("GrayscaleMatte",option) == 0)
-                    image_info->type=GrayscaleMatteType;
-                  if (LocaleCompare("Palette",option) == 0)
-                    image_info->type=PaletteType;
-                  if (LocaleCompare("PaletteMatte",option) == 0)
-                    image_info->type=PaletteMatteType;
-                  if (LocaleCompare("TrueColor",option) == 0)
-                    image_info->type=TrueColorType;
-                  if (LocaleCompare("TrueColorMatte",option) == 0)
-                    image_info->type=TrueColorMatteType;
-                  if (LocaleCompare("ColorSeparation",option) == 0)
-                    image_info->type=ColorSeparationType;
-                  if (LocaleCompare("ColorSeparationMatte",option) == 0)
-                    image_info->type=ColorSeparationMatteType;
-                  if (LocaleCompare("Optimize",option) == 0)
-                    image_info->type=OptimizeType;
-                  if (image_info->type == UndefinedType)
-                    MagickError(OptionError,"Invalid image type",option);
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'u':
-        {
-          if (LocaleCompare("units",option+1) == 0)
-            {
-              image_info->units=UndefinedResolution;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  image_info->units=UndefinedResolution;
-                  if (LocaleCompare("PixelsPerInch",option) == 0)
-                    image_info->units=PixelsPerInchResolution;
-                  if (LocaleCompare("PixelsPerCentimeter",option) == 0)
-                    image_info->units=PixelsPerCentimeterResolution;
-                }
-              break;
-            }
-          if (LocaleCompare("unsharp",option+1) == 0)
-            {
-              (void) CloneString(&option_info.unsharp_geometry,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&option_info.unsharp_geometry,argv[i]);
-                  option_info.compose=ThresholdCompositeOp;
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'v':
-        {
-          if (LocaleCompare("verbose",option+1) == 0)
-            {
-              image_info->verbose=(*option == '-');
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case 'w':
-        {
-          if (LocaleCompare("watermark",option+1) == 0)
-            {
-              (void) CloneString(&option_info.watermark_geometry,(char *) NULL);
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&option_info.watermark_geometry,argv[i]);
-                  option_info.compose=ModulateCompositeOp;
-                }
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
-        case '?':
-        {
-          CompositeUsage();
-          break;
-        }
-        default:
-        {
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
       }
+      case 'c':
+      {
+        if (LocaleCompare("cache",option+1) == 0)
+          {
+            SetCacheThreshold(0);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickError(OptionError,"Missing threshold",option);
+                SetCacheThreshold(atol(argv[i]));
+              }
+            break;
+          }
+        if (LocaleCompare("colors",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing colors",option);
+              }
+            break;
+          }
+        if (LocaleCompare("colorspace",option+1) == 0)
+          {
+            image_info->colorspace=RGBColorspace;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->colorspace=UndefinedColorspace;
+                if (LocaleCompare("cmyk",option) == 0)
+                  image_info->colorspace=CMYKColorspace;
+                if (LocaleCompare("gray",option) == 0)
+                  image_info->colorspace=GRAYColorspace;
+                if (LocaleCompare("ohta",option) == 0)
+                  image_info->colorspace=OHTAColorspace;
+                if (LocaleCompare("rgb",option) == 0)
+                  image_info->colorspace=RGBColorspace;
+                if (LocaleCompare("srgb",option) == 0)
+                  image_info->colorspace=sRGBColorspace;
+                if (LocaleCompare("transparent",option) == 0)
+                  image_info->colorspace=TransparentColorspace;
+                if (LocaleCompare("xyz",option) == 0)
+                  image_info->colorspace=XYZColorspace;
+                if (LocaleCompare("ycbcr",option) == 0)
+                  image_info->colorspace=YCbCrColorspace;
+                if (LocaleCompare("ycc",option) == 0)
+                  image_info->colorspace=YCCColorspace;
+                if (LocaleCompare("yiq",option) == 0)
+                  image_info->colorspace=YIQColorspace;
+                if (LocaleCompare("ypbpr",option) == 0)
+                  image_info->colorspace=YPbPrColorspace;
+                if (LocaleCompare("yuv",option) == 0)
+                  image_info->colorspace=YUVColorspace;
+                if (image_info->colorspace == UndefinedColorspace)
+                  MagickError(OptionError,"Invalid colorspace type",option);
+              }
+            break;
+          }
+        if (LocaleCompare("comment",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing comment",option);
+              }
+            break;
+          }
+        if (LocaleCompare("compose",option+1) == 0)
+          {
+            option_info.compose=CopyCompositeOp;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                option_info.compose=UndefinedCompositeOp;
+                if (LocaleCompare("Over",option) == 0)
+                  option_info.compose=OverCompositeOp;
+                if (LocaleCompare("In",option) == 0)
+                  option_info.compose=InCompositeOp;
+                if (LocaleCompare("Out",option) == 0)
+                  option_info.compose=OutCompositeOp;
+                if (LocaleCompare("Atop",option) == 0)
+                  option_info.compose=AtopCompositeOp;
+                if (LocaleCompare("Xor",option) == 0)
+                  option_info.compose=XorCompositeOp;
+                if (LocaleCompare("Plus",option) == 0)
+                  option_info.compose=PlusCompositeOp;
+                if (LocaleCompare("Minus",option) == 0)
+                  option_info.compose=MinusCompositeOp;
+                if (LocaleCompare("Add",option) == 0)
+                  option_info.compose=AddCompositeOp;
+                if (LocaleCompare("Subtract",option) == 0)
+                  option_info.compose=SubtractCompositeOp;
+                if (LocaleCompare("Difference",option) == 0)
+                  option_info.compose=DifferenceCompositeOp;
+                if (LocaleCompare("Multiply",option) == 0)
+                  option_info.compose=MultiplyCompositeOp;
+                if (LocaleCompare("Bumpmap",option) == 0)
+                  option_info.compose=BumpmapCompositeOp;
+                if (LocaleCompare("Copy",option) == 0)
+                  option_info.compose=CopyCompositeOp;
+                if (LocaleCompare("CopyRed",option) == 0)
+                  option_info.compose=CopyRedCompositeOp;
+                if (LocaleCompare("CopyGreen",option) == 0)
+                  option_info.compose=CopyGreenCompositeOp;
+                if (LocaleCompare("CopyBlue",option) == 0)
+                  option_info.compose=CopyBlueCompositeOp;
+                if (LocaleCompare("CopyOpacity",option) == 0)
+                  option_info.compose=CopyOpacityCompositeOp;
+                if (LocaleCompare("Clear",option) == 0)
+                  option_info.compose=ClearCompositeOp;
+                if (option_info.compose == UndefinedCompositeOp)
+                  MagickError(OptionError,"Invalid compose type",option);
+              }
+            break;
+          }
+        if (LocaleCompare("compress",option+1) == 0)
+          {
+            image_info->compression=NoCompression;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->compression=UndefinedCompression;
+                if (LocaleCompare("None",option) == 0)
+                  image_info->compression=NoCompression;
+                if (LocaleCompare("BZip",option) == 0)
+                  image_info->compression=BZipCompression;
+                if (LocaleCompare("Fax",option) == 0)
+                  image_info->compression=FaxCompression;
+                if (LocaleCompare("Group4",option) == 0)
+                  image_info->compression=Group4Compression;
+                if (LocaleCompare("JPEG",option) == 0)
+                  image_info->compression=JPEGCompression;
+                if (LocaleCompare("Lossless",option) == 0)
+                  image_info->compression=LosslessJPEGCompression;
+                if (LocaleCompare("LZW",option) == 0)
+                  image_info->compression=LZWCompression;
+                if (LocaleCompare("RLE",option) == 0)
+                  image_info->compression=RunlengthEncodedCompression;
+                if (LocaleCompare("Zip",option) == 0)
+                  image_info->compression=ZipCompression;
+                if (image_info->compression == UndefinedCompression)
+                  MagickError(OptionError,"Invalid compression type",option);
+              }
+            break;
+          }
+        if (LocaleCompare("copy",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                Image
+                  *clone_image;
+
+                ImageInfo
+                  *clone_info;
+
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing output filename",option);
+                if (image == (Image *) NULL)
+                  MagickError(OptionError,"Missing source image",(char *) NULL);
+                clone_info=CloneImageInfo(image_info);
+                clone_image=CloneImage(image,0,0,True,&image->exception);
+                if (clone_image == (Image *) NULL)
+                  MagickError(OptionError,"Missing an image file name",
+                    (char *) NULL);
+                status&=MogrifyImages(image_info,i-j,argv+j,&clone_image);
+                (void) CatchImageException(clone_image);
+                status&=CompositeImageList(clone_info,&clone_image,
+                  composite_image,mask_image,&option_info,argv[i],&exception);
+                if (composite_image != (Image *) NULL)
+                  {
+                    DestroyImages(composite_image);
+                    composite_image=(Image *) NULL;
+                  }
+                if (mask_image != (Image *) NULL)
+                  {
+                    DestroyImages(mask_image);
+                    mask_image=(Image *) NULL;
+                  }
+                DestroyImages(clone_image);
+                DestroyImageInfo(clone_info);
+                j=i+1;
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'd':
+      {
+        if (LocaleCompare("debug",option+1) == 0)
+          {
+            image_info->debug=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("density",option+1) == 0)
+          {
+            (void) CloneString(&image_info->density,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->density,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("depth",option+1) == 0)
+          {
+            image_info->depth=QuantumDepth;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing image depth",option);
+                image_info->depth=atol(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("displace",option+1) == 0)
+          {
+            (void) CloneString(&option_info.displace_geometry,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&option_info.displace_geometry,argv[i]);
+                option_info.compose=DisplaceCompositeOp;
+              }
+            break;
+          }
+        if (LocaleCompare("display",option+1) == 0)
+          {
+            (void) CloneString(&image_info->server_name,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing server name",option);
+                (void) CloneString(&image_info->server_name,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("dispose",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing method",option);
+              }
+            break;
+          }
+        if (LocaleCompare("dissolve",option+1) == 0)
+          {
+            option_info.dissolve=0.0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing value",option);
+                option_info.dissolve=atof(argv[i]);
+                option_info.compose=DissolveCompositeOp;
+              }
+            break;
+          }
+        if (LocaleCompare("dither",option+1) == 0)
+          {
+            image_info->dither=(*option == '-');
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'f':
+      {
+        if (LocaleCompare("filter",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                FilterTypes
+                  filter;
+
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                filter=UndefinedFilter;
+                if (LocaleCompare("Point",option) == 0)
+                  filter=PointFilter;
+                if (LocaleCompare("Box",option) == 0)
+                  filter=BoxFilter;
+                if (LocaleCompare("Triangle",option) == 0)
+                  filter=TriangleFilter;
+                if (LocaleCompare("Hermite",option) == 0)
+                  filter=HermiteFilter;
+                if (LocaleCompare("Hanning",option) == 0)
+                  filter=HanningFilter;
+                if (LocaleCompare("Hamming",option) == 0)
+                  filter=HammingFilter;
+                if (LocaleCompare("Blackman",option) == 0)
+                  filter=BlackmanFilter;
+                if (LocaleCompare("Gaussian",option) == 0)
+                  filter=GaussianFilter;
+                if (LocaleCompare("Quadratic",option) == 0)
+                  filter=QuadraticFilter;
+                if (LocaleCompare("Cubic",option) == 0)
+                  filter=CubicFilter;
+                if (LocaleCompare("Catrom",option) == 0)
+                  filter=CatromFilter;
+                if (LocaleCompare("Mitchell",option) == 0)
+                  filter=MitchellFilter;
+                if (LocaleCompare("Lanczos",option) == 0)
+                  filter=LanczosFilter;
+                if (LocaleCompare("Bessel",option) == 0)
+                  filter=BesselFilter;
+                if (LocaleCompare("Sinc",option) == 0)
+                  filter=SincFilter;
+                if (filter == UndefinedFilter)
+                  MagickError(OptionError,"Invalid filter type",option);
+              }
+            break;
+          }
+        if (LocaleCompare("font",option+1) == 0)
+          {
+            (void) CloneString(&image_info->font,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing font name",option);
+                (void) CloneString(&image_info->font,argv[i]);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'g':
+      {
+        if (LocaleCompare("geometry",option+1) == 0)
+          {
+            (void) CloneString(&option_info.geometry,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&option_info.geometry,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("gravity",option+1) == 0)
+          {
+            option_info.gravity=ForgetGravity;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                if (LocaleCompare("Forget",option) == 0)
+                  option_info.gravity=ForgetGravity;
+                if (LocaleCompare("NorthWest",option) == 0)
+                  option_info.gravity=NorthWestGravity;
+                if (LocaleCompare("North",option) == 0)
+                  option_info.gravity=NorthGravity;
+                if (LocaleCompare("NorthEast",option) == 0)
+                  option_info.gravity=NorthEastGravity;
+                if (LocaleCompare("West",option) == 0)
+                  option_info.gravity=WestGravity;
+                if (LocaleCompare("Center",option) == 0)
+                  option_info.gravity=CenterGravity;
+                if (LocaleCompare("East",option) == 0)
+                  option_info.gravity=EastGravity;
+                if (LocaleCompare("SouthWest",option) == 0)
+                  option_info.gravity=SouthWestGravity;
+                if (LocaleCompare("South",option) == 0)
+                  option_info.gravity=SouthGravity;
+                if (LocaleCompare("SouthEast",option) == 0)
+                  option_info.gravity=SouthEastGravity;
+                if (option_info.gravity == ForgetGravity)
+                  MagickError(OptionError,"Invalid gravity type",option);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'h':
+      {
+        if (LocaleCompare("help",option+1) == 0)
+          {
+            CompositeUsage();
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'i':
+      {
+        if (LocaleCompare("interlace",option+1) == 0)
+          {
+            image_info->interlace=NoInterlace;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->interlace=UndefinedInterlace;
+                if (LocaleCompare("None",option) == 0)
+                  image_info->interlace=NoInterlace;
+                if (LocaleCompare("Line",option) == 0)
+                  image_info->interlace=LineInterlace;
+                if (LocaleCompare("Plane",option) == 0)
+                  image_info->interlace=PlaneInterlace;
+                if (LocaleCompare("Partition",option) == 0)
+                  image_info->interlace=PartitionInterlace;
+                if (image_info->interlace == UndefinedInterlace)
+                  MagickError(OptionError,"Invalid interlace type",option);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'l':
+      {
+        if (LocaleCompare("label",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing label name",option);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'm':
+      {
+        if (LocaleCompare("matte",option+1) == 0)
+          break;
+        if (LocaleCompare("monochrome",option+1) == 0)
+          break;
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'n':
+      {
+        if (LocaleCompare("negate",option+1) == 0)
+          break;
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'p':
+      {
+        if (LocaleCompare("page",option+1) == 0)
+          {
+            (void) CloneString(&image_info->page,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing page geometry",option);
+                image_info->page=PostscriptGeometry(argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("process",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing argument",option);
+              }
+            break;
+          }
+        if (LocaleCompare("profile",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              MagickError(OptionError,"Missing profile",option);
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'q':
+      {
+        if (LocaleCompare("quality",option+1) == 0)
+          {
+            image_info->quality=75;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing quality",option);
+                image_info->quality=atol(argv[i]);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'r':
+      {
+        if (LocaleCompare("rotate",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) || !IsGeometry(argv[i]))
+              MagickError(OptionError,"Missing degrees",option);
+            break;
+          }
+        if (LocaleCompare("replace",option+1) == 0)
+          {
+            i++;
+            if (*option == '-')
+              {
+                if (i == argc)
+                  MagickError(OptionError,"Missing output filename",option);
+                if (image == (Image *) NULL)
+                  MagickError(OptionError,"Missing source image",(char *) NULL);
+                status&=MogrifyImages(image_info,i-j,argv+j,&image);
+                (void) CatchImageException(image);
+                status&=CompositeImageList(image_info,&image,composite_image,
+                  mask_image,&option_info,argv[i],&exception);
+                if (composite_image != (Image *) NULL)
+                  {
+                    DestroyImages(composite_image);
+                    composite_image=(Image *) NULL;
+                  }
+                if (mask_image != (Image *) NULL)
+                  {
+                    DestroyImages(mask_image);
+                    mask_image=(Image *) NULL;
+                  }
+                j=i+1;
+              }
+            break;
+          }
+        if (LocaleCompare("resize",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 's':
+      {
+        if (LocaleCompare("scene",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing scene number",option);
+              }
+            break;
+          }
+        if (LocaleCompare("sharpen",option+1) == 0)
+          {
+            i++;
+            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+              MagickError(OptionError,"Missing geometry",option);
+            break;
+          }
+        if (LocaleCompare("size",option+1) == 0)
+          {
+            (void) CloneString(&image_info->size,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->size,argv[i]);
+              }
+            break;
+          }
+        if (LocaleCompare("stegano",option+1) == 0)
+          {
+            option_info.stegano=0;
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing offset",option);
+                option_info.stegano=atol(argv[i])+1;
+              }
+            break;
+          }
+        if (LocaleCompare("stereo",option+1) == 0)
+          {
+            option_info.stereo=(*option == '-');
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 't':
+      {
+        if (LocaleCompare("tile",option+1) == 0)
+          {
+            option_info.tile=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("treedepth",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing depth",option);
+              }
+            break;
+          }
+        if (LocaleCompare("type",option+1) == 0)
+          {
+            image_info->type=UndefinedType;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                if (LocaleCompare("Bilevel",option) == 0)
+                  image_info->type=BilevelType;
+                if (LocaleCompare("Grayscale",option) == 0)
+                  image_info->type=GrayscaleType;
+                if (LocaleCompare("GrayscaleMatte",option) == 0)
+                  image_info->type=GrayscaleMatteType;
+                if (LocaleCompare("Palette",option) == 0)
+                  image_info->type=PaletteType;
+                if (LocaleCompare("PaletteMatte",option) == 0)
+                  image_info->type=PaletteMatteType;
+                if (LocaleCompare("TrueColor",option) == 0)
+                  image_info->type=TrueColorType;
+                if (LocaleCompare("TrueColorMatte",option) == 0)
+                  image_info->type=TrueColorMatteType;
+                if (LocaleCompare("ColorSeparation",option) == 0)
+                  image_info->type=ColorSeparationType;
+                if (LocaleCompare("ColorSeparationMatte",option) == 0)
+                  image_info->type=ColorSeparationMatteType;
+                if (LocaleCompare("Optimize",option) == 0)
+                  image_info->type=OptimizeType;
+                if (image_info->type == UndefinedType)
+                  MagickError(OptionError,"Invalid image type",option);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'u':
+      {
+        if (LocaleCompare("units",option+1) == 0)
+          {
+            image_info->units=UndefinedResolution;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->units=UndefinedResolution;
+                if (LocaleCompare("PixelsPerInch",option) == 0)
+                  image_info->units=PixelsPerInchResolution;
+                if (LocaleCompare("PixelsPerCentimeter",option) == 0)
+                  image_info->units=PixelsPerCentimeterResolution;
+              }
+            break;
+          }
+        if (LocaleCompare("unsharp",option+1) == 0)
+          {
+            (void) CloneString(&option_info.unsharp_geometry,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&option_info.unsharp_geometry,argv[i]);
+                option_info.compose=ThresholdCompositeOp;
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'v':
+      {
+        if (LocaleCompare("verbose",option+1) == 0)
+          {
+            image_info->verbose=(*option == '-');
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'w':
+      {
+        if (LocaleCompare("watermark",option+1) == 0)
+          {
+            (void) CloneString(&option_info.watermark_geometry,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&option_info.watermark_geometry,argv[i]);
+                option_info.compose=ModulateCompositeOp;
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case '?':
+      {
+        CompositeUsage();
+        break;
+      }
+      default:
+      {
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+    }
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);

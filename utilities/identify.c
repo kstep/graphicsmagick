@@ -222,172 +222,173 @@ int IdentifyUtility(int argc,char **argv)
   for (i=1; i < argc; i++)
   {
     option=argv[i];
-    if ((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       {
-        switch(*(option+1))
+        /*
+          Identify image.
+        */
+        (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
+        if (format != (char *) NULL)
+          for (q=strchr(format,'%'); q != (char *) NULL; q=strchr(q+1,'%'))
+            if ((*(q+1) == 'k') || (*(q+1) == '#'))
+              {
+                image_info->verbose=True;
+                break;
+              }
+        if (image_info->verbose)
+          image=ReadImage(image_info,&exception);
+        else
+          image=PingImage(image_info,&exception);
+        if (exception.severity != UndefinedException)
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
+        status&=image != (Image *) NULL;
+        if (image == (Image *) NULL)
+          continue;
+        for (p=image; p != (Image *) NULL; p=p->next)
         {
-          case 'c':
+          if (p->scene == 0)
+            p->scene=count++;
+          if (format == (char *) NULL)
+            {
+              DescribeImage(p,stdout,image_info->verbose);
+              continue;
+            }
+          text=TranslateText(image_info,p,format);
+          if (text == (char *) NULL)
+            ThrowBinaryException(ResourceLimitWarning,
+              "Unable to format image metadata","Memory allocation failed");
+          (void) fputs(text,stdout);
+          (void) fputc('\n',stdout);
+          LiberateMemory((void **) &text);
+        }
+        DestroyImageList(image);
+        number_images++;
+        continue;
+      }
+    switch(*(option+1))
+    {
+      case 'c':
+      {
+        if (LocaleCompare("cache",option+1) == 0)
           {
-            if (LocaleCompare("cache",option+1) == 0)
+            SetCacheThreshold(0);
+            if (*option == '-')
               {
-                SetCacheThreshold(0);
-                if (*option == '-')
-                  {
-                    i++;
-                    if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                      MagickError(OptionError,"Missing threshold",option);
-                    SetCacheThreshold(atol(argv[i]));
-                  }
-                break;
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                  MagickError(OptionError,"Missing threshold",option);
+                SetCacheThreshold(atol(argv[i]));
               }
-            MagickError(OptionError,"Unrecognized option",option);
             break;
           }
-          case 'd':
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'd':
+      {
+        if (LocaleCompare("debug",option+1) == 0)
           {
-            if (LocaleCompare("debug",option+1) == 0)
-              {
-                image_info->debug=(*option == '-');
-                break;
-              }
-            if (LocaleCompare("density",option+1) == 0)
-              {
-                (void) CloneString(&image_info->density,(char *) NULL);
-                if (*option == '-')
-                  {
-                  i++;
-                    if ((i == argc) || !IsGeometry(argv[i]))
-                      MagickError(OptionError,"Missing geometry",option);
-                    (void) CloneString(&image_info->density,argv[i]);
-                  }
-                break;
-              }
-            if (LocaleCompare("depth",option+1) == 0)
-              {
-                image_info->depth=QuantumDepth;
-                if (*option == '-')
-                  {
-                    i++;
-                    if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                      MagickError(OptionError,"Missing image depth",option);
-                    image_info->depth=atol(argv[i]);
-                  }
-                break;
-              }
-            MagickError(OptionError,"Unrecognized option",option);
+            image_info->debug=(*option == '-');
             break;
           }
-          case 'f':
+        if (LocaleCompare("density",option+1) == 0)
           {
-            if (LocaleCompare("format",option+1) == 0)
+            (void) CloneString(&image_info->density,(char *) NULL);
+            if (*option == '-')
               {
-                if (*option == '-')
-                  {
-                    i++;
-                    if (i == argc)
-                      MagickError(OptionError,"Missing format string",option);
-                  }
-                break;
+              i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->density,argv[i]);
               }
-            MagickError(OptionError,"Unrecognized option",option);
             break;
           }
-          case 'h':
+        if (LocaleCompare("depth",option+1) == 0)
           {
-            if (LocaleCompare("help",option+1) == 0)
+            image_info->depth=QuantumDepth;
+            if (*option == '-')
               {
-                IdentifyUsage();
-                break;
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  MagickError(OptionError,"Missing image depth",option);
+                image_info->depth=atol(argv[i]);
               }
-            MagickError(OptionError,"Unrecognized option",option);
             break;
           }
-          case 'p':
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'f':
+      {
+        if (LocaleCompare("format",option+1) == 0)
           {
-            if (LocaleCompare("ping",option+1) == 0)
-              break;  /* default is ping; silently ignore */
-            MagickError(OptionError,"Unrecognized option",option);
-            break;
-          }
-          case 's':
-          {
-            if (LocaleCompare("size",option+1) == 0)
+            if (*option == '-')
               {
-                (void) CloneString(&image_info->size,(char *) NULL);
-                if (*option == '-')
-                  {
-                    i++;
-                    if ((i == argc) || !IsGeometry(argv[i]))
-                      MagickError(OptionError,"Missing geometry",option);
-                    (void) CloneString(&image_info->size,argv[i]);
-                  }
-                break;
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing format string",option);
               }
-            MagickError(OptionError,"Unrecognized option",option);
             break;
           }
-          case 'v':
-          {
-            if (LocaleCompare("verbose",option+1) == 0)
-              {
-                image_info->verbose=(*option == '-');
-                break;
-              }
-            MagickError(OptionError,"Unrecognized option",option);
-            break;
-          }
-          case '?':
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'h':
+      {
+        if (LocaleCompare("help",option+1) == 0)
           {
             IdentifyUsage();
             break;
           }
-          default:
-          {
-            MagickError(OptionError,"Unrecognized option",option);
-            break;
-          }
-        }
-        continue;
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
       }
-    /*
-      Identify image.
-    */
-    (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
-    if (format != (char *) NULL)
-      for (q=strchr(format,'%'); q != (char *) NULL; q=strchr(q+1,'%'))
-        if ((*(q+1) == 'k') || (*(q+1) == '#'))
+      case 'p':
+      {
+        if (LocaleCompare("ping",option+1) == 0)
+          break;  /* default is ping; silently ignore */
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 's':
+      {
+        if (LocaleCompare("size",option+1) == 0)
           {
-            image_info->verbose=True;
+            (void) CloneString(&image_info->size,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->size,argv[i]);
+              }
             break;
           }
-    if (image_info->verbose)
-      image=ReadImage(image_info,&exception);
-    else
-      image=PingImage(image_info,&exception);
-    if (exception.severity != UndefinedException)
-      MagickWarning(exception.severity,exception.reason,exception.description);
-    status&=image != (Image *) NULL;
-    if (image == (Image *) NULL)
-      continue;
-    for (p=image; p != (Image *) NULL; p=p->next)
-    {
-      if (p->scene == 0)
-        p->scene=count++;
-      if (format == (char *) NULL)
-        {
-          DescribeImage(p,stdout,image_info->verbose);
-          continue;
-        }
-      text=TranslateText(image_info,p,format);
-      if (text == (char *) NULL)
-        ThrowBinaryException(ResourceLimitWarning,"Unable to format image data",
-          "Memory allocation failed");
-      (void) fputs(text,stdout);
-      (void) fputc('\n',stdout);
-      LiberateMemory((void **) &text);
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'v':
+      {
+        if (LocaleCompare("verbose",option+1) == 0)
+          {
+            image_info->verbose=(*option == '-');
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case '?':
+      {
+        IdentifyUsage();
+        break;
+      }
+      default:
+      {
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
     }
-    DestroyImageList(image);
-    number_images++;
   }
   if ((i != argc) || (number_images == 0))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
