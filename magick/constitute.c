@@ -2061,9 +2061,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   else
     {
-      unsigned int
-        status;
-
       delegate_info=GetDelegateInfo(clone_info->magick,(char *) NULL,exception);
       if (delegate_info == (const DelegateInfo *) NULL)
         {
@@ -2087,7 +2084,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         }
       (void) strncpy(image->filename,clone_info->filename,MaxTextExtent-1);
       TemporaryFilename(clone_info->filename);
-      status=InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL,
+      (void) InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL,
         exception);
       DestroyImages(image);
       image=(Image *) NULL;

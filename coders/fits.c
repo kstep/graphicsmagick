@@ -179,6 +179,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 
   long
     quantum,
+    scene,
     y;
 
   register IndexPacket
@@ -207,7 +208,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     value_expected;
 
   unsigned long
-    scene,
     number_pixels;
 
   /*

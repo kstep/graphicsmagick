@@ -146,7 +146,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
   int
     c;
 
-  register int
+  register long
     i;
     
   register unsigned char
@@ -206,7 +206,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       */
       i=image->generic_profiles;
       if (image->generic_profile == (ProfileInfo *) NULL)
-        image->generic_profile=(ProfileInfo *) AcquireMemory(sizeof(ProfileInfo));
+        image->generic_profile=(ProfileInfo *)
+          AcquireMemory(sizeof(ProfileInfo));
       else
         ReacquireMemory((void **) &image->generic_profile,
           (i+1)*sizeof(ProfileInfo));

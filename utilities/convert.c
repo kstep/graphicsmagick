@@ -288,8 +288,8 @@ static void ConcatenateImages(int argc,char **argv)
 %
 %
 */
-static void SnapshotImages(ImageInfo *image_info,const int argc,char **argv,
-  Image **images,OptionInfo *option_info)
+static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
+  char **argv,Image **images,OptionInfo *option_info)
 {
   ExceptionInfo
     exception;
@@ -311,7 +311,7 @@ static void SnapshotImages(ImageInfo *image_info,const int argc,char **argv,
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
   if (argc < 2)
-    return;
+    return(False);
   scene=option_info->scene;
   image=(*images);
   while (image->previous != (Image *) NULL)
@@ -445,6 +445,7 @@ static void SnapshotImages(ImageInfo *image_info,const int argc,char **argv,
   }
   if (image_info->verbose)
     DescribeImage(image,stderr,False);
+  return(status);
 }
 
 /*
@@ -1946,8 +1947,8 @@ int main(int argc,char **argv)
                       if (clone_image == (Image *) NULL)
                         MagickError(OptionError,"Missing an image file name",
                           (char *) NULL);
-                      SnapshotImages(clone_info,i-j+2,argv+j-1,&clone_image,
-                        &option_info);
+                      status=SnapshotImages(clone_info,i-j+2,argv+j-1,
+                        &clone_image,&option_info);
                       DestroyImages(clone_image);
                       DestroyImageInfo(clone_info);
                       j=i+1;
@@ -1965,7 +1966,7 @@ int main(int argc,char **argv)
                         if (image == (Image *) NULL)
                           MagickError(OptionError,"Missing source image",
                             (char *) NULL);
-                        SnapshotImages(image_info,i-j+2,argv+j-1,&image,
+                        status=SnapshotImages(image_info,i-j+2,argv+j-1,&image,
                           &option_info);
                         j=i+1;
                       }
@@ -2180,7 +2181,7 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  SnapshotImages(image_info,argc-j+1,argv+j-1,&image,&option_info);
+  status=SnapshotImages(image_info,argc-j+1,argv+j-1,&image,&option_info);
   DestroyImages(image);
   DestroyImageInfo(image_info);
   if (LocaleCompare("-convert",argv[0]) == 0)
