@@ -1010,30 +1010,28 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=UndefinedPrimitive;
             break;
           }
-        if (*p != '\0')
+        if (*p == '\0')
+          break;
+        primitive_info[j].text=p;
+        if (*p == '"')
           {
-            primitive_info[j].text=p;
-            if (*p == '"')
-              {
-                for (p++; *p != '\0'; p++)
-                  if ((*p == '"') && (*(p-1) != '\\'))
-                    break;
-              }
-            else
-              if (*p == '\'')
-                {
-                  for (p++; *p != '\0'; p++)
-                    if ((*p == '\'') && (*(p-1) != '\\'))
-                      break;
-                }
-              else
-                for (p++;  *p != '\0'; p++)
-                  if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
-                    break;
-            if (*p != '\0')
-              p++;
-            *p++='\0';
+            for (p++; *p != '\0'; p++)
+              if ((*p == '"') && (*(p-1) != '\\'))
+                break;
           }
+        else
+          if (*p == '\'')
+            {
+              for (p++; *p != '\0'; p++)
+                if ((*p == '\'') && (*(p-1) != '\\'))
+                  break;
+            }
+          else
+            for (p++;  *p != '\0'; p++)
+              if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
+                break;
+        if (*p != '\0')
+          p++;
         break;
       }
       case ImagePrimitive:

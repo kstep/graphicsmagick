@@ -103,9 +103,6 @@ Export unsigned int AnnotateImage(Image *image,
     *text,
     **textlist;
 
-  ExceptionInfo
-    error;
-
   Image
     *box_image,
     *annotate_image;
@@ -211,15 +208,14 @@ Export unsigned int AnnotateImage(Image *image,
     image_info->fill=annotate_info->fill;
     image_info->stroke=annotate_info->stroke;
     (void) strcpy(image_info->filename,label);
-    annotate_image=ReadImage(image_info,&error);
+    annotate_image=ReadImage(image_info,&image->exception);
     if (annotate_image == (Image *) NULL)
       {
         for (i++ ; textlist[i] != (char *) NULL; i++)
           FreeMemory((void **) &textlist[i]);
         FreeMemory((void **) &textlist);
         DestroyAnnotateInfo(clone_info);
-        ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
-          "Memory allocation failed");
+        return(False);
       }
     if (annotate_info->degrees != 0.0)
       {
@@ -447,7 +443,7 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
   AnnotateInfo *annotate_info)
 {
   ExceptionInfo
-    error;
+    exception;
 
   ImageAttribute
     *attribute;
@@ -485,7 +481,7 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
   */
   clone_info=CloneImageInfo(image_info);
   FormatString(clone_info->filename,"label:%.1024s",Alphabet);
-  annotate_image=ReadImage(clone_info,&error);
+  annotate_image=ReadImage(clone_info,&exception);
   DestroyImageInfo(clone_info);
   if (annotate_image == (Image *) NULL)
     return;
