@@ -224,7 +224,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     /*
       Scale image.
     */
-    chroma_image=True;
+    chroma_image->orphan=True;
     zoom_image=SampleImage(chroma_image,image->columns,image->rows);
     DestroyImage(chroma_image);
     if (zoom_image == (Image *) NULL)
