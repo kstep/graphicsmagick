@@ -582,7 +582,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (logging)
           {
             LogMagickEvent(CoderEvent,"   Decoding OS/2 BMP datastream");
-            LogMagickEvent(CoderEvent,"   Width=%ld, Height=%ld",bmp_info.width,
+            LogMagickEvent(CoderEvent,"   width=%ld, height=%ld",bmp_info.width,
               bmp_info.height);
           }
       }
@@ -610,49 +610,49 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (logging)
           {
             LogMagickEvent(CoderEvent,"   Decoding MS Windows BMP datastream");
-            LogMagickEvent(CoderEvent,"   Width=%ld, Height=%ld",bmp_info.width,
+            LogMagickEvent(CoderEvent,"   width=%ld, height=%ld",bmp_info.width,
               bmp_info.height);
-            LogMagickEvent(CoderEvent,"   Bits per pixel=%d",
+            LogMagickEvent(CoderEvent,"   bits per pixel=%d",
               bmp_info.bits_per_pixel);
             switch ((int) bmp_info.compression)
             {
               case BI_RGB:
               {
-                LogMagickEvent(CoderEvent,"   Compression=BI_RGB");
+                LogMagickEvent(CoderEvent,"   compression=BI_RGB");
                 break;
               }
               case BI_RLE4:
               {
-                LogMagickEvent(CoderEvent,"   Compression=BI_RLE4");
+                LogMagickEvent(CoderEvent,"   compression=BI_RLE4");
                 break;
               }
               case BI_RLE8:
               {
-                LogMagickEvent(CoderEvent,"   Compression=BI_RLE8");
+                LogMagickEvent(CoderEvent,"   compression=BI_RLE8");
                 break;
               }
               case BI_BITFIELDS:
               {
-                LogMagickEvent(CoderEvent,"   Compression=BI_BITFIELDS");
+                LogMagickEvent(CoderEvent,"   compression=BI_BITFIELDS");
                 break;
               }
               case BI_PNG:
               {
-                LogMagickEvent(CoderEvent,"   Compression=BI_PNG");
+                LogMagickEvent(CoderEvent,"   compression=BI_PNG");
                 break;
               }
               case BI_JPEG:
               {
-                LogMagickEvent(CoderEvent,"   Compression=BI_JPEG");
+                LogMagickEvent(CoderEvent,"   compression=BI_JPEG");
                 break;
               }
               default:
               {
-                LogMagickEvent(CoderEvent,"   Compression=UNKNOWN (%lu)",
+                LogMagickEvent(CoderEvent,"   compression=UNKNOWN (%lu)",
                   bmp_info.compression);
               }
             }
-            LogMagickEvent(CoderEvent,"   Number_colors=%lu",
+            LogMagickEvent(CoderEvent,"   number_colors=%lu",
               bmp_info.number_colors);
           }
 
@@ -1677,45 +1677,33 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     if (logging)
       {
         LogMagickEvent(CoderEvent,"   Writing BMP version %ld datastream",type);
-        if (image->storage_class == DirectClass)
-          LogMagickEvent(CoderEvent,"   Storage class=DirectClass");
-        else
-          LogMagickEvent(CoderEvent,"   Storage class=PseudoClass");
-        LogMagickEvent(CoderEvent,"   Image depth=%lu",image->depth);
-        if (image->matte)
-          LogMagickEvent(CoderEvent,"   Matte=True");
-        else
-          LogMagickEvent(CoderEvent,"   Matte=False");
-        LogMagickEvent(CoderEvent,"   BMP bits_per_pixel=%d",
+        LogMagickEvent(CoderEvent,"   bits_per_pixel=%d",
           bmp_info.bits_per_pixel);
         switch ((int) bmp_info.compression)
         {
            case BI_RGB:
            {
-             LogMagickEvent(CoderEvent,"   Compression=BI_RGB");
+             LogMagickEvent(CoderEvent,"   compression=BI_RGB");
              break;
            }
            case BI_RLE8:
            {
-             LogMagickEvent(CoderEvent,"   Compression=BI_RLE8");
+             LogMagickEvent(CoderEvent,"   compression=BI_RLE8");
              break;
            }
            case BI_BITFIELDS:
            {
-             LogMagickEvent(CoderEvent,"   Compression=BI_BITFIELDS");
+             LogMagickEvent(CoderEvent,"   compression=BI_BITFIELDS");
              break;
            }
            default:
            {
-             LogMagickEvent(CoderEvent,"   Compression=UNKNOWN (%lu)",
+             LogMagickEvent(CoderEvent,"   compression=UNKNOWN (%lu)",
                bmp_info.compression);
            }
         }
-        if (bmp_info.number_colors)
-          LogMagickEvent(CoderEvent,"   Number_colors=%lu",
-            bmp_info.number_colors);
-        else
-          LogMagickEvent(CoderEvent,"   Number_colors=unspecified");
+        LogMagickEvent(CoderEvent,"   number_colors=%lu",
+          bmp_info.number_colors);
       }
     (void) WriteBlob(image,2,"BM");
     (void) WriteBlobLSBLong(image,bmp_info.file_size);
