@@ -501,7 +501,8 @@ static int magickCmd(
             }
     	    Tcl_SetObjResult(interp, listPtr);
         }
-	MagickRelinquishMemory(fonts); /* Free TclMagick resource */
+	if (fonts != NULL)
+	    MagickRelinquishMemory(fonts); /* Free TclMagick resource */
 
         break;
     }

@@ -1,3 +1,8 @@
+2004-12-16  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.c (magickCmd): Only free the memory if
+	necessary.  Thanks to David Zolli for reporting the problem.
+
 2004-11-06  David N. Welton  <davidw@dedasys.com>
 
 	* generic/TkMagick.c: phototomagick's error message had the photo
