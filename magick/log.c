@@ -330,14 +330,9 @@ MagickExport unsigned int IsEventLogging(void)
   unsigned int
     status;
 
-  AcquireSemaphoreInfo(&log_semaphore);
   if (log_info == (LogInfo *) NULL)
-    {
-      LiberateSemaphoreInfo(&log_semaphore);
-      return(False);
-    }
+    return(False);
   status=log_info->events != NoEvents;
-  LiberateSemaphoreInfo(&log_semaphore);
   return(status);
 }
 
@@ -542,26 +537,25 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
   va_list
     operands;
 
-  AcquireSemaphoreInfo(&log_semaphore);
   if (log_info == (LogInfo *) NULL)
     {
-      ExceptionInfo
-        exception;
+      AcquireSemaphoreInfo(&log_semaphore);
+      if (log_info == (LogInfo *) NULL)
+        {
+          ExceptionInfo
+            exception;
 
-      GetExceptionInfo(&exception);
-      (void) ReadConfigureFile(LogFilename,0,&exception);
-      DestroyExceptionInfo(&exception);
+          GetExceptionInfo(&exception);
+          (void) ReadConfigureFile(LogFilename,0,&exception);
+          DestroyExceptionInfo(&exception);
+        }
+      LiberateSemaphoreInfo(&log_semaphore);
     }
   if (log_info == (LogInfo *) NULL)
-    {
-      LiberateSemaphoreInfo(&log_semaphore);
-      return(False);
-    }
+    return(False);
   if (!(log_info->events & type))
-    {
-      LiberateSemaphoreInfo(&log_semaphore);
-      return(True);
-    }
+    return(True);
+  AcquireSemaphoreInfo(&log_semaphore);
   switch (type)
   {
     case ConfigureEvent: domain="Configure"; break;
