@@ -102,6 +102,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *resize_image;
 
   long
+    horizontal_factor,
+    vertical_factor,
     y;
 
   register const PixelPacket
@@ -129,10 +131,6 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     status;
 
-  int
-    horizontal_factor=2,
-    vertical_factor=2;
-
   InterlaceType
     interlace;
 
@@ -148,28 +146,29 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(OptionWarning,"Must specify image size",image);
   image->depth=8;
   interlace=image_info->interlace;
+  horizontal_factor=2;
+  vertical_factor=2;
   if (image_info->sampling_factor != (char *) NULL)
     {
-    long
-      factors;
+      long
+        factors;
 
-    factors=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
-      &vertical_factor);
-    if (factors != 2)
-      vertical_factor=horizontal_factor;
-    if (horizontal_factor != 1 && horizontal_factor != 2 &&
-        vertical_factor != 1 && vertical_factor != 2)
-      ThrowReaderException(CorruptImageWarning,"Unexpected sampling factor",
-        image);
+      factors=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
+        &vertical_factor);
+      if (factors != 2)
+        vertical_factor=horizontal_factor;
+      if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
+          (vertical_factor != 1) && (vertical_factor != 2))
+        ThrowReaderException(CorruptImageWarning,"Unexpected sampling factor",
+          image);
     }
-
-  if (interlace == UndefinedInterlace || (interlace == NoInterlace &&
-    vertical_factor==2))
-    if (vertical_factor == 2)
-      interlace=PlaneInterlace; /* CCIR 4:1:1 */
-    else
+  if ((interlace == UndefinedInterlace) ||
+      ((interlace == NoInterlace) && (vertical_factor == 2)))
+    {
       interlace=NoInterlace;    /* CCIR 4:2:2 */
-
+      if (vertical_factor == 2)
+        interlace=PlaneInterlace; /* CCIR 4:1:1 */
+    }
   if (interlace != PartitionInterlace)
     {
       /*
@@ -212,49 +211,49 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     for (y=0; y < (long) image->rows; y++)
     {
-    if (interlace == NoInterlace)
-      {
-        if ((y > 0) || (image->previous == (Image *) NULL))
-          (void) ReadBlob(image,2*image->columns,scanline);
-        p=scanline;
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        s=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
-        if (s == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x+=2)
+      if (interlace == NoInterlace)
         {
-          s->red=0;
-          s->green=Upscale(*p++);
-          q->red=Upscale(*p++);
-          q->green=0;
-          q->blue=0;
-          q++;
-          q->green=0;
-          q->blue=0;
-          s->blue=Upscale(*p++);
-          q->red=Upscale(*p++);
-          s++;
-          q++;
+          if ((y > 0) || (image->previous == (Image *) NULL))
+            (void) ReadBlob(image,2*image->columns,scanline);
+          p=scanline;
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          s=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
+          if (s == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (long) image->columns; x+=2)
+          {
+            s->red=0;
+            s->green=Upscale(*p++);
+            q->red=Upscale(*p++);
+            q->green=0;
+            q->blue=0;
+            q++;
+            q->green=0;
+            q->blue=0;
+            s->blue=Upscale(*p++);
+            q->red=Upscale(*p++);
+            s++;
+            q++;
+          }
         }
-      }
-    else
-      {
-        if ((y > 0) || (image->previous == (Image *) NULL))
-          (void) ReadBlob(image,image->columns,scanline);
-        p=scanline;
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
+      else
         {
-          q->red=Upscale(*p++);
-          q->green=0;
-          q->blue=0;
-          q++;
+          if ((y > 0) || (image->previous == (Image *) NULL))
+            (void) ReadBlob(image,image->columns,scanline);
+          p=scanline;
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (long) image->columns; x++)
+          {
+            q->red=Upscale(*p++);
+            q->green=0;
+            q->blue=0;
+            q++;
+          }
         }
-      }
       if (!SyncImagePixels(image))
         break;
       if (interlace == NoInterlace)
@@ -483,6 +482,8 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     *yuv_image;
 
   long
+    horizontal_factor,
+    vertical_factor,
     y;
 
   register const PixelPacket
@@ -503,37 +504,34 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
   InterlaceType
     interlace;
 
-  int
-    horizontal_factor=2,
-    vertical_factor=2;
-
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   interlace=image_info->interlace;
+  horizontal_factor=2;
+  vertical_factor=2;
   if (image_info->sampling_factor != (char *) NULL)
     {
-    long
-      factors;
+      long
+        factors;
 
-    factors=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
-      &vertical_factor);
-    if (factors != 2)
-      vertical_factor=horizontal_factor;
-    if (horizontal_factor != 1 && horizontal_factor != 2 &&
-        vertical_factor != 1 && vertical_factor != 2)
-      ThrowWriterException(ResourceLimitWarning,"Unexpected sampling factor",
-        image);
+      factors=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
+        &vertical_factor);
+      if (factors != 2)
+        vertical_factor=horizontal_factor;
+      if ((horizontal_factor != 1) && (horizontal_factor != 2) &&
+          (vertical_factor != 1) && (vertical_factor != 2))
+        ThrowWriterException(ResourceLimitWarning,"Unexpected sampling factor",
+          image);
     }
-
-  if (interlace == UndefinedInterlace || (interlace == NoInterlace &&
-    vertical_factor==2))
-    if (vertical_factor == 2)
-      interlace=PlaneInterlace; /* CCIR 4:1:1 */
-    else
+  if ((interlace == UndefinedInterlace) ||
+      ((interlace == NoInterlace) && (vertical_factor == 2)))
+    {
       interlace=NoInterlace;    /* CCIR 4:2:2 */
-
+      if (vertical_factor == 2)
+        interlace=PlaneInterlace; /* CCIR 4:1:1 */
+    }
   if (interlace != PartitionInterlace)
     {
       /*
