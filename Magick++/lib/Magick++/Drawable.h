@@ -222,8 +222,62 @@ namespace Magick
       {
         return new DrawableAffine(*this);
       }
+    
+    void sx( double sx_ )
+      {
+        _sx = sx_;
+      }
+    double sx( void ) const
+      {
+        return _sx;
+      }
 
-  protected:
+    void sy( double sy_ )
+      {
+        _sy = sy_;
+      }
+    double sy( void ) const
+      {
+        return _sy;
+      }
+
+    void rx( double rx_ )
+      {
+        _rx = rx_;
+      }
+    double rx( void ) const
+      {
+        return _rx;
+      }
+    
+    void ry( double ry_ )
+      {
+        _ry = ry_;
+      }
+    double ry( void ) const
+      {
+        return _ry;
+      }
+
+    void tx( double tx_ )
+      {
+        _tx = tx_;
+      }
+    double tx( void ) const
+      {
+        return _tx;
+      }
+
+    void ty( double ty_ )
+      {
+        _ty = ty_;
+      }
+    double ty( void ) const
+      {
+        return _ty;
+      }
+
+  private:
     double _sx;
     double _sy;
     double _rx;
@@ -248,6 +302,15 @@ namespace Magick
     DrawableBase* copy() const
       {
         return new DrawableAngle(*this);
+      }
+
+    void angle( double angle_ )
+      {
+        _angle = angle_;
+      }
+    double angle( void ) const
+      {
+        return _angle;
       }
 
   private:
@@ -276,6 +339,60 @@ namespace Magick
     /*virtual*/ DrawableBase* copy() const
       {
         return new DrawableArc(*this);
+      }
+
+    void startX( double startX_ )
+      {
+        _startX = startX_;
+      }
+    double startX( void ) const
+      {
+        return _startX;
+      }
+
+    void startY( double startY_ )
+      {
+        _startY = startY_;
+      }
+    double startY( void ) const
+      {
+        return _startY;
+      }
+
+    void endX( double endX_ )
+      {
+        _endX = endX_;
+      }
+    double endX( void ) const
+      {
+        return _endX;
+      }
+
+    void endY( double endY_ )
+      {
+        _endY = endY_;
+      }
+    double endY( void ) const
+      {
+        return _endY;
+      }
+
+    void startDegrees( double startDegrees_ )
+      {
+        _startDegrees = startDegrees_;
+      }
+    double startDegrees( void ) const
+      {
+        return _startDegrees;
+      }
+
+    void endDegrees( double endDegrees_ )
+      {
+        _endDegrees = endDegrees_;
+      }
+    double endDegrees( void ) const
+      {
+        return _endDegrees;
       }
 
   private:
@@ -330,6 +447,42 @@ namespace Magick
         return new DrawableCircle(*this);
       }
 
+    void originX( double originX_ )
+      {
+        _originX = originX_;
+      }
+    double originX( void ) const
+      {
+        return _originX;
+      }
+
+    void originY( double originY_ )
+      {
+        _originY = originY_;
+      }
+    double originY( void ) const
+      {
+        return _originY;
+      }
+
+    void perimX( double perimX_ )
+      {
+        _perimX = perimX_;
+      }
+    double perimX( void ) const
+      {
+        return _perimX;
+      }
+
+    void perimY( double perimY_ )
+      {
+        _perimY = perimY_;
+      }
+    double perimY( void ) const
+      {
+        return _perimY;
+      }
+
   private:
     double _originX;
     double _originY;
@@ -358,23 +511,144 @@ namespace Magick
         return new DrawableColor(*this);
       }
 
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
+    void paintMethod( PaintMethod paintMethod_ )
+      {
+        _paintMethod = paintMethod_;
+      }
+    PaintMethod paintMethod( void ) const
+      {
+        return _paintMethod;
+      }
+
   private:
     double _x;
     double _y;
     PaintMethod _paintMethod;
   };
 
-  // Decoration (text decoration)
-  class DrawableTextDecoration : public DrawableBase
+  // Draw image at point, scaled to size specified by width and height
+  class DrawableCompositeImage : public DrawableBase
   {
   public:
-    DrawableTextDecoration ( DecorationType decoration_ );
+    
+    DrawableCompositeImage ( double x_, double y_,
+                             double width_, double height_,
+                             const std::string &image_ )
+      : _x(x_),
+        _y(y_),
+        _width(width_),
+        _height(height_),
+        _image(image_)
+      {
+      }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableCompositeImage(*this);
+      }
+
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
+    void width( double width_ )
+      {
+        _width = width_;
+      }
+    double width( void ) const
+      {
+        return _width;
+      }
+
+    void height( double height_ )
+      {
+        _height = height_;
+      }
+    double height( void ) const
+      {
+        return _height;
+      }
+
+    void image( const std::string &image_ )
+      {
+        _image = image_;
+      }
+     std::string image( void ) const
+      {
+        return _image;
+      }
+
+  private:
+    double _x;
+    double _y;
+    double _width;
+    double _height;
+    std::string _image;
+  };
+
+  // Decoration (text decoration)
+  class DrawableTextDecoration : public DrawableBase
+  {
+  public:
+    DrawableTextDecoration ( DecorationType decoration_ )
+      : _decoration(decoration_)
+      { }
+
+    // Support a polymorphic print-to-stream operator
+    /*virtual*/ void print (std::ostream& stream_) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableTextDecoration(*this);
+      }
+
+    void decoration( DecorationType decoration_ )
+      {
+        _decoration = decoration_;
+      }
+    DecorationType decoration( void ) const
+      {
+        return _decoration;
+      }
 
   private:
     DecorationType _decoration;
@@ -386,13 +660,78 @@ namespace Magick
   public:
     DrawableEllipse ( double originX_, double originY_, 
                       double width_, double height_,
-                      double arcStart_, double arcEnd_ );
+                      double arcStart_, double arcEnd_ )
+      : _originX(originX_),
+        _originY(originY_),
+        _width(width_),
+        _height(height_),
+        _arcStart(arcStart_),
+        _arcEnd(arcEnd_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableEllipse(*this);
+      }
+
+    void originX( double originX_ )
+      {
+        _originX = originX_;
+      }
+    double originX( void ) const
+      {
+        return _originX;
+      }
+
+    void originY( double originY_ )
+      {
+        _originY = originY_;
+      }
+    double originY( void ) const
+      {
+        return _originY;
+      }
+
+    void width( double width_ )
+      {
+        _width = width_;
+      }
+    double width( void ) const
+      {
+        return _width;
+      }
+
+    void height( double height_ )
+      {
+        _height = height_;
+      }
+    double height( void ) const
+      {
+        return _height;
+      }
+
+    void arcStart( double arcStart_ )
+      {
+        _arcStart = arcStart_;
+      }
+    double arcStart( void ) const
+      {
+        return _arcStart;
+      }
+
+    void arcEnd( double arcEnd_ )
+      {
+        _arcEnd = arcEnd_;
+      }
+    double arcEnd( void ) const
+      {
+        return _arcEnd;
+      }
 
   private:
     double _originX;
@@ -407,29 +746,59 @@ namespace Magick
   class DrawableFillColor : public DrawableBase
   {
   public:
-    DrawableFillColor ( const Magick::Color &color_ );
+    DrawableFillColor ( const Color &color_ )
+      : _color(color_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/ DrawableBase* copy() const
+      {
+        return new DrawableFillColor(*this);
+      }
+
+    void color( Color color_ )
+      {
+        _color = color_;
+      }
+    Color color( void ) const
+      {
+        return _color;
+      }
 
   private:
-    Magick::Color _color;
+    Color _color;
   };
 
   // Specify drawing fill opacity
   class DrawableFillOpacity : public DrawableBase
   {
   public:
-    DrawableFillOpacity ( double opacity_ );
+    DrawableFillOpacity ( double opacity_ )
+      : _opacity(opacity_)
+      {
+      }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableFillOpacity(*this);
+      }
+
+    void opacity( double opacity_ )
+      {
+        _opacity = opacity_;
+      }
+    double opacity( void ) const
+      {
+        return _opacity;
+      }
 
   private:
     double _opacity;
@@ -439,13 +808,29 @@ namespace Magick
   class DrawableFont : public DrawableBase
   {
   public:
-    DrawableFont ( const std::string &font_ );
+    DrawableFont ( const std::string &font_ )
+  : _font(font_)
+      {
+      }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableFont(*this);
+      }
+
+    void font( const std::string &font_ )
+      {
+        _font = font_;
+      }
+     std::string font( void ) const
+      {
+        return _font;
+      }
 
   private:
     std::string _font;
@@ -455,38 +840,32 @@ namespace Magick
   class DrawableGravity : public DrawableBase
   {
   public:
-    DrawableGravity ( GravityType gravity_ );
+    DrawableGravity ( GravityType gravity_ )
+      : _gravity(gravity_)
+      {
+      }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableGravity(*this);
+      }
+
+    void gravity( GravityType gravity_ )
+      {
+        _gravity = gravity_;
+      }
+    GravityType gravity( void ) const
+      {
+        return _gravity;
+      }
 
   private:
     GravityType _gravity;
-  };
-
-  // Draw image at point, scaled to size specified by width and height
-  class DrawableCompositeImage : public DrawableBase
-  {
-  public:
-    DrawableCompositeImage ( double x_, double y_,
-                             double width_, double height_,
-                             const std::string &image_ );
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
-    // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
-
-  private:
-    double _x;
-    double _y;
-    double _width;
-    double _height;
-    const std::string _image;
   };
 
   // Line
@@ -494,13 +873,57 @@ namespace Magick
   {
   public:
     DrawableLine ( double startX_, double startY_,
-                   double endX_, double endY_ );
+                   double endX_, double endY_ )
+      : _startX(startX_),
+        _startY(startY_),
+        _endX(endX_),
+        _endY(endY_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/ DrawableBase* copy() const
+      {
+        return new DrawableLine(*this);
+      }
+
+    void startX( double startX_ )
+      {
+        _startX = startX_;
+      }
+    double startX( void ) const
+      {
+        return _startX;
+      }
+
+    void startY( double startY_ )
+      {
+        _startY = startY_;
+      }
+    double startY( void ) const
+      {
+        return _startY;
+      }
+
+    void endX( double endX_ )
+      {
+        _endX = endX_;
+      }
+    double endX( void ) const
+      {
+        return _endX;
+      }
+
+    void endY( double endY_ )
+      {
+        _endY = endY_;
+      }
+    double endY( void ) const
+      {
+        return _endY;
+      }
 
   private:
     double _startX;
@@ -514,13 +937,48 @@ namespace Magick
   {
   public:
     DrawableMatte ( double x_, double y_,
-                    PaintMethod paintMethod_ );
+                    PaintMethod paintMethod_ )
+      : _x(x_),
+        _y(y_),
+        _paintMethod(paintMethod_)
+      { }
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
 
     // Return polymorphic copy of object
-    /*virtual*/ DrawableBase* copy() const;
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableMatte(*this);
+      }
+
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
+    void paintMethod( PaintMethod paintMethod_ )
+      {
+        _paintMethod = paintMethod_;
+      }
+    PaintMethod paintMethod( void ) const
+      {
+        return _paintMethod;
+      }
 
   private:
     double _x;
@@ -569,6 +1027,24 @@ namespace Magick
         return new DrawablePoint(*this);
       }
 
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
   private:
     double _x;
     double _y;
@@ -590,6 +1066,15 @@ namespace Magick
     DrawableBase* copy() const
       {
         return new DrawablePointSize(*this);
+      }
+
+    void pointSize( double pointSize_ )
+      {
+        _pointSize = pointSize_;
+      }
+    double pointSize( void ) const
+      {
+        return _pointSize;
       }
 
   private:
@@ -700,6 +1185,42 @@ namespace Magick
         return new DrawableRectangle(*this);
       }
 
+    void upperLeftX( double upperLeftX_ )
+      {
+        _upperLeftX = upperLeftX_;
+      }
+    double upperLeftX( void ) const
+      {
+        return _upperLeftX;
+      }
+
+    void upperLeftY( double upperLeftY_ )
+      {
+        _upperLeftY = upperLeftY_;
+      }
+    double upperLeftY( void ) const
+      {
+        return _upperLeftY;
+      }
+
+    void lowerRightX( double lowerRightX_ )
+      {
+        _lowerRightX = lowerRightX_;
+      }
+    double lowerRightX( void ) const
+      {
+        return _lowerRightX;
+      }
+
+    void lowerRightY( double lowerRightY_ )
+      {
+        _lowerRightY = lowerRightY_;
+      }
+    double lowerRightY( void ) const
+      {
+        return _lowerRightY;
+      }
+
   private:
     double _upperLeftX;
     double _upperLeftY;
@@ -723,6 +1244,15 @@ namespace Magick
     DrawableBase* copy() const
       {
         return new DrawableRotation(*this);
+      }
+
+    void angle( double angle_ )
+      {
+        _angle = angle_;
+      }
+    double angle( void ) const
+      {
+        return _angle;
       }
 
   private:
@@ -754,6 +1284,60 @@ namespace Magick
         return new DrawableRoundRectangle(*this);
       }
 
+    void centerX( double centerX_ )
+      {
+        _centerX = centerX_;
+      }
+    double centerX( void ) const
+      {
+        return _centerX;
+      }
+
+    void centerY( double centerY_ )
+      {
+        _centerY = centerY_;
+      }
+    double centerY( void ) const
+      {
+        return _centerY;
+      }
+
+    void width( double width_ )
+      {
+        _width = width_;
+      }
+    double width( void ) const
+      {
+        return _width;
+      }
+
+    void hight( double hight_ )
+      {
+        _hight = hight_;
+      }
+    double hight( void ) const
+      {
+        return _hight;
+      }
+
+    void cornerWidth( double cornerWidth_ )
+      {
+        _cornerWidth = cornerWidth_;
+      }
+    double cornerWidth( void ) const
+      {
+        return _cornerWidth;
+      }
+
+    void cornerHeight( double cornerHeight_ )
+      {
+        _cornerHeight = cornerHeight_;
+      }
+    double cornerHeight( void ) const
+      {
+        return _cornerHeight;
+      }
+
   private:
     double _centerX;
     double _centerY;
@@ -782,6 +1366,24 @@ namespace Magick
         return new DrawableScaling(*this);
       }
 
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
   private:
     double _x;
     double _y;
@@ -805,6 +1407,15 @@ namespace Magick
         return new DrawableSkewX(*this);
       }
 
+    void angle( double angle_ )
+      {
+        _angle = angle_;
+      }
+    double angle( void ) const
+      {
+        return _angle;
+      }
+
   private:
     double _angle;
   };
@@ -825,6 +1436,15 @@ namespace Magick
     DrawableBase* copy() const
       {
         return new DrawableSkewY(*this);
+      }
+
+    void angle( double angle_ )
+      {
+        _angle = angle_;
+      }
+    double angle( void ) const
+      {
+        return _angle;
       }
 
   private:
@@ -850,6 +1470,15 @@ namespace Magick
         return new DrawableStrokeAntialias(*this);
       }
 
+    void flag( bool flag_ )
+      {
+        _flag = flag_;
+      }
+    bool flag( void ) const
+      {
+        return _flag;
+      }
+
   private:
     bool _flag;
   };
@@ -870,6 +1499,15 @@ namespace Magick
     DrawableBase* copy() const
       {
         return new DrawableStrokeColor(*this);
+      }
+
+    void color( Color color_ )
+      {
+        _color = color_;
+      }
+    Color color( void ) const
+      {
+        return _color;
       }
 
   private:
@@ -897,6 +1535,15 @@ namespace Magick
         return new DrawableStrokeOpacity(*this);
       }
 
+    void opacity( double opacity_ )
+      {
+        _opacity = opacity_;
+      }
+    double opacity( void ) const
+      {
+        return _opacity;
+      }
+
   private:
     double _opacity;
   };
@@ -917,6 +1564,15 @@ namespace Magick
     DrawableBase* copy() const
       {
         return new DrawableStrokeWidth(*this);
+      }
+
+    void width( double width_ )
+      {
+        _width = width_;
+      }
+    double width( void ) const
+      {
+        return _width;
       }
 
   private:
@@ -944,6 +1600,33 @@ namespace Magick
         return new DrawableText(*this);
       }
 
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
+    void text( const std::string &text_ )
+      {
+        _text = text_;
+      }
+    std::string text( void ) const
+      {
+        return _text;
+      }
+
   private:
     double _x;
     double _y;
@@ -969,6 +1652,24 @@ namespace Magick
         return new DrawableTranslation(*this);
       }
 
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
   private:
     double _x;
     double _y;
@@ -989,6 +1690,15 @@ namespace Magick
     DrawableBase* copy() const
       {
         return new DrawableTextAntialias(*this);
+      }
+
+    void flag( bool flag_ )
+      {
+        _flag = flag_;
+      }
+    bool flag( void ) const
+      {
+        return _flag;
       }
 
   private:
@@ -1012,7 +1722,70 @@ namespace Magick
         _x(x_),
         _y(y_) { }
 
-    // private:  FIXME
+    void radiusX( double radiusX_ )
+      {
+        _radiusX = radiusX_;
+      }
+    double radiusX( void ) const
+      {
+        return _radiusX;
+      }
+
+    void radiusY( double radiusY_ )
+      {
+        _radiusY = radiusY_;
+      }
+    double radiusY( void ) const
+      {
+        return _radiusY;
+      }
+
+    void xAxisRotation( double xAxisRotation_ )
+      {
+        _xAxisRotation = xAxisRotation_;
+      }
+    double xAxisRotation( void ) const
+      {
+        return _xAxisRotation;
+      }
+
+    void largeArcFlag( bool largeArcFlag_ )
+      {
+        _largeArcFlag = largeArcFlag_;
+      }
+    bool largeArcFlag( void ) const
+      {
+        return _largeArcFlag;
+      }
+
+    void sweepFlag( bool sweepFlag_ )
+      {
+        _sweepFlag = sweepFlag_;
+      }
+    bool sweepFlag( void ) const
+      {
+        return _sweepFlag;
+      }
+
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
+  private:
     double	_radiusX;	// X radius
     double	_radiusY;	// Y radius
     double	_xAxisRotation;	// Rotation relative to X axis
@@ -1106,8 +1879,62 @@ namespace Magick
         _y(y_)
       {
       }
-    
-    // private:  FIXME
+
+    void x1( double x1_ )
+      {
+        _x1 = x1_;
+      }
+    double x1( void ) const
+      {
+        return _x1;
+      }
+
+    void y1( double y1_ )
+      {
+        _y1 = y1_;
+      }
+    double y1( void ) const
+      {
+        return _y1;
+      }
+
+    void x2( double x2_ )
+      {
+        _x2 = x2_;
+      }
+    double x2( void ) const
+      {
+        return _x2;
+      }
+
+    void y2( double y2_ )
+      {
+        _y2 = y2_;
+      }
+    double y2( void ) const
+      {
+        return _y2;
+      }
+
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
+  private:
     double _x1;
     double _y1;
     double _x2;
@@ -1226,8 +2053,44 @@ namespace Magick
         _y(y_)
       {
       }
-    
-    // private:  FIXME
+
+    void x1( double x1_ )
+      {
+        _x1 = x1_;
+      }
+    double x1( void ) const
+      {
+        return _x1;
+      }
+
+    void y1( double y1_ )
+      {
+        _y1 = y1_;
+      }
+    double y1( void ) const
+      {
+        return _y1;
+      }
+
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
+  private:
     double _x1;
     double _y1;
     double _x;
@@ -1393,6 +2256,15 @@ namespace Magick
       return new PathLinetoHorizontalAbs(*this);
     }
 
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
+
   private:
     double _x;
   };
@@ -1409,6 +2281,15 @@ namespace Magick
     /*virtual*/ VPathBase* copy() const {
       return new PathLinetoHorizontalRel(*this);
     }
+
+    void x( double x_ )
+      {
+        _x = x_;
+      }
+    double x( void ) const
+      {
+        return _x;
+      }
 
   private:
     double _x;
@@ -1429,6 +2310,15 @@ namespace Magick
       return new PathLinetoVerticalAbs(*this);
     }
 
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
+
   private:
     double _y;
   };
@@ -1445,6 +2335,15 @@ namespace Magick
     /*virtual*/ VPathBase* copy() const {
       return new PathLinetoVerticalRel(*this);
     }
+
+    void y( double y_ )
+      {
+        _y = y_;
+      }
+    double y( void ) const
+      {
+        return _y;
+      }
 
   private:
     double _y;

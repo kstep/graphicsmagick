@@ -124,11 +124,6 @@ void Magick::DrawablePath::print (std::ostream& stream_) const
 }
 
 // Decoration (text decoration)
-Magick::DrawableTextDecoration::DrawableTextDecoration ( Magick::DecorationType decoration_ )
-  : _decoration(decoration_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableTextDecoration::print (std::ostream& stream_) const
 {
   stream_ << "decorate ";
@@ -153,28 +148,8 @@ void Magick::DrawableTextDecoration::print (std::ostream& stream_) const
       }
     }
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableTextDecoration::copy() const
-{
-  return new DrawableTextDecoration(*this);
-}
 
 // Ellipse
-Magick::DrawableEllipse::DrawableEllipse ( double originX_,
-                                           double originY_, 
-                                           double width_,
-                                           double height_,
-                                           double arcStart_,
-                                           double arcEnd_ )
-  : _originX(originX_),
-    _originY(originY_),
-    _width(width_),
-    _height(height_),
-    _arcStart(arcStart_),
-    _arcEnd(arcEnd_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableEllipse::print (std::ostream& stream_) const
 {
   stream_ << "ellipse "
@@ -182,69 +157,29 @@ void Magick::DrawableEllipse::print (std::ostream& stream_) const
 	  << " " << _width << "," << _height
 	  << " " << _arcStart << "," << _arcEnd;
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableEllipse::copy() const
-{
-  return new DrawableEllipse(*this);
-}
 
 // Specify drawing fill color
-Magick::DrawableFillColor::DrawableFillColor ( const Magick::Color &color_ )
-  : _color(color_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableFillColor::print (std::ostream& stream_) const
 {
   stream_ << "fill "
           << string(_color);
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableFillColor::copy() const
-{
-  return new DrawableFillColor(*this);
-}
 
 // Specify drawing fill opacity
-Magick::DrawableFillOpacity::DrawableFillOpacity ( double opacity_ )
-  : _opacity(opacity_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableFillOpacity::print (std::ostream& stream_) const
 {
   stream_ << "fill-opacity "
           << _opacity;
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableFillOpacity::copy() const
-{
-  return new DrawableFillOpacity(*this);
-}
 
 // Specify text font
-Magick::DrawableFont::DrawableFont ( const std::string &font_ )
-  : _font(font_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableFont::print (std::ostream& stream_) const
 {
   stream_ << "font "
           << _font;
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableFont::copy() const
-{
-  return new DrawableFont(*this);
-}
 
 // Specify text positioning gravity
-Magick::DrawableGravity::DrawableGravity ( Magick::GravityType gravity_ )
-  : _gravity(gravity_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableGravity::print (std::ostream& stream_) const
 {
   stream_ << "gravity ";
@@ -313,26 +248,8 @@ void Magick::DrawableGravity::print (std::ostream& stream_) const
       }
     }
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableGravity::copy() const
-{
-  return new DrawableGravity(*this);
-}
 
 // Draw image at point
-Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_,
-                                                         double y_,
-                                                         double width_,
-                                                         double height_,
-                                                         const std::string &image_ )
-  : _x(x_),
-    _y(y_),
-    _width(width_),
-    _height(height_),
-    _image(image_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
 {
   stream_ << "image "
@@ -347,24 +264,8 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
     }
   stream_  << "\"";
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableCompositeImage::copy() const
-{
-  return new DrawableCompositeImage(*this);
-}
 
 // Line
-Magick::DrawableLine::DrawableLine ( double startX_,
-                                     double startY_,
-                                     double endX_,
-                                     double endY_ )
-  : _startX(startX_),
-    _startY(startY_),
-    _endX(endX_),
-    _endY(endY_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableLine::print (std::ostream& stream_) const
 {
   stream_ << "line "
@@ -372,21 +273,8 @@ void Magick::DrawableLine::print (std::ostream& stream_) const
           << " "
           << Coordinate( _endX, _endY );
 }
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableLine::copy() const
-{
-  return new DrawableLine(*this);
-}
 
 // Change pixel matte value to transparent using PaintMethod
-Magick::DrawableMatte::DrawableMatte ( double x_, double y_,
-                                       Magick::PaintMethod paintMethod_ )
-  : _x(x_),
-    _y(y_),
-    _paintMethod(paintMethod_)
-{
-}
-// Support a polymorphic print-to-stream operator
 void Magick::DrawableMatte::print (std::ostream& stream_) const
 {
   stream_ << "matte "
@@ -415,11 +303,6 @@ void Magick::DrawableMatte::print (std::ostream& stream_) const
 	stream_ << "point";
       }
     }
-}
-// Return polymorphic copy of object
-Magick::DrawableBase* Magick::DrawableMatte::copy() const
-{
-  return new DrawableMatte(*this);
 }
 
 // Point
@@ -592,26 +475,26 @@ void Magick::DrawableTextAntialias::print (std::ostream& stream_) const
 std::ostream& operator<<( std::ostream& stream_, const Magick::PathArcArgs& args_
 )
 {
-  stream_ << args_._radiusX
+  stream_ << args_.radiusX()
           << ","
-          << args_._radiusY
+          << args_.radiusY()
           << " "
-          << args_._xAxisRotation
+          << args_.xAxisRotation()
           << " ";
 
-  if ( args_._largeArcFlag )
+  if ( args_.largeArcFlag() )
     stream_ << "1 ";
   else
     stream_ << "0 ";
 
-  if ( args_._sweepFlag )
+  if ( args_.sweepFlag() )
     stream_ << "1 ";
   else
     stream_ << "0 ";
 
-  stream_ << args_._x
+  stream_ << args_.x()
           << ","
-          << args_._y;
+          << args_.y();
 
   return stream_;
 }
@@ -651,21 +534,21 @@ void Magick::PathClosePath::print (std::ostream& stream_) const
 //
 // Path Curveto (Cubic Bezier)
 //
-std::ostream& operator<<( std::ostream& stream_, const Magick::PathCurvetoArgs& args_
-)
+std::ostream& operator<<( std::ostream& stream_,
+                          const Magick::PathCurvetoArgs& args_ )
 {
   stream_ 
-    << args_._x1
+    << args_.x1()
     << " "
-    << args_._y1
+    << args_.y1()
     << " "
-    << args_._x2
+    << args_.x2()
     << " "
-    << args_._y2
+    << args_.y2()
     << " "
-    << args_._x
+    << args_.x()
     << " "
-    << args_._y;
+    << args_.y();
   return stream_;
 }
 // Support a polymorphic print-to-stream operator
@@ -722,13 +605,13 @@ void Magick::PathSmoothCurvetoRel::print (std::ostream& stream_) const
 std::ostream& operator<<( std::ostream& stream_, const Magick::PathQuadraticCurvetoArgs& args_)
 {
   stream_ 
-    << args_._x1
+    << args_.x1()
     << " "
-    << args_._y1
+    << args_.y1()
     << " "
-    << args_._x
+    << args_.x()
     << " "
-    << args_._y;
+    << args_.y();
   return stream_;
 }
 // Support a polymorphic print-to-stream operator
