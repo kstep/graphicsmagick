@@ -260,6 +260,43 @@ MagickExport void DestroyImageList(Image *images)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t F i r s t I m a g e I n L i s t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetFirstImageInList() returns a pointer to the first image in the list
+%
+%  The format of the GetFirstImageInList method is:
+%
+%      Image *GetFirstImageInList(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+*/
+MagickExport Image *GetFirstImageInList(const Image *images)
+{
+  register const Image
+    *p;
+
+  register long
+    i;
+
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  assert(images->signature == MagickSignature);
+  for (p=images; p->previous != (Image *) NULL; p=p->previous);
+  return((Image *) p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e F r o m L i s t                                           %
 %                                                                             %
 %                                                                             %
@@ -373,6 +410,43 @@ MagickExport unsigned long GetImageListLength(const Image *images)
   for (i=0; images != (Image *) NULL; images=images->next)
     i++;
   return(i);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t L a s t I m a g e I n L i s t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetLastImageInList() returns a pointer to the last image in the list
+%
+%  The format of the GetLastImageInList method is:
+%
+%      Image *GetLastImageInList(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+*/
+MagickExport Image *GetLastImageInList(const Image *images)
+{
+  register const Image
+    *p;
+
+  register long
+    i;
+
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  assert(images->signature == MagickSignature);
+  for (p=images; p->next != (Image *) NULL; p=p->next);
+  return((Image *) p);
 }
 
 /*

@@ -53,6 +53,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "attribute.h"
 #include "blob.h"
 #include "gem.h"
 #include "magick.h"
@@ -392,27 +393,24 @@ static unsigned int IsPCD(const unsigned char *magick,const size_t length)
 static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
-  char
-    *commands[3];
-
   Image
     *montage_image;
-
-  ImageInfo
-    *clone_info;
 
   MontageInfo
     *montage_info;
 
   /*
-    Create image tiles.
+    Label image tiles.
   */
-  clone_info=CloneImageInfo(image_info);
-  commands[0]=SetClientName((char *) NULL);
-  commands[1]=(char *) "-label";
-  commands[2]=(char *) DefaultTileLabel;
-  (void) MogrifyImages(clone_info,3,commands,&image);
-  DestroyImageInfo(clone_info);
+  {
+    Image
+      *label_image;
+
+    for( label_image=GetFirstImageInList(image); label_image != 0;
+         label_image=GetNextImageInList(label_image) )
+      SetImageAttribute(label_image, "label", DefaultTileLabel);
+  }
+
   /*
     Create the PCD Overview image.
   */
