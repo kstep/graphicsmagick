@@ -20,8 +20,9 @@ extern MagickExport DrawContext
   DrawAllocateContext(void);
 
 extern MagickExport int
-  DrawRender(Image * image, const ImageInfo * image_info,
-             const DrawContext context);
+  DrawRender(const DrawContext context,
+             Image *image,
+             const ImageInfo *image_info);
 
 extern MagickExport void
   DrawAnnotation(DrawContext context,
@@ -134,6 +135,7 @@ extern MagickExport void
   DrawSetClipRule(DrawContext context, const FillRule fill_rule),
   DrawSetClipUnits(DrawContext context, const ClipPathUnits clip_units),
   DrawSetFill(DrawContext context, const PixelPacket * fill_color),
+  DrawSetFillString(DrawContext context, const char* fill_color),
   DrawSetFillOpacity(DrawContext context, const double fill_opacity),
   DrawSetFillRule(DrawContext context, const FillRule fill_rule),
   DrawSetFont(DrawContext context, const char *font_name),
@@ -149,16 +151,17 @@ extern MagickExport void
   DrawSetSkewY(DrawContext context, const double degrees),
   DrawSetStopColor(DrawContext context, const PixelPacket * color,
                    const double offset),
-  DrawSetStroke(DrawContext context, const PixelPacket * color),
+  DrawSetStroke(DrawContext context, const PixelPacket * stroke_color),
+  DrawSetStrokeString(DrawContext context, const char* stroke_color),
   DrawSetStrokeAntialias(DrawContext context, const int true_false),
   DrawSetStrokeDashArray(DrawContext context,
-                         const unsigned int *dasharray),
+                         const double *dasharray),
   DrawSetStrokeDashOffset(DrawContext context,
                           const unsigned int dashoffset),
   DrawSetStrokeLineCap(DrawContext context, const LineCap linecap),
   DrawSetStrokeLineJoin(DrawContext context, const LineJoin linejoin),
   DrawSetStrokeMiterLimit(DrawContext context,
-                          const unsigned int miterlimit),
+                          const unsigned long miterlimit),
   DrawSetStrokeOpacity(DrawContext context, const double opacity),
   DrawSetStrokeWidth(DrawContext context, const double width),
   DrawSetTextAntialias(DrawContext context, const int true_false),

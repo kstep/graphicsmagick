@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 #
-# Makefile for ImageMagick read/write tests
+# Makefile for ImageMagick tests invoked via the C API
 #
 # Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
@@ -224,7 +224,7 @@ INCLUDES = -I../ -I$(top_srcdir) -I../magick
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = rwblob rwfile
+check_PROGRAMS = drawtest rwblob rwfile
 
 LDADD = ../magick/libMagick.la
 LDFLAGS = @LDFLAGS@
@@ -232,6 +232,8 @@ LDFLAGS = @LDFLAGS@
 rwblob_SOURCES = rwblob.c
 
 rwfile_SOURCES = rwfile.c
+
+drawtest_SOURCES = drawtest.c
 
 CHECK_FILES = \
 	'LOGO:' \
@@ -385,7 +387,12 @@ subdir = tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
-check_PROGRAMS = rwblob$(EXEEXT) rwfile$(EXEEXT)
+check_PROGRAMS = drawtest$(EXEEXT) rwblob$(EXEEXT) rwfile$(EXEEXT)
+am_drawtest_OBJECTS = drawtest.$(OBJEXT)
+drawtest_OBJECTS = $(am_drawtest_OBJECTS)
+drawtest_LDADD = $(LDADD)
+drawtest_DEPENDENCIES = ../magick/libMagick.la
+drawtest_LDFLAGS =
 am_rwblob_OBJECTS = rwblob.$(OBJEXT)
 rwblob_OBJECTS = $(am_rwblob_OBJECTS)
 rwblob_LDADD = $(LDADD)
@@ -403,7 +410,8 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/rwblob.Po ./$(DEPDIR)/rwfile.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/drawtest.Po ./$(DEPDIR)/rwblob.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/rwfile.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -412,9 +420,9 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = $(rwblob_SOURCES) $(rwfile_SOURCES)
+DIST_SOURCES = $(drawtest_SOURCES) $(rwblob_SOURCES) $(rwfile_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(rwblob_SOURCES) $(rwfile_SOURCES)
+SOURCES = $(drawtest_SOURCES) $(rwblob_SOURCES) $(rwfile_SOURCES)
 
 all: all-am
 
@@ -437,6 +445,9 @@ Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.s
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+drawtest$(EXEEXT): $(drawtest_OBJECTS) $(drawtest_DEPENDENCIES) 
+	@rm -f drawtest$(EXEEXT)
+	$(LINK) $(drawtest_LDFLAGS) $(drawtest_OBJECTS) $(drawtest_LDADD) $(LIBS)
 rwblob$(EXEEXT): $(rwblob_OBJECTS) $(rwblob_DEPENDENCIES) 
 	@rm -f rwblob$(EXEEXT)
 	$(LINK) $(rwblob_LDFLAGS) $(rwblob_OBJECTS) $(rwblob_LDADD) $(LIBS)
@@ -450,6 +461,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drawtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rwblob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rwfile.Po@am__quote@
 
@@ -678,6 +690,7 @@ check-rwfile:
 	exit $$status
 
 check: check-rwfile check-rwblob
+	./drawtest drawtest_out.miff
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

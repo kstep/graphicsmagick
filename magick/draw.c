@@ -57,6 +57,9 @@
 /*
   Define declarations.
 */
+#define PixelPacketMatch(p,q) (((p)->red == (q)->red) && \
+  ((p)->green == (q)->green) && ((p)->blue == (q)->blue) && \
+  ((p)->opacity == (q)->opacity))
 
 /*
   Typedef declarations.
@@ -455,21 +458,18 @@ MagickExport void DrawSetFill(DrawContext context,
     new_fill.opacity = context->graphic_context[context->index]->opacity;
 
   current_fill = &context->graphic_context[context->index]->fill;
-  if(current_fill->red != new_fill.red ||
-     current_fill->green != new_fill.green ||
-     current_fill->blue != new_fill.blue ||
-     current_fill->opacity != new_fill.opacity )
+  if( !(PixelPacketMatch(current_fill,&new_fill)) )
     {
       context->graphic_context[context->index]->fill = new_fill;
 
-      if (new_fill.opacity == OpaqueOpacity)
+      if (fill_color->opacity == OpaqueOpacity)
         DrawPrintf(context,
 #if QuantumDepth == 8
                    "fill #%02x%02x%02x\n",
 #elif QuantumDepth == 16
                    "fill #%04x%04x%04x\n",
 #endif
-                   new_fill.red, new_fill.green, new_fill.blue);
+                   fill_color->red, fill_color->green, fill_color->blue);
       else
         DrawPrintf(context,
 #if QuantumDepth == 8
@@ -477,10 +477,19 @@ MagickExport void DrawSetFill(DrawContext context,
 #elif QuantumDepth == 16
                    "fill #%04x%04x%04x%04x\n",
 #endif
-                   new_fill.red, new_fill.green, new_fill.blue,
-                   new_fill.opacity);
+                   fill_color->red, fill_color->green, fill_color->blue,
+                   fill_color->opacity);
     }
 }
+MagickExport void DrawSetFillString(DrawContext context, const char* fill_color)
+{
+  PixelPacket
+    pixel_packet;
+
+  if(QueryColorDatabase(fill_color,&pixel_packet,&context->exception))
+    DrawSetFill(context,&pixel_packet);
+}
+
 
 MagickExport void DrawSetFillOpacity(DrawContext context,
                                      const double fill_opacity)
@@ -1567,8 +1576,8 @@ MagickExport void DrawRectangle(DrawContext context,
   DrawPrintf(context, "rectangle %.4g,%.4g %.4g,%.4g\n", x1, y1, x2, y2);
 }
 
-MagickExport int DrawRender(Image * image, const ImageInfo * image_info,
-                            const DrawContext context)
+MagickExport int DrawRender(const DrawContext context, Image *image,
+                            const ImageInfo *image_info)
 {
   DrawInfo
     *draw_info;
@@ -1601,7 +1610,7 @@ MagickExport void DrawSetRotate(DrawContext context, const double degrees)
   affine.sy=cos(DegreesToRadians(fmod(degrees,360.0)));
   DrawSetAffine(context,&affine);
 
-  DrawPrintf(context, "rotate %.4g\n", degrees);
+/*   DrawPrintf(context, "rotate %.4g\n", degrees); */
 }
 
 MagickExport void DrawRoundRectangle(DrawContext context,
@@ -1630,7 +1639,7 @@ MagickExport void DrawSetScale(DrawContext context,
   affine.sy=y;
   DrawSetAffine(context,&affine);
 
-  DrawPrintf(context, "scale %.4g,%.4g\n", x, y);
+/*   DrawPrintf(context, "scale %.4g,%.4g\n", x, y); */
 }
 
 MagickExport void DrawSetSkewX(DrawContext context, const double degrees)
@@ -1645,7 +1654,7 @@ MagickExport void DrawSetSkewX(DrawContext context, const double degrees)
   affine.ry=tan(DegreesToRadians(fmod(degrees,360.0)));
   DrawSetAffine(context,&affine);
 
-  DrawPrintf(context, "skewX %.4g\n", degrees);
+/*   DrawPrintf(context, "skewX %.4g\n", degrees); */
 }
 
 MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
@@ -1660,7 +1669,7 @@ MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
   affine.rx=tan(DegreesToRadians(fmod(degrees,360.0)));
   DrawSetAffine(context,&affine);
 
-  DrawPrintf(context, "skewY %.4g\n", degrees);
+/*   DrawPrintf(context, "skewY %.4g\n", degrees); */
 }
 
 MagickExport void DrawSetStopColor(DrawContext context,
@@ -1698,155 +1707,223 @@ MagickExport void DrawSetStroke(DrawContext context,
   assert(context->signature == MagickSignature);
   assert(stroke_color != (const PixelPacket *)NULL);
 
-  if (stroke_color->opacity == OpaqueOpacity)
-    DrawPrintf(context,
-#if QuantumDepth == 8
-                  "stroke #%02x%02x%02x\n",
-#elif QuantumDepth == 16
-                  "stroke #%04x%04x%04x\n",
-#endif
-                  stroke_color->red, stroke_color->green, stroke_color->blue);
-  else
-    DrawPrintf(context,
-#if QuantumDepth == 8
-                  "stroke #%02x%02x%02x%02x\n",
-#elif QuantumDepth == 16
-                  "stroke #%04x%04x%04x%04x\n",
-#endif
-                  stroke_color->red, stroke_color->green, stroke_color->blue,
-                  stroke_color->opacity);
+  PixelPacket
+    *current_stroke,
+    new_stroke;
 
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(stroke_color != (const PixelPacket *) NULL);
+
+  new_stroke = *stroke_color;
+  if(new_stroke.opacity != TransparentOpacity)
+    new_stroke.opacity = context->graphic_context[context->index]->opacity;
+
+  current_stroke = &context->graphic_context[context->index]->stroke;
+  if( !(PixelPacketMatch(current_stroke,&new_stroke)) )
+    {
+      context->graphic_context[context->index]->stroke = new_stroke;
+
+      if (stroke_color->opacity == OpaqueOpacity)
+        DrawPrintf(context,
+#if QuantumDepth == 8
+                   "stroke #%02x%02x%02x\n",
+#elif QuantumDepth == 16
+                   "stroke #%04x%04x%04x\n",
+#endif
+                   stroke_color->red, stroke_color->green, stroke_color->blue);
+      else
+        DrawPrintf(context,
+#if QuantumDepth == 8
+                   "stroke #%02x%02x%02x%02x\n",
+#elif QuantumDepth == 16
+                   "stroke #%04x%04x%04x%04x\n",
+#endif
+                   stroke_color->red, stroke_color->green, stroke_color->blue,
+                   stroke_color->opacity);
+    }
+}
+MagickExport void DrawSetStrokeString(DrawContext context, const char* stroke_color)
+{
+  PixelPacket
+    pixel_packet;
+
+  if(QueryColorDatabase(stroke_color,&pixel_packet,&context->exception))
+    DrawSetStroke(context,&pixel_packet);
 }
 
 MagickExport void DrawSetStrokeAntialias(DrawContext context,
-                                         const int true_false)
+                                         const int stroke_antialias)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  DrawPrintf(context, "stroke-antialias %i\n", true_false ? 1 : 0);
+  if(context->graphic_context[context->index]->stroke_antialias != stroke_antialias)
+    {
+      context->graphic_context[context->index]->stroke_antialias = stroke_antialias;
+
+      DrawPrintf(context, "stroke-antialias %i\n", stroke_antialias ? 1 : 0);
+    }
 }
 
 MagickExport void DrawSetStrokeDashArray(DrawContext context,
-                                         const unsigned int *dasharray)
+                                         const double *dasharray)
 {
-  register const unsigned int
+  register const double
     *p = dasharray;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
-  assert(dasharray != (const unsigned int *) NULL);
 
   DrawPrintf(context, "stroke-dasharray ");
-  if ((p == (const unsigned int *) NULL) || (*p == 0))
+  if ((p == (const double *) NULL) || (*p == 0))
     DrawPrintf(context, "none");
   else
     {
-      DrawPrintf(context, "%u", *p++);
+      DrawPrintf(context, "%.4g", *p++);
       while (*p)
-        DrawPrintf(context, ",%u", *p++);
+        DrawPrintf(context, ",%.4g", *p++);
     }
   DrawPrintf(context, "\n");
 }
 
 MagickExport void DrawSetStrokeDashOffset(DrawContext context,
-                                          const unsigned int dashoffset)
+                                          const unsigned int dash_offset)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  DrawPrintf(context, "stroke-dashoffset %u\n", dashoffset);
+  if(context->graphic_context[context->index]->dash_offset != dash_offset)
+    {
+      context->graphic_context[context->index]->dash_offset = dash_offset;
+
+      DrawPrintf(context, "stroke-dashoffset %u\n", dash_offset);
+    }
 }
 
 MagickExport void DrawSetStrokeLineCap(DrawContext context,
                                        const LineCap linecap)
 {
-  const char
-    *p = NULL;
-
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  switch (linecap)
+  if(context->graphic_context[context->index]->linecap != linecap)
     {
-    case ButtCap:
-      p = "butt";
-      break;
-    case RoundCap:
-      p = "round";
-      break;
-    case SquareCap:
-      p = "square";
-      break;
-    default:
-      break;
-    }
+      const char
+        *p = NULL;
 
-  if (p != NULL)
-    DrawPrintf(context, "stroke-linecap %s\n", p);
+      context->graphic_context[context->index]->linecap = linecap;
+
+      switch (linecap)
+        {
+        case ButtCap:
+          p = "butt";
+          break;
+        case RoundCap:
+          p = "round";
+          break;
+        case SquareCap:
+          p = "square";
+          break;
+        default:
+          break;
+        }
+
+      if (p != NULL)
+        DrawPrintf(context, "stroke-linecap %s\n", p);
+    }
 }
 
 MagickExport void DrawSetStrokeLineJoin(DrawContext context,
                                         const LineJoin linejoin)
 {
-  const char
-    *p = NULL;
-
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  switch (linejoin)
+  if(context->graphic_context[context->index]->linejoin != linejoin)
     {
-    case MiterJoin:
-      p = "miter";
-      break;
-    case RoundJoin:
-      p = "round";
-      break;
-    case BevelJoin:
-      p = "square";
-      break;
-    default:
-      break;
-    }
+      const char
+        *p = NULL;
 
-  if (p != NULL)
-    DrawPrintf(context, "stroke-linejoin %s\n", p);
+      context->graphic_context[context->index]->linejoin = linejoin;
+
+      switch (linejoin)
+        {
+        case MiterJoin:
+          p = "miter";
+          break;
+        case RoundJoin:
+          p = "round";
+          break;
+        case BevelJoin:
+          p = "square";
+          break;
+        default:
+          break;
+        }
+
+      if (p != NULL)
+        DrawPrintf(context, "stroke-linejoin %s\n", p);
+    }
 }
 
 MagickExport void DrawSetStrokeMiterLimit(DrawContext context,
-                                          const unsigned int miterlimit)
+                                          const unsigned long miterlimit)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  DrawPrintf(context, "stroke-miterlimit %u\n", miterlimit);
+  if(context->graphic_context[context->index]->miterlimit != miterlimit)
+    {
+      context->graphic_context[context->index]->miterlimit = miterlimit;
+
+      DrawPrintf(context, "stroke-miterlimit %u\n", miterlimit);
+    }
 }
 
 MagickExport void DrawSetStrokeOpacity(DrawContext context,
-                                       const double opacity)
+                                       const double stroke_opacity)
 {
+  double
+    opacity;
+
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  DrawPrintf(context, "stroke-opacity %.4g\n", opacity);
+  opacity = (Quantum)(MaxRGB*(1.0-(stroke_opacity <= 1.0 ? stroke_opacity : 1.0 )));
+
+  if (context->graphic_context[context->index]->stroke.opacity != opacity)
+    {
+      context->graphic_context[context->index]->stroke.opacity = opacity;
+      DrawPrintf(context, "stroke-opacity %.4g\n", stroke_opacity);
+    }
 }
 
-MagickExport void DrawSetStrokeWidth(DrawContext context, const double width)
+MagickExport void DrawSetStrokeWidth(DrawContext context, const double stroke_width)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  DrawPrintf(context, "stroke-width %.4g\n", width);
+  if (context->graphic_context[context->index]->stroke_width != stroke_width)
+    {
+      context->graphic_context[context->index]->stroke_width = stroke_width;
+
+      DrawPrintf(context, "stroke-width %.4g\n", stroke_width);
+    }
 }
 
 MagickExport void DrawSetTextAntialias(DrawContext context,
-                                       const int true_false)
+                                       const int text_antialias)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  DrawPrintf(context, "text-antialias %i\n", true_false ? 1 : 0);
+  if (context->graphic_context[context->index]->text_antialias != text_antialias)
+    {
+      context->graphic_context[context->index]->text_antialias = text_antialias;
+
+      DrawPrintf(context, "text-antialias %i\n", text_antialias ? 1 : 0);
+    }
 }
 
 MagickExport void DrawSetTextDecoration(DrawContext context,
@@ -1858,24 +1935,29 @@ MagickExport void DrawSetTextDecoration(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  switch (decoration)
+  if (context->graphic_context[context->index]->decorate != decoration)
     {
-    case NoDecoration:
-      p = "none";
-      break;
-    case UnderlineDecoration:
-      p = "underline";
-      break;
-    case OverlineDecoration:
-      p = "overline";
-      break;
-    case LineThroughDecoration:
-      p = "line-through";
-      break;
-    }
+      context->graphic_context[context->index]->decorate = decoration;
 
-  if (p != NULL)
-    DrawPrintf(context, "decorate %s\n", p);
+      switch (decoration)
+        {
+        case NoDecoration:
+          p = "none";
+          break;
+        case UnderlineDecoration:
+          p = "underline";
+          break;
+        case OverlineDecoration:
+          p = "overline";
+          break;
+        case LineThroughDecoration:
+          p = "line-through";
+          break;
+        }
+
+      if (p != NULL)
+        DrawPrintf(context, "decorate %s\n", p);
+    }
 }
 
 MagickExport void DrawSetTextUnderColor(DrawContext context,
@@ -1885,23 +1967,28 @@ MagickExport void DrawSetTextUnderColor(DrawContext context,
   assert(context->signature == MagickSignature);
   assert(under_color != (const PixelPacket *)NULL);
 
-  if (under_color->opacity == OpaqueOpacity)
-    DrawPrintf(context,
+  if (!(PixelPacketMatch(&context->graphic_context[context->index]->box, under_color)))
+    {
+      context->graphic_context[context->index]->box = *under_color;
+
+      if (under_color->opacity == OpaqueOpacity)
+        DrawPrintf(context,
 #if QuantumDepth == 8
-                  "decorate #%02x%02x%02x\n",
+                   "decorate #%02x%02x%02x\n",
 #elif QuantumDepth == 16
-                  "decorate #%04x%04x%04x\n",
+                   "decorate #%04x%04x%04x\n",
 #endif
-                  under_color->red, under_color->green, under_color->blue);
-  else
-    DrawPrintf(context,
+                   under_color->red, under_color->green, under_color->blue);
+      else
+        DrawPrintf(context,
 #if QuantumDepth == 8
-                  "decorate #%02x%02x%02x%02x\n",
+                   "decorate #%02x%02x%02x%02x\n",
 #elif QuantumDepth == 16
-                  "decorate #%04x%04x%04x%04x\n",
+                   "decorate #%04x%04x%04x%04x\n",
 #endif
-                  under_color->red, under_color->green, under_color->blue,
-                  under_color->opacity);
+                   under_color->red, under_color->green, under_color->blue,
+                   under_color->opacity);
+    }
 }
 
 MagickExport void DrawSetTranslate(DrawContext context,
@@ -1918,7 +2005,7 @@ MagickExport void DrawSetTranslate(DrawContext context,
   affine.ty=y;
   DrawSetAffine(context,&affine);
 
-  DrawPrintf(context, "translate %.4g,%.4g\n", x, y);
+/*   DrawPrintf(context, "translate %.4g,%.4g\n", x, y); */
 }
 
 MagickExport void DrawSetViewbox(DrawContext context,

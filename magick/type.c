@@ -15,7 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                 July 1992                                   %
+%                                 May 2001                                    %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
@@ -458,8 +458,8 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigurationFile reads the color configuration file which maps
-%  color strings with a particular image format.
+%  Method ReadConfigurationFile reads the type configuration file which
+%  provides a mapping between type attributes and font files.
 %
 %  The format of the ReadConfigurationFile method is:
 %
@@ -468,10 +468,10 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigurationFile returns True if at least one color
-%      is defined otherwise False.
+%    o status: Method ReadConfigurationFile returns True if at least one entry
+%        is read, otherwise False is returned.
 %
-%    o basename:  The color configuration filename.
+%    o basename:  The type configuration filename.
 %
 %    o exception: Return any errors or warnings in this structure.
 %

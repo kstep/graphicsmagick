@@ -1,5 +1,5 @@
 #
-# Makefile for ImageMagick read/write tests
+# Makefile for ImageMagick tests invoked via the C API
 #
 # Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
@@ -36,7 +36,7 @@ INCLUDES = -I../ -I$(top_srcdir) -I../magick
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = rwblob rwfile
+check_PROGRAMS = drawtest rwblob rwfile
 
 LDADD = ../magick/libMagick.la
 LDFLAGS	= @LDFLAGS@
@@ -44,6 +44,8 @@ LDFLAGS	= @LDFLAGS@
 rwblob_SOURCES = rwblob.c
 
 rwfile_SOURCES = rwfile.c
+
+drawtest_SOURCES = drawtest.c
 
 #EXTRA_DIST = 
 
@@ -275,4 +277,4 @@ check-rwfile:
 	exit $$status
 
 check: check-rwfile check-rwblob
-
+	./drawtest drawtest_out.miff
