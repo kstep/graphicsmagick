@@ -67,7 +67,7 @@
   ((pow((double) (color)/MaxRGB,1.0/red_gamma)*MaxRGB)+0.5)))
 #define XGammaPixel(map,color,dx)  (unsigned long) (map->base_pixel+ \
   ((XRedGamma((color)->red)*map->red_max+(1L << (dx-1L)))/ \
-   ((1L << dx)-1L))* map->red_mult+ \
+   ((1L << dx)-1L))*map->red_mult+ \
   ((XGreenGamma((color)->green)*map->green_max+(1L << (dx-1L)))/ \
    ((1L << dx)-1L))*map->green_mult+ \
   ((XBlueGamma((color)->blue)*map->blue_max+(1L << (dx-1L)))/ \
