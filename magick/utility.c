@@ -2466,6 +2466,12 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
     *p,
     *q;
 
+  Image
+    *local_image;
+
+  ImageInfo
+    local_info;
+
   unsigned int
     indirection,
     length;
@@ -2526,10 +2532,30 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
   translated_text=(char *) AllocateMemory(length);
   if (translated_text == (char *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to translated text",
+      MagickWarning(ResourceLimitWarning,"Unable to translate text",
         "Memory allocation failed");
       if (indirection)
         FreeMemory((char *) text);
+      return((char *) NULL);
+    }
+  if (image_info == (ImageInfo *) NULL)
+    {
+      GetImageInfo(&local_info);
+      image_info=(&local_info);
+    }
+  local_image=(Image *) NULL;
+  if (image == (Image *) NULL)
+    {
+      local_image=AllocateImage(image_info);
+      image=local_image;
+    }
+  if ((image_info == (ImageInfo *) NULL) || (image == (Image *) NULL))
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to translate text",
+        "Memory allocation failed");
+      if (indirection)
+        FreeMemory((char *) text);
+      FreeMemory((char *) translated_text);
       return((char *) NULL);
     }
   /*
@@ -2572,8 +2598,6 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
     {
       case 'b':
       {
-        if (image == (Image *) NULL)
-          break;
         if (image->filesize >= (1 << 24))
           FormatString(q,"%ldmb",image->filesize/1024/1024);
         else
@@ -2594,8 +2618,6 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
           *extension,
           *filename;
 
-        if (image == (Image *) NULL)
-          break;
         /*
           Label segment is the base of the filename.
         */
@@ -2645,38 +2667,24 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
       }
       case 'g':
       {
-        if (image_info == (ImageInfo *) NULL)
-          break;
         FormatString(q,"0x%lx",image_info->group);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'h':
       {
-        if (image == (Image *) NULL)
-          break;
-        FormatString(q,"%u",image->magick_rows);
+        FormatString(q,"%u",image->magick_rows ? image->magick_rows : 256);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'i':
       {
-        if (image == (Image *) NULL)
-          {
-            (void) strcpy(q,image_info->filename);
-            q+=Extent(image_info->filename);
-          }
-        else
-          {
-            (void) strcpy(q,image->filename);
-            q+=Extent(image->filename);
-          }
+        (void) strcpy(q,image->filename);
+        q+=Extent(image->filename);
         break;
       }
       case 'l':
       {
-        if (image == (Image *) NULL)
-          break;
         if (image->label == (char *) NULL)
           break;
         (void) strcpy(q,image->label);
@@ -2685,16 +2693,18 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
       }
       case 'm':
       {
-        if (image == (Image *) NULL)
-          break;
         (void) strcpy(q,image->magick);
         q+=Extent(image->magick);
         break;
       }
+      case 'n':
+      {
+        FormatString(q,"%u",image_info->subrange);
+        q=translated_text+Extent(translated_text);
+        break;
+      }
       case 'o':
       {
-        if (image_info == (ImageInfo *) NULL)
-          break;
         (void) strcpy(q,image_info->filename);
         q+=Extent(image_info->filename);
         break;
@@ -2707,8 +2717,6 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
         unsigned int
           page;
 
-        if (image == (Image *) NULL)
-          break;
         p=image;
         for (page=1; p->previous != (Image *) NULL; page++)
           p=p->previous;
@@ -2716,42 +2724,41 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
         q=translated_text+Extent(translated_text);
         break;
       }
+      case 'q':
+      {
+        FormatString(q,"%u",image->depth);
+        q=translated_text+Extent(translated_text);
+        break;
+      }
       case 's':
       {
-        if (image == (Image *) NULL)
-          break;
         FormatString(q,"%u",image->scene);
+        if (image_info->subrange != 0)
+          FormatString(q,"%u",image_info->subimage);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'u':
       {
-        if (image_info == (ImageInfo *) NULL)
-          break;
         (void) strcpy(q,image_info->unique);
         q+=Extent(image_info->unique);
         break;
       }
       case 'w':
       {
-        if (image == (Image *) NULL)
-          break;
-        FormatString(q,"%u",image->magick_columns);
+        FormatString(q,"%u",
+          image->magick_columns ? image->magick_columns : 256);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'x':
       {
-        if (image == (Image *) NULL)
-          break;
         FormatString(q,"%u",(unsigned int) image->x_resolution);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'y':
       {
-        if (image == (Image *) NULL)
-          break;
         FormatString(q,"%u",(unsigned int) image->y_resolution);
         q=translated_text+Extent(translated_text);
         break;
@@ -2770,6 +2777,8 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
     }
   }
   *q='\0';
+  if (local_image != (Image *) NULL)
+    DestroyImage(local_image);
   if (indirection)
     FreeMemory((char *) text);
   return(translated_text);

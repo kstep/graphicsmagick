@@ -199,6 +199,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
     Transfer image info.
   */
   (void) strcpy(allocated_image->filename,image_info->filename);
+  (void) strcpy(allocated_image->magick_filename,image_info->filename);
   (void) strcpy(allocated_image->magick,image_info->magick);
   if (image_info->size != (char *) NULL)
     {
@@ -221,6 +222,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
         if ((flags & HeightValue) == 0)
           allocated_image->rows=allocated_image->columns;
       }
+  allocated_image->magick_columns=allocated_image->columns;
+  allocated_image->magick_rows=allocated_image->rows;
   allocated_image->compression=image_info->compression;
   allocated_image->interlace=image_info->interlace;
   if (image_info->density != (char *) NULL)

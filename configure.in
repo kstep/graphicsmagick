@@ -940,6 +940,10 @@ AC_SUBST(HPGLDecodeDelegate)
 AC_PATH_PROG(HTMLDecodeDelegate, html2ps, html2ps)
 AC_SUBST(HTMLDecodeDelegate)
 
+# Look for 'povray' program
+AC_PATH_PROG(POVDelegate, povray, povray)
+AC_SUBST(POVDelegate)
+
 # Look for 'rawtorle' program
 AC_PATH_PROG(RLEEncodeDelegate, rawtorle, rawtorle)
 AC_SUBST(RLEEncodeDelegate)

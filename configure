@@ -7298,11 +7298,46 @@ fi
 
 
 
+# Look for 'povray' program
+# Extract the first word of "povray", so it can be a program name with args.
+set dummy povray; ac_word=$2
+echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+echo "configure:7306: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_path_POVDelegate'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  case "$POVDelegate" in
+  /*)
+  ac_cv_path_POVDelegate="$POVDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+  for ac_dir in $PATH; do
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      ac_cv_path_POVDelegate="$ac_dir/$ac_word"
+      break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  test -z "$ac_cv_path_POVDelegate" && ac_cv_path_POVDelegate="povray"
+  ;;
+esac
+fi
+POVDelegate="$ac_cv_path_POVDelegate"
+if test -n "$POVDelegate"; then
+  echo "$ac_t""$POVDelegate" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+
+
 # Look for 'rawtorle' program
 # Extract the first word of "rawtorle", so it can be a program name with args.
 set dummy rawtorle; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:7306: checking for $ac_word" >&5
+echo "configure:7341: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_RLEEncodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7337,7 +7372,7 @@ fi
 # Extract the first word of "scanimage", so it can be a program name with args.
 set dummy scanimage; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:7341: checking for $ac_word" >&5
+echo "configure:7376: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_SCANDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7372,7 +7407,7 @@ fi
 # Extract the first word of "GET", so it can be a program name with args.
 set dummy GET; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:7376: checking for $ac_word" >&5
+echo "configure:7411: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_WWWDecodeDelegate'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7431,7 +7466,7 @@ then
     if test "$with_perl" != 'yes'
     then
 	echo $ac_n "checking for perl""... $ac_c" 1>&6
-echo "configure:7435: checking for perl" >&5
+echo "configure:7470: checking for perl" >&5
 if eval "test \"`echo '$''{'ac_cv_path_PERL'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7447,7 +7482,7 @@ do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:7451: checking for $ac_word" >&5
+echo "configure:7486: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_PERL'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7531,7 +7566,7 @@ if test "$have_zlib"   = 'yes' ; then DELEGATES="$DELEGATES zlib" ; fi
 #
 
 echo $ac_n "checking for HP style pty allocation""... $ac_c" 1>&6
-echo "configure:7535: checking for HP style pty allocation" >&5
+echo "configure:7570: checking for HP style pty allocation" >&5
 # following test fails on DECstations and other things that don't grok -c
 # but that's ok, since they don't have PTYMs anyway
 if test -r /dev/ptym/ptyp0 2>/dev/null ; then
@@ -7546,9 +7581,9 @@ else
 fi
 
 echo $ac_n "checking for HP style pty trapping""... $ac_c" 1>&6
-echo "configure:7550: checking for HP style pty trapping" >&5
+echo "configure:7585: checking for HP style pty trapping" >&5
 cat > conftest.$ac_ext <<EOF
-#line 7552 "configure"
+#line 7587 "configure"
 #include "confdefs.h"
 #include <sys/ptyio.h>
 EOF
@@ -7570,7 +7605,7 @@ rm -f conftest*
 
 
 echo $ac_n "checking for AIX new-style pty allocation""... $ac_c" 1>&6
-echo "configure:7574: checking for AIX new-style pty allocation" >&5
+echo "configure:7609: checking for AIX new-style pty allocation" >&5
 if test -r /dev/ptc -a -r /dev/pts ; then
     echo "$ac_t""yes" 1>&6
     cat >> confdefs.h <<\EOF
@@ -7583,7 +7618,7 @@ else
 fi
 
 echo $ac_n "checking for SGI old-style pty allocation""... $ac_c" 1>&6
-echo "configure:7587: checking for SGI old-style pty allocation" >&5
+echo "configure:7622: checking for SGI old-style pty allocation" >&5
 if test -r /dev/ptc -a ! -r /dev/pts ; then
     echo "$ac_t""yes" 1>&6
     cat >> confdefs.h <<\EOF
@@ -7601,7 +7636,7 @@ fi
 # anyway.  So we chose these, which have a special numbering scheme.
 #
 echo $ac_n "checking for SCO style pty allocation""... $ac_c" 1>&6
-echo "configure:7605: checking for SCO style pty allocation" >&5
+echo "configure:7640: checking for SCO style pty allocation" >&5
 sco_ptys=""
 case "${host}" in
   *-sco3.2v[45]*)     sco_clist_ptys=1 svr4_ptys_broken=1;;
@@ -7619,7 +7654,7 @@ else
 fi
 
 echo $ac_n "checking for SVR4/UNIX-'98 style pty allocation""... $ac_c" 1>&6
-echo "configure:7623: checking for SVR4/UNIX-'98 style pty allocation" >&5
+echo "configure:7658: checking for SVR4/UNIX-'98 style pty allocation" >&5
 if test -r /dev/ptmx -a "x$svr4_ptys_broken" = x ; then
   echo "$ac_t""yes" 1>&6
   cat >> confdefs.h <<\EOF
@@ -7628,12 +7663,12 @@ EOF
 
   # aargg. Some systems need libpt.a to use /dev/ptmx
   echo $ac_n "checking for ptsname""... $ac_c" 1>&6
-echo "configure:7632: checking for ptsname" >&5
+echo "configure:7667: checking for ptsname" >&5
 if eval "test \"`echo '$''{'ac_cv_func_ptsname'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7637 "configure"
+#line 7672 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char ptsname(); below.  */
@@ -7656,7 +7691,7 @@ ptsname();
 
 ; return 0; }
 EOF
-if { (eval echo configure:7660: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:7695: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_func_ptsname=yes"
 else
@@ -7683,7 +7718,7 @@ fi
 # In OSF/1 case, SVR4 are somewhat different.
 # Gregory Depp <depp@osf.org> 17Aug93
 echo $ac_n "checking for OSF/1 style pty allocation""... $ac_c" 1>&6
-echo "configure:7687: checking for OSF/1 style pty allocation" >&5
+echo "configure:7722: checking for OSF/1 style pty allocation" >&5
 if test -r /dev/ptmx_bsd ; then
     cat >> confdefs.h <<\EOF
 #define HAVE_PTMX_BSD 1
@@ -7709,17 +7744,17 @@ then
   have_socks_lib='no'
   ac_safe=`echo "socks.h" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for socks.h""... $ac_c" 1>&6
-echo "configure:7713: checking for socks.h" >&5
+echo "configure:7748: checking for socks.h" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7718 "configure"
+#line 7753 "configure"
 #include "confdefs.h"
 #include <socks.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:7723: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:7758: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -7742,7 +7777,7 @@ have_socks_header='no'
 fi
 
   echo $ac_n "checking for SOCKSinit in -lsocks5""... $ac_c" 1>&6
-echo "configure:7746: checking for SOCKSinit in -lsocks5" >&5
+echo "configure:7781: checking for SOCKSinit in -lsocks5" >&5
 ac_lib_var=`echo socks5'_'SOCKSinit | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -7750,7 +7785,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="$LIBS -lsocks5 "
 cat > conftest.$ac_ext <<EOF
-#line 7754 "configure"
+#line 7789 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -7761,7 +7796,7 @@ int main() {
 SOCKSinit()
 ; return 0; }
 EOF
-if { (eval echo configure:7765: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:7800: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -7793,7 +7828,7 @@ do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:7797: checking for $ac_word" >&5
+echo "configure:7832: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_XTP_FTP'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -7827,7 +7862,7 @@ done
 fi
 XTP_DEFS="$XTP_DEFS -DXTP_FTP=\"\\\"$XTP_FTP\\\"\""
 echo $ac_n "checking for gethostbyname in -lnsl""... $ac_c" 1>&6
-echo "configure:7831: checking for gethostbyname in -lnsl" >&5
+echo "configure:7866: checking for gethostbyname in -lnsl" >&5
 ac_lib_var=`echo nsl'_'gethostbyname | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -7835,7 +7870,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="$LIBS -lnsl "
 cat > conftest.$ac_ext <<EOF
-#line 7839 "configure"
+#line 7874 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -7846,7 +7881,7 @@ int main() {
 gethostbyname()
 ; return 0; }
 EOF
-if { (eval echo configure:7850: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:7885: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -7867,7 +7902,7 @@ else
 fi
 
 echo $ac_n "checking for socket in -lsocket""... $ac_c" 1>&6
-echo "configure:7871: checking for socket in -lsocket" >&5
+echo "configure:7906: checking for socket in -lsocket" >&5
 ac_lib_var=`echo socket'_'socket | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -7875,7 +7910,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="$LIBS -lsocket "
 cat > conftest.$ac_ext <<EOF
-#line 7879 "configure"
+#line 7914 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -7886,7 +7921,7 @@ int main() {
 socket()
 ; return 0; }
 EOF
-if { (eval echo configure:7890: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:7925: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -8140,6 +8175,7 @@ s%@CGMDecodeDelegate@%$CGMDecodeDelegate%g
 s%@LZWDecodeDelegate@%$LZWDecodeDelegate%g
 s%@HPGLDecodeDelegate@%$HPGLDecodeDelegate%g
 s%@HTMLDecodeDelegate@%$HTMLDecodeDelegate%g
+s%@POVDelegate@%$POVDelegate%g
 s%@RLEEncodeDelegate@%$RLEEncodeDelegate%g
 s%@SCANDecodeDelegate@%$SCANDecodeDelegate%g
 s%@WWWDecodeDelegate@%$WWWDecodeDelegate%g

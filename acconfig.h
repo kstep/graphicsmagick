@@ -236,6 +236,9 @@
 /* Define location of the 'display' program */
 #undef ShowImageDelegate
 
+/* Define location of the 'gimp' program */
+#undef POVDelegate
+
 /* Define location of the 'lp' program */
 #undef LPDelegate
 

@@ -14,9 +14,13 @@
 #   %e   filename extention
 #   %f   filename
 #   %h   height
+#   %i   input filename
 #   %l   label
 #   %m   magick
+#   %n   number of scenes
+#   %o   output filename
 #   %p   page number
+#   %q   quantum depth
 #   %s   scene number
 #   %t   top of filename
 #   %u   unique temporary filename
@@ -111,10 +115,10 @@ fig=>
 ftp=>
 	@WWWDecodeDelegate@ %m:%i > %o 2>&1
 
-# Gnuplot format (rendered as EPS)
+# Gnuplot format (rendered as Postscript)
 # Add additional gnuplot commands to the input file to adjust output.
 gplt=>
-	@EchoDelegate@ "set size 1.25,0.62;set terminal postscript eps color solid;set output '%o'; load '%i'" > %u
+	@EchoDelegate@ "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
 	@GnuplotDecodeDelegate@ %u
 	@RMDelegate@ -f %u
 
@@ -145,12 +149,12 @@ launch=>pnm
 
 mpg=>
 	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%05d
-	@ConvertDelegate@ %o*.ppm %o
+	@ConvertDelegate@ -concatenate %o*.ppm %o
 	@RMDelegate@ -f %o*.ppm
 
 m2v=>
 	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%05d
-	@ConvertDelegate@ %o*.ppm %o
+	@ConvertDelegate@ -concatenate %o*.ppm %o
 	@RMDelegate@ -f %o*.ppm
 
 pgp=>
@@ -158,6 +162,11 @@ pgp=>
 
 pnm<=win
 	@ShowImageDelegate@ -immutable %i
+
+pov=>
+	@POVDelegate@ +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
+	@ConvertDelegate@ %o*.png %o
+	@RMDelegate@ -f %o*.png
 
 print=>ps
 	@LPDelegate@ -c -s %i
