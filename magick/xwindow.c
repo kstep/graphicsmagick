@@ -1461,7 +1461,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method XCheckRefreshWindows checks the X server for exposure events for
-%  a particular window and updates the area associated withe exposure event.
+%  a particular window and updates the area associated with the exposure event.
 %
 %  The format of the XCheckRefreshWindows method is:
 %
@@ -1680,7 +1680,7 @@ MagickExport void XConfigureImageColormap(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XConstrainWindowPosition assures a window is positioned witin the
+%  Method XConstrainWindowPosition assures a window is positioned within the
 %  X server boundaries.
 %
 %  The format of the XConstrainWindowPosition method is:

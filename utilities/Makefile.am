@@ -67,7 +67,7 @@ uninstall-local:
 endif # MAGICK_COMPAT
 
 clean-local:
-	rm -f *_out.miff demo.miff gm.core core
+	rm -f *_out.miff *_out.txt demo.miff gm.core core
 
 RUNENV = $(SHELL) $(top_builddir)/rungm.sh
 
@@ -147,3 +147,19 @@ check:
 	  -compress rle montage_out.miff
 	${GM} convert logo: -resize 40% logo_out.miff
 	${GM} composite 'tmp:logo_out.miff' -gravity north 'tmp:montage_out.miff' demo.miff
+	@echo ./gm convert -list color \> list_color_out.txt
+	${GM} convert -list color > list_color_out.txt
+	@echo ./gm convert -list delegate \> list_delegate_out.txt
+	${GM} convert -list delegate > list_delegate_out.txt
+	@echo ./gm convert -list format \> list_format_out.txt
+	${GM} convert -list format > list_format_out.txt
+	@echo ./gm convert -list magic \> list_magic_out.txt
+	${GM} convert -list magic > list_magic_out.txt
+	@echo ./gm convert -list resource \> list_resource_out.txt
+	${GM} convert -list resource > list_resource_out.txt
+if WITH_MODULES
+	@echo ./gm convert -list modules \> list_modules_out.txt
+	${GM} convert -list modules > list_modules_out.txt
+endif # WITH_MODULES
+	@echo ./gm convert -list type \> list_type_out.txt
+	${GM} convert -list type > list_type_out.txt

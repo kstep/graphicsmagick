@@ -1841,10 +1841,12 @@ namespace Magick
     MagickLib::GetExceptionInfo( &exceptionInfo );
     MagickLib::MagickInfo **coder_list =
       MagickLib::GetMagickInfoArray( &exceptionInfo );
-    throwException( exceptionInfo );
     if( !coder_list )
-      throwExceptionExplicit(MagickLib::MissingDelegateError,
-                             "Coder array not returned!", 0 );
+      {
+        throwException( exceptionInfo );
+        throwExceptionExplicit(MagickLib::MissingDelegateError,
+                               "Coder array not returned!", 0 );
+      }
 
     // Clear out container
     container_->clear();
@@ -1886,6 +1888,7 @@ namespace Magick
           }
       }
     MagickLib::LiberateMemory((void **)&coder_list);
+    MagickLib::DestroyExceptionInfo( &exceptionInfo );
   }
 
   //
