@@ -3736,7 +3736,7 @@ ImageToBlob(ref,...)
           exception.description);
       if (blob != (char *) NULL)
         {
-          PUSHs(sv_2mortal(newSVpv((const char *) blob,length)));
+          PUSHs(sv_2mortal(newSVpv(blob,length)));
           LiberateMemory((void **) &blob);
         }
       if (package_info->image_info->adjoin)
@@ -6244,7 +6244,6 @@ Ping(ref,...)
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     count=0;
-    blob=(char *) NULL;
     for (i=1; i < items; i++)
     {
       (void) strncpy(info->image_info->filename,(char *) SvPV(ST(i),na),
