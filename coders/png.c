@@ -5318,7 +5318,11 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
 #endif
-      CatchImageException(image);
+      /*
+        Transfer most significant exception to exception argument
+        FIXME: should status be used to terminate processing?
+      */
+      GetImageException(image,exception);
       if (image_info->number_scenes != 0)
         {
           if (mng_info->scenes_found > (long) (image_info->first_scene+image_info->number_scenes))
@@ -7245,7 +7249,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   status=WriteOnePNGImage(mng_info,image_info,image);
 
   CloseBlob(image);
-  CatchImageException(image);
+
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WritePNGImage()");

@@ -2743,7 +2743,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     Call appropriate image reader based on image type.
   */
   magick_info=GetMagickInfo(clone_info->magick,exception);
-  if (exception->severity != UndefinedException)
+  if (exception->severity > UndefinedException)
     return (False);
   if ((magick_info != (const MagickInfo *) NULL) &&
       magick_info->seekable_stream)
@@ -2808,12 +2808,21 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             /*
               Try to choose a useful error type
             */
-            if (IsAccessibleAndNotEmpty(clone_info->filename))
-              ThrowException(exception,MissingDelegateError,
+            if (clone_info->filename[0] == 0)
+              {
+                ThrowException(exception,MissingDelegateError,
+                "NoDecodeDelegateForThisImageFormat",clone_info->magick);
+              }
+            else if (IsAccessibleAndNotEmpty(clone_info->filename))
+              {
+                ThrowException(exception,MissingDelegateError,
                 "NoDecodeDelegateForThisImageFormat",clone_info->filename);
+              }
             else
-              ThrowException(exception,FileOpenError,"UnableToOpenFile",
-                clone_info->filename);
+              {
+                ThrowException(exception,FileOpenError,"UnableToOpenFile",
+                  clone_info->filename);
+              }
             }
           if (clone_info->temporary)
             LiberateTemporaryFile(clone_info->filename);
@@ -3359,7 +3368,7 @@ MagickExport unsigned int WriteImages(ImageInfo *image_info,Image *image,
     if(p->exception.severity > exception->severity)
       ThrowException(exception,p->exception.severity,
         p->exception.reason,p->exception.description);
-    (void) CatchImageException(p);
+    GetImageException(p,exception);
     if (image_info->adjoin)
       break;
   }

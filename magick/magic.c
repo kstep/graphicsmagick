@@ -44,16 +44,6 @@
 #define MagicFilename  "magic.mgk"
 
 /*
-  Declare magick map.
-*/
-static char
-  *MagicMap = (char *)
-    "<?xml version=\"1.0\"?>"
-    "<magicmap>"
-    "  <magic stealth=\"True\" />"
-    "</magicmap>";
-
-/*
   Static declarations.
 */
 static SemaphoreInfo
@@ -160,6 +150,8 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
       if (magic_list == (MagicInfo *) NULL)
         (void) ReadConfigureFile(MagicFilename,0,exception);
       LiberateSemaphoreInfo(&magic_semaphore);
+      if (exception->severity > UndefinedException)
+        return 0;
     }
   if ((magic == (const unsigned char *) NULL) || (length == 0))
     return((const MagicInfo *) magic_list);
@@ -307,8 +299,10 @@ static unsigned int ReadConfigureFile(const char *basename,
     xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   else
     xml=(char *) FileToBlob(basename,&length,exception);
-  if (xml == (char *) NULL)
-    xml=AllocateString(MagicMap);
+
+  if (exception->severity > UndefinedException)
+    return False;
+
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {

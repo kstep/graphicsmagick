@@ -884,11 +884,14 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
               ltdl_initialized=True;
             }
           RegisterStaticModules();
+
+#if defined(SupportMagickModules)
           if (ReadConfigureFile(ModuleFilename,0,exception) != True)
             {
               LiberateSemaphoreInfo(&module_semaphore);
               return 0;
             }
+#endif
         }
       LiberateSemaphoreInfo(&module_semaphore);
     }

@@ -56,6 +56,25 @@
 2003-05-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/magic.c (ReadConfigureFile): Removed bogus embedded magic
+        data and ensured that errors with loading magic.mgk propogate to
+        the top.<BR>
+  <LI> magick/constitute.c (ReadImage): When building delegate error
+        report, handle the case where the filename is empty (such as for
+<STRONG>"LOGO:").</STRONG><BR>
+  <LI> coders/png.c (WritePNGImage): Ensure that most severe exception
+        is reported via exception argument.
+        (ReadMNGImage): Ensure that most severe exception is reported via
+        exception argument.<BR>
+  <LI> magick/command.c (ConvertImageCommand): Ensure that most severe
+        exception is reported via exception argument.
+        (CompositeImageList): Ensure that most severe exception is
+        reported via exception argument.
+        (CompositeImageCommand): Ensure that most severe exception is
+        reported via exception argument.
+  <LI> magick/constitute.c (WriteImages): Ensure that most severe
+        exception is reported via exception argument.
+  <LI> utilities/gm.c: Centered file header because I didn't like it.
   <LI> locale/C.mgk: Removed some defunct messages.
   <LI> magick/blob.c (PingBlob): Report useful error message.
         (BlobToImage): Report sensible error message for null blob.

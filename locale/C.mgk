@@ -193,7 +193,7 @@
         Registry key lookup failed. Package is not properly installed on this machine.
       </Message>
       <Message name="UnableToAccessConfigureFile">
-        Unable to access configure file
+        Unable to access configuration file
       </Message>
       <Message name="UnableToAccessFontFile">
         Unable to access font file

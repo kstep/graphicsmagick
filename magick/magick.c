@@ -242,10 +242,8 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
   register MagickInfo
     *p;
 
-#if defined(SupportMagickModules)
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
     (void) OpenModules(exception);
-#endif /* defined(SupportMagickModules) */
   AcquireSemaphoreInfo(&magick_semaphore);
   if (magick_list != (MagickInfo *) NULL)
     LiberateSemaphoreInfo(&magick_semaphore);
@@ -261,7 +259,12 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
       entry=SetMagickInfo("IMPLICIT");
       entry->stealth=True;
       (void) RegisterMagickInfo(entry);
-      if(!(GetModuleInfo((char *) NULL,exception)))
+
+      /*
+        Load modules and check for any error
+      */
+      (void) GetModuleInfo((char *) NULL,exception);
+      if (exception->severity > UndefinedException)
         return 0;
     }
   if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
