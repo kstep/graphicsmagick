@@ -573,6 +573,10 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %    Mitchell Point      Quandratic
 %    Sinc     Triangle
 %
+%  Most of the filters are FIR (finite impulse response), however, Bessel,
+%  Gaussian, and Sinc are IIR (infinite impulse response).  Bessel and Sinc
+%  are windowed (brought down to zero) with the Blackman filter.
+%
 %  ResizeImage() was inspired by Paul Heckbert's zoom program.
 %
 %  The format of the ResizeImage method is:
@@ -603,6 +607,13 @@ static double Blackman(const double x,const double support)
   return(0.42+0.50*cos(MagickPI*x)+0.08*cos(2.0*MagickPI*x));
 }
 
+static double Bessel(const double x,const double support)
+{
+  if (x == 0.0)
+    return(Blackman(x/support,support)*MagickPI/4.0);
+  return(Blackman(x/support,support)*BesselOrderOne(MagickPI*x)/(2.0*x));
+}
+
 static double Sinc(const double x,const double support)
 {
   if (x == 0.0)
@@ -617,13 +628,6 @@ static double Box(const double x,const double support)
   if (x < 0.5)
     return(1.0);
   return(0.0);
-}
-
-static double Bessel(const double x,const double support)
-{
-  if (x == 0.0)
-    return(Blackman(x/support,support)*MagickPI/4.0);
-  return(Blackman(x/support,support)*BesselOrderOne(MagickPI*x)/(2.0*x));
 }
 
 static double Catrom(const double x,const double support)
