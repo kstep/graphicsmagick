@@ -20,8 +20,8 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
 %                             William Radcliffe                               %
+%                                John Cristy                                  %
 %                               November 1999                                 %
 %                                                                             %
 %                                                                             %
@@ -426,7 +426,7 @@ Export IndexPacket *GetCacheIndexes(Cache cache,const unsigned int x,
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->type == DiskCache)
+  if ((cache_info->class != PseudoClass) || (cache_info->type == DiskCache))
     return((IndexPacket *) NULL);
   return(cache_info->indexes+(y*cache_info->columns+x));
 }

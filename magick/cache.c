@@ -521,10 +521,10 @@ Export unsigned int SyncPixelCache(Image *image)
   unsigned int
     status;
 
-  assert(image != (Image *) NULL);
   /*
     Allocate pixel cache.
   */
+  assert(image != (Image *) NULL);
   status=AllocateCache(image->cache,image->class,image->columns,image->rows);
   if (status == False)
     {
