@@ -92,7 +92,7 @@
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>unsigned long  <STRONG>GetImageDepth</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
-<P>Image * <STRONG>GetImageList</STRONG>( Image *images, const unsigned long n );</P>
+<P>Image * <STRONG>GetImageList</STRONG>( Image *images, const unsigned long n, ExceptionInfo *esception );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
@@ -411,7 +411,7 @@ The image info.
 <H2><A NAME="getimagelist">GetImageList</A></H2>
 <P>Method GetImageList returns an image at the specified position in the image list.</P>
 <P>The format of the GetImageList method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *GetImageList ( <A HREF="types/Image.html">Image</A> *images, const unsigned long n ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *GetImageList ( <A HREF="types/Image.html">Image</A> *images, const unsigned long n, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *esception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>images:</STRONG><BR>
@@ -421,6 +421,10 @@ The image list.
 <dd><p></p><dt><STRONG><A NAME="item_o_n%3A">n:</A></STRONG><BR>
 <DD>
 The position within the list.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagetype">GetImageType</A></H2>

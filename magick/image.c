@@ -1109,7 +1109,10 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
       }
     image->previous=clone_images;
     clone_images->next=image;
+    clone_images=clone_images->next;
   }
+  while (clone_images->previous != (Image *) NULL)
+    clone_images=clone_images->previous;
   return(clone_images);
 }
 
