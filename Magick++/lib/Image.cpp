@@ -91,6 +91,12 @@ Magick::Image::Image( const std::string &imageSpec_ )
     {
       // FIXME: need a way to report warnings in constructor
     }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
+    }
 }
 
 // Construct a blank image canvas of specified size and color
@@ -114,6 +120,12 @@ Magick::Image::Image( const Geometry &size_,
     {
       // FIXME: need a way to report warnings in constructor
     }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
+    }
 }
 
 // Construct Image from in-memory BLOB
@@ -128,6 +140,12 @@ Magick::Image::Image ( const Blob &blob_ )
   catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
+    }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
     }
 }
 
@@ -145,6 +163,12 @@ Magick::Image::Image ( const Blob &blob_,
     {
       // FIXME: need a way to report warnings in constructor
     }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
+    }
 }
 
 // Construct Image of specified size and depth from in-memory BLOB
@@ -161,6 +185,12 @@ Magick::Image::Image ( const Blob &blob_,
   catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
+    }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
     }
 }
 
@@ -180,6 +210,12 @@ Magick::Image::Image ( const Blob &blob_,
     {
       // FIXME: need a way to report warnings in constructor
     }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
+    }
 }
 
 // Construct Image of specified size, and format from in-memory BLOB
@@ -196,6 +232,12 @@ Magick::Image::Image ( const Blob &blob_,
   catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
+    }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
     }
 }
 
@@ -215,6 +257,12 @@ Magick::Image::Image ( const unsigned int width_,
   catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
+    }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
     }
 }
 

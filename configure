@@ -278,7 +278,7 @@ fi
 
 # The HP-UX ksh and POSIX shell print the target directory to stdout
 # if CDPATH is set.
-if test "X${CDPATH+set}" = Xset; then CDPATH=:; export CDPATH; fi
+if test "X${CDPATH+set}" = Xset; then CDPATH=${ZSH_VERSION+.}:; export CDPATH; fi
 
 if test -z "$ECHO"; then
 if test "X${echo_test_string+set}" != Xset; then
@@ -38432,7 +38432,7 @@ else
 fi
 if test "${ghostscript_font_dir}x" != 'x'
 then
-  type_include_files="${type_include_files} "'<include file="type-ghostscript.mgk"/>'
+  type_include_files="${type_include_files} "'<include file="type-ghostscript.mgk" />'
   echo "$as_me:$LINENO: result: $ghostscript_font_dir" >&5
 echo "${ECHO_T}$ghostscript_font_dir" >&6
 else
@@ -39625,7 +39625,7 @@ AMDEP_TRUE="$AMDEP_TRUE" ac_aux_dir="$ac_aux_dir"
 
 # See if we are running on zsh, and set the options which allow our
 # commands through without removal of \ escapes INIT.
-if test -n "${ZSH_VERSION+set}" ; then
+if test -n "\${ZSH_VERSION+set}" ; then
    setopt NO_GLOB_SUBST
 fi
 
@@ -39805,10 +39805,10 @@ fi
     old_postinstall_cmds | old_postuninstall_cmds | \
     sys_lib_search_path_spec | sys_lib_dlsearch_path_spec)
       # Double-quote double-evaled strings.
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$double_quote_subst\" -e \"\\\$sed_quote_subst\" -e \"\\\$delay_variable_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$double_quote_subst\\" -e \\"\\\$sed_quote_subst\\" -e \\"\\\$delay_variable_subst\\"\\\`\\\\\\""
       ;;
     *)
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$sed_quote_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$sed_quote_subst\\"\\\`\\\\\\""
       ;;
     esac
   done
@@ -39915,10 +39915,10 @@ compiler_CXX='`echo "X$compiler_CXX" | $Xsed -e "$delay_single_quote_subst"`'
     old_postinstall_cmds | old_postuninstall_cmds | \
     sys_lib_search_path_spec | sys_lib_dlsearch_path_spec)
       # Double-quote double-evaled strings.
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$double_quote_subst\" -e \"\\\$sed_quote_subst\" -e \"\\\$delay_variable_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$double_quote_subst\\" -e \\"\\\$sed_quote_subst\\" -e \\"\\\$delay_variable_subst\\"\\\`\\\\\\""
       ;;
     *)
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$sed_quote_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$sed_quote_subst\\"\\\`\\\\\\""
       ;;
     esac
   done
@@ -40025,10 +40025,10 @@ compiler_F77='`echo "X$compiler_F77" | $Xsed -e "$delay_single_quote_subst"`'
     old_postinstall_cmds | old_postuninstall_cmds | \
     sys_lib_search_path_spec | sys_lib_dlsearch_path_spec)
       # Double-quote double-evaled strings.
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$double_quote_subst\" -e \"\\\$sed_quote_subst\" -e \"\\\$delay_variable_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$double_quote_subst\\" -e \\"\\\$sed_quote_subst\\" -e \\"\\\$delay_variable_subst\\"\\\`\\\\\\""
       ;;
     *)
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$sed_quote_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$sed_quote_subst\\"\\\`\\\\\\""
       ;;
     esac
   done
@@ -40135,10 +40135,10 @@ compiler_GCJ='`echo "X$compiler_GCJ" | $Xsed -e "$delay_single_quote_subst"`'
     old_postinstall_cmds | old_postuninstall_cmds | \
     sys_lib_search_path_spec | sys_lib_dlsearch_path_spec)
       # Double-quote double-evaled strings.
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$double_quote_subst\" -e \"\\\$sed_quote_subst\" -e \"\\\$delay_variable_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$double_quote_subst\\" -e \\"\\\$sed_quote_subst\\" -e \\"\\\$delay_variable_subst\\"\\\`\\\\\\""
       ;;
     *)
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$sed_quote_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$sed_quote_subst\\"\\\`\\\\\\""
       ;;
     esac
   done
@@ -40245,10 +40245,10 @@ compiler_RC='`echo "X$compiler_RC" | $Xsed -e "$delay_single_quote_subst"`'
     old_postinstall_cmds | old_postuninstall_cmds | \
     sys_lib_search_path_spec | sys_lib_dlsearch_path_spec)
       # Double-quote double-evaled strings.
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$double_quote_subst\" -e \"\\\$sed_quote_subst\" -e \"\\\$delay_variable_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$double_quote_subst\\" -e \\"\\\$sed_quote_subst\\" -e \\"\\\$delay_variable_subst\\"\\\`\\\\\\""
       ;;
     *)
-      eval "lt_\$var=\\\\\"\\\`\\\$echo \"X\\\$\$var\" | \\\$Xsed -e \"\\\$sed_quote_subst\"\\\`\\\\\""
+      eval "lt_\$var=\\\\\\"\\\`\\\$echo \\"X\\\$\$var\\" | \\\$Xsed -e \\"\\\$sed_quote_subst\\"\\\`\\\\\\""
       ;;
     esac
   done
@@ -41355,7 +41355,7 @@ done
 # Generated automatically by $PROGRAM (GNU $PACKAGE $VERSION$TIMESTAMP)
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
-# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001
+# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003
 # Free Software Foundation, Inc.
 #
 # This file is part of GNU Libtool:
@@ -41388,7 +41388,7 @@ Xsed="$SED -e s/^X//"
 
 # The HP-UX ksh and POSIX shell print the target directory to stdout
 # if CDPATH is set.
-if test "X\${CDPATH+set}" = Xset; then CDPATH=:; export CDPATH; fi
+if test "X\${CDPATH+set}" = Xset; then CDPATH=\${ZSH_VERSION+.}:; export CDPATH; fi
 
 # The names of the tagged configurations supported by this script.
 available_tags=

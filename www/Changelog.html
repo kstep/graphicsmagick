@@ -53,6 +53,57 @@
 </tr>
 </table>
 <p>
+2004-02-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/montage.c (MontageImages): Fix leak of texture image (big
+        leak).
+
+</UL>
+<p>
+2004-01-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/blob.c (OpenBlob): Ensure that magick array is
+        fully initialized, even if the fread() is short.
+  <LI> magick/effect.c (SpreadImage): Eliminate read from uninitialized
+        memory.<BR>
+  <LI> magick/montage.c (MontageImages): Free thumbnails once they are
+        no longer needed (big leak).<BR>
+  <LI> magick/quantize.c (DestroyCubeInfo): Eliminate a small memory
+        leak.<BR>
+  <LI> magick/render.c (CloneDrawInfo): Fixed nasty memory leak which
+        becomes painfully evident when using Magick++.
+  <LI> magick/type.c (ReadConfigureFile): Fix problem with parsing
+        &lt;include&gt; directive.<BR>
+  <LI> configure.ac: The type.mgk file generated had a syntax error.
+
+</UL>
+<p>
+2004-02-02  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/bmp.c: fix potential use of unitialized data.
+  <LI> coders/png.c: fix potential use of unitialized data.
+
+</UL>
+<p>
+2004-01-27  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/png.c: Add DestroyBlobInfo() calls to stop memory leak when
+        processing JNG datastreams.
+
+</UL>
+<p>
+2004-01-03  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/sgi.c: opacity channel was lost when writing grayscale
+        SGI images.  See bug report in magick-users list.
+
+</UL>
+<p>
 2003-12-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

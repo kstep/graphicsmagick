@@ -1,3 +1,17 @@
+2004-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (Image): Delete the allocated image reference
+	object if a Magick::Error is thrown by the Image constructor.
+	Otherwise the image reference object becomes a memory leak.
+
+2004-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/readWriteBlob.cpp (main): Needed to delete character array
+        using array [] reference.
+	* lib/Magick++/STL.h (writeImages): Pass Blob::MallocAllocator to
+        updateNoCopy() in order to ensure that correct deallocator is
+        used.
+
 2003-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Makefile.am (pkgincludedir): Improve header install

@@ -819,7 +819,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         /*
           Include element.
         */
-        while ((*token != '>') && (*q != '\0'))
+        while ((*token != '/' && *(token+1)  != '>') && (*q != '\0'))
         {
           (void) strncpy(keyword,token,MaxTextExtent-1);
           GetToken(q,&q,token);

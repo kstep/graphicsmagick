@@ -1871,6 +1871,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                     "  opened file %s as FileStream blob %p",
                       filename,&image->blob);
+                  memset((void *) magick,0,MaxTextExtent);
                   (void) fread(magick,MaxTextExtent,1,image->blob->file);
                   (void) rewind(image->blob->file);
 #if defined(HasZLIB)

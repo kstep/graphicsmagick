@@ -2172,7 +2172,7 @@ namespace Magick
 					 first_->image(),
 					 &length,
 					 &exceptionInfo);
-    blob_->updateNoCopy( data, length );
+    blob_->updateNoCopy( data, length, Blob::MallocAllocator );
 
     unlinkImages( first_, last_ );
 

@@ -97,7 +97,7 @@ int main( int /*argc*/, char ** argv)
 
       // Construct Magick++ Blob
       Blob blob(static_cast<const void*>(blobData), blobLen);
-      delete blobData;
+      delete [] blobData;
 
       // If construction of image fails, an exception should be thrown
       {

@@ -985,9 +985,8 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
     LiberateMemory((void **) &cube_info->node_queue);
     cube_info->node_queue=nodes;
   } while (cube_info->node_queue != (Nodes *) NULL);
-  if (!cube_info->quantize_info->dither)
-    return;
-  LiberateMemory((void **) &cube_info->cache);
+  if (cube_info->quantize_info->dither)
+    LiberateMemory((void **) &cube_info->cache);
   LiberateMemory((void **) &cube_info);
 }
 
