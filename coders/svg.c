@@ -2217,13 +2217,13 @@ static void SVGWarning(void *context,const char *format,...)
       (void) fprintf(stdout,"  SAX.warning: ");
       (void) vfprintf(stdout,format,operands);
     }
-  svg_info->exception->severity=DelegateWarning;
 #if !defined(HAVE_VSNPRINTF)
   (void) vsprintf(reason,format,operands);
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  (void) CloneString(&svg_info->exception->reason,reason);
+  svg_info->exception->severity=DelegateWarning;
+  ThrowException(svg_info->exception,DelegateWarning,reason,(char *) NULL);
   va_end(operands);
 }
 
@@ -2249,13 +2249,13 @@ static void SVGError(void *context,const char *format,...)
       (void) fprintf(stdout,"  SAX.error: ");
       (void) vfprintf(stdout,format,operands);
     }
-  svg_info->exception->severity=DelegateError;
 #if !defined(HAVE_VSNPRINTF)
   (void) vsprintf(reason,format,operands);
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
   (void) CloneString(&svg_info->exception->reason,reason);
+  ThrowException(svg_info->exception,DelegateError,reason,(char *) NULL);
   va_end(operands);
 }
 
