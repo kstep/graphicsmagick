@@ -24,6 +24,20 @@
 
 #ifndef __cms_H
 
+//
+// This part added for GraphicsMagick DLLs
+//
+#ifdef _VISUALC_
+#  if defined(_DLL) && !defined(_LIB)
+     // Using DLLs
+#    define LCMS_DLL 1
+#    if defined(_LCMSLIB_)
+       // Building DLL
+#      define LCMS_DLL_BUILD 1
+#    endif // defined(_LCMSLIB_)
+#  endif // defined(_DLL) && !defined(_LIB)
+#endif // _VISUALC_
+
 // ********** Configuration toggles ****************************************
 
 //   Optimization mode.
@@ -43,7 +57,7 @@
 
 // Uncomment if you are trying the engine in a non-windows environment
 // like linux, SGI, VAX, FreeBSD, BeOS, etc.
-#define NON_WINDOWS  1
+// #define NON_WINDOWS  1
 
 // Uncomment this one if you are using big endian machines (only meaningful
 // when NON_WINDOWS is used)
