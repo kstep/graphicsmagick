@@ -238,6 +238,7 @@ int main(int argc,char **argv)
   blend=0.0;
   compose=ReplaceCompositeOp;
   composite_image=(Image *) NULL;
+  combined_image=(Image *) NULL;
   displacement_geometry=(char *) NULL;
   geometry=(char *) NULL;
   gravity=NorthWestGravity;
@@ -803,8 +804,10 @@ int main(int argc,char **argv)
   }
   if ((image == (Image *) NULL) || (composite_image == (Image *) NULL))
     Usage(client_name);
-  if (i != (argc-1))
+/*
+  if ((i != (argc-1)) || (combined_image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
+ */
   if (mask_image != (Image *) NULL)
     {
       status=CompositeImage(composite_image,ReplaceMatteCompositeOp,
@@ -905,17 +908,17 @@ int main(int argc,char **argv)
               break;
             case NorthGravity:
             {
-              x+=(image->columns-(int) composite_image->columns)/2;
+              x+=((int) image->columns-(int) composite_image->columns)/2;
               break;
             }
             case NorthEastGravity:
             {
-              x+=image->columns-(int) composite_image->columns;
+              x+=(int) image->columns-(int) composite_image->columns;
               break;
             }
             case WestGravity:
             {
-              y+=(image->rows-(int) composite_image->rows)/2;
+              y+=((int) image->rows-(int) composite_image->rows)/2;
               break;
             }
             case ForgetGravity:
@@ -934,31 +937,31 @@ int main(int argc,char **argv)
             case CenterGravity:
             default:
             {
-              x+=(image->columns-(int) composite_image->columns)/2;
-              y+=(image->rows-(int) composite_image->rows)/2;
+              x+=((int) image->columns-(int) composite_image->columns)/2;
+              y+=((int) image->rows-(int) composite_image->rows)/2;
               break;
             }
             case EastGravity:
             {
-              x+=image->columns-(int) composite_image->columns;
-              y+=(image->rows-(int) composite_image->rows)/2;
+              x+=(int) image->columns-(int) composite_image->columns;
+              y+=((int) image->rows-(int) composite_image->rows)/2;
               break;
             }
             case SouthWestGravity:
             {
-              y+=image->rows-(int) composite_image->rows;
+              y+=(int) image->rows-(int) composite_image->rows;
               break;
             }
             case SouthGravity:
             {
-              x+=(image->columns-(int) composite_image->columns)/2;
-              y+=image->rows-(int) composite_image->rows;
+              x+=((int) image->columns-(int) composite_image->columns)/2;
+              y+=(int) image->rows-(int) composite_image->rows;
               break;
             }
             case SouthEastGravity:
             {
-              x+=image->columns-(int) composite_image->columns;
-              y+=image->rows-(int) composite_image->rows;
+              x+=(int) image->columns-(int) composite_image->columns;
+              y+=(int) image->rows-(int) composite_image->rows;
               break;
             }
           }
