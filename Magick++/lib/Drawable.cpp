@@ -103,6 +103,40 @@ void Magick::Drawable::list_arg_impl ( const char* command_,
 // Drawable Objects
 //
 
+// Affine (scaling, rotation, and translation)
+Magick::DrawableAffine::DrawableAffine ( double scaleX_, double scaleY_,
+                                         double rotationX_, double rotationY_,
+                                         double translationX_, double translationY_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "affine "
+          << scaleX_
+          << ","
+          << rotationX_
+          << ","
+          << rotationY_
+          << ","
+          << scaleY_
+          << ","
+          << translationX_
+          << ","
+          << translationY_
+          << ends;
+  _primitive.assign( buffer );
+}
+
+// Angle (text drawing angle)
+Magick::DrawableAngle::DrawableAngle ( double angle_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "angle "
+          << angle_
+          << ends;
+  _primitive.assign( buffer );
+}
+
 // Arc
 Magick::DrawableArc::DrawableArc ( double startX_, double startY_,
                                    double endX_, double endY_,
@@ -171,6 +205,37 @@ Magick::DrawableColor::DrawableColor ( double x_, double y_,
   _primitive.assign(buffer);
 }
 
+// Decoration (text decoration)
+Magick::DrawableDecoration::DrawableDecoration ( DecorationType decoration_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "decorate ";
+
+  switch ( decoration_ )
+    {
+    case NoDecoration:
+      buffstr << "none";
+      break;
+    case UnderlineDecoration:
+      buffstr << "underline";
+      break;
+    case OverlineDecoration:
+      buffstr << "overline";
+      break;
+    case LineThroughDecoration:
+      buffstr << "line-through";
+      break;
+    default :
+      {
+        buffstr << "none";
+      }
+    }
+  buffstr << ends;
+
+  _primitive.assign( buffer );
+}
+
 // Ellipse
 Magick::DrawableEllipse::DrawableEllipse ( double originX_,
                                            double originY_, 
@@ -185,6 +250,116 @@ Magick::DrawableEllipse::DrawableEllipse ( double originX_,
 	  << " " << width_ << "," << height_
 	  << " " << arcStart_ << "," << arcEnd_
 	  << ends;
+  _primitive.assign( buffer );
+}
+
+// Specify drawing fill color
+Magick::DrawableFill::DrawableFill ( Magick::Color &color_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "fill "
+          << string(color_)
+          << ends;
+  _primitive.assign( buffer );
+}
+
+// Specify drawing fill opacity
+Magick::DrawableFillOpacity::DrawableFillOpacity ( double opacity_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "fill-opacity "
+          << opacity_
+          << ends;
+  _primitive.assign( buffer );
+}
+
+// Specify text font
+Magick::DrawableFont::DrawableFont ( const std::string &font_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "font \""
+          << font_
+          << "\""
+          << ends;
+
+  _primitive.assign( buffer );
+}
+
+// Specify text positioning gravity
+Magick::DrawableGravity::DrawableGravity ( GravityType gravity_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "gravity ";
+
+  switch ( gravity_ )
+    {
+      case ForgetGravity :
+        {
+          buffstr << "ForgetGravity";
+          break;
+        }
+      case NorthWestGravity :
+        {
+          buffstr << "NorthWestGravity";
+          break;
+        }
+      case NorthGravity :
+        {
+          buffstr << "NorthGravity";
+          break;
+        }
+      case NorthEastGravity :
+        {
+          buffstr << "NorthEastGravity";
+          break;
+        }
+      case WestGravity :
+        {
+          buffstr << "WestGravity";
+          break;
+        }
+      case CenterGravity :
+        {
+          buffstr << "CenterGravity";
+          break;
+        }
+      case EastGravity :
+        {
+          buffstr << "EastGravity";
+          break;
+        }
+      case SouthWestGravity :
+        {
+          buffstr << "SouthWestGravity";
+          break;
+        }
+      case SouthGravity :
+        {
+          buffstr << "SouthGravity";
+          break;
+        }
+      case SouthEastGravity :
+        {
+          buffstr << "SouthEastGravity";
+          break;
+        }
+      case StaticGravity :
+        {
+          buffstr << "StaticGravity";
+          break;
+        }
+
+    default :
+      {
+        buffstr << "ForgetGravity";
+      }
+    }
+  buffstr << ends;
+
   _primitive.assign( buffer );
 }
 
@@ -324,3 +499,50 @@ Magick::DrawableText::DrawableText ( double x_,
   _primitive.assign( buffer );
 }
 
+// Text pointsize
+Magick::DrawablePointSize::DrawablePointSize( double pointSize_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "pointsize "
+          << pointSize_
+          << ends;
+
+  _primitive.assign( buffer );
+}
+
+// Stroke color
+Magick::DrawableStroke::DrawableStroke ( Color &color_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "stroke "
+          << string(color_)
+          << ends;
+
+  _primitive.assign( buffer );
+}
+
+// Stroke opacity
+Magick::DrawableStrokeOpacity::DrawableStrokeOpacity ( double opacity_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "stroke-opacity "
+          << opacity_
+          << ends;
+
+  _primitive.assign( buffer );
+}
+
+// Stroke width
+Magick::DrawableStrokeWidth::DrawableStrokeWidth ( double width_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "stroke-width "
+          << width_
+          << ends;
+
+  _primitive.assign( buffer );
+}

@@ -1,3 +1,20 @@
+2000-10-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableAffine): New class to influence text
+ 	scaling, rotation, and translation (as defined by SVG XML).
+	(DrawableAngle): New class to influence text drawing angle.
+	(DrawableDecoration): New class to influence text decoration such
+ 	as underline.
+	(DrawableFill): New class to set object filling color.
+	(DrawableFillOpacity): New class to set opacity to use when
+ 	filling object.
+	(DrawableFont::): New class to set font.
+	(DrawableGravity): New class to set text placement gravity.
+	(DrawablePointSize): New class to set font point size.
+	(DrawableStroke): New class to set drawing stroke color.
+	(DrawableStrokeOpacity): New class to set drawing stroke opacity.
+	(DrawableStrokeWidth): New class to set drawing stroke width.
+
 2000-10-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableImage): Added width and height

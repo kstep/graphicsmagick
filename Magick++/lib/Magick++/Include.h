@@ -296,6 +296,13 @@ namespace Magick
   using MagickLib::FloatPixel;
   using MagickLib::DoublePixel;
 
+  // Decoration types
+  using MagickLib::DecorationType;
+  using MagickLib::NoDecoration;
+  using MagickLib::UnderlineDecoration;
+  using MagickLib::OverlineDecoration;
+  using MagickLib::LineThroughDecoration;
+
 #if defined(MAGICK_IMPLEMENTATION)
   //
   // ImageMagick symbols used in implementation code

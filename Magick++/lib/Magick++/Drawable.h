@@ -89,6 +89,22 @@ namespace Magick
   // Drawable Objects
   //
 
+  // Affine (scaling, rotation, and translation)
+  class DrawableAffine  : public Drawable
+  {
+  public:
+    DrawableAffine ( double scaleX_, double scaleY_,
+                     double rotationX_, double rotationY_,
+                     double translationX_, double translationY_ );
+  };
+
+  // Angle (text drawing angle)
+  class DrawableAngle  : public Drawable
+  {
+  public:
+    DrawableAngle ( double angle_ );
+  };
+
   // Arc
   class DrawableArc : public Drawable
   {
@@ -121,6 +137,13 @@ namespace Magick
                     PaintMethod paintMethod_ );
   };
 
+  // Decoration (text decoration)
+  class DrawableDecoration : public Drawable
+  {
+  public:
+    DrawableDecoration ( DecorationType decoration_ );
+  };
+
   // Ellipse
   class DrawableEllipse : public Drawable
   {
@@ -128,6 +151,34 @@ namespace Magick
     DrawableEllipse ( double originX_, double originY_, 
                       double width_, double height_,
                       double arcStart_, double arcEnd_ );
+  };
+
+  // Specify drawing fill color
+  class DrawableFill : public Drawable
+  {
+  public:
+    DrawableFill ( Magick::Color &color_ );
+  };
+
+  // Specify drawing fill opacity
+  class DrawableFillOpacity : public Drawable
+  {
+  public:
+    DrawableFillOpacity ( double opacity_ );
+  };
+
+  // Specify text font
+  class DrawableFont : public Drawable
+  {
+  public:
+    DrawableFont ( const std::string &font_ );
+  };
+
+  // Specify text positioning gravity
+  class DrawableGravity : public Drawable
+  {
+  public:
+    DrawableGravity ( GravityType gravity_ );
   };
 
   // Draw image at point, scaled to size specified by width and height
@@ -155,13 +206,20 @@ namespace Magick
                     PaintMethod paintMethod_ );
   };
 
-  // path
+  // path ???? FIXME!
 
   // Point
   class DrawablePoint : public Drawable
   {
   public:
     DrawablePoint ( double x_, double y_ );
+  };
+
+  // Text pointsize
+  class DrawablePointSize : public Drawable
+  {
+  public:
+    DrawablePointSize ( double pointSize_ );
   };
 
   // Polygon (Coordinate list must contain at least three members)
@@ -177,6 +235,10 @@ namespace Magick
   public:
     DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ );
   };
+
+  // pop graphic-context  FIXME!
+
+  // push graphic-context FIXME!
 
   // Rectangle
   class DrawableRectangle : public Drawable
@@ -195,6 +257,31 @@ namespace Magick
                              double cornerWidth_, double cornerHeight_ );
   };
 
+  // Stroke color
+  class DrawableStroke : public Drawable
+  {
+  public:
+    DrawableStroke ( Color &color_ );
+  };
+
+  // stroke-antialias stroke_antialias FIXME!
+
+  // stroke-dash value FIXME!
+
+  // Stroke opacity
+  class DrawableStrokeOpacity : public Drawable
+  {
+  public:
+    DrawableStrokeOpacity ( double opacity_ );
+  };
+
+    // Stroke width
+  class DrawableStrokeWidth : public Drawable
+  {
+  public:
+    DrawableStrokeWidth ( double width_ );
+  };
+
   // Draw text at point
   class DrawableText : public Drawable
   {
@@ -202,6 +289,8 @@ namespace Magick
     DrawableText ( double x_, double y_,
                    std::string text_ );
   };
+
+  // text-antialias text_antialias FIXME!
 
 } // namespace Magick
 
