@@ -965,6 +965,7 @@ ModuleExport void RegisterTIFFImage(void)
   entry=SetMagickInfo("PTIF");
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
+  entry->adjoin=False;
   entry->blob_support=False;
   entry->description=AllocateString("Pyramid encoded TIFF");
   entry->module=AllocateString("TIFF");
@@ -1232,12 +1233,14 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
+    adjoin,
     scene,
     status;
 
   unsigned long
     strip_size;
 
+  adjoin=image_info->adjoin;
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     {
       Image
@@ -1287,6 +1290,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       } while (((2*width) >= image->tile_info.width) ||
                ((2*height) >= image->tile_info.height));
       image=pyramid_image;
+      adjoin=True;
     }
   /*
     Open TIFF file.
@@ -1510,7 +1514,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       WriteNewsProfile(tiff,TIFFTAG_RICHTIFFIPTC,image);
 #endif
 #endif
-    if (image_info->adjoin && (GetNumberScenes(image) > 1))
+    if (adjoin && (GetNumberScenes(image) > 1))
       {
         TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
         TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
@@ -1772,7 +1776,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       break;
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
-  } while (image_info->adjoin);
+  } while (adjoin);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
