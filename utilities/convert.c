@@ -486,8 +486,8 @@ static void Usage(void)
       "-contrast            enhance or reduce the image contrast",
       "-crop geometry       preferred size and location of the cropped image",
       "-cycle amount        cycle the image colormap",
-      "-delay value         display the next image after pausing",
       "-deconstruct         break down an image sequence into constituent parts",
+      "-delay value         display the next image after pausing",
       "-density geometry    vertical and horizontal density of the image",
       "-depth value         depth of the image",
       "-despeckle           reduce the speckles within an image",
@@ -508,8 +508,8 @@ static void Usage(void)
       "-frame geometry      surround image with an ornamental border",
       "-fuzz distance       colors within this distance are considered equal",
       "-gamma value         level of gamma correction",
-      "-geometry geometry   perferred size or location of the image",
       "-gaussian geometry   gaussian blur an image",
+      "-geometry geometry   perferred size or location of the image",
       "-gravity type        vertical and horizontal text placement",
       "-implode amount      implode image pixels about the center",
       "-intent type         Absolute, Perceptual, Relative, or Saturation",
@@ -543,8 +543,8 @@ static void Usage(void)
       "-sample geometry     scale image with pixel sampling",
       "-scale geometry      resize image",
       "-scene value         image scene number",
-      "-segment values      segment an image",
       "-seed value          pseudo-random number generator seed value",
+      "-segment values      segment an image",
       "-shade degrees       shade the image using a distant light source",
       "-sharpen geometry    sharpen the image",
       "-shave geometry      shave pixels from the image edges",
@@ -1532,8 +1532,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if ((LocaleCompare("mono",option+1) == 0) ||
-              (LocaleCompare("monochrome",option+1) == 0))
+          if (LocaleCompare("monochrome",option+1) == 0)
             {
               image_info->monochrome=(*option == '-');
               break;
