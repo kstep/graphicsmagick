@@ -71,6 +71,12 @@
 */
 typedef struct _CacheInfo
 {
+  char
+    filename[MaxTextExtent];
+
+  FILE
+    *file;
+
   ClassType
 #if defined(__cplusplus) || defined(c_plusplus)
     c_class;
@@ -91,12 +97,6 @@ typedef struct _CacheInfo
 
   IndexPacket
     *indexes;
-
-  char
-    filename[MaxTextExtent];
-
-  FILE
-    *file;
 } CacheInfo;
 
 /*
