@@ -576,7 +576,7 @@ then
     AC_MSG_RESULT(no)
   fi
 fi
-AM_CONDITIONAL(HasZLIB, test "$have_zlib" != 'no')
+AM_CONDITIONAL(HasZLIB, test "$have_zlib" = 'yes')
 AC_SUBST(LIB_ZLIB)
 
 #
@@ -611,7 +611,7 @@ then
     AC_MSG_RESULT(no)
   fi
 fi
-AM_CONDITIONAL(HasBZLIB, test "$have_bzlib" != 'no')
+AM_CONDITIONAL(HasBZLIB, test "$have_bzlib" = 'yes')
 AC_SUBST(LIB_BZLIB)
 
 #
@@ -644,7 +644,7 @@ then
 else
   have_x='no'
 fi
-AM_CONDITIONAL(HasX11, test "$have_x" != 'no')
+AM_CONDITIONAL(HasX11, test "$have_x" = 'yes')
 AC_SUBST(LIB_X11)
 AC_SUBST(LIB_XEXT)
 AC_SUBST(LIB_XT)
@@ -697,7 +697,7 @@ then
     CPPFLAGS=$O_CPPFLAGS
     fi
 fi
-AM_CONDITIONAL(HasDPS, test "$have_dps" != 'no')
+AM_CONDITIONAL(HasDPS, test "$have_dps" = 'yes')
 AC_SUBST(LIB_DPS)
 
 #
@@ -731,7 +731,7 @@ then
         AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasFPX, test "$have_fpx" != 'no')
+AM_CONDITIONAL(HasFPX, test "$have_fpx" = 'yes')
 AC_SUBST(LIB_FPX)
 
 #
@@ -747,13 +747,13 @@ then
     passed=0;
     have_lcms_header='no'
     AC_CHECK_HEADER(lcms.h,have_lcms_header='yes',,)
-    if test "$have_lcms_header" != 'no'
+    if test "$have_lcms_header" = 'yes'
     then
       passed=`expr $passed + 1`
         AC_DEFINE(HAVE_LCMS_H,1,Define if you have the <lcms.h> header file.)
     else
       AC_CHECK_HEADER(lcms/lcms.h,have_lcms_header='yes',,)
-      if test "$have_lcms_header" != 'no'
+      if test "$have_lcms_header" = 'yes'
       then
         passed=`expr $passed + 1`
         AC_DEFINE(HAVE_LCMS_LCMS_H,1,Define if you have the <lcms/lcms.h> header file.)
@@ -780,7 +780,7 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasLCMS, test "$have_lcms" != 'no')
+AM_CONDITIONAL(HasLCMS, test "$have_lcms" = 'yes')
 AC_SUBST(LIB_LCMS)
 
 #
@@ -815,7 +815,7 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasPNG, test "$have_png" != 'no')
+AM_CONDITIONAL(HasPNG, test "$have_png" = 'yes')
 AC_SUBST(LIB_PNG)
 
 #
@@ -880,7 +880,7 @@ fi
         AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasJPEG, test "$have_jpeg" != 'no')
+AM_CONDITIONAL(HasJPEG, test "$have_jpeg" = 'yes')
 AC_SUBST(LIB_JPEG)
 
 #
@@ -915,7 +915,7 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasJP2, test "$have_jp2" != 'no')
+AM_CONDITIONAL(HasJP2, test "$have_jp2" = 'yes')
 AC_SUBST(LIB_JP2)
 
 #
@@ -951,7 +951,7 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasGS, test "$have_gslib" != 'no')
+AM_CONDITIONAL(HasGS, test "$have_gslib" = 'yes')
 AC_SUBST(LIB_GS)
 
 #
@@ -985,7 +985,7 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasMPEG2, test "$have_mpeg2" != 'no')
+AM_CONDITIONAL(HasMPEG2, test "$have_mpeg2" = 'yes')
 AC_SUBST(LIB_MPEG2)
 
 #
@@ -1057,7 +1057,7 @@ dnl Now test for the headers
 	AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasTTF, test "$have_ttf" != 'no')
+AM_CONDITIONAL(HasTTF, test "$have_ttf" = 'yes')
 AC_SUBST(LIB_TTF)
 
 #
@@ -1093,7 +1093,7 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasTIFF, test "$have_tiff" != 'no')
+AM_CONDITIONAL(HasTIFF, test "$have_tiff" = 'yes')
 AC_SUBST(LIB_TIFF)
 
 #
@@ -1133,7 +1133,7 @@ then
     AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasHDF, test "$have_hdf" != 'no')
+AM_CONDITIONAL(HasHDF, test "$have_hdf" = 'yes')
 AC_SUBST(LIB_HDF)
 
 #
@@ -1167,7 +1167,7 @@ then
         AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasJBIG, test "$have_jbig" != 'no')
+AM_CONDITIONAL(HasJBIG, test "$have_jbig" = 'yes')
 AC_SUBST(LIB_JBIG)
 
 #
@@ -1219,7 +1219,7 @@ then
         AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasXML, test "$have_xml" != 'no')
+AM_CONDITIONAL(HasXML, test "$have_xml" = 'yes')
 AC_SUBST(LIB_XML)
 
 #
@@ -1270,7 +1270,7 @@ then
         AC_MSG_RESULT(no)
     fi
 fi
-AM_CONDITIONAL(HasWMF, test "$have_wmf" != 'no')
+AM_CONDITIONAL(HasWMF, test "$have_wmf" = 'yes')
 AC_SUBST(LIB_WMF)
 AC_SUBST(LIB_WMF_DEPS)
 
@@ -1669,12 +1669,11 @@ AC_SUBST(LIBSTDC_LDFLAGS)
 #
 # C++ Support Tests (For Magick++)
 #
-want_magick_plus_plus="$with_magick_plus_plus"
+have_magick_plus_plus='no'
 if test "$with_magick_plus_plus" = 'yes'
 then
  OLIBS="$LIBS"
  LIBS=''
- with_magick_plus_plus='no'
  AC_LANG_CPLUSPLUS
  AC_PROG_CXX
  AC_CXX_BOOL
@@ -1705,12 +1704,14 @@ then
   $ac_cv_cxx_static_cast = 'yes' -a \
   $ac_cv_cxx_templates = 'yes'
  then
-  with_magick_plus_plus='yes'
+  have_magick_plus_plus='yes'
+ else
+  have_magick_plus_plus='no (failed tests)'
  fi
- AC_MSG_RESULT($with_magick_plus_plus)
+ AC_MSG_RESULT($have_magick_plus_plus)
  LIBS="$OLIBS"
 fi
-AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$with_magick_plus_plus" != 'no')
+AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$have_magick_plus_plus" = 'yes')
 
 #
 # Build library dependency list for libMagick
@@ -1769,7 +1770,7 @@ echo "GNU ld            --with-gnu-ld=$with_gnu_ld        	$lt_cv_prog_gnu_ld"
 echo "Ghostscript       None                   	$PSDelegate"
 echo "LZW support       --enable-lzw=$with_lzw            	$with_lzw"
 echo "16 bit pixels     --enable-16bit-pixel=$with_16_bit_pixel 	$with_16_bit_pixel"
-echo "Magick++          --with-magick-plus-plus=$want_magick_plus_plus 	$with_magick_plus_plus"
+echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_magick_plus_plus"
 echo "PERL              --with-perl=$with_perl            	$have_perl"
 echo "BZLIB             --with-bzlib=$with_bzlib          	$have_bzlib"
 echo "DPS               --with-dps=$with_dps              	$have_dps"
