@@ -560,6 +560,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     case LocaleEvent: domain="Locale"; break;
     case CoderEvent: domain="Coder"; break;
     case X11Event: domain="X11"; break;
+    case CacheEvent: domain="Cache"; break;
     case BlobEvent: domain="Blob"; break;
     default: domain="UnknownEvent"; break;
   }
