@@ -15,7 +15,7 @@ extern "C" {
 #if QuantumSize == 8
 #define MagickVersion \
   "@(#)ImageMagick 5.3.9 10/01/01 Q:8 http://www.imagemagick.org"
-#elif
+#elif QuantumSize == 16
 #define MagickVersion \
   "@(#)ImageMagick 5.3.9 10/01/01 Q:16 http://www.imagemagick.org"
 #else
