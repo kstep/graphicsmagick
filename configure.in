@@ -241,7 +241,6 @@ eval "eval MAN_DIR=$mandir"
 
 LDFLAGS="$LDFLAGS -L$LIB_DIR"
 CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
-TRAILING_LIBS=''
 
 # Extend includedir to include magick subdirectory offset
 includedir="$includedir/magick"
@@ -249,14 +248,9 @@ includedir="$includedir/magick"
 #
 # Find math library
 #
+LIB_MATH=''
 AC_CHECK_LIB(m,sqrt,LIB_MATH="-lm",,)
-
-dnl Add math library at end of trailing library list
-if test "$LIB_MATH"
-then
-    TRAILING_LIBS="$TRAILING_LIBS $LIB_MATH"
-fi
-
+LIBS="$LIB_MATH $LIBS"
 
 #
 # Find the X11 include and library directories.
@@ -267,18 +261,22 @@ AC_PATH_XTRA
 X11STUBSDIR=''
 X11STUBSLA=''
 X11STUBSLIB=''
+
+LIB_XEXT=''
+LIB_XT=''
 if test "$with_x" != 'no'
 then
     with_x='yes'dnl Ensure value is set
     LDFLAGS="$LDFLAGS $X_LIBS"
-    LIBS="$LIBS -lX11 $X_EXTRA_LIBS"
+    LIBS="-lX11 $X_EXTRA_LIBS $LIBS"
     CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 
-    AC_CHECK_LIB(Xext,XShmAttach,LIBS="$LIBS -lXext",,)
+    AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
     AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory),,)
     AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape),,)
 
-    AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIBS="$LIBS -lXt",,)
+    AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIB_XT='-lXt',,)
+    LIBS="$LIB_XEXT $LIB_XT $LIBS"
 else
     dnl Check for X11 stubs library
     AC_MSG_CHECKING(for X11 stubs library)
@@ -362,8 +360,8 @@ then
     failed=0;
     passed=0;
     AC_CHECK_HEADER(stdio.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(sfio,_stdopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-    AC_CHECK_LIB(stdio,vprintf,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-lsfio $TRAILING_LIBS)
+    AC_CHECK_LIB(sfio,_stdopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(stdio,vprintf,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-lsfio)
     AC_MSG_CHECKING(if SFIO package is complete)
     if test $passed -gt 0
     then
@@ -373,7 +371,7 @@ then
 	    have_sfio='no (failed tests)'
 	else
 	    LIB_SFIO='-lstdio -lsfio'
-	    TRAILING_LIBS="$TRAILING_LIBS $LIB_SFIO"
+	    LIBS="$LIB_SFIO $LIBS"
 	    AC_DEFINE(HasSFIO)
 	    AC_MSG_RESULT(yes)
 	    have_sfio='yes'
@@ -381,138 +379,6 @@ then
     else
 	AC_MSG_RESULT(no)
     fi
-fi
-
-#
-# Check for FlashPIX
-#
-have_fpx='no'
-LIB_FPX=''
-if test "$with_fpx" != 'no'
-then
-    AC_CHECKING(for FlashPIX components ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(fpx.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(fpx,FPX_OpenImageByFilename,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-    AC_MSG_CHECKING(if FlashPIX package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-	have_fpx='no (failed tests)'
-    else
-	LIB_FPX='-lfpx'
-	LIBS="$LIBS $LIB_FPX"
-	AC_DEFINE(HasFPX)
-	AC_MSG_RESULT(yes)
-        have_fpx='yes'
-    fi
-    else
-        AC_MSG_RESULT(no)
-    fi
-fi
-
-#
-# Check for JBIG
-#
-have_jbig='no'
-LIB_JBIG=''
-if test "$with_jbig" != 'no'
-then
-    AC_CHECKING(for JBIG support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(jbig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(jbig,jbg_dec_init,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-    AC_MSG_CHECKING(if JBIG package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-        have_jbig='no (failed tests)'
-    else
-	LIB_JBIG='-ljbig'
-	LIBS="$LIBS $LIB_JBIG"
-	AC_DEFINE(HasJBIG)
-	AC_MSG_RESULT(yes)
-        have_jbig='yes'
-    fi
-    else
-        AC_MSG_RESULT(no)
-    fi
-fi
-
-
-#
-# Check for JPEG
-#
-have_jpeg='no'
-LIB_JPEG=''
-if test "$with_jpeg" != 'no'
-then
-    AC_CHECKING(for JPEG support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(jconfig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_HEADER(jerror.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_HEADER(jmorecfg.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_HEADER(jpeglib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(jpeg,jpeg_read_header,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-    AC_MSG_CHECKING(if JPEG package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-        have_jpeg='no (failed tests)'
-    else
-	LIB_JPEG='-ljpeg'
-dnl Other libs may depend on -ljpeg and some linkers don't work very well so put -ljpeg in trailing libs
-        TRAILING_LIBS="$LIB_JPEG $TRAILING_LIBS"
-	#LIBS="$LIBS $LIB_JPEG"
-	AC_DEFINE(HasJPEG)
-	AC_MSG_RESULT(yes)
-        have_jpeg='yes'
-    fi
-    else
-        AC_MSG_RESULT(no)
-    fi
-fi
-
-
-#
-# Check for BZLIB
-#
-have_bzlib='no'
-if test "$with_bzlib" != 'no'
-then
-  LIB_BZLIB=''
-  AC_CHECKING(for BZLIB support ...)
-  failed=0;
-  passed=0;
-  AC_CHECK_HEADER(bzlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(bz2,bzBuffToBuffCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-  AC_CHECK_LIB(bz2,bzBuffToBuffDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-  AC_MSG_CHECKING(if BZLIB package is complete)
-  if test $passed -gt 0
-  then
-    if test $failed -gt 0
-    then
-      AC_MSG_RESULT(no -- some components failed test)
-      have_bzlib='no (failed tests)'
-    else
-      LIB_BZLIB='-lbz2'
-      LIBS="$LIBS $LIB_BZLIB"
-      AC_DEFINE(HasBZLIB)
-      AC_MSG_RESULT(yes)
-      have_bzlib='yes'
-    fi
-  else
-    AC_MSG_RESULT(no)
-  fi
 fi
 
 #
@@ -528,10 +394,10 @@ then
   passed=0;
   AC_CHECK_HEADER(zconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
   AC_CHECK_HEADER(zlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(z,compress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-  AC_CHECK_LIB(z,uncompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-  AC_CHECK_LIB(z,deflate,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-  AC_CHECK_LIB(z,inflate,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
+  AC_CHECK_LIB(z,compress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(z,uncompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(z,deflate,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(z,inflate,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
   AC_MSG_CHECKING(if ZLIB package is complete)
   if test $passed -gt 0
   then
@@ -541,8 +407,7 @@ then
       have_zlib='no (failed tests)'
     else
       LIB_ZLIB='-lz'
-dnl Other libs may depend on -lz and some linkers don't work very well so put -lz in trailing libs
-      TRAILING_LIBS="$TRAILING_LIBS $LIB_ZLIB"
+      LIBS="$LIB_ZLIB $LIBS"
       AC_DEFINE(HasZLIB)
       AC_MSG_RESULT(yes)
       have_zlib='yes'
@@ -553,129 +418,35 @@ dnl Other libs may depend on -lz and some linkers don't work very well so put -l
 fi
 
 #
-# Check for HDF
+# Check for BZLIB
 #
-have_hdf='no'
-LIB_HDF=''
-if test "$with_hdf" != 'no'
+have_bzlib='no'
+if test "$with_bzlib" != 'no'
 then
-    AC_CHECKING(for HDF components ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(hdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(df,DFANputlabel,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-    AC_MSG_CHECKING(if HDF package is complete)
-    if test $passed -gt 0
-    then
+  LIB_BZLIB=''
+  AC_CHECKING(for BZLIB support ...)
+  failed=0;
+  passed=0;
+  AC_CHECK_HEADER(bzlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  AC_CHECK_LIB(bz2,bzBuffToBuffCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(bz2,bzBuffToBuffDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_MSG_CHECKING(if BZLIB package is complete)
+  if test $passed -gt 0
+  then
     if test $failed -gt 0
     then
-	AC_MSG_RESULT(no -- some components failed test)
-        have_hdf='no (failed tests)'
+      AC_MSG_RESULT(no -- some components failed test)
+      have_bzlib='no (failed tests)'
     else
-	LIB_HDF='-ldf'
-	LIBS="$LIBS $LIB_HDF"
-	AC_DEFINE(HasHDF)
-	AC_MSG_RESULT(yes)
-	have_hdf='yes'
+      LIB_BZLIB='-lbz2'
+      LIBS="$LIB_BZLIB $LIBS"
+      AC_DEFINE(HasBZLIB)
+      AC_MSG_RESULT(yes)
+      have_bzlib='yes'
     fi
-    else
+  else
     AC_MSG_RESULT(no)
-    fi
-fi
-
-#
-# Check for PNG
-#
-have_png='no'
-LIB_PNG=''
-if test "$with_png" != 'no'
-then
-    AC_CHECKING(for PNG support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_HEADER(pngconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(png,png_info_init,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-    AC_MSG_CHECKING(if PNG package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-	have_png='no (failed tests)'
-    else
-	LIB_PNG='-lpng'
-	LIBS="$LIBS $LIB_PNG"
-	AC_DEFINE(HasPNG)
-	AC_MSG_RESULT(yes)
-	have_png='yes'
-    fi
-    else
-    AC_MSG_RESULT(no)
-    fi
-fi
-
-#
-# Check for TIFF
-#
-have_tiff='no'
-LIB_TIFF=''
-if test "$with_tiff" != 'no'
-then
-    AC_CHECKING(for TIFF support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(tiff.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_HEADER(tiffio.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(tiff,TIFFOpen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-    AC_MSG_CHECKING(if TIFF package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-	have_tiff='no (failed tests)'
-    else
-	LIB_TIFF='-ltiff'
-	LIBS="$LIBS $LIB_TIFF"
-	AC_DEFINE(HasTIFF)
-	AC_MSG_RESULT(yes)
-	have_tiff='yes'
-    fi
-    else
-    AC_MSG_RESULT(no)
-    fi
-fi
-
-#
-# Check for TTF
-#
-have_ttf='no'
-LIB_TTF=''
-if test "$with_ttf" != 'no'
-then
-    AC_CHECKING(for TrueType Font support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(freetype.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(ttf,TT_Init_FreeType,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-    AC_MSG_CHECKING(if FreeType package is complete)
-    if test $passed -gt 0
-    then
-	if test $failed -gt 0
-	then
-	    AC_MSG_RESULT(no -- some components failed test)
-	    have_ttf='no (failed tests)'
-	else
-	    LIB_TTF='-lttf'
-	    LIBS="$LIBS $LIB_TTF"
-	    AC_DEFINE(HasTTF)
-	    AC_MSG_RESULT(yes)
-	    have_ttf='yes'
-	fi
-    else
-	AC_MSG_RESULT(no)
-    fi
+  fi
 fi
 
 #
@@ -692,8 +463,8 @@ then
     CPPFLAGS="$CPPFLAGS -I${ac_x_includes}/X11"
     AC_CHECK_HEADER(DPS/dpsXclient.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_HEADER(DPS/dpsXpreview.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(dps,DPSInitialize,passed=`expr $passed + 1`,failed=`expr $failed + 1`,$TRAILING_LIBS)
-    AC_CHECK_LIB(dpstk,XDPSPixelsPerPoint,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-ldps $TRAILING_LIBS)
+    AC_CHECK_LIB(dps,DPSInitialize,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(dpstk,XDPSPixelsPerPoint,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-ldps)
     AC_MSG_CHECKING(if DPS package is complete)
     if test $passed -gt 0
     then
@@ -704,7 +475,7 @@ then
 	CPPFLAGS="$O_CPPFLAGS"
     else
 	LIB_DPS='-ldpstk -ldps'
-	LIBS="$LIBS $LIB_DPS"
+	LIBS="$LIB_DPS $LIBS"
 	AC_DEFINE(HasDPS)
 	AC_MSG_RESULT(yes)
 	have_dps='yes'
@@ -715,21 +486,235 @@ then
     fi
 fi
 
+#
+# Check for FlashPIX
+#
+have_fpx='no'
+LIB_FPX=''
+if test "$with_fpx" != 'no'
+then
+    AC_CHECKING(for FlashPIX components ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(fpx.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(fpx,FPX_OpenImageByFilename,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if FlashPIX package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_fpx='no (failed tests)'
+    else
+	LIB_FPX='-lfpx'
+	LIBS="$LIB_FPX $LIBS"
+	AC_DEFINE(HasFPX)
+	AC_MSG_RESULT(yes)
+        have_fpx='yes'
+    fi
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
 
 #
-# Add trailing libs to end of library list
+# Check for PNG
 #
-if test "$TRAILING_LIBS"
+have_png='no'
+LIB_PNG=''
+if test "$with_png" != 'no'
 then
-    LIBS="$LIBS $TRAILING_LIBS"
+    AC_CHECKING(for PNG support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_HEADER(pngconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(png,png_info_init,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if PNG package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_png='no (failed tests)'
+    else
+	LIB_PNG='-lpng'
+	LIBS="$LIB_PNG $LIBS"
+	AC_DEFINE(HasPNG)
+	AC_MSG_RESULT(yes)
+	have_png='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
 fi
+
+#
+# Check for JPEG
+#
+have_jpeg='no'
+LIB_JPEG=''
+if test "$with_jpeg" != 'no'
+then
+    AC_CHECKING(for JPEG support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(jconfig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(jerror.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(jmorecfg.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(jpeglib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(jpeg,jpeg_read_header,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if JPEG package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_jpeg='no (failed tests)'
+    else
+	LIB_JPEG='-ljpeg'
+	LIBS="$LIB_JPEG $LIBS"
+	AC_DEFINE(HasJPEG)
+	AC_MSG_RESULT(yes)
+        have_jpeg='yes'
+    fi
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for TTF
+#
+have_ttf='no'
+LIB_TTF=''
+if test "$with_ttf" != 'no'
+then
+    AC_CHECKING(for TrueType Font support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(freetype.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(ttf,TT_Init_FreeType,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if FreeType package is complete)
+    if test $passed -gt 0
+    then
+	if test $failed -gt 0
+	then
+	    AC_MSG_RESULT(no -- some components failed test)
+	    have_ttf='no (failed tests)'
+	else
+	    LIB_TTF='-lttf'
+	    LIBS="$LIB_TTF $LIBS"
+	    AC_DEFINE(HasTTF)
+	    AC_MSG_RESULT(yes)
+	    have_ttf='yes'
+	fi
+    else
+	AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for TIFF
+#
+have_tiff='no'
+LIB_TIFF=''
+if test "$with_tiff" != 'no'
+then
+    AC_CHECKING(for TIFF support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(tiff.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(tiffio.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(tiff,TIFFOpen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if TIFF package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_tiff='no (failed tests)'
+    else
+	LIB_TIFF='-ltiff'
+	LIBS="$LIB_TIFF $LIBS"
+	AC_DEFINE(HasTIFF)
+	AC_MSG_RESULT(yes)
+	have_tiff='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for HDF
+#
+have_hdf='no'
+LIB_HDF=''
+if test "$with_hdf" != 'no'
+then
+    AC_CHECKING(for HDF components ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(hdf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(df,DFANputlabel,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if HDF package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_hdf='no (failed tests)'
+    else
+	LIB_HDF='-ldf'
+	LIBS="$LIB_HDF $LIBS"
+	AC_DEFINE(HasHDF)
+	AC_MSG_RESULT(yes)
+	have_hdf='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+fi
+
+#
+# Check for JBIG
+#
+have_jbig='no'
+LIB_JBIG=''
+if test "$with_jbig" != 'no'
+then
+    AC_CHECKING(for JBIG support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(jbig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(jbig,jbg_dec_init,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if JBIG package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_jbig='no (failed tests)'
+    else
+	LIB_JBIG='-ljbig'
+	LIBS="$LIB_JBIG $LIBS"
+	AC_DEFINE(HasJBIG)
+	AC_MSG_RESULT(yes)
+        have_jbig='yes'
+    fi
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+
 
 # Check standard headers
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADER(elf.h,AC_DEFINE(SVR4))
-AC_CHECK_HEADERS(fcntl.h strings.h sys/file.h sys/time.h unistd.h vsnprintf)
+AC_CHECK_HEADERS(fcntl.h strings.h sys/file.h sys/time.h unistd.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

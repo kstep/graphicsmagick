@@ -7966,15 +7966,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
     FormatString(options,"-dFirstPage=%u -dLastPage=%u",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
-  for (i=0; i < 50; i++)
-  {
-    /*
-      Ghostscript eats % characters.
-    */
-    TemporaryFilename((char *) image_info->filename);
-    if (strchr(image_info->filename,'%') == (char *) NULL)
-      break;
-  }
+  TemporaryFilename((char *) image_info->filename);
   alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
   FormatString(command,delegate_info.commands,alias_bits,alias_bits,geometry,
     density,options,image_info->filename,postscript_filename);
@@ -9610,9 +9602,10 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
               (char *) NULL);
             return(0);
           }
-        if (Latin1Compare(q,"END_OF_COMMENTS") == 0)
+        if (Latin1Compare(q,"END_OF_COMMENT") == 0)
           p=q;
         *p='\0';
+        c=fgetc(image->file);
       }
   } while (!isdigit(c));
   if (base == 2)
@@ -10365,15 +10358,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
     FormatString(options,"-dFirstPage=%u -dLastPage=%u",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
-  for (i=0; i < 50; i++)
-  {
-    /*
-      Ghostscript eats % characters.
-    */
-    TemporaryFilename((char *) image_info->filename);
-    if (strchr(image_info->filename,'%') == (char *) NULL)
-      break;
-  }
+  TemporaryFilename((char *) image_info->filename);
   alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
   FormatString(command,delegate_info.commands,alias_bits,alias_bits,geometry,
     density,options,image_info->filename,postscript_filename);

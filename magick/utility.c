@@ -2387,7 +2387,8 @@ Export int SystemCommand(unsigned int verbose,char *command)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method TemporaryFilename replaces the contents of the string pointed to
-%  by filename by a unique file name.
+%  by filename by a unique file name.  Some delegates do not like % or .
+%  in their filenames.
 %
 %  The format of the TemporaryFilename routine is:
 %
@@ -2402,10 +2403,14 @@ Export int SystemCommand(unsigned int verbose,char *command)
 */
 Export void TemporaryFilename(char *filename)
 {
+  register int
+    i;
+
   assert(filename != (char *) NULL);
   *filename='\0';
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+  for (i=0; i < 50; i++)
   {
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
     register char
       *p;
 
@@ -2415,17 +2420,20 @@ Export void TemporaryFilename(char *filename)
         (void) strcpy(filename,p);
         FreeMemory((char *) p);
       }
-  }
 #else
 #if defined(WIN32)
-  (void) NTTemporaryFilename(filename);
+    (void) NTTemporaryFilename(filename);
 #else
 #if defined(macintosh)
-  (void) getcwd(filename,MaxTextExtent >> 1);
+    (void) getcwd(filename,MaxTextExtent >> 1);
 #endif
-  (void) tmpnam(filename+strlen(filename));
+    (void) tmpnam(filename+strlen(filename));
 #endif
 #endif
+    if ((strchr(filename,'%') == (char *) NULL) &&
+        (strchr(filename,'.') == (char *) NULL))
+      break;
+  }
 }
 
 /*
