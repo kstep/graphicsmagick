@@ -132,7 +132,7 @@ MagickExport const char *AcquireString(const char *source)
   destination=(char *) AcquireMemory(strlen(source)+1);
   if (destination == (char *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to acquire string");
+      "UnableToAcquireString");
   *destination='\0';
   if (source != (char *) NULL)
     (void) strcpy(destination,source);
@@ -180,7 +180,7 @@ MagickExport char *AllocateString(const char *source)
   destination=(char *) AcquireMemory(length+MaxTextExtent);
   if (destination == (char *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to allocate string");
+      "UnableToAllocateString");
   *destination='\0';
   if (source != (char *) NULL)
     (void) strcpy(destination,source);
@@ -3114,7 +3114,7 @@ MagickExport int SubstituteString(char **buffer,const char *search,
   result=(char *) AcquireMemory(allocated_length);
   if (result == (char *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to allocate string");
+      "UnableToAllocateString");
   *result='\0';
   result_length=0;
   destination=result;

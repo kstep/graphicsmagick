@@ -1252,6 +1252,12 @@
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>
+        <Message name="UnableToAcquireString">
+          unable to acquire string
+        </Message>
+        <Message name="UnableToAllocateString">
+          unable to allocate string
+        </Message>
         <Message name="UnableToAddGenericProfile">
           unable to add generic profile
         </Message>
@@ -1320,6 +1326,9 @@
         </Message>
         <Message name="UnableToDetermineTheNumberOfImageColors">
           unable to determine the number of image colors
+        </Message>
+        <Message name="UnableToDistillRandomEvent">
+          unable to distill random event
         </Message>
         <Message name="UnableToDitherImage">
           unable to dither image

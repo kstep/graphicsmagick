@@ -80,10 +80,81 @@ typedef struct _SignatureInfo
 } SignatureInfo;
 
 /*
+  Global declarations.
+*/
+SignatureInfo
+  *reservoir = (SignatureInfo *) NULL;
+
+static unsigned long
+  *roulette = (unsigned long *) NULL;
+
+/*
   Forward declarations.
 */
 static void
-  TransformSignature(SignatureInfo *);
+  FinalizeSignature(SignatureInfo *),
+  GetSignatureInfo(SignatureInfo *),
+  TransformSignature(SignatureInfo *),
+  UpdateSignature(SignatureInfo *,const unsigned char *,const size_t);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D i s t i l l R a n d o m E v e n t                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DistillRandomEvent() distills randomness from an event and stores in
+%  in the reservoir.  This method must be called before GetRandomKey()
+%  and it should be called a number of times using different random events
+%  (e.g. thread completion time, fine grained time-of-day clock in a
+%  tight loop, keystroke timing, etc.) to build up sufficient randomness
+%  in the reservoir.
+%
+%  The format of the DistillRandomEvent method is:
+%
+%      DistillRandomEvent(const unsigned char *event,const size_t length,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o event: A random event.
+%
+%    o length: The length of the event.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport void DistillRandomEvent(const unsigned char *event,
+  const size_t length,ExceptionInfo *exception)
+{
+  SignatureInfo
+    digest_info;
+
+  /*
+    Distill a random event.
+  */
+  assert(event != (const unsigned char *) NULL);
+  if (reservoir == (SignatureInfo *) NULL)
+    reservoir=(SignatureInfo *) AcquireMemory(sizeof(SignatureInfo));
+  if (roulette == (unsigned long *) NULL)
+    roulette=(unsigned long *) AcquireMemory(sizeof(unsigned long));
+  if ((reservoir == (SignatureInfo *) NULL) ||
+      (roulette == (unsigned long *) NULL))
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "UnableToDistillRandomEvent");
+  GetSignatureInfo(&digest_info);
+  UpdateSignature(&digest_info,(unsigned char *) reservoir->digest,
+    sizeof(reservoir->digest));
+  UpdateSignature(&digest_info,event,length);
+  FinalizeSignature(&digest_info);
+  memcpy(reservoir->digest,digest_info.digest,sizeof(reservoir->digest));
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -148,6 +219,85 @@ static void FinalizeSignature(SignatureInfo *signature_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t R a n d o m K e y                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetRandomKey() gets a random key from the reservoir.
+%
+%  The format of the GetRandomKey method is:
+%
+%      unsigned int GetRandomKey(unsigned char *key,const size_t length,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o key: The key.
+%
+%    o length: The key length.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+*/
+MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
+  ExceptionInfo *exception)
+{
+  SignatureInfo
+    digest_info;
+
+  long
+    n;
+
+  assert(key != (unsigned char *) NULL);
+  if ((roulette == (unsigned long *) NULL) ||
+      (reservoir == (SignatureInfo *) NULL))
+    {
+      char
+        filename[MaxTextExtent];
+
+      pid_t
+        pid;
+
+      time_t
+        seconds;
+
+      /*
+        Initialize random reservoir.
+      */
+      (void) strcpy(filename,"magic");
+      (void) tmpnam(filename);
+      DistillRandomEvent((const unsigned char *) filename,MaxTextExtent,
+        exception);
+      seconds=time(0);
+      DistillRandomEvent((const unsigned char *) &seconds,sizeof(time_t),
+        exception);
+      pid=getpid();
+      DistillRandomEvent((const unsigned char *) &pid,sizeof(pid_t),exception);
+    }
+  n=length;
+  while (n > 0)
+  {
+    GetSignatureInfo(&digest_info);
+    UpdateSignature(&digest_info,(unsigned char *) reservoir->digest,
+      sizeof(reservoir->digest));
+    UpdateSignature(&digest_info,(unsigned char *) roulette,sizeof(roulette));
+    FinalizeSignature(&digest_info);
+    (*roulette)++;
+    memcpy(key,digest_info.digest,
+      n < (long) sizeof(reservoir->digest) ? n : sizeof(reservoir->digest));
+    n-=sizeof(reservoir->digest);
+    key+=sizeof(reservoir->digest);
+  }
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t S i g n a t u r e I n f o                                           %
 %                                                                             %
 %                                                                             %
@@ -177,6 +327,148 @@ static void GetSignatureInfo(SignatureInfo *signature_info)
   signature_info->digest[5]=0x9b05688cUL;
   signature_info->digest[6]=0x1f83d9abUL;
   signature_info->digest[7]=0x5be0cd19UL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S i g n a t u r e I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SignatureImage() computes a message digest from an image pixel stream with
+%  an implementation of the NIST SHA-256 Message Digest algorithm.  This
+%  signature uniquely identifies the image and is convenient for determining
+%  if an image has been modified or whether two images are identical.
+%
+%  The format of the SignatureImage method is:
+%
+%      unsigned int SignatureImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport unsigned int SignatureImage(Image *image)
+{
+  char
+    signature[MaxTextExtent];
+
+  IndexPacket
+    *indexes;
+
+  long
+    y;
+
+  register const PixelPacket
+    *p;
+
+  register long
+    x;
+
+  register unsigned char
+    *q;
+
+  SignatureInfo
+    signature_info;
+
+  unsigned char
+    *message;
+
+  unsigned long
+    quantum;
+
+  /*
+    Allocate memory for digital signature.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  message=(unsigned char *) AcquireMemory(20*image->columns);
+  if (message == (unsigned char *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      "UnableToComputeImageSignature");
+  /*
+    Compute image digital signature.
+  */
+  GetSignatureInfo(&signature_info);
+  for (y=0; y < (long) image->rows; y++)
+  {
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetIndexes(image);
+    q=message;
+    for (x=0; x < (long) image->columns; x++)
+    {
+      quantum=ScaleQuantumToLong(p->red);
+      *q++=(unsigned char) (quantum >> 24);
+      *q++=(unsigned char) (quantum >> 16);
+      *q++=(unsigned char) (quantum >> 8);
+      *q++=(unsigned char) quantum;
+      quantum=ScaleQuantumToLong(p->green);
+      *q++=(unsigned char) (quantum >> 24);
+      *q++=(unsigned char) (quantum >> 16);
+      *q++=(unsigned char) (quantum >> 8);
+      *q++=(unsigned char) quantum;
+      quantum=ScaleQuantumToLong(p->blue);
+      *q++=(unsigned char) (quantum >> 24);
+      *q++=(unsigned char) (quantum >> 16);
+      *q++=(unsigned char) (quantum >> 8);
+      *q++=(unsigned char) quantum;
+      if (!image->matte)
+        {
+          if (image->colorspace == CMYKColorspace)
+            {
+              quantum=ScaleQuantumToLong(p->opacity);
+              *q++=(unsigned char) (quantum >> 24);
+              *q++=(unsigned char) (quantum >> 16);
+              *q++=(unsigned char) (quantum >> 8);
+              *q++=(unsigned char) quantum;
+            }
+          quantum=ScaleQuantumToLong(OpaqueOpacity);
+          *q++=(unsigned char) (quantum >> 24);
+          *q++=(unsigned char) (quantum >> 16);
+          *q++=(unsigned char) (quantum >> 8);
+          *q++=(unsigned char) quantum;
+        }
+      else
+        {
+          quantum=ScaleQuantumToLong(p->opacity);
+          *q++=(unsigned char) (quantum >> 24);
+          *q++=(unsigned char) (quantum >> 16);
+          *q++=(unsigned char) (quantum >> 8);
+          *q++=(unsigned char) quantum;
+          if (image->colorspace == CMYKColorspace)
+            {
+              quantum=ScaleQuantumToLong(indexes[x]);
+              *q++=(unsigned char) (quantum >> 24);
+              *q++=(unsigned char) (quantum >> 16);
+              *q++=(unsigned char) (quantum >> 8);
+              *q++=(unsigned char) quantum;
+            }
+        }
+      p++;
+    }
+    UpdateSignature(&signature_info,message,q-message);
+  }
+  FinalizeSignature(&signature_info);
+  LiberateMemory((void **) &message);
+  /*
+    Convert digital signature to a 64 character hex string.
+  */
+  FormatString(signature,"%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx",
+    signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
+    signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
+    signature_info.digest[6],signature_info.digest[7]);
+  (void) SetImageAttribute(image,"signature",(char *) NULL);
+  (void) SetImageAttribute(image,"signature",signature);
+  return(True);
 }
 
 /*
@@ -402,146 +694,4 @@ static void UpdateSignature(SignatureInfo *signature_info,
   }
   (void) memcpy(signature_info->message,message,n);
   signature_info->offset=(long) n;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S i g n a t u r e I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SignatureImage() computes a message digest from an image pixel stream with
-%  an implementation of the NIST SHA-256 Message Digest algorithm.  This
-%  signature uniquely identifies the image and is convenient for determining
-%  if an image has been modified or whether two images are identical.
-%
-%  The format of the SignatureImage method is:
-%
-%      unsigned int SignatureImage(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%
-*/
-MagickExport unsigned int SignatureImage(Image *image)
-{
-  char
-    signature[MaxTextExtent];
-
-  IndexPacket
-    *indexes;
-
-  long
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
-
-  register unsigned char
-    *q;
-
-  SignatureInfo
-    signature_info;
-
-  unsigned char
-    *message;
-
-  unsigned long
-    quantum;
-
-  /*
-    Allocate memory for digital signature.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  message=(unsigned char *) AcquireMemory(20*image->columns);
-  if (message == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToComputeImageSignature");
-  /*
-    Compute image digital signature.
-  */
-  GetSignatureInfo(&signature_info);
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    q=message;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      quantum=ScaleQuantumToLong(p->red);
-      *q++=(unsigned char) (quantum >> 24);
-      *q++=(unsigned char) (quantum >> 16);
-      *q++=(unsigned char) (quantum >> 8);
-      *q++=(unsigned char) quantum;
-      quantum=ScaleQuantumToLong(p->green);
-      *q++=(unsigned char) (quantum >> 24);
-      *q++=(unsigned char) (quantum >> 16);
-      *q++=(unsigned char) (quantum >> 8);
-      *q++=(unsigned char) quantum;
-      quantum=ScaleQuantumToLong(p->blue);
-      *q++=(unsigned char) (quantum >> 24);
-      *q++=(unsigned char) (quantum >> 16);
-      *q++=(unsigned char) (quantum >> 8);
-      *q++=(unsigned char) quantum;
-      if (!image->matte)
-        {
-          if (image->colorspace == CMYKColorspace)
-            {
-              quantum=ScaleQuantumToLong(p->opacity);
-              *q++=(unsigned char) (quantum >> 24);
-              *q++=(unsigned char) (quantum >> 16);
-              *q++=(unsigned char) (quantum >> 8);
-              *q++=(unsigned char) quantum;
-            }
-          quantum=ScaleQuantumToLong(OpaqueOpacity);
-          *q++=(unsigned char) (quantum >> 24);
-          *q++=(unsigned char) (quantum >> 16);
-          *q++=(unsigned char) (quantum >> 8);
-          *q++=(unsigned char) quantum;
-        }
-      else
-        {
-          quantum=ScaleQuantumToLong(p->opacity);
-          *q++=(unsigned char) (quantum >> 24);
-          *q++=(unsigned char) (quantum >> 16);
-          *q++=(unsigned char) (quantum >> 8);
-          *q++=(unsigned char) quantum;
-          if (image->colorspace == CMYKColorspace)
-            {
-              quantum=ScaleQuantumToLong(indexes[x]);
-              *q++=(unsigned char) (quantum >> 24);
-              *q++=(unsigned char) (quantum >> 16);
-              *q++=(unsigned char) (quantum >> 8);
-              *q++=(unsigned char) quantum;
-            }
-        }
-      p++;
-    }
-    UpdateSignature(&signature_info,message,q-message);
-  }
-  FinalizeSignature(&signature_info);
-  LiberateMemory((void **) &message);
-  /*
-    Convert digital signature to a 64 character hex string.
-  */
-  FormatString(signature,"%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx",
-    signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
-    signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
-    signature_info.digest[6],signature_info.digest[7]);
-  (void) SetImageAttribute(image,"signature",(char *) NULL);
-  (void) SetImageAttribute(image,"signature",signature);
-  return(True);
 }
