@@ -7459,6 +7459,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
               filter;
 
             option=argv[++i];
+            filter=LanczosFilter;
             if (Latin1Compare("Point",option) == 0)
               filter=PointFilter;
             if (Latin1Compare("Box",option) == 0)

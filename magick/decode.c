@@ -16023,6 +16023,19 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
         for (y=0; y < (int) image->rows; y++)
         {
           TIFFReadScanline(tiff,(char *) scanline,y,0);
+          if (bits_per_sample == 16)
+            {
+              unsigned long
+                lsb_first;
+
+              /*
+                Ensure the header byte-order is most-significant byte first.
+              */
+              lsb_first=1;
+              if (*(char *) &lsb_first)
+                MSBFirstOrderShort((char *) scanline,
+                  (TIFFScanlineSize(tiff) << 1)+4);
+            }
           if (bits_per_sample == 4)
             {
               register unsigned char
