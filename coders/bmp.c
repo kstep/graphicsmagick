@@ -125,7 +125,6 @@ static unsigned int
 %  The format of the DecodeImage method is:
 %
 %      unsigned int DecodeImage(Image *image,const unsigned int compression,
-%        const unsigned int number_columns,const unsigned int number_rows,
 %        unsigned char *pixels)
 %
 %  A description of each parameter follows:
@@ -138,19 +137,12 @@ static unsigned int
 %    o compression:  A value of 1 means the compressed pixels are runlength
 %      encoded for a 256-color bitmap.  A value of 2 means a 16-color bitmap.
 %
-%    o number_columns:  An integer value that is the number of columns or
-%      width in pixels of your source image.
-%
-%    o number_rows:  An integer value that is the number of rows or
-%      heigth in pixels of your source image.
-%
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the decoding process.
 %
 %
 */
 static unsigned int DecodeImage(Image *image,const unsigned int compression,
-  const unsigned int number_columns,const unsigned int number_rows,
   unsigned char *pixels)
 {
   int
@@ -167,12 +159,12 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 
   assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  for (i=0; i < (int) (number_columns*number_rows); i++)
+  for (i=0; i < (int) (image->columns*image->rows); i++)
     pixels[i]=0;
   byte=0;
   x=0;
   q=pixels;
-  for (y=0; y < (int) number_rows; )
+  for (y=0; y < (int) image->rows; )
   {
     count=ReadByte(image);
     if (count == EOF)
@@ -209,7 +201,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             */
             x=0;
             y++;
-            q=pixels+y*number_columns;
+            q=pixels+y*image->columns;
             break;
           }
           case 0x02:
@@ -219,7 +211,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             */
             x+=ReadByte(image);
             y+=ReadByte(image);
-            q=pixels+y*number_columns+x;
+            q=pixels+y*image->columns+x;
             break;
           }
           default:
@@ -254,8 +246,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
           }
         }
       }
-    if (QuantumTick(y,number_rows))
-      ProgressMonitor(LoadImageText,y,number_rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   (void) ReadByte(image);  /* end of line */
   (void) ReadByte(image);
@@ -277,8 +269,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 %
 %  The format of the EncodeImage method is:
 %
-%    static unsigned int EncodeImage(const unsigned char *pixels,
-%      const unsigned int number_columns,const unsigned int number_rows,
+%    static unsigned int EncodeImage(Image *image,
+%      const unsigned int bytes_per_line,const unsigned char *pixels,
 %      unsigned char *compressed_pixels)
 %
 %  A description of each parameter follows:
@@ -286,23 +278,18 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 %    o status:  Method EncodeImage returns the number of bytes in the
 %      runlength encoded compress_pixels array.
 %
+%    o image:  A pointer to a Image structure.
+%
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the compression process.
-%
-%    o number_columns:  An integer value that is the number of columns or
-%      width in pixels of your source image.
-%
-%    o number_rows:  An integer value that is the number of rows or
-%      heigth in pixels of your source image.
 %
 %    o compressed_pixels:  The address of a byte (8 bits) array of compressed
 %      pixel data.
 %
 %
 */
-static unsigned int EncodeImage(const unsigned char *pixels,
-  const unsigned int number_columns,const unsigned int number_rows,
-  unsigned char *compressed_pixels)
+static unsigned int EncodeImage(Image *image,const unsigned int bytes_per_line,
+  const unsigned char *pixels,unsigned char *compressed_pixels)
 {
   int
     y;
@@ -317,21 +304,16 @@ static unsigned int EncodeImage(const unsigned char *pixels,
   register unsigned char
     *q;
 
-  unsigned int
-    bytes_per_line;
-
   /*
     Runlength encode pixels.
   */
-  assert(pixels != (unsigned char *) NULL);
+  assert(image != (Image *) NULL);
+  assert(pixels != (const unsigned char *) NULL);
   assert(compressed_pixels != (unsigned char *) NULL);
   p=pixels;
   q=compressed_pixels;
   i=0;
-  bytes_per_line=number_columns;
-  while ((bytes_per_line & 3) != 0)
-    bytes_per_line++;
-  for (y=0; y < (int) number_rows; y++)
+  for (y=0; y < (int) image->rows; y++)
   {
     for (x=0; x < (int) bytes_per_line; x+=i)
     {
@@ -350,8 +332,8 @@ static unsigned int EncodeImage(const unsigned char *pixels,
     */
     *q++=0x00;
     *q++=0x00;
-    if (QuantumTick(y,number_rows))
-      ProgressMonitor(SaveImageText,y,number_rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,y,image->rows);
   }
   /*
     End of bitmap.
@@ -633,8 +615,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert run-length encoded raster pixels.
         */
-        status=DecodeImage(image,(unsigned int) bmp_info.compression,
-          (unsigned int) bmp_info.width,image->rows,pixels);
+        status=DecodeImage(image,(unsigned int) bmp_info.compression,pixels);
         if (status == False)
           ThrowReaderException(CorruptImageWarning,"runlength decoding failed",
             image);
@@ -852,9 +833,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (LocaleNCompare((char *) magick,"BM",2) == 0)
       {
         /*
-          Allocate next image structure.
+          Acquire next image structure.
         */
-        AllocateNextImage(image_info,image);
+        AcquireNextImage(image_info,image);
         if (image->next == (Image *) NULL)
           {
             DestroyImages(image);
@@ -1042,9 +1023,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
         bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
       }
-    bytes_per_line=image->columns;
-    while ((bytes_per_line & 3) != 0)
-      bytes_per_line++;
+    bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.reserved[0]=0;
     bmp_info.reserved[1]=0;
     bmp_info.size=40;
@@ -1086,19 +1065,10 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass image to a BMP monochrome image.
         */
-        polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
+        polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
         if (image->colors == 2)
-          {
-            PixelPacket temp;
-            polarity=
-              Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
-            if (!polarity)
-              {
-                temp=image->colormap[1];
-                image->colormap[1]=image->colormap[0];
-                image->colormap[0]=temp;
-              }
-          }
+          polarity=
+            Intensity(image->colormap[1]) < Intensity(image->colormap[0]);
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
@@ -1190,7 +1160,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           /*
             Convert run-length encoded raster pixels.
           */
-          packets=(unsigned int) ((bytes_per_line*(bmp_info.height+2)+1) << 1);
+          packets=(unsigned int)
+            ((bytes_per_line*(bmp_info.height+2)+1) << 1);
           bmp_data=(unsigned char *) AcquireMemory(packets);
           if (pixels == (unsigned char *) NULL)
             {
@@ -1199,8 +1170,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
                 "Memory allocation failed",image);
             }
           bmp_info.file_size-=bmp_info.image_size;
-          bmp_info.image_size=
-            EncodeImage(pixels,image->columns,image->rows,bmp_data);
+          bmp_info.image_size=EncodeImage(image,bytes_per_line,pixels,bmp_data);
           bmp_info.file_size+=bmp_info.image_size;
           LiberateMemory((void **) &pixels);
           pixels=bmp_data;
