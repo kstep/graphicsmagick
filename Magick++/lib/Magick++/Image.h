@@ -662,7 +662,11 @@ namespace Magick
 
     // Filter to use when resizing image
     void            filterType ( FilterTypes filterType_ );
-    FilterTypes      filterType ( void ) const;
+    FilterTypes     filterType ( void ) const;
+
+    // Used when reading an image, to determine whether to flatten layers
+    void            flatten ( bool flag_ );
+    bool			flatten ( void ) const;
 
     // Text rendering font
     void            font ( const std::string &font_ );
