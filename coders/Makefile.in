@@ -222,7 +222,7 @@ MICRO_VERSION = @MICRO_VERSION@
 @WITH_MODULES_FALSE@libCoders_la_SOURCES = @WITH_MODULES_FALSE@$(MAGICK_CODER_SRCS)
 
 # Additional files to distribute
-EXTRA_DIST = modules.mgk
+EXTRA_DIST = modules.mgk delegates.mgk.in
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
