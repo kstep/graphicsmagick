@@ -38,8 +38,8 @@ int main( int /*argc*/, char ** argv)
     //
     cout << "Read images..." << endl;
     Image null;
-    null.size( "70x70" );
-    null.read( "null:black" );
+    null.size( Geometry(70,70) );
+    null.read( "NULL:black" );
 
     Image model( srcdir + "model.miff" );
     model.label( "Magick++" );
@@ -53,7 +53,7 @@ int main( int /*argc*/, char ** argv)
     //
     // Create image stack.
     //
-    cout << "Transform image..." << endl;
+    cout << "Creating thumbnails..." << endl;
 
     // Construct initial list containing five copies of null image
     list<Image> images( 5, null );
@@ -66,7 +66,13 @@ int main( int /*argc*/, char ** argv)
     //  3. apply operation to image
     //  4. append image to container
 
+    cout << "  add noise" << endl;
+    example.label( "Add Noise" );
+    example.addNoise( LaplacianNoise );
+    images.push_back( example );
+
     cout << "  annotate ..." << endl;
+    example = model;
     example.label( "Annotate" );
     example.density( "72x72" );
     example.fontPointsize( 18 );
@@ -82,18 +88,18 @@ int main( int /*argc*/, char ** argv)
     example.blur( 0, 1.5 );
     images.push_back( example );
 
-    cout << "  gaussian blur ..." << endl;
+    cout << "  border" << endl;
     example = model;
-    example.label( "Gaussian Blur" );
-    example.gaussianBlur( 2, 2 );
+    example.label( "Border" );
+    example.borderColor( "gold" );
+    example.border( Geometry(6,6) );
     images.push_back( example );
 
-//     cout << "  border ..." << endl;
-//     example = model;
-//     example.label( "Border" );
-//     example.borderColor( "gold" );
-//     example.border( );
-//     images.push_back( example );
+    cout << "  channel ..." << endl;
+    example = model;
+    example.label( "Channel" );
+    example.channel( RedChannel );
+    images.push_back( example );
 
     cout << "  charcoal ..." << endl;
     example = model;
@@ -105,6 +111,22 @@ int main( int /*argc*/, char ** argv)
     example = model;
     example.label( "Composite" );
     example.composite( smile, "+35+65", OverCompositeOp);
+    images.push_back( example );
+
+    cout << "  contrast ..." << endl;
+    example = model;
+    example.label( "Contrast" );
+    example.contrast( false );
+    images.push_back( example );
+
+    cout << "  convolve ..." << endl;
+    example = model;
+    example.label( "Convolve" );
+    {
+      // 3x3 matrix
+      const double kernel[] = { 1, 1, 1, 1, 4, 1, 1, 1, 1 };
+      example.convolve( 3, kernel );
+    }
     images.push_back( example );
 
     cout << "  crop ..." << endl;
@@ -127,6 +149,12 @@ int main( int /*argc*/, char ** argv)
     example.draw( DrawableCircle( 60,90, 60,120 ) );
     images.push_back( example );
 
+    cout << "  edge ..." << endl;
+    example = model;
+    example.label( "Detect Edges" );
+    example.edge( );
+    images.push_back( example );
+
     cout << "  emboss ..." << endl;
     example = model;
     example.label( "Emboss" );
@@ -142,6 +170,7 @@ int main( int /*argc*/, char ** argv)
     cout << "  explode ..." << endl;
     example = model;
     example.label( "Explode" );
+    example.backgroundColor( "#000000FF" );
     example.implode( -1 );
     images.push_back( example );
 
@@ -157,16 +186,22 @@ int main( int /*argc*/, char ** argv)
     example.flop();
     images.push_back( example );
 
-//     cout << "  frame ..." << endl;
-//     example = model;
-//     example.label( "Frame" );
-//     example.frame( );
-//     images.push_back( example );
+    cout << "  frame ..." << endl;
+    example = model;
+    example.label( "Frame" );
+    example.frame( );
+    images.push_back( example );
 
     cout << "  gamma ..." << endl;
     example = model;
     example.label( "Gamma" );
     example.gamma( 1.6 );
+    images.push_back( example );
+
+    cout << "  gaussian blur ..." << endl;
+    example = model;
+    example.label( "Gaussian Blur" );
+    example.gaussianBlur( 0.0, 1.5 );
     images.push_back( example );
 
     cout << "  gradient ..." << endl;
@@ -187,6 +222,12 @@ int main( int /*argc*/, char ** argv)
     example = model;
     example.label( "Implode" );
     example.implode( 0.5 );
+    images.push_back( example );
+
+    cout << "  median filter ..." << endl;
+    example = model;
+    example.label( "Median Filter" );
+    example.medianFilter( );
     images.push_back( example );
 
     cout << "  modulate ..." << endl;
@@ -229,10 +270,28 @@ int main( int /*argc*/, char ** argv)
     plasma.label( "Plasma" );
     images.push_back( plasma );
 
+    cout << "  quantize ..." << endl;
+    example = model;
+    example.label( "Quantize" );
+    example.quantize( );
+    images.push_back( example );
+
     cout << "  raise ..." << endl;
     example = model;
     example.label( "Raise" );
     example.raise( );
+    images.push_back( example );
+
+    cout << "  reduse noise ..." << endl;
+    example = model;
+    example.label( "Reduce Noise" );
+    example.reduceNoise( );
+    images.push_back( example );
+
+    cout << "  resize ..." << endl;
+    example = model;
+    example.label( "Resize" );
+    example.zoom( "50%" );
     images.push_back( example );
 
     cout << "  roll ..." << endl;
@@ -246,6 +305,12 @@ int main( int /*argc*/, char ** argv)
     example.label( "Rotate" );
     example.rotate( 45 );
     example.transparent( "black" );
+    images.push_back( example );
+
+    cout << "  scale ..." << endl;
+    example = model;
+    example.label( "Scale" );
+    example.scale( "60%" );
     images.push_back( example );
 
     cout << "  segment ..." << endl;
@@ -263,7 +328,13 @@ int main( int /*argc*/, char ** argv)
     cout << "  sharpen ..." << endl;
     example = model;
     example.label("Sharpen");
-    example.sharpen( 3 );
+    example.sharpen( 0.0, 1.0 );
+    images.push_back( example );
+
+    cout << "  shave ..." << endl;
+    example = model;
+    example.label("Shave");
+    example.shave( Geometry( 10, 10) );
     images.push_back( example );
 
     cout << "  shear ..." << endl;
@@ -287,44 +358,25 @@ int main( int /*argc*/, char ** argv)
 
     cout << "  swirl ..." << endl;
     example = model;
+    example.backgroundColor( "#000000FF" );
     example.label( "Swirl" );
     example.swirl( 90 );
+    images.push_back( example );
+
+    cout << "  unsharp mask ..." << endl;
+    example = model;
+    example.label( "Unsharp Mask" );
+    //           radius_, sigma_, amount_, threshold_
+    example.unsharpmask( 0.0, 1.0, 1.0, 0.05);
     images.push_back( example );
 
     cout << "  wave ..." << endl;
     example = model;
     example.label( "Wave" );
+    example.matte( true );
+    example.backgroundColor( "#000000FF" );
     example.wave( 25, 150 );
     images.push_back( example );
-    
-    cout << "  zoom ..." << endl;
-    example = model;
-    example.label( "Zoom" );
-    example.zoom( "50%" );
-    images.push_back( example );
-
-    //
-    // Create title.
-    //
-    cout << "Annotate image..." << endl;
-    Image background;
-    background.size( "550x90" );
-    background.read( "gradation:#20a0ff-#ffff00" );
-
-    Image title;
-    title.size( "550x90" );
-    title.read( "xc:black" );
-
-    title.density( "72x72" );
-    title.font( font );
-    title.fontPointsize( 80 );
-    title.strokeColor( "white" );
-    title.fillColor( "white" );
-    title.annotate( "Magick++", "+1+1", CenterGravity );
-    title.strokeColor( "black" );
-    title.draw( DrawableMatte( 0, 0, ReplaceMethod ) );
-
-    title.composite( background, 0, 0, InCompositeOp ); // Was AddCompositeOp
 
     //
     // Create image montage.
@@ -338,29 +390,27 @@ int main( int /*argc*/, char ** argv)
     imageRef.strokeColor( "#600" );
 
     MontageFramed montageOpts;
-    montageOpts.borderColor( "green" );
-    montageOpts.borderWidth( 1 );
-    montageOpts.compose( OverCompositeOp );
-    montageOpts.fileName( "Magick++ Demo" );
-    montageOpts.font( font );
     montageOpts.geometry( "130x194+10+5>" );
     montageOpts.gravity( CenterGravity );
+    montageOpts.borderColor( "green" );
+    montageOpts.borderWidth( 1 );
+    montageOpts.tile( "5x1000" );
+    montageOpts.compose( OverCompositeOp );
+    montageOpts.backgroundColor( "#ffffff" );
+    montageOpts.font( font );
     montageOpts.pointSize( 18 );
     montageOpts.fillColor( "#600" );
-    montageOpts.texture( "granite:" );
-    montageOpts.tile( "5x1000" );
+    montageOpts.fileName( "Magick++ Demo" );
     montageImages( &montage, images.begin(), images.end(), montageOpts );
 
-    // Modify montage image to avoid extra copy.
-    Image& final = montage.front();
-    final.composite( title, "+90+50", OverCompositeOp );
+    // Create logo image
+    Image logo( "logo:" );
+    logo.crop( "461x455+98+0" );
+    logo.zoom( "45%" );
 
-    final.font( font );
-    final.fontPointsize( 18 );
-    final.fillColor( "#600" );
-    final.annotate( "Every thing you see on this page was created with the "\
-		    "Magick++ and ImageMagick libraries.",
-		    "+20+175" );
+    // Composite logo into montage image
+    Image& final = montage.front();
+    final.composite( logo, "+245+0", OverCompositeOp );
 
     cout << "Writing image \"demo_out.miff\" ..." << endl;
     final.matte( false );
