@@ -49,6 +49,7 @@ $call Make matte.c
 $call Make meta.c
 $call Make miff.c
 $call Make mpc.c
+$call Make mpeg.c
 $call Make mono.c
 $call Make mtv.c
 $call Make mvg.c
@@ -69,6 +70,7 @@ $call Make ps2.c
 $call Make ps3.c
 $call Make psd.c
 $call Make pwp.c
+$call Make registry.c
 $call Make rgb.c
 $call Make rla.c
 $call Make rle.c
@@ -101,10 +103,10 @@ $call Make xwd.c
 $call Make yuv.c
 $library/create libCoders.olb art,avi,avs,bmp,cmyk,cut,dcm,dps,dpx,ept,fax, -
   fits,fpx,gif,gradient,gray,hdf,histogram,html,icon,jbig,jpeg,label,logo,map, -
-  mat,matte,meta,miff,mpc,mono,mtv,mvg,null,pcd,pcl,pcx,pdb,pdf,pict,pix, -
-  plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,rgb,rla,rle,sct,sfw,sgi,stegano, -
-  sun,svg,tga,tiff,tile,tim,ttf,txt,uil,url,uyvy,vicar,vid,viff,wbmp,wmf,wpg, -
-  x,xbm,xc,xpm,xwd,yuv,[-.magick]compress,[-.magick]prervicccm
+  mat,matte,meta,miff,mpc,mpeg,mono,mtv,mvg,null,pcd,pcl,pcx,pdb,pdf,pict,pix, -
+  plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,registry,rgb,rla,rle,sct,sfw,sgi, -
+  stegano,sun,svg,tga,tiff,tile,tim,ttf,txt,uil,url,uyvy,vicar,vid,viff,wbmp, -
+  wmf,wpg,x,xbm,xc,xpm,xwd,yuv,[-.magick]compress,[-.magick]prervicccm
 $exit
 $
 $Make: subroutine
