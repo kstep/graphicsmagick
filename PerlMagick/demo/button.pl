@@ -5,7 +5,7 @@
 use Image::Magick;
 
 $q=Image::Magick->new;
-$q->Set(size=>'30x105');
+$q->Set(size=>'30x106');
 $q->Read('gradient:#00f685-#0083f8');
 $q->Rotate(-90);
 $q->Raise('6x6');
