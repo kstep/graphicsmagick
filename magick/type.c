@@ -480,16 +480,6 @@ static unsigned int ReadConfigurationFile(const char *basename,
     GetToken(q,&q,token);
     switch (*keyword)
     {
-      case 'A':
-      case 'a':
-      {
-        if (LocaleCompare((char *) keyword,"alias") == 0)
-          {
-            type_list->alias=AllocateString(token);
-            break;
-          }
-        break;
-      }
       case 'E':
       case 'e':
       {

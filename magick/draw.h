@@ -128,7 +128,6 @@ typedef struct _TypeInfo
   char
     *filename,
     *name,
-    *alias,
     *description,
     *family;
 

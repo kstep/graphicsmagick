@@ -6452,10 +6452,6 @@ QueryFont(ref,...)
         PUSHs(&sv_undef);
       else
         PUSHs(sv_2mortal(newSVpv(type_info->name,0)));
-      if (type_info->alias == (char *) NULL)
-        PUSHs(&sv_undef);
-      else
-        PUSHs(sv_2mortal(newSVpv(type_info->alias,0)));
       if (type_info->description == (char *) NULL)
         PUSHs(&sv_undef);
       else
