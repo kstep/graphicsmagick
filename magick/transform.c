@@ -925,8 +925,12 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
     page.y=next->page.y;
     if ((next->columns+page.x) > page.width)
       page.width=next->columns+page.x;
+    if (next->page.width > page.width)
+      page.width=next->page.width;
     if ((next->rows+page.y) > page.height)
       page.height=next->rows+page.y;
+    if (next->page.height > page.height)
+      page.height=next->page.height;
   }
   /*
     Allocate mosaic image.
