@@ -3443,9 +3443,6 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     (primitive_info->method == FloodfillMethod);
   fill_color=draw_info->fill;
   stroke_color=draw_info->stroke;
-  if ((fill_color.opacity == TransparentOpacity) &&
-      (stroke_color.opacity == TransparentOpacity))
-    stroke_color.opacity=OpaqueOpacity;
   mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   bounds=polygon_info->edges[0].bounds;
   for (i=1; i < polygon_info->number_edges; i++)
