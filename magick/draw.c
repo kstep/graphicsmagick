@@ -465,7 +465,7 @@ MagickExport void MgkDrawImageFile(MgkDrawContext context,
       p = "Clear";
       break;
     case ColorizeCompositeOp:
-      p = "Colorize";
+      p = "Colorize_not_supported";
       break;
     case CopyBlueCompositeOp:
       p = "CopyBlue";
@@ -483,40 +483,40 @@ MagickExport void MgkDrawImageFile(MgkDrawContext context,
       p = "CopyRed";
       break;
     case DarkenCompositeOp:
-      p = "Darken";
+      p = "Darken_not_supported";
       break;
     case DifferenceCompositeOp:
       p = "Difference";
       break;
     case DisplaceCompositeOp:
-      p = "Displace";
+      p = "Displace_not_supported";
       break;
     case DissolveCompositeOp:
-      p = "Dissolve";
+      p = "Dissolve_not_supported";
       break;
     case HueCompositeOp:
-      p = "Hue";
+      p = "Hue_not_supported";
       break;
     case InCompositeOp:
       p = "In";
       break;
     case LightenCompositeOp:
-      p = "Lighten";
+      p = "Lighten_not_supported";
       break;
     case LuminizeCompositeOp:
-      p = "Luminize";
+      p = "Luminize_not_supported";
       break;
     case MinusCompositeOp:
       p = "Minus";
       break;
     case ModulateCompositeOp:
-      p = "Modulate";
+      p = "Modulate_not_supported";
       break;
     case MultiplyCompositeOp:
       p = "Multiply";
       break;
     case NoCompositeOp:
-      p = "No";
+      p = "No_not_supported";
       break;
     case OutCompositeOp:
       p = "Out";
@@ -525,16 +525,16 @@ MagickExport void MgkDrawImageFile(MgkDrawContext context,
       p = "Over";
       break;
     case OverlayCompositeOp:
-      p = "Overlay";
+      p = "Overlay_not_supported";
       break;
     case PlusCompositeOp:
       p = "Plus";
       break;
     case SaturateCompositeOp:
-      p = "Saturate";
+      p = "Saturate_not_supported";
       break;
     case ScreenCompositeOp:
-      p = "Screen";
+      p = "Screen_not_supported";
       break;
     case SubtractCompositeOp:
       p = "Subtract";
