@@ -1280,7 +1280,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (point.y > bounds.y2)
         bounds.y2=point.y;
     }
-    mid=clone_info->affine[0]*clone_info->linewidth/2.0;
+    mid=clone_info->affine[0]*clone_info->linewidth/2.0+1.0;
     bounds.x1-=mid;
     if (bounds.x1 < 0.0)
       bounds.x1=0.0;
@@ -1294,19 +1294,20 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1.0;
     alpha=1.0/MaxRGB;
-    target.y=(int) (bounds.y1+0.5);
-    for (y=0; y <= (int) (bounds.y2-bounds.y1+0.5); y++)
+    for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
     {
       /*
         Fill the primitive on the image.
       */
-      target.x=(int) (bounds.x1+0.5);
-      n=(int) (bounds.x2-bounds.x1+0.5);
-      q=GetImagePixels(image,target.x,target.y,n+1,1);
+      x=(int) ceil(bounds.x1-0.5);
+      n=(int) floor(bounds.x2-0.5)-x;
+      q=GetImagePixels(image,x,y,n+1,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x <= n; x++)
+      for ( ; x <= (int) floor(bounds.x2-0.5); x++)
       {
+        target.x=x;
+        target.y=y;
         switch (primitive_info->primitive)
         {
           case ArcPrimitive:
