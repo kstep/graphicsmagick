@@ -1188,6 +1188,149 @@ Export Image *ImplodeImage(Image *image,const double factor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     M e d i a n F i l t e r I m a g e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MedianFilterImage creates a new image that is a copy of an existing
+%  one with each pixel component replaced with the median color in a
+%  circular neighborhood.
+%
+%  The format of the MedianFilterImage method is:
+%
+%      Image *MedianFilterImage(Image *image,const unsigned int radius)
+%
+%  A description of each parameter follows:
+%
+%    o median_image: Method MedianFilterImage returns a pointer to the image
+%      after it is `filtered'.  A null image is returned if there is a memory
+%      shortage.
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%    o radius: An unsigned int that is the radius of the circular
+%      neighborhood.
+%
+%
+*/
+
+static int MedianCompare(const void *x,const void *y)
+{
+  PixelPacket
+    *color_1,
+    *color_2;
+
+  color_1=(PixelPacket *) x;
+  color_2=(PixelPacket *) y;
+  return((int) Intensity(*color_1)-(int) Intensity(*color_2));
+}
+
+Export Image *MedianFilterImage(Image *image,const unsigned int radius)
+{
+#define MedianFilterImageText  "  Filtering image with neighborhood ranking...  "
+
+  Image
+    *median_image;
+
+  int
+    j,
+    y;
+
+  PixelPacket
+    *window;
+
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *p,
+    *q,
+    *s,
+    *w;
+
+  assert(image != (Image *) NULL);
+  if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to oil median",
+        "image smaller than radius");
+      return((Image *) NULL);
+    }
+  /*
+    Initialize median image attributes.
+  */
+  median_image=CloneImage(image,image->columns,image->rows,True);
+  if (median_image == (Image *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to reduce noise",
+        "Memory allocation failed");
+      return((Image *) NULL);
+    }
+  median_image->class=DirectClass;
+  /*
+    Allocate window and scanline.
+  */
+  window=(PixelPacket *)
+    AllocateMemory((2*radius+1)*(2*radius+1)*sizeof(PixelPacket));
+  if (window == (PixelPacket *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to reduce noise",
+        "Memory allocation failed");
+      DestroyImage(median_image);
+      return((Image *) NULL);
+    }
+  /*
+    Paint each row of the image.
+  */
+  for (y=radius; y < (int) (image->rows-radius); y++)
+  {
+    p=GetPixelCache(image,0,y-radius,image->columns,2*radius+1);
+    q=SetPixelCache(median_image,0,y,median_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    p+=radius*image->columns+radius;
+    q+=radius;
+    for (x=radius; x < (int) (image->columns-radius); x++)
+    {
+      /*
+        Determine most frequent color.
+      */
+      w=window;
+      for (i=0; i < (int) radius; i++)
+      {
+        s=p-(radius-i)*image->columns-i-1;
+        for (j=0; j < (2*i+1); j++)
+          *w++=(*s++);
+        s=p+(radius-i)*image->columns-i-1;
+        for (j=0; j < (2*i+1); j++)
+          *w++=(*s++);
+      }
+      s=p-radius;
+      for (j=0; j < (int) (radius+radius+1); j++)
+        *w++=(*s++);
+      qsort((void *) window,w-window,sizeof(PixelPacket),
+        (int (*)(const void *, const void *)) MedianCompare);
+      w-=(w-window)/2;
+      *q=(*w);
+      p++;
+      q++;
+    }
+    if (!SyncPixelCache(median_image))
+      break;
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(MedianFilterImageText,y,image->rows);
+  }
+  FreeMemory(window);
+  return(median_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     M o r p h I m a g e s                                                   %
 %                                                                             %
 %                                                                             %

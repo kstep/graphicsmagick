@@ -993,8 +993,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
           s->red=red > MaxRGB ? MaxRGB : red;
           s->green=green > MaxRGB ? MaxRGB : green;
           s->blue=blue > MaxRGB ? MaxRGB : blue;
-          s->opacity=
-            opacity > MaxColormapSize ? MaxColormapSize : opacity;
+          s->opacity=opacity > MaxRGB ? MaxRGB : opacity;
           s++;
           y_vector[x].red=0;
           y_vector[x].green=0;
@@ -1064,8 +1063,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
             t->red=red > MaxRGB ? MaxRGB : red;
             t->green=green > MaxRGB ? MaxRGB : green;
             t->blue=blue > MaxRGB ? MaxRGB : blue;
-            t->opacity=
-              opacity > MaxColormapSize ? MaxColormapSize : opacity;
+            t->opacity=opacity > MaxRGB ? MaxRGB : opacity;
             y_scale-=y_span;
             y_span=1.0;
             next_column=True;

@@ -99,6 +99,7 @@
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
 %    -matte               store matte channel if the image has one
+%    -median radius       apply a median filter to the image
 %    -modulate value      vary the brightness, saturation, and hue
 %    -monochrome          transform image to black and white
 %    -negate              replace every pixel with its complementary color 
@@ -228,6 +229,7 @@ static void Usage(const char *client_name)
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
       "-matte               store matte channel if the image has one",
+      "-median radius       apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",

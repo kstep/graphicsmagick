@@ -287,7 +287,7 @@ static struct
       {"outer", IntegerReference}, {"color", StringReference} } },
     { "Implode", { {"factor", DoubleReference} } },
     { "Magnify", },
-    { "MedianFilter", },
+    { "MedianFilter", { {"radius", IntegerReference} } },
     { "Minify", },
     { "OilPaint", { {"radius", IntegerReference} } },
     { "ReduceNoise", },
@@ -3863,7 +3863,12 @@ Mogrify(ref,...)
           break;
         }
         case 18:  /* MedianFilter */
+        {
+          if (!attribute_flag[0])
+            argument_list[0].int_reference=3;
+          image=MedianFilterImage(image,argument_list[0].int_reference);
           break;
+        }
         case 19:  /* Minify */
         {
           image=MinifyImage(image);

@@ -687,13 +687,40 @@ VMS COMPILATION
   TIFF libraries.
 
 
-NT COMPILATION
+Windows NT/95 VISUAL C++ 6.0 COMPILATION
 
-  The NT distribution contains a Visual C++ workspace in the VisualMagick
-  subdirectory.  This workspace was contributed and maintained by
-  Bill Radcliffe (BillR@corbis.com).  To build ImageMagick simply change
-  to the VisualMagick directory and open the file ImageMagick.dsw and
-  press Build.
+  The Visual C++ distribution targeted at Windows NT or Windows 95
+  is provided in the "VisualMagick" subdirectory of the distribution.
+  There are two workspaces (DSW files) that can be used to do the
+  complete build:
+
+    VisualMagick.dsw : The one used to build everything as DLL's
+    VisualMagickStatic.dsw: The one used to build everything as
+                            static standalone executable
+
+  A complete build can be accomplished by simply doing:
+
+    Build: Batch Build: Clean
+    Build: Batch Build: Build
+
+  The "Clean" step is needed in order to make sure that all of the
+  target support libraries are updated with any patches needed to
+  get them to compile properly on Windows.
+
+  All of the required files that are needed to run any of the command
+  line tools will be found in the "bin" subdirectory of the VisualMagick
+  subdirectory. This includes EXE, and DLL files. You should be able
+  to test the build directly from this directory without having to
+  move anything to any of the global SYSTEM or SYSTEM32 areas in the
+  operating system installation.
+
+  NOTE: The two utilities "display" and "animate" will compile and
+  link but not function in the default build environment. This is due
+  to the fact that the default build environment uses the X11 stubs
+  to supply non-functional stubs for X-Window functionality. This is
+  due to the lack of a high need for this on a Windows NT or Win95
+  only system. Work is underway to add X11 libraries to the standard
+  distribution in the neat future.
 
   To view any image in a Microsoft window, type
 

@@ -69,7 +69,7 @@ live for the sake of another man, nor ask another man to live for mine"</i>
 <a href="#vmsc">VMS Compilation</a></li>
 
 <li>
-<a href="#ntc">NT Compilation</a></li>
+<a href="#ntc">Windows NT/95 VISUAL C++ 6.0 COMPILATION</a></li>
 
 <li>
 <a href="#macc">Macintosh Compilation</a></li>
@@ -1070,44 +1070,50 @@ PNG, TIFF,</b> and <b>TTF</b> libraries.</dd>
 <p><a NAME="ntc"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">NT
-Compilation</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Windows NT/95 Visual C++ 6.0 Compilation
+</font></font></font></b></td>
 </tr>
 </table>
 <p>
 <dd>
-The <a href="ftp://ftp.wizards.dupont.com/pub/ImageMagick/nt">NT</a> distribution
-contains <b>MetroWerks Codewarrior Professional</b> projects and a <b>Visual
-C++</b> workspace (thanks to
-<a href="mailto:BillR@corbis.com">Bill Radcliffe</a>)
-for compilation. For those who do not have access to CodeWarrior or Visual
-C++, the binaries for the command line utilities are enclosed.</dd>
+The Visual C++ distribution targeted at Windows 
+The <a href="ftp://ftp.wizards.dupont.com/pub/ImageMagick/nt">NT</a>
+is provided in the <tt>VisualMagick</tt> subdirectory of the distribution.
+There are two workspaces (DSW files) that can be used to do the
+complete build:
 
-<dd>
-If you have an NT X server like
-<a href="http://www.hummingbird.com">Exceed</a>
-you will also need to include</dd>
+<pre>
+    VisualMagick.dsw : The one used to build everything as DLL's
+    VisualMagickStatic.dsw: The one used to build everything as
+                            static standalone executable
+</pre>
 
-<pre>&nbsp;&nbsp;&nbsp; SET DISPLAY=local-ip-address:0.0</pre>
+<dd> A complete build can be accomplished by simply doing:
 
-<dd>
-in the System Control panel (NT) or <tt>Autoexec.bat</tt> (Win95).
-<tt>Autoexec.bat</tt>
-requires that you restart your computer. See
-<a href="http://www.rahul.net/kenton/xsites.html">Technical
-Window System and OSF/Motif WWW Sites</a> for a list of commercial and
-free X server software. Without an X server you can still <a href="display.html">display</a>
-or
-<a href="animate.html">animate</a> to, or
-<a href="import.html">import</a>
-from, a remote X server.
-<a href="convert.html">Convert</a>,
-<a href="mogrify.html">mogrify</a>,
-<a href="montage.html">montage</a>,
-<a href="combine.html">combine</a>,
-and
-<a href="identify.html">identify</a>, will work with or without an
-X server directly from the command prompt.</dd>
+<pre>
+    Build: Batch Build: Clean
+    Build: Batch Build: Build
+</pre>
+
+<dd>The <tt>Clean</tt> step is needed in order to make sure that all of the
+target support libraries are updated with any patches needed to
+get them to compile properly on Windows.
+
+<dd>All of the required files that are needed to run any of the command
+line tools will be found in the "bin" subdirectory of the VisualMagick
+subdirectory. This includes EXE, and DLL files. You should be able
+to test the build directly from this directory without having to
+move anything to any of the global SYSTEM or SYSTEM32 areas in the
+operating system installation.
+
+<dd>NOTE: The two utilities <a href="display.html">display</a> and
+<a href="animate.html">animate</a> will compile and
+link but not function in the default build environment. This is due
+to the fact that the default build environment uses the X11 stubs
+to supply non-functional stubs for X-Window functionality. This is
+due to the lack of a high need for this on a Windows NT or Win95
+only system. Work is underway to add X11 libraries to the standard
+distribution in the neat future.
 
 <dd>
 To view any image in a Microsoft window, type</dd>
@@ -1131,13 +1137,7 @@ Make sure <tt>iexplore</tt> (Internet Explorer) is in your execution path
 <b>ImageMagick</b> documentation.</dd>
 <p>
 <dd>
-To compile the source with Codewarrior, start with
-<tt>Magick/Magick.mcp</tt>
-and then <tt>animate.mcp</tt>, <tt>convert.mcp</tt>, etc.. The Visual C++
-workspace is <tt>ImageMagick.dsw</tt>.</dd>
-<p>
-<dd>
-And yes, the NT executables will work under Windows 95.</dd>
+The NT executables will work under Windows 95/98.</dd>
 </dl>
 <p><i><a href="#contents">Back to Contents</a></i>
 <br>&nbsp;

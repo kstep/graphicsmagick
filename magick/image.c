@@ -4651,6 +4651,22 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         (*image)->matte_color=target_color;
         continue;
       }
+    if (strncmp("-median",option,4) == 0)
+      {
+        Image
+          *median_image;
+
+        /*
+          Median filter image.
+        */
+        median_image=MedianFilterImage(*image,atoi(argv[++i]));
+        if (median_image != (Image *) NULL)
+          {
+            DestroyImage(*image);
+            *image=median_image;
+          }
+        continue;
+      }
     if (strncmp("-modulate",option,4) == 0)
       {
         ModulateImage(*image,argv[++i]);
@@ -4718,16 +4734,16 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-paint",option,4) == 0)
       {
         Image
-          *painted_image;
+          *paint_image;
 
         /*
           Oil paint image.
         */
-        painted_image=OilPaintImage(*image,atoi(argv[++i]));
-        if (painted_image != (Image *) NULL)
+        paint_image=OilPaintImage(*image,atoi(argv[++i]));
+        if (paint_image != (Image *) NULL)
           {
             DestroyImage(*image);
-            *image=painted_image;
+            *image=paint_image;
           }
         continue;
       }

@@ -104,6 +104,7 @@
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
 %    -matte               store matte channel if the image has one
+%    -median radius       apply a median filter to the image
 %    -modulate value      vary the brightness, saturation and hue
 %    -monochrome          transform image to black and white
 %    -morph value         morph an image sequence
@@ -304,6 +305,7 @@ static void Usage(const char *client_name)
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
       "-matte               store matte channel if the image has one",
+      "-median radius       apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-morph value         morph an image sequence",
@@ -1089,6 +1091,16 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing matte color",option);
                   (void) QueryColorDatabase(argv[i],&image_info.matte_color);
+                }
+              break;
+            }
+          if (strncmp("median",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing radius",option);
                 }
               break;
             }

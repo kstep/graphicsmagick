@@ -16,7 +16,7 @@ extern "C" {
 #define HexColorFormat "#%04x%04x%04x"
 #define MaxRGB  65535L
 #define QuantumDepth  16
-#define UpScale(quantum)  (((unsigned long) (quantum))*257)
+#define UpScale(quantum)  (257*((unsigned long) (quantum)))
 #define XDownScale(color)  ((unsigned long) (color))
 #define XUpScale(color)  ((unsigned long) (color))
 
@@ -31,7 +31,7 @@ typedef unsigned short Quantum;
 #define QuantumDepth  8
 #define UpScale(quantum)  ((unsigned long) (quantum))
 #define XDownScale(color)  (((unsigned long) (color)) >> 8)
-#define XUpScale(color)  (((unsigned long) (color))*257)
+#define XUpScale(color)  (257*((unsigned long) (color)))
 
 typedef unsigned char Quantum;
 #endif
@@ -599,6 +599,7 @@ extern Export Image
   *ImplodeImage(Image *,const double),
   **ListToGroupImage(const Image *,unsigned int *),
   *MagnifyImage(Image *),
+  *MedianFilterImage(Image *,const unsigned int),
   *MinifyImage(Image *),
   *MontageImages(const Image *,const MontageInfo *),
   *MorphImages(Image *,const unsigned int),

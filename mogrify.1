@@ -525,6 +525,12 @@ optimal set of colors that best represent all the images.
 .B "-matte"
 store matte channel if the image has one otherwise create an opaque one.
 .TP
+.B "-median \fIradius\fP"
+apply a median filter to the image.
+
+Each pixel is replaced by the median color in a circular neighborhood
+whose width is specified with \fIradius\fP.
+.TP
 .B "-modulate \fIvalue\fP"
 vary the brightness, saturation, and hue of an image.
 
