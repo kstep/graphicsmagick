@@ -234,6 +234,9 @@ typedef struct _MontageInfo
     border_color,
     matte_color;
 
+  GravityType
+    gravity;  /* deprecated */
+
   char
     filename[MaxTextExtent];
 } MontageInfo;
