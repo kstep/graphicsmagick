@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.3.8.  Version 5.3.8 is a bug-fix release to resolve bugs
-reported against 5.3.7.
+ImageMagick 5.3.8.1.  Version 5.3.8.1 is a bug-fix release to resolve bugs
+reported against 5.3.8 (existing only for days) and 5.3.7.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 71 major
@@ -19,13 +19,28 @@ available.  ImageMagick is available for free, may be used to support
 both open and proprietary applications, and may be redistributed
 without fee.
 
+Changes from the 5.3.7 release:
+
+   o Many bugs fixed which were reported via the ImageMagick bug
+     tracking system, or via the mailing lists.
+
+   o C API support (SetImageClipMask) added for registering a 
+     clipping mask image. Masked areas of the image (corresponsding to
+     transparent pixels in the clipping mask) are not modified by image
+     processing or drawing operations.
+
+   o C API support added to support Image reference counting.
+
+   o The image signature algorithm has been upgraded from MD5 to the
+     NIST SHA-256 algorithm.
+
 The ImageMagick WWW page is
 
    http://www.imagemagick.org/
  
-ImageMagick 5.3.8 is available via ftp as
+ImageMagick 5.3.8.1 is available via ftp as
 
-   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.8.tar.gz
+   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.8.1.tar.gz
 
 If ftp.imagemagick.org is overloaded (very likely), check the list of
 mirrors at http://www.imagemagick.org/www/archives.html for other
