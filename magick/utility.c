@@ -925,7 +925,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 %
 %
 */
-MagickExport FormatSize(const off_t size,char *format)
+MagickExport void FormatSize(const off_t size,char *format)
 {
   double
     length;
