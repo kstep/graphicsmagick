@@ -4867,9 +4867,7 @@ Export Image *FlipImage(const Image *image)
     Initialize flipped image attributes.
   */
   assert(image != (Image *) NULL);
-  ((Image *) image)->orphan=True;
   flipped_image=CloneImage(image,image->columns,image->rows,False);
-  ((Image *) image)->orphan=False;
   if (flipped_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to flip image",
@@ -4985,9 +4983,7 @@ Export Image *FlopImage(const Image *image)
     Initialize flopped image attributes.
   */
   assert(image != (Image *) NULL);
-  ((Image *) image)->orphan=True;
   flopped_image=CloneImage(image,image->columns,image->rows,False);
-  ((Image *) image)->orphan=False;
   if (flopped_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to reflect image",
@@ -10366,9 +10362,7 @@ Export Image *RollImage(const Image *image,const int x_offset,
     Initialize rolled image attributes.
   */
   assert(image != (Image *) NULL);
-  ((Image *) image)->orphan=True;
   rolled_image=CloneImage(image,image->columns,image->rows,False);
-  ((Image *) image)->orphan=False;
   if (rolled_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to roll image",
@@ -10482,9 +10476,7 @@ Export Image *SampleImage(const Image *image,const unsigned int columns,
   /*
     Initialize sampled image attributes.
   */
-  ((Image *) image)->orphan=True;
   sampled_image=CloneImage(image,columns,rows,False);
-  ((Image *) image)->orphan=False;
   if (sampled_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to sample image",

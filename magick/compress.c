@@ -1500,6 +1500,9 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     k,
     runlength;
 
+  Image
+    *huffman_image;
+
   register int
     j,
     n,
@@ -1537,6 +1540,27 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
         (char *) NULL);
       return(False);
     }
+  huffman_image=(Image *) image;
+  if (!IsMonochromeImage(huffman_image))
+    {
+      QuantizeInfo
+        quantize_info;
+
+      /*
+        Convert image to monochrome.
+      */
+      ((Image *) image)->orphan=True;
+      huffman_image=CloneImage(image,image->columns,image->rows,True);
+      ((Image *) image)->orphan=False;
+      if (huffman_image == (Image *) NULL)
+        return(False);
+      GetQuantizeInfo(&quantize_info);
+      quantize_info.number_colors=2;
+      quantize_info.dither=image_info->dither;
+      quantize_info.colorspace=GRAYColorspace;
+      (void) QuantizeImage(&quantize_info,huffman_image);
+      SyncImage(huffman_image);
+    }
   byte=0;
   bit=0x80;
   if (Latin1Compare(image_info->magick,"FAX") != 0)
@@ -1554,23 +1578,23 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     Compress runlength encoded to 1D Huffman pixels.
   */
   polarity=0;
-  if (image->colors == 2)
-    polarity=(Intensity(image->colormap[0]) >
-      Intensity(image->colormap[1]) ? 0 : 1);
+  if (huffman_image->colors == 2)
+    polarity=(Intensity(huffman_image->colormap[0]) >
+      Intensity(huffman_image->colormap[1]) ? 0 : 1);
   q=scanline;
   for (i=0; i < (int) width; i++)
     *q++=(unsigned char) polarity;
-  p=image->pixels;
+  p=huffman_image->pixels;
   q=scanline;
   x=0;
-  for (i=0; i < (int) image->packets; i++)
+  for (i=0; i < (int) huffman_image->packets; i++)
   {
     for (j=0; j <= ((int) p->length); j++)
     {
       *q++=(unsigned char)
         (p->index == polarity ? (int) polarity : (int) !polarity);
       x++;
-      if (x < (int) image->columns)
+      if (x < (int) huffman_image->columns)
         continue;
       /*
         Huffman encode scanline.
@@ -1628,9 +1652,9 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
       q=scanline;
     }
     p++;
-    if (image->previous == (Image *) NULL)
-      if (QuantumTick(i,image->packets))
-        ProgressMonitor(SaveImageText,i,image->packets);
+    if (huffman_image->previous == (Image *) NULL)
+      if (QuantumTick(i,huffman_image->packets))
+        ProgressMonitor(SaveImageText,i,huffman_image->packets);
   }
   /*
     End of page.
@@ -1647,12 +1671,14 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   if (bit != 0x80)
     {
       if (Latin1Compare(image_info->magick,"FAX") == 0)
-        (void) fputc((char) byte,image->file);
+        (void) fputc((char) byte,huffman_image->file);
       else
-        Ascii85Encode((unsigned int) byte,image->file);
+        Ascii85Encode((unsigned int) byte,huffman_image->file);
     }
   if (Latin1Compare(image_info->magick,"FAX") != 0)
-    Ascii85Flush(image->file);
+    Ascii85Flush(huffman_image->file);
+  if (huffman_image != image)
+    DestroyImage(huffman_image);
   FreeMemory((char *) scanline);
   return(True);
 }
@@ -1721,6 +1747,23 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   ((Image *) image)->orphan=True;
   huffman_image=CloneImage(image,image->columns,image->rows,True);
   ((Image *) image)->orphan=False;
+  if (huffman_image == (Image *) NULL)
+    return(False);
+  if (!IsMonochromeImage(huffman_image))
+    {
+      QuantizeInfo
+        quantize_info;
+
+      /*
+        Convert image to monochrome.
+      */
+      GetQuantizeInfo(&quantize_info);
+      quantize_info.number_colors=2;
+      quantize_info.dither=image_info->dither;
+      quantize_info.colorspace=GRAYColorspace;
+      (void) QuantizeImage(&quantize_info,huffman_image);
+      SyncImage(huffman_image);
+    }
   TemporaryFilename(huffman_image->filename);
   (void) strcpy(huffman_image->magick,"TIFF");
   local_info=CloneImageInfo(image_info);

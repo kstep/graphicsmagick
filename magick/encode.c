@@ -1209,18 +1209,6 @@ Export unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
       Convert MIFF to monochrome.
     */
     TransformRGBImage(image,RGBColorspace);
-    if (!IsMonochromeImage(image))
-      {
-        QuantizeInfo
-          quantize_info;
-
-        GetQuantizeInfo(&quantize_info);
-        quantize_info.number_colors=2;
-        quantize_info.dither=image_info->dither;
-        quantize_info.colorspace=GRAYColorspace;
-        (void) QuantizeImage(&quantize_info,image);
-        SyncImage(image);
-      }
     status=HuffmanEncodeImage((ImageInfo *) image_info,image);
     if (image->next == (Image *) NULL)
       break;
@@ -4015,7 +4003,7 @@ Export unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate colormap.
   */
-  if (image->class == DirectClass)
+  if (!IsPseudoClass(image))
     {
       QuantizeInfo
         quantize_info;
@@ -5097,7 +5085,7 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           if (monochrome_image == (Image *) NULL)
             PrematureExit(ResourceLimitWarning,"Unable to scale image",image);
         }
-      if (IsMonochromeImage(monochrome_image))
+      if (!IsMonochromeImage(monochrome_image))
         {
           QuantizeInfo
             quantize_info;
@@ -9690,7 +9678,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         (void) ParseImageGeometry(image->page,&x,&y,&width,&height);
       else
         if (Latin1Compare(image_info->magick,"PS2") == 0)
-	  (void) ParseImageGeometry(PSPageGeometry,&x,&y,&width,&height);
+          (void) ParseImageGeometry(PSPageGeometry,&x,&y,&width,&height);
     /*
       Scale relative to dots-per-inch.
     */
@@ -11614,10 +11602,35 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
     if (image->depth > 8)
       TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
+    compress_tag=COMPRESSION_NONE;
+    if ((image_info->compression == FaxCompression) ||
+        (image_info->compression == Group4Compression))
+      if (!IsMonochromeImage(image))
+        {
+          QuantizeInfo
+            quantize_info;
+
+          GetQuantizeInfo(&quantize_info);
+          quantize_info.number_colors=2;
+          quantize_info.dither=image_info->dither;
+          quantize_info.colorspace=GRAYColorspace;
+          (void) QuantizeImage(&quantize_info,image);
+          SyncImage(image);
+        }
     switch (image->compression)
     {
-      case FaxCompression: compress_tag=COMPRESSION_CCITTFAX3; break;
-      case Group4Compression: compress_tag=COMPRESSION_CCITTFAX4; break;
+      case FaxCompression:
+      {
+        if (IsMonochromeImage(image))
+          compress_tag=COMPRESSION_CCITTFAX3;
+        break;
+      }
+      case Group4Compression:
+      {
+        if (IsMonochromeImage(image))
+          compress_tag=COMPRESSION_CCITTFAX4;
+        break;
+      }
       case JPEGCompression: compress_tag=COMPRESSION_JPEG; break;
       case LZWCompression: compress_tag=COMPRESSION_LZW; break;
       case RunlengthEncodedCompression:
@@ -13908,7 +13921,9 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 %  Method WriteImage writes an image to a file as defined by image->filename.
 %  You can specify a particular image format by prefixing the file with the
 %  image type and a colon (i.e. ps:image) or specify the image type as the
-%  filename suffix (i.e. image.ps).
+%  filename suffix (i.e. image.ps).  The image may be modified to adapt it
+%  to the requirements of the image format.  For example, DirectClass images
+%  must be color-reduced to PseudoClass if the format is GIF.
 %
 %  The format of the WriteImage routine is:
 %
