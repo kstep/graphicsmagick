@@ -1424,12 +1424,12 @@ int main( int /*argc*/, char ** argv)
       }
 
   }
-  catch( Exception error_ )
+  catch( Exception &error_ )
     {
       cout << "Caught exception: " << error_.what() << endl;
       return 1;
     }
-  catch( exception error_ )
+  catch( exception &error_ )
     {
       cout << "Caught exception: " << error_.what() << endl;
       return 1;

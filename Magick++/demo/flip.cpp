@@ -50,7 +50,7 @@ int main( int /*argc*/, char ** argv)
     writeImages( morphed.begin(), morphed.end(), "flip_out.miff" );
 
   }
-  catch( exception error_ )
+  catch( exception &error_ )
     {
       cout << "Caught exception: " << error_.what() << endl;
       return 1;

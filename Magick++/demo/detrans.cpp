@@ -47,7 +47,7 @@ int main(int argc,char **argv)
 	base.matte( false );
 	base.write( fname );
       }
-      catch( Exception error_ ) 
+      catch( Exception &error_ ) 
 	{ 
 	  cout << error_.what() << endl; 
 	}
