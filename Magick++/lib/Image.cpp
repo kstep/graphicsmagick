@@ -2592,9 +2592,9 @@ Magick::Color Magick::Image::pixelColor ( unsigned int x_,
   ClassType storage_class;
   storage_class = classType();
   // DirectClass
+  const PixelPacket* pixel = getConstPixels( x_, y_, 1, 1 );
   if ( storage_class == DirectClass )
     {
-      const PixelPacket* pixel = getConstPixels( x_, y_, 1, 1 );
       if ( pixel )
         return Color( *pixel );
     }
@@ -2604,7 +2604,7 @@ Magick::Color Magick::Image::pixelColor ( unsigned int x_,
     {
       const IndexPacket* indexes = getConstIndexes();
       if ( indexes )
-        return colorMap( *(indexes + y_*columns() + x_) );
+        return colorMap( *indexes );
     }
 
   return Color(); // invalid
