@@ -741,9 +741,6 @@ MagickExport void FormatString(char *string,const char *format,...)
 */
 MagickExport char *GetExecutionPath(const char *path)
 {
-#if defined(HAVE_GETEXECNAME)
-  return(AllocateString(getexecname()));
-#endif
 #if defined(WIN32)
   return(NTGetExecutionPath());
 #endif
