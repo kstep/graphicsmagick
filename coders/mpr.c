@@ -99,9 +99,6 @@ static Image *ReadMPRImage(const ImageInfo *image_info,
   char
     *p;
 
-  Image
-    *image;
-
   long
     id;
 
@@ -118,8 +115,7 @@ static Image *ReadMPRImage(const ImageInfo *image_info,
   if (LocaleCompare(image_info->magick,"MPRI") != 0)
     return(GetImageFromMagickRegistry(image_info->filename,exception));
   id=strtol(image_info->filename,&p,0);
-  image=(Image *) GetMagickRegistry(id,&type,&length,exception);
-	return(image);
+	return((Image *) GetMagickRegistry(id,&type,&length,exception));
 }
 
 /*

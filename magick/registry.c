@@ -243,6 +243,8 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,
       }
   }
   LiberateSemaphoreInfo(&registry_semaphore);
+  if (image == (Image *) NULL)
+    ThrowException(exception,RegistryWarning,"Unable to locate image",name);
   return(image);
 }
 
@@ -336,6 +338,15 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
     break;
   }
   LiberateSemaphoreInfo(&registry_semaphore);
+  if (blob == (void *) NULL)
+    {
+      char
+        description[MaxTextExtent];
+
+      FormatString(description,"id=%ld",id);
+      ThrowException(exception,RegistryWarning,"Unable to locate registry id",
+        description);
+    }
   return(blob);
 }
 
