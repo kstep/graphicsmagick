@@ -13,7 +13,7 @@
 if {[file exists ../win/debug/tclMagick.dll]} {
     load ../win/debug/tclMagick.dll
 }
-puts [package require TclMagick]
+puts [format "TclMagick %s" [package require TclMagick]]
 puts [info script]
 
 
@@ -27,7 +27,7 @@ set TMP "../tmp"
 ##########################################
 # Check which tests should be performed
 #
-set TestFunctions {
+set TestFunctionsA {
     AdaptiveThresholdImage      img     1
     AddImage                    seq     1
     AddNoiseImage               img     1
@@ -69,68 +69,54 @@ set TestFunctions {
     FrameImage                  img     1
     FxImageChannel              img     1
     GammaImage                  img     1
-    GammaImageChannel           img     0
+    GammaImageChannel           img     1
 
     GetSetFilename              img     1
-    GetSetBackgroundColor       img     0
-    GetSetBluePrimary           img     0
-    GetSetBorderColor           img     0
-    GetSetChannelDepth          img     0
-    GetChannelExtrema           img     0
-    GetChannelMean              img     0
-    GetSetColormapColor         img     0
-    GetColors                   img     0
-    GetSetColorspace            img     0
-    GetSetCompose               img     0
-    GetSetCompression           img     0
-    GetSetDelay                 img     0
-    GetSetDepth                 img     0
-    GetSetDispose               img     0
-    GetExtrema                  img     0
-    Getformat                   img     0
-    GetSetGamma                 img     0
-    GetsetGreenPrimary          img     0
-    GetHeight                   img     0
-    GetSetIndex                 img     0
-    GetSetInterlaceScheme       img     0
-    GetSetIterations            img     0
-    GetSetMatteColor            img     0
-    GetSetImageFilename         img     0
+    GetSetBackgroundColor       img     1
+    GetSetBluePrimary           img     1
+    GetSetBorderColor           img     1
+    GetSetChannelDepth          img     1
+    GetChannelExtrema           img     1
+    GetChannelMean              img     1
+    GetSetColormapColor         img     1
+    GetColors                   img     1
+    GetSetColorspace            img     1
+    GetSetCompose               img     1
+    GetSetCompression           img     1
+    GetSetDelay                 seq     1
+    GetSetDepth                 img     1
+    GetSetDispose               img     1
+    GetExtrema                  img     1
+    GetFormat                   img     1
+    GetSetGamma                 img     1
+    GetSetGreenPrimary          img     1
+    GetHeight                   img     1
+    GetSetIndex                 seq     1
+    GetSetInterlaceScheme       img     1
+    GetSetIterations            img     1
+    GetSetMatteColor            img     1
+    GetSetImageFilename         img     1
     GetSetPixels                img     1
-    GetSetRemoveProfile         img     0
-    GetSetRedPrimary            img     0
-    GetSetRendering             img     0
-    GetSetResolution            img     0
-    GetSetScene                 img     0
-    GetImageSize                img     0
+    GetSetRemoveProfile         img     1
+    GetSetRedPrimary            img     1
+    GetSetRendering             img     1
+    GetSetResolution            img     1
+    GetSetScene                 seq     1
+    GetImageSize                img     1
     GetSignature                img     1
-    GetSetImageType             img     0
-    GetSetImageUnits            img     0
-    GetSetVirtualPixelMethod    img     0
-    GetSetWhitePoint            img     0
-    GetWidth                    img     0
-    GetNumberImages             seq     0
-    GetSetSamplingFactors       img     0
+    GetSetImageType             img     1
+    GetSetImageUnits            img     1
+    GetSetVirtualPixelMethod    img     1
+    GetSetWhitePoint            img     1
+    GetWidth                    img     1
+    GetNumberImages             seq     1
+    GetSetSamplingFactors       img     1
     GetSetSize                  img     1
 
-    ImplodeImage                img     1
-    LabelImage                  img     1
-    LevelImage                  img     1
-    LevelImageChannel           img     0
-    MagnifyImage                img     1
-    MapImage                    img     1
-    MatteFloodfillImage         img     1
-    MedianFilterImage           img     1
-    MinifyImage                 img     1
-    ModulateImage               img     1
-    MontageImage                img     0
-    MorphImages                 img     0
-    MosaicImages                img     0
-    MotionBlurImage             img     1
-    NegateImage                 img     1
-    NormalizeImage              img     1
-    NextPrevious                seq     0
-
+}
+set TestFunctionsB {
+}
+set TestFunctionsC {
     OilPaintImage               img     1
     OpaqueImage                 img     1
     PingImage                   img     0
@@ -174,6 +160,27 @@ set TestFunctions {
     WaveImage                   img     1
     WhiteThresholdImage         img     1
 }
+set TestFunctions {
+    ImplodeImage                img     1
+    LabelImage                  img     1
+    LevelImage                  img     1
+    LevelImageChannel           img     1
+    MagnifyImage                img     1
+    MapImage                    img     1
+    MatteFloodfillImage         img     1
+    MedianFilterImage           img     1
+    MinifyImage                 img     1
+    ModulateImage               img     1
+    MontageImage                seq     1
+    MorphImages                 seq     1
+    MosaicImages                seq     1
+xxxxx--MotionBlurImage             img     0
+    NegateImage                 img     1
+    NormalizeImage              img     1
+
+    NextPrevious                seq     1
+    
+}
 
 ############################################
 # Command debugging
@@ -213,7 +220,7 @@ proc AddImage {seq} {
     set x [$wand CloneImage imgX]
     $wand SetIndex 0
     $wand AddImage $x
-    $wand WriteImages "$::TMP/x-Add.gif"
+    $wand WriteImages "$::TMP/x-Add.gif" 1
 
     magick delete $wand $x
 }
@@ -243,10 +250,11 @@ proc AnnotateImage {img} {
     set draw [magick create drawing]
     debug $wand $draw
    
+    [magick create pixel pix] SetColor "blue"
     $draw push graph
         $draw SetStrokeWidth 1
-        $draw SetStrokeColorString "blue"
-        $draw SetFillColorString "blue"
+        $draw SetStrokeColor pix
+        $draw SetFillColor pix
         $draw SetFontSize 18
         $draw Annotation 10 170 "TclMagick"
     $draw pop graph
@@ -254,15 +262,15 @@ proc AnnotateImage {img} {
     $wand AnnotateImage $draw
     $wand WriteImage "$::TMP/x-Annotate.jpg"
 
-    magick delete $draw $wand
+    magick delete $draw $wand pix
 }
 proc AppendImages {seq} {
     set wand [$seq AppendImages 0 seqX]
     debug $wand
-    $wand WriteImages "$::TMP/x-Append.gif"
+    $wand WriteImages "$::TMP/x-Append.gif" 1
     magick delete $wand
 }
-proc AverageImages {img} {
+proc AverageImages {seq} {
     set wand [$seq AverageImages seqX]
     debug $wand
     $wand WriteImage "$::TMP/x-Average.jpg"
@@ -338,7 +346,7 @@ proc ClipPathImage {img} {
 }
 proc CoalesceImages {img} {
     set new [$img CoalesceImages]
-    $new WriteImages "$::TMP/x-Coalesce.gif"
+    $new WriteImages "$::TMP/x-Coalesce.gif" 1
     magick delete $new
 }
 proc ColorFloodfillImage {img} {
@@ -553,7 +561,7 @@ proc FrameImage {img} {
 proc FxImageChannel {img} {
     set wand [$img clone imgX]
     debug $wand
-    $wand FxImageChannel blue "x/4"
+    $wand FxImageChannel $img blue "x/4"
     $wand WriteImage "$::TMP/x-Fx.jpg"
     magick delete $wand
 }
@@ -570,7 +578,7 @@ proc GammaImageChannel {img} {
     set wand [$img clone imgX]
     debug $wand
     
-    $wand GammaImage blue 2.0
+    $wand GammaImageChannel blue 2.0
     
     $wand WriteImage "$::TMP/x-GammaChannel.jpg"
     magick delete $wand
@@ -584,6 +592,218 @@ proc GetSetFilename {img} {
     $wand filename
     $wand SetFilename "bar.jpg"
     $wand GetFilename
+
+    magick delete $wand
+}
+proc GetSetBackgroundColor {img} {
+    set wand [$img clone imgX]
+    set pix [magick create pixel pixX]
+    debug $wand $pix
+
+    $pix set red 0.0 green 0.5 blue 0.5
+    $wand SetBackgroundColor $pix
+    $pix set red 0 green 0 blue 0
+    $wand GetBackgroundColor $pix
+    $pix GetColor 
+
+    magick delete $pix $wand
+}
+proc GetSetBluePrimary {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetBluePrimary
+    $wand SetBluePrimary 100 50
+    $wand GetBluePrimary
+
+    magick delete $wand
+}
+proc GetSetBorderColor {img} {
+    set wand [$img clone imgX]
+    set pix [magick create pixel pixX]
+    debug $wand $pix
+
+    $pix set red 0.0 green 0.5 blue 0.5
+    $wand SetBorderColor $pix
+    $pix set red 0 green 0 blue 0
+    $wand GetBorderColor $pix
+    $pix GetColor 
+
+    magick delete $pix $wand
+}
+proc GetSetChannelDepth {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetChannelDepth red
+    $wand SetChannelDepth red 16
+    $wand GetChannelDepth red
+
+    magick delete $wand
+}
+proc GetChannelExtrema {img} {
+    $img GetChannelExtrema blue
+}
+proc GetChannelMean {img} {
+    $img GetChannelMean blue
+}
+proc GetSetColormapColor {img} {
+    set wand [$img clone imgX]
+    set pix [magick create pixel pixX]
+    debug $wand $pix
+
+    $pix set red 0 green 0.5 blue 0.7
+    $wand SetColormapColor 0 $pix
+    $pix GetColor 
+    $pix set red 0 green 0 blue 0
+    $wand GetColormapColor 0 $pix
+    $pix GetColor 
+
+    magick delete $pix $wand
+}
+proc GetColors {img} {
+    $img GetColors
+}
+proc GetSetColorspace {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetColorspace
+    $wand SetColorspace "CMYK"
+    $wand GetColorspace
+
+    magick delete $wand
+}
+proc GetSetCompose {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetCompose
+    $wand SetCompose "xor"
+    $wand GetCompose
+
+    magick delete $wand
+}
+proc GetSetCompression {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetCompression
+    $wand SetCompression "zip"
+    $wand GetCompression
+
+    magick delete $wand
+}
+proc GetSetDelay {seq} {
+    set wand [$seq clone seqX]
+    debug $wand
+
+    $wand GetDelay
+    $wand SetDelay 123
+    $wand GetDelay
+
+    magick delete $wand
+}
+proc GetSetDepth {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetDepth
+    $wand SetDepth 16
+    $wand GetDepth
+
+    magick delete $wand
+}
+proc GetSetDispose {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetDispose
+    $wand SetDispose "background"
+    $wand GetDispose
+
+    magick delete $wand
+}
+proc GetExtrema {img} {
+    $img GetExtrema
+}
+proc GetFormat {img} {
+    $img GetFormat
+}
+proc GetSetGamma {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetGamma
+    $wand SetGamma 2.5
+    $wand GetGamma
+
+    magick delete $wand
+}
+proc GetSetGreenPrimary {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetGreenPrimary
+    $wand SetGreenPrimary 100 50
+    $wand GetGreenPrimary
+
+    magick delete $wand
+}
+proc GetHeight {img} {
+    $img GetHeight
+}
+proc GetSetIndex {seq} {
+    set wand [$seq clone seqX]
+    debug $wand
+
+    $wand GetIndex
+    $wand SetIndex 3
+    $wand GetIndex
+
+    magick delete $wand
+}
+proc GetSetInterlaceScheme {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetInterlaceScheme
+    $wand SetInterlaceScheme "plane"
+    $wand GetInterlaceScheme
+
+    magick delete $wand
+}
+proc GetSetIterations {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetIterations
+    $wand SetIterations 3
+    $wand GetIterations
+
+    magick delete $wand
+}
+proc GetSetMatteColor {img} {
+    set wand [$img clone imgX]
+    set pix [magick create pixel pixX]
+    debug $wand $pix
+
+    $pix set red 0 green 0.5 blue 0.7
+    $wand SetMatteColor $pix
+    $pix GetColor 
+    $pix set red 0 green 0 blue 0
+    $wand GetMatteColor $pix
+    $pix GetColor 
+
+    magick delete $pix $wand
+}
+proc GetSetImageFilename {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetImageFilename
+    $wand SetImageFilename "foo"
+    $wand GetImageFilename
 
     magick delete $wand
 }
@@ -615,6 +835,19 @@ proc GetSetPixels {img} {
     $wand WriteImage "$::TMP/x-Pixels.jpg"
     magick delete $wand
 }
+proc GetSetRemoveProfile {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand SetProfile "icc" "foo"
+    $wand SetProfile "8bim" "bar"
+    $wand GetProfile "icc"
+    $wand GetProfile "8bim"
+    $wand RemoveProfile "icc"
+    $wand GetProfile "icc"
+
+    magick delete $wand
+}
 proc GetSetRemoveSetProfile {img} {
     set wand [$img clone imgX]
     debug $wand
@@ -622,10 +855,96 @@ proc GetSetRemoveSetProfile {img} {
     $wand WriteImage "$::TMP/x-Profile.jpg"
     magick delete $wand 
 }
-proc GetSignature {img} {
+proc GetSetRedPrimary {img} {
     set wand [$img clone imgX]
     debug $wand
-    $wand GetSignature
+
+    $wand GetRedPrimary
+    $wand SetRedPrimary 100 50
+    $wand GetRedPrimary
+
+    magick delete $wand
+}
+proc GetSetRendering {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetRendering
+    $wand SetRendering "perceptual"
+    $wand GetRendering
+
+    magick delete $wand
+}
+proc GetSetResolution {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetResolution
+    $wand SetResolution 360 720
+    $wand GetResolution
+
+    magick delete $wand
+}
+proc GetSetScene {seq} {
+    set wand [$seq clone seqX]
+    debug $wand
+
+    $wand GetScene
+    $wand SetScene 3
+    $wand GetScene
+
+    magick delete $wand
+}
+proc GetImageSize {img} {
+    $img GetImageSize
+}
+proc GetSignature {img} {
+    $img GetSignature
+}
+proc GetSetImageType {seq} {
+    set wand [$seq clone seqX]
+    debug $wand
+
+    $wand GetImageType
+    $wand SetImageType grayscale
+    $wand GetImageType
+
+    magick delete $wand
+}
+proc GetSetImageUnits {seq} {
+    set wand [$seq clone seqX]
+    debug $wand
+
+    $wand GetImageUnits
+    $wand SetImageUnits "ppcm"
+    $wand GetImageUnits
+
+    magick delete $wand
+}
+proc GetSetVirtualPixelMethod {seq} {
+    set wand [$seq clone seqX]
+    debug $wand
+
+    $wand GetVirtualPixelMethod
+    $wand SetVirtualPixelMethod "mirror"
+    $wand GetVirtualPixelMethod
+
+    magick delete $wand
+}
+proc GetWidth {img} {
+    $img GetWidth
+}
+proc GetNumberImages {seq} {
+    $seq GetNumberImages
+}
+proc GetSetSamplingFactors {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetSamplingFactors
+    $wand SetSamplingFactors {1 2 3 4 5}
+    $wand GetSamplingFactors
+
     magick delete $wand
 }
 proc GetSetSize {img} {
@@ -637,6 +956,16 @@ proc GetSetSize {img} {
     $wand size
     $wand SetSize 300 400
     $wand GetSize
+
+    magick delete $wand
+}
+proc GetSetWhitePoint {img} {
+    set wand [$img clone imgX]
+    debug $wand
+
+    $wand GetWhitePoint
+    $wand SetWhitePoint 100 50
+    $wand GetWhitePoint
 
     magick delete $wand
 }
@@ -659,6 +988,13 @@ proc LevelImage {img} {
     debug $wand  
     $wand LevelImage 10000 2.0 50000
     $wand WriteImage "$::TMP/x-Level.jpg"
+    magick delete $wand
+}
+proc LevelImageChannel {img} {
+    set wand [$img clone imgX]
+    debug $wand  
+    $wand LevelImageChannel blue 10000 2.0 50000
+    $wand WriteImage "$::TMP/x-LevelChannel.jpg"
     magick delete $wand
 }
 proc MagnifyImage {img} {
@@ -710,6 +1046,30 @@ proc ModulateImage {img} {
     $wand WriteImage "$::TMP/x-Modulate.jpg"
     magick delete $wand 
 }
+proc MontageImage {seq} {
+    set wand [$seq clone seqX]
+    set draw [magick create drawing drawX]
+    debug $wand $draw
+   
+    set x [$wand MontageImage $draw "40x40" "400x400" frame "4x4" imgX]
+    $x WriteImage "$::TMP/x-Montage.jpg"
+
+    magick delete $wand $draw $x
+}
+proc MorphImages {seq} {
+    $seq GetNumberImages
+    set wand [$seq MorphImages 5 seqY]
+    debug $wand
+    $wand GetNumberImages
+    $wand WriteImages "$::TMP/x-Morph.gif" 1
+    magick delete $wand
+}
+proc MosaicImages {seq} {
+    set wand [$seq MosaicImages imgX]
+    debug $wand
+    $wand WriteImage "$::TMP/x-Mosaic.gif"
+    magick delete $wand 
+}
 proc MotionBlurImage {img} {
     set wand [$img clone imgX]
     debug $wand
@@ -730,6 +1090,21 @@ proc NormalizeImage {img} {
     $wand NormalizeImage
     $wand WriteImage "$::TMP/x-Normalize.jpg"
     magick delete $wand 
+}
+proc NextPrevious {seq} {
+    set wand [$seq clone seqX]
+    debug $wand
+
+    set max [$wand GetNumberImages]
+    for {set i 0} {$i < $max} {incr i} {
+        $wand SetIndex $i
+        $wand HasPrevious
+        $wand HasNext
+    }    
+    $wand ResetIterator
+    $wand GetIndex 
+    
+    magick delete $wand
 }
 proc OilPaintImage {img} {
     set wand [$img clone imgX]
@@ -959,52 +1334,16 @@ proc WhiteThresholdImage {img} {
 }
 
 ##########################################
-# Image sequence test
-#
-proc SequenceTest {seq} {
-    set wand [$seq clone imgX]
-    debug $wand
-    
-    set N [$wand GetNumberImages] 
-    if {$N != 5} {
-        error [format "Expected 5 images, got %d" $N]
-    }
-    $wand WriteImages "$::TMP/y-seq0.gif" 1
-
-    $wand SetIndex 3
-    $wand WriteImage "$::TMP/y-seq-Extract-%0d.gif"
-
-    $wand SetIndex 0
-    $wand RemoveImage
-
-    set new [$wand DeconstructImages]
-    $new WriteImages "$::TMP/y-seq-Deconstruct.gif"
-    magick delete $new
-    
-    $wand SetIndex 1
-    $wand ResizeImage 40 20
-    $wand SetIndex 3
-    $wand ResizeImage 40 40
-    $wand WriteImages "$::TMP/y-seq1.gif"
-
-    set new [$wand CoalesceImages]
-    $new WriteImages "$::TMP/y-seq-Coalesce.gif"
-    magick delete $new
-
-    magick delete $wand
-}
-
-##########################################
 # Prepare tests
 #
 
 if {! [file isdirectory $::TMP] } {
     file mkdir $::TMP
 }
-magick fonts
-magick formats
-
 debug magick
+
+magick fonts 
+magick formats 
 
 set img [magick create wand img0]
 set seq [magick create wand img1]
@@ -1042,5 +1381,5 @@ if {$SKIPPED} {
     puts [format "%d tests skipped" $SKIPPED]
 }
 if {!$ERRORS} {
-    after 3000 exit
+#    after 3000 exit
 }

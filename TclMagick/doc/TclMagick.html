@@ -68,14 +68,14 @@ Deleting the Magick object also deletes the command.
   </tr>
   <tr>
     <td><div align="left"></div>
-      <div align="left">magick fonts pattern <br>
+      <div align="left">magick fonts ?pattern? <br>
     </div></td>
     <td><div align="left"># MagickQueryFonts</div></td>
   </tr>
   <tr>
     <td><div align="left">
       <ul>
-        <li>string pattern</li>
+        <li>string pattern (default="*")</li>
         <li>returns stringList (all matching fonts)</li>
       </ul>
     </div></td>
@@ -83,14 +83,14 @@ Deleting the Magick object also deletes the command.
   </tr>
   <tr>
     <td><div align="left"></div>
-      <div align="left">magick formats pattern <br>
+      <div align="left">magick formats ?pattern? <br>
 </div></td>
     <td><div align="left"># MagickQueryFormats</div></td>
   </tr>
   <tr>
     <td><div align="left">
       <ul>
-        <li>string pattern</li>
+        <li>string pattern (default="*")</li>
         <li>returns stringList (all matching image formats)</li>
       </ul>
     </div></td>
@@ -487,7 +487,7 @@ MagickClipImage</div></td>
   </tr>
   <tr>
     <td><div align="left"></div>
-        <div align="left">wandName comparechannels chen refName <br>
+        <div align="left">wandName comparechannels  refName chan metric <br>
           wandName CompareImageChannels refName chan metric<br>
         </div></td>
     <td><div align="left">MagickCompareImageChannels<br>

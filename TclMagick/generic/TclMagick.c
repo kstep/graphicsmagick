@@ -464,13 +464,16 @@ static int magickCmd(
         int     i;
 	long listLen = 0;
         Tcl_Obj *listPtr;
-        char    *pattern, **fonts;
+        char    *pattern = "*";
+        char    **fonts;
 
-	if( objc != 3 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "pattern");
+	if( objc > 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "?pattern?");
 	    return TCL_ERROR;
 	}
-	pattern = Tcl_GetString(objv[2]);
+        if( objc > 2 ) {
+            pattern = Tcl_GetString(objv[2]);
+        }
 
 	fonts = MagickQueryFonts(pattern, &listLen);
 	if( (fonts != NULL) && (listLen > 0) ) {
@@ -490,13 +493,16 @@ static int magickCmd(
         int     i;
 	long listLen = 0;
         Tcl_Obj *listPtr;
-        char    *pattern, **fonts;
+        char    *pattern = "*";
+        char    **fonts;
 
-	if( objc != 3 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "pattern");
+	if( objc > 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "?pattern?");
 	    return TCL_ERROR;
 	}
-	pattern = Tcl_GetString(objv[2]);
+        if( objc > 2 ) {
+            pattern = Tcl_GetString(objv[2]);
+        }
 
 	fonts = MagickQueryFormats(pattern, &listLen);
 	if( (fonts != NULL) && (listLen > 0) ) {
@@ -604,7 +610,7 @@ static int wandObjCmd(
         "profile",          "GetProfile",           "SetProfile",
         "ProfileImage",     "RemoveProfile",
         "redprimary",       "GetRedPrimary",        "SetRedPrimary",
-        "renderingintent",  "GetRenederingIntent",  "SetRenderingIntent",
+        "renderingintent",  "GetRenderingIntent",   "SetRenderingIntent",
         "resolution",       "GetResolution",        "SetResolution",
         "scene",            "GetScene",             "SetScene",
         "signature",        "GetSignature",
@@ -929,7 +935,7 @@ static int wandObjCmd(
         (char *) NULL
     };
     static InterlaceType interlaceTypes[] = {
-        UndefinedInterlace, NoInterlace, LineInterlace, PlaneInterlace, PartitionInterlace
+        UndefinedInterlace, NoInterlace, LineInterlace, PlaneInterlace, PartitionInterlace,
     };
     static CONST char *renderNames[] = {
         "undefined", "saturation", "perceptual", "absolute", "relative",
@@ -1530,7 +1536,7 @@ static int wandObjCmd(
 	char            *name;
 	double          value;
 
-	if( objc != 3 ) {
+	if( objc != 5 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "refName");
 	    return TCL_ERROR;
 	}
@@ -2223,7 +2229,7 @@ static int wandObjCmd(
 	if (Tcl_GetIndexFromObj(interp, objv[2], chanNames, "channelType", 0, &chanIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	if (objc == 3) {
+	if (objc == 4) {
 	    /*
 	     * Set channel depth
 	     */
@@ -2307,11 +2313,11 @@ static int wandObjCmd(
         PixelWand *pixPtr = NULL;
 
 	if( ((enum subIndex)index == TM_SET_COLORMAP_COLOR) && (objc != 4) ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "pixel");
+	    Tcl_WrongNumArgs(interp, 2, objv, "index pixel");
 	    return TCL_ERROR;
 	}
 	if( ((enum subIndex)index != TM_SET_COLORMAP_COLOR) && ((objc < 3) || (objc > 4)) ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "?pixel?");
+	    Tcl_WrongNumArgs(interp, 2, objv, "index ?pixel?");
 	    return TCL_ERROR;
 	}
 	if (Tcl_GetIntFromObj(interp, objv[2], &idx) != TCL_OK) {
@@ -2606,7 +2612,7 @@ static int wandObjCmd(
             if (Tcl_GetIndexFromObj(interp, objv[2], disposeNames, "disposeType", 0, &disposeIdx) != TCL_OK) {
 	        return TCL_ERROR;
 	    }
-	    result = MagickSetImageCompression(wandPtr, disposeTypes[disposeIdx]);
+	    result = MagickSetImageDispose(wandPtr, disposeTypes[disposeIdx]);
 	    if (!result) {
 		return myMagickError(interp, wandPtr);
 	    }
@@ -2614,7 +2620,7 @@ static int wandObjCmd(
 	    /*
 	     * Get dispose
 	     */
-	    dispose = MagickGetImageCompression(wandPtr);
+	    dispose = MagickGetImageDispose(wandPtr);
 	    for (disposeIdx = 0; disposeIdx < sizeof(disposeTypes)/sizeof(disposeTypes[0]); disposeIdx++) {
 		if( disposeTypes[disposeIdx] == dispose ) {
 		    Tcl_SetResult(interp, (char *)disposeNames[disposeIdx], TCL_VOLATILE);
@@ -2733,7 +2739,7 @@ static int wandObjCmd(
 	    /*
 	     * Get gamma
 	     */
-	    gamma = MagickGetImageDepth(wandPtr);
+	    gamma = MagickGetImageGamma(wandPtr);
 	    Tcl_SetObjResult(interp, Tcl_NewDoubleObj(gamma));
 	}
 	break;
@@ -3598,11 +3604,11 @@ static int wandObjCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
 	    return TCL_ERROR;
 	}
-	if( ((enum subIndex)index == TM_SET_SAMPLING_FACTORS) && (objc != 4) ) {
+	if( ((enum subIndex)index == TM_SET_SAMPLING_FACTORS) && (objc != 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "factorList");
 	    return TCL_ERROR;
 	}
-	if (objc == 4) {
+	if (objc == 3) {
 	    /*
 	     * Set sampling factors
 	     */
