@@ -87,8 +87,11 @@ struct SemaphoreInfo
   Static declaractions.
 */
 #if defined(WIN32)
-  CRITICAL_SECTION
-    critical_section = (CRITICAL_SECTION) NULL;
+  static CRITICAL_SECTION
+    critical_section;
+
+  static int
+    critical_section_flag = True;
 #endif
 
 #if defined(HasPTHREADS)
@@ -140,8 +143,11 @@ MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info)
   pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (critical_section == (CRITICAL_SECTION) NULL)
-    InitializeCriticalSection(&critical_section);
+  if (critical_section_flag)
+    {
+      InitializeCriticalSection(&critical_section);
+      critical_section_flag=False;
+    }
   EnterCriticalSection(&critical_section);
 #endif
   atexit(DestroySemaphoreInfo);
