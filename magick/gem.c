@@ -88,7 +88,7 @@
 MagickExport PixelPacket AlphaComposite(const PixelPacket *p,const double alpha,
   const PixelPacket *q,const double beta)
 {
-  double
+  register double
     scale;
 
   PixelPacket
@@ -138,8 +138,9 @@ MagickExport PixelPacket AlphaComposite(const PixelPacket *p,const double alpha,
 MagickExport unsigned int ColorMatch(const PixelPacket *p,const PixelPacket *q,
   const double fuzz)
 {
-  double
+  register double
     blue,
+    distance,
     green,
     red;
 
@@ -149,7 +150,8 @@ MagickExport unsigned int ColorMatch(const PixelPacket *p,const PixelPacket *q,
   red=(double) p->red-(double) q->red;
   green=(double) p->green-(double) q->green;
   blue=(double) p->blue-(double) q->blue;
-  if (((red*red)+(green*green)+(blue*blue)) <= (fuzz*fuzz))
+  distance=red*red+green*green+blue*blue;
+  if (distance <= (fuzz*fuzz))
     return(True);
   return(False);
 }
