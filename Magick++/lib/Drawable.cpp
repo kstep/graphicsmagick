@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Implementation of Drawable (Graphic objects)
 //
@@ -244,9 +244,15 @@ void Magick::DrawableFillOpacity::print (std::ostream& stream_) const
 // Specify text font
 void Magick::DrawableFont::print (std::ostream& stream_) const
 {
-  stream_ << "font '"
-          << _font
-          << "'";
+  stream_ << "font '";
+
+  for ( unsigned int i = 0; i < _font.length(); ++i )
+    {
+      if ( _font[i] == '\'' )
+	stream_ << "\\";
+      stream_ << _font[i];
+    }
+  stream_  << "'";
 }
 
 // Specify text positioning gravity
@@ -386,14 +392,17 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
   stream_ << Magick::Coordinate( _x, _y)
           << " "
           << Magick::Coordinate( _width, _height)
-          << " \"";
+          << " '"
+          << _image
+          << " '";
+  
   for ( unsigned int i = 0; i < _image.length(); ++i )
     {
-      if ( _image[i] == '"' )
+      if ( _image[i] == '\'' )
 	stream_ << "\\";
       stream_ << _image[i];
     }
-  stream_  << "\"";
+  stream_  << "'";
 }
 
 // Line
@@ -669,14 +678,14 @@ void Magick::DrawableText::print (std::ostream& stream_) const
 {
   stream_ << "text "
           << Magick::Coordinate( _x, _y)
-	  << " \"";
+	  << " '";
   for ( unsigned int i = 0; i < _text.length(); ++i )
     {
-      if ( _text[i] == '"' )
+      if ( _text[i] == '\'' )
 	stream_ << "\\";
       stream_ << _text[i];
     }
-  stream_ << "\"";
+  stream_ << "\'";
 }
 
 // Apply Translation

@@ -1,3 +1,8 @@
+2001-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (print): Add single quotes around file names
+ 	and font specifications.
+
 2001-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (read): Ensure that only a single image frame is read.
