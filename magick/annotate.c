@@ -198,7 +198,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       /*
         User specified annotation geometry.
       */
-      flags=ParseGeometry(draw_info->geometry,&geometry.x,&geometry.y,
+      flags=ParseImageGeometry(draw_info->geometry,&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
       if ((flags & WidthValue) == 0)
         geometry.width-=2*geometry.x > (long) geometry.width ?

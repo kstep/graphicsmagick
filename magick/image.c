@@ -3442,7 +3442,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a border of solid color.
             */
-            flags=ParseGeometry(argv[++i],&geometry.x,&geometry.y,
+            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             border_image=BorderImage(*image,&geometry,&(*image)->exception);
             if (border_image == (Image *) NULL)
@@ -3978,9 +3978,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with an ornamental border.
             */
-            (void) memset(&frame_info,0,sizeof(FrameInfo));
-            flags=ParseGeometry(argv[++i],&geometry.x,&geometry.y,
+            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
+            (void) memset(&frame_info,0,sizeof(FrameInfo));
             frame_info.width=geometry.width;
             frame_info.height=geometry.height;
             frame_info.x=geometry.x;

@@ -222,19 +222,14 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   ImageInfo
     *clone_info;
 
-  long
-    x,
-    y;
+  RectangleInfo
+	  geometry;
 
   register char
     *p;
 
   unsigned int
     status;
-
-  unsigned long
-    height,
-    width;
 
   /*
     Open image.
@@ -318,12 +313,10 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Determine the size and location of each image tile.
       */
-      width=image->columns;
-      height=image->rows;
-      x=0;
-      y=0;
+      SetGeometry(image,&geometry);
       if (image->montage != (char *) NULL)
-        (void) ParseGeometry(image->montage,&x,&y,&width,&height);
+        (void) ParseImageGeometry(image->montage,&geometry.x,&geometry.y,
+          &geometry.width,&geometry.height);
       /*
         Write an image map.
       */
@@ -334,7 +327,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       if (image->directory == (char *) NULL)
         {
           FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%lu,%lu>\n",
-            image->filename,width-1,height-1);
+            image->filename,geometry.width-1,geometry.height-1);
           (void) WriteBlobString(image,buffer);
         }
       else
@@ -344,18 +337,19 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           else
             {
               FormatString(buffer,"\" shape=rect coords=%ld,%ld,%ld,%ld>\n",
-                x,y,x+(long) width-1,y+(long) height-1);
+                geometry.x,geometry.y,geometry.x+(long) geometry.width-1,
+                geometry.y+(long) geometry.height-1);
               (void) WriteBlobString(image,buffer);
               if (*(p+1) != '\0')
                 {
                   FormatString(buffer,"  <area href=%.1024s\"",url);
                   (void) WriteBlobString(image,buffer);
                 }
-              x+=width;
-              if (x >= (long) image->columns)
+              geometry.x+=geometry.width;
+              if (geometry.x >= (long) image->columns)
                 {
-                  x=0;
-                  y+=height;
+                  geometry.x=0;
+                  geometry.y+=geometry.height;
                 }
             }
       (void) WriteBlobString(image,"</map>\n");
@@ -399,12 +393,10 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Determine the size and location of each image tile.
   */
-  width=image->columns;
-  height=image->rows;
-  x=0;
-  y=0;
+  SetGeometry(image,&geometry);
   if (image->montage != (char *) NULL)
-    (void) ParseGeometry(image->montage,&x,&y,&width,&height);
+    (void) ParseImageGeometry(image->montage,&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
   /*
     Write an image map.
   */
@@ -415,7 +407,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   if (image->directory == (char *) NULL)
     {
       FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%lu,%lu>\n",
-        image->filename,width-1,height-1);
+        image->filename,geometry.width-1,geometry.height-1);
       (void) WriteBlobString(image,buffer);
     }
   else
@@ -424,19 +416,20 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,*p);
       else
         {
-          FormatString(buffer," shape=rect coords=%ld,%ld,%ld,%ld>\n",x,y,
-            x+(long) width-1,y+(long) height-1);
+          FormatString(buffer," shape=rect coords=%ld,%ld,%ld,%ld>\n",
+            geometry.x,geometry.y,geometry.x+(long) geometry.width-1,
+            geometry.y+(long) geometry.height-1);
           (void) WriteBlobString(image,buffer);
           if (*(p+1) != '\0')
             {
               FormatString(buffer,"  <area href=%.1024s\"",url);
               (void) WriteBlobString(image,buffer);
             }
-          x+=width;
-          if (x >= (long) image->columns)
+          geometry.x+=geometry.width;
+          if (geometry.x >= (long) image->columns)
             {
-              x=0;
-              y+=height;
+              geometry.x=0;
+              geometry.y+=geometry.height;
             }
         }
   (void) WriteBlobString(image,"</map>\n");
