@@ -2283,7 +2283,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
     return((PixelPacket *) NULL);
   number_pixels=cache_info->columns*cache_info->rows;
   offset+=(rows-1)*cache_info->columns+columns-1;
-  if (offset > number_pixels)
+  if (offset >= number_pixels)
     return((PixelPacket *) NULL);
   /*
     Return pixel cache.

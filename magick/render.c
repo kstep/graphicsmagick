@@ -450,7 +450,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         {
           if (x < (long) image->columns)
             {
-              q=GetImagePixels(image,x,y,image->columns-x+1,1);
+              q=GetImagePixels(image,x,y,image->columns-x,1);
               if (q == (PixelPacket *) NULL)
                 break;
               for ( ; x < (long) image->columns; x++)
