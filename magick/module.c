@@ -105,13 +105,13 @@ static char
   *TagToProcess(const char *);
 
 static CoderInfo
-  *RegisterModule(CoderInfo *),
+  *RegisterModule(CoderInfo *,ExceptionInfo *),
   *SetCoderInfo(const char *);
 
 static unsigned int
   ReadConfigurationFile(const char *,ExceptionInfo *),
-  UnloadModule(const char *,ExceptionInfo *),
-  UnregisterModule(const char *);
+  UnloadModule(const CoderInfo *,ExceptionInfo *),
+  UnregisterModule(const char *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -152,16 +152,15 @@ MagickExport void DestroyModuleInfo(void)
     Free module & coder list.
   */
   GetExceptionInfo(&exception);
+  AcquireSemaphoreInfo(&module_semaphore);
   for (p=coder_list; p != (CoderInfo *) NULL; )
   {
     coder_info=p;
     p=p->next;
-    (void) UnloadModule(coder_info->tag,&exception);
-    (void) UnregisterModule(coder_info->tag);
+    (void) UnregisterModule(coder_info->tag,&exception);
   }
   DestroyExceptionInfo(&exception);
   coder_list=(CoderInfo *) NULL;
-  AcquireSemaphoreInfo(&module_semaphore);
   for (q=module_list; q != (ModuleInfo *) NULL; )
   {
     module_info=q;
@@ -686,7 +685,7 @@ MagickExport unsigned int OpenModule(const char *module,
     }
   coder_info->handle=handle;
   (void) time(&coder_info->load_time);
-  if (!RegisterModule(coder_info))
+  if (!RegisterModule(coder_info,exception))
     return(False);
   /*
     Locate and execute RegisterFORMATImage function
@@ -952,7 +951,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
 %
 %  The format of the RegisterModule method is:
 %
-%      CoderInfo *RegisterModule(CoderInfo *entry)
+%      CoderInfo *RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -960,8 +959,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
 %
 %    o entry: a pointer to the CoderInfo structure to register.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
+%
 */
-static CoderInfo *RegisterModule(CoderInfo *entry)
+static CoderInfo *RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
 {
   register CoderInfo
     *p;
@@ -971,7 +973,8 @@ static CoderInfo *RegisterModule(CoderInfo *entry)
   */
   assert(entry != (CoderInfo *) NULL);
   assert(entry->signature == MagickSignature);
-  (void) UnregisterModule(entry->tag);
+  (void) UnregisterModule(entry->tag,exception);
+  AcquireSemaphoreInfo(&module_semaphore);
   entry->previous=(CoderInfo *) NULL;
   entry->next=(CoderInfo *) NULL;
   if (coder_list == (CoderInfo *) NULL)
@@ -980,6 +983,7 @@ static CoderInfo *RegisterModule(CoderInfo *entry)
         Start module list.
       */
       coder_list=entry;
+      LiberateSemaphoreInfo(&module_semaphore);
       return(entry);
     }
   /*
@@ -998,6 +1002,7 @@ static CoderInfo *RegisterModule(CoderInfo *entry)
       entry->previous=p;
       if (entry->next != (CoderInfo *) NULL)
         entry->next->previous=entry;
+      LiberateSemaphoreInfo(&module_semaphore);
       return(entry);
     }
   /*
@@ -1010,6 +1015,7 @@ static CoderInfo *RegisterModule(CoderInfo *entry)
     entry->previous->next=entry;
   if (p == coder_list)
     coder_list=entry;
+  LiberateSemaphoreInfo(&module_semaphore);
   return(entry);
 }
 
@@ -1162,35 +1168,31 @@ MagickExport char *TagToModule(const char *tag)
 %
 %  The format of the UnloadModule method is:
 %
-%      unsigned int UnloadModule(const char *module,ExceptionInfo *exception)
+%      unsigned int UnloadModule(const CoderInfo *coder_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o module: a character string that indicates the module to unload.
+%    o coder_info: The coder info.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-static unsigned int UnloadModule(const char *module,ExceptionInfo *exception)
+static unsigned int UnloadModule(const CoderInfo *coder_info,
+	ExceptionInfo *exception)
 {
   char
     name[MaxTextExtent];
 
-  const CoderInfo
-    *coder_info;
-
   void
     (*method)(void);
 
-  assert(module != (const char *) NULL);
-  coder_info=GetCoderInfo(module,exception);
-  if (coder_info == (const CoderInfo *) NULL)
-    return(False);
   /*
     Locate and execute UnregisterFORMATImage function
   */
-  ModuleToTag(module,"Unregister%sImage",name);
+  assert(coder_info != (const CoderInfo *) NULL);
+  ModuleToTag(coder_info->tag,"Unregister%sImage",name);
   method=(void (*)(void)) lt_dlsym((ModuleHandle) coder_info->handle,name);
   if (method == (void (*)(void)) NULL)
     MagickWarning(DelegateWarning,"failed to find symbol",lt_dlerror());
@@ -1216,7 +1218,7 @@ static unsigned int UnloadModule(const char *module,ExceptionInfo *exception)
 %
 %  The format of the UnregisterModule method is:
 %
-%      unsigned int UnregisterModule(const char *tag)
+%      unsigned int UnregisterModule(const char *tag,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1226,8 +1228,11 @@ static unsigned int UnloadModule(const char *module,ExceptionInfo *exception)
 %    o tag: a character string that represents the image format we are
 %      looking for.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
+%
 */
-static unsigned int UnregisterModule(const char *tag)
+static unsigned int UnregisterModule(const char *tag,ExceptionInfo *exception)
 {
   CoderInfo
     *coder_info;
@@ -1236,11 +1241,11 @@ static unsigned int UnregisterModule(const char *tag)
     *p;
 
   assert(tag != (const char *) NULL);
-  AcquireSemaphoreInfo(&module_semaphore);
   for (p=coder_list; p != (CoderInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)
       continue;
+    (void) UnloadModule(p,exception);
     LiberateMemory((void **) &p->tag);
     if (p->previous != (CoderInfo *) NULL)
       p->previous->next=p->next;
@@ -1256,6 +1261,5 @@ static unsigned int UnregisterModule(const char *tag)
     LiberateMemory((void **) &coder_info);
     break;
   }
-  LiberateSemaphoreInfo(&module_semaphore);
   return(p != (CoderInfo *) NULL);
 }
