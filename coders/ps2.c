@@ -670,7 +670,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           }
         (void) WriteBlobString(image,"%%EndComments\n");
         (void) WriteBlobString(image,"\n%%BeginDefaults\n");
-        (void) WriteBlobString(image,"%%PageOrientation: Portrait\n");
         (void) WriteBlobString(image,"%%EndDefaults\n\n");
         /*
           Output Postscript commands.

@@ -1041,7 +1041,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           }
         (void) WriteBlobString(image,"%%EndComments\n");
         (void) WriteBlobString(image,"\n%%BeginDefaults\n");
-        (void) WriteBlobString(image,"%%PageOrientation: Portrait\n");
         (void) WriteBlobString(image,"%%EndDefaults\n\n");
         if ((LocaleCompare(image_info->magick,"EPI") == 0) ||
             (LocaleCompare(image_info->magick,"EPT") == 0) ||
