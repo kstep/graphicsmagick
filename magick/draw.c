@@ -2936,7 +2936,8 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
   assert(primitive_info != (PrimitiveInfo *) NULL);
-  assert(primitive_info->coordinates != 0);
+  if (primitive_info->coordinates == 0)
+    return(True);
   path_info=ConvertPrimitiveToPath(draw_info,primitive_info);
   if (path_info == (PathInfo *) NULL)
     return(False);
