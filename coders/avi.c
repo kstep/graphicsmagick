@@ -458,7 +458,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert BMP raster image to pixel packets.
         */
-        switch (bmp_info.bits_per_pixel)
+        switch ((int) bmp_info.bits_per_pixel)
         {
           case 1:
           {

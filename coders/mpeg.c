@@ -582,7 +582,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     {
       p->scene=count++;
       FormatString(p->filename,"%.1024s.%%lu.yuv",basename);
-      switch (i)
+      switch ((int) i)
       {
         case 0:
         {

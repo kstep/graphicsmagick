@@ -245,7 +245,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     }
   for ( ; ; )
   {
-    if (!isalnum(c))
+    if (!isalnum((int) c))
       {
         c=ReadBlobByte(image);
         count++;

@@ -93,7 +93,7 @@ register IndexPacket *indexes;
                 {
                 index=ValidateColormapIndex(image,*p);
                 indexes[x]=index;
-                *q++=image->colormap[index];
+                *q++=image->colormap[(int) index];
                 p++;
                 }
            if (!SyncImagePixels(image))
@@ -300,7 +300,7 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",
 /*fprintf(stdout,"Cell type:%ld\n",CellType);*/
    (void) ReadBlob(image,4,&size);      /*data size*/
 
-   switch(CellType)
+   switch((int) CellType)
       {
       case 2:image->depth=8;		/*Byte type cell*/
              ldblk=MATLAB_HDR.SizeX;
@@ -308,7 +308,7 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",
       case 4:image->depth=16;    	/*Word type cell*/
              ldblk=2*MATLAB_HDR.SizeX;break; 
       case 9:image->depth=24;    	/*double type cell*/
-             if(sizeof(double)!=8) ThrowReaderException(CorruptImageWarning,"Incompatible size of double!",image);
+             if(sizeof(double)!=8) ThrowReaderException(CorruptImageWarning,"Incompatible size of double!",image)
              ldblk=8*MATLAB_HDR.SizeX;
              break; 
       default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image)
@@ -361,7 +361,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	    dblrow++;            
 	    }
 	}       
-     SeekBlob(image,filepos,SEEK_SET);
+     (void) SeekBlob(image,filepos,SEEK_SET);
      }
    
    for(i=0;i<(long) MATLAB_HDR.SizeY;i++)

@@ -187,7 +187,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
         count=ReadBlobByte(image);
         if (count == 0x01)
           return(True);
-        switch (count)
+        switch ((int) count)
         {
           case 0x00:
           {

@@ -197,7 +197,7 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     for (x=0; x < (long) image->columns; x++)
     {
       indexes[x]=p->opacity;
-      *q=matte_image->colormap[p->opacity];
+      *q=matte_image->colormap[(int) p->opacity];
       p++;
       q++;
     }

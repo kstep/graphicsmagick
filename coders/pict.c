@@ -336,7 +336,7 @@ static unsigned int
 */
 
 static unsigned char *ExpandBuffer(unsigned char *pixels,
-  unsigned long *bytes_per_line,const long bits_per_pixel)
+  unsigned long *bytes_per_line,const unsigned int bits_per_pixel)
 {
   register long
     i;
@@ -404,7 +404,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,
 }
 
 static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
-  Image *image,unsigned long bytes_per_line,const long bits_per_pixel)
+  Image *image,unsigned long bytes_per_line,const unsigned int bits_per_pixel)
 {
   long
     j,

@@ -2755,7 +2755,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Set image resolution.
         */
-        png_get_pHYs(ping,ping_info,&x_resolution,&y_resolution,&unit_type);
+        (void) png_get_pHYs(ping,ping_info,&x_resolution,&y_resolution,&unit_type);
         image->x_resolution=(float) x_resolution;
         image->y_resolution=(float) y_resolution;
         if (unit_type == PNG_RESOLUTION_METER)
@@ -4644,7 +4644,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          */
          (void) WriteBlobMSBLong(image,1L);
          PNGType(chunk,mng_sRGB);
-         chunk[4]=image->rendering_intent+1;
+         chunk[4]=(int) image->rendering_intent+1;
          (void) WriteBlob(image,5,(char *) chunk);
          (void) WriteBlobMSBLong(image,crc32(0,chunk,5));
          have_write_global_srgb=True;
@@ -5384,7 +5384,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         /*
           Note image rendering intent.
         */
-        png_set_sRGB(ping,ping_info,(int) (image->rendering_intent+1));
+        (void) png_set_sRGB(ping,ping_info,(int) (image->rendering_intent+1));
         png_set_gAMA(ping,ping_info,0.45455);
       }
     not_valid=(!ping_info->valid);

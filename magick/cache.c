@@ -1574,19 +1574,19 @@ MagickExport unsigned int OpenCache(Image *image)
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   if (ftruncate(file,length) == -1)
     {
-      close(file);
+      (void) close(file);
       ThrowBinaryException(CacheWarning,"Unable to truncate cache",
         image->filename)
     }
 #else
   if (lseek(file,length,SEEK_SET) == -1)
     {
-      close(file);
+      (void) close(file);
       ThrowBinaryException(CacheWarning,"Unable to seek cache",image->filename)
     }
   if (write(file,&offset,sizeof(size_t)) == -1)
     {
-      close(file);
+      (void) close(file);
       ThrowBinaryException(CacheWarning,"Unable to write cache",
         image->filename)
     }
@@ -1607,7 +1607,7 @@ MagickExport unsigned int OpenCache(Image *image)
           (cache_info->colorspace == CMYKColorspace))
         cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
     }
-  close(file);
+  (void) close(file);
   return(True);
 }
 
@@ -1706,7 +1706,7 @@ static unsigned int ReadCacheIndexes(const Cache cache,const unsigned long id)
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
   }
-  close(file);
+  (void) close(file);
   return(True);
 }
 
@@ -1799,7 +1799,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long id)
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
   }
-  close(file);
+  (void) close(file);
   return(True);
 }
 
@@ -2534,7 +2534,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long id)
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
   }
-  close(file);
+  (void) close(file);
   return(True);
 }
 
@@ -2884,6 +2884,6 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long id)
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
   }
-  close(file);
+  (void) close(file);
   return(True);
 }

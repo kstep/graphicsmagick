@@ -372,7 +372,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case AddNoisePreview:
       {
-        switch (x)
+        switch ((int) x)
         {
           case 0: (void) strcpy(factor,"uniform"); break;
           case 1: (void) strcpy(factor,"Gaussian"); break;

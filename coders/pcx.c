@@ -824,7 +824,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.top);
     (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.right);
     (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.bottom);
-    (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.horizontal_resolution);
+    (void) WriteBlobLSBShort(image,(unsigned int)
+      pcx_info.horizontal_resolution);
     (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.vertical_resolution);
     /*
       Dump colormap to file.
@@ -871,7 +872,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < pcx_info.bytes_per_line; x++)
             {
-              switch (i)
+              switch ((int) i)
               {
                 case 0:
                 {

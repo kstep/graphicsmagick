@@ -3169,7 +3169,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         k/(long) stegano_image->columns,1,1);
         if (q == (PixelPacket *) NULL)
           break;
-        switch (c)
+        switch ((int) c)
         {
           case 0:
           {

@@ -206,7 +206,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert DPX raster image to pixel packets.
   */
-  switch (colortype)
+  switch ((int) colortype)
   {
     case (MonoColorType):
     {

@@ -425,7 +425,7 @@ ModuleExport void RegisterHDFImage(void)
   entry->blob_support=False;
   entry->description=AllocateString("Hierarchical Data Format");
   entry->module=AllocateString("HDF");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -449,7 +449,7 @@ ModuleExport void RegisterHDFImage(void)
 */
 ModuleExport void UnregisterHDFImage(void)
 {
-  UnregisterMagickInfo("HDF");
+  (void) UnregisterMagickInfo("HDF");
 }
 
 #if defined(HasHDF)

@@ -91,7 +91,7 @@ static unsigned int
 %
 %
 */
-static unsigned int DecodeImage(Image *image,const long channel)
+static unsigned int DecodeImage(Image *image,const int channel)
 {
   int
     count;

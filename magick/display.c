@@ -464,7 +464,7 @@ static unsigned int XAnnotateEditImage(Display *display,
         */
         (void) XLookupString((XKeyEvent *) &event.xkey,command,sizeof(command),
           &key_symbol,(XComposeStatus *) NULL);
-        switch (key_symbol)
+        switch ((int) key_symbol)
         {
           case XK_Escape:
           case XK_F20:
@@ -705,7 +705,7 @@ static unsigned int XAnnotateEditImage(Display *display,
         if ((event.xkey.state & ControlMask) || (event.xkey.state & Mod1Mask))
           state|=ModifierState;
         if (state & ModifierState)
-          switch (key_symbol)
+          switch ((int) key_symbol)
           {
             case XK_u:
             case XK_U:
@@ -716,7 +716,7 @@ static unsigned int XAnnotateEditImage(Display *display,
             default:
               break;
           }
-        switch (key_symbol)
+        switch ((int) key_symbol)
         {
           case XK_BackSpace:
           {
@@ -1316,7 +1316,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
         */
         (void) XLookupString((XKeyEvent *) &event.xkey,command,
           sizeof(command),&key_symbol,(XComposeStatus *) NULL);
-        switch (key_symbol)
+        switch ((int) key_symbol)
         {
           case XK_Escape:
           case XK_F20:
@@ -1912,7 +1912,7 @@ static unsigned int XColorEditImage(Display *display,
         */
         (void) XLookupString((XKeyEvent *) &event.xkey,command,sizeof(command),
           &key_symbol,(XComposeStatus *) NULL);
-        switch (key_symbol)
+        switch ((int) key_symbol)
         {
           case XK_Escape:
           case XK_F20:
@@ -2503,7 +2503,7 @@ static unsigned int XCompositeImage(Display *display,
         if (resource_info->debug)
           (void) fprintf(stderr,"Key press: 0x%lx (%.1024s)\n",key_symbol,
             command);
-        switch (key_symbol)
+        switch ((int) key_symbol)
         {
           case XK_Escape:
           case XK_F20:
@@ -3070,7 +3070,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
         */
         (void) XLookupString((XKeyEvent *) &event.xkey,command,sizeof(command),
           &key_symbol,(XComposeStatus *) NULL);
-        switch (key_symbol)
+        switch ((int) key_symbol)
         {
           case XK_Escape:
           case XK_F20:
@@ -3431,7 +3431,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           */
           (void) XLookupString((XKeyEvent *) &event.xkey,command,
             sizeof(command),&key_symbol,(XComposeStatus *) NULL);
-          switch (key_symbol)
+          switch ((int) key_symbol)
           {
             case XK_Escape:
             case XK_F20:
@@ -4064,7 +4064,7 @@ static unsigned int XDrawEditImage(Display *display,
           */
           (void) XLookupString((XKeyEvent *) &event.xkey,command,
             sizeof(command),&key_symbol,(XComposeStatus *) NULL);
-          switch (key_symbol)
+          switch ((int) key_symbol)
           {
             case XK_Escape:
             case XK_F20:
@@ -4946,7 +4946,7 @@ static CommandType XImageWindowCommand(Display *display,
       }
       return(NullCommand);
     }
-  switch (key_symbol)
+  switch ((int) key_symbol)
   {
     case XK_o:
     {
@@ -7183,7 +7183,7 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
   quantum=1;
   if (state & Mod1Mask)
     quantum=10;
-  switch (key_symbol)
+  switch ((int) key_symbol)
   {
     case QuitCommand:
     {
@@ -7669,7 +7669,7 @@ static unsigned int XMatteEditImage(Display *display,
         */
         (void) XLookupString((XKeyEvent *) &event.xkey,command,sizeof(command),
           &key_symbol,(XComposeStatus *) NULL);
-        switch (key_symbol)
+        switch ((int) key_symbol)
         {
           case XK_Escape:
           case XK_F20:
@@ -8492,7 +8492,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
         if (resource_info->debug)
           (void) fprintf(stderr,"Key press: 0x%lx (%.1024s)\n",key_symbol,
             command);
-        switch (key_symbol)
+        switch ((int) key_symbol)
         {
           case XK_Escape:
           case XK_F20:
@@ -9060,7 +9060,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
         */
         (void) XLookupString((XKeyEvent *) &event.xkey,command,sizeof(command),
           &key_symbol,(XComposeStatus *) NULL);
-        switch (key_symbol)
+        switch ((int) key_symbol)
         {
           case XK_Escape:
           case XK_F20:
@@ -9465,7 +9465,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           */
           (void) XLookupString((XKeyEvent *) &event.xkey,command,
             sizeof(command),&key_symbol,(XComposeStatus *) NULL);
-          switch (key_symbol)
+          switch ((int) key_symbol)
           {
             case XK_Shift_L:
             case XK_Shift_R:
@@ -9820,7 +9820,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
             */
             (void) XLookupString((XKeyEvent *) &event.xkey,command,
               sizeof(command),&key_symbol,(XComposeStatus *) NULL);
-            switch (key_symbol)
+            switch ((int) key_symbol)
             {
               case XK_Escape:
               case XK_F20:
@@ -10902,7 +10902,7 @@ static void XTranslateImage(Display *display,XWindows *windows,
   y_offset=windows->image.height;
   if (image->montage != (char *) NULL)
     (void) XParseGeometry(image->montage,&x,&y,&x_offset,&y_offset);
-  switch (key_symbol)
+  switch ((int) key_symbol)
   {
     case XK_Home:
     case XK_KP_Home:

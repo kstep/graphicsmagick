@@ -1019,7 +1019,7 @@ static void XDrawWidgetText(Display *display,const XWindowInfo *window_info,
 static void XEditText(Display *display,XWidgetInfo *text_info,
   const KeySym key_symbol,char *text,const unsigned long state)
 {
-  switch (key_symbol)
+  switch ((int) key_symbol)
   {
     case XK_BackSpace:
     case XK_Delete:
@@ -2382,7 +2382,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             /*
               Move slider.
             */
-            switch (key_symbol)
+            switch ((int) key_symbol)
             {
               case XK_Home:
               case XK_KP_Home:
@@ -2441,7 +2441,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
             break;
           }
         if (state & ControlState)
-          switch (key_symbol)
+          switch ((int) key_symbol)
           {
             case XK_u:
             case XK_U:
@@ -3908,7 +3908,7 @@ MagickExport int XDialogWidget(Display *display,XWindows *windows,
             break;
           }
         if (state & ControlState)
-          switch (key_symbol)
+          switch ((int) key_symbol)
           {
             case XK_u:
             case XK_U:
@@ -4982,7 +4982,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             /*
               Move slider.
             */
-            switch (key_symbol)
+            switch ((int) key_symbol)
             {
               case XK_Home:
               case XK_KP_Home:
@@ -5049,7 +5049,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             break;
           }
         if (state & ControlState)
-          switch (key_symbol)
+          switch ((int) key_symbol)
           {
             case XK_u:
             case XK_U:
@@ -6191,7 +6191,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
             /*
               Move slider.
             */
-            switch (key_symbol)
+            switch ((int) key_symbol)
             {
               case XK_Home:
               case XK_KP_Home:
@@ -6251,7 +6251,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
             break;
           }
         if (state & ControlState)
-          switch (key_symbol)
+          switch ((int) key_symbol)
           {
             case XK_u:
             case XK_U:
@@ -7209,7 +7209,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
             /*
               Move slider.
             */
-            switch (key_symbol)
+            switch ((int) key_symbol)
             {
               case XK_Home:
               case XK_KP_Home:
@@ -7269,7 +7269,7 @@ MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
             break;
           }
         if (state & ControlState)
-          switch (key_symbol)
+          switch ((int) key_symbol)
           {
             case XK_u:
             case XK_U:
@@ -9288,7 +9288,7 @@ MagickExport void XTextViewWidget(Display *display,
             /*
               Move slider.
             */
-            switch (key_symbol)
+            switch ((int) key_symbol)
             {
               case XK_Home:
               case XK_KP_Home:

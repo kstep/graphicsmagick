@@ -217,9 +217,9 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     icon_info.y_pixels=ReadBlobLSBLong(image);
     icon_info.number_colors=ReadBlobLSBLong(image);
     icon_info.colors_important=ReadBlobLSBLong(image);
-    image->matte=icon_info.bits_per_pixel == 32;
-    image->columns= icon_info.width;
-    image->rows= icon_info.height;
+    image->matte=(unsigned int) (icon_info.bits_per_pixel == 32);
+    image->columns=icon_info.width;
+    image->rows=icon_info.height;
     image->depth=8;
     if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel < 16))
       {

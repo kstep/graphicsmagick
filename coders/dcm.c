@@ -2836,7 +2836,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if ((strcmp(implicit_vr,"SS") == 0) ||
             (strcmp(implicit_vr,"US") == 0))
-          switch (datum)
+          switch ((int) datum)
           {
             case 2:
             default:
@@ -3226,7 +3226,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              switch (i)
+              switch ((int) i)
               {
                 case 0: q->red=UpScale(ReadBlobByte(image)); break;
                 case 1: q->green=UpScale(ReadBlobByte(image)); break;

@@ -167,7 +167,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     tim_info.flag=ReadBlobLSBLong(image);
     has_clut=!!(tim_info.flag & (1 << 3));
     pixel_mode=tim_info.flag & 0x07;
-    switch (pixel_mode)
+    switch ((int) pixel_mode)
     {
       case 0: bits_per_pixel=4; break;
       case 1: bits_per_pixel=8; break;
@@ -200,7 +200,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (i=0; i < (long) image->colors; i++)
         {
           word=(*p++);
-          word|=(*p++ << 8);
+          word|=(unsigned short) (*p++ << 8);
           image->colormap[i].blue=UpScale(ScaleColor5to8((word >> 10) & 0x1f));
           image->colormap[i].green=UpScale(ScaleColor5to8((word >> 5) & 0x1f));
           image->colormap[i].red=UpScale(ScaleColor5to8(word & 0x1f));
