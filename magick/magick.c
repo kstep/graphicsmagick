@@ -478,8 +478,11 @@ MagickExport void MagickIncarnate(const char *path)
       */
       filename=AllocateString(path);
       for (p=filename+(Extent(filename)-1); p > filename; p--)
-        if (IsBasenameSeparator(*(p-1)))
+        if (IsBasenameSeparator(*p))
           {
+#if !defined(vms)
+	    p++;
+#endif
             *p='\0';
             SetClientPath(filename);
             (void) strcpy(filename,path+(p-filename));
