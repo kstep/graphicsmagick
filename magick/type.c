@@ -653,7 +653,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           {
             type_list->glyphs=AcquireString(token);
 #if defined(WIN32)
-            SubstituteString(&type_list->glyphs,"@GSFONTS@",gsfonts);
+            SubstituteString(&type_list->glyphs,"@ghostscript_font_dir@",gsfonts);
 #endif /* WIN32 */
             break;
           }
@@ -666,7 +666,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           {
             type_list->metrics=AcquireString(token);
 #if defined(WIN32)
-            SubstituteString(&type_list->glyphs,"@GSFONTS@",gsfonts);
+            SubstituteString(&type_list->glyphs,"@ghostscript_font_dir@",gsfonts);
 #endif /* WIN32 */
             break;
           }
