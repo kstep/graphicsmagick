@@ -288,6 +288,14 @@ namespace Magick
   // IndexPacket type
   using MagickLib::IndexPacket;
 
+  // StorageType type
+  using MagickLib::StorageType;
+  using MagickLib::CharPixel;
+  using MagickLib::ShortPixel;
+  using MagickLib::IntegerPixel;
+  using MagickLib::FloatPixel;
+  using MagickLib::DoublePixel;
+
 #if defined(MAGICK_IMPLEMENTATION)
   //
   // ImageMagick symbols used in implementation code
@@ -316,6 +324,7 @@ namespace Magick
   using MagickLib::ColorFloodfillImage;
   using MagickLib::ColorizeImage;
   using MagickLib::CompositeImage;
+  using MagickLib::ConstituteImage;
   using MagickLib::ContrastImage;
   using MagickLib::CorruptImageError;
   using MagickLib::CorruptImageWarning;
@@ -333,6 +342,7 @@ namespace Magick
   using MagickLib::DestroyMagickInfo;
   using MagickLib::DestroyPostscriptGeometry;
   using MagickLib::DestroyQuantizeInfo;
+  using MagickLib::DispatchImage;
   using MagickLib::DisplayImages;
   using MagickLib::DrawImage;
   using MagickLib::DrawInfo;

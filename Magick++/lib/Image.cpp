@@ -137,6 +137,18 @@ Magick::Image::Image ( const Blob &blob_,
   read( blob_, size_, magick_ );
 }
 
+// Construct an image based on an array of raw pixels, of specified
+// type and mapping, in memory
+Magick::Image::Image ( const unsigned int width_,
+                       const unsigned int height_,
+                       const char *map_,
+                       const StorageType type_,
+                       const void *pixels_ )
+  : _imgRef(new ImageRef)
+{
+  read( width_, height_, map_, type_, pixels_ );
+}
+
 // Default constructor
 Magick::Image::Image( void )
   : _imgRef(new ImageRef)
@@ -1082,6 +1094,23 @@ void Magick::Image::read ( const Blob &blob_,
   read( blob_ );
 }
 
+// Read image based on raw pixels in memory (ConstituteImage)
+void Magick::Image::read ( const unsigned int width_,
+                           const unsigned int height_,
+                           const char *map_,
+                           const StorageType type_,
+                           const void *pixels_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* image =
+    ConstituteImage( width_, height_, map_, type_, pixels_, &exceptionInfo );
+  replaceImage( image );
+  throwException( exceptionInfo );
+  if ( image )
+    throwException( image->exception );
+}
+
 // Reduce noise in image
 void Magick::Image::reduceNoise ( unsigned int order_ )
 {
@@ -1422,6 +1451,20 @@ void Magick::Image::write ( Blob *blob_,
   throwImageException();
 }
 
+// Write image to an array of pixels with storage type specified
+// by user (DispatchImage), e.g.
+// image.write( 0, 0, 640, 1, "RGB", 0, pixels );
+void Magick::Image::write ( const int x_,
+                            const int y_,
+                            const unsigned int columns_,
+                            const unsigned int rows_,
+                            const char *map_,
+                            const StorageType type_,
+                            void *pixels_ )
+{
+  DispatchImage( image(), x_, y_, columns_, rows_, map_, type_, pixels_ );
+  throwImageException();
+}
 
 // Zoom image
 void Magick::Image::zoom( const Geometry &geometry_ )

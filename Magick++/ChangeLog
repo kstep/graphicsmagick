@@ -1,3 +1,13 @@
+2000-09-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (read): New overloaded method to read an image
+ 	based on an array of raw pixels, of specified type and mapping, in
+ 	memory.
+	(write): New overloaded method to write image to an array of
+ 	pixels, of specified type and mapping.
+	(Image): New overloaded constructor to construct an image based on
+ 	an array of raw pixels, of specified type and mapping, in memory.
+
 2000-09-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (colorize): API change to match change in

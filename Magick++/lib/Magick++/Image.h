@@ -68,6 +68,14 @@ namespace Magick
     // Construct Image of specified size, and format from in-memory BLOB
     Image ( const Blob &blob_, const Geometry &size, const std::string &magick_ );
 
+    // Construct an image based on an array of raw pixels, of
+    // specified type and mapping, in memory
+    Image ( const unsigned int width_,
+            const unsigned int height_,
+            const char *map_,
+            const StorageType type_,
+            const void *pixels_ );
+
     // Default constructor
     Image( void );
     
@@ -335,6 +343,15 @@ namespace Magick
 			   const Geometry    &size_,
 			   const std::string &magick_ );
 
+    // Read image from an array of raw pixels, with specified storage
+    // type (ConstituteImage), e.g.
+    // image.read( 640, 480, "RGB", 0, pixels );
+    void            read ( const unsigned int width_,
+                           const unsigned int height_,
+                           const char *map_,
+                           const StorageType type_,
+                           const void *pixels_ );
+
     // Reduce noise in image using a noise peak elimination filter
     void            reduceNoise ( void );
     void            reduceNoise ( unsigned int order_ );
@@ -424,6 +441,17 @@ namespace Magick
     void            write ( Blob *blob_,
 			    const std::string &magick_,
 			    unsigned int depth_ );
+
+    // Write image to an array of pixels with storage type specified
+    // by user (DispatchImage), e.g.
+    // image.write( 0, 0, 640, 1, "RGB", 0, pixels );
+    void            write ( const int x_,
+                            const int y_,
+                            const unsigned int columns_,
+                            const unsigned int rows_,
+                            const char *map_,
+                            const StorageType type_,
+                            void *pixels_ );
     
     // Zoom image to specified size.
     void            zoom ( const Geometry &geometry_ );
