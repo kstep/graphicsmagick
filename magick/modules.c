@@ -410,7 +410,6 @@ static void InitializeModuleSearchPath(void)
         if (q == (char *) NULL)
           {
             module_path[i++]=AllocateString(p);
-            i++;
             break;
           }
         (void) strncpy(message,p,q-p);
