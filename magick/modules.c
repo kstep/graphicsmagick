@@ -299,7 +299,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method InitializeModules initializes the modules subsystem. It must be
-%  invoked before the LoadModule method may be used.
+%  invoked before the OpenModule method may be used.
 %
 %  The format of the InitializeModules method is:
 %
@@ -593,25 +593,25 @@ MagickExport char **ListModules(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o a d M o d u l e                                                       %
+%   O p e n M o d u l e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LoadModule loads a module, and invokes its registration
+%  Method OpenModule loads a module, and invokes its registration
 %  function.  It returns True on success, and False if there is an error.
 %
-%  The format of the LoadModule method is:
+%  The format of the OpenModule method is:
 %
-%      int LoadModule(const char *module)
+%      int OpenModule(const char *module)
 %
 %  A description of each parameter follows:
 %
 %    o module: a character string that indicates the module to load.
 %
 */
-MagickExport int LoadModule(const char *module)
+MagickExport int OpenModule(const char *module)
 {
   char
     message[MaxTextExtent],
@@ -707,20 +707,20 @@ MagickExport int LoadModule(const char *module)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o a d M o d u l e s                                                     %
+%   O p e n M o d u l e s                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LoadModules loads all available modules.
+%  Method OpenModules loads all available modules.
 %
-%  The format of the LoadModules method is:
+%  The format of the OpenModules method is:
 %
-%      void LoadModules(void)
+%      void OpenModules(void)
 %
 */
-MagickExport int LoadModules(void)
+MagickExport int OpenModules(void)
 {
   char
     **module_list;
@@ -739,7 +739,7 @@ MagickExport int LoadModules(void)
     return(False);
   p=module_list;
   while (*p)
-    LoadModule(*p++);
+    OpenModule(*p++);
   /*
     Free resources.
   */

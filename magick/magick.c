@@ -248,7 +248,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
   if (p != (MagickInfo *) NULL)
     return(p);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-  (void) LoadModule(tag);
+  (void) OpenModule(tag);
 #if defined(HasPTHREADS)
   pthread_mutex_lock(&magick_mutex);
 #endif
@@ -302,7 +302,7 @@ MagickExport void ListMagickInfo(FILE *file)
     "-----------------\n");
   (void) GetMagickInfo((char *) NULL);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-  LoadModules();
+  OpenModules();
 #endif
 #if defined(HasPTHREADS)
   pthread_mutex_lock(&magick_mutex);
