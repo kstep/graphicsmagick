@@ -485,11 +485,11 @@ MagickExport Image *DeconstructImages(const Image *image,
   RectangleInfo
     *bounds;
 
+  register const Image
+    *next;
+
   register const PixelPacket
     *p;
-
-  register Image
-    *next;
 
   register long
     i,
