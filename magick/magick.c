@@ -366,7 +366,7 @@ MagickExport void InitializeMagick(const char *path)
 #if defined(POSIX)
       if (*path == *DirectorySeparator)
 #elif defined(WIN32)
-      if (path[1] == ':')
+      if ((path[1] == ':') || ((path[0] == '\\') && (path[1] == '\\')))
 #else
       if (1)
 #endif
