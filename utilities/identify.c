@@ -143,7 +143,7 @@ static void IdentifyUsage(void)
 %
 %
 */
-static int IdentifyUtility(int argc,char **argv)
+static unsigned int IdentifyUtility(int argc,char **argv)
 {
   char
     *format,
