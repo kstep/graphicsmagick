@@ -207,11 +207,11 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     x,
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
-
-  register PixelPacket
-    *p;
 
   RectangleInfo
     media_info;
@@ -331,8 +331,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,buffer);
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
@@ -397,8 +397,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,buffer);
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         bit=0;

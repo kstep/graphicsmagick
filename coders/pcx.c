@@ -709,15 +709,15 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   PCXInfo
     pcx_info;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register long
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   register unsigned char
     *q;
@@ -855,8 +855,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           q=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
           for (i=0; i < pcx_info.planes; i++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             for (x=0; x < pcx_info.bytes_per_line; x++)
             {
@@ -895,8 +895,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       if (pcx_info.bits_per_pixel > 1)
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
           q=pcx_pixels+y*pcx_info.bytes_per_line;
@@ -922,8 +922,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
               Intensity(image->colormap[1]);
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             bit=0;

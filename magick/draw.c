@@ -208,8 +208,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->density != (char *) NULL)
     clone_info->density=AllocateString(draw_info->density);
   if (draw_info->tile != (Image *) NULL)
-    clone_info->tile=
-      CloneImage(draw_info->tile,0,0,True,&draw_info->tile->exception);
+    clone_info->tile=ReferenceImage(draw_info->tile);
   if (draw_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(draw_info->server_name);
   if (draw_info->dash_pattern != (unsigned int *) NULL)
@@ -291,9 +290,6 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   PixelPacket
     color;
 
-  register IndexPacket
-    *indexes;
-
   register long
     i,
     x;
@@ -307,6 +303,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
 
   SegmentInfo
     *segment_stack;
+
+  unsigned char
+    *floodplane;
 
   /*
     Check boundary conditions.
@@ -324,28 +323,17 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   */
   if (ColorMatch(draw_info->fill,target,image->fuzz))
     return(False);
+  floodplane=(unsigned char *) AcquireMemory(image->columns*image->rows);
   segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
-  if (segment_stack == (SegmentInfo *) NULL)
+  if ((floodplane== (unsigned char *) NULL) ||
+      (segment_stack == (SegmentInfo *) NULL))
     ThrowBinaryException(ResourceLimitWarning,"Unable to floodfill image",
       image->filename);
-  /*
-    Track "hot" pixels with the image index packets.
-  */
-  image->storage_class=PseudoClass;
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x++)
-      indexes[x]=False;
-    if (!SyncImagePixels(image))
-      break;
-  }
+  (void) memset(floodplane,0,image->columns*image->rows);
   /*
     Push initial segment on stack.
   */
+  image->storage_class=DirectClass;
   x=x_offset;
   y=y_offset;
   start=0;
@@ -369,7 +357,6 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     if (q == (PixelPacket *) NULL)
       break;
     q+=x1;
-    indexes=GetIndexes(image);
     for (x=x1; x >= 0; x--)
     {
       if (method == FloodfillMethod)
@@ -381,7 +368,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         if (ColorMatch(*q,target,image->fuzz) ||
             ColorMatch(*q,draw_info->fill,image->fuzz))
           break;
-      indexes[x]=True;
+      floodplane[y*image->columns+x]=True;
       *q=draw_info->fill;
       q--;
     }
@@ -404,7 +391,6 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
               q=GetImagePixels(image,x,y,image->columns-x+1,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
               for (i=0; x < (long) image->columns; x++)
               {
                 if (method == FloodfillMethod)
@@ -416,7 +402,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                   if (ColorMatch(*q,target,image->fuzz) ||
                       ColorMatch(*q,draw_info->fill,image->fuzz))
                     break;
-                indexes[i++]=True;
+                floodplane[y*image->columns+i]=True;
                 *q=draw_info->fill;
                 q++;
               }
@@ -460,10 +446,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image);
       for (x=0; x < (long) image->columns; x++)
       {
-        if (indexes[x])
+        if (floodplane[y*image->columns+x])
           *q=draw_info->fill;
         q++;
       }
@@ -480,10 +465,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
-          if (indexes[x])
+          if (floodplane[y*image->columns+x])
             {
               color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
                 y % draw_info->tile->rows);
@@ -497,8 +481,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
           break;
       }
     }
-  image->storage_class=DirectClass;
   LiberateMemory((void **) &segment_stack);
+  LiberateMemory((void **) &floodplane);
   return(True);
 }
 

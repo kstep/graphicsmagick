@@ -299,6 +299,9 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
+  register const PixelPacket
+    *p;
+
   unsigned char
     *scanline;
 
@@ -333,7 +336,8 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     */
     for (y=0; y < (long) image->rows; y++)
     {
-      if (!GetImagePixels(image,0,y,image->columns,1))
+      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       (void) PopImagePixels(image,GrayQuantum,scanline);
       (void) WriteBlob(image,packet_size*image->columns,scanline);

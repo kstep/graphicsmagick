@@ -298,15 +298,15 @@ static void XShearImage(Image *image,const double degrees,
     step,
     y;
 
-  register PixelPacket
-    *p,
-    *q;
+  PixelPacket
+    pixel;
 
   register long
     i;
 
-  PixelPacket
-    pixel;
+  register PixelPacket
+    *p,
+    *q;
 
   assert(image != (Image *) NULL);
   y_offset--;

@@ -440,7 +440,7 @@ MagickExport unsigned int SignatureImage(Image *image)
   register long
     x;
 
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   register unsigned char
@@ -467,8 +467,8 @@ MagickExport unsigned int SignatureImage(Image *image)
   GetSignatureInfo(&signature_info);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     q=message;

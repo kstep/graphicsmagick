@@ -675,7 +675,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     i,
     x;
 
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   register unsigned char
@@ -751,8 +751,9 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   q=scanline;
   for (y=0; y < (long) huffman_image->rows; y++)
   {
-    p=GetImagePixels(huffman_image,0,y,huffman_image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(huffman_image,0,y,huffman_image->columns,1,
+      &huffman_image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(huffman_image);
     for (x=0; x < (long) huffman_image->columns; x++)

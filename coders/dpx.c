@@ -348,13 +348,13 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+  
   register long
     i,
     x;
 
-  register PixelPacket
-    *q;
-  
   unsigned long
     pixel;
 
@@ -399,16 +399,16 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    q=SetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      pixel=((1023*XUpScale(q->red)/MaxRGB) << 22) |
-        ((1023*XUpScale(q->green)/MaxRGB) << 12) |
-        ((1023*XUpScale(q->blue)/MaxRGB) << 2);
+      pixel=((1023*XUpScale(p->red)/MaxRGB) << 22) |
+        ((1023*XUpScale(p->green)/MaxRGB) << 12) |
+        ((1023*XUpScale(p->blue)/MaxRGB) << 2);
       (void) WriteBlobMSBLong(image,pixel);
-      q++;
+      p++;
     }
   }
   CloseBlob(image);  

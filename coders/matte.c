@@ -159,6 +159,9 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
@@ -166,7 +169,6 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   unsigned int
@@ -187,9 +189,9 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   matte_image->matte=False;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     q=SetImagePixels(matte_image,0,y,matte_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetIndexes(matte_image);
     for (x=0; x < (long) image->columns; x++)

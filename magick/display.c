@@ -1611,7 +1611,6 @@ static unsigned int XColorEditImage(Display *display,
     y_offset;
 
   register PixelPacket
-    *p,
     *q;
 
   register long
@@ -2006,12 +2005,12 @@ static unsigned int XColorEditImage(Display *display,
               Update color information using point algorithm.
             */
             (*image)->storage_class=DirectClass;
-            p=GetImagePixels(*image,x_offset,y_offset,1,1);
-            if (p == (PixelPacket *) NULL)
+            q=GetImagePixels(*image,x_offset,y_offset,1,1);
+            if (q == (PixelPacket *) NULL)
               break;
-            p->red=XDownScale(color.red);
-            p->green=XDownScale(color.green);
-            p->blue=XDownScale(color.blue);
+            q->red=XDownScale(color.red);
+            q->green=XDownScale(color.green);
+            q->blue=XDownScale(color.blue);
             (void) SyncImagePixels(*image);
             break;
           }

@@ -280,7 +280,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
             break;
           (void) PushImagePixels(image,MagentaQuantum,scanline+x);
           if (!SyncImagePixels(image))
@@ -306,7 +306,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
             break;
           (void) PushImagePixels(image,YellowQuantum,scanline+x);
           if (!SyncImagePixels(image))
@@ -332,7 +332,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
             break;
           (void) PushImagePixels(image,BlackQuantum,scanline+x);
           if (!SyncImagePixels(image))
@@ -366,7 +366,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             {
               (void) ReadBlob(image,packet_size*image->tile_info.width,
                 scanline);
-              if (!GetImagePixels(image,0,y,image->columns,1))
+              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
                 break;
               (void) PushImagePixels(image,AlphaQuantum,scanline+x);
               if (!SyncImagePixels(image))
@@ -523,6 +523,9 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
+  register const PixelPacket
+    *p;
+
   unsigned char
     *pixels;
 
@@ -569,7 +572,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           if (LocaleCompare(image_info->magick,"CMYKA") != 0)
             {
@@ -594,7 +598,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           (void) PopImagePixels(image,CyanQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
@@ -629,7 +634,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           }
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           (void) PopImagePixels(image,CyanQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
@@ -645,7 +651,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         MagickMonitor(SaveImageText,100,400);
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           (void) PopImagePixels(image,MagentaQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
@@ -661,7 +668,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         MagickMonitor(SaveImageText,200,400);
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           (void) PopImagePixels(image,YellowQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
@@ -677,7 +685,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         MagickMonitor(SaveImageText,200,400);
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           (void) PopImagePixels(image,BlackQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
@@ -689,14 +698,17 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
               {
                 CloseBlob(image);
                 AppendImageFormat("A",image->filename);
-                status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+                status=OpenBlob(image_info,image,WriteBinaryType,
+                  &image->exception);
                 if (status == False)
                   ThrowWriterException(FileOpenWarning,"Unable to open file",
                     image);
               }
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!GetImagePixels(image,0,y,image->columns,1))
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               (void) PopImagePixels(image,AlphaQuantum,pixels);
               (void) WriteBlob(image,image->columns,pixels);

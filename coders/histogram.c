@@ -186,12 +186,12 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     sans_offset,
     y;
 
+  register long
+    x;
+
   register PixelPacket
     *p,
     *q;
-
-  register long
-    x;
 
   unsigned int
     status;

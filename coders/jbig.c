@@ -367,14 +367,14 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     sans_offset,
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register long
     x;
-
-  register PixelPacket
-    *p;
 
   register unsigned char
     *q;
@@ -433,8 +433,8 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     q=pixels;
     for (y=0; y < (long) image->rows; y++)
     {
-      p=GetImagePixels(image,0,y,image->columns,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
       bit=0;

@@ -582,14 +582,14 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     count,
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register long
     x;
-
-  register PixelPacket
-    *p;
 
   register long
     i;
@@ -704,8 +704,8 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         image);
     for (y=(long) (image->rows-1); y >= 0; y--)
     {
-      p=GetImagePixels(image,0,y,image->columns,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       q=targa_pixels;
       indexes=GetIndexes(image);

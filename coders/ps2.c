@@ -349,11 +349,11 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     x,
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
-
-  register PixelPacket
-    *p;
 
   register long
     i;
@@ -691,8 +691,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             q=pixels;
             for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
@@ -742,8 +743,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             Ascii85Initialize(image);
             for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
@@ -814,8 +816,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               q=pixels;
               for (y=0; y < (long) image->rows; y++)
               {
-                p=GetImagePixels(image,0,y,image->columns,1);
-                if (p == (PixelPacket *) NULL)
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
                 for (x=0; x < (long) image->columns; x++)
@@ -847,8 +850,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               Ascii85Initialize(image);
               for (y=0; y < (long) image->rows; y++)
               {
-                p=GetImagePixels(image,0,y,image->columns,1);
-                if (p == (PixelPacket *) NULL)
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
                 for (x=0; x < (long) image->columns; x++)

@@ -102,12 +102,14 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     y;
 
+  register const PixelPacket
+    *r;
+
   register long
     x;
 
   register PixelPacket
-    *q,
-    *r;
+    *q;
 
   register long
     i;
@@ -245,8 +247,9 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (y=0; y < (long) image->rows; y++)
     {
       q=GetImagePixels(image,0,y,image->columns,1);
-      r=GetImagePixels(resize_image,0,y,resize_image->columns,1);
-      if ((q == (PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
+      r=AcquireImagePixels(resize_image,0,y,resize_image->columns,1,
+        &resize_image->exception);
+      if ((q == (PixelPacket *) NULL) || (r == (const PixelPacket *) NULL))
         break;
       for (x=0; x < (long) image->columns; x++)
       {
@@ -394,11 +397,11 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
-
-  register PixelPacket
-    *p;
 
   unsigned int
     status;
@@ -446,8 +449,9 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     */
     for (y=0; y < (long) yuv_image->rows; y++)
     {
-      p=GetImagePixels(yuv_image,0,y,yuv_image->columns,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(yuv_image,0,y,yuv_image->columns,1,
+        &yuv_image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       for (x=0; x < (long) yuv_image->columns; x++)
       {
@@ -482,8 +486,9 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       }
     for (y=0; y < (long) chroma_image->rows; y++)
     {
-      p=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(chroma_image,0,y,chroma_image->columns,1,
+        &chroma_image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       for (x=0; x < (long) chroma_image->columns; x++)
       {
@@ -504,8 +509,9 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       }
     for (y=0; y < (long) chroma_image->rows; y++)
     {
-      p=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(chroma_image,0,y,chroma_image->columns,1,
+        &chroma_image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       for (x=0; x < (long) chroma_image->columns; x++)
       {

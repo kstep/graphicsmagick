@@ -186,12 +186,14 @@ MagickExport unsigned int EqualizeImage(Image *image)
   Quantum
     *equalize_map;
 
+  register const PixelPacket
+    *p;
+
   register long
     i,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   unsigned int
@@ -219,8 +221,8 @@ MagickExport unsigned int EqualizeImage(Image *image)
     histogram[i]=0;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
@@ -693,11 +695,13 @@ MagickExport unsigned int NormalizeImage(Image *image)
     gray_value,
     *normalize_map;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   register long
@@ -724,8 +728,8 @@ MagickExport unsigned int NormalizeImage(Image *image)
     histogram[i]=0;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {

@@ -818,11 +818,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   PixelPacket
     pixel;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
-
-  register PixelPacket
-    *p;
 
   register long
     i;
@@ -999,8 +999,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             count=0;
             for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(preview_image,0,y,preview_image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(preview_image,0,y,preview_image->columns,1,
+                &preview_image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(preview_image);
               bit=0;
@@ -1131,8 +1132,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               pixel=(*p);
               length=255;
@@ -1175,8 +1177,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             i=0;
             for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
@@ -1217,8 +1220,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               i++;
               for (y=0; y < (long) image->rows; y++)
               {
-                p=GetImagePixels(image,0,y,image->columns,1);
-                if (p == (PixelPacket *) NULL)
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
                   break;
                 for (x=0; x < (long) image->columns; x++)
                 {
@@ -1252,8 +1256,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               count=0;
               for (y=0; y < (long) image->rows; y++)
               {
-                p=GetImagePixels(image,0,y,image->columns,1);
-                if (p == (PixelPacket *) NULL)
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
                 bit=0;
@@ -1331,8 +1336,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               i=0;
               for (y=0; y < (long) image->rows; y++)
               {
-                p=GetImagePixels(image,0,y,image->columns,1);
-                if (p == (PixelPacket *) NULL)
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
                 index=(*indexes);
@@ -1380,8 +1386,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               i=0;
               for (y=0; y < (long) image->rows; y++)
               {
-                p=GetImagePixels(image,0,y,image->columns,1);
-                if (p == (PixelPacket *) NULL)
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
                 for (x=0; x < (long) image->columns; x++)

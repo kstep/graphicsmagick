@@ -296,12 +296,12 @@ ModuleExport void UnregisterAVSImage(void)
 */
 static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 {
+  register const PixelPacket
+    *p;
+
   register long
     x,
     y;
-
-  register PixelPacket
-    *p;
 
   register unsigned char
     *q;
@@ -340,7 +340,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     */
     for (y=0; y < (long) image->rows; y++)
     {
-      p=GetImagePixels(image,0,y,image->columns,1);
+      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
       if (p == (PixelPacket *) NULL)
         break;
       q=pixels;

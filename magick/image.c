@@ -961,7 +961,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       if (image->directory != (char *) NULL)
         (void) CloneString(&clone_image->directory,image->directory);
       if (clone_image->clip_mask != (Image *) NULL)
-        clone_image->clip_mask=CloneImage(image->clip_mask,0,0,True,exception);
+        clone_image->clip_mask=ReferenceImage(image->clip_mask);
       clone_image->cache=ReferenceCache(image->cache);
     }
   clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
@@ -1110,11 +1110,13 @@ MagickExport unsigned int CompositeImage(Image *image,
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
@@ -1176,10 +1178,11 @@ MagickExport unsigned int CompositeImage(Image *image,
       {
         if (((y+y_offset) < 0) || ((y+y_offset) >= (long) image->rows))
           continue;
-        p=GetImagePixels(composite_image,0,y,composite_image->columns,1);
+        p=AcquireImagePixels(composite_image,0,y,composite_image->columns,1,
+          &composite_image->exception);
         q=GetImagePixels(image,0,y+y_offset,image->columns,1);
         r=GetImagePixels(displace_image,0,y,displace_image->columns,1);
-        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
             (r == (PixelPacket *) NULL))
           break;
         q+=x_offset;
@@ -1269,8 +1272,9 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
       if ((x-x_offset) >= (long) composite_image->columns)
         break;
-      p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(composite_image,x-x_offset,y-y_offset,1,1,
+        &composite_image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       composite_indexes=GetIndexes(composite_image);
       switch (compose)
@@ -1799,14 +1803,14 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   p=(Image *) NULL;
   if ((image->matte && (strcmp(image->magick,"GIF") != 0)) || image->taint)
     {
-      PixelPacket
+      const PixelPacket
         *p;
 
       p=(PixelPacket *) NULL;
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
@@ -2607,11 +2611,11 @@ MagickExport unsigned long GetImageDepth(Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
-
-  register PixelPacket
-    *p;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2621,8 +2625,8 @@ MagickExport unsigned long GetImageDepth(Image *image)
   image->depth=16;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
@@ -2932,12 +2936,12 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
     opacity,
     red;
 
-  register long
-    x;
-
-  register PixelPacket
+  register const PixelPacket
     *p,
     *q;
+
+  register long
+    x;
 
   /*
     Initialize measurement.
@@ -2964,9 +2968,10 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   opacity=0;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    q=GetImagePixels(reference,0,y,reference->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    q=AcquireImagePixels(reference,0,y,reference->columns,1,
+      &reference->exception);
+    if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
       break;
     for (x=0; x < (long) image->columns; x++)
     {
@@ -4646,8 +4651,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             tile_image=ReadImage(clone_info,&exception);
             if (tile_image == (Image *) NULL)
               continue;
-            draw_info->tile=
-              CloneImage(tile_image,0,0,True,&tile_image->exception);
+            draw_info->tile=ReferenceImage(tile_image);
             DestroyImage(tile_image);
             continue;
           }
@@ -5205,11 +5209,13 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   register long
@@ -5272,8 +5278,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
@@ -5745,7 +5751,7 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
       image->clip_mask=(Image *) NULL;
       return(True);
     }
-  image->clip_mask=CloneImage(clip_mask,0,0,True,&clip_mask->exception);
+  image->clip_mask=ReferenceImage(clip_mask);
   return(True);
 }
 
@@ -5786,7 +5792,7 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
     x;
 
   register PixelPacket
-    *p;
+    *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -5798,16 +5804,16 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   image->depth=8;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      p->red=UpScale(DownScale(p->red));
-      p->green=UpScale(DownScale(p->green));
-      p->blue=UpScale(DownScale(p->blue));
-      p->opacity=UpScale(DownScale(p->opacity));
-      p++;
+      q->red=UpScale(DownScale(q->red));
+      q->green=UpScale(DownScale(q->green));
+      q->blue=UpScale(DownScale(q->blue));
+      q->opacity=UpScale(DownScale(q->opacity));
+      q++;
     }
     if (!SyncImagePixels(image))
       break;
@@ -5817,14 +5823,14 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
       register long
         i;
 
-      p=image->colormap;
+      q=image->colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        p->red=UpScale(DownScale(p->red));
-        p->green=UpScale(DownScale(p->green));
-        p->blue=UpScale(DownScale(p->blue));
-        p->opacity=UpScale(DownScale(p->opacity));
-        p++;
+        q->red=UpScale(DownScale(q->red));
+        q->green=UpScale(DownScale(q->green));
+        q->blue=UpScale(DownScale(q->blue));
+        q->opacity=UpScale(DownScale(q->opacity));
+        q++;
       }
     }
   return(True);
@@ -5908,7 +5914,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
     {
       if (image->colorspace == CMYKColorspace)
         {
-          indexes[x]=opacity;
+	  indexes[x]=opacity;
           continue;
         }
       q->opacity=opacity;

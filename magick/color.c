@@ -928,6 +928,9 @@ MagickExport unsigned int IsPseudoClass(Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
@@ -938,7 +941,6 @@ MagickExport unsigned int IsPseudoClass(Image *image)
     *node_info;
 
   register PixelPacket
-    *p,
     *q;
 
   register long
@@ -966,8 +968,8 @@ MagickExport unsigned int IsPseudoClass(Image *image)
       "Memory allocation failed");
   for (y=0; (y < (long) image->rows) && (cube_info->colors <= 256); y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       return(False);
     for (x=0; (x < (long) image->columns) && (cube_info->colors <= 256); x++)
     {

@@ -337,14 +337,14 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register long
     x;
-
-  register PixelPacket
-    *p;
 
   unsigned char
     bit,
@@ -383,8 +383,8 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   WBMPWriteInteger(image,image->rows);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     bit=0;

@@ -256,9 +256,11 @@ static unsigned int Classify(Image *image,short **extrema,
     k,
     y;
 
-
   PixelPacket
     *colormap;
+
+  register const PixelPacket
+    *p;
 
   register double
     *squares;
@@ -271,7 +273,6 @@ static unsigned int Classify(Image *image,short **extrema,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   unsigned int
@@ -343,8 +344,8 @@ static unsigned int Classify(Image *image,short **extrema,
   count=0;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
@@ -830,12 +831,12 @@ static void InitializeHistogram(Image *image,long **histogram)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   /*
     Initialize histogram.
@@ -848,8 +849,8 @@ static void InitializeHistogram(Image *image,long **histogram)
   }
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {

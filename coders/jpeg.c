@@ -1086,17 +1086,15 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   JSAMPROW
     scanline[1];
 
-  register long
-    x;
+  register const PixelPacket
+    *p;
 
   register JSAMPLE
     *q;
 
-  register PixelPacket
-    *p;
-
   register long
-    i;
+    i,
+    x;
 
   struct jpeg_compress_struct
     jpeg_info;
@@ -1267,8 +1265,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (jpeg_info.in_color_space == JCS_GRAYSCALE)
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           q=jpeg_pixels;
           for (x=0; x < (long) image->columns; x++)
@@ -1285,8 +1283,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             (jpeg_info.in_color_space == JCS_YCbCr))
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             q=jpeg_pixels;
             for (x=0; x < (long) image->columns; x++)
@@ -1303,8 +1301,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         else
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             q=jpeg_pixels;
             for (x=0; x < (long) image->columns; x++)
@@ -1327,8 +1325,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     if (jpeg_info.in_color_space == JCS_GRAYSCALE)
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         q=jpeg_pixels;
         for (x=0; x < (long) image->columns; x++)
@@ -1345,8 +1343,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           (jpeg_info.in_color_space == JCS_YCbCr))
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           q=jpeg_pixels;
           for (x=0; x < (long) image->columns; x++)
@@ -1363,8 +1361,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       else
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           q=jpeg_pixels;
           for (x=0; x < (long) image->columns; x++)

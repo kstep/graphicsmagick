@@ -459,14 +459,14 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
+  register const PixelPacket
+    *p;
+
   register int
     x;
 
   register IndexPacket
     *indexes;
-
-  register PixelPacket
-    *p;
 
   unsigned char
     bit,
@@ -522,8 +522,8 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)

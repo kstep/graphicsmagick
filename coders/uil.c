@@ -172,15 +172,15 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     k,
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register long
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   unsigned int
     characters_per_pixel,
@@ -200,7 +200,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   (void) TransformRGBImage(image,RGBColorspace);
   transparent=False;
   i=0;
-  p=(PixelPacket *) NULL;
+  p=(const PixelPacket *) NULL;
   if (image->storage_class == PseudoClass)
     colors=image->colors;
   else
@@ -227,8 +227,8 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
               "Memory allocation failed",image);
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
@@ -249,8 +249,8 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           colors++;
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             for (x=0; x < (long) image->columns; x++)
@@ -316,8 +316,8 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     (void) WriteBlobString(image,"    \"");

@@ -731,12 +731,12 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
   SGIInfo
     iris_info;
 
+  register const PixelPacket
+    *p;
+
   register long
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   register unsigned char
     *q;
@@ -815,8 +815,8 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     */
     for (y=0; y < (long) image->rows; y++)
     {
-      p=GetImagePixels(image,0,y,image->columns,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       q=iris_pixels+((iris_info.rows-1)-y)*(iris_info.columns*4);
       for (x=0; x < (long) image->columns; x++)

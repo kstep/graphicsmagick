@@ -937,7 +937,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    if (!GetImagePixels(image,0,y,image->columns,1))
+    if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
       break;
     if (fpx_info.numberOfComponents == 1)
       (void) PopImagePixels(image,GrayQuantum,pixels);

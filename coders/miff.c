@@ -1188,11 +1188,11 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   PixelPacket
     pixel;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
-
-  register PixelPacket
-    *p;
 
   register long
     i,
@@ -1505,8 +1505,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     status=True;
     for (y=0; y < (long) image->rows; y++)
     {
-      p=GetImagePixels(image,0,y,image->columns,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
       q=pixels;

@@ -236,8 +236,8 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,const long 
     status|=ReadCacheIndexes(image->cache,id);
   if (status == False)
     {
-      ThrowException(exception,CacheWarning,"Unable to acquire pixels from cache",
-        image->filename);
+      ThrowException(exception,CacheWarning,
+        "Unable to acquire pixels from cache",image->filename);
       return((PixelPacket *) NULL);
     }
   return(pixels);
@@ -704,7 +704,7 @@ static void DestroyCacheInfo(Cache cache)
     case MemoryCache:
     {
       LiberateMemory((void **) &cache_info->pixels);
-      (void) GetCacheMemory(-(off_t) length);
+      (void) GetCacheMemory(-length);
       break;
     }
     case MemoryMappedCache:
@@ -1577,6 +1577,9 @@ static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
   ClassType
     storage_class;
 
+  ColorspaceType
+    colorspace;
+
   Image
     *clone_image;
 
@@ -1607,8 +1610,10 @@ static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
   /*
     Clone pixel cache.
   */
-  storage_class=image->class;
+  storage_class=image->storage_class;
+  colorspace=image->colorspace;
   image->storage_class=GetCacheClass(image->cache);
+  image->colorspace=GetCacheColorspace(image->cache);
   clone_image=AllocateImage((ImageInfo *) NULL);
   *clone_image=(*image);
   GetCacheInfo(&clone_image->cache);
@@ -1628,6 +1633,7 @@ static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
   }
   image->cache=clone_image->cache;
   image->storage_class=storage_class;
+  image->colorspace=colorspace;
   LiberateMemory((void **) &clone_image);
   if (y < (long) image->rows)
     {
@@ -2512,10 +2518,8 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long id)
       NexusInfo
         *nexus_info;
 
-      register const PixelPacket
-        *p;
-
       register PixelPacket
+        *p,
         *q;
 
       ViewInfo
@@ -2529,11 +2533,11 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long id)
           image->filename);
       cache_info=(CacheInfo *) image->cache;
       nexus_info=cache_info->nexus_info;
-      p=AcquireCacheView(image_view,nexus_info->x,nexus_info->y,
-        nexus_info->columns,nexus_info->rows,&image->exception);
+      p=GetCacheView(image_view,nexus_info->x,nexus_info->y,nexus_info->columns,
+        nexus_info->rows);
       q=GetCacheView(mask_view,nexus_info->x,nexus_info->y,nexus_info->columns,
         nexus_info->rows);
-      if ((p != (const PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
+      if ((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
         {
           long
             y;

@@ -562,7 +562,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
   register long
     x;
 
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   unsigned int
@@ -572,8 +572,8 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     if (cube_info->nodes > MaxNodes)
       {
@@ -1882,6 +1882,9 @@ MagickExport unsigned int QuantizationError(Image *image)
     count,
     y;
 
+  register const PixelPacket
+    *p;
+
   register double
     blue,
     green,
@@ -1892,9 +1895,6 @@ MagickExport unsigned int QuantizationError(Image *image)
 
   register long
     x;
-
-  register PixelPacket
-    *p;
 
   /*
     Initialize measurement.
@@ -1914,8 +1914,8 @@ MagickExport unsigned int QuantizationError(Image *image)
   total_error=0;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x+=count)

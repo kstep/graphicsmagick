@@ -900,6 +900,9 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   Image
     *clone_image;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
@@ -907,7 +910,6 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     y;
 
   register PixelPacket
-    *p,
     *q;
 
   unsigned int
@@ -939,14 +941,15 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(CacheWarning,"Unable to open pixel cache",image);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(clone_image);
     if (indexes != (IndexPacket *) NULL)
-      (void) memcpy(indexes,GetIndexes(image),image->columns*sizeof(IndexPacket));
+      (void) memcpy(indexes,GetIndexes(image),
+        image->columns*sizeof(IndexPacket));
     if (!SyncImagePixels(clone_image))
       break;
   }

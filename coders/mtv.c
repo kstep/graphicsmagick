@@ -304,11 +304,11 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
+  register const PixelPacket
+    *p;
+
   register int
     x;
-
-  register PixelPacket
-    *p;
 
   register unsigned char
     *q;
@@ -345,8 +345,8 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     for (y=0; y < (long) image->rows; y++)
     {
-      p=GetImagePixels(image,0,y,image->columns,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       q=pixels;
       for (x=0; x < (long) image->columns; x++)

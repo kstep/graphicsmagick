@@ -422,7 +422,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   image->depth=8;
   for (y=0; y < (long) image->rows; y++)
   {
-    if (!GetImagePixels(image,0,y,image->columns,1))
+    if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
       break;
     (void) PopImagePixels(image,GrayQuantum,scanline);
     (void) WriteBlob(image,image->columns,scanline);

@@ -1171,15 +1171,15 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register long
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   register unsigned char
     *q;
@@ -1507,7 +1507,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           {
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!GetImagePixels(image,0,y,image->columns,1))
+              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
                 break;
               if (!image->matte)
                 (void) PopImagePixels(image,RGBQuantum,scanline);
@@ -1529,7 +1529,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!GetImagePixels(image,0,y,image->columns,1))
+              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
                 break;
               (void) PopImagePixels(image,RedQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
@@ -1538,7 +1538,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             MagickMonitor(SaveImageText,100,400);
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!GetImagePixels(image,0,y,image->columns,1))
+              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
                 break;
               (void) PopImagePixels(image,GreenQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
@@ -1547,7 +1547,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             MagickMonitor(SaveImageText,200,400);
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!GetImagePixels(image,0,y,image->columns,1))
+              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
                 break;
               (void) PopImagePixels(image,BlueQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
@@ -1557,7 +1557,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             if (image->matte)
               for (y=0; y < (long) image->rows; y++)
               {
-                if (!GetImagePixels(image,0,y,image->columns,1))
+                if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
                   break;
                 (void) PopImagePixels(image,AlphaQuantum,scanline);
                 if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
@@ -1578,7 +1578,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           (void) RGBTransformImage(image,CMYKColorspace);
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
             break;
           if (!image->matte)
             (void) PopImagePixels(image,CMYKQuantum,scanline);
@@ -1647,7 +1647,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!GetImagePixels(image,0,y,image->columns,1))
+              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
                 break;
               if (photometric != PHOTOMETRIC_PALETTE)
                 (void) PopImagePixels(image,GrayQuantum,scanline);
@@ -1680,8 +1680,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             }
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
           bit=0;

@@ -977,15 +977,15 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register long
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   register unsigned char
     *q;
@@ -1083,8 +1083,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
           q=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1119,8 +1119,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
           q=pixels+(image->rows-y-1)*bytes_per_line;
@@ -1143,8 +1143,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (long) image->columns; x++)

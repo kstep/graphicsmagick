@@ -596,7 +596,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       if (border_width != 0)
         {
           Image
-            *border_image;
+            *bordered_next;
 
           RectangleInfo
             border_info;
@@ -612,11 +612,11 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
               border_info.height=(height-next->rows+1)/2;
             }
           next->orphan=True;
-          border_image=BorderImage(next,&border_info,exception);
-          if (border_image != (Image *) NULL)
+          bordered_next=BorderImage(next,&border_info,exception);
+          if (bordered_next != (Image *) NULL)
             {
               DestroyImage(next);
-              next=border_image;
+              next=bordered_next;
             }
         }
       /*
@@ -688,7 +688,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
             tile_info;
 
           Image
-            *frame_image;
+            *framed_next;
 
           /*
             Put an ornamental border around this tile.
@@ -700,11 +700,11 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
           if (attribute != (ImageAttribute *) NULL)
             tile_info.height+=(font_height+4)*MultilineCensus(attribute->value);
           next->orphan=True;
-          frame_image=FrameImage(next,&tile_info,exception);
-          if (frame_image != (Image *) NULL)
+          framed_next=FrameImage(next,&tile_info,exception);
+          if (framed_next != (Image *) NULL)
             {
               DestroyImage(next);
-              next=frame_image;
+              next=framed_next;
             }
           x=0;
           y=0;

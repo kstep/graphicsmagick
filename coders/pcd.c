@@ -872,12 +872,12 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     x,
     y;
 
-  register int
-    i;
-
-  register PixelPacket
+  register const PixelPacket
     *p,
     *q;
+
+  register int
+    i;
 
   unsigned long
     height,
@@ -930,24 +930,27 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   */
   for (y=0; y < (long) tile_image->rows; y+=2)
   {
-    p=GetImagePixels(tile_image,0,y,tile_image->columns,2);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(tile_image,0,y,tile_image->columns,2,
+      &tile_image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) (tile_image->columns << 1); x++)
     {
       (void) WriteBlobByte(image,DownScale(p->red));
       p++;
     }
-    q=GetImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,1);
-    if (q == (PixelPacket *) NULL)
+    q=AcquireImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,
+      1,&downsampled_image->exception);
+    if (q == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) downsampled_image->columns; x++)
     {
       (void) WriteBlobByte(image,DownScale(q->green));
       q++;
     }
-    q=GetImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,1);
-    if (q == (PixelPacket *) NULL)
+    q=AcquireImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,
+      1,&downsampled_image->exception);
+    if (q == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) downsampled_image->columns; x++)
     {

@@ -578,11 +578,11 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register int
     i;
-
-  register PixelPacket
-    *p;
 
   unsigned char
     *pixels;
@@ -636,8 +636,8 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   */
   for (y=image->rows-1; y >= 0; y--)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     (void) PopImagePixels(image,GrayQuantum,pixels);
     (void) WriteBlob(image,packet_size*image->columns,pixels);

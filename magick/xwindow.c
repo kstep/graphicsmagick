@@ -1717,13 +1717,13 @@ static void XDitherImage(Image *image,XImage *ximage)
   register char
     *q;
 
+  register const PixelPacket
+    *p;
+
   register int
     i,
     j,
     x;
-
-  register PixelPacket
-    *p;
 
   unsigned int
     scanline_pad;
@@ -1793,8 +1793,8 @@ static void XDitherImage(Image *image,XImage *ximage)
   q=ximage->data;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
@@ -5390,7 +5390,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   register int
     x;
 
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   register unsigned char
@@ -5444,8 +5444,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         bit=0;
@@ -5484,8 +5484,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             nibble=0;
@@ -5535,8 +5535,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             nibble=0;
@@ -5578,8 +5578,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             }
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             for (x=0; x < (long) image->columns; x++)
@@ -5608,8 +5608,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           bytes_per_pixel=ximage->bits_per_pixel >> 3;
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             for (x=0; x < (long) image->columns; x++)
@@ -5642,8 +5642,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           for (y=0; y < (long) image->rows; y++)
           {
             nibble=0;
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
@@ -5693,8 +5693,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             nibble=0;
             for (x=0; x < (long) image->columns; x++)
@@ -5737,8 +5737,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             }
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
@@ -5762,8 +5762,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               */
               for (y=0; y < (long) image->rows; y++)
               {
-                p=GetImagePixels(image,0,y,image->columns,1);
-                if (p == (PixelPacket *) NULL)
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
                   break;
                 for (x=0; x < (long) image->columns; x++)
                 {
@@ -5786,8 +5787,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                 */
                 for (y=0; y < (long) image->rows; y++)
                 {
-                  p=GetImagePixels(image,0,y,image->columns,1);
-                  if (p == (PixelPacket *) NULL)
+                  p=AcquireImagePixels(image,0,y,image->columns,1,
+                    &image->exception);
+                  if (p == (const PixelPacket *) NULL)
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
@@ -5816,7 +5818,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                 bytes_per_pixel=ximage->bits_per_pixel >> 3;
                 for (y=0; y < (long) image->rows; y++)
                 {
-                  p=GetImagePixels(image,0,y,image->columns,1);
+                  p=AcquireImagePixels(image,0,y,image->columns,1,
+                    &image->exception);
                   if (p == (PixelPacket *) NULL)
                     break;
                   for (x=0; x < (long) image->columns; x++)
@@ -5847,8 +5850,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       q=(unsigned char *) matte_image->data;
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         bit=0;
         byte=0;
@@ -5923,7 +5926,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   register int
     x;
 
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   register unsigned char
@@ -5977,8 +5980,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         bit=0;
@@ -6017,8 +6020,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             nibble=0;
@@ -6068,8 +6071,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             nibble=0;
@@ -6111,8 +6114,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             }
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             for (x=0; x < (long) image->columns; x++)
@@ -6141,8 +6144,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           bytes_per_pixel=ximage->bits_per_pixel >> 3;
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             for (x=0; x < (long) image->columns; x++)
@@ -6174,8 +6177,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             nibble=0;
             for (x=0; x < (long) image->columns; x++)
@@ -6226,8 +6229,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           */
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             nibble=0;
             for (x=0; x < (long) image->columns; x++)
@@ -6270,8 +6273,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             }
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
@@ -6295,8 +6298,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               */
               for (y=0; y < (long) image->rows; y++)
               {
-                p=GetImagePixels(image,0,y,image->columns,1);
-                if (p == (PixelPacket *) NULL)
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
                   break;
                 for (x=0; x < (long) image->columns; x++)
                 {
@@ -6319,8 +6323,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 */
                 for (y=0; y < (long) image->rows; y++)
                 {
-                  p=GetImagePixels(image,0,y,image->columns,1);
-                  if (p == (PixelPacket *) NULL)
+                  p=AcquireImagePixels(image,0,y,image->columns,1,
+                    &image->exception);
+                  if (p == (const PixelPacket *) NULL)
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
@@ -6349,8 +6354,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 bytes_per_pixel=ximage->bits_per_pixel >> 3;
                 for (y=0; y < (long) image->rows; y++)
                 {
-                  p=GetImagePixels(image,0,y,image->columns,1);
-                  if (p == (PixelPacket *) NULL)
+                  p=AcquireImagePixels(image,0,y,image->columns,1,
+                    &image->exception);
+                  if (p == (const PixelPacket *) NULL)
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
@@ -6380,8 +6386,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       q=(unsigned char *) matte_image->data;
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         bit=0;
         byte=0;

@@ -1399,15 +1399,15 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     size_rectangle,
     source_rectangle;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register long
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   size_t
     count,
@@ -1696,8 +1696,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if (storage_class == PseudoClass)
     for (y=0; y < (long) image->rows; y++)
     {
-      p=GetImagePixels(image,0,y,image->columns,1);
-      if (p == (PixelPacket *) NULL)
+      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+      if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
       for (x=0; x < (long) image->columns; x++)
@@ -1727,8 +1727,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
         opacity=scanline+3*image->columns;
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           red=scanline;
           green=scanline+image->columns;

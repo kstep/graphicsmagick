@@ -492,12 +492,12 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   jas_stream_t
     *jp2_stream;
 
+  register const PixelPacket
+    *p;
+
   register long
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   unsigned int
     status;
@@ -554,8 +554,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   }
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {

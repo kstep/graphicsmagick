@@ -384,15 +384,15 @@ static unsigned int CompressColormapTransFirst(Image *image)
   PixelPacket
     *colormap;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
   register long
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   unsigned char
     *marker,
@@ -433,8 +433,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
   transparent_pixels=0;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
@@ -585,8 +585,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
       */
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
@@ -624,7 +624,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
 */
 static unsigned int ImageIsGray(Image *image)
 {
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   register long
@@ -644,8 +644,8 @@ static unsigned int ImageIsGray(Image *image)
     }
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       return(False);
     for (x=0; (x < (long) image->columns); x++)
     {
@@ -675,7 +675,7 @@ static unsigned int ImageIsGray(Image *image)
 */
 static unsigned int ImageIsMonochrome(Image *image)
 {
-  register PixelPacket
+  register const PixelPacket
     *p;
 
   register long
@@ -699,8 +699,8 @@ static unsigned int ImageIsMonochrome(Image *image)
     }
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       return(False);
     for (x=0; x < (long) image->columns; x++)
     {
@@ -3795,7 +3795,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           ok_to_reduce;
 
-        PixelPacket
+        const PixelPacket
           *p;
 
         ok_to_reduce=((((image->background_color.red >> 8) & 0xff)
@@ -3823,8 +3823,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (ok_to_reduce && image->storage_class != PseudoClass)
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
@@ -4277,7 +4277,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   register long
     x=0;
 
-  register PixelPacket
+  register const PixelPacket
     *p=NULL;
 
   register long
@@ -4914,8 +4914,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
@@ -4932,8 +4932,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (long) image->rows; y++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+          if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
@@ -4971,9 +4971,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             */
             for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
               x=0;
-              if (p == (PixelPacket *) NULL)
+              if (p == (const PixelPacket *) NULL)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
@@ -5132,8 +5132,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                ping_info->trans[i]=255;
             for (y=0; y < (long) image->rows; y++)
             {
-              p=GetImagePixels(image,0,y,image->columns,1);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
               for (x=0; x < (long) image->columns; x++)
@@ -5383,7 +5383,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (long) image->rows; y++)
         {
-          if (!GetImagePixels(image,0,y,image->columns,1))
+          if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
             break;
           if (image->storage_class == PseudoClass)
                 (void) PopImagePixels(image,(QuantumType) GrayQuantum,
@@ -5402,7 +5402,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         {
           for (y=0; y < (long) image->rows; y++)
           {
-            if (!GetImagePixels(image,0,y,image->columns,1))
+            if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
               {
@@ -5460,7 +5460,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           if ((image->depth > 8) || image->storage_class!=PseudoClass)
             for (y=0; y < (long) image->rows; y++)
             {
-              if (!GetImagePixels(image,0,y,image->columns,1))
+              if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
                 break;
               if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
                 {
@@ -5487,7 +5487,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         else
           for (y=0; y < (long) image->rows; y++)
           {
-            if (!GetImagePixels(image,0,y,image->columns,1))
+            if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
               break;
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
               (void) PopImagePixels(image,(QuantumType) GrayQuantum,

@@ -14,7 +14,7 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                              Bob Friesenhahn                                %
+%                     Bob Friesenhahn & Francis J. Franklin                   %
 %                          December 2000 - May 2001                           %
 %                                                                             %
 %                                                                             %
@@ -66,7 +66,13 @@ Work remaining to be completed on libwmf portion of this module:
 #include "magick.h"
 #include "define.h"
 
-#if defined(HasWMF)
+#if defined(HasWMF2)
+ /* HasWMF2 */
+static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+{
+  return (Image *)NULL;
+}
+#elif defined(HasWMF)
 #include <wmfapi.h>
 
 /*
@@ -1786,9 +1792,51 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterWMFImage(void)
 {
-#if defined(HasWMF)
+#if defined(HasWMF) || defined(HasWMF2)
   MagickInfo
     *entry;
+
+/*   entry=SetMagickInfo("HATCH_BDIAGONAL"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   (void) RegisterMagickInfo(entry); */
+
+/*   entry=SetMagickInfo("HATCH_CROSS"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   (void) RegisterMagickInfo(entry); */
+
+/*   entry=SetMagickInfo("HATCH_DIAGCROSS"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   (void) RegisterMagickInfo(entry); */
+
+/*   entry=SetMagickInfo("HATCH_FDIAGONAL"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   (void) RegisterMagickInfo(entry); */
+
+/*   entry=SetMagickInfo("HATCH_HORIZONTAL"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   (void) RegisterMagickInfo(entry); */
+
+/*   entry=SetMagickInfo("HATCH_VERTICAL"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   (void) RegisterMagickInfo(entry); */
 
   entry=SetMagickInfo("WMF");
   entry->decoder=ReadWMFImage;
@@ -1796,7 +1844,7 @@ ModuleExport void RegisterWMFImage(void)
   entry->blob_support=False;
   entry->module=AllocateString("WMF");
   (void) RegisterMagickInfo(entry);
-#endif /* defined(HasWMF) */
+#endif /* defined(HasWMF) || defined(HasWMF2) */
 }
 
 /*
@@ -1820,7 +1868,7 @@ ModuleExport void RegisterWMFImage(void)
 */
 ModuleExport void UnregisterWMFImage(void)
 {
-#if defined(HasWMF)
+#if defined(HasWMF) || defined(HasWMF2)
   (void) UnregisterMagickInfo("WMF");
-#endif /* defined(HasWMF) */
+#endif /* defined(HasWMF) || defined(HasWMF2) */
 }
