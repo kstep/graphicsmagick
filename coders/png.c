@@ -686,8 +686,8 @@ unsigned int ImageIsMonochrome(Image *image)
     {
       for (i=0; i < (int) image->colors; i++)
       {
-        if (!IsGray(image->colormap[i]) || (image->colormap[i].red != zero) ||
-            (image->colormap[i].red != MaxRGB))
+        if (!IsGray(image->colormap[i]) || ((image->colormap[i].red != zero)
+            && (image->colormap[i].red != MaxRGB)))
           return(False);
       }
       return(True);
