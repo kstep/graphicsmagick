@@ -1,3 +1,6 @@
+2004-08-09  Glenn Randers-Pehrson <glennrp@glennrp.com>
+	* fix incorrect argument to png_set_keep_unknown_chunks().
+
 2004-08-07  David R. Linn  <drl@vuse.vanderbilt.edu>
 
 	* www/formats.html: Titles for JNG and MNG were reversed.
