@@ -1145,7 +1145,7 @@ MagickExport char *GetConfigurePath(const char *filename,
   */
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
-#if defined POSIX
+#if defined(POSIX)
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",getenv("MAGICK_HOME"),
         filename);
 #else

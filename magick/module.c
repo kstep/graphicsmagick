@@ -622,7 +622,7 @@ MagickExport char *GetModulePath(const char *filename,ExceptionInfo *exception)
   */
   if (*SetClientPath((char *) NULL) != '\0')
     {
-#if defined POSIX
+#if defined(POSIX)
       char
         prefix[MaxTextExtent];
 
@@ -646,7 +646,7 @@ MagickExport char *GetModulePath(const char *filename,ExceptionInfo *exception)
   */
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
-#if defined POSIX
+#if defined(POSIX)
       FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
         getenv("MAGICK_HOME"),filename);
 #else
