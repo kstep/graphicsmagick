@@ -484,6 +484,30 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 %      to shear.
 %
 */
+
+static inline PixelPacket BlendComposite(const PixelPacket *p,
+  const PixelPacket *q,const double alpha)
+{
+  double
+    color;
+
+  PixelPacket
+    composite;
+
+  color=(double) (p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
+  composite.red=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  color=(double) (p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
+  composite.green=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  color=(double) (p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
+  composite.blue=(Quantum)
+    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
+  color=(double) (p->opacity*(MaxRGB-alpha)+q->opacity*alpha)/MaxRGB;
+  composite.opacity=p->opacity;
+  return(composite);
+}
+
 static void XShearImage(Image *image,const double degrees,
   const unsigned long width,const unsigned long height,const long x_offset,
   long y_offset)
@@ -548,9 +572,6 @@ static void XShearImage(Image *image,const double degrees,
             p+=x_offset;
             q=p-step;
             (void) memcpy(q,p,width*sizeof(PixelPacket));
-            /*
-              Set old row to background color.
-            */
             q+=width;
             for (i=0; i < (long) step; i++)
               *q++=image->background_color;
@@ -568,9 +589,6 @@ static void XShearImage(Image *image,const double degrees,
             q=p+step;
             for (i=0; i < (long) width; i++)
               *--q=(*--p);
-            /*
-              Set old row to background color.
-            */
             for (i=0; i < (long) step; i++)
               *--q=image->background_color;
             break;
@@ -607,11 +625,10 @@ static void XShearImage(Image *image,const double degrees,
               q++;
               continue;
             }
-          *q++=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
+          *q++=BlendComposite(&pixel,p,alpha);
           pixel=(*p++);
         }
-        *q++=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
-          image->background_color.opacity);
+        *q++=BlendComposite(&pixel,&image->background_color,alpha);
         for (i=0; i < (step-1); i++)
           *q++=image->background_color;
         break;
@@ -632,11 +649,10 @@ static void XShearImage(Image *image,const double degrees,
           q--;
           if ((x_offset+width+step-i) >= image->columns)
             continue;
-          *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
+          *q=BlendComposite(&pixel,p,alpha);
           pixel=(*p);
         }
-        *--q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
-          image->background_color.opacity);
+        *--q=BlendComposite(&pixel,&image->background_color,alpha);
         for (i=0; i < (step-1); i++)
           *--q=image->background_color;
         break;
@@ -747,9 +763,6 @@ static void YShearImage(Image *image,const double degrees,
             p+=y_offset;
             q=p-step;
             (void) memcpy(q,p,height*sizeof(PixelPacket));
-            /*
-              Set old column to background color.
-            */
             q+=height;
             for (i=0; i < (long) step; i++)
               *q++=image->background_color;
@@ -767,9 +780,6 @@ static void YShearImage(Image *image,const double degrees,
             q=p+step;
             for (i=0; i < (long) height; i++)
               *--q=(*--p);
-            /*
-              Set old column to background color.
-            */
             for (i=0; i < (long) step; i++)
               *--q=image->background_color;
             break;
@@ -806,11 +816,10 @@ static void YShearImage(Image *image,const double degrees,
               q++;
               continue;
             }
-          *q++=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
+          *q++=BlendComposite(&pixel,p,alpha);
           pixel=(*p++);
         }
-        *q++=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
-          image->background_color.opacity);
+        *q++=BlendComposite(&pixel,&image->background_color,alpha);
         for (i=0; i < (step-1); i++)
           *q++=image->background_color;
         break;
@@ -831,11 +840,10 @@ static void YShearImage(Image *image,const double degrees,
           q--;
           if ((y_offset+height+step-i) >= image->rows)
             continue;
-          *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
+          *q=BlendComposite(&pixel,p,alpha);
           pixel=(*p);
         }
-        *--q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
-          image->background_color.opacity);
+        *--q=BlendComposite(&pixel,&image->background_color,alpha);
         for (i=0; i < (step-1); i++)
           *--q=image->background_color;
         break;
