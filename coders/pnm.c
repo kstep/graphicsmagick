@@ -370,7 +370,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            index=PNMInteger(image,2);
+            index=!PNMInteger(image,2);
             if (index >= image->colors)
               {
                 ThrowException(&image->exception,CorruptImageError,
@@ -480,7 +480,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (bit == 0)
               byte=ReadBlobByte(image);
-            index=(byte & 0x80) ? 0x01 : 0x00;
+            index=(byte & 0x80) ? 0x00 : 0x01;
             indexes[x]=index;
             *q++=image->colormap[index];
             bit++;
@@ -917,7 +917,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            FormatString(buffer,"%u ",indexes[x] == polarity ? 0x01 : 0x00);
+            FormatString(buffer,"%u ",indexes[x] == polarity ? 0x00 : 0x01);
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 36)
@@ -1039,7 +1039,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             byte<<=1;
-            if (indexes[x] == polarity)
+            if (indexes[x] != polarity)
               byte|=0x01;
             bit++;
             if (bit == 8)
