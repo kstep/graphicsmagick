@@ -755,7 +755,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
     }
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->semaphore);
-  FormatString(message,"destroy pixel cache (%.1024s)",cache_info->filename);
+  FormatString(message,"destroy %.1024s",cache_info->filename);
   LogMagickEvent(CacheEvent,message);
   LiberateMemory((void **) &cache_info);
 }
@@ -1984,8 +1984,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             if ((cache_info->storage_class == PseudoClass) ||
                 (cache_info->colorspace == CMYKColorspace))
               cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
-            FormatString(message,"memory cache %lumb (%.1024s)",(unsigned long)
-              (cache_info->length/1024/1024),cache_info->filename);
+            FormatString(message,"open %.1024s (%lumb)",
+							cache_info->filename,(unsigned long)
+              (cache_info->length/1024/1024));
             LogMagickEvent(CacheEvent,message);
             return(True);
           }
@@ -2052,9 +2053,10 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif
-  FormatString(message,"%.1024s cache %lumb (%.1024s)",
+  FormatString(message,"open %.1024s (%.1024s, %.1024s, %lumb)",
+    cache_info->filename,cache_info->cache_filename,
     cache_info->type == MemoryMappedCache ? "memory-mapped" : "disk",
-    (unsigned long) (cache_info->length/1024/1024),cache_info->filename);
+    (unsigned long) (cache_info->length/1024/1024));
   LogMagickEvent(CacheEvent,message);
   return(True);
 }
