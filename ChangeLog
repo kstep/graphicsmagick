@@ -1,4 +1,11 @@
 2002-12-12 William Radcliffe <billr@corbis.com>
+	* magick/magick.c
+	Fixed bugs in InitializeMagick, but I also heavily commented
+	the code so show what it seesm to be doing. It appears broken
+	and needs testing on all platforms. Toward that end, I added
+	Log events so that we can see what it is doing.
+
+2002-12-12 William Radcliffe <billr@corbis.com>
 	* utilities/gm.c
 	Fixes a crashing bug in gm.c caused by an attempt tp free a bad
 	pointer. Added comments to the code that explain why this happens
