@@ -1,3 +1,14 @@
+Important Notes
+
+  On some platforms VISUAL C++ 7.0 fails with an internal compiler
+  error while compiling image.c.  The workaround to this problem is to
+  use the following procedure if the problem is encountered:
+
+   o In the Solution Explorer, select CORE_Magick->src->image.c
+   o Select "Properities" (right-mouse menu) to bring up the Property
+   Pages for image.c
+   o Select "C/C++"->"Optimization"->"Floating-Point Consistency"
+   o Select "Improve Consistency (/Op)"
 
 Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
 

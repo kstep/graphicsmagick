@@ -418,8 +418,12 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   length=(long) GetCharacter(jpeg_info) << 8;
   length+=(long) GetCharacter(jpeg_info);
   length-=2;
-  if (length <= 0)
-    return(True);
+  if (length <= 14)
+    {
+      while (--length >= 0)
+        (void) GetCharacter(jpeg_info);
+      return(True);
+    }
   for (i=0; i < 12; i++)
     magick[i]=GetCharacter(jpeg_info);
   if (LocaleCompare(magick,"ICC_PROFILE") != 0)

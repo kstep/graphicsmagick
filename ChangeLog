@@ -1,3 +1,11 @@
+2003-03-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* INSTALL-windows.txt: Added a note regarding a workaround for
+	internal compiler errors while compiling image.c when using
+	Visual C++ 7.0.
+	* coders/jpeg.c (ReadICCProfile): Incorporate ImageMagick fix
+	to handle short JPEG ICC profiles.
+
 2003-03-11  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 	* www/gm.html, utilities/gm.1, guide/gm.tex: Expanded description
 	of the -affine option.
