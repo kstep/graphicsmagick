@@ -317,8 +317,6 @@ int main(int argc,char **argv)
   image_info->coalesce_frames=True;
   (void) strcpy(image_info->filename,argv[argc-1]);
   SetImageInfo(image_info,True);
-  if (strcmp(image_info->magick,"CACHE") == 0)
-    SetCacheThreshold(0);
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
   scene=0;

@@ -472,8 +472,6 @@ int main(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,argv[argc-1]);
   SetImageInfo(image_info,True);
-  if (strcmp(image_info->magick,"CACHE") == 0)
-    SetCacheThreshold(0);
   option=(char *) NULL;
   scene=0;
   /*

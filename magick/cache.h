@@ -59,14 +59,17 @@ typedef struct _CacheInfo
   IndexPacket
     *indexes;
 
-  unsigned int
-    persist;
-
   char
     filename[MaxTextExtent];
 
   int
     file;
+
+  off_t
+    offset;
+
+  unsigned int
+    persist;
 
   NexusInfo
     *nexus;
@@ -98,6 +101,7 @@ extern MagickExport unsigned int
   WriteCacheIndexes(Cache,const unsigned int);
 
 extern MagickExport void
+  AllocateCacheNexus(CacheInfo *),
   DestroyCacheNexus(Cache,const unsigned int),
   GetCacheInfo(Cache *),
   SetCacheThreshold(const off_t),

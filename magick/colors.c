@@ -1555,6 +1555,7 @@ MagickExport unsigned int QueryColorName(const PixelPacket *color,char *name)
   }
   if (min_distance != 0.0)
     FormatString(name,HexColorFormat,(unsigned int) color->red,
-      (unsigned int) color->green,(unsigned int) color->blue);
+      (unsigned int) color->green,(unsigned int) color->blue,
+      (unsigned int) color->opacity);
   return((unsigned int) min_distance);
 }

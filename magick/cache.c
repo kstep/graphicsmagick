@@ -910,6 +910,9 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
     length,
     number_pixels;
 
+  size_t
+    offset;
+
   void
     *allocation;
 
@@ -1004,26 +1007,19 @@ else
     return(False);
 #endif
   cache_info->storage_class=storage_class;
-  if (cache_info->type != DiskCache)
+  cache_info->type=DiskCache;
+  allocation=MapBlob(cache_info->file,IOMode,&offset);
+  if (allocation != (void *) NULL)
     {
-      size_t
-        offset;
-
-      cache_info->type=DiskCache;
-      allocation=MapBlob(cache_info->file,IOMode,&offset);
-      if (allocation != (void *) NULL)
-        {
-          /*
-            Create memory-mapped pixel cache.
-          */
-          cache_info->type=MemoryMappedCache;
-          cache_info->pixels=(PixelPacket *)
-            ((char *) allocation+cache_info->offset);
-          if (cache_info->storage_class == PseudoClass)
-            cache_info->indexes=(IndexPacket *)
-              (cache_info->pixels+number_pixels);
-          CloseCache(cache);
-        }
+      /*
+        Create memory-mapped pixel cache.
+      */
+      cache_info->type=MemoryMappedCache;
+      cache_info->pixels=(PixelPacket *)
+        ((char *) allocation+cache_info->offset);
+      if (cache_info->storage_class == PseudoClass)
+        cache_info->indexes=(IndexPacket *) (cache_info->pixels+number_pixels);
+      CloseCache(cache);
     }
   return(True);
 }
