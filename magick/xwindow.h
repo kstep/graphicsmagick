@@ -200,10 +200,8 @@ typedef struct _XImportInfo
 
 typedef struct _XPixelInfo
 {
-  unsigned int
-    colors;
-
   unsigned long
+    colors,
     *pixels;
 
   XColor
@@ -241,7 +239,7 @@ typedef struct _XResourceInfo
   QuantizeInfo
     *quantize_info;
 
-  unsigned int
+  unsigned long
     colors;
 
   unsigned int

@@ -338,7 +338,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             "http://www.imagemagick.org/");
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
-            PropModeReplace,(unsigned char *) command,strlen(command));
+            PropModeReplace,(unsigned char *) command,(int) strlen(command));
           XSetCursorState(display,windows,False);
           break;
         }
@@ -461,8 +461,10 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     **images;
 
   int
-    i,
     scene;
+
+  register size_t
+    i;
 
   unsigned int
     height,
@@ -601,12 +603,12 @@ MagickExport void XAnimateBackgroundImage(Display *display,
           next_image->matte=False;
           if ((next_image->storage_class == DirectClass) ||
               (next_image->colors != image->colors) ||
-              ((int) next_image->colors > visual_info->colormap_size))
+              (next_image->colors > (unsigned long) visual_info->colormap_size))
             break;
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < image->colors; i++)
             if (!ColorMatch(next_image->colormap[i],image->colormap[i],0))
               break;
-          if (i < (int) image->colors)
+          if (i < image->colors)
             break;
           next_image=next_image->next;
         }
@@ -1011,7 +1013,7 @@ MagickExport Image *XAnimateImages(Display *display,
   register char
     *p;
 
-  register int
+  register size_t
     i;
 
   static char
@@ -1192,12 +1194,12 @@ MagickExport Image *XAnimateImages(Display *display,
           next_image->matte=False;
           if ((next_image->storage_class == DirectClass) ||
               (next_image->colors != image->colors) ||
-              ((int) next_image->colors > visual_info->colormap_size))
+              (next_image->colors > (unsigned long) visual_info->colormap_size))
             break;
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < image->colors; i++)
             if (!ColorMatch(next_image->colormap[i],image->colormap[i],0))
               break;
-          if (i < (int) image->colors)
+          if (i < image->colors)
             break;
           next_image=next_image->next;
         }
@@ -1867,7 +1869,7 @@ MagickExport Image *XAnimateImages(Display *display,
             event.xclient.format,(unsigned long) event.xclient.data.l[0]);
         if (event.xclient.message_type == windows->im_protocols)
           {
-            if (*event.xclient.data.l == (int) windows->im_update_colormap)
+            if (*event.xclient.data.l == windows->im_update_colormap)
               {
                 /*
                   Update graphic context and window colormap.
@@ -1900,7 +1902,7 @@ MagickExport Image *XAnimateImages(Display *display,
                   XInstallColormap(display,map_info->colormap);
                 break;
               }
-            if (*event.xclient.data.l == (int) windows->im_exit)
+            if (*event.xclient.data.l == windows->im_exit)
               {
                 state|=ExitState;
                 break;
@@ -1929,15 +1931,14 @@ MagickExport Image *XAnimateImages(Display *display,
             /*
               Display image named by the Drag-and-Drop selection.
             */
-            if (((int) (*event.xclient.data.l) != 2) &&
-                ((int) (*event.xclient.data.l) != 128))
+            if ((*event.xclient.data.l != 2) && (*event.xclient.data.l != 128))
               break;
             selection=XInternAtom(display,"DndSelection",False);
             status=XGetWindowProperty(display,root_window,selection,0L,2047L,
               False,(Atom) AnyPropertyType,&type,&format,&length,&after,&data);
             if ((status != Success) || (length == 0))
               break;
-            if ((int) (*event.xclient.data.l) == 2)
+            if (*event.xclient.data.l == 2)
               {
                 /*
                   Offix DND.
@@ -1972,13 +1973,13 @@ MagickExport Image *XAnimateImages(Display *display,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == (int) windows->wm_take_focus)
+        if (*event.xclient.data.l == windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != (int) windows->wm_delete_window)
+        if (*event.xclient.data.l != windows->wm_delete_window)
           break;
         XWithdrawWindow(display,event.xclient.window,visual_info->screen);
         if (event.xclient.window == windows->image.id)
