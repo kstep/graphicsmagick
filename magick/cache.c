@@ -1594,14 +1594,14 @@ MagickExport void ResetPixelCacheMethods(void)
   /*
     Reset image pixel methods.
   */
-  close_pixel_handler=ClosePixelCache;
-  destroy_pixel_handler=DestroyPixelCache;
   get_pixel_handler=GetPixelCache;
-  get_indexes_from_handler=GetIndexesFromCache;
-  get_one_pixel_from_handler=GetOnePixelFromCache;
-  get_pixels_from_handler=GetPixelsFromCache;
   set_pixel_handler=SetPixelCache;
   sync_pixel_handler=SyncPixelCache;
+  get_pixels_from_handler=GetPixelsFromCache;
+  get_indexes_from_handler=GetIndexesFromCache;
+  get_one_pixel_from_handler=GetOnePixelFromCache;
+  close_pixel_handler=ClosePixelCache;
+  destroy_pixel_handler=DestroyPixelCache;
 }
 
 /*
@@ -1905,14 +1905,14 @@ MagickExport void SetPixelCacheMethods(GetPixelHandler get_pixel,
   assert(get_one_pixel_from != (GetOnePixelFromHandler) NULL);
   assert(close_pixel != (ClosePixelHandler) NULL);
   assert(destroy_pixel != (DestroyPixelHandler) NULL);
-  close_pixel_handler=close_pixel;
-  destroy_pixel_handler=destroy_pixel;
   get_pixel_handler=get_pixel;
-  get_indexes_from_handler=get_indexes_from;
-  get_one_pixel_from_handler=get_one_pixel_from;
-  get_pixels_from_handler=get_pixels_from;
   set_pixel_handler=set_pixel;
   sync_pixel_handler=sync_pixel;
+  get_pixels_from_handler=get_pixels_from;
+  get_indexes_from_handler=get_indexes_from;
+  get_one_pixel_from_handler=get_one_pixel_from;
+  close_pixel_handler=close_pixel;
+  destroy_pixel_handler=destroy_pixel;
 }
 
 /*

@@ -937,23 +937,23 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   CloseBlob(image);
   DestroyImage(image);
   /*
-    Check magic.mgk.
+    Check magic.mgk configuration file.
   */
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
   if ((magic_info != (MagicInfo *) NULL) && (magic_info->name != (char *) NULL))
-  {
-    (void) strcpy(image_info->magick,magic_info->name);
-    return(True);
-  }
+    {
+      (void) strcpy(image_info->magick,magic_info->name);
+      return(True);
+    }
   /*
-    Check module Is* functions
+    Check module IsImage() methods.
   */
   p=GetImageMagick(magick,2*MaxTextExtent);
   if (p != (char *) NULL)
-  {
-    (void) strcpy(image_info->magick,p);
-    return(True);
-  }
+    {
+      (void) strcpy(image_info->magick,p);
+      return(True);
+    }
   return(False);
 }
 
