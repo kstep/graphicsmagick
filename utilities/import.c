@@ -10,7 +10,7 @@
 %                 IIIII  M   M  P       OOO   R  R     T                      %
 %                                                                             %
 %                                                                             %
-%             Import X11 image to a machine independent format.               %
+%             Import image to a machine independent format.               %
 %                                                                             %
 %                                                                             %
 %                                                                             %

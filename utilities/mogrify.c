@@ -88,7 +88,7 @@
 %    -filter type         use this filter when resizing an image
 %    -flip                flip image in the vertical direction
 %    -flop                flop image in the horizontal direction
-%    -font name           X11 font for displaying text
+%    -font name           font for rendering text
 %    -format type         image format type
 %    -frame geometry      surround image with an ornamental border
 %    -fuzz distance       colors within this distance are considered equal
@@ -218,7 +218,7 @@ static void Usage()
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",
       "-flop                flop image in the horizontal direction",
-      "-font name           X11 font for displaying text",
+      "-font name           font for rendering text",
       "-format type         image format type",
       "-frame geometry      surround image with an ornamental border",
       "-fuzz distance       colors within this distance are considered equal",

@@ -92,7 +92,7 @@
 %    -flatten             flatten a sequence of images
 %    -flip                flip image in the vertical direction
 %    -flop                flop image in the horizontal direction
-%    -font name           X11 font for displaying text
+%    -font name           font for rendering text
 %    -frame geometry      surround image with an ornamental border
 %    -fuzz distance       colors within this distance are considered equal
 %    -gamma value         level of gamma correction
@@ -293,7 +293,7 @@ static void Usage()
       "-flatten             flatten a sequence of images",
       "-flip                flip image in the vertical direction",
       "-flop                flop image in the horizontal direction",
-      "-font name           X11 font for displaying text",
+      "-font name           font for rendering text",
       "-frame geometry      surround image with an ornamental border",
       "-fuzz distance       colors within this distance are considered equal",
       "-gamma value         level of gamma correction",

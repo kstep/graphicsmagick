@@ -64,7 +64,7 @@
 %    -dispose method     GIF disposal method
 %    -dissolve value     dissolve the two images a given percent
 %    -dither             apply Floyd/Steinberg error diffusion to image
-%    -font name          X11 font for displaying text
+%    -font name          font for rendering text
 %    -geometry geometry  location of the composite image
 %    -gravity type       which direction to gravitate towards
 %    -interlace type     None, Line, Plane, or Partition
@@ -133,7 +133,7 @@ static void Usage()
       "-dispose method     GIF disposal method",
       "-dissolve value     dissolve the two images a given percent",
       "-dither             apply Floyd/Steinberg error diffusion to image",
-      "-font name          X11 font for displaying text",
+      "-font name          font for rendering text",
       "-geometry geometry  location of the composite image",
       "-gravity type       which direction to gravitate towards",
       "-interlace type     None, Line, Plane, or Partition",
