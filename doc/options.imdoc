@@ -156,7 +156,7 @@ is specified as the background color.
 The color is specified using the format described under the <s>-fill</s>
 option.</pp>
 
-Refer to
+<pp>Refer to
 <format type=html>
 <a href="#xres">X Resources</a>
 </format>
@@ -1281,15 +1281,15 @@ a file titled by the remaining characters in the string.
 
 <pp>
 <s>Rotate</s> rotates subsequent shape primitives and text primitives about
-the origen of the main image. If the <s>-region</s> option precedes the
-<s>-draw</s> option, the origen for transformations is the upper left
+the origin of the main image. If the <s>-region</s> option precedes the
+<s>-draw</s> option, the origin for transformations is the upper left
 corner of the region.</pp>
 <pp>
 <s>Translate</s> translates them.</pp>
 <pp>
 <s>Scale</s> scales them.</pp>
 <pp>
-<s>SkewX</s> and <s>SkewY</s> skew them with respect to the origen of
+<s>SkewX</s> and <s>SkewY</s> skew them with respect to the origin of
 the main image or the region.</pp>
 <pp>
 The transformations modify the current affine matrix, which is initialized

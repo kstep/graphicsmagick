@@ -1,5 +1,6 @@
 2003-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* doc/options.imdoc: Fix to formatting. Fix spelling of origin.
 	* PerlMagick/t/bzlib/read.t: Add test for reading BZipped file.
 	* PerlMagick/t/subroutines.pl (testRead): Skip testing reads
 	of compressed BLOBs because reading compressed BLOBs is not
