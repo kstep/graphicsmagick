@@ -8,6 +8,13 @@
 extern "C" {
 #endif
 
+typedef Image
+  *(*DecoderHandler)(const ImageInfo *,ExceptionInfo *);
+
+typedef unsigned int
+  (*EncoderHandler)(const ImageInfo *,Image *),
+  (*MagickHandler)(const unsigned char *,const size_t);
+
 typedef struct _MagickInfo
 {
   const char
@@ -19,12 +26,14 @@ typedef struct _MagickInfo
   ImageInfo
     *image_info;
 
-  Image
-    *(*decoder)(const ImageInfo *,ExceptionInfo *);
+  DecoderHandler
+    decoder;
 
-  unsigned int
-    (*encoder)(const ImageInfo *,Image *),
-    (*magick)(const unsigned char *,const size_t);
+  EncoderHandler
+    encoder;
+
+  MagickHandler
+    magick;
 
   void
     *client_data;
