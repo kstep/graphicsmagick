@@ -864,12 +864,14 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("geometry",option+1) == 0)
             {
+              (void) CloneString(&image_info->geometry,(char *) NULL);
               resource_info.image_geometry=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
+                  (void) CloneString(&image_info->geometry,argv[i]);
                   resource_info.image_geometry=argv[i];
                 }
               break;

@@ -106,7 +106,6 @@ typedef struct _OptionInfo
 {
   char
     *displace_geometry,
-    *geometry,
     *unsharp_geometry,
     *watermark_geometry;
 
@@ -304,7 +303,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,
           height=(*image)->rows;
           x=0;
           y=0;
-          flags=ParseGeometry(option_info->geometry,&x,&y,&width,&height);
+          flags=ParseGeometry(image_info->geometry,&x,&y,&width,&height);
           if ((flags & XNegative) != 0)
             x+=(*image)->columns;
           if ((flags & WidthValue) == 0)
@@ -952,13 +951,13 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("geometry",option+1) == 0)
             {
-              (void) CloneString(&option_info.geometry,(char *) NULL);
+              (void) CloneString(&image_info->geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&option_info.geometry,argv[i]);
+                  (void) CloneString(&image_info->geometry,argv[i]);
                 }
               break;
             }

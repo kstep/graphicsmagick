@@ -80,14 +80,14 @@
 %    -interlace type     None, Line, Plane, or Partition
 %    -label name         assign a label to an image
 %    -monochrome         transform image to black and white
-%    -negate             replace every pixel with its complementary color 
+%    -negate             replace every pixel with its complementary color
 %    -page geometry      size and location of an image canvas
 %    -pointsize value    pointsize of Postscript font
 %    -quality value      JPEG/MIFF/PNG compression level
 %    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        number of screen snapshots
 %    -screen             select image from root window
-%    -silent             operate silently, i.e. don't ring any bells 
+%    -silent             operate silently, i.e. don't ring any bells
 %    -transparent color  make this color transparent within the image
 %    -treedepth value    depth of the color tree
 %    -type type          image type
@@ -625,11 +625,13 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("geometry",option+1) == 0)
             {
+              (void) CloneString(&image_info->geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
+                  (void) CloneString(&image_info->geometry,argv[i]);
                 }
               break;
             }
@@ -796,6 +798,18 @@ int main(int argc,char **argv)
           if (LocaleCompare("silent",option+1) == 0)
             {
               ximage_info.silent=(*option == '-');
+              break;
+            }
+          if (LocaleCompare("size",option+1) == 0)
+            {
+              (void) CloneString(&image_info->size,(char *) NULL);
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !IsGeometry(argv[i]))
+                    MagickError(OptionError,"Missing geometry",option);
+                  (void) CloneString(&image_info->size,argv[i]);
+                }
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);

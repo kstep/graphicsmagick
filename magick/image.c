@@ -1043,6 +1043,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     clone_info->tile=AllocateString(image_info->tile);
   if (image_info->page != (char *) NULL)
     clone_info->page=AllocateString(image_info->page);
+  if (image_info->geometry != (char *) NULL)
+    clone_info->geometry=AllocateString(image_info->geometry);
   if (image_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(image_info->server_name);
   if (image_info->font != (char *) NULL)
@@ -2357,6 +2359,8 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     LiberateMemory((void **) &image_info->tile);
   if (image_info->page != (char *) NULL)
     LiberateMemory((void **) &image_info->page);
+  if (image_info->geometry != (char *) NULL)
+    LiberateMemory((void **) &image_info->geometry);
   if (image_info->server_name != (char *) NULL)
     LiberateMemory((void **) &image_info->server_name);
   if (image_info->font != (char *) NULL)

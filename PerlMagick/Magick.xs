@@ -1303,6 +1303,20 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'G':
     case 'g':
     {
+      if (LocaleCompare(attribute,"geometry") == 0)
+        {
+          if (info)
+            {
+              if (!IsGeometry(SvPV(sval,na)))
+                {
+                  MagickWarning(OptionWarning,"Invalid geometry on size",
+                    SvPV(sval,na));
+                  return;
+                }
+              (void) CloneString(&info->image_info->geometry,SvPV(sval,na));
+            }
+          return;
+        }
       if (LocaleCompare(attribute,"green-primary") == 0)
         {
           for ( ; image; image=image->next)
