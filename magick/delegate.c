@@ -632,18 +632,21 @@ static unsigned int ReadConfigureFile(const char *basename,
                 ThrowException(exception,ConfigureError,
                   "<include /> nested too deeply",path);
 	  					else
-                {
-                  char
-                    filename[MaxTextExtent];
+	  					  if (IsAccessible(path))
+                  (void) ReadConfigureFile(path,depth+1,exception);
+								else
+                  {
+                    char
+                      filename[MaxTextExtent];
   
-                  GetPathComponent(path,HeadPath,filename);
-                  (void) strcat(filename,DirectorySeparator);
-                  (void) strncat(filename,token,MaxTextExtent-
-                    strlen(filename)-1);
-                  (void) ReadConfigureFile(filename,depth+1,exception);
-                  while (delegate_list->next != (DelegateInfo *) NULL)
-                    delegate_list=delegate_list->next;
-                }
+                    GetPathComponent(path,HeadPath,filename);
+                    (void) strcat(filename,DirectorySeparator);
+                    (void) strncat(filename,token,MaxTextExtent-
+                      strlen(filename)-1);
+                    (void) ReadConfigureFile(filename,depth+1,exception);
+                  }
+              while (delegate_list->next != (DelegateInfo *) NULL)
+                delegate_list=delegate_list->next;
             }
         }
         continue;
