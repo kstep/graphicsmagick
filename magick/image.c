@@ -4559,7 +4559,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             height=(*image)->rows;
             x=0;
             y=0;
-            (void) ParseGeometry(argv[++i],&x,&y,&width,&height);
+            (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
             if ((width == (*image)->columns) && (height == (*image)->rows))
               break;
             resize_image=ResizeImage(*image,width,height,(*image)->filter,
@@ -4633,7 +4633,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             height=(*image)->rows;
             x=0;
             y=0;
-            (void) ParseGeometry(argv[++i],&x,&y,&width,&height);
+            (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
             sample_image=SampleImage(*image,width,height,&(*image)->exception);
             if (sample_image == (Image *) NULL)
               break;
@@ -4656,7 +4656,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             height=(*image)->rows;
             x=0;
             y=0;
-            (void) ParseGeometry(argv[++i],&x,&y,&width,&height);
+            (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
             scale_image=ScaleImage(*image,width,height,&(*image)->exception);
             if (scale_image == (Image *) NULL)
               break;

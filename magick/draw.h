@@ -115,6 +115,7 @@ typedef struct _TypeInfo
 { 
   char
     *filename,
+    *foundry,
     *name,
     *family,
     *alias,

@@ -415,6 +415,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
             type_list->format=AllocateString(token);
             break;
           }
+        if (LocaleCompare((char *) keyword,"foundry") == 0)
+          {
+            type_list->foundry=AllocateString(token);
+            break;
+          }
         if (LocaleCompare((char *) keyword,"fullname") == 0)
           {
             type_list->description=AllocateString(token);
