@@ -2003,6 +2003,12 @@ and blue color values:
 <pre>&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = split(', ', $image->QueryColor('cyan'));
 &nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = split(', ', $image->QueryColor('#716bae'));</pre>
 <dd>
+<tt>QueryColorName</tt> accepts a color value and returns its respective
+name or hex value;
+<pre>
+  &nbsp;&nbsp;&nbsp; $name = $image->QueryColorName('rgba(80,60,0,0)');
+</pre>
+<dd>
 <p>Use <tt>RemoteCommand</tt> to send a command to an already running <a href="display.html">display</a>
 or <a href="animate.html">animate</a> application. The only parameter is
 the name of the image file to display or animate.
