@@ -8440,7 +8440,7 @@ static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
 extern "C" {
 #endif
 
-void XSignalHandler(int status)
+MagickExport void XSignalHandler(int status)
 {
   XWindows
     *windows;
