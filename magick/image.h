@@ -48,27 +48,6 @@ typedef unsigned char Quantum;
 /*
   Typedef declarations.
 */
-typedef struct _AffineMatrix
-{
-  double
-    sx,
-    rx,
-    ry,
-    sy,
-    tx,
-    ty;
-} AffineMatrix;
-
-typedef struct _Ascii85Info
-{
-  int
-    offset,
-    line_break;
-
-  unsigned char
-    buffer[10];
-} Ascii85Info;
-
 typedef struct _PointInfo
 {
   double
@@ -113,14 +92,15 @@ typedef struct _RectangleInfo
     y;
 } RectangleInfo;
 
-typedef struct _BoundingBox
+typedef struct _Ascii85Info
 {
-  double
-    width,
-    height,
-    x,
-    y;
-} BoundingBox;
+  int
+    offset,
+    line_break;
+
+  unsigned char
+    buffer[10];
+} Ascii85Info;
 
 typedef struct _BlobInfo
 {
@@ -153,6 +133,23 @@ typedef struct _ChromaticityInfo
     blue_primary,
     white_point;
 } ChromaticityInfo;
+
+typedef struct _ColorInfo
+{
+  char
+    *filename,
+    *name;
+
+  ComplianceType
+    compliance;
+
+  PixelPacket
+    color;
+  
+  struct _ColorInfo
+    *previous,
+    *next;
+} ColorInfo;
 
 typedef struct _ExceptionInfo
 {
@@ -621,9 +618,13 @@ extern MagickExport const int
   Image utilities methods.
 */
 extern MagickExport char 
+  **GetColorList(const char *,int *),
   *GetImageMagick(const unsigned char *,const unsigned int),
   *GetMagickConfigurePath(const char *),
   *GetMagickVersion(unsigned int *);
+
+extern MagickExport size_t
+  GetNumberColors(Image *,FILE *);
 
 extern MagickExport Image
   *AddNoiseImage(Image *,const NoiseType,ExceptionInfo *),
@@ -692,7 +693,8 @@ extern MagickExport ImageType
   GetImageType(Image *);
 
 extern MagickExport IndexPacket
-  *(*GetIndexes)(const Image *);
+  *(*GetIndexes)(const Image *),
+  ValidateColormapIndex(Image *,const int);
 
 extern MagickExport int
   ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
@@ -731,10 +733,15 @@ extern MagickExport unsigned int
   GetImageDepth(Image *),
   GetNumberScenes(const Image *),
   IsGeometry(const char *),
+  IsGrayImage(Image *),
   IsImagesEqual(Image *,Image *),
-  IsMagickConflict(const char *),
-  IsSubimage(const char *,const unsigned int),
   IsImageTainted(const Image *),
+  IsMagickConflict(const char *),
+  IsMonochromeImage(Image *),
+  IsOpaqueImage(Image *),
+  IsPseudoClass(Image *),
+  IsSubimage(const char *,const unsigned int),
+  ListColorInfo(FILE *,ExceptionInfo *),
   ListMagickInfo(FILE *,ExceptionInfo *),
   ModulateImage(Image *,const char *),
   MogrifyImage(const ImageInfo *,const int,char **,Image **),
@@ -746,6 +753,8 @@ extern MagickExport unsigned int
   PopImagePixels(Image *,const QuantumType,unsigned char *),
   ProfileImage(Image *,const char *,const char *),
   PushImagePixels(Image *,const QuantumType,const unsigned char *),
+  QueryColorDatabase(const char *,PixelPacket *),
+  QueryColorname(Image *,const PixelPacket *,const ComplianceType,char *),
   RaiseImage(Image *,const RectangleInfo *,const int),
   ReadStream(const ImageInfo *,int (*)(const Image *,const void *,const size_t),
     ExceptionInfo *),
@@ -771,6 +780,7 @@ extern MagickExport void
   CompressColormap(Image *),
   CycleColormapImage(Image *,const int),
   DescribeImage(Image *,FILE *,const unsigned int),
+  DestroyColorInfo(void),
   DestroyConstitute(void),
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),

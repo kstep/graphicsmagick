@@ -11,6 +11,17 @@ extern "C" {
 /*
   Typedef declarations.
 */
+typedef struct _AffineMatrix
+{
+  double
+    sx,
+    rx,
+    ry,
+    sy,
+    tx,
+    ty;
+} AffineMatrix;
+
 typedef struct _DrawInfo
 {
   char
