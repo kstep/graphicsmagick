@@ -4,6 +4,19 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2002-04-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableCompositeImage): If magick attribute
+        string is specified, then composite image is supplied to
+        ImageMagick as inlined Base64 rather than by MPRI reference.
+
+  <LI> lib/Blob.cpp (base64): Added methods to update Blob with data
+        from Base64-encoded string, or to return a Base64-encoded string
+        from Blob.  Still needs documentation.
+
+</UL>
+<p>
 2002-04-09  Dom Lachowicz    &lt;cinamod@hotmail.com&gt;
 
 <UL>

@@ -493,7 +493,8 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( const Magick::DrawableC
      _y(original_._y),
      _width(original_._width),
      _height(original_._height),
-     _image(new Image(*original_._image))
+     _image(new Image(*original_._image)),
+     _magick(original_._magick)
 {
 }
 // Assignment operator
@@ -509,6 +510,7 @@ Magick::DrawableCompositeImage& Magick::DrawableCompositeImage::operator= (const
       _height = original_._height;
       delete _image;
       _image = new Image(*original_._image);
+      _magick = original_._magick;
     }
   return *this;
 }
@@ -589,15 +591,34 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
       stream_ << "CopyOpacity ";
       break;
     default:
-        {
-          stream_ << "Copy ";
-        }
+      {
+        stream_ << "Copy ";
+      }
     }
 
   stream_ << Magick::Coordinate( _x, _y)
           << " "
           << Magick::Coordinate( _width, _height)
-          << " 'mpri:" << _image->registerId() << "'";
+          << " '";
+
+  if( _magick.length() == 0 )
+    {
+      // Pass via mpri reference id
+      stream_ << "mpri:" << _image->registerId();
+    }
+  else
+    {
+      // Pass as Base64-encoded inline image using a data URL
+      // (see RFC 2397).  The URL format follows the form:
+      // data:[<mediatype>][;base64],<data>
+      Blob blob;
+      _image->write(&blob,_magick);
+
+      char *media_type = MagickToMime(_magick.c_str());
+      stream_ << "data:" << media_type << ";base64," << blob.base64();
+      LiberateMemory(reinterpret_cast<void **>(&media_type));
+    }
+  stream_ << "'";
 }
 
 // Line

@@ -1,3 +1,13 @@
+2002-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableCompositeImage): If magick attribute
+ 	string is specified, then composite image is supplied to
+ 	ImageMagick as inlined Base64 rather than by MPRI reference.
+
+	* lib/Blob.cpp (base64): Added methods to update Blob with data
+ 	from Base64-encoded string, or to return a Base64-encoded string
+ 	from Blob.  Still needs documentation.
+
 2002-04-09  Dom Lachowicz    <cinamod@hotmail.com>
 
 	* lib/Image.cpp (Image::ping): Added PingBlob function

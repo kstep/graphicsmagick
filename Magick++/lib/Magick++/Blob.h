@@ -9,6 +9,7 @@
 #define Magick_Blob_header
 
 #include "Magick++/Thread.h"
+#include <string>
 
 namespace Magick
 {
@@ -43,6 +44,11 @@ namespace Magick
     // Assignment operator (reference counted)
     Blob&         operator= ( const Blob& blob_ );
 
+    // Update object contents from Base64-encoded string representation.
+    void          base64 ( const std::string base64_ );
+    // Return Base64-encoded string representation.
+    std::string   base64 ( void );
+
     // Update object contents, making a copy of the supplied data.
     // Any existing data in the object is deallocated.
     void          update ( const void* data_, size_t length_ );
@@ -57,7 +63,11 @@ namespace Magick
     void          updateNoCopy ( void* data_, size_t length_,
                                  Allocator allocator_ = NewAllocator );
 
-    // Obtain pointer to data
+    // Obtain pointer to data. The user should never try to modify or
+    // free this data since the Blob class manages its own data. The
+    // user must be finished with the data before allowing the Blob to
+    // be destroyed since the pointer is invalid once the Blob is
+    // destroyed.
     const void*   data ( void ) const;
 
     // Obtain data length

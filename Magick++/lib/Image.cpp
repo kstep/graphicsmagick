@@ -1655,16 +1655,16 @@ void Magick::Image::zoom( const Geometry &geometry_ )
   unsigned long height = rows();
 
   GetMagickGeometry (static_cast<std::string>(geometry_).c_str(),
-		      &x, &y,
-		      &width, &height );
+                     &x, &y,
+                     &width, &height );
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     ZoomImage( image(),
-	       width,
-	       height,
-	       &exceptionInfo);
+               width,
+               height,
+               &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
 }

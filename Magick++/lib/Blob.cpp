@@ -79,6 +79,35 @@ Magick::Blob& Magick::Blob::operator= ( const Magick::Blob& blob_ )
   return *this;
 }
 
+// Update object contents from Base64-encoded string representation.
+void Magick::Blob::base64 ( const std::string base64_ )
+{
+  size_t length;
+
+  unsigned char *decoded =
+    Base64Decode( base64_.c_str(), &length );
+
+  if(decoded)
+    updateNoCopy( static_cast<void*>(decoded), length, MallocAllocator );
+}
+
+// Return Base64-encoded string representation.
+std::string Magick::Blob::base64 ( void )
+{
+  char *encoded =
+    Base64Encode(static_cast<const unsigned char*>(data()), length());
+
+  std::string result;
+
+  if(encoded)
+    {
+      result = std::string(encoded);
+      LiberateMemory(reinterpret_cast<void **>(&encoded));
+    }
+
+  return result;
+}
+
 // Update object contents, making a copy of the supplied data.
 // Any existing data in the object is deallocated.
 void Magick::Blob::update ( const void* data_, size_t length_ )
