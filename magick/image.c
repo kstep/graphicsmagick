@@ -5043,9 +5043,9 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          cyan=MaxRGB-red;
-          magenta=MaxRGB-green;
-          yellow=MaxRGB-blue;
+          cyan=MaxRGB-q->red;
+          magenta=MaxRGB-q->green;
+          yellow=MaxRGB-q->blue;
           black=cyan < magenta ? Min(cyan,yellow) : Min(magenta,yellow);
           q->red=(Quantum) (cyan < 0 ? 0 : cyan >= MaxRGB ? MaxRGB : cyan);
           q->green=(Quantum)
