@@ -165,9 +165,12 @@ MagickExport char *GetImageMagick(const unsigned char *magick,
     if (p->magick)
       if (p->magick(magick,length))
         break;
-  LiberateSemaphore(&magick_semaphore);
   if (p != (MagickInfo *) NULL)
-    return(p->tag);
+    {
+      LiberateSemaphore(&magick_semaphore);
+      return(p->tag);
+    }
+  LiberateSemaphore(&magick_semaphore);
   return((char *) NULL);
 }
 
@@ -289,6 +292,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       /*
         Register image formats.
       */
+      LiberateSemaphore(&magick_semaphore);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
       InitializeModules();
 #else
@@ -373,14 +377,13 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterYUVImage();
 #endif
     }
+  LiberateSemaphore(&magick_semaphore);
   if ((tag == (char *) NULL) || (*tag == '\0'))
-    {
-      LiberateSemaphore(&magick_semaphore);
-      return(magick_list);
-    }
+    return(magick_list);
   /*
     Find tag in list
   */
+  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       break;
@@ -389,8 +392,10 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       LiberateSemaphore(&magick_semaphore);
       return(p);
     }
+  LiberateSemaphore(&magick_semaphore);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   (void) OpenModule(tag);
+  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       break;
@@ -474,19 +479,19 @@ MagickExport void ListMagickInfo(FILE *file)
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
   (void) GetMagickInfo((char *) NULL);
-  AcquireSemaphore(&magick_semaphore);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   OpenModules();
 #endif    
+  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (p->stealth != True)
       (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
         p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
         p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
         p->description ? p->description : "");
+  LiberateSemaphore(&magick_semaphore);
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
-  LiberateSemaphore(&magick_semaphore);
 }
 
 /*
@@ -576,11 +581,13 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   assert(entry != (MagickInfo *) NULL);
   assert(entry->signature == MagickSignature);
   UnregisterMagickInfo(entry->tag);
+  AcquireSemaphore(&magick_semaphore);
   entry->previous=(MagickInfo *) NULL;
   entry->next=(MagickInfo *) NULL;
   if (magick_list == (MagickInfo *) NULL)
     {
       magick_list=entry;
+      LiberateSemaphore(&magick_semaphore);
       return(entry);
     }
   for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
@@ -593,6 +600,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
       entry->previous=p;
       if (entry->next != (MagickInfo *) NULL)
         entry->next->previous=entry;
+      LiberateSemaphore(&magick_semaphore);
       return(entry);
     }
   entry->next=p;
@@ -602,6 +610,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
     entry->previous->next=entry;
   if (p == magick_list)
     magick_list=entry;
+  LiberateSemaphore(&magick_semaphore);
   return(entry);
 }
 
@@ -688,6 +697,7 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
 
   assert(tag != (const char *) NULL);
   status=False;
+  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)
@@ -705,5 +715,6 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
     status=True;
     break;
   }
+  LiberateSemaphore(&magick_semaphore);
   return(status);
 }
