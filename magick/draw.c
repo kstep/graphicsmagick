@@ -1978,7 +1978,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (LocaleCompare("graphic-context",token) == 0)
               {
                 if (graphic_context[n]->clip_mask != (Image *) NULL)
-                  if (graphic_context[n]->clip_mask != 
+                  if (graphic_context[n]->clip_mask !=
                       graphic_context[n-1]->clip_mask)
                     {
                       DestroyImage(graphic_context[n]->clip_mask);
@@ -2312,6 +2312,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (*token == ',')
         GetToken(q,&q,token);
       point.y=atof(token);
+      GetToken(q,(char **) NULL,token);
+      if (*token == ',')
+        GetToken(q,&q,token);
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].point=point;
       primitive_info[i].coordinates=0;
