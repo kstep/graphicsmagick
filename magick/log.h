@@ -30,24 +30,28 @@ extern "C" {
 /* NOTE: any changes to this effect PerlMagick */
 typedef enum
 { 
-  UndefinedEventMask = 0x0000,
-  NoEventsMask = 0x0000,
-  ConfigureEventMask = 0x0001,
-  AnnotateEventMask = 0x0002,
-  RenderEventMask = 0x0004,
-  TransformEventMask = 0x0008,
-  LocaleEventMask = 0x0010,
-  CoderEventMask = 0x0020,
-  X11EventMask = 0x0040,
-  CacheEventMask = 0x0080,
-  BlobEventMask = 0x0100,
-  DeprecateEventMask = 0x0200,
-  UserEventMask = 0x0400,
-  ResourceEventMask = 0x0800,
-  TemporaryFileEventMask = 0x01000,
-  ExceptionEventMask = 0x02000,
-  OptionEventMask = 0x04000,
-  AllEventsMask = 0x7FFFFFFF
+  UndefinedEventMask     = 0x00000000,
+  NoEventsMask           = 0x00000000,
+  ConfigureEventMask     = 0x00000001,
+  AnnotateEventMask      = 0x00000002,
+  RenderEventMask        = 0x00000004,
+  TransformEventMask     = 0x00000008,
+  LocaleEventMask        = 0x00000010,
+  CoderEventMask         = 0x00000020,
+  X11EventMask           = 0x00000040,
+  CacheEventMask         = 0x00000080,
+  BlobEventMask          = 0x00000100,
+  DeprecateEventMask     = 0x00000200,
+  UserEventMask          = 0x00000400,
+  ResourceEventMask      = 0x00000800,
+  TemporaryFileEventMask = 0x00001000,
+  ExceptionEventMask     = 0x00002000,
+  OptionEventMask        = 0x00004000,
+  InformationEventMask   = 0x00008000,
+  WarningEventMask       = 0x00010000,
+  ErrorEventMask         = 0x00020000,
+  FatalErrorEventMask    = 0x00040000,
+  AllEventsMask          = 0x7FFFFFFF
 } LogEventType;
 
 /*

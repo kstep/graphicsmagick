@@ -85,9 +85,11 @@ typedef struct _LogInfo
     *file;
 
   unsigned long
-    events,
     generation,
     count;
+
+  LogEventType
+    events;
 
   LogOutputType
     output_type;
@@ -100,7 +102,8 @@ typedef struct _EventInfo
 {
   char *name;
   LogEventType mask;
-  ExceptionType type;
+  ExceptionType start_type;
+  ExceptionType end_type;
 } EventInfo;
 
 /*
@@ -122,24 +125,45 @@ static const char
     "  <log format=\"%t %r %u %p %m/%f/%l/%d/%s:\n  %e\" />"
     "</magicklog>";
 
+/* This table maps between masks and the various event id's that can occur
+   This following id's are not represetned in this table yet, since each of
+   them would require a bit in the bitmask and none of these are actually
+   used in the code at this point.
+
+     DelegateBase
+     MissingDelegateBase
+     CorruptImageBase
+     FileOpenBase
+     StreamBase
+     ModuleBase
+     ImageBase
+     MonitorBase
+     RegistryBase
+
+ */
 static const EventInfo eventmask_map[] =
   {
     { "none", NoEventsMask, 0 },
-    { "configure", ConfigureEventMask, ConfigureBase },
-    { "annotate", AnnotateEventMask, AnnotateBase },
-    { "render", RenderEventMask, RenderBase },
-    { "transform", TransformEventMask, TransformBase },
-    { "locale", LocaleEventMask, LocaleBase },
-    { "coder", CoderEventMask, CoderBase },
-    { "x11", X11EventMask, X11Base },
-    { "cache", CacheEventMask, CacheBase },
-    { "blob", BlobEventMask, BlobBase },
-    { "deprecate", DeprecateEventMask, DeprecateBase },
-    { "user", UserEventMask, UserBase },
-    { "resource", ResourceEventMask, ResourceBase },
-    { "temporaryfile", TemporaryFileEventMask, TemporaryFileBase },
-    { "exception", ExceptionEventMask, ExceptionBase },
-    { "option", OptionEventMask, OptionBase },
+    { "information", InformationEventMask, EventException, EventException+99 },
+    { "warning", WarningEventMask, WarningException, WarningException+99 },
+    { "error", ErrorEventMask, ErrorException, ErrorException+99 },
+    { "fatalerror", FatalErrorEventMask, FatalErrorException, FatalErrorException+99 },
+    { "configure", ConfigureEventMask, ConfigureBase, ConfigureBase },
+    { "annotate", AnnotateEventMask, AnnotateBase, AnnotateBase },
+    { "render", RenderEventMask, RenderBase, RenderBase },
+    { "transform", TransformEventMask, TransformBase, TransformBase },
+    { "locale", LocaleEventMask, LocaleBase, LocaleBase },
+    { "coder", CoderEventMask, CoderBase, CoderBase },
+    { "x11", X11EventMask, X11Base, UserBase },
+    { "cache", CacheEventMask, CacheBase, CacheBase },
+    { "blob", BlobEventMask, BlobBase, BlobBase },
+    { "deprecate", DeprecateEventMask, DeprecateBase, DeprecateBase },
+    { "user", UserEventMask, UserBase, UserBase },
+    { "resource", ResourceEventMask, ResourceBase, ResourceBase },
+    { "temporaryfile", TemporaryFileEventMask, TemporaryFileBase, TemporaryFileBase },
+    /* this one is actually not used anymore */
+    { "exception", ExceptionEventMask, ExceptionBase, ExceptionBase },
+    { "option", OptionEventMask, OptionBase, OptionBase },
     { "all", AllEventsMask, 0 },
     { 0, 0 }
   };
@@ -181,7 +205,7 @@ static void
 /*
   Parse an event specification string and return the equivalent bits.
 */
-static unsigned long ParseEvents(const char *event_string)
+static LogEventType ParseEvents(const char *event_string)
 {
   const char
     *p;
@@ -189,8 +213,8 @@ static unsigned long ParseEvents(const char *event_string)
   int
     i;
 
-  unsigned long
-    events=0;
+  LogEventType
+    events=NoEventsMask;
 
   for (p=event_string; p != 0; p=strchr(p,','))
     {
@@ -679,11 +703,32 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
       /* first translate the base type of the event to a mask */
       for (i=0; eventmask_map[i].name != 0; i++)
         {
-          if ((type % 100) == eventmask_map[i].type)
+          /* if the range in the table is above 100 it represents raw
+             event id's. These entry types are to look for specific
+             severity codes.
+           */
+          if (eventmask_map[i].start_type > 99)
             {
-              if (!(log_info->events & eventmask_map[i].mask))
-                return(True);
-              break;
+              if ((type >= eventmask_map[i].start_type) &&
+                (type <= eventmask_map[i].end_type))
+                {
+                  if (!(log_info->events & eventmask_map[i].mask))
+                    return(True);
+                  break;
+                }
+            }
+          else
+            {
+              /* these ranges are for id's with the severity stripped
+                 off and represent a category instead.
+               */
+              if (((type % 100) >= eventmask_map[i].start_type) &&
+                ((type % 100) <= eventmask_map[i].end_type))
+                {
+                  if (!(log_info->events & eventmask_map[i].mask))
+                    return(True);
+                  break;
+                }
             }
         }
     }
