@@ -1497,8 +1497,7 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
                 geometry.height=height;
                 geometry.x=x;
                 geometry.y=y;
-                next=CropImage(transform_image,&geometry,
-                  &(*image)->exception);
+                next=CropImage(transform_image,&geometry,&(*image)->exception);
                 if (next == (Image *) NULL)
                   break;
                 if (crop_image == (Image *) NULL)
