@@ -270,7 +270,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     else
       if (AbsoluteValue(weight-(long) p->weight) <= 200)
         score+=4;
-			else
+      else
         if (AbsoluteValue(weight-(long) p->weight) <= 400)
           score+=2;
     if (p->stretch == stretch)
