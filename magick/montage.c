@@ -732,7 +732,6 @@ MagickExport Image *MontageImages(const Image *images,
       MagickMonitor(MontageImageText,tiles,total_tiles);
       tiles++;
     }
-    montage->matte=False;
     if ((i+1) < (long) images_per_page)
       {
         /*
