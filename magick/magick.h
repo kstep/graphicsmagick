@@ -107,6 +107,7 @@
 #define HasHDF
 #define HasFPX
 #define HAVE_MMAP
+#define HasXML
 #endif
 
 #undef index
