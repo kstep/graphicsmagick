@@ -331,6 +331,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
         (void) SetMonitorHandler(handler);
         return((Image *) NULL);
       }
+    tiled_image->exempt=True;
     image_list[tile]=tiled_image;
     (void) SetMonitorHandler(handler);
     ProgressMonitor(TileImageText,tile,number_images);

@@ -1355,7 +1355,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
 %
 %  A description of each parameter follows:
 %
-%    o morphed_image: Method MorphImages returns an image sequence that
+%    o morph_image: Method MorphImages returns an image sequence that
 %      has linearly interpolated pixels and size between two input images.
 %
 %    o images: The address of a structure of type Image;  returned from
@@ -1377,8 +1377,8 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
 
   Image
     *image,
-    *morphed_image,
-    *morphed_images;
+    *morph_image,
+    *morph_images;
 
   int
     y;
@@ -1407,8 +1407,8 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
   /*
     Clone first frame in sequence.
   */
-  morphed_images=CloneImage(images,images->columns,images->rows,True);
-  if (morphed_images == (Image *) NULL)
+  morph_images=CloneImage(images,images->columns,images->rows,True);
+  if (morph_images == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
         "Memory allocation failed");
@@ -1425,33 +1425,33 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
     {
       beta=(double) (i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
-      morphed_images->next=ZoomImage(image,
+      morph_images->next=ZoomImage(image,
         (unsigned int) (alpha*image->columns+beta*image->next->columns+0.5),
         (unsigned int) (alpha*image->rows+beta*image->next->rows+0.5));
-      if (morphed_images->next == (Image *) NULL)
+      if (morph_images->next == (Image *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
             "Memory allocation failed");
           break;
         }
-      morphed_images->next->previous=morphed_images;
-      morphed_images=morphed_images->next;
-      morphed_image=ZoomImage(image->next,morphed_images->columns,
-        morphed_images->rows);
-      if (morphed_image == (Image *) NULL)
+      morph_images->next->previous=morph_images;
+      morph_images=morph_images->next;
+      morph_image=
+        ZoomImage(image->next,morph_images->columns,morph_images->rows);
+      if (morph_image == (Image *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
             "Memory allocation failed");
           break;
         }
-      morphed_images->class=DirectClass;
-      for (y=0; y < (int) morphed_images->rows; y++)
+      morph_images->class=DirectClass;
+      for (y=0; y < (int) morph_images->rows; y++)
       {
-        p=GetPixelCache(morphed_image,0,y,morphed_image->columns,1);
-        q=SetPixelCache(morphed_images,0,y,morphed_images->columns,1);
+        p=GetPixelCache(morph_image,0,y,morph_image->columns,1);
+        q=SetPixelCache(morph_images,0,y,morph_images->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        for (x=0; x < (int) morphed_images->columns; x++)
+        for (x=0; x < (int) morph_images->columns; x++)
         {
           q->red=(Quantum) (alpha*q->red+beta*p->red+0.5);
           q->green=(Quantum) (alpha*q->green+beta*p->green+0.5);
@@ -1460,36 +1460,36 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
           p++;
           q++;
         }
-        if (!SyncPixelCache(morphed_images))
+        if (!SyncPixelCache(morph_images))
           break;
       }
-      DestroyImage(morphed_image);
+      DestroyImage(morph_image);
     }
     /*
       Clone last frame in sequence.
     */
-    morphed_images->next=
+    morph_images->next=
       CloneImage(image->next,image->next->columns,image->next->rows,True);
-    if (morphed_images->next == (Image *) NULL)
+    if (morph_images->next == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
           "Memory allocation failed");
         break;
       }
-    morphed_images->next->previous=morphed_images;
-    morphed_images=morphed_images->next;
+    morph_images->next->previous=morph_images;
+    morph_images=morph_images->next;
     (void) SetMonitorHandler(handler);
     ProgressMonitor(MorphImageText,scene,GetNumberScenes(images));
     scene++;
   }
-  while (morphed_images->previous != (Image *) NULL)
-    morphed_images=morphed_images->previous;
+  while (morph_images->previous != (Image *) NULL)
+    morph_images=morph_images->previous;
   if (image->next != (Image *) NULL)
     {
-      DestroyImages(morphed_images);
+      DestroyImages(morph_images);
       return((Image *) NULL);
     }
-  return(morphed_images);
+  return(morph_images);
 }
 
 /*
@@ -2675,9 +2675,9 @@ Export Image *SteganoImage(Image *image,Image *watermark)
         EmbedBit(*stegano_image->indexes)
       else
         {
-          EmbedBit(stegano_image->pixels->red);
-          EmbedBit(stegano_image->pixels->green);
-          EmbedBit(stegano_image->pixels->blue);
+          EmbedBit(p->red);
+          EmbedBit(p->green);
+          EmbedBit(p->blue);
         }
       if (!SyncPixelCache(stegano_image))
         break;

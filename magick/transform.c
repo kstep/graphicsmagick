@@ -679,6 +679,7 @@ Export Image *DeconstructImages(Image *images)
     crop_image=CropImage(image,&bounding_box[i++]);
     if (crop_image == (Image *) NULL)
       break;
+    crop_image->exempt=True;
     deconstruct_image->next=crop_image;
     crop_image->previous=deconstruct_image;
     deconstruct_image=deconstruct_image->next;

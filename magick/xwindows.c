@@ -4679,16 +4679,16 @@ Export Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
       if ((crop_info.width != 0) && (crop_info.height != 0))
         {
           Image
-            *cropped_image;
+            *crop_image;
 
           /*
             Crop image as defined by the cropping rectangle.
           */
-          cropped_image=CropImage(image,&crop_info);
-          if (cropped_image != (Image *) NULL)
+          crop_image=CropImage(image,&crop_info);
+          if (crop_image != (Image *) NULL)
             {
               DestroyImage(image);
-              image=cropped_image;
+              image=crop_image;
             }
         }
       status=XGetWMName(display,target,&window_name);
@@ -5078,7 +5078,7 @@ Export unsigned int XMakeImage(Display *display,
       if (window->crop_geometry)
         {
           Image
-            *cropped_image;
+            *crop_image;
 
           RectangleInfo
             crop_info;
@@ -5092,12 +5092,12 @@ Export unsigned int XMakeImage(Display *display,
           crop_info.y=0;
           (void) XParseGeometry(window->crop_geometry,&crop_info.x,
             &crop_info.y,&crop_info.width,&crop_info.height);
-          cropped_image=CropImage(transformed_image,&crop_info);
-          if (cropped_image != (Image *) NULL)
+          crop_image=CropImage(transformed_image,&crop_info);
+          if (crop_image != (Image *) NULL)
             {
               if (transformed_image != image)
                 DestroyImage(transformed_image);
-              transformed_image=cropped_image;
+              transformed_image=crop_image;
             }
         }
       if ((width != transformed_image->columns) ||

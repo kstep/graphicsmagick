@@ -1120,13 +1120,12 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     height=image->rows;
     x=0;
     y=0;
-    image->orphan=True;
     (void) ParseImageGeometry("106x106+0+0>",&x,&y,&width,&height);
     if (image->class == PseudoClass)
       tile_image=SampleImage(image,width,height);
     else
       tile_image=ZoomImage(image,width,height);
-    image->orphan=False;
+    tile_image->exempt=True;
     if (tile_image == (Image *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     xref[object++]=TellBlob(image);

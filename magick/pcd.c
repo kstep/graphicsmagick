@@ -812,6 +812,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   char *geometry,char *tile_geometry)
 {
   Image
+    *clone_image,
     *downsampled_image,
     *tile_image;
 
@@ -845,6 +846,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   tile_image=ZoomImage(image,width,height);
   if (tile_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Unable to scale image",image);
+  tile_image->exempt=True;
   (void) sscanf(geometry,"%ux%u",&width,&height);
   if ((tile_image->columns != width) || (tile_image->rows != height))
     {
@@ -870,7 +872,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   downsampled_image=
     ZoomImage(tile_image,tile_image->columns >> 1,tile_image->rows >> 1);
   if (downsampled_image == (Image *) NULL)
-    WriterExit(ResourceLimitWarning,"Unable to scale image",image);
+    WriterExit(ResourceLimitWarning,"Unable to down sample image",image);
   /*
     Write tile to PCD file.
   */

@@ -148,6 +148,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   preview_image=ZoomImage(image,width,height);
   if (preview_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+  preview_image->exempt=True;
   LabelImage(preview_image,DefaultTileLabel);
   /*
     Apply enhancement at varying strengths.

@@ -3662,14 +3662,14 @@ Mogrify(ref,...)
     if (setjmp(error_jmp))
       goto ReturnIt;
     (void) memset((char *) &pen_color,0,sizeof(PixelPacket));
-    rectangle_info.width=image->columns;
-    rectangle_info.height=image->rows;
-    rectangle_info.x=rectangle_info.y=0;
     first=True;
     pv=reference_vector;
     for (next=image; next; first=False, next=next->next)
     {
       image=next;
+      rectangle_info.width=image->columns;
+      rectangle_info.height=image->rows;
+      rectangle_info.x=rectangle_info.y=0;
       if ((region_info.width*region_info.height) != 0)
         {
           region_image=image;

@@ -2329,10 +2329,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->page_info.height=image->rows;
                 image->page_info.x=0;
                 image->page_info.y=0;
-                image->orphan=True;
                 p=CropImage(image,&crop_info);
                 if (p != (Image *) NULL)
                   {
+                    p->exempt=True;
                     image->columns=p->columns;
                     image->rows=p->rows;
                     if (image->pixels != (PixelPacket *) NULL)
@@ -2342,7 +2342,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                       MagickWarning(ResourceLimitWarning,"Unable to crop image",
                        "image->pixels == NULL");
                     p->pixels=(PixelPacket *)NULL;
-                    p->orphan=True;  /* don't mess up links or close FILE */
                     p->file=(FILE *)NULL;
                     p->blob_info.mapped=False;
                     DestroyImage(p);

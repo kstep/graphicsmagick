@@ -335,11 +335,10 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           /*
             Scale image.
           */
-          image->orphan=True;
           monochrome_image=ZoomImage(image,width,height);
-          image->orphan=False;
           if (monochrome_image == (Image *) NULL)
             WriterExit(ResourceLimitWarning,"Unable to scale image",image);
+          monochrome_image->exempt=True;
         }
       if (!IsMonochromeImage(monochrome_image))
         {

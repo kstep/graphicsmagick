@@ -556,7 +556,7 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
 %
 %  A description of each parameter follows:
 %
-%    o averaged_image: Method AverageImages returns the mean pixel value
+%    o average_image: Method AverageImages returns the mean pixel value
 %      for an image sequence.
 %
 %    o images: The address of a structure of type Image;  returned from
@@ -581,7 +581,7 @@ Export Image *AverageImages(Image *images)
     *image;
 
   Image
-    *averaged_image;
+    *average_image;
 
   int
     y;
@@ -641,15 +641,15 @@ Export Image *AverageImages(Image *images)
   /*
     Initialize average image attributes.
   */
-  averaged_image=CloneImage(images,images->columns,images->rows,True);
-  if (averaged_image == (Image *) NULL)
+  average_image=CloneImage(images,images->columns,images->rows,True);
+  if (average_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to average image",
         "Memory allocation failed");
       FreeMemory(sum);
       return((Image *) NULL);
     }
-  averaged_image->class=DirectClass;
+  average_image->class=DirectClass;
   /*
     Compute sum over each pixel color component.
   */
@@ -678,27 +678,27 @@ Export Image *AverageImages(Image *images)
     Average image pixels.
   */
   i=0;
-  for (y=0; y < (int) averaged_image->rows; y++)
+  for (y=0; y < (int) average_image->rows; y++)
   {
-    q=SetPixelCache(averaged_image,0,y,averaged_image->columns,1);
+    q=SetPixelCache(average_image,0,y,average_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) averaged_image->columns; x++)
+    for (x=0; x < (int) average_image->columns; x++)
     {
-      q->red=(Quantum) ((sum[i].red+number_scenes/2.0)/number_scenes);
-      q->green=(Quantum) ((sum[i].green+number_scenes/2.0)/number_scenes);
-      q->blue=(Quantum) ((sum[i].blue+number_scenes/2.0)/number_scenes);
-      q->opacity=(Quantum) ((sum[i].opacity+number_scenes/2.0)/number_scenes);
+      q->red=(sum[i].red+number_scenes/2.0)/number_scenes;
+      q->green=(sum[i].green+number_scenes/2.0)/number_scenes;
+      q->blue=(sum[i].blue+number_scenes/2.0)/number_scenes;
+      q->opacity=(sum[i].opacity+number_scenes/2.0)/number_scenes;
       q++;
       i++;
     }
-    if (!SyncPixelCache(averaged_image))
+    if (!SyncPixelCache(average_image))
       break;
-    if (QuantumTick(y,averaged_image->rows))
-      ProgressMonitor(AverageImageText,y,averaged_image->rows);
+    if (QuantumTick(y,average_image->rows))
+      ProgressMonitor(AverageImageText,y,average_image->rows);
   }
   FreeMemory(sum);
-  return(averaged_image);
+  return(average_image);
 }
 
 /*
