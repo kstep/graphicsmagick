@@ -1,3 +1,8 @@
+2002-12-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/image.h: Backed out arbitrary name change from
+	ChannelThresholdImage() to ThresholdImageChannel() that snuck in
+	from Cristy's image.h changes.
+
 2002-12-11  Cristy  <cristy@mystic.es.dupont.com>
 	* coders/psd.c: Reference cloned image Blob (not sure why needed
 	but must be important).
