@@ -291,16 +291,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
   int
     c,
+    range,
     y;
 
   register int
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register size_t
-    i;
 
   register unsigned char
     *p;
@@ -310,34 +309,29 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
   uint16
     compress_tag,
+    bits_per_sample,
     extra_samples,
-    *sample_info;
+    max_sample_value,
+    min_sample_value,
+    interlace,
+    pages,
+    photometric,
+    *sample_info,
+    samples_per_pixel,
+    units,
+    value;
 
   uint32
-    length;
+    height,
+    length,
+    width;
 
   unsigned char
     *scanline;
 
   unsigned int
-    height,
     method,
-    status,
-    width;
-
-  unsigned long
-    range;
-
-  unsigned short
-    bits_per_sample,
-    interlace,
-    max_sample_value,
-    min_sample_value,
-    pages,
-    photometric,
-    samples_per_pixel,
-    units,
-    value;
+    status;
 
   /*
     Open image.
@@ -461,13 +455,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
          (photometric == PHOTOMETRIC_PALETTE)))
       {
         image->colors=1 << bits_per_sample;
-        if ((range != 0) && (range <= image->colors))
+        if ((range != 0) && (range <= (int) image->colors))
           image->colors=range+1;
         if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image)
+              "Memory allocation failed",image);
           }
       }
     if (units == RESUNIT_INCH)
@@ -537,7 +531,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image)
+              "Memory allocation failed",image);
           }
         /*
           Create colormap.
@@ -546,7 +540,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         {
           case PHOTOMETRIC_MINISBLACK:
           {
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=
                 ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
@@ -560,11 +554,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           case PHOTOMETRIC_MINISWHITE:
           default:
           {
-            unsigned long
+            unsigned int
               colors;
 
             colors=image->colors;
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[colors-i-1].red=
                 ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1));
@@ -580,7 +574,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             long
               range;
 
-            unsigned short
+            uint16
               *blue_colormap,
               *green_colormap,
               *red_colormap;
@@ -588,14 +582,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,&green_colormap,
               &blue_colormap);
             range=256L;  /* might be old style 8-bit colormap */
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
               if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
                   (blue_colormap[i] >= 256))
                 {
                   range=65535L;
                   break;
                 }
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=
                 ((unsigned long) (MaxRGB*red_colormap[i])/range);
@@ -664,7 +658,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               }
               if ((width % 4) != 0)
                 {
-                  for (i=3; i >= (4-(width % 4)); i--)
+                  for (i=3; i >= (int) (4-(width % 4)); i--)
                     *r++=(*p >> (i*2)) & 0x03;
                   p++;
                 }
@@ -734,7 +728,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image)
+              "Memory allocation failed",image);
           }
         TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
           &sample_info);
@@ -763,13 +757,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               register unsigned char
                 *r;
 
-	      size_t
-	        length;
-
-              length=TIFFScanlineSize(tiff);
+              width=TIFFScanlineSize(tiff);
               p=scanline+width-1;
               r=scanline+(width << 1)-1;
-              for (i=0; i < length; i++)
+              for (x=0; x < (int) width; x++)
               {
                 *r--=((*p) & 0xf) << 4;
                 *r--=((*p >> 4) & 0xf) << 4;
@@ -823,7 +814,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image)
+              "Memory allocation failed",image);
           }
         (void) TIFFReadRGBAImage(tiff,image->columns,image->rows,
           pixels+image->columns*sizeof(uint32),0);
@@ -1008,16 +999,14 @@ ModuleExport void UnregisterTIFFImage(void)
 #if defined(IPTC_SUPPORT)
 static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 {
-  register size_t
+  register int
     i;
-
-  size_t
-    length;
 
   unsigned char
     *profile;
 
-  unsigned long
+  unsigned int
+    length,
     roundup;
 
   if (type == TIFFTAG_RICHTIFFIPTC)
@@ -1031,8 +1020,8 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       if ((length == 0) || (profile == (unsigned char *) NULL))
         return;
       memcpy(profile,image->iptc_profile.info,length);
-      for (i=0; i < roundup; i++)
-        profile[length+i] = 0;
+      for (i=0; i < (int) roundup; i++)
+        profile[length + i] = 0;
       length=(image->iptc_profile.length+roundup)/4;
       if (TIFFIsByteSwapped(tiff))
         TIFFSwabArrayOfLong((uint32 *) profile,length);
@@ -1078,24 +1067,20 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   tsample_t sample,Image *image)
 {
-  long
-    count;
+  int
+    bytes_per_pixel,
+    number_tiles,
+    status,
+    tile_width;
 
-  register size_t
-    i;
-
-  size_t
+  register int
+    i,
     j,
     k;
 
   static unsigned char
     *scanlines = (unsigned char *) NULL,
     *tile_pixels = (unsigned char *) NULL;
-
-  unsigned long
-    bytes_per_pixel,
-    number_tiles,
-    tile_width;
 
   if (!TIFFIsTiled(tiff))
     return(TIFFWriteScanline(tiff,scanline,row,sample));
@@ -1113,22 +1098,22 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   */
   i=(row % image->tile_info.height)*TIFFScanlineSize(tiff);
   memcpy(scanlines+i,(char *) scanline,TIFFScanlineSize(tiff));
-  if (((row % image->tile_info.height) !=
-       (unsigned int) (image->tile_info.height-1)) &&
-      (row != (unsigned int) (image->rows-1)))
+  if (((row % image->tile_info.height) != (image->tile_info.height-1)) &&
+      (row != image->rows-1))
     return(0);
   /*
     Write tile to TIFF image.
   */
+  status=0;
   bytes_per_pixel=
     TIFFTileSize(tiff)/(image->tile_info.height*image->tile_info.width);
   number_tiles=
     (image->columns+image->tile_info.width-1)/image->tile_info.height;
   for (i=0; i < number_tiles; i++)
   {
-    tile_width=((i == number_tiles-1) ?
-      image->columns-(i*image->tile_info.width) : image->tile_info.width);
-    for (j=0; j < ((row % image->tile_info.height)+1); j++)
+    tile_width=(i == (int) number_tiles-1) ?
+      image->columns-(i*image->tile_info.width) : image->tile_info.width;
+    for (j=0; j < (int) ((row % image->tile_info.height)+1); j++)
       for (k=0; k < tile_width; k++)
       {
         register unsigned char
@@ -1141,12 +1126,12 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
           (j*(TIFFTileSize(tiff)/image->tile_info.height)+k*bytes_per_pixel);
         memcpy(q,p,bytes_per_pixel);
       }
-      count=TIFFWriteTile(tiff,tile_pixels,i*image->tile_info.width,(row/
+      status=TIFFWriteTile(tiff,tile_pixels,i*image->tile_info.width,(row/
         image->tile_info.height)*image->tile_info.height,0,sample);
-      if (count < 0)
+      if (status < 0)
         break;
   }
-  if (row == (unsigned int) (image->rows-1))
+  if (row == (image->rows-1))
     {
       /*
         Free memory resources.
@@ -1156,7 +1141,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
       LiberateMemory((void **) &tile_pixels);
       tile_pixels=(unsigned char *) NULL;
     }
-  return(True);
+  return(status);
 }
 
 static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
@@ -1178,13 +1163,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     *indexes;
 
   register int
+    i,
     x;
 
   register PixelPacket
     *p;
-
-  register size_t
-    i;
 
   register unsigned char
     *q;
@@ -1358,9 +1341,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       {
         uint16
           extra_samples,
-          sample_info[1];
-
-        unsigned short
+          sample_info[1],
           samples_per_pixel;
 
         /*
@@ -1402,7 +1383,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+(8-(strip_size % 8)));
     else
       if ((compress_tag == COMPRESSION_CCITTFAX4) ||
-          (compress_tag == COMPRESSION_ADOBE_DEFLATE))
+          (compress_tag == COMPRESSION_ADOBE_DEFLATE) || (sizeof(long) > 4))
         TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
       else
         TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
@@ -1599,7 +1580,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       }
       case PHOTOMETRIC_PALETTE:
       {
-        unsigned short
+        uint16
           *blue,
           *green,
           *red;
@@ -1621,13 +1602,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Initialize TIFF colormap.
         */
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (int) image->colors; i++)
         {
           red[i]=((unsigned long) (65535L*image->colormap[i].red)/MaxRGB);
           green[i]=((unsigned long) (65535L*image->colormap[i].green)/MaxRGB);
           blue[i]=((unsigned long) (65535L*image->colormap[i].blue)/MaxRGB);
         }
-        for ( ; i < (1UL << image->depth); i++)
+        for ( ; i < (1 << image->depth); i++)
         {
           red[i]=0;
           green[i]=0;
