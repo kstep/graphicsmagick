@@ -254,9 +254,6 @@ namespace Magick
     // Assignment not supported
     Options operator= ( const Options& );
 
-    // Update draw info
-    void updateDrawInfo( void );
-
     MagickLib::ImageInfo*        _imageInfo;
     MagickLib::QuantizeInfo*     _quantizeInfo;
     MagickLib::DrawInfo*         _drawInfo;
@@ -325,7 +322,6 @@ inline void Magick::Options::fontPointsize ( double pointSize_ )
 {
   _imageInfo->pointsize = pointSize_;
   _drawInfo->pointsize = pointSize_;
-  updateDrawInfo();
 }
 inline double Magick::Options::fontPointsize ( void ) const
 {

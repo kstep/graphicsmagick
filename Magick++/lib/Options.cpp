@@ -148,8 +148,6 @@ void Magick::Options::density ( const Magick::Geometry &density_ )
     LiberateMemory( reinterpret_cast<void**>(&_imageInfo->density) );
   else
     Magick::CloneString( &_imageInfo->density, density_ );
-
-  updateDrawInfo();
 }
 Magick::Geometry Magick::Options::density ( void ) const
 {
@@ -201,8 +199,6 @@ void Magick::Options::font ( const std::string &font_ )
       Magick::CloneString( &_imageInfo->font, font_ );
       Magick::CloneString( &_drawInfo->font, font_ );
     }
-
-  updateDrawInfo();
 }
 std::string Magick::Options::font ( void ) const
 {
@@ -498,18 +494,4 @@ std::string Magick::Options::x11Display ( void ) const
     return std::string( _imageInfo->server_name );
 
     return std::string();
-}
-
-// Update draw info based on current ImageInfo
-void Magick::Options::updateDrawInfo( void )
-{
-  // Update _drawInfo
-  DrawInfo* draw_info =
-    static_cast<DrawInfo*>(AcquireMemory(sizeof(DrawInfo)));
-  if ( draw_info )
-    {
-      GetDrawInfo( _imageInfo, draw_info );
-      DestroyDrawInfo( _drawInfo );
-      _drawInfo=draw_info;
-    }
 }

@@ -1,3 +1,9 @@
+2001-02-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Options.cpp (updateDrawInfo): The updateDrawInfo() method
+ 	was no longer needed.  Due to ImageMagick changes, calling it was
+ 	causing some options to be lost.
+
 2001-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (fillRule): New method to specify the rule to use when filling drawn objects.  Still needs documentation!
