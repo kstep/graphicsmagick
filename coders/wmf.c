@@ -314,7 +314,7 @@ static void draw_composite(wmfAPI* API,
     *ddata = WMF_MAGICK_GetData(API);
 
   ExceptionInfo
-    exception_info;
+    exception;
 
   ImageInfo
     *image_info;
@@ -341,22 +341,22 @@ static void draw_composite(wmfAPI* API,
   assert(height != 0);
   assert(*image->magick != '\0');
 
-  GetExceptionInfo( &exception_info );
+  GetExceptionInfo( &exception );
 
-  clone_image = CloneImage(image,0,0,True,&exception_info);
+  clone_image = CloneImage(image,0,0,True,&exception);
   if(!clone_image)
     {
-      ThrowException(&ddata->image->exception,exception_info.severity,
-                     exception_info.reason,exception_info.description);
+      ThrowException(&ddata->image->exception,exception.severity,
+                     exception.reason,exception.description);
       return;
     }
   image_info = CloneImageInfo((const ImageInfo *)NULL);
-  blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length, &exception_info );
+  blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length, &exception );
   DestroyImageList(clone_image);
   if(!blob)
     {
-      ThrowException(&ddata->image->exception,exception_info.severity,
-                     exception_info.reason,exception_info.description);
+      ThrowException(&ddata->image->exception,exception.severity,
+                     exception.reason,exception.description);
       return;
     }
 
@@ -500,7 +500,7 @@ static void draw_composite(wmfAPI* API,
     }
 
   LiberateMemory((void**)&media_type);
-  DestroyExceptionInfo(&exception_info);
+  DestroyExceptionInfo(&exception);
   DestroyImageInfo(image_info);
 }
 
