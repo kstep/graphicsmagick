@@ -9,7 +9,7 @@
 %        SSSSS  IIIII   GGG   N   N  A   A    T     UUU   R  R   EEEEE        %
 %                                                                             %
 %                                                                             %
-%             Methods to Compute a Digital Signature for an Image             %
+%             Methods to Compute a Message Digest for an Image                %
 %                                                                             %
 %                                                                             %
 %                             Software Design                                 %
@@ -410,10 +410,10 @@ static void UpdateSignature(SignatureInfo *signature_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SignatureImage computes a digital signature from an image with an
-%  implementation of the NIST SHA-256 Message Digest algorithm.  This signature
-%  uniquely identifies the image and is convenient for determining whether two
-%  images are identical.
+%  Method SignatureImage computes a message digest from an image pixel stream
+%  with an implementation of the NIST SHA-256 Message Digest algorithm.  This
+%  signature uniquely identifies the image and is convenient for determining
+%  whether two images are identical.
 %
 %  The format of the SignatureImage method is:
 %
@@ -422,7 +422,6 @@ static void UpdateSignature(SignatureInfo *signature_info,
 %  A description of each parameter follows:
 %
 %    o image: The image.
-%
 %
 %
 */

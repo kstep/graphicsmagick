@@ -58,8 +58,8 @@
 	  configuration option.
 
 2001-09-09  Cristy  <cristy@mystic.es.dupont.com>
-	* Updated PerlMagick signatures to reflect new digital
-	  signature algorithm.
+	* Updated PerlMagick signatures to reflect new message
+	  digest algorithm.
 
 2001-09-08  Cristy  <cristy@mystic.es.dupont.com>
 	* ImageMagick defaults to 16-bit quantum.  Set QuantumMagick for

@@ -1662,7 +1662,8 @@ MagickExport unsigned int OpenCache(Image *image)
     *cache_info;
 
   off_t
-    length;
+    length,
+    size;
 
   PixelPacket
     *pixels;
@@ -1730,10 +1731,14 @@ MagickExport unsigned int OpenCache(Image *image)
       for (id=1; id < (cache_info->rows+3); id++)
         cache_info->nexus_info[id].available=True;
     }
-  length=number_pixels*sizeof(PixelPacket);
+  size=sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
-    length+=number_pixels*sizeof(IndexPacket);
+    size+=sizeof(IndexPacket);
+  length=size*number_pixels;
+  if (cache_info->columns != (length/cache_info->rows/size))
+    ThrowBinaryException(ResourceLimitWarning,"Pixel cache allocation failed",
+      image->filename);
   offset=length;
   if (length != offset)
     cache_info->type=DiskCache;
