@@ -830,13 +830,13 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
           aggregate.opacity/=normalize;
         }
       q->red=(Quantum) ((aggregate.red < 0) ? 0 :
-	(aggregate.red > MaxRGB) ? MaxRGB : aggregate.red+0.5);
+        (aggregate.red > MaxRGB) ? MaxRGB : aggregate.red+0.5);
       q->green=(Quantum) ((aggregate.green < 0) ? 0 :
-	(aggregate.green > MaxRGB) ? MaxRGB : aggregate.green+0.5);
+        (aggregate.green > MaxRGB) ? MaxRGB : aggregate.green+0.5);
       q->blue=(Quantum) ((aggregate.blue < 0) ? 0 :
-	(aggregate.blue > MaxRGB) ? MaxRGB : aggregate.blue+0.5);
+        (aggregate.blue > MaxRGB) ? MaxRGB : aggregate.blue+0.5);
       q->opacity=(Quantum) ((aggregate.opacity < 0) ? 0 :
-	(aggregate.opacity > MaxRGB) ? MaxRGB : aggregate.opacity+0.5);
+        (aggregate.opacity > MaxRGB) ? MaxRGB : aggregate.opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(convolve_image))
@@ -1201,13 +1201,19 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
 MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 {
 #define Enhance(weight) \
-  mean=(int) (s->red+red)/2; \
-  distance=s->red-(int) red; \
+  mean=(int) (s->red+pixel.red)/2; \
+  distance=s->red-(int) pixel.red; \
   distance_squared= \
     (double) (2.0*(MaxRGB+1)+mean)*distance*distance/MaxRGB; \
-  distance=s->green-(int) green; \
+  mean=(int) (s->green+pixel.green)/2; \
+  distance=s->green-(int) pixel.green; \
   distance_squared+=4.0*distance*distance; \
-  distance=s->blue-(int) blue; \
+  mean=(int) (s->blue+pixel.blue)/2; \
+  distance=s->blue-(int) pixel.blue; \
+  distance_squared+= \
+    (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
+  mean=(int) (s->opacity+pixel.opacity)/2; \
+  distance=s->opacity-(int) pixel.opacity; \
   distance_squared+= \
     (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
   if (distance_squared < Threshold) \
@@ -1239,10 +1245,8 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
   long
     distance;
 
-  Quantum
-    blue,
-    green,
-    red;
+  PixelPacket
+    pixel;
 
   register int
     x;
@@ -1291,10 +1295,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
       memset(&aggregate,0,sizeof(AggregatePacket));
       total_weight=0.0;
       s=p+2*image->columns+2;
-      aggregate.red=s->red;
-      aggregate.green=s->green;
-      aggregate.blue=s->blue;
-      aggregate.opacity=s->opacity;
+      pixel=(*s);
       s=p;
       Enhance(5);  Enhance(8);  Enhance(10); Enhance(8);  Enhance(5);
       s=p+image->columns;
