@@ -103,10 +103,10 @@ static Image *ReadMPRImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=(Image *) GetImageFromRegistry(image_info->filename,exception);
-  if ((image == (Image *) NULL) || (type != ImageRegistryType))
+  image=(Image *) GetImageFromMagickRegistry(image_info->filename,exception);
+  if (image == (Image *) NULL)
     return((Image *) NULL);
-  return(CloneImage(image,0,0,True,exception));
+  return(image);
 }
 
 /*
