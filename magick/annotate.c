@@ -123,6 +123,10 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   */
   assert(image != (Image *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
+  if (annotate_info->text == (char *) NULL)
+    return;
+  if (*annotate_info->text == '\0')
+    return;
   if (!UncondenseImage(image))
     return;
   /*
@@ -131,10 +135,16 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   local_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
   text=TranslateText((ImageInfo *) NULL,image,local_info->text);
   if (text == (char *) NULL)
-    return;
+    {
+      DestroyAnnotateInfo(local_info);
+      return;
+    }
   textlist=StringToList(text);
   if (textlist == (char **) NULL)
-    return;
+    {
+      DestroyAnnotateInfo(local_info);
+      return;
+    }
   length=Extent(textlist[0]);
   for (i=1; textlist[i] != (char *) NULL; i++)
     if (Extent(textlist[i]) > (int) length)
@@ -145,6 +155,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     {
       MagickWarning(ResourceLimitWarning,"Unable to annotate image",
         "Memory allocation failed");
+      DestroyAnnotateInfo(local_info);
       return;
     }
   width=image->columns;
