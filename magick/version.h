@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#define MagickCopyright  "Copyright (C) 2001 ImageMagick Studio"
+#define MagickCopyright  "Copyright (C) 2002 ImageMagick Studio"
 #define MagickLibVersion  0x0542
 #define MagickLibVersionText  "5.4.2"
 #define MagickLibVersionNumber  5.4.2,0
