@@ -1028,7 +1028,8 @@ static void wmf_magick_draw_text (wmfAPI* API,
   /* Save graphic context */
   wmf_stream_printf (API,out,"push graphic-context\n");
 
-  /* printf("\nText                    = \"%s\"\n", draw_text->str); */
+#if 0
+  printf("\nText                    = \"%s\"\n", draw_text->str);
   /* printf("WMF_FONT_NAME:          = %s\n", WMF_FONT_NAME(font)); */
   /* printf("Postscript font         = \"%s\"\n", font_name); */
   /* printf("Text box                = %.10gx%.10g\n", bbox_width, bbox_height); */
@@ -1037,6 +1038,7 @@ static void wmf_magick_draw_text (wmfAPI* API,
   /* printf("WMF_FONT_WIDTH          = %i\n", (int)WMF_FONT_WIDTH(font)); */
   /* printf("font width (points)     = %.10g\n", font_width_points); */
   /* printf("font ratio              = %.10g\n", draw_text->font_ratio ); */
+#endif
 
   /*
    * Correct font pointsize based on font metrics
@@ -1049,13 +1051,16 @@ static void wmf_magick_draw_text (wmfAPI* API,
     DrawInfo
       draw_info;
 
+    ImageInfo
+      *image_info;
 
     TypeMetric
       metrics;
 
-    CloneString(&ddata->image_info->font,font_name);
-    ddata->image_info->pointsize=font_height_points;
-    GetDrawInfo(ddata->image_info,&draw_info);
+    image_info=CloneImageInfo((ImageInfo*)NULL);
+    CloneString(&image_info->font,font_name);
+    image_info->pointsize=font_height_points;
+    GetDrawInfo(image_info,&draw_info);
     CloneString(&draw_info.text,draw_text->str);
 
     if(GetTypeMetrics(image,&draw_info,&metrics) != False)
@@ -1067,11 +1072,13 @@ static void wmf_magick_draw_text (wmfAPI* API,
         draw_info.pointsize = pointsize;
         GetTypeMetrics(image,&draw_info,&metrics);
 
-        /* printf("Pointsize            = %.10g\n", pointsize); */
-        /* printf("Metric ascent        = %li\n", metrics.ascent); */
-        /* printf("Metric descent       = %li\n", metrics.descent); */
-        /* printf("Metric width         = %lu\n", metrics.width); */
-        /* printf("Metric height        = %lu\n", metrics.height ); */
+#if 0
+        printf("Pointsize            = %.10g\n", pointsize);
+        printf("Metric ascent        = %li\n", metrics.ascent);
+        printf("Metric descent       = %li\n", metrics.descent);
+        printf("Metric width         = %lu\n", metrics.width);
+        printf("Metric height        = %lu\n", metrics.height );
+#endif
 
         if(strlen(draw_text->str) > 1)
           {
@@ -1098,11 +1105,15 @@ static void wmf_magick_draw_text (wmfAPI* API,
             
             /* Center the text if it is not yet centered and should be */ 
             if((WMF_DC_TEXTALIGN (draw_text->dc) & TA_CENTER) &&
-               (point.x < (BL.x + bbox_width/10)))
+               (point.x < (BL.x + 1)))
               {
-                point.x += bbox_width/2 - (metrics.width
-                  *(ddata->image->y_resolution/POINTS_PER_INCH)
-                  *(ddata->bbox_to_pixels_scale_y/ddata->bbox_to_pixels_scale_x))/2;
+                double
+                  text_width;
+
+                text_width = metrics.width
+                  *(ddata->bbox_to_pixels_scale_y/ddata->bbox_to_pixels_scale_x);
+
+                point.x += bbox_width/2 - text_width/2;
               }
 /*             wmf_stream_printf (API,out,"stroke blue\n"); */
 /*             wmf_stream_printf (API,out,"line %.10g,%.10g %.10g,%.10g\n", */
