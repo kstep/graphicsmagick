@@ -183,23 +183,20 @@ Export void AppendImageFormat(const char *format,char *filename)
 */
 Export char *BaseFilename(const char *name)
 {
+  char
+    *basename;
+
   register char
     *p;
-
-  static char
-    *basename = (char *) NULL;
 
   /*
     Get basename of client.
   */
   assert(name != (char *) NULL);
+  basename=(char *) AllocateMemory(strlen(name)+1);
   if (basename == (char *) NULL)
-    {
-      basename=(char *) AllocateMemory(MaxTextExtent);
-      if (basename == (char *) NULL)
-        MagickError(ResourceLimitError,"Unable to get base filename",
-          "Memory allocation failed");
-    }
+    MagickError(ResourceLimitError,"Unable to get base filename",
+      "Memory allocation failed");
   (void) strcpy(basename,name);
   p=basename+(Extent(basename)-1);
   while (p > basename)
@@ -1944,9 +1941,14 @@ Export char *SetClientName(const char *name)
 
   if (name != (char *) NULL)
     {
-      (void) strcpy(client_name,BaseFilename(name));
+      char
+        *basename;
+
+      basename=BaseFilename(name);
+      (void) strcpy(client_name,basename);
       (void) setlocale(LC_ALL,"");
       (void) setlocale(LC_NUMERIC,"C");
+      FreeMemory((void *) &basename);
     }
   return(client_name);
 }
