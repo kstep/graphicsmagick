@@ -76,7 +76,8 @@ typedef struct _DIR
 */
 extern MagickExport char
   *NTGetExecutionPath(void),
-  *NTGetLastError(void);
+  *NTGetLastError(void),
+  *NTRegistryKeyLookup(const char *key);
 
 extern MagickExport int
   Exit(int),

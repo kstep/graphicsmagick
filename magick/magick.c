@@ -246,7 +246,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     return(path);
   search_path=AllocateString(path);
   FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-    DirectorySeparator,filename);
+               DirectorySeparator,filename);
   if (IsAccessible(path))
     {
       LiberateMemory((void **) &search_path);
@@ -257,7 +257,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   if (getenv("MAGICK_HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
+                   DirectorySeparator,filename);
       if (IsAccessible(path))
         {
           LiberateMemory((void **) &search_path);
@@ -269,8 +269,8 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   if (getenv("HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%s%s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,
-        DirectorySeparator,filename);
+                   *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,
+                   DirectorySeparator,filename);
       if (IsAccessible(path))
         {
           LiberateMemory((void **) &search_path);
@@ -282,7 +282,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
     {
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
-        DirectorySeparator,filename);
+                   DirectorySeparator,filename);
       if (IsAccessible(path))
         {
           LiberateMemory((void **) &search_path);
@@ -291,6 +291,42 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
       ConcatenateString(&search_path,"; MAGICK_FONT_PATH:");
       ConcatenateString(&search_path,path);
     }
+#if defined(WIN32)
+  {
+    static char
+      *registry_path_keys[] = {
+        "LibPath",
+        "ModulesPath",
+        "SharePath",
+        NULL
+      };
+
+    char
+      *key_value;
+
+    int
+      i;
+
+    for( i=0; registry_path_keys[i] != NULL; i++ )
+      {
+        if( (key_value = NTRegistryKeyLookup(registry_path_keys[i])) != (char *) NULL)
+          {
+            FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+                         filename);
+            LiberateMemory((void**) &key_value);
+        
+            if (IsAccessible(path))
+              {
+                return(path);
+              }
+            ConcatenateString(&search_path,"; Registry[");
+            ConcatenateString(&search_path, registry_path_keys[i]);
+            ConcatenateString(&search_path,"]:");
+            ConcatenateString(&search_path,path);
+          }
+      }
+  }
+#endif
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (IsAccessible(path))
     {
@@ -333,7 +369,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   }
 #endif
   ThrowException(exception,ConfigurationError,
-    "Unable to open configuration file",search_path);
+                 "Unable to open configuration file",search_path);
   LiberateMemory((void **) &search_path);
   LiberateMemory((void **) &path);
   return((char *) NULL);

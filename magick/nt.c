@@ -137,6 +137,7 @@ MagickExport void closedir(DIR *entry)
 
 /* #define ENABLE_TRACING 1 */
 
+#ifdef ENABLE_TRACING
 static CRITICAL_SECTION
   critical_section;
 
@@ -149,6 +150,7 @@ static unsigned int
 
 FILE
   *trace_file = (FILE *) NULL;
+#endif /* ENABLE_TRACING */
 
 MagickExport void DestroyTracingCriticalSection(void)
 {
@@ -817,6 +819,80 @@ char *NTGetLastError(void)
       LocalFree(buffer);
     }
   return(reason);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T R e g i s t r y K e y L o o k u p                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method NTRegistryKeyLookup returns ImageMagick installation path settings
+%  stored in the Windows Registry. Path settings are specific to the
+%  installed ImageMagick version so that multiple ImageMagick installations
+%  may coexist.
+%
+%  Values are stored in the registry under a path path similar to
+%  "HKEY_LOCAL_MACHINE/SOFTWARE/ImageMagick/5.4.7/LibPath".
+%
+%  The format of the NTRegistryKeyLookup method is:
+%
+%      char *NTRegistryKeyLookup(const char *key)
+%
+%  A description of each parameter follows:
+%
+%    o key: Specifies a string that identifies the registry object.
+%           Currently supported keys include: "ApplicationDefaultsPath",
+%           "BinPath", "LibPath", "ModulesPath", and "SharePath".
+%
+*/
+MagickExport char *NTRegistryKeyLookup(const char *key)
+{
+  static HKEY
+    reg_key = (HKEY) INVALID_HANDLE_VALUE;
+
+  char
+    *dst;
+
+  DWORD
+    size,
+    type;
+
+  LONG
+    res;
+
+  /* Can probably append MagickLibVersionText to string for efficiency */
+  if (reg_key == (HKEY) INVALID_HANDLE_VALUE) {
+    res = RegOpenKeyExA (HKEY_LOCAL_MACHINE, "SOFTWARE\\ImageMagick", 0, KEY_READ, &reg_key);
+    
+    if (res == ERROR_SUCCESS)
+      res = RegOpenKeyExA (reg_key, MagickLibVersionText, 0, KEY_READ, &reg_key);
+
+    if (res != ERROR_SUCCESS) {
+      reg_key = (HKEY) INVALID_HANDLE_VALUE;
+      return 0;
+    }
+  }
+
+  size = 32;
+  dst = (char *) AcquireMemory(size);
+
+  res = RegQueryValueExA (reg_key, key, 0, &type, dst, &size);
+  if (res == ERROR_MORE_DATA && type == REG_SZ) {
+    ReacquireMemory((void**) &dst,size);
+    res = RegQueryValueExA (reg_key, key, 0, &type, dst, &size);
+  }
+
+  if (type != REG_SZ || res != ERROR_SUCCESS) {
+    LiberateMemory((void**) &dst);
+  }
+
+  return dst;
 }
 
 /*
