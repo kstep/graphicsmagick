@@ -1164,8 +1164,7 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
     Initialize root node.
   */
   cube_info->root=GetNodeInfo(cube_info,0,0,(NodeInfo *) NULL);
-  cube_info->squares=(double *)
-    AcquireMemory((MaxRGB+MaxRGB+1)*sizeof(double));
+  cube_info->squares=(double *) AcquireMemory((MaxRGB+MaxRGB+1)*sizeof(double));
   if ((cube_info->root == (NodeInfo *) NULL) ||
       (cube_info->squares == (double *) NULL))
     return(False);

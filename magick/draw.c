@@ -231,8 +231,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   */
   if (ColorMatch(draw_info->fill,target,image->fuzz))
     return(False);
-  segment_stack=(SegmentInfo *)
-    AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
+  segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to floodfill image",
       image->filename);
@@ -568,7 +567,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive+1);
         }
       length=MaxTextExtent;
-      primitive=(char *) AcquireMemory(length);
+      primitive=AllocateString("");
       q=primitive;
       while (primitive != (char *) NULL)
       {
@@ -628,6 +627,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       break;
     while (isspace((int) (*p)) && (*p != '\0'))
       p++;
+    if (LocaleCompare(";",keyword) == 0)
+      continue;
     if (LocaleCompare("affine",keyword) == 0)
       {
         double
@@ -639,7 +640,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           current[k]=graphic_context[n]->affine[k];
           affine[k]=strtod(p,&p);
           if (*p == ',')
-            break;
+            p++;
         }
         graphic_context[n]->affine[0]=current[0]*affine[0]+current[2]*affine[1];
         graphic_context[n]->affine[1]=current[1]*affine[0]+current[3]*affine[1];
@@ -773,6 +774,20 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (LocaleCompare("stroke-antialias",keyword) == 0)
       {
         graphic_context[n]->stroke_antialias=(unsigned int) strtod(p,&p);
+        continue;
+      }
+    if (LocaleCompare("stroke-dash",keyword) == 0)
+      {
+        for ( ; ; )
+        {
+          while (isspace((int) (*p)) && (*p != '\0'))
+            p++;
+          if (!IsGeometry(p))
+            break;
+          (void) strtod(p,&p);
+          if (*p == ',')
+            p++;
+        }
         continue;
       }
     if (LocaleCompare("stroke-opacity",keyword) == 0)
@@ -2437,8 +2452,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   /*
     Allocate segment stack.
   */
-  segment_stack=(SegmentInfo *)
-    AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
+  segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to floodfill image",
       image->filename);

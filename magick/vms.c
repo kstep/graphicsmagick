@@ -122,7 +122,7 @@ DIR *opendir(char *name)
   /*
     Allocate memory for handle and the pattern.
   */
-  directory=(DIR *) AcquireMemory(sizeof(*directory));
+  directory=(DIR *) AcquireMemory(sizeof(DIR));
   if (directory == (DIR *) NULL)
     {
       errno=ENOMEM;
@@ -130,8 +130,8 @@ DIR *opendir(char *name)
     }
   if (strcmp(".",name) == 0)
     name="";
-  directory->pattern=AcquireMemory((unsigned int) (strlen(name)
-    +sizeof("*.*")+1));
+  directory->pattern=
+    AcquireMemory((unsigned int) (strlen(name)+sizeof("*.*")+1));
   if (directory->pattern == (char *) NULL)
     {
       LiberateMemory((void **) &directory);

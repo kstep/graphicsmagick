@@ -1247,8 +1247,7 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
       for (p=XColorlist; p->name != (char *) NULL; p++)
         if (GlobExpression(p->name,pattern))
           {
-            colorlist[*number_colors]=(char *)
-              AcquireMemory(Extent(p->name)+1);
+            colorlist[*number_colors]=(char *) AcquireMemory(Extent(p->name)+1);
             if (colorlist[*number_colors] == (char *) NULL)
               break;
             (void) strcpy(colorlist[*number_colors],p->name);
@@ -1991,10 +1990,7 @@ MagickExport char *PostscriptGeometry(const char *page)
   /*
     Allocate page geometry memory.
   */
-  geometry=(char *) AcquireMemory(Extent(page)+MaxTextExtent);
-  if (geometry == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to translate page geometry",
-      "Memory allocation failed");
+  geometry=AllocateString(page);
   *geometry='\0';
   if (page == (char *) NULL)
     return(geometry);
@@ -2927,7 +2923,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
             Read text from a file.
           */
           length=MaxTextExtent;
-          text=(char *) AcquireMemory(length);
+          text=AllocateString("");
           for (q=text; text != (char *) NULL; q++)
           {
             c=fgetc(file);
@@ -2952,20 +2948,11 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         }
     }
   /*
-    Allocate and initialize image text.
-  */
-  length=Extent(text)+MaxTextExtent;
-  translated_text=(char *) AcquireMemory(length);
-  if (translated_text == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to translate text",
-      "Memory allocation failed");
-  clone_info=CloneImageInfo(image_info);
-  if ((clone_info == (ImageInfo *) NULL))
-    MagickError(ResourceLimitError,"Unable to translate text",
-      "Memory allocation failed");
-  /*
     Translate any embedded format characters.
   */
+  length=Extent(text)+MaxTextExtent;
+  translated_text=AllocateString(text);
+  clone_info=CloneImageInfo(image_info);
   p=text;
   for (q=translated_text; *p != '\0'; p++)
   {

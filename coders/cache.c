@@ -192,10 +192,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
       Decode image header;  header terminates one character beyond a ':'.
     */
     length=MaxTextExtent;
-    values=(char *) AcquireMemory(length);
-    if (values == (char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
-        image);
+    values=AllocateString("");
     GetCacheInfo(&image->cache);
     cache_info=(CacheInfo *) image->cache;
     image->depth=8;
@@ -214,7 +211,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
             Read comment-- any text between { }.
           */
           length=MaxTextExtent;
-          comment=(char *) AcquireMemory(length);
+          comment=AllocateMemory("");
           p=comment;
           for ( ; comment != (char *) NULL; p++)
           {
@@ -613,7 +610,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
         /*
           Image directory.
         */
-        image->directory=(char *) AcquireMemory(MaxTextExtent);
+        image->directory=AllocateString("");
         if (image->directory == (char *) NULL)
           ThrowReaderException(CorruptImageWarning,"Unable to read image data",
             image);
@@ -709,8 +706,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
               Read image colormap from file.
             */
             packet_size=image->colors > 256 ? 6 : 3;
-            colormap=(unsigned char *)
-              AcquireMemory(packet_size*image->colors);
+            colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitWarning,
                 "Memory allocation failed",image);

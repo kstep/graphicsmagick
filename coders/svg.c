@@ -742,13 +742,17 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare(keyword,"style") == 0)
         {
           char
-            font_family[MaxTextExtent],
-            font_style[MaxTextExtent],
-            font_weight[MaxTextExtent];
+            *dash_array,
+            *dash_offset,
+            *font_family,
+            *font_style,
+            *font_weight;
 
-          *font_family='\0';
-          *font_style='\0';
-          *font_weight='\0';
+          dash_array=(char *) NULL;
+          dash_offset=(char *) NULL;
+          font_family=(char *) NULL;
+          font_style=(char *) NULL;
+          font_weight=(char *) NULL;
           if (svg_info->verbose)
             (void) fprintf(stdout,"\n");
           tokens=StringToTokens(value,&number_tokens);
@@ -770,18 +774,18 @@ static void SVGStartElement(void *context,const xmlChar *name,
               }
             if (LocaleCompare(keyword,"font-family:") == 0)
               {
-                (void) strcpy(font_family,value);
+                font_family=AllocateString(value);
                 continue;
               }
             if (LocaleCompare(keyword,"font-style:") == 0)
               {
-                (void) strcpy(font_style,value);
+                font_style=AllocateString(value);
                 *font_style=toupper((int) *font_style);
                 continue;
               }
             if (LocaleCompare(keyword,"font-weight:") == 0)
               {
-                (void) strcpy(font_weight,value);
+                font_weight=AllocateString(value);
                 *font_weight=toupper((int) *font_weight);
                 continue;
               }
@@ -812,6 +816,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
               {
                 (void) fprintf(svg_info->file,"stroke-antialias %d\n",
                   LocaleCompare(value,"true") == 0);
+                continue;
+              }
+            if (LocaleCompare(keyword,"stroke-dasharray:") == 0)
+              {
+                dash_array=AllocateString(value);
+                continue;
+              }
+            if (LocaleCompare(keyword,"stroke-dashoffset:") == 0)
+              {
+                dash_offset=AllocateString(value);
                 continue;
               }
             if (LocaleCompare(keyword,"stroke-opacity:") == 0)
@@ -853,19 +867,41 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 continue;
               }
           }
-        if (*font_family != '\0')
-          {
-            (void) fprintf(svg_info->file,"font %s",font_family);
-            if ((*font_style != '\0') && (*font_weight != '\0'))
-              (void) fprintf(svg_info->file,"-%s-%s",font_weight,font_style);
-            else
-              if (*font_style != '\0')
-                (void) fprintf(svg_info->file,"-%s",font_style);
+          if (dash_array != (char *) NULL)
+            {
+              (void) fprintf(svg_info->file,"stroke-dash ");
+              if (dash_offset == (char *) NULL)
+                (void) fprintf(svg_info->file,"0 ");
               else
-                if (*font_weight != '\0')
-                  (void) fprintf(svg_info->file,"-%s",font_weight);
-            (void) fprintf(svg_info->file,"\n");
-          }
+                (void) fprintf(svg_info->file,"%s ",dash_offset);
+              if (dash_array != (char *) NULL)
+                (void) fprintf(svg_info->file,"%s",dash_array);
+              (void) fprintf(svg_info->file,";\n");
+            }
+          if (font_family != (char *) NULL)
+            {
+              (void) fprintf(svg_info->file,"font %s",font_family);
+              if ((font_style != (char *) NULL) &&
+                  (font_weight != (char *) NULL))
+                (void) fprintf(svg_info->file,"-%s-%s",font_weight,font_style);
+              else
+                if (font_style != (char *) NULL)
+                  (void) fprintf(svg_info->file,"-%s",font_style);
+                else
+                  if (font_weight != (char *) NULL)
+                    (void) fprintf(svg_info->file,"-%s",font_weight);
+              (void) fprintf(svg_info->file,"\n");
+            }
+          if (font_family != (char *) NULL)
+            LiberateMemory((void **) &font_family);
+          if (font_style != (char *) NULL)
+            LiberateMemory((void **) &font_style);
+          if (font_weight != (char *) NULL)
+            LiberateMemory((void **) &font_weight);
+          if (dash_offset != (char *) NULL)
+            LiberateMemory((void **) &dash_offset);
+          if (dash_array != (char *) NULL)
+            LiberateMemory((void **) &dash_array);
           for (j=0; j < number_tokens; j++)
             LiberateMemory((void **) &tokens[j]);
           LiberateMemory((void **) &tokens);

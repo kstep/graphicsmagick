@@ -5440,7 +5440,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
     Sort font list in ascending order.
   */
   listhead=fontlist;
-  fontlist=(char **) AcquireMemory(fonts*sizeof(char **));
+  fontlist=(char **) AcquireMemory(fonts*sizeof(char *));
   if (fontlist == (char **) NULL)
     {
       XNoticeWidget(display,windows,"Unable to view fonts:",
@@ -5717,7 +5717,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           Sort font list in ascending order.
         */
         listhead=fontlist;
-        fontlist=(char **) AcquireMemory(fonts*sizeof(char **));
+        fontlist=(char **) AcquireMemory(fonts*sizeof(char *));
         if (fontlist == (char **) NULL)
           {
             XNoticeWidget(display,windows,"Unable to view fonts:",

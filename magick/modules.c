@@ -783,10 +783,7 @@ char *TagToProcess(const char *tag)
     *module_name;
 
   assert(tag != (char *) NULL);
-  module_name=(char *) AcquireMemory(MaxTextExtent);
-  if (module_name == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to get module name",
-      "Memory allocation failed");
+  module_name=AllocateString("");
 #if !defined(_VISUALC_)
   (void) FormatString(module_name,"%s.la",tag);
   (void) LocaleLower(module_name);

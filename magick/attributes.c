@@ -599,7 +599,6 @@ void StoreImageAttribute(Image *image,char *text)
     *value;
 
   int
-    length,
     next,
     state,
     status;
@@ -607,17 +606,13 @@ void StoreImageAttribute(Image *image,char *text)
   TokenInfo
     token_info;
 
-  length=MaxTextExtent;
   next=0;
   state=0;
-  token=(char *) AcquireMemory(length);
-  if (token == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to parse attribute",
-      "Memory allocation failed");
+  token=AllocateString("");
   for ( ; ; )
   {
-    status=Tokenizer(&token_info,0,token,length,text,"","=","\'",0,&breaker,
-      &next,&quote);
+    status=Tokenizer(&token_info,0,token,MaxTextExtent,text,"","=","\'",0,
+      &breaker,&next,&quote);
     if (status != False)
       break;
     switch (state)

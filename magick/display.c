@@ -4757,9 +4757,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       cache_image->geometry=windows->image.crop_geometry;
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          cache_image->geometry=(char *) AcquireMemory(MaxTextExtent);
-          if (cache_image->geometry != (char *) NULL)
-            (void) strcpy(cache_image->geometry,windows->image.crop_geometry);
+          cache_image->geometry=AllocateString("");
+          (void) strcpy(cache_image->geometry,windows->image.crop_geometry);
         }
       if (undo_image == (Image *) NULL)
         {
@@ -7977,7 +7976,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       if (file == (FILE *) NULL)
         return((Image *) NULL);
       length=MaxTextExtent;
-      text=(char *) AcquireMemory(length);
+      text=AllocateString("");
       for (p=text ; text != (char *) NULL; p++)
       {
         c=fgetc(file);
@@ -10518,15 +10517,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
   else
-    {
-      /*
-        Allocate crop geometry string.
-      */
-      windows->image.crop_geometry=(char *) AcquireMemory(MaxTextExtent);
-      if (windows->image.crop_geometry == (char *) NULL)
-        MagickError(ResourceLimitError,"Unable to crop X image",
-          windows->image.name);
-    }
+    windows->image.crop_geometry=AllocateString("");
   /*
     Define the crop geometry string from the cropping rectangle.
   */
@@ -12182,11 +12173,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Window name is the base of the filename.
       */
-      windows->image.name=(char *) AcquireMemory(MaxTextExtent);
-      windows->image.icon_name=(char *) AcquireMemory(MaxTextExtent);
-      if ((windows->image.name == NULL) || (windows->image.icon_name == NULL))
-        MagickError(ResourceLimitError,"Unable to create Image window",
-          "Memory allocation failed");
+      windows->image.name=AllocateString("");
+      windows->image.icon_name=AllocateString("");
       p=display_image->filename+Extent(display_image->filename)-1;
       while ((p > display_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
@@ -12367,10 +12355,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->widget.name=(char *) AcquireMemory(MaxTextExtent);
-  if (windows->widget.name == NULL)
-    MagickError(ResourceLimitError,"Unable to create Image window",
-      "Memory allocation failed");
+  windows->widget.name=AllocateString("");
   *windows->widget.name='\0';
   windows->widget.border_width=0;
   windows->widget.flags|=PPosition;
@@ -12399,10 +12384,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     LiberateMemory((void **) &windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
-  windows->popup.name=(char *) AcquireMemory(MaxTextExtent);
-  if (windows->popup.name == NULL)
-    MagickError(ResourceLimitError,"Unable to create Image window",
-      "Memory allocation failed");
+  windows->popup.name=AllocateString("");
   *windows->popup.name='\0';
   windows->popup.border_width=0;
   windows->popup.flags|=PPosition;
@@ -12434,10 +12416,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.magnify",resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->magnify.name=(char *) AcquireMemory(MaxTextExtent);
-  if (windows->magnify.name == NULL)
-    MagickError(ResourceLimitError,"Unable to create Magnify window",
-      "Memory allocation failed");
+  windows->magnify.name=AllocateString("");
   FormatString(windows->magnify.name,"Magnify %uX",resource_info->magnify);
   windows->magnify.cursor=XMakeCursor(display,windows->image.id,
     map_info->colormap,resource_info->background_color,

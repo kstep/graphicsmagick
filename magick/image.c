@@ -695,8 +695,7 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
   /*
     Allocate sum accumulation buffer.
   */
-  sum=(SumPacket *)
-    AcquireMemory(image->columns*image->rows*sizeof(SumPacket));
+  sum=(SumPacket *) AcquireMemory(image->columns*image->rows*sizeof(SumPacket));
   if (sum == (SumPacket *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to average image sequence",
       "Memory allocation failed");
@@ -5965,8 +5964,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   /*
     Allocate memory for pixel indexes.
   */
-  pixels=(unsigned short *)
-    AcquireMemory(image->colors*sizeof(unsigned short));
+  pixels=(unsigned short *) AcquireMemory(image->colors*sizeof(unsigned short));
   if (pixels == (unsigned short *) NULL)
     ThrowBinaryException(MissingDelegateWarning,"Unable to sort colormap",
       "Memory allocation failed");

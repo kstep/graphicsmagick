@@ -591,7 +591,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     /*
       Set montage geometry.
     */
-    montage_next->montage=(char *) AcquireMemory(MaxTextExtent);
+    montage_next->montage=AllocateString("");
     count=1;
     for (tile=0; tile < tiles_per_page; tile++)
       count+=Extent(next_list[tile]->filename)+1;

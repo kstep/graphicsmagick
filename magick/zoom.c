@@ -1252,10 +1252,8 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
   /*
     Allocate scan line buffer and column offset buffers.
   */
-  pixels=(PixelPacket *)
-    AcquireMemory(image->columns*sizeof(PixelPacket));
-  index=(IndexPacket *)
-    AcquireMemory(image->columns*sizeof(IndexPacket));
+  pixels=(PixelPacket *) AcquireMemory(image->columns*sizeof(PixelPacket));
+  index=(IndexPacket *) AcquireMemory(image->columns*sizeof(IndexPacket));
   x_offset=(double *) AcquireMemory(sample_image->columns*sizeof(double));
   y_offset=(double *) AcquireMemory(sample_image->rows*sizeof(double));
   if ((pixels == (PixelPacket *) NULL) || (index == (IndexPacket *) NULL) ||
@@ -1373,14 +1371,14 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
 {
 #define ScaleImageText  "  Scale image...  "
 
-  typedef struct ScaledPacket
+  typedef struct ScalePacket
   {
     double
       red,
       green,
       blue,
       opacity;
-  } ScaledPacket;
+  } ScalePacket;
 
   double
     blue,
@@ -1407,11 +1405,11 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
     *p,
     *q;
 
-  register ScaledPacket
+  register ScalePacket
     *s,
     *t;
 
-  ScaledPacket
+  ScalePacket
     *scale_scanline,
     *scanline,
     *x_vector,
@@ -1437,18 +1435,17 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
   /*
     Allocate memory.
   */
-  x_vector=(ScaledPacket *) AcquireMemory(image->columns*sizeof(ScaledPacket));
+  x_vector=(ScalePacket *) AcquireMemory(image->columns*sizeof(ScalePacket));
   scanline=x_vector;
   if (image->rows != scale_image->rows)
-    scanline=(ScaledPacket *)
-      AcquireMemory(image->columns*sizeof(ScaledPacket));
-  scale_scanline=(ScaledPacket *)
-    AcquireMemory(scale_image->columns*sizeof(ScaledPacket));
-  y_vector=(ScaledPacket *) AcquireMemory(image->columns*sizeof(ScaledPacket));
-  if ((scanline == (ScaledPacket *) NULL) ||
-      (scale_scanline == (ScaledPacket *) NULL) ||
-      (x_vector == (ScaledPacket *) NULL) ||
-      (y_vector == (ScaledPacket *) NULL))
+    scanline=(ScalePacket *)
+      AcquireMemory(image->columns*sizeof(ScalePacket));
+  scale_scanline=(ScalePacket *)
+    AcquireMemory(scale_image->columns*sizeof(ScalePacket));
+  y_vector=(ScalePacket *) AcquireMemory(image->columns*sizeof(ScalePacket));
+  if ((scanline == (ScalePacket *) NULL) ||
+      (scale_scanline == (ScalePacket *) NULL) ||
+      (x_vector == (ScalePacket *) NULL) || (y_vector == (ScalePacket *) NULL))
     {
       DestroyImage(scale_image);
       ThrowImageException(ResourceLimitWarning,"Unable to scale image",

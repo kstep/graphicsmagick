@@ -494,9 +494,9 @@ MagickExport unsigned int SignatureImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  signature=(char *) AcquireMemory(33);
+  signature=AllocateString("");
   message=(unsigned char *) AcquireMemory(8*image->columns);
-  if ((signature == (char *) NULL) || (message == (unsigned char *) NULL))
+  if (message == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,
       "Unable to compute image signature","Memory allocation failed");
   /*

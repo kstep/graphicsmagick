@@ -1642,7 +1642,7 @@ MagickExport void XDisplayImageInfo(Display *display,
   */
   (void) rewind(file);
   length=MaxTextExtent;
-  text=(char *) AcquireMemory(length);
+  text=AllocateString("");
   for (p=text; text != (char *) NULL; p++)
   {
     c=fgetc(file);
@@ -2648,8 +2648,7 @@ MagickExport void XGetPixelPacket(Display *display,
     MaxNumberPens;
   if (pixel->pixels != (unsigned long *) NULL)
     LiberateMemory((void **) &pixel->pixels);
-  pixel->pixels=(unsigned long *)
-    AcquireMemory(packets*sizeof(unsigned long));
+  pixel->pixels=(unsigned long *) AcquireMemory(packets*sizeof(unsigned long));
   if (pixel->pixels == (unsigned long *) NULL)
     MagickError(ResourceLimitError,"Unable to get pixel info",
       "Memory allocation failed");
@@ -5259,8 +5258,8 @@ MagickExport unsigned int XMakeImage(Display *display,
             /*
               Allocate matte image pixel data.
             */
-            matte_image->data=(char *) AcquireMemory(
-              matte_image->bytes_per_line*
+            matte_image->data=(char *)
+              AcquireMemory(matte_image->bytes_per_line*
               matte_image->height*matte_image->depth);
             if (matte_image->data == (char *) NULL)
               {
