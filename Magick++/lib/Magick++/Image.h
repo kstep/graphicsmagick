@@ -342,37 +342,37 @@ namespace Magick
     void            raise ( const Geometry &geometry_ = raiseGeometryDefault,
 			    bool raisedFlag_ = false );
     
-    // Read image into current object
+    // Read single image frame into current object
     void            read ( const std::string &imageSpec_ );
 
-    // Read image of specified size into current object
+    // Read single image frame of specified size into current object
     void            read ( const Geometry &size_,
 			   const std::string &imageSpec_ );
 
-    // Read image from in-memory BLOB
+    // Read single image frame from in-memory BLOB
     void            read ( const Blob       &blob_ );
 
-    // Read image of specified size from in-memory BLOB
+    // Read single image frame of specified size from in-memory BLOB
     void            read ( const Blob        &blob_,
 			   const Geometry    &size_ );
 
-    // Read image of specified size and depth from in-memory BLOB
+    // Read single image frame of specified size and depth from in-memory BLOB
     void            read ( const Blob        &blob_,
 			   const Geometry    &size_,
 			   unsigned int      depth_ );
 
-    // Read image of specified size, depth, and format from in-memory BLOB
+    // Read single image frame of specified size, depth, and format from in-memory BLOB
     void            read ( const Blob        &blob_,
 			   const Geometry    &size_,
 			   unsigned int      depth_,
 			   const std::string &magick_ );
 
-    // Read Image of specified size, and format from in-memory BLOB
+    // Read single image frame of specified size, and format from in-memory BLOB
     void            read ( const Blob        &blob_,
 			   const Geometry    &size_,
 			   const std::string &magick_ );
 
-    // Read image from an array of raw pixels, with specified storage
+    // Read single image frame from an array of raw pixels, with specified storage
     // type (ConstituteImage), e.g.
     // image.read( 640, 480, "RGB", 0, pixels );
     void            read ( const unsigned int width_,
@@ -480,10 +480,11 @@ namespace Magick
     // Map image pixels to a sine wave
     void            wave ( double amplitude_ = 25.0, double wavelength_ = 150.0 );
     
-    // Write image to a file
+    // Write single image frame to a file
     void            write ( const std::string &imageSpec_ );
 
-    // Write image to in-memory BLOB, with optional format and adjoin parameters.
+    // Write single image frame to in-memory BLOB, with optional
+    // format and adjoin parameters.
     void            write ( Blob *blob_ );
     void            write ( Blob *blob_,
 			    const std::string &magick_ );
@@ -491,7 +492,7 @@ namespace Magick
 			    const std::string &magick_,
 			    unsigned int depth_ );
 
-    // Write image to an array of pixels with storage type specified
+    // Write single image frame to an array of pixels with storage type specified
     // by user (DispatchImage), e.g.
     // image.write( 0, 0, 640, 1, "RGB", 0, pixels );
     void            write ( const int x_,

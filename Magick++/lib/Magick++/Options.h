@@ -198,7 +198,8 @@ namespace Magick
 
     void            subImage ( unsigned int subImage_ );
     unsigned int    subImage ( void ) const;
-    
+
+    // Sub-frame number to return
     void            subRange ( unsigned int subRange_ );
     unsigned int    subRange ( void ) const;
     

@@ -2,6 +2,8 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Set scene number to 1 (or 0?) in STL unlinkImages.
+
 * Add read/write methods to support user-supplied BLOBs which are
   supplied in raw form rather than via a Blob object.
 

@@ -421,6 +421,7 @@ int main( int /*argc*/, char ** argv)
 
     cout << "Writing image \"demo_out.miff\" ..." << endl;
     montage_image.matte( false );
+    montage_image.compressType( RunlengthEncodedCompression );
     montage_image.write( "demo_out.miff" );
 
     // Uncomment following lines to display image to screen
