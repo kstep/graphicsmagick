@@ -177,6 +177,52 @@ static void wmf_magick_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
 
 /* TODO ?? Care about bmp_draw->type
  */
+#if 0
+/* passed as argument to wmf_magick_bmp_read */
+struct _wmfBMP_Read_t    /* Two means available for accessing BMP image:        */
+{
+  long offset;           /* (1) position in source file of start of BMP;        *
+                          * use API->bbuf.seek to set pos(ition), etc.          */
+  long length;           /* (2) buffer of length length containing image of BMP */
+  unsigned char* buffer;
+
+  U16 width;  /* WMF player may preset these values; zero otherwise. */
+  U16 height; /* Use caution - may be buggy... ?? [TODO]             */
+
+  wmfBMP bmp;
+};
+
+/* passed as argument to wmf_magick_bmp_draw */
+struct _wmfBMP_Draw_t
+{
+  wmfDC* dc;
+
+  wmfD_Coord pt;
+  wmfBMP bmp;
+
+  U32 type;
+
+  struct
+  {       U16 x;
+    U16 y;
+    U16 w;
+    U16 h;
+  } crop;
+
+  double pixel_width;
+  double pixel_height;
+};
+
+/* passed as argument to wmf_magick_bmp_free */
+struct _wmfBMP
+{
+  U16 width;
+  U16 height;
+  
+  void* data;
+};
+
+#endif /* out */
 static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 {
   wmf_magick_t* ddata = WMF_MAGICK_GetData (API);
@@ -230,11 +276,73 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
                      pt.x,pt.y,(int)width,(int)height,tmpname);
 }
 
+#if 0
+/* passed as argument to wmf_magick_bmp_read */
+struct _wmfBMP_Read_t    /* Two means available for accessing BMP image:        */
+{
+  long offset;           /* (1) position in source file of start of BMP;        *
+                          * use API->bbuf.seek to set pos(ition), etc.          */
+  long length;           /* (2) buffer of length length containing image of BMP */
+  unsigned char* buffer;
+
+  U16 width;  /* WMF player may preset these values; zero otherwise. */
+  U16 height; /* Use caution - may be buggy... ?? [TODO]             */
+
+  wmfBMP bmp;
+};
+#endif /* out */
 static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
 {
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]bmp_read");
 
   wmf_ipa_bmp_read (API,bmp_read);
+#if 0 
+  ExceptionInfo
+    exception;
+
+  ImageInfo
+    *image_info;
+
+  Image
+    *image;
+
+  image_info=CloneImageInfo((ImageInfo *)0);
+  strcpy(image_info->magick,"BMP");
+  GetExceptionInfo( &exception );
+  image = BlobToImage(image_info,(const void*)bmp_read->buffer,
+                      bmp_read->length,&exception);
+  DestroyImageInfo(image_info);
+  if(!image)
+    {
+      char error_message[MaxTextExtent];
+      snprintf(error_message,sizeof(error_message)-1,"%s (%s)",
+               exception.reason, exception.description);
+      bmp_read->bmp->data   = (void *)0;
+      bmp_read->bmp->width  = (U16)0;
+      bmp_read->bmp->height = (U16)0;
+      WMF_ERROR(API,error_message);
+      switch(exception.severity)
+        {
+        case ResourceLimitWarning:
+        case ResourceLimitError:
+          API->err = wmf_E_InsMem;
+          break;
+        case CorruptImageWarning:
+        case CorruptImageError:
+          API->err = wmf_E_BadFormat;
+          break;
+        default:
+          {
+            API->err = wmf_E_DeviceError;
+          }
+    }
+  else
+    {
+      bmp_read->bmp->data   = image;
+      bmp_read->bmp->width  = (U16)image->columns;
+      bmp_read->bmp->height = (U16)image->rows;
+    }
+#endif /* out */
 }
 
 static void wmf_magick_bmp_free (wmfAPI* API,wmfBMP* bmp)
@@ -242,6 +350,12 @@ static void wmf_magick_bmp_free (wmfAPI* API,wmfBMP* bmp)
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]bmp_free");
 
   wmf_ipa_bmp_free (API,bmp);
+#if 0
+  DestroyImage((Image*)bmp->data);
+  bmp->data   = (void*)0;
+  bmp->width  = (U16)0;
+  bmp->height = (U16)0;
+#endif /* out */
 }
 
 
