@@ -735,6 +735,7 @@ extern Export void
   RegisterDCMImage(void),
   RegisterDCXImage(void),
   RegisterDIBImage(void),
+  RegisterDPSImage(void),
   RegisterEPDFImage(void),
   RegisterEPIImage(void),
   RegisterEPSImage(void),

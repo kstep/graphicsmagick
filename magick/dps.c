@@ -493,3 +493,37 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r D P S I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterDPSImage adds attributes for the Display Postscript image
+%  format to the list of supported formats.  The attributes include the image
+%  format tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterDPSImage method is:
+%
+%      RegisterDPSImage(void)
+%
+*/
+Export void RegisterDPSImage(void)
+{
+  MagickInfo
+    *entry;
+
+  entry=SetMagickInfo("DPS");
+  entry->decoder=ReadDPSImage;
+  entry->description=AllocateString("Display Postscript");
+  RegisterMagickInfo(entry);
+}
