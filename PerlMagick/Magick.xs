@@ -406,7 +406,7 @@ static struct
     { "GaussianBlur", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Convolve", { {"coefficients", ArrayReference} } },
-    { "Profile", { {"profile", StringReference}, {"filen", StringReference} } },
+    { "Profile", { {"profile", StringReference}, {"filename", StringReference} } },
     { "UnsharpMask", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference}, {"amount", DoubleReference},
       {"threshold", DoubleReference} } },
@@ -6261,7 +6261,7 @@ Ping(ref,...)
     for (i=1; i < items; i++)
     {
       (void) strcpy(info->image_info->filename,(char *) SvPV(ST(i),na));
-      if ((items >= 3) && strEQcase(info->image_info->filename,"filen"))
+      if ((items >= 3) && strEQcase(info->image_info->filename,"filename"))
         continue;
       if ((items >= 3) && strEQcase(info->image_info->filename,"file"))
         {
@@ -6736,7 +6736,7 @@ Read(ref,...)
       for (n=0, i=0; i < ac; i++)
       {
         list[n]=(char *) SvPV(ST(i+1),na);
-        if ((items >= 3) && strEQcase(list[n],"filen"))
+        if ((items >= 3) && strEQcase(list[n],"filename"))
           continue;
         if ((items >= 3) && strEQcase(list[n],"file"))
           {
@@ -7126,7 +7126,7 @@ Write(ref,...)
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(package_info,NULL,"filen",ST(1));
+      SetAttribute(package_info,NULL,"filename",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
