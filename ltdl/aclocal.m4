@@ -11,16 +11,44 @@ dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
 
-# serial 44 AC_PROG_LIBTOOL
-AC_DEFUN(AC_PROG_LIBTOOL,[AC_REQUIRE([_AC_PROG_LIBTOOL])])
+# serial 45 AC_PROG_LIBTOOL
+AC_DEFUN(AC_PROG_LIBTOOL,[AC_REQUIRE([_AC_PROG_LIBTOOL])
+dnl If AC_PROG_CXX has already been expanded, run AC_LIBTOOL_CXX
+dnl immediately, otherwise, hook it in at the end of AC_PROG_CXX.
+  AC_PROVIDE_IFELSE([AC_PROG_CXX],
+    [AC_LIBTOOL_CXX],
+    [define([AC_PROG_CXX], defn([AC_PROG_CXX])[AC_LIBTOOL_CXX
+])])
+
+dnl Quote A][M_PROG_GCJ so that aclocal doesn't bring it in needlessly.
+dnl If either AC_PROG_GCJ or A][M_PROG_GCJ have already been expanded, run
+dnl AC_LIBTOOL_GCJ immediately, otherwise, hook it in at the end of both.
+  AC_PROVIDE_IFELSE([AC_PROG_GCJ],
+    [AC_LIBTOOL_GCJ],
+    [AC_PROVIDE_IFELSE([A][M_PROG_GCJ],
+        [AC_LIBTOOL_GCJ],
+	[AC_PROVIDE_IFELSE([LT_AC_PROG_GCJ],
+	  [AC_LIBTOOL_GCJ],
+	[ifdef([AC_PROG_GCJ],
+	       [define([AC_PROG_GCJ], defn([AC_PROG_GCJ])[AC_LIBTOOL_GCJ
+])])
+	 ifdef([A][M_PROG_GCJ],
+	       [define([A][M_PROG_GCJ], defn([A][M_PROG_GCJ])[AC_LIBTOOL_GCJ
+])])
+	 ifdef([LT_AC_PROG_GCJ],
+	       [define([LT_AC_PROG_GCJ], defn([LT_AC_PROG_GCJ])[AC_LIBTOOL_GCJ
+])])])])])])
+
 AC_DEFUN(_AC_PROG_LIBTOOL,
 [AC_REQUIRE([AC_LIBTOOL_SETUP])dnl
+AC_BEFORE([$0],[AC_LIBTOOL_CXX])dnl
+AC_BEFORE([$0],[AC_LIBTOOL_GCJ])dnl
 
 # Save cache, so that ltconfig can load it
 AC_CACHE_SAVE
 
 # Actually configure libtool.  ac_aux_dir is where install-sh is found.
-AR="$AR" CC="$CC" CFLAGS="$CFLAGS" CPPFLAGS="$CPPFLAGS" \
+AR="$AR" LTCC="$CC" CC="$CC" CFLAGS="$CFLAGS" CPPFLAGS="$CPPFLAGS" \
 MAGIC="$MAGIC" LD="$LD" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
 LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" STRIP="$STRIP" \
 AS="$AS" DLLTOOL="$DLLTOOL" OBJDUMP="$OBJDUMP" \
@@ -34,7 +62,7 @@ $libtool_flags --no-verify --build="$build" $ac_aux_dir/ltmain.sh $host \
 AC_CACHE_LOAD
 
 # This can be used to rebuild libtool when needed
-LIBTOOL_DEPS="$ac_aux_dir/ltconfig $ac_aux_dir/ltmain.sh"
+LIBTOOL_DEPS="$ac_aux_dir/ltconfig $ac_aux_dir/ltmain.sh $ac_aux_dir/ltcf-c.sh"
 
 # Always use our own libtool.
 LIBTOOL='$(SHELL) $(top_builddir)/libtool'
@@ -58,6 +86,7 @@ AC_REQUIRE([AC_PROG_LD_RELOAD_FLAG])dnl
 AC_REQUIRE([AC_PROG_NM])dnl
 AC_REQUIRE([AC_PROG_LN_S])dnl
 AC_REQUIRE([AC_DEPLIBS_CHECK_METHOD])dnl
+# Autoconf 2.13's AC_OBJEXT and AC_EXEEXT macros only works for C compilers!
 AC_REQUIRE([AC_OBJEXT])dnl
 AC_REQUIRE([AC_EXEEXT])dnl
 dnl
@@ -134,7 +163,7 @@ case "$host" in
   ;;
 
 ifdef([AC_PROVIDE_AC_LIBTOOL_WIN32_DLL],
-[*-*-cygwin* | *-*-mingw*)
+[*-*-cygwin* | *-*-mingw* | *-*-pw32*)
   AC_CHECK_TOOL(DLLTOOL, dlltool, false)
   AC_CHECK_TOOL(AS, as, false)
   AC_CHECK_TOOL(OBJDUMP, objdump, false)
@@ -156,7 +185,7 @@ ifdef([AC_PROVIDE_AC_LIBTOOL_WIN32_DLL],
     AC_CACHE_CHECK([how to link DLLs], lt_cv_cc_dll_switch,
       [AC_TRY_LINK([], [], [lt_cv_cc_dll_switch=-mdll],[lt_cv_cc_dll_switch=-dll])])
     CFLAGS="$SAVE_CFLAGS" ;;
-  *-*-cygwin*)
+  *-*-cygwin* | *-*-pw32*)
     # cygwin systems need to pass --dll to the linker, and not link
     # crt.o which will require a WinMain@16 definition.
     lt_cv_cc_dll_switch="-Wl,--dll -nostartfiles" ;;
@@ -489,28 +518,27 @@ bsdi4*)
   lt_cv_file_magic_test_file=/shlib/libc.so
   ;;
 
-cygwin* | mingw*)
+cygwin* | mingw* |pw32*)
   lt_cv_deplibs_check_method='file_magic file format pei*-i386(.*architecture: i386)?'
   lt_cv_file_magic_cmd='${OBJDUMP} -f'
   ;;
 
-freebsd*)
-  case "$version_type" in
-  freebsd-elf*)
-    lt_cv_deplibs_check_method=pass_all
-    ;;
-  *)
+freebsd* )
+  if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
     case "$host_cpu" in
     i*86 )
+      # Not sure whether the presence of OpenBSD here was a mistake.
+      # Let's accept both of them until this is cleared up.
       changequote(,)dnl
-      lt_cv_deplibs_check_method=='file_magic OpenBSD/i[3-9]86 demand paged shared library'
+      lt_cv_deplibs_check_method='file_magic (FreeBSD|OpenBSD)/i[3-9]86 (compact )?demand paged shared library'
       changequote([, ])dnl
       lt_cv_file_magic_cmd=/usr/bin/file
       lt_cv_file_magic_test_file=`echo /usr/lib/libc.so.*`
       ;;
     esac
-    ;;
-  esac
+  else
+    lt_cv_deplibs_check_method=pass_all
+  fi
   ;;
 
 gnu*)
@@ -619,18 +647,20 @@ else
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${PATH_SEPARATOR-:}"
   for ac_dir in $PATH /usr/ccs/bin /usr/ucb /bin; do
     test -z "$ac_dir" && ac_dir=.
-    if test -f $ac_dir/nm || test -f $ac_dir/nm$ac_exeext ; then
+    tmp_nm=$ac_dir/${ac_tool_prefix}nm
+    if test -f $tmp_nm || test -f $tmp_nm$ac_exeext ; then
       # Check to see if the nm accepts a BSD-compat flag.
       # Adding the `sed 1q' prevents false positives on HP-UX, which says:
       #   nm: unknown option "B" ignored
-      if ($ac_dir/nm -B /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
-	ac_cv_path_NM="$ac_dir/nm -B"
+      # Tru64's nm complains that /dev/null is an invalid object file
+      if ($tmp_nm -B /dev/null 2>&1 | sed '1q'; exit 0) | egrep '(/dev/null|Invalid file or object type)' >/dev/null; then
+	ac_cv_path_NM="$tmp_nm -B"
 	break
-      elif ($ac_dir/nm -p /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
-	ac_cv_path_NM="$ac_dir/nm -p"
+      elif ($tmp_nm -p /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
+	ac_cv_path_NM="$tmp_nm -p"
 	break
       else
-	ac_cv_path_NM=${ac_cv_path_NM="$ac_dir/nm"} # keep the first match, but
+	ac_cv_path_NM=${ac_cv_path_NM="$tmp_nm"} # keep the first match, but
 	continue # so that we can try to find one that supports BSD flags
       fi
     fi
@@ -647,7 +677,7 @@ AC_DEFUN(AC_CHECK_LIBM,
 [AC_REQUIRE([AC_CANONICAL_HOST])dnl
 LIBM=
 case "$host" in
-*-*-beos* | *-*-cygwin*)
+*-*-beos* | *-*-cygwin* | *-*-pw32*)
   # These system don't have libm
   ;;
 *-ncr-sysv4.3*)
@@ -711,6 +741,75 @@ AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   fi
 ])
 
+# If this macro is not defined by Autoconf, define it here.
+ifdef([AC_PROVIDE_IFELSE],
+      [],
+      [define([AC_PROVIDE_IFELSE],
+              [ifdef([AC_PROVIDE_$1],
+                     [$2], [$3])])])
+
+# AC_LIBTOOL_CXX - enable support for C++ libraries
+AC_DEFUN(AC_LIBTOOL_CXX,[AC_REQUIRE([_AC_LIBTOOL_CXX])])
+AC_DEFUN(_AC_LIBTOOL_CXX,
+[AC_REQUIRE([AC_PROG_LIBTOOL])
+AC_REQUIRE([AC_PROG_CXX])
+AC_REQUIRE([AC_PROG_CXXCPP])
+LIBTOOL_DEPS=$LIBTOOL_DEPS" $ac_aux_dir/ltcf-cxx.sh"
+lt_save_CC="$CC"
+lt_save_CFLAGS="$CFLAGS"
+dnl Make sure LTCC is set to the C compiler, i.e. set LTCC before CC
+dnl is set to the C++ compiler.
+AR="$AR" LTCC="$CC" CC="$CXX" CXX="$CXX" CFLAGS="$CXXFLAGS" CPPFLAGS="$CPPFLAGS" \
+MAGIC="$MAGIC" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
+LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" STRIP="$STRIP" \
+AS="$AS" DLLTOOL="$DLLTOOL" OBJDUMP="$OBJDUMP" \
+objext="$OBJEXT" exeext="$EXEEXT" reload_flag="$reload_flag" \
+deplibs_check_method="$deplibs_check_method" \
+file_magic_cmd="$file_magic_cmd" \
+${CONFIG_SHELL-/bin/sh} $ac_aux_dir/ltconfig -o libtool $libtool_flags \
+--build="$build" --add-tag=CXX $ac_aux_dir/ltcf-cxx.sh $host \
+|| AC_MSG_ERROR([libtool tag configuration failed])
+CC="$lt_save_CC"
+CFLAGS="$lt_save_CFLAGS"
+
+# Redirect the config.log output again, so that the ltconfig log is not
+# clobbered by the next message.
+exec 5>>./config.log
+])
+
+# AC_LIBTOOL_GCJ - enable support for GCJ libraries
+AC_DEFUN(AC_LIBTOOL_GCJ,[AC_REQUIRE([_AC_LIBTOOL_GCJ])])
+AC_DEFUN(_AC_LIBTOOL_GCJ,
+[AC_REQUIRE([AC_PROG_LIBTOOL])
+AC_PROVIDE_IFELSE([AC_PROG_GCJ],[],
+  [AC_PROVIDE_IFELSE([A][M_PROG_GCJ],[],
+    [AC_PROVIDE_IFELSE([LT_AC_PROG_GCJ],[],
+      [ifdef([AC_PROG_GCJ],[AC_REQUIRE([AC_PROG_GCJ])],
+         [ifdef([A][M_PROG_GCJ],[AC_REQUIRE([A][M_PROG_GCJ])],
+           [AC_REQUIRE([A][C_PROG_GCJ_OR_A][M_PROG_GCJ])])])])])])
+LIBTOOL_DEPS=$LIBTOOL_DEPS" $ac_aux_dir/ltcf-gcj.sh"
+lt_save_CC="$CC"
+lt_save_CFLAGS="$CFLAGS"
+dnl Make sure LTCC is set to the C compiler, i.e. set LTCC before CC
+dnl is set to the C++ compiler.
+AR="$AR" LTCC="$CC" CC="$GCJ" CFLAGS="$GCJFLAGS" CPPFLAGS="" \
+MAGIC="$MAGIC" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
+LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" STRIP="$STRIP" \
+AS="$AS" DLLTOOL="$DLLTOOL" OBJDUMP="$OBJDUMP" \
+objext="$OBJEXT" exeext="$EXEEXT" reload_flag="$reload_flag" \
+deplibs_check_method="$deplibs_check_method" \
+file_magic_cmd="$file_magic_cmd" \
+${CONFIG_SHELL-/bin/sh} $ac_aux_dir/ltconfig -o libtool $libtool_flags \
+--build="$build" --add-tag=GCJ $ac_aux_dir/ltcf-gcj.sh $host \
+|| AC_MSG_ERROR([libtool tag configuration failed])
+CC="$lt_save_CC"
+CFLAGS="$lt_save_CFLAGS"
+
+# Redirect the config.log output again, so that the ltconfig log is not
+# clobbered by the next message.
+exec 5>>./config.log
+])
+
 dnl old names
 AC_DEFUN(AM_PROG_LIBTOOL, [indir([AC_PROG_LIBTOOL])])dnl
 AC_DEFUN(AM_ENABLE_SHARED, [indir([AC_ENABLE_SHARED], $@)])dnl
@@ -722,6 +821,12 @@ AC_DEFUN(AM_PROG_NM, [indir([AC_PROG_NM])])dnl
 
 dnl This is just to silence aclocal about the macro not being used
 ifelse([AC_DISABLE_FAST_INSTALL])dnl
+
+AC_DEFUN([LT_AC_PROG_GCJ],[
+  AC_CHECK_TOOL(GCJ, gcj, no)
+  test "x${GCJFLAGS+set}" = xset || GCJFLAGS="-g -O2"
+  AC_SUBST(GCJFLAGS)
+])
 
 # serial 1 AC_LIB_LTDL
 
@@ -806,7 +911,7 @@ AC_DEFUN(AC_LTDL_SYSSEARCHPATH,
 AC_CACHE_CHECK([for the default library search path],
   libltdl_cv_sys_search_path, [libltdl_cv_sys_search_path="$sys_lib_dlsearch_path_spec"])
 if test -n "$libltdl_cv_sys_search_path"; then
-  case "$lt_target" in
+  case "$host" in
   *-*-mingw*) pathsep=";" ;;
   *) pathsep=":" ;;
   esac
@@ -864,7 +969,10 @@ AC_DEFUN(AC_LTDL_DLLIB,
 AC_CHECK_LIB(dl, dlopen, [AC_DEFINE(HAVE_LIBDL, 1,
    [Define if you have the libdl library or equivalent. ]) LIBADD_DL="-ldl"],
 [AC_CHECK_FUNC(dlopen, [AC_DEFINE(HAVE_LIBDL, 1,
-   [Define if you have the libdl library or equivalent.])])])
+   [Define if you have the libdl library or equivalent.])],
+[AC_CHECK_LIB(svld, dlopen, [AC_DEFINE(HAVE_LIBDL, 1,
+   [Define if you have the libdl library or equivalent.]) LIBADD_DL="-lsvld"]
+)])])
 AC_CHECK_FUNC(shl_load, [AC_DEFINE(HAVE_SHL_LOAD, 1,
    [Define if you have the shl_load function.])],
 [AC_CHECK_LIB(dld, shl_load,
@@ -1157,7 +1265,7 @@ fi
 
 # Define a conditional.
 
-AC_DEFUN(AM_CONDITIONAL,
+AC_DEFUN([AM_CONDITIONAL],
 [AC_SUBST($1_TRUE)
 AC_SUBST($1_FALSE)
 if $2; then
@@ -1172,29 +1280,47 @@ fi])
 # some checks are only needed if your package does certain things.
 # But this isn't really a big deal.
 
-# serial 1
+# serial 3
 
-dnl Usage:
-dnl AM_INIT_AUTOMAKE(package,version, [no-define])
-
-AC_DEFUN(AM_INIT_AUTOMAKE,
-[AC_REQUIRE([AC_PROG_INSTALL])
-dnl We require 2.13 because we rely on SHELL being computed by configure.
 AC_PREREQ([2.13])
-PACKAGE=[$1]
-AC_SUBST(PACKAGE)
-VERSION=[$2]
-AC_SUBST(VERSION)
-dnl test to see if srcdir already configured
+
+# AC_PROVIDE_IFELSE(MACRO-NAME, IF-PROVIDED, IF-NOT-PROVIDED)
+# -----------------------------------------------------------
+# If MACRO-NAME is provided do IF-PROVIDED, else IF-NOT-PROVIDED.
+# The purpose of this macro is to provide the user with a means to
+# check macros which are provided without letting her know how the
+# information is coded.
+# If this macro is not defined by Autoconf, define it here.
+ifdef([AC_PROVIDE_IFELSE],
+      [],
+      [define([AC_PROVIDE_IFELSE],
+              [ifdef([AC_PROVIDE_$1],
+                     [$2], [$3])])])
+
+
+# AM_INIT_AUTOMAKE(PACKAGE,VERSION, [NO-DEFINE])
+# ----------------------------------------------
+AC_DEFUN([AM_INIT_AUTOMAKE],
+[dnl We require 2.13 because we rely on SHELL being computed by configure.
+AC_REQUIRE([AC_PROG_INSTALL])dnl
+# test to see if srcdir already configured
 if test "`CDPATH=: && cd $srcdir && pwd`" != "`pwd`" &&
    test -f $srcdir/config.status; then
   AC_MSG_ERROR([source directory already configured; run "make distclean" there first])
 fi
+
+# Define the identity of the package.
+PACKAGE=$1
+AC_SUBST(PACKAGE)dnl
+VERSION=$2
+AC_SUBST(VERSION)dnl
 ifelse([$3],,
-AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE", [Name of package])
-AC_DEFINE_UNQUOTED(VERSION, "$VERSION", [Version number of package]))
-AC_REQUIRE([AM_SANITY_CHECK])
-AC_REQUIRE([AC_ARG_PROGRAM])
+[AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE", [Name of package])
+AC_DEFINE_UNQUOTED(VERSION, "$VERSION", [Version number of package])])
+
+# Some tools Automake needs.
+AC_REQUIRE([AM_SANITY_CHECK])dnl
+AC_REQUIRE([AC_ARG_PROGRAM])dnl
 AM_MISSING_PROG(ACLOCAL, aclocal)
 AM_MISSING_PROG(AUTOCONF, autoconf)
 AM_MISSING_PROG(AUTOMAKE, automake)
@@ -1202,23 +1328,27 @@ AM_MISSING_PROG(AUTOHEADER, autoheader)
 AM_MISSING_PROG(MAKEINFO, makeinfo)
 AM_MISSING_PROG(AMTAR, tar)
 AM_MISSING_INSTALL_SH
-dnl We need awk for the "check" target.  The system "awk" is bad on
-dnl some platforms.
-AC_REQUIRE([AC_PROG_AWK])
-AC_REQUIRE([AC_PROG_MAKE_SET])
-AC_REQUIRE([AM_DEP_TRACK])
-AC_REQUIRE([AM_SET_DEPDIR])
-ifdef([AC_PROVIDE_AC_PROG_CC], [AM_DEPENDENCIES(CC)], [
-   define([AC_PROG_CC], defn([AC_PROG_CC])[AM_DEPENDENCIES(CC)])])
-ifdef([AC_PROVIDE_AC_PROG_CXX], [AM_DEPENDENCIES(CXX)], [
-   define([AC_PROG_CXX], defn([AC_PROG_CXX])[AM_DEPENDENCIES(CXX)])])
+# We need awk for the "check" target.  The system "awk" is bad on
+# some platforms.
+AC_REQUIRE([AC_PROG_AWK])dnl
+AC_REQUIRE([AC_PROG_MAKE_SET])dnl
+AC_REQUIRE([AM_DEP_TRACK])dnl
+AC_REQUIRE([AM_SET_DEPDIR])dnl
+AC_PROVIDE_IFELSE([AC_PROG_CC],
+                  [AM_DEPENDENCIES(CC)],
+                  [define([AC_PROG_CC],
+                          defn([AC_PROG_CC])[AM_DEPENDENCIES(CC)])])dnl
+AC_PROVIDE_IFELSE([AC_PROG_CXX],
+                  [AM_DEPENDENCIES(CXX)],
+                  [define([AC_PROG_CXX],
+                          defn([AC_PROG_CXX])[AM_DEPENDENCIES(CXX)])])dnl
 ])
 
 #
 # Check to make sure that the build environment is sane.
 #
 
-AC_DEFUN(AM_SANITY_CHECK,
+AC_DEFUN([AM_SANITY_CHECK],
 [AC_MSG_CHECKING([whether build environment is sane])
 # Just in case
 sleep 1
@@ -1257,15 +1387,15 @@ fi
 rm -f conftest*
 AC_MSG_RESULT(yes)])
 
-dnl AM_MISSING_PROG(NAME, PROGRAM)
-AC_DEFUN(AM_MISSING_PROG, [
+# AM_MISSING_PROG(NAME, PROGRAM)
+AC_DEFUN([AM_MISSING_PROG], [
 AC_REQUIRE([AM_MISSING_HAS_RUN])
 $1=${$1-"${am_missing_run}$2"}
 AC_SUBST($1)])
 
-dnl Like AM_MISSING_PROG, but only looks for install-sh.
-dnl AM_MISSING_INSTALL_SH()
-AC_DEFUN(AM_MISSING_INSTALL_SH, [
+# Like AM_MISSING_PROG, but only looks for install-sh.
+# AM_MISSING_INSTALL_SH()
+AC_DEFUN([AM_MISSING_INSTALL_SH], [
 AC_REQUIRE([AM_MISSING_HAS_RUN])
 if test -z "$install_sh"; then
    install_sh="$ac_aux_dir/install-sh"
@@ -1277,13 +1407,13 @@ if test -z "$install_sh"; then
 fi
 AC_SUBST(install_sh)])
 
-dnl AM_MISSING_HAS_RUN.
-dnl Define MISSING if not defined so far and test if it supports --run.
-dnl If it does, set am_missing_run to use it, otherwise, to nothing.
+# AM_MISSING_HAS_RUN.
+# Define MISSING if not defined so far and test if it supports --run.
+# If it does, set am_missing_run to use it, otherwise, to nothing.
 AC_DEFUN([AM_MISSING_HAS_RUN], [
 test x"${MISSING+set}" = xset || \
   MISSING="\${SHELL} `CDPATH=: && cd $ac_aux_dir && pwd`/missing"
-dnl Use eval to expand $SHELL
+# Use eval to expand $SHELL
 if eval "$MISSING --run :"; then
   am_missing_run="$MISSING --run "
 else
@@ -1293,14 +1423,14 @@ else
 fi
 ])
 
-dnl See how the compiler implements dependency checking.
-dnl Usage:
-dnl AM_DEPENDENCIES(NAME)
-dnl NAME is "CC", "CXX" or "OBJC".
+# See how the compiler implements dependency checking.
+# Usage:
+# AM_DEPENDENCIES(NAME)
+# NAME is "CC", "CXX" or "OBJC".
 
-dnl We try a few techniques and use that to set a single cache variable.
+# We try a few techniques and use that to set a single cache variable.
 
-AC_DEFUN(AM_DEPENDENCIES,[
+AC_DEFUN([AM_DEPENDENCIES],[
 AC_REQUIRE([AM_SET_DEPDIR])
 AC_REQUIRE([AM_OUTPUT_DEPENDENCY_COMMANDS])
 ifelse([$1],CC,[
@@ -1336,10 +1466,13 @@ if test -z "$AMDEP"; then
       ;;
     none) break ;;
     esac
+    # We check with `-c' and `-o' for the sake of the "dashmstdout"
+    # mode.  It turns out that the SunPro C++ compiler does not properly
+    # handle `-M -o', and we need to detect this.
     if depmode="$depmode" \
        source=conftest.c object=conftest.o \
        depfile=conftest.Po tmpdepfile=conftest.TPo \
-       $SHELL $am_depcomp $depcc -c conftest.c 2>/dev/null &&
+       $SHELL $am_depcomp $depcc -c conftest.c -o conftest.o 2>/dev/null &&
        grep conftest.h conftest.Po > /dev/null 2>&1; then
       am_cv_[$1]_dependencies_compiler_type="$depmode"
       break
@@ -1356,10 +1489,10 @@ AC_MSG_RESULT($am_cv_[$1]_dependencies_compiler_type)
 AC_SUBST([$1]DEPMODE)
 ])
 
-dnl Choose a directory name for dependency files.
-dnl This macro is AC_REQUIREd in AM_DEPENDENCIES
+# Choose a directory name for dependency files.
+# This macro is AC_REQUIREd in AM_DEPENDENCIES
 
-AC_DEFUN(AM_SET_DEPDIR,[
+AC_DEFUN([AM_SET_DEPDIR],[
 if test -d .deps || mkdir .deps 2> /dev/null || test -d .deps; then
   DEPDIR=.deps
 else
@@ -1368,7 +1501,7 @@ fi
 AC_SUBST(DEPDIR)
 ])
 
-AC_DEFUN(AM_DEP_TRACK,[
+AC_DEFUN([AM_DEP_TRACK],[
 AC_ARG_ENABLE(dependency-tracking,
 [  --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors])
@@ -1393,16 +1526,16 @@ subst(AMDEPBACKSLASH)
 popdef([subst])
 ])
 
-dnl Generate code to set up dependency tracking.
-dnl This macro should only be invoked once -- use via AC_REQUIRE.
-dnl Usage:
-dnl AM_OUTPUT_DEPENDENCY_COMMANDS
+# Generate code to set up dependency tracking.
+# This macro should only be invoked once -- use via AC_REQUIRE.
+# Usage:
+# AM_OUTPUT_DEPENDENCY_COMMANDS
 
-dnl
-dnl This code is only required when automatic dependency tracking
-dnl is enabled.  FIXME.  This creates each `.P' file that we will
-dnl need in order to bootstrap the dependency handling code.
-AC_DEFUN(AM_OUTPUT_DEPENDENCY_COMMANDS,[
+#
+# This code is only required when automatic dependency tracking
+# is enabled.  FIXME.  This creates each `.P' file that we will
+# need in order to bootstrap the dependency handling code.
+AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS],[
 AC_OUTPUT_COMMANDS([
 test x"$AMDEP" != x"" ||
 for mf in $CONFIG_FILES; do
@@ -1446,33 +1579,39 @@ ac_aux_dir="$ac_aux_dir"])])
 
 # Like AC_CONFIG_HEADER, but automatically create stamp file.
 
-AC_DEFUN(AM_CONFIG_HEADER,
-[AC_PREREQ([2.12])
-AC_CONFIG_HEADER([$1])
-dnl When config.status generates a header, we must update the stamp-h file.
-dnl This file resides in the same directory as the config header
-dnl that is generated.  We must strip everything past the first ":",
-dnl and everything past the last "/".
-AC_OUTPUT_COMMANDS(changequote(<<,>>)dnl
-ifelse(patsubst(<<$1>>, <<[^ ]>>, <<>>), <<>>,
-<<test -z "<<$>>CONFIG_HEADERS" || echo timestamp > patsubst(<<$1>>, <<^\([^:]*/\)?.*>>, <<\1>>)stamp-h<<>>dnl>>,
-<<am_indx=1
-for am_file in <<$1>>; do
-  case " <<$>>CONFIG_HEADERS " in
-  *" <<$>>am_file "*<<)>>
-    echo timestamp > `echo <<$>>am_file | sed -e 's%:.*%%' -e 's%[^/]*$%%'`stamp-h$am_indx
-    ;;
-  esac
-  am_indx=`expr "<<$>>am_indx" + 1`
-done<<>>dnl>>)
-changequote([,]))])
+# serial 3
+
+# When config.status generates a header, we must update the stamp-h file.
+# This file resides in the same directory as the config header
+# that is generated.  We must strip everything past the first ":",
+# and everything past the last "/".
+
+AC_PREREQ([2.12])
+
+AC_DEFUN([AM_CONFIG_HEADER],
+[AC_CONFIG_HEADER([$1])
+  AC_OUTPUT_COMMANDS(
+   ifelse(patsubst([$1], [[^ ]], []),
+	  [],
+	  [test -z "$CONFIG_HEADERS" || echo timestamp >dnl
+	   patsubst([$1], [^\([^:]*/\)?.*], [\1])stamp-h]),
+  [am_indx=1
+  for am_file in $1; do
+    case " $CONFIG_HEADERS " in
+    *" $am_file "*)
+      echo timestamp > `echo $am_file | sed 's%:.*%%;s%[^/]*$%%'`stamp-h$am_indx
+      ;;
+    esac
+    am_indx=\`expr \$am_indx + 1\`
+  done])
+])
 
 # Add --enable-maintainer-mode option to configure.
 # From Jim Meyering
 
 # serial 1
 
-AC_DEFUN(AM_MAINTAINER_MODE,
+AC_DEFUN([AM_MAINTAINER_MODE],
 [AC_MSG_CHECKING([whether to enable maintainer-specific portions of Makefiles])
   dnl maintainer-mode is disabled by default
   AC_ARG_ENABLE(maintainer-mode,

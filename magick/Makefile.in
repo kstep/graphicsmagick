@@ -322,7 +322,7 @@ $(DEPDIR)/signature.Plo $(DEPDIR)/stream.Plo $(DEPDIR)/timer.Plo \
 $(DEPDIR)/transform.Plo $(DEPDIR)/utility.Plo $(DEPDIR)/widget.Plo \
 $(DEPDIR)/xwindows.Plo $(DEPDIR)/zoom.Plo
 DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
-Magick-config.in Makefile.am Makefile.in config.h.in
+Magick-config.in Makefile.am Makefile.in config.h.in magick/config.h.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -606,6 +606,7 @@ maintainer-clean-depend:
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
 distdir: $(DISTFILES)
+	$(mkinstalldirs) $(distdir)/magick
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \

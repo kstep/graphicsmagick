@@ -313,9 +313,6 @@
 /* Location of coder modules */
 #undef MagickModulesPath
 
-/* Name of package */
-#undef PACKAGE
-
 /* Pixel cache threshold (default 2047MB) */
 #undef PixelCacheThreshold
 
@@ -342,9 +339,6 @@
 
 /* Define to specify default TrueType font path. */
 #undef TT_FONT_PATH
-
-/* Version number of package */
-#undef VERSION
 
 /* Define if using the dmalloc debugging malloc package */
 #undef WITH_DMALLOC

@@ -27,6 +27,9 @@
 /* Define if you have the `dld' library (-ldld). */
 #undef HAVE_LIBDLD
 
+/* Define if you have the `svld' library (-lsvld). */
+#undef HAVE_LIBSVLD
+
 /* Define if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
@@ -80,14 +83,8 @@
 /* Define if dlsym() requires a leading underscode in symbol names. */
 #undef NEED_USCORE
 
-/* Name of package */
-#undef PACKAGE
-
 /* Define if you have the ANSI C header files. */
 #undef STDC_HEADERS
-
-/* Version number of package */
-#undef VERSION
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
