@@ -3554,9 +3554,6 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   SegmentInfo
     bounds;
 
-  TimerInfo
-    timer;
-
   unsigned int
     fill;
 
