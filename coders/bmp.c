@@ -433,11 +433,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   long
     bit,
+    y;
+
+  unsigned long
     blue,
     green,
     opacity,
-    red,
-    y;
+    red;
 
   off_t
     start_position;
@@ -670,22 +672,22 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (bmp_info.alpha_mask != 0)
           while (((bmp_info.alpha_mask << shift.opacity) & 0x80000000L) == 0)
             shift.opacity++;
-        i=0;
-        while (((bmp_info.red_mask << (shift.red+i)) & 0x80000000L) != 0)
+        i=shift.red;
+        while (((bmp_info.red_mask << i) & 0x80000000L) != 0)
           i++;
-        quantum_bits.red=i;
-        i=0;
-        while (((bmp_info.green_mask << (shift.green+i)) & 0x80000000L) != 0)
+        quantum_bits.red=(Quantum) (i-shift.red);
+        i=shift.green;
+        while (((bmp_info.green_mask << i) & 0x80000000L) != 0)
           i++;
-        quantum_bits.green=i;
-        i=0;
-        while (((bmp_info.blue_mask << (shift.blue+i)) & 0x80000000L) != 0)
+        quantum_bits.green=(Quantum) (i-shift.green);
+        i=shift.blue;
+        while (((bmp_info.blue_mask << i) & 0x80000000L) != 0)
           i++;
-        quantum_bits.blue=i;
-        i=0;
-        while (((bmp_info.alpha_mask << (shift.opacity+i)) & 0x80000000L) != 0)
+        quantum_bits.blue=(Quantum) (i-shift.blue);
+        i=shift.opacity;
+        while (((bmp_info.alpha_mask << i) & 0x80000000L) != 0)
           i++;
-        quantum_bits.opacity=i;
+        quantum_bits.opacity=(Quantum) (i-shift.opacity);
       }
     switch (bmp_info.bits_per_pixel)
     {
@@ -862,7 +864,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert DirectColor scanline.
         */
-        bytes_per_line=3*((image->columns*bmp_info.bits_per_pixel+31)/32);
+        bytes_per_line=4*((image->columns*24+31)/32);
         for (y=(long) image->rows-1; y >= 0; y--)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
@@ -893,7 +895,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageWarning,
             "Compression mode != 3 in 32-bit BMP image file",image)
 
-        bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
+        bytes_per_line=4*(image->columns);
 
         for (y=(long) image->rows-1; y >= 0; y--)
         {
@@ -1168,7 +1170,14 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
-    bmp_info.size=image->matte ? 108 : 40;
+    if (!image->matte)
+      bmp_info.size=40;
+    else
+      {
+        bmp_info.size=108;
+        bmp_info.file_size+=68;
+        bmp_info.offset_bits+=68;
+      }
     bmp_info.width=(long) image->columns;
     bmp_info.height=(long) image->rows;
     bmp_info.planes=1;
