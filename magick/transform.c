@@ -1464,8 +1464,7 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
       crop_image=(Image *) NULL;
       if ((width == 0) || (height == 0) ||
           ((flags & XValue) != 0) || ((flags & YValue) != 0))
-        crop_image=CropImage(transform_image,&crop_info,
-          &(*image)->exception);
+        crop_image=CropImage(transform_image,&crop_info,&(*image)->exception);
       else
         if ((transform_image->columns > width) ||
             (transform_image->rows > height))
