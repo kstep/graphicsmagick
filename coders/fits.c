@@ -240,7 +240,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     Decode image header.
   */
   c=ReadBlobByte(image);
-  count=1;
   if (c == EOF)
     {
       DestroyImage(image);
@@ -249,10 +248,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   for ( ; ; )
   {
     if (!isalnum((int) c))
-      {
-        c=ReadBlobByte(image);
-        count++;
-      }
+      c=ReadBlobByte(image);
     else
       {
         register char
@@ -267,7 +263,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           if ((p-keyword) < (MaxTextExtent-1))
             *p++=c;
           c=ReadBlobByte(image);
-          count++;
         } while (isalnum(c) || (c == '_'));
         *p='\0';
         if (LocaleCompare(keyword,"END") == 0)
@@ -278,7 +273,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           if (c == '=')
             value_expected=True;
           c=ReadBlobByte(image);
-          count++;
         }
         if (value_expected == False)
           continue;
@@ -288,7 +282,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           if ((p-value) < (MaxTextExtent-1))
             *p++=c;
           c=ReadBlobByte(image);
-          count++;
         }
         *p='\0';
         /*
@@ -315,16 +308,12 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         if (LocaleCompare(keyword,"BSCALE") == 0)
           fits_info.scale=atof(value);
       }
-    while (isspace(c))
-    {
+    while ((TellBlob(image) % 80) != 0)
       c=ReadBlobByte(image);
-      count++;
-    }
+    c=ReadBlobByte(image);
   }
-  while (count > 2880)
-    count-=2880;
-  for ( ; count < 2880; count++)
-    (void) ReadBlobByte(image);
+  while ((TellBlob(image) % 2880) != 0)
+    c=ReadBlobByte(image);
   /*
     Verify that required image information is defined.
   */
@@ -372,15 +361,14 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     number_pixels=image->columns*image->rows;
     fits_pixels=(unsigned char *) AcquireMemory(packet_size*number_pixels);
     if (fits_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
-        image);
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
     /*
       Convert FITS pixels to pixel packets.
     */
     count=ReadBlob(image,packet_size*number_pixels,fits_pixels);
     if (count == 0)
-      ThrowReaderException(CorruptImageError,
-        "Insufficient image data in file",image);
+      ThrowReaderException(CorruptImageError,"Insufficient image data in file",
+        image);
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
       {
         /*
