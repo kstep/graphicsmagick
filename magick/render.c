@@ -4873,11 +4873,12 @@ MagickExport void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo star
 }
 
 MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,
-  const PointInfo start,const PointInfo stop,PointInfo degrees)
+  const PointInfo start,const PointInfo stop,const PointInfo degrees)
 {
   double
     delta,
-    step;
+    step,
+    y;
 
   PointInfo
     angle,
@@ -4896,10 +4897,11 @@ MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,
   step=MagickPI/8.0;
   if (delta < (MagickPI/8.0))
     step=MagickPI/(4*ceil(MagickPI/delta/2));
-  while (degrees.y < degrees.x)
-    degrees.y+=360.0;
   angle.x=DegreesToRadians(degrees.x);
-  angle.y=DegreesToRadians(degrees.y);
+  y=degrees.y;
+  while (y < degrees.x)
+    y+=360.0;
+  angle.y=DegreesToRadians(y);
   p=primitive_info;
   for ( ; angle.x < angle.y; angle.x+=step)
   {
