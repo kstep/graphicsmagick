@@ -694,7 +694,7 @@ MAGICK DELEGATES
 
          ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
 
-      to read the JPEG image format.
+      to read the JPEG v1 image format.
 
       Apply this JPEG patch to Independent JPEG Group's source
       distribution if you want to read lossless jpeg-encoded DICOM
@@ -704,6 +704,13 @@ MAGICK DELEGATES
 
       Use of lossless JPEG is not encouraged. Unless you have a requirement
       to read lossless jpeg-encoded DICOM images, please disregard the patch.
+
+    o ImageMagick requires the JasPer Project's Jasper library available
+      via http from
+
+         http://www.ece.uvic.ca/~mdadams/jasper/
+
+      to read and write the JPEG v2 format.
 
     o ImageMagick requires the MPEG utilities from the MPEG Software
       Simulation Group, which are available via anonymous FTP as
