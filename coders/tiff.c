@@ -488,7 +488,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
     image->columns=width;
     image->rows=height;
-    image->depth=bits_per_sample <= 8 ? 8 : QuantumDepth;
+    image->depth=range <= 255 ? 8 : QuantumDepth;
     range=max_sample_value-min_sample_value;
     if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff))
       {
@@ -732,17 +732,20 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             case 16:
             {
               if (image->depth <= 8)
-                for (x=0; x < (int) width; x++)
                 {
-                  *r++=(*p++);
-                  p++;
+                  for (x=0; x < (int) width; x++)
+                  {
+                    *r=(*p++) << 8;
+                    *r|=(*p++);
+                    r++;
+                  }
+                  break;
                 }
-              else
-                for (x=0; x < (int) image->columns; x++)
-                {
-                  *r++=(*p++);
-                  *r++=(*p++);
-                }
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *r++=(*p++);
+                *r++=(*p++);
+              }
               break;
             }
             default:
