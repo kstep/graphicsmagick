@@ -1100,6 +1100,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             }
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'B':
@@ -1134,6 +1135,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->border_color=target_color;
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'C':
@@ -1219,6 +1221,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->compression=(CompressionType) sp;
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'D':
@@ -1310,6 +1313,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             }
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'E':
@@ -1330,6 +1334,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->endian=(EndianType) sp;
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'F':
@@ -1373,6 +1378,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->fuzz=SvNV(sval);
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'G':
@@ -1399,6 +1405,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               &image->chromaticity.green_primary.y);
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'I':
@@ -1456,6 +1463,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->interlace=(InterlaceType) sp;
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'L':
@@ -1463,6 +1471,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     {
       if (LocaleCompare(attribute,"loop") == 0)
         goto iterations;
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'M':
@@ -1523,6 +1532,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->monochrome=sp != 0;
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'P':
@@ -1606,6 +1616,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->preview_type=(PreviewType) sp;
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'Q':
@@ -1617,6 +1628,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->quality=SvIV(sval);
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'R':
@@ -1643,6 +1655,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
            image->rendering_intent=(RenderingIntent) sp;
          return;
        }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'S':
@@ -1700,6 +1713,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             (void) QueryColorDatabase(SvPV(sval,na),&info->draw_info->stroke);
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'T':
@@ -1731,6 +1745,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             SetImageType(image,(ImageType) sp);
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'U':
@@ -1752,6 +1767,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->units=(ResolutionType) sp;
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'V':
@@ -1776,6 +1792,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             (void) CloneString(&info->image_info->view,SvPV(sval,na));
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     case 'W':
@@ -1789,10 +1806,14 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               &image->chromaticity.white_point.y);
           return;
         }
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
     }
     default:
+    {
+      MagickError(OptionError,"Invalid attribute",attribute);
       break;
+    }
   }
   if (image == (Image *) NULL)
     MagickError(OptionError,"Invalid attribute",attribute);
@@ -2115,10 +2136,15 @@ Append(ref,...)
                 }
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
+          break;
+        }
+        default:
+        {
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
       }
-      MagickError(OptionError,"Invalid attribute",attribute);
     }
     next=AppendImages(image,stack,&image->exception);
     if (!next)
@@ -2942,6 +2968,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'B':
@@ -3014,6 +3041,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'C':
@@ -3105,6 +3133,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'D':
@@ -3167,6 +3196,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'E':
@@ -3191,6 +3221,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'F':
@@ -3268,6 +3299,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'G':
@@ -3309,6 +3341,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'H':
@@ -3321,6 +3354,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'I':
@@ -3396,6 +3430,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'L':
@@ -3421,6 +3456,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'M':
@@ -3485,6 +3521,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'P':
@@ -3552,6 +3589,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'Q':
@@ -3564,6 +3602,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'R':
@@ -3598,6 +3637,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'S':
@@ -3659,6 +3699,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'T':
@@ -3706,6 +3747,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'U':
@@ -3727,6 +3769,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'V':
@@ -3746,6 +3789,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'W':
@@ -3768,6 +3812,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'X':
@@ -3780,6 +3825,7 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'Y':
@@ -3792,10 +3838,14 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         default:
+        {
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
+        }
       }
       if (image == (Image *) NULL)
         MagickError(OptionError,"Invalid attribute",attribute);
@@ -5988,7 +6038,10 @@ Montage(ref,...)
           break;
         }
         default:
+        {
           MagickError(OptionError,"Invalid attribute",attribute);
+          break;
+        }
       }
     }
     exception=(&image->exception);
@@ -6128,10 +6181,15 @@ Morph(ref,...)
               number_frames=SvIV(ST(i));
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
+          break;
+        }
+        default:
+        {
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
       }
-      MagickError(OptionError,"Invalid attribute",attribute);
     }
     exception=(&image->exception);
     image=MorphImages(image,number_frames,exception);
@@ -6717,6 +6775,7 @@ QueryFontMetrics(ref,...)
               CloneString(&draw_info->density,SvPV(ST(i),na));
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'f':
@@ -6727,6 +6786,7 @@ QueryFontMetrics(ref,...)
               CloneString(&draw_info->font,SvPV(ST(i),na));
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'g':
@@ -6743,6 +6803,7 @@ QueryFontMetrics(ref,...)
                 LookupStr(GravityTypes,SvPV(ST(i),na));
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'p':
@@ -6753,6 +6814,7 @@ QueryFontMetrics(ref,...)
               (void) sscanf(SvPV(ST(i),na),"%lf",&draw_info->pointsize);
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'r':
@@ -6764,6 +6826,7 @@ QueryFontMetrics(ref,...)
                 &affine.ry);
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 's':
@@ -6788,6 +6851,7 @@ QueryFontMetrics(ref,...)
               affine.rx=tan(DegreesToRadians(fmod(y_angle,360.0)));
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 't':
@@ -6804,6 +6868,7 @@ QueryFontMetrics(ref,...)
                 &affine.ty);
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'x':
@@ -6814,6 +6879,7 @@ QueryFontMetrics(ref,...)
               (void) sscanf(SvPV(ST(i),na),"%lf",&x);
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'y':
@@ -6824,10 +6890,15 @@ QueryFontMetrics(ref,...)
               (void) sscanf(SvPV(ST(i),na),"%lf",&y);
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
+          break;
+        }
+        default:
+        {
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
       }
-      MagickError(OptionError,"Invalid attribute",attribute);
     }
     draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
     draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
@@ -7318,21 +7389,26 @@ Transform(ref,...)
               crop_geometry=SvPV(ST(i),na);
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
         case 'g':
         case 'G':
-        default:
         {
           if (LocaleCompare(attribute,"geometry") == 0)
             {
               geometry=SvPV(ST(i),na);
               break;
             }
+          MagickError(OptionError,"Invalid attribute",attribute);
+          break;
+        }
+        default:
+        {
+          MagickError(OptionError,"Invalid attribute",attribute);
           break;
         }
       }
-      MagickError(OptionError,"Invalid attribute",attribute);
     }
     for (next=image; next; next=next->next)
     {
