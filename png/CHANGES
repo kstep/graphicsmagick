@@ -1,3 +1,4 @@
+
 CHANGES - changes for libpng
 
 version 0.2
@@ -893,6 +894,92 @@ version 1.0.9rc2 [January 22, 2001]
 version 1.0.9 [January 31, 2001]
   Added check of cygwin's ALL_STATIC in pngconf.h
   Added "-nommx" parameter to contrib/gregbook/rpng2-win and rpng2-x demos.
+version 1.0.10beta1 [March 14, 2001]
+  Revised makefile.dec, makefile.sgi, and makefile.sggcc; added makefile.hpgcc.
+  Reformatted libpng.3 to eliminate bad line breaks.
+  Added checks for _mmx_supported in the read_filter_row function of pnggccrd.c
+  Added prototype for png_mmx_support() near the top of pnggccrd.c
+  Moved some error checking from png_handle_IHDR to png_set_IHDR.
+  Added PNG_NO_READ_SUPPORTED and PNG_NO_WRITE_SUPPORTED macros.
+  Revised png_mmx_support() function in pnggccrd.c
+  Restored version 1.0.8 PNG_WRITE_EMPTY_PLTE_SUPPORTED behavior in pngwutil.c
+  Fixed memory leak in contrib/visupng/PngFile.c
+  Fixed bugs in png_combine_row() in pnggccrd.c and pngvcrd.c (C version)
+  Added warnings when retrieving or setting gamma=0.
+  Increased the first part of msg buffer from 16 to 18 in png_chunk_warning().
+version 1.0.10rc1 [March 23, 2001]
+  Changed all instances of memcpy, strcpy, and strlen to png_memcpy, png_strcpy,
+    and png_strlen.
+  Revised png_mmx_supported() function in pnggccrd.c to return proper value.
+  Fixed bug in progressive reading (pngpread.c) with small images (height < 8).
+version 1.0.10 [March 30, 2001]
+  Deleted extraneous space (introduced in 1.0.9) from line 42 of makefile.cygwin
+  Added beos project files (Chris Herborth)
+version 1.0.11beta1 [April 3, 2001]
+  Added type casts on several png_malloc() calls (Dimitri Papadapoulos).
+  Removed a no-longer needed AIX work-around from pngconf.h
+  Changed several "//" single-line comments to C-style in pnggccrd.c
+version 1.0.11beta2 [April 11, 2001]
+  Removed PNGAPI from several functions whose prototypes did not have PNGAPI.
+  Updated scripts/pngos2.def
+version 1.0.11beta3 [April 14, 2001]
+  Added checking the results of many instances of png_malloc() for NULL
+version 1.0.11beta4 [April 20, 2001]
+  Undid the changes from version 1.0.11beta3.  Added a check for NULL return
+    from user's malloc_fn().
+  Removed some useless type casts of the NULL pointer.
+  Added makefile.netbsd
+version 1.0.11 [April 27, 2001]
+  Revised makefile.netbsd
+version 1.0.12beta1 [May 14, 2001]
+  Test for Windows platform in pngconf.h when including malloc.h (Emmanuel Blot)
+  Updated makefile.cygwin and handling of Cygwin's ALL_STATIC in pngconf.h
+  Added some never-to-be-executed code in pnggccrd.c to quiet compiler warnings.
+  Eliminated the png_error about apps using png_read|write_init().  Instead,
+    libpng will reallocate the png_struct and info_struct if they are too small.
+    This retains future binary compatibility for old applications written for
+    libpng-0.88 and earlier.
+version 1.2.0beta1 [May 6, 2001]
+  Bumped DLLNUM to 2.
+  Re-enabled PNG_MNG_FEATURES_SUPPORTED and enabled PNG_ASSEMBLER_CODE_SUPPORTED
+    by default.
+  Added runtime selection of MMX features.
+  Added png_set_strip_error_numbers function and related macros.
+version 1.2.0beta2 [May 7, 2001]
+  Finished merging 1.2.0beta1 with version 1.0.11
+  Added a check for attempts to read or write PLTE in grayscale PNG datastreams.
+version 1.2.0beta3 [May 17, 2001]
+  Enabled user memory function by default.
+  Modified png_create_struct so it passes user mem_ptr to user memory allocator.
+  Increased png_mng_features flag from png_byte to png_uint_32.
+  Bumped shared-library (so-number) and dll-number to 3.
+version 1.2.0beta4 [June 23, 2001]
+  Check for missing profile length field in iCCP chunk and free chunk_data
+     in case of truncated iCCP chunk.
+  Bumped shared-library number to 3 in makefile.sgi and makefile.sggcc
+  Bumped dll-number from 2 to 3 in makefile.cygwin
+  Revised contrib/gregbook/rpng*-x.c to avoid a memory leak and to exit cleanly
+     if user attempts to run it on an 8-bit display.
+  Updated contrib/gregbook
+  Use png_malloc instead of png_zalloc to allocate palette in pngset.c
+  Updated makefile.ibmc
+  Added some typecasts to eliminate gcc 3.0 warnings.  Changed prototypes
+     of png_write_oFFS width and height from png_uint_32 to png_int_32.
+  Updated example.c
+  Revised prototypes for png_debug_malloc and png_debug_free in pngtest.c
+version 1.2.0beta5 [August 8, 2001]
+  Revised contrib/gregbook
+  Revised makefile.gcmmx
+  Revised pnggccrd.c to conditionally compile some thread-unsafe code only
+     when PNG_THREAD_UNSAFE_OK is defined.
+  Added tests to prevent pngwutil.c from writing a bKGD or tRNS chunk with
+     value exceeding 2^bit_depth-1
+  Revised makefile.sgi and makefile.sggcc
+  Replaced calls to fprintf(stderr,...) with png_warning() in pnggccrd.c
+  Removed restriction that do_invert_mono only operate on 1-bit opaque files
+version 1.2.0 [September 1, 2001]
+  Changed a png_warning() to png_debug() in pnggccrd.c
+  Fixed contrib/gregbook/rpng-x.c, rpng2-x.c to avoid crash with XFreeGC().
 
 Send comments/corrections/commendations to
 png-implement@ccrc.wustl.edu or to randeg@alum.rpi.edu

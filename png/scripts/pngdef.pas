@@ -1,12 +1,14 @@
 unit pngdef;
 
-// Caution: this file is probably out of date.
+// Caution: this file has fallen out of date since version 1.0.5.  Write to
+// png-implement@ccrc.wustl.edu or to randeg@alum.rpi.edu about bringing
+// it up to date.
 
 interface
 
 const
-  PNG_LIBPNG_VER_STRING = '1.0.9';
-  PNG_LIBPNG_VER        =  10009;
+  PNG_LIBPNG_VER_STRING = '1.2.0';
+  PNG_LIBPNG_VER        =  10200;
 
 type
   png_uint_32 = Cardinal;
