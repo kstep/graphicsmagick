@@ -485,20 +485,23 @@ MagickExport const char *GetLocaleExceptionMessage(const ExceptionType severity,
   const char
     *locale_message;
 
-  /* This is a hack that depends on the fact that tag can never have spaces in
-     them. If a space is found then it means we are being asked to translate a
-     message that has already been translated. A big waste of time. The reason
-     this happens is that messages are translated at the point of an exception
-     and then again when the exception is caught and processed via the default
-     error and warning handlers
-  */
-  if (strrchr(tag, ' '))
-    return(tag);
-  FormatString(message,"%.1024s%.1024s",ExceptionSeverityToTag(severity),tag);
-  locale_message=GetLocaleMessage(message);
-  if (locale_message == message)
-    return(tag);
-  return(locale_message);
+  /* protect against NULL lookups */
+  if (tag != (char *) NULL)
+    {
+      /* This is a hack that depends on the fact that tag can never have spaces in
+        them. If a space is found then it means we are being asked to translate a
+        message that has already been translated. A big waste of time. The reason
+        this happens is that messages are translated at the point of an exception
+        and then again when the exception is caught and processed via the default
+        error and warning handlers
+      */
+      if (strrchr(tag, ' '))
+        return tag;
+      FormatString(message,"%.1024s%.1024s",ExceptionSeverityToTag(severity),tag);
+      locale_message=GetLocaleMessage(message);
+      return(locale_message);
+   }
+  return(tag);
 }
 
 /*
