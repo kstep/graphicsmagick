@@ -155,10 +155,6 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   long
     count;
 
-  register int
-    i,
-    x;
-
   unsigned char
     *scanline;
 
@@ -393,16 +389,10 @@ ModuleExport void UnregisterVICARImage(void)
 static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 {
   char
-    buffer[MaxTextExtent],
-    header[MaxTextExtent],
-    label[MaxTextExtent];
+    header[MaxTextExtent];
 
   int
     y;
-
-  register int
-    i,
-    x;
 
   unsigned char
     *scanline;
