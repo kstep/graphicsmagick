@@ -2332,6 +2332,7 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       local_info.y1=y_mid;
       return(PlasmaImage(image,&local_info,attenuate,depth));
     }
+  SetImageType(image,TrueColorType);
   x_mid=(long) (segment->x1+segment->x2+0.5)/2;
   y_mid=(long) (segment->y1+segment->y2+0.5)/2;
   if ((segment->x1 == x_mid) && (segment->x2 == x_mid) &&

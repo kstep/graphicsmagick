@@ -283,7 +283,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (critical_section_exists)
+  if (active_critical_section)
     EnterCriticalSection(&critical_section);
 #endif
   if (*semaphore_info == (SemaphoreInfo *) NULL)
@@ -300,7 +300,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (critical_section_exists)
+  if (active_critical_section)
     LeaveCriticalSection(&critical_section);
 #endif
 }
