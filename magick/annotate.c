@@ -210,6 +210,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       break;
     switch (annotate->gravity)
     {
+      case ForgetGravity:
       case NorthWestGravity:
       {
         offset.x=geometry.x+i*draw_info->affine.ry*metrics.height;
@@ -241,7 +242,6 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
           metrics.descent)/2;
         break;
       }
-      case ForgetGravity:
       case StaticGravity:
       case CenterGravity:
       default:

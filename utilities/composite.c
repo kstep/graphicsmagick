@@ -306,6 +306,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                 &geometry.y,&geometry.width,&geometry.height);
               switch (option_info->gravity)
               {
+                case ForgetGravity:
                 case NorthWestGravity:
                   break;
                 case NorthGravity:
@@ -324,7 +325,6 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                   geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
                   break;
                 }
-                case ForgetGravity:
                 case StaticGravity:
                 case CenterGravity:
                 default:

@@ -4816,6 +4816,7 @@ Mogrify(ref,...)
           if (attribute_flag[5])
             switch (argument_list[5].int_reference)
             {
+              case ForgetGravity:
               case NorthWestGravity:
                 break;
               case NorthGravity:
@@ -4834,7 +4835,6 @@ Mogrify(ref,...)
                 geometry.y+=(long) (geometry.height/2-composite_image->rows/2);
                 break;
               }
-              case ForgetGravity:
               case StaticGravity:
               case CenterGravity:
               default:

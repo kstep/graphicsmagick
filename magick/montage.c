@@ -611,6 +611,7 @@ MagickExport Image *MontageImages(const Image *images,
       */
       switch (montage_info->gravity)
       {
+        case ForgetGravity:
         case NorthWestGravity:
         {
           x=0;
@@ -635,7 +636,6 @@ MagickExport Image *MontageImages(const Image *images,
           y=(long) (((height+2*border_width)-(long) image->rows)/2);
           break;
         }
-        case ForgetGravity:
         case StaticGravity:
         case CenterGravity:
         default:
