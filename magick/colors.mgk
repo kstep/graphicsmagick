@@ -1,5 +1,16 @@
 <?xml version="1.0"?>
 <colormap>
+  <color name="none" red="0" green="0" blue="0" opacity="255" compliance="SVG" />
+  <color name="white" red="255" green="255" blue="255" compliance="SVG, X11" />
+  <color name="red" red="255" green="0" blue="0" compliance="SVG, X11" />
+  <color name="green" red="0" green="255" blue="0" compliance="X11" />
+  <color name="gray" red="126" green="126" blue="126" compliance="SVG" />
+  <color name="gray" red="190" green="190" blue="190" compliance="X11" />
+  <color name="blue" red="0" green="0" blue="255" compliance="SVG, X11" />
+  <color name="cyan" red="0" green="255" blue="255" compliance="SVG, X11" />
+  <color name="magenta" red="255" green="0" blue="255" compliance="SVG" />
+  <color name="yellow" red="255" green="255" blue="0" compliance="SVG, X11" />
+  <color name="black" red="0" green="0" blue="0" compliance="SVG, X11" />
   <color name="AliceBlue" red="240" green="248" blue="255" compliance="SVG, X11" />
   <color name="AntiqueWhite" red="250" green="235" blue="215" compliance="SVG, X11" />
   <color name="AntiqueWhite1" red="255" green="239" blue="219" compliance="X11" />
@@ -23,10 +34,7 @@
   <color name="bisque2" red="238" green="213" blue="183" compliance="X11" />
   <color name="bisque3" red="205" green="183" blue="158" compliance="X11" />
   <color name="bisque4" red="139" green="125" blue="107" compliance="X11" />
-  <color name="black" red="0" green="0" blue="0" compliance="SVG, X11" />
   <color name="BlanchedAlmond" red="255" green="235" blue="205" compliance="SVG, X11" />
-  <color name="blue violet" red="138" green="43" blue="226" compliance="X11" />
-  <color name="blue" red="0" green="0" blue="255" compliance="SVG, X11" />
   <color name="blue1" red="0" green="0" blue="255" compliance="X11" />
   <color name="blue2" red="0" green="0" blue="238" compliance="X11" />
   <color name="blue3" red="0" green="0" blue="205" compliance="X11" />
@@ -70,7 +78,6 @@
   <color name="cornsilk3" red="205" green="200" blue="177" compliance="X11" />
   <color name="cornsilk4" red="139" green="136" blue="120" compliance="X11" />
   <color name="crimson" red="220" green="20" blue="60" compliance="SVG" />
-  <color name="cyan" red="0" green="255" blue="255" compliance="SVG, X11" />
   <color name="cyan1" red="0" green="255" blue="255" compliance="X11" />
   <color name="cyan2" red="0" green="238" blue="238" compliance="X11" />
   <color name="cyan3" red="0" green="205" blue="205" compliance="X11" />
@@ -157,8 +164,6 @@
   <color name="goldenrod2" red="238" green="180" blue="34" compliance="X11" />
   <color name="goldenrod3" red="205" green="155" blue="29" compliance="X11" />
   <color name="goldenrod4" red="139" green="105" blue="20" compliance="X11" />
-  <color name="gray" red="126" green="126" blue="126" compliance="SVG" />
-  <color name="gray" red="190" green="190" blue="190" compliance="X11" />
   <color name="gray0" red="0" green="0" blue="0" compliance="X11" />
   <color name="gray1" red="3" green="3" blue="3" compliance="X11" />
   <color name="gray10" red="26" green="26" blue="26 " compliance="X11" />
@@ -260,8 +265,6 @@
   <color name="gray97" red="247" green="247" blue="247 " compliance="X11" />
   <color name="gray98" red="250" green="250" blue="250 " compliance="X11" />
   <color name="gray99" red="252" green="252" blue="252 " compliance="X11" />
-  <color name="green yellow" red="173" green="255" blue="47" compliance="X11" />
-  <color name="green" red="0" green="255" blue="0" compliance="X11" />
   <color name="green1" red="0" green="255" blue="0" compliance="X11" />
   <color name="green2" red="0" green="238" blue="0" compliance="X11" />
   <color name="green3" red="0" green="205" blue="0" compliance="X11" />
@@ -459,7 +462,6 @@
   <color name="lime" red="0" green="255" blue="0" compliance="SVG" />
   <color name="LimeGreen" red="50" green="205" blue="50" compliance="SVG, X11" />
   <color name="linen" red="250" green="240" blue="230" compliance="SVG, X11" />
-  <color name="magenta" red="255" green="0" blue="255" compliance="SVG" />
   <color name="magenta" red="255" green="0" blue="255" compliance="X11" />
   <color name="magenta1" red="255" green="0" blue="255" compliance="X11" />
   <color name="magenta2" red="238" green="0" blue="238" compliance="X11" />
@@ -503,7 +505,6 @@
   <color name="NavajoWhite4" red="139" green="121" blue="94" compliance="X11" />
   <color name="navy" red="0" green="0" blue="128" compliance="SVG, X11" />
   <color name="NavyBlue" red="0" green="0" blue="128" compliance="X11" />
-  <color name="none" red="0" green="0" blue="0" opacity="255" compliance="SVG" />
   <color name="OldLace" red="253" green="245" blue="230" compliance="SVG, X11" />
   <color name="olive" red="128" green="128" blue="0" compliance="SVG" />
   <color name="OliveDrab" red="107" green="142" blue="35" compliance="SVG, X11" />
@@ -566,7 +567,6 @@
   <color name="purple2" red="145" green="44" blue="238" compliance="X11" />
   <color name="purple3" red="125" green="38" blue="205" compliance="X11" />
   <color name="purple4" red="85" green="26" blue="139" compliance="X11" />
-  <color name="red" red="255" green="0" blue="0" compliance="SVG, X11" />
   <color name="red1" red="255" green="0" blue="0" compliance="X11" />
   <color name="red2" red="238" green="0" blue="0" compliance="X11" />
   <color name="red3" red="205" green="0" blue="0" compliance="X11" />
@@ -667,9 +667,7 @@
   <color name="wheat2" red="238" green="216" blue="174" compliance="X11" />
   <color name="wheat3" red="205" green="186" blue="150" compliance="X11" />
   <color name="wheat4" red="139" green="126" blue="102" compliance="X11" />
-  <color name="white" red="255" green="255" blue="255" compliance="SVG, X11" />
   <color name="WhiteSmoke" red="245" green="245" blue="245" compliance="SVG, X11" />
-  <color name="yellow" red="255" green="255" blue="0" compliance="SVG, X11" />
   <color name="yellow1" red="255" green="255" blue="0" compliance="X11" />
   <color name="yellow2" red="238" green="238" blue="0" compliance="X11" />
   <color name="yellow3" red="205" green="205" blue="0" compliance="X11" />
