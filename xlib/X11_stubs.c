@@ -7849,9 +7849,9 @@ Status XrmCombineFileDatabase(
 ){}
 
 #if defined(_VISUALC_)
-extern MagickExport XrmDatabase XrmAllocateStringDatabase(
+extern MagickExport XrmDatabase XrmGetStringDatabase(
 #else
-XrmDatabase XrmAllocateStringDatabase(
+XrmDatabase XrmGetStringDatabase(
 #endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* data */  /*  null terminated string */
