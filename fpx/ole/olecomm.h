@@ -71,7 +71,7 @@
   #endif
   
   // Define OLE_STR and V_UI1REF
-  #ifdef macintosh
+#if defined(_UNIX) || defined(macintosh)
     #define OLE_STR (char*) 
     #define V_UI1REF(X) V_BSTR(X) 
   #endif
@@ -136,6 +136,7 @@ typedef struct tagBLOB __RPC_FAR *LPBLOB;
 
 #endif
 
+#if defined(_UNIX) || defined(macintosh)
       /* size is 4 */
   #ifndef _tagCLIPDATA_DEFINED
     #define _tagCLIPDATA_DEFINED
@@ -149,6 +150,7 @@ typedef struct tagBLOB __RPC_FAR *LPBLOB;
 
   #endif
   // End of the OAIDL.H copy
+#endif
 
 // This is the structure used to define read/writable arrays (vectors).
 typedef struct

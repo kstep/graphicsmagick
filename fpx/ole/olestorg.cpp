@@ -254,7 +254,7 @@ Boolean OLEStorage::OpenStream(const char * name, OLEStream ** currentStream, DW
     // Search the opened object list, if the object already open just add its reference
     if ( (ppStm = (IStream *)openOLEObjList->Search((char *)name)) == NULL ) {
       
-      err = oleStorage->OpenStream(OLESTR(name), 0, mode, 0, &ppStm);
+      err = oleStorage->OpenStream(OLE_STR(name), 0, mode, 0, &ppStm);
 #ifdef macintosh
   #ifndef powerc
       if( (ppStm == NULL) && (mode == OLE_READWRITE_MODE))
@@ -265,7 +265,7 @@ Boolean OLEStorage::OpenStream(const char * name, OLEStream ** currentStream, DW
       if (FAILED(err) && (mode == OLE_READWRITE_MODE))
 #endif
         // Try to open at least in read mode if the read/write failed
-        err = oleStorage->OpenStream(OLESTR(name), 0, OLE_READ_ONLY_MODE, 0, &ppStm);
+        err = oleStorage->OpenStream(OLE_STR(name), 0, OLE_READ_ONLY_MODE, 0, &ppStm);
     
       if ( !FAILED(err) ) 
         // Add stream to the list
@@ -299,7 +299,7 @@ Boolean OLEStorage::CreateStream(const char * name, OLEStream ** newStream)
   HRESULT err = NOERROR;
   if (oleStorage) {
     LPSTREAM ppStm;
-    if (FAILED(err = oleStorage->CreateStream(OLESTR(name), OLE_CREATE_MODE, 0, 0, &ppStm))) { 
+    if (FAILED(err = oleStorage->CreateStream(OLE_STR(name), OLE_CREATE_MODE, 0, 0, &ppStm))) { 
       lastError = TranslateOLEError(err);
       fpxStatus = OLEtoFPXError(err);
       return false;
@@ -342,7 +342,7 @@ Boolean OLEStorage::OpenStorage(const char * name, OLEStorage ** currentStorage,
     if ( (openStorage = (OLEStorage *)openOLEObjList->Search((char *)name)) == NULL ) {
       
       // Open the names storage
-      err = oleStorage->OpenStorage(OLESTR(name), 0, mode, NULL, 0, &ppStg);
+      err = oleStorage->OpenStorage(OLE_STR(name), 0, mode, NULL, 0, &ppStg);
 #ifdef macintosh
   #ifndef powerc
       if( (ppStg == NULL) && (mode == OLE_READWRITE_MODE))
@@ -353,7 +353,7 @@ Boolean OLEStorage::OpenStorage(const char * name, OLEStorage ** currentStorage,
       if (FAILED(err) && (mode == OLE_READWRITE_MODE))
 #endif
         // Try to open at least in read mode if the read/write failed
-        err = oleStorage->OpenStorage(OLESTR(name), 0, OLE_READ_ONLY_MODE, NULL, 0, &ppStg);
+        err = oleStorage->OpenStorage(OLE_STR(name), 0, OLE_READ_ONLY_MODE, NULL, 0, &ppStg);
         
       // Exit if error
       if (FAILED(err))
@@ -459,7 +459,7 @@ Boolean OLEStorage::CreateStorage(const CLSID& classID, const char * name, OLESt
   if (oleStorage) {
   
     LPSTORAGE ppStg;
-    if (FAILED(err = oleStorage->CreateStorage(OLESTR(name), OLE_CREATE_MODE, 0, 0, &ppStg)) ) {
+    if (FAILED(err = oleStorage->CreateStorage(OLE_STR(name), OLE_CREATE_MODE, 0, 0, &ppStg)) ) {
       lastError = TranslateOLEError(err);
       fpxStatus = OLEtoFPXError(err);
       return false;
@@ -499,7 +499,7 @@ Boolean OLEStorage::CreatePropertySet(const CLSID& classID, const char *name, OL
   HRESULT err = NOERROR;
   if (oleStorage) {
     LPSTREAM ppStm;
-    if (FAILED(err = oleStorage->CreateStream(OLESTR(name), OLE_CREATE_MODE, 0, 0, &ppStm)) ) {
+    if (FAILED(err = oleStorage->CreateStream(OLE_STR(name), OLE_CREATE_MODE, 0, 0, &ppStm)) ) {
       lastError = TranslateOLEError(err);
       fpxStatus = OLEtoFPXError(err);
       return false;
@@ -547,7 +547,7 @@ Boolean OLEStorage::OpenPropertySet(const CLSID& classID, const char *name, OLEP
     // NOTE: property set is a special kind of stream
     if ( (ppStm = (IStream *)openOLEObjList->Search(name)) == NULL ) {
 
-      err = oleStorage->OpenStream(OLESTR(name), 0, mode, 0, &ppStm);
+      err = oleStorage->OpenStream(OLE_STR(name), 0, mode, 0, &ppStm);
 #ifdef macintosh
   #ifndef powerc
       if( (ppStm == NULL) && (mode == OLE_READWRITE_MODE))
@@ -558,7 +558,7 @@ Boolean OLEStorage::OpenPropertySet(const CLSID& classID, const char *name, OLEP
       if (FAILED(err) && (mode == OLE_READWRITE_MODE))
 #endif
         // Try to open at least in read mode if the read/write failed
-        err = oleStorage->OpenStream(OLESTR(name), 0, OLE_READ_ONLY_MODE, 0, &ppStm);
+        err = oleStorage->OpenStream(OLE_STR(name), 0, OLE_READ_ONLY_MODE, 0, &ppStm);
     
       if ( !FAILED(err) || ppStm != NULL) 
         // Add stream to the list
@@ -603,7 +603,7 @@ Boolean OLEStorage::CreateHeaderStream(const CLSID& classID, const char *name, O
   HRESULT err = NOERROR;
   if (oleStorage) {
     LPSTREAM ppStm;
-    if (FAILED(err = oleStorage->CreateStream(OLESTR(name), OLE_CREATE_MODE, 0, 0, &ppStm)) ) {
+    if (FAILED(err = oleStorage->CreateStream(OLE_STR(name), OLE_CREATE_MODE, 0, 0, &ppStm)) ) {
       lastError = TranslateOLEError(err);
       fpxStatus = OLEtoFPXError(err);
       return false;
@@ -654,7 +654,7 @@ Boolean OLEStorage::OpenHeaderStream(const CLSID& classID, const char *name, OLE
     // Search the opened object list, if the object already open just add its reference
     if ( (ppStm = (IStream *)openOLEObjList->Search(name)) == NULL ) {
       
-      err = oleStorage->OpenStream(OLESTR(name), 0, mode, 0, &ppStm);
+      err = oleStorage->OpenStream(OLE_STR(name), 0, mode, 0, &ppStm);
 #ifdef macintosh
   #ifndef powerc
       if( (ppStm == NULL) && (mode == OLE_READWRITE_MODE))
@@ -665,7 +665,7 @@ Boolean OLEStorage::OpenHeaderStream(const CLSID& classID, const char *name, OLE
       if (FAILED(err) && (mode == OLE_READWRITE_MODE))
 #endif
         // Try to open at least in read mode if the read/write failed
-        err = oleStorage->OpenStream(OLESTR(name), 0, OLE_READ_ONLY_MODE, 0, &ppStm);
+        err = oleStorage->OpenStream(OLE_STR(name), 0, OLE_READ_ONLY_MODE, 0, &ppStm);
     
       if ( !FAILED(err) ) 
         // Add stream to the list
@@ -740,8 +740,8 @@ Boolean OLEStorage::DumpStats( ofstream& statStream )
     if (pEnumStatstg->IsStorage(&statstg)) {      
       LPSTORAGE pStg;
 
-      if (FAILED(err = oleStorage->OpenStorage(OLESTR(statstg.pwcsName), 0, OLE_READWRITE_MODE, NULL, 0, &pStg)) ) {
-        if (FAILED(err = oleStorage->OpenStorage(OLESTR(statstg.pwcsName), 0, OLE_READ_ONLY_MODE, NULL, 0, &pStg)) ) {
+      if (FAILED(err = oleStorage->OpenStorage(OLE_STR(statstg.pwcsName), 0, OLE_READWRITE_MODE, NULL, 0, &pStg)) ) {
+        if (FAILED(err = oleStorage->OpenStorage(OLE_STR(statstg.pwcsName), 0, OLE_READ_ONLY_MODE, NULL, 0, &pStg)) ) {
           lastError = TranslateOLEError(err);
           fpxStatus = OLEtoFPXError(err);
           return false;
@@ -862,7 +862,7 @@ Boolean OLEStorage::RenameElement( const char *oldName, const char *newName )
 {
   HRESULT err = NOERROR;
   if (oleStorage) {
-    if (FAILED(err = oleStorage->RenameElement(OLESTR(oldName), OLESTR(newName)))) {
+    if (FAILED(err = oleStorage->RenameElement(OLE_STR(oldName), OLE_STR(newName)))) {
       lastError = TranslateOLEError(err);
       fpxStatus = OLEtoFPXError(err);
       return false;
@@ -880,7 +880,7 @@ Boolean OLEStorage::DestroyElement( const char *name )
 {
   HRESULT err = NOERROR;
   if (oleStorage) {
-    if (FAILED(err = oleStorage->DestroyElement(OLESTR(name)))) {
+    if (FAILED(err = oleStorage->DestroyElement(OLE_STR(name)))) {
       lastError = TranslateOLEError(err);
       fpxStatus = OLEtoFPXError(err);
       return false;
