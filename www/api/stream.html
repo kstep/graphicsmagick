@@ -1,81 +1,85 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<TITLE>stream - Image Pixel FIFO</TITLE>
-<link rel="StyleSheet" href="../magick.css" type="text/css">
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>stream - Image Pixel FIFO</title>
+<link rel="StyleSheet" href="../magick.css" type="text/css" />
+</head>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080"> IMG SRC="../../images/promote.png" ALT="Pair" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A>
 
-<A NAME="__index__"></A>
+<p><a name="__index__"></a></p>
 <!-- INDEX BEGIN -->
 
-<UL>
+<ul>
 
-	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
-	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
-	<LI><A HREF="#function descriptions">
-<FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
-	<UL>
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
 
-		<LI><A HREF="#readstream">ReadStream</A>
-		<LI><A HREF="#writestream">WriteStream</A>
-	</UL>
+		<li><a href="#readstream">ReadStream</a></li>
+		<li><a href="#writestream">WriteStream</a></li>
+	</ul>
 
-</UL>
+</ul>
 <!-- INDEX END -->
 
-<HR>
-<P>
-<H1><A NAME="name">
-<FONT SIZE=-1>NAME</FONT></A></H1>
-<P>stream - Image Pixel 
-<FONT SIZE=-1>FIFO</FONT></P>
-<P>
-<HR>
-<H1><A NAME="synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>Image * <STRONG>ReadStream</STRONG>( const ImageInfo *image_info, void(* Stream )( const Image *, const void *, const size_t ), ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>WriteStream</STRONG>( const ImageInfo *image_info, Image *, int(* Stream )( const Image *, const void *, const size_t ));</P>
-<P>
-<HR>
-<H1><A NAME="function descriptions">
-<FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
-<P>
-<H2><A NAME="readstream">ReadStream</A></H2>
-<blockquote>ReadStream() makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the ReadImage ( ) method. </blockquote><blockquote>The format of the ReadStream() method is: </blockquote><blockquote><A HREF="types/Image.html">Image</A> *ReadStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, void ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ), <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
-<DD>
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>stream - Image Pixel FIFO</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>Image * <strong>ReadStream</strong>( const ImageInfo *image_info, void(* Stream )( const Image *, const void *, const size_t ), ExceptionInfo *exception );</p>
+<p>unsigned int  <strong>WriteStream</strong>( const ImageInfo *image_info, Image *, int(* Stream )( const Image *, const void *, const size_t ));</p>
+<p>
+</p>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<p>
+</p>
+<h2><a name="readstream">ReadStream</a></h2>
+<blockquote>ReadStream() makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the ReadImage ( ) method. </blockquote><blockquote>The format of the ReadStream() method is: </blockquote><blockquote><A HREF="types/Image.html">Image</A> *ReadStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, void ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ), <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong><a name="item_o_image_info%3a">o image_info:</a></strong><br />
+</dt>
+<dd>
 The image info.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_stream%3A">stream:</A></STRONG><BR>
-<DD>
+</dd>
+<p></p>
+<dt><strong><a name="item_o_stream%3a">o stream:</a></strong><br />
+</dt>
+<dd>
 a callback method.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
-<DD>
+</dd>
+<p></p>
+<dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
+</dt>
+<dd>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="writestream">WriteStream</A></H2>
-<blockquote>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage ( ) method. </blockquote><blockquote>The format of the WriteStream() method is: </blockquote><blockquote>unsigned int WriteStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *, int ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ) ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="writestream">WriteStream</a></h2>
+<blockquote>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage ( ) method. </blockquote><blockquote>The format of the WriteStream() method is: </blockquote><blockquote>unsigned int WriteStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *, int ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ) ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong>o image_info:</strong><br />
+</dt>
+<dd>
 The image info.
-<P></P>
-<dd><p></p><dt><STRONG>stream:</STRONG><BR>
-<DD>
+</dd>
+<p></p>
+<dt><strong>o stream:</strong><br />
+</dt>
+<dd>
+A callback method.
+</dd>
+</dl>
 
-<FONT SIZE=-1>A</FONT> callback method.
-</DL></DL>
+</body>
 
-</BODY>
-
-</HTML>
+</html>

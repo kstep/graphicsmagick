@@ -172,3 +172,6 @@ int main(int argc,char **argv)
   DestroyImageInfo(image_info);
   DestroyMagick();
 }
+<A HREF="http://promote.pair.com/direct.pl?imagemagick.org">
+  <IMG SRC="../images/promote.png" ALIGN=RIGHT WIDTH=120
+    HEIGHT=60 BORDER=0></A>

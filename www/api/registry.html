@@ -1,129 +1,148 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<TITLE>registry - ImageMagick Registry Methods</TITLE>
-<link rel="StyleSheet" href="../magick.css" type="text/css">
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>registry - ImageMagick Registry Methods</title>
+<link rel="StyleSheet" href="../magick.css" type="text/css" />
+</head>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080"> IMG SRC="../../images/promote.png" ALT="Pair" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A>
 
-<A NAME="__index__"></A>
+<p><a name="__index__"></a></p>
 <!-- INDEX BEGIN -->
 
-<UL>
+<ul>
 
-	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A>
-	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A>
-	<LI><A HREF="#function descriptions">
-<FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
-	<UL>
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
 
-		<LI><A HREF="#deletemagickregistry">DeleteMagickRegistry</A>
-		<LI><A HREF="#getimagefrommagickregisty">GetImageFromMagickRegisty</A>
-		<LI><A HREF="#getmagickregistry">GetMagickRegistry</A>
-		<LI><A HREF="#setmagickregistry">SetMagickRegistry</A>
-	</UL>
+		<li><a href="#deletemagickregistry">DeleteMagickRegistry</a></li>
+		<li><a href="#getimagefrommagickregisty">GetImageFromMagickRegisty</a></li>
+		<li><a href="#getmagickregistry">GetMagickRegistry</a></li>
+		<li><a href="#setmagickregistry">SetMagickRegistry</a></li>
+	</ul>
 
-</UL>
+</ul>
 <!-- INDEX END -->
 
-<HR>
-<P>
-<H1><A NAME="name">
-<FONT SIZE=-1>NAME</FONT></A></H1>
-<P>registry - ImageMagick Registry Methods</P>
-<P>
-<HR>
-<H1><A NAME="synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>unsigned int  <STRONG>DeleteMagickRegistry</STRONG>( const long id );</P>
-<P>const void * <STRONG>GetMagickRegistry</STRONG>( const long id, RegistryType *type, size_t *length, ExceptionInfo *exception );</P>
-<P>long  <STRONG>SetMagickRegistry</STRONG>( const RegistryType type, const void *blob, const size_t length, ExceptionInfo *exception );</P>
-<P>
-<HR>
-<H1><A NAME="function descriptions">
-<FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
-<P>
-<H2><A NAME="deletemagickregistry">DeleteMagickRegistry</A></H2>
-<blockquote>DeleteMagickRegistry() deletes an entry in the registry as defined by the id. It returns True if the entry is deleted otherwise False if no entry is found in the registry that matches the id. </blockquote><P>The format of the DeleteMagickRegistry method is:</P>
-<blockquote>unsigned int DeleteMagickRegistry ( const long id ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_id%3A">id:</A></STRONG><BR>
-<DD>
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>registry - ImageMagick Registry Methods</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>unsigned int  <strong>DeleteMagickRegistry</strong>( const long id );</p>
+<p>const void * <strong>GetMagickRegistry</strong>( const long id, RegistryType *type, size_t *length, ExceptionInfo *exception );</p>
+<p>long  <strong>SetMagickRegistry</strong>( const RegistryType type, const void *blob, const size_t length, ExceptionInfo *exception );</p>
+<p>
+</p>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<p>
+</p>
+<h2><a name="deletemagickregistry">DeleteMagickRegistry</a></h2>
+<blockquote>DeleteMagickRegistry() deletes an entry in the registry as defined by the id. It returns True if the entry is deleted otherwise False if no entry is found in the registry that matches the id. </blockquote><p>The format of the DeleteMagickRegistry method is:</p>
+<blockquote>unsigned int DeleteMagickRegistry ( const long id ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong><a name="item_o_id%3a">o id:</a></strong><br />
+</dt>
+<dd>
 The registry id.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getimagefrommagickregisty">GetImageFromMagickRegisty</A></H2>
-<P><CODE>GetImageFromMagickRegistry()</CODE> gets an image from the registry as defined by its name.  If the blob that matches the name is not found, 
-<FONT SIZE=-1>NULL</FONT> is returned.</P>
-<P>The format of the GetImageFromMagickRegistry method is:</P>
-<PRE>
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="getimagefrommagickregisty">GetImageFromMagickRegisty</a></h2>
+<p><code>GetImageFromMagickRegistry()</code> gets an image from the registry as defined by its name.  If the blob that matches the name is not found, NULL is returned.</p>
+<p>The format of the GetImageFromMagickRegistry method is:</p>
+<pre>
     Image *GetImageFromMagickRegistry(const char *name,long *id,
-      ExceptionInfo *exception)</PRE>
-<P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
-<DD>
+      ExceptionInfo *exception)</pre>
+<p>A description of each parameter follows:</p>
+<dl>
+<dt><strong><a name="item_o_name%3a">o name:</a></strong><br />
+</dt>
+<dd>
 The name of the image to retrieve from the registry.
-<P></P>
-<dd><p></p><dt><STRONG>id:</STRONG><BR>
-<DD>
+</dd>
+<p></p>
+<dt><strong>o id:</strong><br />
+</dt>
+<dd>
 The registry id.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
-<DD>
+</dd>
+<p></p>
+<dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
+</dt>
+<dd>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getmagickregistry">GetMagickRegistry</A></H2>
-<blockquote>GetMagickRegistry() gets a blob from the registry as defined by the id. If the blob that matches the id is not found, NULL is returned. </blockquote><P>The format of the GetMagickRegistry method is:</P>
-<blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>id:</STRONG><BR>
-<DD>
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="getmagickregistry">GetMagickRegistry</a></h2>
+<blockquote>GetMagickRegistry() gets a blob from the registry as defined by the id. If the blob that matches the id is not found, NULL is returned. </blockquote><p>The format of the GetMagickRegistry method is:</p>
+<blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong>o id:</strong><br />
+</dt>
+<dd>
 The registry id.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
-<DD>
+</dd>
+<p></p>
+<dt><strong><a name="item_o_type%3a">o type:</a></strong><br />
+</dt>
+<dd>
 The registry type.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
-<DD>
+</dd>
+<p></p>
+<dt><strong><a name="item_o_length%3a">o length:</a></strong><br />
+</dt>
+<dd>
 The blob length in number of bytes.
-<P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
-<DD>
+</dd>
+<p></p>
+<dt><strong>o exception:</strong><br />
+</dt>
+<dd>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="setmagickregistry">SetMagickRegistry</A></H2>
-<blockquote>SetMagickRegistry() sets a blob into the registry and returns a unique ID. If an error occurs, -1 is returned. </blockquote><P>The format of the SetMagickRegistry method is:</P>
-<blockquote>long SetMagickRegistry ( const RegistryType type, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>type:</STRONG><BR>
-<DD>
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="setmagickregistry">SetMagickRegistry</a></h2>
+<blockquote>SetMagickRegistry() sets a blob into the registry and returns a unique ID. If an error occurs, -1 is returned. </blockquote><p>The format of the SetMagickRegistry method is:</p>
+<blockquote>long SetMagickRegistry ( const RegistryType type, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong>o type:</strong><br />
+</dt>
+<dd>
 The registry type.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_blob%3A">blob:</A></STRONG><BR>
-<DD>
+</dd>
+<p></p>
+<dt><strong><a name="item_o_blob%3a">o blob:</a></strong><br />
+</dt>
+<dd>
 The address of a Binary Large OBject.
-<P></P>
-<dd><p></p><dt><STRONG>length:</STRONG><BR>
-<DD>
-For a registry type of ImageRegistryType use <CODE>sizeof(Image)</CODE> otherise the blob length in number of bytes.
-<P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
-<DD>
+</dd>
+<p></p>
+<dt><strong>o length:</strong><br />
+</dt>
+<dd>
+For a registry type of ImageRegistryType use <code>sizeof(Image)</code> otherise the blob length in number of bytes.
+</dd>
+<p></p>
+<dt><strong>o exception:</strong><br />
+</dt>
+<dd>
 Return any errors or warnings in this structure.
-</DL></DL>
+</dd>
+</dl>
 
-</BODY>
+</body>
 
-</HTML>
+</html>
