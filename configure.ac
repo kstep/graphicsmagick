@@ -1413,7 +1413,6 @@ AC_PATH_PROG(SCANDecodeDelegate, scanimage, scanimage)
 AC_PATH_PROG(TXTDelegate, enscript, enscript)
 AC_PATH_PROG(WMFDecodeDelegate, wmf2magick, wmf2magick)
 AC_PATH_PROG(WWWDecodeDelegate, wget, wget)
-AC_PATH_PROG(XCFDecodeDelegate, xcftopnm, xcftopnm)
 AC_PATH_PROG(ZipDelegate, gzip, gzip)
 
 # Prefer lpr to lp; lp needs options tacked on.
@@ -1438,7 +1437,6 @@ have_mpeg2decode='no' ; if test "$MPEGDecodeDelegate" != 'mpeg2decode' ; then ha
 have_mpeg2encode='no' ; if test "$MPEGEncodeDelegate" != 'mpeg2encode' ; then have_mpeg2encode='yes' ; fi
 have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != 'ra_ppm' ; then have_ra_ppm='yes' ; fi
 have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != 'ralcgm' ; then have_ralcgm='yes' ; fi
-have_xcftopnm='no'  ; if test "$XCFDecodeDelegate" != 'xcftopnm' ; then have_xcftopnm='yes' ; fi
 
 # Test for optional txt2html utility and define automake conditional HasTXT2HTML if found.
 AC_PATH_PROG(TXT2HTML, txt2html, txt2html)
@@ -1531,7 +1529,6 @@ then
   TXTDelegate='enscript'
   WMFDecodeDelegate='wmf2magick'
   WWWDecodeDelegate='wget'
-  XCFDecodeDelegate='xcftopnm'
   ZipDelegate='gzip'
 fi
 
@@ -1571,7 +1568,6 @@ AC_SUBST(ShowImageDelegate)
 AC_SUBST(TXTDelegate)
 AC_SUBST(WMFDecodeDelegate)
 AC_SUBST(WWWDecodeDelegate)
-AC_SUBST(XCFDecodeDelegate)
 AC_SUBST(ZipDelegate)
 
 # Figure out what drivers Ghostscript supports (if available)
