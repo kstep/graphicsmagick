@@ -1011,7 +1011,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 							{
 								for (j=0; j<msl_info->n;j++)
 								{
-									ImageAttribute *
+									const ImageAttribute *
 										theAttr = GetImageAttribute(msl_info->attributes[j], "id");
 									if (theAttr && LocaleCompare(theAttr->value, value) == 0)
 									{
@@ -2910,7 +2910,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 							{
 								for (j=0; j<msl_info->n;j++)
 								{
-									ImageAttribute *
+									const ImageAttribute *
 										theAttr = GetImageAttribute(msl_info->attributes[j], "id");
 									if (theAttr && LocaleCompare(theAttr->value, value) == 0)
 									{
@@ -3375,7 +3375,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 					  {
 						for (j=0; j<msl_info->n;j++)
 						{
-							ImageAttribute *
+							const ImageAttribute *
 								theAttr = GetImageAttribute(msl_info->attributes[j], "id");
 							if (theAttr && LocaleCompare(theAttr->value, value) == 0)
 							{
@@ -3443,7 +3443,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 					  {
 						for (j=0; j<msl_info->n;j++)
 						{
-							ImageAttribute *
+							const ImageAttribute *
 								theAttr = GetImageAttribute(msl_info->attributes[j], "id");
 							if (theAttr && LocaleCompare(theAttr->value, value) == 0)
 							{
@@ -3600,7 +3600,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 					  {
 						for (j=0; j<msl_info->n;j++)
 						{
-							ImageAttribute *
+							const ImageAttribute *
 								theAttr = GetImageAttribute(msl_info->attributes[j], "id");
 							if (theAttr && LocaleCompare(theAttr->value, value) == 0)
 							{
