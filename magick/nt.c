@@ -1060,8 +1060,8 @@ MagickExport struct dirent *readdir(DIR *entry)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadWMFImage reads an Apple Macintosh QuickDraw/WMF image
-%  file using MacOS QuickDraw methods and returns it.  It allocates the
+%  Method ReadWMFImage reads an Microsoft Windows MetaFile/WMF image
+%  file using the Windows API and returns it.  It allocates the
 %  memory necessary for the new Image structure and returns a pointer to
 %  the new image.
 %
