@@ -376,7 +376,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
   /*
     Update the SHA digest.
   */
-  count=Trunc32(signature_info->low_order+((unsigned char) (length << 3)));
+  count=Trunc32(signature_info->low_order+(((unsigned char) length) << 3));
   if (length < signature_info->low_order)
     signature_info->high_order++;
   signature_info->low_order=count;
