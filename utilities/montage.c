@@ -338,7 +338,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=0;
   scene=0;
-	status=True;
+  status=True;
   transparent_color=(char *) NULL;
   /*
     Parse command line.
@@ -775,7 +775,9 @@ static unsigned int MontageUtility(int argc,char **argv)
             }
           if (LocaleCompare("gravity",option+1) == 0)
             {
-              montage_info->gravity=SouthGravity;
+              GravityType
+                gravity;
+
               if (*option == '-')
                 {
                   i++;
@@ -783,27 +785,27 @@ static unsigned int MontageUtility(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   if (LocaleCompare("Forget",option) == 0)
-                    montage_info->gravity=ForgetGravity;
+                    gravity=ForgetGravity;
                   if (LocaleCompare("NorthWest",option) == 0)
-                    montage_info->gravity=NorthWestGravity;
+                    gravity=NorthWestGravity;
                   if (LocaleCompare("North",option) == 0)
-                    montage_info->gravity=NorthGravity;
+                    gravity=NorthGravity;
                   if (LocaleCompare("NorthEast",option) == 0)
-                    montage_info->gravity=NorthEastGravity;
+                    gravity=NorthEastGravity;
                   if (LocaleCompare("West",option) == 0)
-                    montage_info->gravity=WestGravity;
+                    gravity=WestGravity;
                   if (LocaleCompare("Center",option) == 0)
-                    montage_info->gravity=CenterGravity;
+                    gravity=CenterGravity;
                   if (LocaleCompare("East",option) == 0)
-                    montage_info->gravity=EastGravity;
+                    gravity=EastGravity;
                   if (LocaleCompare("SouthWest",option) == 0)
-                    montage_info->gravity=SouthWestGravity;
+                    gravity=SouthWestGravity;
                   if (LocaleCompare("South",option) == 0)
-                    montage_info->gravity=SouthGravity;
+                    gravity=SouthGravity;
                   if (LocaleCompare("SouthEast",option) == 0)
-                    montage_info->gravity=SouthEastGravity;
+                    gravity=SouthEastGravity;
                   if (LocaleCompare("Static",option) == 0)
-                    montage_info->gravity=StaticGravity;
+                    gravity=StaticGravity;
                 }
               break;
             }

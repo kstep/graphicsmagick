@@ -193,7 +193,6 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   montage_info->tile=AllocateString("6x4");
   montage_info->font=AllocateString(image_info->font);
   montage_info->pointsize=image_info->pointsize;
-  montage_info->gravity=CenterGravity;
   montage_info->fill=image_info->pen;
   (void) QueryColorDatabase("#000000ff",&montage_info->stroke);
   montage_info->background_color=image_info->background_color;
@@ -481,7 +480,6 @@ MagickExport Image *MontageImages(const Image *images,
     Allocate next structure.
   */
   tile_image=AllocateImage(NULL);
-  tile_image->gravity=montage_info->gravity;
   montage=AllocateImage(image_info);
   montage->scene=1;
   images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
@@ -615,6 +613,7 @@ MagickExport Image *MontageImages(const Image *images,
       */
       tile_image->columns=width;
       tile_image->rows=height;
+      tile_image->gravity=image->gravity;
       FormatString(tile_geometry,"%dx%d+0+0",image->columns,image->rows);
       flags=GetImageGeometry(tile_image,tile_geometry,False,&geometry);
       x=geometry.x+border_width;

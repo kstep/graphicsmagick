@@ -224,9 +224,6 @@ typedef struct _MontageInfo
   unsigned long
     border_width;
 
-  GravityType
-    gravity;
-
   unsigned int
     shadow;
 
