@@ -1107,7 +1107,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if(!image_info->ping)
     {
       /* Add viewbox primitive to support a stand-alone mvg file */
-      sprintf( buff, "viewbox 0,0 %i,%i\n",
+      sprintf( buff, "viewbox 0 0 %i %i\n",
                (int)cstruct->realwidth, (int)cstruct->realheight );
       ExtendMVG(cstruct, buff);
 
@@ -1149,7 +1149,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
       GetDrawInfo( local_info, draw_info );
       draw_info->primitive=(char*)cstruct->userdata;
-puts(draw_info->primitive);
+      /* puts(draw_info->primitive); */
       DrawImage(image,draw_info);
       draw_info->primitive = (char*)NULL;
       DestroyDrawInfo(draw_info);
