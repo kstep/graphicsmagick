@@ -24,7 +24,6 @@
 		<LI><A HREF="#dispatchimage">DispatchImage</A></LI>
 		<LI><A HREF="#pingimage">PingImage</A></LI>
 		<LI><A HREF="#readimage">ReadImage</A></LI>
-		<LI><A HREF="#readimages">ReadImages</A></LI>
 		<LI><A HREF="#writeimage">WriteImage</A></LI>
 	</UL>
 
@@ -40,11 +39,11 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>Image * <STRONG>ConstituteImage</STRONG>( const unsigned int width, const unsigned int height, const char *map, const StorageType type, const void *pixels, ExceptionInfo *exception );</P>
+<P>image:  <STRONG>ConstituteImage</STRONG>( )returns a pointer to the image. 
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image cannot be read.;</P>
 <P>unsigned int  <STRONG>DispatchImage</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels );</P>
 <P>Image * <STRONG>PingImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ReadImage</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ReadImages</STRONG>( const ImageInfo *image_info, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>WriteImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>
 <HR>
@@ -53,137 +52,105 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="constituteimage">ConstituteImage</A></H2>
-<P>Method ConstituteImage is a convenience routine that creates an image from the pixel data you supply and returns it.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  The pixel data must be in scanline order top-to-bottom.  The data can be character, short int, integer, float, or double.  Float and double require the pixels to be normalized [0..1]. The other types are [0..MaxRGB]. For example, to create a 640x480 image from unsigned red-green-blue character data, use</P>
-<blockquote>image=ConstituteImage ( 640, 480, "RGB", 0, pixels, &exception );; </blockquote><P>The format of the Constitute method is:</P>
+<blockquote>ConstituteImage ( ) returns an image from the the pixel data you supply.The pixel data must be in scanline order top-to-bottom. The data can bechar, short int, int, float, or double. Float and double require thepixels to be normalized [0..1], otherwise [0..MaxRGB]. For example, tocreate a 640x480 image from unsigned red-green-blue character data, use; </blockquote><blockquote>image=ConstituteImage ( 640, 480, "RGB", CharPixel, pixels, &exception );; </blockquote><P>The format of the Constitute method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ConstituteImage ( const unsigned int width, const unsigned int height, const char *map, const StorageType type, const void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
-<DD>
-Method Constitute returns a pointer to the image.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image cannot be read.
-<P></P>
+<blockquote>image: ConstituteImage ( ) returns a pointer to the image. A null image is returned if there is a memory shortage or if the image cannot be read.; </blockquote><DL><DL>
 <p><dt><STRONG><A NAME="item_o_width%3A">width:</A></STRONG><BR>
 <DD>
-Specifies the width in pixels of the image.
+width in pixels of the image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_height%3A">height:</A></STRONG><BR>
 <DD>
-Specifies the height in pixels of the image.
+height in pixels of the image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_map%3A">map:</A></STRONG><BR>
 <DD>
-This character string can be any combination or order of 
+This string reflects the expected ordering of the pixel array.  It can be any combination or order of 
 <FONT SIZE=-1>R</FONT> = red, 
 <FONT SIZE=-1>G</FONT> = green, 
 <FONT SIZE=-1>B</FONT> = blue, 
 <FONT SIZE=-1>A</FONT> = alpha, 
 <FONT SIZE=-1>C</FONT> = cyan, 
 <FONT SIZE=-1>Y</FONT> = yellow, 
-<FONT SIZE=-1>M</FONT> = magenta, and 
-<FONT SIZE=-1>K</FONT> = black.  The ordering reflects the order of the pixels in the supplied pixel array.
+<FONT SIZE=-1>M</FONT> = magenta, 
+<FONT SIZE=-1>K</FONT> = black, or 
+<FONT SIZE=-1>I</FONT> = intensity (for grayscale).
 <P></P>
 <p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
 <DD>
-pixel type where 0 = unsigned char, 1 = short int, 2 = int, 3 = float, and 4 = double.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB].
+Define the data type of the pixels.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB]. Choose from these types: CharPixel, ShortPixel, IntegerPixel, FloatPixel, or DoublePixel.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
 <DD>
-This array of values contain the pixel components as defined by the map and type parameters.  The length of the arrays must equal the area specified by the width and height values and type parameters.
+This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, and type.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="dispatchimage">DispatchImage</A></H2>
-<P>Method DispatchImage is a convenience routine.  Use it to extract pixel data from an image and place it in a buffer you supply.  The data is saved either as char, short int, integer, float or double format in the order specified by the type parameter.  For example, we want to extract scanline 1 of a 640x480 image as character data in red-green-blue order:</P>
-<blockquote>DispatchImage ( image, 0, 0, 640, 1, "RGB", 0, pixels );; </blockquote><P>The format of the DispatchImage method is:</P>
+<blockquote>DispatchImage ( ) extracts pixel data from an image and returns it to you.The method returns False on success otherwise True if an error isencountered. The data is returned as char, short int, int, float, or doublein the order specified by map. Suppose we want want to extract the firstscanline of a 640x480 image as character data in red-green-blue order:; </blockquote><blockquote>DispatchImage ( image, 0, 0, 640, 1, "RGB", 0, pixels );; </blockquote><P>The format of the DispatchImage method is:</P>
 <blockquote>unsigned int DispatchImage ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows, const char *map, const StorageType type, void *pixels ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
-Specifies a pointer to a Image structure; returned from ReadImage.
+The image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_x%2Cy%2Ccolumns%2Crows%3A">x,y,columns,rows:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_x%2C_y%2C_columns%2C_rows%3A">x, y, columns, rows:</A></STRONG><BR>
 <DD>
 These values define the perimeter of a region of pixels you want to extract.
 <P></P>
 <p><dt><STRONG>map:</STRONG><BR>
 <DD>
-This character string can be any combination or order of 
+This string reflects the expected ordering of the pixel array.  It can be any combination or order of 
 <FONT SIZE=-1>R</FONT> = red, 
 <FONT SIZE=-1>G</FONT> = green, 
 <FONT SIZE=-1>B</FONT> = blue, 
 <FONT SIZE=-1>A</FONT> = alpha, 
 <FONT SIZE=-1>C</FONT> = cyan, 
 <FONT SIZE=-1>Y</FONT> = yellow, 
-<FONT SIZE=-1>M</FONT> = magenta, and 
-<FONT SIZE=-1>K</FONT> = black.  The ordering reflects the order of the pixels in the supplied pixel array.
+<FONT SIZE=-1>M</FONT> = magenta, 
+<FONT SIZE=-1>K</FONT> = black, or 
+<FONT SIZE=-1>I</FONT> = intensity (for grayscale).
 <P></P>
 <p><dt><STRONG>type:</STRONG><BR>
 <DD>
-pixel type where 0 = unsigned char, 1 = short int, 2 = int, 3 = float, and 4 = double.  Float and double types are expected to be normalized [0..1] otherwise [0..MaxRGB].
+Define the data type of the pixels.  Float and double types are normalized to [0..1] otherwise [0..MaxRGB]. Choose from these types: CharPixel, ShortPixel, IntegerPixel, FloatPixel, or DoublePixel.
 <P></P>
 <p><dt><STRONG>pixels:</STRONG><BR>
 <DD>
-This array of values contain the pixel components as defined by the map and type parameters.  The length of the arrays must equal the area specified by the width and height values and type parameters.
+This array of values contain the pixel components as defined by map and type.  You must preallocate this array where the expected length varies depending on the values of width, height, and type.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="pingimage">PingImage</A></H2>
-<P>Method PingImage returns the image size in bytes if it exists and can be read (at least up until it reveals it's size). The width and height of the image is returned as well.  Note, only the first image in a multi-frame image file is pinged.</P>
-<P>The format of the PingImage method is:</P>
+<blockquote>PingImage ( ) is a convenience method that returns information about animage without having to read the image into memory. It returns thewidth, height, file size in bytes, and the file format of the image.For an image sequence, only the information for the first imagein the sequence is returned.; </blockquote><blockquote>PingImage ( ) returns an <A HREF="types/Image.html">Image</A> on success and NULL if the image cannot bepinged. The image does not contain any pixel data.; </blockquote><P>The format of the PingImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_Image%3A">Image:</A></STRONG><BR>
-<DD>
-Method PingImage returns the image size in bytes if the image file exists and it size can be determined otherwise 0.
-<P></P>
 <p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+Ping the image defined by the file or filename members of this structure.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="readimage">ReadImage</A></H2>
-<P>Method ReadImage reads an image and returns it.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  By default, the image format is determined by its magic number.  To specify a particular image format, precede the filename with an explicit image format name and a colon (i.e.  ps:image) or as the filename suffix (i.e.  image.ps).</P>
-<P>The format of the ReadImage method is:</P>
+<blockquote>ReadImage ( ) reads an image or image sequence from a file or file handle.The method returns a NULL if there is a memory shortage or if the imagecannot be read.; </blockquote><P>The format of the ReadImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-Method ReadImage returns a pointer to the image after reading.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image cannot be read.
-<P></P>
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+Read the image defined by the file or filename members of this structure.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
-return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="readimages">ReadImages</A></H2>
-<P>Method ReadImages reads a list of image names from a file and then returns the images as a linked list.</P>
-<P>The format of the ReadImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-Method ReadImage returns a pointer to the image after reading.  
-<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage or if the image cannot be read.
-<P></P>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="writeimage">WriteImage</A></H2>
