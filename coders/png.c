@@ -1467,7 +1467,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     insert_layers,
 #endif
     mng_height=0,
-    mng_iterations=0,
+    mng_iterations=1,
     mng_width=0,
     simplicity=0,
     subframe_height=0,
