@@ -437,28 +437,25 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
   image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
+  if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode))
+    if (!AllocateImageColormap(image,256))
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
   length=ReadBlobMSBLong(image);
-  if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
-      (psd_info.mode == IndexedMode) || (length > 0))
+  if (length > 0)
     {
       /*
-        Create colormap.
+        Read PSD raster colormap.
       */
-      if (!AllocateImageColormap(image,256))
+      if (!AllocateImageColormap(image,length/3))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      if (length > 0)
-        {
-          /*
-            Read PSD raster colormap.
-          */
-          for (i=0; i < (int) image->colors; i++)
-            image->colormap[i].red=UpScale(ReadBlobByte(image));
-          for (i=0; i < (int) image->colors; i++)
-            image->colormap[i].green=UpScale(ReadBlobByte(image));
-          for (i=0; i < (int) image->colors; i++)
-            image->colormap[i].blue=UpScale(ReadBlobByte(image));
-        }
+      for (i=0; i < (int) image->colors; i++)
+        image->colormap[i].red=UpScale(ReadBlobByte(image));
+      for (i=0; i < (int) image->colors; i++)
+        image->colormap[i].green=UpScale(ReadBlobByte(image));
+      for (i=0; i < (int) image->colors; i++)
+        image->colormap[i].blue=UpScale(ReadBlobByte(image));
     }
   length=ReadBlobMSBLong(image);
   if (length > 0)
@@ -466,6 +463,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       unsigned char
         *data;
 
+      /*
+        Image resources.
+      */
       data=(unsigned char *) AcquireMemory(length);
       if (data == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitWarning,
@@ -489,7 +489,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (length > 0)
     {
       /*
-        Read layer and mask block.
+        Layer and mask block.
       */
       size=ReadBlobMSBLong(image);
       number_layers=ReadBlobMSBShort(image);
@@ -505,9 +505,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].height=ReadBlobMSBLong(image)-layer_info[i].y;
         layer_info[i].width=ReadBlobMSBLong(image)-layer_info[i].x;
         layer_info[i].channels=ReadBlobMSBShort(image);
-        if (layer_info[i].channels > 24)
-          ThrowReaderException(CorruptImageWarning,"Not a PSD image file",
-            image);
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
           layer_info[i].channel_info[j].type=ReadBlobMSBShort(image);
@@ -552,81 +549,82 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
           compression=ReadBlobMSBShort(layer_info[i].image);
-          if (compression == 0)
+          if (compression == 1)
             {
+              /*
+                Read RLE compressed data.
+              */
               for (y=0; y < (int) layer_info[i].image->rows; y++)
                 (void) ReadBlobMSBShort(layer_info[i].image);
               (void) DecodeImage(layer_info[i].image,
                 layer_info[i].channel_info[j].type);
+              continue;
+            }
+          /*
+            Read uncompressed pixel data as separate planes.
+          */
+          packet_size=1;
+          if (layer_info[i].image->storage_class == PseudoClass)
+            {
+              if (layer_info[i].image->colors > 256)
+                packet_size++;
             }
           else
+            if (layer_info[i].image->depth > 8)
+              packet_size++;
+          scanline=(unsigned char *)
+            AcquireMemory(packet_size*layer_info[i].image->columns+1);
+          if (scanline == (unsigned char *) NULL)
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
+          for (y=0; y < (int) layer_info[i].image->rows; y++)
+          {
+            q=SetImagePixels(layer_info[i].image,0,y,
+              layer_info[i].image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            (void) ReadBlob(layer_info[i].image,packet_size*
+              layer_info[i].image->columns,(char *) scanline);
+            switch (layer_info[i].channel_info[j].type)
             {
-              /*
-                Read uncompressed pixel data as separate planes.
-              */
-              packet_size=1;
-              if (layer_info[i].image->storage_class == PseudoClass)
-                {
-                  if (layer_info[i].image->colors > 256)
-                    packet_size++;
-                }
-              else
-                if (layer_info[i].image->depth > 8)
-                  packet_size++;
-              scanline=(unsigned char *)
-                AcquireMemory(packet_size*layer_info[i].image->columns+1);
-              if (scanline == (unsigned char *) NULL)
-                ThrowReaderException(ResourceLimitWarning,
-                  "Memory allocation failed",image);
-              for (y=0; y < (int) layer_info[i].image->rows; y++)
+              case 0:
               {
-                q=SetImagePixels(layer_info[i].image,0,y,
-                  layer_info[i].image->columns,1);
-                if (q == (PixelPacket *) NULL)
-                  break;
-                (void) ReadBlob(layer_info[i].image,packet_size*
-                  layer_info[i].image->columns,(char *) scanline);
-                switch (layer_info[i].channel_info[j].type)
-                {
-                  case 0:
-                  {
-                    if (layer_info[i].image->storage_class == PseudoClass)
-                      (void) PushImagePixels(layer_info[i].image,IndexQuantum,
-                        scanline);
-                    else
-                      (void) PushImagePixels(layer_info[i].image,RedQuantum,
-                        scanline);
-                    break;
-                  }
-                  case 1:
-                  {
-                    (void) PushImagePixels(layer_info[i].image,GreenQuantum,
-                      scanline);
-                    break;
-                  }
-                  case 2:
-                  {
-                    (void) PushImagePixels(layer_info[i].image,BlueQuantum,
-                      scanline);
-                    break;
-                  }
-                  case 3:
-                  default:
-                  {
-                    if (layer_info[i].image->colorspace == CMYKColorspace)
-                      (void) PushImagePixels(layer_info[i].image,BlackQuantum,
-                        scanline);
-                    else
-                      (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
-                        scanline);
-                    break;
-                  }
-                }
-                if (!SyncImagePixels(layer_info[i].image))
-                  break;
+                if (layer_info[i].image->storage_class == PseudoClass)
+                  (void) PushImagePixels(layer_info[i].image,IndexQuantum,
+                    scanline);
+                else
+                  (void) PushImagePixels(layer_info[i].image,RedQuantum,
+                    scanline);
+                break;
               }
-              LiberateMemory((void **) &scanline);
+              case 1:
+              {
+                (void) PushImagePixels(layer_info[i].image,GreenQuantum,
+                  scanline);
+                break;
+              }
+              case 2:
+              {
+                (void) PushImagePixels(layer_info[i].image,BlueQuantum,
+                  scanline);
+                break;
+              }
+              case 3:
+              default:
+              {
+                if (layer_info[i].image->colorspace == CMYKColorspace)
+                  (void) PushImagePixels(layer_info[i].image,BlackQuantum,
+                    scanline);
+                else
+                  (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
+                    scanline);
+                break;
+              }
             }
+            if (!SyncImagePixels(layer_info[i].image))
+              break;
+          }
+          LiberateMemory((void **) &scanline);
         }
         image->file=layer_info[i].image->file;
         image->blob=layer_info[i].image->blob;
@@ -682,7 +680,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   compression=ReadBlobMSBShort(image);
   SetImage(image,OpaqueOpacity);
-  if (compression != 0)
+  if (compression == 1)
     {
       /*
         Read Packbit encoded pixel data as separate planes.
