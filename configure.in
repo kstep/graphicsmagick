@@ -818,21 +818,38 @@ then
     AC_MSG_RESULT()
     failed=0;
     passed=0;
-    AC_CHECK_HEADERS(freetype2/freetype.h)
-    if test "$ac_cv_header_freetype2_freetype_h" = 'yes'
-    then
-	passed=`expr $passed + 1`
-    else
-	failed=`expr $failed + 1`
-    fi
+
+dnl First see if there is a library
+    OLD_LDFLAGS="$LDFLAGS"
+    LDFLAGS=-L`freetype-config --prefix`/lib" $LDFLAGS"
     if test "$LIB_TTF" = ''
     then
       AC_CHECK_LIB(freetype,FT_Init_FreeType,LIB_TTF='-lfreetype',,)
       if test "$LIB_TTF" != ''
       then
          passed=`expr $passed + 1`
+      else
+         LDFLAGS="$OLD_LDFLAGS"
       fi
     fi
+
+dnl Next see what magic is required for the headers
+    if test "$LIB_TTF" != ''
+    then
+      OLD_CPPFLAGS="$CPPFLAGS"
+      CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS"
+    fi
+
+dnl Now test for the headers
+    AC_CHECK_HEADERS(freetype/freetype.h)
+    if test "$ac_cv_header_freetype_freetype_h" = 'yes'
+    then
+	passed=`expr $passed + 1`
+    else
+        CPPFLAGS="$OLD_CPPFLAGS"
+	failed=`expr $failed + 1`
+    fi
+
     AC_MSG_CHECKING(if FreeType package is complete)
     if test $passed -gt 0
     then
