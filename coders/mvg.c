@@ -187,6 +187,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(OptionError,"Must specify image size",image);
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  draw_info->fill=image_info->pen;
   (void) strcpy(filename,"@");
   (void) strcat(filename,image_info->filename);
   (void) CloneString(&draw_info->primitive,filename);

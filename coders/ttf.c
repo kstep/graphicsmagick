@@ -184,8 +184,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns = 800;
   image->rows = 480;
   draw_info=CloneDrawInfo(image_info, (DrawInfo *) NULL);
-  if (draw_info == (DrawInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"Unable to allocate image",image);
+  draw_info->fill=image_info->pen;
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);

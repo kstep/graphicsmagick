@@ -182,7 +182,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  (void) CloneString(&draw_info->text,"The quick brown fox jumps over the lazy dog");
+  draw_info->fill=image_info->pen;
+  (void) CloneString(&draw_info->text,
+    "The quick brown fox jumps over the lazy dog");
   FormatString(geometry,"0x0%+ld%+ld",page.x,page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics);
