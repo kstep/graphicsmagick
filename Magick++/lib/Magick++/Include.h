@@ -394,6 +394,7 @@ namespace Magick
   using MagickLib::GetGeometry;
   using MagickLib::GetImageAttribute;
   using MagickLib::GetImageAttribute;
+  using MagickLib::GetImageDepth;
   using MagickLib::GetImageInfo;
   using MagickLib::GetImagePixels;
   using MagickLib::GetIndexes;
@@ -463,6 +464,7 @@ namespace Magick
   using MagickLib::SetClientName;
   using MagickLib::SetImageAttribute;
   using MagickLib::SetImageClipMask;
+  using MagickLib::SetImageDepth;
   using MagickLib::SetImageInfo;
   using MagickLib::SetImageOpacity;
   using MagickLib::SetImagePixels;

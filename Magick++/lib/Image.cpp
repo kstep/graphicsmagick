@@ -2119,16 +2119,16 @@ Magick::Geometry Magick::Image::density ( void ) const
   return constOptions()->density( );
 }
 
-// Image quantum depth (8 or 16)
+// Image depth (8 or 16)
 void Magick::Image::depth ( unsigned int depth_ )
 {
   modifyImage();
-  image()->depth = depth_;
+  SetImageDepth( image(), depth_ );
   options()->depth( depth_ );
 }
 unsigned int Magick::Image::depth ( void ) const
 {
-  return constImage()->depth;
+  return GetImageDepth( const_cast<MagickLib::Image*>(constImage()) );
 }
 
 std::string Magick::Image::directory ( void ) const

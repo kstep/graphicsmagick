@@ -1,5 +1,8 @@
 2001-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Image.cpp (depth): Use GetImageDepth and SetImageDepth
+ 	rather than just getting/setting depth attributes.
+
 	* lib/Magick++/STL.h (opacityImage): New unary function object to
  	set, or attenuate, image pixel opacity throughout the image.
 
