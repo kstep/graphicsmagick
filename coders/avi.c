@@ -507,7 +507,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+                  if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,exception))
                     break;
             }
             break;
@@ -545,7 +545,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+                  if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,exception))
                     break;
             }
             break;
@@ -575,7 +575,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+                  if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,exception))
                     break;
             }
             break;
@@ -587,9 +587,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             /*
               Convert PseudoColor scanline.
-            if (bmp_info.compression == 1)
             */
-              bytes_per_line=image->columns << 1;
+            bytes_per_line=image->columns << 1;
             image->storage_class=DirectClass;
             for (y=(long) image->rows-1; y >= 0; y--)
             {
@@ -610,7 +609,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+                  if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,exception))
                     break;
             }
             break;
@@ -641,7 +640,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+                  if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,exception))
                     break;
             }
             break;

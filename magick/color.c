@@ -931,7 +931,8 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
         p++;
       }
       if (QuantumTick(cube_info->progress,cube_info->colors))
-        MagickMonitor(HistogramImageText,cube_info->progress,cube_info->colors,exception);
+        (void) MagickMonitor(HistogramImageText,cube_info->progress,
+          cube_info->colors,exception);
       cube_info->progress++;
     }
 }

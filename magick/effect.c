@@ -362,6 +362,9 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   register PixelPacket
     *q;
 
+  unsigned int
+    status;
+
   /*
     Get convolution matrix for the specified standard-deviation.
   */
@@ -427,8 +430,12 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(y,blur_image->rows+blur_image->columns))
-      if (!MagickMonitor(BlurImageText,y,blur_image->rows+blur_image->columns,exception))
-        break;
+      {
+        status=MagickMonitor(BlurImageText,y,blur_image->rows+
+          blur_image->columns,exception);
+        if (status == False)
+          break;
+      }
   }
   /*
     Blur the image columns.
@@ -443,8 +450,12 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(blur_image->rows+x,blur_image->rows+blur_image->columns))
-      if (!MagickMonitor(BlurImageText,blur_image->rows+x,blur_image->rows+blur_image->columns,exception))
-        break;
+      {
+        status=MagickMonitor(BlurImageText,blur_image->rows+x,blur_image->rows+
+          blur_image->columns,exception);
+        if (status == False)
+          break;
+      }
   }
   LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &kernel);

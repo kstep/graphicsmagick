@@ -110,6 +110,9 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
     case DirectClass:
     default:
     {
+      unsigned int
+        status;
+
       /*
         Contrast enhance DirectClass image.
       */
@@ -128,13 +131,13 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
         if (QuantumTick(y,image->rows))
           {
             if (sharpen)
-              {
-                if (!MagickMonitor(SharpenContrastImageText,y,image->rows,&image->exception))
-                  break;
-              }
+              status=MagickMonitor(SharpenContrastImageText,y,image->rows,
+                &image->exception);
             else
-              if (!MagickMonitor(DullContrastImageText,y,image->rows,&image->exception))
-                break;
+              status=MagickMonitor(DullContrastImageText,y,image->rows,
+                &image->exception);
+            if (status == False);
+              break;
           }
       }
       break;
@@ -1085,9 +1088,13 @@ MagickExport unsigned int NormalizeImage(Image *image)
     case DirectClass:
     default:
     {
+      ExceptionInfo
+        *exception;
+
       /*
         Normalize DirectClass image.
       */
+      exception=(&image->exception);
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
@@ -1108,7 +1115,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(NormalizeImageText,y,image->rows,&image->exception))
+          if (!MagickMonitor(NormalizeImageText,y,image->rows,exception))
             break;
       }
       break;
