@@ -786,16 +786,24 @@ compression when you create the PDF file:
 	<DT STYLE="margin-bottom: 0.2in"><A NAME="C28"></A><B>28. How can I
 	add a matte layer to my image?</B> 
 	</DT></DL>
-<DD STYLE="margin-left: 0in">
-One way is to use a bitmap as your transparency mask. Try 
-</DD><DD STYLE="margin-left: 0in">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <TT>composite -compose CopyOpacity
-image.gif mask.xbm transparent.gif</TT> 
-</DD><DD STYLE="margin-left: 0in; margin-bottom: 0.2in">
-Note, GIF is limited to one transparent color. If your mask has
-variable opacity, use a format like MIFF, TIFF, or PNG as you output
-image format. 
-</DD><HR SIZE=5>
+<dd style="margin-left: 0in">
+One way is to use a bitmap as your transparency mask</dd>
+<dd style="margin-left: 0in; margin-bottom: 0.2 in">
+First, use the <tt>-matte</tt> option to add an
+all-opaque opacity channel, then
+use the <tt>composite</tt> utility to copy the graylevel samples from the mask
+file into your new opacity channel:</dd>
+<dd style="margin-left: 0in">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<tt>convert image.gif -matte temp.miff</tt></dd>
+<dd style="margin-left: 0in"; margin-bottom: 0.2 in>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<tt>composite -compose CopyOpacity mask.xbm temp.miff transparent.gif</tt></dd>
+<dd style="margin-left: 0in; margin-bottom: 0.2in">
+Note, GIF is limited to one transparent color. If your mask has variable
+opacity, use a format like MIFF, TIFF, or PNG as your output image
+format.</dd>
+<HR SIZE=5>
 <DL>
 	<DT STYLE="margin-bottom: 0.2in"><A NAME="C29"></A><B>29. How can I
 	draw with text using 'convert' under Windows NT?</B> 
