@@ -1467,6 +1467,9 @@
       <Message name="WandContainsNoImageIndexs">
         Wand contains no image indices `%.1024s'
       </Message>
+      <Message name="WandAPINotImplemented">
+         Wand API not implemented `%.1024s'
+      </Message>
     </Error>
   </Wand>
   <XServer>

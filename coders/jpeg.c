@@ -1405,7 +1405,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     jpeg_error;
 
   unsigned int
-    logging,
     status;
 
   unsigned long
@@ -1418,7 +1417,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
@@ -1494,7 +1492,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       const ImageAttribute
         *attribute;
 
-      if (logging)
+      if (image->logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  JPEG:preserve-settings flag is defined.");
 
@@ -1504,7 +1502,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           (attribute->value != (char *) NULL))
         {
           sscanf(attribute->value,"%lu",&quality);
-          if (logging)
+          if (image->logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  Input quality=%lu",quality);
         }
@@ -1515,7 +1513,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           (attribute->value != (char *) NULL))
         {
           sscanf(attribute->value,"%lu",&input_colorspace);
-          if (logging)
+          if (image->logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  Input colorspace=%lu",input_colorspace);
         }
@@ -1528,14 +1526,14 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               (attribute->value != (char *) NULL))
             {
               sampling_factors=attribute->value;
-              if (logging)
+              if (image->logging)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "  Input sampling-factors=%s",sampling_factors);
             }
         }
       else
         {
-          if (logging)
+          if (image->logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  Input colorspace (%lu) != Output colorspace (%d)",
                 input_colorspace,jpeg_info.in_color_space);
@@ -1574,7 +1572,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         image->y_resolution=image->x_resolution;
     }
   jpeg_info.density_unit=1;  /* default to DPI */
-  if (logging)
+  if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Image resolution: %ld,%ld",(long) image->x_resolution,
       (long) image->y_resolution);
@@ -1592,11 +1590,19 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         jpeg_info.density_unit=2;
     }
   jpeg_info.dct_method=JDCT_FLOAT;
-  jpeg_info.optimize_coding=True;
+
+   /*
+     Don't enable Huffman optimization for large images (> 16 Mpixels)
+     in order to conserve memory.
+   */
+  if (((magick_uint64_t) image->columns * image->rows) <
+      (magick_uint64_t) 1024UL*1024UL*16UL)
+    jpeg_info.optimize_coding=True;
+
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if (image_info->interlace != NoInterlace)
     jpeg_simple_progression(&jpeg_info);
-  if (logging)
+  if (image->logging)
     {
       if (image_info->interlace != NoInterlace)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1606,7 +1612,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           "Interlace: nonprogressive");
     }
 #else
-  if (logging)
+  if (image->logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Interlace:  nonprogressive");
 #endif
@@ -1625,7 +1631,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           predictor=quality/100;  /* range 1-7 */
           point_transform=quality % 20;  /* range 0-15 */
           jpeg_simple_lossless(&jpeg_info,predictor,point_transform);
-          if (logging)
+          if (image->logging)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "Compression: lossless");
@@ -1638,7 +1644,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 #else
         {
           jpeg_set_quality(&jpeg_info,100,True);
-          if (logging)
+          if (image->logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: 100");
         }
 #endif
@@ -1646,7 +1652,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   else
     {
       jpeg_set_quality(&jpeg_info,(int) quality,True);
-      if (logging)
+      if (image->logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: %lu",
           quality);
     }
@@ -1688,8 +1694,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           jpeg_info.comp_info[i].v_samp_factor=1;
         }
     }
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Starting JPEG compression");
   jpeg_start_compress(&jpeg_info,True);
-  if (logging)
+  if (image->logging)
     {
       if (image->storage_class == PseudoClass)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1811,14 +1818,14 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if (image->color_profile.length != 0)
     {
       WriteICCProfile(&jpeg_info,image);
-      if (logging)
+      if (image->logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "ICC profile: %ld bytes",(long) image->color_profile.length);
     }
   if (image->iptc_profile.length != 0)
     {
       WriteIPTCProfile(&jpeg_info,image);
-      if (logging)
+      if (image->logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "IPTC profile: %ld bytes",(long) image->iptc_profile.length);
     }
@@ -1830,7 +1837,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     if (LocaleNCompare(image->generic_profile[i].name,"APP",3) != 0)
       continue;
     x=atol(image->generic_profile[i].name+3);
-    if (logging)
+    if (image->logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Profile: %s, %ld bytes",image->generic_profile[i].name,
         (long) image->generic_profile[i].length);
@@ -1850,129 +1857,160 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if (jpeg_info.data_precision > 8)
     {
       if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-        for (y=0; y < (long) image->rows; y++)
         {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          q=jpeg_pixels;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            *q++=(JSAMPLE) (ScaleQuantumToShort(PixelIntensityToQuantum(p))/16);
-            p++;
-          }
-          (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-          if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-              break;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Writing %d bit JCS_GRAYSCALE samples",
+                                jpeg_info.data_precision);
+          for (y=0; y < (long) image->rows; y++)
+            {
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              q=jpeg_pixels;
+              for (x=0; x < (long) image->columns; x++)
+                {
+                  *q++=(JSAMPLE) (ScaleQuantumToShort(PixelIntensityToQuantum(p))/16);
+                  p++;
+                }
+              (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+              if (QuantumTick(y,image->rows))
+                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  break;
+            }
         }
       else
         if ((jpeg_info.in_color_space == JCS_RGB) ||
             (jpeg_info.in_color_space == JCS_YCbCr))
-          for (y=0; y < (long) image->rows; y++)
           {
-            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            q=jpeg_pixels;
-            for (x=0; x < (long) image->columns; x++)
-            {
-              *q++=(JSAMPLE) (ScaleQuantumToShort(p->red)/16);
-              *q++=(JSAMPLE) (ScaleQuantumToShort(p->green)/16);
-              *q++=(JSAMPLE) (ScaleQuantumToShort(p->blue)/16);
-              p++;
-            }
-            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                break;
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Writing %d bit JCS_RGB or JCS_YCbCr samples",
+                                  jpeg_info.data_precision);
+            for (y=0; y < (long) image->rows; y++)
+              {
+                p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+                if (p == (const PixelPacket *) NULL)
+                  break;
+                q=jpeg_pixels;
+                for (x=0; x < (long) image->columns; x++)
+                  {
+                    *q++=(JSAMPLE) (ScaleQuantumToShort(p->red)/16);
+                    *q++=(JSAMPLE) (ScaleQuantumToShort(p->green)/16);
+                    *q++=(JSAMPLE) (ScaleQuantumToShort(p->blue)/16);
+                    p++;
+                  }
+                (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    break;
+              }
           }
         else
-          for (y=0; y < (long) image->rows; y++)
           {
-            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            q=jpeg_pixels;
-            for (x=0; x < (long) image->columns; x++)
-            {
-              /*
-                Convert DirectClass packets to contiguous CMYK scanlines.
-              */
-              *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->red)/16);
-              *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->green)/16);
-              *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->blue)/16);
-              *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->opacity)/16);
-              p++;
-            }
-            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                break;
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                  "Writing %d bit JCS_CMYK samples",
+                                  jpeg_info.data_precision);
+            for (y=0; y < (long) image->rows; y++)
+              {
+                p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+                if (p == (const PixelPacket *) NULL)
+                  break;
+                q=jpeg_pixels;
+                for (x=0; x < (long) image->columns; x++)
+                  {
+                    /*
+                      Convert DirectClass packets to contiguous CMYK scanlines.
+                    */
+                    *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->red)/16);
+                    *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->green)/16);
+                    *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->blue)/16);
+                    *q++=(JSAMPLE) (4095-ScaleQuantumToShort(p->opacity)/16);
+                    p++;
+                  }
+                (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    break;
+              }
           }
     }
   else
     if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-      for (y=0; y < (long) image->rows; y++)
       {
-        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        q=jpeg_pixels;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          *q++=(JSAMPLE) ScaleQuantumToChar(PixelIntensityToQuantum(p));
-          p++;
-        }
-        (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-            break;
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Writing %d bit JCS_GRAYSCALE samples",
+                              jpeg_info.data_precision);
+        for (y=0; y < (long) image->rows; y++)
+          {
+            p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+            if (p == (const PixelPacket *) NULL)
+              break;
+            q=jpeg_pixels;
+            for (x=0; x < (long) image->columns; x++)
+              {
+                *q++=(JSAMPLE) ScaleQuantumToChar(PixelIntensityToQuantum(p));
+                p++;
+              }
+            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+            if (QuantumTick(y,image->rows))
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
+          }
       }
     else
       if ((jpeg_info.in_color_space == JCS_RGB) ||
           (jpeg_info.in_color_space == JCS_YCbCr))
-        for (y=0; y < (long) image->rows; y++)
         {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          q=jpeg_pixels;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            *q++=(JSAMPLE) ScaleQuantumToChar(p->red);
-            *q++=(JSAMPLE) ScaleQuantumToChar(p->green);
-            *q++=(JSAMPLE) ScaleQuantumToChar(p->blue);
-            p++;
-          }
-          (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-          if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-              break;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Writing %d bit JCS_RGB or JCS_YCbCr samples",
+                                jpeg_info.data_precision);
+          for (y=0; y < (long) image->rows; y++)
+            {
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              q=jpeg_pixels;
+              for (x=0; x < (long) image->columns; x++)
+                {
+                  *q++=(JSAMPLE) ScaleQuantumToChar(p->red);
+                  *q++=(JSAMPLE) ScaleQuantumToChar(p->green);
+                  *q++=(JSAMPLE) ScaleQuantumToChar(p->blue);
+                  p++;
+                }
+              (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+              if (QuantumTick(y,image->rows))
+                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  break;
+            }
         }
       else
-        for (y=0; y < (long) image->rows; y++)
         {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          q=jpeg_pixels;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            /*
-              Convert DirectClass packets to contiguous CMYK scanlines.
-            */
-            *q++=(JSAMPLE) (ScaleQuantumToChar(MaxRGB-p->red));
-            *q++=(JSAMPLE) (ScaleQuantumToChar(MaxRGB-p->green));
-            *q++=(JSAMPLE) (ScaleQuantumToChar(MaxRGB-p->blue));
-            *q++=(JSAMPLE) (ScaleQuantumToChar(MaxRGB-p->opacity));
-            p++;
-          }
-          (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-          if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-              break;
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Writing %d bit JCS_CMYK samples",
+                                jpeg_info.data_precision);
+          for (y=0; y < (long) image->rows; y++)
+            {
+              p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              q=jpeg_pixels;
+              for (x=0; x < (long) image->columns; x++)
+                {
+                  /*
+                    Convert DirectClass packets to contiguous CMYK scanlines.
+                  */
+                  *q++=(JSAMPLE) (ScaleQuantumToChar(MaxRGB-p->red));
+                  *q++=(JSAMPLE) (ScaleQuantumToChar(MaxRGB-p->green));
+                  *q++=(JSAMPLE) (ScaleQuantumToChar(MaxRGB-p->blue));
+                  *q++=(JSAMPLE) (ScaleQuantumToChar(MaxRGB-p->opacity));
+                  p++;
+                }
+              (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+              if (QuantumTick(y,image->rows))
+                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  break;
+            }
         }
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Finishing JPEG compression");
   jpeg_finish_compress(&jpeg_info);
   /*
     Free memory.
@@ -1980,8 +2018,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_destroy_compress(&jpeg_info);
   MagickFreeMemory(jpeg_pixels);
   CloseBlob(image);
-  if (logging) 
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   return(True);
 }
 #endif

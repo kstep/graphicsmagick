@@ -2651,6 +2651,12 @@ invalid colormap index `%.1024s
 .
 
 MessageId       = +1
+SymbolicName    = WandErrorWandAPINotImplemented
+Language        = English
+Wand API not implemented `%.1024s
+.
+
+MessageId       = +1
 SymbolicName    = WandErrorWandContainsNoImageIndexs
 Language        = English
 Wand contains no image indices `%.1024s

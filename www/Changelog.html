@@ -21,6 +21,36 @@
 </tr>
 </table>
 <p>
+2004-07-05  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c (WriteJPEGImage): Don't enable Huffman compression
+        for large images (&gt; 16 Mpixels for the moment) in order to
+        conserve memory.  When Huffman compression is enabled the entire
+        image is buffered in memory prior to encoding and writing
+        anything.  Huffman compression is a method of eliminating
+        redundant data so the Huffman compression is disabled, files sizes
+        will be larger, but otherwise the image is the same.
+  <LI> wand/magick_wand.c (MagickSetPassphrase): String was being
+        copied to a null pointer.  Now memory is allocated as required
+        prior to a copy.<BR>
+        Ensure that all unimplemented functions return a proper error
+        report.
+
+</UL>
+<p>
+2004-07-01  Mike Chiarappa &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick: updated to GraphicsMagick v.1.2
+  <LI> BCBMagick\All: project GMlib-1.1.bpr has been replaced with
+        GMlib.bpr<BR>
+  <LI> BCBMagick\All: project GMdll-1.1.bpr has been replaced with
+        GMdll.bpr<BR>
+  <LI> BCBMagick\readme.txt: updated documentation.
+
+</UL>
+<p>
 2004-06-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
