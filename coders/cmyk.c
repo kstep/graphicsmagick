@@ -170,7 +170,10 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!SetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PushImagePixels(image,CMYKQuantum,scanline+x);
+          if (!image->matte)
+            (void) PushImagePixels(image,CMYKQuantum,scanline+x);
+          else
+            (void) PushImagePixels(image,CMYKAQuantum,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -203,6 +206,12 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           (void) PushImagePixels(image,MagentaQuantum,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           (void) PushImagePixels(image,BlackQuantum,scanline+x);
+          if (image->matte)
+            {
+              (void) ReadBlob(image,packet_size*image->tile_info.width,
+                scanline);
+              (void) PushImagePixels(image,OpacityQuantum,scanline+x);
+            }
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -328,6 +337,26 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               MagickMonitor(LoadImageText,i,span);
           i++;
         }
+        if (image->matte)
+          {
+            for (y=0; y < image->tile_info.y; y++)
+              (void) ReadBlob(image,packet_size*image->tile_info.width,
+                scanline);
+            for (y=0; y < (int) image->rows; y++)
+            {
+              (void) ReadBlob(image,packet_size*image->tile_info.width,
+                scanline);
+              if (!GetImagePixels(image,0,y,image->columns,1))
+                break;
+              (void) PushImagePixels(image,OpacityQuantum,scanline+x);
+              if (!SyncImagePixels(image))
+                break;
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(i,span))
+                  MagickMonitor(LoadImageText,i,span);
+              i++;
+            }
+          }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -507,7 +536,10 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,CMYKQuantum,pixels);
+          if (!image->matte)
+            (void) PopImagePixels(image,CMYKQuantum,pixels);
+          else
+            (void) PopImagePixels(image,CMYKAQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -532,6 +564,11 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,image->columns,pixels);
           (void) PopImagePixels(image,BlackQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
+          if (image->matte)
+            {
+              (void) PopImagePixels(image,OpacityQuantum,pixels);
+              (void) WriteBlob(image,image->columns,pixels);
+            }
           if (QuantumTick(y,image->rows))
             MagickMonitor(SaveImageText,y,image->rows);
         }
@@ -609,6 +646,28 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         if (image_info->interlace == PartitionInterlace)
           (void) strcpy(image->filename,image_info->filename);
         MagickMonitor(SaveImageText,400,400);
+        if (image->matte)
+          {
+            if (image_info->interlace == PartitionInterlace)
+              {
+                CloseBlob(image);
+                AppendImageFormat("K",image->filename);
+                status=OpenBlob(image_info,image,WriteBinaryType);
+                if (status == False)
+                  ThrowWriterException(FileOpenWarning,"Unable to open file",
+                    image);
+              }
+            for (y=0; y < (int) image->rows; y++)
+            {
+              if (!GetImagePixels(image,0,y,image->columns,1))
+                break;
+              (void) PopImagePixels(image,OpacityQuantum,pixels);
+              (void) WriteBlob(image,image->columns,pixels);
+            }
+            if (image_info->interlace == PartitionInterlace)
+              (void) strcpy(image->filename,image_info->filename);
+            MagickMonitor(SaveImageText,400,400);
+          }
         break;
       }
     }

@@ -1114,6 +1114,25 @@ MagickExport unsigned int PopImagePixels(Image *image,
     }
     case OpacityQuantum:
     {
+      if (image->colorspace == CMYKColorspace)
+        {
+          if (image->depth <= 8)
+            {
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *q++=DownScale(MaxRGB-indexes[x]);
+                p++;
+              }
+              break;
+            }
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=(MaxRGB-indexes[x]) >> 8;
+            *q++=MaxRGB-indexes[x];
+            p++;
+          }
+          break;
+        }
       if (image->depth <= 8)
         {
           for (x=0; x < (int) image->columns; x++)
@@ -1146,25 +1165,6 @@ MagickExport unsigned int PopImagePixels(Image *image,
       {
         *q++=(MaxRGB-p->opacity) >> 8;
         *q++=MaxRGB-p->opacity;
-        p++;
-      }
-      break;
-    }
-    case AlphaQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=DownScale(MaxRGB-indexes[x]);
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=(MaxRGB-indexes[x]) >> 8;
-        *q++=MaxRGB-indexes[x];
         p++;
       }
       break;
@@ -1512,6 +1512,21 @@ MagickExport unsigned int PushImagePixels(Image *image,
     }
     case OpacityQuantum:
     {
+      if (image->colorspace == CMYKColorspace)
+        {
+          if (image->depth <= 8)
+            {
+              for (x=0; x < (int) image->columns; x++)
+                indexes[x]=UpScale(*p++);
+              break;
+            }
+          for (x=0; x < (int) image->columns; x++)
+          {
+            indexes[x]=XDownScale((*p << 8) | *(p+1));
+            p+=2;
+          }
+          break;
+        }
       if (image->depth <= 8)
         {
           for (x=0; x < (int) image->columns; x++)
@@ -1545,21 +1560,6 @@ MagickExport unsigned int PushImagePixels(Image *image,
         q->opacity=XDownScale((*p << 8) | *(p+1));
         p+=2;
         q++;
-      }
-      break;
-    }
-    case AlphaQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          for (x=0; x < (int) image->columns; x++)
-            indexes[x]=UpScale(*p++);
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        indexes[x]=XDownScale((*p << 8) | *(p+1));
-        p+=2;
       }
       break;
     }

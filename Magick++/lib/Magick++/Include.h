@@ -275,15 +275,15 @@ namespace Magick
   using MagickLib::QuantumType;
   using MagickLib::IndexQuantum;
   using MagickLib::GrayQuantum;
-  using MagickLib::IndexOpacityQuantum;
-  using MagickLib::GrayOpacityQuantum;
+  using MagickLib::IndexAlphaQuantum;
+  using MagickLib::GrayAlphaQuantum;
   using MagickLib::RedQuantum;
   using MagickLib::CyanQuantum;
   using MagickLib::GreenQuantum;
   using MagickLib::YellowQuantum;
   using MagickLib::BlueQuantum;
   using MagickLib::MagentaQuantum;
-  using MagickLib::OpacityQuantum;
+  using MagickLib::AlphaQuantum;
   using MagickLib::BlackQuantum;
   using MagickLib::RGBQuantum;
   using MagickLib::RGBAQuantum;

@@ -361,7 +361,6 @@ typedef enum
   MagentaQuantum,
   OpacityQuantum,
   BlackQuantum,
-  AlphaQuantum,
   RGBQuantum,
   RGBAQuantum,
   CMYKQuantum,
