@@ -474,6 +474,9 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     *chroma_image,
     *yuv_image;
 
+  InterlaceType
+    interlace;
+
   long
     horizontal_factor,
     vertical_factor,
@@ -493,9 +496,6 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     scene,
     height,
     width;
-
-  InterlaceType
-    interlace;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
