@@ -65,6 +65,7 @@
 %    -dispose method     GIF disposal method
 %    -dissolve value     dissolve the two images a given percent
 %    -dither             apply Floyd/Steinberg error diffusion to image
+%    -filter type        use this filter when resizing an image
 %    -font name          font for rendering text
 %    -geometry geometry  location of the composite image
 %    -gravity type       which direction to gravitate towards
@@ -74,6 +75,7 @@
 %    -monochrome         transform image to black and white
 %    -negate             replace every pixel with its complementary color
 %    -page geometry      size and location of an image canvas
+%    -profile filename   add ICM or IPTC information profile to image
 %    -quality value      JPEG/MIFF/PNG compression level
 %    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        image scene number
@@ -83,6 +85,7 @@
 %    -tile               repeat composite operation across image
 %    -treedepth value    depth of the color tree
 %    -type type          image type
+%    -units type         PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -verbose            print detailed information about the image
 %
 %
@@ -421,6 +424,7 @@ static void Usage(void)
       "-dispose method     GIF disposal method",
       "-dissolve value     dissolve the two images a given percent",
       "-dither             apply Floyd/Steinberg error diffusion to image",
+      "-filter type        use this filter when resizing an image",
       "-font name          font for rendering text",
       "-geometry geometry  location of the composite image",
       "-gravity type       which direction to gravitate towards",
@@ -430,6 +434,7 @@ static void Usage(void)
       "-monochrome         transform image to black and white",
       "-negate             replace every pixel with its complementary color ",
       "-page geometry      size and location of an image canvas",
+      "-profile filename   add ICM or IPTC information profile to image",
       "-quality value      JPEG/MIFF/PNG compression level",
       "-rotate degrees     apply Paeth rotation to the image",
       "-scene value        image scene number",
@@ -439,6 +444,7 @@ static void Usage(void)
       "-tile               repeat composite operation across image",
       "-treedepth value    depth of the color tree",
       "-type type          image type",
+      "-units type         PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-verbose            print detailed information about the image",
       (char *) NULL
     };
@@ -574,8 +580,6 @@ int main(int argc,char **argv)
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
                 exception.description);
-            status=MogrifyImages(image_info,i,argv,&composite_image);
-            CatchImageException(composite_image);
             continue;
           }
         if (mask_image != (Image *) NULL)
@@ -586,6 +590,9 @@ int main(int argc,char **argv)
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
                 exception.description);
+            if (image == (Image *) NULL)
+              continue;
+            /* allow users to apply features to the main input image */
             status=MogrifyImages(image_info,i,argv,&image);
             CatchImageException(image);
             continue;
@@ -597,8 +604,6 @@ int main(int argc,char **argv)
         if (exception.severity != UndefinedException)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
-        status=MogrifyImages(image_info,i,argv,&mask_image);
-        CatchImageException(mask_image);
       }
     else
       switch(*(option+1))
@@ -864,14 +869,66 @@ int main(int argc,char **argv)
         }
         case 'f':
         {
-          (void) CloneString(&image_info->font,(char *) NULL);
-          if (*option == '-')
+          if (LocaleCompare("filter",option+1) == 0)
             {
-              i++;
-              if (i == argc)
-                MagickError(OptionError,"Missing font name",option);
-              (void) CloneString(&image_info->font,argv[i]);
+              if (*option == '-')
+                {
+                  FilterTypes
+                    filter;
+
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  filter=UndefinedFilter;
+                  if (LocaleCompare("Point",option) == 0)
+                    filter=PointFilter;
+                  if (LocaleCompare("Box",option) == 0)
+                    filter=BoxFilter;
+                  if (LocaleCompare("Triangle",option) == 0)
+                    filter=TriangleFilter;
+                  if (LocaleCompare("Hermite",option) == 0)
+                    filter=HermiteFilter;
+                  if (LocaleCompare("Hanning",option) == 0)
+                    filter=HanningFilter;
+                  if (LocaleCompare("Hamming",option) == 0)
+                    filter=HammingFilter;
+                  if (LocaleCompare("Blackman",option) == 0)
+                    filter=BlackmanFilter;
+                  if (LocaleCompare("Gaussian",option) == 0)
+                    filter=GaussianFilter;
+                  if (LocaleCompare("Quadratic",option) == 0)
+                    filter=QuadraticFilter;
+                  if (LocaleCompare("Cubic",option) == 0)
+                    filter=CubicFilter;
+                  if (LocaleCompare("Catrom",option) == 0)
+                    filter=CatromFilter;
+                  if (LocaleCompare("Mitchell",option) == 0)
+                    filter=MitchellFilter;
+                  if (LocaleCompare("Lanczos",option) == 0)
+                    filter=LanczosFilter;
+                  if (LocaleCompare("Bessel",option) == 0)
+                    filter=BesselFilter;
+                  if (LocaleCompare("Sinc",option) == 0)
+                    filter=SincFilter;
+                  if (filter == UndefinedFilter)
+                    MagickError(OptionError,"Invalid filter type",option);
+                }
+              break;
             }
+          if (LocaleCompare("font",option+1) == 0)
+            {
+              (void) CloneString(&image_info->font,(char *) NULL);
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing font name",option);
+                  (void) CloneString(&image_info->font,argv[i]);
+                }
+              break;
+            }
+          MagickError(OptionError,"Unrecognized option",option);
           break;
         }
         case 'g':
@@ -1009,6 +1066,13 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing page geometry",option);
                   image_info->page=PostscriptGeometry(argv[i]);
                 }
+              break;
+            }
+          if (LocaleCompare("profile",option+1) == 0)
+            {
+              i++;
+              if (i == argc)
+                MagickError(OptionError,"Missing profile",option);
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -1197,6 +1261,23 @@ int main(int argc,char **argv)
         }
         case 'u':
         {
+          if (LocaleCompare("units",option+1) == 0)
+            {
+              image_info->units=UndefinedResolution;
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  image_info->units=UndefinedResolution;
+                  if (LocaleCompare("PixelsPerInch",option) == 0)
+                    image_info->units=PixelsPerInchResolution;
+                  if (LocaleCompare("PixelsPerCentimeter",option) == 0)
+                    image_info->units=PixelsPerCentimeterResolution;
+                }
+              break;
+            }
           if (LocaleCompare("unsharp",option+1) == 0)
             {
               (void) CloneString(&option_info.unsharp_geometry,(char *) NULL);
