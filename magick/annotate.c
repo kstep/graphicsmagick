@@ -180,11 +180,11 @@ Export unsigned int AnnotateImage(Image *image,
       if ((flags & XNegative) != 0)
         x+=image->columns;
       if ((flags & WidthValue) == 0)
-        width-=x;
+        width-=2*x;
       if ((flags & YNegative) != 0)
         y+=image->rows;
       if ((flags & HeightValue) == 0)
-        height-=y;
+        height-=2*y;
     }
   /*
     Annotate image.
@@ -269,27 +269,27 @@ Export unsigned int AnnotateImage(Image *image,
       }
       case EastGravity:
       {
-        clone_info->bounds.x=width-(int) annotate_image->columns-x;
-        clone_info->bounds.y=(height/2)-(int) (number_lines*
-          clone_info->bounds.height/2)+i*clone_info->bounds.height-y;
+        clone_info->bounds.x=x+width-(int) annotate_image->columns;
+        clone_info->bounds.y=y+(height/2)-(int) (number_lines*
+          clone_info->bounds.height/2)+i*clone_info->bounds.height;
         break;
       }
       case SouthWestGravity:
       {
         clone_info->bounds.x=x;
-        clone_info->bounds.y=height-(i+1)*clone_info->bounds.height-y;
+        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height;
         break;
       }
       case SouthGravity:
       {
-        clone_info->bounds.x=(width/2)-(int) (annotate_image->columns/2)-x;
-        clone_info->bounds.y=height-(i+1)*clone_info->bounds.height-y;
+        clone_info->bounds.x=x+(width/2)-(int) (annotate_image->columns/2);
+        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height;
         break;
       }
       case SouthEastGravity:
       {
-        clone_info->bounds.x=width-(int) annotate_image->columns-x;
-        clone_info->bounds.y=height-(i+1)*clone_info->bounds.height-y;
+        clone_info->bounds.x=x+width-(int) annotate_image->columns;
+        clone_info->bounds.y=y+height-(i+1)*clone_info->bounds.height;
         break;
       }
     }
