@@ -1,3 +1,8 @@
+
+2002-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+       * Remove bogus cast of blob data in readImages().
+
 2002-01-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (throwImageException): Throwing exceptions was
@@ -68,6 +73,7 @@
 	(all remaining methods): Change return type to 'double'.  Fix
  	documentation in source files to reflect that units are in pixels
  	rather than points.
+	(descent): Renamed method from 'decent' to 'descent'.
 
 2001-11-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
