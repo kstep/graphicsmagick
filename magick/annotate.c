@@ -857,6 +857,13 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   metrics->width=annotate_image->columns/ExpandAffine(&draw_info->affine);
   metrics->height=1.152*metrics->pixels_per_em.x;
   metrics->max_advance=metrics->pixels_per_em.x;
+  metrics->bounds.x1=0.0;
+  metrics->bounds.y1=metrics->descent;
+  metrics->bounds.x2=metrics->ascent+metrics->descent;
+  metrics->bounds.y2=metrics->ascent+metrics->descent;
+  metrics->underline_position=(-2.0);
+  metrics->underline_thickness=1.0;
+  /*
   if (!render)
     {
       DestroyImage(annotate_image);
@@ -1508,6 +1515,12 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   metrics->width=annotate_info.width/ExpandAffine(&draw_info->affine);
   metrics->height=metrics->pixels_per_em.x+4;
   metrics->max_advance=font_info->max_bounds.width;
+  metrics->bounds.x1=0.0;
+  metrics->bounds.y1=metrics->descent;
+  metrics->bounds.x2=metrics->ascent+metrics->descent;
+  metrics->bounds.y2=metrics->ascent+metrics->descent;
+  metrics->underline_position=(-2.0);
+  metrics->underline_thickness=1.0;
   if (!render)
     return(True);
   if (draw_info->fill.opacity == TransparentOpacity)
