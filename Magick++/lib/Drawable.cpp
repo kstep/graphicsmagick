@@ -639,11 +639,10 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
           width = 0;
         }
     }
+  stream_ << "'";
   
   LiberateMemory(reinterpret_cast<void **>(&media_type));
   LiberateMemory(reinterpret_cast<void **>(&base64));
-
-  stream_ << "'";
 }
 
 // Line

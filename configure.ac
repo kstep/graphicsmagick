@@ -116,6 +116,12 @@ then
   AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_modules",Location of coder modules)
 fi
 
+# Enable build using delegate libraries built in subdirectories rather than installed
+# delegate libraries (bzlib fpx hdf jasper jbig jpeg lcms mpeg2 png tiff ttf wmf xml zlib)
+AC_ARG_ENABLE(delegate_build,
+	      [  --enable-delegate-build  enable using delegate libs in subdirectories (default disabled)],
+	      [with_delegate_build=$enableval],
+	      [with_delegate_build='no'])
 
 # Enable verbose output from libtool (enable libtool's default)
 AC_ARG_ENABLE(libtool-verbose,
@@ -397,54 +403,58 @@ then
 fi
 AC_SUBST(LIB_LF)
 
-# Check for delegate sub-directories and add -I & -L options as required.
-# This presumes that delegates are installed as detailed in the ImageMagick
-# README. If delegates are installed in a standard location where the
-# compiler will automatically find them then these options should not be
-# required.
 
 srcdirfull=`cd $srcdir && pwd`
 builddir=`pwd`
 
-#
-# Most delegates have includes in the same directory as the library, but not all ...
-#
-# Includes
-for dir in bzlib fpx hdf/hdf/src jasper jbig/libjbig jpeg lcms/src mpeg2/include png tiff/libtiff ttf/include wmf/include xml zlib
-do
-  if test -d "$builddir/$dir"
-  then
-    CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
-  else
-    if test -d "$srcdirfull/$dir"
-    then
-      CPPFLAGS="$CPPFLAGS -I$srcdirfull/$dir"
-    fi
-  fi
-done
+if test "$with_delegate_build" != 'no'
+then
+  # Check for delegate sub-directories and add -I & -L options as required.
+  # This presumes that delegates are installed as detailed in the ImageMagick
+  # README. If delegates are installed in a standard location where the
+  # compiler will automatically find them then these options should not be
+  # required.
 
-# Libraries
-for dir in bzlib fpx/obj hdf/hdf/src jasper jbig/libjbig jpeg lcms/src png mpeg2/libmpeg2 tiff/libtiff ttf/objs wmf/src xml zlib
-do
-  if test -d "$builddir/$dir"
-  then
-    LDFLAGS="$LDFLAGS -L$builddir/$dir"
-  else
-    if test -d "$srcdirfull/$dir"
+  #
+  # Most delegates have includes in the same directory as the library, but not all ...
+  #
+  # Includes
+  for dir in bzlib fpx hdf/hdf/src jasper jbig/libjbig jpeg lcms/src mpeg2/include png tiff/libtiff ttf/include wmf/include xml zlib
+  do
+    if test -d "$builddir/$dir"
     then
+      CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
+    else
+      if test -d "$srcdirfull/$dir"
+      then
+        CPPFLAGS="$CPPFLAGS -I$srcdirfull/$dir"
+      fi
+    fi
+  done
+
+  # Libraries
+  for dir in bzlib fpx/obj hdf/hdf/src jasper jbig/libjbig jpeg lcms/src png mpeg2/libmpeg2 tiff/libtiff ttf/objs wmf/src xml zlib
+  do
+    if test -d "$builddir/$dir"
+    then
+      LDFLAGS="$LDFLAGS -L$builddir/$dir"
+    else
+      if test -d "$srcdirfull/$dir"
+      then
         LDFLAGS="$LDFLAGS -L$srcdirfull/$dir"
+      fi
     fi
-  fi
-  if test -d "$builddir/$dir/.libs"
-  then
-    LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
-  else
-    if test -d "$srcdirfull/$dir/.libs"
+    if test -d "$builddir/$dir/.libs"
     then
+      LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
+    else
+      if test -d "$srcdirfull/$dir/.libs"
+      then
         LDFLAGS="$LDFLAGS -L$srcdirfull/$dir/.libs"
+      fi
     fi
-  fi
-done
+  done
+fi
 
 # Evaluate shell variable equivalents to Makefile directory variables
 eval "eval BIN_DIR=$bindir"
@@ -1011,7 +1021,7 @@ then
 
     OLD_LDFLAGS="$LDFLAGS"
     OLD_CPPFLAGS="$CPPFLAGS"
-    if test -d "$builddir/ttf/include"
+    if test "$with_delegate_build" != 'no' -a test -d "$builddir/ttf/include"
     then
        :
     else

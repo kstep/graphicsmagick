@@ -113,14 +113,6 @@ struct _DrawContext
   PathMode
     path_mode;
 
-  /* Image reference management */
-  int
-    max_temp_image_index,
-    cur_temp_image_index;
-
-  long
-    *temp_images;
-
   /* Structure unique signature */
   unsigned long
     signature;
@@ -233,15 +225,6 @@ MagickExport DrawContext DrawAllocateContext(void)
   /* Path operation support */
   context->path_operation = PathDefaultOperation;
   context->path_mode = DefaultPathMode;
-
-  /* Image reference management */
-  context->max_temp_image_index = 2048;
-  context->cur_temp_image_index = 0;
-  context->temp_images =
-    (long *) AcquireMemory(context->max_temp_image_index * sizeof(long));
-  if(context->temp_images == (long *) NULL)
-    MagickFatalError(ResourceLimitFatalError,
-      "Unable to allocate image reference array","Memory allocation failed");
 
   /* Structure unique signature */
   context->signature = MagickSignature;
@@ -404,19 +387,8 @@ MagickExport void DrawColor(DrawContext context, const double x,
 
 MagickExport void DrawDestroyContext(DrawContext context)
 {
-  int
-    index;
-
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
-
-  /* Image reference management */
-  if (context->temp_images != 0)
-    {
-      for (index = 0; index < context->cur_temp_image_index; index++)
-        DeleteMagickRegistry( (context->temp_images)[index] );
-      LiberateMemory((void **) &context->temp_images);
-    }
 
   /* Path operation support */
   context->path_operation = PathDefaultOperation;
@@ -747,143 +719,176 @@ MagickExport void DrawComposite(DrawContext context,
                                 const double width, const double height,
                                 const Image * image )
 {
-  long
-    id;
+  ExceptionInfo
+    exception_info;
+
+  ImageInfo
+    *image_info;
+
+  Image
+    *clone_image;
 
   char
-    filespec[MaxTextExtent];
-
-  ExceptionInfo
-    exceptionInfo;
+    *media_type = NULL,
+    *base64 = NULL;
 
   const char
     *p = NULL;
+
+  unsigned char
+    *blob;
+
+  size_t
+    length = 2048;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(width != 0);
   assert(height != 0);
+  assert(*image->magick != '\0');
+
+  GetExceptionInfo( &exception_info );
+
+  clone_image = CloneImage(image,image->columns,image->rows,True,&exception_info);
+  image_info = CloneImageInfo((const ImageInfo *)NULL);
+  
+  blob = (unsigned char*)ImageToBlob( image_info, clone_image, &length, &exception_info );
+  if(blob != (unsigned char*)NULL)
+    {
+      base64 = Base64Encode(blob,length);
+      LiberateMemory((void**)&blob);
+    }
 
   switch (composite_operator)
     {
     case AddCompositeOp:
-      p = "Add";
+      p = "add";
       break;
     case AtopCompositeOp:
-      p = "Atop";
+      p = "atop";
       break;
     case BumpmapCompositeOp:
-      p = "Bumpmap";
+      p = "bumpmap";
       break;
     case ClearCompositeOp:
-      p = "Clear";
+      p = "clear";
       break;
     case ColorizeCompositeOp:
-      p = "Colorize_not_supported";
+      p = "colorize_not_supported";
       break;
     case CopyBlueCompositeOp:
-      p = "CopyBlue";
+      p = "copyblue";
       break;
     case CopyCompositeOp:
-      p = "Copy";
+      p = "copy";
       break;
     case CopyGreenCompositeOp:
-      p = "CopyGreen";
+      p = "copygreen";
       break;
     case CopyOpacityCompositeOp:
-      p = "CopyOpacity";
+      p = "copyopacity";
       break;
     case CopyRedCompositeOp:
-      p = "CopyRed";
+      p = "copyred";
       break;
     case DarkenCompositeOp:
-      p = "Darken_not_supported";
+      p = "darken_not_supported";
       break;
     case DifferenceCompositeOp:
-      p = "Difference";
+      p = "difference";
       break;
     case DisplaceCompositeOp:
-      p = "Displace_not_supported";
+      p = "displace_not_supported";
       break;
     case DissolveCompositeOp:
-      p = "Dissolve_not_supported";
+      p = "dissolve_not_supported";
       break;
     case HueCompositeOp:
-      p = "Hue_not_supported";
+      p = "hue_not_supported";
       break;
     case InCompositeOp:
-      p = "In";
+      p = "in";
       break;
     case LightenCompositeOp:
-      p = "Lighten_not_supported";
+      p = "lighten_not_supported";
       break;
     case LuminizeCompositeOp:
-      p = "Luminize_not_supported";
+      p = "luminize_not_supported";
       break;
     case MinusCompositeOp:
-      p = "Minus";
+      p = "minus";
       break;
     case ModulateCompositeOp:
-      p = "Modulate_not_supported";
+      p = "modulate_not_supported";
       break;
     case MultiplyCompositeOp:
-      p = "Multiply";
+      p = "multiply";
       break;
     case NoCompositeOp:
-      p = "No_not_supported";
+      p = "no_not_supported";
       break;
     case OutCompositeOp:
-      p = "Out";
+      p = "out";
       break;
     case OverCompositeOp:
-      p = "Over";
+      p = "over";
       break;
     case OverlayCompositeOp:
-      p = "Overlay_not_supported";
+      p = "overlay_not_supported";
       break;
     case PlusCompositeOp:
-      p = "Plus";
+      p = "plus";
       break;
     case SaturateCompositeOp:
-      p = "Saturate_not_supported";
+      p = "saturate_not_supported";
       break;
     case ScreenCompositeOp:
-      p = "Screen_not_supported";
+      p = "screen_not_supported";
       break;
     case SubtractCompositeOp:
-      p = "Subtract";
+      p = "subtract";
       break;
     case ThresholdCompositeOp:
-      p = "Threshold";
+      p = "threshold";
       break;
     case XorCompositeOp:
-      p = "Xor";
+      p = "xor";
       break;
     default:
       break;
     }
 
-  GetExceptionInfo( &exceptionInfo );
-  id=SetMagickRegistry(ImageRegistryType,image,sizeof(Image), &exceptionInfo);
-  if( (id >= 0) && (p != NULL) )
+  media_type = MagickToMime( clone_image->magick );
+
+  if( (base64 != NULL) && (p != NULL) && (media_type != NULL) )
     {
-      /* Save image reference to clean-up list */
-      (context->temp_images)[context->cur_temp_image_index] = id;
-      ++context->cur_temp_image_index;
-      if (context->cur_temp_image_index == context->max_temp_image_index)
+      const unsigned int
+        line_width = 76;
+
+      long
+        remaining;
+
+      char
+        *str;
+
+      DrawPrintf(context, "image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
+                 p, x, y, width, height, media_type);
+
+      remaining = strlen(base64);
+      for( str = base64; remaining > 0; )
         {
-          context->max_temp_image_index += 2048;
-          ReacquireMemory((void **) &context->temp_images,
-                          context->max_temp_image_index * sizeof(long));
+          DrawPrintf(context,"%.76s\n", str);
+          remaining -= line_width;
+          str += line_width;
         }
 
-      /* Draw via image reference */
-      sprintf(filespec,"mpri:%li",id);
-      DrawPrintf(context, "image %s %.4g,%.4g %.4g,%.4g %s\n",
-                 p, x, y, width, height, filespec);
+      DrawPrintf(context,"'\n");
     }
-  DestroyExceptionInfo(&exceptionInfo);
+
+  LiberateMemory((void**)&media_type);
+  DestroyExceptionInfo(&exception_info);
+  DestroyImageInfo(image_info);
 }
 
 MagickExport void DrawLine(DrawContext context,

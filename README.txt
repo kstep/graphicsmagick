@@ -730,7 +730,7 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   build or use the X11 "stubs". The assumption is that most Win32 user
   could care less about X11 support, so we stub out all the X11
   functionality so that everything compiles. However, the X11 utility
-  programs like display and animage will not work.
+  programs animate, display, and import will not work.
 
   This leads to five different possible build options, which should
   cover almost any particular situation. The default binary
