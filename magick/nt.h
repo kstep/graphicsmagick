@@ -63,8 +63,8 @@ extern __declspec(dllexport) struct dirent
  
 extern __declspec(dllexport) void
   closedir(DIR *),
-  NTErrorHandler(const char *,const char *),
-  NTWarningHandler(const char *,const char *),
+  NTErrorHandler(const unsigned int,const char *,const char *),
+  NTWarningHandler(const unsigned int,const char *,const char *),
   seekdir(DIR *,long);
 #endif
 

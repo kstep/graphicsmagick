@@ -511,69 +511,49 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
       case PointPrimitive:
       default:
       {
-        for ( ; (p < q) && (opacity == Transparent); p++)
-          if ((x == p->x) && (y == p->y))
-            opacity=Opaque;
+        if ((x == p->x) && (y == p->y))
+          opacity=Opaque;
         break;
       }
       case LinePrimitive:
       {
-        for ( ; (p < q) && (opacity == Transparent); p++)
-        {
-          if (p->x == (p+1)->x)
-            {
-              if ((x >= (p->x-mid)) && (x < (p->x+mid)) &&
-                  (y >= Min(p->y,(p+1)->y)) && (y <= Max(p->y,(p+1)->y)))
-                opacity=Opaque;
-            }
-          else
-            if (p->y == (p+1)->y)
-              {
-                if ((x >= Min(p->x,(p+1)->x)) && (x <= Max(p->x,(p+1)->x)) &&
-                    (y >= (p->y-mid)) && (y < (p->y+mid)))
-                  opacity=Opaque;
-              }
-            else
-              {
-                slope=(double) (p->y-(p+1)->y)/(p->x-(p+1)->x);
-                trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
-                triy=slope*(trix-p->x)+p->y;
-                if ((((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
-                    (trix >= Min(p->x,(p+1)->x)) &&
-                    (trix <= Max(p->x,(p+1)->x)))
-                  opacity=Opaque;
-              }
-          p++;
-        }
+        if (p->x == q->x)
+          {
+            if ((x >= (p->x-mid)) && (x < (p->x+mid)) &&
+                (y >= Min(p->y,q->y)) && (y <= Max(p->y,q->y)))
+              opacity=Opaque;
+            break;
+          }
+        if (p->y == q->y)
+          {
+            if ((x >= Min(p->x,q->x)) && (x <= Max(p->x,q->x)) &&
+                (y >= (p->y-mid)) && (y < (p->y+mid)))
+              opacity=Opaque;
+            break;
+          }
+        slope=(double) (p->y-q->y)/(p->x-q->x);
+        trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
+        triy=slope*(trix-p->x)+p->y;
+        if ((((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
+            (trix >= Min(p->x,q->x)) && (trix <= Max(p->x,q->x)))
+          opacity=Opaque;
         break;
       }
       case RectanglePrimitive:
       {
-        for ( ; (p < q) && (opacity == Transparent); p++)
-        {
-          if ((x >= Min(p->x-mid,(p+1)->x+mid)) &&
-              (x < Max(p->x-mid,(p+1)->x+mid)) &&
-              (y >= Min(p->y-mid,(p+1)->y+mid)) &&
-              (y < Max(p->y-mid,(p+1)->y+mid)))
-            opacity=Opaque;
-          if ((x >= Min(p->x+mid,(p+1)->x-mid)) &&
-              (x < Max(p->x+mid,(p+1)->x-mid)) &&
-              (y >= Min(p->y+mid,(p+1)->y-mid)) &&
-              (y < Max(p->y+mid,(p+1)->y-mid)))
-            opacity=Transparent;
-          p++;
-        }
+        if ((x >= Min(p->x-mid,q->x+mid)) && (x < Max(p->x-mid,q->x+mid)) &&
+            (y >= Min(p->y-mid,q->y+mid)) && (y < Max(p->y-mid,q->y+mid)))
+          opacity=Opaque;
+        if ((x >= Min(p->x+mid,q->x-mid)) && (x < Max(p->x+mid,q->x-mid)) &&
+            (y >= Min(p->y+mid,q->y-mid)) && (y < Max(p->y+mid,q->y-mid)))
+          opacity=Transparent;
         break;
       }
       case FillRectanglePrimitive:
       {
-        for ( ; (p < q) && (opacity == Transparent); p++)
-        {
-          if ((x >= Min(p->x,(p+1)->x)) && (x <= Max(p->x,(p+1)->x)) &&
-              (y >= Min(p->y,(p+1)->y)) && (y <= Max(p->y,(p+1)->y)))
-            opacity=Opaque;
-          p++;
-        }
+        if ((x >= Min(p->x,q->x)) && (x <= Max(p->x,q->x)) &&
+            (y >= Min(p->y,q->y)) && (y <= Max(p->y,q->y)))
+          opacity=Opaque;
         break;
       }
       case CirclePrimitive:
@@ -581,43 +561,45 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         double
           center;
 
-        for ( ; (p < q) && (opacity == Transparent); p++)
-        {
-          radius=sqrt(((p->y-(p+1)->y)*(p->y-(p+1)->y))+
-            ((p->x-(p+1)->x)*(p->x-(p+1)->x)));
-          distance=sqrt(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)));
-          center=fabs(distance-radius);
-          if (center >= (mid+0.5))
+        radius=sqrt(((p->y-q->y)*(p->y-q->y))+((p->x-q->x)*(p->x-q->x)));
+        distance=sqrt(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)));
+        center=fabs(distance-radius);
+        if (center >= (mid+0.5))
+          {
             opacity=Transparent;
-          else
-            if (center <= (mid-0.5))
-              opacity=Opaque;
-            else
-              opacity=Opaque*pow((mid-center+0.5),2);
-          p++;
-        }
+            break;
+          }
+        if (center <= (mid-0.5))
+          {
+            opacity=Opaque;
+            break;
+          }
+        opacity=Opaque*(mid-center+0.5)*(mid-center+0.5);
         break;
       }
       case FillCirclePrimitive:
       {
-        for ( ; (p < q) && (opacity == Transparent); p++)
-        {
-          radius=sqrt(((p->y-(p+1)->y)*(p->y-(p+1)->y))+
-            ((p->x-(p+1)->x)*(p->x-(p+1)->x)));
-          distance=sqrt(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)));
-          if (distance >= (radius+1.0))
+        radius=sqrt(((p->y-q->y)*(p->y-q->y))+((p->x-q->x)*(p->x-q->x)));
+        distance=sqrt(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)));
+        if (distance >= (radius+1.0))
+          {
             opacity=Transparent;
-          else
-            if (distance <= (radius-1.0))
-              opacity=Opaque;
-            else
-              opacity=Opaque*pow((radius-distance+1.0)/2,2);
-          p++;
-        }
+            break;
+          }
+        if (distance <= (radius-1.0))
+          {
+            opacity=Opaque;
+            break;
+          }
+        opacity=Opaque*((radius-distance+1.0)/2)*((radius-distance+1.0)/2);
         break;
       }
       case PolygonPrimitive:
       {
+        register PrimitiveInfo
+          *r;
+
+        r=p;
         for ( ; (p < q) && (opacity == Transparent); p++)
         {
           if (p->x == (p+1)->x)
@@ -643,32 +625,31 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               (trix >= Min(p->x,(p+1)->x)) && (trix <= Max(p->x,(p+1)->x)))
             opacity=Opaque;
         }
-        while (p <= q)
-          p++;
         if (opacity != Transparent)
           break;
+        while (p <= q)
+          p++;
         p--;
-        q=primitive_info;
-        if (p->x == q->x)
+        if (p->x == r->x)
           {
             if ((x >= (p->x-mid)) && (x < (p->x+mid)) &&
-                (y >= (Min(p->y,q->y)-mid)) && (y < (Max(p->y,q->y)+mid)))
+                (y >= (Min(p->y,r->y)-mid)) && (y < (Max(p->y,r->y)+mid)))
               opacity=Opaque;
           }
         else
-          if (p->y == q->y)
+          if (p->y == r->y)
             {
-              if ((x >= (Min(p->x,q->x)-mid)) && (x < (Max(p->x,q->x)+mid)) &&
+              if ((x >= (Min(p->x,r->x)-mid)) && (x < (Max(p->x,r->x)+mid)) &&
                   (y >= (p->y-mid)) && (y < (p->y+mid)))
                 opacity=Opaque;
             }
           else
             {
-              slope=(double) (p->y-q->y)/(p->x-q->x);
+              slope=(double) (p->y-r->y)/(p->x-r->x);
               trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
               triy=slope*(trix-p->x)+p->y;
               if ((((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
-                  (trix >= Min(p->x,q->x)) && (trix <= Max(p->x,q->x)))
+                  (trix >= Min(p->x,r->x)) && (trix <= Max(p->x,r->x)))
                 opacity=Opaque;
             }
         p++;
@@ -725,53 +706,51 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case ColorPrimitive:
       {
-        for ( ; (p <= q) && (opacity == Transparent); p++)
-          switch (p->method)
+        switch (p->method)
+        {
+          case PointMethod:
+          default:
           {
-            case PointMethod:
-            default:
-            {
-              if ((p->x != x) || (p->y != y))
-                break;
-              opacity=Opaque;
+            if ((p->x != x) || (p->y != y))
               break;
-            }
-            case ReplaceMethod:
-            {
-              RunlengthPacket
-                color;
-
-              if ((x == 0) && (y == 0))
-                target=image->pixels[p->y*image->columns+p->x];
-              color=image->pixels[y*image->columns+x];
-              if (ColorMatch(color,target,(int) image->fuzz))
-                opacity=Opaque;
-              break;
-            }
-            case FloodfillMethod:
-            case FillToBorderMethod:
-            {
-              if ((p->x != x) || (p->y != y))
-                break;
-              target=image->pixels[y*image->columns+x];
-              if (p->method == FillToBorderMethod)
-                {
-                  (void) XQueryColorDatabase(annotate_info->border_color,
-                    &border_color);
-                  target.red=XDownScale(border_color.red);
-                  target.green=XDownScale(border_color.green);
-                  target.blue=XDownScale(border_color.blue);
-                }
-              ColorFloodfillImage(image,&target,annotate_info->pen,x,y,
-                p->method);
-              break;
-            }
-            case ResetMethod:
-            {
-              opacity=Opaque;
-              break;
-            }
+            opacity=Opaque;
+            break;
           }
+          case ReplaceMethod:
+          {
+            RunlengthPacket
+              color;
+
+            if ((x == 0) && (y == 0))
+              target=image->pixels[p->y*image->columns+p->x];
+            color=image->pixels[y*image->columns+x];
+            if (ColorMatch(color,target,(int) image->fuzz))
+              opacity=Opaque;
+            break;
+          }
+          case FloodfillMethod:
+          case FillToBorderMethod:
+          {
+            if ((p->x != x) || (p->y != y))
+              break;
+            target=image->pixels[y*image->columns+x];
+            if (p->method == FillToBorderMethod)
+              {
+                (void) XQueryColorDatabase(annotate_info->border_color,
+                  &border_color);
+                target.red=XDownScale(border_color.red);
+                target.green=XDownScale(border_color.green);
+                target.blue=XDownScale(border_color.blue);
+              }
+            ColorFloodfillImage(image,&target,annotate_info->pen,x,y,p->method);
+            break;
+          }
+          case ResetMethod:
+          {
+            opacity=Opaque;
+            break;
+          }
+        }
         break;
       }
       case MattePrimitive:
@@ -786,55 +765,54 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             for (i=0; i < (int) image->packets; i++)
               image->pixels[i].index=Opaque;
           }
-        for ( ; p <= q; p++)
-          switch (p->method)
+        switch (p->method)
+        {
+          case PointMethod:
+          default:
           {
-            case PointMethod:
-            default:
-            {
-              if ((p->x != x) || (p->y != y))
-                break;
-              image->pixels[y*image->columns+x].index=Transparent;
+            if ((p->x != x) || (p->y != y))
               break;
-            }
-            case ReplaceMethod:
-            {
-              RunlengthPacket
-                color;
-
-              static RunlengthPacket
-                target;
-
-              if ((x == 0) && (y == 0))
-                target=image->pixels[p->y*image->columns+p->x];
-              color=image->pixels[y*image->columns+x];
-              if (ColorMatch(color,target,(int) image->fuzz))
-                image->pixels[y*image->columns+x].index=Transparent;
-              break;
-            }
-            case FloodfillMethod:
-            case FillToBorderMethod:
-            {
-              if ((p->x != x) || (p->y != y))
-                break;
-              target=image->pixels[y*image->columns+x];
-              if (p->method == FillToBorderMethod)
-                {
-                  (void) XQueryColorDatabase(annotate_info->border_color,
-                    &border_color);
-                  target.red=XDownScale(border_color.red);
-                  target.green=XDownScale(border_color.green);
-                  target.blue=XDownScale(border_color.blue);
-                }
-              MatteFloodfillImage(image,&target,Transparent,x,y,p->method);
-              break;
-            }
-            case ResetMethod:
-            {
-              image->pixels[y*image->columns+x].index=Opaque;
-              break;
-            }
+            image->pixels[y*image->columns+x].index=Transparent;
+            break;
           }
+          case ReplaceMethod:
+          {
+            RunlengthPacket
+              color;
+
+            static RunlengthPacket
+              target;
+
+            if ((x == 0) && (y == 0))
+              target=image->pixels[p->y*image->columns+p->x];
+            color=image->pixels[y*image->columns+x];
+            if (ColorMatch(color,target,(int) image->fuzz))
+              image->pixels[y*image->columns+x].index=Transparent;
+            break;
+          }
+          case FloodfillMethod:
+          case FillToBorderMethod:
+          {
+            if ((p->x != x) || (p->y != y))
+              break;
+            target=image->pixels[y*image->columns+x];
+            if (p->method == FillToBorderMethod)
+              {
+                (void) XQueryColorDatabase(annotate_info->border_color,
+                  &border_color);
+                target.red=XDownScale(border_color.red);
+                target.green=XDownScale(border_color.green);
+                target.blue=XDownScale(border_color.blue);
+              }
+            MatteFloodfillImage(image,&target,Transparent,x,y,p->method);
+            break;
+          }
+          case ResetMethod:
+          {
+            image->pixels[y*image->columns+x].index=Opaque;
+            break;
+          }
+        }
         break;
       }
       case TextPrimitive:
@@ -843,63 +821,62 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         register char
           *r;
 
-        for ( ; p <= q; p++)
-        {
-          if ((p->x != x) || (p->y != y))
-            continue;
-          if (p->text == (char *) NULL)
-            continue;
-          r=p->text;
-          if (*r == '"')
+        if ((p->x != x) || (p->y != y))
+          continue;
+        if (p->text == (char *) NULL)
+          continue;
+        r=p->text;
+        if (*r == '"')
+          {
+            p->text++;
+            for (r++; *r != '\0'; r++)
+              if ((*r == '"') && (*(r-1) != '\\'))
+                break;
+          }
+        else
+          if (*r == '\'')
             {
               p->text++;
               for (r++; *r != '\0'; r++)
-                if ((*r == '"') && (*(r-1) != '\\'))
+                if ((*r == '\'') && (*(r-1) != '\\'))
                   break;
             }
           else
-            if (*r == '\'')
+            for (r++;  *r != '\0'; r++)
+              if (isspace((int) *r) && (*(r-1) != '\\'))
+                break;
+        (void) strncpy(annotate_info->text,p->text,r-p->text);
+        annotate_info->text[r-p->text]='\0';
+        if (p->primitive == TextPrimitive)
+          {
+            FormatString(annotate_info->geometry,"%+d%+d",p->x,p->y);
+            AnnotateImage(image,annotate_info);
+          }
+        else
+          {
+            Image
+              *composite_image;
+
+            ImageInfo
+              composite_info;
+
+            GetImageInfo(&composite_info);
+            (void) strcpy(composite_info.filename,annotate_info->text);
+            composite_image=ReadImage(&composite_info);
+            if (composite_image != (Image *) NULL)
               {
-                p->text++;
-                for (r++; *r != '\0'; r++)
-                  if ((*r == '\'') && (*(r-1) != '\\'))
-                    break;
+                CompositeImage(image,ReplaceCompositeOp,composite_image,
+                  p->x,p->y);
+                DestroyImage(composite_image);
               }
-            else
-              for (r++;  *r != '\0'; r++)
-                if (isspace((int) *r) && (*(r-1) != '\\'))
-                  break;
-          (void) strncpy(annotate_info->text,p->text,r-p->text);
-          annotate_info->text[r-p->text]='\0';
-          if (p->primitive == TextPrimitive)
-            {
-              FormatString(annotate_info->geometry,"%+d%+d",p->x,p->y);
-              AnnotateImage(image,annotate_info);
-            }
-          else
-            {
-              Image
-                *composite_image;
-
-              ImageInfo
-                composite_info;
-
-              GetImageInfo(&composite_info);
-              (void) strcpy(composite_info.filename,annotate_info->text);
-              composite_image=ReadImage(&composite_info);
-              if (composite_image != (Image *) NULL)
-                {
-                  CompositeImage(image,ReplaceCompositeOp,composite_image,
-                    p->x,p->y);
-                  DestroyImage(composite_image);
-                }
-            }
-        }
+          }
         break;
       }
     }
     if (opacity != Transparent)
       return(opacity);
+    while (p <= q)
+      p++;
   }
   return(opacity);
 }

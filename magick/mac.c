@@ -383,9 +383,11 @@ void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 %
 %  The format of the MACErrorHandler routine is:
 %
-%      MACErrorHandler(message,qualifier)
+%      MACErrorHandler(error,message,qualifier)
 %
 %  A description of each parameter follows:
+%
+%    o error: Specifies the numeric error category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -394,7 +396,8 @@ void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 %
 %
 */
-Export void MACErrorHandler(const char *message,const char *qualifier)
+Export void MACErrorHandler(const unsigned int error,const char *message,
+  const char *qualifier)
 {
   char
     buffer[2048];
@@ -705,9 +708,11 @@ int MACSystemCommand(const char * command)
 %
 %  The format of the MACWarningHandler routine is:
 %
-+      MACWarningHandler(message,qualifier)
++      MACWarningHandler(warning,message,qualifier)
 %
 %  A description of each parameter follows:
+%
+%    o warning: Specifies the numeric warning category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -716,7 +721,8 @@ int MACSystemCommand(const char * command)
 %
 %
 */
-Export void MACWarningHandler(const char *message,const char *qualifier)
+Export void MACWarningHandler(const unsigned int warning,const char *message,
+  const char *qualifier)
 {
   char
     buffer[2048];

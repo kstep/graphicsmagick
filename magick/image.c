@@ -4134,7 +4134,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         PointInfo
           degrees;
 
-        if (primitive_info[j].coordinates < 3)
+        if (primitive_info[j].coordinates != 3)
           {
             primitive_type=UndefinedPrimitive;
             break;
@@ -4267,7 +4267,9 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
       if (indirection)
         FreeMemory((char *) primitive);
       FreeMemory((char *) annotate_info->geometry);
+      annotate_info->geometry=(char *) NULL;
       FreeMemory((char *) annotate_info->text);
+      annotate_info->text=(char *) NULL;
       return;
     }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)

@@ -230,6 +230,7 @@ Export void MagickWarning(const unsigned int warning,const char *message,
 {
   if (warning_handler != (ErrorHandler) NULL)
     (*warning_handler)(warning,message,qualifier);
+  errno=0;
 }
 
 /*

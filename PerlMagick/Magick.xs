@@ -4249,14 +4249,10 @@ Mogrify(ref,...)
               if (attribute_flag[4])
                 annotate_info.linewidth=argument_list[4].int_reference;
             }
-          i=MaxTextExtent;
-          if (attribute_flag[1])
-            i+=Extent(argument_list[1].string_reference);
+          CloneString(&annotate_info.primitive,"Point");
           if (attribute_flag[0] && (argument_list[0].int_reference > 0))
-            annotate_info.primitive=strcpy(safemalloc(i),
+            CloneString(&annotate_info.primitive,
               PrimitiveTypes[argument_list[0].int_reference]);
-          else
-            annotate_info.primitive=strcpy(safemalloc(i)," ");
           if (attribute_flag[1])
             {
               (void) strcat(annotate_info.primitive," ");
@@ -4270,8 +4266,6 @@ Mogrify(ref,...)
                 MethodTypes[argument_list[2].int_reference]);
             }
           DrawImage(image,&annotate_info);
-          safefree(annotate_info.primitive);
-          annotate_info.primitive=NULL;
           break;
         }
         case 39:  /* Equalize */

@@ -2404,7 +2404,8 @@ static unsigned int XCompositeImage(Display *display,
           &key_symbol,(XComposeStatus *) NULL);
         *(command+length)='\0';
         if (resource_info->debug)
-          (void) fprintf(stderr,"Key press: 0x%lx (%.1024s)\n",key_symbol,command);
+          (void) fprintf(stderr,"Key press: 0x%lx (%.1024s)\n",key_symbol,
+            command);
         switch (key_symbol)
         {
           case XK_Escape:
@@ -12388,7 +12389,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                       /*
                         Redisplay image.
                       */
-                      (void) strcpy(resource_info->image_info->filename,
+                      FormatString(resource_info->image_info->filename,
+                        "%.1024s:%.1024s",displayed_image->magick,
                         displayed_image->filename);
                       loaded_image=ReadImage(resource_info->image_info);
                       if (loaded_image != (Image *) NULL)

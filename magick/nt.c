@@ -216,9 +216,11 @@ Export int IsWindows95()
 %
 %  The format of the NTErrorHandler routine is:
 %
-%      NTErrorHandler(message,qualifier)
+%      NTErrorHandler(error,message,qualifier)
 %
 %  A description of each parameter follows:
+%
+%    o error: Specifies the numeric error category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -227,7 +229,8 @@ Export int IsWindows95()
 %
 %
 */
-Export void NTErrorHandler(const char *message,const char *qualifier)
+Export void NTErrorHandler(const unsigned int error,const char *message,
+  const char *qualifier)
 {
   char
     buffer[2048];
@@ -379,9 +382,11 @@ Export int NTTemporaryFilename(char *filename)
 %
 %  The format of the NTWarningHandler routine is:
 %
-+      NTWarningHandler(message,qualifier)
+%      NTWarningHandler(warning,message,qualifier)
 %
 %  A description of each parameter follows:
+%
+%    o warning: Specifies the numeric warning category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.
@@ -390,7 +395,8 @@ Export int NTTemporaryFilename(char *filename)
 %
 %
 */
-Export void NTWarningHandler(const char *message,const char *qualifier)
+Export void NTWarningHandler(const unsigned int warning,const char *message,
+  const char *qualifier)
 {
   char
     buffer[2048];
