@@ -393,6 +393,7 @@ int main(int argc,char **argv)
 #define NotInitialized  (unsigned int) (~0)
 
   char
+    *cgi,
     *client_name,
     *filename,
     *option;
@@ -436,7 +437,10 @@ int main(int argc,char **argv)
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
   client_name=SetClientName((char *) NULL);
-  status=ExpandFilenames(&argc,&argv);
+	if (getenv("GATEWAY_INTERFACE"))
+    status=CGIToArgv(getenv("QUERY_STRING"),&argc,&argv);
+  else
+    status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 3)
@@ -446,6 +450,7 @@ int main(int argc,char **argv)
   */
   append=0;
   average=False;
+  cgi=(char *) NULL;
   coalesce=False;
   deconstruct=False;
   GetExceptionInfo(&exception);
@@ -614,6 +619,17 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing order",option);
+                }
+              break;
+            }
+          if (LocaleNCompare("cgi",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing mime type",option);
+                  cgi=argv[i];
                 }
               break;
             }
@@ -1868,6 +1884,11 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
+    if (cgi != (char *) NULL)
+      {
+        puts ("HTTP/1.0 200 Ok");
+        printf ("Content-Type: %s\n\n", cgi);
+      }
     status=WriteImage(image_info,p);
     if (status == False)
       CatchImageException(p);
