@@ -46,7 +46,7 @@ testFilter('input.miff', 'Colorize',
 ++$test;
 testFilter('input.miff', 'Contrast',
   q/1/,
-  '5dfad29a83f2adc433c316d5dabaebf1ba1aac81f0895e2a15deb5d7d50cd81a',
+  'd22f5aa7610c7527355e9805aac6d3e0125b8b4d62cdb7a1a4e5bf5359c83e11',
   'f780476c04c823dc288b7cda85e8cd26bb97353323978b11ff7081a96209d1f2');
 
 ++$test;
@@ -127,7 +127,7 @@ testFilter('input.miff', 'MatteFloodfill',
 ++$test;
 testFilter('input.miff', 'Minify',
   q/ /,
-  'd67721c1bacf41a77479f9dc6db256be011b74de6cace0103b4977b8bf26f08c',
+  'f8b5694b96ad47e606927399c7613f5625376ecb79a676d9554907dcb20b61aa',
   'd3792cac9b525db981cd035bb418adf84790882f12e92b05f99211a6269386ac');
 
 ++$test;
@@ -150,7 +150,7 @@ testFilter('input.miff', 'Normalize',
 ++$test;
 testFilter('input.miff', 'OilPaint',
   q/3/,
-  'ae81b1636f41eba1923ff4bcdd606fbba6fde92cb2073549c0c2778eeff6d0f6',
+  'b9cc4ce7b365d8ddb2a4bc3803b810e2a8b6fdcd267670cf7a9b089fc53fb4a5',
   'cd912828f23fbb79bec8a7f2c07cddc487e94a39ff197b68a1c59891eae23f1f');
 
 ++$test;
@@ -167,7 +167,7 @@ testFilter('input.miff', 'Quantize',
 ++$test;
 testFilter('input.miff', 'Raise',
   q/10x10/,
-  '6ae4fbb49540e53193584f59250e7973718149a078adcf31b3aea84d00eef3fe',
+  'b31cae257270e0a9ab61181d79c57f2433e465a43f1c75fc70f1398473419c78',
   '3dd26d98684455a4d6de122ca1040ae44f646f64e0d67cc655e32977f6d2b8bf');
 
 ++$test;
@@ -206,8 +206,8 @@ testFilter('input.miff', 'Segment',
 ++$test;
 testFilter('input.miff', 'Shade',
   q/30/,
-  '952f26eb25cda963e3f53d2dea1e1d3d6673d137835c125208a5609fa7fa35a3',
-  'a426bf4feae0e8be748bf1469a31d64ec2e4f2d4c8b4b81fa5fefee9cfb4484a');
+  'b5e864463e316b3789c601fd8db6045d3cb92e96a71f77d7b83b86e02ed186b2',
+  '23cbb34aac5522fa39a4aa284f90f0b78dd370a2d4f6b4c24d10a4fdf3cb8399');
 
 ++$test;
 testFilter('input.miff', 'Sharpen',
@@ -241,7 +241,7 @@ testFilter('input.miff', 'Swirl',
 ++$test;
 testFilter('input.miff', 'Threshold',
   q/128/,
-  '79af76e4629de988f7a9d83187503f6f7dc76ed3d2842347d0449a9ede0321fb',
+  '36c9b367b84035869df118d2fc61cbd7060d419d8626c4147955c712bcab15c0',
   '40db28af0162a4abd3ee8a1094591cd7eb07463464d7c235e4c2f2ae40aa3686');
 
 ++$test;
