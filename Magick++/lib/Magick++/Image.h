@@ -179,7 +179,12 @@ namespace Magick
     
     // Contrast image (enhance intensity differences in image)
     void            contrast ( unsigned int sharpen_ );
-    
+
+    // Convolve image.  Applies a user-specfied convolution to the image.
+    //  order_ represents the number of columns and rows in the filter kernel.
+    //  kernel_ is an array of doubles representing the convolution kernel.
+    void            convolve ( unsigned int order_, const double *kernel_ );
+
     // Crop image (subregion of original image)
     void            crop ( const Geometry &geometry_ );
     
@@ -448,6 +453,23 @@ namespace Magick
     
     // Trim edges that are the background color from the image
     void            trim ( void );
+
+    // Replace image with a sharpened version of the original image
+    // using the unsharp mask algorithm.
+    //  radius_
+    //    the radius of the Gaussian, in pixels, not counting the
+    //    center pixel.
+    //  sigma_
+    //    the standard deviation of the Gaussian, in pixels.
+    //  amount_
+    //    the percentage of the difference between the original and
+    //    the blur image that is added back into the original.
+    // threshold_
+    //   the threshold in pixels needed to apply the diffence amount.
+    void            unsharpmask ( double radius_,
+                                  double sigma_,
+                                  double amount_,
+                                  double threshold_ );
 
     // Map image pixels to a sine wave
     void            wave ( double amplitude_ = 25.0, double wavelength_ = 150.0 );

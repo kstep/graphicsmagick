@@ -6,13 +6,9 @@ Items large and small which remain to be worked on.
 
 * Support options stack similar to graphic-context.
 
-* Add support for ConvolveImage().
-
 * Add support for DeconstructImages().
 
 * Add support for MosaicImages().
-
-* Add support for UnsharpMaskImage().
 
 * Add suppport for new drawing primitives:
   - clip-path %s  (%s is the name of the clip path

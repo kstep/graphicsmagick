@@ -1,3 +1,10 @@
+2000-12-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (convolve): New method to convolve image using
+ 	user-supplied convolution matrix.
+	(unsharpmask): New method to replace image with a sharpened
+ 	version of the original image using the unsharp mask algorithm.
+
 2000-12-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* : Adapted to ImageMagick API change which eliminates AnnotateInfo.

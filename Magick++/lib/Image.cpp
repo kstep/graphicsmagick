@@ -514,6 +514,20 @@ void Magick::Image::contrast ( unsigned int sharpen_ )
   throwImageException();
 }
 
+// Convolve image.  Applies a general image convolution kernel to the image.
+//  order_ represents the number of columns and rows in the filter kernel.
+//  kernel_ is an array of doubles representing the convolution kernel.
+void Magick::Image::convolve ( unsigned int order_, const double *kernel_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+  ConvolveImage ( image(), order_,
+		  kernel_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+
 // Crop image
 void Magick::Image::crop ( const Geometry &geometry_ )
 {
@@ -1427,6 +1441,36 @@ void Magick::Image::trim ( void )
   // width=0, height=0 trims edges
   Geometry cropInfo(0,0);
   crop ( cropInfo );
+}
+
+// Replace image with a sharpened version of the original image
+// using the unsharp mask algorithm.
+//  radius_
+//    the radius of the Gaussian, in pixels, not counting the
+//    center pixel.
+//  sigma_
+//    the standard deviation of the Gaussian, in pixels.
+//  amount_
+//    the percentage of the difference between the original and
+//    the blur image that is added back into the original.
+// threshold_
+//   the threshold in pixels needed to apply the diffence amount.
+void Magick::Image::unsharpmask ( double radius_,
+                                  double sigma_,
+                                  double amount_,
+                                  double threshold_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickLib::Image* newImage =
+    UnsharpMaskImage( image(),
+                      radius_,
+                      sigma_,
+                      amount_,
+                      threshold_,
+                      &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
 }
 
 // Map image pixels to a sine wave

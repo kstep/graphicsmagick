@@ -536,6 +536,19 @@ by <i>compose_</i>.&nbsp;</font></td>
 
 <tr>
 <td>
+<center><a NAME="convolve"></a><font size=-1>convolve</font></center>
+</td>
+
+<td><font size=-1>unsigned int order_, const double *kernel_</font></td>
+
+<td><font size=-1>Convolve image.&nbsp; Applies a user-specfied convolution
+to the image. The <i>order_</i> parameter represents the number of columns
+and rows in the filter kernel, and <i>kernel_</i> is a two-dimensional
+array of doubles representing the convolution kernel to apply.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="crop"></a><font size=-1>crop</font></center>
 </td>
 
@@ -1315,6 +1328,24 @@ to transparent.</font></td>
 <td><font size=-1>void</font></td>
 
 <td><font size=-1>Trim edges that are the background color from the image.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="unsharpmask"></a><font size=-1>unsharpmask</font></center>
+</td>
+
+<td><font size=-1>double radius_, double sigma_, double amount_, double
+threshold_</font></td>
+
+<td><font size=-1>Replace image with a sharpened version of the original
+image using the unsharp mask algorithm. The <i>radius</i>_ parameter specifies
+the radius of the Gaussian, in pixels, not counting the center pixel. The
+<i>sigma</i>_ parameter specifies the standard deviation of the Gaussian,
+in pixels. The <i>amount</i>_ parameter specifies the percentage of the
+difference between the original and the blur image that is added back into
+the original. The <i>threshold</i>_ parameter specifies the threshold in
+pixels needed to apply the diffence amount.</font></td>
 </tr>
 
 <tr>
