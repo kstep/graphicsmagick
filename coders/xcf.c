@@ -150,12 +150,6 @@ typedef struct {
 } XCFPixelPacket;
 
 /*
-  Forward declarations.
-*/
-static unsigned int
-  WriteXCFImage(const ImageInfo *,Image *);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -1383,7 +1377,6 @@ ModuleExport void RegisterXCFImage(void)
 
   entry=SetMagickInfo("XCF");
   entry->decoder=ReadXCFImage;
-  /* entry->encoder=WriteXCFImage; BOGUS: not yet implemented! */
   entry->magick=IsXCF;
   entry->description=AllocateString("GIMP image");
   entry->module=AllocateString("XCF");
@@ -1412,41 +1405,4 @@ ModuleExport void RegisterXCFImage(void)
 ModuleExport void UnregisterXCFImage(void)
 {
   (void) UnregisterMagickInfo("XCF");
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   W r i t e X C F I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteXCFImage writes an image in Microsoft Windows bitmap encoded
-%  image format.
-%
-%  The format of the WriteXCFImage method is:
-%
-%      unsigned int WriteXCFImage(const ImageInfo *image_info,Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteXCFImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteXCFImage(const ImageInfo *image_info,Image *image)
-{
-	/* BOGUS: NOT YET IMPLEMENTED */
-
-  return(True);
 }

@@ -1845,9 +1845,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               graphic_context[n]->stretch=ExtraCondensedStretch;
             if (LocaleCompare(token,"extra-expanded") == 0)
               graphic_context[n]->stretch=ExtraExpandedStretch;
-            if (LocaleCompare(token,"narrower") == 0)
-              if (graphic_context[n]->stretch != UltraCondensedStretch)
-                graphic_context[n]->stretch-=1;
             if (LocaleCompare(token,"normal") == 0)
               graphic_context[n]->stretch=NormalStretch;
             if (LocaleCompare(token,"semi-condensed") == 0)
@@ -1858,9 +1855,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               graphic_context[n]->stretch=UltraCondensedStretch;
             if (LocaleCompare(token,"ultra-expanded") == 0)
               graphic_context[n]->stretch=UltraExpandedStretch;
-            if (LocaleCompare(token,"wider") == 0)
-              if (graphic_context[n]->stretch != UltraExpandedStretch)
-                graphic_context[n]->stretch+=1;
             break;
           }
         if (LocaleCompare("font-style",keyword) == 0)
@@ -4562,7 +4556,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
     step=MagickPI/8.0;
   else
     {
-      segments=ceil(MagickPI/step/2)*4;
+      segments=(long) ceil(MagickPI/step/2)*4;
       step=MagickPI/segments;
     }
   angle.x=DegreesToRadians(degrees.x);

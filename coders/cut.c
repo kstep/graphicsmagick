@@ -241,8 +241,8 @@ MaxColor=0;
 	     q++;	
 	     }	
 	}
-if(MaxColor<Upscale(2)) MaxColor=2;		
-else if(MaxColor<Upscale(16)) MaxColor=16;		
+if(MaxColor<(int) Upscale(2)) MaxColor=2;		
+else if(MaxColor<(int) Upscale(16)) MaxColor=16;		
 return(MaxColor);
 }
 

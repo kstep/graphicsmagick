@@ -303,7 +303,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         image->colormap[255 - i].blue = Upscale(ReadBlobByte(image));
         }
       }
-    for(; i < (1 << bpp); i++)
+    for(; i < (long) (1 << bpp); i++)
       {
       image->colormap[255 - i].red = PalmPalette8bpp[i][0];
       image->colormap[255 - i].green = PalmPalette8bpp[i][1];
@@ -322,7 +322,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
 
   mask = (1 << bpp) - 1;
 
-  for(y = 0; y < image->rows; y++)
+  for(y = 0; y < (long) image->rows; y++)
     {
     if (compressionType == PALM_COMPRESSION_RLE)
       {
@@ -365,7 +365,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       break;
     indexes=GetIndexes(image);
     bit = 8 - bpp;
-    for(x = 0; x < image->columns; x++)
+    for(x = 0; x < (long) image->columns; x++)
       {
       index = mask - (((*ptr) & (mask << bit)) >> bit);
       indexes[x] = index;
@@ -537,7 +537,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
 
-  for (bpp = 1;  (1 << bpp) < image->colors;  bpp *= 2)
+  for (bpp = 1;  (1 << bpp) < (long) image->colors;  bpp *= 2)
       ;
 
   if(!IsGrayImage(image, &exception))  /* is color */
@@ -608,11 +608,11 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
                       &PalmPalette8bpp, &exception);
       SetImageType(map, PaletteType);
       MapImage(image, map, False);
-      for(y = 0; y < image->rows; y++)
+      for(y = 0; y < (long) image->rows; y++)
         {
         p = GetImagePixels(image, 0, y, image->columns, 1);
         indexes=GetIndexes(image);
-        for(x = 0; x < image->columns; x++)
+        for(x = 0; x < (long) image->columns; x++)
           indexes[x] = FindColor(&image->colormap[indexes[x]]);
         }
       DestroyImage(map);
@@ -660,11 +660,11 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     if(image->compression == RunlengthEncodedCompression)
       {
       x = 0;
-      while(x < bytes_per_row)
+      while(x < (long) bytes_per_row)
         {
         byte = one_row[x];
         count = 1;
-        while(one_row[++x] == byte && count < 255 && x < bytes_per_row)
+        while(one_row[++x] == byte && count < 255 && x < (long) bytes_per_row)
           count++;
         (void) WriteBlobByte(image, count);
         (void) WriteBlobByte(image, byte);
@@ -676,7 +676,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       char tmpbuf[8];
       char *tptr;
 
-      for (x = 0;  x < bytes_per_row;  x += 8)
+      for (x = 0;  x < (long) bytes_per_row;  x += 8)
         {
         tptr = tmpbuf;
         for(bit = 0, byte = 0; bit < Min(8, bytes_per_row - x); bit++)
