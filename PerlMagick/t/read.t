@@ -281,4 +281,4 @@ testReadSized( 'input_70x46.cmyk', '70x46', '70b0c3d7fcc7a617481285a1e27345d5' )
 # UYVY format
 #
 ++$test;
-testReadSized( 'input_70x46.uyvy', '70x46', '81990d39685ec85b67d606a4bd35fc9c' );
+testReadSized( 'input_70x46.uyvy', '70x46', '2ca4b6f0599c21f3e9811a8a98fe511c' );

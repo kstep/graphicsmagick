@@ -5380,8 +5380,8 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         Initialize YCbCr tables:
 
           Y =  0.299000*R+0.587000*G+0.114000*B
-          Cb= -0.168736*R-0.331264*G+0.500000*B
-          Cr=  0.500000*R-0.418688*G-0.081312*B
+          Cb= -0.172586*R-0.338828*G+0.511414*B
+          Cr=  0.511414*R-0.428246*G-0.083168*B
 
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
@@ -5393,12 +5393,12 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         x[i+X]=0.299*i;
         y[i+X]=0.587*i;
         z[i+X]=0.114*i;
-        x[i+Y]=(-0.16873)*i;
-        y[i+Y]=(-0.331264)*i;
-        z[i+Y]=0.5*i;
-        x[i+Z]=0.5*i;
-        y[i+Z]=(-0.418688)*i;
-        z[i+Z]=(-0.081312)*i;
+        x[i+Y]=(-0.172586)*i;
+        y[i+Y]=(-0.338828)*i;
+        z[i+Y]=0.511414*i;
+        x[i+Z]=0.511414*i;
+        y[i+Z]=(-0.428246)*i;
+        z[i+Z]=(-0.08316)*i;
       }
       break;
     }
@@ -6608,9 +6608,9 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       /*
         Initialize YCbCr tables:
 
-          R = Y            +1.402000*Cr
-          G = Y-0.344136*Cb-0.714136*Cr
-          B = Y+1.772000*Cb
+          R = Y            +1.370707*Cr
+          G = Y-0.336453*Cb-0.698195*Cr
+          B = Y+1.732445*Cb
 
         Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxRGB.
@@ -6619,12 +6619,12 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       {
         red[i+R]=i;
         green[i+R]=0.0;
-        blue[i+R]=0.701*(2.0*i-MaxRGB);
+        blue[i+R]=0.6853535*(2.0*i-MaxRGB);
         red[i+G]=i;
-        green[i+G]=(-0.172068)*(2.0*i-MaxRGB);
-        blue[i+G]=(-0.357068)*(2.0*i-MaxRGB);
+        green[i+G]=(-0.1682265)*(2.0*i-MaxRGB);
+        blue[i+G]=(-0.3490975)*(2.0*i-MaxRGB);
         red[i+B]=i;
-        green[i+B]=0.886*(2.0*i-MaxRGB);
+        green[i+B]=0.8662225*(2.0*i-MaxRGB);
         blue[i+B]=0.0;
       }
       break;
