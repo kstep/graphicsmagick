@@ -209,7 +209,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pixels_per_point=XDPSPixelsPerPoint(screen);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     pixels_per_point=Min(image->x_resolution,image->y_resolution)/72.0;
-  status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->file,
+  status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->blob->file,
     visual_info->depth,pixels_per_point,&pixmap,&bits_per_pixel,&page);
   if ((status == dps_status_failure) || (status == dps_status_no_extension))
     {
@@ -221,8 +221,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Rasterize the file into the pixmap.
   */
-  status=XDPSImageFileIntoDrawable((DPSContext) NULL,screen,pixmap,image->file,
-    bits_per_pixel.height,visual_info->depth,&page,-page.x,
+  status=XDPSImageFileIntoDrawable((DPSContext) NULL,screen,pixmap,
+    image->blob->file,bits_per_pixel.height,visual_info->depth,&page,-page.x,
     -page.y,pixels_per_point,True,False,True,&sans);
   if (status != dps_status_success)
     {
@@ -449,12 +449,12 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Rasterize matte image.
   */
-  status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->file,1,
+  status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->blob->file,1,
     pixels_per_point,&pixmap,&bits_per_pixel,&page);
   if ((status != dps_status_failure) && (status != dps_status_no_extension))
     {
       status=XDPSImageFileIntoDrawable((DPSContext) NULL,screen,pixmap,
-        image->file,bits_per_pixel.height,1,&page,-page.x,
+        image->blob->file,bits_per_pixel.height,1,&page,-page.x,
         -page.y,pixels_per_point,True,True,True,&sans);
       if (status == dps_status_success)
         {

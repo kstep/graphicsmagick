@@ -4766,7 +4766,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
             */
             cache_image=previous_image;
             previous_image=previous_image->previous;
-            cache_image->file=(FILE *) NULL;
+            cache_image->blob->file=(FILE *) NULL;
             DestroyImage(cache_image->list);
             DestroyImage(cache_image);
           }

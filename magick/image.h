@@ -111,6 +111,9 @@ typedef struct _Ascii85Info
 
 typedef struct _BlobInfo
 {
+  FILE
+    *file;
+
   size_t
     length,
     extent,
@@ -440,9 +443,6 @@ typedef struct _Image
     status,
     temporary,
     pipet;
-
-  FILE
-    *file;
 
   BlobInfo
     *blob;

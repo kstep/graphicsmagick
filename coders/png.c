@@ -3899,7 +3899,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->columns=p->columns;
                     image->rows=p->rows;
                     p->orphan=True;
-                    p->file=(FILE *) NULL;
+                    p->blob->file=(FILE *) NULL;
                     p->exempt=True;
                     p->fifo=
                       (int (*)(const Image *,const void *,const size_t)) NULL;

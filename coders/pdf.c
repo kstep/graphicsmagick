@@ -803,7 +803,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
-  if ((image->file == stdout) || image->pipet)
+  if ((image->blob->file == stdout) || image->pipet)
     {
       /*
         Write standard output or pipe to temporary file.
@@ -1573,12 +1573,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           case FaxCompression:
           {
-            tile_image->file=image->file;
+            tile_image->blob->file=image->blob->file;
             if (LocaleCompare(CCITTParam,"0") == 0)
               (void) HuffmanEncodeImage(image_info,tile_image);
             else
               (void) Huffman2DEncodeImage(image_info,tile_image);
-            image->file=tile_image->file;
+            image->blob->file=tile_image->blob->file;
             break;
           }
           case JPEGCompression:
@@ -2004,7 +2004,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       if (file == (FILE *) NULL)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) fputc(c,encode_image.file);
+        (void) fputc(c,encode_image.blob->file);
       (void) fclose(file);
       (void) remove(image->filename);
       image->temporary=False;

@@ -308,7 +308,6 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
     (void) strncpy(image->next->filename,image_info->filename,MaxTextExtent-1);
   DestroyBlobInfo(image->next->blob);
   image->next->blob=ReferenceBlob(image->blob);
-  image->next->file=image->file;
   image->next->scene=image->scene+1;
   image->next->previous=image;
 }
@@ -1015,7 +1014,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->status=image->status;
   clone_image->temporary=image->temporary;
   clone_image->pipet=image->pipet;
-  clone_image->file=image->file;
   clone_image->blob=ReferenceBlob(image->blob);
   clone_image->magick_columns=image->magick_columns;
   clone_image->magick_rows=image->magick_rows;
@@ -6462,7 +6460,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
         ThrowBinaryException(MissingDelegateError,"Unable to write file",
           image->filename);
       i=0;
-      for (c=fgetc(image->file); c != EOF; c=fgetc(image->file))
+      for (c=fgetc(image->blob->file); c != EOF; c=fgetc(image->blob->file))
       {
         if (i < MaxTextExtent)
           magick[i++]=(unsigned char) c;
