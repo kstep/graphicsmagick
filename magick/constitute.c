@@ -59,7 +59,7 @@ typedef enum
   OpacityInvertedMapQuantum,
   PadMapQuantum,
   RedMapQuantum,
-  OpacityMapQuantum,
+  OpacityMapQuantum
 } MapQuantumType;
 
 static SemaphoreInfo
