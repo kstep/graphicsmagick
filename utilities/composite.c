@@ -343,7 +343,7 @@ static void CompositeUsage(void)
       "-unsharp geometry    sharpen the image",
       "-verbose             print detailed information about the image",
       "-watermark geometry  percent brightness and saturation of a watermark",
-			"-write filename      write images to this file",
+      "-write filename      write images to this file",
       (char *) NULL
     };
 

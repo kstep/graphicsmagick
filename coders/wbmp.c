@@ -377,7 +377,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
     Convert image to a bi-level image.
   */
   if ((image->storage_class == DirectClass) ||
-    	!IsMonochromeImage(image,&image->exception))
+      !IsMonochromeImage(image,&image->exception))
     {
       QuantizeInfo
         quantize_info;

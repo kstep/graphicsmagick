@@ -279,7 +279,7 @@ ModuleExport void RegisterJBIGImage(void)
 #define JBIGDescription  "Joint Bi-level Image experts Group interchange format"
 
   char
-	  version[MaxTextExtent];
+    version[MaxTextExtent];
 
   MagickInfo
     *entry;

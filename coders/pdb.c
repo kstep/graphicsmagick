@@ -394,7 +394,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   switch (pdb_image.version)
-	{
+  {
     case 0:
     {
       image->compression=NoCompression;
@@ -750,7 +750,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(pdb_image.name, pdb_info.name, 32);
   pdb_image.version=1;  /* RLE Compressed */
   switch(bits_per_pixel)
-	{
+  {
     case 1: pdb_image.type=(char) 0xff; break;  /* monochrome */
     case 2: pdb_image.type=(char) 0x00; break;  /* 2 bit gray */
     default: pdb_image.type=(char) 0x02;  /* 4 bit gray */
@@ -864,7 +864,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobByte(image,1);
     }
   /*
-	 Write the Image data.
+    Write the Image data.
   */
   (void) WriteBlob(image,32,pdb_image.name);
   (void) WriteBlobByte(image,pdb_image.version);

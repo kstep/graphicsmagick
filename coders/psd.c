@@ -456,7 +456,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset_y;
 
   unsigned char
-	name[256];
+  name[256];
 
     Image
       *image;
@@ -516,7 +516,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     count,
     length,
-	combinedlength,
+  combinedlength,
     size;
 
   off_t
@@ -695,7 +695,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].flags=ReadBlobByte(image);
         layer_info[i].visible=!(layer_info[i].flags & 0x02);
         (void) ReadBlobByte(image);  /* filler */
-		combinedlength = 0;
+  	combinedlength = 0;
         size=ReadBlobMSBLong(image);
         if (size != 0)
           {
@@ -717,7 +717,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 for (j=0; j < (long) (length-16); j++)
                   (void) ReadBlobByte(image);
               }
-            combinedlength += length + 4;	/* +4 for length */
+            combinedlength += length + 4;  /* +4 for length */
 
             length=ReadBlobMSBLong(image);
             if (length != 0)
@@ -731,17 +731,17 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 for (j=0; j < (long) (length); j++)
                   (void) ReadBlobByte(image);
               }
-            combinedlength += length + 4;	/* +4 for length */
+            combinedlength += length + 4;  /* +4 for length */
 
             length=ReadBlobByte(image);
             if (length != 0)
-			{
-				/* layer name */
+  		{
+  			/* layer name */
                 for (j=0; j < (long) (length); j++)
                   layer_info[i].name[j] = ReadBlobByte(image);
-				layer_info[i].name[j] = 0;	/* zero term */
-			}
-            combinedlength += length + 1;	/* +1 for length */
+  			layer_info[i].name[j] = 0;	/* zero term */
+  		}
+            combinedlength += length + 1;  /* +1 for length */
 
            /*
               Skip the rest of the variable data until we support it.
@@ -774,13 +774,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             layer_info[i].image->matte=True;
 
         /* set up some hidden attributes for folks that need them */
-		sprintf( s, "%ld", layer_info[i].page.x );
-		(void) SetImageAttribute(layer_info[i].image,"[layer-xpos]",s);
-		sprintf( s, "%ld", layer_info[i].page.y );
-		(void) SetImageAttribute(layer_info[i].image,"[layer-ypos]",s);
-		sprintf( s, "%d", layer_info[i].opacity );
-		(void) SetImageAttribute(layer_info[i].image,"[layer-opacity]",s);
-		(void) SetImageAttribute(layer_info[i].image,"[layer-name]", (char *) layer_info[i].name);
+  	sprintf( s, "%ld", layer_info[i].page.x );
+  	(void) SetImageAttribute(layer_info[i].image,"[layer-xpos]",s);
+  	sprintf( s, "%ld", layer_info[i].page.y );
+  	(void) SetImageAttribute(layer_info[i].image,"[layer-ypos]",s);
+  	sprintf( s, "%d", layer_info[i].opacity );
+  	(void) SetImageAttribute(layer_info[i].image,"[layer-opacity]",s);
+  	(void) SetImageAttribute(layer_info[i].image,"[layer-name]", (char *) layer_info[i].name);
       }
       /*
         Read pixel data for each layer.
@@ -1274,19 +1274,19 @@ static void WritePascalString (Image* inImage, const char *inString, int inPad)
 
   if ( strLength !=  0 )
   {
-	(void) WriteBlobByte(inImage, strLength);
-	(void) WriteBlob(inImage, strLength, inString);      
+  (void) WriteBlobByte(inImage, strLength);
+  (void) WriteBlob(inImage, strLength, inString);      
   }
   else
-	(void) WriteBlobByte(inImage, 0);
+  (void) WriteBlobByte(inImage, 0);
 
-  strLength ++;	
+  strLength ++;  
 
   if ( (strLength % inPad) == 0 )
     return;
 
   for ( i=0; i < (inPad - (strLength % inPad)); i++)
-	(void) WriteBlobByte(inImage, 0);
+  (void) WriteBlobByte(inImage, 0);
 }
 
 static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)

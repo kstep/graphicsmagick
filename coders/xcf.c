@@ -909,7 +909,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,14,(char *) magick);
   if ((count == 0) ||
       (LocaleNCompare((char *) magick,"gimp xcf file",14) != 0))
-		ThrowReaderException(CorruptImageError,"Not a XCF image file",image);
+    ThrowReaderException(CorruptImageError,"Not a XCF image file",image);
   /* clear the docinfo stuff */
   memset( &doc_info, 0, sizeof(XCFDocInfo));
   doc_info.exception = exception;
@@ -1070,12 +1070,12 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     case PROP_USER_UNIT:
       {
-		char  unit_string[1000];
+    char  unit_string[1000];
         /*BOGUS: ignored for now */
         /*float  factor = (float) */ (void) ReadBlobMSBLong(image);
         /* unsigned long digits =  */ (void) ReadBlobMSBLong(image);
-		for (i=0; i<5; i++)
-		 ReadBlobStringWithLongSize(image, unit_string);
+    for (i=0; i<5; i++)
+     ReadBlobStringWithLongSize(image, unit_string);
       }
      break;
 

@@ -54,7 +54,7 @@ int main ( int argc, char **argv )
   strncpy( format, argv[2], MaxTextExtent-1 );
 
   printf("%s %s %s\n",
-	  argv[0],infile, format );
+    argv[0],infile, format );
   fflush(stdout);
 
   /*

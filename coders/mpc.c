@@ -1048,7 +1048,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
         if (image->scene == 0)
           FormatString(buffer,"iterations=%lu  delay=%lu  Dispose=%lu\n",
             image->iterations,image->delay,image->dispose);
-				else
+        else
           FormatString(buffer,
             "scene=%lu  iterations=%lu  delay=%lu  Dispose=%lu\n",
             image->scene,image->iterations,image->delay,image->dispose);

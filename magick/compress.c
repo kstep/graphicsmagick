@@ -225,10 +225,10 @@ static char *Ascii85Tuple(unsigned char *data)
     x;
 
   unsigned int
-		code;
+    code;
 
   unsigned long
-		quantum;
+    quantum;
 
   code=(((data[0] << 8) | data[1]) << 16) | (data[2] << 8) | data[3];
   if (code == 0L)
@@ -244,7 +244,7 @@ static char *Ascii85Tuple(unsigned char *data)
     code-=quantum*x;
     tuple[i]='!'+x;
     quantum/=85L;
-	}
+  }
   tuple[4]='!'+(code % 85L);
   tuple[5]='\0';
   return(tuple);
@@ -253,13 +253,13 @@ static char *Ascii85Tuple(unsigned char *data)
 MagickExport void Ascii85Initialize(Image *image)
 {
   /*
-	 Allocate image structure.
+    Allocate image structure.
   */
-	image->ascii85=(Ascii85Info *) AcquireMemory(sizeof(Ascii85Info));
-	if (image->ascii85 == (Ascii85Info *) NULL)
-		MagickFatalError(ResourceLimitFatalError,"Unable to allocate Ascii85",
+  image->ascii85=(Ascii85Info *) AcquireMemory(sizeof(Ascii85Info));
+  if (image->ascii85 == (Ascii85Info *) NULL)
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocate Ascii85",
       "Memory allocation failed");
-	(void) memset(image->ascii85,0,sizeof(Ascii85Info));
+  (void) memset(image->ascii85,0,sizeof(Ascii85Info));
   image->ascii85->line_break=MaxLineExtent << 1;
   image->ascii85->offset=0;
 }

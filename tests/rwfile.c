@@ -53,7 +53,7 @@ int main ( int argc, char **argv )
   strncpy( format, argv[2], MaxTextExtent-1 );
 
   printf("%s %s %s\n",
-	  argv[0], infile, format );
+    argv[0], infile, format );
   fflush(stdout);
 
   /*
@@ -108,7 +108,7 @@ int main ( int argc, char **argv )
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
-	       imageInfo.magick );
+         imageInfo.magick );
       exit(1);
     }
 
@@ -136,7 +136,7 @@ int main ( int argc, char **argv )
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
-	       imageInfo.magick );
+         imageInfo.magick );
       exit(1);
     }
 

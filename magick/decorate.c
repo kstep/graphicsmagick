@@ -112,7 +112,7 @@ MagickExport Image *BorderImage(const Image *image,
   border_image=FrameImage(clone_image,&frame_info,exception);
   DestroyImage(clone_image);
   if (border_image != (Image *) NULL)
-		border_image->matte_color=image->matte_color;
+  	border_image->matte_color=image->matte_color;
   return(border_image);
 }
 
@@ -417,7 +417,7 @@ MagickExport unsigned int RaiseImage(Image *image,
     background;
 
   long
-  	y;
+    y;
 
   register long
     x;

@@ -73,11 +73,11 @@
 */
 static unsigned int
   RenderType(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
-	  TypeMetric *),
+    TypeMetric *),
   RenderPostscript(Image *,const DrawInfo *,const PointInfo *,
     const unsigned int,TypeMetric *),
   RenderFreetype(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
-	  TypeMetric *),
+    TypeMetric *),
   RenderX11(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
     TypeMetric *);
 

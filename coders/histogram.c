@@ -200,7 +200,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   unsigned int
     status;
 
-	unsigned long
+  unsigned long
     length;
 
   /*

@@ -1035,7 +1035,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
   */
   memset(normalize_map,0,(MaxRGB+1)*sizeof(PixelPacket));
   for (i=0; i <= MaxRGB; i++)
-	{
+  {
     if (i < (long) low.red)
       normalize_map[i].red=0;
     else
@@ -1072,7 +1072,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
         if (low.opacity != high.opacity)
           normalize_map[i].opacity=(Quantum) ((MaxRGB*(double) (i-low.opacity))/
             (double) (high.opacity-low.opacity));
-	}
+  }
   /*
     Normalize the image.
   */

@@ -290,7 +290,7 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
     memSize = nPixels * bitmap.bmBitsPixel;
     theBitsH = (HANDLE) GlobalAlloc (GMEM_MOVEABLE | GMEM_DDESHARE, memSize);
     if (theBitsH == NULL)
-      return( False );	/* DoDisplayError( "OnEditCopy", GetLastError() ); */
+      return( False );  /* DoDisplayError( "OnEditCopy", GetLastError() ); */
     else {
       RGBQUAD * theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
       RGBQUAD *pDestPixel = theBits;
@@ -300,9 +300,9 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
       pPixels = AcquireImagePixels(image,0,0,image->columns,image->rows,&image->exception);
       for( nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
         {
-          pDestPixel->rgbRed	    = Downscale(pPixels->red);
+          pDestPixel->rgbRed      = Downscale(pPixels->red);
           pDestPixel->rgbGreen    = Downscale(pPixels->green);
-          pDestPixel->rgbBlue	    = Downscale(pPixels->blue);
+          pDestPixel->rgbBlue      = Downscale(pPixels->blue);
           pDestPixel->rgbReserved = 0;
           ++pDestPixel;
           ++pPixels;
