@@ -316,7 +316,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      status=InvokeDelegate(&resource_info->image_info,*image,"browse",True);
+      status=InvokeDelegate(&resource_info->image_info,*image,"browse",
+        (char *) NULL);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to browse documentation",
           (char *) NULL);

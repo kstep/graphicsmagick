@@ -544,8 +544,7 @@ typedef struct _ColorProfileInfo
 typedef struct _Image
 {
   FILE
-    *file,
-    *ps_file;
+    *file;
 
   int
     exempt,

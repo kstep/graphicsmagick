@@ -728,7 +728,7 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADER(elf.h,AC_DEFINE(SVR4))
-AC_CHECK_HEADERS(stdlib.h fcntl.h strings.h sys/file.h sys/time.h unistd.h vsnprintf)
+AC_CHECK_HEADERS(fcntl.h strings.h sys/file.h sys/time.h unistd.h vsnprintf)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

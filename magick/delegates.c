@@ -139,14 +139,14 @@ static unsigned int ReadDelegates(char *path,char *directory)
     delegate_info.direction=0;
     if (*p == '<')
       {
-        delegate_info.direction=(-1);
+        delegate_info.direction--;
         *p++;
       }
     if (*p == '=')
       *p++;
     if (*p == '>')
       {
-        delegate_info.direction=1;
+        delegate_info.direction++;
         *p++;
       }
     while (isspace(*p))
@@ -257,18 +257,18 @@ Export void DestroyDelegates(void)
 %
 %  The format of the GetDelegateInfo routine is:
 %
-%     status=GetDelegateInfo(tag,decode,delegate_info)
+%     status=GetDelegateInfo(decode_tag,encode_tag,delegate_info)
 %
 %  A description of each parameter follows:
 %
 %    o status: Method GetDelegateInfo returns True if a delegate is found,
 %      otherwise False.
 %
-%    o tag: Specifies the delegate we are searching for as a character
-%      string.
+%    o decode_tag: Specifies the decode delegate we are searching for as a
+%      character string.
 %
-%    o decode: An unsigned integer other than zero means to match decode
-%      tages in the delegate list otherwise encode tags.
+%    o encode_tag: Specifies the encode delegate we are searching for as a
+%      character string.
 %
 %    o delegate_info:  A structure of type DelegateInfo.  On return this
 %      structure contains the delegate information for the specified
@@ -276,8 +276,8 @@ Export void DestroyDelegates(void)
 %
 %
 */
-Export unsigned int GetDelegateInfo(char *tag,unsigned int decode,
-  DelegateInfo *delegate_info)
+Export unsigned int GetDelegateInfo(const char *decode_tag,
+  const char *encode_tag,DelegateInfo *delegate_info)
 {
   DelegateInfo
     *delegates;
@@ -306,30 +306,34 @@ Export unsigned int GetDelegateInfo(char *tag,unsigned int decode,
         MagickWarning(DelegateWarning,"no delegates configuration file found",
           DelegateFilename);
     }
-  if (decode)
-    {
-      /*
-        Search for requested decode delegate.
-      */
-      for ( ; delegates != (DelegateInfo *) NULL; delegates=delegates->next)
-        if (delegates->direction >= 0)
-          if (Latin1Compare(delegates->decode_tag,tag) == 0)
-            {
-              *delegate_info=(*delegates);
-              return(True);
-            }
-      return(False);
-    }
   /*
-    Search for requested encode delegate.
+    Search for requested delegate.
   */
   for ( ; delegates != (DelegateInfo *) NULL; delegates=delegates->next)
-    if (delegates->direction <= 0)
-      if (Latin1Compare(delegates->encode_tag,tag) == 0)
-        {
-          *delegate_info=(*delegates);
+  {
+    *delegate_info=(*delegates);
+    if (delegates->direction > 0)
+      {
+        if (Latin1Compare(delegates->decode_tag,decode_tag) == 0)
           return(True);
-        }
+        continue;
+      }
+    if (delegates->direction < 0)
+      {
+        if (Latin1Compare(delegates->encode_tag,encode_tag) == 0)
+          return(True);
+        continue;
+      }
+    if (Latin1Compare(decode_tag,delegates->decode_tag) == 0)
+      if (Latin1Compare(encode_tag,delegates->encode_tag) == 0)
+        return(True);
+    if (Latin1Compare(decode_tag,"*") == 0)
+      if (Latin1Compare(encode_tag,delegates->encode_tag) == 0)
+        return(True);
+    if (Latin1Compare(decode_tag,delegates->decode_tag) == 0)
+      if (Latin1Compare(encode_tag,"*") == 0)
+        return(True);
+  }
   return(False);
 }
 
@@ -349,7 +353,7 @@ Export unsigned int GetDelegateInfo(char *tag,unsigned int decode,
 %
 %  The format of the GetDelegateCommand routine is:
 %
-%      command=GetDelegateCommand(image_info,image,tag,decode)
+%      command=GetDelegateCommand(image_info,image,decode_tag,encode_tag)
 %
 %  A description of each parameter follows:
 %
@@ -360,16 +364,16 @@ Export unsigned int GetDelegateInfo(char *tag,unsigned int decode,
 %
 %    o image: The address of a structure of type Image.
 %
-%    o tag: Specifies the delegate we are searching for as a character
-%      string.
+%    o decode_tag: Specifies the decode delegate we are searching for as a
+%      character string.
 %
-%    o decode: An unsigned integer other than zero means to match decode
-%      tages in the delegate list otherwise encode tags.
+%    o encode_tag: Specifies the encode delegate we are searching for as a
+%      character string.
 %
 %
 */
 Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
-  char *tag,unsigned int decode)
+  const char *decode_tag,const char *encode_tag)
 {
   char
     *command,
@@ -381,15 +385,17 @@ Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   register int
     i;
 
-  if (!GetDelegateInfo(tag,decode,&delegate_info))
+  if (!GetDelegateInfo(decode_tag,encode_tag,&delegate_info))
     {
-      MagickWarning(MissingDelegateWarning,"no tag found",tag);
+      MagickWarning(MissingDelegateWarning,"no tag found",
+        decode_tag ? decode_tag : encode_tag);
       return((char *) NULL);
     }
   commands=StringToList(delegate_info.commands);
   if (commands == (char **) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",tag);
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        decode_tag ? decode_tag : encode_tag);
       return((char *) NULL);
     }
   command=TranslateText(image_info,image,commands[0]);
@@ -421,7 +427,7 @@ Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %
 %  The format of the InvokeDelegate routine is:
 %
-%      InvokeDelegate(image_info,image,tag,decode)
+%      InvokeDelegate(image_info,image,decode_tag,encode_tag)
 %
 %  A description of each parameter follows:
 %
@@ -429,16 +435,10 @@ Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %
 %    o image: The address of a structure of type Image.
 %
-%    o tag: Specifies the delegate we are searching for as a character
-%      string.
-%
-%    o decode: An unsigned integer other than zero means to match decode
-%      tages in the delegate list otherwise encode tags.
-%
 %
 */
 Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
-  char *tag,unsigned int decode)
+  const char *decode_tag,const char *encode_tag)
 {
   char
     *command,
@@ -455,9 +455,10 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
     status;
 
   (void) strcpy(filename,image->filename);
-  if (!GetDelegateInfo(tag,decode,&delegate_info))
+  if (!GetDelegateInfo(decode_tag,encode_tag,&delegate_info))
     {
-      MagickWarning(MissingDelegateWarning,"no tag found",tag);
+      MagickWarning(MissingDelegateWarning,"no tag found",
+        decode_tag ? decode_tag : encode_tag);
       return(True);
     }
   if (Latin1Compare(delegate_info.decode_tag,"YUV") == 0)
@@ -477,7 +478,8 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
         file=fopen(image_info->unique,"w");
         if (file == (FILE *) NULL)
           {
-            MagickWarning(DelegateWarning,"delegate failed",tag);
+            MagickWarning(DelegateWarning,"delegate failed",
+              decode_tag ? decode_tag : encode_tag);
             return(True);
           }
         (void) fprintf(file,"MPEG\n");
@@ -542,52 +544,56 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
         (void) fclose(file);
         (void) strcat(image->filename,"%d.yuv");
       }
-  if ((decode && (*delegate_info.encode_tag != '\0')) ||
-      (!decode && (*delegate_info.decode_tag != '\0')))
-    {
-      char
-        filename[MaxTextExtent],
-        *magick;
-
-      ImageInfo
-        local_info;
-
-      register Image
-        *p;
-
-      /*
-        Delegate requires a particular image format.
-      */
-      magick=TranslateText(image_info,image,decode ?
-        delegate_info.encode_tag : delegate_info.decode_tag);
-      if (magick == (char *) NULL)
-        {
-          MagickWarning(DelegateWarning,"delegate failed",tag);
-          return(True);
-        }
-      Latin1Upper(magick);
-      local_info=(*image_info);
-      local_info.adjoin=False;
-      (void) strcpy((char *) image_info->magick,magick);
-      (void) strcpy(image->magick,magick);
-      FreeMemory((char *) magick);
-      (void) strcpy(filename,image->filename);
-      for (p=image; p != (Image *) NULL; p=p->next)
+  if (delegate_info.direction != 0)
+    if ((decode_tag && (*delegate_info.encode_tag != '\0')) ||
+        (encode_tag && (*delegate_info.decode_tag != '\0')))
       {
-        (void) strcpy(p->filename,filename);
-        status=WriteImage(&local_info,p);
-        if (status == False)
+        char
+          filename[MaxTextExtent],
+          *magick;
+
+        ImageInfo
+          local_info;
+
+        register Image
+          *p;
+
+        /*
+          Delegate requires a particular image format.
+        */
+        magick=TranslateText(image_info,image,decode_tag != (char *) NULL ?
+          delegate_info.encode_tag : delegate_info.decode_tag);
+        if (magick == (char *) NULL)
           {
-            MagickWarning(DelegateWarning,"delegate failed",tag);
-            return(False);
+            MagickWarning(DelegateWarning,"delegate failed",
+              decode_tag ? decode_tag : encode_tag);
+            return(True);
           }
+        Latin1Upper(magick);
+        local_info=(*image_info);
+        local_info.adjoin=False;
+        (void) strcpy((char *) image_info->magick,magick);
+        (void) strcpy(image->magick,magick);
+        FreeMemory((char *) magick);
+        (void) strcpy(filename,image->filename);
+        for (p=image; p != (Image *) NULL; p=p->next)
+        {
+          (void) strcpy(p->filename,filename);
+          status=WriteImage(&local_info,p);
+          if (status == False)
+            {
+              MagickWarning(DelegateWarning,"delegate failed",
+                decode_tag ? decode_tag : encode_tag);
+              return(False);
+            }
+        }
       }
-    }
   (void) strcpy(image->filename,filename);
   commands=StringToList(delegate_info.commands);
   if (commands == (char **) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",tag);
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        decode_tag ? decode_tag : encode_tag);
       return(True);
     }
   command=(char *) NULL;

@@ -7807,11 +7807,11 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
 
   if (image_info->monochrome)
     {
-      if (!GetDelegateInfo("gs-mono",True,&delegate_info))
+      if (!GetDelegateInfo("gs-mono",(char *) NULL,&delegate_info))
         return((Image *) NULL);
     }
   else
-    if (!GetDelegateInfo("gs-color",True,&delegate_info))
+    if (!GetDelegateInfo("gs-color",(char *) NULL,&delegate_info))
       return((Image *) NULL);
   /*
     Allocate image structure.
@@ -7954,7 +7954,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   (void) strcpy((char *) image_info->filename,filename);
-  image->ps_file=fopen(image_info->filename,ReadBinaryType);
   do
   {
     (void) strcpy(image->magick,"PDF");
@@ -10179,11 +10178,11 @@ static Image *ReadPSImage(const ImageInfo *image_info)
 
   if (image_info->monochrome)
     {
-      if (!GetDelegateInfo("gs-mono",True,&delegate_info))
+      if (!GetDelegateInfo("gs-mono",(char *) NULL,&delegate_info))
         return((Image *) NULL);
     }
   else
-    if (!GetDelegateInfo("gs-color",True,&delegate_info))
+    if (!GetDelegateInfo("gs-color",(char *) NULL,&delegate_info))
       return((Image *) NULL);
   /*
     Allocate image structure.
@@ -10373,7 +10372,6 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   (void) strcpy((char *) image_info->filename,filename);
-  image->ps_file=fopen(image_info->filename,ReadBinaryType);
   do
   {
     (void) strcpy(image->magick,"PS");
@@ -17411,13 +17409,13 @@ Export Image *ReadImage(ImageInfo *image_info)
   assert(image_info->filename != (char *) NULL);
   temporary=False;
   SetImageInfo(image_info,False);
-  if (GetDelegateInfo(image_info->magick,True,&delegate_info))
+  if (GetDelegateInfo(image_info->magick,(char *) NULL,&delegate_info))
     {
       unsigned int
         status;
 
       /*
-        Let our delegate process the image.
+        Let our decoding delegate process the image.
       */
       image=AllocateImage(image_info);
       if (image == (Image *) NULL)
@@ -17425,7 +17423,7 @@ Export Image *ReadImage(ImageInfo *image_info)
       (void) strcpy(filename,image_info->filename);
       (void) strcpy(image->filename,image_info->filename);
       TemporaryFilename(image_info->filename);
-      status=InvokeDelegate(image_info,image,image_info->magick,True);
+      status=InvokeDelegate(image_info,image,image_info->magick,(char *) NULL);
       DestroyImages(image);
       if (status == False)
         temporary=True;

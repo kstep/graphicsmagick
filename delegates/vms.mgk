@@ -1,21 +1,25 @@
-# ImageMagick delegates for VMS.  The format is as follows.  Each
-# delegate begins with a tag and/or format separated by a colon (=>).
-# This line must be followed by one or more commands preceded with a tab
-# (\t) character.  If a command exceeds the length of a line, use the
-# backslash continuation character.  End the command with an ampersand
-# (&) to execute the command in the background.
-#
+# ImageMagick delegates for Unix.  The format is as follows.  Each
+# delegate begins with a tag and/or format separated by a operator tag
+# (<=, <=>, =>).  This line must be followed by one or more commands
+# preceded with a tab (\t) character.  If a command exceeds the length of
+# a line, use the backslash continuation character.  End the command with
+# an ampersand (&) to execute the command in the background.
+# 
 # Optionally you can include the image filename, type, width, height, or
-# other image attributes by embedding special format characters=>
+# other image attributes by embedding special format characters:
 # 
 #   %b   file size
 #   %d   directory
 #   %e   filename extention
 #   %f   filename
 #   %h   height
+#   %i   input filename
 #   %l   label
 #   %m   magick
+#   %n   number of scenes
+#   %o   output filename
 #   %p   page number
+#   %q   quantum depth
 #   %s   scene number
 #   %t   top of filename
 #   %u   unique temporary filename
@@ -23,24 +27,26 @@
 #   %x   x resolution
 #   %y   y resolution
 # 
-# There are two types of delegates: decode and encode.  Decode delegates
-# begin with a image format (tag) specified (e.g. mpeg) followed with a
-# equal-greater sign (=>).  The delegate is invoked whenever ImageMagick
+# There are three types of delegates: decode, encode, and bypass.  Decode
+# delegates begin with a image format (tag) specified (e.g. mpeg) followed
+# with a equal-greater sign (=>).  The delegate is invoked whenever ImageMagick
 # attempts to read an image whose format specifier or filename extension
-# matches the tag (e.g.  image.mpg for tag mpg=>).  The delegate must write
-# an image to the file designated by %o in an image format that ImageMagick
-# understands (e.g. pnm).
+# matches the tag (e.g.  image.mpg for tag mpg=>).  The delegate must
+# write an image to the file designated by %o in an image format that
+# ImageMagick understands (e.g. pnm).
 # 
 # An encode delegate begins with an image format, a less-equal sign (<=),
-# and a tag.  The delegate is invoked whenever ImageMagick attempts to write
-# an image whose format specifier or filename extension matches the tag
-# (e.g. image.mpg for tag=>mpg).  ImageMagick writes to a temporary file
-# in the format you specify.  The delegate can then read this file and
-# convert it to a format it supports and pesumably ImageMagick does not.
+# and a tag.  The delegate is invoked whenever ImageMagick attempts to
+# write an image whose format specifier or filename extension matches the
+# tag (e.g. image.mpg for tag <=mpg).  ImageMagick writes to a temporary
+# file in the format you specify.  The delegate can then read this file
+# and convert it to a format it supports and presumably ImageMagick does
+# not.
 # 
-# If you use a less-equal-greater sign (<=>) the delegate is bi-directional.
-# Delegates must be separated with a blank line.
-#
+# If you use a less-equal-greater sign (<=>) the delegate bypasses
+# ImageMagick and directly converts the image file (this assumes you do not
+# apply any image transforms such as sizing or rotation).
+# 
 # Lines that begin with a pound sign (#) are comments and are ignored.
 # 
 # There are a number of delegates used by ImageMagick for special
@@ -48,15 +54,14 @@
 # remove these or ImageMagick may behave strangely.
 # 
 # ImageMagick looks for the delegate configurarion file in this order:
-#
+# 
 #     sys$login:delegates.mgk
 #     delegates.mgk
-#
-# Where DELEGATE_PATH and HOME are environment variables.
-#
-# Like entries in the later two directories overrides the specification
-# in the system-wide delegates file.
 # 
+# Like entries in the later two directory overrides the specification in
+# the system-wide delegates file.
+#
+#
 
 <=bzip
 	|bzip2 -f > %o
@@ -67,18 +72,6 @@
 <=zip
 	|gzip -cf > %o
 
-<=gs-eps
-	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" \
-	  -c quit
-
-<=gs-pdf
-	gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" \
-	  -c quit
-
-<=gs-ps
-	gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" \
-	  -c quit
-
 browse=>
 	mosiac http://www.wizards.dupont.com/cristy/ImageMagick.html &
 
@@ -87,14 +80,25 @@ bzip=>
 
 cgm=>
 	ralcgm -d ps %i %o %u
-	mv %o.ps %o
-	rm -f %u
+	rename %o.ps %o
+	delete %u
 
 compress=>
 	|uncompress -c %i
 
+dvi=>
+	dvips -q -o %o %i
+
 edit=>
 	xterm -title "Edit Image Comment" -e vi %i
+
+eps<=>pdf
+	gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
+
+eps<=>ps
+	gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
 	GET %m:%i > %o 2>&1
@@ -105,13 +109,22 @@ fig=>
 ftp=>
 	GET %m:%i > %o 2>&1
 
+# Gnuplot format (rendered as Postscript)
+# Add additional gnuplot commands to the input file to adjust output.
+gplt=>
+	echo "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
+	gnuplot %u
+	delete %u
+
 gs-color=>
-	gs -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
-	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit
+	gs -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-	gs -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
-	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- "%s" -c quit
+	gs -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
 	hp2xx -q -m eps -f %i %o
@@ -138,14 +151,35 @@ m2v=>
 	convert -concatenate %o*.ppm %o
 	delete %o*.ppm
 
-pnm<=win
-	display -immutable %i
+pdf<=>eps
+	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
+
+pdf<=>ps
+	gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
 	pgpv -fq %i
 
+pnm<=win
+	display -immutable %i
+
+pov=>
+	povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
+	convert %o*.png %o
+	delete %o*.png
+
 print=>ps
 	print/delete %i
+
+ps<=>eps
+	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
+
+ps<=>pdf
+	gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
 
 rad=>
 	ra_ppm -g 1.0 %i %o
@@ -165,11 +199,11 @@ shtml=>
 
 yuv<=m2v
 	mpeg2encode %u %o
-	rm -f %i*.yuv %u*
+	delete %i*.yuv %u*
 
 yuv<=mpg
 	mpeg2encode %u %o
-	rm -f %i*.yuv %u*
+	delete %i*.yuv %u*
 
 zip=>
 	|gzip -cdfq %i

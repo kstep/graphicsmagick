@@ -1,22 +1,25 @@
 # ImageMagick delegates for Unix.  The format is as follows.  Each
-# delegate begins with a tag and/or format separated by a operation
-# tag (see below).  This line must be followed by one or more commands
-# preceded with a tab (\t) character.  If a command exceeds the length
-# of a line, use the backslash continuation character.  End the
-# command with an ampersand (&) to execute the command in the
-# background.
-#
+# delegate begins with a tag and/or format separated by a operator tag
+# (<=, <=>, =>).  This line must be followed by one or more commands
+# preceded with a tab (\t) character.  If a command exceeds the length of
+# a line, use the backslash continuation character.  End the command with
+# an ampersand (&) to execute the command in the background.
+# 
 # Optionally you can include the image filename, type, width, height, or
-# other image attributes by embedding special format characters=>
+# other image attributes by embedding special format characters:
 # 
 #   %b   file size
 #   %d   directory
 #   %e   filename extention
 #   %f   filename
 #   %h   height
+#   %i   input filename
 #   %l   label
 #   %m   magick
+#   %n   number of scenes
+#   %o   output filename
 #   %p   page number
+#   %q   quantum depth
 #   %s   scene number
 #   %t   top of filename
 #   %u   unique temporary filename
@@ -24,24 +27,26 @@
 #   %x   x resolution
 #   %y   y resolution
 # 
-# There are two types of delegates: decode and encode.  Decode delegates
-# begin with a image format (tag) specified (e.g. mpeg) followed with a
-# equal-greater sign (=>).  The delegate is invoked whenever ImageMagick
+# There are three types of delegates: decode, encode, and bypass.  Decode
+# delegates begin with a image format (tag) specified (e.g. mpeg) followed
+# with a equal-greater sign (=>).  The delegate is invoked whenever ImageMagick
 # attempts to read an image whose format specifier or filename extension
-# matches the tag (e.g.  image.mpg for tag mpg=>).  The delegate must write
-# an image to the file designated by %o in an image format that ImageMagick
-# understands (e.g. pnm).
+# matches the tag (e.g.  image.mpg for tag mpg=>).  The delegate must
+# write an image to the file designated by %o in an image format that
+# ImageMagick understands (e.g. pnm).
 # 
 # An encode delegate begins with an image format, a less-equal sign (<=),
-# and a tag.  The delegate is invoked whenever ImageMagick attempts to write
-# an image whose format specifier or filename extension matches the tag
-# (e.g. image.mpg for tag <=mpg).  ImageMagick writes to a temporary file
-# in the format you specify.  The delegate can then read this file and
-# convert it to a format it supports and pesumably ImageMagick does not.
+# and a tag.  The delegate is invoked whenever ImageMagick attempts to
+# write an image whose format specifier or filename extension matches the
+# tag (e.g. image.mpg for tag <=mpg).  ImageMagick writes to a temporary
+# file in the format you specify.  The delegate can then read this file
+# and convert it to a format it supports and presumably ImageMagick does
+# not.
 # 
-# If you use a less-equal-greater sign (<=>) the delegate is bi-directional.
-# Delegates must be separated with a blank line.
-#
+# If you use a less-equal-greater sign (<=>) the delegate bypasses
+# ImageMagick and directly converts the image file (this assumes you do not
+# apply any image transforms such as sizing or rotation).
+# 
 # Lines that begin with a pound sign (#) are comments and are ignored.
 # 
 # There are a number of delegates used by ImageMagick for special
@@ -49,135 +54,160 @@
 # remove these or ImageMagick may behave strangely.
 # 
 # ImageMagick looks for the delegate configurarion file in this order:
-#
+# 
 #     /usr/local/share/ImageMagick/delegates.mgk
 #     DELEGATE_PATH/delegates.mgk
 #     HOME/.magick/delegates.mgk
 #     ./delegates.mgk
-#
-# Where DELEGATE_PATH and HOME are environment variables.
-#
-# Like entries in the later two directory overrides the specification
-# in the system-wide delegates file.
 # 
+# Where DELEGATE_PATH and HOME are environment variables.
+# 
+# Like entries in the later two directory overrides the specification in
+# the system-wide delegates file.
+#
+#
 
 <=bzip
-	|/usr/local/bin/bzip2 -f > %o
+	|bzip2 -f > %o
 
 <=compress
-	|/usr/bin/compress -c > %o
-
-<=gs-eps
-	/usr/local/bin/gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%s" -- "%s" -c quit
-
-<=gs-pdf
-	/usr/local/bin/gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%s" -- "%s" -c quit
-
-<=gs-ps
-	/usr/local/bin/gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%s" -- "%s" -c quit
+	|compress -c > %o
 
 <=zip
-	|/usr/local/bin/gzip -cf > %o
+	|gzip -cf > %o
 
 browse=>
-	/usr/local/bin/netscape http://www.wizards.dupont.com/cristy/ImageMagick.html &
+	netscape http://www.wizards.dupont.com/cristy/ImageMagick.html &
 
 bzip=>
-	|/usr/local/bin/bzip2 -cd %i
+	|bzip2 -cd %i
 
 cgm=>
-	/usr/local/bin/ralcgm -d ps %i %o %u
-	/usr/bin/mv %o.ps %o
-	/usr/bin/rm -f %u
+	ralcgm -d ps %i %o %u
+	mv %o.ps %o
+	rm -f %u
 
 compress=>
-	|/usr/bin/uncompress -c %i
+	|uncompress -c %i
 
 dvi=>
-	/usr/local/bin/dvips -q -o %o %i
+	dvips -q -o %o %i
 
 edit=>
-	/usr/X11R6.4/bin/xterm -title "Edit Image Comment" -e vi %i
+	xterm -title "Edit Image Comment" -e vi %i
+
+eps<=>pdf
+	gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
+
+eps<=>ps
+	gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
-	/usr/local/bin/GET %m:%i > %o 2>&1
+	GET %m:%i > %o 2>&1
 
 fig=>
-	/usr/local/bin/fig2dev -L ps %i %o
+	fig2dev -L ps %i %o
 
 ftp=>
-	/usr/local/bin/GET %m:%i > %o 2>&1
+	GET %m:%i > %o 2>&1
+
+# Gnuplot format (rendered as Postscript)
+# Add additional gnuplot commands to the input file to adjust output.
+gplt=>
+	echo "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
+	gnuplot %u
+	rm -f %u
 
 gs-color=>
-	/usr/local/bin/gs -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
+	gs -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-	/usr/local/bin/gs -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
+	gs -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
-	/usr/local/bin/hp2xx -q -m eps -f %i %o
+	hp2xx -q -m eps -f %i %o
 
 htm=>
-	/usr/local/bin/html2ps -o %o %i
+	html2ps -o %o %i
 
 html=>
-	/usr/local/bin/html2ps -o %o %i
+	html2ps -o %o %i
 
 http=>
-	/usr/local/bin/GET %m:%i > %o 2>&1
+	GET %m:%i > %o 2>&1
 
 launch=>pnm
-	/usr/local/bin/gimp %i
+	gimp %i
 
 mpg=>
-	/usr/local/bin/mpeg2decode -q -b %i -f -r -o3 %o%%05d
-	/usr/local/bin/convert -concatenate %o*.ppm %o
-	/usr/bin/rm -f %o*.ppm
+	mpeg2decode -q -b %i -f -r -o3 %o%%05d
+	convert -concatenate %o*.ppm %o
+	rm -f %o*.ppm
 
 m2v=>
-	/usr/local/bin/mpeg2decode -q -b %i -f -r -o3 %o%%05d
-	/usr/local/bin/convert -concatenate %o*.ppm %o
-	/usr/bin/rm -f %o*.ppm
+	mpeg2decode -q -b %i -f -r -o3 %o%%05d
+	convert -concatenate %o*.ppm %o
+	rm -f %o*.ppm
+
+pdf<=>eps
+	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
+
+pdf<=>ps
+	gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
-	/usr/local/bin/pgpv -fq %i
+	pgpv -fq %i
 
 pnm<=win
-	/usr/local/bin/display -immutable %i
+	display -immutable %i
+
+pov=>
+	povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
+	convert %o*.png %o
+	rm -f %o*.png
 
 print=>ps
-	/usr/bin/lp -c -s %i
+	lp -c -s %i
+
+ps<=>eps
+	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
+
+ps<=>pdf
+	gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
 
 rad=>
-	/usr/local/bin/ra_ppm -g 1.0 %i %o
+	ra_ppm -g 1.0 %i %o
 
 rgba<=rle
-	/usr/local/bin/mogrify -flip -size %wx%h rgba:%i
-	/usr/local/bin/rawtorle -w %w -h %h -n 4 -o %o %i
+	mogrify -flip -size %wx%h rgba:%i
+	rawtorle -w %w -h %h -n 4 -o %o %i
 
 scan=>
 	scanimage  -d %i > %o
 
 show=>%m
-	/usr/local/bin/display -immutable -window_group %g -title "%l of %f" tmp:%i &
+	display -immutable -window_group %g -title "%l of %f" tmp:%i &
 
 shtml=>
-	/usr/local/bin/html2ps -o %o %i
+	html2ps -o %o %i
 
 yuv<=m2v
-	/usr/local/bin/mpeg2encode %u %o
-	/usr/bin/rm -f %i*.yuv %u*
+	mpeg2encode %u %o
+	rm -f %i*.yuv %u*
 
 yuv<=mpg
-	/usr/local/bin/mpeg2encode %u %o
-	/usr/bin/rm -f %i*.yuv %u*
+	mpeg2encode %u %o
+	rm -f %i*.yuv %u*
 
 zip=>
-	|/usr/local/bin/gzip -cdfq %i
+	|gzip -cdfq %i

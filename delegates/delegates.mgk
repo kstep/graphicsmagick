@@ -1,13 +1,12 @@
 # ImageMagick delegates for Unix.  The format is as follows.  Each
-# delegate begins with a tag and/or format separated by a operation
-# tag (see below).  This line must be followed by one or more commands
-# preceded with a tab (\t) character.  If a command exceeds the length
-# of a line, use the backslash continuation character.  End the
-# command with an ampersand (&) to execute the command in the
-# background.
-#
+# delegate begins with a tag and/or format separated by a operator tag
+# (<=, <=>, =>).  This line must be followed by one or more commands
+# preceded with a tab (\t) character.  If a command exceeds the length of
+# a line, use the backslash continuation character.  End the command with
+# an ampersand (&) to execute the command in the background.
+# 
 # Optionally you can include the image filename, type, width, height, or
-# other image attributes by embedding special format characters=>
+# other image attributes by embedding special format characters:
 # 
 #   %b   file size
 #   %d   directory
@@ -28,24 +27,26 @@
 #   %x   x resolution
 #   %y   y resolution
 # 
-# There are two types of delegates: decode and encode.  Decode delegates
-# begin with a image format (tag) specified (e.g. mpeg) followed with a
-# equal-greater sign (=>).  The delegate is invoked whenever ImageMagick
+# There are three types of delegates: decode, encode, and bypass.  Decode
+# delegates begin with a image format (tag) specified (e.g. mpeg) followed
+# with a equal-greater sign (=>).  The delegate is invoked whenever ImageMagick
 # attempts to read an image whose format specifier or filename extension
-# matches the tag (e.g.  image.mpg for tag mpg=>).  The delegate must write
-# an image to the file designated by %o in an image format that ImageMagick
-# understands (e.g. pnm).
+# matches the tag (e.g.  image.mpg for tag mpg=>).  The delegate must
+# write an image to the file designated by %o in an image format that
+# ImageMagick understands (e.g. pnm).
 # 
 # An encode delegate begins with an image format, a less-equal sign (<=),
-# and a tag.  The delegate is invoked whenever ImageMagick attempts to write
-# an image whose format specifier or filename extension matches the tag
-# (e.g. image.mpg for tag <=mpg).  ImageMagick writes to a temporary file
-# in the format you specify.  The delegate can then read this file and
-# convert it to a format it supports and pesumably ImageMagick does not.
+# and a tag.  The delegate is invoked whenever ImageMagick attempts to
+# write an image whose format specifier or filename extension matches the
+# tag (e.g. image.mpg for tag <=mpg).  ImageMagick writes to a temporary
+# file in the format you specify.  The delegate can then read this file
+# and convert it to a format it supports and presumably ImageMagick does
+# not.
 # 
-# If you use a less-equal-greater sign (<=>) the delegate is bi-directional.
-# Delegates must be separated with a blank line.
-#
+# If you use a less-equal-greater sign (<=>) the delegate bypasses
+# ImageMagick and directly converts the image file (this assumes you do not
+# apply any image transforms such as sizing or rotation).
+# 
 # Lines that begin with a pound sign (#) are comments and are ignored.
 # 
 # There are a number of delegates used by ImageMagick for special
@@ -53,35 +54,24 @@
 # remove these or ImageMagick may behave strangely.
 # 
 # ImageMagick looks for the delegate configurarion file in this order:
-#
+# 
 #     /usr/local/share/ImageMagick/delegates.mgk
 #     DELEGATE_PATH/delegates.mgk
 #     HOME/.magick/delegates.mgk
 #     ./delegates.mgk
-#
-# Where DELEGATE_PATH and HOME are environment variables.
-#
-# Like entries in the later two directory overrides the specification
-# in the system-wide delegates file.
 # 
+# Where DELEGATE_PATH and HOME are environment variables.
+# 
+# Like entries in the later two directory overrides the specification in
+# the system-wide delegates file.
+#
+#
 
 <=bzip
 	|/usr/local/bin/bzip2 -f > %o
 
 <=compress
 	|/usr/bin/compress -c > %o
-
-<=gs-eps
-	/usr/local/bin/gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%s" -- "%s" -c quit
-
-<=gs-pdf
-	/usr/local/bin/gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%s" -- "%s" -c quit
-
-<=gs-ps
-	/usr/local/bin/gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
-	  -sOutputFile="%s" -- "%s" -c quit
 
 <=zip
 	|/usr/local/bin/gzip -cf > %o
@@ -105,6 +95,14 @@ dvi=>
 
 edit=>
 	/usr/X11R6.4/bin/xterm -title "Edit Image Comment" -e vi %i
+
+eps<=>pdf
+	/usr/local/bin/gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
+
+eps<=>ps
+	/usr/local/bin/gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
 	/usr/local/bin/GET %m:%i > %o 2>&1
@@ -157,6 +155,14 @@ m2v=>
 	/usr/local/bin/convert -concatenate %o*.ppm %o
 	/usr/bin/rm -f %o*.ppm
 
+pdf<=>eps
+	/usr/local/bin/gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
+
+pdf<=>ps
+	/usr/local/bin/gs -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
+
 pgp=>
 	/usr/local/bin/pgpv -fq %i
 
@@ -170,6 +176,14 @@ pov=>
 
 print=>ps
 	/usr/bin/lp -c -s %i
+
+ps<=>eps
+	/usr/local/bin/gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
+
+ps<=>pdf
+	/usr/local/bin/gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	  -sOutputFile="%o" -- "%i" -c quit
 
 rad=>
 	/usr/local/bin/ra_ppm -g 1.0 %i %o

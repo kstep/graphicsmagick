@@ -6559,7 +6559,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      status=InvokeDelegate(&image_info,*image,"edit",True);
+      status=InvokeDelegate(&image_info,*image,"edit",(char *) NULL);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to edit image comment",
           (char *) NULL);
@@ -6583,7 +6583,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       TemporaryFilename((*image)->filename);
-      status=InvokeDelegate(&image_info,*image,"launch",True);
+      status=InvokeDelegate(&image_info,*image,"launch",(char *) NULL);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to launch image editor",
           (char *) NULL);
@@ -6658,7 +6658,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       TemporaryFilename((*image)->filename);
       (void) strcpy((*image)->magick,"preview");
       LabelImage(*image,"Preview");
-      status=InvokeDelegate(&image_info,*image,"show",True);
+      status=InvokeDelegate(&image_info,*image,"show",(char *) NULL);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to show image preview",
           (*image)->filename);
@@ -6677,7 +6677,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       TemporaryFilename((*image)->filename);
       (void) strcpy((*image)->magick,"histogram");
       LabelImage(*image,"Histogram");
-      status=InvokeDelegate(&image_info,*image,"show",True);
+      status=InvokeDelegate(&image_info,*image,"show",(char *) NULL);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to show histogram",
           (*image)->filename);
@@ -6702,7 +6702,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       TemporaryFilename((*image)->filename);
       (void) strcpy((*image)->magick,"matte");
       LabelImage(*image,"Matte");
-      status=InvokeDelegate(&image_info,*image,"show",True);
+      status=InvokeDelegate(&image_info,*image,"show",(char *) NULL);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to show histogram",
           (*image)->filename);
@@ -6802,7 +6802,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      status=InvokeDelegate(&image_info,*image,"browse",True);
+      status=InvokeDelegate(&image_info,*image,"browse",(char *) NULL);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to browse documentation",
           (char *) NULL);
@@ -8459,7 +8459,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
     Print image.
   */
   TemporaryFilename(print_image->filename);
-  status=InvokeDelegate(&image_info,print_image,"print",True);
+  status=InvokeDelegate(&image_info,print_image,"print",(char *) NULL);
   if (status == False)
     XNoticeWidget(display,windows,"Unable to print image ",
       print_image->filename);

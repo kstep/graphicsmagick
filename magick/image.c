@@ -110,7 +110,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
     Initialize Image structure.
   */
   allocated_image->file=(FILE *) NULL;
-  allocated_image->ps_file=(FILE *) NULL;
   allocated_image->exempt=False;
   allocated_image->status=False;
   allocated_image->temporary=False;
@@ -3273,16 +3272,6 @@ Export void DestroyImage(Image *image)
       CloseImage(image);
       if (image->temporary)
         (void) remove(image->filename);
-    }
-  if (image->ps_file != (FILE *) NULL)
-    {
-      register Image
-        *p;
-
-      (void) fclose(image->ps_file);
-      if (!image->orphan)
-        for (p=image; p != (Image *) NULL; p=p->next)
-          p->ps_file=(FILE *) NULL;
     }
   /*
     Deallocate the image comments.
@@ -7556,7 +7545,7 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
           Decrypt image file with PGP encryption utilities.
         */
         if (*type == 'r')
-          p=GetDelegateCommand(image_info,image,"pgp",True);
+          p=GetDelegateCommand(image_info,image,"pgp",(char *) NULL);
       }
     else
       if ((Extent(filename) > 4) &&
@@ -7566,9 +7555,9 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
             Uncompress/compress image file with BZIP compress utilities.
           */
           if (*type == 'r')
-            p=GetDelegateCommand(image_info,image,"bzip",True);
+            p=GetDelegateCommand(image_info,image,"bzip",(char *) NULL);
           else
-            p=GetDelegateCommand(image_info,image,"bzip",False);
+            p=GetDelegateCommand(image_info,image,(char *) NULL,"bzip");
         }
       else
         if ((Extent(filename) > 3) &&
@@ -7578,9 +7567,9 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
               Uncompress/compress image file with GNU compress utilities.
             */
             if (*type == 'r')
-              p=GetDelegateCommand(image_info,image,"zip",True);
+              p=GetDelegateCommand(image_info,image,"zip",(char *) NULL);
             else
-              p=GetDelegateCommand(image_info,image,"zip",False);
+              p=GetDelegateCommand(image_info,image,(char *) NULL,"zip");
           }
         else
           if ((Extent(filename) > 2) &&
@@ -7590,9 +7579,9 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
                 Uncompress/compress image file with UNIX compress utilities.
               */
               if (*type == 'r')
-                p=GetDelegateCommand(image_info,image,"compress",True);
+                p=GetDelegateCommand(image_info,image,"compress",(char *) NULL);
               else
-                p=GetDelegateCommand(image_info,image,"compress",False);
+                p=GetDelegateCommand(image_info,image,(char *) NULL,"compress");
             }
   if (p != (char *) NULL)
     {

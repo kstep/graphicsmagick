@@ -46,14 +46,14 @@ typedef struct _DelegateInfo
   Exported delegate methods.
 */
 Export char
-  *GetDelegateCommand(const ImageInfo *,Image *,char *,unsigned int);
+  *GetDelegateCommand(const ImageInfo *,Image *,const char *,const char *);
 
 Export DelegateInfo
   *SetDelegateInfo(DelegateInfo *);
 
 Export unsigned int
-  GetDelegateInfo(char *,unsigned int,DelegateInfo *),
-  InvokeDelegate(const ImageInfo *,Image *,char *,unsigned int);
+  GetDelegateInfo(const char *,const char *,DelegateInfo *),
+  InvokeDelegate(const ImageInfo *,Image *,const char *,const char *);
 
 Export void
   DestroyDelegates(void);

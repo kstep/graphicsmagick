@@ -903,6 +903,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     filename[MaxTextExtent];
 
   FILE
+    *ps_file,
     *tiff_file;
 
   int
@@ -915,14 +916,17 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     eps_length,
     tiff_length;
 
-  if (image->ps_file != (FILE *) NULL)
+  ps_file=(FILE *) NULL;
+  if (Latin1Compare(image_info->magick,"PS") == 0)
+    ps_file=fopen(image->magick_filename,ReadBinaryType);
+  if (ps_file != (FILE *) NULL)
     {
       /*
         Read existing Encapsulated Postscript.
       */
-      (void) fseek(image->ps_file,0L,SEEK_END);
-      eps_length=ftell(image->ps_file);
-      (void) fseek(image->ps_file,0L,SEEK_SET);
+      (void) fseek(ps_file,0L,SEEK_END);
+      eps_length=ftell(ps_file);
+      (void) fseek(ps_file,0L,SEEK_SET);
     }
   else
     {
@@ -939,7 +943,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
         PrematureExit(FileOpenWarning,"Unable to open file",image);
       (void) remove(image->filename);
       eps_length=image->filesize;
-      image->ps_file=image->file;
+      ps_file=image->file;
       image->file=(FILE *) NULL;
     }
   /*
@@ -971,7 +975,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   LSBFirstWriteLong(eps_length+30,image->file);
   LSBFirstWriteLong(tiff_length,image->file);
   LSBFirstWriteShort(0xffff,image->file);
-  for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
+  for (c=fgetc(ps_file); c != EOF; c=fgetc(ps_file))
     (void) fputc((char) c,image->file);
   for (c=fgetc(tiff_file); c != EOF; c=fgetc(tiff_file))
     (void) fputc((char) c,image->file);
@@ -5218,9 +5222,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   CompressionType
     compression;
 
-  DelegateInfo
-    delegate_info;
-
   float
     dx_resolution,
     dy_resolution,
@@ -5273,39 +5274,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     number_packets,
     *xref;
 
-  if (image->ps_file != (FILE *) NULL) 
-    if ((image->next == (Image *) NULL) || image_info->adjoin)
-      if ((image->previous == (Image *) NULL) && !IsTainted(image))
-        if (GetDelegateInfo("gs-pdf",False,&delegate_info))
-          {
-            char
-              command[MaxTextExtent],
-              filename[MaxTextExtent];
-
-            FILE
-              *file;
-
-            TemporaryFilename(filename);
-            file=fopen(filename,WriteBinaryType);
-            if (file != (FILE *) NULL)
-              {
-                int
-                  c;
-
-                /*
-                  Use Ghostscript's PDF writer.
-                */
-                for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
-                  (void) putc(c,file);
-                (void) fclose(file);
-                FormatString(command,delegate_info.commands,image->filename,
-                  filename);
-                status=SystemCommand(image_info->verbose,command);
-                (void) remove(filename);
-                if (status == False)
-                  return(True);
-              }
-          }
   /*
     Open output image file.
   */
@@ -8426,9 +8394,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     **labels,
     **q;
 
-  DelegateInfo
-    delegate_info;
-
   float
     dx_resolution,
     dy_resolution,
@@ -8466,44 +8431,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   XSegment
     bounding_box;
 
-  if (image->ps_file != (FILE *) NULL) 
-    if ((image->next == (Image *) NULL) || image_info->adjoin)
-      if ((image->previous == (Image *) NULL) && !IsTainted(image))
-        if ((Latin1Compare(image_info->magick,"PS") &&
-             GetDelegateInfo("gs-ps",False,&delegate_info)) ||
-             GetDelegateInfo("gs-eps",False,&delegate_info))
-          {
-            char
-              command[MaxTextExtent],
-              filename[MaxTextExtent];
-
-            FILE
-              *file;
-
-            TemporaryFilename(filename);
-            file=fopen(filename,WriteBinaryType);
-            if (file != (FILE *) NULL)
-              {
-                int
-                  c;
-
-                unsigned int
-                  status;
-
-                /*
-                  Use Ghostscript's PDF writer.
-                */
-                for (c=fgetc(image->ps_file); c != EOF; c=fgetc(image->ps_file))
-                  (void) putc(c,file);
-                (void) fclose(file);
-                FormatString(command,delegate_info.commands,image->filename,
-                  filename);
-                status=SystemCommand(image_info->verbose,command);
-                (void) remove(filename);
-                if (status == False)
-                  return(True);
-              }
-          }
   /*
     Open output image file.
   */
@@ -13469,15 +13396,27 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
   SetImageInfo(image_info,True);
   SetNumberScenes(image);
   (void) strcpy(image->filename,image_info->filename);
-  if (GetDelegateInfo(image_info->magick,False,&delegate_info))
+  if (GetDelegateInfo(image->magick,image_info->magick,&delegate_info))
+    if ((image->next == (Image *) NULL) || image_info->adjoin)
+      if ((image->previous == (Image *) NULL) && !IsTainted(image))
+        if (IsAccessible(image->magick_filename))
+          {
+            /*
+              Let our bi-directional delegate process the image.
+            */
+            (void) strcpy(image->filename,image->magick_filename);
+            status=
+              InvokeDelegate(image_info,image,image->magick,image_info->magick);
+            return(status);
+          }
+  if (GetDelegateInfo((char *) NULL,image_info->magick,&delegate_info))
     {
       /*
-        Let our delegate process the image.
+        Let our encoding delegate process the image.
       */
       TemporaryFilename(image->filename);
-      status=InvokeDelegate(image_info,image,image_info->magick,False);
+      status=InvokeDelegate(image_info,image,(char *) NULL,image_info->magick);
       remove(image->filename);
-      remove(image_info->unique);
       return(status);
     }
   /*

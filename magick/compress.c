@@ -1681,7 +1681,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
     *buffer;
 
   Image
-    huffman_image;
+    *huffman_image;
 
   ImageInfo
     local_info;
@@ -1704,14 +1704,18 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   /*
     Write image as CCITTFax4 TIFF image to a temporary file.
   */
-  huffman_image=(*image);
-  TemporaryFilename(huffman_image.filename);
-  (void) strcpy(huffman_image.magick,"TIFF");
+  image->orphan=True;
+  huffman_image=CloneImage(image,image->columns,image->rows,True);
+  image->orphan=False;
+  TemporaryFilename(huffman_image->filename);
+  (void) strcpy(huffman_image->magick,"TIFF");
   local_info=(*image_info);
-  status=WriteImage(&local_info,&huffman_image);
+  status=WriteImage(&local_info,huffman_image);
+  DestroyImage(huffman_image);
   if (status == False)
     return(False);
-  tiff=TIFFOpen(huffman_image.filename,ReadBinaryType);
+  tiff=TIFFOpen(huffman_image->filename,ReadBinaryType);
+  (void) remove(huffman_image->filename);
   if (tiff == (TIFF *) NULL)
     {
       MagickWarning(FileOpenWarning,"Unable to open file",image_info->filename);
@@ -1731,7 +1735,6 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL);
       TIFFClose(tiff);
-      (void) remove(huffman_image.filename);
       return(False);
     }
   /*
@@ -1747,7 +1750,6 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   Ascii85Flush(image->file);
   FreeMemory((char *) buffer);
   TIFFClose(tiff);
-  (void) remove(huffman_image.filename);
   return(True);
 }
 #else
