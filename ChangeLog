@@ -1,5 +1,15 @@
 2004-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* config/delegates.mgk.in: Quote delegate command names so
+	that they can contain embedded spaces.
+	* VisualMagick/bin/delegates.mgk: Quote delegate command names so
+	that they can contain embedded spaces.
+	* coders/tiff.c (WriteTIFFImage): Use the libtiff default endian
+	mode when writing TIFF rather than forcing MSB2LSB bit order.
+	(ReadTIFFImage): Enable reading in MSB2LSB bit order (better for
+	our byte-level parsing), enable memory mapping, and enable strip
+	chopping.  Memory mapping and strip chopping are probably enabled
+	by default.
 	* magick/nt_base.c (NTSystemComman): Use
 	MsgWaitForMultipleObjects() rather than WaitForSingleObject() in
 	order to avoid possible deadlock when application code directly or

@@ -4,6 +4,15 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2004-03-06  Vladimir Lukianov  &lt;lvm@integrum.ru&gt;
+
+<UL>
+  <LI> lib/Thread.cpp (lock): Use MsgWaitForMultipleObjects() rather than
+        WaitForSingleObject() in order to avoid possible deadlock when
+        application code directly or indirectly creates windows.
+
+</UL>
+<p>
 2004-02-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

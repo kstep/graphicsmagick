@@ -555,7 +555,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       if(!AcquireTemporaryFileName(filename))
         ThrowReaderTemporaryFileException(filename);
       (void) ImageToFile(image,filename,exception);
-      tiff=TIFFOpen(filename,"rb");
+      /*
+        Open TIFF file
+
+        'r'          open for read
+        'B'          read/write information using MSB2LSB bit order
+        'M'          enable use of memory-mapped files when supported
+        'C'          enable strip chopping support when reading
+      */
+      tiff=TIFFOpen(filename,"rBMC");
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Open temporary file %.1024s",filename);
@@ -1773,7 +1781,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
   else
     CloseBlob(image);
-  tiff=TIFFOpen(filename,"wb");
+  /*
+    Open TIFF file
+
+    'w'          open for write
+  */
+  tiff=TIFFOpen(filename,"w");
   if (tiff == (TIFF *) NULL)
     {
       if (filename_is_temporary)
