@@ -345,8 +345,17 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         (void) fprintf(file,"-\n");
         (void) fprintf(file,"-\n");
         (void) fprintf(file,"%s\n",image_info->zero);
-        (void) fprintf(file,"1\n");
-        (void) fprintf(file,"%u\n",GetNumberScenes(image));
+        if (image_info->subrange == 0)
+          {
+            (void) fprintf(file,"1\n");
+            (void) fprintf(file,"%u\n",GetNumberScenes(image));
+          }
+        else
+          {
+            (void) fprintf(file,"%u\n",image_info->subimage);
+            (void) fprintf(file,"%u\n",image_info->subimage+
+              image_info->subrange-1);
+          }
         (void) fprintf(file,"0\n");
         (void) fprintf(file,"00:00:00:00\n");
         (void) fprintf(file,"%d\n",mpeg ? 12 : 15);
