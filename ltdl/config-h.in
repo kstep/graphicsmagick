@@ -131,7 +131,7 @@
 /* Define to the system default library search path. */
 #undef LTDL_SYSSEARCHPATH
 
-/* Define if dlsym() requires a leading underscode in symbol names. */
+/* Define if dlsym() requires a leading underscore in symbol names. */
 #undef NEED_USCORE
 
 /* Define if you have the ANSI C header files. */

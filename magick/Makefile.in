@@ -223,11 +223,12 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
-  image.c color.c quantize.c segment.c zoom.c transform.c shear.c enhance.c \
-  effect.c decorate.c annotate.c type.c draw.c montage.c semaphore.c \
-  attribute.c signature.c compress.c gem.c registry.c magic.c magick.c \
-  delegate.c module.c static.c timer.c utility.c cache_view.c stream.c animate.c \
-  display.c widget.c xwindow.c PreRvIcccm.c
+  image.c color.c quantize.c segment.c zoom.c transform.c shear.c \
+  enhance.c effect.c decorate.c annotate.c type.c draw.c montage.c \
+  semaphore.c attribute.c signature.c compress.c gem.c registry.c magic.c \
+  magick.c delegate.c module.c static.c timer.c utility.c cache_view.c stream.c \
+  animate.c display.c widget.c xwindow.c PreRvIcccm.c
+
 
 # Library sources
 @WITH_MODULES_TRUE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
@@ -275,26 +276,28 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 @WITH_MODULES_TRUE@libMagick_la_DEPENDENCIES = \
 @WITH_MODULES_TRUE@	$(top_builddir)/ltdl/libltdlc.la
 @WITH_MODULES_FALSE@libMagick_la_DEPENDENCIES = ../coders/libCoders.la
-@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = memory.lo blob.lo \
-@WITH_MODULES_TRUE@    cache.lo error.lo monitor.lo constitute.lo image.lo \
-@WITH_MODULES_TRUE@    color.lo quantize.lo segment.lo zoom.lo transform.lo \
-@WITH_MODULES_TRUE@    shear.lo enhance.lo effect.lo decorate.lo annotate.lo \
-@WITH_MODULES_TRUE@    type.lo draw.lo montage.lo semaphore.lo attribute.lo \
-@WITH_MODULES_TRUE@    signature.lo compress.lo gem.lo registry.lo magic.lo magick.lo \
-@WITH_MODULES_TRUE@    delegate.lo module.lo static.lo timer.lo utility.lo \
-@WITH_MODULES_TRUE@    cache_view.lo stream.lo animate.lo display.lo \
-@WITH_MODULES_TRUE@    widget.lo xwindow.lo PreRvIcccm.lo
-@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = PreRvIcccm.lo animate.lo \
-@WITH_MODULES_FALSE@	annotate.lo attribute.lo blob.lo cache.lo \
-@WITH_MODULES_FALSE@	cache_view.lo color.lo compress.lo \
-@WITH_MODULES_FALSE@	constitute.lo decorate.lo delegate.lo \
-@WITH_MODULES_FALSE@	display.lo draw.lo effect.lo enhance.lo \
-@WITH_MODULES_FALSE@	error.lo gem.lo registry.lo image.lo magic.lo magick.lo \
-@WITH_MODULES_FALSE@	memory.lo module.lo monitor.lo montage.lo \
-@WITH_MODULES_FALSE@	quantize.lo segment.lo semaphore.lo \
-@WITH_MODULES_FALSE@	shear.lo signature.lo static.lo stream.lo \
-@WITH_MODULES_FALSE@	timer.lo transform.lo type.lo utility.lo \
-@WITH_MODULES_FALSE@	widget.lo xwindow.lo zoom.lo
+@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = memory.lo blob.lo cache.lo \
+@WITH_MODULES_TRUE@	error.lo monitor.lo constitute.lo image.lo \
+@WITH_MODULES_TRUE@	color.lo quantize.lo segment.lo zoom.lo \
+@WITH_MODULES_TRUE@	transform.lo shear.lo enhance.lo effect.lo \
+@WITH_MODULES_TRUE@	decorate.lo annotate.lo type.lo draw.lo \
+@WITH_MODULES_TRUE@	montage.lo semaphore.lo attribute.lo \
+@WITH_MODULES_TRUE@	signature.lo compress.lo gem.lo registry.lo \
+@WITH_MODULES_TRUE@	magic.lo magick.lo delegate.lo module.lo \
+@WITH_MODULES_TRUE@	static.lo timer.lo utility.lo cache_view.lo \
+@WITH_MODULES_TRUE@	stream.lo animate.lo display.lo widget.lo \
+@WITH_MODULES_TRUE@	xwindow.lo PreRvIcccm.lo
+@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = memory.lo blob.lo cache.lo \
+@WITH_MODULES_FALSE@	error.lo monitor.lo constitute.lo image.lo \
+@WITH_MODULES_FALSE@	color.lo quantize.lo segment.lo zoom.lo \
+@WITH_MODULES_FALSE@	transform.lo shear.lo enhance.lo effect.lo \
+@WITH_MODULES_FALSE@	decorate.lo annotate.lo type.lo draw.lo \
+@WITH_MODULES_FALSE@	montage.lo semaphore.lo attribute.lo \
+@WITH_MODULES_FALSE@	signature.lo compress.lo gem.lo registry.lo \
+@WITH_MODULES_FALSE@	magic.lo magick.lo delegate.lo module.lo \
+@WITH_MODULES_FALSE@	static.lo timer.lo utility.lo cache_view.lo \
+@WITH_MODULES_FALSE@	stream.lo animate.lo display.lo widget.lo \
+@WITH_MODULES_FALSE@	xwindow.lo PreRvIcccm.lo
 libMagick_la_OBJECTS = $(am_libMagick_la_OBJECTS)
 SCRIPTS = $(bin_SCRIPTS)
 
@@ -311,18 +314,18 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/decorate.Plo $(DEPDIR)/delegate.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/display.Plo $(DEPDIR)/draw.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/effect.Plo $(DEPDIR)/enhance.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/error.Plo $(DEPDIR)/gem.Plo $(DEPDIR)/registry.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/error.Plo $(DEPDIR)/gem.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/image.Plo $(DEPDIR)/magic.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/magick.Plo $(DEPDIR)/memory.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/module.Plo $(DEPDIR)/monitor.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/montage.Plo $(DEPDIR)/quantize.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/segment.Plo $(DEPDIR)/semaphore.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/shear.Plo $(DEPDIR)/signature.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/static.Plo $(DEPDIR)/stream.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/timer.Plo $(DEPDIR)/transform.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/type.Plo $(DEPDIR)/utility.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/widget.Plo $(DEPDIR)/xwindow.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/zoom.Plo
+@AMDEP_TRUE@	$(DEPDIR)/registry.Plo $(DEPDIR)/segment.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/semaphore.Plo $(DEPDIR)/shear.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/signature.Plo $(DEPDIR)/static.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/stream.Plo $(DEPDIR)/timer.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/transform.Plo $(DEPDIR)/type.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/utility.Plo $(DEPDIR)/widget.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/xwindow.Plo $(DEPDIR)/zoom.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -458,7 +461,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/enhance.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/gem.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/registry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/image.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/magic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/magick.Plo@am__quote@
@@ -467,6 +469,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/monitor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/montage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/quantize.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/registry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/segment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/semaphore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/shear.Plo@am__quote@

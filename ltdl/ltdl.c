@@ -387,7 +387,7 @@ realloc (ptr, size)
      lt_ptr ptr;
      size_t size;
 {
-  if (size <= 0)
+  if (size == 0)
     {
       /* For zero or less bytes, free the original memory */
       if (ptr != 0)
@@ -2624,7 +2624,6 @@ try_dlopen (phandle, filename)
       char *	deplibs	 = 0;
       char *    line	 = 0;
       size_t	line_len;
-      int	i;
 
       /* if we can't find the installed flag, it is probably an
 	 installed libtool archive, produced with an old version
@@ -2640,23 +2639,26 @@ try_dlopen (phandle, filename)
 	}
 
       /* canonicalize the module name */
-      for (i = 0; i < ext - base_name; ++i)
-	{
-	  if (isalnum ((int)(base_name[i])))
-	    {
-	      name[i] = base_name[i];
-	    }
-	  else
-	    {
-	      name[i] = '_';
-	    }
-	}
-      name[ext - base_name] = LT_EOS_CHAR;
+      {
+        size_t i;
+        for (i = 0; i < ext - base_name; ++i)
+	  {
+	    if (isalnum ((int)(base_name[i])))
+	      {
+	        name[i] = base_name[i];
+	      }
+	    else
+	      {
+	        name[i] = '_';
+	      }
+	  }
+        name[ext - base_name] = LT_EOS_CHAR;
+      }
 
-    /* Now try to open the .la file.  If there is no directory name
-       component, try to find it first in user_search_path and then other
-       prescribed paths.  Otherwise (or in any case if the module was not
-       yet found) try opening just the module name as passed.  */
+      /* Now try to open the .la file.  If there is no directory name
+         component, try to find it first in user_search_path and then other
+         prescribed paths.  Otherwise (or in any case if the module was not
+         yet found) try opening just the module name as passed.  */
       if (!dir)
 	{
 	  const char *search_path;
@@ -2715,7 +2717,7 @@ try_dlopen (phandle, filename)
       /* read the .la file */
       while (!feof (file))
 	{
-	  if (!fgets (line, line_len, file))
+	  if (!fgets (line, (int) line_len, file))
 	    {
 	      break;
 	    }
@@ -2725,7 +2727,7 @@ try_dlopen (phandle, filename)
 	  while (line[LT_STRLEN(line) -1] != '\n')
 	    {
 	      line = LT_DLREALLOC (char, line, line_len *2);
-	      if (!fgets (&line[line_len -1], line_len +1, file))
+	      if (!fgets (&line[line_len -1], (int) line_len +1, file))
 		{
 		  break;
 		}
@@ -2924,7 +2926,7 @@ lt_dlopen (filename)
 
 /* If the last error messge store was `FILE_NOT_FOUND', then return
    non-zero.  */
-int
+static int
 file_not_found ()
 {
   const char *error = 0;

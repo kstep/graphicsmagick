@@ -45,6 +45,12 @@
 /* Define if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
+/* Define if you have the <hdf.h> header file. */
+#undef HAVE_HDF_H
+
+/* Define if you have the <hdf/hdf.h> header file. */
+#undef HAVE_HDF_HDF_H
+
 /* Define if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 

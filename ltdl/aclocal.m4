@@ -2076,11 +2076,11 @@ esac
 # AC_LIBLTDL_CONVENIENCE([DIRECTORY])
 # -----------------------------------
 # sets LIBLTDL to the link flags for the libltdl convenience library and
-# INCLTDL to the include flags for the libltdl header and adds
+# LTDLINCL to the include flags for the libltdl header and adds
 # --enable-ltdl-convenience to the configure arguments.  Note that LIBLTDL
-# and INCLTDL are not AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If
+# and LTDLINCL are not AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If
 # DIRECTORY is not provided, it is assumed to be `libltdl'.  LIBLTDL will
-# be prefixed with '${top_builddir}/' and INCLTDL will be prefixed with
+# be prefixed with '${top_builddir}/' and LTDLINCL will be prefixed with
 # '${top_srcdir}/' (note the single quotes!).  If your package is not
 # flat and you're not using automake, define top_builddir and
 # top_srcdir appropriately in the Makefiles.
@@ -2092,19 +2092,21 @@ AC_DEFUN([AC_LIBLTDL_CONVENIENCE],
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
   esac
   LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdlc.la
-  INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
+  LTDLINCL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
+  # For backwards non-gettext consistent compatibility...
+  INCLTDL="$LTDLINCL"
 ])# AC_LIBLTDL_CONVENIENCE
 
 
 # AC_LIBLTDL_INSTALLABLE([DIRECTORY])
 # -----------------------------------
 # sets LIBLTDL to the link flags for the libltdl installable library and
-# INCLTDL to the include flags for the libltdl header and adds
+# LTDLINCL to the include flags for the libltdl header and adds
 # --enable-ltdl-install to the configure arguments.  Note that LIBLTDL
-# and INCLTDL are not AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If
+# and LTDLINCL are not AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If
 # DIRECTORY is not provided and an installed libltdl is not found, it is
 # assumed to be `libltdl'.  LIBLTDL will be prefixed with '${top_builddir}/'
-# and INCLTDL will be prefixed with '${top_srcdir}/' (note the single
+# and LTDLINCL will be prefixed with '${top_srcdir}/' (note the single
 # quotes!).  If your package is not flat and you're not using automake,
 # define top_builddir and top_srcdir appropriately in the Makefiles.
 # In the future, this macro may have to be called after AC_PROG_LIBTOOL.
@@ -2121,12 +2123,14 @@ AC_DEFUN([AC_LIBLTDL_INSTALLABLE],
   if test x"$enable_ltdl_install" = x"yes"; then
     ac_configure_args="$ac_configure_args --enable-ltdl-install"
     LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdl.la
-    INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
+    LTDLINCL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
   else
     ac_configure_args="$ac_configure_args --enable-ltdl-install=no"
     LIBLTDL="-lltdl"
-    INCLTDL=
+    LTDLINCL=
   fi
+  # For backwards non-gettext consistent compatibility...
+  INCLTDL="$LTDLINCL"
 ])# AC_LIBLTDL_INSTALLABLE
 
 
@@ -5613,7 +5617,7 @@ fi
 
 if test x"$libltdl_cv_need_uscore" = xyes; then
   AC_DEFINE(NEED_USCORE, 1,
-    [Define if dlsym() requires a leading underscode in symbol names.])
+    [Define if dlsym() requires a leading underscore in symbol names.])
 fi
 ])# AC_LTDL_DLSYM_USCORE
 
