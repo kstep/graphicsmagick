@@ -735,20 +735,20 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     blue,
     center,
     density,
-    end,
     green,
     opacity,
     red,
-    scale_factor,
-    start,
+    scale,
     support;
 
   IndexPacket
     index;
 
   int
+    end,
     j,
     n,
+    start,
     y;
 
   register int
@@ -793,8 +793,8 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
   /*
     Apply filter to resize horizontally from source to destination.
   */
-  scale_factor=blur*Max(1.0/x_factor,1.0);
-  support=Max(scale_factor*filter_info->support,0.5);
+  scale=blur*Max(1.0/x_factor,1.0);
+  support=Max(scale*filter_info->support,0.5);
   if (support > 0.5)
     destination->storage_class=DirectClass;
   else
@@ -803,21 +803,21 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         Reduce to point sampling.
       */
       support=0.5+MagickEpsilon;
-      scale_factor=1.0;
+      scale=1.0;
     }
   for (x=0; x < (int) destination->columns; x++)
   {
     density=0.0;
     n=0;
     center=(double) x/x_factor;
-    start=center-support;
-    end=center+support;
-    for (i=(int) Max(start+0.5,0); i < (int) Min(end+0.5,source->columns); i++)
+    start=Max(center-support+0.5,0);
+    end=Min(center+support+0.5,source->columns);
+    for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
       contribution[n].weight=
-        filter_info->function((i-center+0.5)/scale_factor);
-      contribution[n].weight/=scale_factor;
+        filter_info->function((i-center+0.5)/scale);
+      contribution[n].weight/=scale;
       density+=contribution[n].weight;
       n++;
     }
@@ -880,19 +880,19 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     center,
     density,
     green,
-    end,
     opacity,
     red,
-    scale_factor,
-    start,
+    scale,
     support;
 
   IndexPacket
     index;
 
   int
+    end,
     j,
     n,
+    start,
     x;
 
   register int
@@ -937,8 +937,8 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
   /*
     Apply filter to resize vertically from source to destination.
   */
-  scale_factor=blur*Max(1.0/y_factor,1.0);
-  support=Max(scale_factor*filter_info->support,0.5);
+  scale=blur*Max(1.0/y_factor,1.0);
+  support=Max(scale*filter_info->support,0.5);
   if (support > 0.5)
     destination->storage_class=DirectClass;
   else
@@ -947,21 +947,21 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         Reduce to point sampling.
       */
       support=0.5+MagickEpsilon;
-      scale_factor=1.0;
+      scale=1.0;
     }
   for (y=0; y < (int) destination->rows; y++)
   {
     density=0.0;
     n=0;
     center=(double) y/y_factor;
-    start=center-support;
-    end=center+support;
-    for (i=(int) Max(start+0.5,0); i < (int) Min(end+0.5,source->rows); i++)
+    start=Max(center-support+0.5,0);
+    end=Min(center+support+0.5,source->rows);
+    for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
       contribution[n].weight=
-        filter_info->function((i-center+0.5)/scale_factor);
-      contribution[n].weight/=scale_factor;
+        filter_info->function((i-center+0.5)/scale);
+      contribution[n].weight/=scale;
       density+=contribution[n].weight;
       n++;
     }
@@ -1022,9 +1022,12 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
     *contribution;
 
   double
+    scale,
     support,
     x_factor,
-    y_factor;
+    x_support,
+    y_factor,
+    y_support;
 
   Image
     *source_image,
@@ -1076,9 +1079,12 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
     Allocate filter contribution info.
   */
   x_factor=(double) resize_image->columns/image->columns;
+  scale=blur*Max(1.0/x_factor,1.0);
+  x_support=Max(scale*filters[filter].support,0.5);
   y_factor=(double) resize_image->rows/image->rows;
-  support=Max(filters[filter].support/x_factor,
-    filters[filter].support/y_factor);
+  scale=blur*Max(1.0/y_factor,1.0);
+  y_support=Max(scale*filters[filter].support,0.5);
+  support=Max(x_support,y_support);
   if (support < filters[filter].support)
     support=filters[filter].support;
   contribution=(ContributionInfo *)
@@ -1104,7 +1110,7 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
         }
       span=source_image->columns+resize_image->rows;
       status=HorizontalFilter(image,source_image,x_factor,&filters[filter],blur,
-	contribution,span,&quantum);
+        contribution,span,&quantum);
       status|=VerticalFilter(source_image,resize_image,y_factor,
         &filters[filter],blur,contribution,span,&quantum);
     }
