@@ -298,7 +298,6 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterAVIImage();
       RegisterAVSImage();
       RegisterBMPImage();
-      RegisterCACHEImage();
       RegisterCMYKImage();
       RegisterCUTImage();
       RegisterDCMImage();
@@ -323,6 +322,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterMATTEImage();
       RegisterMIFFImage();
       RegisterMONOImage();
+      RegisterMPCImage();
       RegisterMTVImage();
       RegisterMVGImage();
       RegisterNULLImage();
