@@ -1192,25 +1192,32 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
     status;
 
   assert(draw_info != (const DrawInfo *) NULL);
-  assert(draw_info->clip_mask != (Image *) NULL);
-  SetImage(draw_info->clip_mask,TransparentOpacity);
   FormatString(clip_path,"[%.1024s]",draw_info->clip_path);
   attribute=GetImageAttribute(image,clip_path);
   if (attribute == (ImageAttribute *) NULL)
     return(False);
+  if (image->clip_mask == (Image *) NULL)
+    {
+      Image
+        *clip_mask;
+
+      clip_mask=CloneImage(image,0,0,True,&image->exception);
+      if (clip_mask == (Image *) NULL)
+        return(False);
+      SetImageClipMask(image,clip_mask);
+    }
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("black",&clone_info->fill);
   clone_info->clip_path=(char *) NULL;
-  clone_info->clip_mask=(Image *) NULL;
   if (draw_info->debug)
     (void) fprintf(stdout,"\nbegin clip-path %.1024s\n",draw_info->clip_path);
-  status=DrawImage(draw_info->clip_mask,clone_info);
+  SetImage(image->clip_mask,TransparentOpacity);
+  status=DrawImage(image->clip_mask,clone_info);
   if (draw_info->debug)
     (void) fprintf(stdout,"end clip-path\n\n");
   draw_info->clip_units=clone_info->clip_units;
   DestroyDrawInfo(clone_info);
-  SetImageClipMask(image,draw_info->clip_mask);
   return(status);
 }
 
@@ -1604,10 +1611,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             */
             GetToken(q,&q,token);
             graphic_context[n]->clip_path=AllocateString(token);
-            graphic_context[n]->clip_mask=
-              CloneImage(image,0,0,True,&image->exception);
-            if (graphic_context[n]->clip_mask != (Image *) NULL)
-              (void) DrawClipPath(image,graphic_context[n]);
+            (void) DrawClipPath(image,graphic_context[n]);
             break;
           }
         if (LocaleCompare("clip-rule",keyword) == 0)
@@ -2014,13 +2018,10 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               break;
             if (LocaleCompare("graphic-context",token) == 0)
               {
-                if (graphic_context[n]->clip_mask != (Image *) NULL)
-                  if (graphic_context[n]->clip_mask !=
-                      graphic_context[n-1]->clip_mask)
-                    {
-                      DestroyImage(graphic_context[n]->clip_mask);
-                      SetImageClipMask(image,(Image *) NULL);
-                    }
+                if (graphic_context[n]->clip_path != (char *) NULL)
+                  if (LocaleCompare(graphic_context[n]->clip_path,
+                      graphic_context[n-1]->clip_path) != 0)
+                    SetImageClipMask(image,(Image *) NULL);
                 DestroyDrawInfo(graphic_context[n]);
                 n--;
                 if (n < 0)
@@ -2603,7 +2604,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       if (point.y > graphic_context[n]->bounds.y2)
         graphic_context[n]->bounds.y2=point.y;
     }
-    if (graphic_context[n]->clip_mask != (Image *) NULL)
+    if (graphic_context[n]->clip_path != (char *) NULL)
       if (graphic_context[n]->clip_units == ObjectBoundingBox)
         (void) DrawClipPath(image,graphic_context[n]);
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);

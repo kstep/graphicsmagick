@@ -112,9 +112,6 @@ typedef struct _DrawInfo
   ClipPathUnits
     clip_units;
 
-  Image
-    *clip_mask;
-
   SegmentInfo
     bounds;
 

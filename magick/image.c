@@ -980,6 +980,9 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         (void) CloneString(&clone_image->montage,image->montage);
       if (image->directory != (char *) NULL)
         (void) CloneString(&clone_image->directory,image->directory);
+      if (clone_image->clip_mask != (Image *) NULL)
+        clone_image->clip_mask=
+          CloneImage(image->clip_mask,0,0,True,&image->clip_mask->exception);
     }
   clone_image->attributes=(ImageAttribute *) NULL;
   attribute=GetImageAttribute(image,(char *) NULL);
@@ -2234,28 +2237,16 @@ MagickExport void DestroyImage(Image *image)
         (void) remove(image->filename);
     }
   DestroyImagePixels(image);
-  /*
-    Deallocate the image montage directory.
-  */
   if (image->montage != (char *) NULL)
     LiberateMemory((void **) &image->montage);
   if (image->directory != (char *) NULL)
     LiberateMemory((void **) &image->directory);
-  /*
-    Deallocate the image colormap.
-  */
   if (image->colormap != (PixelPacket *) NULL)
     LiberateMemory((void **) &image->colormap);
-  /*
-    Deallocate the image ICM profile.
-  */
   if (image->color_profile.name != (char *) NULL)
     LiberateMemory((void **) &image->color_profile.name);
   if (image->color_profile.length != 0)
     LiberateMemory((void **) &image->color_profile.info);
-  /*
-    Deallocate the image IPTC profile.
-  */
   if (image->iptc_profile.name != (char *) NULL)
     LiberateMemory((void **) &image->iptc_profile.name);
   if (image->iptc_profile.length != 0)
@@ -2274,17 +2265,10 @@ MagickExport void DestroyImage(Image *image)
       }
       LiberateMemory((void **) &image->generic_profile);
     }
-  /*
-    Deallocate the image text attributes.
-  */
   DestroyImageAttributes(image);
-  /*
-    Deallocate the exception info structure.
-  */
   DestroyExceptionInfo(&image->exception);
-  /*
-    Deallocate the image pixels.
-  */
+  if (image->clip_mask != (Image *) NULL)
+    DestroyImage(image->clip_mask);
   if (!image->orphan)
     {
       /*
@@ -5619,7 +5603,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e D e p t h                                                 %
+%   S e t I m a g e C l i p M a s k                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -5642,16 +5626,51 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
 */
 MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 {
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *p,
+    *q;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image->clip_mask=(Image *) NULL;
   if (clip_mask == (Image *) NULL)
-    return(True);
+    {
+      if (image->clip_mask != (Image *) NULL)
+        DestroyImage(image->clip_mask);
+      image->clip_mask=(Image *) NULL;
+      return(True);
+    }
   if ((clip_mask->columns != image->columns) ||
       (clip_mask->rows != image->rows))
     ThrowBinaryException(OptionWarning,"Unable to associate clip mask",
       "image widths or heights differ");
-  image->clip_mask=clip_mask;
+  if (image->clip_mask == (Image *) NULL)
+    {
+      image->clip_mask=clip_mask;
+      return(True);
+    }
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(clip_mask,0,y,image->columns,1);
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      if (p->opacity != TransparentOpacity)
+        *q=(*p);
+      p++;
+      q++;
+    }
+    if (!SyncImagePixels(image))
+      break;
+  }
+  DestroyImage(clip_mask);
   return(True);
 }
 
