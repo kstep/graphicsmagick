@@ -21,10 +21,19 @@ fill colorspec
 fill-opacity opacity
 fill-rule (evenodd|nonzero)
 font fontname
-font-size pointsize  (used to be 'pointsize')
+font-family familyname (e.g. "helvetica")
+font-size pointsize
+font-stretch (all|normal|ultra-condensed|extra-condensed|condensed|
+              semi-condensed|semi-expanded|expanded|extra-expanded|
+              ultra-expanded)
+font-style (all|normal|italic|oblique)
+font-weight (all|normal|bold|100|200|300|400|500|600|700|800|900)
 gradient-units (userSpace|userSpaceOnUse|objectBoundingBox)
-gravity (NorthWest|North|NorthEast|West|Center|East|SouthWest|South|SouthEast)
-image (Over|In|Out|Atop|Xor|Plus|Minus|Add|Subtract|Difference|Multiply|Bumpmap|Copy|CopyRed|CopyGreen|CopyBlue|CopyOpacity|Clear) x,y width,height filename
+gravity (NorthWest|North|NorthEast|West|Center|East|SouthWest|
+         South|SouthEast)
+image (Over|In|Out|Atop|Xor|Plus|Minus|Add|Subtract|Difference|
+       Multiply|Bumpmap|Copy|CopyRed|CopyGreen|CopyBlue|CopyOpacity
+       |Clear) x,y width,height filename
 line startX,startY endX,endY
 matte x,y (point|replace|floodfill|filltoborder|reset)
 opacity fill stroke
