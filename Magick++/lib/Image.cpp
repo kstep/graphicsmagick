@@ -8,8 +8,6 @@
 #define MAGICK_IMPLEMENTATION
 
 #include <string>
-#include <iostream>
-#include <strstream>
 #include <string.h>
 #include <errno.h>
 #include <math.h>
@@ -81,7 +79,7 @@ Magick::Image::Image( const std::string &imageSpec_ )
     }
   catch ( const Warning &warning_ )
     {
-      cerr << warning_.what() << endl;
+      // FIXME: need a way to report warnings in constructor
     }
 }
 
@@ -104,7 +102,7 @@ Magick::Image::Image( const Geometry &size_,
     }
   catch ( const Warning &warning_ )
     {
-      cerr << warning_.what() << endl;
+      // FIXME: need a way to report warnings in constructor
     }
 }
 
@@ -119,7 +117,7 @@ Magick::Image::Image ( const Blob &blob_ )
     }
   catch ( const Warning &warning_ )
     {
-      cerr << warning_.what() << endl;
+      // FIXME: need a way to report warnings in constructor
     }
 }
 
@@ -135,7 +133,7 @@ Magick::Image::Image ( const Blob &blob_,
     }
   catch ( const Warning &warning_ )
     {
-      cerr << warning_.what() << endl;
+      // FIXME: need a way to report warnings in constructor
     }
 }
 
@@ -152,7 +150,7 @@ Magick::Image::Image ( const Blob &blob_,
     }
   catch ( const Warning &warning_ )
     {
-      cerr << warning_.what() << endl;
+      // FIXME: need a way to report warnings in constructor
     }
 }
 
@@ -170,7 +168,7 @@ Magick::Image::Image ( const Blob &blob_,
     }
   catch ( const Warning &warning_ )
     {
-      cerr << warning_.what() << endl;
+      // FIXME: need a way to report warnings in constructor
     }
 }
 
@@ -187,7 +185,7 @@ Magick::Image::Image ( const Blob &blob_,
     }
   catch ( const Warning &warning_ )
     {
-      cerr << warning_.what() << endl;
+      // FIXME: need a way to report warnings in constructor
     }
 }
 
@@ -206,7 +204,7 @@ Magick::Image::Image ( const unsigned int width_,
     }
   catch ( const Warning &warning_ )
     {
-      cerr << warning_.what() << endl;
+      // FIXME: need a way to report warnings in constructor
     }
 }
 
@@ -274,20 +272,20 @@ void Magick::Image::annotate ( const std::string &text_,
   
   drawInfo->text = const_cast<char *>(text_.c_str());
 
-  ostrstream boundingArea;
+  char boundingArea[MaxTextExtent];
+
   drawInfo->geometry = 0;
   if ( boundingArea_.isValid() ){
     if ( boundingArea_.width() == 0 || boundingArea_.height() == 0 )
       {
-        boundingArea << "+" << boundingArea_.xOff()
-                     << "+" << boundingArea_.yOff() << ends;
+        FormatString( boundingArea, "+%u+%u",
+                      boundingArea_.xOff(), boundingArea_.yOff() );
       }
     else
       {
-        boundingArea << string(boundingArea_) << ends;
+        strcpy( boundingArea, string(boundingArea_).c_str());
       }
-    drawInfo->geometry = boundingArea.str();
-    // cout << "Annotation geometry: \"" << drawInfo->geometry << "\"" << endl;
+    drawInfo->geometry = boundingArea;
   }
 
   drawInfo->gravity = gravity_;
@@ -1107,7 +1105,6 @@ void Magick::Image::read ( const std::string &imageSpec_ )
   if ( image && image->next )
     {
       // Destroy any extra image frames
-      cout << "Destroying excess image frames! ..." << endl;
       MagickLib::Image* next = image->next;
       image->next = 0;
       image->orphan = true;

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Implementation of Exception and derived classes
 //
@@ -8,7 +8,6 @@
 #define MAGICK_IMPLEMENTATION
 
 #include <string>
-#include <iostream>
 #include <errno.h>
 #include <string.h>
 
@@ -42,13 +41,6 @@ Magick::Exception& Magick::Exception::operator= (const Magick::Exception& origin
 /*virtual*/ const char* Magick::Exception::what( ) const throw()
 {
   return _what.c_str();
-}
-
-std::ostream& operator<<( std::ostream& stream_,
-			  const Magick::Exception& exception_)
-{
-  stream_ << exception_.what();
-  return stream_;
 }
 
 //

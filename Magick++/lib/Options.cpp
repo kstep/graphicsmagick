@@ -11,7 +11,6 @@
 
 #include <string>
 #include <stdlib.h>
-#include <iostream>
 #include <math.h>
 #include "Magick++/Options.h"
 #include "Magick++/Functions.h"

@@ -502,7 +502,6 @@ then
 # Full set of headers used ...
 # algorithm cctype cerrno cmath cstdio cstdlib cstring ctime exception
 # functional iomanip iosfwd iostream iterator list string strstream utility
- AC_CHECK_HEADERS(iosfwd)
  AC_LANG_CPLUSPLUS
  AC_PROG_CXX
  AC_CXX_BOOL
@@ -697,9 +696,10 @@ then
     OLIBS="$LIBS"
     # Assume that gcc is used with ccmalloc.
     LIBS="$LIBS $CCMALLOC_PREFIX/lib/ccmalloc-gcc.o"
-    AC_CHECK_LIB(ccmalloc,ccmalloc_malloc,LIB_CCMALLOC='-lccmalloc -ldl',,-ldl)
+    AC_CHECK_LIB(ccmalloc,ccmalloc_malloc,LIB_CCMALLOC="$CCMALLOC_PREFIX/lib/ccmalloc-gcc.o -lccmalloc -ldl",,-ldl)
     if test -n "$LIB_CCMALLOC"
     then
+      LIBS="$OLIBS"
       LIBS="$LIBS $LIB_CCMALLOC"
       have_ccmalloc='yes'
      else
@@ -1866,9 +1866,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_XEXT $LIB_XT $LIB_X11 $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_XEXT $LIB_XT $LIB_X11 $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_HDF $LIB_LCMS $LIB_MPEG2 $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_HDF $LIB_LCMS $LIB_MPEG2 $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 

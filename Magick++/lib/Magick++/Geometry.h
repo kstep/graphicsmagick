@@ -97,9 +97,6 @@ namespace Magick
     // Return geometry string
     operator std::string() const;
     
-    // print object to a stream
-    friend std::ostream& operator<<(std::ostream& stream_, const Geometry& geometry_);
-
     //
     // Public methods below this point are for Magick++ use only.
     //

@@ -8,10 +8,6 @@
 #define MAGICK_IMPLEMENTATION
 
 #include <string>
-#include <iostream>
-#include <iomanip>
-#include <strstream>
-
 #include <ctype.h> // for isdigit
 
 using namespace std;
@@ -264,61 +260,54 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
 // Return geometry string
 Magick::Geometry::operator std::string() const
 {
+  string geometry;
   char buffer[32];
-  ostrstream geomStr( buffer, sizeof( buffer ) - 1 );
 
   if ( _width )
-    geomStr << _width;
+    {
+      FormatString( buffer, "%u", _width );
+      geometry += buffer;
+    }
 
   if ( _width && _height )
-    geomStr << "x" << _height;
+    {
+      FormatString( buffer, "%u",  _height);
+      geometry += 'x';
+      geometry +=  buffer;
+    }
 
   if ( _xOff || _yOff )
     {
       if ( _xNegative )
-        {
-          geomStr << "-";
-        }
+        geometry += '-';
       else
-        {
-          geomStr << "+";
-        }
-      geomStr << _xOff;
+        geometry += '+';
+
+      FormatString( buffer, "%u", _xOff);
+      geometry += buffer;
 
       if ( _yNegative )
-        {
-          geomStr << "-";
-        }
+        geometry += '-';
       else
-        {
-          geomStr << "+";
-        }
-      geomStr << _yOff;
+        geometry += '+';
+
+      FormatString( buffer, "%u", _yOff);
+      geometry += buffer;
     }
 
   if ( _percent )
-    geomStr << "%";
-
+    geometry += '%';
+  
   if ( _aspect )
-    geomStr << "!";
+    geometry += '!';
 
   if ( _greater )
-    geomStr << ">";
+    geometry += '>';
 
   if ( _less )
-    geomStr << "<";
+    geometry += '<';
 
-  geomStr << ends;
-
-  return string(buffer);
-}
-
-// print object to a stream
-ostream& operator<<(ostream& stream_, const Magick::Geometry& geometry_)
-{
-  std::string geomStr( geometry_ );
-  stream_ << geomStr;
-  return stream_;
+  return geometry;
 }
 
 // Construct from RectangleInfo

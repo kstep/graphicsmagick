@@ -149,6 +149,194 @@ struct _DrawContext
   unsigned long
     signature;
 };
+
+/* Vector table for invoking subordinate renderers */
+struct _DrawVTable
+{
+  void (*DrawAnnotation)
+    (DrawContext context, const double x, const double y,
+     const unsigned char *text);
+  void (*DrawArc)
+    (DrawContext context, const double sx, const double sy,
+     const double ex, const double ey, const double sd, const double ed);
+  void (*DrawBezier)
+    (DrawContext context, const size_t num_coords, const PointInfo *coordinates);
+  void (*DrawCircle)
+    (DrawContext context, const double ox, const double oy,
+     const double px, const double py);
+  void (*DrawColor)
+    (DrawContext context, const double x, const double y,
+     const PaintMethod paintMethod);
+  void (*DrawComment)
+    (DrawContext context,const char* comment);
+  void (*DrawDestroyContext)
+    (DrawContext context);
+  void (*DrawEllipse)
+    (DrawContext context, const double ox, const double oy,
+     const double rx, const double ry, const double start, const double end);
+  void (*DrawComposite)
+    (DrawContext context, const CompositeOperator composite_operator,
+     const double x, const double y, const double width, const double height,
+     const Image * image );
+  void (*DrawLine)
+    (DrawContext context, const double sx, const double sy,
+     const double ex, const double ey);
+  void (*DrawMatte)
+    (DrawContext context, const double x, const double y,
+     const PaintMethod paint_method);
+  void (*DrawPathClose)
+    (DrawContext context);
+  void (*DrawPathCurveToAbsolute)
+    (DrawContext context, const double x1, const double y1,
+     const double x2, const double y2, const double x, const double y);
+  void (*DrawPathCurveToRelative)
+    (DrawContext context, const double x1, const double y1,
+     const double x2, const double y2, const double x, const double y);
+  void (*DrawPathCurveToQuadraticBezierAbsolute)
+    (DrawContext context, const double x1, const double y1,
+     const double x, const double y);
+  void (*DrawPathCurveToQuadraticBezierRelative)
+    (DrawContext context, const double x1, const double y1,
+     const double x, const double y);
+  void (*DrawPathCurveToQuadraticBezierSmoothAbsolute)
+    (DrawContext context, const double x, const double y);
+  void (*DrawPathCurveToQuadraticBezierSmoothRelative)
+    (DrawContext context, const double x, const double y);
+  void (*DrawPathCurveToSmoothAbsolute)
+    (DrawContext context, const double x2, const double y2,
+     const double x, const double y);
+  void (*DrawPathCurveToSmoothRelative)
+    (DrawContext context, const double x2, const double y2,
+     const double x, const double y);
+  void (*DrawPathEllipticArcAbsolute)
+    (DrawContext context, const double rx, const double ry,
+     const double x_axis_rotation, unsigned int large_arc_flag,
+     unsigned int sweep_flag, const double x, const double y);
+  void (*DrawPathEllipticArcRelative)
+    (DrawContext context, const double rx, const double ry,
+     const double x_axis_rotation, unsigned int large_arc_flag,
+     unsigned int sweep_flag, const double x, const double y);
+  void (*DrawPathFinish)
+    (DrawContext context);
+  void (*DrawPathLineToAbsolute)
+    (DrawContext context, const double x, const double y);
+  void (*DrawPathLineToRelative)
+    (DrawContext context, const double x, const double y);
+  void (*DrawPathLineToHorizontalAbsolute)
+    (DrawContext context, const double x);
+  void (*DrawPathLineToHorizontalRelative)
+    (DrawContext context, const double x);
+  void (*DrawPathLineToVerticalAbsolute)
+    (DrawContext context, const double y);
+  void (*DrawPathLineToVerticalRelative)
+    (DrawContext context, const double y);
+  void (*DrawPathMoveToAbsolute)
+    (DrawContext context, const double x, const double y);
+  void (*DrawPathMoveToRelative)
+    (DrawContext context, const double x, const double y);
+  void (*DrawPathStart)
+    (DrawContext context);
+  void (*DrawPoint)
+    (DrawContext context, const double x, const double y);
+  void (*DrawPolygon)
+    (DrawContext context, const size_t num_coords, const PointInfo * coordinates);
+  void (*DrawPolyline)
+    (DrawContext context, const size_t num_coords, const PointInfo * coordinates);
+  void (*DrawPopClipPath)
+    (DrawContext context);
+  void (*DrawPopDefs)
+    (DrawContext context);
+  void (*DrawPopGraphicContext)
+    (DrawContext context);
+  void (*DrawPopPattern)
+    (DrawContext context);
+  void (*DrawPushClipPath)
+    (DrawContext context, const char *clip_path_id);
+  void (*DrawPushDefs)
+    (DrawContext context);
+  void (*DrawPushGraphicContext)
+    (DrawContext context);
+  void (*DrawPushPattern)
+    (DrawContext context, const char *pattern_id,
+     const double x, const double y, const double width, const double height);
+  void (*DrawRectangle)
+    (DrawContext context, const double x1, const double y1,
+     const double x2, const double y2);
+  void (*DrawRoundRectangle)
+    (DrawContext context, double x1, double y1,
+     double x2, double y2, double rx, double ry);
+  void (*DrawSetAffine)
+    (DrawContext context, const AffineMatrix *affine);
+  void (*DrawSetClipPath)
+    (DrawContext context, const char *clip_path);
+  void (*DrawSetClipRule)
+    (DrawContext context, const FillRule fill_rule);
+  void (*DrawSetClipUnits)
+    (DrawContext context, const ClipPathUnits clip_units);
+  void (*DrawSetFillColor)
+    (DrawContext context, const PixelPacket * fill_color);
+  void (*DrawSetFillOpacity)
+    (DrawContext context, const double fill_opacity);
+  void (*DrawSetFillRule)
+    (DrawContext context, const FillRule fill_rule);
+  void (*DrawSetFillPatternURL)
+    (DrawContext context, const char* fill_url);
+  void (*DrawSetFont)
+    (DrawContext context, const char *font_name);
+  void (*DrawSetFontFamily)
+    (DrawContext context, const char *font_family);
+  void (*DrawSetFontSize)
+    (DrawContext context, const double font_pointsize);
+  void (*DrawSetFontStretch)
+    (DrawContext context, const StretchType font_stretch);
+  void (*DrawSetFontStyle)
+    (DrawContext context, const StyleType font_style);
+  void (*DrawSetFontWeight)
+    (DrawContext context, const double font_weight);
+  void (*DrawSetGravity)
+    (DrawContext context, const GravityType gravity);
+  void (*DrawSetRotate)
+    (DrawContext context, const double degrees);
+  void (*DrawSetScale)
+    (DrawContext context, const double x, const double y);
+  void (*DrawSetSkewX)
+    (DrawContext context, const double degrees);
+  void (*DrawSetSkewY)
+    (DrawContext context, const double degrees);
+  void (*DrawSetStopColor)
+    (DrawContext context, const PixelPacket * color, const double offset);
+  void (*DrawSetStrokeAntialias)
+    (DrawContext context, const int true_false);
+  void (*DrawSetStrokeColor)
+    (DrawContext context, const PixelPacket * stroke_color);
+  void (*DrawSetStrokeDashArray)
+    (DrawContext context,const double *dasharray);
+  void (*DrawSetStrokeDashOffset)
+    (DrawContext context,const double dashoffset);
+  void (*DrawSetStrokeLineCap)
+    (DrawContext context, const LineCap linecap);
+  void (*DrawSetStrokeLineJoin)
+    (DrawContext context, const LineJoin linejoin);
+  void (*DrawSetStrokeMiterLimit)
+    (DrawContext context,const unsigned long miterlimit);
+  void (*DrawSetStrokeOpacity)
+    (DrawContext context, const double opacity);
+  void (*DrawSetStrokePatternURL)
+    (DrawContext context, const char* stroke_url);
+  void (*DrawSetStrokeWidth)
+    (DrawContext context, const double width);
+  void (*DrawSetTextAntialias)
+    (DrawContext context, const int true_false);
+  void (*DrawSetTextDecoration)
+    (DrawContext context, const DecorationType decoration);
+  void (*DrawSetTextUnderColor)
+    (DrawContext context, const PixelPacket * color);
+  void (*DrawSetTranslate)
+    (DrawContext context, const double x, const double y);
+  void (*DrawSetViewbox)
+    (DrawContext context, unsigned long x1, unsigned long y1,
+     unsigned long x2, unsigned long y2);
+};
 
 /*
   Forward declarations.
