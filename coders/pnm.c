@@ -333,7 +333,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->colormap[i].red=(Quantum)
                     ((unsigned long) (MaxRGB*red)/0x07);
                   image->colormap[i].green=(Quantum)
-                    ((unsigned long) (green*MaxRGB)/0x07);
+                    ((unsigned long) (MaxRGB*green)/0x07);
                   image->colormap[i].blue=(Quantum)
                     ((unsigned long) (MaxRGB*blue)/0x03);
                   i++;

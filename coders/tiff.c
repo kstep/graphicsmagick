@@ -1634,8 +1634,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     */
     scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
     if (scanline == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
-        image);
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
     switch (photometric)
     {
       case PHOTOMETRIC_RGB:
