@@ -267,6 +267,7 @@ void CNtMagickView::DoDisplayImage()
       SetStretchBltMode(pDC->m_hDC,COLORONCOLOR);
 
       StretchDIBits
+grun!on
         (
          pDC->m_hDC,		// handle of device context 
          nImageX,		// x-coordinate of upper-left corner of dest. rect. 
@@ -305,9 +306,9 @@ void CNtMagickView::DoDisplayImage()
       RGBQUAD *pDestPixel = prgbaDIB;
       for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
         {
-          pDestPixel->rgbRed = DownScale(pPixels16->red);
-          pDestPixel->rgbGreen = DownScale(pPixels16->green);
-          pDestPixel->rgbBlue = DownScale(pPixels16->blue);
+          pDestPixel->rgbRed = DownScale(pPixels->red);
+          pDestPixel->rgbGreen = DownScale(pPixels->green);
+          pDestPixel->rgbBlue = DownScale(pPixels->blue);
           pDestPixel->rgbReserved = 0;
           ++pDestPixel;
           ++pPixels;
