@@ -452,7 +452,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     {
       marker[(int) indexes[x]]=True;
       opacity[(int) indexes[x]]=p->opacity;
-      if (indexes[x] > (IndexPacket) top_used)
+      if ((long) indexes[x] > top_used)
          top_used=indexes[x];
       if (p->opacity != OpaqueOpacity)
          transparent_pixels++;
@@ -5243,7 +5243,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                       index;
 
                     index=indexes[x];
-                    assert(index < (IndexPacket) number_colors);
+                    assert((unsigned long) index < number_colors);
                     ping_info->trans[index]=(png_byte) (255-
 #if (QuantumDepth == 8)
                        p->opacity);
