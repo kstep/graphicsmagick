@@ -2423,7 +2423,7 @@ MagickExport void TemporaryFilename(char *filename)
 {
   assert(filename != (char *) NULL);
   *filename='\0';
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if !defined(vms) && !defined(macintosh)
   {
     char
       *name;
@@ -2437,15 +2437,12 @@ MagickExport void TemporaryFilename(char *filename)
         LiberateMemory((void **) &name);
       }
   }
-#else
-#if defined(WIN32)
-  (void) NTTemporaryFilename(filename);
-#else
+#endif
 #if defined(macintosh)
   (void) getcwd(filename,MaxTextExtent >> 1);
 #endif
+#if defined(vms)
   (void) tmpnam(filename+strlen(filename));
-#endif
 #endif
 }
 

@@ -760,49 +760,6 @@ MagickExport int NTSystemCommand(const char *command)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   N T T e m p o r a r y F i l e n a m e                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method NTTemporaryFilename creates a name for a temporary file.  It
-%  returns zero if an error occurs.
-%
-%  The format of the TemporaryFilename method is:
-%
-%      int NTTemporaryFilename(char *filename)
-%
-%  A description of each parameter follows:
-%
-%    o filename: Specifies a pointer to a string to place the filename.
-%
-%
-*/
-MagickExport int NTTemporaryFilename(char *filename)
-{
-  char
-    path[MaxTextExtent];
-
-  int
-    status;
-
-  assert(filename != (char *) NULL);
-  status=GetTempPath(sizeof(path),path);
-  if (status != 0)
-    status=GetTempFileName(path,"magick",0,filename);
-  (void) remove(filename);
-  if (strlen(filename) > 4)
-    if (LocaleCompare(filename+strlen(filename)-4,".tmp") == 0)
-      filename[strlen(filename)-4]='\0';
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   N T U s e r T i m e                                                       %
 %                                                                             %
 %                                                                             %

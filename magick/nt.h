@@ -85,7 +85,6 @@ extern MagickExport double
 
 extern MagickExport int
   munmap(void *,size_t),
-  NTTemporaryFilename(char *),
   lt_dlinit(void);
 
 extern MagickExport long
