@@ -867,6 +867,7 @@ ModuleExport void RegisterJPEGImage(void)
 #endif
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");
+  entry->thread_support=False;
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;
   entry->adjoin=False;

@@ -4197,6 +4197,7 @@ ModuleExport void RegisterPNGImage(void)
     *entry;
 
   entry=SetMagickInfo("MNG");
+  entry->thread_support=False;
   entry->decoder=ReadPNGImage;
   entry->encoder=WritePNGImage;
   entry->magick=IsMNG;
@@ -4204,6 +4205,7 @@ ModuleExport void RegisterPNGImage(void)
   entry->module=AcquireString("PNG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PNG");
+  entry->thread_support=False;
   entry->decoder=ReadPNGImage;
   entry->encoder=WritePNGImage;
   entry->magick=IsPNG;
