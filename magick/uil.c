@@ -231,7 +231,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
               if (matte_image[i])
@@ -318,7 +318,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image->cache);
+    indexes=GetIndexes(image);
     (void) strcpy(buffer,"    \"");
     (void) WriteBlob(image,strlen(buffer),buffer);
     for (x=0; x < (int) image->columns; x++)

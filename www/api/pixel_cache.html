@@ -20,7 +20,9 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
+		<LI><A HREF="#getindexes">GetIndexes</A></LI>
 		<LI><A HREF="#getpixelcache">GetPixelCache</A></LI>
+		<LI><A HREF="#getpixels">GetPixels</A></LI>
 		<LI><A HREF="#readpixelcache">ReadPixelCache</A></LI>
 		<LI><A HREF="#setpixelcache">SetPixelCache</A></LI>
 		<LI><A HREF="#syncpixelcache">SyncPixelCache</A></LI>
@@ -40,17 +42,34 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>IndexPacket * <STRONG>GetIndexes</STRONG>( const Image *image );</P>
 <P>PixelPacket * <STRONG>GetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
-<P>unsigned int  <STRONG>ReadPixelCache</STRONG>( Image *image, const QuantumTypes quantum, const unsigned char *source );</P>
+<P>PixelPacket * <STRONG>GetPixels</STRONG>( const Image image );</P>
+<P>unsigned int  <STRONG>ReadPixelCache</STRONG>( const Image *image, const QuantumTypes quantum, const unsigned char *source );</P>
 <P>PixelPacket * <STRONG>SetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
 <P>unsigned int  <STRONG>SyncPixelCache</STRONG>( Image *image );</P>
-<P>unsigned int  <STRONG>WritePixelCache</STRONG>( Image *, const QuantumTypes quantum, unsigned char *destination );</P>
+<P>unsigned int  <STRONG>WritePixelCache</STRONG>( const Image *, const QuantumTypes quantum, unsigned char *destination );</P>
 <P>
 <A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
 <H1><A NAME="function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
+<P>
+<H2><A NAME="getindexes">GetIndexes</A></H2>
+<P>Method GetIndexes returns the colormap indexes associated with the last call to the <CODE>SetPixelCache</CODE> or <CODE>GetPixelCache</CODE> methods.</P>
+<P>The format of the GetIndexes method is:</P>
+<blockquote>IndexPacket *GetIndexes ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_indexes%3A">indexes:</A></STRONG><BR>
+<DD>
+Method GetIndexes returns the indexes associated with the last call to the <CODE>SetPixelCache</CODE> or <CODE>GetPixelCache</CODE> methods.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P></DL></DL>
 <P>
 <H2><A NAME="getpixelcache">GetPixelCache</A></H2>
 <P>Method GetPixelCache gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.  
@@ -65,7 +84,7 @@
 Method GetPixelCache returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
 <FONT SIZE=-1>NULL</FONT> is returned.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The address of a structure of type Image.
 <P></P>
@@ -74,10 +93,25 @@ The address of a structure of type Image.
 These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="getpixels">GetPixels</A></H2>
+<P>Method GetPixels returns the pixels associated with the last call to the <CODE>SetPixelCache</CODE> or <CODE>GetPixelCache</CODE> methods.</P>
+<P>The format of the GetPixels method is:</P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetPixels ( const <A HREF="types/Image.html">Image</A> image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
+<DD>
+Method GetPixels returns the pixels associated with the last call to the <CODE>SetPixelCache</CODE> or <CODE>GetPixelCache</CODE> methods.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="readpixelcache">ReadPixelCache</A></H2>
 <P>Method ReadPixelCache transfers one or more pixel components from a buffer or file into the image pixel buffer of an image.  It returns True if the pixels are successfully transferred, otherwise False.</P>
 <P>The format of the ReadPixelCache method is:</P>
-<blockquote>unsigned int ReadPixelCache ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#QuantumTypes">QuantumTypes</A> quantum, const unsigned char *source ); </blockquote><P>
+<blockquote>unsigned int ReadPixelCache ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#QuantumTypes">QuantumTypes</A> quantum, const unsigned char *source ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>
@@ -139,7 +173,7 @@ The address of a structure of type Image.
 <H2><A NAME="writepixelcache">WritePixelCache</A></H2>
 <P>Method WritePixelCache transfers one or more pixel components from the image pixel buffer to a buffer or file.  It returns True if the pixels are successfully transferred, otherwise False.</P>
 <P>The format of the WritePixelCache method is:</P>
-<blockquote>unsigned int WritePixelCache ( <A HREF="types/Image.html">Image</A> *, const <A HREF="types/Enumerations.html#QuantumTypes">QuantumTypes</A> quantum, unsigned char *destination ); </blockquote><P>
+<blockquote>unsigned int WritePixelCache ( const <A HREF="types/Image.html">Image</A> *, const <A HREF="types/Enumerations.html#QuantumTypes">QuantumTypes</A> quantum, unsigned char *destination ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>

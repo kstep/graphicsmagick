@@ -630,7 +630,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image->cache);
+    indexes=GetIndexes(image);
     (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
     for (x=0; x < (int) image->columns; x++)
     {

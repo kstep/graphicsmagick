@@ -423,7 +423,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         p=GetPixelCache(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image->cache);
+        indexes=GetIndexes(image);
         bit=0;
         byte=0;
         for (x=0; x < (int) image->columns; x++)

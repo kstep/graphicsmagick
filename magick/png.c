@@ -162,7 +162,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image->cache);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
       marker[indexes[x]]=True;
@@ -296,7 +296,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image->cache);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
       index=indexes[x];
@@ -2282,7 +2282,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           p=scanlines[y];
           r=quantum_scanline;
           switch (ping_info->bit_depth)
@@ -2419,7 +2419,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q=GetPixelCache(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
               IndexPacket
@@ -3732,7 +3732,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               p=GetPixelCache(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image->cache);
+              indexes=GetIndexes(image);
               for (x=0; x < (int) image->columns; x++)
               {
                 if (p->opacity != Opaque)

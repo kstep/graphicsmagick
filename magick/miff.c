@@ -578,7 +578,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       q=SetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image->cache);
+      indexes=GetIndexes(image);
 #if defined(HasZLIB)
       if (image->compression == ZipCompression)
         {
@@ -1138,7 +1138,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       p=GetPixelCache(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image->cache);
+      indexes=GetIndexes(image);
       q=pixels;
       if (compression != RunlengthEncodedCompression)
         {

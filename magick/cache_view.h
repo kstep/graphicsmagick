@@ -23,7 +23,11 @@ typedef struct _ViewInfo
 /*
   Export cache view interfaces.
 */
+extern Export IndexPacket
+  *GetCacheViewIndexes(const ViewInfo *);
+
 extern Export PixelPacket
+  *GetCacheViewPixels(const ViewInfo *),
   *GetCacheView(ViewInfo *,const int,const int,const unsigned int,
     const unsigned int),
   *SetCacheView(ViewInfo *,const int,const int,const unsigned int,

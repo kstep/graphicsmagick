@@ -633,7 +633,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     r=SetPixelCache(image,0,y,image->columns,1);
     if (r == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image->cache);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
       (void) strncpy(key,p,width);
@@ -832,7 +832,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
               if (p->opacity)
@@ -917,7 +917,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image->cache);
+    indexes=GetIndexes(image);
     (void) strcpy(buffer,"\"");
     (void) WriteBlob(image,strlen(buffer),buffer);
     for (x=0; x < (int) image->columns; x++)

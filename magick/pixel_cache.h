@@ -11,7 +11,11 @@ extern "C" {
 /*
   Export pixel cache interfaces.
 */
+extern Export IndexPacket
+  *GetIndexes(const Image *);
+
 extern Export PixelPacket
+  *GetPixels(const Image *),
   *GetPixelCache(Image *,const int,const int,const unsigned int,
     const unsigned int),
   *SetPixelCache(Image *,const int,const int,const unsigned int,

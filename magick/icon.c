@@ -263,7 +263,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           for (x=0; x < ((int) image->columns-7); x+=8)
           {
             byte=ReadByte(image);
@@ -294,7 +294,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           for (x=0; x < ((int) image->columns-1); x+=2)
           {
             byte=ReadByte(image);
@@ -324,7 +324,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
             byte=ReadByte(image);
@@ -348,7 +348,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
             byte=ReadByte(image);

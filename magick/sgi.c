@@ -445,7 +445,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           p=iris_pixels+((image->rows-1)-y)*(image->columns*4);
           for (x=0; x < (int) image->columns; x++)
           {

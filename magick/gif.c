@@ -185,7 +185,7 @@ static unsigned int DecodeImage(Image *image,const int opacity,
     q=SetPixelCache(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image->cache);
+    indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; )
     {
       if (top_stack == pixel_stack)
@@ -333,8 +333,8 @@ static unsigned int DecodeImage(Image *image,const int opacity,
           q=SetPixelCache(image,0,y,image->columns,1);
           if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
             break;
-          indexes=GetIndexes(image->cache);
-          interlace_indexes=GetIndexes(interlace_image->cache);
+          indexes=GetIndexes(image);
+          interlace_indexes=GetIndexes(interlace_image);
           (void) memcpy(indexes,interlace_indexes,
             image->columns*sizeof(IndexPacket));
           (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
@@ -497,7 +497,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image->cache);
+    indexes=GetIndexes(image);
     if (y == 0)
       waiting_code=(*indexes);
     for (x=(y == 0) ? 1 : 0; x < (int) image->columns; x++)
@@ -1180,7 +1180,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               p=GetPixelCache(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image->cache);
+              indexes=GetIndexes(image);
               for (x=0; x < (int) image->columns; x++)
               {
                 if (p->opacity == Transparent)
@@ -1203,7 +1203,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
               if (p->opacity == Transparent)
@@ -1389,8 +1389,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             q=SetPixelCache(interlace_image,0,i,interlace_image->columns,1);
             if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
               break;
-            indexes=GetIndexes(image->cache);
-            interlace_indexes=GetIndexes(interlace_image->cache);
+            indexes=GetIndexes(image);
+            interlace_indexes=GetIndexes(interlace_image);
             (void) memcpy(interlace_indexes,indexes,
               image->columns*sizeof(IndexPacket));
             (void) memcpy(q,p,image->columns*sizeof(PixelPacket));

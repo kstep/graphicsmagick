@@ -432,7 +432,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=SetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      indexes=GetIndexes(image->cache);
+      indexes=GetIndexes(image);
       r=scanline;
       if (image->class == DirectClass)
         for (i=0; i < (int) pcx_header.planes; i++)
@@ -905,7 +905,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           p=GetPixelCache(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           q=pcx_pixels+y*pcx_header.bytes_per_line;
           for (x=0; x < (int) image->columns; x++)
             *q++=indexes[x];
@@ -932,7 +932,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             p=GetPixelCache(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image->cache);
+            indexes=GetIndexes(image);
             bit=0;
             byte=0;
             q=pcx_pixels+y*pcx_header.bytes_per_line;

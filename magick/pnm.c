@@ -370,7 +370,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
             index=!PNMInteger(image,2);
@@ -395,7 +395,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
             index=PNMInteger(image,10);
@@ -458,7 +458,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           bit=0;
           byte=0;
           for (x=0; x < (int) image->columns; x++)
@@ -502,7 +502,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
             if (image->depth <= 8)
@@ -873,7 +873,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           p=GetPixelCache(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
           {
             (void) sprintf(buffer,"%d ",(int) (indexes[x] == polarity));
@@ -973,7 +973,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           p=GetPixelCache(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          indexes=GetIndexes(image->cache);
+          indexes=GetIndexes(image);
           bit=0;
           byte=0;
           for (x=0; x < (int) image->columns; x++)
