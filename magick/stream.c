@@ -59,24 +59,7 @@
 /*
   Typedef declaractions.
 */
-typedef struct _StreamInfo
-{
-  unsigned int
-    columns,
-    rows;
-
-  off_t
-    length;
-
-  void
-    *stash;
-
-  PixelPacket
-    *pixels;
-
-  IndexPacket
-    *indexes;
-} StreamInfo;
+typedef CacheInfo StreamInfo;
 
 /*
   Declare pixel stream interfaces.
@@ -163,7 +146,8 @@ static void DestroyPixelStream(Image *image)
   if (image->cache == (void *) NULL)
     return;
   stream_info=(StreamInfo *) image->cache;
-  LiberateMemory((void **) &stream_info->stash);
+  assert(stream_info->signature == MagickSignature);
+  LiberateMemory((void **) &stream_info->pixels);
   LiberateMemory((void **) &stream_info);
 }
 
@@ -203,6 +187,7 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
   return(stream_info->indexes);
 }
 
@@ -329,6 +314,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
   return(stream_info->pixels);
 }
 
@@ -461,37 +447,29 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
         "image does not contain the stream geometry");
       return((PixelPacket *) NULL);
     }
-  if (image->cache == (void *) NULL)
+  stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
+  if (image->storage_class != GetCacheClassType(image->cache))
     {
-      stream_info=(StreamInfo *) AcquireMemory(sizeof(StreamInfo));
-      if (stream_info == (StreamInfo *) NULL)
-        MagickError(ResourceLimitError,"Memory allocation failed",
-          "unable to allocate cache info");
       stream_info->columns=image->columns;
       stream_info->rows=image->rows;
-      stream_info->stash=(void *) NULL;
-      stream_info->pixels=(PixelPacket *) NULL;
-      stream_info->indexes=(IndexPacket *) NULL;
       image->cache=stream_info;
     }
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
-  stream_info=(StreamInfo *) image->cache;
   number_pixels=stream_info->columns*stream_info->rows;
   length=number_pixels*sizeof(PixelPacket);
   if (image->storage_class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
-  if (stream_info->stash == (void *) NULL)
-    stream_info->stash=AcquireMemory(length);
+  if (stream_info->pixels == (PixelPacket *) NULL)
+    stream_info->pixels=(PixelPacket *) AcquireMemory(length);
   else
-    if (stream_info->length != length)
-      ReacquireMemory((void **) &stream_info->stash,length);
-  if (stream_info->stash == (void *) NULL)
+    if ((stream_info->columns*stream_info->rows) != (columns*rows))
+      ReacquireMemory((void **) &stream_info->pixels,length);
+  if (stream_info->pixels == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
-  stream_info->length=length;
-  stream_info->pixels=(PixelPacket *) stream_info->stash;
   stream_info->indexes=(IndexPacket *)
     (stream_info->pixels+stream_info->columns*stream_info->rows);
   return(stream_info->pixels);
@@ -532,6 +510,7 @@ static unsigned int SyncPixelStream(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
   return(image->fifo(image,stream_info->pixels,image->columns));
 }
 
