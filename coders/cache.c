@@ -281,138 +281,273 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
             /*
               Assign a value to the specified keyword.
             */
-            if (LocaleCompare(keyword,"Background-color") == 0)
-              (void) QueryColorDatabase(values,&image->background_color);
-            if (LocaleCompare(keyword,"Blue-primary") == 0)
-              (void) sscanf(values,"%lf,%lf",
-                &image->chromaticity.blue_primary.x,
-                &image->chromaticity.blue_primary.y);
-            if (LocaleCompare(keyword,"Border-color") == 0)
-              (void) QueryColorDatabase(values,&image->border_color);
-            if (LocaleCompare(keyword,"Cache") == 0)
+            switch (*keyword)
+            {
+              case 'b':
+              case 'B':
               {
-                (void) strcpy(cache_info->filename,values);
-                cache_info->file=
-                  open(cache_info->filename,O_RDWR | O_BINARY,0777);
-                if (cache_info->file == -1)
-                  ThrowReaderException(CacheWarning,
-                    "failed to open persistent cache",image);
+                if (LocaleCompare(keyword,"Background-color") == 0)
+                  {
+                    (void) QueryColorDatabase(values,&image->background_color);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Blue-primary") == 0)
+                  {
+                    (void) sscanf(values,"%lf,%lf",
+                      &image->chromaticity.blue_primary.x,
+                      &image->chromaticity.blue_primary.y);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Border-color") == 0)
+                  {
+                    (void) QueryColorDatabase(values,&image->border_color);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
               }
-            if (LocaleCompare(keyword,"Class") == 0)
+              case 'c':
+              case 'C':
               {
-                if (LocaleCompare(values,"PseudoClass") == 0)
-                  image->class=PseudoClass;
-                else
-                  if (LocaleCompare(values,"DirectClass") == 0)
-                    image->class=DirectClass;
-                  else
-                    image->class=UndefinedClass;
-              }
-            if (LocaleCompare(keyword,"Colors") == 0)
-              image->colors=(unsigned int) atoi(values);
-            if (LocaleCompare(keyword,"Color-profile") == 0)
-              image->color_profile.length=(unsigned int) atoi(values);
-            if (LocaleCompare(keyword,"Colorspace") == 0)
-              {
-                if (LocaleCompare(values,"CMYK") == 0)
-                  image->colorspace=CMYKColorspace;
-                else
-                  if (LocaleCompare(values,"RGB") == 0)
-                    image->colorspace=RGBColorspace;
-              }
-            if (LocaleCompare(keyword,"Compression") == 0)
-              {
-                if (LocaleCompare(values,"Zip") == 0)
-                  image->compression=ZipCompression;
-                else
-                  if (LocaleCompare(values,"BZip") == 0)
-                    image->compression=BZipCompression;
-                  else
-                    if (LocaleCompare(values,"RunlengthEncoded") == 0)
-                      image->compression=RunlengthEncodedCompression;
+                if (LocaleCompare(keyword,"Class") == 0)
+                  {
+                    if (LocaleCompare(values,"PseudoClass") == 0)
+                      image->class=PseudoClass;
                     else
-                      image->compression=UndefinedCompression;
-              }
-            if (LocaleCompare(keyword,"Columns") == 0)
-              image->columns=(unsigned int) atoi(values);
-            if (LocaleCompare(keyword,"Delay") == 0)
-              {
-                if (image_info->delay == (char *) NULL)
-                  image->delay=atoi(values);
-              }
-            if (LocaleCompare(keyword,"Depth") == 0)
-              image->depth=atoi(values) <= 8 ? 8 : 16;
-            if (LocaleCompare(keyword,"Dispose") == 0)
-              {
-                if (image_info->dispose == (char *) NULL)
-                  image->dispose=atoi(values);
-              }
-            if (LocaleCompare(keyword,"Gamma") == 0)
-              image->gamma=atof(values);
-            if (LocaleCompare(keyword,"Green-primary") == 0)
-              (void) sscanf(values,"%lf,%lf",
-                &image->chromaticity.green_primary.x,
-                &image->chromaticity.green_primary.y);
-            if (LocaleCompare(keyword,"Id") == 0)
-              (void) strcpy(id,values);
-            if (LocaleCompare(keyword,"Iterations") == 0)
-              {
-                if (image_info->iterations == (char *) NULL)
-                  image->iterations=atoi(values);
-              }
-            if (LocaleCompare(keyword,"Matte") == 0)
-              image->matte=(LocaleCompare(values,"True") == 0) ||
-                (LocaleCompare(values,"true") == 0);
-            if (LocaleCompare(keyword,"Matte-color") == 0)
-              (void) QueryColorDatabase(values,&image->matte_color);
-            if (LocaleCompare(keyword,"Montage") == 0)
-              (void) CloneString(&image->montage,values);
-            if (LocaleCompare(keyword,"Page") == 0)
-              ParseImageGeometry(PostscriptGeometry(values),
-                &image->page.x,&image->page.y,
-                &image->page.width,&image->page.height);
-            if (LocaleCompare(keyword,"Red-primary") == 0)
-              (void) sscanf(values,"%lf,%lf",&image->chromaticity.red_primary.x,
-                &image->chromaticity.red_primary.y);
-            if (LocaleCompare(keyword,"Rendering-intent") == 0)
-              {
-                if (LocaleCompare(values,"Saturation") == 0)
-                  image->rendering_intent=SaturationIntent;
-                else
-                  if (LocaleCompare(values,"perceptual") == 0)
-                    image->rendering_intent=PerceptualIntent;
-                  else
-                    if (LocaleCompare(values,"absolute") == 0)
-                      image->rendering_intent=AbsoluteIntent;
-                    else
-                      if (LocaleCompare(values,"relative") == 0)
-                        image->rendering_intent=RelativeIntent;
+                      if (LocaleCompare(values,"DirectClass") == 0)
+                        image->class=DirectClass;
                       else
-                        image->rendering_intent=UndefinedIntent;
+                        image->class=UndefinedClass;
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Colors") == 0)
+                  {
+                    image->colors=(unsigned int) atoi(values);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Color-profile") == 0)
+                  {
+                    image->color_profile.length=(unsigned int) atoi(values);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Colorspace") == 0)
+                  {
+                    if (LocaleCompare(values,"CMYK") == 0)
+                      image->colorspace=CMYKColorspace;
+                    else
+                      if (LocaleCompare(values,"RGB") == 0)
+                        image->colorspace=RGBColorspace;
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Compression") == 0)
+                  {
+                    if (LocaleCompare(values,"Zip") == 0)
+                      image->compression=ZipCompression;
+                    else
+                      if (LocaleCompare(values,"BZip") == 0)
+                        image->compression=BZipCompression;
+                      else
+                        if (LocaleCompare(values,"RunlengthEncoded") == 0)
+                          image->compression=RunlengthEncodedCompression;
+                        else
+                          image->compression=UndefinedCompression;
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Columns") == 0)
+                  {
+                    image->columns=(unsigned int) atoi(values);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
               }
-            if (LocaleCompare(keyword,"Resolution") == 0)
-              (void) sscanf(values,"%lfx%lf",&image->x_resolution,
-                &image->y_resolution);
-            if (LocaleCompare(keyword,"Rows") == 0)
-              image->rows=(unsigned int) atoi(values);
-            if (LocaleCompare(keyword,"Scene") == 0)
-              image->scene=(unsigned int) atoi(values);
-            if (LocaleCompare(keyword,"Units") == 0)
+              case 'd':
+              case 'D':
               {
-                if (LocaleCompare(values,"undefined") == 0)
-                  image->units=UndefinedResolution;
-                else
-                  if (LocaleCompare(values,"pixels-per-inch") == 0)
-                    image->units=PixelsPerInchResolution;
-                  else
-                    if (LocaleCompare(values,"pixels-per-centimeter") == 0)
-                      image->units=PixelsPerCentimeterResolution;
+                if (LocaleCompare(keyword,"Delay") == 0)
+                  {
+                    if (image_info->delay == (char *) NULL)
+                      image->delay=atoi(values);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Depth") == 0)
+                  {
+                    image->depth=atoi(values) <= 8 ? 8 : 16;
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Dispose") == 0)
+                  {
+                    if (image_info->dispose == (char *) NULL)
+                      image->dispose=atoi(values);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
               }
-            if (LocaleCompare(keyword,"White-point") == 0)
-              (void) sscanf(values,"%lf,%lf",&image->chromaticity.white_point.x,
-                &image->chromaticity.white_point.y);
-            if (*values == '{')
-              (void) SetImageAttribute(image,keyword,values+1);
+              case 'g':
+              case 'G':
+              {
+                if (LocaleCompare(keyword,"Gamma") == 0)
+                  {
+                    image->gamma=atof(values);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Green-primary") == 0)
+                  {
+                    (void) sscanf(values,"%lf,%lf",
+                      &image->chromaticity.green_primary.x,
+                      &image->chromaticity.green_primary.y);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
+              }
+              case 'i':
+              case 'I':
+              {
+                if (LocaleCompare(keyword,"Id") == 0)
+                  {
+                    (void) strcpy(id,values);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Iterations") == 0)
+                  {
+                    if (image_info->iterations == (char *) NULL)
+                      image->iterations=atoi(values);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
+              }
+              case 'm':
+              case 'M':
+              {
+                if (LocaleCompare(keyword,"Matte") == 0)
+                  {
+                    image->matte=(LocaleCompare(values,"True") == 0) ||
+                      (LocaleCompare(values,"true") == 0);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Matte-color") == 0)
+                  {
+                    (void) QueryColorDatabase(values,&image->matte_color);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Montage") == 0)
+                  {
+                    (void) CloneString(&image->montage,values);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
+              }
+              case 'p':
+              case 'P':
+              {
+                if (LocaleCompare(keyword,"Page") == 0)
+                  {
+                    ParseImageGeometry(PostscriptGeometry(values),
+                      &image->page.x,&image->page.y,
+                      &image->page.width,&image->page.height);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
+              }
+              case 'r':
+              case 'R':
+              {
+                if (LocaleCompare(keyword,"Red-primary") == 0)
+                  {
+                    (void) sscanf(values,"%lf,%lf",
+                      &image->chromaticity.red_primary.x,
+                      &image->chromaticity.red_primary.y);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Rendering-intent") == 0)
+                  {
+                    if (LocaleCompare(values,"Saturation") == 0)
+                      image->rendering_intent=SaturationIntent;
+                    else
+                      if (LocaleCompare(values,"perceptual") == 0)
+                        image->rendering_intent=PerceptualIntent;
+                      else
+                        if (LocaleCompare(values,"absolute") == 0)
+                          image->rendering_intent=AbsoluteIntent;
+                        else
+                          if (LocaleCompare(values,"relative") == 0)
+                            image->rendering_intent=RelativeIntent;
+                          else
+                            image->rendering_intent=UndefinedIntent;
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Resolution") == 0)
+                  {
+                    (void) sscanf(values,"%lfx%lf",&image->x_resolution,
+                      &image->y_resolution);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"Rows") == 0)
+                  {
+                    image->rows=(unsigned int) atoi(values);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
+              }
+              case 's':
+              case 'S':
+              {
+                if (LocaleCompare(keyword,"Scene") == 0)
+                  {
+                    image->scene=(unsigned int) atoi(values);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
+              }
+              case 'u':
+              case 'U':
+              {
+                if (LocaleCompare(keyword,"Units") == 0)
+                  {
+                    if (LocaleCompare(values,"undefined") == 0)
+                      image->units=UndefinedResolution;
+                    else
+                      if (LocaleCompare(values,"pixels-per-inch") == 0)
+                        image->units=PixelsPerInchResolution;
+                      else
+                        if (LocaleCompare(values,"pixels-per-centimeter") == 0)
+                          image->units=PixelsPerCentimeterResolution;
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
+              }
+              case 'w':
+              case 'W':
+              {
+                if (LocaleCompare(keyword,"White-point") == 0)
+                  {
+                    (void) sscanf(values,"%lf,%lf",
+                      &image->chromaticity.white_point.x,
+                      &image->chromaticity.white_point.y);
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,values);
+                break;
+              }
+              case '{':
+              {
+                (void) SetImageAttribute(image,keyword,values+1);
+                break;
+              }
+              default:
+              {
+                (void) SetImageAttribute(image,keyword,values);
+                break;
+              }
+            }
           }
         else
           c=ReadByte(image);
