@@ -1,7 +1,7 @@
 
 /* pngtest.c - a simple test program to test libpng
  *
- * libpng 1.2.6rc1 - August 4, 2004
+ * libpng 1.2.7 - September 12, 2004
  * For conditions of distribution and use, see copyright notice in png.h
  * Copyright (c) 1998-2004 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
@@ -470,7 +470,7 @@ pngtest_error(png_structp png_ptr, png_const_charp message)
 /* END of code to validate stdio-free compilation */
 
 /* START of code to validate memory allocation and deallocation */
-#ifdef PNG_USER_MEM_SUPPORTED
+#if defined(PNG_USER_MEM_SUPPORTED) && PNG_DEBUG
 
 /* Allocate memory.  For reasonable files, size should never exceed
    64K.  However, zlib may allocate more then 64K if you don't tell
@@ -510,7 +510,10 @@ png_debug_malloc(png_structp png_ptr, png_uint_32 size)
    /* This calls the library allocator twice, once to get the requested
       buffer and once to get a new free list entry. */
    {
-      memory_infop pinfo = (memory_infop)png_malloc_default(png_ptr,
+      /* Disable malloc_fn and free_fn */
+      memory_infop pinfo;
+      png_set_mem_fn(png_ptr, NULL, NULL, NULL);
+      pinfo = (memory_infop)png_malloc(png_ptr,
          (png_uint_32)png_sizeof (*pinfo));
       pinfo->size = size;
       current_allocation += size;
@@ -518,21 +521,23 @@ png_debug_malloc(png_structp png_ptr, png_uint_32 size)
       num_allocations ++;
       if (current_allocation > maximum_allocation)
          maximum_allocation = current_allocation;
-      pinfo->pointer = (png_voidp)png_malloc_default(png_ptr, size);
+      pinfo->pointer = (png_voidp)png_malloc(png_ptr, size);
+      /* Restore malloc_fn and free_fn */
+      png_set_mem_fn(png_ptr, png_voidp_NULL, (png_malloc_ptr)png_debug_malloc,
+         (png_free_ptr)png_debug_free);
       if (size != 0 && pinfo->pointer == NULL)
       {
          current_allocation -= size;
          total_allocation -= size;
-         png_error(png_ptr,"out of memory in pngtest->png_malloc_default.\n");
+         png_error(png_ptr,
+           "out of memory in pngtest->png_debug_malloc.");
       }
       pinfo->next = pinformation;
       pinformation = pinfo;
       /* Make sure the caller isn't assuming zeroed memory. */
       png_memset(pinfo->pointer, 0xdd, pinfo->size);
-#if PNG_DEBUG
       if(verbose)
          printf("png_malloc %lu bytes at %x\n",size,pinfo->pointer);
-#endif
       assert(pinfo->size != 12345678);
       return (png_voidp)(pinfo->pointer);
    }
@@ -581,14 +586,12 @@ png_debug_free(png_structp png_ptr, png_voidp ptr)
    }
 
    /* Finally free the data. */
-#if PNG_DEBUG
    if(verbose)
       printf("Freeing %x\n",ptr);
-#endif
    png_free_default(png_ptr, ptr);
    ptr=NULL;
 }
-#endif /* PNG_USER_MEM_SUPPORTED */
+#endif /* PNG_USER_MEM_SUPPORTED && PNG_DEBUG */
 /* END of code to test memory allocation/deallocation */
 
 /* Test one file */
@@ -650,7 +653,7 @@ test_one_file(PNG_CONST char *inname, PNG_CONST char *outname)
    }
 
    png_debug(0, "Allocating read and write structures\n");
-#ifdef PNG_USER_MEM_SUPPORTED
+#if defined(PNG_USER_MEM_SUPPORTED) && PNG_DEBUG
    read_ptr = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, png_voidp_NULL,
       png_error_ptr_NULL, png_error_ptr_NULL, png_voidp_NULL,
       (png_malloc_ptr)png_debug_malloc, (png_free_ptr)png_debug_free);
@@ -663,7 +666,7 @@ test_one_file(PNG_CONST char *inname, PNG_CONST char *outname)
        pngtest_warning);
 #endif
 #ifdef PNG_WRITE_SUPPORTED
-#ifdef PNG_USER_MEM_SUPPORTED
+#if defined(PNG_USER_MEM_SUPPORTED) && PNG_DEBUG
    write_ptr = png_create_write_struct_2(PNG_LIBPNG_VER_STRING, png_voidp_NULL,
       png_error_ptr_NULL, png_error_ptr_NULL, png_voidp_NULL,
       (png_malloc_ptr)png_debug_malloc, (png_free_ptr)png_debug_free);
@@ -777,14 +780,18 @@ test_one_file(PNG_CONST char *inname, PNG_CONST char *outname)
    png_set_write_user_transform_fn(write_ptr, count_zero_samples);
 #endif
 
-#define HANDLE_CHUNK_IF_SAFE      2
-#define HANDLE_CHUNK_ALWAYS       3
 #if defined(PNG_READ_UNKNOWN_CHUNKS_SUPPORTED)
-   png_set_keep_unknown_chunks(read_ptr, HANDLE_CHUNK_ALWAYS,
+#  ifndef PNG_HANDLE_CHUNK_ALWAYS
+#    define PNG_HANDLE_CHUNK_ALWAYS       3
+#  endif
+   png_set_keep_unknown_chunks(read_ptr, PNG_HANDLE_CHUNK_ALWAYS,
       png_bytep_NULL, 0);
 #endif
 #if defined(PNG_WRITE_UNKNOWN_CHUNKS_SUPPORTED)
-   png_set_keep_unknown_chunks(write_ptr, HANDLE_CHUNK_IF_SAFE,
+#  ifndef PNG_HANDLE_CHUNK_IF_SAFE
+#    define PNG_HANDLE_CHUNK_IF_SAFE      2
+#  endif
+   png_set_keep_unknown_chunks(write_ptr, PNG_HANDLE_CHUNK_IF_SAFE,
       png_bytep_NULL, 0);
 #endif
 
@@ -1381,7 +1388,7 @@ main(int argc, char *argv[])
    if (multiple)
    {
       int i;
-#ifdef PNG_USER_MEM_SUPPORTED
+#if defined(PNG_USER_MEM_SUPPORTED) && PNG_DEBUG
       int allocation_now = current_allocation;
 #endif
       for (i=2; i<argc; ++i)
@@ -1416,7 +1423,7 @@ main(int argc, char *argv[])
             fprintf(STDERR, " FAIL\n");
             ierror += kerror;
          }
-#ifdef PNG_USER_MEM_SUPPORTED
+#if defined(PNG_USER_MEM_SUPPORTED) && PNG_DEBUG
          if (allocation_now != current_allocation)
             fprintf(STDERR, "MEMORY ERROR: %d bytes lost\n",
                current_allocation-allocation_now);
@@ -1435,7 +1442,7 @@ main(int argc, char *argv[])
          }
 #endif
       }
-#ifdef PNG_USER_MEM_SUPPORTED
+#if defined(PNG_USER_MEM_SUPPORTED) && PNG_DEBUG
          fprintf(STDERR, " Current memory allocation: %10d bytes\n",
             current_allocation);
          fprintf(STDERR, " Maximum memory allocation: %10d bytes\n",
@@ -1452,7 +1459,7 @@ main(int argc, char *argv[])
       for (i=0; i<3; ++i)
       {
          int kerror;
-#ifdef PNG_USER_MEM_SUPPORTED
+#if defined(PNG_USER_MEM_SUPPORTED) && PNG_DEBUG
          int allocation_now = current_allocation;
 #endif
          if (i == 1) status_dots_requested = 1;
@@ -1491,7 +1498,7 @@ main(int argc, char *argv[])
             fprintf(STDERR, " FAIL\n");
             ierror += kerror;
          }
-#ifdef PNG_USER_MEM_SUPPORTED
+#if defined(PNG_USER_MEM_SUPPORTED) && PNG_DEBUG
          if (allocation_now != current_allocation)
              fprintf(STDERR, "MEMORY ERROR: %d bytes lost\n",
                current_allocation-allocation_now);
@@ -1510,7 +1517,7 @@ main(int argc, char *argv[])
           }
 #endif
        }
-#ifdef PNG_USER_MEM_SUPPORTED
+#if defined(PNG_USER_MEM_SUPPORTED) && PNG_DEBUG
        fprintf(STDERR, " Current memory allocation: %10d bytes\n",
           current_allocation);
        fprintf(STDERR, " Maximum memory allocation: %10d bytes\n",
@@ -1544,4 +1551,4 @@ main(int argc, char *argv[])
 }
 
 /* Generate a compiler error if there is an old png.h in the search path. */
-typedef version_1_2_6rc1 your_png_h_is_not_version_1_2_6rc1;
+typedef version_1_2_7 your_png_h_is_not_version_1_2_7;

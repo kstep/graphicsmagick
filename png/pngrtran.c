@@ -1,7 +1,7 @@
 
 /* pngrtran.c - transforms the data in a row for PNG readers
  *
- * libpng version 1.2.6rc1 - August 4, 2004
+ * libpng version  1.2.7 - September 12, 2004
  * For conditions of distribution and use, see copyright notice in png.h
  * Copyright (c) 1998-2004 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
@@ -482,12 +482,14 @@ png_set_dither(png_structp png_ptr, png_colorp palette,
 
          for (ir = 0; ir < num_red; ir++)
          {
-            int dr = abs(ir - r);
+            /* int dr = abs(ir - r); */
+            int dr = ((ir > r) ? ir - r : r - ir);
             int index_r = (ir << (PNG_DITHER_BLUE_BITS + PNG_DITHER_GREEN_BITS));
 
             for (ig = 0; ig < num_green; ig++)
             {
-               int dg = abs(ig - g);
+               /* int dg = abs(ig - g); */
+               int dg = ((ig > g) ? ig - g : g - ig);
                int dt = dr + dg;
                int dm = ((dr > dg) ? dr : dg);
                int index_g = index_r | (ig << PNG_DITHER_BLUE_BITS);
@@ -495,7 +497,8 @@ png_set_dither(png_structp png_ptr, png_colorp palette,
                for (ib = 0; ib < num_blue; ib++)
                {
                   int d_index = index_g | ib;
-                  int db = abs(ib - b);
+                  /* int db = abs(ib - b); */
+                  int db = ((ib > b) ? ib - b : b - ib);
                   int dmax = ((dm > db) ? dm : db);
                   int d = dmax + dt + db;
 
@@ -1132,8 +1135,10 @@ png_read_transform_info(png_structp png_ptr, png_infop info_ptr)
        (info_ptr->color_type == PNG_COLOR_TYPE_GRAY)))
    {
       info_ptr->channels++;
-#if 0 /* if adding a true alpha channel not just filler */
-      info_ptr->color_type |= PNG_COLOR_MASK_ALPHA;
+      /* if adding a true alpha channel not just filler */
+#if !defined(PNG_1_0_X)
+      if (png_ptr->transformations & PNG_ADD_ALPHA)
+        info_ptr->color_type |= PNG_COLOR_MASK_ALPHA;
 #endif
    }
 #endif
@@ -1932,8 +1937,8 @@ png_do_read_filler(png_row_infop row_info, png_bytep row,
          /* This changes the data from RGB to RGBX */
          if (flags & PNG_FLAG_FILLER_AFTER)
          {
-            png_bytep sp = row + (png_size_t)row_width * 6;
-            png_bytep dp = sp  + (png_size_t)row_width * 2;
+            png_bytep sp = row + (png_size_t)row_width * 3;
+            png_bytep dp = sp  + (png_size_t)row_width;
             for (i = 1; i < row_width; i++)
             {
                *(--dp) = lo_filler;
@@ -2273,7 +2278,7 @@ png_do_rgb_to_gray(png_structp png_ptr, png_row_infop row_info, png_bytep row)
                   png_byte blue  = *(sp++);
                   if(red != green || red != blue)
                      rgb_error |= 1;
-                  *(dp++) =  (png_byte)((gc*red + gc*green + bc*blue)>>8);
+                  *(dp++) =  (png_byte)((rc*red + gc*green + bc*blue)>>15);
                   *(dp++) = *(sp++);  /* alpha */
                }
             }
