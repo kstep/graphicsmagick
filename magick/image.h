@@ -466,8 +466,7 @@ typedef struct _ImageInfo
   char
     *size,
     *tile,
-    *page,
-    *geometry;
+    *page;
 
   InterlaceType
     interlace;
