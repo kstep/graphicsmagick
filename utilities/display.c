@@ -116,7 +116,7 @@ static void DisplayUsage(void)
       "-authenticate value  decrypt image with this password",
       "-backdrop            display image centered on a backdrop",
       "-border geometry     surround image with a border of color",
-      "-cache geometry      min/max megabytes of memory of pixel cache memory",
+      "-cache geometry      megabytes of memory in pixel cache memory",
       "-colormap type       Shared or Private",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",

@@ -94,7 +94,7 @@ static void MontageUsage(void)
       "-authenticate value  decrypt image with this password",
       "-blue-primary point  chomaticity blue primary point",
       "-blur factor         apply a filter to blur the image",
-      "-cache geometry      min/max megabytes of memory of pixel cache memory",
+      "-cache geometry      megabytes of memory in pixel cache memory",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorsapce",
       "-comment string      annotate image with comment",

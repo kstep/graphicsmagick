@@ -99,7 +99,7 @@ static void ImportUsage(void)
     {
       "-adjoin              join images into a single multi-image file",
       "-border              include image borders in the output image",
-      "-cache geometry      min/max megabytes of memory of pixel cache memory",
+      "-cache geometry      megabytes of memory in pixel cache memory",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",

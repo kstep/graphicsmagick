@@ -94,7 +94,7 @@ static void MogrifyUsage(void)
       "-blur radius         blur the image",
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",
-      "-cache geometry      min/max megabytes of memory of pixel cache memory",
+      "-cache geometry      megabytes of memory in pixel cache memory",
       "-channel type        extract a particular color channel from image",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",

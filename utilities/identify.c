@@ -89,7 +89,7 @@ static void IdentifyUsage(void)
     *options[]=
     {
       "-authenticate value  decrypt image with this password",
-      "-cache geometry      min/max megabytes of memory of pixel cache memory",
+      "-cache geometry      megabytes of memory in pixel cache memory",
       "-debug events        display copious debugging information",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
