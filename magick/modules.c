@@ -408,25 +408,6 @@ static void InitializeModuleSearchPath(void)
         }
       /* Terminate list */
       module_path[path_index]=(char*) NULL;
-
-      /* Tell ltdl about search path */
-      *scratch='\0';
-      for( i=0; module_path[i]; ++i)
-        {
-          if(i != 0)
-            {
-#if !defined(_VISUALC_)
-              strcat(scratch,":");
-#else
-              char temp[2];
-              temp[0]=DirectoryListSeparator;
-              temp[1]='\0';
-              strcat(scratch,temp);
-#endif
-            }
-          strcat(scratch,module_path[i]);
-        }
-      lt_dlsetsearchpath(scratch);
     }
 }
 
