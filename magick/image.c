@@ -3057,6 +3057,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("blue-primary",option+1) == 0)
           {
+            /*
+              Blue chromaticity primary point.
+            */
+            if (*option == '+')
+              {
+                (*image)->chromaticity.blue_primary.x=0.1500f;
+                (*image)->chromaticity.blue_primary.y=0.0600f;
+                continue;
+              }
             (void) sscanf(argv[++i],"%lf%*[, ]%lf",
               &(*image)->chromaticity.blue_primary.x,
               &(*image)->chromaticity.blue_primary.y);
@@ -3790,6 +3799,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("green-primary",option+1) == 0)
           {
+            /*
+              Green chromaticity primary point.
+            */
+            if (*option == '+')
+              {
+                (*image)->chromaticity.green_primary.x=0.3000f;
+                (*image)->chromaticity.green_primary.y=0.6000f;
+                continue;
+              }
             (void) sscanf(argv[++i],"%lf%*[, ]%lf",
               &(*image)->chromaticity.green_primary.x,
               &(*image)->chromaticity.green_primary.y);
@@ -4186,6 +4204,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("red-primary",option+1) == 0)
           {
+            /*
+              Red chromaticity primary point.
+            */
+            if (*option == '+')
+              {
+                (*image)->chromaticity.red_primary.x=0.6400f;
+                (*image)->chromaticity.red_primary.y=0.3300f;
+                continue;
+              }
             (void) sscanf(argv[++i],"%lf%*[, ]%lf",
               &(*image)->chromaticity.red_primary.x,
               &(*image)->chromaticity.red_primary.y);
@@ -4720,6 +4747,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("white-point",option+1) == 0)
           {
+            /*
+              White chromaticity point.
+            */
+            if (*option == '+')
+              {
+                (*image)->chromaticity.white_point.x=0.3127f;
+                (*image)->chromaticity.white_point.y=0.3290f;
+                continue;
+              }
             (void) sscanf(argv[++i],"%lf%*[, ]%lf",
               &(*image)->chromaticity.white_point.x,
               &(*image)->chromaticity.white_point.y);
