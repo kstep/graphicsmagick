@@ -1724,7 +1724,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 affine.sy=draw_info->bounds.y2;
                 affine.tx=draw_info->bounds.x1;
                 affine.ty=draw_info->bounds.y1;
-draw_info->clip_units=ObjectBoundingBox;
                 break;
               }
             status=False;
@@ -3693,7 +3692,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       if (primitive_info->text == (char *) NULL)
         break;
       clone_info=CloneImageInfo((ImageInfo *) NULL);
-      if (LocaleCompare(primitive_info->text,"data:") != 0)
+      if (LocaleNCompare(primitive_info->text,"data:",5) == 0)
         composite_image=ReadInlineImage(clone_info,primitive_info->text,
           &image->exception);
       else
