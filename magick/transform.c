@@ -976,7 +976,9 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %  ProfileImage() adds or removes a ICM, IPTC, or generic profile from an
 %  image.  If the profile is NULL, it is removed from the image otherwise
 %  added.  Use a name of '*' and a profile of NULL to remove all profiles
-%  from the image.
+%  from the image. Ownership of the profile is transferred to ImageMagick
+%  (it should not be altered or deallocated) unless the clone option is set
+%  to True.
 %
 %  The format of the ProfileImage method is:
 %
@@ -993,6 +995,9 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %
 %    o length: The length of the profile.
 %
+%    o clone: If set True, then copy the profile rather than taking
+%             ownership of it.
+%
 %
 */
 MagickExport unsigned int ProfileImage(Image *image,const char *name,
@@ -1005,7 +1010,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (name == (const char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"Unable to add/remove profile",
+    ThrowBinaryException(OptionError,"Unable to add/remove profile",
       "no profile name was given");
   if ((profile == (const unsigned char *) NULL) || (length == 0))
     {
