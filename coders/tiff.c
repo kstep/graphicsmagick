@@ -1333,11 +1333,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
           TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
           photometric=PHOTOMETRIC_PALETTE;
-          if (image->colors <= 2)
+          if (IsMonochromeImage(image))
             {
-              if (IsMonochromeImage(image))
-                photometric=PHOTOMETRIC_MINISWHITE;
               TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
+              photometric=PHOTOMETRIC_MINISWHITE;
               compress_tag=COMPRESSION_CCITTFAX4;
             }
           else
@@ -1639,7 +1638,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           byte,
           polarity;
 
-        if (image->colors > 2)
+        if (!IsMonochromeImage(image))
           {
             /*
               Convert PseudoClass packets to contiguous grayscale scanlines.
