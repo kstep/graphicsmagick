@@ -25,39 +25,39 @@ namespace Magick
     
   public:
     LastError( void );
-    LastError( int error_,
-		     const std::string message_,
-		     const std::string qualifier_ = MagickNullString );
     ~LastError( void );
     
     // Obtain instance of object
-    static LastError* instance ( void );
+    static LastError*      instance ( void );
     
-    // Test to see if object contains error
-    void                 isError( bool isError_ );
-    bool                 isError( void ) const;
+    // Test to see if error or warning is set
+    bool                   isError( void ) const;
     
     // Clear out existing error info
-    void                 clear ( void );
+    void                   clear ( void );
     
     // Error code
-    void                 error ( int error_ );
-    int                  error ( void ) const;
+    void                   error ( MagickLib::ErrorType error_ );
+    MagickLib::ErrorType   error ( void ) const;
+
+    // Warning code
+    void                   warning ( MagickLib::WarningType warning_ );
+    MagickLib::WarningType warning ( void ) const;
     
     // System errno
-    void                 syserror ( int syserror_ );
-    int                  syserror ( void ) const;
+    void                   syserror ( int syserror_ );
+    int                    syserror ( void ) const;
     
     // Error message
-    void                 message ( std::string message_ );
-    std::string          message ( void ) const;
+    void                   message ( std::string message_ );
+    std::string            message ( void ) const;
     
     // Error qualifier
-    void                 qualifier ( std::string qualifier_ );
-    std::string          qualifier ( void ) const;
+    void                   qualifier ( std::string qualifier_ );
+    std::string            qualifier ( void ) const;
     
     // Throw exception corresponding to error (if any)
-    void                 throwException( void );
+    void                   throwException( void );
     
   private:
     
@@ -67,13 +67,13 @@ namespace Magick
     // Don't support assignment
     LastError& operator = ( const LastError& original_ );
     
-    bool                 _isError;
-    int                  _error;
-    int                  _syserror;
-    std::string          _message;
-    std::string          _qualifier;
+    MagickLib::ErrorType   _error;
+    MagickLib::WarningType _warning;
+    int                    _syserror;
+    std::string            _message;
+    std::string            _qualifier;
     
-    static LastError* _instance;
+    static LastError*      _instance;
   };
 } // namespace Magick
 
@@ -82,25 +82,33 @@ namespace Magick
 //
 
 // Test to see if object contains error
-inline void Magick::LastError::isError( bool isError_ )
-{
-  _isError = isError_;
-}
 inline bool Magick::LastError::isError( void ) const
 {
-  return _isError;
+  return ( _error   != MagickLib::UndefinedError ||
+	   _warning != MagickLib::UndefinedWarning );
 }
 
 // Error code
-inline void Magick::LastError::error ( int error_ )
+inline void Magick::LastError::error ( MagickLib::ErrorType error_ )
 {
   _error = error_;
 }
-inline int Magick::LastError::error ( void ) const
+inline MagickLib::ErrorType Magick::LastError::error ( void ) const
 {
   return _error;
 }
 
+// Warning code
+inline void Magick::LastError::warning ( MagickLib::WarningType warning_ )
+{
+  _warning = warning_;
+}
+inline MagickLib::WarningType Magick::LastError::warning ( void ) const
+{
+  return _warning;
+}
+
+// System error
 inline void Magick::LastError::syserror ( int syserror_ )
 {
   _syserror = syserror_;
@@ -110,7 +118,6 @@ inline int Magick::LastError::syserror ( void ) const
   return _syserror;
 }
   
-
 // Error message
 inline void Magick::LastError::message ( std::string message_ )
 {

@@ -94,7 +94,7 @@ INTERFACE_CURRENT = @INTERFACE_CURRENT@
 INTERFACE_REVISION = @INTERFACE_REVISION@
 INTERFACE_AGE = @INTERFACE_AGE@
 
-libMagick___la_SOURCES = Blob.cpp Color.cpp Drawable.cpp 	Exception.cpp Functions.cpp Geometry.cpp 	Image.cpp LastError.cpp Montage.cpp 	Options.cpp
+libMagick___la_SOURCES =  	Blob.cpp Color.cpp Drawable.cpp Exception.cpp 	Functions.cpp Geometry.cpp Image.cpp LastError.cpp Montage.cpp 	Options.cpp Pixels.cpp
 
 
 libMagick___la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)
@@ -113,7 +113,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libMagick___la_LIBADD = 
 libMagick___la_OBJECTS =  Blob.lo Color.lo Drawable.lo Exception.lo \
-Functions.lo Geometry.lo Image.lo LastError.lo Montage.lo Options.lo
+Functions.lo Geometry.lo Image.lo LastError.lo Montage.lo Options.lo \
+Pixels.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -343,7 +344,7 @@ distdir: $(DISTFILES)
 	done
 Blob.lo Blob.o : Blob.cpp Magick++/Include.h Magick++/Blob.h
 Color.lo Color.o : Color.cpp Magick++/Color.h Magick++/Include.h \
-	Magick++/Functions.h Magick++/LastError.h
+	Magick++/Functions.h Magick++/Exception.h
 Drawable.lo Drawable.o : Drawable.cpp Magick++/Drawable.h \
 	Magick++/Color.h Magick++/Include.h Magick++/Geometry.h
 Exception.lo Exception.o : Exception.cpp Magick++/Exception.h
@@ -361,6 +362,10 @@ Montage.lo Montage.o : Montage.cpp Magick++/Montage.h Magick++/Color.h \
 	Magick++/Include.h Magick++/Geometry.h Magick++/Functions.h
 Options.lo Options.o : Options.cpp Magick++/Options.h Magick++/Color.h \
 	Magick++/Include.h Magick++/Geometry.h Magick++/Functions.h
+Pixels.lo Pixels.o : Pixels.cpp Magick++/Pixels.h Magick++/Include.h \
+	Magick++/Color.h Magick++/Image.h Magick++/Blob.h \
+	Magick++/Drawable.h Magick++/Geometry.h Magick++/Exception.h \
+	Magick++/Options.h Magick++/LastError.h
 
 info-am:
 info: info-recursive

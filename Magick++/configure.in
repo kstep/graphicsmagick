@@ -9,7 +9,7 @@ dnl Written by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 
 AC_INIT(lib/Magick++.h)
 
-MAGICK_RELEASE="0.9.0"		# Magick++ release
+MAGICK_RELEASE="0.9.1"		# Magick++ release
 TESTED_MAGICK_VERSION="5.1.0"	# Last tested ImageMagick release
 
 dnl The most recent interface number that this library implements.

@@ -18,13 +18,16 @@ using namespace std;
 #include <Magick++/LastError.h>
 #include <Magick++/Exception.h>
 
-// Magick++ combined error/warning callback function
+// Magick++ error/warning callback functions
 namespace Magick
 {
   extern "C" {
-  void LastErrorHandler( const unsigned int error_,
+  void LastErrorHandler( const MagickLib::ErrorType error_,
 			 const char *message_ ,
-			 const char *qualifier_);
+			 const char *qualifier_ );
+  void LastWarningHandler( const MagickLib::WarningType warning_,
+			   const char *message_ ,
+			   const char *qualifier_ );
   }
 }
 
@@ -33,22 +36,11 @@ Magick::LastError*  Magick::LastError::_instance = 0;
 
 // Constructor
 Magick::LastError::LastError( void )
-  : _isError(false),
-    _error(0),
+  : _error(MagickLib::UndefinedError),
+    _warning(MagickLib::UndefinedWarning),
     _syserror(0),
     _message(),
     _qualifier()
-{
-}
-
-// Construct with parameters
-Magick::LastError::LastError( int error_, const std::string message_,
-			      const std::string qualifier_ )
-  : _isError(true),
-    _error(error_),
-    _syserror(errno),
-    _message(message_),
-    _qualifier(qualifier_)
 {
 }
 
@@ -69,7 +61,7 @@ Magick::LastError* Magick::LastError::instance ( void )
 
       // Register error callback function with ImageMagick
       MagickLib::SetErrorHandler( LastErrorHandler );
-      MagickLib::SetWarningHandler( LastErrorHandler );
+      MagickLib::SetWarningHandler( LastWarningHandler );
     }
   return _instance;
 }
@@ -77,8 +69,8 @@ Magick::LastError* Magick::LastError::instance ( void )
 // Clear out existing error info
 void Magick::LastError::clear ( void )
 {
-  _isError   = false;
-  _error     = 0;
+  _error     = MagickLib::UndefinedError;
+  _warning   = MagickLib::UndefinedWarning;
   _syserror  = 0;
   _message.erase();
   _qualifier.erase();
@@ -102,64 +94,107 @@ void Magick::LastError::throwException( void )
   if ( _qualifier.length() > 0 )
     message += " (" + _qualifier + ")";
 
-
-
   // FIXME: For some reason this all of a sudden became necessary on a SVR4 box!
 #undef strerror
   if ( syserror() )
     message += std::string(" [") + strerror(syserror()) + std::string("]");
 
-  int error = _error;
-  clear();
-
-  switch ( error )
+  if ( warning() != MagickLib::UndefinedWarning )
     {
-      // Warnings
-    case MagickLib::ResourceLimitWarning :
-      throw WarningResourceLimit( message );
-    case MagickLib::XServerWarning :
-      throw WarningXServer( message );
-    case MagickLib::OptionWarning :
-      throw WarningOption( message );
-    case MagickLib::DelegateWarning :
-      throw WarningDelegate( message );
-    case MagickLib::MissingDelegateWarning :
-      throw WarningMissingDelegate( message );
-    case MagickLib::CorruptImageWarning :
-      throw WarningCorruptImage( message );
-    case MagickLib::FileOpenWarning :
-      throw WarningFileOpen( message );
-      // Errors
-    case MagickLib::ResourceLimitError :
-      throw ErrorResourceLimit( message );
-    case MagickLib::XServerError :
-      throw ErrorXServer( message );
-    case MagickLib::OptionError :
-      throw ErrorOption( message );
-    case MagickLib::DelegateError :
-      throw ErrorDelegate( message );
-    case MagickLib::MissingDelegateError :
-      throw ErrorMissingDelegate( message );
-    case MagickLib::CorruptImageError :
-      throw ErrorCorruptImage( message );
-    case MagickLib::FileOpenError :
-      throw ErrorFileOpen( message );
-    case MagickLib::UndefinedError :
-    default :
-      throw ErrorUndefined( message );
+      MagickLib::WarningType warningVal = warning();
+      clear();
+      
+      switch ( warningVal )
+	{
+	  // Warnings
+	case MagickLib::ResourceLimitWarning :
+	  throw WarningResourceLimit( message );
+	case MagickLib::XServerWarning :
+	  throw WarningXServer( message );
+	case MagickLib::OptionWarning :
+	  throw WarningOption( message );
+	case MagickLib::DelegateWarning :
+	  throw WarningDelegate( message );
+	case MagickLib::MissingDelegateWarning :
+	  throw WarningMissingDelegate( message );
+	case MagickLib::CorruptImageWarning :
+	  throw WarningCorruptImage( message );
+	case MagickLib::FileOpenWarning :
+	  throw WarningFileOpen( message );
+	case MagickLib::BlobWarning :
+	  throw WarningBlob ( message );
+	case MagickLib::CacheWarning :
+	  throw WarningCache ( message );
+	case MagickLib::UndefinedWarning :
+	default :
+	  throw WarningUndefined( message );
+	}
+    }
+  else if ( error() != MagickLib::UndefinedError )
+    {
+      MagickLib::ErrorType errorVal = error();
+      clear();
+      
+      switch ( errorVal )
+	{
+	  // Errors
+	case MagickLib::ResourceLimitError :
+	  throw ErrorResourceLimit( message );
+	case MagickLib::XServerError :
+	  throw ErrorXServer( message );
+	case MagickLib::OptionError :
+	  throw ErrorOption( message );
+	case MagickLib::DelegateError :
+	  throw ErrorDelegate( message );
+	case MagickLib::MissingDelegateError :
+	  throw ErrorMissingDelegate( message );
+	case MagickLib::CorruptImageError :
+	  throw ErrorCorruptImage( message );
+	case MagickLib::FileOpenError :
+	  throw ErrorFileOpen( message );
+	case MagickLib::BlobError :
+	  throw ErrorBlob ( message );
+	case MagickLib::CacheWarning :
+	  throw ErrorCache ( message );
+	case MagickLib::UndefinedError :
+	default :
+	  throw ErrorUndefined( message );
+	}
     }
 }
 
 //
-// Magick++ combined error/warning callback function
+// Magick++ error callback function
 //
-void Magick::LastErrorHandler( const unsigned int error_,
+void Magick::LastErrorHandler( const MagickLib::ErrorType error_,
 			       const char *message_ ,
 			       const char *qualifier_)
 {
   LastError* errPtr = LastError::instance();
-  errPtr->isError( true );
   errPtr->error( error_ );
+  errPtr->syserror( errno );
+  if ( message_ )
+    errPtr->message( message_ );
+  else
+    errPtr->message( "" );
+  if ( qualifier_ )
+    errPtr->qualifier( qualifier_ );
+  else
+    errPtr->qualifier( "" );
+
+  // Clear out system errno now that it has been collected.
+  errno = 0;
+}
+
+//
+// Magick++ warning callback function
+//
+void Magick::LastWarningHandler( const MagickLib::WarningType warning_,
+				 const char *message_ ,
+				 const char *qualifier_)
+{
+  LastError* errPtr = LastError::instance();
+  errPtr->warning( warning_ );
   errPtr->syserror( errno );
   if ( message_ )
     errPtr->message( message_ );

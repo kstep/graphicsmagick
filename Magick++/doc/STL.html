@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Documentation on Magick++'s STL support templates.">
    <meta name="Keywords" content="STL,Magick++,ImageMagick">
@@ -1032,16 +1032,6 @@ const <a href="Geometry.html">Geometry</a> &amp;cropGeometry_&nbsp;</font></td>
 </tr>
 
 <tr>
-<td><a NAME="transformColorSpace"></a><font size=-1>transform-</font>
-<br><font size=-1>ColorSpaceImage</font></td>
-
-<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
-colorSpace_</font></td>
-
-<td><font size=-1>Transform the image representation to a different colorspace.</font></td>
-</tr>
-
-<tr>
 <td>
 <center><a NAME="transparentImage"></a><font size=-1>transparentImage</font></center>
 </td>
@@ -1343,6 +1333,21 @@ color in RGB space.</font></td>
 </tr>
 
 <tr>
+<td><a NAME="colorSpaceImage"></a><font size=-1>colorSpaceImage</font></td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a></font></td>
+
+<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
+colorSpace_</font></td>
+
+<td><font size=-1>The colorspace (e.g. CMYK) used to represent the image
+pixel colors. Image pixels are always stored as RGB(A) except for the case
+of CMY(K).</font></td>
+</tr>
+
+<tr>
 <td>
 <center><a NAME="compressType"></a><font size=-1>compressType-</font>
 <br><font size=-1>Image</font></center>
@@ -1593,6 +1598,27 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 <td><font size=-1>bool flag_</font></td>
 
 <td><font size=-1>Transform the image to black and white</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="pageImage"></a>pageImage</center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Geometry.html#PostscriptPageSize">Geometry</a></font></td>
+
+<td><font size=-1>const <a href="Geometry.html#PostscriptPageSize">Geometry</a>
+&amp;pageSize_</font></td>
+
+<td><font size=-1>Preferred size and location of an image canvas.</font><font size=-1></font>
+<p><font size=-1>Use this option to specify the dimensions and position
+of the Postscript page in dots per inch or a TEXT page in pixels. This
+option is typically used in concert with <i><a href="#density">density</a></i>.</font><font size=-1></font>
+<p><font size=-1>Page may also be used to position a GIF image (such as
+for a scene in an animation)</font></td>
 </tr>
 
 <tr>

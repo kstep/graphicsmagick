@@ -33,7 +33,7 @@ int main( int /*argc*/, char ** /*argv*/)
     averageImages( &averaged, imageList.begin(), imageList.end() );
     // averaged.display();
     if ( averaged.signature() != "678f291ed463419f4cfe26289b99552f" &&
-	 averaged.signature() != "990a6b8f3abca6d06936b29c7a5a41af")
+	 averaged.signature() != "b2dd960061090cf3e7f0864b6a9f044d")
       {
 	cout << "Line: " << __LINE__
 	     << "  Averaging image failed, signature = "

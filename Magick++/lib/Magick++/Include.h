@@ -21,7 +21,6 @@
 //
 #include <vcl.h>
 #include <stdio.h>
-
 #endif // defined(__BORLANDC__)
 
 // If <clocale> is not included, then SPARC Works 5.0 blows up when
@@ -33,9 +32,9 @@
 
 // Needed for time_t
 #include <ctime>
-#if defined(_VISUALC_)
-#include <sys\types.h>
-#endif
+
+// Needed for off_t
+#include <sys/types.h>
 
 namespace MagickLib
 {
@@ -224,6 +223,24 @@ namespace Magick
   using MagickLib::OilPaintPreview;
   using MagickLib::CharcoalDrawingPreview;
   using MagickLib::JPEGPreview;
+
+  // Quantum types
+  using MagickLib::QuantumTypes;
+  using MagickLib::IndexQuantum;
+  using MagickLib::GrayQuantum;
+  using MagickLib::IndexOpacityQuantum;
+  using MagickLib::GrayOpacityQuantum;
+  using MagickLib::RedQuantum;
+  using MagickLib::CyanQuantum;
+  using MagickLib::GreenQuantum;
+  using MagickLib::YellowQuantum;
+  using MagickLib::BlueQuantum;
+  using MagickLib::MagentaQuantum;
+  using MagickLib::OpacityQuantum;
+  using MagickLib::BlackQuantum;
+  using MagickLib::RGBQuantum;
+  using MagickLib::RGBAQuantum;
+  using MagickLib::CMYKQuantum;
 
   // Rendering intents
   using MagickLib::RenderingIntent;

@@ -1,5 +1,12 @@
 This file records noteworthy changes.
 
+(0.9.1)
+  * Renamed transformColorSpace() to colorSpace() and added a
+    colorSpace() accessor method.
+  * Renamed psPageSize() to page(), which now properly returns the
+    actual attribute from the image, rather than the image options.
+    This is important in order to manipulate GIF animations.
+
 (0.9)
   * Ported to ImageMagick 5.0.
   * BLOB sizes are now specified using size_t type.

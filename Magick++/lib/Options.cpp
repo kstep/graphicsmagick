@@ -268,6 +268,28 @@ Magick::Color Magick::Options::matteColor ( void ) const
   return Magick::Color( _imageInfo->matte_color );
 }
 
+void Magick::Options::page ( const Magick::Geometry &pageSize_ )
+{
+  if ( !pageSize_.isValid() )
+    {
+      if ( _imageInfo->page )
+	{
+	  MagickLib::FreeMemory( _imageInfo->page );
+	  _imageInfo->page = (char *)NULL;
+	}
+      return;
+    }
+
+  Magick::CloneString( &_imageInfo->page, pageSize_ );
+}
+Magick::Geometry Magick::Options::page ( void ) const
+{
+  if ( _imageInfo->page )
+    return Geometry( _imageInfo->page );
+
+    return Geometry();
+}
+
 void Magick::Options::penColor ( const Color &penColor_ )
 {
   if ( !penColor_.isValid() )
@@ -306,28 +328,6 @@ void Magick::Options::penTexture ( const MagickLib::Image *penTexture_ )
 const MagickLib::Image* Magick::Options::penTexture ( void  ) const
 {
   return _penTexture;
-}
-
-void Magick::Options::psPageSize ( const Magick::Geometry &pageSize_ )
-{
-  if ( !pageSize_.isValid() )
-    {
-      if ( _imageInfo->page )
-	{
-	  MagickLib::FreeMemory( _imageInfo->page );
-	  _imageInfo->page = (char *)NULL;
-	}
-      return;
-    }
-
-  Magick::CloneString( &_imageInfo->page, pageSize_ );
-}
-Magick::Geometry Magick::Options::psPageSize ( void ) const
-{
-  if ( _imageInfo->page )
-    return std::string( _imageInfo->page );
-
-    return std::string();
 }
 
 void Magick::Options::resolutionUnits ( Magick::ResolutionType resolutionUnits_ )

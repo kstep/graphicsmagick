@@ -81,41 +81,54 @@ namespace Magick
     // Vertical and horizontal resolution in pixels of the image
     void            density ( const Geometry &geomery_ );
     Geometry        density ( void ) const;
-    
+
+    // Image depth (8 or 16)
     void            depth ( unsigned int depth_ );
     unsigned int    depth ( void ) const;
-    
+
+    // Image filename to read or write
     void            fileName ( const std::string &fileName_ );
     std::string     fileName ( void ) const;
-    
+
+    // Font name
     void            font ( const std::string &font_ );
     std::string     font ( void ) const;
-    
+
+    // Font point size
     void            fontPointsize ( double pointSize_ );
     double          fontPointsize ( void ) const;
     
     std::string     format ( void ) const;
-    
+
+    // GIF disposal method
     void            gifDisposeMethod ( unsigned int disposeMethod_ );
     unsigned int    gifDisposeMethod ( void ) const;
-    
+
+    // Image interlace scheme
     void            interlaceType ( InterlaceType interlace_ );
     InterlaceType   interlaceType ( void ) const;
     
     // Linewidth for drawing vector objects (default one)
     void            lineWidth ( unsigned int lineWidth_ );
     unsigned int    lineWidth ( void ) const;
-    
+
+    // Image format to write or read
     void            magick ( const std::string &magick_ );
     std::string     magick ( void ) const;
     
     // Transparent color
     void            matteColor ( const Color &matteColor_ );
     Color           matteColor ( void ) const;
-    
+
+    // Write as a monochrome image
     void            monochrome ( bool monochromeFlag_ );
     bool            monochrome ( void ) const;
-    
+
+    // Preferred size and location of an image canvas.
+    void            page ( const Geometry &pageSize_ );
+    Geometry        page ( void ) const;
+
+    // Pen drawing color
     void            penColor ( const Color &penColor_ );
     Color           penColor ( void  ) const;
 
@@ -123,9 +136,7 @@ namespace Magick
     void            penTexture ( const MagickLib::Image *penTexture_ );
     const MagickLib::Image* penTexture ( void  ) const;
 
-    void            psPageSize ( const Geometry &pageSize_ );
-    Geometry        psPageSize ( void ) const;
-    
+    // Desired image quality factor
     void            quality ( unsigned int quality_ );
     unsigned int    quality ( void ) const;
     
@@ -144,10 +155,12 @@ namespace Magick
     // Quantization tree-depth
     void            quantizeTreeDepth ( unsigned int treeDepth_ );
     unsigned int    quantizeTreeDepth ( void ) const;
-    
+
+    // Units of resolution to interpret density
     void            resolutionUnits ( ResolutionType resolutionUnits_ );
     ResolutionType  resolutionUnits ( void ) const;
-    
+
+    // Image size (required for raw formats)
     void            size ( const Geometry &geometry_ );
     Geometry        size ( void ) const;
     
@@ -159,27 +172,36 @@ namespace Magick
     
     void            tileName ( const std::string &tileName_ );
     std::string     tileName ( void ) const;
-    
+
+    // Return verbose information about an image, or an operation
     void            verbose ( bool verboseFlag_ );
     bool            verbose ( void ) const;
     
     void            view ( const std::string &view_ );
     std::string     view ( void ) const;
-    
+
+    // X11 display name
     void            x11Display ( const std::string &display_ );
     std::string     x11Display ( void ) const;
     
     //
     // Internal implementation methods.  Please do not use.
     //
+
+    // Construct using pointers to external structures
+    // Must not delete pointers!
+//     Options( ImageInfo* imageInfo_, QuantizeInfo* quantizeInfo_ );
+    
     ImageInfo *     imageInfo( void );
     QuantizeInfo *  quantizeInfo( void );
-    
+
+  protected:
+
   private:
     
     // Assignment not supported
     Options operator= ( const Options& );
-    
+
     ImageInfo*        _imageInfo;
     QuantizeInfo*     _quantizeInfo;
     MagickLib::Image* _penTexture;

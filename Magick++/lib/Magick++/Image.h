@@ -71,10 +71,12 @@ namespace Magick
     
     // Assignment operator
     Image operator= ( const Image &image_ );
-    
+
+    //////////////////////////////////////////////////////////////////////
     //
     // Image operations
     //
+    //////////////////////////////////////////////////////////////////////
     
     // Add noise to image with specified noise type
     void            addNoise ( NoiseType noiseType_ );
@@ -350,9 +352,6 @@ namespace Magick
     void            transform ( const Geometry &imageGeometry_,
 				const Geometry &cropGeometry_  );
 
-    // Convert the image colorspace representation
-    void            transformColorSpace( ColorspaceType colorSpace_ );
-
     // Add matte image to image, setting pixels matching color to transparent
     void            transparent ( const Color &color_ );
     
@@ -373,10 +372,12 @@ namespace Magick
     
     // Zoom image to specified size.
     void            zoom ( const Geometry &geometry_ );
-    
+
+    //////////////////////////////////////////////////////////////////////
     //
-    // Image Option Accessors
+    // Image Options
     //
+    //////////////////////////////////////////////////////////////////////
 
     // Anti-alias Postscript and TrueType fonts (default true)
     void            antiAlias( bool flag_ );
@@ -458,7 +459,11 @@ namespace Magick
     // Color at colormap position index_
     void            colorMap ( unsigned int index_, const Color &color_ );
     Color           colorMap ( unsigned int index_ ) const;
-    
+
+    // Image Color Space
+    void            colorSpace( ColorspaceType colorSpace_ );
+    ColorspaceType  colorSpace ( void ) const;
+
     // Image width
     unsigned int    columns ( void ) const;
     
@@ -578,9 +583,9 @@ namespace Magick
 				 const Color &color_ );
     Color           pixelColor ( unsigned int x_, unsigned int y_ );
 
-    // Postscript page size. 
-    void            psPageSize ( const Geometry &pageSize_ );
-    Geometry        psPageSize ( void ) const;
+    // Preferred size and location of an image canvas.
+    void            page ( const Geometry &pageSize_ );
+    Geometry        page ( void ) const;
 
     // JPEG/MIFF/PNG compression level (default 75).
     void            quality ( unsigned int quality_ );
@@ -616,7 +621,7 @@ namespace Magick
     // Image scene number
     void            scene ( unsigned int scene_ );
     unsigned int    scene ( void ) const;
-    
+
     // Image signature.  Set force_ to true in order to re-calculate
     // the signature regardless of whether the image data has been
     // modified.
@@ -663,9 +668,11 @@ namespace Magick
     // y resolution of the image
     double          yResolution ( void ) const;
 
+    //////////////////////////////////////////////////////////////////////    
     //
     // No user-serviceable parts beyond this point
     //
+    //////////////////////////////////////////////////////////////////////
     
     // Construct with image and options
     Image ( MagickLib::Image* image_, Magick::Options* options_ );
@@ -676,11 +683,14 @@ namespace Magick
 
     // Retrieve Options*
     Options* options( void );
-    const Options* constOptions( void ) const;
+    const Options*  constOptions( void ) const;
 
     // Retrieve ImageInfo*
     MagickLib::ImageInfo * imageInfo( void );
     const MagickLib::ImageInfo * constImageInfo( void ) const;
+
+    // Retrieve last error object
+    LastError& lastError( void ) const;
 
     // Replace current image (reference counted)
     MagickLib::Image* replaceImage ( MagickLib::Image* replacement_ );
@@ -693,7 +703,8 @@ namespace Magick
 
   private:
 
-    ImageRef * _imgRef;
+    ImageRef *      _imgRef;
+    LastError *     _lastError;
   };
 
 
@@ -719,11 +730,9 @@ namespace Magick
     
     void                 image ( MagickLib::Image * image_ );
     MagickLib::Image *&  image ( void );
-    void                 imageMissing ( void ) const;
     
     void                 options ( Options * options_ );
     Options *            options ( void );
-    void                 optionsMissing( void ) const;
     
     MagickLib::Image *   _image;    // ImageMagick Image
     Options *            _options;  // User-specified options
@@ -748,9 +757,6 @@ inline void Magick::ImageRef::image ( MagickLib::Image * image_ )
 // Get image pointer
 inline MagickLib::Image *& Magick::ImageRef::image ( void )
 {
-  if ( !_image )
-    imageMissing(); // Throw exception
-
   return _image;
 }
 
@@ -762,9 +768,6 @@ inline void  Magick::ImageRef::options ( Options * options_ )
 // Get options pointer
 inline Magick::Options * Magick::ImageRef::options ( void )
 {
-  if ( !_options )
-    optionsMissing();
-
   return _options;
 }
 
@@ -802,5 +805,11 @@ inline const MagickLib::ImageInfo * Magick::Image::constImageInfo( void ) const
   return _imgRef->options()->imageInfo();
 }
 
+// Access last error object
+inline Magick::LastError& Magick::Image::lastError( void ) const
+{
+  // Cast to allow updates from const methods
+  return const_cast<Magick::LastError&>(*_lastError);
+}
 
 #endif // Image_header

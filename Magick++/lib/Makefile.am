@@ -12,10 +12,10 @@ INTERFACE_CURRENT  = @INTERFACE_CURRENT@
 INTERFACE_REVISION = @INTERFACE_REVISION@
 INTERFACE_AGE      = @INTERFACE_AGE@
 
-libMagick___la_SOURCES = Blob.cpp Color.cpp Drawable.cpp \
-	Exception.cpp Functions.cpp Geometry.cpp \
-	Image.cpp LastError.cpp Montage.cpp \
-	Options.cpp
+libMagick___la_SOURCES = \
+	Blob.cpp Color.cpp Drawable.cpp Exception.cpp \
+	Functions.cpp Geometry.cpp Image.cpp LastError.cpp Montage.cpp \
+	Options.cpp Pixels.cpp
 
 libMagick___la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)
 

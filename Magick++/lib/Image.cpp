@@ -62,11 +62,9 @@ int Magick::operator <= ( const Magick::Image& left_, const Magick::Image& right
 
 // Construct from image file or image specification
 Magick::Image::Image( const std::string &imageSpec_ )
-  : _imgRef(new ImageRef)
+  : _imgRef(new ImageRef),
+    _lastError(LastError::instance())
 {
-  // Ensure that error collection object is instantiated
-  LastError::instance();
-
   // Initialize, Allocate and Read images
   read( imageSpec_ );
 }
@@ -74,11 +72,9 @@ Magick::Image::Image( const std::string &imageSpec_ )
 // Construct a blank image canvas of specified size and color
 Magick::Image::Image( const Geometry &size_,
 		      const Color &color_ )
-  : _imgRef(new ImageRef)
+  : _imgRef(new ImageRef),
+    _lastError(LastError::instance())
 {
-  // Ensure that error collection object is instantiated
-  LastError::instance();
-
   // xc: prefix specifies an X11 color string
   std::string imageSpec("xc:");
   imageSpec += color_;
@@ -92,32 +88,27 @@ Magick::Image::Image( const Geometry &size_,
 
 // Construct Image from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_ )
-  : _imgRef(new ImageRef)
+  : _imgRef(new ImageRef),
+    _lastError(LastError::instance())
 {
-  // Ensure that error collection object is instantiated
-  LastError::instance();
-
   // Initialize, Allocate and Read images
   read( blob_ );
 }
 
 // Construct Image of specified size from in-memory BLOB
 Magick::Image::Image ( const Geometry &size_, const Blob &blob_ )
-  : _imgRef(new ImageRef)
+  : _imgRef(new ImageRef),
+    _lastError(LastError::instance())
 {
-  // Ensure that error collection object is instantiated
-  LastError::instance();
-
   // Initialize, Allocate and Read images
   read( size_, blob_ );
 }
 
 // Default constructor
 Magick::Image::Image( void )
-  : _imgRef(new ImageRef)
+  : _imgRef(new ImageRef),
+    _lastError(LastError::instance())
 {
-  // Ensure that error collection object is instantiated
-  LastError::instance();
 }
 
 // Destructor
@@ -256,14 +247,16 @@ void Magick::Image::colorize ( const Color &opaqueColor_,
 {
   if ( !opaqueColor_.isValid() )
     {
-      LastError err( MagickLib::OptionError, "Opaque color argument is invalid" );
-      err.throwException();
+      lastError().error(MagickLib::OptionError);
+      lastError().message("Opaque color argument is invalid");
+      lastError().throwException();
     }
 
   if ( !penColor_.isValid() )
     {
-      LastError err( MagickLib::OptionError, "Pen color argument is invalid" );
-      err.throwException();
+      lastError().error(MagickLib::OptionError);
+      lastError().message("Pen color argument is invalid");
+      lastError().throwException();
     }
 
   std::string opaque_str(opaqueColor_);
@@ -719,8 +712,9 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
 {
   if ( !target_.isValid() )
     {
-      LastError err( MagickLib::OptionError, "Target color argument is invalid" );
-      err.throwException();
+      lastError().error(MagickLib::OptionError);
+      lastError().message("Target color argument is invalid");
+      lastError().throwException();
     }
 
   MagickLib::PixelPacket rllPacket;
@@ -783,13 +777,15 @@ void Magick::Image::opaque ( const Color &opaqueColor_,
 {
   if ( !opaqueColor_.isValid() )
     {
-      LastError err( MagickLib::OptionError, "Opaque color argument is invalid" );
-      err.throwException();
+      lastError().error(MagickLib::OptionError);
+      lastError().message("Opaque color argument is invalid");
+      lastError().throwException();
     }
   if ( !penColor_.isValid() )
     {
-      LastError err( MagickLib::OptionError, "Pen color argument is invalid" );
-      err.throwException();
+      lastError().error(MagickLib::OptionError);
+      lastError().message("Pen color argument is invalid");
+      lastError().throwException();
     }
 
   std::string opaque = opaqueColor_;
@@ -1045,69 +1041,14 @@ void Magick::Image::transform ( const Geometry &imageGeometry_,
   throwMagickError();
 }
 
-void Magick::Image::transformColorSpace( ColorspaceType colorSpace_ )
-{
-  // Nothing to do?
-  if ( image()->colorspace == colorSpace_ )
-    return;
-
-  modifyImage();
-
-  if ( image()->colorspace == RGBColorspace ||
-       image()->colorspace == TransparentColorspace ||
-       image()->colorspace == GRAYColorspace )
-    {
-      // Convert the image to an alternate colorspace representation
-      // In:			Out:
-      // RGBColorspace		RGBColorspace (no conversion)
-      // TransparentColorspace	TransparentColorspace (no conversion)
-      // GRAYColorspace		GRAYColorspace (no conversion if really Gray)
-      // RGBColorspace		CMYKColorspace
-      // RGBColorspace		GRAYColorspace
-      // RGBColorspace		OHTAColorspace
-      // RGBColorspace		sRGBColorspace
-      // RGBColorspace		XYZColorspace
-      // RGBColorspace		YCbCrColorspace
-      // RGBColorspace		YCCColorspace
-      // RGBColorspace		YIQColorspace
-      // RGBColorspace		YPbPrColorspace
-      // RGBColorspace		YUVColorspace
-      MagickLib::RGBTransformImage( image(), colorSpace_ );
-      throwMagickError();
-      return;
-    }
-
-  if ( colorSpace_ == RGBColorspace ||
-       colorSpace_ == TransparentColorspace ||
-       colorSpace_ == GRAYColorspace )
-    {
-      // Convert the image from an alternate colorspace representation
-      // In:				Out:
-      // CMYKColorspace		RGBColorspace
-      // RGBColorspace		RGBColorspace (no conversion)
-      // GRAYColorspace		GRAYColorspace (no conversion)
-      // TransparentColorspace	TransparentColorspace (no conversion)
-      // OHTAColorspace		RGBColorspace
-      // sRGBColorspace		RGBColorspace
-      // XYZColorspace		RGBColorspace
-      // YCbCrColorspace		RGBColorspace
-      // YCCColorspace		RGBColorspace
-      // YIQColorspace		RGBColorspace
-      // YPbPrColorspace		RGBColorspace
-      // YUVColorspace		RGBColorspace
-      MagickLib::TransformRGBImage( image(), colorSpace_ );
-      throwMagickError();
-      return;
-    }
-}
-
 // Add matte image to image, setting pixels matching color to transparent
 void Magick::Image::transparent ( const Color &color_ )
 {
   if ( !color_.isValid() )
     {
-      LastError err( MagickLib::OptionError, "Color argument is invalid." );
-      err.throwException();
+      lastError().error(MagickLib::OptionError);
+      lastError().message("Color argument is invalid");
+      lastError().throwException();
     }
 
   std::string color = color_;
@@ -1415,9 +1356,9 @@ void Magick::Image::colorMap ( unsigned int index_,
       if ( image()->c_class == MagickLib::DirectClass )
 	{
 	  errno = 0;
-	  LastError err( MagickLib::OptionError,
-			 "Image class does not support colormap" );
-	  err.throwException();
+	  lastError().error(MagickLib::OptionError);
+	  lastError().message("Image class does not support colormap");
+	  lastError().throwException();
 	}
       
       modifyImage();
@@ -1425,10 +1366,9 @@ void Magick::Image::colorMap ( unsigned int index_,
       if ( index_ > image()->colors )
 	{
 	  errno = 0;
-	  LastError err( MagickLib::OptionError,
-			 "color index is greater than maximum image color index" );
-	  err.throwException();
-	  //index_ %= image()->colors;
+	  lastError().error(MagickLib::OptionError);
+	  lastError().message("Color index is greater than maximum image color index");
+	  lastError().throwException();
 	}
 
       if ( image()->colormap )
@@ -1442,14 +1382,15 @@ void Magick::Image::colorMap ( unsigned int index_,
 	}
 
       errno = 0;
-      LastError err( MagickLib::OptionError,
-		     "Image does not contain colormap" );
-      err.throwException();
+      lastError().error(MagickLib::OptionError);
+      lastError().message("Image does not contain colormap");
+      lastError().throwException();
     }
 
   errno = 0;
-  LastError err( MagickLib::OptionError, "Color argument is invalid" );
-  err.throwException();
+  lastError().error(MagickLib::OptionError);
+  lastError().message("Color argument is invalid");
+  lastError().throwException();
 }
 Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
 {
@@ -1458,10 +1399,9 @@ Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
       if ( index_ > constImage()->colors )
 	{
 	  errno = 0;
-	  LastError err( MagickLib::OptionError,
-			 "color index is greater than maximum image color index" );
-	  err.throwException();
-	  //index_ %= constImage()->colors;
+	  lastError().error(MagickLib::OptionError);
+	  lastError().message("Color index is greater than maximum image color index");
+	  lastError().throwException();
 	}
 
       MagickLib::PixelPacket *color = constImage()->colormap + index_;
@@ -1470,13 +1410,75 @@ Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
     }
 
   errno = 0;
-  Magick::LastError err( MagickLib::CorruptImageError,
-			 "Image does not contain colormap" );
-  err.throwException();
+  lastError().error(MagickLib::CorruptImageError);
+  lastError().message("Image does not contain colormap");
+  lastError().throwException();
 
   return Color();
 }
 
+// Image colorspace
+void Magick::Image::colorSpace( ColorspaceType colorSpace_ )
+{
+  // Nothing to do?
+  if ( image()->colorspace == colorSpace_ )
+    return;
+
+  modifyImage();
+
+  if ( image()->colorspace == RGBColorspace ||
+       image()->colorspace == TransparentColorspace ||
+       image()->colorspace == GRAYColorspace )
+    {
+      // Convert the image to an alternate colorspace representation
+      // In:			Out:
+      // RGBColorspace		RGBColorspace (no conversion)
+      // TransparentColorspace	TransparentColorspace (no conversion)
+      // GRAYColorspace		GRAYColorspace (no conversion if really Gray)
+      // RGBColorspace		CMYKColorspace
+      // RGBColorspace		GRAYColorspace
+      // RGBColorspace		OHTAColorspace
+      // RGBColorspace		sRGBColorspace
+      // RGBColorspace		XYZColorspace
+      // RGBColorspace		YCbCrColorspace
+      // RGBColorspace		YCCColorspace
+      // RGBColorspace		YIQColorspace
+      // RGBColorspace		YPbPrColorspace
+      // RGBColorspace		YUVColorspace
+      MagickLib::RGBTransformImage( image(), colorSpace_ );
+      throwMagickError();
+      return;
+    }
+
+  if ( colorSpace_ == RGBColorspace ||
+       colorSpace_ == TransparentColorspace ||
+       colorSpace_ == GRAYColorspace )
+    {
+      // Convert the image from an alternate colorspace representation
+      // In:				Out:
+      // CMYKColorspace		RGBColorspace
+      // RGBColorspace		RGBColorspace (no conversion)
+      // GRAYColorspace		GRAYColorspace (no conversion)
+      // TransparentColorspace	TransparentColorspace (no conversion)
+      // OHTAColorspace		RGBColorspace
+      // sRGBColorspace		RGBColorspace
+      // XYZColorspace		RGBColorspace
+      // YCbCrColorspace		RGBColorspace
+      // YCCColorspace		RGBColorspace
+      // YIQColorspace		RGBColorspace
+      // YPbPrColorspace		RGBColorspace
+      // YUVColorspace		RGBColorspace
+      MagickLib::TransformRGBImage( image(), colorSpace_ );
+      throwMagickError();
+      return;
+    }
+}
+Magick::ColorspaceType Magick::Image::colorSpace ( void ) const
+{
+  return constImage()->colorspace;
+}
+
+// Image columns
 unsigned int Magick::Image::columns ( void ) const
 {
   return constImage()->columns;
@@ -1526,6 +1528,20 @@ void Magick::Image::density ( const Geometry &density_ )
 {
   modifyImage();
   options()->density( density_ );
+  if ( density_.isValid() )
+    {
+      image()->x_resolution = density_.width();
+      if ( density_.height() != 0 )
+	image()->y_resolution = density_.height();
+      else
+	image()->y_resolution = density_.width();
+    }
+  else
+    {
+      // Reset to default
+      image()->x_resolution = 0;
+      image()->y_resolution = 0;
+    }
 }
 Magick::Geometry Magick::Image::density ( void ) const
 {
@@ -1550,9 +1566,9 @@ std::string Magick::Image::directory ( void ) const
     return std::string( constImage()->directory );
 
   errno = 0;
-  LastError err( MagickLib::CorruptImageWarning,
-		 "Image does not contain a directory." );
-  err.throwException();
+  lastError().warning(MagickLib::CorruptImageWarning);
+  lastError().message("Image does not contain a directory");
+  lastError().throwException();
 
   return std::string();
 }
@@ -1619,9 +1635,9 @@ std::string Magick::Image::format ( void ) const
       ( *magick_info->description != '\0' ))
     return std::string(magick_info->description);
 
-  LastError err( MagickLib::CorruptImageWarning,
-		 "Unrecognized image magick type." );
-  err.throwException();
+  lastError().warning(MagickLib::CorruptImageWarning);
+  lastError().message("Unrecognized image magick type");
+  lastError().throwException();
 
   return std::string();
 }
@@ -1638,9 +1654,9 @@ Magick::Geometry Magick::Image::geometry ( void ) const
       return Geometry(constImage()->geometry);
     }
 
-  Magick::LastError err( MagickLib::OptionWarning,
-			 "Image does not contain a geometry." );
-  err.throwException();
+  lastError().warning(MagickLib::OptionWarning);
+  lastError().message("Image does not contain a geometry");
+  lastError().throwException();
 
   return Geometry();
 }
@@ -1753,8 +1769,7 @@ void Magick::Image::isValid ( bool isValid_ )
 
 bool Magick::Image::isValid ( void ) const
 {
-  // Image is considered valid if we have pixels
-  if ( constImage()->pixels != (MagickLib::PixelPacket*)0 )
+  if ( rows() && columns() )
     return true;
 
   return false;
@@ -1838,8 +1853,6 @@ Magick::Color Magick::Image::matteColor ( void ) const
   return Color( constImage()->matte_color.red,
 		constImage()->matte_color.green,
 		constImage()->matte_color.blue );
-
-//   return options()->matteColor( );
 }
 
 double Magick::Image::meanErrorPerPixel ( void ) const
@@ -1862,9 +1875,9 @@ Magick::Geometry Magick::Image::montageGeometry ( void ) const
   if ( constImage()->montage )
     return Magick::Geometry(constImage()->montage);
 
-  LastError err( MagickLib::CorruptImageWarning,
-		 "Image does not contain a montage." );
-  err.throwException();
+  lastError().warning(MagickLib::CorruptImageWarning);
+  lastError().message("Image does not contain a montage");
+  lastError().throwException();
 
   return Magick::Geometry();
 }
@@ -1878,16 +1891,6 @@ double Magick::Image::normalizedMeanError ( void ) const
 {
   return constImage()->normalized_mean_error;
 }
-
-// unsigned int Magick::Image::packets ( void ) const
-// {
-//   return constImage()->packets;
-// }
-
-// unsigned int Magick::Image::packetSize ( void ) const
-// {
-//   return constImage()->packet_size;
-// }
 
 void Magick::Image::penColor ( const Color &penColor_ )
 {
@@ -1929,9 +1932,9 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
       // Test arguments to ensure they are within the image.
       if ( y_ > rows() || x_ > columns() )
         {
-          Magick::LastError err( MagickLib::OptionError,
-                                 "Access outside of image boundary." );
-          err.throwException();
+	  lastError().error(MagickLib::OptionError);
+	  lastError().message("Access outside of image boundary");
+          lastError().throwException();
         }
 
       modifyImage();
@@ -1956,55 +1959,47 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
       return;
     }
 
-  LastError err( MagickLib::OptionError, "Color argument is invalid" );
-  err.throwException();
+  lastError().error(MagickLib::OptionError);
+  lastError().message("Color argument is invalid");
+  lastError().throwException();
 }
 Magick::Color Magick::Image::pixelColor ( unsigned int x_,
 					  unsigned int y_ )
 {
-  // Access image.
-  if ( !image()->pixels )
-    {
-      Magick::LastError err( MagickLib::CorruptImageError,
-                             "Image does not contain pixel data." );
-      err.throwException();
-    }
+  MagickLib::PixelPacket* pixel;
 
   // Test arguments to ensure they are within the image.
   if ( y_ > rows() || x_ > columns() )
     {
-      Magick::LastError err( MagickLib::OptionError,
-                             "Access outside of image boundary." );
-      err.throwException();
+      lastError().error(MagickLib::OptionError);
+      lastError().message("Access outside of image boundary");
+      lastError().throwException();
     }
 
   // Retrieve single pixel at co-ordinate from pixel cache
-  if ( !MagickLib::GetPixelCache( image(), x_, y_, 1, 1 ) )
+  if ( (pixel = MagickLib::GetPixelCache( image(), x_, y_, 1, 1 )) == 0 )
   {
     throwMagickError();
     return Color();  // Shouldn't get here if GetPixelCache reports error
   }
-  MagickLib::PixelPacket* pixel = image()->pixels;
 
   return Color ( *pixel );
 
 }
 
-void Magick::Image::psPageSize ( const Magick::Geometry &pageSize_ )
+// Preferred size and location of an image canvas.
+void Magick::Image::page ( const Magick::Geometry &pageSize_ )
 {
   modifyImage();
-  options()->psPageSize( pageSize_ );
-
-  if ( pageSize_.isValid() )
-    {
-      image()->page_info = pageSize_;
-    }
-  // FIXME: need to handle case where page size is not valid
-  //        What to do?
+  options()->page( pageSize_ );
+  image()->page_info = pageSize_;
 }
-Magick::Geometry Magick::Image::psPageSize ( void ) const
+Magick::Geometry Magick::Image::page ( void ) const
 {
-  return constOptions()->psPageSize();
+  return Geometry( constImage()->page_info.width,
+		   constImage()->page_info.height,
+		   constImage()->page_info.x,
+		   constImage()->page_info.y );
 }
 
 void Magick::Image::quality ( unsigned int quality_ )
@@ -2203,7 +2198,8 @@ double Magick::Image::yResolution ( void ) const
 
 // Copy Constructor
 Magick::Image::Image( const Image & image_ )
-  : _imgRef(image_._imgRef)
+  : _imgRef(image_._imgRef),
+    _lastError(image_._lastError)
 {
   // Increase reference count
   ++_imgRef->_refCount;
@@ -2222,6 +2218,9 @@ Magick::Image Magick::Image::operator=( const Magick::Image &image_ )
   // Use new image reference
   _imgRef = image_._imgRef;
 
+  // Use same error object
+  _lastError = image_._lastError;
+
   return *this;
 }
 
@@ -2235,7 +2234,8 @@ Magick::Image Magick::Image::operator=( const Magick::Image &image_ )
 // Construct using MagickLib::Image and Magick::Options
 //
 Magick::Image::Image ( MagickLib::Image* image_, Magick::Options* options_ )
-  : _imgRef(new ImageRef( image_, options_) )
+  : _imgRef(new ImageRef( image_, options_)),
+    _lastError(LastError::instance())
 {
 }
 
@@ -2244,6 +2244,18 @@ Magick::Image::Image ( MagickLib::Image* image_, Magick::Options* options_ )
 //
 MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
 {
+
+  // Catch errors that ImageMagick properly reports
+  throwMagickError();
+
+  // Catch null pointer errors
+  if ( !replacement_ )
+    {
+      lastError().error(MagickLib::CorruptImageError);
+      lastError().message("Image pointer returned by ImageMagick is null");
+      lastError().throwException();
+    }
+
   if ( _imgRef->_refCount == 1 )
     {
       // We own the image.  Destroy existing image.
@@ -2264,14 +2276,12 @@ MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
 			      _imgRef->_options );
     }
 
-  throwMagickError();
-
   return replacement_;
 }
 
 //
-// Prepare to modify image pixels
-// Replace current image with copy if reference count > 1
+// Prepare to modify image or image options
+// Replace current image and options with copy if reference count > 1
 //
 void Magick::Image::modifyImage( void )
 {
@@ -2312,7 +2322,8 @@ Magick::ImageRef::ImageRef ( MagickLib::Image * image_ )
 {
 }
 
-// // Construct with an image and options
+// Construct with an image and options
+// Inserts Image* in image, but copies Options into image.
 Magick::ImageRef::ImageRef ( MagickLib::Image * image_,
 			     const Options * options_ )
   : _image(image_),
@@ -2350,18 +2361,25 @@ Magick::ImageRef::~ImageRef( void )
   _options = (Options *)NULL;
 }
 
-// Report Image missing error (throws exception)
-void Magick::ImageRef::imageMissing ( void ) const
+//
+// Cleanup class to ensure that ImageMagick singletons are destroyed
+// so as to avoid any resemblence to a memory leak (which seems to
+// confuse users)
+//
+namespace Magick
 {
-  LastError err( MagickLib::UndefinedError,
-		 "Object does not contain image." );
-  err.throwException();
-}
 
-// Report options missing error (throws exception)
-void Magick::ImageRef::optionsMissing( void ) const
-{
-      Magick::LastError err( MagickLib::UndefinedError,
-			     "Object does not contain options." );
-      err.throwException();
+  class MagickCleanUp
+  {
+  public:
+    ~MagickCleanUp( void )
+      {
+	MagickLib::DestroyMagickInfo();
+	MagickLib::DestroyDelegateInfo();
+      }
+  };
+
+  // The destructor for this object is invoked when the destructors for
+  // static objects in this translation unit are invoked.
+  static MagickCleanUp magickCleanUpGuard;
 }

@@ -35,23 +35,25 @@ int main( int /*argc*/, char ** /*argv*/)
     appendImages( &appended, imageList.begin(), imageList.end() );
     // appended.display();
     if ( appended.signature() != "0e600860c5cb47cd5e2377c015753d3c" &&
-	 appended.signature() != "eed68e3f06a225f24d8aa56d9a2848db" )
+	 appended.signature() != "7c7c64a91c652c0eadbee38ac315539b" )
       {
 	++failures;
 	cout << "Line: " << __LINE__
 	     << "  Horizontal append failed, signature = "
 	     << appended.signature() << endl;
+	// appended.display();
       }
 
     // Vertical
     appendImages( &appended, imageList.begin(), imageList.end(), true );
     if ( appended.signature() != "b65606228af103f08d21d437725ba90d" &&
-	 appended.signature() != "29b2e6300df902a177440a4e9c7dbbbc" )
+	 appended.signature() != "39c8d58e479462844d8e38d9a0016bb6" )
       {
 	++failures;
 	cout << "Line: " << __LINE__
 	     << "  Vertical append failed, signature = "
 	     << appended.signature() << endl;
+	// appended.display();
       }
     
   }

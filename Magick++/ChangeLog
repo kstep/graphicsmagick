@@ -1,3 +1,22 @@
+1999-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (density): Bug fix. Was not setting image x & y density.
+
+1999-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (page): psPageSize() is renamed to page() and now
+ 	properly returns the attribute from the image.
+
+1999-11-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp: Rename transformColorSpace() to colorSpace().
+  	Added colorSpace() accessor method.
+
+1999-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Color.cpp: Re-implemented PixelPacket pointer so that it is
+ 	never NULL and added a 'valid' field for tracking object validity.
+
 1999-11-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (quantizeError): Eliminated method.

@@ -4,8 +4,8 @@
 //
 // Demonstration of unary function-object based operations
 //
-// Reads the multi-frame file "smile_anim.gif" and writes a
-// flipped and morphed version to "flip_out.gif".
+// Reads the multi-frame file "smile_anim.miff" and writes a
+// flipped and morphed version to "flip_out.miff".
 //
 
 #include <string>
@@ -26,6 +26,8 @@ int main( int /*argc*/, char ** /*argv*/)
     // Read images into STL list
     list<Image> imageList;
     readImages( &imageList, "smile_anim.miff" );
+
+    // cout << "Total scenes: " << imageList.size() << endl;
 
     // Flip images
     for_each( imageList.begin(), imageList.end(), flipImage() );

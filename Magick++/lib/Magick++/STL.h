@@ -256,6 +256,21 @@ namespace Magick
     const Color _penColor;
   };
 
+  // Convert the image colorspace representation
+  class colorSpaceImage : public std::unary_function<Image&,void>
+  {
+  public:
+    colorSpaceImage( ColorspaceType colorSpace_ )
+      : _colorSpace( colorSpace_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.colorSpace( _colorSpace );
+      }
+  private:
+    const ColorspaceType _colorSpace;
+  };
+
   // Comment image (add comment string to image)
   class commentImage : public std::unary_function<Image&,void>
   {
@@ -1143,21 +1158,6 @@ namespace Magick
     const Geometry _cropGeometry;
   };
 
-  // Convert the image colorspace representation
-  class transformColorSpaceImage : public std::unary_function<Image&,void>
-  {
-  public:
-    transformColorSpaceImage( ColorspaceType colorSpace_ )
-      : _colorSpace( colorSpace_ ) { }
-
-    void operator()( Image &image_ )
-      {
-	image_.transformColorSpace( _colorSpace );
-      }
-  private:
-    const ColorspaceType _colorSpace;
-  };
-
   // Set image color to transparent
   class transparentImage : public std::unary_function<Image&,void>
   {
@@ -1706,15 +1706,15 @@ namespace Magick
   };
 
   // Postscript page size.
-  class psPageSizeImage : public std::unary_function<Image&,void>
+  class pageImage : public std::unary_function<Image&,void>
   {
   public:
-    psPageSizeImage( const Geometry &pageSize_ )
+    pageImage( const Geometry &pageSize_ )
       : _pageSize( pageSize_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.psPageSize( _pageSize );
+	image_.page( _pageSize );
       }
   private:
     const Geometry _pageSize;

@@ -84,6 +84,16 @@ Magick::WarningFileOpen::WarningFileOpen ( const std::string& what_ )
 {
 }
 
+Magick::WarningBlob::WarningBlob ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
+Magick::WarningCache::WarningCache ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
 //
 // Errors
 //
@@ -129,6 +139,16 @@ Magick::ErrorCorruptImage::ErrorCorruptImage ( const std::string& what_ )
 }
 
 Magick::ErrorFileOpen::ErrorFileOpen ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorBlob::ErrorBlob ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorCache::ErrorCache ( const std::string& what_ )
   : Error(what_)
 {
 }

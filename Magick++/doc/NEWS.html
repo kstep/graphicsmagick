@@ -1,10 +1,20 @@
 <HTML>
 <HEAD>
 </HEAD>
-<BODY text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
 This file records noteworthy changes.
 
+<p>
+(0.9.1)<BR>
+<UL>
+  <LI> Renamed transformColorSpace() to colorSpace() and added a
+    colorSpace() accessor method.<BR>
+  <LI> Renamed psPageSize() to page(), which now properly returns the
+    actual attribute from the image, rather than the image options.
+    This is important in order to manipulate GIF animations.
+
+</UL>
 <p>
 (0.9)<BR>
 <UL>
@@ -12,8 +22,12 @@ This file records noteworthy changes.
   <LI> BLOB sizes are now specified using size_t type.
   <LI> Rotate() no longer accepts sharpen or crop options.
   <LI> Shear() No longer accepts a crop option.
+  <LI> FontPointsize() now takes a double.
   <LI> The condense, uncondense, and condensed methods have been removed
     since ImageMagick 5.0 no longer uses run-length encoding.
+  <LI> The quantizeError method has been removed since it never worked.
+  <LI> The cacheThreshold method is added to set the threshold of
+    ImageMagick's image cache.
 
 </UL>
 <p>
