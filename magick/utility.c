@@ -2037,7 +2037,7 @@ MagickExport unsigned int IsAccessible(const char *filename)
       (void) fclose(file);
     }
   if (magick_debug)
-    (void) fprintf(stdout,"  %.1024s %s accessible",filename,
+    (void) fprintf(stdout,"  %.1024s %s accessible\n",filename,
       status ? "is" : "is not");
   return(status);
 }
