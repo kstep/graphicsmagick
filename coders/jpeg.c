@@ -1278,7 +1278,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       }
     else
       if ((jpeg_info.in_color_space == JCS_RGB) ||
-            (jpeg_info.in_color_space == JCS_YCbCr))
+          (jpeg_info.in_color_space == JCS_YCbCr))
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);

@@ -264,7 +264,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
   /*
     Clone first next in sequence.
   */
-  coalesce_image=CloneImage(image,image->columns,image->rows,True,exception);
+  coalesce_image=CloneImage(image,0,0,True,exception);
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
   GetPageInfo(&coalesce_image->page);
@@ -273,8 +273,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
   */
   for (next=image->next; next != (Image *) NULL; next=next->next)
   {
-    coalesce_image->next=CloneImage(coalesce_image,coalesce_image->columns,
-      coalesce_image->rows,True,exception);
+    coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
     if (coalesce_image->next == (Image *) NULL)
       {
         DestroyImages(coalesce_image);
@@ -668,7 +667,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   /*
     Clone first next in sequence.
   */
-  deconstruct_image=CloneImage(image,image->columns,image->rows,True,exception);
+  deconstruct_image=CloneImage(image,0,0,True,exception);
   if (deconstruct_image == (Image *) NULL)
     {
       LiberateMemory((void **) &bounds);
@@ -1146,7 +1145,7 @@ MagickExport Image *RollImage(Image *image,const int x_offset,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  roll_image=CloneImage(image,image->columns,image->rows,False,exception);
+  roll_image=CloneImage(image,0,0,False,exception);
   if (roll_image == (Image *) NULL)
     return((Image *) NULL);
   /*

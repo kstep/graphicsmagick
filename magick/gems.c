@@ -271,28 +271,27 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
 MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
 {
   double
-    denom,
     normalize,
     value;
 
   int
-    u,
     width;
+
+  register int
+    u;
 
   if (radius > 0.0)
     return((int) (2.0*ceil(radius)+1.0));
   for (width=5; ;)
   {
     normalize=0.0;
-    denom=2.0*sigma*sigma;
     for (u=(-width/2); u <= (width/2); u++)
-      normalize+=exp((double) -(u*u)/denom);
+      normalize+=exp((double) -(u*u)/(2.0*sigma*sigma));
     u=width/2;
-    value=exp((double) -(u*u)/denom)/normalize;
-    if ((int)(value*MaxRGB) > 0)
-      width+=2;
-    else
+    value=exp((double) -(u*u)/(2.0*sigma*sigma))/normalize;
+    if ((int) (value*MaxRGB) <= 0)
       break;
+    width+=2;
   }
   return(width-2);
 }
@@ -304,9 +303,11 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     value;
 
   int
-    u,
-    v,
     width;
+
+  register int
+    u,
+    v;
 
   if (radius > 0.0)
     return((int) (2.0*ceil(radius)+1.0));
@@ -320,10 +321,9 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     }
     v=width/2;
     value=exp((double) -(v*v)/(sigma*sigma))/normalize;
-    if ((int)(value*MaxRGB) > 0)
-      width+=2;
-    else
+    if ((int) (value*MaxRGB) <= 0)
       break;
+    width+=2;
   }
   return(width-2);
 }

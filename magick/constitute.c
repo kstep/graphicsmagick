@@ -1750,8 +1750,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             /*
               Clone this subimage.
             */
-            clone_image=
-              CloneImage(next,next->columns,next->rows,True,exception);
+            clone_image=CloneImage(next,0,0,True,exception);
             if (clone_image == (Image *) NULL)
               break;
             if (subimages == (Image *) NULL)

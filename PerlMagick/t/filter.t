@@ -14,8 +14,8 @@ require 't/subroutines.pl';
 chdir 't' || die 'Cd failed';
 
 testFilter('input.miff', 'Blur',
-  q/0.0x1.5/,
-  'ffaa23e7b744bc72f70cd4328174331b',
+  q/0.0x1.0/,
+  '8457df30246e14ce6441b4252554c4e6',
   '6046acf8622ed1bdf5628416cf26ea88');
 
 ++$test;
@@ -73,7 +73,7 @@ testFilter('input.miff', 'Edge',
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/3/,
-  '7c09db11b97f69c397aaee276d367131',
+  '83642cd00e36ca29fa4ddee858cc5e80',
   'e8e5eb03ca6563f34db3692747a8d9f8');
 
 ++$test;
@@ -153,7 +153,7 @@ testFilter('input.miff', 'Normalize',
 ++$test;
 testFilter('input.miff', 'OilPaint',
   q/3/,
-  'a70161481478c896def77f29b0f8f997',
+  '37880bdf76cb9ae064e60223b74ea802',
   'e16d40c46206f6c3dc682139de76f76d');
 
 ++$test;
@@ -214,8 +214,8 @@ testFilter('input.miff', 'Shade',
 
 ++$test;
 testFilter('input.miff', 'Sharpen',
-  q/0.0x1.5/,
-  '57de7911c47d77e8cac507eb42d93ae0',
+  q/0.0x1.0/,
+  '1e1d678e448d7b2aac7cd0cee6ff1eae',
   'd2a0063811738be757a6d427499a6187');
 
 ++$test;

@@ -2793,8 +2793,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             if (mng_info->ob[object_id]->image != (Image *) NULL)
               DestroyImage(mng_info->ob[object_id]->image);
-            mng_info->ob[object_id]->image=
-              CloneImage(image,image->columns,image->rows,True);
+            mng_info->ob[object_id]->image=CloneImage(image,0,0,True);
             if (mng_info->ob[object_id]->image != (Image *) NULL)
               mng_info->ob[object_id]->image->file=(FILE *) NULL;
             else

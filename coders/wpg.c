@@ -430,7 +430,7 @@ ImageInfo *clone_info;
 ExceptionInfo exception;
 Image *image2;
 
-if((clone_info=CloneImageInfo(image_info))==NULL) return(image);
+if ((clone_info=CloneImageInfo(image_info)) == NULL) return(image);
 TemporaryFilename((char *) clone_info->filename);
 
 /*printf("PS part %ld %ld %s\n",PS_Offset,PS_Size,clone_info->filename);*/

@@ -119,8 +119,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   DestroyImageInfo(clone_info);
   if (tiled_image == (Image *) NULL)
     return((Image *) NULL);
-  clone_image=
-    CloneImage(tiled_image,image->columns,image->rows,True,exception);
+  clone_image=CloneImage(tiled_image,image->columns,image->rows,True,exception);
   DestroyImage(image);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);

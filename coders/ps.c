@@ -977,8 +977,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Create preview image.
             */
-            preview_image=CloneImage(image,image->columns,image->rows,True,
-              &image->exception);
+            preview_image=CloneImage(image,0,0,True,&image->exception);
             if (preview_image == (Image *) NULL)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
@@ -1109,11 +1108,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     if (LocaleCompare(image_info->magick,"PS") != 0)
       {
         (void) strcpy(buffer,"userdict begin\n");
-        (void) WriteBlob(image,strlen(buffer),buffer);
-      }
-    else
-      {
-        (void) strcpy(buffer,"%%BeginData:\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     (void) strcpy(buffer,"DisplayImage\n");
@@ -1435,11 +1429,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     if (LocaleCompare(image_info->magick,"PS") != 0)
       {
         (void) strcpy(buffer,"end\n");
-        (void) WriteBlob(image,strlen(buffer),buffer);
-      }
-    else
-      {
-        (void) strcpy(buffer,"%%EndData\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     (void) strcpy(buffer,"%%PageTrailer\n");

@@ -201,8 +201,8 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   /*
     Initialize framed image attributes.
   */
-  frame_image=
-    CloneImage(image,frame_info->width,frame_info->height,False,exception);
+  frame_image=CloneImage(image,frame_info->width,frame_info->height,False,
+    exception);
   if (frame_image == (Image *) NULL)
     return(False);
   frame_image->storage_class=DirectClass;

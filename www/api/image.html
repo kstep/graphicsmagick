@@ -228,7 +228,7 @@ return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
-<P>Method CloneImage returns a copy of all fields of the input image.  The image pixels and indexes are copied only if the columns and rows of the cloned image are the same as the original otherwise the pixel data is undefined and must be initialized with <CODE>SetImagePixels()</CODE> and <CODE>SyncImagePixels()</CODE> methods.</P>
+<P>Method CloneImage clones an image.  If the specified columns and rows is 0, an exact copy of the image is returned, otherwise the pixel data is undefined and must be initialized with <CODE>SetImagePixels()</CODE> and <CODE>SyncImagePixels()</CODE> methods.</P>
 <P>The format of the CloneImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>

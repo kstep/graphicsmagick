@@ -4745,8 +4745,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
         break;
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      cache_image->list=CloneImage(*image,(*image)->columns,(*image)->rows,
-        True,&(*image)->exception);
+      cache_image->list=CloneImage(*image,0,0,True,&(*image)->exception);
       XSetCursorState(display,windows,False);
       if (cache_image->list == (Image *) NULL)
         {
@@ -6856,8 +6855,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XBackgroundImage(display,resource_info,windows,image);
       if (status == False)
         break;
-      nexus=CloneImage(*image,(*image)->columns,(*image)->rows,True,
-        &(*image)->exception);
+      nexus=CloneImage(*image,0,0,True,&(*image)->exception);
       if (nexus != (Image *) NULL)
         XClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_next_image,CurrentTime);
@@ -6889,8 +6887,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XPreferencesWidget(display,resource_info,windows);
       if (status == False)
         break;
-      nexus=CloneImage(*image,(*image)->columns,(*image)->rows,True,
-        &(*image)->exception);
+      nexus=CloneImage(*image,0,0,True,&(*image)->exception);
       if (nexus != (Image *) NULL)
         XClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_next_image,CurrentTime);
@@ -8280,9 +8277,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   */
   if (resource_info->copy_image == (Image *) NULL)
     return(False);
-  paste_image=CloneImage(resource_info->copy_image,
-    resource_info->copy_image->columns,resource_info->copy_image->rows,True,
-    &image->exception);
+  paste_image=CloneImage(resource_info->copy_image,0,0,True,&image->exception);
   /*
     Map Command widget.
   */
@@ -8632,8 +8627,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  print_image=
-    CloneImage(image,image->columns,image->rows,True,&image->exception);
+  print_image=CloneImage(image,0,0,True,&image->exception);
   if (print_image == (Image *) NULL)
     return(True);
   FormatString(geometry,"%dx%d!",windows->image.ximage->width,
@@ -10154,8 +10148,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  save_image=
-    CloneImage(image,image->columns,image->rows,True,&image->exception);
+  save_image=CloneImage(image,0,0,True,&image->exception);
   if (save_image == (Image *) NULL)
     return(False);
   FormatString(geometry,"%dx%d!",windows->image.ximage->width,

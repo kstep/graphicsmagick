@@ -235,8 +235,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   commands[0]=SetClientName((char *) NULL);
   for (i=0; i < NumberTiles; i++)
   {
-    images[i]=CloneImage(preview_image,preview_image->columns,
-      preview_image->rows,True,&image->exception);
+    images[i]=CloneImage(preview_image,0,0,True,&image->exception);
     if (images[i] == (Image *) NULL)
       {
         for (x=0;  x < i; x++)

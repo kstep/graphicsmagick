@@ -775,8 +775,7 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
                   exception;
 
                 GetExceptionInfo(&exception);
-                image=CloneImage(image,image->columns,image->rows,False,
-                  &exception);
+                image=CloneImage(image,0,0,False,&exception);
                 if (image == (Image *) NULL)
                   {
                     MagickWarning(exception.severity,exception.message,
@@ -2432,7 +2431,7 @@ Copy(ref)
     SvREFCNT_dec(av);
     for (next=image; next; next=next->next)
     {
-      image=CloneImage(next,next->columns,next->rows,False,&next->exception);
+      image=CloneImage(next,0,0,False,&next->exception);
       if (!image)
         {
           MagickWarning(next->exception.severity,next->exception.message,
@@ -4003,7 +4002,7 @@ Mogrify(ref,...)
             sigma;
 
           radius=0.0;
-          sigma=1.5;
+          sigma=1.0;
           if (attribute_flag[1])
             radius=argument_list[1].double_reference;
           if (attribute_flag[2])
@@ -4086,7 +4085,7 @@ Mogrify(ref,...)
             sigma;
 
           radius=0.0;
-          sigma=1.5;
+          sigma=1.0;
           if (attribute_flag[1])
             radius=argument_list[1].double_reference;
           if (attribute_flag[2])
@@ -4268,7 +4267,7 @@ Mogrify(ref,...)
             sigma;
 
           radius=0.0;
-          sigma=1.5;
+          sigma=1.0;
           if (attribute_flag[1])
             radius=argument_list[1].double_reference;
           if (attribute_flag[2])
@@ -4802,9 +4801,8 @@ Mogrify(ref,...)
           if (attribute_flag[5])
             draw_info->linewidth=argument_list[5].double_reference;
           if (attribute_flag[15])
-            draw_info->tile=CloneImage(argument_list[15].image_reference,
-              argument_list[15].image_reference->columns,
-              argument_list[15].image_reference->rows,True,&exception);
+            draw_info->tile=
+              CloneImage(argument_list[15].image_reference,0,0,True,&exception);
           DrawImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           DestroyImageInfo(image_info);
@@ -5138,7 +5136,7 @@ Mogrify(ref,...)
             sigma;
 
           radius=0.0;
-          sigma=1.5;
+          sigma=1.0;
           if (attribute_flag[1])
             radius=argument_list[1].double_reference;
           if (attribute_flag[2])
@@ -5191,7 +5189,7 @@ Mogrify(ref,...)
             threshold;
 
           radius=0.0;
-          sigma=1.5;
+          sigma=1.0;
           amount=1.0;
           threshold=0.05;
           if (attribute_flag[1])
@@ -6410,7 +6408,7 @@ Transform(ref,...)
     GetExceptionInfo(&exception);
     for (next=image; next; next=next->next)
     {
-      clone=CloneImage(next,next->columns,next->rows,False,&exception);
+      clone=CloneImage(next,0,0,False,&exception);
       if (clone)
         TransformImage(&clone,crop_geometry,geometry);
       if (!image)

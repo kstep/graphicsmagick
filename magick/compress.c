@@ -719,8 +719,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
       /*
         Convert image to monochrome.
       */
-      huffman_image=
-        CloneImage(image,image->columns,image->rows,True,&image->exception);
+      huffman_image=CloneImage(image,0,0,True,&image->exception);
       if (huffman_image == (Image *) NULL)
         return(False);
       GetQuantizeInfo(&quantize_info);
@@ -921,8 +920,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  huffman_image=CloneImage(image,image->columns,image->rows,True,
-    &image->exception);
+  huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
   if (!IsMonochromeImage(huffman_image))

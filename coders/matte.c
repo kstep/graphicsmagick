@@ -175,8 +175,8 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   if (!image->matte)
     ThrowWriterException(ResourceLimitWarning,
       "Image does not have a matte channel",image);
-  matte_image=
-    CloneImage(image,image->columns,image->rows,True,&image->exception);
+  matte_image=CloneImage(image,image->columns,image->rows,True,
+    &image->exception);
   if (matte_image == (Image *) NULL)
     return(False);
   if (!AllocateImageColormap(matte_image,MaxRGB+1))

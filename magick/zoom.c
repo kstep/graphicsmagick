@@ -327,8 +327,8 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  magnify_image=
-    CloneImage(image,2*image->columns,2*image->rows,False,exception);
+  magnify_image=CloneImage(image,2*image->columns,2*image->rows,False,
+    exception);
   if (magnify_image == (Image *) NULL)
     return((Image *) NULL);
   magnify_image->storage_class=DirectClass;
@@ -1102,7 +1102,7 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
     ThrowImageException(OptionWarning,"Unable to zoom image",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
-    return(CloneImage(image,columns,rows,False,exception));
+    return(CloneImage(image,0,0,False,exception));
   zoom_image=CloneImage(image,columns,rows,False,exception);
   if (zoom_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1245,7 +1245,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     ThrowImageException(OptionWarning,"Unable to resize image",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
-    return(CloneImage(image,columns,rows,False,exception));
+    return(CloneImage(image,0,0,False,exception));
   sample_image=CloneImage(image,columns,rows,False,exception);
   if (sample_image == (Image *) NULL)
     return((Image *) NULL);

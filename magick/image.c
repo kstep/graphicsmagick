@@ -779,9 +779,8 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneImage returns a copy of all fields of the input image.  The
-%  image pixels and indexes are copied only if the columns and rows of the
-%  cloned image are the same as the original otherwise the pixel data is
+%  Method CloneImage clones an image.  If the specified columns and rows is
+%  0, an exact copy of the image is returned, otherwise the pixel data is
 %  undefined and must be initialized with SetImagePixels() and SyncImagePixels()
 %  methods.
 %
@@ -909,7 +908,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
     }
   GetBlobInfo(&clone_image->blob);
   clone_image->cache=(void *) NULL;
-  if ((image->columns != columns) || (image->rows != rows))
+  if ((columns != 0) || (rows != 0))
     {
       clone_image->columns=columns;
       clone_image->rows=rows;
@@ -1176,8 +1175,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       /*
         Allocate the displace image.
       */
-      displace_image=CloneImage(composite_image,composite_image->columns,
-        composite_image->rows,True,&image->exception);
+      displace_image=CloneImage(composite_image,0,0,True,&image->exception);
       if (displace_image == (Image *) NULL)
         return(False);
       horizontal_scale=20.0;
@@ -3504,12 +3502,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         quantize_info.number_colors=atoi(argv[++i]);
         continue;
       }
-    if (LocaleNCompare("colorspace",option+1,7) == 0)
+    if (LocaleNCompare("colorspace",option,7) == 0)
       {
         char
           type;
 
-        type=*option;
+        type=(*option);
         option=argv[++i];
         if (LocaleCompare("cmyk",option) == 0)
           {
@@ -3547,7 +3545,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (LocaleCompare("yuv",option) == 0)
           quantize_info.colorspace=YUVColorspace;
         clone_info->colorspace=quantize_info.colorspace;
-        /* force the image colorspace to the one selected */
         if (type == '+')
           (*image)->colorspace=clone_info->colorspace;
         continue;
@@ -3968,9 +3965,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (LocaleCompare("Matte",option) == 0)
               layer=MatteLayer;
           }
-        /* if the colorspace specified does not match the image - convert */
-        if ((*image)->colorspace != clone_info->colorspace)
-          RGBTransformImage(*image,clone_info->colorspace);
         LayerImage(*image,layer);
         continue;
       }

@@ -169,8 +169,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->font != (char *) NULL)
     cloned_info->font=AllocateString(draw_info->font);
   if (draw_info->tile != (Image *) NULL)
-    cloned_info->tile=CloneImage(draw_info->tile,draw_info->tile->columns,
-      draw_info->tile->rows,True,&draw_info->tile->exception);
+    cloned_info->tile=
+      CloneImage(draw_info->tile,0,0,True,&draw_info->tile->exception);
   return(cloned_info);
 }
 

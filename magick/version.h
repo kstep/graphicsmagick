@@ -9,13 +9,13 @@ extern "C" {
 #endif
 
 #define MagickCopyright  "Copyright (C) 2000 ImageMagick Studio"
-#define MagickLibVersion  0x0523
+#define MagickLibVersion  0x0524
 #if defined(QuantumLeap)
 #define MagickVersion  \
-  "@(#)ImageMagick 5.2.3 00/09/01 Q:16 cristy@mystic.es.dupont.com"
+  "@(#)ImageMagick 5.2.4 00/10/01 Q:16 cristy@mystic.es.dupont.com"
 #else
 #define MagickVersion  \
-  "@(#)ImageMagick 5.2.3 00/09/01 Q:8 cristy@mystic.es.dupont.com"
+  "@(#)ImageMagick 5.2.4 00/10/01 Q:8 cristy@mystic.es.dupont.com"
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
