@@ -1465,12 +1465,12 @@ format specification in the file name. For example,
     montage -scenes 5-7 image.miff
 </pre>
 <p>
-makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and&lt;//p&gt; 
+makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and 
 <pre>
     animate -scenes 0-12 image%02d.miff
 </pre>
 <p>
-animates files image00.miff, image01.miff, through image12.miff.&lt;//p&gt; 
+animates files image00.miff, image01.miff, through image12.miff. 
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1732,6 +1732,67 @@ color="#FFFFFF"><font size="+1">
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
+<p>
+By default, the image format is determined by its magic number, i.e., the
+first few bytes of the file. To specify
+a particular image format, precede the filename with an image format name
+and a colon (<em>i.e.</em><strong>ps:image</strong>) or specify the image type as the
+filename suffix.
+The magic number takes precedence over the filename suffix
+and the prefix takes precedence over the magic number and the suffix
+in input files.
+The prefix takes precedence over the filename
+suffix in output files.  To read the "built-in" formats (GRANITE, H, LOGO,
+NETSCAPE, PLASMA, and ROSE) use a prefix (including the colon) without a
+filename or suffix.  To read the XC format, follow the colon with a color
+specification.  To read the CAPTION format, follow the colon with a text
+string or with a filename prefixed with the at symbol (<strong>@</strong>).
+<br>&nbsp;<br>
+<p>
+When you specify <strong>X</strong> as your image type, the filename has special
+meaning. It specifies an X window by <strong>id, name</strong>, or
+<strong>root</strong>. If
+no filename is specified, the window is selected by clicking the mouse
+in the desired window.
+<p>
+Specify <em>input_file</em> as <strong>-</strong> for standard input,
+<em>output_file</em>
+as <strong>-</strong> for standard output. If <em>input_file</em> has the extension
+<strong>.Z</strong> or
+<strong>.gz</strong>, the file is uncompressed with <strong>uncompress</strong> or <strong>gunzip</strong>
+respectively. If <em>output_file</em> has the extension <strong>.Z</strong> or
+<strong>.gz</strong>,
+the file is compressed using with <em>compress</em> or <em>gzip</em>
+respectively.
+<p>
+Finally, when running on platforms that allow it, precede the image file name
+with <strong>|</strong> to pipe to or from a system command (this feature is not
+available on VMS, Win32 and Macintosh platforms).
+<p>
+Use an optional index enclosed in brackets after an input file name to specify
+a desired subimage of a multi-resolution image format like Photo CD
+(e.g. <tt>img0001.pcd[4]</tt>) or a range for MPEG images
+(e.g. <tt>video.mpg[50-75]</tt>). A subimage
+specification can be disjoint (e.g. <tt>image.tiff[2,7,4]</tt>). For raw images,
+specify a subimage with a geometry
+(e.g. <tt>-size 640x512 image.rgb[320x256+50+50]</tt>).
+<p>Single images are written with the filename you specify. However, multi-part
+images (e.g., a multi-page PostScript document with <strong>+adjoin</strong> specified)
+are written
+with the filename followed by a period (<strong>.</strong>) and the scene number.  You
+can change this behavior by embedding a <tt>%0Nd, %0No,</tt>
+or <tt>%0Nx</tt> <em>printf</em>
+format specification in the file name. For example,
+<pre>
+    image%02d.miff
+</pre>
+<p>
+writes files <em>image00.miff, image01.miff,</em> etc.
+<p>
+When running a commandline utility, you can
+prepend an at sign <tt>@</tt> to a filename to read a list of image
+filenames from that file. This is convenient in the event you have too
+many image filenames to fit on the command line.
 <p>
 Note, a composite MIFF image displayed to an X server with
 <strong>display</strong>
