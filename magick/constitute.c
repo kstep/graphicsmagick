@@ -2410,8 +2410,14 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
                              clone_info->filename);
               }
           }
+        DestroyExceptionInfo(&module_exception);
+        DestroyExceptionInfo(&delegate_exception);
+        if (clone_info->temporary)
+          RemoveTemporaryInputFile(clone_info);
+        DestroyImageInfo(clone_info);
+        return((Image *) NULL);
       }
-
+    
     DestroyExceptionInfo(&module_exception);
     DestroyExceptionInfo(&delegate_exception);
   }
