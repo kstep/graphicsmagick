@@ -218,8 +218,7 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
   p=(char *) string;
   GetToken(p,&p,token);
   value=atof(token);
-  GetToken(p,&p,token);
-  if (*token == '%')
+  if (strchr(token,'%') != (char *) NULL)
     {
       double
         alpha,
@@ -233,6 +232,7 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
       beta=value-svg_info->view_box.height;
       return(sqrt(alpha*alpha+beta*beta)/sqrt(2.0)/100.0);
     }
+  GetToken(p,&p,token);
   if (LocaleNCompare(token,"cm",2) == 0)
     return(72.0*svg_info->scale[0]/2.54*value);
   if (LocaleNCompare(token,"em",2) == 0)
