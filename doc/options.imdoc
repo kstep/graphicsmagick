@@ -934,6 +934,52 @@ option appears after all of the input images, all images are deconstructed.</pp>
 
 
 
+<!-- ------------ -define ------------------------------------------ -->
+
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<dopt>-define <key>{=<value>},...</opt>
+
+<abs>add coder/decoder specific options</abs>
+
+<pp>This option creates one or more definitions for coders and
+decoders to use while reading and writing image data. Definitions may
+be passed to coders and decoders to control options that are very
+specific to certain image formats. If <i>value</i> is missing for a
+definition, an empty-valued definition will be created for that
+key. This is used to control on/off options. Use <tt>+define
+<key>,...</tt> to remove definitions previously created. Use
+<tt>+define "*"</tt> to remove all existing definitions.</pp>
+
+<pp>
+The following defintions may be created:
+</pp>
+
+<pre>
+    ps:imagemask
+        If the ps:imagemask key is defined, the PS3 and EPS3 coders will
+        create Postscript files that render bilevel images with the Postscript
+        imagemask operator instead of the image operator.
+    tiff:bits-per-sample=<value>
+        If the tiff:bits-per-sample key is defined to a value less than the
+        GraphicsMagick Quantum depth, the TIFF coder will write TIFF images
+        with the defined bits per sample, overriding any value stored in the
+        image.
+    tiff:samples-per-pixel=<value>
+        If the tiff:samples-per-pixel key is defined to a value, the TIFF
+        coder will write TIFF images with the defined samples per pixel,
+        overriding any value stored in the image.
+</pre>
+
+<pp>
+For example, to create a postscript file that will render only the black
+pixels of a bilevel image, use:
+</pp>
+<pre>
+    convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+</pre>
+</utils>
+
+
 
 
 <!-- ------------ -delay -------------------------------------------- -->

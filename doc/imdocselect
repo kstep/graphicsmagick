@@ -81,16 +81,16 @@ sed "
        s/$2/found/
        t select
        s/.*/!DELETE!/
-       t skipform
+       t skipf
 
-     : skipform
+     : skipf
        s/<.format>//
        t select
        s/<format/<FORMAT/
        t inform
        s/.*/!DELETE!/
        n
-       b skipform
+       b skipf
 
      : select
        d

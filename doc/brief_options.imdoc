@@ -133,6 +133,10 @@
 <lopt>-deconstruct</opt>
 <abs>break down an image sequence into constituent parts</abs>
 </utils>
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<lopt>-define <key>{=<value>},...</opt>
+<abs>add coder/decoder specific options</abs>
+</utils>
 <utils apps=animate,convert,display,import,mogrify>
 <lopt>-delay <1/100ths of a second></opt>
 <abs>display the next image after pausing</abs>
