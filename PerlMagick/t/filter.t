@@ -21,7 +21,7 @@ testFilter('input.miff', 'Blur',
 ++$test;
 testFilter('input.miff', 'Border',
   q/10/,
-  'db2045a3b8d6d27dc4083f05d4345a8a5bec6f941d368fc8b791e0cdf27c8bbf');
+  '90a0ef26496810bef40cef8e5d3bc28cb64676e2b8b6c43268257e7c481b7452');
 
 ++$test;
 testFilter('input.miff', 'Channel',
@@ -98,7 +98,7 @@ testFilter('input.miff', 'Flop',
 testFilter('input.miff', 'Frame',
   q/10x10/,
   '808ad51705e83a0bbc21720b770f198949df0f99a7f060a93eba22ada7768240', 
-  '61e51802a1b11a86b1f192cf63da321bdf55292c13583370547f2ad785ec602c');
+  '10ba54ede9fc36b3c9196d22eed854a0ccefdb67549a55ef4f3aa95594723322');
 
 ++$test;
 testFilter('input.miff', 'Gamma',
@@ -168,7 +168,7 @@ testFilter('input.miff', 'Quantize',
 testFilter('input.miff', 'Raise',
   q/10x10/,
   '63ee7cf715a496513c833b48ac01922f722a7953c3715a88bbd265a65539a3dd',
-  '69b71c6d6b72f8002c2410f103c42f7021f56f1160e537f5e4e119ab0a3aa428');
+  '0ec36fc210e157c81309a9fb9da801116eade2b5986c0a6b1b9fcae17881d1cc');
 
 ++$test;
 testFilter('input.miff', 'Resize',
@@ -218,7 +218,7 @@ testFilter('input.miff', 'Sharpen',
 ++$test;
 testFilter('input.miff', 'Shave',
   q/10x10/,
-  '1fe90b7991d46595e87bd046280880776df23ed0a0481e89eb7f4554ad69725a');
+  '1f3cb0be4e297e1fc20ee7b2fedf7ea6d4c8b5b91856e4f7be44ddd278b8ff81');
 
 ++$test;
 testFilter('input.miff', 'Shear',

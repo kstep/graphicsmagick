@@ -1420,6 +1420,7 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
       */
       crop_image=(Image *) NULL;
       SetGeometry(transform_image,&geometry);
+      geometry.height=geometry.width;
       flags=ParseImageGeometry(crop_geometry,&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
       if ((geometry.width == 0) || (geometry.height == 0) ||

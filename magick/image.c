@@ -3437,6 +3437,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a border of solid color.
             */
+            geometry.height=geometry.width;
             flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             border_image=BorderImage(*image,&geometry,&(*image)->exception);
@@ -3523,6 +3524,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Chop the image.
             */
+            geometry.height=geometry.width;
             flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             chop_image=ChopImage(*image,&geometry,&(*image)->exception);
@@ -3975,7 +3977,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             (void) memset(&frame_info,0,sizeof(FrameInfo));
             frame_info.width=(*image)->columns;
-            frame_info.height=(*image)->rows;
+            frame_info.height=(*image)->columns;
             flags=ParseImageGeometry(argv[++i],&frame_info.outer_bevel,
               &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
             if ((flags & HeightValue) == 0)
@@ -4468,6 +4470,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a raise of solid color.
             */
+            geometry.height=geometry.width;
             flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             (void) RaiseImage(*image,&geometry,*option == '-');
@@ -4495,6 +4498,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Apply transformations to a selected region of the image.
             */
             SetGeometry(*image,&region_geometry);
+            region_geometry.height=geometry.width;
             flags=ParseImageGeometry(argv[++i],&region_geometry.x,
               &region_geometry.y,&region_geometry.width,
               &region_geometry.height);
@@ -4697,6 +4701,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Shave the image edges.
             */
+            geometry.height=geometry.width;
             flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             shave_image=ShaveImage(*image,&geometry,&(*image)->exception);

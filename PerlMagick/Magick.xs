@@ -4039,6 +4039,7 @@ Mogrify(ref,...)
         attribute=(char *) SvPV(ST(1),na);
         if (ix)
           {
+            region_info.height=region_info.width;
             flags=ParseImageGeometry(attribute,&region_info.x,&region_info.y,
               &region_info.width,&region_info.height);
             attribute=(char *) SvPV(ST(2),na);
@@ -4216,6 +4217,7 @@ Mogrify(ref,...)
         }
         case 5:  /* Border */
         {
+          geometry.height=geometry.width;
           if (attribute_flag[0])
             flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
@@ -4252,6 +4254,7 @@ Mogrify(ref,...)
         }
         case 7:  /* Chop */
         {
+          geometry.height=geometry.width;
           if (attribute_flag[0])
             flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
@@ -4275,6 +4278,7 @@ Mogrify(ref,...)
         }
         case 8:  /* Crop */
         {
+          geometry.height=geometry.width;
           if (attribute_flag[0])
             flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
@@ -4340,17 +4344,17 @@ Mogrify(ref,...)
         }
         case 15:  /* Frame */
         {
-          frame_info.height=frame_info.width=25;
-          frame_info.x=frame_info.y=0;
-          frame_info.inner_bevel=frame_info.outer_bevel=6;
+          frame_info.width=15;
+          frame_info.height=15;
+          frame_info.x=0;
+          frame_info.y=0;
+          frame_info.inner_bevel=3;
+          frame_info.outer_bevel=3;
           if (attribute_flag[0])
             {
               flags=ParseImageGeometry(argument_list[0].string_reference,
-                &geometry.x,&geometry.y,&geometry.width,&geometry.height);
-              frame_info.width=geometry.width;
-              frame_info.height=geometry.height;
-              frame_info.x=geometry.x;
-              frame_info.y=geometry.y;
+                &frame_info.outer_bevel,&frame_info.inner_bevel,
+                &frame_info.width,&frame_info.height);
               if (!(flags & HeightValue))
                 frame_info.height=frame_info.width;
               if (!(flags & XValue))
@@ -5172,6 +5176,7 @@ Mogrify(ref,...)
         }
         case 49:  /* Raise */
         {
+          geometry.height=geometry.width;
           if (attribute_flag[0])
             flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
@@ -5446,6 +5451,7 @@ Mogrify(ref,...)
         }
         case 72:  /* Shave */
         {
+          geometry.height=geometry.width;
           if (attribute_flag[0])
             flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
