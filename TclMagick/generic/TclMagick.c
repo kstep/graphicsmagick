@@ -15,9 +15,9 @@
 #include "TclMagick.h"
 #include <wand/magick_wand.h>
 
-#define TCLMAGICK_VERSION_STR "0.31"
+#define TCLMAGICK_VERSION_STR "0.32"
 #define TCLMAGICK_VERSION_HI  0
-#define TCLMAGICK_VERSION_LO  31
+#define TCLMAGICK_VERSION_LO  32
 
 /**********************************************************************/
 /* Workaround for bugs: */
@@ -228,6 +228,18 @@ static char *newPixelObj(Tcl_Interp  *interp, PixelWand *wandPtr, char *name)
 }
 
 /*----------------------------------------------------------------------
+ * Check whether an empty object name is specified
+ * - Should we extend this to use "none" alternatively to "" ?
+ *   This reads better, but disallows "none" as an object name
+ *----------------------------------------------------------------------
+ */
+static int noWandObj(const char *name)
+{
+    return (strlen(name) == 0);
+}
+
+
+ /*----------------------------------------------------------------------
  * Find TclMagick objects
  *----------------------------------------------------------------------
  */
@@ -538,13 +550,13 @@ static int magickCmd(
     case TM_LIBRARY:    /* magick library ?-option? */
     {
 	static CONST char *options[] = {
-	    "-copyright",    "-date",  "-name",
-	    "-quantumdepth", "-url",   "-version", "-versionstr",
+	    "-copyright",  "-date",    "-name",       "-quantumdepth", 
+	    "-url",        "-version", "-versionstr", "-maxrgb",
 	    (char *) NULL
 	};
         char  buf[40];
         const char *str;
-        unsigned long depth=0, version=0;
+        unsigned long depth=0, version=0, maxrgb=0;
 
         if( objc > 3) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?-option?");
@@ -625,6 +637,11 @@ static int magickCmd(
             case 6: /* -versionstr */
                 str = MagickGetVersion(&version);
                 Tcl_SetObjResult(interp, Tcl_NewStringObj(str, -1));
+                break;
+            case 7: /* -maxrgb */
+                MagickGetQuantumDepth(&depth);
+		maxrgb = (1 << depth) - 1;
+                Tcl_SetObjResult(interp, Tcl_NewLongObj((signed long)maxrgb));
                 break;
             default:
                 break;
@@ -1400,25 +1417,6 @@ static int wandObjCmd(
 	break;
     }
 
-    case TM_SEPARATE:         /* separate channelType */
-    case TM_SEPARATE_CHANNEL: /* SeparateImageChannel channelType */
-    {
-	int chanIdx;
-
-	if( objc != 3 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "channelType");
-	    return TCL_ERROR;
-	}
-	if (Tcl_GetIndexFromObj(interp, objv[2], chanNames, "channelType", 0, &chanIdx) != TCL_OK) {
-	    return TCL_ERROR;
-	}
-	result = MagickSeparateImageChannel(wandPtr, chanTypes[chanIdx]);
-	if (!result) {
-	    return myMagickError(interp, wandPtr);
-	}
-	break;
-    }
-
     case TM_CHARCOAL:        /* charcoal ?radius? ?sigma? */
     case TM_CHARCOAL_IMAGE:  /* CharcoalImage ?radius? ?sigma? */
     {
@@ -1554,11 +1552,12 @@ static int wandObjCmd(
 
     case TM_COLOR_FLOODFILL:        /* colorfloodfill fillPixel ?fuzz? ?borderPix? ?x y? */
     case TM_COLOR_FLOODFILL_IMAGE:  /* ColorFloodfillImage ?fuzz? ?borderPix? ?x y? */
+				    /* - empty borderPix is allowed */
     {
 	int	x=0, y=0;
 	double  fuzz=0.0;
 	char	*name;
-	PixelWand *fillPtr, *borderPtr;
+	PixelWand *fillPtr, *borderPtr = NULL;
 
 	if( (objc < 3) || (objc > 7) || (objc == 6) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "fillPixel ?fuzz=0.0? ?borderPix=fillPix? ?x=0 y=0?");
@@ -1568,13 +1567,14 @@ static int wandObjCmd(
 	if( (fillPtr = findPixelWand(interp, name)) == NULL ) {
 	    return TCL_ERROR;
 	}
-	borderPtr = fillPtr; /* default */
 	if( (objc > 3) && ((stat = Tcl_GetDoubleFromObj(interp, objv[3], &fuzz)) != TCL_OK) ) {
 	    return stat;
 	}
 	if( objc > 4 ) {
 	    name = Tcl_GetString(objv[4]);
-	    if( (borderPtr = findPixelWand(interp, name)) == NULL ) {
+	    if( noWandObj(name) ) {
+		borderPtr = NULL;
+	    } else if( (borderPtr = findPixelWand(interp, name)) == NULL ) {
 		return TCL_ERROR;
 	    }
 	}
@@ -4748,6 +4748,25 @@ static int wandObjCmd(
 	    return stat;
 	}
 	result = MagickScaleImage(wandPtr, x, y);
+	if (!result) {
+	    return myMagickError(interp, wandPtr);
+	}
+	break;
+    }
+
+    case TM_SEPARATE:         /* separate channelType */
+    case TM_SEPARATE_CHANNEL: /* SeparateImageChannel channelType */
+    {
+	int chanIdx;
+
+	if( objc != 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "channelType");
+	    return TCL_ERROR;
+	}
+	if (Tcl_GetIndexFromObj(interp, objv[2], chanNames, "channelType", 0, &chanIdx) != TCL_OK) {
+	    return TCL_ERROR;
+	}
+	result = MagickSeparateImageChannel(wandPtr, chanTypes[chanIdx]);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}

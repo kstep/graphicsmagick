@@ -26,21 +26,19 @@ puts [info script]
 ##########################################
 # Global options
 #
-set IMG "logo:"
-set SEQ "../images/sequence.miff"
-set TMP "../tmp"
+set IMG  "logo:"
+set SEQ  "../images/sequence.miff"
+set MAP  "../images/map6colors.gif"
+set PATH "../images/path2.tif"
+set TMP  "../tmp"
 
 ##########################################
 # Check which tests should be performed
 #
 set xTestFunctions {
     AnnotateImage               img     0
-    ClipImage                   img     0
+    ClipImage                   img     1
     ClipPathImage               img     0
-
-    ColorFloodfillImage         img     1
-    MapImage                    img     1
-    TextureImage                img     1    
 }
 set TestFunctions {
     AdaptiveThresholdImage      img     1
@@ -259,13 +257,12 @@ proc AnnotateImage {img} {
     [magick create pixel pix] SetColor "blue"
     $draw push graph
         $draw SetStrokeWidth 1
- #       $draw SetStrokeColor pix
- #       $draw SetFillColor pix
+        $draw SetStrokeColor pix
+        $draw SetFillColor pix
         $draw SetFontSize 18
-#        $draw Annotation 10 170 "TclMagick"
     $draw pop graph
     
-    $wand AnnotateImage $draw 10 10 10 "Hallo world"
+    $wand AnnotateImage $draw 20 50 0 "Hello world"
     $wand WriteImage "$::TMP/x-Annotate.jpg"
 
     magick delete $draw $wand pix
@@ -328,8 +325,10 @@ proc ChopImage {img} {
     magick delete $wand
 }
 proc ClipImage {img} {
-    set wand [$img clone imgX]
+    set wand [magick create wand]
     debug $wand
+    
+    $wand ReadImage $::PATH
     $wand ClipImage
     $wand WriteImage "$::TMP/x-Clip.jpg"
     magick delete $wand
@@ -347,17 +346,23 @@ proc CoalesceImages {img} {
     magick delete $new
 }
 proc ColorFloodfillImage {img} {
-    set wand [$img clone imgX]
-    set fill [magick create pixel]
-    set border [magick create pixel]
-    debug $wand $fill $border
-    
-    $fill color rgb(100%,0,0)
-    $border color rgb(100%,100%,100%)
-    $wand ColorFloodfillImage $fill 0 $border 0 0
-    
-    $wand WriteImage "$::TMP/x-ColorFloodfill.jpg"
-    magick delete $fill $border $wand
+   set wand [$img clone imgX]
+   set fill [magick create pixel]
+   set border [magick create pixel]
+   debug $wand $fill $border
+
+   $fill SetColor "lightgreen"
+   $border SetColor "black"
+
+   set max [magick library -maxrgb]
+   $wand ColorFloodfillImage $fill [expr {0.01 * $max}] {} 0 0
+   $wand WriteImage "$::TMP/x-ColorFloodfill-1.jpg"
+
+   $fill SetColor "lightblue"
+   $wand ColorFloodfillImage $fill [expr {0.01 * $max}] $border 0 0
+   $wand WriteImage "$::TMP/x-ColorFloodfill-2.jpg"
+
+   magick delete $fill $border $wand
 }
 proc ColorizeImage {img} {
     set wand [$img clone imgX]
@@ -1025,9 +1030,7 @@ proc MapImage {img} {
     set map [magick create wand]
     debug $wand $map
     
-    $map ReadImage "xc:white"
-    $map ReadImage "xc:gray"
-    $map ReadImage "xc:black"
+    $map ReadImage $::MAP
     $wand MapImage $map
     $wand WriteImage "$::TMP/x-Map.jpg"
     magick delete $wand $map
@@ -1372,7 +1375,10 @@ proc TextureImage {img} {
     debug $wand $text
     
     $text ReadImage "xc:gray"
-    set new [$wand TextureImage $text]
+    $text ResizeImage 500 500 
+    $wand ResizeImage 110 110 triangle
+    
+    set new [$text TextureImage $wand]
     $new WriteImage "$::TMP/x-Texture.jpg"
 
     magick delete $wand $text $new
@@ -1484,12 +1490,13 @@ magick names
 set ERRORS  0
 set TESTED  0
 set SKIPPED 0
-set NUM_OBJECTS [llength [magick names]]
 
 foreach {func var flag} $TestFunctions {
     if {$flag} {
         incr TESTED
         puts [format "%s:" $func $var]
+        set num1 [llength [magick names]]
+
         set err [catch {$func [set $var]} result]
         if {$err} {
             incr ERRORS
@@ -1497,10 +1504,12 @@ foreach {func var flag} $TestFunctions {
         }
         # Check for unfree'd resources 
         #
-        set num [llength [magick names]]
-        if {$num > $NUM_OBJECTS} {
+        set num2 [llength [magick names]]
+        if {! $err && ($num2 > $num1)} {
             puts stderr "Check resources (magick names) !!!"
-            set NUM_OBJECTS $num
+            set err 1
+        }
+        if {$err} {
             update ; after 5000
         }
     } else {

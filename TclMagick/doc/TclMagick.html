@@ -41,7 +41,9 @@
       called <i>wand</i>, <i>drawing</i> and <i>pixel</i>.  They are
       created and deleted with the <i>magick</i> command similar to
       Tcl's <i>image</i>command.  Wand-API methods are then called as
-      subcommands of the created TclMagick object.
+      subcommands of the created TclMagick object.<br>
+	  If an ImageMagick-API allows a NULL object argument, 
+	  it can be specified as an empty string {} or "".
     </p>
     <h2>General design:</h2>
 
@@ -139,14 +141,16 @@
 	  <td>magick library<br>
 	    magick library -copyright<br>
 	    magick library -date<br>
+	    magick library -maxrgb<br>
 	    magick library -name<br>
 	    magick library -quantumdepth<br>
-	    magick library -url<br>
+		magick library -url<br>
 	    magick library -version<br>
 	    magick library -versionstr</td>
 	  <td># Returns all options <br>
 	    MagickGetCopyright<br>
 	    MagickGetReleaseDate<br>
+	    MagickGetQuantumDepth<br>
 	    MagickGetPackageName<br>
 	    MagickGetQuantumDepth<br>
 	    MagickGetHomeURL<br>
@@ -468,7 +472,7 @@
 	  <td><div align="left">
 	      <ul>
 		<li>PixelWand fillPix,borderPix
-		  (default: borderPix=fillPix)</li>
+		  (default: borderPix=""=>NULL)</li>
 		<li>double fuzz (default=0.0)</li>
 		<li>integer x,y
 		  (default: x=y=0)</li>
