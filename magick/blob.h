@@ -57,7 +57,7 @@ extern Export void
   CloseBlob(Image *),
   DestroyBlobInfo(BlobInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *),
-  *MapBlob(const char *,const MapMode,size_t *),
+  *MapBlob(int,const MapMode,size_t *),
   MSBFirstOrderLong(char *,const size_t),
   MSBFirstOrderShort(char *,const size_t),
   GetBlobInfo(BlobInfo *),

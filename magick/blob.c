@@ -714,14 +714,14 @@ Export size_t LSBFirstWriteShort(Image *image,const unsigned int value)
 %
 %  The format of the MapBlob method is:
 %
-%      void *MapBlob(const char *filename,const MapMode mode,size_t *length)
+%      void *MapBlob(int file,const MapMode mode,size_t *length)
 %
 %  A description of each parameter follows:
 %
 %    o status:  Method MapBlob returns the address of the blob as well as
 %      its length in bytes.
 %
-%    o filename: this string is the name of the file to map.
+%    o file: map this file descriptor.
 %
 %    o mode: ReadMode, WriteMode, or IOMode.
 %
@@ -729,12 +729,9 @@ Export size_t LSBFirstWriteShort(Image *image,const unsigned int value)
 %
 %
 */
-Export void *MapBlob(const char *filename,const MapMode mode,size_t *length)
+Export void *MapBlob(int file,const MapMode mode,size_t *length)
 {
 #if defined(HAVE_MMAP) || defined(WIN32)
-  int
-    file;
-
   struct stat
     attributes;
 
@@ -742,33 +739,16 @@ Export void *MapBlob(const char *filename,const MapMode mode,size_t *length)
     *map;
 
   /*
-    Open file.
+    Map file.
   */
-  assert(filename != (char *) NULL);
   assert(length != (size_t *) NULL);
-  switch (mode)
-  {
-    default:
-    case ReadMode: file=open(filename,O_RDONLY | O_BINARY,0777); break;
-    case WriteMode: file=open(filename,O_WRONLY | O_BINARY,0777); break;
-    case IOMode: file=open(filename,O_RDWR | O_BINARY,0777); break;
-  }
   if (file == -1)
     return((void *) NULL);
   if (fstat(file,&attributes) == -1)
-    {
-      (void) close(file);
-      return((void *) NULL);
-    }
+    return((void *) NULL);
   *length=attributes.st_size;
   if (*length != attributes.st_size)
-    {
-      (void) close(file);
-      return((void *) NULL);
-    }
-  /*
-    Map file.
-  */
+    return((void *) NULL);
   switch (mode)
   {
     case ReadMode:
@@ -788,10 +768,9 @@ Export void *MapBlob(const char *filename,const MapMode mode,size_t *length)
       break;
     }
   }
-  (void) close(file);
   if (map == MAP_FAILED)
     {
-      MagickWarning(FileOpenWarning,"Unable to map file",filename);
+      MagickWarning(BlobWarning,"Unable to map file",(char *) NULL);
       return((void *) NULL);
     }
   return((void *) map);
@@ -1238,7 +1217,8 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         if (*type == 'w')
           SetApplicationType(filename,image_info->magick,'8BIM');
 #endif
-        if (*type == 'r')
+        image->file=(FILE *) fopen(filename,type);
+        if ((image->file != (FILE *) NULL) && (*type == 'r'))
           {
             MagickInfo
               *magick_info;
@@ -1252,15 +1232,13 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                       Format supports blobs-- try memory-mapped I/O.
                     */
                     image->blob_info.length=0;
-                    image->blob_info.data=(char *)
-                      MapBlob(filename,ReadMode,&image->blob_info.length);
+                    image->blob_info.data=(char *) MapBlob(fileno(image->file),
+                      ReadMode,&image->blob_info.length);
                     image->blob_info.mapped=
                       image->blob_info.data != (void *) NULL;
                   }
               }
           }
-        if (!image->blob_info.mapped)
-          image->file=(FILE *) fopen(filename,type);
         image->filesize=SizeBlob(image);
       }
   image->status=False;

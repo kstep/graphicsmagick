@@ -166,9 +166,9 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
     *allocation;
 
   assert(cache != (Cache) NULL);
-  if (class_type == GetCacheClassType(cache))
-    return(True);
   cache_info=(CacheInfo *) cache;
+  if (class_type == cache_info->class)
+    return(True);
   length=cache_info->number_pixels*sizeof(PixelPacket);
   if (cache_info->class == PseudoClass)
     length+=cache_info->number_pixels*sizeof(IndexPacket);
@@ -240,7 +240,7 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
         offset;
 
       cache_info->type=DiskCache;
-      allocation=MapBlob(cache_info->filename,IOMode,&offset);
+      allocation=MapBlob(cache_info->file,IOMode,&offset);
       if (allocation != (void *) NULL)
         {
           /*
