@@ -2749,7 +2749,9 @@ static unsigned int XConfigureImage(Display *display,
     &window_changes);
   if (image->matte)
     XClearWindow(display,windows->image.id);
-  if (stasis)
+  if (!stasis)
+    image->taint=True;
+  else
     XRefreshWindow(display,&windows->image,(XEvent *) NULL);
   /*
     Update Magnify window configuration.
@@ -5534,8 +5536,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 
       if ((windows->image.crop_geometry == (char *) NULL) &&
           ((int) (*image)->columns == windows->image.ximage->width) &&
-          ((int) (*image)->rows == windows->image.ximage->height) &&
-          (resource_info->quantize_info->number_colors == 0))
+          ((int) (*image)->rows == windows->image.ximage->height))
         break;
       /*
         Apply size transforms to image.
@@ -5555,16 +5556,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       windows->image.x=0;
       windows->image.y=0;
-      if (resource_info->quantize_info->number_colors != 0)
-        {
-          /*
-            Reduce the number of colors in the image.
-          */
-          if (((*image)->storage_class == DirectClass) ||
-              ((*image)->colors > resource_info->quantize_info->number_colors) ||
-              (resource_info->quantize_info->colorspace == GRAYColorspace))
-            (void) QuantizeImage(resource_info->quantize_info,*image);
-        }
       XConfigureImageColormap(display,resource_info,windows,*image);
       (void) XConfigureImage(display,resource_info,windows,*image);
       break;
@@ -8626,16 +8617,6 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   FormatString(geometry,"%dx%d!",windows->image.ximage->width,
     windows->image.ximage->height);
   TransformImage(&print_image,windows->image.crop_geometry,geometry);
-  if (resource_info->quantize_info->number_colors != 0)
-    {
-      /*
-        Reduce the number of colors in the image.
-      */
-      if ((print_image->storage_class == DirectClass) ||
-          (print_image->colors > resource_info->quantize_info->number_colors) ||
-          (resource_info->quantize_info->colorspace == GRAYColorspace))
-        (void) QuantizeImage(resource_info->quantize_info,print_image);
-    }
   /*
     Print image.
   */
@@ -10139,22 +10120,12 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   FormatString(geometry,"%dx%d!",windows->image.ximage->width,
     windows->image.ximage->height);
   TransformImage(&save_image,windows->image.crop_geometry,geometry);
-  if (resource_info->quantize_info->number_colors != 0)
-    {
-      /*
-        Reduce the number of colors in the image.
-      */
-      if ((save_image->storage_class == DirectClass) ||
-          (save_image->colors > resource_info->quantize_info->number_colors) ||
-          (resource_info->quantize_info->colorspace == GRAYColorspace))
-        (void) QuantizeImage(resource_info->quantize_info,save_image);
-    }
   /*
     Write image.
   */
   (void) strcpy(save_image->filename,filename);
   status=WriteImage(image_info,save_image);
-  if (status == True)
+  if (status != False)
     image->taint=False;
   DestroyImage(save_image);
   DestroyImageInfo(image_info);
