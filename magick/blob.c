@@ -1078,7 +1078,9 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 
                 p=strchr(filename,'%')+1;
                 (void) strtol(p,&q,10);
-                if (*q == 'd')
+                if (*q == '.')
+                  (void) strtol(q+1,&q,10);
+                if (*q == 'd' || *q == '%')
                   FormatString(filename,image->filename,(int) image->scene);
               }
             if (!image_info->adjoin)
