@@ -96,17 +96,11 @@ static unsigned int
 static Image *ReadMPRImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  Image
-    *image;
-
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=(Image *) GetImageFromMagickRegistry(image_info->filename,exception);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  return(image);
+  return(GetImageFromMagickRegistry(image_info->filename,exception));
 }
 
 /*
@@ -204,9 +198,6 @@ ModuleExport void UnregisterMPRImage(void)
 */
 static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
 {
-  ExceptionInfo
-    exception;
-
   long
     id;
 
@@ -214,10 +205,6 @@ static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  GetExceptionInfo(&exception);
-  id=SetMagickRegistry(ImageRegistryType,image,sizeof(Image),&exception);
-  if(id < 0)
-    ThrowWriterException(RegistryWarning,"Unable to write image to registry",
-      image);
-  return(True);
+  id=SetMagickRegistry(ImageRegistryType,image,sizeof(Image),&image->exception);
+  return(id >= 0);
 }
