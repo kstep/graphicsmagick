@@ -1892,7 +1892,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
     case 'W':
     case 'w':
     {
-      if (LocaleCompare(attribute,"white-primary") == 0)
+      if (LocaleCompare(attribute,"white-point") == 0)
         {
           for ( ; image; image=image->next)
             (void) sscanf(SvPV(sval,na),"%lf%*[, ]%lf",
