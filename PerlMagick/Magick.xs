@@ -1288,7 +1288,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
 
           for ( ; image; image=image->next)
           {
-            if (image->class != PseudoClass)
+            if (image->storage_class != PseudoClass)
               continue;
             x=0;
             y=0;
@@ -3228,7 +3228,7 @@ Get(ref,...)
 
               if (!image)
                 break;
-              if (image->class != PseudoClass)
+              if (image->storage_class != PseudoClass)
                 break;
               x=0;
               y=0;
@@ -3396,7 +3396,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"pointsize") == 0)
             {
               if (info)
-                s=newSViv(info->image_info->pointsize);
+                s=newSViv((long) info->image_info->pointsize);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
