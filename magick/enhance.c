@@ -237,7 +237,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
   LiberateMemory((void **) &histogram);
   low=map[0];
   high=map[MaxRGB];
-  if ((low == high) || (high == 0))
+  if (low == high)
     {
       LiberateMemory((void **) &equalize_map);
       LiberateMemory((void **) &map);
