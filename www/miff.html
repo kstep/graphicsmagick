@@ -22,7 +22,7 @@
   background="../images/background.gif">
 
 <center>
-  <img SRC="../images/miff.gif" height=116 width=433 align=BOTTOM>
+  <img SRC="../images/miff.gif" ALT="MIFF" height=116 width=433 align=BOTTOM>
 </center>
 
 <p>
@@ -39,7 +39,7 @@ to and from <b>MIFF</b> (<i>e.g.</i> <b>JPEG, XPM, TIFF,</b> <i>etc.</i>).
 
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Description</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Description</font></font></font></b></td>
 </tr>
 </table>
 <p>
@@ -136,7 +136,7 @@ the type of algorithm used to compress the image data. If this keyword
 is not present, the image data is assumed to be uncompressed.</dd>
 
 <dt>
-<b>delay</b> <i>&lt;1/100ths of a second></i></dt>
+<b>delay</b> <i>&lt;1/100ths of a second&gt;</i></dt>
 
 <dd>
 the interframe delay in an image sequence. The maximum delay is 65535.</dd>
@@ -208,8 +208,8 @@ is generally useful for image compositing. This keyword has no meaning
 for pseudocolor images.</dd>
 
 <dt>
-<b>montage</b>=<i>&lt;width>x&lt;height>{+-}&lt;xoffset</i>>{+-}&lt;<i>y</i>
-<i>offset</i>></dt>
+<b>montage</b>=<i>&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset</i>&gt;{+-}&lt;<i>y</i>
+<i>offset</i>&gt;</dt>
 
 <dd>
 size and location of the individual tiles of a composite image. See <i>X(1)</i>
@@ -218,13 +218,13 @@ for details about the geometry specification.</dd>
 <dd>
 Use this keyword when the image is a composite of a number of different
 tiles. A tile consists of an image and optionally a border and a label.
-&lt;<i>width</i>> is the size in pixels of each individual tile in the
-horizontal direction and &lt;<i>height</i>> is the size in the vertical
+&lt;<i>width</i>&gt; is the size in pixels of each individual tile in the
+horizontal direction and &lt;<i>height</i>&gt; is the size in the vertical
 direction. Each tile must have an equal number of pixels in width and equal
 in height. However, the width can differ from the height. &lt;<i>x</i>
-<i>offset</i>> is the offset in number of pixels from the vertical edge
+<i>offset</i>&gt; is the offset in number of pixels from the vertical edge
 of the composite image where the first tile of a row begins and &lt;<i>y</i>
-<i>offset</i>> is the offset from the horizontal edge where the first tile
+<i>offset</i>&gt; is the offset from the horizontal edge where the first tile
 of a column begins.</dd>
 
 <dd>
@@ -281,7 +281,7 @@ Rendering intent is the CSS-1 property that has been defined by the
 Color Consortium</a>.</dd>
 
 <dt>
-<b>resolution</b>=<i>&lt;x-resolution>x&lt;y-resolution></i></dt>
+<b>resolution</b>=<i>&lt;x-resolution&gt;x&lt;y-resolution&gt;</i></dt>
 
 <dd>
 vertical and horizontal resolution of the image. See <b>units</b> for the
@@ -318,9 +318,9 @@ pixel contents. RSA's Data Security MD5 Digest Algorithm is recommended.</dd>
 <dd>
 image resolution units.</dd>
 
-<p></dl>
 </dl>
-The following is a sample <b>MIFF</b> header. In this example, &lt;FF>
+</dl>
+The following is a sample <b>MIFF</b> header. In this example, &lt;FF&gt;
 is a formfeed character:
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id=ImageMagick
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class=PseudoClass&nbsp; colors=256
@@ -331,7 +331,7 @@ is a formfeed character:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rendered via Dore by Sandi Tennyson.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;FF>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;FF&gt;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :</pre>
 Note that <i>keyword</i>=<i>value</i> combinations may be separated by
 newlines or spaces and may occur in any order within the header. Comments
@@ -402,7 +402,7 @@ each individual image (composed of a header and image data) into one file.</dl>
 <a NAME="auth"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Authors</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Authors</font></font></font></b></td>
 </tr>
 </table>
 <p>
@@ -414,7 +414,7 @@ each individual image (composed of a header and image data) into one file.</dl>
 <dl><a NAME="copy"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Copyright</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Copyright</font></font></font></b></td>
 </tr>
 </table>
 <p>

@@ -24,8 +24,7 @@
 <center>
   <img SRC="../images/api.gif" ALT="Image Magick" height=57 width=330>
 </center>
-<b></b>
-<p><br><b></b>
+<p><br>
 <p><b>ImageMagick</b> has a number of functions that allow you to read,
 manipulate, write, or display an image. These functions are accessible
 through the various <a href="tools.html">tools</a> or the object-oriented
@@ -162,7 +161,7 @@ found in <tt>image.c</tt> and <tt>effects.c</tt>.
 <p>Here is a full example of a program, <tt>example.c</tt>, that reads
 a JPEG image, creates a thumbnail, and writes it to disk in the GIF image
 format.
-<pre>&nbsp;&nbsp;&nbsp; #include &lt;magick.h>
+<pre>&nbsp;&nbsp;&nbsp; #include &lt;magick.h&gt;
 
 &nbsp;&nbsp;&nbsp; int main(int argc,char **argv)
 &nbsp;&nbsp;&nbsp; {
@@ -193,7 +192,7 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Write the image as GIF and destroy it.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image->filename,"image.gif");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image-&gt;filename,"image.gif");
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WriteImage(&amp;image_info,image);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
 &nbsp;&nbsp;&nbsp; }</pre>
@@ -207,14 +206,14 @@ to display a smiley face on your X server.
 a C++ reserved word). The <tt>class</tt> element of the <tt>Image</tt>
 structure in C++ is defined as <tt>c_class</tt>. Both of these requirements
 are illustrated here:
-<pre>&nbsp;&nbsp;&nbsp; #include &lt;magick.h>
+<pre>&nbsp;&nbsp;&nbsp; #include &lt;magick.h&gt;
 &nbsp;&nbsp;&nbsp; #if defined(__cplusplus) || defined(c_plusplus)
 &nbsp;&nbsp;&nbsp; #undef class
 &nbsp;&nbsp;&nbsp; #endif
 
 &nbsp;&nbsp;&nbsp; ...
 
-&nbsp;&nbsp;&nbsp; if (image->c_class == DirectClass)</pre>
+&nbsp;&nbsp;&nbsp; if (image-&gt;c_class == DirectClass)</pre>
 
 <hr>
 <p><a href="../ImageMagick.html"><img SRC="../images/home.gif" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>&nbsp;&nbsp;

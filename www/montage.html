@@ -20,7 +20,8 @@
   alink="#ff0000" background="../images/background.gif">
 <A NAME="top"></A>
 <center>
-<img src="../images/montage.gif" align=bottom width=248 height=54>
+<img src="../images/montage.gif" ALT="Montage" align=bottom width=248
+  height=54>
 </center>
 <pre>
  
@@ -49,7 +50,7 @@
 <p>
 <DL>
 <p>
-<A NAME="syno">
+<A NAME="syno"></a>
 <table width="100%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#52799e">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
@@ -69,7 +70,7 @@
 <p>
 <A HREF="#top"><I>Back to Contents</I></A>
 <p>
-<A NAME="desc">
+<A NAME="desc"></a>
 <table width="100%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#52799e">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
@@ -148,7 +149,7 @@ use the <B>NULL</B> image format.
 <p>
 <DL>
 <p>
-<A NAME="exam">
+<A NAME="exam"></a>
 <table width="100%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#52799e">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
@@ -161,38 +162,44 @@ use the <B>NULL</B> image format.
 <p>
 <DD>To create a montage of a cockatoo, a parrot, and a
 hummingbird and write it to a file called birds, use:
-<p><dl>
-  <dd><tt>montage cockatoo.miff parrot.miff hummingbird.miff birds.miff</tt>
-</p></dl>
+<p>
+<dl>
+  <dd><tt>montage cockatoo.miff parrot.miff hummingbird.miff birds.miff</tt></dd>
+</dl>
+</p>
 <DD>To tile several bird images so that they are at most 256
 pixels in width and 192 pixels in height, surrounded by a
 red border, and separated by 10 pixels of background color,
 use:
 <p><dl>
-  <dd><tt>montage -geometry 256x192+10+10 -bordercolor red birds.* montage.miff</tt>
-</p></dl>
+  <dd><tt>montage -geometry 256x192"+1"0"+1"0 -bordercolor red birds.* montage.miff</tt></dd>
+</dl>
+</p>
 <DD>To create an unlabeled parrot image, 640 by 480 pixels, and
 surrounded by a border of black, use:
 <p><dl>
-  <dd><tt>montage -geometry 640x480 -bordercolor black -label "" parrot.miff bird.miff</tt>
-</p></dl>
+  <dd><tt>montage -geometry 640x480 -bordercolor black -label "" parrot.miff bird.miff</tt></dd>
+</dl>
+</p>
 <DD>To create an image of an eagle with a textured background, use:
 <p><dl>
-  <dd><tt>montage -texture bumps.jpg eagle.jpg eagle.png</tt>
-</p></dl>
+  <dd><tt>montage -texture bumps.jpg eagle.jpg eagle.png</tt></dd>
+</dl>
+</p>
 <DD>To join several GIF images together without any extraneous
 graphics (e.g. no label, no shadowing, no surrounding tile
 frame), use:
 <p><dl>
-  <dd><tt>montage +frame +shadow +label -tile 5x1 -geometry 50x50+0+0 *.gif joined.gif</tt>
-</p></dl>
+  <dd><tt>montage +frame +shadow +label -tile 5x1 -geometry 50x50+0+0 *.gif joined.gif</tt></dd>
+</dl>
+</p>
 </DL>
 <P> 
 <A HREF="#top"><I>Back to Contents</I></A>
 <p>
 <DL>
 <p>
-<A NAME="opti">
+<A NAME="opti"></a>
 <table width="100%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#52799e">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
@@ -732,7 +739,7 @@ processed in command line order so be sure to use <b>-pen</b>
 </table>
 <dd>use this type of filter when resizing an image.
 <p>
-<d>Use this option to affect the resizing operation of an image (see
+<dd>Use this option to affect the resizing operation of an image (see
 <b>-geometry</b>).  Choose from these filters:
 <p>
 <dd><pre>
@@ -1009,7 +1016,7 @@ pixels.  The choices for a Postscript page are:
 <b>-geometry</b> (e.g. <tt>-page letter+43+43&gt</tt>).
 <P>
 <P>
-To position a GIF image, use <b>-page</b> +LEFT+TOP (e.g. -page +100+200).
+To position a GIF image, use <b>-page</b> +LEFT+TOP (e.g. -page "+1"00+200).
 <P>
 <dd>For a Postscript page, the image is sized as in <b>-geometry</b> and
 positioned relative to the lower left hand corner of the page by
@@ -1079,8 +1086,8 @@ otherwise no filtering is used.
 <dd>The default is quality is 75.  Which means nearly the best compression
 with adaptive filtering.
 <p>
-<dd>For further information, see the PNG specification
-(<a href=http://www.w3.org/pub/WWW/TR>RFC 2083</a>).
+<dd>For further information, see the 
+<a href="http://www.w3.org/pub/WWW/TR">PNG</a> specification.
 <P>
 <dt><table width="65%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#9ebac6">
@@ -1092,7 +1099,7 @@ with adaptive filtering.
 </table>
 <DD>apply Paeth image rotation to the image.
 <P>   
-<dd>Use <tt>&gt;</tt> to rotate the image </t>only</i> if its width exceeds the
+<dd>Use <tt>&gt;</tt> to rotate the image <i>only</i> if its width exceeds the
 height.  <tt>&lt;</tt> rotates the image <i>only</i> if its width is less than
 the height.  For example, if you specify <tt>-90&gt;</tt> and the image size
 is 480x640, the image is not rotated by the specified angle.  However,
@@ -1286,7 +1293,7 @@ display it.  See <B>display(1)</B> and <B>miff(5)</B> for details.
 <p> 
 <dl>
 <p>
-<A NAME="xres">
+<A NAME="xres"></a>
 <table width="100%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#52799e">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
@@ -1396,7 +1403,7 @@ place a title at the top of the composite image.
 <p>
 <DL>
 <p>
-<A NAME="envi">
+<A NAME="envi"></a>
 <table width="100%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#52799e">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
@@ -1425,7 +1432,7 @@ place a title at the top of the composite image.
 <p>
 <DL>
 <p>
-<A NAME="ackn">
+<A NAME="ackn"></a>
 <table width="100%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#52799e">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
@@ -1456,7 +1463,7 @@ his Img software.
 <p>
 <DL>
 <p>
-<A NAME="auth">
+<A NAME="auth"></a>
 <table width="100%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#52799e">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>
@@ -1475,7 +1482,7 @@ Incorporated</B>.
 <A HREF="#top"><I>Back to Contents</I></A>
 <DL>
 <p>
-<A NAME="copy">
+<A NAME="copy"></a>
 <table width="100%" cellpadding="1" border="0">
 <tr><td align="left" bgcolor="#52799e">
   <font color="#ffffff" face="Helvetica, Arial"><big><b>

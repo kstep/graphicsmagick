@@ -22,7 +22,8 @@
   background="../images/background.gif">
 
 <center>
-  <img SRC="../images/quantize.gif" height=48 width=267 align=BOTTOM>
+  <img SRC="../images/quantize.gif" ALT="Quantize" height=48 width=267
+    align=BOTTOM>
 </center>
 
 <p>
@@ -31,10 +32,11 @@ This document describes how <a href="../ImageMagick.html">ImageMagick</a>
 performs color reduction on an image. To fully understand this document,
 you should have a knowledge of basic imaging techniques and the tree data
 structure and terminology.
-<dl>&nbsp;
+&nbsp;
+<dl>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Description</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Description</font></font></font></b></td>
 </tr>
 </table>
 <p>
@@ -165,13 +167,13 @@ a node.</dd>
 </dl>
 </dl>
 <b>Reduction</b> repeatedly prunes the tree until the number of nodes with
-<i>n2</i> > <i>0</i> is less than or equal to the maximum number of colors
+<i>n2</i> &gt; <i>0</i> is less than or equal to the maximum number of colors
 allowed in the output image. On any given iteration over the tree, it selects
 those nodes whose <i>E</i> value is minimal for pruning and merges their
 color statistics upward. It uses a pruning threshold, <i>Ep</i>, to govern
 node selection as follows:
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ep = 0
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while number of nodes with (n2 > 0) > required maximum number of colors
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while number of nodes with (n2 &gt; 0) &gt; required maximum number of colors
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prune all nodes such that E &lt;= Ep
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set Ep&nbsp; to minimum E in remaining nodes</pre>
 This has the effect of minimizing any quantization error when merging two
@@ -184,7 +186,7 @@ pruned are always added to the corresponding data in that node's parent.
 This retains the pruned node's color characteristics for later averaging.
 <p>For each node, <i>n2</i> pixels exist for which that node represents
 the smallest volume in <b>RGB</b> space containing those pixel's colors.
-When <i>n2</i> > <i>0</i> the node will uniquely define a color in the
+When <i>n2</i> &gt; <i>0</i> the node will uniquely define a color in the
 output image. At the beginning of reduction,
 <i>n2</i> = <i>0</i> for all
 nodes except the leaves of the tree which represent colors present in the
@@ -207,7 +209,7 @@ array.</li>
 </ol>
 <p>
 First, the assignment phase makes one pass over the pruned color description
-tree to establish the image's color map. For each node with <i>n2</i> >
+tree to establish the image's color map. For each node with <i>n2</i> &gt;
 <i>0</i>, it divides <i>Sr</i>,
 <i>Sg</i>, and <i>Sb</i> by <i>n2</i>.
 This produces the mean color of all pixels that classify no lower than
@@ -224,10 +226,11 @@ is as described except each pixel is a point in the alternate color space.
 For convenience, the color components are normalized to the range 0 to
 a maximum value, <i>Cmax</i>. The color reduction can then proceed as described.</dl>
 
-<dl>&nbsp;
+&nbsp;
+<dl>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Measuring
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Measuring
 Color Reduction Error</font></font></font></b></td>
 </tr>
 </table>
@@ -287,10 +290,11 @@ in the image.</dd>
 </dl>
 </dl>
 
-<dl>&nbsp;
+&nbsp;
+<dl>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Authors</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Authors</font></font></font></b></td>
 </tr>
 </table>
 <p>
@@ -299,10 +303,11 @@ in the image.</dd>
 <b>E.I. du Pont de Nemours and Company Incorporated</b>.</dd>
 </dl>
 
-<dl>&nbsp;
+&nbsp;
+<dl>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Acknowledgements</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Acknowledgements</font></font></font></b></td>
 </tr>
 </table>
 <p>
@@ -313,10 +318,11 @@ With Paul's permission, this document is an adaptation from a document
 he wrote.</dd>
 </dl>
 
-<dl>&nbsp;
+&nbsp;
+<dl>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Copyright</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Copyright</font></font></font></b></td>
 </tr>
 </table>
 

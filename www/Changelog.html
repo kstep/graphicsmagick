@@ -22,7 +22,8 @@
   background="../images/background.gif">
 
 <center>
-  <img SRC="../images/changelog.gif" height=57 width=292 align=BOTTOM>
+  <img SRC="../images/changelog.gif" ALT="Changelog" height=57 width=292
+    align=BOTTOM>
 </center>
 
 <p>
@@ -53,7 +54,7 @@ Alexander Zimmermann</a>).</li>
 <li>
 Added <tt>BlobImage()</tt> method. Right now it is a convenience method
 until we can implement direct to memory image blobs. You can also read
-a blob: <tt>ReadImage(blob=>$blob)</tt></li>
+a blob: <tt>ReadImage(blob=&gt;$blob)</tt></li>
 
 <li>
 Added <tt>-deconstruct</tt> to <i><a href="convert.html">convert</a></i>
@@ -140,10 +141,12 @@ Montage was sometimes freeing the wrong memory location causing a memory
 fault.</li>
 
 <li>
-Added @filename to <tt>-pen</tt>. Use with <tt>-draw</tt>, for example,</li>
+Added @filename to <tt>-pen</tt>. Use with <tt>-draw</tt>, for example,
 
 <pre>convert -pen @brush.gif -fuzz 20 -draw "color 300,200 floodfill" image.jpg draw.png</pre>
 (source patches by <a href="mailto:rmabry@server1.softdisk.com">Rick Mabry</a>).
+</li>
+
 <li>
 Improved ImplodeImage, WaveImage, and SwirlImage methods (source patches
 by <a href="mailto:rmabry@server1.softdisk.com">Rick Mabry</a>).</li>
@@ -243,7 +246,7 @@ Added support for sRGB and image chromaticity.</li>
 
 <li>
 Most image processing loops were sped-up by using a local variable rather
-than <tt>image->runlength</tt>.</li>
+than <tt>image-&gt;runlength</tt>.</li>
 
 <li>
 Image resizing no longer introduces a moire pattern (thanks for the alert
@@ -258,7 +261,7 @@ This also fixed a rare PerlMagick memory leak that only occurred when PerlMagick
 was running out of memory and realloc(3) was called.</li>
 
 <li>
-Use <tt>-page 612x792></tt> to center an image on a Postscript page. This
+Use <tt>-page 612x792&gt;</tt> to center an image on a Postscript page. This
 used to be the default behavior.</li>
 
 <li>
@@ -313,7 +316,7 @@ Use it in concert with the <b>-draw</b> option to align text.</li>
 ImageMagick can now read Macintosh PICT images under NT.</li>
 
 <li>
-Converting large images (> 2000x2000) to PDF with Flate compression (the
+Converting large images (&gt; 2000x2000) to PDF with Flate compression (the
 default if you include the ZLIB delegate) no longer produces corrupt images.</li>
 
 <li>
@@ -642,7 +645,7 @@ Major infa-structure changes to libMagick in anticipation of the Perl libMagick
 extension. Please report if you get any assertion reports.</li>
 
 <li>
-Overloaded -rotate with <tt>&lt;</tt> and <tt>></tt>. See the manual pages
+Overloaded -rotate with <tt>&lt;</tt> and <tt>&gt;</tt>. See the manual pages
 for details.</li>
 
 <li>
@@ -697,7 +700,7 @@ image.gif netscape.gif</tt>.</li>
 Added <tt>-displace</tt> to
 <i><a href="combine.html">combine</a></i> and
 <tt>Color
-Edit->Composite->Displace</tt> to <i><a href="display.html">display</a></i>.
+Edit-&gt;Composite-&gt;Displace</tt> to <i><a href="display.html">display</a></i>.
 This function allows you shift image pixels as defined by a displacement
 map.</li>
 
@@ -715,7 +718,7 @@ Bodenstab</a>)</li>
 Multiline labels now work properly for the Postscript format.</li>
 
 <li>
-Added <tt>Miscellany->Show Preview</tt> to <i><a href="display.html">display</a></i>.
+Added <tt>Miscellany-&gt;Show Preview</tt> to <i><a href="display.html">display</a></i>.
 This function allows you to preview the effects of different image operators
 at varying scales.</li>
 
@@ -770,7 +773,7 @@ Added a smoothing threshold option to <tt>-segment</tt> (suggested by <a href="m
 Added a new filter <tt>shade</tt> to shade grayscale images.</li>
 
 <li>
-Added a new command <b>Micellany->Show Matte</b> to
+Added a new command <b>Micellany-&gt;Show Matte</b> to
 <i><a href="display.html">Display</a></i>
 (suggested by <a href="mailto:pederl@norway.hp.com">pederl@norway.hp.com</a>).</li>
 
@@ -886,7 +889,7 @@ frame of a multi-page image.</li>
 
 <li>
 You can now specify a sub-image for a raw image (i.e. image tile). For
-example <tt>display -size 8000x8000 image.rgb[1000x1000+100+100]</tt>.</li>
+example <tt>display -size 8000x8000 image.rgb[1000x1000"+1"00"+1"00]</tt>.</li>
 
 <li>
 <i><a href="mogrify.html">Mogrify</a></i> now handles multi-frame images
@@ -1131,8 +1134,8 @@ Added "Browse Documentation" to display(1) (suggested by pederl@hpubgon.norway.h
 Use \n to produce multi-line labels within montage(1).</li>
 
 <li>
-Added &lt; and > to the geometry specification. See convert(1) for details.</li>
-</dl>
+Added &lt; and &gt; to the geometry specification. See convert(1) for details.</li>
+</ul>
 
 <p>
 <br>
@@ -1609,9 +1612,10 @@ Added shared pixmaps to display(1) and animate(1) (patch provided by rhutchin@in
 
 <li>
 Added vertical rotation operator in display(1) (suggested by koreth@hyperion.com).</li>
+</ul>
 
 <br>&nbsp;
-<p>&nbsp;</ul>
+<p>&nbsp;
 
 <hr>
 <p><a href="../ImageMagick.html"><img SRC="../images/home.gif" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>  Image

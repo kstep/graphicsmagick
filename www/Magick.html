@@ -22,7 +22,7 @@
   background="../images/background.gif">
 
 <center>
-  <img SRC="../images/faq.gif" height=134 width=511 align=BOTTOM>
+  <img SRC="../images/faq.gif" ALT="FAQ" height=134 width=511 align=BOTTOM>
 </center>
 
 <pre></pre>
@@ -350,7 +350,7 @@ First create a matte image and position your images onto the matte. For
 example,
 <pre>&nbsp;&nbsp;&nbsp; convert -size 350x500 xc:black composite.miff
 &nbsp;&nbsp;&nbsp; combine -geometry +0+0&nbsp;&nbsp; composite.miff image1.gif composite.miff
-&nbsp;&nbsp;&nbsp; combine -geometry +100+0 composite.miff image2.gif composite.miff
+&nbsp;&nbsp;&nbsp; combine -geometry "+1"00+0 composite.miff image2.gif composite.miff
 &nbsp;&nbsp;&nbsp; combine -geometry +0+300 composite.miff image3.gif composite.miff
 &nbsp;&nbsp;&nbsp; combine -geometry +0+375 composite.miff image4.gif composite.miff</pre>
 
@@ -375,7 +375,7 @@ For example, if the delay was 20, 10, and 5, use
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -delay 5 frame3.gif animation.gif</pre>
 Use <b>-page</b> to specify the <i>left</i> and <i>top</i> locations of
 the image frame:
-<pre>&nbsp;&nbsp;&nbsp; convert frame1.gif -page +50+100 frame2.gif -page +0+100 \
+<pre>&nbsp;&nbsp;&nbsp; convert frame1.gif -page +50"+1"00 frame2.gif -page +0"+1"00 \
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frame3.gif animation.gif</pre>
 Finally, if you want the image to loop within <b>Netscape</b>, use
 <b>-loop</b>:
@@ -586,7 +586,9 @@ use:</li>
 
 <pre>&nbsp;&nbsp;&nbsp; convert -mattecolor gray -frame 25x25+0+25 image.jpg image.gif
 &nbsp;&nbsp;&nbsp; convert -mattecolor gray -frame 25x25+25+0 image.jpg image.gif</pre>
-&nbsp;</ul>
+</ul>
+&nbsp;
+
 
 <pre></pre>
 
@@ -643,7 +645,7 @@ fonts. First see if you have any scalable fonts. Type</dd>
 
 <dd>
 Or if you are using <a href="display.html">display</a>, use the font
-pattern above within the Font Browser (see Image Edit->Annotate). Next
+pattern above within the Font Browser (see Image Edit-&gt;Annotate). Next
 substitute the appropriate resolution. Keep in mind that a scalable font
 must be fully qualified to work. That is, all 14 fields must be specified.
 Here is one example where we annotate an image with large <i>Helvetica</i>
