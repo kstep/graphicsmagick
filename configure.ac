@@ -148,6 +148,7 @@ AC_PROG_CC_STDC
 AC_PROG_CPP
 AM_PROG_LD
 AC_SUBST(LD)
+AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
@@ -287,8 +288,8 @@ AC_SUBST(LFS_CPPFLAGS)
 AC_LIBLTDL_CONVENIENCE(ltdl)
 AC_LIB_LTDL
 # Substitute INCLTDL and LIBLTDL in the Makefiles
-AC_SUBST(INCLTDL)
-AC_SUBST(LIBLTDL)
+#AC_SUBST(INCLTDL)
+#AC_SUBST(LIBLTDL)
 
 # Configure libtool
 AC_DISABLE_SHARED
@@ -2729,37 +2730,23 @@ AC_CONFIG_COMMANDS([rungm.sh.in],[chmod +x rungm.sh])
 
 AC_OUTPUT( \
         GraphicsMagick.spec \
-        Magick++/Makefile \
         Magick++/bin/GraphicsMagick++-config \
-        Magick++/bin/Makefile \
-        Magick++/demo/Makefile \
         Magick++/lib/GraphicsMagick++.pc \
-        Magick++/lib/Magick++/Makefile \
-        Magick++/lib/Makefile \
-        Magick++/tests/Makefile \
         Makefile \
         PerlMagick/Magick.pm \
         PerlMagick/Makefile.PL \
-        coders/Makefile \
-        config/Makefile \
         config/delegates.mgk \
         config/type-ghostscript.mgk \
         config/type-solaris.mgk \
         config/type-windows.mgk \
         config/type.mgk \
-        filters/Makefile \
-        ltdl/Makefile \
         magick/GraphicsMagick-config \
         magick/GraphicsMagick.pc \
-        magick/Makefile \
         magick/magick_types.h \
         magick/version.h \
         rungm.sh \
-        tests/Makefile \
-        utilities/Makefile \
         wand/GraphicsMagickWand-config \
-        wand/GraphicsMagickWand.pc \
-        wand/Makefile )
+        wand/GraphicsMagickWand.pc )
 rm -f magick-version
 
 echo ""

@@ -1,76 +1,71 @@
-# Copyright (C) 2003 GraphicsMagick Group
-#
+# Copyright (C) 2004 GraphicsMagick Group
+
 # This program is covered by multiple licenses, which are described in
 # Copyright.txt. You should have received a copy of Copyright.txt with this
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
-# Makefile for building Magick Wand library
+# Makefile for building Wand library
 #
-#
-# Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.8 foreign
 
-includedir = ${prefix}/include/GraphicsMagick
-pkgincludedir = $(includedir)/wand
+wandincdir = $(topincludedir)/wand
 
-lib_LTLIBRARIES = libGraphicsMagickWand.la
+WAND_SOURCES = \
+        wand/drawing_wand.c \
+	wand/drawing_wand.h \
+	wand/magick_compat.c \
+	wand/magick_compat.h \
+	wand/magick_wand.c \
+	wand/magick_wand.h \
+	wand/pixel_wand.c \
+	wand/pixel_wand.h \
+	wand/wand_api.h
 
-LIBRARY_CURRENT    = @MAGICK_WAND_LIBRARY_CURRENT@
-LIBRARY_REVISION   = @MAGICK_WAND_LIBRARY_REVISION@
-LIBRARY_AGE        = @MAGICK_WAND_LIBRARY_AGE@
-
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
-
-libGraphicsMagickWand_la_SOURCES = drawing_wand.c magick_wand.c pixel_wand.c \
-	magick_compat.c
-
-libGraphicsMagickWand_la_LDFLAGS = -no-undefined \
-	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
-
-libGraphicsMagickWand_la_LIBADD = $(top_builddir)/magick/libGraphicsMagick.la $(LIB_MATH)
-
-check_PROGRAMS = drawtest wandtest
-
-drawtest_LDADD     = libGraphicsMagickWand.la
-drawtest_LDFLAGS   = @LDFLAGS@
-drawtest_SOURCES   = drawtest.c
-
-wandtest_LDADD     = libGraphicsMagickWand.la
-wandtest_LDFLAGS   = @LDFLAGS@
-wandtest_SOURCES   = wandtest.c
-
-# Binary scripts
-bin_SCRIPTS = GraphicsMagickWand-config
+WAND_INCLUDE_HDRS = \
+	wand/drawing_wand.h \
+	wand/magick_wand.h \
+	wand/pixel_wand.h \
+	wand/wand_api.h
 
 # Headers which are installed
-pkginclude_HEADERS = drawing_wand.h magick_wand.h pixel_wand.h wand_api.h
+wandinc_HEADERS = \
+	$(WAND_INCLUDE_HDRS)
 
-# Headers which are not installed but which are distributed
-noinst_HEADERS = magick_compat.h
+WAND_BIN_SCRPTS = \
+        wand/GraphicsMagickWand-config
 
-# Pkgconfig directory
-pkgconfigdir = $(libdir)/pkgconfig
+WAND_PKGCONFIG = \
+        wand/GraphicsMagickWand.pc
 
-# Files to install in Pkgconfig directory
-pkgconfig_DATA = GraphicsMagickWand.pc
+WAND_MANS = \
+        wand/GraphicsMagickWand-config.1
 
-EXTRA_DIST = GraphicsMagickWand-config.1 input_256c.miff input_bilevel.miff \
-	input_gray.miff input_truecolor.miff sequence.miff
+LIBWAND=wand/libGraphicsMagickWand.la
 
-# Manual pages to install
-man_MANS = GraphicsMagickWand-config.1
+wand_libGraphicsMagickWand_la_SOURCES = $(WAND_SOURCES)
+wand_libGraphicsMagickWand_la_LDFLAGS = -no-undefined \
+	-version-info $(MAGICK_WAND_LIBRARY_CURRENT):$(MAGICK_WAND_LIBRARY_REVISION):$(MAGICK_WAND_LIBRARY_AGE)
+wand_libGraphicsMagickWand_la_LIBADD = $(LIBMAGICK) $(LIB_MATH)
 
-# Files to clean
-CLEANFILES = *_out.* image.miff
+WAND_EXTRA_DIST = \
+	wand/GraphicsMagickWand-config.1 \
+	wand/input_256c.miff \
+	wand/input_bilevel.miff \
+	wand/input_gray.miff \
+	wand/input_truecolor.miff \
+	wand/sequence.miff
 
-if WIN32_NATIVE_BUILD
-SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
-else
-SRCDIR='$(srcdir)/'
-endif
+wand_drawtest_LDADD        = $(LIBWAND)
+wand_drawtest_LDFLAGS      = $(LDFLAGS)
+wand_drawtest_SOURCES      = wand/drawtest.c
 
-RUNENV = $(SHELL) $(top_builddir)/rungm.sh
+wand_wandtest_LDADD        = $(LIBWAND)
+wand_wandtest_LDFLAGS      = $(LDFLAGS)
+wand_wandtest_SOURCES      = wand/wandtest.c
 
-check:
-	-@$(RUNENV) ./drawtest drawtest_out.miff
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./wandtest
+WAND_CHECK_PGRMS = \
+	wand/drawtest \
+	wand/wandtest
+
+WAND_CLEANFILES = \
+        wand/*_out.* \
+        wand/image.miff

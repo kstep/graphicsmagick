@@ -33,7 +33,11 @@ in
    ;;
 esac
 
-echo "$@"
+#echo "$@" >& 2
+if test -n "$VERBOSE"
+then
+  echo "$@"
+fi
 env \
   LD_LIBRARY_PATH="${top_builddir}/magick/.libs:${LD_LIBRARY_PATH}" \
   MAGICK_CODER_MODULE_PATH="${MAGICK_CODER_MODULE_PATH}" \

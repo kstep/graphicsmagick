@@ -21,6 +21,42 @@
 </tr>
 </table>
 <p>
+2004-09-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Makefile.am: Use one Makefile to rule them all as described in
+        Peter Miller's excellent paper, Recursive Make Considered Harmful,
+        "http://www.pcug.org.au/~millerp/rmch/recu-make-cons-harm.html".
+        Some glitches may remain.<BR>
+  <LI> coders/tiff.c (TIFFErrors): Prevent possible stack overflow on
+        error.<BR>
+        (TIFFWarnings): Prevent possible stack overflow on error.
+  <LI> magick/constitute.c (ImportImagePixelArea): For RGBQuantum
+        initialize the opacity channel since it is easier than altering
+        all code to properly access it.
+
+</UL>
+<p>
+2004-09-02  Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+<UL>
+  <LI> magick/transform.c: Bugfix from Cristy in CoalesceImages().
+
+</UL>
+<p>
+2004-08-26  Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+<UL>
+  <LI> Avoid error introduced in libpng-1.2.6 that causes the encoder
+        to write out-of-spec zlib header bytes.
+
+</UL>
+<p>
+2004-08-24  Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+<UL>
+  <LI> coders/bmp.c is said to have a potential buffer overrun.
+        Patch from Cristy applied (also to avi.c and dib.c).
+
+</UL>
+<p>
 2004-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

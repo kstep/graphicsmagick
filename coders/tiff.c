@@ -362,14 +362,15 @@ static int TIFFCloseBlob(thandle_t image)
   return(0);
 }
 
-/* Report errors */
+/* Report errors. Not thread safe!  */
 static unsigned int TIFFErrors(const char *module,const char *format,
   va_list warning)
 {
   char
     message[MaxTextExtent];
 
-  (void) vsprintf(message,format,warning);
+  (void) vsnprintf(message,MaxTextExtent-2,format,warning);
+  message[MaxTextExtent-2]='\0';
   (void) strcat(message,".");
   ThrowException2(tiff_exception,CoderError,message,module);
   return(True);
@@ -427,14 +428,15 @@ static void TIFFUnmapBlob(thandle_t image,tdata_t base,toff_t size)
 /*       "TIFF unmap blob: base=%p size=%ld", base, size); */
 }
 
-/* Report warnings */
+/* Report warnings. Not thread safe! */
 static unsigned int TIFFWarnings(const char *module,const char *format,
   va_list warning)
 {
   char
     message[MaxTextExtent];
 
-  (void) vsprintf(message,format,warning);
+  (void) vsnprintf(message,MaxTextExtent-2,format,warning);
+  message[MaxTextExtent-2]='\0';
   (void) strcat(message,".");
   ThrowException2(tiff_exception,CoderWarning,message,module);
   return(True);

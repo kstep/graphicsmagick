@@ -1,3 +1,16 @@
+2004-09-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Use one Makefile to rule them all as described in
+	Peter Miller's excellent paper, Recursive Make Considered Harmful,
+	"http://www.pcug.org.au/~millerp/rmch/recu-make-cons-harm.html".
+	Some glitches may remain.
+	* coders/tiff.c (TIFFErrors): Prevent possible stack overflow on
+	error.
+	(TIFFWarnings): Prevent possible stack overflow on error.
+	* magick/constitute.c (ImportImagePixelArea): For RGBQuantum
+	initialize the opacity channel since it is easier than altering
+	all code to properly access it.
+
 2004-09-02  Glenn Randers-Pehrson <glennrp@glennrp.com>
 	* magick/transform.c: Bugfix from Cristy in CoalesceImages().
 

@@ -3080,7 +3080,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     q->green=quantum;
                     ImportModulo8Quantum(quantum,quantum_size,p);
                     q->blue=quantum;
-                    /* q->opacity=0U; */
+                    q->opacity=0U;
                     q++;
                   }
               }
@@ -3095,7 +3095,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     q->green=quantum*quantum_scale;
                     ImportModulo8Quantum(quantum,quantum_size,p);
                     q->blue=quantum*quantum_scale;
-                    /* q->opacity=0U; */
+                    q->opacity=0U;
                     q++;
                   }
               }
@@ -3110,7 +3110,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     q->green=quantum/quantum_scale;
                     ImportModulo8Quantum(quantum,quantum_size,p);
                     q->blue=quantum/quantum_scale;
-                    /* q->opacity=0U; */
+                    q->opacity=0U;
                     q++;
                   }
               }
@@ -3132,7 +3132,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     q->red=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
                     q->green=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
                     q->blue=BitStreamMSBRead(&stream,quantum_size)*quantum_scale;
-                    /* q->opacity=0U; */
+                    q->opacity=0U;
                     q++;
                   }
               }
@@ -3144,7 +3144,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     q->red=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
                     q->green=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
                     q->blue=BitStreamMSBRead(&stream,quantum_size)/quantum_scale;
-                    /* q->opacity=0U; */
+                    q->opacity=0U;
                     q++;
                   }
               }

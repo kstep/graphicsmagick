@@ -2930,10 +2930,20 @@ or <strong>All</strong>.</font></td></tr></table>
 Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Divide</strong>, <strong>LShift</strong>,
 <strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>, <strong>Subtract</strong>, <strong>Xor</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Rvalue may be any floating point value in the range of 0 to MaxRGB, where
-MaxRGB is the largest quantum value supported by the GraphicsMagick build
-(255, 65535, or 4294967295). If a percent (<strong>%</strong>) symbol is appended
-to the argument, then the argument has a range of 0 to 100 percent.</font></td></tr></table>
+Rvalue may be any floating point value. Normally rvalue will
+be in the range of 0 to MaxRGB, where MaxRGB is the largest
+quantum value supported by the GraphicsMagick build (255,
+65535, or 4294967295) but values outside this range may be
+useful for some arithmetic operations. Arguments to logical or
+bit-wise operations are rounded to a positive integral value
+prior to use. If a percent (<strong>%</strong>) symbol is appended to
+the argument, then the argument has a range of 0 to 100
+percent.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">As an example, the <strong>xor</strong> operator may be used to invert a
+monochrome image (interchange black and white):</font></td></tr></table>
+<pre>
+  gm convert in.bmp -operator all xor "100%" out.bmp
+</pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
