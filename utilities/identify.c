@@ -199,7 +199,6 @@ int IdentifyUtility(int argc,char **argv)
         if (i == argc)
           MagickError(OptionError,"Missing format string",option);
         (void) CloneString(&format,argv[i]);
-        argv[i]=(char *) "";
         break;
       }
   }
@@ -354,7 +353,7 @@ int IdentifyUtility(int argc,char **argv)
       Identify image.
     */
     (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
-    if (!image_info->verbose)
+    if (!image_info->verbose && (format == (char *) NULL))
       image=PingImage(image_info,&exception);
     else
       image=ReadImage(image_info,&exception);
@@ -375,12 +374,13 @@ int IdentifyUtility(int argc,char **argv)
           char
             *text;
 
-          text=TranslateText((ImageInfo *) NULL,image,format);
+          text=TranslateText(image_info,p,format);
           if (text == (char *) NULL)
             ThrowBinaryException(ResourceLimitWarning,
               "Unable to format image data","Memory allocation failed");
           (void) fputs(text,stdout);
           (void) fputc('\n',stdout);
+          LiberateMemory((void **) &text);
         }
     }
     DestroyImageList(image);
