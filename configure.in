@@ -848,7 +848,7 @@ then
     failed=0;
     passed=0;
     AC_CHECK_HEADER(jasper/jasper.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(jasper,image_load_jp2,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(jasper,jas_stream_fopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if JPEG version 2 support package is complete)
     if test $passed -gt 0
     then

@@ -7407,9 +7407,9 @@ else
   failed=`expr $failed + 1`
 fi
 
-    echo "$as_me:7410: checking for image_load_jp2 in -ljasper" >&5
-echo $ECHO_N "checking for image_load_jp2 in -ljasper... $ECHO_C" >&6
-if test "${ac_cv_lib_jasper_image_load_jp2+set}" = set; then
+    echo "$as_me:7410: checking for jas_stream_fopen in -ljasper" >&5
+echo $ECHO_N "checking for jas_stream_fopen in -ljasper... $ECHO_C" >&6
+if test "${ac_cv_lib_jasper_jas_stream_fopen+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -7424,11 +7424,11 @@ extern "C"
 #endif
 /* We use char because int might match the return type of a gcc2
    builtin and then its argument prototype would still apply.  */
-char image_load_jp2 ();
+char jas_stream_fopen ();
 int
 main ()
 {
-image_load_jp2 ();
+jas_stream_fopen ();
   ;
   return 0;
 }
@@ -7445,18 +7445,18 @@ if { (eval echo "$as_me:7437: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:7446: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_lib_jasper_image_load_jp2=yes
+  ac_cv_lib_jasper_jas_stream_fopen=yes
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-ac_cv_lib_jasper_image_load_jp2=no
+ac_cv_lib_jasper_jas_stream_fopen=no
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-echo "$as_me:7457: result: $ac_cv_lib_jasper_image_load_jp2" >&5
-echo "${ECHO_T}$ac_cv_lib_jasper_image_load_jp2" >&6
-if test $ac_cv_lib_jasper_image_load_jp2 = yes; then
+echo "$as_me:7457: result: $ac_cv_lib_jasper_jas_stream_fopen" >&5
+echo "${ECHO_T}$ac_cv_lib_jasper_jas_stream_fopen" >&6
+if test $ac_cv_lib_jasper_jas_stream_fopen = yes; then
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
