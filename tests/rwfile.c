@@ -14,8 +14,10 @@
 #if !defined(_VISUALC_)
 #include <config.h>
 #endif
-#include <sys/types.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
 #if defined(_VISUALC_)
 #include <stdlib.h>
 #include <sys\types.h>
@@ -60,14 +62,12 @@ int main ( int argc, char **argv )
   GetImageInfo( &imageInfo );
   imageInfo.dither = 0;
   strcpy( imageInfo.filename, infile );
-  printf("  read \"%s\"\n", imageInfo.filename);
   fflush(stdout);
   original = ReadImage ( &imageInfo, &exception );
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo.filename );
-      fflush(stdout);
-      return 1;
+      MagickError(exception.severity,exception.reason,exception.description);
     }
 
   /*
@@ -85,10 +85,9 @@ int main ( int argc, char **argv )
   strcpy( original->magick, format );
   strcpy( original->filename, filename );
   original->delay = 10;
-  printf("  write \"%s\"\n", original->filename);
   fflush(stdout);
   WriteImage ( &imageInfo, original );
-  imageInfo.depth=GetImageDepth(original);
+  imageInfo.depth=original->depth;
   DestroyImage( original );
   original = (Image*)NULL;
 
@@ -99,15 +98,13 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, filename );
   if (size != NULL)
     CloneString( &imageInfo.size, size );
-  printf("  read \"%s\"\n", imageInfo.filename);
   fflush(stdout);
   original = ReadImage ( &imageInfo, &exception );
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
 	       imageInfo.magick );
-      fflush(stdout);
-      return 1;
+      MagickError(exception.severity,exception.reason,exception.description);
     }
 
   /*
@@ -117,7 +114,6 @@ int main ( int argc, char **argv )
   strcpy( original->magick, format );
   strcpy( original->filename, filename );
   original->delay = 10;
-  printf("  write \"%s\"\n", original->filename);
   fflush(stdout);
   WriteImage ( &imageInfo, original );
 
@@ -128,15 +124,13 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, filename );
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
-  printf("  read \"%s\"\n", imageInfo.filename);
   fflush(stdout);
   final = ReadImage ( &imageInfo, &exception );
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
 	       imageInfo.magick );
-      fflush(stdout);
-      return 1;
+      MagickError(exception.severity,exception.reason,exception.description);
     }
 
   /*
@@ -148,6 +142,8 @@ int main ( int argc, char **argv )
        !strcmp( "JPG24", format ) ||
        !strcmp( "JP2", format ) ||
        !strcmp( "PAL", format ) ||
+       !strcmp( "GRAY", format ) ||
+       !strcmp( "CMYK", format ) ||
        !strcmp( "PCD", format ) ||
        !strcmp( "PCDS", format ) ||
        !strcmp( "UYVY", format ) ||
@@ -160,7 +156,7 @@ int main ( int argc, char **argv )
       printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
         format,(unsigned int) original->mean_error_per_pixel,original->normalized_mean_error,
         original->normalized_maximum_error);
-      fflush(stdout);
+      MagickError(exception.severity,exception.reason,exception.description);
     }
 
   DestroyImage( original );

@@ -14,8 +14,10 @@
 #if !defined(_VISUALC_)
 #include <config.h>
 #endif
-#include <sys/types.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <string.h>
 #if defined(_VISUALC_)
 #include <stdlib.h>
 #include <sys\types.h>
@@ -66,8 +68,7 @@ int main ( int argc, char **argv )
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo.filename );
-      fflush(stdout);
-      return 1;
+      MagickError(exception.severity,exception.reason,exception.description);
     }
 
   /*
@@ -89,9 +90,9 @@ int main ( int argc, char **argv )
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
-      fflush(stdout);
-      return 1;
+      MagickError(exception.severity,exception.reason,exception.description);
     }
+  imageInfo.depth=original->depth;
   DestroyImage( original );
   original = (Image*)NULL;
 
@@ -105,9 +106,8 @@ int main ( int argc, char **argv )
   original = BlobToImage( &imageInfo, blob, blob_length, &exception );
   if ( original == (Image *)NULL )
     {
-      printf ( "Failed to read image from BLOB in format %s\n", imageInfo.magick );
-      fflush(stdout);
-      return 1;
+      printf ( "Failed to read image from BLOB in format %s\n",imageInfo.magick );
+      MagickError(exception.severity,exception.reason,exception.description);
     }
   LiberateMemory( (void**)&blob );
 
@@ -119,12 +119,11 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, "" );
   original->delay = 10;
   blob = ImageToBlob ( &imageInfo, original, &blob_length, &exception );
-  imageInfo.depth=GetImageDepth(original);
+  imageInfo.depth=original->depth;
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
-      fflush(stdout);
-      return 1;
+      MagickError(exception.severity,exception.reason,exception.description);
     }
 
   /*
@@ -137,9 +136,8 @@ int main ( int argc, char **argv )
   final = BlobToImage( &imageInfo, blob, blob_length, &exception );
   if ( final == (Image *)NULL )
     {
-      printf ( "Failed to read image from BLOB in format %s\n", imageInfo.magick );
-      fflush(stdout);
-      return 1;
+      printf ( "Failed to read image from BLOB in format %s\n",imageInfo.magick );
+      MagickError(exception.severity,exception.reason,exception.description);
     }
   LiberateMemory( (void**)&blob );
 
@@ -152,6 +150,7 @@ int main ( int argc, char **argv )
        !strcmp( "JPG24", format ) ||
        !strcmp( "JP2", format ) ||
        !strcmp( "GRAY", format ) ||
+       !strcmp( "CMYK", format ) ||
        !strcmp( "PAL", format ) ||
        !strcmp( "PCD", format ) ||
        !strcmp( "PCDS", format ) ||

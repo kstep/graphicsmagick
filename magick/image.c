@@ -5262,11 +5262,14 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           magenta=MaxRGB-q->green;
           yellow=MaxRGB-q->blue;
           black=cyan < magenta ? Min(cyan,yellow) : Min(magenta,yellow);
-          q->red=(Quantum) (cyan < 0 ? 0 : cyan >= MaxRGB ? MaxRGB : cyan);
-          q->green=(Quantum)
-            (magenta < 0 ? 0 : magenta >= MaxRGB ? MaxRGB : magenta);
-          q->blue=(Quantum)
-            (yellow < 0 ? 0 : yellow >= MaxRGB ? MaxRGB : yellow);
+          black=cyan;
+          if (magenta < black)
+            black=magenta;
+          if (yellow < black)
+            black=yellow;
+          q->red=(Quantum) cyan;
+          q->green=(Quantum) magenta;
+          q->blue=(Quantum) yellow;
           indexes[x]=q->opacity;
           q->opacity=(Quantum) black;
           q++;
@@ -6499,7 +6502,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           q->green=(unsigned long)
             ((MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB;
           q->blue=(unsigned long) ((MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB;
-          q->opacity=indexes[x];
+          if (image->matte)
+          q->opacity=image->matte ? indexes[x] : OpaqueOpacity;
           q++;
         }
         if (!SyncImagePixels(image))

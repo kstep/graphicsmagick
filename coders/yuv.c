@@ -285,8 +285,6 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void **) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }
@@ -426,12 +424,14 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     /*
       Sample image to an even width and height.
     */
+    image->depth=8;
     TransformRGBImage(image,RGBColorspace);
     width=image->columns+(image->columns & 0x01);
     height=image->rows+(image->rows & 0x01);
     image->orphan=True;
-    yuv_image=ResizeImage(image,width,height,TriangleFilter,1.0,
-      &image->exception);
+    if (image->storage_class == PseudoClass)
+      image->filter=PointFilter;
+    yuv_image=ZoomImage(image,width,height,&image->exception);
     if (yuv_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
     RGBTransformImage(yuv_image,YCbCrColorspace);
@@ -457,8 +457,9 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       Downsample image.
     */
     image->orphan=True;
-    chroma_image=ResizeImage(image,width/2,height/2,TriangleFilter,1.0,
-      &image->exception);
+    if (image->storage_class == PseudoClass)
+      image->filter=PointFilter;
+    chroma_image=ZoomImage(image,width/2,height/2,&image->exception);
     if (chroma_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
     RGBTransformImage(chroma_image,YCbCrColorspace);
