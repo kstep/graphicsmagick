@@ -261,7 +261,6 @@ extern "C" {
 #define ScaleColor6to8(x)  ((x) << 2)
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #define True  1
-#define TypeFilename  "type.mgk"
 
 /*
   3D effects.

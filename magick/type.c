@@ -57,6 +57,7 @@
 /*
   Define declarations.
 */
+#define TypeFilename  "type.mgk"
 
 /*
   Declare type map.
