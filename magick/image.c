@@ -255,8 +255,8 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   size_t
     length;
 
-  unsigned long
-    pixel;
+  Quantum
+    quantum;
 
   /*
     Allocate image colormap.
@@ -274,10 +274,10 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
     return(False);
   for (i=0; i < (long) image->colors; i++)
   {
-    pixel=i*(MaxRGB/Max(colors-1,1));
-    image->colormap[i].red=(Quantum) pixel;
-    image->colormap[i].green=(Quantum) pixel;
-    image->colormap[i].blue=(Quantum) pixel;
+    quantum=(Quantum) i*(MaxRGB/Max(colors-1,1));
+    image->colormap[i].red=quantum;
+    image->colormap[i].green=quantum;
+    image->colormap[i].blue=quantum;
     image->colormap[i].opacity=OpaqueOpacity;
   }
   return(True);
@@ -561,6 +561,9 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 #define AverageImageText  "  Average image sequence...  "
 
   DoublePixelPacket
+    *pixels_array;
+
+  register DoublePixelPacket
     *pixels;
 
   Image
@@ -576,7 +579,6 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     *p;
 
   register long
-    i,
     x;
 
   register PixelPacket
@@ -606,19 +608,19 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     Allocate sum accumulation buffer.
   */
   number_pixels=image->columns*image->rows;
-  pixels=(DoublePixelPacket *)
+  pixels_array=(DoublePixelPacket *)
     AcquireMemory(number_pixels*sizeof(DoublePixelPacket));
-  if (pixels == (DoublePixelPacket *) NULL)
+  if (pixels_array == (DoublePixelPacket *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToAverageImageSequence");
-  (void) memset(pixels,0,number_pixels*sizeof(DoublePixelPacket));
+  (void) memset(pixels_array,0,number_pixels*sizeof(DoublePixelPacket));
   /*
     Initialize average next attributes.
   */
   average_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (average_image == (Image *) NULL)
     {
-      LiberateMemory((void **) &pixels);
+      LiberateMemory((void **) &pixels_array);
       return((Image *) NULL);
     }
   SetImageType(average_image,TrueColorType);
@@ -628,20 +630,20 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   number_scenes=0;
   for (next=image; next != (Image *) NULL; next=next->next)
   {
-    i=0;
+    pixels=pixels_array;
     for (y=0; y < (long) next->rows; y++)
     {
       p=AcquireImagePixels(next,0,y,next->columns,1,exception);
       if (p == (const PixelPacket *) NULL)
         break;
-      for (x=0; x < (long) next->columns; x++)
+      for (x=(long) next->columns; x > 0; x--)
       {
-        pixels[i].red+=p->red;
-        pixels[i].green+=p->green;
-        pixels[i].blue+=p->blue;
-        pixels[i].opacity+=p->opacity;
+        pixels->red+=p->red;
+        pixels->green+=p->green;
+        pixels->blue+=p->blue;
+        pixels->opacity+=p->opacity;
         p++;
-        i++;
+        pixels++;
       }
     }
     number_scenes++;
@@ -649,20 +651,20 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   /*
     Average next pixels.
   */
-  i=0;
+  pixels=pixels_array;
   for (y=0; y < (long) average_image->rows; y++)
   {
     q=SetImagePixels(average_image,0,y,average_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) average_image->columns; x++)
+    for (x=(long) average_image->columns; x > 0; x--)
     {
-      q->red=(Quantum) (pixels[i].red/number_scenes+0.5);
-      q->green=(Quantum) (pixels[i].green/number_scenes+0.5);
-      q->blue=(Quantum) (pixels[i].blue/number_scenes+0.5);
-      q->opacity=(Quantum) (pixels[i].opacity/number_scenes+0.5);
+      q->red=(Quantum) (pixels->red/number_scenes+0.5);
+      q->green=(Quantum) (pixels->green/number_scenes+0.5);
+      q->blue=(Quantum) (pixels->blue/number_scenes+0.5);
+      q->opacity=(Quantum) (pixels->opacity/number_scenes+0.5);
       q++;
-      i++;
+      pixels++;
     }
     if (!SyncImagePixels(average_image))
       break;
@@ -670,7 +672,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       if (!MagickMonitor(AverageImageText,y,average_image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels_array);
   return(average_image);
 }
 
@@ -771,53 +773,70 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      switch (channel)
+    switch (channel)
       {
-        case RedChannel:
-        case CyanChannel:
+      case RedChannel:
+      case CyanChannel:
         {
-          q->green=q->red;
-          q->blue=q->red;
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              q->green=q->red;
+              q->blue=q->red;
+              q++;
+            }
           break;
         }
-        case GreenChannel:
-        case MagentaChannel:
+      case GreenChannel:
+      case MagentaChannel:
         {
-          q->red=q->green;
-          q->blue=q->green;
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              q->red=q->green;
+              q->blue=q->green;
+              q++;
+            }
           break;
         }
-        case BlueChannel:
-        case YellowChannel:
+      case BlueChannel:
+      case YellowChannel:
         {
-          q->red=q->blue;
-          q->green=q->blue;
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              q->red=q->blue;
+              q->green=q->blue;
+              q++;
+            }
           break;
         }
-        case OpacityChannel:
+      case OpacityChannel:
         {
           if (image->colorspace == CMYKColorspace)
             {
-              q->red=indexes[x];
-              q->green=indexes[x];
-              q->blue=indexes[x];
-              break;
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  q->red=*indexes;
+                  q->green=*indexes;
+                  q->blue=*indexes;
+                  q++;
+                  indexes++;
+                }
             }
+          break;
         }
-        case MatteChannel:
-        case BlackChannel:
-        default:
+      case MatteChannel:
+      case BlackChannel:
+      default:
         {
-          q->red=q->opacity;
-          q->green=q->opacity;
-          q->blue=q->opacity;
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              q->red=q->opacity;
+              q->green=q->opacity;
+              q->blue=q->opacity;
+              q++;
+            }
           break;
         }
       }
-      q++;
-    }
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))

@@ -1,6 +1,10 @@
 2003-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-	* Fixed bug in RGBTransformImage (thanks to Bill for
-	finding it) and finished optimizing XYZ table creation.
+	* magick/image.c (RGBTransformImage): Fixed bug (thanks to
+	Bill for finding it) and finished optimizing XYZ table
+	creation.
+	(AverageImages): Optimized loops.
+	(ChannelImage): Optimized loops.  3X speed-up for SPARC.
+
 	* magick/enhance.c: Optimized NegateImage().
 
 2003-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
