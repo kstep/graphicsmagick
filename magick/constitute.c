@@ -1242,11 +1242,9 @@ MagickExport unsigned int PopImagePixels(const Image *image,
   register unsigned char
     *q;
 
-  unsigned int
-    pixel;
-
   unsigned long
-    number_pixels;
+    number_pixels,
+    pixel;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1931,11 +1929,9 @@ MagickExport unsigned int PushImagePixels(Image *image,
   register PixelPacket
     *q;
 
-  unsigned int
-    pixel;
-
   unsigned long
-    number_pixels;
+    number_pixels,
+    pixel;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
