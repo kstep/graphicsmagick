@@ -5985,7 +5985,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     case GrayscaleType:
     {
       GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=2;
+      quantize_info.number_colors=256;
       quantize_info.tree_depth=8;
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,image);
@@ -5994,7 +5994,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     case GrayscaleMatteType:
     {
       GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=2;
+      quantize_info.number_colors=256;
       quantize_info.tree_depth=8;
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,image);
