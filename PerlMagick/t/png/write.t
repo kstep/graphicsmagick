@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1; print "1..5\n"; }
+BEGIN { $| = 1; $test=1; print "1..6\n"; }
 END {print "not ok $test\n" unless $loaded;}
 
 use Image::Magick;
@@ -64,5 +64,5 @@ testReadWrite( 'input_16.png',
 # 6) Test Black-and-white, bit_depth=1 PNG
 # 
 ++$test;
-testReadWrite( 'input_bw.png', output_bw.png, q/quality=>95/,
+testReadWrite( 'input_bw.png', 'output_bw.png', q/quality=>95/,
                '8703ee7acfb2e12fea0ba8519b5f6d15', 'same' );
