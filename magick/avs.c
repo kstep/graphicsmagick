@@ -151,12 +151,14 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     pixels=(unsigned char *) AllocateMemory(4*image->columns);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",image);
+      ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",
+        image);
     for (y=0; y < (int) image->rows; y++)
     {
       status=ReadBlob(image,4*image->columns,pixels);
       if (status == False)
-        ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
+        ThrowReaderException(CorruptImageWarning,"Unable to read image data",
+          image);
       p=pixels;
       q=SetPixelCache(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)

@@ -395,6 +395,9 @@ int main(int argc,char **argv)
   ExceptionInfo
     exception;
 
+  ExceptionType
+    type;
+
   Image
     *image,
     *next_image;
@@ -448,6 +451,7 @@ int main(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   option=(char *) NULL;
   scene=0;
+  type=UndefinedException;
   /*
     Parse command-line arguments.
   */
@@ -467,11 +471,13 @@ int main(int argc,char **argv)
         if (next_image == (Image *) NULL)
           {
             MagickWarning(exception.type,exception.message,exception.qualifier);
+            if (exception.type > type)
+              type=exception.type;
             continue;
           }
         status=MogrifyImages(image_info,i,argv,&next_image);
         if (status == False)
-          CatchImageException(next_image);
+          CatchImageException(next_image,&type);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -1647,7 +1653,7 @@ int main(int argc,char **argv)
     {
       status=MogrifyImages(image_info,i,argv,&image);
       if (status == False)
-        CatchImageException(image);
+        CatchImageException(image,&type);
     }
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -1661,7 +1667,7 @@ int main(int argc,char **argv)
       */
       appended_image=AppendImages(image,append == 1);
       if (appended_image == (Image *) NULL)
-        CatchImageException(image);
+        CatchImageException(image,&type);
       else
         {
           DestroyImages(image);
@@ -1678,7 +1684,7 @@ int main(int argc,char **argv)
       */
       averaged_image=AverageImages(image);
       if (averaged_image == (Image *) NULL)
-        CatchImageException(image);
+        CatchImageException(image,&type);
       else
         {
           DestroyImages(image);
@@ -1695,7 +1701,7 @@ int main(int argc,char **argv)
       */
       coalesced_image=CoalesceImages(image);
       if (coalesced_image == (Image *) NULL)
-        CatchImageException(image);
+        CatchImageException(image,&type);
       else
         {
           DestroyImages(image);
@@ -1712,7 +1718,7 @@ int main(int argc,char **argv)
       */
       deconstructed_image=DeconstructImages(image);
       if (deconstructed_image == (Image *) NULL)
-        CatchImageException(image);
+        CatchImageException(image,&type);
       else
         {
           DestroyImages(image);
@@ -1729,7 +1735,7 @@ int main(int argc,char **argv)
       */
       morphed_image=MorphImages(image,morph);
       if (morphed_image == (Image *) NULL)
-        CatchImageException(image);
+        CatchImageException(image,&type);
       else
         {
           DestroyImages(image);
@@ -1746,7 +1752,7 @@ int main(int argc,char **argv)
       */
       mosaic_image=MosaicImages(image);
       if (mosaic_image == (Image *) NULL)
-        CatchImageException(image);
+        CatchImageException(image,&type);
       else
         {
           DestroyImages(image);
@@ -1769,7 +1775,7 @@ int main(int argc,char **argv)
   {
     status=WriteImage(image_info,p);
     if (status == False)
-      CatchImageException(p);
+      CatchImageException(p,&type);
     if (image_info->adjoin)
       break;
   }
@@ -1780,6 +1786,6 @@ int main(int argc,char **argv)
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit(status ? 0 : errno);
+  Exit((int) type);
   return(False);
 }

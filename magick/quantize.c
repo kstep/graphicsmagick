@@ -386,7 +386,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
     image->colormap=(PixelPacket *) ReallocateMemory((char *) image->colormap,
       cube_info->colors*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
-    ThrowBooleanException(ResourceLimitWarning,"Unable to quantize image",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
       "Memory allocation failed");
   cube_info->colormap=image->colormap;
   cube_info->colors=0;
@@ -611,7 +611,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
             node_info->census|=1 << id;
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              ThrowBooleanException(ResourceLimitWarning,
+              ThrowBinaryException(ResourceLimitWarning,
                 "Unable to quantize image","Memory allocation failed");
             if (level == cube_info->depth)
               cube_info->colors++;
@@ -1491,7 +1491,7 @@ Export unsigned int MapImage(Image *image,Image *map_image,
   quantize_info.colorspace=image->matte ? TransparentColorspace : RGBColorspace;
   status=GetCubeInfo(&cube_info,&quantize_info,8);
   if (status == False)
-    ThrowBooleanException(ResourceLimitWarning,"Unable to map image",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to map image",
       "Memory allocation failed");
   status=Classification(&cube_info,map_image);
   if (status != False)
@@ -1579,7 +1579,7 @@ Export unsigned int MapImages(Image *images,Image *map_image,
   */
   status=GetCubeInfo(&cube_info,&quantize_info,8);
   if (status == False)
-    ThrowBooleanException(ResourceLimitWarning,"Unable to map image sequence",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to map image sequence",
       "Memory allocation failed");
   status=Classification(&cube_info,map_image);
   if (status != False)
@@ -1675,7 +1675,7 @@ static unsigned int OrderedDitherImage(Image *image)
   image->colors=2;
   colormap=(PixelPacket *) AllocateMemory(image->colors*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
-    ThrowBooleanException(ResourceLimitWarning,"Unable to dither image",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to dither image",
       "Memory allocation failed");
   if (image->colormap != (PixelPacket *) NULL)
     FreeMemory(image->colormap);
@@ -1888,7 +1888,7 @@ Export unsigned int QuantizationError(Image *image)
     return(True);
   cube_info.squares=(double *) AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(double));
   if (cube_info.squares == (double *) NULL)
-    ThrowBooleanException(ResourceLimitWarning,"Unable to measure error",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to measure error",
       "Memory allocation failed");
   cube_info.squares+=MaxRGB;
   for (i=(-MaxRGB); i <= MaxRGB; i++)
@@ -2004,7 +2004,7 @@ Export unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   */
   status=GetCubeInfo(&cube_info,quantize_info,depth);
   if (status == False)
-    ThrowBooleanException(ResourceLimitWarning,"Unable to quantize image",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
       "Memory allocation failed");
   if (quantize_info->colorspace != RGBColorspace)
     RGBTransformImage(image,quantize_info->colorspace);
@@ -2118,7 +2118,7 @@ Export unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   */
   status=GetCubeInfo(&cube_info,quantize_info,depth);
   if (status == False)
-    ThrowBooleanException(ResourceLimitWarning,
+    ThrowBinaryException(ResourceLimitWarning,
       "Unable to quantize image sequence","Memory allocation failed");
   image=images;
   for (i=0; image != (Image *) NULL; i++)

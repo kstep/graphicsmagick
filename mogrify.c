@@ -313,6 +313,9 @@ int main(int argc,char **argv)
   ExceptionInfo
     exception;
 
+  ExceptionType
+    type;
+
   ImageInfo
     *image_info;
 
@@ -353,6 +356,7 @@ int main(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   scene=0;
   status=False;
+  type=UndefinedException;
   /*
     Parse command line.
   */
@@ -1402,6 +1406,8 @@ int main(int argc,char **argv)
         if (image == (Image *) NULL)
           {
             MagickWarning(exception.type,exception.message,exception.qualifier);
+            if (exception.type > type)
+              type=exception.type;
             if (*option == '-')
               break;
             else
@@ -1435,7 +1441,7 @@ int main(int argc,char **argv)
         */
         status=MogrifyImages(image_info,i,argv,&image);
         if (status == False)
-          CatchImageException(image);
+          CatchImageException(image,&type);
         if (global_colormap)
           (void) MapImages(image,(Image *) NULL,image_info->dither);
         /*
@@ -1459,7 +1465,7 @@ int main(int argc,char **argv)
         {
           status=WriteImage(image_info,p);
           if (status == False)
-            CatchImageException(p);
+            CatchImageException(p,&type);
           if (image_info->adjoin)
             break;
         }
@@ -1482,6 +1488,6 @@ int main(int argc,char **argv)
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit(status ? 0 : errno);
+  Exit((int) type);
   return(False);
 }

@@ -3813,7 +3813,8 @@ static unsigned int
 %
 %  The format of the ReadLOGOImage method is:
 %
-%      Image *ReadLOGOImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadLOGOImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3827,13 +3828,20 @@ static unsigned int
 %
 %
 */
-static Image *ReadLOGOImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadLOGOImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
+  Image
+    *image;
+
   if (Latin1Compare(image_info->magick,"GRANITE") == 0)
-    return(BlobToImage(image_info,(char *) GraniteImage,GraniteImageExtent));
-  if (Latin1Compare(image_info->magick,"NETSCAPE") == 0)
-    return(BlobToImage(image_info,(char *) NetscapeImage,NetscapeImageExtent));
-  return(BlobToImage(image_info,(char *) LogoImage,LogoImageExtent));
+    image=BlobToImage(image_info,GraniteImage,GraniteImageExtent,exception);
+  else
+    if (Latin1Compare(image_info->magick,"NETSCAPE") == 0)
+      image=BlobToImage(image_info,NetscapeImage,NetscapeImageExtent,exception);
+    else
+      image=BlobToImage(image_info,LogoImage,LogoImageExtent,exception);
+  return(image);
 }
 
 /*

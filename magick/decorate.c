@@ -434,7 +434,7 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
   assert(raise_info != (RectangleInfo *) NULL);
   if ((image->columns <= (raise_info->width << 1)) ||
       (image->rows <= (raise_info->height << 1)))
-    ThrowBooleanException(OptionWarning,"Unable to raise image",
+    ThrowBinaryException(OptionWarning,"Unable to raise image",
       "image size must exceed bevel width");
   foreground=MaxRGB;
   background=0;

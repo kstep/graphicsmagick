@@ -199,6 +199,9 @@ int main(int argc,char **argv)
   ExceptionInfo
     exception;
 
+  ExceptionType
+    type;
+
   Image
     *combined_image,
     *composite_image,
@@ -239,7 +242,6 @@ int main(int argc,char **argv)
   compose=ReplaceCompositeOp;
   composite_image=(Image *) NULL;
   displacement_geometry=(char *) NULL;
-  watermark_geometry=(char *) NULL;
   geometry=(char *) NULL;
   gravity=NorthWestGravity;
   image=(Image *) NULL;
@@ -248,6 +250,8 @@ int main(int argc,char **argv)
   stegano=0;
   stereo=False;
   tile=False;
+  type=UndefinedException;
+  watermark_geometry=(char *) NULL;
   write_filename=argv[argc-1];
   /*
     Check command syntax.
@@ -267,8 +271,12 @@ int main(int argc,char **argv)
           {
             image=ReadImage(image_info,&exception);
             if (image == (Image *) NULL)
-              MagickWarning(exception.type,exception.message,
-                exception.qualifier);
+              {
+                MagickWarning(exception.type,exception.message,
+                  exception.qualifier);
+                if (exception.type > type)
+                  type=exception.type;
+              }
             continue;
           }
         if (mask_image != (Image *) NULL)
@@ -277,13 +285,21 @@ int main(int argc,char **argv)
           {
             composite_image=ReadImage(image_info,&exception);
             if (composite_image == (Image *) NULL)
-              MagickWarning(exception.type,exception.message,
-                exception.qualifier);
+              {
+                MagickWarning(exception.type,exception.message,
+                  exception.qualifier);
+                if (exception.type > type)
+                  type=exception.type;
+              }
             continue;
           }
         mask_image=ReadImage(image_info,&exception);
         if (mask_image == (Image *) NULL)
-          MagickWarning(exception.type,exception.message,exception.qualifier);
+          {
+            MagickWarning(exception.type,exception.message,exception.qualifier);
+            if (exception.type > type)
+              type=exception.type;
+          }
       }
     else
       switch(*(option+1))
@@ -808,7 +824,7 @@ int main(int argc,char **argv)
       status=CompositeImage(composite_image,ReplaceMatteCompositeOp,
         mask_image,0,0);
       if (status == False)
-        CatchImageException(composite_image);
+        CatchImageException(composite_image,&type);
       DestroyImage(mask_image);
     }
   if (compose == BlendCompositeOp)
@@ -880,7 +896,7 @@ int main(int argc,char **argv)
             {
               status=CompositeImage(image,compose,composite_image,x,y);
               if (status == False)
-                CatchImageException(image);
+                CatchImageException(image,&type);
             }
           combined_image=image;
         }
@@ -962,7 +978,7 @@ int main(int argc,char **argv)
           }
           status=CompositeImage(image,compose,composite_image,x,y);
           if (status == False)
-            CatchImageException(image);
+            CatchImageException(image,&type);
           combined_image=image;
         }
   if (combined_image == (Image *) NULL)
@@ -972,7 +988,7 @@ int main(int argc,char **argv)
   */
   status=MogrifyImage(image_info,argc,argv,&combined_image);
   if (status == False)
-    CatchImageException(combined_image);
+    CatchImageException(combined_image,&type);
   /*
     Write image.
   */
@@ -980,7 +996,7 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   status=WriteImage(image_info,combined_image);
   if (status == False)
-    CatchImageException(combined_image);
+    CatchImageException(combined_image,&type);
   if (image_info->verbose)
     DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);
@@ -988,6 +1004,6 @@ int main(int argc,char **argv)
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit(status ? 0 : errno);
+  Exit((int) type);
   return(False);
 }

@@ -216,7 +216,7 @@ Export unsigned int EqualizeImage(Image *image)
   equalize_map=(Quantum *) AllocateMemory((MaxRGB+1)*sizeof(Quantum));
   if ((histogram == (unsigned int *) NULL) || (map == (unsigned int *) NULL) ||
       (equalize_map == (Quantum *) NULL))
-    ThrowBooleanException(ResourceLimitWarning,"Unable to equalize image",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to equalize image",
       "Memory allocation failed");
   /*
     Form histogram.
@@ -380,7 +380,7 @@ Export unsigned int GammaImage(Image *image,const char *gamma)
   */
   gamma_map=(PixelPacket *) AllocateMemory((MaxRGB+1)*sizeof(PixelPacket));
   if (gamma_map == (PixelPacket *) NULL)
-    ThrowBooleanException(ResourceLimitWarning,"Unable to gamma correct image",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to gamma correct image",
       "Memory allocation failed");
   for (i=0; i <= MaxRGB; i++)
   {
@@ -723,7 +723,7 @@ Export unsigned int NormalizeImage(Image *image)
   histogram=(int *) AllocateMemory((MaxRGB+1)*sizeof(int));
   normalize_map=(Quantum *) AllocateMemory((MaxRGB+1)*sizeof(Quantum));
   if ((histogram == (int *) NULL) || (normalize_map == (Quantum *) NULL))
-    ThrowBooleanException(ResourceLimitWarning,"Unable to normalize image",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to normalize image",
       "Memory allocation failed");
   /*
     Form histogram.

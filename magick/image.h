@@ -105,6 +105,16 @@ typedef struct _ColorlistInfo
     blue;
 } ColorlistInfo;
 
+typedef struct _ExceptionInfo
+{
+  ExceptionType
+    type;
+
+  const char
+    *message,
+    *qualifier;
+} ExceptionInfo;
+
 typedef struct _FrameInfo
 {
   int

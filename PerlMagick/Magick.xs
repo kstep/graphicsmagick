@@ -1747,6 +1747,9 @@ Animate(ref,...)
     animateimage  = 3
   PPCODE:
   {
+    ExceptionType
+      type;
+
     jmp_buf
       error_jmp;
 
@@ -1793,6 +1796,7 @@ Animate(ref,...)
         for (i=2; i < items; i+=2)
           SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     AnimateImages(package_info->image_info,image);
+    CatchImageException(image,&type);
 
   MethodException:
     if (package_info)
@@ -1832,6 +1836,9 @@ Append(ref,...)
     char
       *attribute,
       *p;
+
+    ExceptionType
+      type;
 
     HV
       *hv;
@@ -1884,7 +1891,7 @@ Append(ref,...)
     image=SetupList(reference,&info,&reference_vector);
     if (!image)
       {
-        MagickWarning(OptionWarning,"No images to montage",NULL);
+        MagickWarning(OptionWarning,"No images to append",NULL);
         goto MethodException;
       }
     info=GetPackageInfo((void *) av,info);
@@ -1916,10 +1923,11 @@ Append(ref,...)
       }
       MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }
-    image=AppendImages(image,stack);
-    if (!image)
+    next=AppendImages(image,stack);
+    CatchImageException(image,&type);
+    if (!next)
       goto MethodException;
-    for (next=image; next; next=next->next)
+    for ( ; next; next=next->next)
     {
       sv=newSViv((IV) next);
       rv=newRV(sv);
@@ -1966,6 +1974,9 @@ Average(ref)
     AV
       *av;
 
+    ExceptionType
+      type;
+
     char
       *p;
 
@@ -1976,7 +1987,8 @@ Average(ref)
       error_jmp;
 
     Image
-      *image;
+      *image,
+      *next;
 
     struct PackageInfo
       *info;
@@ -2008,8 +2020,9 @@ Average(ref)
         MagickWarning(OptionWarning,"No images to average",NULL);
         goto MethodException;
       }
-    image=AverageImages(image);
-    if (!image)
+    next=AverageImages(image);
+    CatchImageException(image,&type);
+    if (!next)
       goto MethodException;
     /*
       Create blessed Perl array for the returned image.
@@ -2017,7 +2030,7 @@ Average(ref)
     av=newAV();
     ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    sv=newSViv((IV) image);
+    sv=newSViv((IV) next);
     rv=newRV(sv);
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
@@ -2066,6 +2079,12 @@ BlobToImage(ref,...)
     char
       **keep,
       **list;
+
+    ExceptionInfo
+      exception;
+
+    ExceptionType
+      type;
 
     HV
       *hv;
@@ -2142,7 +2161,9 @@ BlobToImage(ref,...)
       goto ReturnIt;
     for (i=number_images=0; i < n; i++)
     {
-      image=BlobToImage(info->image_info,list[i],length[i]);
+      image=BlobToImage(info->image_info,list[i],length[i],&exception);
+      if (exception.type != UndefinedException)
+        MagickWarning(exception.type,exception.message,exception.qualifier);
       for ( ; image; image=image->next)
       {
         sv=newSViv((IV) image);
@@ -2202,6 +2223,9 @@ Copy(ref)
     AV
       *av;
 
+    ExceptionType
+      type;
+
     HV
       *hv;
 
@@ -2252,7 +2276,10 @@ Copy(ref)
     {
       image=CloneImage(next,next->columns,next->rows,False);
       if (!image)
-        break;
+        {
+          CatchImageException(next,&type);
+          continue;
+        }
       sv=newSViv((IV) image);
       rv=newRV(sv);
       av_push(av,sv_bless(rv,hv));
@@ -3255,6 +3282,12 @@ ImageToBlob(ref,...)
     char
       filename[MaxTextExtent];
 
+    ExceptionInfo
+      exception;
+
+    ExceptionType
+      type;
+
     Image
       *image,
       *next;
@@ -3312,7 +3345,9 @@ ImageToBlob(ref,...)
     for (next=image; next; next=next->next)
     {
       length=0;
-      blob=ImageToBlob(package_info->image_info,next,&length);
+      blob=ImageToBlob(package_info->image_info,next,&length,&exception);
+      if (exception.type != UndefinedException)
+        MagickWarning(exception.type,exception.message,exception.qualifier);
       if (blob != (char *) NULL)
         {
           PUSHs(sv_2mortal(newSVpv(blob,length)));
@@ -3486,6 +3521,9 @@ Mogrify(ref,...)
       attribute_flag[MaxArguments],
       *commands[10],
       message[MaxTextExtent];
+
+    ExceptionType
+      type;
 
     FrameInfo
       frame_info;
@@ -3680,7 +3718,6 @@ Mogrify(ref,...)
     for (next=image; next; first=False, next=next->next)
     {
       image=next;
-      GetExceptionInfo(&image->exception);
       rectangle_info.width=image->columns;
       rectangle_info.height=image->rows;
       rectangle_info.x=rectangle_info.y=0;
@@ -4615,20 +4652,24 @@ Mogrify(ref,...)
       }
       if (region_image != (Image *) NULL)
         {
+          unsigned int
+            status;
+
           /*
             Composite region.
           */
-          CompositeImage(region_image,ReplaceCompositeOp,image,region_info.x,
-            region_info.y);
+          status=CompositeImage(region_image,ReplaceCompositeOp,image,
+            region_info.x,region_info.y);
+          if (status == False)
+            CatchImageException(region_image,&type);
           image->orphan=True;
           DestroyImage(image);
           image=region_image;
         }
-      if (image && (image->exception.type != UndefinedException))
-        MagickWarning(image->exception.type,image->exception.message,
-          image->exception.qualifier);
+      CatchImageException(next,&type);
       if (image)
         {
+          CatchImageException(image,&type);
           number_images++;
           if (next && (next != image))
             {
@@ -4687,6 +4728,9 @@ Montage(ref,...)
       *attribute,
       *p,
       *transparent_color;
+
+    ExceptionType
+      type;
 
     HV
       *hv;
@@ -5006,7 +5050,9 @@ Montage(ref,...)
       }
       MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }
+    CatchImageException(image,&type);
     image=MontageImages(image,&montage_info);
+    CatchImageException(image,&type);
     DestroyMontageInfo(&montage_info);
     if (!image)
       goto MethodException;
@@ -5063,6 +5109,9 @@ Morph(ref,...)
 
     char
       *attribute;
+
+    ExceptionType
+      type;
 
     HV
       *hv;
@@ -5142,6 +5191,7 @@ Morph(ref,...)
       MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }
     image=MorphImages(image,number_frames);
+    CatchImageException(image,&type);
     if (!image)
       goto MethodException;
     for (next=image; next; next=next->next)
@@ -5194,6 +5244,9 @@ Mosaic(ref)
     char
       *p;
 
+    ExceptionType
+      type;
+
     HV
       *hv;
 
@@ -5234,6 +5287,7 @@ Mosaic(ref)
         goto MethodException;
       }
     image=MosaicImages(image);
+    CatchImageException(image,&type);
     if (!image)
       goto MethodException;
     /*
@@ -5292,7 +5346,7 @@ Ping(ref,...)
       message[MaxTextExtent];
 
     ExceptionInfo
-      error;
+      exception;
 
     Image
       *image;
@@ -5322,7 +5376,9 @@ Ping(ref,...)
           info->image_info->file=IoIFP(sv_2io(ST(i)));
           continue;
         }
-      image=PingImage(info->image_info,&error);
+      image=PingImage(info->image_info,&exception);
+      if (exception.type != UndefinedException)
+        MagickWarning(exception.type,exception.message,exception.qualifier);
       if (image == (Image *) NULL)
         s=(&sv_undef);
       else
@@ -5667,6 +5723,9 @@ Write(ref,...)
     char
       filename[MaxTextExtent];
 
+    ExceptionType
+      type;
+
     Image
       *image,
       *next;
@@ -5730,8 +5789,7 @@ Write(ref,...)
     {
       status=WriteImage(package_info->image_info,next);
       if (status == False)
-        MagickWarning(next->exception.type,next->exception.message,
-          next->exception.qualifier);
+        CatchImageException(next,&type);
       number_images++;
       if (package_info->image_info->adjoin)
         break;

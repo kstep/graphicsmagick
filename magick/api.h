@@ -35,7 +35,6 @@
 #include "magick/config.h"
 #endif
 #include "magick/classify.h"
-#include "magick/error.h"
 #include "magick/image.h"
 #include "magick/gems.h"
 #include "magick/quantize.h"
@@ -50,9 +49,9 @@
 #include "magick/delegates.h"
 #include "magick/timer.h"
 #include "magick/version.h"
+#include "magick/error.h"
 #else
 #include "classify.h"
-#include "error.h"
 #include "image.h"
 #include "gems.h"
 #include "quantize.h"
@@ -68,6 +67,7 @@
 #include "delegates.h"
 #include "timer.h"
 #include "version.h"
+#include "error.h"
 #endif
 
 #endif

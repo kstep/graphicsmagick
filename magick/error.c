@@ -97,24 +97,29 @@ static WarningHandler
 %
 %  The format of the CatchImageException method is:
 %
-%      CatchImageException(Image *images)
+%      CatchImageException(Image *images,ExceptionType *type)
 %
 %  A description of each parameter follows:
 %
 %    o images: Specifies a pointer to a list of one or more images.
 %
+%    o type: return the highest exception type.
+%
 %
 */
-Export void CatchImageException(Image *images)
+Export void CatchImageException(Image *images,ExceptionType *type)
 {
   register Image
     *image;
 
-  assert(image != (Image *) NULL);
+  if (image == (Image *) NULL)
+    return;
   for (image=images; image != (Image *) NULL; image=image->next)
   {
     if (image->exception.type == UndefinedException)
       continue;
+    if (image->exception.type > *type)
+      *type=image->exception.type;
     if (image->exception.type < ResourceLimitError)
       {
         MagickWarning(image->exception.type,image->exception.message,

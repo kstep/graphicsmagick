@@ -376,7 +376,7 @@ Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
   XCloseDisplay(display);
   return(image->exception.type == UndefinedException);
 #else
-  ThrowBooleanException(MissingDelegateWarning,"X11 library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
   return(False);
 #endif
@@ -996,7 +996,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
   if (((x_offset+(int) composite_image->columns) < 0) ||
       ((y_offset+(int) composite_image->rows) < 0) ||
       (x_offset > (int) image->columns) || (y_offset > (int) image->rows))
-    ThrowBooleanException(OptionWarning,"Unable to composite image",
+    ThrowBinaryException(OptionWarning,"Unable to composite image",
       "geometry does not contain image");
   /*
     Image must be uncompressed.
@@ -1050,7 +1050,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
       displace_image=CloneImage(composite_image,composite_image->columns,
         composite_image->rows,True);
       if (displace_image == (Image *) NULL)
-        ThrowBooleanException(ResourceLimitWarning,"Unable to composite image",
+        ThrowBinaryException(ResourceLimitWarning,"Unable to composite image",
           "Memory allocation failed");
       horizontal_scale=20.0;
       vertical_scale=20.0;
@@ -1555,7 +1555,7 @@ Export Image *CreateImage(const unsigned int width,const unsigned int height,
   */
   assert(pixels != (void *) NULL);
   if ((width*height) == 0)
-    ThrowBooleanException(OptionWarning,"Unable to create image",
+    ThrowBinaryException(OptionWarning,"Unable to create image",
       "impossible image size");
   image=AllocateImage((ImageInfo *) NULL);
   if (image == (Image *) NULL)
@@ -2806,7 +2806,7 @@ Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
   XCloseDisplay(display);
   return(image->exception.type != UndefinedException);
 #else
-  ThrowBooleanException(MissingDelegateWarning,"X11 library is not available",
+  ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
   return(False);
 #endif
@@ -3190,7 +3190,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
             }
             default:
             {
-              ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
               break;
             }
           }
@@ -3248,7 +3248,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
             }
             default:
             {
-              ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
               break;
             }
           }
@@ -3306,7 +3306,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
             }
             default:
             {
-              ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
               break;
             }
           }
@@ -3364,7 +3364,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
             }
             default:
             {
-              ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
               break;
             }
           }
@@ -3422,7 +3422,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
             }
             default:
             {
-              ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+              ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
               break;
             }
           }
@@ -3433,7 +3433,7 @@ Export unsigned int GetPixels(Image *image,const int x,const int y,
     }
     default:
     {
-      ThrowBooleanException(OptionWarning,"Invalid pixel map",map);
+      ThrowBinaryException(OptionWarning,"Invalid pixel map",map);
       break;
     }
   }
@@ -3656,7 +3656,7 @@ Export unsigned int LayerImage(Image *image,const LayerType layer)
 
   assert(image != (Image *) NULL);
   if ((layer == MatteLayer) && !image->matte)
-    ThrowBooleanException(OptionWarning,"Unable to extract layer",
+    ThrowBinaryException(OptionWarning,"Unable to extract layer",
       "image does not have a matte layer");
   /*
     Layer DirectClass packets.
@@ -5605,11 +5605,12 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
   image=(Image *) NULL;
   magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
   if ((magick_info != (MagickInfo *) NULL) &&
-      (magick_info->decoder != (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
+      (magick_info->decoder !=
+        (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
     image=(magick_info->decoder)(image_info,exception);
   else
     if (!GetDelegateInfo(image_info->magick,(char *) NULL,&delegate_info))
-      ThrowImageException(MissingDelegateWarning,
+      ThrowException(exception,MissingDelegateWarning,
         "no delegate for this image format",image_info->filename)
     else
       {
@@ -5633,10 +5634,11 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
         SetImageInfo(image_info,False);
         magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
         if ((magick_info != (MagickInfo *) NULL) &&
-            (magick_info->decoder != (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
+            (magick_info->decoder !=
+              (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
           image=(magick_info->decoder)(image_info,exception);
         else
-          ThrowImageException(MissingDelegateWarning,
+          ThrowException(exception,MissingDelegateWarning,
             "no delegate for this image format",image_info->filename);
       }
   if (image_info->temporary)
@@ -5694,7 +5696,7 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
               next_image->rows,True);
             if (clone_image == (Image *) NULL)
               {
-                ThrowImageException(MissingDelegateWarning,
+                ThrowException(exception,MissingDelegateWarning,
                   "Memory allocation failed",image_info->filename);
                 break;
               }
@@ -5712,7 +5714,7 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImages(image);
       image=(Image *) NULL;
       if (subimages == (Image *) NULL)
-        ThrowImageException(OptionWarning,
+        ThrowException(exception,OptionWarning,
           "Subimage specification returns no images",image_info->filename);
       while (subimages->previous != (Image *) NULL)
         subimages=subimages->previous;
@@ -5754,14 +5756,14 @@ Export Image *ReadImage(ImageInfo *image_info,ExceptionInfo *exception)
         }
         if (image == (Image *) NULL)
           {
-            ThrowImageException(OptionWarning,
+            ThrowException(exception,OptionWarning,
               "Subimage specification returns no images",image_info->filename);
           }
         while (image->previous != (Image *) NULL)
           image=image->previous;
       }
   if (image->status)
-    ThrowImageException(CorruptImageWarning,
+    ThrowException(exception,CorruptImageWarning,
       "An error has occurred reading file",image_info->filename);
   DestroyBlobInfo(&image->blob);
   for (next_image=image; next_image; next_image=next_image->next)
@@ -5836,7 +5838,7 @@ Export Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
   */
   file=(FILE *) fopen(image_info->filename+1,"r");
   if (file == (FILE *) NULL)
-    ThrowBooleanException(ResourceLimitWarning,"Unable to read image list",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to read image list",
       "Memory allocation failed");
   length=MaxTextExtent;
   command=(char *) AllocateMemory(length);
@@ -5858,7 +5860,7 @@ Export Image *ReadImages(ImageInfo *image_info,ExceptionInfo *exception)
   }
   (void) fclose(file);
   if (command == (char *) NULL)
-    ThrowBooleanException(ResourceLimitWarning,"Unable to read image list",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to read image list",
       "Memory allocation failed");
   *p='\0';
   Strip(command);
@@ -6026,7 +6028,7 @@ Export unsigned int RGBTransformImage(Image *image,
   z_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   if ((x_map == (double *) NULL) || (y_map == (double *) NULL) ||
       (z_map == (double *) NULL))
-    ThrowBooleanException(ResourceLimitWarning,
+    ThrowBinaryException(ResourceLimitWarning,
       "Unable to transform color space","Memory allocation failed");
   tx=0;
   ty=0;
@@ -6645,7 +6647,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
       FormatString(image_info->filename,"%.1024s",image->filename);
       file=fopen(image->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
-        ThrowBooleanException(MissingDelegateWarning,"Unable to write file",
+        ThrowBinaryException(MissingDelegateWarning,"Unable to write file",
           image->filename);
       i=0;
       for (c=fgetc(image->file); c != EOF; c=fgetc(image->file))
@@ -6749,7 +6751,7 @@ Export unsigned int SortColormapByIntensity(Image *image)
   pixels=(unsigned short *)
     AllocateMemory(image->colors*sizeof(unsigned short));
   if (pixels == (unsigned short *) NULL)
-    ThrowBooleanException(MissingDelegateWarning,"Unable to sort colormap",
+    ThrowBinaryException(MissingDelegateWarning,"Unable to sort colormap",
       "Memory allocation failed");
   /*
     Assign index values to colormap entries.
@@ -7061,7 +7063,7 @@ Export unsigned int TransformRGBImage(Image *image,
   blue_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   if ((red_map == (double *) NULL) || (green_map == (double *) NULL) ||
       (blue_map == (double *) NULL))
-    ThrowBooleanException(MissingDelegateWarning,
+    ThrowBinaryException(MissingDelegateWarning,
       "Unable to transform colorspace","Memory allocation failed");
   max_value=MaxRGB;
   switch (colorspace)
@@ -7423,7 +7425,6 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
   assert(image != (Image *) NULL);
-  GetExceptionInfo(&image->exception);
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->filename,image->filename);
   (void) strcpy(clone_info->magick,image->magick);
@@ -7451,20 +7452,20 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
   if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->encoder !=
-      (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+        (unsigned int (*)(const ImageInfo *,Image *)) NULL))
     status=(magick_info->encoder)(clone_info,image);
   else
     if (!GetDelegateInfo((char *) NULL,clone_info->magick,&delegate_info))
       {
-        ThrowBooleanException(MissingDelegateWarning,
+        ThrowBinaryException(MissingDelegateWarning,
           "no encode delegate for this image format",clone_info->magick);
         magick_info=(MagickInfo *) GetMagickInfo(image->magick);
         if ((magick_info != (MagickInfo *) NULL) &&
             (magick_info->encoder !=
-            (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+              (unsigned int (*)(const ImageInfo *,Image *)) NULL))
           status=(magick_info->encoder)(clone_info,image);
         else
-          ThrowBooleanException(MissingDelegateWarning,
+          ThrowBinaryException(MissingDelegateWarning,
             "no encode delegate for this image format",clone_info->magick);
       }
     else
@@ -7482,7 +7483,7 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(image->magick,clone_info->magick);
   DestroyImageInfo(clone_info);
   if (image->status)
-    ThrowBooleanException(CorruptImageWarning,
+    ThrowBinaryException(CorruptImageWarning,
       "An error has occurred writing to file",image->filename);
   return(status);
 }

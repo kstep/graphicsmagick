@@ -2886,7 +2886,7 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
   assert(image != (Image *) NULL);
   colormap=(PixelPacket *) AllocateMemory(2*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
-    ThrowBooleanException(ResourceLimitWarning,"Unable to threshold image",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to threshold image",
       "Memory allocation failed");
   if (image->colormap != (PixelPacket *) NULL)
     FreeMemory(image->colormap);

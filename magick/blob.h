@@ -19,7 +19,7 @@ extern Export char
   *GetStringBlob(Image *,char *);
 
 extern Export Image
-  *BlobToImage(const ImageInfo *,const char *,const size_t);
+  *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *);
 
 extern Export int
   EOFBlob(const Image *),
@@ -56,7 +56,7 @@ extern Export unsigned long
 extern Export void
   CloseBlob(Image *),
   DestroyBlobInfo(BlobInfo *),
-  *ImageToBlob(const ImageInfo *,Image *,size_t *),
+  *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),
   *MapBlob(int,const MapMode,size_t *),
   MSBFirstOrderLong(char *,const size_t),
   MSBFirstOrderShort(char *,const size_t),
