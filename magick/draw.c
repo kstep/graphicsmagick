@@ -3154,14 +3154,13 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
           (x-(long) ceil(bounds.x1-0.5)) % draw_info->fill_pattern->columns,
           (y-(long) ceil(bounds.y1-0.5)) % draw_info->fill_pattern->rows);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
-      *q=AlphaComposite(&fill_color,(unsigned long) fill_opacity,q,q->opacity);
+      *q=AlphaComposite(&fill_color,fill_opacity,q,q->opacity);
       if (draw_info->stroke_pattern != (Image *) NULL)
         stroke_color=GetOnePixel(draw_info->stroke_pattern,
           (x-(long) ceil(bounds.x1-0.5)) % draw_info->stroke_pattern->columns,
           (y-(long) ceil(bounds.y1-0.5)) % draw_info->stroke_pattern->rows);
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
-      *q=AlphaComposite(&stroke_color,(unsigned long) stroke_opacity,
-        q,q->opacity);
+      *q=AlphaComposite(&stroke_color,stroke_opacity,q,q->opacity);
       q++;
     }
     if (!SyncImagePixels(image))

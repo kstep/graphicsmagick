@@ -71,9 +71,8 @@
 %
 %  The format of the AlphaComposite method is:
 %
-%      PixelPacket AlphaComposite(const PixelPacket *p,
-%        const unsigned long alpha,const PixelPacket *q,
-%        const unsigned long beta)
+%      PixelPacket AlphaComposite(const PixelPacket *p,const double alpha,
+%        const PixelPacket *q,const double beta)
 %
 %  A description of each parameter follows:
 %
@@ -96,14 +95,14 @@ MagickExport PixelPacket AlphaComposite(const PixelPacket *p,
     composite;
 
   gamma=1.0/MaxRGB;
-  composite.red=(Quantum) (gamma*((double) (MaxRGB-alpha)*p->red+
-    (double) alpha*(MaxRGB-beta)*q->red/MaxRGB)+0.5);
-  composite.green=(Quantum) (gamma*((double) (MaxRGB-alpha)*p->green+
-    (double) alpha*(MaxRGB-beta)*q->green/MaxRGB)+0.5);
-  composite.blue=(Quantum) (gamma*((double) (MaxRGB-alpha)*p->blue+
-    (double) alpha*(MaxRGB-beta)*q->blue/MaxRGB)+0.5);
-  composite.opacity=(Quantum) (MaxRGB-((double) (MaxRGB-alpha)+
-    (double) alpha*(MaxRGB-beta)/MaxRGB)+0.5);
+  composite.red=(Quantum)
+    (gamma*((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)+0.5);
+  composite.green=(Quantum)
+    (gamma*((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)+0.5);
+  composite.blue=(Quantum)
+    (gamma*((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)+0.5);
+  composite.opacity=(Quantum)
+    (MaxRGB-((MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB)+0.5);
   return(composite);
 }
 
