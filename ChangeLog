@@ -1,5 +1,7 @@
 2004-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/type.c (ReadTypeConfigureFile): Determine location of
+	Ghostscript fonts only once in order to improve performance.
 	* magick/nt_base.c (NTGhostscriptFonts): Properly determine
 	Ghostscript font location for Ghostscript 8.0 and later.
 	* GraphicsMagick.spec.in: Install *-config scripts with mode 755
