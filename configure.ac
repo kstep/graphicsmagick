@@ -1596,8 +1596,8 @@ MagickLibSubdir="ImageMagick-$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 AC_DEFINE_UNQUOTED(MagickLibSubdir,"$MagickLibSubdir",Subdirectory of lib where ImageMagick architecture dependent files are installed)
 
 # Path to ImageMagick lib
-MagickLibPath="${LIB_DIR}/${MagickLibSubdir}/"
-MagickLibPathDefine="${MagickLibPath}"
+MagickLibPath="${LIB_DIR}/${MagickLibSubdir}"
+MagickLibPathDefine="${MagickLibPath}/"
 if test "$native_win32_build" = 'yes'
 then
   MagickLibPathDefine=`$WinPathScript "$MagickLibPathDefine" 1`
@@ -1610,8 +1610,8 @@ MagickModulesSubdir="${MagickLibSubdir}/modules/coders"
 AC_DEFINE_UNQUOTED(MagickModulesSubdir,"$MagickModulesSubdir",Subdirectory of lib where ImageMagick modules are installed)
 
 # Path to ImageMagick coder module files
-MagickModulesPath="${LIB_DIR}/${MagickModulesSubdir}/"
-MagickModulesPathDefine="${MagickModulesPath}"
+MagickModulesPath="${LIB_DIR}/${MagickModulesSubdir}"
+MagickModulesPathDefine="${MagickModulesPath}/"
 if test "$native_win32_build" = 'yes'
 then
   MagickModulesPathDefine=`$WinPathScript "$MagickModulesPathDefine" 1`
@@ -1620,8 +1620,8 @@ AC_DEFINE_UNQUOTED(MagickModulesPath,"$MagickModulesPathDefine",Location of code
 AC_SUBST(MagickModulesPath)
 
 # Path to ImageMagick share files
-MagickSharePath="${DATA_DIR}/ImageMagick/"
-MagickSharePathDefine="$MagickSharePath"
+MagickSharePath="${DATA_DIR}/ImageMagick"
+MagickSharePathDefine="${MagickSharePath}/"
 if test "$native_win32_build" = 'yes'
 then
   MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
