@@ -86,69 +86,28 @@ else
 XWD=
 endif
 
-BILEVEL_FORMATS = \
-	$(JBIG) \
-	BMP \
-	DIB \
-	FAX \
-	GIF \
-	MONO \
-	OTB \
-	SUN \
-	MIFF \
-	WBMP \
-	XBM
+# Optional compression formats.
+if HasLZW
+LZWCOMPRESS=lzw
+else
+LZWCOMPRESS=
+endif
 
-COLORMAPPED_FORMATS = \
-	ART \
-	BMP \
-	DIB \
-	GIF \
-	SUN \
-	MIFF \
-	$(MNG) \
-	PALM \
-	PDB \
-	PCX \
-	PICT \
-	$(PNG) \
-	$(TIFF) \
-	VIFF \
-	XPM \
-	$(XWD)
+if HasZLIB
+ZIPCOMPRESS=zip
+else
+ZIPCOMPRESS=
+endif
 
-GRAYSCALE_FORMATS = \
-	FITS \
-	MIFF \
-	$(MNG) \
-	$(JPEG) \
-	$(JP2) \
-	PDB \
-	$(PNG)
+if HasBZLIB
+BZIPCOMPRESS=bzip
+else
+BZIPCOMPRESS=
+endif
 
-TRUECOLOR_FORMATS = \
-	AVS \
-	BMP \
-	DCX \
-	DIB \
-	$(FPX) \
-	$(JPEG) \
-	$(JP2) \
-	$(MNG) \
-	PCD \
-	PCDS \
-	$(PNG) \
-	SUN \
-	MIFF \
-	MTV \
-	P7 \
-	PCX \
-	PICT \
-	PSD \
-	SGI \
-	TGA \
-	$(TIFF) \
-	$(XWD)
+RLECOMPRESS=rle
+
+NOCOMPRESS=none
 
 # Blob formats to test which don't require that size be specified
 CHECK_BLOB_FORMATS = \
@@ -382,4 +341,37 @@ check-drawtest:
 	-./drawtest drawtest_out.mvg
 	-./drawtest drawtest_out.svg
 
-check: check-drawtest check-rwfile check-rwblob check-rwblob-sized check-rwfile-sized 
+CHECK_MIFF_FILE_COMPRESS= \
+	$(NOCOMPRESS) \
+	$(LZWCOMPRESS) \
+	$(BZIPCOMPRESS) \
+	$(RLECOMPRESS)
+
+check-miff:
+	-@status=0 ; \
+	compress='' ; \
+	for compress in $(CHECK_MIFF_FILE_COMPRESS) ; \
+	do \
+	  test_failed=0 ; \
+	  for file in $(CHECK_FILES) ; \
+	  do \
+	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile -compress $$compress $$file MIFF ; \
+	    then \
+	      : ; \
+	    else \
+	      status=1 ; \
+	      test_failed=1 ; \
+	    fi \
+	  done ; \
+	  if test $$test_failed -gt 0 ; \
+	  then \
+	    failed="$$failed$$compress " ; \
+	  fi ; \
+	done ; \
+	if test -n "$$failed" ; \
+	then \
+	  echo "Failed rwfile MIFF for compression: $$failed" ; \
+	fi ; \
+	exit $$status
+
+check: check-drawtest check-rwfile check-miff check-rwblob check-rwblob-sized check-rwfile-sized 

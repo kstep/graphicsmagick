@@ -53,6 +53,19 @@
 </tr>
 </table>
 <p>
+2003-04-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/miff.c (PushImageRLEPixels): Fix reading
+        RLE MIFF at Q:32.  A fragment of old code was being
+        used to obtain the length.<BR>
+        (WriteRunlengthPacket): Fix writing RLE MIFF at Q:32.
+        In most cases the wrong scaling macro was being used.
+  <LI> tests/Makefile.am (check-miff): Added MIFF tests
+        for supported compression options.
+
+</UL>
+<p>
 2003-04-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

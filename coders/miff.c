@@ -633,7 +633,16 @@ static unsigned int PushImageRLEPixels(Image *image,
                       quantum|=(*p++ << 8);
                       quantum|=(*p++);
                       pixel.blue=ScaleLongToQuantum(quantum);
-                      length=ReadBlobByte(image)+1;
+                      length=(*p++)+1;
+#if 0
+                      {
+                        char
+                          tuple[MaxTextExtent];
+
+                        GetColorTuple(&pixel,32,False,True,tuple);
+                        printf("%i #%s\n", length,tuple);
+                      }
+#endif
                     }
                   length--;
                   *q++=pixel;
@@ -1181,8 +1190,21 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader",
-        image);
+      {
+        if (image->previous)
+          {
+            /* Recover from failure to read image in sequence */
+            RemoveLastImageFromList(&image);
+            ThrowException(exception,CorruptImageWarning,
+              "ImproperImageHeader",image->filename);
+            break;
+          }
+        else
+          {
+            ThrowReaderException(CorruptImageError,"ImproperImageHeader",
+              image);
+          }
+      }
 
     if (image->montage != (char *) NULL)
       {
@@ -1330,10 +1352,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     /*
       Allocate image pixels.
     */
+    packet_size=image->depth/8;
     if (image->storage_class == DirectClass)
       packet_size=3*image->depth/8;
-    else
-      packet_size=image->depth/8;
     if (image->colorspace == CMYKColorspace)
       packet_size+=image->depth/8;
     if (image->matte)
@@ -1725,26 +1746,26 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             *q++=(unsigned char) (value >> 16); \
             *q++=(unsigned char) (value >> 8); \
             *q++=(unsigned char) value; \
-            value=ScaleQuantumToShort(pixel.green); \
+            value=ScaleQuantumToLong(pixel.green); \
             *q++=(unsigned char) (value >> 24); \
             *q++=(unsigned char) (value >> 16); \
             *q++=(unsigned char) (value >> 8); \
             *q++=(unsigned char) value; \
-            value=ScaleQuantumToShort(pixel.blue); \
+            value=ScaleQuantumToLong(pixel.blue); \
             *q++=(unsigned char) (value >> 24); \
             *q++=(unsigned char) (value >> 16); \
             *q++=(unsigned char) (value >> 8); \
             *q++=(unsigned char) value; \
             if (image->colorspace == CMYKColorspace) \
               { \
-                value=ScaleQuantumToShort(pixel.opacity); \
+                value=ScaleQuantumToLong(pixel.opacity); \
                 *q++=(unsigned char) (value >> 24); \
                 *q++=(unsigned char) (value >> 16); \
                 *q++=(unsigned char) (value >> 8); \
                 *q++=(unsigned char) value; \
                 if (image->matte) \
                   { \
-                    value=ScaleQuantumToShort(index); \
+                    value=ScaleQuantumToLong(index); \
                     *q++=(unsigned char) (value >> 24); \
                     *q++=(unsigned char) (value >> 16); \
                     *q++=(unsigned char) (value >> 8); \
@@ -1754,7 +1775,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             else \
               if (image->matte) \
                 { \
-                  value=ScaleQuantumToShort(pixel.opacity); \
+                  value=ScaleQuantumToLong(pixel.opacity); \
                   *q++=(unsigned char) (value >> 24); \
                   *q++=(unsigned char) (value >> 16); \
                   *q++=(unsigned char) (value >> 8); \

@@ -498,12 +498,14 @@
         </Message>
       </FatalError>
       <Warning>
+        <Message name="ImproperImageHeader">
+          Improper image header
+        </Message>
         <Message name="SkipToSyncByte">
           Corrupt PCD image, skipping to sync byte
         </Message>
       </Warning>
     </Image>
-  </Corrupt>
   <Delegate>
     <Error>
       <Message name="DelegateFailed">
