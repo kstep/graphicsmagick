@@ -1,7 +1,8 @@
+#include <libxml/parser.h>
+
 #ifndef __XML_ERROR_H__
 #define __XML_ERROR_H__
 
-#include <libxml/parser.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -109,7 +110,7 @@ typedef enum {
     XML_ERR_EQUAL_REQUIRED,
 
     XML_ERR_TAG_NAME_MISMATCH, /* 77 */
-    XML_ERR_TAG_NOT_FINISED,
+    XML_ERR_TAG_NOT_FINISHED,
 
     XML_ERR_STANDALONE_VALUE, /* 79 */
 
@@ -132,32 +133,35 @@ typedef enum {
     XML_ERR_ENTITY_LOOP, /* 89 */
     XML_ERR_ENTITY_BOUNDARY, /* 90 */
     XML_ERR_INVALID_URI, /* 91 */
-    XML_ERR_URI_FRAGMENT /* 92 */
+    XML_ERR_URI_FRAGMENT, /* 92 */
+    XML_WAR_CATALOG_PI, /* 93 */
+    XML_ERR_NO_DTD  /* 94 */
 }xmlParserErrors;
 
-/*
+/**
+ * xmlGenericErrorFunc:
+ * @ctx:  a parsing context
+ * @msg:  the message
+ * @...:  the extra arguments of the varags to format the message
+ *
  * Signature of the function to use when there is an error and
- * no parsing or validity context available 
+ * no parsing or validity context available .
  */
-typedef void (*xmlGenericErrorFunc) (void *ctx, const char *msg, ...);
+typedef void (*xmlGenericErrorFunc) (void *ctx,
+				 const char *msg,
+				 ...);
 
 /*
- * Those are the default error function and associated context to use
- * when when there is an error and no parsing or validity context available
- */
-
-LIBXML_DLL_IMPORT extern xmlGenericErrorFunc xmlGenericError;
-LIBXML_DLL_IMPORT extern void *xmlGenericErrorContext;
-
-/*
- * Use the following function to reset the two previous global variables.
+ * Use the following function to reset the two global variables
+ * xmlGenericError and xmlGenericErrorContext.
  */
 void	xmlSetGenericErrorFunc	(void *ctx,
 				 xmlGenericErrorFunc handler);
+void	initGenericErrorDefaultFunc(xmlGenericErrorFunc *handler);
 
 /*
  * Default message routines used by SAX and Valid context for error
- * and warning reporting
+ * and warning reporting.
  */
 void	xmlParserError		(void *ctx,
 				 const char *msg,

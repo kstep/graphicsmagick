@@ -3,7 +3,7 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel Veillard <Daniel.Veillard@w3.org>
+ * Daniel Veillard <daniel@veillard.com>
  */
 
 
@@ -20,7 +20,7 @@ extern "C" {
 #endif
 const xmlChar *	getPublicId			(void *ctx);
 const xmlChar *	getSystemId			(void *ctx);
-void	setDocumentLocator			(void *ctx,
+void		setDocumentLocator		(void *ctx,
 						 xmlSAXLocatorPtr loc);
     
 int		getLineNumber			(void *ctx);
@@ -54,7 +54,7 @@ void		entityDecl			(void *ctx,
 						 xmlChar *content);
 void		attributeDecl			(void *ctx,
 						 const xmlChar *elem,
-						 const xmlChar *name,
+						 const xmlChar *fullname,
 						 int type,
 						 int def,
 						 const xmlChar *defaultValue,
@@ -111,9 +111,17 @@ void		cdataBlock			(void *ctx,
 						 const xmlChar *value,
 						 int len);
 
+void		initxmlDefaultSAXHandler	(xmlSAXHandler *hdlr,
+						 int warning);
+#ifdef LIBXML_HTML_ENABLED
+void		inithtmlDefaultSAXHandler	(xmlSAXHandler *hdlr);
+#endif
+#ifdef LIBXML_DOCB_ENABLED
+void		initdocbDefaultSAXHandler	(xmlSAXHandler *hdlr);
+#endif
 void		xmlDefaultSAXHandlerInit	(void);
 void		htmlDefaultSAXHandlerInit	(void);
-void		sgmlDefaultSAXHandlerInit	(void);
+void		docbDefaultSAXHandlerInit	(void);
 #ifdef __cplusplus
 }
 #endif

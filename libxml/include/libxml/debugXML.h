@@ -2,7 +2,7 @@
  * debugXML.h : Interfaces to a set of routines used for debugging the tree
  *              produced by the XML parser.
  *
- * Daniel Veillard <Daniel.Veillard@w3.org>
+ * Daniel Veillard <daniel@veillard.com>
  */
 
 #ifndef __DEBUG_XML__
@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 /*
- * The standard Dump routines
+ * The standard Dump routines.
  */
 void	xmlDebugDumpString	(FILE *output,
 				 const xmlChar *str);
@@ -43,11 +43,14 @@ void	xmlDebugDumpDocumentHead(FILE *output,
 void	xmlDebugDumpDocument	(FILE *output,
 				 xmlDocPtr doc);
 void	xmlDebugDumpDTD		(FILE *output,
-				 xmlDtdPtr doc);
+				 xmlDtdPtr dtd);
 void	xmlDebugDumpEntities	(FILE *output,
 				 xmlDocPtr doc);
-void	xmlLsOneNode		(FILE *output,
-				 xmlNodePtr node);
+
+void	xmlLsOneNode		(FILE *output, xmlNodePtr node);
+int	xmlLsCountNode		(xmlNodePtr node);
+
+LIBXML_DLL_IMPORT const char *xmlBoolToText	(int boolval);
 
 /****************************************************************
  *								*
@@ -59,14 +62,16 @@ void	xmlLsOneNode		(FILE *output,
  * xmlShellReadlineFunc:
  * @prompt:  a string prompt
  *
- * This is a generic signature for the XML shell input function
+ * This is a generic signature for the XML shell input function.
  *
- * Returns a string which will be freed by the Shell
+ * Returns a string which will be freed by the Shell.
  */
 typedef char * (* xmlShellReadlineFunc)(char *prompt);
 
-/*
- * The shell context itself
+/**
+ * xmlShellCtxt:
+ *
+ * A debugging shell context.
  * TODO: add the defined function tables.
  */
 typedef struct _xmlShellCtxt xmlShellCtxt;
@@ -88,22 +93,67 @@ struct _xmlShellCtxt {
  * @node:  a first node
  * @node2:  a second node
  *
- * This is a generic signature for the XML shell functions
+ * This is a generic signature for the XML shell functions.
  *
- * Returns an int, negative returns indicating errors
+ * Returns an int, negative returns indicating errors.
  */
 typedef int (* xmlShellCmd) (xmlShellCtxtPtr ctxt,
                              char *arg,
 			     xmlNodePtr node,
 			     xmlNodePtr node2);
 
+void	xmlShellPrintXPathError	(int errorType,
+				 const char *arg);
+void	xmlShellPrintNode	(xmlNodePtr node);
+void	xmlShellPrintXPathResult(xmlXPathObjectPtr list);
+int	xmlShellList		(xmlShellCtxtPtr ctxt,
+				 char *arg,
+				 xmlNodePtr node,
+				 xmlNodePtr node2);
+int	xmlShellBase		(xmlShellCtxtPtr ctxt,
+				 char *arg,
+				 xmlNodePtr node,
+				 xmlNodePtr node2);
+int	xmlShellDir		(xmlShellCtxtPtr ctxt,
+				 char *arg,
+				 xmlNodePtr node,
+				 xmlNodePtr node2);
+int	xmlShellCat		(xmlShellCtxtPtr ctxt,
+				 char *arg,
+				 xmlNodePtr node,
+				 xmlNodePtr node2);
+int	xmlShellLoad		(xmlShellCtxtPtr ctxt,
+				 char *filename,
+				 xmlNodePtr node,
+				 xmlNodePtr node2);
+int	xmlShellWrite		(xmlShellCtxtPtr ctxt,
+				 char *filename,
+				 xmlNodePtr node,
+				 xmlNodePtr node2);
+int	xmlShellSave		(xmlShellCtxtPtr ctxt,
+				 char *filename,
+				 xmlNodePtr node,
+				 xmlNodePtr node2);
+int	xmlShellValidate	(xmlShellCtxtPtr ctxt,
+				 char *dtd,
+				 xmlNodePtr node,
+				 xmlNodePtr node2);
+int	xmlShellDu		(xmlShellCtxtPtr ctxt,
+				 char *arg,
+				 xmlNodePtr tree,
+				 xmlNodePtr node2);
+int	xmlShellPwd		(xmlShellCtxtPtr ctxt,
+				 char *buffer,
+				 xmlNodePtr node,
+				 xmlNodePtr node2);
+
 /*
  * The Shell interface.
  */
-void	xmlShell	(xmlDocPtr doc,
-			 char *filename,
-			 xmlShellReadlineFunc input,
-			 FILE *output);
+void	xmlShell		(xmlDocPtr doc,
+				 char *filename,
+				 xmlShellReadlineFunc input,
+				 FILE *output);
 			 
 #ifdef __cplusplus
 }

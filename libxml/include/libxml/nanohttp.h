@@ -3,13 +3,17 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
  
 #ifndef __NANO_HTTP_H__
 #define __NANO_HTTP_H__
 
+#if defined(WIN32) && defined(_MSC_VER)
+#include <libxml/xmlwin32version.h>
+#else
 #include <libxml/xmlversion.h>
+#endif
 #ifdef LIBXML_HTTP_ENABLED
 
 #ifdef __cplusplus
@@ -25,9 +29,20 @@ void *	xmlNanoHTTPMethod	(const char *URL,
 				 const char *method,
 				 const char *input,
 				 char **contentType,
-				 const char *headers);
+				 const char *headers,
+				 int   ilen);
+void *	xmlNanoHTTPMethodRedir	(const char *URL,
+				 const char *method,
+				 const char *input,
+				 char **contentType,
+				 char **redir,
+				 const char *headers,
+				 int   ilen);
 void *	xmlNanoHTTPOpen		(const char *URL,
 				 char **contentType);
+void *	xmlNanoHTTPOpenRedir	(const char *URL,
+				 char **contentType,
+				 char **redir);
 int	xmlNanoHTTPReturnCode	(void *ctx);
 const char * xmlNanoHTTPAuthHeader(void *ctx);
 int	xmlNanoHTTPRead		(void *ctx,
