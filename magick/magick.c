@@ -328,7 +328,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 #if defined(HasTIFF)
       (void) RegisterMagickInfo("PTIF",ReadTIFFImage,WriteTIFFImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Pyramid encoded TIFF");
+        True,False,"Pyramid encoded TIFF");
 #endif
       (void) RegisterMagickInfo("PWP",ReadPWPImage,
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsPWP,True,True,
@@ -376,12 +376,12 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 #if defined(HasTIFF)
       (void) RegisterMagickInfo("TIF",ReadTIFFImage,WriteTIFFImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"Tagged Image File Format");
+        True,False,"Tagged Image File Format");
       (void) RegisterMagickInfo("TIFF",ReadTIFFImage,WriteTIFFImage,IsTIFF,
-        True,True,"Tagged Image File Format");
+        True,False,"Tagged Image File Format");
       (void) RegisterMagickInfo("TIFF24",ReadTIFFImage,WriteTIFFImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,True,"24-bit Tagged Image File Format");
+        True,False,"24-bit Tagged Image File Format");
 #endif
       (void) RegisterMagickInfo("TILE",ReadTILEImage,
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,

@@ -180,7 +180,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   if (type == TIFFTAG_RICHTIFFIPTC)
     {
       /*
-        Handle TIFFTAG_RICHTIFFIPTC tag.
+        Handle IPTC tag.
       */
       length*=4;
       image->iptc_profile.info=(unsigned char *)
@@ -196,7 +196,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
       return(True);
     }
   /*
-    Handle TIFFTAG_PHOTOSHOP tag.
+    Handle PHOTOSHOP tag.
   */
   while (length > 0)
   {
@@ -243,40 +243,6 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
 }
 #endif
 
-static int TIFFCloseBlob(thandle_t image)
-{
-  CloseBlob((Image *) image);
-  return(0);
-}
-
-static int TIFFMapBlob(thandle_t image,tdata_t *buffer,toff_t *offset)
-{
-  return(0);
-}
-
-static tsize_t TIFFReadBlob(thandle_t image,tdata_t buffer,tsize_t size)
-{
-  return(ReadBlob((Image *) image,(size_t) size,buffer));
-}
-
-static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
-{
-  if (SeekBlob((Image *) image,(off_t) offset,whence) == -1)
-    return(-1);
-  return(TellBlob((Image *) image));
-}
-
-static toff_t TIFFSizeBlob(thandle_t image)
-{
-  (void) SeekBlob((Image *) image,0L,SEEK_END);
-  return(TellBlob((Image *) image));
-}
-
-static void TIFFUnmapBlob(thandle_t image,tdata_t buffer,toff_t offset)
-{
-  return;
-}
-
 static void TIFFWarningHandler(const char *module,const char *format,
   va_list warning)
 {
@@ -295,11 +261,6 @@ static void TIFFWarningHandler(const char *module,const char *format,
   (void) vsprintf(p,format,warning);
   (void) strcat(p,".");
   MagickWarning(DelegateWarning,message,(char *) NULL);
-}
-
-static tsize_t TIFFWriteBlob(thandle_t image,tdata_t buffer,tsize_t size)
-{
-  return(WriteBlob((Image *) image,(size_t) size,buffer));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -377,11 +338,35 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
+  if ((image->file == stdin) || image->pipe)
+    {
+      FILE
+        *file;
+
+      int
+        c;
+
+      /*
+        Copy standard input or pipe to temporary file.
+      */
+      TemporaryFilename((char *) image_info->filename);
+      file=fopen(image_info->filename,WriteBinaryType);
+      if (file == (FILE *) NULL)
+        ReaderExit(FileOpenWarning,"Unable to write file",image);
+      c=ReadByte(image);
+      while (c != EOF)
+      {
+        (void) putc(c,file);
+        c=ReadByte(image);
+      }
+      (void) fclose(file);
+      (void) strcpy(image->filename,image_info->filename);
+      image->temporary=True;
+    }
+  CloseBlob(image);
   TIFFSetErrorHandler(TIFFWarningHandler);
   TIFFSetWarningHandler(TIFFWarningHandler);
-  tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,
-    (thandle_t) image,TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,
-    TIFFSizeBlob,TIFFMapBlob,TIFFUnmapBlob);
+  tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   if (image_info->subrange != 0)
@@ -896,6 +881,11 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
       }
   } while (status == True);
   TIFFClose(tiff);
+  if (image->temporary)
+    {
+      (void) remove(image->filename);
+      image->temporary=False;
+    }
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -1102,6 +1092,9 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
 #endif
 
+  Image
+    encode_image;
+
   int
     y;
 
@@ -1182,9 +1175,19 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  tiff=TIFFClientOpen(image->filename,WriteBinaryType,
-    (thandle_t) image,TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,
-    TIFFSizeBlob,TIFFMapBlob,TIFFUnmapBlob);
+  if ((image->file != stdout) && !image->pipe)
+    (void) remove(image->filename);
+  else
+    {
+      /*
+        Write standard output or pipe to temporary file.
+      */
+      encode_image=(*image);
+      TemporaryFilename(image->filename);
+      image->temporary=True;
+    }
+  CloseBlob(image);
+  tiff=TIFFOpen(image->filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);
   image->status=0;
@@ -1608,8 +1611,27 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  CloseBlob(image);
-  image->status=0;
+  if (image->temporary)
+    {
+      FILE
+        *file;
+
+      int
+        c;
+
+      /*
+        Copy temporary file to standard output or pipe.
+      */
+      file=fopen(image->filename,ReadBinaryType);
+      if (file == (FILE *) NULL)
+        WriterExit(FileOpenWarning,"Unable to open file",image);
+      for (c=fgetc(file); c != EOF; c=fgetc(file))
+        (void) putc(c,encode_image.file);
+      (void) fclose(file);
+      (void) remove(image->filename);
+      image->temporary=False;
+      CloseBlob(&encode_image);
+    }
   if (Latin1Compare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);
   return(True);
