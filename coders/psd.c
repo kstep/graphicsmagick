@@ -531,9 +531,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     combinedlength,
     size;
 
+/*
   ExtendedSignedIntegralType
-    offset/* , */
-/*     diff_offset */;
+    offset,
+    diff_offset; */
 
   unsigned char
     *data;
@@ -752,7 +753,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (length != 0)
     {
-      offset = TellBlob(image);
+      /* offset = TellBlob(image); */
       size=ReadBlobMSBLong(image);
       number_layers=(short) ReadBlobMSBShort(image);
       if(logging)

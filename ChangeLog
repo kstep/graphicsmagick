@@ -1,5 +1,8 @@
 2003-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/psd.c: Eliminated warning regarding unused initialized
+	variable.
+	* magick/log.c: Eliminate type warnings regarding enum assignment.
 	* coders/locale.c (WriteLOCALEImage): Use UndefinedException
 	rather than 0 in severity_list terminating entry in order to avoid
 	a type conversion warning.

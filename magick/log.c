@@ -102,8 +102,8 @@ typedef struct _EventInfo
 {
   char *name;
   LogEventType mask;
-  ExceptionType start_type;
-  ExceptionType end_type;
+  int start_type;
+  int end_type;
 } EventInfo;
 
 /*
@@ -165,7 +165,7 @@ static const EventInfo eventmask_map[] =
     { "exception", ExceptionEventMask, ExceptionBase, ExceptionBase },
     { "option", OptionEventMask, OptionBase, OptionBase },
     { "all", AllEventsMask, 0 },
-    { 0, 0 }
+    { 0, NoEventsMask }
   };
 
 static const OutputInfo output_map[] =
@@ -178,7 +178,7 @@ static const OutputInfo output_map[] =
     { "txtfile", TXTFileOutput },
     { "win32debug", Win32DebugOutput },
     { "win32eventlog", Win32EventlogOutput },
-    { 0, 0 }
+    { 0, UndefinedOutput }
   };
 
 /*
