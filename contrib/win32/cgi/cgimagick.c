@@ -286,7 +286,7 @@ char *CGIGetInput(CGIAccessType iMethod)
     {
       if (getenv ("QUERY_STRING"))
         {
-          iStdinLen = Extent (getenv ("QUERY_STRING"));
+          iStdinLen = strlen (getenv ("QUERY_STRING"));
           iMethodWas = CGI_GET;
         }
     }
@@ -804,14 +804,14 @@ int main(int argc,char **argv)
                     FormatString(prefix,
                       "HTTP/1.0 200 Ok\nContent-Length: %u\r\nContent-Type: %s\n\n",
                         blob_length,szMimeType);
-                    fwrite(prefix,1,Extent(prefix),stdout);
+                    fwrite(prefix,1,strlen(prefix),stdout);
                     fwrite(blob_data,1,blob_length,stdout);
                   }
                 else if (mode==2)
                   {
                     FormatString(prefix,
                       "HTTP/1.0 200 Ok\nContent-Type: %s\n\n",szMimeType);
-                    fwrite(prefix,1,Extent(prefix),stdout);
+                    fwrite(prefix,1,strlen(prefix),stdout);
                     convert_main(i-argc_hw,argv_hw);
                     /* returns nothing - image has been stream already */
                   }
@@ -927,14 +927,14 @@ int main(int argc,char **argv)
                     FormatString(prefix,
                       "HTTP/1.0 200 Ok\nContent-Length: %u\r\nContent-Type: %s\n\n",
                         blob_length,szMimeType);
-                    fwrite(prefix,1,Extent(prefix),stdout);
+                    fwrite(prefix,1,strlen(prefix),stdout);
                     fwrite(blob_data,1,blob_length,stdout);
                   }
                 else if (mode==2)
                   {
                     FormatString(prefix,
                       "HTTP/1.0 200 Ok\nContent-Type: %s\n\n",szMimeType);
-                    fwrite(prefix,1,Extent(prefix),stdout);
+                    fwrite(prefix,1,strlen(prefix),stdout);
                     combine_main(i-argc_hw,argv_hw);
                     /* returns nothing - image has been stream already */
                   }
