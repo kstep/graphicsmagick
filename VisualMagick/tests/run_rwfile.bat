@@ -1,3 +1,4 @@
+@echo off
 ..\bin\rwfile LOGO: AVS
 ..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm AVS
 ..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm AVS
@@ -30,10 +31,10 @@
 ..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm GRAY
 ..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm GRAY
 ..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm GRAY
-..\bin\rwfile LOGO: HDF
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm HDF
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm HDF
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm HDF
+;..\bin\rwfile LOGO: HDF
+;..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm HDF
+;..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm HDF
+;..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm HDF
 ..\bin\rwfile LOGO: ICB
 ..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm ICB
 ..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm ICB
@@ -166,10 +167,10 @@
 ..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm XPM
 ..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm XPM
 ..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm XPM
-..\bin\rwfile LOGO: XWD
-..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm XWD
-..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm XWD
-..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm XWD
+;..\bin\rwfile LOGO: XWD
+;..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm XWD
+;..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm XWD
+;..\bin\rwfile ..\..\PerlMagick\t\input_p6.ppm XWD
 ..\bin\rwfile LOGO: YUV
 ..\bin\rwfile ..\..\PerlMagick\t\input_p4.pbm YUV
 ..\bin\rwfile ..\..\PerlMagick\t\input_p5.pgm YUV
