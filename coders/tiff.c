@@ -1352,57 +1352,50 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    if ((image_info->compression == FaxCompression) ||
-        (image_info->compression == Group4Compression))
-      if ((image->storage_class == DirectClass) ||
-          !IsMonochromeImage(image,&image->exception))
-        SetImageType(image,BilevelType);
+    if (image->depth > 8)
+      (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
     if (((image_info->colorspace == UndefinedColorspace) &&
          (image->colorspace == CMYKColorspace)) ||
          (image_info->colorspace == CMYKColorspace))
       {
         photometric=PHOTOMETRIC_SEPARATED;
-        if (image->depth > 8)
-          (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,4);
         (void) TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
       }
     else
-      if (image->storage_class == DirectClass)
-        {
-          /*
-            Full color TIFF raster.
-          */
-          (void) TransformRGBImage(image,RGBColorspace);
-          photometric=PHOTOMETRIC_RGB;
-          if (image->depth > 8)
-            (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
-          (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
-        }
-      else
-        {
-          /*
-            Colormapped TIFF raster.
-          */
-          (void) TransformRGBImage(image,RGBColorspace);
-          if (image->colors > 256)
-            (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
-          (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-          photometric=PHOTOMETRIC_PALETTE;
-          if (IsMonochromeImage(image,&image->exception))
-            {
-              (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
-              photometric=PHOTOMETRIC_MINISWHITE;
-              compress_tag=COMPRESSION_CCITTFAX4;
-            }
-          else
+      {
+        /*
+          Full color TIFF raster.
+        */
+        (void) TransformRGBImage(image,RGBColorspace);
+        photometric=PHOTOMETRIC_RGB;
+        (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
+        if (image_info->type != TrueColorType)
+          {
             if (IsGrayImage(image,&image->exception))
               {
-                if (image->depth > 8)
-                  (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
+               (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                 photometric=PHOTOMETRIC_MINISBLACK;
+                if (IsMonochromeImage(image,&image->exception))
+                  {
+                    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
+                    photometric=PHOTOMETRIC_MINISWHITE;
+                    compress_tag=COMPRESSION_CCITTFAX4;
+                  }
               }
-        }
+            else
+              if (image->storage_class == PseudoClass)
+                {
+                  /*
+                    Colormapped TIFF raster.
+                  */
+                  (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
+                  if (image->colors <= 256)
+                    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
+                  photometric=PHOTOMETRIC_PALETTE;
+                }
+          }
+      }
     if (image->matte)
       {
         uint16
