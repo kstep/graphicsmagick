@@ -184,7 +184,7 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn the images into a thumbnail sequence.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; thumbnails=NewImageList();
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while ((image=PopImageList(&images)) != (Image *) NULL)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while ((image=ShiftImageList(&images)) != (Image *) NULL)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resize_image=ResizeImage(image,106,80,MitchellFilter,1.0,&amp;exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (resize_image == (Image *) NULL)

@@ -417,13 +417,13 @@ MagickExport Image *PopImageList(Image **images)
   if ((*images) == (Image *) NULL)
     return((Image *) NULL);
   assert((*images)->signature == MagickSignature);
-  while ((*images)->previous != (Image *) NULL)
-    (*images)=(*images)->previous;
+  while ((*images)->next != (Image *) NULL)
+    (*images)=(*images)->next;
   image=(*images);
-  *images=(*images)->next;
+  *images=(*images)->previous;
   if ((*images) != (Image *) NULL)
-    (*images)->previous=NewImageList();
-  image->next=NewImageList();
+    (*images)->next=NewImageList();
+  image->previous=NewImageList();
   return(image);
 }
 
