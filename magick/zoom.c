@@ -811,12 +811,12 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) x/x_factor;
-    start=(long) Max(ceil(center-support-0.5),0);
-    end=(long) Min(floor(center+support+0.5),source->columns);
+    start=Max((long) ceil(center-support-0.5),0L);
+    end=Min((long) floor(center+support+0.5),source->columns);
     for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function((i-center+0.5)/scale);
+      contribution[n].weight=filter_info->function((i-center)/scale);
       contribution[n].weight/=scale;
       density+=contribution[n].weight;
       n++;
@@ -839,8 +839,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       opacity=0.0;
       for (i=0; i < n; i++)
       {
-        j=(long) ceil(y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-          (contribution[i].pixel-contribution[0].pixel+1)-0.5);
+        j=(long) (y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+          (contribution[i].pixel-contribution[0].pixel));
         red+=contribution[i].weight*(p+j)->red;
         green+=contribution[i].weight*(p+j)->green;
         blue+=contribution[i].weight*(p+j)->blue;
@@ -948,12 +948,12 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) y/y_factor;
-    start=(long) Max(ceil(center-support-0.5),0);
-    end=(long) Min(floor(center+support+0.5),source->rows);
+    start=Max((long) ceil(center-support-0.5),0L);
+    end=Min((long) floor(center+support+0.5),source->rows);
     for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function((i-center+0.5)/scale);
+      contribution[n].weight=filter_info->function((i-center)/scale);
       contribution[n].weight/=scale;
       density+=contribution[n].weight;
       n++;
@@ -976,8 +976,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       opacity=0.0;
       for (i=0; i < n; i++)
       {
-        j=(long) ceil(((contribution[i].pixel-contribution[0].pixel+1)*
-          source->columns+x)-0.5);
+        j=(long)
+          (source->columns*(contribution[i].pixel-contribution[0].pixel)+x);
         red+=contribution[i].weight*(p+j)->red;
         green+=contribution[i].weight*(p+j)->green;
         blue+=contribution[i].weight*(p+j)->blue;
@@ -1247,7 +1247,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
         /*
           Read a scan line.
         */
-        j=(int) y_offset[y];
+        j=(long) y_offset[y];
         p=AcquireImagePixels(image,0,j,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
