@@ -14,7 +14,7 @@ extern "C" {
 typedef struct _DrawContext *DrawContext;
 
 extern MagickExport DrawContext
-  DrawAllocateContext(ExceptionInfo *exception);
+  DrawAllocateContext(void);
 
 extern MagickExport int
   DrawRender(Image * image, const ImageInfo * image_info,
@@ -126,12 +126,8 @@ extern MagickExport void
                      double x1, double y1,
                      double x2, double y2,
                      double rx, double ry),
-  DrawSetAngle(DrawContext context, const double degrees),
-  DrawSetAffine(DrawContext context,
-                const double sx, const double rx,
-                const double ry, const double sy,
-                const double tx, const double ty),
-  DrawSetClipPath(DrawContext context, const char *clip_url),
+  DrawSetAffine(DrawContext context, const AffineMatrix *affine),
+  DrawSetClipPath(DrawContext context, const char *clip_path),
   DrawSetClipRule(DrawContext context, const FillRule fill_rule),
   DrawSetClipUnits(DrawContext context, const ClipPathUnits clip_units),
   DrawSetFill(DrawContext context, const PixelPacket * fill_color),
