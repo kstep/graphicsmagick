@@ -105,9 +105,6 @@
 /* Define to specify default TrueType font path. */
 #undef TT_FONT_PATH
 
-/* Define if you have the SFIO mmap-based stdio library emulation */
-#undef HasSFIO
-
 /* Define if you have XML library */
 #undef HasXML
 
