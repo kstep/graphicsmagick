@@ -395,11 +395,17 @@ static void wmf_magick_flood_interior (wmfAPI* API,wmfFlood_t* flood)
 
   if (out == 0) return;
 
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
   wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
                      (int)rgb->r,(int)rgb->g,(int)rgb->b);
 
   pt = magick_translate (API,flood->pt);
   wmf_stream_printf (API,out,"color %f,%f filltoborder\n",pt.x,pt.y);
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 static void wmf_magick_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
@@ -416,6 +422,9 @@ static void wmf_magick_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
 
   if (out == 0) return;
 
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
   pt = magick_translate (API,flood->pt);
 
   wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
@@ -425,6 +434,9 @@ static void wmf_magick_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
     wmf_stream_printf (API,out,"color %f,%f floodfill\n",pt.x,pt.y);
   else
     wmf_stream_printf (API,out,"color %f,%f filltoborder\n",pt.x,pt.y);
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 static void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
@@ -444,6 +456,9 @@ static void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
 
   if (out == 0) return;
 
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
   pt = magick_translate (API,draw_pixel->pt);
 
   width  = magick_width  (API,draw_pixel->pixel_width);
@@ -458,6 +473,9 @@ static void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
 
   wmf_stream_printf (API,out,"rectangle %f,%f %f,%f\n",
                      pt.x,pt.y,pt.x+width,pt.y+height);
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 static void wmf_magick_draw_pie (wmfAPI* API,
@@ -528,6 +546,9 @@ static void magick_draw_arc (wmfAPI* API,
 
   if (out == 0) return;
 
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
   if (TO_FILL (draw_arc) || TO_DRAW (draw_arc))
     {
       centre.x = (draw_arc->TL.x + draw_arc->BR.x) / 2;
@@ -593,6 +614,9 @@ static void magick_draw_arc (wmfAPI* API,
         wmf_stream_printf (API,out,"arc %f,%f %f,%f %f,%f\n",
                            O.x,O.y,Rx,Ry,phi_s,phi_e);
     }
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 static void wmf_magick_draw_line (wmfAPI* API,
@@ -609,6 +633,9 @@ static void wmf_magick_draw_line (wmfAPI* API,
 
   if (out == 0) return;
 
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
   if (TO_DRAW (draw_line))
     { 
       from = magick_translate (API,draw_line->from);
@@ -618,6 +645,9 @@ static void wmf_magick_draw_line (wmfAPI* API,
 
       wmf_stream_printf (API,out,"line %f,%f %f,%f\n",from.x,from.y,to.x,to.y);
     }
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 static void wmf_magick_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
@@ -633,6 +663,9 @@ static void wmf_magick_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]poly_line");
 
   if (out == 0) return;
+
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
 
   if (poly_line->count <= 1) return;
 
@@ -650,6 +683,9 @@ static void wmf_magick_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
 
       wmf_stream_printf (API,out,"\n");
     }
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 static void wmf_magick_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
@@ -665,6 +701,9 @@ static void wmf_magick_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]draw_polygon");
 
   if (out == 0) return;
+
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
 
   if (poly_line->count <= 2) return;
 
@@ -683,6 +722,9 @@ static void wmf_magick_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
 
       wmf_stream_printf (API,out,"\n");
     }
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 static void wmf_magick_draw_rectangle (wmfAPI* API,
@@ -701,6 +743,9 @@ static void wmf_magick_draw_rectangle (wmfAPI* API,
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]draw_rectangle");
 
   if (out == 0) return;
+
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
 
   if (TO_FILL (draw_rect) || TO_DRAW (draw_rect))
     {
@@ -722,6 +767,9 @@ static void wmf_magick_draw_rectangle (wmfAPI* API,
 	wmf_stream_printf (API,out,"rectangle %f,%f %f,%f\n",
                            TL.x,TL.y,BR.x,BR.y);
     }
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 static void wmf_magick_region_frame (wmfAPI* API,
