@@ -816,7 +816,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function((i-center-0.5)/scale);
+      contribution[n].weight=filter_info->function((i-center)/scale);
       contribution[n].weight/=scale;
       density+=contribution[n].weight;
       n++;
@@ -953,7 +953,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     for (i=start; i < end; i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function((i-center-0.5)/scale);
+      contribution[n].weight=filter_info->function((i-center)/scale);
       contribution[n].weight/=scale;
       density+=contribution[n].weight;
       n++;
