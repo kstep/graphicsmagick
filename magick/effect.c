@@ -57,6 +57,18 @@
 #include "define.h"
 
 /*
+  Typedef declarations.
+*/
+typedef struct _AggregatePacket
+{
+  double
+    red,
+    green,
+    blue,
+    opacity;
+} AggregatePacket;
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -81,8 +93,7 @@
 %      the noise is minified.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o noise_type:  The type of noise: Gaussian, multiplicative Gaussian,
 %      impulse, laplacian, or Poisson.
@@ -227,13 +238,12 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 */
 
 static void BlurScanline(const double *kernel,const int width,
-  const PixelPacket *source,PixelPacket *destination,const int columns)
+  const PixelPacket *source,PixelPacket *destination,const unsigned int columns)
 {
+  AggregatePacket
+    aggregate;
+
   double
-    blue,
-    green,
-    opacity,
-    red,
     scale;
 
   register const double
@@ -248,23 +258,20 @@ static void BlurScanline(const double *kernel,const int width,
 
   if (width > columns)
     {
-      for (x=0; x < columns; x++)
+      for (x=0; x < (int) columns; x++)
       {
-        red=0.0;
-        green=0.0;
-        blue=0.0;
-        opacity=0.0;
+        memset(&aggregate,0,sizeof(AggregatePacket));
         scale=0.0;
         p=kernel;
         q=source;
-        for (i=0; i < columns; i++)
+        for (i=0; i < (int) columns; i++)
         {
           if ((i >= (x-width/2)) && (i <= (x+width/2)))
             {
-              red+=(*p)*q->red;
-              green+=(*p)*q->green;
-              blue+=(*p)*q->blue;
-              opacity+=(*p)*q->opacity;
+              aggregate.red+=(*p)*q->red;
+              aggregate.green+=(*p)*q->green;
+              aggregate.blue+=(*p)*q->blue;
+              aggregate.opacity+=(*p)*q->opacity;
             }
           if (((i+width/2-x) >= 0) && ((i+width/2-x) < width))
             scale+=kernel[i+width/2-x];
@@ -272,10 +279,10 @@ static void BlurScanline(const double *kernel,const int width,
           q++;
         }
         scale=1.0/scale;
-        destination[x].red=(Quantum) (scale*(red+0.5));
-        destination[x].green=(Quantum) (scale*(green+0.5));
-        destination[x].blue=(Quantum) (scale*(blue+0.5));
-        destination[x].opacity=(Quantum) (scale*(opacity+0.5));
+        destination[x].red=(Quantum) (scale*(aggregate.red+0.5));
+        destination[x].green=(Quantum) (scale*(aggregate.green+0.5));
+        destination[x].blue=(Quantum) (scale*(aggregate.blue+0.5));
+        destination[x].opacity=(Quantum) (scale*(aggregate.opacity+0.5));
       }
       return;
     }
@@ -284,79 +291,70 @@ static void BlurScanline(const double *kernel,const int width,
   */
   for (x=0; x < (width/2); x++)
   {
-    red=0.0;
-    green=0.0;
-    blue=0.0;
-    opacity=0.0;
+    memset(&aggregate,0,sizeof(AggregatePacket));
     scale=0.0;
     p=kernel+width/2-x;
     q=source;
     for (i=width/2-x; i < width; i++)
     {
-      red+=(*p)*q->red;
-      green+=(*p)*q->green;
-      blue+=(*p)*q->blue;
-      opacity+=(*p)*q->opacity;
+      aggregate.red+=(*p)*q->red;
+      aggregate.green+=(*p)*q->green;
+      aggregate.blue+=(*p)*q->blue;
+      aggregate.opacity+=(*p)*q->opacity;
       scale+=(*p);
       p++;
       q++;
     }
     scale=1.0/scale;
-    destination[x].red=(Quantum) (scale*(red+0.5));
-    destination[x].green=(Quantum) (scale*(green+0.5));
-    destination[x].blue=(Quantum) (scale*(blue+0.5));
-    destination[x].opacity=(Quantum) (scale*(opacity+0.5));
+    destination[x].red=(Quantum) (scale*(aggregate.red+0.5));
+    destination[x].green=(Quantum) (scale*(aggregate.green+0.5));
+    destination[x].blue=(Quantum) (scale*(aggregate.blue+0.5));
+    destination[x].opacity=(Quantum) (scale*(aggregate.opacity+0.5));
   }
-  for ( ; x < (columns-width/2); x++)
+  for ( ; x < (int) (columns-width/2); x++)
   {
-    red=0.0;
-    green=0.0;
-    blue=0.0;
-    opacity=0.0;
+    memset(&aggregate,0,sizeof(AggregatePacket));
     p=kernel;
     q=source+(x-width/2);
     for (i=0; i < width; i++)
     {
-      red+=(*p)*q->red;
-      green+=(*p)*q->green;
-      blue+=(*p)*q->blue;
-      opacity+=(*p)*q->opacity;
+      aggregate.red+=(*p)*q->red;
+      aggregate.green+=(*p)*q->green;
+      aggregate.blue+=(*p)*q->blue;
+      aggregate.opacity+=(*p)*q->opacity;
       p++;
       q++;
     }
-    destination[x].red=(Quantum) (red+0.5);
-    destination[x].green=(Quantum) (green+0.5);
-    destination[x].blue=(Quantum) (blue+0.5);
-    destination[x].opacity=(Quantum) (opacity+0.5);
+    destination[x].red=(Quantum) (aggregate.red+0.5);
+    destination[x].green=(Quantum) (aggregate.green+0.5);
+    destination[x].blue=(Quantum) (aggregate.blue+0.5);
+    destination[x].opacity=(Quantum) (aggregate.opacity+0.5);
   }
-  for ( ; x < columns; x++)
+  for ( ; x < (int) columns; x++)
   {
-    red=0.0;
-    green=0.0;
-    blue=0.0;
-    opacity=0.0;
+    memset(&aggregate,0,sizeof(AggregatePacket));
     scale=0;
     p=kernel;
     q=source+(x-width/2);
     for (i=0; i < (columns-x+width/2); i++)
     {
-      red+=(*p)*q->red;
-      green+=(*p)*q->green;
-      blue+=(*p)*q->blue;
-      opacity+=(*p)*q->opacity;
+      aggregate.red+=(*p)*q->red;
+      aggregate.green+=(*p)*q->green;
+      aggregate.blue+=(*p)*q->blue;
+      aggregate.opacity+=(*p)*q->opacity;
       scale+=(*p);
       p++;
       q++;
     }
     scale=1.0/scale;
-    destination[x].red=(Quantum) (scale*(red+0.5));
-    destination[x].green=(Quantum) (scale*(green+0.5));
-    destination[x].blue=(Quantum) (scale*(blue+0.5));
-    destination[x].opacity=(Quantum) (scale*(opacity+0.5));
+    destination[x].red=(Quantum) (scale*(aggregate.red+0.5));
+    destination[x].green=(Quantum) (scale*(aggregate.green+0.5));
+    destination[x].blue=(Quantum) (scale*(aggregate.blue+0.5));
+    destination[x].opacity=(Quantum) (scale*(aggregate.opacity+0.5));
   }
 }
 
-static int GetBlurKernel(int width,const double sigma,double **kernel)
+static int GetBlurKernel(unsigned width,const double sigma,double **kernel)
 {
 #define KernelRank 3
 
@@ -405,7 +403,8 @@ MagickExport Image *BlurImage(Image *image,const double radius,
     *blur_image;
 
   int
-    width;
+    width,
+    y;
 
   PixelPacket
     *p,
@@ -413,8 +412,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
     *scanline;
 
   register int
-    x,
-    y;
+    x;
 
   /*
     Get convolution matrix for the specified standard-deviation.
@@ -425,23 +423,21 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   kernel=(double *) NULL;
   if (radius > 0)
-    width=GetBlurKernel((int) (2.0*ceil(radius)+1.0),sigma,&kernel);
+    width=GetBlurKernel(2.0*ceil(radius)+1.0,sigma,&kernel);
   else
     {
       double
         *last_kernel;
 
       last_kernel=(double *) NULL;
-      width=3;
-      width=GetBlurKernel(width,sigma,&kernel);
+      width=GetBlurKernel(3,sigma,&kernel);
       while ((int) (MaxRGB*kernel[0]) > 0)
       {
         if (last_kernel != (double *)NULL)
           LiberateMemory((void **) &last_kernel);
         last_kernel=kernel;
         kernel=(double *) NULL;
-        width+=2;
-        width=GetBlurKernel(width,sigma,&kernel);
+        width=GetBlurKernel(width+2,sigma,&kernel);
       }
       if (last_kernel != (double *) NULL)
         {
@@ -592,8 +588,7 @@ MagickExport Image *CharcoalImage(Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o opacity:  A character string indicating the level of opacity as a
 %      percentage (0-100).
@@ -706,8 +701,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
 %      after it is convolved.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o order:  The number of columns and rows in the filter kernel.
 %
@@ -726,18 +720,16 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
 #define Cy(y) (y) < 0 ? (y)+(int) image->rows : \
   (y) >= (int) image->rows ? (y)-image->rows : y
 
+  AggregatePacket
+    aggregate;
+
   double
-    blue,
-    green,
-    normalize,
-    opacity,
-    red;
+    normalize;
 
   Image
     *convolve_image;
 
   int
-    i,
     width,
     y;
 
@@ -749,6 +741,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
     *k;
 
   register int
+    i,
     u,
     v,
     x;
@@ -768,7 +761,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   if ((width % 2) == 0)
     ThrowImageException(OptionWarning,"Unable to convolve image",
       "kernel width must be an odd number");
-  if (((int) (int) image->columns < width) || ((int) (int) image->rows < width))
+  if (((int) image->columns < width) || ((int) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to convolve image",
       "image smaller than kernel width");
   convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -789,10 +782,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       break;
     for (x=0; x < (int) convolve_image->columns; x++)
     {
-      red=0.0;
-      green=0.0;
-      blue=0.0;
-      opacity=0.0;
+      memset(&aggregate,0,sizeof(AggregatePacket));
       k=kernel;
       if ((x < (width/2)) || (x >= (int) (image->columns-width/2)) ||
           (y < (width/2)) || (y >= (int) (image->rows-width/2)))
@@ -802,10 +792,10 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
             for (u=(-width/2); u <= (width/2); u++)
             {
               pixel=GetOnePixel(image,Cx(x+u),Cy(y+v));
-              red+=(*k)*pixel.red;
-              green+=(*k)*pixel.green;
-              blue+=(*k)*pixel.blue;
-              opacity+=(*k)*pixel.opacity;
+              aggregate.red+=(*k)*pixel.red;
+              aggregate.green+=(*k)*pixel.green;
+              aggregate.blue+=(*k)*pixel.blue;
+              aggregate.opacity+=(*k)*pixel.opacity;
               k++;
             }
           }
@@ -823,10 +813,10 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
           {
             for (u=(-width/2); u <= (width/2); u++)
             {
-              red+=(*k)*s[u].red;
-              green+=(*k)*s[u].green;
-              blue+=(*k)*s[u].blue;
-              opacity+=(*k)*s[u].opacity;
+              aggregate.red+=(*k)*s[u].red;
+              aggregate.green+=(*k)*s[u].green;
+              aggregate.blue+=(*k)*s[u].blue;
+              aggregate.opacity+=(*k)*s[u].opacity;
               k++;
             }
             s+=image->columns;
@@ -834,17 +824,19 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
         }
       if ((normalize != 0.0) && (normalize != 1.0))
         {
-          red/=normalize;
-          green/=normalize;
-          blue/=normalize;
-          opacity/=normalize;
+          aggregate.red/=normalize;
+          aggregate.green/=normalize;
+          aggregate.blue/=normalize;
+          aggregate.opacity/=normalize;
         }
-      q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-      q->green=(Quantum)
-        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      q->opacity=(Quantum)
-        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+      q->red=(Quantum) ((aggregate.red < 0) ? 0 :
+	(aggregate.red > MaxRGB) ? MaxRGB : aggregate.red+0.5);
+      q->green=(Quantum) ((aggregate.green < 0) ? 0 :
+	(aggregate.green > MaxRGB) ? MaxRGB : aggregate.green+0.5);
+      q->blue=(Quantum) ((aggregate.blue < 0) ? 0 :
+	(aggregate.blue > MaxRGB) ? MaxRGB : aggregate.blue+0.5);
+      q->opacity=(Quantum) ((aggregate.opacity < 0) ? 0 :
+	(aggregate.opacity > MaxRGB) ? MaxRGB : aggregate.opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(convolve_image))
@@ -883,8 +875,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
 %      after it is despeckled.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -914,12 +905,12 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     *p,
     *q;
 
+  size_t
+    length;
+
   static const int
     X[4]= {0, 1, 1,-1},
     Y[4]= {1, 0, 1, 1};
-
-  unsigned long
-    packets;
 
   /*
     Allocate despeckled image.
@@ -935,9 +926,9 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   /*
     Allocate image buffers.
   */
-  packets=(image->columns+2)*(image->rows+2);
-  pixels=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
-  buffer=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
+  length=(image->columns+2)*(image->rows+2)*sizeof(Quantum);
+  pixels=(Quantum *) AcquireMemory(length);
+  buffer=(Quantum *) AcquireMemory(length);
   if ((buffer == (Quantum *) NULL) || (pixels == (Quantum *) NULL))
     {
       DestroyImage(despeckle_image);
@@ -949,8 +940,8 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   */
   for (layer=0; layer <= 3; layer++)
   {
-    (void) memset(buffer,0,packets*sizeof(Quantum));
-    (void) memset(pixels,0,packets*sizeof(Quantum));
+    (void) memset(buffer,0,length);
+    (void) memset(pixels,0,length);
     j=image->columns+2;
     for (y=0; y < (int) image->rows; y++)
     {
@@ -1108,8 +1099,7 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
 %      after it is embossed.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o radius: the radius of the pixel neighborhood.
 %
@@ -1202,8 +1192,7 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
 %      after it is enhanced.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -1223,21 +1212,22 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
     (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
   if (distance_squared < Threshold) \
     { \
-      total_red+=(weight)*s->red; \
-      total_green+=(weight)*s->green; \
-      total_blue+=(weight)*s->blue; \
+      aggregate.red+=(weight)*s->red; \
+      aggregate.green+=(weight)*s->green; \
+      aggregate.blue+=(weight)*s->blue; \
+      aggregate.opacity+=(weight)*s->opacity; \
       total_weight+=(weight); \
     } \
   s++;
 #define EnhanceImageText  "  Enhance image...  "
 #define Threshold  2500
 
+  AggregatePacket
+    aggregate;
+
   double
     distance_squared,
     mean,
-    total_blue,
-    total_green,
-    total_red,
     total_weight;
 
   Image
@@ -1298,14 +1288,13 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0.0;
-      total_green=0.0;
-      total_blue=0.0;
+      memset(&aggregate,0,sizeof(AggregatePacket));
       total_weight=0.0;
       s=p+2*image->columns+2;
-      red=s->red;
-      green=s->green;
-      blue=s->blue;
+      aggregate.red=s->red;
+      aggregate.green=s->green;
+      aggregate.blue=s->blue;
+      aggregate.opacity=s->opacity;
       s=p;
       Enhance(5);  Enhance(8);  Enhance(10); Enhance(8);  Enhance(5);
       s=p+image->columns;
@@ -1316,10 +1305,11 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
       Enhance(8);  Enhance(20); Enhance(40); Enhance(20); Enhance(8);
       s=p+4*image->columns;
       Enhance(5);  Enhance(8);  Enhance(10); Enhance(8);  Enhance(5);
-      q->red=(Quantum) ((total_red+(total_weight/2)-1)/total_weight);
-      q->green=(Quantum) ((total_green+(total_weight/2)-1)/total_weight);
-      q->blue=(Quantum) ((total_blue+(total_weight/2)-1)/total_weight);
-      q->opacity=(p+2*image->columns)->opacity;
+      q->red=(Quantum) ((aggregate.red+(total_weight/2)-1)/total_weight);
+      q->green=(Quantum) ((aggregate.green+(total_weight/2)-1)/total_weight);
+      q->blue=(Quantum) ((aggregate.blue+(total_weight/2)-1)/total_weight);
+      q->opacity=(Quantum)
+        ((aggregate.opacity+(total_weight/2)-1)/total_weight);
       p++;
       q++;
     }
@@ -1437,8 +1427,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
 %      after it is implode.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o amount:  A double value that defines the extent of the implosion.
 %
@@ -1592,7 +1581,7 @@ static int BlueCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return((int) color_1->blue-color_2->blue);
+  return((int) (color_1->blue-color_2->blue));
 }
 
 static int GreenCompare(const void *x,const void *y)
@@ -1603,7 +1592,7 @@ static int GreenCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return((int) color_1->green-color_2->green);
+  return((int) (color_1->green-color_2->green));
 }
 
 static int OpacityCompare(const void *x,const void *y)
@@ -1625,7 +1614,7 @@ static int RedCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return((int) color_1->red-color_2->red);
+  return((int) (color_1->red-color_2->red));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -1748,8 +1737,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
 %    o morph_images: Method MorphImages returns an next sequence that
 %      has linearly interpolated pixels and size between two input image.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
 %    o number_frames:  This unsigned integer reflects the number of in-between
 %      image to generate.  The more in-between frames, the smoother
@@ -1979,20 +1967,17 @@ static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
 MagickExport Image *MotionBlurImage(Image *image,const double radius,
   const double sigma,const double angle,ExceptionInfo *exception)
 {
+  AggregatePacket
+    aggregate;
+
   double
-    blue,
-    green,
-    *kernel,
-    opacity,
-    red;
+    *kernel;
 
   Image
     *blur_image;
 
   int
     width,
-    u,
-    v,
     y;
 
   PixelPacket
@@ -2003,6 +1988,8 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
 
   register int
     i,
+    u,
+    v,
     x;
 
   register PixelPacket
@@ -2020,16 +2007,14 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
         *last_kernel;
 
       last_kernel=(double *) NULL;
-      width=3;
-      width=GetMotionBlurKernel(width,sigma,&kernel);
+      width=GetMotionBlurKernel(3,sigma,&kernel);
       while ((int) (MaxRGB*kernel[width-1]) > 0)
       {
         if (last_kernel != (double *)NULL)
           LiberateMemory((void **) &last_kernel);
         last_kernel=kernel;
         kernel=(double *) NULL;
-        width+=2;
-        width=GetMotionBlurKernel(width,sigma,&kernel);
+        width=GetMotionBlurKernel(width+2,sigma,&kernel);
       }
       if (last_kernel != (double *) NULL)
         {
@@ -2070,10 +2055,7 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      red=0.0;
-      green=0.0;
-      blue=0.0;
-      opacity=0.0;
+      memset(&aggregate,0,sizeof(AggregatePacket));
       for (i=0; i < width; i++)
       {
         u=x+(int) offsets[i].x;
@@ -2082,15 +2064,15 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
             (v < 0) || (v >= (int) image->rows))
           continue;
         pixel=GetOnePixel(image,u,v);
-        red+=kernel[i]*pixel.red;
-        green+=kernel[i]*pixel.green;
-        blue+=kernel[i]*pixel.blue;
-        opacity+=kernel[i]*pixel.opacity;
+        aggregate.red+=kernel[i]*pixel.red;
+        aggregate.green+=kernel[i]*pixel.green;
+        aggregate.blue+=kernel[i]*pixel.blue;
+        aggregate.opacity+=kernel[i]*pixel.opacity;
       }
-      q->red=(Quantum) red;
-      q->green=(Quantum) green;
-      q->blue=(Quantum) blue;
-      q->opacity=(Quantum) opacity;
+      q->red=(Quantum) aggregate.red;
+      q->green=(Quantum) aggregate.green;
+      q->blue=(Quantum) aggregate.blue;
+      q->opacity=(Quantum) aggregate.opacity;
       q++;
     }
     if (!SyncImagePixels(blur_image))
@@ -2128,8 +2110,7 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
 %      after it is `painted'.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o radius: The radius of the circular neighborhood.
 %
@@ -2211,7 +2192,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
       count=0;
       for (i=0; i < (MaxRGB+1); i++)
         histogram[i]=0;
-      for (i=0; i < (int) width; i++)
+      for (i=0; i < width; i++)
       {
         s=p-(width-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
@@ -2239,7 +2220,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
         }
       }
       s=p-width;
-      for (j=0; j < (int) (width+width+1); j++)
+      for (j=0; j < (width+width+1); j++)
       {
         k=Intensity(*s);
         histogram[k]++;
@@ -2286,8 +2267,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
 %    o status: Method PlasmaImage returns True when the fractal process
 %      is complete.  Otherwise False is returned.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o segment:  specifies a structure of type SegmentInfo that defines
 %      the boundaries of the area where the plasma fractals are applied.
@@ -2678,8 +2658,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
 %      after it is shaded.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o color_shading: A value other than zero shades the red, green, and blue
 %      components of the image.
@@ -2909,8 +2888,7 @@ MagickExport Image *SharpenImage(Image *image,const double radius,
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o threshold:  An double value that defines the extent of the
 %      solarization.
@@ -3008,8 +2986,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
 %      after it is spread.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o amount:  An unsigned value constraining the "vicinity" for choosing
 %      a random pixel to swap.
@@ -3367,8 +3344,7 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
 %      after it is swirl.  A null image is returned if there is a memory
 %      shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o degrees:  An double value that defines the tightness of the swirling.
 %
@@ -3492,8 +3468,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o threshold: A double indicating the threshold value.
 %
@@ -3686,8 +3661,7 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
 %    o wave_image: Method WaveImage returns a pointer to the image after
 %      it is waved.  A null image is returned if there is a memory shortage.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: the image.
 %
 %    o amplitude, frequency:  A double value that indicates the amplitude
 %      and wave_length of the sine wave.
