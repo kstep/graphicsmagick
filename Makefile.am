@@ -97,7 +97,6 @@ PERLMAKEFILE=$(PERLMAGICK)/Makefile
 
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:
-	touch perl-sources && \
 	cd $(PERLMAGICK) && \
 	( \
 	  if test -n "$(VPATH)" ; then \
@@ -109,6 +108,7 @@ perl-sources:
 	    done \
 	  fi ; \
 	)
+	touch perl-sources
 
 if WITH_PERL_DYNAMIC
 
