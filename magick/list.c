@@ -73,8 +73,7 @@
 %
 %  The format of the AppendImageToList method is:
 %
-%      unsigned int AppendImageToList(Image *images,const Image *image,
-%        ExceptionInfo *exception)
+%      unsigned int AppendImageToList(Image *images,const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -86,8 +85,7 @@
 %
 %
 */
-MagickExport unsigned int AppendImageToList(Image **images,const Image *image,
-  ExceptionInfo *exception)
+MagickExport unsigned int AppendImageToList(Image **images,const Image *image)
 {
   Image
     *next;
@@ -98,14 +96,12 @@ MagickExport unsigned int AppendImageToList(Image **images,const Image *image,
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     {
-      *images=CloneImageList(image,exception);
-      return(*images != (Image *) NULL);
+      *images=image;
+      return(True);
     }
   assert((*images)->signature == MagickSignature);
   for (next=(*images); next->next != (Image *) NULL; next=next->next);
-  next->next=CloneImageList(image,exception);
-  if (next->next == (Image *) NULL)
-    return(False);
+  next->next=image;
   next->next->previous=next;
   return(True);
 }
@@ -626,8 +622,7 @@ MagickExport Image *NewImageList(void)
 %
 %  The format of the PrependImageToList method is:
 %
-%      unsigned int PrependImageToList(Image *images,const Image *image,
-%        ExceptionInfo *exception)
+%      unsigned int PrependImageToList(Image *images,const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -635,12 +630,9 @@ MagickExport Image *NewImageList(void)
 %
 %    o image: The image.
 %
-%    o exception: Return any errors or warnings in this structure.
-%
 %
 */
-MagickExport unsigned int PrependImageToList(Image **images,const Image *image,
-  ExceptionInfo *exception)
+MagickExport unsigned int PrependImageToList(Image **images,const Image *image)
 {
   Image
     *next;
@@ -650,15 +642,13 @@ MagickExport unsigned int PrependImageToList(Image **images,const Image *image,
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     {
-      *images=CloneImageList(image,exception);
-      return(*images != (Image *) NULL);
+      *images=image;
+      return(True);
     }
   assert((*images)->signature == MagickSignature);
   while ((*images)->previous != (Image *) NULL)
     (*images)=(*images)->previous;
-  next=CloneImageList(image,exception);
-  if (next == (Image *) NULL)
-    return(False);
+  next=image;
   while (next->next != (Image *) NULL)
     next=next->next;
   (*images)->previous=next;

@@ -424,7 +424,7 @@ MagickExport char *PostscriptGeometry(const char *page)
 MagickExport unsigned int PushImageList(Image **images,const Image *image,
   ExceptionInfo *exception)
 {
-  return(AppendImageToList(images,image,exception));
+  return(AppendImageToList(images,CloneImageList(image,exception)));
 }
 
 /*
@@ -591,7 +591,11 @@ MagickExport ExtendedSignedIntegralType SizeBlob(const Image *image)
 MagickExport Image *SpliceImageList(Image *images,const long offset,
   const unsigned long length,const Image *splices,ExceptionInfo *exception)
 {
-  return(SpliceImageIntoList(&images,offset,length,splices,exception));
+  Image
+    *clone_images;
+
+  clone_images=CloneImageList(image,exception);
+  return(SpliceImageIntoList(&images,offset,length,clone_images,exception));
 }
 
 /*
@@ -625,7 +629,7 @@ MagickExport Image *SpliceImageList(Image *images,const long offset,
 MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
   ExceptionInfo *exception)
 {
-  return(PrependImageToList(images,image,exception));
+  return(PrependImageToList(images,CloneImageList(image,exception)));
 }
 
 /*

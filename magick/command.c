@@ -1542,8 +1542,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       {
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
-        AppendImageToList(&image_list,image,exception);
-        DestroyImageList(image);
+        AppendImageToList(&image_list,image);
         image=(Image *) NULL;
         j=k+1;
       }
@@ -3198,8 +3197,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
     {
       status&=MogrifyImages(image_info,i-j,argv+j,&image);
       (void) CatchImageException(image);
-      AppendImageToList(&image_list,image,exception);
-      DestroyImageList(image);
+      AppendImageToList(&image_list,image);
     }
   status&=WriteImages(image_info,image_list,argv[argc-1],exception);
   if (metadata != (char **) NULL)
@@ -5403,8 +5401,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       {
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
-        AppendImageToList(&image_list,image,exception);
-        DestroyImageList(image);
+        AppendImageToList(&image_list,image);
         image=(Image *) NULL;
         j=k+1;
       }
@@ -6483,8 +6480,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
     {
       status&=MogrifyImages(image_info,i-j,argv+j,&image);
       (void) CatchImageException(image);
-      AppendImageToList(&image_list,image,exception);
-      DestroyImageList(image);
+      AppendImageToList(&image_list,image);
       image=(Image *) NULL;
       j=i;
     }

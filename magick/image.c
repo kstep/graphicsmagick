@@ -4950,8 +4950,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
       image->scene+=i;
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
-    AppendImageToList(&mogrify_images,image,&image->exception);
-    DestroyImage(image);
+    AppendImageToList(&mogrify_images,image);
     if (!MagickMonitor(MogrifyImageText,i,number_images,&image->exception))
       break;
   }

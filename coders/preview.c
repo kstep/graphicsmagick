@@ -253,8 +253,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         (void) QueryColorDatabase("#dfdfdf",&preview_image->matte_color,
           &image->exception);
-        AppendImageToList(&images,preview_image,&image->exception);
-        DestroyImage(preview_image);
+        AppendImageToList(&images,preview_image);
         continue;
       }
     argc=1;
@@ -556,8 +555,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     commands[argc++]=label;
     (void) MogrifyImage(clone_info,argc,commands,&preview_image);
     (void) SetMonitorHandler(handler);
-    AppendImageToList(&images,preview_image,&image->exception);
-    DestroyImage(preview_image);
+    AppendImageToList(&images,preview_image);
     if (!MagickMonitor(PreviewImageText,i,NumberTiles,&image->exception))
       break;
   }
