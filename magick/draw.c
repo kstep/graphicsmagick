@@ -881,7 +881,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
         register int
           k,
-	  l;
+          l;
 
         if (primitive_info[j].coordinates < 3)
           {

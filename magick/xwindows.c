@@ -6454,8 +6454,6 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
 */
 Export void XMakeMagnifyImage(Display *display,XWindows *windows)
 {
-#define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
-
   register int
     x,
     y;

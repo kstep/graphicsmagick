@@ -1073,7 +1073,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 #endif
   jpeg_start_compress(&jpeg_info,True);
   attribute=GetImageAttribute(image,"Comment");
-  if ((attribute != (ImageAttribute *) NULL) && (attribute->value != NULL))
+  if (attribute != (ImageAttribute *) NULL)
     for (i=0; i < Extent(attribute->value); i+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+
         i,(unsigned int) Min(Extent(attribute->value+i),65533));

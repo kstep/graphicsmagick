@@ -94,6 +94,7 @@ extern "C" {
 /*
   Define declarations.
 */
+#define ArrayReference  (char **) 4
 #define DoubleReference  (char **) 2
 #define EndOf(array)  (&array[NumberOf(array)])
 #define ImageReference  (char **) 3
@@ -150,6 +151,9 @@ union ArgumentList
 
   Image
     *image_reference;
+
+  SV
+    *array_reference;
 };
 
 /*
@@ -376,6 +380,7 @@ static struct
     { "Deconstruct", },
     { "GaussianBlur", { {"geom", StringReference}, {"width", DoubleReference},
       {"sigma", DoubleReference} } },
+    { "Convolve", { {"coefficients", ArrayReference} } },
   };
 
 /*
@@ -3519,6 +3524,8 @@ Mogrify(ref,...)
     DeconstructImage   = 132
     GaussianBlur       = 133
     GaussianBlurImage  = 134
+    Convolve           = 135
+    ConvolveImage      = 136
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -3693,22 +3700,25 @@ Mogrify(ref,...)
                   }
               }
             else
-              if (!SvPOK(sv))  /* not a string; just get number */
-                al->int_reference=SvIV(sv);
+              if (pp->type == ArrayReference)
+                al->array_reference=SvRV(sv);
               else
-                {
-                  /*
-                    Is a string; look up name.
-                  */
-                  al->int_reference=LookupStr(pp->type,SvPV(sv,na));
-                  if ((al->int_reference < 0) &&
-                      ((al->int_reference=SvIV(sv)) <= 0))
-                    {
-                      FormatString(message,"invalid %.60s value",pp->method);
-                      MagickWarning(OptionWarning,message,attribute);
-                      goto continue_outer_loop;
-                    }
-                }
+                if (!SvPOK(sv))  /* not a string; just get number */
+                  al->int_reference=SvIV(sv);
+                else
+                  {
+                    /*
+                      Is a string; look up name.
+                    */
+                    al->int_reference=LookupStr(pp->type,SvPV(sv,na));
+                    if ((al->int_reference < 0) &&
+                        ((al->int_reference=SvIV(sv)) <= 0))
+                      {
+                        FormatString(message,"invalid %.60s value",pp->method);
+                        MagickWarning(OptionWarning,message,attribute);
+                        goto continue_outer_loop;
+                      }
+                  }
       attribute_flag[pp-rp->arguments]++;
       continue_outer_loop: ;
     }
@@ -4692,6 +4702,32 @@ Mogrify(ref,...)
             (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
               &width,&sigma);
           image=GaussianBlurImage(image,width,sigma,&exception);
+          break;
+        }
+        case 68:  /* Convolve */
+        {
+          AV
+            *av;
+
+          float
+            *coefficients;
+
+          register int
+            j;
+
+          unsigned int
+            number_coefficients;
+
+          if (!attribute_flag[0])
+            break;
+          av=(AV*) argument_list[0].array_reference;
+          number_coefficients=av_len(av)+1;
+          coefficients=(float *) safemalloc(number_coefficients*sizeof(float));
+          for (j=0; j < number_coefficients; j++)
+            coefficients[j]=(float) SvNV(*(av_fetch(av,j,0)));
+          image=
+            ConvolveImage(image,number_coefficients,coefficients,&exception);
+          safefree(coefficients);
           break;
         }
       }

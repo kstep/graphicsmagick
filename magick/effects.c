@@ -385,6 +385,169 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     C o n v o l v e I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ConvolveImage applies a general image convolution of a 2d decoupled
+%  filter to an image and returns the results.
+%
+%  The format of the ConvolveImage method is:
+%
+%      Image *ConvolveImage(Image *image,const unsigned int number_coefficients,
+%        const float *coefficients,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o convolve_image: Method ConvolveImage returns a pointer to the image
+%      after it is convolved.  A null image is returned if there is a memory
+%      shortage.
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%    o number_coefficients:  This unsigned integer reflects the number of
+%      coefficients in the filter.
+%
+%    o coefficients:  An array of floats representing the coefficients of a
+%      2d decoupled filter.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+Export Image *ConvolveImage(Image *image,const unsigned int number_coefficients,
+  const float *coefficients,ExceptionInfo *exception)
+{
+#define ConvolveImageText  "  Convoling image...  "
+
+  double
+    blue,
+    green,
+    opacity,
+    red,
+    weight;
+
+  Image
+    *convolve_image,
+    *stage_image;
+
+  int
+    center,
+    y;
+
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *p,
+    *q;
+
+  /*
+    Initialize convolved image attributes.
+  */
+  assert(image != (Image *) NULL);
+  stage_image=CloneImage(image,image->columns,image->rows,False,exception);
+  if (stage_image == (Image *) NULL)
+    return((Image *) NULL);
+  stage_image->class=DirectClass;
+  convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
+  if (convolve_image == (Image *) NULL)
+    return((Image *) NULL);
+  convolve_image->class=DirectClass;
+  /*
+    Convolve image.
+  */
+  center=(number_coefficients-1)/2;
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(stage_image,0,y,stage_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      weight=0.0;
+      red=0.0;
+      green=0.0;
+      blue=0.0;
+      opacity=0.0;
+      for (i=0; i < number_coefficients; i++)
+      {
+        if (((x+i-center) < 0) || ((x+i-center) >= image->columns))
+          continue;
+        red+=coefficients[i]*(p+i-center)->red;
+        green+=coefficients[i]*(p+i-center)->green;
+        blue+=coefficients[i]*+(p+i-center)->blue;
+        opacity+=coefficients[i]*(p+i-center)->opacity;
+        weight+=coefficients[i];
+      }
+      red/=weight;
+      green/=weight;
+      blue/=weight;
+      opacity/=weight;
+      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
+      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
+      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
+      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
+      p++;
+      q++;
+    }
+    if (!SyncImagePixels(convolve_image))
+      break;
+    if (QuantumTick(y,convolve_image->rows))
+      ProgressMonitor(ConvolveImageText,y,convolve_image->rows);
+  }
+  for (x=0; x < (int) stage_image->columns; x++)
+  {
+    p=GetImagePixels(stage_image,x,0,1,stage_image->rows);
+    q=SetImagePixels(convolve_image,x,0,1,convolve_image->rows);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    for (y=0; y < (int) stage_image->rows; y++)
+    {
+      weight=0.0;
+      red=0.0;
+      green=0.0;
+      blue=0.0;
+      opacity=0.0;
+      for (i=0; i < number_coefficients; i++)
+      {
+        if (((y+i-center) < 0) || ((y+i-center) >= image->rows))
+          continue;
+        red+=coefficients[i]*(p+i-center)->red;
+        green+=coefficients[i]*(p+i-center)->green;
+        blue+=coefficients[i]*+(p+i-center)->blue;
+        opacity+=coefficients[i]*(p+i-center)->opacity;
+        weight+=coefficients[i];
+      }
+      red/=weight;
+      green/=weight;
+      blue/=weight;
+      opacity/=weight;
+      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
+      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
+      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
+      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
+      p++;
+      q++;
+    }
+    if (!SyncImagePixels(convolve_image))
+      break;
+    if (QuantumTick(y,convolve_image->rows))
+      ProgressMonitor(ConvolveImageText,y,convolve_image->rows);
+  }
+  DestroyImage(stage_image);
+  return(convolve_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     D e s p e c k l e I m a g e                                             %
 %                                                                             %
 %                                                                             %
@@ -3168,9 +3331,8 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %  A description of each parameter follows:
 %
-%    o shade_image: Method WaveImage returns a pointer to the image
-%      after it is shaded.  A null image is returned if there is a memory
-%      shortage.
+%    o wave_image: Method WaveImage returns a pointer to the image after
+%      it is waved.  A null image is returned if there is a memory shortage.
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.

@@ -632,6 +632,7 @@ extern Export Image
   *ColorizeImage(Image *,const char *,const PixelPacket,ExceptionInfo *),
   *ConstituteImage(const unsigned int,const unsigned int,const char *,
     const StorageType,const void *,ExceptionInfo *),
+  *ConvolveImage(Image *,const unsigned int,const float *,ExceptionInfo *),
   *CropImage(Image *,const RectangleInfo *,ExceptionInfo *),
   *DeconstructImages(Image *,ExceptionInfo *),
   *DespeckleImage(Image *,ExceptionInfo *),

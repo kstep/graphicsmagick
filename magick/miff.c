@@ -1061,18 +1061,15 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     {
       FormatString(buffer,"%.1024s=",attribute->key);
       (void) WriteBlob(image,strlen(buffer),buffer);
-      if (attribute->value != NULL)
-        {
-          for (i=0; i < strlen(attribute->value); i++)
-            if (isspace(attribute->value[i]))
-              break;
-          if (i < strlen(attribute->value))
-            (void) WriteByte(image,'{');
-          (void) WriteBlob(image,strlen(attribute->value),attribute->value);
-          if (i < strlen(attribute->value))
-            (void) WriteByte(image,'}');
-          (void) WriteByte(image,'\n');
-        }
+      for (i=0; i < strlen(attribute->value); i++)
+        if (isspace(attribute->value[i]))
+          break;
+      if (i < strlen(attribute->value))
+        (void) WriteByte(image,'{');
+      (void) WriteBlob(image,strlen(attribute->value),attribute->value);
+      if (i < strlen(attribute->value))
+        (void) WriteByte(image,'}');
+      (void) WriteByte(image,'\n');
       attribute=attribute->next;
     }
     (void) strcpy(buffer,"\f\n:\032");

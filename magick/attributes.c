@@ -144,6 +144,9 @@ Export ImageAttribute *GetImageAttribute(const Image *image,const char *key)
   for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
     if (Latin1Compare(key,p->key) == 0)
       break;
+  if ((p == (ImageAttribute *) NULL) || (p->value == (char *) NULL) ||
+      (*p->value == '\0'))
+    return((ImageAttribute *) NULL);
   return(p);
 }
 
