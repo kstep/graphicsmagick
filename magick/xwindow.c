@@ -59,15 +59,19 @@
 /*
   X defines.
 */
-#define XGamma(color) ((Quantum) (xgamma == 1.0 ? (color) : \
-  ((pow((double) (color)/MaxRGB,1.0/xgamma)*MaxRGB)+0.5)))
+#define XBlueGamma(color) ((Quantum) (blue_gamma == 1.0 ? (color) : \
+  ((pow((double) (color)/MaxRGB,1.0/blue_gamma)*MaxRGB)+0.5)))
+#define XGreenGamma(color) ((Quantum) (green_gamma == 1.0 ? (color) : \
+  ((pow((double) (color)/MaxRGB,1.0/green_gamma)*MaxRGB)+0.5)))
+#define XRedGamma(color) ((Quantum) (red_gamma == 1.0 ? (color) : \
+  ((pow((double) (color)/MaxRGB,1.0/red_gamma)*MaxRGB)+0.5)))
 #define XGammaPixel(map,color,dx)  (unsigned long) (map->base_pixel+ \
-  ((XGamma((color)->red)*map->red_max+(1L << (dx-1L)))/((1L << dx)-1L))* \
-    map->red_mult+ \
-  ((XGamma((color)->green)*map->green_max+(1L << (dx-1L)))/((1L << dx)-1L))* \
-    map->green_mult+ \
-  ((XGamma((color)->blue)*map->blue_max+(1L << (dx-1L)))/((1L << dx)-1L))* \
-    map->blue_mult)
+  ((XRedGamma((color)->red)*map->red_max+(1L << (dx-1L)))/ \
+	 ((1L << dx)-1L))* map->red_mult+ \
+  ((XGreenGamma((color)->green)*map->green_max+(1L << (dx-1L)))/ \
+	 ((1L << dx)-1L))*map->green_mult+ \
+  ((XBlueGamma((color)->blue)*map->blue_max+(1L << (dx-1L)))/ \
+   ((1L << dx)-1L))*map->blue_mult)
 #define XStandardPixel(map,color,dx)  (unsigned long) (map->base_pixel+ \
   (((color).red*map->red_max+(1L << (dx-1L)))/((1L << dx)-1L))*map->red_mult+ \
   (((color).green*map->green_max+(1L << (dx-1L)))/((1L << dx)-1L))*map->green_mult+\
@@ -86,7 +90,9 @@ static char
   *XVisualClassName(const int);
 
 static double
-  xgamma = 1.0;
+  blue_gamma = 1.0,
+  green_gamma = 1.0,
+  red_gamma = 1.0;
 
 static unsigned int
   XMakePixmap(Display *,const XResourceInfo *,XWindowInfo *);
@@ -2781,8 +2787,16 @@ MagickExport void XGetPixelPacket(Display *display,
           /*
             Initialize map relative to display and image gamma.
           */
-          count=sscanf(resource_info->display_gamma,"%lf",&xgamma);
-          xgamma*=image->gamma;
+          count=sscanf(resource_info->display_gamma,"%lf%*[,/]%lf%*[,/]%lf",
+            &red_gamma,&green_gamma,&blue_gamma);
+          if (count == 1)
+            {
+              green_gamma=red_gamma;
+              blue_gamma=red_gamma;
+            }
+          red_gamma*=image->gamma;
+          green_gamma*=image->gamma;
+          blue_gamma*=image->gamma;
         }
       if (image->storage_class == PseudoClass)
         {
@@ -5716,9 +5730,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                   break;
                 for (x=0; x < (long) image->columns; x++)
                 {
-                  *q++=ScaleQuantumToChar(XGamma(p->blue));
-                  *q++=ScaleQuantumToChar(XGamma(p->green));
-                  *q++=ScaleQuantumToChar(XGamma(p->red));
+                  *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
+                  *q++=ScaleQuantumToChar(XGreenGamma(p->green));
+                  *q++=ScaleQuantumToChar(XRedGamma(p->red));
                   *q++=0;
                   p++;
                 }
@@ -5741,9 +5755,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    *q++=ScaleQuantumToChar(XGamma(p->red));
-                    *q++=ScaleQuantumToChar(XGamma(p->green));
-                    *q++=ScaleQuantumToChar(XGamma(p->blue));
+                    *q++=ScaleQuantumToChar(XRedGamma(p->red));
+                    *q++=ScaleQuantumToChar(XGreenGamma(p->green));
+                    *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
                     *q++=0;
                     p++;
                   }
@@ -6250,9 +6264,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 for (x=0; x < (long) image->columns; x++)
                 {
                   *q++=0;
-                  *q++=ScaleQuantumToChar(XGamma(p->red));
-                  *q++=ScaleQuantumToChar(XGamma(p->green));
-                  *q++=ScaleQuantumToChar(XGamma(p->blue));
+                  *q++=ScaleQuantumToChar(XRedGamma(p->red));
+                  *q++=ScaleQuantumToChar(XGreenGamma(p->green));
+                  *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
                   p++;
                 }
               }
@@ -6275,9 +6289,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   for (x=0; x < (long) image->columns; x++)
                   {
                     *q++=0;
-                    *q++=ScaleQuantumToChar(XGamma(p->blue));
-                    *q++=ScaleQuantumToChar(XGamma(p->green));
-                    *q++=ScaleQuantumToChar(XGamma(p->red));
+                    *q++=ScaleQuantumToChar(XBlueGamma(p->blue));
+                    *q++=ScaleQuantumToChar(XGreenGamma(p->green));
+                    *q++=ScaleQuantumToChar(XRedGamma(p->red));
                     p++;
                   }
                 }
@@ -7118,37 +7132,27 @@ MagickExport void XMakeStandardColormap(Display *display,
           "Memory allocation failed");
       p=colors;
       color.flags=DoRed | DoGreen | DoBlue;
-      if (visual_info->storage_class == StaticColor)
-        for (i=0; i < (long) image->colors; i++)
-        {
-          color.red=ScaleQuantumToShort(XGamma(image->colormap[i].red));
-          color.green=ScaleQuantumToShort(XGamma(image->colormap[i].green));
-          color.blue=ScaleQuantumToShort(XGamma(image->colormap[i].blue));
-          status=XAllocColor(display,colormap,&color);
-          if (status == 0)
-            {
-              colormap=XCopyColormapAndFree(display,colormap);
-              (void) XAllocColor(display,colormap,&color);
-            }
-          pixel->pixels[i]=color.pixel;
-          *p++=color;
-        }
-      else
-        for (i=0; i < (long) image->colors; i++)
-        {
-          gray_value=XGamma(PixelIntensity(image->colormap+i));
-          color.red=ScaleQuantumToShort(gray_value);
-          color.green=ScaleQuantumToShort(gray_value);
-          color.blue=ScaleQuantumToShort(gray_value);
-          status=XAllocColor(display,colormap,&color);
-          if (status == 0)
-            {
-              colormap=XCopyColormapAndFree(display,colormap);
-              (void) XAllocColor(display,colormap,&color);
-            }
-          pixel->pixels[i]=color.pixel;
-          *p++=color;
-        }
+      for (i=0; i < (long) image->colors; i++)
+      {
+        color.red=ScaleQuantumToShort(XRedGamma(image->colormap[i].red));
+        color.green=ScaleQuantumToShort(XGreenGamma(image->colormap[i].green));
+        color.blue=ScaleQuantumToShort(XBlueGamma(image->colormap[i].blue));
+        if (visual_info->storage_class != StaticColor)
+          {
+            gray_value=PixelIntensity(&color);
+            color.red=ScaleQuantumToShort(gray_value);
+            color.green=color.red;
+            color.blue=color.red;
+          }
+        status=XAllocColor(display,colormap,&color);
+        if (status == 0)
+          {
+            colormap=XCopyColormapAndFree(display,colormap);
+            (void) XAllocColor(display,colormap,&color);
+          }
+        pixel->pixels[i]=color.pixel;
+        *p++=color;
+      }
       break;
     }
     case GrayScale:
@@ -7244,35 +7248,28 @@ MagickExport void XMakeStandardColormap(Display *display,
           */
           p=colors;
           color.flags=DoRed | DoGreen | DoBlue;
-          if (visual_info->storage_class == PseudoColor)
-            for (i=0; i < (long) image->colors; i++)
-            {
-              index=diversity[i].index;
-              color.red=ScaleQuantumToShort(XGamma(image->colormap[index].red));
-              color.green=
-                ScaleQuantumToShort(XGamma(image->colormap[index].green));
-              color.blue=
-                ScaleQuantumToShort(XGamma(image->colormap[index].blue));
-              status=XAllocColor(display,colormap,&color);
-              if (status == 0)
-                break;
-              pixel->pixels[index]=color.pixel;
-              *p++=color;
-            }
-          else
-            for (i=0; i < (long) image->colors; i++)
-            {
-              index=diversity[i].index;
-              gray_value=XGamma(PixelIntensity(image->colormap+index));
-              color.red=ScaleQuantumToShort(gray_value);
-              color.green=ScaleQuantumToShort(gray_value);
-              color.blue=ScaleQuantumToShort(gray_value);
-              status=XAllocColor(display,colormap,&color);
-              if (status == 0)
-                break;
-              pixel->pixels[index]=color.pixel;
-              *p++=color;
-            }
+          for (i=0; i < (long) image->colors; i++)
+          {
+            index=diversity[i].index;
+            color.red=
+              ScaleQuantumToShort(XRedGamma(image->colormap[index].red));
+            color.green=
+              ScaleQuantumToShort(XGreenGamma(image->colormap[index].green));
+            color.blue=
+              ScaleQuantumToShort(XBlueGamma(image->colormap[index].blue));
+            if (visual_info->storage_class != PseudoColor)
+              {
+                gray_value=PixelIntensity(&color);
+                color.red=ScaleQuantumToShort(gray_value);
+                color.green=color.red;
+                color.blue=color.red;
+              }
+            status=XAllocColor(display,colormap,&color);
+            if (status == 0)
+              break;
+            pixel->pixels[index]=color.pixel;
+            *p++=color;
+          }
           /*
             Read X server colormap.
           */
@@ -7288,33 +7285,27 @@ MagickExport void XMakeStandardColormap(Display *display,
           /*
             Select remaining colors from X server colormap.
           */
-          if (visual_info->storage_class == PseudoColor)
-            for (; i < (long) image->colors; i++)
-            {
-              index=diversity[i].index;
-              color.red=ScaleQuantumToShort(XGamma(image->colormap[index].red));
-              color.green=
-                ScaleQuantumToShort(XGamma(image->colormap[index].green));
-              color.blue=
-                ScaleQuantumToShort(XGamma(image->colormap[index].blue));
-              XBestPixel(display,colormap,server_colors,(unsigned int)
-                visual_info->colormap_size,&color);
-              pixel->pixels[index]=color.pixel;
-              *p++=color;
-            }
-          else
-            for (; i < (long) image->colors; i++)
-            {
-              index=diversity[i].index;
-              gray_value=XGamma(PixelIntensity(image->colormap+index));
-              color.red=ScaleQuantumToShort(gray_value);
-              color.green=ScaleQuantumToShort(gray_value);
-              color.blue=ScaleQuantumToShort(gray_value);
-              XBestPixel(display,colormap,server_colors,(unsigned int)
-                visual_info->colormap_size,&color);
-              pixel->pixels[index]=color.pixel;
-              *p++=color;
-            }
+          for (; i < (long) image->colors; i++)
+          {
+            index=diversity[i].index;
+            color.red=
+              ScaleQuantumToShort(XRedGamma(image->colormap[index].red));
+            color.green=
+              ScaleQuantumToShort(XGreenGamma(image->colormap[index].green));
+            color.blue=
+              ScaleQuantumToShort(XBlueGamma(image->colormap[index].blue));
+            if (visual_info->storage_class != PseudoColor)
+              {
+                gray_value=PixelIntensity(&color);
+                color.red=ScaleQuantumToShort(gray_value);
+                color.green=color.red;
+                color.blue=color.red;
+              }
+            XBestPixel(display,colormap,server_colors,(unsigned int)
+              visual_info->colormap_size,&color);
+            pixel->pixels[index]=color.pixel;
+            *p++=color;
+          }
           if ((int) image->colors < visual_info->colormap_size)
             {
               /*
@@ -7383,27 +7374,21 @@ MagickExport void XMakeStandardColormap(Display *display,
       */
       p=colors;
       color.flags=DoRed | DoGreen | DoBlue;
-      if (visual_info->storage_class == PseudoColor)
-        for (i=0; i < (long) image->colors; i++)
-        {
-          color.red=ScaleQuantumToShort(XGamma(image->colormap[i].red));
-          color.green=
-            ScaleQuantumToShort(XGamma(image->colormap[i].green));
-          color.blue=
-            ScaleQuantumToShort(XGamma(image->colormap[i].blue));
-          color.pixel=pixel->pixels[i];
-          *p++=color;
-        }
-      else
-        for (i=0; i < (long) image->colors; i++)
-        {
-          gray_value=XGamma(PixelIntensity(image->colormap+i));
-          color.red=ScaleQuantumToShort(gray_value);
-          color.green=ScaleQuantumToShort(gray_value);
-          color.blue=ScaleQuantumToShort(gray_value);
-          color.pixel=pixel->pixels[i];
-          *p++=color;
-        }
+      for (i=0; i < (long) image->colors; i++)
+      {
+        color.red=ScaleQuantumToShort(XRedGamma(image->colormap[i].red));
+        color.green=ScaleQuantumToShort(XGreenGamma(image->colormap[i].green));
+        color.blue=ScaleQuantumToShort(XBlueGamma(image->colormap[i].blue));
+        if (visual_info->storage_class != PseudoColor)
+          {
+            gray_value=PixelIntensity(&color);
+            color.red=ScaleQuantumToShort(gray_value);
+            color.green=color.red;
+            color.blue=color.red;
+          }
+        color.pixel=pixel->pixels[i];
+        *p++=color;
+      }
       (void) XStoreColors(display,colormap,colors,(int) image->colors);
       break;
     }
