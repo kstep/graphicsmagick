@@ -217,18 +217,28 @@ const char *GetLocaleMessage(const char *tag)
           if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
             return tag;
           else
-          if (LocaleNCompare(NEXT_FIELD, "ImageSequenceIsRequired", 23) || p - tp != 23)
-            return tag;
-          else
-            return *np ? tag : "Image sequence is required";
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'i':  case 'I':
+              if (p - tp == 23 && !LocaleNCompare(tp, "ImageSequenceIsRequired", 23))
+                return *np ? tag : "Image sequence is required";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCompareImages", 21))
+                return *np ? tag : "Unable to compare images";
+              else
+                return tag;
+            }
         else
           return tag;
 
-      case 'r':  case 'R':
-        if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
-          if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
-            return tag;
-          else
+      case 'o':  case 'O':
+        if (p - tp == 6 && !LocaleNCompare(tp, "Option", 6))
           if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
             return tag;
           else
@@ -237,33 +247,86 @@ const char *GetLocaleMessage(const char *tag)
             default:
               return tag;
 
-            case 'c':  case 'C':
-              if (p - tp == 23 && !LocaleNCompare(tp, "CacheResourcesExhausted", 23))
-                return *np ? tag : "Cache resources exhausted";
+            case 'g':  case 'G':
+              if (p - tp == 25 && !LocaleNCompare(tp, "GeometryDimensionsAreZero", 25))
+                return *np ? tag : "Geometry dimensions are zero";
+              else
+              if (p - tp == 27 && !LocaleNCompare(tp, "GeometryDoesNotContainImage", 27))
+                return *np ? tag : "Geometry does not contain image";
               else
                 return tag;
 
-            case 'm':  case 'M':
-              if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
-                return *np ? tag : "Memory allocation failed";
+            case 'i':  case 'I':
+              if (p - tp == 23 && !LocaleNCompare(tp, "ImagesAreNotTheSameSize", 23))
+                return *np ? tag : "Images are not the same size";
               else
                 return tag;
 
             case 'n':  case 'N':
-              if (p - tp == 22 && !LocaleNCompare(tp, "NoPixelsDefinedInCache", 22))
-                return *np ? tag : "No pixels defined in cache";
+              if (p - tp == 21 && !LocaleNCompare(tp, "NoProfileNameWasGiven", 21))
+                return *np ? tag : "No profile name was given";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 'r':  case 'R':
+        if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
+          if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'e':  case 'E':
+              if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+                switch (*NEXT_FIELD)
+                {
+                default:
+                  return tag;
+
+                case 'c':  case 'C':
+                  if (p - tp == 23 && !LocaleNCompare(tp, "CacheResourcesExhausted", 23))
+                    return *np ? tag : "Cache resources exhausted";
+                  else
+                    return tag;
+
+                case 'm':  case 'M':
+                  if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
+                    return *np ? tag : "Memory allocation failed";
+                  else
+                    return tag;
+
+                case 'n':  case 'N':
+                  if (p - tp == 22 && !LocaleNCompare(tp, "NoPixelsDefinedInCache", 22))
+                    return *np ? tag : "No pixels defined in cache";
+                  else
+                    return tag;
+
+                case 'p':  case 'P':
+                  if (p - tp == 26 && !LocaleNCompare(tp, "PixelCacheAllocationFailed", 26))
+                    return *np ? tag : "Pixel cache allocation failed";
+                  else
+                    return tag;
+
+                case 'u':  case 'U':
+                  if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
+                    return *np ? tag : "Unable to manage color";
+                  else
+                    return tag;
+                }
               else
                 return tag;
 
-            case 'p':  case 'P':
-              if (p - tp == 26 && !LocaleNCompare(tp, "PixelCacheAllocationFailed", 26))
-                return *np ? tag : "Pixel cache allocation failed";
-              else
-                return tag;
-
-            case 'u':  case 'U':
-              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
-                return *np ? tag : "Unable to manage color";
+            case 'w':  case 'W':
+              if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+                if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
+                  return tag;
+                else
+                  return *np ? tag : "Memory allocation failed";
               else
                 return tag;
             }

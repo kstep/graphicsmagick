@@ -72,11 +72,30 @@
   </Configure>
   <Image>
     <Error>
-        <Message name="ImageSequenceIsRequired">
-          Image sequence is required
-        </Message>
+      <Message name="ImageSequenceIsRequired">
+        Image sequence is required
+      </Message>
+      <Message name="UnableToCompareImages">
+        Unable to compare images
+      </Message>
     </Error>
   </Image>
+  <Option>
+    <Error>
+      <Message name="GeometryDimensionsAreZero">
+        Geometry dimensions are zero
+      </Message>
+      <Message name="GeometryDoesNotContainImage">
+        Geometry does not contain image
+      </Message>
+      <Message name="ImagesAreNotTheSameSize">
+        Images are not the same size
+      </Message>
+      <Message name="NoProfileNameWasGiven">
+        No profile name was given
+      </Message>
+    </Error>
+  </Option>
   <Resource>
     <Limit>
       <Error>
@@ -96,6 +115,11 @@
           Unable to manage color
         </Message>
       </Error>
+      <Warning>
+        <Message name="MemoryAllocationFailed">
+          Memory allocation failed
+        </Message>
+      </Warning>
     </Limit>
   </Resource>
 </locale>

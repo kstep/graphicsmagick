@@ -586,7 +586,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(ImageError,"ImageSequenceIsRequired");
+    ThrowImageException(ImageError,"ImageSequenceIsRequired",
       "Unable to average image sequence");
   for (next=image; next != (Image *) NULL; next=next->next)
   {
@@ -2685,14 +2685,14 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   memset(&image->error,0,sizeof(ErrorInfo));
   if ((image->rows != reference->rows) ||
       (image->columns != reference->columns))
-    ThrowBinaryException(OptionError,"Unable to compare images",
-      "images size differs");
+    ThrowBinaryException(ImageError,"UnableToCompareImages",
+      "Images size differs");
   if (image->colorspace != reference->colorspace)
-    ThrowBinaryException(OptionError,"Unable to compare images",
-      "images colorspace differs");
+    ThrowBinaryException(ImageError,"UnableToCompareImages",
+      "Images colorspace differs");
   if(image->matte != reference->matte)
-    ThrowBinaryException(OptionError,"Unable to compare images",
-      "images opacity differs");
+    ThrowBinaryException(ImageError,"UnableToCompareImages",
+      "Images opacity differs");
   /*
     For each pixel, collect error statistics.
   */
@@ -7044,8 +7044,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   blue_map=(double *) AcquireMemory(3*65536L*sizeof(double));
   if ((red_map == (double *) NULL) || (green_map == (double *) NULL) ||
       (blue_map == (double *) NULL))
-    ThrowBinaryException(MissingDelegateError,
-      "Unable to transform colorspace","Memory allocation failed");
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      "Unable to transform colorspace");
   switch (colorspace)
   {
     case OHTAColorspace:
