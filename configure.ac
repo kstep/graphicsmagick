@@ -803,6 +803,7 @@ AC_CACHE_CHECK(for JPEG library is version 6b or later, ac_cv_jpeg_version_ok,
 changequote(<<, >>)dnl
 <<
 #include <stdio.h>
+#include <stdlib.h>
 #include <jpeglib.h>
 int
 main ()
