@@ -98,39 +98,26 @@ namespace Magick
   class Drawable
   {
   public:
+
     // Constructor
-    Drawable ( void )
-      : dp(0)
-      { }
+    Drawable ( void );
 
     // Construct from DrawableBase
-    Drawable ( const DrawableBase& original_ )
-      : dp(original_.copy())
-      { }
+    Drawable ( const DrawableBase& original_ );
 
     // Destructor
-    ~Drawable ( void )
-      {
-        delete dp;
-      }
+    ~Drawable ( void );
 
     // Copy constructor
-    Drawable ( const Drawable& original_ )
-      : dp(original_.dp? original_.dp->copy(): 0)
-      { }
+    Drawable ( const Drawable& original_ );
 
     // Assignment operator
-    Drawable& operator= (const Drawable& original_ )
-      {
-        if (this != &original_)
-          {
-            delete dp;
-            dp = (original_.dp ? original_.dp->copy() : 0);
-          }
-        return *this;
-      }
+    Drawable& operator= (const Drawable& original_ );
 
-    // private: FIXME
+    // Operator to invoke contained object
+    void operator()( MagickLib::DrawContext context_ ) const;
+
+  private:
     DrawableBase* dp;
   };
 
@@ -168,39 +155,24 @@ namespace Magick
   {
   public:
     // Constructor
-    VPath ( void )
-      : dp(0)
-      { }
+    VPath ( void );
     
     // Construct from VPathBase
-    VPath ( const VPathBase& original_ )
-      : dp(original_.copy())
-      { }
+    VPath ( const VPathBase& original_ );
     
     // Destructor
-    virtual ~VPath ( void )
-      {
-        delete dp;
-      }
+    virtual ~VPath ( void );
 
     // Copy constructor
-    VPath ( const VPath& original_ )
-      : dp(original_.dp? original_.dp->copy(): 0)
-      {
-      }
+    VPath ( const VPath& original_ );
     
     // Assignment operator
-    VPath& operator= (const VPath& original_ )
-      {
-        if (this != &original_)
-          {
-            delete dp;
-            dp = (original_.dp ? original_.dp->copy() : 0);
-          }
-        return *this;
-      }
+    VPath& operator= (const VPath& original_ );
 
-    // private:  FIXME
+    // Operator to invoke contained object
+    void operator()( MagickLib::DrawContext context_ ) const;
+
+  private:
     VPathBase* dp;
   };
 

@@ -54,6 +54,88 @@ int Magick::operator <= ( const Magick::Coordinate& left_, const Magick::Coordin
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
 }
 
+// Constructor
+Magick::Drawable::Drawable ( void )
+  : dp(0)
+{
+}
+
+// Construct from DrawableBase
+Magick::Drawable::Drawable ( const Magick::DrawableBase& original_ )
+  : dp(original_.copy())
+{
+}
+
+// Destructor
+Magick::Drawable::~Drawable ( void )
+{
+  delete dp;
+}
+
+// Copy constructor
+Magick::Drawable::Drawable ( const Magick::Drawable& original_ )
+  : dp(original_.dp? original_.dp->copy(): 0)
+{
+}
+
+// Assignment operator
+Magick::Drawable& Magick::Drawable::operator= (const Magick::Drawable& original_ )
+{
+  if (this != &original_)
+    {
+      delete dp;
+      dp = (original_.dp ? original_.dp->copy() : 0);
+    }
+  return *this;
+}
+
+// Operator to invoke contained object
+void Magick::Drawable::operator()( MagickLib::DrawContext context_ ) const
+{
+  dp->operator()( context_ );
+}
+
+// Constructor
+Magick::VPath::VPath ( void )
+  : dp(0)
+{
+}
+
+// Construct from VPathBase
+Magick::VPath::VPath ( const Magick::VPathBase& original_ )
+  : dp(original_.copy())
+{
+}
+
+// Destructor
+/* virtual */ Magick::VPath::~VPath ( void )
+{
+  delete dp;
+}
+
+// Copy constructor
+Magick::VPath::VPath ( const Magick::VPath& original_ )
+  : dp(original_.dp? original_.dp->copy(): 0)
+{
+}
+
+// Assignment operator
+Magick::VPath& Magick::VPath::operator= (const Magick::VPath& original_ )
+{
+  if (this != &original_)
+    {
+      delete dp;
+      dp = (original_.dp ? original_.dp->copy() : 0);
+    }
+  return *this;
+}
+
+// Operator to invoke contained object
+void Magick::VPath::operator()( MagickLib::DrawContext context_ ) const
+{
+  dp->operator()( context_ );
+}
+
 //
 // Drawable Objects
 //
@@ -121,10 +203,9 @@ void Magick::DrawablePath::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPathStart( context_ );
 
-  // FIXME, improve access syntax
   for( std::list<Magick::VPath>::const_iterator p = _path.begin();
        p != _path.end(); p++ )
-    p->dp->operator()( context_ );
+    p->operator()( context_ );
 
   DrawPathFinish( context_ );
 }
