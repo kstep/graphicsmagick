@@ -1511,6 +1511,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         (void) fprintf(file,"%.1024s ",image->filename);
       else
         (void) fprintf(file,"%.1024s[%u] ",image->filename,image->scene);
+      (void) fprintf(file,"%.1024s ",image->magick);
       if ((image->magick_columns != 0) || (image->magick_rows != 0))
         if ((image->magick_columns != image->columns) ||
             (image->magick_rows != image->rows))
@@ -1521,20 +1522,6 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       else
         (void) fprintf(file,"%ux%u%+d%+d ",image->page.width,
           image->page.height,image->page.x,image->page.y);
-      switch (GetImageType(image))
-      {
-        case BilevelType: (void) fprintf(file,"Bilevel"); break;
-        case GrayscaleType: (void) fprintf(file,"Grayscale"); break;
-        case PaletteType: (void) fprintf(file,"Palette"); break;
-        case PaletteMatteType: (void) fprintf(file,"PaletteMatte"); break;
-        case TrueColorType: (void) fprintf(file,"TrueColor"); break;
-        case TrueColorMatteType: (void) fprintf(file,"TrueColorMatte"); break;
-        case ColorSeparationType: (void) fprintf(file,"ColorSeparation"); break;
-        case ColorSeparationMatteType:
-          (void) fprintf(file,"ColorSeparationMatte"); break;
-        default: (void) fprintf(file,"Undefined"); break;
-      }
-      (void) fprintf(file," ");
       if (image->storage_class == DirectClass)
         {
           (void) fprintf(file,"DirectClass ");
@@ -1551,6 +1538,20 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             (void) fprintf(file,"%u/%.6f/%.6fe ",image->mean_error_per_pixel,
               image->normalized_mean_error,image->normalized_maximum_error);
           }
+      switch (GetImageType(image))
+      {
+        case BilevelType: (void) fprintf(file,"Bilevel"); break;
+        case GrayscaleType: (void) fprintf(file,"Grayscale"); break;
+        case PaletteType: (void) fprintf(file,"Palette"); break;
+        case PaletteMatteType: (void) fprintf(file,"PaletteMatte"); break;
+        case TrueColorType: (void) fprintf(file,"TrueColor"); break;
+        case TrueColorMatteType: (void) fprintf(file,"TrueColorMatte"); break;
+        case ColorSeparationType: (void) fprintf(file,"ColorSeparation"); break;
+        case ColorSeparationMatteType:
+          (void) fprintf(file,"ColorSeparationMatte"); break;
+        default: (void) fprintf(file,"Undefined"); break;
+      }
+      (void) fprintf(file," ");
       if (image->filesize != 0)
         {
           if (image->filesize >= (1 << 24))
@@ -1561,8 +1562,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             else
               (void) fprintf(file,"%db ",image->filesize);
         }
-      (void) fprintf(file,"%.1024s %.1fu %d:%02d\n",image->magick,user_time,
-        (int) (elapsed_time/60.0),(int) ceil(fmod(elapsed_time,60.0)));
+      (void) fprintf(file,"%.1fu %d:%02d\n",user_time,(int) (elapsed_time/60.0),
+        (int) ceil(fmod(elapsed_time,60.0)));
       return;
     }
   /*
@@ -1578,6 +1579,16 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   else
     (void) fprintf(file,"  Format: %.1024s (%.1024s)\n",image->magick,
       magick_info->description);
+  (void) fprintf(file,"  Geometry: %ux%u\n",image->columns,image->rows);
+  if (image->storage_class == DirectClass)
+    (void) fprintf(file,"  Class: DirectClass\n");
+  else
+    (void) fprintf(file,"  Class: PseudoClass\n");
+  if ((image->magick_columns != 0) || (image->magick_rows != 0))
+    if ((image->magick_columns != image->columns) ||
+        (image->magick_rows != image->rows))
+      (void) fprintf(file,"  Base Geometry: %ux%u\n",image->magick_columns,
+        image->magick_rows);
   (void) fprintf(file,"  Type: ");
   switch (GetImageType(image))
   {
@@ -1595,48 +1606,33 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     default: (void) fprintf(file,"undefined"); break;
   }
   (void) fprintf(file,"\n");
-  if (image->storage_class == DirectClass)
-    (void) fprintf(file,"  Class: DirectClass\n");
-  else
-    (void) fprintf(file,"  Class: PseudoClass\n");
-  if ((image->magick_columns != 0) || (image->magick_rows != 0))
-    if ((image->magick_columns != image->columns) ||
-        (image->magick_rows != image->rows))
-      (void) fprintf(file,"  Base Geometry: %ux%u\n",image->magick_columns,
-        image->magick_rows);
-  (void) fprintf(file,"  Geometry: %ux%u\n",image->columns,image->rows);
   (void) fprintf(file,"  Depth: %u\n",GetImageDepth(image));
   x=0;
   p=(Image *) NULL;
-  if (!image->matte)
-    (void) fprintf(file,"  Opaque: False\n");
-  else
-    if ((strcmp(image->magick,"GIF") != 0) || image->taint)
-      (void) fprintf(file,"  Opaque: True\n");
-    else
-      {
-        PixelPacket
-          *p;
+  if (image->matte && (strcmp(image->magick,"GIF") != 0) || image->taint)
+    {
+      PixelPacket
+        *p;
 
-        p=(PixelPacket *) NULL;
-        for (y=0; y < (int) image->rows; y++)
+      p=(PixelPacket *) NULL;
+      for (y=0; y < (int) image->rows; y++)
+      {
+        p=GetImagePixels(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
         {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
+          if (p->opacity == TransparentOpacity)
             break;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            if (p->opacity == TransparentOpacity)
-              break;
-            p++;
-          }
-          if (x < (int) image->columns)
-            break;
+          p++;
         }
-        if ((x < (int) image->columns) || (y < (int) image->rows))
-          (void) fprintf(file,"  Opacity: (%5d,%5d,%5d)\t#%04x%04x%04x\n",
-            p->red,p->green,p->blue,p->red,p->green,p->blue);
+        if (x < (int) image->columns)
+          break;
       }
+      if ((x < (int) image->columns) || (y < (int) image->rows))
+        (void) fprintf(file,"  Opacity: (%5d,%5d,%5d)\t#%04x%04x%04x\n",
+          p->red,p->green,p->blue,p->red,p->green,p->blue);
+    }
   if (image->storage_class == DirectClass)
     (void) fprintf(file,"  Colors: %lu\n",number_colors);
   else
