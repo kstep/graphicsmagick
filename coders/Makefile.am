@@ -54,7 +54,7 @@ endif # WITH_MODULES
 EXTRA_DIST = modules.mgk
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS =  mng.h
+noinst_HEADERS =  
 
 if WITH_MODULES
 # Where modules are installed
