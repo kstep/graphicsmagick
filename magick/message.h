@@ -8,6 +8,8 @@
 extern "C" {
 #endif
 
+extern MagickExport const char
+  *GetLocaleMessage(const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
