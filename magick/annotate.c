@@ -489,7 +489,7 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
     MagickError(ResourceLimitError,"Unable to convert text to Unicode",
       "Memory allocation failed");
   q=unicode;
-  for (p=text; ; p+=length)
+  for (p=text; *p != '\0'; p+=length)
   {
     length=strlen(p);
     c=GetUnicodeCharacter((const unsigned char *) p,&length);
@@ -501,8 +501,6 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
         return(unicode);
       }
     *q=c;
-    if (length == 0)
-      break;
     q++;
   }
   *count=q-unicode;
