@@ -257,6 +257,8 @@ static void DestroyPixelStream(Image *image)
   LiberateSemaphoreInfo(&stream_info->semaphore);
   if (stream_info->pixels != (PixelPacket *) NULL)
     LiberateMemory((void **) &stream_info->pixels);
+  if (stream_info->semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&stream_info->semaphore);
   LiberateMemory((void **) &stream_info);
 }
 
