@@ -1815,7 +1815,7 @@ static unsigned int XColorEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=atof(FuzzMenu[entry]);
+                (*image)->fuzz=StringToDouble(FuzzMenu[entry],MaxRGB);
                 break;
               }
             FormatString(fuzz,"%d",(*image)->fuzz);
@@ -1823,7 +1823,7 @@ static unsigned int XColorEditImage(Display *display,
               fuzz);
             if (*fuzz == '\0')
               break;
-            (*image)->fuzz=atof(fuzz);
+            (*image)->fuzz=StringToDouble(fuzz,MaxRGB);
             break;
           }
           case ColorEditUndoCommand:
@@ -7562,7 +7562,7 @@ static unsigned int XMatteEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=atof(FuzzMenu[entry]);
+                (*image)->fuzz=StringToDouble(FuzzMenu[entry],MaxRGB);
                 break;
               }
             FormatString(fuzz,"%f",(*image)->fuzz);
@@ -7570,7 +7570,7 @@ static unsigned int XMatteEditImage(Display *display,
               fuzz);
             if (*fuzz == '\0')
               break;
-            (*image)->fuzz=atof(fuzz);
+            (*image)->fuzz=StringToDouble(fuzz,MaxRGB);
             break;
           }
           case MatteEditValueCommand:
