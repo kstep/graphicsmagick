@@ -13,14 +13,14 @@
 #   %e   filename extention
 #   %f   filename
 #   %h   height
-#   %i   input filename
+#   "%i"   input filename
 #   %l   label
 #   %m   magick
 #   %n   number of scenes
-#   %o   output filename
+#   "%o"   output filename
 #   %p   page number
 #   %q   quantum depth
-#   %s   scene number
+#   "%s"   scene number
 #   %t   top of filename
 #   %u   unique temporary filename
 #   %w   width
@@ -33,7 +33,7 @@
 # with a equal-greater sign (=>).  The delegate is invoked whenever ImageMagick
 # attempts to read an image whose format specifier or filename extension
 # matches the tag (e.g.  image.mpg for tag mpg=>).  The delegate must
-# write an image to the file designated by %o in an image format that
+# write an image to the file designated by "%o" in an image format that
 # ImageMagick understands (e.g. pnm).
 # 
 # An encode delegate begins with an image format, a less-equal sign (<=),
@@ -65,35 +65,35 @@
 #
 
 <=bzip
-	|bzip2 -f > %o
+	|bzip2 -f > "%o"
 
 <=compress
-	|compress -c > %o
+	|compress -c > "%o"
 
 <=show
-	display -immutable -window_group %g -title "%l of %f" tmp:%o &
+	display -immutable -window_group %g -title "%l of %f" "tmp:%o" &
 
 <=zip
-	|gzip -cf > %o
+	|gzip -cf > "%o"
 
 browse=>
 	mosiac http://www.simplesystems.org/ImageMagick/ &
 
 bzip=>
-	|bzip2 -cd %i
+	|bzip2 -cd "%i"
 
 cgm=>
-	ralcgm -d ps %i %o %u
-	convert -concatenate %o*.ps %o
+	ralcgm -d ps "%i" "%o" %u
+	convert -concatenate "%o"*.ps "%o"
 
 compress=>
-	|uncompress -c %i
+	|uncompress -c "%i"
 
 dvi=>
-	dvips -q -o %o %i
+	dvips -q -o "%o" "%i"
 
 edit=>
-	xterm -title "Edit Image Comment" -e vi %o
+	xterm -title "Edit Image Comment" -e vi "%o"
 
 eps<=>pdf
 	gs -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
@@ -104,40 +104,40 @@ eps<=>ps
 	  -sOutputFile="%o" -- "%i" -c quit
 
 fig=>
-	fig2dev -L ps %i %o
+	fig2dev -L ps "%i" "%o"
 
 # Gnuplot format (rendered as Postscript)
 # Add additional gnuplot commands to the input file to adjust output.
 gplt=>
-	echo "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
+	echo "set size 1.25,0.62; set terminal postscript portrait color solid; set output '"%o"'; load '"%i"'" > %u
 	gnuplot %u
 
 gs-color=>
 	gs -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" "%s" \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
 	gs -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" "%s" \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
-	hp2xx -q -m eps -f %i %o
+	hp2xx -q -m eps -f "%i" "%o"
 
 htm=>
-	html2ps -o %o %i
+	html2ps -o "%o" "%i"
 
 html=>
-	html2ps -o %o %i
+	html2ps -o "%o" "%i"
 
 mpg=>
-	mpeg2decode -q -b %i -f -r -o3 %o%%05d
-	convert -concatenate %o*.ppm %o
+	mpeg2decode -q -b "%i" -f -r -o3 "%o"%%05d
+	convert -concatenate "%o*.ppm" "%o"
 
 m2v=>
-	mpeg2decode -q -b %i -f -r -o3 %o%%05d
-	convert -concatenate %o*.ppm %o
+	mpeg2decode -q -b "%i" -f -r -o3 "%o"%%05d
+	convert -concatenate "%o*.ppm" "%o"
 
 pdf<=>eps
 	gs -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
@@ -148,18 +148,18 @@ pdf<=>ps
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
-	pgpv -fq %i
+	pgpv -fq "%i"
 
 pnm<=launch
-	gimp %i
+	gimp "%i"
 
 pnm<=win
-	display -immutable %i
+	display -immutable "%i"
 
 pov=>
-	povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
-	convert %o*.png %o
-	convert -concatenate %o*.png %o
+	povray +i"%i" +o"%o" +fn%q +w%w +h%h +a -q9 -kfi"%s" -kff%n
+	convert "%o*.png" "%o"
+	convert -concatenate "%o*.png" "%o"
 
 ps<=>eps
 	gs -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
@@ -170,35 +170,35 @@ ps<=>pdf
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print
-	copy %i magick.ps
+	copy "%i" magick.ps
 	print/delete magick.ps
 
 rad=>
-	ra_ppm -g 1.0 %i %o
+	ra_ppm -g 1.0 "%i" "%o"
 
 rgba<=rle
-	mogrify -flip -size %wx%h rgba:%i
-	rawtorle -w %w -h %h -n 4 -o %o %i
+	mogrify -flip -size %wx%h "rgba:%i"
+	rawtorle -w %w -h %h -n 4 -o "%o" "%i"
 
 scan=>
-	scanimage  -d %i > %o
+	scanimage  -d "%i" > "%o"
 
 shtml=>
-	html2ps -o %o %i
+	html2ps -o "%o" "%i"
 
 txt<=>ps
-	enscript -o %o %i
+	enscript -o "%o" "%i"
 
 wmf=>
-	wmftogif %i %o
+	wmftogif "%i" "%o"
 
 yuv<=m2v
-	mpeg2encode %u %o
-	convert -concatenate %o*.yuv %u
+	mpeg2encode %u "%o"
+	convert -concatenate "%o"*.yuv %u
 
 yuv<=mpg
-	mpeg2encode %u %o
-	convert -concatenate %o*.yuv %u
+	mpeg2encode %u "%o"
+	convert -concatenate "%o"*.yuv %u
 
 zip=>
-	|gzip -cdfq %i
+	|gzip -cdfq "%i"

@@ -33,7 +33,7 @@
 # with a equal-greater sign (=>).  The delegate is invoked whenever ImageMagick
 # attempts to read an image whose format specifier or filename extension
 # matches the tag (e.g.  image.mpg for tag mpg=>).  The delegate must
-# write an image to the file designated by %o in an image format that
+# write an image to the file designated by "%o" in an image format that
 # ImageMagick understands (e.g. pnm).
 # 
 # An encode delegate begins with an image format, a less-equal sign (<=),
@@ -69,16 +69,16 @@
 #
 
 <=bzip
-	|@BZIPDelegate@ -f > %o
+	|@BZIPDelegate@ -f > "%o"
 
 <=compress
-	|@LZWEncodeDelegate@ -c > %o
+	|@LZWEncodeDelegate@ -c > "%o"
 
 <=show
-	@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" tmp:%o &
+	@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" "tmp:%o" &
 
 <=zip
-	|@ZipDelegate@ -cf > %o
+	|@ZipDelegate@ -cf > "%o"
 
 browse=>
 	@BrowseDelegate@ http://www.simplesystems.org/ImageMagick/ &
@@ -87,23 +87,23 @@ bzip=>
 	|@BZIPDelegate@ -cd "%i"
 
 cgm=>
-	@CGMDecodeDelegate@ -d ps "%i" %o %u
-	@ConvertDelegate@ -concatenate %o*.ps %o
+	@CGMDecodeDelegate@ -d ps "%i" "%o" %u
+	@ConvertDelegate@ -concatenate "%o"*.ps "%o"
 
 compress=>
 	|@LZWDecodeDelegate@ -c "%i"
 
 dot=>
-	@DOTDecodeDelegate@ -Tps "%i" -o %o 
+	@DOTDecodeDelegate@ -Tps "%i" -o "%o" 
 
 dvi=>
-	@DVIDecodeDelegate@ -q -o %o "%i"
+	@DVIDecodeDelegate@ -q -o "%o" "%i"
 
 edit=>
-	@EditorDelegate@ -title "Edit Image Comment" -e vi %o
+	@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"
 
 emf=>
-	@WMFDecodeDelegate@ "%i" %o
+	@WMFDecodeDelegate@ "%i" "%o"
 
 eps<=>pdf
 	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
@@ -114,51 +114,51 @@ eps<=>ps
 	  -sOutputFile="%o" -- "%i" -c quit
 
 fig=>
-	@FIGDecodeDelegate@ -L ps "%i" %o
+	@FIGDecodeDelegate@ -L ps "%i" "%o"
 
 # Gnuplot format (rendered as Postscript)
 # Add additional gnuplot commands to the input file to adjust output.
 gplt=>
-	@EchoDelegate@ "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
+	@EchoDelegate@ "set size 1.25,0.62; set terminal postscript portrait color solid; set output '"%o"'; load '"%i"'" > %u
 	@GnuplotDecodeDelegate@ %u
 
 gs-color=>
 	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSColorDevice@ -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" "%s" \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
 	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSMonoDevice@ -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" "%s" \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
-	@HPGLDecodeDelegate@ -q -m eps -f `basename %o` "%i"
-	mv `basename %o` %o
+	@HPGLDecodeDelegate@ -q -m eps -f `basename "%o"` "%i"
+	mv `basename "%o"` "%o"
 
 htm=>
-	@HTMLDecodeDelegate@ -U -o %o "%i"
+	@HTMLDecodeDelegate@ -U -o "%o" "%i"
 
 html=>
-	@HTMLDecodeDelegate@ -U -o %o "%i"
+	@HTMLDecodeDelegate@ -U -o "%o" "%i"
 
 ilbm=>
-	@ILBMDecodeDelegate@ "%i" > %o 
+	@ILBMDecodeDelegate@ "%i" > "%o" 
 
 man=>
-	@MANDelegate@ -man -Tps "%i" > %o
+	@MANDelegate@ -man -Tps "%i" > "%o"
 
 mpeg=>
-	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 %o%%05d
-	@ConvertDelegate@ -concatenate %o*.ppm %o
+	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o"%%05d
+	@ConvertDelegate@ -concatenate "%o*.ppm" "%o"
 
 mpg=>
-	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 %o%%05d
-	@ConvertDelegate@ -concatenate %o*.ppm %o
+	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o"%%05d
+	@ConvertDelegate@ -concatenate "%o*.ppm" "%o"
 
 m2v=>
-	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 %o%%05d
-	@ConvertDelegate@ -concatenate %o*.ppm %o
+	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o"%%05d
+	@ConvertDelegate@ -concatenate "%o*.ppm" "%o"
 
 pdf<=>eps
 	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
@@ -172,7 +172,7 @@ pgp=>
 	@PGPDecodeDelegate@ -fq "%i"
 
 pnm<=ilbm
-	@ILBMEncodeDelegate@ -24if "%i" > %o
+	@ILBMEncodeDelegate@ -24if "%i" > "%o"
 
 pnm<=launch
 	@LaunchDelegate@ "%i"
@@ -181,8 +181,8 @@ pnm<=win
 	@ShowImageDelegate@ -immutable "%i"
 
 pov=>
-	@POVDelegate@ "+i%i" +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
-	@ConvertDelegate@ -concatenate %o*.png %o
+	@POVDelegate@ "+i"%i"" +o"%o" +fn%q +w%w +h%h +a -q9 -kfi"%s" -kff"%n"
+	@ConvertDelegate@ -concatenate "%o*.png" "%o"
 
 ps<=>eps
 	@PSDelegate@ -dMaxBitmap=300000000 -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
@@ -196,37 +196,37 @@ ps<=print
 	@PrintDelegate@ "%i"
 
 rad=>
-	@RADDecodeDelegate@ -g 1.0 "%i" %o
+	@RADDecodeDelegate@ -g 1.0 "%i" "%o"
 
 rgba<=rle
 	@MogrifyDelegate@ -flip -size %wx%h "rgba:%i"
-	@RLEEncodeDelegate@ -w %w -h %h -n 4 -o %o "%i"
+	@RLEEncodeDelegate@ -w %w -h %h -n 4 -o "%o" "%i"
 
 scan=>
-	@SCANDecodeDelegate@ -d "%i" > %o
+	@SCANDecodeDelegate@ -d "%i" > "%o"
 
 shtml=>
-	@HTMLDecodeDelegate@ -U -o %o "%i"
+	@HTMLDecodeDelegate@ -U -o "%o" "%i"
 
 txt<=>ps
-	@TXTDelegate@ -o %o "%i"
+	@TXTDelegate@ -o "%o" "%i"
 
 wmf=>
-	@WMFDecodeDelegate@ "%i" %o
+	@WMFDecodeDelegate@ "%i" "%o"
 
 xcf=>
-	@XCFDecodeDelegate@ "%i" > %o 
+	@XCFDecodeDelegate@ "%i" > "%o" 
 
 yuv<=m2v
-	@MPEGEncodeDelegate@ %u %o
+	@MPEGEncodeDelegate@ %u "%o"
 	@ConvertDelegate@ -concatenate "%i*.yuv" %u
 
 yuv<=mpeg
-	@MPEGEncodeDelegate@ %u %o
+	@MPEGEncodeDelegate@ %u "%o"
 	@ConvertDelegate@ -concatenate "%i*.yuv" %u
 
 yuv<=mpg
-	@MPEGEncodeDelegate@ %u %o
+	@MPEGEncodeDelegate@ %u "%o"
 	@ConvertDelegate@ -concatenate "%i*.yuv" %u
 
 zip=>
