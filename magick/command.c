@@ -331,15 +331,15 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   memset(&option_info,0,sizeof(CompositeOptions));
   option_info.dissolve=0.0;
   option_info.compose=OverCompositeOp;
-  composite_image=(Image *) NULL;
+  composite_image=NewImageList();
   option_info.displace_geometry=(char *) NULL;
   filename=(char *) NULL;
   format=(char *) "%w,%h,%m";
   option_info.geometry=(char *) NULL;
-  image=(Image *) NULL;
+  image=NewImageList();
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,exception);
-  mask_image=(Image *) NULL;
+  mask_image=NewImageList();
   option_info.stegano=0;
   option_info.stereo=False;
   option_info.tile=False;
@@ -1004,12 +1004,12 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (composite_image != (Image *) NULL)
               {
                 DestroyImageList(composite_image);
-                composite_image=(Image *) NULL;
+                composite_image=NewImageList();
               }
             if (mask_image != (Image *) NULL)
               {
                 DestroyImageList(mask_image);
-                mask_image=(Image *) NULL;
+                mask_image=NewImageList();
               }
             (void) CatchImageException(image);
             break;
@@ -1473,9 +1473,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
     k,
     x;
 
-  register Image
-    *p;
-
   register long
     i;
 
@@ -1492,7 +1489,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   status=True;
   filename=(char *) NULL;
   format=(char *) "%w,%h,%m";
-  image=(Image *) NULL;
+  image=NewImageList();
   image_list=(Image *) NULL;
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,exception);
@@ -1530,12 +1527,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             image=next_image;
             continue;
           }
-        /*
-          Link image into image list.
-        */
-        for (p=image; p->next != (Image *) NULL; p=p->next);
-        next_image->previous=p;
-        p->next=next_image;
+        AppendImageToList(&image,next_image);
         continue;
       }
     if ((image != (Image *) NULL) && (j != (k+1)))
@@ -1543,7 +1535,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
         AppendImageToList(&image_list,image);
-        image=(Image *) NULL;
+        image=NewImageList();
         j=k+1;
       }
     switch (*(option+1))
@@ -3294,7 +3286,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   */
   count=0;
   format=(char *) NULL;
-  image=(Image *) NULL;
+  image=NewImageList();
   number_images=0;
   status=True;
   ping=True;
@@ -3359,7 +3351,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             }
         }
         DestroyImageList(image);
-        image=(Image *) NULL;
+        image=NewImageList();
         number_images++;
         continue;
       }
@@ -3649,7 +3641,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   */
   format=(char *) NULL;
   global_colormap=False;
-  image=(Image *) NULL;
+  image=NewImageList();
   status=True;
   /*
     Parse command line.
@@ -5317,9 +5309,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   QuantizeInfo
     quantize_info;
 
-  register Image
-    *p;
-
   register long
     i;
 
@@ -5331,12 +5320,12 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   */
   format=(char *) "%w,%h,%m";
   first_scene=0;
-  image=(Image *) NULL;
+  image=NewImageList();
   image_list=(Image *) NULL;
   last_scene=0;
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,exception);
-  montage_image=(Image *) NULL;
+  montage_image=NewImageList();
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=0;
@@ -5388,12 +5377,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               image=next_image;
               continue;
             }
-          /*
-            Link image into image list.
-          */
-          for (p=image; p->next != (Image *) NULL; p=p->next);
-          next_image->previous=p;
-          p->next=next_image;
+          AppendImageToList(&image,next_image);
         }
         continue;
       }
@@ -5402,7 +5386,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
         AppendImageToList(&image_list,image);
-        image=(Image *) NULL;
+        image=NewImageList();
         j=k+1;
       }
     switch (*(option+1))
@@ -6481,7 +6465,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       status&=MogrifyImages(image_info,i-j,argv+j,&image);
       (void) CatchImageException(image);
       AppendImageToList(&image_list,image);
-      image=(Image *) NULL;
+      image=NewImageList();
       j=i;
     }
   (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);

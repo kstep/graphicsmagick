@@ -34,6 +34,7 @@
 		<li><a href="#removelastimagefromlist">RemoveLastImageFromList</a></li>
 		<li><a href="#reverseimagelist">ReverseImageList</a></li>
 		<li><a href="#spliceimageintolist">SpliceImageIntoList</a></li>
+		<li><a href="#splitimagelist">SplitImageList</a></li>
 	</ul>
 
 </ul>
@@ -48,7 +49,7 @@
 </p>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>unsigned int  <strong>AppendImageToList</strong>( Image *images, const Image *image );</p>
+<p>unsigned int  <strong>AppendImageToList</strong>( Image *images, Image *image );</p>
 <p>Image * <strong>CloneImageList</strong>( const Image *images, ExceptionInfo *exception );</p>
 <p>unsigned int  <strong>DeleteImageFromList</strong>( Image ** images, const long offset );</p>
 <p>void  <strong>DestroyImageList</strong>( Image *image );</p>
@@ -60,11 +61,12 @@
 <p>Image **  <strong>ImageListToArray</strong>( const Image *images, ExceptionInfo *exception );</p>
 <p>unsigned int  <strong>InsertImageInList</strong>( Image *images, const Image *image, const long offset, ExceptionInfo *exception );</p>
 <p>Image * <strong>NewImageList</strong>( void );</p>
-<p>unsigned int  <strong>PrependImageToList</strong>( Image *images, const Image *image );</p>
+<p>unsigned int  <strong>PrependImageToList</strong>( Image *images, Image *image );</p>
 <p>Image * <strong>RemoveFirstImageFromList</strong>( Image ** images );</p>
 <p>Image * <strong>RemoveLastImageFromList</strong>( Image ** images );</p>
 <p>Image * <strong>ReverseImageList</strong>( const Image *images, ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>SpliceImageIntoList</strong>( Image ** images, const long offset, const unsigned long length, Image *splices, ExceptionInfo *exception );</p>
+<p>unsigned int  <strong>SpliceImageIntoList</strong>( Image ** images, const long offset, const unsigned long length, Image *splices );</p>
+<p>Image * <strong>SplitImageList</strong>( Image *images, const long offset );</p>
 <p>
 </p>
 <hr />
@@ -73,7 +75,7 @@
 </p>
 <h2><a name="appendimagetolist">AppendImageToList</a></h2>
 <blockquote>AppendImageToList() appends an image to the end of the list. </blockquote><p>The format of the AppendImageToList method is:</p>
-<blockquote>unsigned int AppendImageToList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>unsigned int AppendImageToList ( <A HREF="types/Image.html">Image</A> *images, <A HREF="types/Image.html">Image</A> *image ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong><a name="item_o_images%3a">o images:</a></strong><br />
 </dt>
@@ -85,12 +87,6 @@ The image list.
 </dt>
 <dd>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
-</dt>
-<dd>
-Return any errors or warnings in this structure.
 </dd>
 <p></p></dl>
 <p>
@@ -105,7 +101,7 @@ Return any errors or warnings in this structure.
 The image list.
 </dd>
 <p></p>
-<dt><strong>o exception:</strong><br />
+<dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
 </dt>
 <dd>
 Return any errors or warnings in this structure.
@@ -269,7 +265,7 @@ Return any errors or warnings in this structure.
 </p>
 <h2><a name="prependimagetolist">PrependImageToList</a></h2>
 <blockquote>PrependImageToList() prepends the image to the beginning of the list. </blockquote><p>The format of the PrependImageToList method is:</p>
-<blockquote>unsigned int PrependImageToList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>unsigned int PrependImageToList ( <A HREF="types/Image.html">Image</A> *images, <A HREF="types/Image.html">Image</A> *image ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>
@@ -329,7 +325,7 @@ Return any errors or warnings in this structure.
 </p>
 <h2><a name="spliceimageintolist">SpliceImageIntoList</a></h2>
 <blockquote>SpliceImageIntoList() removes the images designated by offset and length from the list and replaces them with the specified list. </blockquote><p>The format of the SpliceImageIntoList method is:</p>
-<blockquote>unsigned int SpliceImageIntoList ( <A HREF="types/Image.html">Image</A> **images, const long offset, const unsigned long length, <A HREF="types/Image.html">Image</A> *splices, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>unsigned int SpliceImageIntoList ( <A HREF="types/Image.html">Image</A> **images, const long offset, const unsigned long length, <A HREF="types/Image.html">Image</A> *splices ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>
@@ -359,6 +355,24 @@ Replace the removed image list with this list.
 </dt>
 <dd>
 Return any errors or warnings in this structure.
+</dd>
+<p></p></dl>
+<p>
+</p>
+<h2><a name="splitimagelist">SplitImageList</a></h2>
+<blockquote>SplitImageList() splits an image into two lists. </blockquote><p>The format of the SplitImageList method is:</p>
+<blockquote><A HREF="types/Image.html">Image</A> *SplitImageList ( <A HREF="types/Image.html">Image</A> *images, const long offset ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong>o images:</strong><br />
+</dt>
+<dd>
+The image list.
+</dd>
+<p></p>
+<dt><strong>o offset:</strong><br />
+</dt>
+<dd>
+The position within the list.
 </dd>
 </dl>
 

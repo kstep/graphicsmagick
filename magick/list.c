@@ -85,8 +85,8 @@
 */
 MagickExport unsigned int AppendImageToList(Image **images,Image *image)
 {
-  Image
-    *next;
+  register Image
+    *p;
 
   assert(images != (Image **) NULL);
   if (image == (Image *) NULL)
@@ -98,9 +98,9 @@ MagickExport unsigned int AppendImageToList(Image **images,Image *image)
       return(True);
     }
   assert((*images)->signature == MagickSignature);
-  for (next=(*images); next->next != (Image *) NULL; next=next->next);
-  next->next=image;
-  next->next->previous=next;
+  for (p=(*images); p->next != (Image *) NULL; p=p->next);
+  p->next=image;
+  p->next->previous=p;
   return(True);
 }
 
@@ -132,36 +132,38 @@ MagickExport unsigned int AppendImageToList(Image **images,Image *image)
 MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 {
   Image
-    *clone_images,
-    *image;
+    *clone;
+
+  register Image
+    *p;
 
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  clone_images=(Image *) NULL;
+  p=(Image *) NULL;
   while (images->previous != (Image *) NULL)
     images=images->previous;
   for ( ; images != (Image *) NULL; images=images->next)
   {
-    image=CloneImage(images,0,0,True,exception);
-    if (image == (Image *) NULL)
+    clone=CloneImage(images,0,0,True,exception);
+    if (clone == (Image *) NULL)
       {
-        if (clone_images != (Image *) NULL)
-          DestroyImageList(clone_images);
+        if (p != (Image *) NULL)
+          DestroyImageList(p);
         return((Image *) NULL);
       }
-    if (clone_images == (Image *) NULL)
+    if (p == (Image *) NULL)
       {
-        clone_images=image;
+        p=clone;
         continue;
       }
-    image->previous=clone_images;
-    clone_images->next=image;
-    clone_images=clone_images->next;
+    clone->previous=p;
+    p->next=clone;
+    p=p->next;
   }
-  while (clone_images->previous != (Image *) NULL)
-    clone_images=clone_images->previous;
-  return(clone_images);
+  while (p->previous != (Image *) NULL)
+    p=p->previous;
+  return(p);
 }
 
 /*
@@ -192,8 +194,8 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 */
 MagickExport unsigned int DeleteImageFromList(Image **images,const long offset)
 {
-  Image
-    *image;
+  register Image
+    *p;
 
   register long
     i;
@@ -202,32 +204,32 @@ MagickExport unsigned int DeleteImageFromList(Image **images,const long offset)
   if ((*images) == (Image *) NULL)
     return(False);
   assert((*images)->signature == MagickSignature);
-  image=(*images);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  for (i=0; image != (Image *) NULL; image=image->next)
+  p=(*images);
+  while (p->previous != (Image *) NULL)
+    p=p->previous;
+  for (i=0; p != (Image *) NULL; p=p->next)
     if (i++ == offset)
       break;
-  if (image == (Image *) NULL)
+  if (p == (Image *) NULL)
     return(False);
-  if ((image->previous == (Image *) NULL) && (image->next == (Image *) NULL))
+  if ((p->previous == (Image *) NULL) && (p->next == (Image *) NULL))
     *images=(Image *) NULL;
   else
     {
-      if (image->previous != (Image *) NULL)
+      if (p->previous != (Image *) NULL)
         {
-          image->previous->next=image->next;
-          if (image == *images)
-            *images=image->previous;
+          p->previous->next=p->next;
+          if (p == *images)
+            *images=p->previous;
         }
-      if (image->next != (Image *) NULL)
+      if (p->next != (Image *) NULL)
         {
-          image->next->previous=image->previous;
-          if (image == *images)
-            *images=image->next;
+          p->next->previous=p->previous;
+          if (p == *images)
+            *images=p->next;
         }
     }
-  DestroyImage(image);
+  DestroyImage(p);
   return(True);
 }
 
@@ -256,18 +258,18 @@ MagickExport unsigned int DeleteImageFromList(Image **images,const long offset)
 */
 MagickExport void DestroyImageList(Image *images)
 {
-  Image
-    *image;
+  register Image
+    *p;
 
   if (images == (Image *) NULL)
     return;
   assert(images->signature == MagickSignature);
   while (images->previous != (Image *) NULL)
     images=images->previous;
-  for (image=images; images != (Image *) NULL; image=images)
+  for (p=images; images != (Image *) NULL; p=images)
   {
     images=images->next;
-    DestroyImage(image);
+    DestroyImage(p);
   }
 }
 
@@ -462,6 +464,11 @@ MagickExport Image *GetPreviousImageInList(const Image *images)
   assert(images->signature == MagickSignature);
   if (images->previous == (Image *) NULL)
     return((Image *) NULL);
+  if (images->blob != images->previous->blob)
+    {
+      DestroyBlobInfo(images->previous->blob);
+      images->previous->blob=ReferenceBlob(images->blob);
+    }
   return(images->previous);
 }
 
@@ -551,8 +558,8 @@ MagickExport Image **ImageListToArray(const Image *images,
 MagickExport unsigned int InsertImageInList(Image **images,const Image *image,
   const long offset,ExceptionInfo *exception)
 {
-  Image
-    *next;
+  register Image
+    *p;
 
   register long
     i;
@@ -569,16 +576,16 @@ MagickExport unsigned int InsertImageInList(Image **images,const Image *image,
       return(*images != (Image *) NULL);
     }
   assert((*images)->signature == MagickSignature);
-  for (next=(*images); next->previous != (Image *) NULL; next=next->previous);
-  for (i=0; next != (Image *) NULL; next=next->next)
+  for (p=(*images); p->previous != (Image *) NULL; p=p->previous);
+  for (i=0; p != (Image *) NULL; p=p->next)
     if (i++ == offset)
       break;
-  if (next == (Image *) NULL)
+  if (p == (Image *) NULL)
     return(False);
-  next->next=CloneImageList(image,exception);
-  if (next->next == (Image *) NULL)
+  p->next=CloneImageList(image,exception);
+  if (p->next == (Image *) NULL)
     return(False);
-  next->next->previous=next;
+  p->next->previous=p;
   return(True);
 }
 
@@ -632,8 +639,8 @@ MagickExport Image *NewImageList(void)
 */
 MagickExport unsigned int PrependImageToList(Image **images,Image *image)
 {
-  Image
-    *next;
+  register Image
+    *p;
 
   assert(images != (Image **) NULL);
   assert(image != (Image *) NULL);
@@ -646,10 +653,10 @@ MagickExport unsigned int PrependImageToList(Image **images,Image *image)
   assert((*images)->signature == MagickSignature);
   while ((*images)->previous != (Image *) NULL)
     (*images)=(*images)->previous;
-  next=image;
-  while (next->next != (Image *) NULL)
-    next=next->next;
-  (*images)->previous=next;
+  p=image;
+  while (p->next != (Image *) NULL)
+    p=p->next;
+  (*images)->previous=p;
   (*images)->previous->next=(*images);
   while ((*images)->previous != (Image *) NULL)
     (*images)=(*images)->previous;
@@ -681,8 +688,8 @@ MagickExport unsigned int PrependImageToList(Image **images,Image *image)
 */
 MagickExport Image *RemoveFirstImageFromList(Image **images)
 {
-  Image
-    *image;
+  register Image
+    *p;
 
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
@@ -690,12 +697,12 @@ MagickExport Image *RemoveFirstImageFromList(Image **images)
   assert((*images)->signature == MagickSignature);
   while ((*images)->previous != (Image *) NULL)
     (*images)=(*images)->previous;
-  image=(*images);
+  p=(*images);
   *images=(*images)->next;
   if ((*images) != (Image *) NULL)
     (*images)->previous=(Image *) NULL;
-  image->next=(Image *) NULL;
-  return(image);
+  p->next=(Image *) NULL;
+  return(p);
 }
 
 /*
@@ -724,7 +731,7 @@ MagickExport Image *RemoveFirstImageFromList(Image **images)
 MagickExport Image *RemoveLastImageFromList(Image **images)
 {
   Image
-    *image;
+    *p;
 
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
@@ -732,12 +739,12 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
   assert((*images)->signature == MagickSignature);
   while ((*images)->next != (Image *) NULL)
     (*images)=(*images)->next;
-  image=(*images);
+  p=(*images);
   *images=(*images)->previous;
   if ((*images) != (Image *) NULL)
     (*images)->next=(Image *) NULL;
-  image->previous=(Image *) NULL;
-  return(image);
+  p->previous=(Image *) NULL;
+  return(p);
 }
 
 /*
@@ -769,36 +776,38 @@ MagickExport Image *ReverseImageList(const Image *images,
   ExceptionInfo *exception)
 {
   Image
-    *image,
-    *reverse_images;
+    *clone;
+
+  register Image
+    *p;
 
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  reverse_images=(Image *) NULL;
+  p=(Image *) NULL;
   while (images->next != (Image *) NULL)
     images=images->next;
   for ( ; images != (Image *) NULL; images=images->previous)
   {
-    image=CloneImage(images,0,0,True,exception);
-    if (image == (Image *) NULL)
+    clone=CloneImage(images,0,0,True,exception);
+    if (clone == (Image *) NULL)
       {
-        if (reverse_images != (Image *) NULL)
-          DestroyImageList(reverse_images);
+        if (p != (Image *) NULL)
+          DestroyImageList(p);
         return((Image *) NULL);
       }
-    if (reverse_images == (Image *) NULL)
+    if (p == (Image *) NULL)
       {
-        reverse_images=image;
+        p=clone;
         continue;
       }
-    image->previous=reverse_images;
-    reverse_images->next=image;
-    reverse_images=reverse_images->next;
+    clone->previous=p;
+    p->next=clone;
+    p=p->next;
   }
-  while (reverse_images->previous != (Image *) NULL)
-    reverse_images=reverse_images->previous;
-  return(reverse_images);
+  while (p->previous != (Image *) NULL)
+    p=p->previous;
+  return(p);
 }
 
 /*
@@ -838,11 +847,13 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
   const unsigned long length,Image *splices)
 {
   Image
-    *image,
-    *next;
+    *split;
 
   register long
     i;
+
+  unsigned int
+    status;
 
   assert(images != (Image **) NULL);
   assert(splices != (Image *) NULL);
@@ -850,44 +861,63 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
   if ((*images) == (Image *) NULL)
     return(False);
   assert((*images)->signature == MagickSignature);
-  image=(*images);
-  for ( ; image->previous != (Image *) NULL; image=image->previous);
-  for (i=0; image != (Image *) NULL; image=image->next)
+  split=SplitImageList(*images,offset);
+  if (split == False)
+    return(False);
+  status=False;
+  for (i=0; i < length; i++)
+    status|=DeleteImageFromList(&split,0);
+  AppendImageToList(images,splices);
+  AppendImageToList(images,split);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S p l i t I m a g e L i s t                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SplitImageList() splits an image into two lists.
+%
+%  The format of the SplitImageList method is:
+%
+%      Image *SplitImageList(Image *images,const long offset)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o offset: The position within the list.
+%
+%
+*/
+MagickExport Image *SplitImageList(Image *images,const long offset)
+{
+  register Image
+    *p;
+
+  register long
+    i;
+
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  p=images;
+  for ( ; p->previous != (Image *) NULL; p=p->previous);
+  for (i=0; p != (Image *) NULL; p=p->next)
     if (i++ == offset)
       break;
-  if (image == (Image *) NULL)
-    return(False);
-  next=image;
-  for (i=0; i < length; i++)
-  {
-    if (next->next == (Image *) NULL)
-      break;
-    next=next->next;
-  }
-  if ((image->previous != (Image *) NULL) && (image->next != (Image *) NULL))
-    *images=splices;
-  else
-    {
-      if (image->previous != (Image *) NULL)
-        {
-          image->previous->next=splices;
-          while (splices->previous != (Image *) NULL)
-            splices=splices->previous;
-          splices->previous=image->previous;
-        }
-      if (next->next != (Image *) NULL)
-        {
-          while (splices->next != (Image *) NULL)
-            splices=splices->next;
-          splices->next=next->next;
-          next->next->previous=splices;
-        }
-    }
-  for (i=0; i < length; i++)
-  {
-    next=image;
-    image=image->next;
-    DestroyImage(next);
-  }
-  return(True);
+  if (p == (Image *) NULL)
+    return((Image *) NULL);
+  if (p->next == (Image *) NULL)
+    return((Image *) NULL);
+  p=p->next;
+  p->previous->next=(Image *) NULL;
+  p->previous=(Image *) NULL;
+  return(p);
 }
