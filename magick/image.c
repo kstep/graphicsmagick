@@ -1436,7 +1436,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           if ((source.opacity == TransparentOpacity) ||
               (destination.opacity == TransparentOpacity))
             {
-					    destination=source;
+              destination=source;
               break;
             }
           opacity=(double)
@@ -1455,7 +1455,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           if ((source.opacity == TransparentOpacity) ||
               (destination.opacity == OpaqueOpacity))
             {
-					    destination=source;
+              destination=source;
               break;
             }
           opacity=(double) (MaxRGB-source.opacity)*destination.opacity/MaxRGB;
