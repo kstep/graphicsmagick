@@ -3595,7 +3595,7 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
     (primitive_info[i-1].point.y == primitive_info[0].point.y);
   number_vertices=i;
   polygon_primitive=(PrimitiveInfo *)
-    AcquireMemory((number_vertices+1)*sizeof(PrimitiveInfo));
+    AcquireMemory((number_vertices+2)*sizeof(PrimitiveInfo));
   if (polygon_primitive == (PrimitiveInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to draw stroke polygon",
       image->filename);
