@@ -2551,7 +2551,7 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
         Min(y+y_distance,image->rows-1),1,1);
       if (p == (PixelPacket *) NULL)
         break;
-      *q++=(*q);
+      *q++=(*p);
     }
     if (!SyncPixelCache(spread_image))
       break;
