@@ -653,7 +653,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("colorspace",option+1,7) == 0)
             {
-              if (*option == '-')
+              if ((*option == '-') || (*option == '+'))
                 {
                   i++;
                   if (i == argc)
