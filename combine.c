@@ -88,13 +88,8 @@
 /*
   Include declarations.
 */
-#if !defined(macintosh)
 #include "magick/magick.h"
 #include "magick/defines.h"
-#else
-#include "magick.h"
-#include "defines.h"
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

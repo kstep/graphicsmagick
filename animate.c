@@ -110,15 +110,9 @@
 /*
   Include declarations.
 */
-#if !defined(macintosh)
 #include "magick/magick.h"
 #include "magick/defines.h"
 #include "magick/xwindows.h"
-#else
-#include "magick.h"
-#include "defines.h"
-#include "xwindows.h"
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
