@@ -1426,6 +1426,45 @@ static PixelPacket *GetPixelCache(Image *image,const long x,const long y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t P i x e l C a c h e A r e a                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetPixelCacheArea() returns the area (width * height in pixels) consumed by
+%  the current pixel cache.
+%
+%  The format of the GetPixelCacheArea() method is:
+%
+%      unsigned long GetPixelCacheArea(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport unsigned long GetPixelCacheArea(const Image *image)
+{
+  CacheInfo
+    *cache_info;
+
+  register NexusInfo
+    *nexus_info;
+
+  assert(image != (Image *) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  nexus_info=cache_info->nexus_info+cache_info->id;
+  return(nexus_info->columns*nexus_info->rows);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t P i x e l s F r o m C a c h e                                       %
 %                                                                             %
 %                                                                             %
@@ -2509,6 +2548,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   assert(image != (Image *) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
+  cache_info->id=nexus;
   nexus_info=cache_info->nexus_info+nexus;
   nexus_info->columns=region->width;
   nexus_info->rows=region->height;

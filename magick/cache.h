@@ -41,6 +41,9 @@ typedef struct _NexusInfo
 
 typedef struct _CacheInfo
 {
+  unsigned long
+    id;
+
   NexusInfo
     *nexus_info;
 
@@ -147,7 +150,8 @@ extern MagickExport unsigned int
   SyncCacheNexus(Image *,const unsigned long);
 
 extern MagickExport unsigned long
-  GetNexus(Cache);
+  GetNexus(Cache),
+  GetPixelCacheArea(const Image *);
 
 extern MagickExport void
   AllocateCacheNexus(CacheInfo *),
