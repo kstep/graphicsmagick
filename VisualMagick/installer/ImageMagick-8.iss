@@ -52,7 +52,7 @@
 AppName=GraphicsMagick 1.0.0 Q:8
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=GraphicsMagick 1.0.0 Q:8 Beta (November 26, 2002)
+AppVerName=GraphicsMagick 1.0.0 Q:8 Beta (December 6, 2002)
 AppVersion=1.0.0
 AppCopyright=Copyright (C) 2002 GraphicsMagick Group LLC
 AppPublisher=GraphicsMagick Group
@@ -734,6 +734,7 @@ Source: "..\bin\composite.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\conjure.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\convert.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\display.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+Source: "..\bin\gm.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\hp2xx.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\identify.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\import.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
