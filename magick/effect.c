@@ -1611,7 +1611,7 @@ static int OpacityCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return((int) color_1->opacity-color_2->opacity);
+  return((int) (color_1->opacity-color_2->opacity));
 }
 
 static int RedCompare(const void *x,const void *y)
