@@ -952,8 +952,6 @@ extern MagickExport void
   SolarizeImage(Image *,const double),
   SyncImage(Image *),
   TextureImage(Image *,const Image *),
-  TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,
-    double *),
   TransformImage(Image **,const char *,const char *),
   UnregisterARTImage(void),
   UnregisterAVIImage(void),
