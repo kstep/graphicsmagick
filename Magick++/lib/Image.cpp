@@ -1838,7 +1838,7 @@ Magick::Color Magick::Image::boxColor ( void ) const
 /* static */
 void Magick::Image::cacheThreshold ( const unsigned int threshold_ )
 {
-  SetCacheThreshold( threshold_ , threshold_);
+  SetCacheThreshold( threshold_ , ~0 );
 }
 
 void Magick::Image::chromaBluePrimary ( const double x_, const double y_ )

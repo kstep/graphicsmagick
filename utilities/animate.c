@@ -496,8 +496,7 @@ int main(int argc,char **argv)
 
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"Missing threshold",
-                    option);
+                  MagickFatalError(OptionFatalError,"Missing threshold",option);
                 minimum=0.0;
                 maximum=0.0;
                 count=sscanf(argv[i],"%lfx%lf",&minimum,&maximum);
