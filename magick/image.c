@@ -7223,7 +7223,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 #define R 0
 #define TransformRGBImageText  "  Transform image colors...  "
 
-  static const Quantum
+  static const unsigned char
     sRGBMap[351] =
     {
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
