@@ -45,6 +45,10 @@ typedef struct _DrawInfo
     fill,
     stroke;
 
+  Image
+    *fill_pattern,
+    *stroke_pattern;
+
   unsigned int
     stroke_antialias,
     text_antialias;
