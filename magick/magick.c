@@ -939,7 +939,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   if (p != (char *) NULL)
     (void) strcpy(image_info->magick,p);
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
-  if (magic_info != (MagicInfo *) NULL)
+  if ((magic_info != (MagicInfo *) NULL) && (magic_info->name != (char *) NULL))
     (void) strcpy(image_info->magick,magic_info->name);
   return(True);
 }
