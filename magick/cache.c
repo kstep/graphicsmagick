@@ -922,9 +922,10 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
         allocation=AllocateMemory(length);
       else
         {
-          allocation=ReallocateMemory(cache_info->pixels,length);
-          if (allocation == (void *) NULL)
+          cache_info->pixels=ReallocateMemory(cache_info->pixels,length);
+          if (cache_info->pixels == (void *) NULL)
             return(False);
+          allocation=cache_info->pixels;
         }
       if (allocation != (void *) NULL)
         {
