@@ -1,7 +1,7 @@
 #
 # Makefile for Magick++ demo programs
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2001
+# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 #
 AUTOMAKE_OPTIONS = 1.4
 
@@ -20,7 +20,7 @@ piddle_SOURCES  = piddle.cpp
 shapes_SOURCES  = shapes.cpp
 zoom_SOURCES	= zoom.cpp
 
-EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
+EXTRA_DIST = model.miff smile.miff smile_anim.miff tile.miff
 
 CLEANFILES = *_out.miff
 

@@ -27,7 +27,7 @@ int main( int /*argc*/, char ** argv)
     srcdir = getenv("srcdir") + string("/");
 
   // Common font to use.
-  string font = srcdir + "Generic.ttf";
+  string font = "Helvetica";
 
   try {
 

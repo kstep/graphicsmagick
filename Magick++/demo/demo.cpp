@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Simple demo program for Magick++
 //
@@ -33,7 +33,7 @@ int main( int /*argc*/, char ** argv)
       srcdir = getenv("srcdir") + string("/");
     
     // Common font to use.
-    string font = srcdir + "Generic.ttf";
+    string font = "Helvetica";
 
     list<Image> montage;
 

@@ -47,10 +47,10 @@ int main( int /*argc*/, char ** argv)
     string textColor = "red";
 
     // Font to use for text
-    string textFont = srcdir + "Generic.ttf";
+    string font = "Helvetica";
 
     // Font point size
-    int textFontPointSize = 16;
+    int fontPointSize = 16;
 
     //
     // Magick++ operations
@@ -70,8 +70,8 @@ int main( int /*argc*/, char ** argv)
 
     // Add some text
     button.fillColor( textColor );
-    button.fontPointsize( textFontPointSize );
-    button.font( textFont );
+    button.fontPointsize( fontPointSize );
+    button.font( font );
     button.annotate( text, CenterGravity );
 
     // Add a decorative frame

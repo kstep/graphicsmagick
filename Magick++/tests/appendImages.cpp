@@ -16,6 +16,12 @@ using namespace std;
 
 using namespace Magick;
 
+#if defined(EXPLICIT_TEMPLATE_INSTANTIATION)
+template class std::list <Magick::Image>;
+template void Magick::insertImages<std::list<Magick::Image> > (std::list<Magick::Image>*, MagickLib::Image*, Options &);
+template void Magick::readImages<std::list<Magick::Image> > (std::list<Magick::Image>*, const std::string &);
+#endif
+
 int main( int /*argc*/, char ** argv)
 {
 
