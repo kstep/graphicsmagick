@@ -1,5 +1,9 @@
 2002-11-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Updated to autoconf 2.56
+
+2002-11-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* Updated to autoconf 2.55
 	* Switched to using standard C++ headers.  Define
         USE_LEGACY_INCLUDES to use legacy headers.
