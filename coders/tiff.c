@@ -331,13 +331,24 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     units,
     value;
 
+#if defined(HasPTHREADS)
+  static pthread_mutex_t
+    tiff_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+  pthread_mutex_lock(&tiff_mutex);
+#endif
   /*
     Open image.
   */
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    {
+#if defined(HasPTHREADS)
+      pthread_mutex_unlock(&tiff_mutex);
+#endif
+      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    }
   if ((image->file == stdin) || image->pipe)
     {
       FILE
@@ -352,7 +363,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       TemporaryFilename((char *) image_info->filename);
       file=fopen(image_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+        {
+#if defined(HasPTHREADS)
+          pthread_mutex_unlock(&tiff_mutex);
+#endif
+          ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+        }
       c=ReadByte(image);
       while (c != EOF)
       {
@@ -367,7 +383,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarningHandler);
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    {
+#if defined(HasPTHREADS)
+      pthread_mutex_unlock(&tiff_mutex);
+#endif
+      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    }
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
     {
@@ -377,8 +398,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image->scene++;
       status=TIFFReadDirectory(tiff);
       if (status == False)
-        ThrowReaderException(CorruptImageWarning,"Unable to read subimage",
-          image);
+        {
+#if defined(HasPTHREADS)
+          pthread_mutex_unlock(&tiff_mutex);
+#endif
+          ThrowReaderException(CorruptImageWarning,"Unable to read subimage",
+            image);
+        }
     }
   do
   {
@@ -472,6 +498,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (image->colormap == (PixelPacket *) NULL)
           {
             TIFFClose(tiff);
+#if defined(HasPTHREADS)
+            pthread_mutex_unlock(&tiff_mutex);
+#endif
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -534,6 +563,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
+#if defined(HasPTHREADS)
+            pthread_mutex_unlock(&tiff_mutex);
+#endif
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -722,6 +754,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
+#if defined(HasPTHREADS)
+            pthread_mutex_unlock(&tiff_mutex);
+#endif
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -800,6 +835,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
+#if defined(HasPTHREADS)
+            pthread_mutex_unlock(&tiff_mutex);
+#endif
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -808,6 +846,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             FreeMemory((void **) &pixels);
             TIFFClose(tiff);
+#if defined(HasPTHREADS)
+            pthread_mutex_unlock(&tiff_mutex);
+#endif
             ThrowReaderException(CorruptImageWarning,"Unable to read image",
               image);
           }
@@ -872,6 +913,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&tiff_mutex);
+#endif
   return(image);
 }
 #else
