@@ -108,7 +108,7 @@ static CoderInfo
   *SetCoderInfo(const char *);
 
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned int,ExceptionInfo *),
+  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *),
   UnloadModule(const CoderInfo *,ExceptionInfo *),
   UnregisterModule(const char *,ExceptionInfo *);
 
@@ -499,7 +499,7 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
         MagickFatalError(DelegateFatalError,
           "Unable to initialize module loader",lt_dlerror());
       OpenStaticModules();
-      (void) ReadConfigureFile(ModuleFilename,True,exception);
+      (void) ReadConfigureFile(ModuleFilename,0,exception);
     }
   LiberateSemaphoreInfo(&module_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
@@ -817,7 +817,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %  The format of the ReadConfigureFile method is:
 %
 %      unsigned int ReadConfigureFile(const char *basename,
-%        const unsigned int master,ExceptionInfo *exception)
+%        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -826,14 +826,14 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %
 %    o basename:  The color configuration filename.
 %
-%    o master: This is the master configure file if a value other than 0.
+%    o depth: depth of <include /> statements.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 static unsigned int ReadConfigureFile(const char *basename,
-  const unsigned int master,ExceptionInfo *exception)
+  const unsigned long depth,ExceptionInfo *exception)
 {
 #if defined(HasMODULES)
   char
@@ -850,7 +850,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     Read the module configure file.
   */
   (void) strcpy(path,basename);
-  if (master)
+  if (depth == 0)
     xml=(char *) GetModuleBlob(basename,path,&length,exception);
   else
     xml=(char *) FileToBlob(basename,&length,exception);
@@ -888,17 +888,21 @@ static unsigned int ReadConfigureFile(const char *basename,
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
-            {
-              char
-                filename[MaxTextExtent];
-
-              GetPathComponent(path,HeadPath,filename);
-              (void) strcat(filename,DirectorySeparator);
-              (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
-              (void) ReadConfigureFile(filename,False,exception);
-              while (module_list->next != (ModuleInfo *) NULL)
-                module_list=module_list->next;
-            }
+            if (depth > 200)
+              ThrowException(exception,ConfigureError,
+                "<include /> nested too deeply",path);
+						else
+              {
+                char
+                  filename[MaxTextExtent];
+  
+                GetPathComponent(path,HeadPath,filename);
+                (void) strcat(filename,DirectorySeparator);
+                (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
+                (void) ReadConfigureFile(filename,depth+1,exception);
+                while (module_list->next != (ModuleInfo *) NULL)
+                  module_list=module_list->next;
+              }
         }
         continue;
       }

@@ -1141,7 +1141,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     case 'raw ':
     case 'smc ':
     {
-      if (depth > 32)
+      if (depth > 200)
         {
           depth-=32;
           picture_info.theColorTable=GetCTable(colormap_id);

@@ -149,7 +149,7 @@ static NodeInfo
   *GetNodeInfo(CubeInfo *,const unsigned int);
 
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned int,ExceptionInfo *);
+  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 static void
   DestroyColorList(const NodeInfo *),
@@ -429,7 +429,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 
   AcquireSemaphoreInfo(&color_semaphore);
   if (color_list == (ColorInfo *) NULL)
-    (void) ReadConfigureFile(ColorFilename,True,exception);
+    (void) ReadConfigureFile(ColorFilename,0,exception);
   LiberateSemaphoreInfo(&color_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(color_list);
@@ -1617,7 +1617,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
 %  The format of the ReadConfigureFile method is:
 %
 %      unsigned int ReadConfigureFile(const char *basename,
-%        const unsigned int master,ExceptionInfo *exception)
+%        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1626,14 +1626,14 @@ MagickExport unsigned int QueryColorname(const Image *image,
 %
 %    o basename:  The color configuration filename.
 %
-%    o master: This is the master configure file if a value other than 0.
+%    o depth: depth of <include /> statements.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 static unsigned int ReadConfigureFile(const char *basename,
-  const unsigned int master,ExceptionInfo *exception)
+  const unsigned long depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -1649,7 +1649,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     Read the color configure file.
   */
   (void) strcpy(path,basename);
-  if (master)
+  if (depth == 0)
     xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   else
     xml=(char *) FileToBlob(basename,&length,exception);
@@ -1687,17 +1687,21 @@ static unsigned int ReadConfigureFile(const char *basename,
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
-            {
-              char
-                filename[MaxTextExtent];
-
-              GetPathComponent(path,HeadPath,filename);
-              (void) strcat(filename,DirectorySeparator);
-              (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
-              (void) ReadConfigureFile(filename,False,exception);
-              while (color_list->next != (ColorInfo *) NULL)
-                color_list=color_list->next;
-            }
+            if (depth > 200)
+              ThrowException(exception,ConfigureError,
+                "<include /> nested too deeply",path);
+						else
+              {
+                char
+                  filename[MaxTextExtent];
+  
+                GetPathComponent(path,HeadPath,filename);
+                (void) strcat(filename,DirectorySeparator);
+                (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
+                (void) ReadConfigureFile(filename,depth+1,exception);
+                while (color_list->next != (ColorInfo *) NULL)
+                  color_list=color_list->next;
+              }
         }
         continue;
       }

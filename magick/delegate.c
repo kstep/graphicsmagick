@@ -88,7 +88,7 @@ static SemaphoreInfo
   Forward declaractions.
 */
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned int,ExceptionInfo *);
+  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -260,7 +260,7 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
 
   AcquireSemaphoreInfo(&delegate_semaphore);
   if (delegate_list == (DelegateInfo *) NULL)
-    (void) ReadConfigureFile(DelegateFilename,True,exception);
+    (void) ReadConfigureFile(DelegateFilename,0,exception);
   LiberateSemaphoreInfo(&delegate_semaphore);
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     return(delegate_list);
@@ -557,7 +557,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %  The format of the ReadConfigureFile method is:
 %
 %      unsigned int ReadConfigureFile(const char *basename,
-%        const unsigned int master,ExceptionInfo *exception)
+%        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -566,14 +566,14 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %
 %    o basename:  The color configuration filename.
 %
-%    o master: This is the master configure file if a value other than 0.
+%    o depth: depth of <include /> statements.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 static unsigned int ReadConfigureFile(const char *basename,
-  const unsigned int master,ExceptionInfo *exception)
+  const unsigned long depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -589,7 +589,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     Read the delegates configure file.
   */
   (void) strcpy(path,basename);
-  if (master)
+  if (depth == 0)
     xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   else
     xml=(char *) FileToBlob(basename,&length,exception);
@@ -627,17 +627,21 @@ static unsigned int ReadConfigureFile(const char *basename,
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
-            {
-              char
-                filename[MaxTextExtent];
+            if (depth > 200)
+              ThrowException(exception,ConfigureError,
+                "<include /> nested too deeply",path);
+						else
+              {
+                char
+                  filename[MaxTextExtent];
 
-              GetPathComponent(path,HeadPath,filename);
-              (void) strcat(filename,DirectorySeparator);
-              (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
-              (void) ReadConfigureFile(filename,False,exception);
-              while (delegate_list->next != (DelegateInfo *) NULL)
-                delegate_list=delegate_list->next;
-            }
+                GetPathComponent(path,HeadPath,filename);
+                (void) strcat(filename,DirectorySeparator);
+                (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
+                (void) ReadConfigureFile(filename,depth+1,exception);
+                while (delegate_list->next != (DelegateInfo *) NULL)
+                  delegate_list=delegate_list->next;
+              }
         }
         continue;
       }

@@ -81,7 +81,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned int,ExceptionInfo *);
+  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -171,7 +171,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
 
   AcquireSemaphoreInfo(&magic_semaphore);
   if (magic_list == (MagicInfo *) NULL)
-    (void) ReadConfigureFile(MagicFilename,True,exception);
+    (void) ReadConfigureFile(MagicFilename,0,exception);
   LiberateSemaphoreInfo(&magic_semaphore);
   if ((magic == (const unsigned char *) NULL) || (length == 0))
     return(magic_list);
@@ -283,7 +283,7 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 %  The format of the ReadConfigureFile method is:
 %
 %      unsigned int ReadConfigureFile(const char *basename,
-%        const unsigned int master,ExceptionInfo *exception)
+%        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -292,14 +292,14 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 %
 %    o basename:  The color configuration filename.
 %
-%    o master: This is the master configure file if a value other than 0.
+%    o depth: depth of <include /> statements.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 static unsigned int ReadConfigureFile(const char *basename,
-  const unsigned int master,ExceptionInfo *exception)
+  const unsigned long depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -315,7 +315,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     Read the magic configure file.
   */
   (void) strcpy(path,basename);
-  if (master)
+  if (depth == 0)
     xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   else
     xml=(char *) FileToBlob(basename,&length,exception);
@@ -353,17 +353,21 @@ static unsigned int ReadConfigureFile(const char *basename,
             continue;
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
-            {
-              char
-                filename[MaxTextExtent];
-
-              GetPathComponent(path,HeadPath,filename);
-              (void) strcat(filename,DirectorySeparator);
-              (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
-              (void) ReadConfigureFile(filename,False,exception);
-              while (magic_list->next != (MagicInfo *) NULL)
-                magic_list=magic_list->next;
-            }
+            if (depth > 200)
+              ThrowException(exception,ConfigureError,
+                "<include /> nested too deeply",path);
+						else
+              {
+                char
+                  filename[MaxTextExtent];
+  
+                GetPathComponent(path,HeadPath,filename);
+                (void) strcat(filename,DirectorySeparator);
+                (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
+                (void) ReadConfigureFile(filename,depth+1,exception);
+                while (magic_list->next != (MagicInfo *) NULL)
+                  magic_list=magic_list->next;
+              }
         }
         continue;
       }
