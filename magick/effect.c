@@ -906,7 +906,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "unableToEdgeImage");
+      "UnableToEdgeImage");
   for (i=0; i < (width*width); i++)
     kernel[i]=(-1.0);
   kernel[i/2]=width*width-1.0;

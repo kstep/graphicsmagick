@@ -330,7 +330,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     {
       DestroyImage(magnify_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to magnify image")
+        "UnableToMagnifyImage")
     }
   /*
     Initialize magnify image pixels.
@@ -1057,7 +1057,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   assert((filter >= 0) && (filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
     ThrowImageException(ImageError,"UnableToResizeImage",
-      "image dimensions are zero");
+      "NegativeOrZeroImageSize");
   if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
     return(CloneImage(image,0,0,True,exception));
   resize_image=CloneImage(image,columns,rows,True,exception);
@@ -1089,7 +1089,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     {
       DestroyImage(resize_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to resize image")
+        "UnableToResizeImage")
     }
   /*
     Resize image.
@@ -1135,7 +1135,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     {
       DestroyImage(resize_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to resize image");
+        "UnableToResizeImage");
     }
   return(resize_image);
 }
@@ -1213,7 +1213,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   assert(exception->signature == MagickSignature);
   if ((columns == 0) || (rows == 0))
     ThrowImageException(ImageError,"UnableToResizeImage",
-      "image dimensions are zero");
+      "NegativeOrZeroImageSize");
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,True,exception));
   sample_image=CloneImage(image,columns,rows,True,exception);
@@ -1230,7 +1230,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     {
       DestroyImage(sample_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to sample image")
+        "UnableToSampleImage")
     }
   /*
     Initialize pixel offsets.
@@ -1397,7 +1397,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
     {
       DestroyImage(scale_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to scale image")
+        "UnableToScaleImage")
     }
   /*
     Scale image.

@@ -952,7 +952,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   integral_image=IntegralRotateImage(image,rotations,exception);
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to rotate image");
+      "UnableToRotateImage");
   shear.x=(-tan(DegreesToRadians(angle)/2));
   shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -980,7 +980,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   DestroyImage(integral_image);
   if (rotate_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to rotate image");
+      "UnableToRotateImage");
   /*
     Rotate the image.
   */
@@ -1067,15 +1067,14 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if ((x_shear == 180.0) || (y_shear == 180.0))
-    ThrowImageException(ImageError,"UnableToShearImage",
-      "angle is discontinuous");
+    ThrowImageException(ImageError,"UnableToShearImage","AngleIsDiscontinuous");
   /*
     Initialize shear angle.
   */
   integral_image=IntegralRotateImage(image,0,exception);
   if (integral_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to shear image");
+      "UnableToShearImage");
   shear.x=(-tan(DegreesToRadians(x_shear)/2));
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -1095,7 +1094,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   shear_image=BorderImage(integral_image,&border_info,exception);
   if (shear_image == (Image *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to shear image");
+      "UnableToShearImage");
   DestroyImage(integral_image);
   /*
     Shear the image.

@@ -467,7 +467,7 @@ MagickExport unsigned int SignatureImage(Image *image)
   message=(unsigned char *) AcquireMemory(20*image->columns);
   if (message == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to compute signature");
+      "UnableToComputeImageSignature");
   /*
     Compute image digital signature.
   */

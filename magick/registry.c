@@ -331,7 +331,7 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
         if (blob == (void *) NULL)
           {
             ThrowException(exception,ResourceLimitError,
-              "MemoryAllocationFailed","Unable to get registry");
+              "MemoryAllocationFailed","UnableToGetFromRegistry");
             break;
           }
         (void) memcpy(blob,registry_info->blob,registry_info->length);
@@ -407,13 +407,13 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       if (length != sizeof(Image))
         {
           ThrowException(exception,RegistryError,"UnableToSetRegistry",
-            "structure size mismatch");
+            "StructureSizeMismatch");
           return(-1);
         }
       if (image->signature != MagickSignature)
         {
           ThrowException(exception,RegistryError,"UnableToSetRegistry",
-            "image expected");
+            "ImageExpected");
           return(-1);
         }
       clone_blob=(void *) CloneImageList(image,exception);
@@ -430,13 +430,13 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       if (length != sizeof(ImageInfo))
         {
           ThrowException(exception,RegistryError,"UnableToSetRegistry",
-            "structure size mismatch");
+            "StructureSizeMismatch");
           return(-1);
         }
       if (image_info->signature != MagickSignature)
         {
           ThrowException(exception,RegistryError,"UnableToSetRegistry",
-            "image info expected");
+            "ImageInfoExpected");
           return(-1);
         }
       clone_blob=(void *) CloneImageInfo(image_info);

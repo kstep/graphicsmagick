@@ -373,7 +373,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   if ((floodplane== (unsigned char *) NULL) ||
       (segment_stack == (SegmentInfo *) NULL))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to floodfill image");
+      "UnableToFloodfillImage");
   (void) memset(floodplane,False,image->columns*image->rows);
   /*
     Push initial segment on stack.
@@ -1834,7 +1834,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     {
       LiberateMemory((void **) &primitive);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to draw image")
+        "UnableToDrawOnImage")
     }
   number_points=2047;
   primitive_info=(PrimitiveInfo *)
@@ -1846,7 +1846,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         DestroyDrawInfo(graphic_context[n]);
       LiberateMemory((void **) &graphic_context);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to draw image")
+        "UnableToDrawOnImage")
     }
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   token=AllocateString(primitive);
@@ -2574,7 +2574,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 if (graphic_context == (DrawInfo **) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitError,
-											"MemoryAllocationFailed","unable to draw image");
+											"MemoryAllocationFailed","UnableToDrawOnImage");
                     break;
                   }
                 graphic_context[n]=
@@ -2698,7 +2698,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 if (graphic_context[n]->dash_pattern == (double *) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitError,
-											"MemoryAllocationFailed","unable to draw image");
+											"MemoryAllocationFailed","UnableToDrawOnImage");
                     break;
                   }
                 for (j=0; j < x; j++)
@@ -2926,7 +2926,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
           ThrowException(&image->exception,ResourceLimitError,
-						"MemoryAllocationFailed","unable to draw image");
+						"MemoryAllocationFailed","UnableToDrawOnImage");
           break;
         }
     }
@@ -2965,7 +2965,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (primitive_info == (PrimitiveInfo *) NULL)
           {
             ThrowException(&image->exception,ResourceLimitError,
-							"MemoryAllocationFailed","unable to draw image");
+							"MemoryAllocationFailed","UnableToDrawOnImage");
             break;
           }
       }
@@ -3115,7 +3115,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
                 ThrowException(&image->exception,ResourceLimitError,
-									"MemoryAllocationFailed","unable to draw path");
+									"MemoryAllocationFailed","UnableToDrawOnImage");
                 break;
               }
           }
@@ -4418,7 +4418,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to floodfill image");
+      "UnableToFloodfillImage");
   /*
     Push initial segment on stack.
   */
@@ -4838,7 +4838,7 @@ MagickExport void TraceBezier(PrimitiveInfo *primitive_info,
   points=(PointInfo *) AcquireMemory(control_points*sizeof(PointInfo));
   if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
     MagickFatalError(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to draw image");
+      "UnableToDrawOnImage");
   /*
     Compute bezier points.
   */

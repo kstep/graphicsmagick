@@ -710,7 +710,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       }
       case 'u':
       {
-        (void) fprintf(stdout,"%0.2fu",user_time);
+        (void) fprintf(stdout,"%0.3fu",user_time);
         break;
       }
       default:

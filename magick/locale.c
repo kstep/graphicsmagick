@@ -421,7 +421,7 @@ const char *GetLocaleMessage(const char *tag)
 
         case 'w':  case 'W':
           if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
-            if (LocaleNCompare(NEXT_FIELD, "Lossless to lossy JPEG conversion", 33) || p - tp != 33)
+            if (LocaleNCompare(NEXT_FIELD, "LosslessToLossyJPEGConversion", 29) || p - tp != 29)
               return tag;
             else
               return *np ? tag : "Lossless to lossy JPEG conversion";
@@ -939,6 +939,12 @@ const char *GetLocaleMessage(const char *tag)
           default:
             return tag;
 
+          case 'a':  case 'A':
+            if (p - tp == 21 && !LocaleNCompare(tp, "AngleIs discontinuous", 21))
+              return *np ? tag : "angle is discontinuous";
+            else
+              return tag;
+
           case 'c':  case 'C':
             if (p - tp == 27 && !LocaleNCompare(tp, "ColorSeparatedImageRequired", 27))
               return *np ? tag : "Color separated image required";
@@ -946,11 +952,26 @@ const char *GetLocaleMessage(const char *tag)
               return tag;
 
           case 'i':  case 'I':
+            if (p - tp == 22 && !LocaleNCompare(tp, "ImageColorspaceDiffers", 22))
+              return *np ? tag : "image colorspace differs";
+            else
+            if (p - tp == 19 && !LocaleNCompare(tp, "ImageOpacityDiffers", 19))
+              return *np ? tag : "image opacity differs";
+            else
             if (p - tp == 23 && !LocaleNCompare(tp, "ImageSequenceIsRequired", 23))
               return *np ? tag : "Image sequence is required";
             else
+            if (p - tp == 16 && !LocaleNCompare(tp, "ImageSizeDiffers", 16))
+              return *np ? tag : "image size differs";
+            else
             if (p - tp == 27 && !LocaleNCompare(tp, "InputImagesAlreadySpecified", 27))
               return *np ? tag : "Input images already specified";
+            else
+              return tag;
+
+          case 'l':  case 'L':
+            if (p - tp == 28 && !LocaleNCompare(tp, "LeftAndRightImageSizesDiffer", 28))
+              return *np ? tag : "left and right image sizes differ";
             else
               return tag;
 
@@ -966,12 +987,33 @@ const char *GetLocaleMessage(const char *tag)
             else
               return tag;
 
+          case 't':  case 'T':
+            if (p - tp == 15 && !LocaleNCompare(tp, "TooManyClusters", 15))
+              return *np ? tag : "too many cluster";
+            else
+              return tag;
+
           case 'u':  case 'U':
+            if (p - tp == 19 && !LocaleNCompare(tp, "UnableToAppendImage", 19))
+              return *np ? tag : "unable to append image";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnableToAverageImage", 20))
+              return *np ? tag : "unable to average image";
+            else
             if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCompareImages", 21))
               return *np ? tag : "Unable to compare images";
             else
+            if (p - tp == 25 && !LocaleNCompare(tp, "UnableToCreateImageMosaic", 25))
+              return *np ? tag : "unable to create image mosaic";
+            else
             if (p - tp == 25 && !LocaleNCompare(tp, "UnableToCreateStereoImage", 25))
               return *np ? tag : "Unable to create stereo image";
+            else
+            if (p - tp == 32 && !LocaleNCompare(tp, "UnableToDeconstructImageSequence", 32))
+              return *np ? tag : "Unable to deconstruct image sequence";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnableToFlattenImage", 20))
+              return *np ? tag : "Unable to flatten image";
             else
             if (p - tp == 19 && !LocaleNCompare(tp, "UnableToResizeImage", 19))
               return *np ? tag : "Unable to resize image";
@@ -1244,8 +1286,14 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 29 && !LocaleNCompare(tp, "ImageSizeMustExceedBevelWidth", 29))
               return *np ? tag : "size must exceed bevel width";
             else
+            if (p - tp == 27 && !LocaleNCompare(tp, "ImageSmallerThanKernelWidth", 27))
+              return *np ? tag : "image smaller than kernel width";
+            else
             if (p - tp == 22 && !LocaleNCompare(tp, "ImageSmallerThanRadius", 22))
               return *np ? tag : "image smaller than radius";
+            else
+            if (p - tp == 26 && !LocaleNCompare(tp, "ImageWidthsOrHeightsDiffer", 26))
+              return *np ? tag : "image widths or heights differ";
             else
             if (p - tp == 17 && !LocaleNCompare(tp, "InvalidColorspace", 17))
               return *np ? tag : "Invalid image colorspace";
@@ -1264,6 +1312,9 @@ const char *GetLocaleMessage(const char *tag)
           case 'k':  case 'K':
             if (p - tp == 22 && !LocaleNCompare(tp, "KernelRadiusIsTooSmall", 22))
               return *np ? tag : "kernel radius is too small";
+            else
+            if (p - tp == 28 && !LocaleNCompare(tp, "KernelWidthMustBeAnOddNumber", 28))
+              return *np ? tag : "kernel width must be an odd number";
             else
               return tag;
 
@@ -1463,6 +1514,9 @@ const char *GetLocaleMessage(const char *tag)
               return tag;
 
           case 'u':  case 'U':
+            if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAddOrRemoveProfile", 26))
+              return *np ? tag : "Unable to add or remove profile";
+            else
             if (p - tp == 17 && !LocaleNCompare(tp, "UnableToBlurImage", 17))
               return *np ? tag : "Unable to blur image";
             else
@@ -1484,6 +1538,9 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 18 && !LocaleNCompare(tp, "UnableToFrameImage", 18))
               return *np ? tag : "Unable to frame image";
             else
+            if (p - tp == 21 && !LocaleNCompare(tp, "UnableToOilPaintImage", 21))
+              return *np ? tag : "unable to oil paint image";
+            else
             if (p - tp == 18 && !LocaleNCompare(tp, "UnableToPaintImage", 18))
               return *np ? tag : "Unable to paint image";
             else
@@ -1495,6 +1552,9 @@ const char *GetLocaleMessage(const char *tag)
             else
             if (p - tp == 22 && !LocaleNCompare(tp, "UnableToThresholdImage", 22))
               return *np ? tag : "Unable to threshold image";
+            else
+            if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWaveImage", 17))
+              return *np ? tag : "Unable to wave image";
             else
             if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedAttribute", 21))
               return *np ? tag : "Unrecognized attribute";
@@ -1565,6 +1625,21 @@ const char *GetLocaleMessage(const char *tag)
           default:
             return tag;
 
+          case 'i':  case 'I':
+            if (p - tp == 13 && !LocaleNCompare(tp, "ImageExpected", 13))
+              return *np ? tag : "image expected";
+            else
+            if (p - tp == 17 && !LocaleNCompare(tp, "ImageInfoExpected", 17))
+              return *np ? tag : "image info expected";
+            else
+              return tag;
+
+          case 's':  case 'S':
+            if (p - tp == 21 && !LocaleNCompare(tp, "StructureSizeMismatch", 21))
+              return *np ? tag : "structure size mismatch";
+            else
+              return tag;
+
           case 'u':  case 'U':
             if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetRegistryID", 21))
               return *np ? tag : "Unable to get registry ID";
@@ -1619,20 +1694,65 @@ const char *GetLocaleMessage(const char *tag)
                   return tag;
 
               case 'u':  case 'U':
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnableToAddGenericProfile", 25))
+                  return *np ? tag : "unable to add generic profile";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToAddICMProfile", 21))
+                  return *np ? tag : "unable to add ICM profile";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToAddIPTCProfile", 22))
+                  return *np ? tag : "unable to add IPTC profile";
+                else
                 if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAllocateColormap", 24))
                   return *np ? tag : "Unable to allocate colormap";
                 else
                 if (p - tp == 21 && !LocaleNCompare(tp, "UnableToAnnotateImage", 21))
                   return *np ? tag : "Unable to annotate image";
                 else
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToAverageImageSequence", 28))
+                  return *np ? tag : "unable to average image sequence";
+                else
                 if (p - tp == 17 && !LocaleNCompare(tp, "UnableToBlurImage", 17))
                   return *np ? tag : "unable to blur image";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToChopImage", 17))
+                  return *np ? tag : "unable to chop image";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
+                  return *np ? tag : "unable to clone image";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCoalesceImage", 21))
+                  return *np ? tag : "unable to coalesce image";
+                else
+                if (p - tp == 29 && !LocaleNCompare(tp, "UnableToComputeImageSignature", 29))
+                  return *np ? tag : "unable to compute image signature";
                 else
                 if (p - tp == 23 && !LocaleNCompare(tp, "UnableToConstituteImage", 23))
                   return *np ? tag : "unable to constitute image";
                 else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToConvertFont", 19))
+                  return *np ? tag : "unable to convert font";
+                else
                 if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
                   return *np ? tag : "Unable to create colormap";
+                else
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToCreateColorTransform", 28))
+                  return *np ? tag : "unable to create color transform";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToCreateCommandWidget", 27))
+                  return *np ? tag : "unable to create command widget";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToCreateImageGroup", 24))
+                  return *np ? tag : "Unable to create image group";
+                else
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToCreateImageMontage", 26))
+                  return *np ? tag : "Unable to create image montage";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCreateXWindow", 21))
+                  return *np ? tag : "unable to create X window";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToCropImage", 17))
+                  return *np ? tag : "unable to crop image";
                 else
                 if (p - tp == 22 && !LocaleNCompare(tp, "UnableToDespeckleImage", 22))
                   return *np ? tag : "unable to despeckle image";
@@ -1643,6 +1763,9 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 39 && !LocaleNCompare(tp, "UnableToDetermineTheNumberOfImageColors", 39))
                   return *np ? tag : "unable to determine the number of image colors";
                 else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToDitherImage", 19))
+                  return *np ? tag : "unable to dither image";
+                else
                 if (p - tp == 19 && !LocaleNCompare(tp, "UnableToDrawOnImage", 19))
                   return *np ? tag : "unable to draw on image";
                 else
@@ -1652,8 +1775,35 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 19 && !LocaleNCompare(tp, "UnableToEmbossImage", 19))
                   return *np ? tag : "unable to emboss image";
                 else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToEnhanceImage", 20))
+                  return *np ? tag : "unable to enhance image";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToFloodfillImage", 22))
+                  return *np ? tag : "unable to floodfill image";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnableToGammaCorrectImage", 25))
+                  return *np ? tag : "unable to gamma correct image";
+                else
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToGetBestIconSize", 23))
+                  return *np ? tag : "unable to get best icon size";
+                else
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToGetFromRegistry", 23))
+                  return *np ? tag : "unable to get from registry";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToLevelImage", 18))
+                  return *np ? tag : "unable to level image";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToMagnifyImage", 20))
+                  return *np ? tag : "unable to magnify image";
+                else
                 if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
                   return *np ? tag : "Unable to manage color";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "UnableToMapImage", 16))
+                  return *np ? tag : "Unable to map image";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToMapImageSequence", 24))
+                  return *np ? tag : "Unable to map image sequence";
                 else
                 if (p - tp == 25 && !LocaleNCompare(tp, "UnableToMedianFilterImage", 25))
                   return *np ? tag : "unable to median filter image";
@@ -1664,14 +1814,56 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 24 && !LocaleNCompare(tp, "UnableToNoiseFilterImage", 24))
                   return *np ? tag : "unable to noise filter image";
                 else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToNormalizeImage", 22))
+                  return *np ? tag : "unable to normalize image";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToOpenColorProfile", 24))
+                  return *np ? tag : "unable to open color profile";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToQuantizeImage", 21))
+                  return *np ? tag : "unable to quantize image";
+                else
+                if (p - tp == 29 && !LocaleNCompare(tp, "UnableToQuantizeImageSequence", 29))
+                  return *np ? tag : "unable to quantize image sequence";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToReadXImage", 18))
+                  return *np ? tag : "unable to read X image";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToReadXServerColormap", 27))
+                  return *np ? tag : "unable to read X server colormap";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToResizeImage", 19))
+                  return *np ? tag : "unable to resize image";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToRotateImage", 19))
+                  return *np ? tag : "unable to rotate image";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToSampleImage", 19))
+                  return *np ? tag : "unable to sample image";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToScaleImage", 18))
+                  return *np ? tag : "unable to scale image";
+                else
                 if (p - tp == 19 && !LocaleNCompare(tp, "UnableToSelectImage", 19))
                   return *np ? tag : "unable to select image";
                 else
                 if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSharpenImage", 20))
                   return *np ? tag : "unable to sharpen image";
                 else
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToShaveImage", 18))
+                  return *np ? tag : "unable to shave image";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToShearImage", 18))
+                  return *np ? tag : "unable to shear image";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnableToSortImageColormap", 25))
+                  return *np ? tag : "unable to sort image colormap";
+                else
                 if (p - tp == 22 && !LocaleNCompare(tp, "UnableToThresholdImage", 22))
                   return *np ? tag : "unable to threshold image";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToTransformColorspace", 27))
+                  return *np ? tag : "unable to transform colorspace";
                 else
                   return tag;
               }
@@ -1708,6 +1900,18 @@ const char *GetLocaleMessage(const char *tag)
           {
           default:
             return tag;
+
+          case 'i':  case 'I':
+            if (p - tp == 36 && !LocaleNCompare(tp, "ImageDoesNotContainTheStreamGeometry", 36))
+              return *np ? tag : "image does not contain the stream geometry";
+            else
+              return tag;
+
+          case 'n':  case 'N':
+            if (p - tp == 24 && !LocaleNCompare(tp, "NoStreamHandlerIsDefined", 24))
+              return *np ? tag : "no stream handler is defined";
+            else
+              return tag;
 
           case 'p':  case 'P':
             if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))

@@ -200,7 +200,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
       ThrowException(exception,StreamError,"UnableToAcquirePixelStream",
-        "image does not contain the stream geometry");
+        "ImageDoesNotContainTheStreamGeometry");
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
@@ -559,13 +559,13 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
       ThrowException(&image->exception,StreamError,"UnableToSetPixelStream",
-        "image does not contain the geometry");
+        "ImageDoesNotContainTheStreamGeometry");
       return((PixelPacket *) NULL);
     }
   if (image->blob->stream == (StreamHandler) NULL)
     {
       ThrowException(&image->exception,StreamError,"UnableToSetPixelStream",
-        "no stream handler is defined");
+        "NoStreamHandlerIsDefined");
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
@@ -652,7 +652,7 @@ static unsigned int SyncPixelStream(Image *image)
   if (image->blob->stream == (StreamHandler) NULL)
     {
       ThrowException(&image->exception,StreamError,"UnableToSyncPixelStream",
-        "no stream handler is defined");
+        "NoStreamHandlerIsDefined");
       return(False);
     }
   return(image->blob->stream(image,stream_info->pixels,stream_info->columns));

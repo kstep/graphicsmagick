@@ -316,10 +316,10 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   width=(long) order;
   if ((width % 2) == 0)
     ThrowImageException(OptionError,"UnableToConvolveImage",
-      "Kernel width must be an odd number");
+      "KernelWidthMustBeAnOddNumber");
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionError,"UnableToConvolveImage",
-      "image smaller than kernel width");
+      "ImageSmallerThanKernelWidth");
   convolve_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
@@ -756,7 +756,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionError,"UnableToPaintImage",
-      "image smaller than radius");
+      "ImageSmallerThanRadius");
   paint_image=CloneImage(image,0,0,True,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
@@ -769,7 +769,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     {
       DestroyImage(paint_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to oil paint")
+        "UnableToOilPaintImage")
     }
   /*
     Paint each row of the image.
@@ -1099,7 +1099,7 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
   if ((image->columns != offset_image->columns) ||
       (image->rows != offset_image->rows))
     ThrowImageException(ImageError,"UnableToCreateStereoImage",
-      "left and right image sizes differ");
+      "LeftAndRightImageSizesDiffer");
   /*
     Initialize stereo image attributes.
   */
@@ -1337,7 +1337,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     {
       DestroyImage(wave_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to wave image")
+        "UnableToWaveImage")
     }
   for (x=0; x < (long) wave_image->columns; x++)
     sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);

@@ -595,14 +595,29 @@
   </File>
   <Image>
     <Error>
+      <Message name="AngleIs discontinuous">
+        angle is discontinuous
+      </Message>
       <Message name="ColorSeparatedImageRequired">
         Color separated image required
+      </Message>
+      <Message name="ImageColorspaceDiffers">
+        image colorspace differs
+      </Message>
+      <Message name="ImageOpacityDiffers">
+        image opacity differs
       </Message>
       <Message name="ImageSequenceIsRequired">
         Image sequence is required
       </Message>
+      <Message name="ImageSizeDiffers">
+        image size differs
+      </Message>
       <Message name="InputImagesAlreadySpecified">
         Input images already specified
+      </Message>
+      <Message name="LeftAndRightImageSizesDiffer">
+        left and right image sizes differ
       </Message>
       <Message name="NoImagesWereFound">
         No images were found
@@ -610,14 +625,32 @@
       <Message name="NoImagesWereLoaded">
         No images were loaded
       </Message>
+      <Message name="TooManyClusters">
+        too many cluster
+      </Message>
       <Message name="NoLocaleImageAttribute">
         No [LOCALE] image attribute
+      </Message>
+      <Message name="UnableToAppendImage">
+        unable to append image
+      </Message>
+      <Message name="UnableToAverageImage">
+        unable to average image
       </Message>
       <Message name="UnableToCompareImages">
         Unable to compare images
       </Message>
       <Message name="UnableToCreateStereoImage">
         Unable to create stereo image
+      </Message>
+      <Message name="UnableToCreateImageMosaic">
+        unable to create image mosaic
+      </Message>
+      <Message name="UnableToDeconstructImageSequence">
+        Unable to deconstruct image sequence
+      </Message>
+      <Message name="UnableToFlattenImage">
+        Unable to flatten image
       </Message>
       <Message name="UnableToResizeImage">
         Unable to resize image
@@ -713,6 +746,12 @@
       <Message name="ImageSmallerThanRadius">
         image smaller than radius
       </Message>
+      <Message name="ImageSmallerThanKernelWidth">
+        image smaller than kernel width
+      </Message>
+      <Message name="ImageWidthsOrHeightsDiffer">
+        image widths or heights differ
+      </Message>
       <Message name="InvalidColorspace">
         Invalid image colorspace
       </Message>
@@ -727,6 +766,9 @@
       </Message>
       <Message name="KernelRadiusIsTooSmall">
         kernel radius is too small
+      </Message>
+      <Message name="KernelWidthMustBeAnOddNumber">
+        kernel width must be an odd number
       </Message>
       <Message name="MissingAffineMatrix">
         Missing affine matrix
@@ -914,6 +956,9 @@
       <Message name="SubimageSpecificationReturnsNoImages">
         Subimage specification returns no images profile name was given
       </Message>
+      <Message name="UnableToAddOrRemoveProfile">
+        Unable to add or remove profile
+      </Message>
       <Message name="UnableToBlurImage">
         Unable to blur image
       </Message>
@@ -935,6 +980,9 @@
       <Message name="UnableToFrameImage">
         Unable to frame image
       </Message>
+      <Message name="UnableToOilPaintImage">
+        unable to oil paint image
+      </Message>
       <Message name="UnableToPaintImage">
         Unable to paint image
       </Message>
@@ -946,6 +994,9 @@
       </Message>
       <Message name="UnableToThresholdImage">
         Unable to threshold image
+      </Message>
+      <Message name="UnableToWaveImage">
+        Unable to wave image
       </Message>
       <Message name="UnrecognizedAttribute">
         Unrecognized attribute
@@ -1112,6 +1163,15 @@
   </Option>
   <Registry>
     <Error>
+      <Message name="ImageExpected">
+        image expected
+      </Message>
+      <Message name="ImageInfoExpected">
+        image info expected
+      </Message>
+      <Message name="StructureSizeMismatch">
+        structure size mismatch
+      </Message>
       <Message name="UnableToGetRegistryID">
         Unable to get registry ID
       </Message>
@@ -1138,20 +1198,65 @@
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>
+        <Message name="UnableToAddGenericProfile">
+          unable to add generic profile
+        </Message>
+        <Message name="UnableToAddICMProfile">
+          unable to add ICM profile
+        </Message>
+        <Message name="UnableToAddIPTCProfile">
+          unable to add IPTC profile
+        </Message>
         <Message name="UnableToAllocateColormap">
           Unable to allocate colormap
         </Message>
         <Message name="UnableToAnnotateImage">
           Unable to annotate image
         </Message>
+        <Message name="UnableToAverageImageSequence">
+          unable to average image sequence
+        </Message>
         <Message name="UnableToBlurImage">
           unable to blur image
+        </Message>
+        <Message name="UnableToChopImage">
+          unable to chop image
+        </Message>
+        <Message name="UnableToCloneImage">
+          unable to clone image
+        </Message>
+        <Message name="UnableToCoalesceImage">
+          unable to coalesce image
+        </Message>
+        <Message name="UnableToComputeImageSignature">
+          unable to compute image signature
         </Message>
         <Message name="UnableToConstituteImage">
           unable to constitute image
         </Message>
+        <Message name="UnableToConvertFont">
+          unable to convert font
+        </Message>
         <Message name="UnableToCreateColormap">
           Unable to create colormap
+        </Message>
+        <Message name="UnableToCreateColorTransform">
+          unable to create color transform
+        </Message>
+        <Message name="UnableToCreateCommandWidget">
+          unable to create command widget
+        </Message>
+        <Message name="UnableToCreateImageGroup">
+          Unable to create image group
+        </Message>
+        <Message name="UnableToCreateImageMontage">
+          Unable to create image montage
+        </Message>
+        <Message name="UnableToCreateXWindow">
+          unable to create X window
+        </Message>
+        <Message name="UnableToCropImage">
+          unable to crop image
         </Message>
         <Message name="UnableToDespeckleImage">
           unable to despeckle image
@@ -1162,6 +1267,9 @@
         <Message name="UnableToDetermineTheNumberOfImageColors">
           unable to determine the number of image colors
         </Message>
+        <Message name="UnableToDitherImage">
+          unable to dither image
+        </Message>
         <Message name="UnableToDrawOnImage">
           unable to draw on image
         </Message>
@@ -1171,8 +1279,35 @@
         <Message name="UnableToEmbossImage">
           unable to emboss image
         </Message>
+        <Message name="UnableToEnhanceImage">
+          unable to enhance image
+        </Message>
+        <Message name="UnableToFloodfillImage">
+          unable to floodfill image
+        </Message>
+        <Message name="UnableToGammaCorrectImage">
+          unable to gamma correct image
+        </Message>
+        <Message name="UnableToGetBestIconSize">
+          unable to get best icon size
+        </Message>
+        <Message name="UnableToGetFromRegistry">
+          unable to get from registry
+        </Message>
+        <Message name="UnableToLevelImage">
+          unable to level image
+        </Message>
+        <Message name="UnableToMagnifyImage">
+          unable to magnify image
+        </Message>
         <Message name="UnableToManageColor">
           Unable to manage color
+        </Message>
+        <Message name="UnableToMapImage">
+          Unable to map image
+        </Message>
+        <Message name="UnableToMapImageSequence">
+          Unable to map image sequence
         </Message>
         <Message name="UnableToMedianFilterImage">
           unable to median filter image
@@ -1180,14 +1315,56 @@
         <Message name="UnableToMotionBlurImage">
           unable to motion blur image
         </Message>
+        <Message name="UnableToNormalizeImage">
+          unable to normalize image
+        </Message>
         <Message name="UnableToNoiseFilterImage">
           unable to noise filter image
+        </Message>
+        <Message name="UnableToOpenColorProfile">
+          unable to open color profile
+        </Message>
+        <Message name="UnableToQuantizeImage">
+          unable to quantize image
+        </Message>
+        <Message name="UnableToQuantizeImageSequence">
+          unable to quantize image sequence
+        </Message>
+        <Message name="UnableToReadXImage">
+          unable to read X image
+        </Message>
+        <Message name="UnableToReadXServerColormap">
+          unable to read X server colormap
+        </Message>
+        <Message name="UnableToResizeImage">
+          unable to resize image
+        </Message>
+        <Message name="UnableToRotateImage">
+          unable to rotate image
+        </Message>
+        <Message name="UnableToSampleImage">
+          unable to sample image
+        </Message>
+        <Message name="UnableToScaleImage">
+          unable to scale image
         </Message>
         <Message name="UnableToSelectImage">
           unable to select image
         </Message>
         <Message name="UnableToSharpenImage">
           unable to sharpen image
+        </Message>
+        <Message name="UnableToShaveImage">
+          unable to shave image
+        </Message>
+        <Message name="UnableToShearImage">
+          unable to shear image
+        </Message>
+        <Message name="UnableToSortImageColormap">
+          unable to sort image colormap
+        </Message>
+        <Message name="UnableToTransformColorspace">
+          unable to transform colorspace
         </Message>
         <Message name="UnableToThresholdImage">
           unable to threshold image
@@ -1226,6 +1403,12 @@
   </Type>
   <Stream>
     <Error>
+      <Message name="ImageDoesNotContainTheStreamGeometry">
+        image does not contain the stream geometry
+      </Message>
+      <Message name="NoStreamHandlerIsDefined">
+        no stream handler is defined
+      </Message>
       <Message name="PixelCacheIsNotOpen">
         Pixel cache is not open
       </Message>
