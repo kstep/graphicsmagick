@@ -96,11 +96,33 @@ static unsigned int
 static Image *ReadMPRImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  char
+    *p;
+
+  Image
+    *image;
+
+  long
+    id;
+
+  RegistryType
+    type;
+
+  size_t
+    length;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  return(GetImageFromMagickRegistry(image_info->filename,exception));
+  if (LocaleCompare(image_info->magick,"MPRI") != 0)
+    return(GetImageFromMagickRegistry(image_info->filename,exception));
+  id=strtol(image_info->filename,&p,0);
+  image=(Image *) GetMagickRegistry(id,&type,&length,exception);
+  if ((image == (Image *) NULL) || (type != ImageRegistryType))
+    ThrowReaderException(RegistryWarning,"Image not found in registry",image);
+  if (length != sizeof(Image))
+    ThrowReaderException(RegistryWarning,"Image structure size mismatch",image);  return(image);
 }
 
 /*

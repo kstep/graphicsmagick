@@ -1844,7 +1844,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %  The format of the WriteBlobByte method is:
 %
-%      size_t WriteBlobByte(Image *image,const long value)
+%      size_t WriteBlobByte(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
@@ -1856,14 +1856,14 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %
 */
-MagickExport size_t WriteBlobByte(Image *image,const long value)
+MagickExport size_t WriteBlobByte(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[1];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  buffer[0]=(unsigned char) value;
+  buffer[0]=value;
   return(WriteBlob(image,1,buffer));
 }
 
@@ -1883,7 +1883,7 @@ MagickExport size_t WriteBlobByte(Image *image,const long value)
 %
 %  The format of the WriteBlobLSBLong method is:
 %
-%      size_t WriteBlobLSBLong(Image *image,const long value)
+%      size_t WriteBlobLSBLong(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
@@ -1896,7 +1896,7 @@ MagickExport size_t WriteBlobByte(Image *image,const long value)
 %
 %
 */
-MagickExport size_t WriteBlobLSBLong(Image *image,const long value)
+MagickExport size_t WriteBlobLSBLong(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[4];
@@ -1939,7 +1939,7 @@ MagickExport size_t WriteBlobLSBLong(Image *image,const long value)
 %
 %
 */
-MagickExport size_t WriteBlobLSBShort(Image *image,const long value)
+MagickExport size_t WriteBlobLSBShort(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[2];
@@ -1967,7 +1967,7 @@ MagickExport size_t WriteBlobLSBShort(Image *image,const long value)
 %
 %  The format of the WriteBlobMSBLong method is:
 %
-%      size_t WriteBlobMSBLong(Image *image,const long value)
+%      size_t WriteBlobMSBLong(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
@@ -1980,7 +1980,7 @@ MagickExport size_t WriteBlobLSBShort(Image *image,const long value)
 %
 %
 */
-MagickExport size_t WriteBlobMSBLong(Image *image,const long value)
+MagickExport size_t WriteBlobMSBLong(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[4];
@@ -2010,7 +2010,7 @@ MagickExport size_t WriteBlobMSBLong(Image *image,const long value)
 %
 %  The format of the WriteBlobMSBShort method is:
 %
-%      size_t WriteBlobMSBShort(Image *image,const long value)
+%      size_t WriteBlobMSBShort(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
@@ -2020,7 +2020,7 @@ MagickExport size_t WriteBlobMSBLong(Image *image,const long value)
 %
 %
 */
-MagickExport size_t WriteBlobMSBShort(Image *image,const long value)
+MagickExport size_t WriteBlobMSBShort(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[2];

@@ -36,11 +36,11 @@ extern MagickExport off_t
 extern MagickExport size_t
   ReadBlob(Image *,const size_t,void *),
   WriteBlob(Image *,const size_t,const void *),
-  WriteBlobByte(Image *,const long),
-  WriteBlobLSBLong(Image *,const long),
-  WriteBlobLSBShort(Image *,const long),
-  WriteBlobMSBLong(Image *,const long),
-  WriteBlobMSBShort(Image *,const long),
+  WriteBlobByte(Image *,const unsigned long),
+  WriteBlobLSBLong(Image *,const unsigned long),
+  WriteBlobLSBShort(Image *,const unsigned long),
+  WriteBlobMSBLong(Image *,const unsigned long),
+  WriteBlobMSBShort(Image *,const unsigned long),
   WriteBlobString(Image *,const char *);
 
 extern MagickExport unsigned int
