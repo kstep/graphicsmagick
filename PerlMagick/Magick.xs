@@ -3226,10 +3226,7 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              if (info)
-                j=(int) GetImageType(info->image_info,image);
-              else
-                j=(int) GetImageType((const ImageInfo *) NULL,image);
+              j=(int) GetImageType(image);
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(ImageTypes)-1))
                 {

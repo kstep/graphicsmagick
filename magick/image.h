@@ -853,7 +853,7 @@ extern Export ImageInfo
   *CloneImageInfo(const ImageInfo *);
 
 extern Export ImageType
-  GetImageType(const ImageInfo *,Image *);
+  GetImageType(Image *);
 
 extern Export int
   ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);

@@ -3139,7 +3139,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  format: %.1024s (%s)\n",image->magick,
       magick_info->description);
   (void) fprintf(file,"  type: ");
-  switch (GetImageType((const ImageInfo *) NULL,image))
+  switch (GetImageType(image))
   {
     case BilevelType: (void) fprintf(file,"bilevel"); break;
     case GrayscaleType: (void) fprintf(file,"grayscale"); break;
@@ -5160,9 +5160,6 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
   Image
     *annotate_image;
 
-  ImageInfo
-    *local_info;
-
   assert(image_info != (ImageInfo *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
   annotate_info->image_info=CloneImageInfo(image_info);
@@ -5279,20 +5276,18 @@ Export void GetImageInfo(ImageInfo *image_info)
 %
 %  The format of the GetImageType routine is:
 %
-%      type=GetImageType(image_info,image)
+%      type=GetImageType(image)
 %
 %  A description of each parameter follows:
 %
 %    o type: Method GetImageType returns a ImageType enum that specifies the
 %      type of the specified image (e.g. bilevel, palette, etc).
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
 %    o image: The address of a structure of type Image.
 %
 %
 */
-Export ImageType GetImageType(const ImageInfo *image_info,Image *image)
+Export ImageType GetImageType(Image *image)
 {
   assert(image != (Image *) NULL);
   if (image->colorspace == CMYKColorspace)
@@ -6846,7 +6841,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
           Set image density.
         */
         CloneString(&image_info->density,argv[++i]);
-        count=sscanf(image_info->density,"%lfx%lf",
+        count=sscanf(image_info->density,"%fx%f",
           &(*image)->x_resolution,&(*image)->y_resolution);
         if (count != 2)
           (*image)->y_resolution=(*image)->x_resolution;

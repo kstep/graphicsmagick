@@ -785,7 +785,8 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
                 target_color.blue=XDownScale(border_color.blue);
               }
             ColorFloodfillImage(image,&target_color,
-              annotate_info->image_info->pen,target->x,target->y,p->method);
+              annotate_info->image_info->pen,(int) target->x,
+              (int) target->y,p->method);
             break;
           }
           case ResetMethod:
@@ -849,8 +850,8 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
                 target_color.green=XDownScale(border_color.green);
                 target_color.blue=XDownScale(border_color.blue);
               }
-            MatteFloodfillImage(image,&target_color,Transparent,target->x,
-              target->y,p->method);
+            MatteFloodfillImage(image,&target_color,Transparent,(int) target->x,
+              (int) target->y,p->method);
             break;
           }
           case ResetMethod:
