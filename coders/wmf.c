@@ -817,19 +817,30 @@ static void wmf_magick_draw_text (wmfAPI* API,
   char
     buff[MaxTextExtent],
     *p,
-    *ps_name=0,
-    *path = 0,
+    *font_name=0,
+    *font_path = 0,
     *q;
 
   int
+    pointsize,
     string_length;
+
+  double
+    angle = 0;
 
   magickPoint
     pt;
 
+  wmfFont
+    *font;
+
+  wmfRGB
+    *box,
+    *fill,
+    *stroke;
+
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData (API);
-
 
   wmfStream
     *out = ddata->out;
@@ -838,24 +849,64 @@ static void wmf_magick_draw_text (wmfAPI* API,
 
   if (out == 0) return;
 
-  ps_name = WMF_FONT_PSNAME (WMF_DC_FONT (draw_text->dc));
+  font = WMF_DC_FONT (draw_text->dc);
 
-  path = wmf_ipa_font_lookup (API,ps_name);
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
 
-  if (path)
-    wmf_stream_printf (API,out,"font '%s'\n",path);
+  /* Set stroke color */
+  wmf_stream_printf (API,out,"stroke none\n");
+/*   wmfRGB* stroke = WMF_DC_TEXTCOLOR (draw_text->dc); */
+/*   wmf_stream_printf (API,out,"stroke #%02x%02x%02x\n", */
+/*                      (int)stroke->r,(int)stroke->g,(int)stroke->b); */
 
-  /* etc. */
+  /* Set fill color */
+  if(WMF_DC_OPAQUE(draw_text->dc))
+     {
+       wmfRGB* fill = WMF_DC_TEXTCOLOR (draw_text->dc);
+       wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
+                          (int)fill->r,(int)fill->g,(int)fill->b);
+     }
 
-#if 0
-    WMF_DC_FONT (draw_text->dc); /* Font */
-  WMF_DC_OPAQUE (draw_text->dc) /* ??? */
-    wmfRGB* bg = WMF_DC_BACKGROUND (draw_text->dc); /* Box color */
-    double theta = WMF_TEXT_ANGLE (font); /* Text angle */
-    WMF_DC_TEXTCOLOR (draw_text->dc); /* Text color */
-#endif
+  /* Set box color */
+  if(!WMF_DC_TRANSPARENT(draw_text->dc))
+    {
+      wmfRGB* box = WMF_DC_BACKGROUND (draw_text->dc);
+      wmf_stream_printf (API,out,"box #%02x%02x%02x\n",
+                         (int)box->r,(int)box->g,(int)box->b);
+     }
 
+  /* Output font file name */
+  font_name = WMF_FONT_PSNAME (font);
+  font_path = wmf_ipa_font_lookup (API,font_name);
+  if (font_path)
+    wmf_stream_printf (API,out,"font '%s'\n",font_path);
+
+  /* Set underline */
+  if(WMF_TEXT_UNDERLINE(font))
+    wmf_stream_printf (API,out,"decorate underline\n");
+
+  /* Set strikeout */
+  if(WMF_TEXT_STRIKEOUT(font))
+    wmf_stream_printf (API,out,"decorate line-through\n");
+
+  /* Set font size */
+  pointsize = WMF_FONT_HEIGHT(font) / 25.4 ;
+  wmf_stream_printf (API,out,"font-size %i\n", pointsize);
+
+  /* Translate coordinates so target is 0,0 */
   pt = magick_translate(API,draw_text->pt);
+  wmf_stream_printf (API,out,"translate %f,%f\n",pt.x,pt.y);
+
+  /* Apply rotation */
+  angle = WMF_TEXT_ANGLE(font);
+  wmf_stream_printf (API,out,"rotate %d\n",angle);
+          
+  /*
+   * Render text
+   *
+   */
+
   /* Build escaped string */
   for( p=draw_text->str, q=buff, string_length=0;
        *p!=0 && string_length < (sizeof(buff)-3);
@@ -874,12 +925,10 @@ static void wmf_magick_draw_text (wmfAPI* API,
         }
     }
   *q=0;
-          
-  wmf_stream_printf (API,out,"text %f,%f '%.1024s'\n",
-                     pt.x,
-                     pt.y,
-                     buff);
+  wmf_stream_printf (API,out,"text 0,0 '%.1024s'\n",buff);
 
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 static void wmf_magick_udata_init (wmfAPI* API,
@@ -1401,7 +1450,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   ScribbleMVG(image,mvg);
 
   /* Cleanup allocated data */
-  free(mvg);
   wmf_api_destroy(API);
 
   /* Return image */
