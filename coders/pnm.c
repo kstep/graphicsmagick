@@ -521,24 +521,33 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (long) image->columns; x++)
-          {
-            if (image->depth <= 8)
+          if (image->depth <= 8)
+            for (x=0; x < (long) image->columns; x++)
+            {
               index=(*p++);
-            else
-              {
-                index=(*p << 8) | *(p+1);
-                p+=2;
-              }
-            if (index >= image->colors)
-              {
-                ThrowException(&image->exception,CorruptImageError,
-                  "invalid colormap index",image->filename);
-                index=0;
-              }
-            indexes[x]=index;
-            *q++=image->colormap[index];
-          }
+              if (index >= image->colors)
+                {
+                  ThrowException(&image->exception,CorruptImageError,
+                    "invalid colormap index",image->filename);
+                  index=0;
+                }
+              indexes[x]=index;
+              *q++=image->colormap[index];
+            }
+          else
+            for (x=0; x < (long) image->columns; x++)
+            {
+              index=(*p << 8) | *(p+1);
+              p+=2;
+              if (index >= image->colors)
+                {
+                  ThrowException(&image->exception,CorruptImageError,
+                    "invalid colormap index",image->filename);
+                  index=0;
+                }
+              indexes[x]=index;
+              *q++=image->colormap[index];
+            }
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -571,34 +580,43 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            if (image->depth <= 8)
-              {
-                pixel.red=(*p++);
-                pixel.green=(*p++);
-                pixel.blue=(*p++);
-              }
-            else
-              {
-                pixel.red=(*p << 8) | *(p+1);
-                p+=2;
-                pixel.green=(*p << 8) | *(p+1);
-                p+=2;
-                pixel.blue=(*p << 8) | *(p+1);
-                p+=2;
-              }
-            if (scale != (unsigned long *) NULL)
-              {
-                pixel.red=scale[pixel.red];
-                pixel.green=scale[pixel.green];
-                pixel.blue=scale[pixel.blue];
-              }
-            q->red=(Quantum) pixel.red;
-            q->green=(Quantum) pixel.green;
-            q->blue=(Quantum) pixel.blue;
-            q++;
-          }
+          if (image->depth <= 8)
+            for (x=0; x < (long) image->columns; x++)
+            {
+              pixel.red=(*p++);
+              pixel.green=(*p++);
+              pixel.blue=(*p++);
+              if (scale != (unsigned long *) NULL)
+                {
+                  pixel.red=scale[pixel.red];
+                  pixel.green=scale[pixel.green];
+                  pixel.blue=scale[pixel.blue];
+                }
+              q->red=(Quantum) pixel.red;
+              q->green=(Quantum) pixel.green;
+              q->blue=(Quantum) pixel.blue;
+              q++;
+            }
+          else
+            for (x=0; x < (long) image->columns; x++)
+            {
+              pixel.red=(*p << 8) | *(p+1);
+              p+=2;
+              pixel.green=(*p << 8) | *(p+1);
+              p+=2;
+              pixel.blue=(*p << 8) | *(p+1);
+              p+=2;
+              if (scale != (unsigned long *) NULL)
+                {
+                  pixel.red=scale[pixel.red];
+                  pixel.green=scale[pixel.green];
+                  pixel.blue=scale[pixel.blue];
+                }
+              q->red=(Quantum) pixel.red;
+              q->green=(Quantum) pixel.green;
+              q->blue=(Quantum) pixel.blue;
+              q++;
+            }
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -1055,16 +1073,20 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            if (image->depth <= 8)
+          if (image->depth <= 8)
+            for (x=0; x < (long) image->columns; x++)
+            {
               (void) WriteBlobByte(image,
                 ScaleQuantumToChar(PixelIntensityToQuantum(p)));
-	    else
+              p++;
+            }
+          else
+            for (x=0; x < (long) image->columns; x++)
+            {
               (void) WriteBlobMSBShort(image,
                 ScaleQuantumToShort(PixelIntensityToQuantum(p)));
-            p++;
-          }
+              p++;
+            }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
@@ -1103,25 +1125,25 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           if (p == (const PixelPacket *) NULL)
             break;
           q=pixels;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            if (image->depth <= 8)
-              {
-                *q++=ScaleQuantumToChar(p->red);
-                *q++=ScaleQuantumToChar(p->green);
-                *q++=ScaleQuantumToChar(p->blue);
-              }
-	    else
-              {
-                *q++=(unsigned char) (ScaleQuantumToShort(p->red) >> 8);
-                *q++=(unsigned char) ScaleQuantumToShort(p->red);
-                *q++=(unsigned char) (ScaleQuantumToShort(p->green) >> 8);
-                *q++=(unsigned char) ScaleQuantumToShort(p->green);
-                *q++=(unsigned char) (ScaleQuantumToShort(p->blue) >> 8);
-                *q++=(unsigned char) ScaleQuantumToShort(p->blue);
-              }
-            p++;
-          }
+          if (image->depth <= 8)
+            for (x=0; x < (long) image->columns; x++)
+            {
+              *q++=ScaleQuantumToChar(p->red);
+              *q++=ScaleQuantumToChar(p->green);
+              *q++=ScaleQuantumToChar(p->blue);
+              p++;
+            }
+          else
+            for (x=0; x < (long) image->columns; x++)
+            {
+              *q++=(unsigned char) (ScaleQuantumToShort(p->red) >> 8);
+              *q++=(unsigned char) ScaleQuantumToShort(p->red);
+              *q++=(unsigned char) (ScaleQuantumToShort(p->green) >> 8);
+              *q++=(unsigned char) ScaleQuantumToShort(p->green);
+              *q++=(unsigned char) (ScaleQuantumToShort(p->blue) >> 8);
+              *q++=(unsigned char) ScaleQuantumToShort(p->blue);
+              p++;
+            }
           (void) WriteBlob(image,q-pixels,(char *) pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
