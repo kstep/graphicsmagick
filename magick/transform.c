@@ -1348,8 +1348,8 @@ MagickExport Image *ShaveImage(const Image *image,
     geometry;
 
   SetGeometry(image,&geometry);
-  geometry.width-=shave_info->width;
-  geometry.height-=shave_info->height;
+  geometry.width-=2*shave_info->width;
+  geometry.height-=2*shave_info->height;
   geometry.x=(long) shave_info->width;
   geometry.y=(long) shave_info->height;
   return(CropImage(image,&geometry,exception));
