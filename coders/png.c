@@ -1823,10 +1823,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             have_global_bkgd=False;
             if (length > 5)
               {
-                mng_global_bkgd.red=XDownscale(((p[0]<<8) | p[1]));
-                mng_global_bkgd.green=XDownscale(((p[2]<<8)
+                mng_global_bkgd.red=(Quantum) XDownscale(((p[0]<<8) | p[1]));
+                mng_global_bkgd.green=(Quantum) XDownscale(((p[2]<<8)
                    | p[3]));
-                mng_global_bkgd.blue=XDownscale(((p[4]<<8) | p[5]));
+                mng_global_bkgd.blue=(Quantum) XDownscale(((p[4]<<8) | p[5]));
                 have_global_bkgd=True;
               }
             LiberateMemory((void **) &chunk);
@@ -1841,11 +1841,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mandatory_back=0;
             if (mandatory_back && length>5)
               {
-                mng_background_color.red=XDownscale(((p[0]<<8)
+                mng_background_color.red=(Quantum) XDownscale(((p[0]<<8)
                    | p[1]));
-                mng_background_color.green=XDownscale(((p[2]<<8)
+                mng_background_color.green=(Quantum) XDownscale(((p[2]<<8)
                    | p[3]));
-                mng_background_color.blue=XDownscale(((p[4]<<8)
+                mng_background_color.blue=(Quantum) XDownscale(((p[4]<<8)
                    | p[5]));
                 mng_background_color.opacity=OpaqueOpacity;
               }
@@ -2824,6 +2824,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ping_info->valid|=PNG_INFO_gAMA;
     if (have_global_chrm || image->rendering_intent)
       ping_info->valid|=PNG_INFO_cHRM;
+#if defined(PNG_oFFs_SUPPORTED)
+    if (mng_type==0 && ping_info->valid & PNG_INFO_oFFs)
+      {
+         image->page.x=png_get_x_offset_pixels(ping, ping_info);
+         image->page.y=png_get_y_offset_pixels(ping, ping_info);
+      }
+#endif
+#if defined(PNG_pHYs_SUPPORTED)
     if (ping_info->valid & PNG_INFO_pHYs)
       {
         int
@@ -2864,6 +2872,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ping_info->valid|=PNG_INFO_pHYs;
           }
       }
+#endif
     if (ping_info->valid & PNG_INFO_PLTE)
       {
         int
@@ -2930,9 +2939,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if (QuantumDepth == 16)
         image->background_color=mng_global_bkgd;
 #else
-        image->background_color.red=XDownscale(mng_global_bkgd.red);
-        image->background_color.green=XDownscale(mng_global_bkgd.green);
-        image->background_color.blue=XDownscale(mng_global_bkgd.blue);
+        image->background_color.red=(Quantum) XDownscale(mng_global_bkgd.red);
+        image->background_color.green=
+          (Quantum) XDownscale(mng_global_bkgd.green);
+        image->background_color.blue=(Quantum) XDownscale(mng_global_bkgd.blue);
 #endif
       }
     if (ping_info->valid & PNG_INFO_bKGD)
@@ -2948,10 +2958,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         else
           {
-            image->background_color.red=XDownscale(ping_info->background.red);
+            image->background_color.red=
+              (Quantum) XDownscale(ping_info->background.red);
             image->background_color.green=
-              XDownscale(ping_info->background.green);
-            image->background_color.blue=XDownscale(ping_info->background.blue);
+              (Quantum) XDownscale(ping_info->background.green);
+            image->background_color.blue=
+              (Quantum) XDownscale(ping_info->background.blue);
           }
       }
 #endif
@@ -3049,9 +3061,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
             for (i=0; i < (long) image->colors; i++)
             {
-              image->colormap[i].red=Upscale(palette[i].red);
-              image->colormap[i].green=Upscale(palette[i].green);
-              image->colormap[i].blue=Upscale(palette[i].blue);
+              image->colormap[i].red=(Quantum) Upscale(palette[i].red);
+              image->colormap[i].green=(Quantum) Upscale(palette[i].green);
+              image->colormap[i].blue=(Quantum) Upscale(palette[i].blue);
             }
           }
         else
@@ -3319,7 +3331,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                      * In a PNG datastream, Opaque is MaxRGB
                      * and Transparent is 0.
                      */
-                    q->opacity=Upscale(255-(*p++));
+                    q->opacity=(Quantum) Upscale(255-(*p++));
                     q++;
                   }
               }
@@ -3400,7 +3412,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
                   {
                     if (index < ping_info->num_trans)
-                      q->opacity=Upscale(255-ping_info->trans[index]);
+                      q->opacity=(Quantum) Upscale(255-ping_info->trans[index]);
                   }
                 else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
                   {
@@ -4319,11 +4331,11 @@ ModuleExport void UnregisterPNGImage(void)
 extern "C" {
 #endif
 
-
 static size_t WriteBlobMSBULong(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[4];
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   buffer[0]=(unsigned char) (value >> 24);
@@ -4663,23 +4675,23 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       equal_palettes=False;
       need_local_plte=False;
 #endif
+      page=image->page;
+      page.y=image->page.y;
       for (next_image=image; next_image != (Image *) NULL; )
       {
-        page=next_image->page;
-        page.y=image->page.y;
         if (need_geom)
           {
-            if ((next_image->columns+page.x) > page.width)
-              page.width=next_image->columns+page.x;
-            if ((next_image->rows+page.y) > page.height)
-              page.height=next_image->rows+page.y;
+            if ((next_image->columns+next_image->page.x) > page.width)
+              page.width=next_image->columns+next_image->page.x;
+            if ((next_image->rows+next_image->page.y) > page.height)
+              page.height=next_image->rows+next_image->page.y;
           }
-        if (page.x || page.y)
+        if (next_image->page.x || next_image->page.y)
           need_defi=True;
         if (next_image->matte)
           need_matte=True;
         if (next_image->dispose >= 2)
-          if (next_image->matte || page.x || page.y ||
+          if (next_image->matte || next_image->page.x || next_image->page.y ||
               ((next_image->columns < page.width) &&
                (next_image->rows < page.height)))
             need_fram=True;
@@ -4952,9 +4964,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        {
          (void) WriteBlobMSBULong(image,6L);
          PNGType(chunk,mng_BACK);
-         red=XUpscale(image->background_color.red);
-         green=XUpscale(image->background_color.green);
-         blue=XUpscale(image->background_color.blue);
+         red=(unsigned short) XUpscale(image->background_color.red);
+         green=(unsigned short) XUpscale(image->background_color.green);
+         blue=(unsigned short) XUpscale(image->background_color.blue);
          PNGShort(chunk+4,red);
          PNGShort(chunk+6,green);
          PNGShort(chunk+8,blue);
@@ -4984,9 +4996,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          PNGType(chunk,mng_PLTE);
          for (i=0; i < (long) image->colors; i++)
          {
-           chunk[4+i*3]=Downscale(image->colormap[i].red) & 0xff;
-           chunk[5+i*3]=Downscale(image->colormap[i].green) & 0xff;
-           chunk[6+i*3]=Downscale(image->colormap[i].blue) & 0xff;
+           chunk[4+i*3]=(unsigned char) Downscale(image->colormap[i].red) &
+             0xff;
+           chunk[5+i*3]=(unsigned char) Downscale(image->colormap[i].green) &
+              0xff;
+           chunk[6+i*3]=(unsigned char) Downscale(image->colormap[i].blue) &
+              0xff;
          }
          (void) WriteBlob(image,data_length+4,(char *) chunk);
          (void) WriteBlobMSBULong(image,crc32(0,chunk,(int) (data_length+4)));
@@ -5044,9 +5059,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 PNGType(chunk,mng_PLTE);
                 for (i=0; i < (long) image->colors; i++)
                 {
-                  chunk[4+i*3]=Downscale(image->colormap[i].red) & 0xff;
-                  chunk[5+i*3]=Downscale(image->colormap[i].green) & 0xff;
-                  chunk[6+i*3]=Downscale(image->colormap[i].blue) & 0xff;
+                  chunk[4+i*3]=
+                    (unsigned char) Downscale(image->colormap[i].red) & 0xff;
+                  chunk[5+i*3]=
+                    (unsigned char) Downscale(image->colormap[i].green) & 0xff;
+                  chunk[6+i*3]=
+                    (unsigned char) Downscale(image->colormap[i].blue) & 0xff;
                 }
                 (void) WriteBlob(image,data_length+4,(char *) chunk);
                 (void) WriteBlobMSBULong(image,crc32(0,chunk,
@@ -5146,6 +5164,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->height=image->rows;
     save_image_depth=image->depth;
     ping_info->bit_depth=(png_byte) save_image_depth;
+#if defined(PNG_pHYs_SUPPORTED)
     if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
         (!write_mng || !equal_physs))
       {
@@ -5176,6 +5195,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
          png_set_pHYs(ping,ping_info,x_resolution,y_resolution,unit_type);
       }
+#endif
+#if defined(PNG_oFFs_SUPPORTED)
+    if (write_mng==0 && (image->page.x || image->page.y))
+       png_set_oFFs(ping,ping_info,(png_int_32) image->page.x,
+         (png_int_32) image->page.y, 0);
+#endif
     if (image->matte && (!adjoin || !equal_backgrounds))
       {
         png_color_16
@@ -5277,7 +5302,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.blue=p->blue;
             ping_info->trans_values.gray=(png_uint_16) Intensity(p);
             ping_info->trans_values.index=(unsigned char)
-               (MAXRGB-Downscale(p->opacity));
+               (MAXRGB-(unsigned char) Downscale(p->opacity));
           }
         if (ping_info->valid & PNG_INFO_tRNS)
           {
@@ -5372,8 +5397,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
                 for (i=0; i<(long) image->colors; i++)
                 {
-                   int
-                     intensity=(Quantum) Downscale(image->colormap[i].red);
+                   unsigned int
+                     intensity;
+
+                   intensity=(unsigned int) Downscale(image->colormap[i].red);
 
                    if ((intensity & 0x0f) != ((intensity & 0xf0)>>4))
                      depth_4_ok=depth_2_ok=depth_1_ok=False;
@@ -5430,9 +5457,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     "Memory allocation failed",image);
                 for (i=0; i < (long) number_colors; i++)
                 {
-                  palette[i].red=Downscale(image->colormap[i].red);
-                  palette[i].green=Downscale(image->colormap[i].green);
-                  palette[i].blue=Downscale(image->colormap[i].blue);
+                  palette[i].red=
+                    (unsigned char) Downscale(image->colormap[i].red);
+                  palette[i].green=
+                    (unsigned char) Downscale(image->colormap[i].green);
+                  palette[i].blue=
+                    (unsigned char) Downscale(image->colormap[i].blue);
                 }
                 png_set_PLTE(ping,ping_info,palette,(int) number_colors);
 #if (PNG_LIBPNG_VER > 10008)
@@ -5488,6 +5518,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               ping_info->valid&=(~PNG_INFO_tRNS);
             if (!(ping_info->valid & PNG_INFO_tRNS))
               ping_info->num_trans=0;
+            if (ping_info->num_trans == 0)
+              LiberateMemory((void **) &ping_info->trans);
 
             /*
               Identify which colormap entry is the background color.
@@ -5774,40 +5806,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               }
             else /* PNG_COLOR_TYPE_GRAY_ALPHA */
               {
-                if (image->storage_class == DirectClass)
-                  {
-                    unsigned char
-                       *p,
-                       *r;
-
-                    (void) PopImagePixels(image,(QuantumType) RGBAQuantum,
-                       scanlines[y]);
-                    p=scanlines[y];
-                    r=p;
-                    if (image->depth == 8)
-                      for (x=0; x < (long) image->columns; x++)
-                        {
-                          p++;       /* skip red sample */
-                          *r++=*p++; /* copy green sample */
-                          p++;       /* skip blue sample */
-                          *r++=*p++; /* copy alpha sample */
-                        }
-#if (QuantumDepth == 16)
-                    else /* image->depth == 16 */
-                      for (x=0; x < (long) image->columns; x++)
-                        {
-                          p+=2;       /* skip red sample */
-                          *r++=*p++;  /* copy green sample */
-                          *r++=*p++;
-                          p+=2;       /* skip blue sample */
-                          *r++=*p++;  /* copy alpha sample */
-                          *r++=*p++;
-                        }
-#endif
-                  }
-                else /* PseudoClass */
-                   (void) PopImagePixels(image,(QuantumType) GrayAlphaQuantum,
-                     scanlines[y]);
+                (void) PopImagePixels(image,(QuantumType) GrayAlphaQuantum,
+                   scanlines[y]);
               }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
@@ -5946,7 +5946,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         else
           framing_mode=3;
       }
-    if (!need_fram && (image->dispose >= 3))
+    if (write_mng && !need_fram && (image->dispose == 3))
        ThrowException(&image->exception,(ExceptionType) DelegateError,
          "Cannot convert GIF with disposal method 3 to MNG-LC",(char *) NULL);
     image->depth=save_image_depth;
