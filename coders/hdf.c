@@ -300,14 +300,24 @@ ModuleExport void UnregisterHDFImage(void)
 */
 static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
+  hid_t
+    dataset,
+    dataspace,
+    datatype,
+    file;
+
+  hsize_t
+    dimensions[2];
+
+  int
+    **pixels,
+    y;
+
   register int
     i,
     x;
 
   register PixelPacket
-    *p;
-
-  register unsigned char
     *q;
 
   unsigned int
@@ -321,6 +331,9 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   CloseBlob(image);
+  file=H5Fcreate(image->filename,H5F_ACC_TRUNC,H5P_DEFAULT,H5P_DEFAULT);
+  if (file < 0)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   scene=0;
   do
   {
@@ -328,12 +341,33 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
       Initialize raster file header.
     */
     TransformRGBImage(image,RGBColorspace);
+    dimensions[0]=image->rows;
+    dimensions[1]=image->columns;
+    dataspace=H5Screate_simple(2,dimensions,NULL);
+    dataset=H5Dcreate(file,"IntArray",H5T_STD_U8BE,dataspace,H5P_DEFAULT);
+    pixels=(int **) AcquireMemory(image->rows*sizeof(int *));
+    for (y=0; y < image->rows; y++)
+    {
+      pixels[y]=(int *) AcquireMemory(image->columns*sizeof(int));
+      q=SetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (int) image->columns; x++)
+      {
+        pixels[y][x]=Intensity(*q);
+        q++;
+      }
+    }
+    status=H5Dwrite(dataset,H5T_NATIVE_INT,H5S_ALL,H5S_ALL,H5P_DEFAULT,pixels);
+    H5Sclose(dataspace);
+    H5Dclose(dataset);
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL) 
       image=image->previous;
+  H5Fclose(file);
   return(status != -1);
 }
 #else
