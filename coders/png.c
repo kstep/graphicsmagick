@@ -379,6 +379,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     j,
     new_number_colors,
     number_colors,
+    top_used,
     y;
 
   PixelPacket
@@ -394,13 +395,13 @@ static unsigned int CompressColormapTransFirst(Image *image)
     i,
     x;
 
+  IndexPacket
+    *map,
+    *opacity;
+
   unsigned char
     *marker,
     have_transparency;
-
-  unsigned short
-    *map,
-    *opacity;
 
   /*
     Determine if colormap can be compressed.
@@ -408,14 +409,14 @@ static unsigned int CompressColormapTransFirst(Image *image)
   assert(image != (Image *) NULL);
   if (image->storage_class != PseudoClass || image->colors > 256 ||
       image->colors < 2)
-    return(True);
+    return(False);
   marker=(unsigned char *) AcquireMemory(image->colors);
   if (marker == (unsigned char *) NULL)
     ThrowBinaryException((ExceptionType) ResourceLimitWarning,
       "Unable to compress colormap", "Memory allocation failed");
-  opacity=(unsigned short *)
-    AcquireMemory(image->colors*sizeof(unsigned short));
-  if (opacity == (unsigned short *) NULL)
+  opacity=(IndexPacket *)
+    AcquireMemory(image->colors*sizeof(IndexPacket));
+  if (opacity == (IndexPacket *) NULL)
     {
       LiberateMemory((void **) &marker);
       ThrowBinaryException((ExceptionType) ResourceLimitWarning,
@@ -431,6 +432,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     opacity[i]=OpaqueOpacity;
   }
   transparent_pixels=0;
+  top_used=0;
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -441,21 +443,26 @@ static unsigned int CompressColormapTransFirst(Image *image)
     {
       marker[(int) indexes[x]]=True;
       opacity[(int) indexes[x]]=p->opacity;
+      if (indexes[x] > top_used)
+         top_used=indexes[x];
       if (p->opacity != OpaqueOpacity)
          transparent_pixels++;
       p++;
     }
   }
-  /*
-    Mark background color.
-  */
-  for (i=0; i < number_colors; i++)
+  if (image->matte)
   {
-    if (ColorMatch(image->colormap[i],image->background_color,zero))
-      {
-        marker[i]=True;
-        break;
-      }
+    /*
+      Mark background color, topmost occurrence if more than one.
+    */
+    for (i=number_colors-1; i; i--)
+    {
+      if (ColorMatch(image->colormap[i],image->background_color,zero))
+        {
+          marker[i]=True;
+          break;
+        }
+    }
   }
   /*
     Unmark duplicates.
@@ -490,9 +497,15 @@ static unsigned int CompressColormapTransFirst(Image *image)
       LiberateMemory((void **) &opacity);
       return(True);
     }
+
+  remap_needed=False;
+  if (top_used > new_number_colors)
+     remap_needed=True;
+
   /*
     Compress colormap.
   */
+
   colormap=(PixelPacket *) AcquireMemory(image->colors*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     {
@@ -504,8 +517,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
   /*
     Eliminate unused colormap entries.
   */
-  map=(unsigned short *) AcquireMemory(number_colors*sizeof(unsigned short));
-  if (map == (unsigned short *) NULL)
+  map=(IndexPacket *) AcquireMemory(number_colors*sizeof(IndexPacket));
+  if (map == (IndexPacket *) NULL)
     {
       LiberateMemory((void **) &marker);
       LiberateMemory((void **) &opacity);
@@ -516,7 +529,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
   k=0;
   for (i=0; i < number_colors; i++)
   {
-    map[i]=(unsigned short) k;
+    map[i]=(IndexPacket) k;
     if (marker[i])
       {
         for (j=i+1; j < number_colors; j++)
@@ -524,11 +537,11 @@ static unsigned int CompressColormapTransFirst(Image *image)
           if ((opacity[i] == opacity[j]) &&
               (ColorMatch(image->colormap[i],image->colormap[j],zero)))
             {
-               map[j]=(unsigned short) k;
+               map[j]=(IndexPacket) k;
                marker[j]=False;
             }
         }
-      k++;
+        k++;
       }
   }
   j=0;
@@ -540,7 +553,6 @@ static unsigned int CompressColormapTransFirst(Image *image)
         j++;
       }
   }
-  remap_needed=False;
   if (have_transparency && (opacity[0] != TransparentOpacity))
     {
       /*
@@ -554,12 +566,12 @@ static unsigned int CompressColormapTransFirst(Image *image)
               temp_colormap;
 
             temp_colormap=colormap[0];
-            colormap[0]=colormap[map[i]];
+            colormap[0]=colormap[(int) map[i]];
             colormap[map[i]]=temp_colormap;
             for (j=0; j < number_colors; j++)
             {
               if (map[j] == 0)
-                map[j]=(unsigned short) map[i];
+                map[j]=map[i];
               else if (map[j] == map[i])
                 map[j]=0;
             }
@@ -568,14 +580,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
           }
       }
    }
-  LiberateMemory((void **) &opacity);
 
-  if (!remap_needed)
-    for (i=new_number_colors; i < number_colors; i++)
-    {
-      if (marker[i])
-        remap_needed=True;
-    }
+  LiberateMemory((void **) &opacity);
   LiberateMemory((void **) &marker);
 
   if (remap_needed)
@@ -592,7 +598,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
         for (x=0; x < (long) image->columns; x++)
         {
           j=(int) indexes[x];
-          indexes[x]=(IndexPacket) map[j];
+          indexes[x]= map[j];
         }
         if (!SyncImagePixels(image))
           break;
@@ -1340,14 +1346,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     mng_global_bkgd,
     transparent_color;
 
+  register unsigned char
+    *p;
+
   register IndexPacket
     *indexes;
 
   register long
     x;
-
-  register unsigned char
-    *p;
 
   register long
     i;
@@ -3577,15 +3583,16 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           else
                             {
                               /* Interpolate */
-                              (*q).red=((long) (2*i*((*n).red-(*p).red)+m))
-                                 /((long) (m*2))+(*p).red;
-                              (*q).green=((long) (2*i*((*n).green-(*p).green)+m))
-                                 /((long) (m*2))+(*p).green;
-                              (*q).blue=((long) (2*i*((*n).blue-(*p).blue)+m))
-                                 /((long) (m*2))+(*p).blue;
+                              (*q).red=(Quantum) (((long) (2*i*((*n).red
+                                 -(*p).red)+m))/((long) (m*2))+(*p).red);
+                              (*q).green=(Quantum) (((long) (2*i*((*n).green
+                                 -(*p).green)+m))/((long) (m*2))+(*p).green);
+                              (*q).blue=(Quantum) (((long) (2*i*((*n).blue
+                                 -(*p).blue)+m))/((long) (m*2))+(*p).blue);
                               if (image->matte)
-                                 (*q).opacity=((long) (2*i*((*n).opacity-
-                                    (*p).opacity)+m))/((long) (m*2))+(*p).opacity;
+                                 (*q).opacity=(Quantum) (((long)
+                                 (2*i*((*n).opacity-(*p).opacity)+m))
+                                 /((long) (m*2))+(*p).opacity);
                             }
                           if (magn_methy == 4)
                             {
@@ -3605,8 +3612,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                              *q=(*n);
                           if (magn_methy == 5)
                             {
-                              (*q).opacity=((long) (2*i*((*n).opacity
-                                 -(*p).opacity)+m))/((long) (m*2))+(*p).opacity;
+                              (*q).opacity=(Quantum) (((long) (2*i*((*n).opacity
+                                 -(*p).opacity)+m))/((long) (m*2))+(*p).opacity);
                             }
                         }
                       n++;
@@ -3638,7 +3645,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   q=GetImagePixels(image,0,y,image->columns,1);
                   p=q+(image->columns-length);
                   n=p+1;
-                  for (x=(long) (image->columns-length); x < (long) image->columns; x++)
+                  for (x=(long) (image->columns-length);
+                    x < (long) image->columns; x++)
                   {
                     if (x == (long) (image->columns-length))
                       m=mng_info->magn_ml;
@@ -3664,15 +3672,15 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           else
                             {
                               /* Interpolate */
-                              (*q).red=(long) (2*i*((*n).red-(*p).red)+m)
-                                 /((long) (m*2))+(*p).red;
-                              (*q).green=(long) (2*i*((*n).green-(*p).green)+m)
-                                 /((long) (m*2))+(*p).green;
-                              (*q).blue=(long) (2*i*((*n).blue-(*p).blue)+m)
-                                 /((long) (m*2))+(*p).blue;
+                              (*q).red=(Quantum) ((2*i*((*n).red-(*p).red)+m)
+                                 /((long) (m*2))+(*p).red);
+                              (*q).green=(Quantum) ((2*i*((*n).green-(*p).green)
+                                 +m)/((long) (m*2))+(*p).green);
+                              (*q).blue=(Quantum) ((2*i*((*n).blue-(*p).blue)+m)
+                                 /((long) (m*2))+(*p).blue);
                               if (image->matte)
-                                 (*q).opacity=(long) (2*i*((*n).opacity
-                                   -(*p).opacity)+m)/((long) (m*2))+(*p).opacity;
+                                 (*q).opacity=(Quantum) ((2*i*((*n).opacity
+                                   -(*p).opacity)+m)/((long) (m*2))+(*p).opacity);
                             }
                           if (magn_methx == 4)
                             {
@@ -3693,8 +3701,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           if (magn_methx == 5)
                             {
                               /* Interpolate */
-                              (*q).opacity=(long) (2*i*((*n).opacity
-                                 -(*p).opacity)+m) /((long) (m*2))+(*p).opacity;
+                              (*q).opacity=(Quantum) ((2*i*((*n).opacity
+                                 -(*p).opacity)+m) /((long) (m*2))+(*p).opacity);
                             }
                         }
                       q++;
@@ -4267,8 +4275,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     use_global_plte,
     zero=0;
 
+  unsigned long
+    rowbytes;
+
   long
-    rowbytes,
     y;
 
   register IndexPacket
@@ -5095,7 +5105,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             else
               {
 #ifdef PNG_SORT_PALETTE
-/* Still does not work for at least one GIF animation */
                 unsigned long
                    save_number_colors;
 
@@ -5145,11 +5154,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
                     index=indexes[x];
                     assert(index < number_colors);
+                    ping_info->trans[index]=(png_byte) (255-
 #if (QuantumDepth == 8)
-                    ping_info->trans[index]=(png_byte) (255-p->opacity);
+                       p->opacity);
 #else
-                    ping_info->trans[index]=
-                       (png_byte) (255-((p->opacity>>8)&255));
+                       ((p->opacity>>8)&0xff));
 #endif
                   }
                 p++;
@@ -5628,12 +5637,3 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     "PNG library is not available", image->filename);
 }
 #endif
-
-#if 0
-lint reports the following:
-(71) warning: lint suppression directive not used
-(4895) warning: semantics of "/" change in ANSI C; use explicit cast
-(4902) warning: semantics of "/" change in ANSI C; use explicit cast
-(4967) warning: semantics of "/" change in ANSI C; use explicit cast
-#endif
-
