@@ -404,7 +404,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       tiff=TIFFOpen(filename,ReadBinaryType);
     }
   if (tiff == (TIFF *) NULL)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    {
+      if ((image->blob->file == stdin) || image->blob->pipet)
+        remove(filename);
+      ThrowReaderException(FileOpenError,"Unable to open file",image);
+    }
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
     {
@@ -414,8 +418,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image->scene++;
       status=TIFFReadDirectory(tiff);
       if (status == False)
-        ThrowReaderException(CorruptImageError,"Unable to read subimage",
-          image);
+        {
+          TIFFClose(tiff);
+          if ((image->blob->file == stdin) || image->blob->pipet)
+            remove(filename);
+          ThrowReaderException(CorruptImageError,"Unable to read subimage",
+            image);
+        }
     }
   do
   {
@@ -505,6 +514,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
+            if ((image->blob->file == stdin) || image->blob->pipet)
+              remove(filename);
             ThrowReaderException(ResourceLimitError,
               "Memory allocation failed",image)
           }
@@ -578,8 +589,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitError,
-              "Memory allocation failed",image)
+            if ((image->blob->file == stdin) || image->blob->pipet)
+              remove(filename);
+            ThrowReaderException(ResourceLimitError,"Memory allocation failed",
+              image)
           }
         /*
           Create colormap.
@@ -772,6 +785,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
+            if ((image->blob->file == stdin) || image->blob->pipet)
+              remove(filename);
             ThrowReaderException(ResourceLimitError,
               "Memory allocation failed",image)
           }
@@ -855,6 +870,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
+            if ((image->blob->file == stdin) || image->blob->pipet)
+              remove(filename);
             ThrowReaderException(ResourceLimitError,
               "Memory allocation failed",image)
           }
