@@ -1804,7 +1804,7 @@ static void CacheSignalHandler(int status)
 }
 #endif
 
-MagickExport void SetCacheThreshold(const off_t size)
+MagickExport void SetCacheThreshold(const unsigned long size)
 {
   SetMagickResourceLimit(MemoryResource,size);
 }

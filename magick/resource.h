@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#define ResourceInfinity  (~0)
+#define ResourceInfinity  (~0UL)
 
 /*
   Typedef declarations.
@@ -25,16 +25,16 @@ typedef enum
 /*
   Method declarations.
 */
-extern MagickExport off_t
-  GetMagickResourceUsage(const ResourceType);
-
 extern MagickExport unsigned int
   AcquireMagickResource(const ResourceType,const off_t);
+
+extern MagickExport unsigned long
+  GetMagickResourceUsage(const ResourceType);
 
 extern MagickExport void
   DestroyMagickResources(void),
   LiberateMagickResource(const ResourceType,const off_t),
-  SetMagickResourceLimit(const ResourceType,const off_t);
+  SetMagickResourceLimit(const ResourceType,const unsigned long);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

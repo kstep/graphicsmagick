@@ -62,7 +62,7 @@
 */
 typedef struct _ResourceInfo
 {
-  off_t
+  long double
     memory,
     disk,
     memory_map;
@@ -182,11 +182,11 @@ MagickExport void DestroyMagickResources(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetMagickResourceUsages() returns the available size of the specified
-%  resource.
+%  resource in megabytes.
 %
 %  The format of the GetMagickResourceUsage() method is:
 %
-%      ResourceInfo GetMagickResourceUsage(const ResourceType type)
+%      long double GetMagickResourceUsage(const ResourceType type)
 %
 %  A description of each parameter follows:
 %
@@ -195,21 +195,37 @@ MagickExport void DestroyMagickResources(void)
 %
 %
 */
-MagickExport off_t GetMagickResourceUsage(const ResourceType type)
+MagickExport unsigned long GetMagickResourceUsage(const ResourceType type)
 {
-  off_t
-    size;
+  unsigned long
+    usage;
 
   AcquireSemaphoreInfo(&resource_semaphore);
   switch (type)
   {
-    case MemoryResource: size=resource_info.memory; break;
-    case DiskResource: size=resource_info.disk; break;
-    case MemoryMapResource: size=resource_info.memory_map; break;
-    default: size=0; break;
+    case MemoryResource:
+    {
+      usage=resource_info.memory/1024.0/1024.0;
+      break;
+    }
+    case DiskResource:
+		{
+      usage=resource_info.disk/1024.0/1024.0;
+      break;
+		}
+    case MemoryMapResource:
+		{
+  		usage=resource_info.memory_map/1024.0/1024.0;
+      break;
+		}
+    default:
+    {
+		  usage=0;
+      break;
+    }
   }
   LiberateSemaphoreInfo(&resource_semaphore);
-  return(size);
+  return(usage);
 }
 
 /*
@@ -283,7 +299,8 @@ MagickExport void LiberateMagickResource(const ResourceType type,
 %
 %  The format of the SetMagickResourceLimit() method is:
 %
-%      void SetMagickResourceLimit(const ResourceType type,const off_t limit)
+%      void SetMagickResourceLimit(const ResourceType type,]
+%        const unsigned long limit)
 %
 %  A description of each parameter follows:
 %
@@ -294,14 +311,26 @@ MagickExport void LiberateMagickResource(const ResourceType type,
 %
 */
 MagickExport void SetMagickResourceLimit(const ResourceType type,
-  const off_t limit)
+  const unsigned long limit)
 {
   AcquireSemaphoreInfo(&resource_semaphore);
   switch (type)
   {
-    case MemoryResource: resource_info.memory=1024*1024*limit; break;
-    case DiskResource: resource_info.disk=1024*1024*limit; break;
-    case MemoryMapResource: resource_info.memory_map=1024*1024*limit; break;
+    case MemoryResource:
+    {
+      resource_info.memory=1024.0*1024.0*(double) limit;
+      break;
+    }
+    case DiskResource:
+    {
+      resource_info.disk=1024.0*1024.0*(double) limit;
+      break;
+    }
+    case MemoryMapResource:
+    {
+      resource_info.memory_map=1024.0*1024.0*(double) limit;
+      break;
+    }
     default: break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);

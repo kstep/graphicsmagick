@@ -3071,15 +3071,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               {
                 (*image)->chromaticity.blue_primary.x=0.0;
                 (*image)->chromaticity.blue_primary.y=0.0;
-                (*image)->chromaticity.blue_primary.z=0.0;
                 continue;
               }
             (void) sscanf(argv[++i],"%lf%*[,/]%lf",
               &(*image)->chromaticity.blue_primary.x,
               &(*image)->chromaticity.blue_primary.y);
-            (*image)->chromaticity.blue_primary.z=1.0-
-              ((*image)->chromaticity.blue_primary.x+
-               (*image)->chromaticity.blue_primary.y);
             continue;
           }
         if (LocaleCompare("blur",option+1) == 0)
@@ -3817,15 +3813,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               {
                 (*image)->chromaticity.green_primary.x=0.0;
                 (*image)->chromaticity.green_primary.y=0.0;
-                (*image)->chromaticity.green_primary.z=0.0;
                 continue;
               }
             (void) sscanf(argv[++i],"%lf%*[,/]%lf",
               &(*image)->chromaticity.green_primary.x,
               &(*image)->chromaticity.green_primary.y);
-            (*image)->chromaticity.green_primary.z=1.0-
-              ((*image)->chromaticity.green_primary.x+
-               (*image)->chromaticity.green_primary.y);
             continue;
           }
         break;
@@ -4226,15 +4218,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               {
                 (*image)->chromaticity.red_primary.x=0.0;
                 (*image)->chromaticity.red_primary.y=0.0;
-                (*image)->chromaticity.red_primary.z=0.0;
                 continue;
               }
             (void) sscanf(argv[++i],"%lf%*[,/]%lf",
               &(*image)->chromaticity.red_primary.x,
               &(*image)->chromaticity.red_primary.y);
-            (*image)->chromaticity.red_primary.z=1.0-
-              ((*image)->chromaticity.red_primary.x+
-               (*image)->chromaticity.red_primary.y);
             continue;
           }
         if (LocaleCompare("region",option+1) == 0)
@@ -4773,15 +4761,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               {
                 (*image)->chromaticity.white_point.x=0.0;
                 (*image)->chromaticity.white_point.y=0.0;
-                (*image)->chromaticity.white_point.z=0.0;
                 continue;
               }
             (void) sscanf(argv[++i],"%lf%*[,/]%lf",
               &(*image)->chromaticity.white_point.x,
               &(*image)->chromaticity.white_point.y);
-            (*image)->chromaticity.white_point.z=1.0-
-              ((*image)->chromaticity.white_point.x+
-               (*image)->chromaticity.white_point.y);
             continue;
           }
         break;

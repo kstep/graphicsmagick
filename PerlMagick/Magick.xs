@@ -1193,9 +1193,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             (void) sscanf(SvPV(sval,na),"%lf%*[,/]%lf",
               &image->chromaticity.blue_primary.x,
               &image->chromaticity.blue_primary.y);
-          image->chromaticity.blue_primary.z=1.0-
-            (image->chromaticity.blue_primary.x+
-             image->chromaticity.blue_primary.y);
           return;
         }
       if (LocaleCompare(attribute,"bordercolor") == 0)
@@ -1485,9 +1482,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             (void) sscanf(SvPV(sval,na),"%lf%*[,/]%lf",
               &image->chromaticity.green_primary.x,
               &image->chromaticity.green_primary.y);
-          image->chromaticity.green_primary.z=1.0-
-            (image->chromaticity.green_primary.x+
-             image->chromaticity.green_primary.y);
           return;
         }
       MagickError(OptionError,"Invalid attribute",attribute);
@@ -1726,9 +1720,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             (void) sscanf(SvPV(sval,na),"%lf%*[,/]%lf",
               &image->chromaticity.red_primary.x,
               &image->chromaticity.red_primary.y);
-          image->chromaticity.red_primary.z=1.0-
-            (image->chromaticity.red_primary.x+
-             image->chromaticity.red_primary.y);
           return;
         }
       if (LocaleCompare(attribute,"render") == 0)
@@ -1906,9 +1897,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             (void) sscanf(SvPV(sval,na),"%lf%*[,/]%lf",
               &image->chromaticity.white_point.x,
               &image->chromaticity.white_point.y);
-          image->chromaticity.white_point.z=1.0-
-            (image->chromaticity.white_point.x+
-             image->chromaticity.white_point.y);
           return;
         }
       MagickError(OptionError,"Invalid attribute",attribute);
@@ -3140,9 +3128,8 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(color,"%g,%g,%g",image->chromaticity.blue_primary.x,
-                image->chromaticity.blue_primary.y,
-                image->chromaticity.blue_primary.z);
+              FormatString(color,"%g,%g",image->chromaticity.blue_primary.x,
+                image->chromaticity.blue_primary.y);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -3475,9 +3462,8 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(color,"%g,%g,%g",image->chromaticity.green_primary.x,
-                image->chromaticity.green_primary.y,
-                image->chromaticity.green_primary.z);
+              FormatString(color,"%g,%g",image->chromaticity.green_primary.x,
+                image->chromaticity.green_primary.y);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -3765,9 +3751,8 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(color,"%g,%g,%g",image->chromaticity.red_primary.x,
-                image->chromaticity.red_primary.y,
-                image->chromaticity.red_primary.z);
+              FormatString(color,"%g,%g",image->chromaticity.red_primary.x,
+                image->chromaticity.red_primary.y);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -3948,9 +3933,8 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              FormatString(color,"%g,%g,%g",image->chromaticity.white_point.x,
-                image->chromaticity.white_point.y,
-                image->chromaticity.white_point.z);
+              FormatString(color,"%g,%g",image->chromaticity.white_point.x,
+                image->chromaticity.white_point.y);
               s=newSVpv(color,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
