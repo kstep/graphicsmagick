@@ -1,6 +1,6 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2003 Marti Maria
+//  Copyright (C) 1998-2004 Marti Maria
 //
 // Permission is hereby granted, free of charge, to any person obtaining 
 // a copy of this software and associated documentation files (the "Software"), 
@@ -71,6 +71,14 @@ BOOL LCMSEXPORT _cmsSaveProfileToMem(cmsHPROFILE hProfile, LPVOID MemPtr, size_t
 
 // ------------------- implementation -----------------------------------
 
+
+/*
+  Fix 64-bit platforms: the ALIGNLONG macro aligned on an 32-bit word
+  boundary, which on 64-bit platforms is not the proper alignment for
+  longs. The patch replaces the hardcoding of 3 with sizeof(long)-1.
+
+  FIXME:
+*/
 
 #define ALIGNLONG(x) (((x)+3) & ~(3))         // Aligns to DWORD boundary
 
@@ -2159,6 +2167,13 @@ DWORD LCMSEXPORT cmsGetProfileICCversion(cmsHPROFILE hProfile)
 }
 
 
+void LCMSEXPORT cmsSetProfileICCversion(cmsHPROFILE hProfile, DWORD Version)
+{
+   LPLCMSICCPROFILE  Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
+
+   Icc -> Version = Version;
+}
+
 
 void LCMSEXPORT cmsSetDeviceClass(cmsHPROFILE hProfile, icProfileClassSignature sig)
 {
@@ -3098,8 +3113,10 @@ BOOL SaveLUT(FILE* OutStream, const LPLUT NewLUT, LPLCMSICCPROFILE Icc)
                                                  NewLUT->InputChan));
        // The 3D CLUT.
 
-       if (!SaveWordsTable(OutStream, (int) nTabSize, NewLUT -> T, Icc)) return FALSE;
+       if (nTabSize > 0) {
 
+             if (!SaveWordsTable(OutStream, (int) nTabSize, NewLUT -> T, Icc)) return FALSE;
+       }
        // The postlinearization table
 
        for (i=0; i < NewLUT -> OutputChan; i++) {
