@@ -1,3 +1,14 @@
+2003-10-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/cineon.c: Fix source module description.  Contrary to
+	opinion, ImageMagick did not invent the Cineon X image format so
+	description is now "Read/Write Cineon X Image Format."
+	* magick/magic.mgk: Added a CINEON entry for the Cineon X image
+	format.
+	* magick/static.c (RegisterStaticModules): Invoke
+	RegisterCINEONImage().
+	* coders/modules.mgk: Map "CIN" magick to CINEON module.
+
 2003-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* locale/C.mgk: Added message for "UnrecognizedCommand".

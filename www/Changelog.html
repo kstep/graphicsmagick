@@ -53,6 +53,30 @@
 </tr>
 </table>
 <p>
+2003-10-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/cineon.c: Fix source module description.  Contrary to
+        opinion, ImageMagick did not invent the Cineon X image format so
+        description is now "Read/Write Cineon X Image Format."
+  <LI> magick/magic.mgk: Added a CINEON entry for the Cineon X image
+        format.<BR>
+  <LI> magick/static.c (RegisterStaticModules): Invoke
+        RegisterCINEONImage().<BR>
+  <LI> coders/modules.mgk: Map "CIN" magick to CINEON module.
+
+</UL>
+<p>
+2003-10-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> locale/C.mgk: Added message for "UnrecognizedCommand".
+  <LI> magick/command.c (MagickCommand): No error was reported when a
+        subcommand failed to be matched so 'gm foo' would silently return.
+        Now an error message is properly reported.
+
+</UL>
+<p>
 2003-10-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

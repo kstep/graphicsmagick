@@ -16,7 +16,8 @@
 %                   CCCC  IIIII  N   N  EEEEE  OOO   N   N                    %
 %                                                                             %
 %                                                                             %
-%                    Read/Write ImageMagick Image Format.                     %
+%                    Read/Write Kodak Cineon Image Format.                    %
+%                Cineon Image Format is a subset of SMTPE DPX                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -309,11 +310,11 @@ ModuleExport void RegisterCINEONImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("CINEON");
+  entry=SetMagickInfo("CIN");
   entry->decoder=(DecoderHandler) ReadCINEONImage;
   entry->encoder=(EncoderHandler) WriteCINEONImage;
   entry->magick=(MagickHandler) IsCINEON;
-  entry->description=AcquireString("Digital Moving Picture Exchange");
+  entry->description=AcquireString("Cineon Image File");
   entry->module=AcquireString("CINEON");
   (void) RegisterMagickInfo(entry);
 }
@@ -339,7 +340,7 @@ ModuleExport void RegisterCINEONImage(void)
 */
 ModuleExport void UnregisterCINEONImage(void)
 {
-  (void) UnregisterMagickInfo("CINEON");
+  (void) UnregisterMagickInfo("CIN");
 }
 
 /*
@@ -387,11 +388,11 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
 
   unsigned long
     maxr,
-		maxg,
-		maxb,
-		minr,
-		ming,
-		minb;
+    maxg,
+    maxb,
+    minr,
+    ming,
+    minb;
 
   /* 
     Get the max values for each component... I guess it "needs" it...
@@ -549,6 +550,11 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   /* Reseved for future Use.. */
   for (i=0; i < 20; i++)
     (void) WriteBlobByte(image,0x00);
+
+  /*
+    Generic Orientation Header
+  */
+
   /* X offset */
   (void) WriteBlobMSBLong(image,0x0);
   /* Y offset */
@@ -563,7 +569,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   /* time who cares ? */
   for ( i =0 ; i < 12 ; i++ ) 
     (void) WriteBlobByte(image,0);
-  (void) WriteBlobString(image,"ImageMagick");
+  (void) WriteBlobString(image,"GraphicsMagick");
   for (i = 0; i < 64-11 ; i++)
     (void) WriteBlobByte(image,0);
   for (i = 0; i < 32 ; i++)

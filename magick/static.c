@@ -107,6 +107,7 @@ MagickExport void RegisterStaticModules(void)
   RegisterAVSImage();
   RegisterBMPImage();
   RegisterCAPTIONImage();
+  RegisterCINEONImage();
   RegisterCLIPBOARDImage();
   RegisterCMYKImage();
   RegisterCUTImage();
