@@ -173,6 +173,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     degrees,
     gamma,
     percentage,
+    radius,
+    sigma,
     threshold;
 
   Image
@@ -231,6 +233,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   x=0;
   y=0;
   percentage=0.0;
+  radius=0.0;
+  sigma=1.0;
   threshold=0.0;
   commands[0]=SetClientName((char *) NULL);
   for (i=0; i < NumberTiles; i++)
@@ -282,7 +286,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case HuePreview:
       {
-        FormatString(factor,"0,0,%.1f",percentage);
+        FormatString(factor,"0,0,%g",percentage);
         FormatString(label,"modulate %.1024s",factor);
         commands[argc++]=(char *) "-modulate";
         commands[argc++]=factor;
@@ -290,7 +294,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case SaturationPreview:
       {
-        FormatString(factor,"0,%.1f",percentage);
+        FormatString(factor,"0,%g",percentage);
         FormatString(label,"modulate %.1024s",factor);
         commands[argc++]=(char *) "-modulate";
         commands[argc++]=factor;
@@ -298,7 +302,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case BrightnessPreview:
       {
-        FormatString(factor,"%.1f",percentage);
+        FormatString(factor,"%g",percentage);
         FormatString(label,"modulate %.1024s",factor);
         commands[argc++]=(char *) "-modulate";
         commands[argc++]=factor;
@@ -306,7 +310,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case GammaPreview:
       {
-        FormatString(factor,"%.1f",gamma+=0.4f);
+        FormatString(factor,"%g",gamma+=0.4f);
         FormatString(label,"gamma %.1024s",factor);
         commands[argc++]=(char *) "-gamma";
         commands[argc++]=factor;
@@ -379,7 +383,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case SharpenPreview:
       {
-        FormatString(factor,"%.1f",percentage);
+        FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"sharpen %.1024s",factor);
         commands[argc++]=(char *) "-sharpen";
         commands[argc++]=factor;
@@ -387,7 +391,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case BlurPreview:
       {
-        FormatString(factor,"%.1f",percentage);
+        FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"-blur %.1024s",factor);
         commands[argc++]=(char *) "-blur";
         commands[argc++]=factor;
@@ -403,7 +407,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case EdgeDetectPreview:
       {
-        FormatString(factor,"%.1f",percentage);
+        FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"edge %.1024s",factor);
         commands[argc++]=(char *) "-edge";
         commands[argc++]=factor;
@@ -419,7 +423,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case SolarizePreview:
       {
-        FormatString(factor,"%.1f",percentage);
+        FormatString(factor,"%g",percentage);
         FormatString(label,"solarize %.1024s",factor);
         commands[argc++]=(char *) "-solarize";
         commands[argc++]=factor;
@@ -436,7 +440,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
             break;
           }
         degrees+=10.0;
-        FormatString(factor,"%.1fx%.1f",degrees,degrees);
+        FormatString(factor,"%gx%g",degrees,degrees);
         FormatString(label,"shade %.1024s",factor);
         commands[argc++]=(char *) "-shade";
         commands[argc++]=factor;
@@ -537,6 +541,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
     }
     percentage+=12.5;
+    radius+=0.5;
+    sigma+=0.25;
     commands[argc++]=(char *) "-label";
     commands[argc++]=label;
     MogrifyImage(clone_info,argc,commands,&images[i]);
