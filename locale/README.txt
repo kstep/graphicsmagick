@@ -1,2 +1,3 @@
-Locale files must be valid XML but in addition must be sorted in
-alphabetical order at each of the hierarchical levels.
+This directory contains the ImageMagick messaging subsystem.  For now the
+only locale supported is ISO8859-1.  We intend on adding additional locales
+in the near future.
