@@ -55,6 +55,7 @@
 #include "defines.h"
 #include "proxy.h"
 
+#if defined(HasX11)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -454,7 +455,16 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   CloseImage(image);
   return(image);
 }
+#else
+Export Image *ReadXWDImage(const ImageInfo *image_info)
+{
+  MagickWarning(MissingDelegateWarning,"X11 library is not available",
+    image_info->filename);
+  return((Image *) NULL);
+}
+#endif
 
+#if defined(HasX11)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -655,3 +665,11 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   CloseImage(image);
   return(True);
 }
+#else
+Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
+{
+  MagickWarning(MissingDelegateWarning,"X11 library is not available",
+    image->filename);
+  return(False);
+}
+#endif

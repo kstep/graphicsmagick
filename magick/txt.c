@@ -95,6 +95,9 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     *status,
     text[MaxTextExtent];
 
+  ColorPacket
+    color;
+
   double
     dx_resolution,
     dy_resolution;
@@ -115,9 +118,6 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
 
   register RunlengthPacket
     *q;
-
-  XColor
-    color;
 
   /*
     Allocate image structure.
@@ -167,7 +167,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     AllocateMemory(image->packets*sizeof(RunlengthPacket));
   if (image->pixels == (RunlengthPacket *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  (void) XQueryColorDatabase("#c0c0c0",&color);
+  (void) QueryColorDatabase("#c0c0c0",&color);
   image->background_color.red=XDownScale(color.red);
   image->background_color.green=XDownScale(color.green);
   image->background_color.blue=XDownScale(color.blue);

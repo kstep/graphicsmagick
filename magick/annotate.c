@@ -159,7 +159,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       /*
         User specified annotation geometry.
       */
-      flags=XParseGeometry(local_info->geometry,&x,&y,&width,&height);
+      flags=ParseGeometry(local_info->geometry,&x,&y,&width,&height);
       if ((flags & XNegative) != 0)
         x+=image->columns;
       if ((flags & WidthValue) == 0)

@@ -54,6 +54,8 @@
 #define __EXTENSIONS__  1
 #include "magick.h"
 #include "defines.h"
+#include "proxy.h"
+#if defined(HasX11)
 #include "display.h"
 
 /*
@@ -13489,3 +13491,4 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   *image=displayed_image;
   return(loaded_image);
 }
+#endif

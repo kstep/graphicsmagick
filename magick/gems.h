@@ -14,9 +14,6 @@ extern "C" {
 extern Export ColorPacket
   InterpolateColor(Image *,const double,const double);
 
-extern Export double
-  BesselOrderOne(double);
-
 extern Export Quantum
   GenerateNoise(const Quantum,const NoiseType);
 

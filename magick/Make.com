@@ -151,8 +151,8 @@ $  if (object_file .eqs. "")
 $  then
 $    write sys$output "Compiling ",p1
 $    cc'compile_options'/include_directory=([-],[-.jpeg],[-.png], -
-       [-.tiff],[-.ttf],[-.zlib])/define=("HasJPEG","HasLZW","HasPNG", -
-       "HasTIFF","HasTTF","HasZLIB") 'source_file'  
+       [-.tiff],[-.ttf],[-.zlib])/define=("HasX11","HasJPEG","HasLZW", -
+       "HasPNG","HasTIFF","HasTTF","HasZLIB") 'source_file'  
 $  endif
 $endif
 $exit

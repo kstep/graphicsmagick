@@ -137,8 +137,15 @@
 /*
   Include declarations.
 */
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #include "magick/magick.h"
 #include "magick/defines.h"
+#include "magick/proxy.h"
+#else
+#include "magick.h"
+#include "defines.h"
+#include "proxy.h"
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -291,6 +298,7 @@ int WINAPI WinMain(HINSTANCE instance,HINSTANCE last,LPSTR command,int state)
 
 int main(int argc,char **argv)
 {
+#if defined(HasX11)
   char
     *client_name,
     *option,
@@ -1476,5 +1484,6 @@ int main(int argc,char **argv)
     }
   DestroyDelegateInfo();
   Exit(0);
+#endif
   return(False);
 }

@@ -15,7 +15,6 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
 	<UL>
 
-		<LI><A HREF="#BesselOrderOne">BesselOrderOne</A>
 		<LI><A HREF="#Constrast">Constrast</A>
 		<LI><A HREF="#GenerateNoise">GenerateNoise</A>
 		<LI><A HREF="#HSLTransform">HSLTransform</A>
@@ -39,9 +38,6 @@ gems - Graphic Gems - Graphic Support Methods
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-value=<STRONG>BesselOrderOne</STRONG>(x)
-
-<P>
 <STRONG>GenerateNoise</STRONG>(pixel,noise_type)
 
 <P>
@@ -64,60 +60,6 @@ value=<STRONG>BesselOrderOne</STRONG>(x)
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
 <HR>
-<H2><A NAME="BesselOrderOne">BesselOrderOne</A></H2>
-<P>
-Method BesselOrderOne computes the Bessel function of x of the first kind
-of order 0:
-
-<P>
-<PRE>  Reduce x to |x| since j1(x)= -j1(-x), and for x in (0,8]
-</PRE>
-<P>
-<PRE>     j1(x) = x*j1(x);
-</PRE>
-<P>
-<PRE>  For x in (8,inf)
-</PRE>
-<P>
-<PRE>     j1(x) = sqrt(2/(pi*x))*(p1(x)*cos(x1)-q1(x)*sin(x1))
-</PRE>
-<P>
-<PRE>  where x1 = x-3*pi/4. Compute sin(x1) and cos(x1) as follow:
-</PRE>
-<P>
-<PRE>     cos(x1) =  cos(x)cos(3pi/4)+sin(x)sin(3pi/4)
-</PRE>
-<P>
-<PRE>             =  1/sqrt(2) * (sin(x) - cos(x))
-</PRE>
-<P>
-<PRE>     sin(x1) =  sin(x)cos(3pi/4)-cos(x)sin(3pi/4)
-</PRE>
-<P>
-<PRE>             = -1/sqrt(2) * (sin(x) + cos(x))
-</PRE>
-<P>
-The format of the BesselOrderOne routine is:
-
-<P>
-<PRE>        value=BesselOrderOne(x)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG><A NAME="item_o">value:</A></STRONG><DD>
-<P>
-Method BesselOrderOne returns the Bessel function of x of the first kind of
-orders 1.
-
-<DT><STRONG>x:</STRONG><DD>
-<P>
-double value.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="Constrast">Constrast</A></H2>
 <P>
 Method Contrast enhances the intensity differences between the lighter and
@@ -133,7 +75,7 @@ The format of the Contrast routine is:
 A description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>sign:</STRONG><DD>
+<DT><STRONG><A NAME="item_o">sign:</A></STRONG><DD>
 <P>
 A positive value enhances the contrast otherwise it is reduced.
 

@@ -89,6 +89,19 @@ const char
   };
 
 /*
+  Constant declarations.
+*/
+static const unsigned char
+  HighlightBitmap[8] =
+  {
+    0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
+  },
+  ShadowBitmap[8] =
+  {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+  };
+
+/*
   Enumeration declarations.
 */
 typedef enum

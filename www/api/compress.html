@@ -20,6 +20,7 @@
 		<LI><A HREF="#HuffmanEncodeImage">HuffmanEncodeImage</A>
 		<LI><A HREF="#Huffman2DEncodeImage">Huffman2DEncodeImage</A>
 		<LI><A HREF="#LZWEncodeImage">LZWEncodeImage</A>
+		<LI><A HREF="#PackbitsEncodeImage">PackbitsEncodeImage</A>
 		<LI><A HREF="#RunlengthDecodeImage">RunlengthDecodeImage</A>
 		<LI><A HREF="#RunlengthEncodeImage">RunlengthEncodeImage</A>
 		<LI><A HREF="#SetRunlengthEncoder">SetRunlengthEncoder</A>
@@ -53,6 +54,9 @@ status=<STRONG>HuffmanEncodeImage</STRONG>(image_info,image)
 
 <P>
 status=<STRONG>LZWEncodeImage</STRONG>(file,number_pixels,pixels)
+
+<P>
+status=<STRONG>PackbitsEncodeImage</STRONG>(file,number_pixels,pixels)
 
 <P>
 status=<STRONG>RunlengthDecodeImage</STRONG>(image)
@@ -217,6 +221,44 @@ this file.
 <DT><STRONG>number_pixels:</STRONG><DD>
 <P>
 An unsigned interger that specifies the number of pixels to compress.
+
+<DT><STRONG>pixels:</STRONG><DD>
+<P>
+The address of an unsigned array of characters containing the pixels to
+compress.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="PackbitsEncodeImage">PackbitsEncodeImage</A></H2>
+<P>
+Method PackbitsEncodeImage compresses an image via Macintosh Packbits
+encoding specific to Postscript Level II or Portable Document Format. To
+ensure portability, the binary Packbits bytes are encoded as ASCII Base-85.
+
+<P>
+The format of the PackbitsEncodeImage routine is:
+
+<P>
+<PRE>        status=PackbitsEncodeImage(file,number_pixels,pixels)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method PackbitsEncodeImage returns True if all the pixels are compressed
+without error, otherwise False.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+The address of a structure of type FILE. LZW encoded pixels are written to
+this file.
+
+<DT><STRONG>number_pixels:</STRONG><DD>
+<P>
+An unsigned integer that specifies the number of pixels to compress.
 
 <DT><STRONG>pixels:</STRONG><DD>
 <P>

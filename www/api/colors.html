@@ -17,6 +17,7 @@
 
 		<LI><A HREF="#GetNumberColors">GetNumberColors</A>
 		<LI><A HREF="#IsPseudoClass">IsPseudoClass</A>
+		<LI><A HREF="#QueryColorDatabase">QueryColorDatabase</A>
 		<LI><A HREF="#QueryColorName">QueryColorName</A>
 	</UL>
 
@@ -37,6 +38,9 @@ number_colors=<STRONG>GetNumberColors</STRONG>(image,file)
 
 <P>
 status=<STRONG>IsPseudoClass</STRONG>(image)
+
+<P>
+status=<STRONG>QueryColorDatabase</STRONG>(target,color)
 
 <P>
 distance=<STRONG>QueryColorName</STRONG>(color,name)
@@ -128,6 +132,38 @@ color or less.
 The address of a byte (8 bits) array of run-length encoded pixel data of
 your source image. The sum of the run-length counts in the source image
 must be equal to or exceed the number of pixels.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="QueryColorDatabase">QueryColorDatabase</A></H2>
+<P>
+Method QueryColorDatabase looks up a RGB values for a color given in the
+target string.
+
+<P>
+The format of the QueryColorDatabase routine is:
+
+<P>
+<PRE>      status=QueryColorDatabase(target,color)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method QueryColorDatabase returns True if the RGB values of the target
+color is defined, otherwise False is returned.
+
+<DT><STRONG>target:</STRONG><DD>
+<P>
+Specifies the color to lookup in the X color database.
+
+<DT><STRONG>color:</STRONG><DD>
+<P>
+A pointer to an ColorPacket structure. The RGB value of the target color is
+returned as this value.
 
 </DL></DL>
 <P>

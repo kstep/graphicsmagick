@@ -39,16 +39,34 @@ typedef unsigned char Quantum;
 #endif
 
 /*
+  3D effects.
+*/
+#define AccentuateModulate  UpScale(80)
+#define HighlightModulate  UpScale(125)
+#define ShadowModulate  UpScale(135)
+#define DepthModulate  UpScale(185)
+#define TroughModulate  UpScale(110)
+
+/*
   Typedef declarations.
 */
-typedef struct _ColorPacket
+typedef struct _ColorlistInfo
 {
-  Quantum
+  char
+    *name;
+
+  unsigned char
     red,
     green,
     blue;
+} ColorlistInfo;
 
+typedef struct _ColorPacket
+{
   unsigned short
+    red,
+    green,
+    blue,
     index;
 
   unsigned char
@@ -496,10 +514,14 @@ typedef struct _AnnotateInfo
 */
 extern const char
   *Alphabet,
+  *BackgroundColor,
+  *BorderColor,
   *DefaultPointSize,
   *DefaultTileFrame,
   *DefaultTileGeometry,
   *DefaultTileLabel,
+  *ForegroundColor,
+  *MatteColor,
   *LoadImageText,
   *LoadImagesText,
   *PSDensityGeometry,
@@ -509,6 +531,10 @@ extern const char
   *SaveImageText,
   *SaveImagesText,
   *WriteBinaryType;
+
+extern const ColorlistInfo
+  XPMColorlist[235],
+  XColorlist[757];
 
 /*
   Image utilities methods.
@@ -630,6 +656,7 @@ extern Export ImageType
   GetImageType(Image *);
 
 extern Export int
+  ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
 
 extern Export unsigned int
@@ -643,6 +670,7 @@ extern Export unsigned int
   IsSubimage(const char *,const unsigned int),
   IsTainted(const Image *),
   PlasmaImage(Image *,const SegmentInfo *,int,int),
+  QueryColorDatabase(const char *,ColorPacket *),
   UncondenseImage(Image *),
   WriteAVSImage(const ImageInfo *image_info,Image *image),
   WriteBMPImage(const ImageInfo *image_info,Image *image),

@@ -2479,7 +2479,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       if (image_info->page != (char *) NULL)
         {
          /* Get specified global "page" geometry.  */
-          (void) XParseGeometry(image_info->page,&page_info.x,&page_info.y,
+          (void) ParseGeometry(image_info->page,&page_info.x,&page_info.y,
             &page_info.width,&page_info.height);
           need_geom=False;
         }
@@ -2494,7 +2494,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           if (next_image->page != (char *) NULL)
             {
               /* Get "page" geometry of scene. */
-              (void) XParseGeometry(next_image->page,&page_info.x,
+              (void) ParseGeometry(next_image->page,&page_info.x,
                 &page_info.y, &width, &height);
             }
           else
@@ -2638,7 +2638,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
         if (image->page != (char *) NULL)
           {
-            (void) XParseGeometry(image->page,&page_info.x,&page_info.y,
+            (void) ParseGeometry(image->page,&page_info.x,&page_info.y,
                &width,&height);
           }
         else

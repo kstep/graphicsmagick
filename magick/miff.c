@@ -90,6 +90,9 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
     keyword[MaxTextExtent],
     value[MaxTextExtent];
 
+  ColorPacket
+    color;
+
   Image
     *image;
 
@@ -108,9 +111,6 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
   unsigned long
     count,
     max_packets;
-
-  XColor
-    color;
 
   /*
     Allocate image structure.
@@ -224,7 +224,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
             */
             if (Latin1Compare(keyword,"background-color") == 0)
               {
-                (void) XQueryColorDatabase(value,&color);
+                (void) QueryColorDatabase(value,&color);
                 image->background_color.red=XDownScale(color.red);
                 image->background_color.green=XDownScale(color.green);
                 image->background_color.blue=XDownScale(color.blue);
@@ -235,7 +235,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                 &image->chromaticity.blue_primary.y);
             if (Latin1Compare(keyword,"border-color") == 0)
               {
-                (void) XQueryColorDatabase(value,&color);
+                (void) QueryColorDatabase(value,&color);
                 image->border_color.red=XDownScale(color.red);
                 image->border_color.green=XDownScale(color.green);
                 image->border_color.blue=XDownScale(color.blue);
@@ -320,7 +320,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
               }
             if (Latin1Compare(keyword,"matte-color") == 0)
               {
-                (void) XQueryColorDatabase(value,&color);
+                (void) QueryColorDatabase(value,&color);
                 image->matte_color.red=XDownScale(color.red);
                 image->matte_color.green=XDownScale(color.green);
                 image->matte_color.blue=XDownScale(color.blue);

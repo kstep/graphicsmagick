@@ -123,12 +123,24 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
     }
     case PseudoClass:
     {
+      Quantum
+        blue,
+        green,
+        red;
+
       /*
         Contrast enhance PseudoClass image.
       */
       for (i=0; i < (int) image->colors; i++)
-        Contrast(sign,&image->colormap[i].red,&image->colormap[i].green,
-          &image->colormap[i].blue);
+      {
+        red=image->colormap[i].red;
+        green=image->colormap[i].green;
+        blue=image->colormap[i].blue;
+        Contrast(sign,&red,&green,&blue);
+        image->colormap[i].red=red;
+        image->colormap[i].green=green;
+        image->colormap[i].blue=blue;
+      }
       SyncImage(image);
       break;
     }
@@ -480,13 +492,25 @@ Export void ModulateImage(Image *image,const char *modulate)
     }
     case PseudoClass:
     {
+      Quantum
+        blue,
+        green,
+        red;
+
       /*
         Modulate the color for a PseudoClass image.
       */
       for (i=0; i < (int) image->colors; i++)
+      {
+        red=image->colormap[i].red;
+        green=image->colormap[i].green;
+        blue=image->colormap[i].blue;
         Modulate(percent_hue,percent_saturation,percent_brightness,
-          &image->colormap[i].red,&image->colormap[i].green,
-          &image->colormap[i].blue);
+          &red,&green,&blue);
+        image->colormap[i].red=red;
+        image->colormap[i].green=green;
+        image->colormap[i].blue=blue;
+      }
       SyncImage(image);
       break;
     }

@@ -89,6 +89,7 @@ extern "C" {
 #define HasPNG
 #define HasTIFF
 #define HasTTF
+#define HasX11
 #define HasZLIB
 #endif
 
@@ -104,9 +105,6 @@ extern "C" {
 #include <magick/utility.h>
 #include <magick/monitor.h>
 #include <magick/error.h>
-#include <magick/xwindows.h>
-#include <magick/widget.h>
-#include <magick/PreRvIcccm.h>
 #include <magick/memory.h>
 #include <magick/delegates.h>
 #include <magick/version.h>
@@ -122,9 +120,6 @@ extern "C" {
 #if defined(_VISUALC_)
 #define INT32  X11_INT32
 #endif
-#include "xwindows.h"
-#include "widget.h"
-#include "PreRvIcccm.h"
 #include "memory.h"
 #include "delegates.h"
 #include "version.h"

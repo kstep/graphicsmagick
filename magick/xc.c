@@ -87,6 +87,9 @@
 */
 Export Image *ReadXCImage(const ImageInfo *image_info)
 {
+  ColorPacket
+    color;
+
   Image
     *image;
 
@@ -95,9 +98,6 @@ Export Image *ReadXCImage(const ImageInfo *image_info)
 
   register RunlengthPacket
     *q;
-
-  XColor
-    color;
 
   /*
     Allocate image structure.
@@ -126,7 +126,7 @@ Export Image *ReadXCImage(const ImageInfo *image_info)
   /*
     Initialize colormap.
   */
-  (void) XQueryColorDatabase((char *) image_info->filename,&color);
+  (void) QueryColorDatabase((char *) image_info->filename,&color);
   image->colormap[0].red=XDownScale(color.red);
   image->colormap[0].green=XDownScale(color.green);
   image->colormap[0].blue=XDownScale(color.blue);

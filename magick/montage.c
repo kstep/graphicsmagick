@@ -369,7 +369,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
       tiles_per_column=number_images;
       x=0;
       y=0;
-      (void) XParseGeometry(montage_info->tile,&x,&y,&tiles_per_row,
+      (void) ParseGeometry(montage_info->tile,&x,&y,&tiles_per_row,
         &tiles_per_column);
     }
   /*
@@ -386,7 +386,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
       frame_info.height=0;
       frame_info.outer_bevel=0;
       frame_info.inner_bevel=0;
-      flags=XParseGeometry(montage_info->frame,&frame_info.outer_bevel,
+      flags=ParseGeometry(montage_info->frame,&frame_info.outer_bevel,
         &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
       if ((flags & HeightValue) == 0)
         frame_info.height=frame_info.width;

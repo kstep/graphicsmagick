@@ -54,6 +54,7 @@
 #include "magick.h"
 #include "defines.h"
 #include "proxy.h"
+#if defined(HasX11)
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,7 +86,16 @@ Export Image *ReadXImage(const ImageInfo *image_info)
   XGetImportInfo(&ximage_info);
   return(XImportImage(image_info,&ximage_info));
 }
+#else
+Export Image *ReadXImage(const ImageInfo *image_info)
+{
+  MagickWarning(MissingDelegateWarning,"X11 library is not available",
+    image_info->filename);
+  return((Image *) NULL);
+}
+#endif
 
+#if defined(HasX11)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -159,3 +169,11 @@ Export unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   XCloseDisplay(display);
   return(True);
 }
+#else
+Export unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
+{
+  MagickWarning(MissingDelegateWarning,"X11 library is not available",
+    image->filename);
+  return(False);
+}
+#endif

@@ -58,7 +58,7 @@
 /*
   Constant declaractions.
 */
-const XColorlist
+const ColorlistInfo
   XPMColorlist[235] =
   {
     { "AliceBlue", 240, 248, 255 },
@@ -376,6 +376,9 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
     **textlist,
     *xpm_buffer;
 
+  ColorPacket
+    color;
+
   Image
     *image;
 
@@ -398,9 +401,6 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
 
   unsigned int
     width;
-
-  XColor
-    color;
 
   /*
     Allocate image structure.
@@ -548,7 +548,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
         image->matte=True;
         (void) strcpy(target,"black");
       }
-    (void) XQueryColorDatabase(target,&color);
+    (void) QueryColorDatabase(target,&color);
     image->colormap[j].red=XDownScale(color.red);
     image->colormap[j].green=XDownScale(color.green);
     image->colormap[j].blue=XDownScale(color.blue);
@@ -691,7 +691,7 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   register RunlengthPacket
     *p;
 
-  register const XColorlist
+  register const ColorlistInfo
     *q;
 
   unsigned int

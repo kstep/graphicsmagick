@@ -4,6 +4,13 @@
 #ifndef _PROXY_H
 #define _PROXY_H
 
+#if defined(HasX11)
+#include "xwindows.h"
+#include "widget.h"
+#include "PreRvIcccm.h"
+#else
+#include <locale.h>
+#endif
 #if defined(HasBZLIB)
 #include "bzlib.h"
 #endif

@@ -181,7 +181,7 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       x=0;
       y=0;
       if (image->montage != (char *) NULL)
-        (void) XParseGeometry(image->montage,&x,&y,&width,&height);
+        (void) ParseGeometry(image->montage,&x,&y,&width,&height);
       /*
         Write an image map.
       */
@@ -264,7 +264,7 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   x=0;
   y=0;
   if (image->montage != (char *) NULL)
-    (void) XParseGeometry(image->montage,&x,&y,&width,&height);
+    (void) ParseGeometry(image->montage,&x,&y,&width,&height);
   /*
     Write an image map.
   */

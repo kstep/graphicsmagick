@@ -752,7 +752,7 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   x_resolution=72;
   y_resolution=72;
   if (image_info->density != (char *) NULL)
-    flags=XParseGeometry(image_info->density,&sans_offset,&sans_offset,
+    flags=ParseGeometry(image_info->density,&sans_offset,&sans_offset,
       &x_resolution,&y_resolution);
   if (flags & WidthValue)
     image->x_resolution=x_resolution;

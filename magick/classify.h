@@ -94,11 +94,34 @@ typedef enum
 
 typedef enum
 {
+  NoValue = 0x0000,
+  XValue = 0x0001,
+  YValue = 0x0002,
+  WidthValue = 0x0004,
+  HeightValue = 0x0008,
+  AllValues = 0x000F,
+  XNegative = 0x0010,
+  YNegative = 0x0020,
   AspectValue = 0x2000,
   GreaterValue = 0x8000,
   LessValue = 0x4000,
   PercentValue = 0x1000
 } GeometryFlags;
+
+typedef enum
+{
+  ForgetGravity,
+  NorthWestGravity,
+  NorthGravity,
+  NorthEastGravity,
+  WestGravity,
+  CenterGravity,
+  EastGravity,
+  SouthWestGravity,
+  SouthGravity,
+  SouthEastGravity,
+  StaticGravity
+} GravityType;
 
 typedef enum
 {
@@ -134,6 +157,14 @@ typedef enum
   BlueLayer,
   MatteLayer
 } LayerType;
+
+typedef enum
+{
+  UndefinedMode,
+  FrameMode,
+  UnframeMode,
+  ConcatenateMode
+} MontageMode;
 
 typedef enum
 {
@@ -236,7 +267,10 @@ typedef enum
 
 typedef enum
 {
-  DoMatte = 0x1000
+  DoRed = 0x0000,
+  DoGreen = 0x0002,
+  DoBlue = 0x0004,
+  DoMatte = 0x0008
 } XColorFlags;
 
 typedef enum

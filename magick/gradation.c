@@ -90,6 +90,9 @@ Export Image *ReadGRADATIONImage(const ImageInfo *image_info)
   char
     colorname[MaxTextExtent];
 
+  ColorPacket
+    color;
+
   double
     brightness,
     brightness_step,
@@ -107,9 +110,6 @@ Export Image *ReadGRADATIONImage(const ImageInfo *image_info)
 
   register RunlengthPacket
     *q;
-
-  XColor
-    color;
 
   /*
     Allocate image structure.
@@ -136,7 +136,7 @@ Export Image *ReadGRADATIONImage(const ImageInfo *image_info)
   */
   (void) strcpy(colorname,image_info->filename);
   (void) sscanf(image_info->filename,"%[^-]",colorname);
-  (void) XQueryColorDatabase(colorname,&color);
+  (void) QueryColorDatabase(colorname,&color);
   TransformHSL((Quantum) XDownScale(color.red),
     (Quantum) XDownScale(color.green),(Quantum) XDownScale(color.blue),
     &hue,&saturation,&brightness);
@@ -144,7 +144,7 @@ Export Image *ReadGRADATIONImage(const ImageInfo *image_info)
   if (Intensity(color) > 32767)
     (void) strcpy(colorname,"black");
   (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
-  (void) XQueryColorDatabase(colorname,&color);
+  (void) QueryColorDatabase(colorname,&color);
   TransformHSL((Quantum) XDownScale(color.red),
     (Quantum) XDownScale(color.green),(Quantum) XDownScale(color.blue),
     &hue_step,&saturation_step,&brightness_step);

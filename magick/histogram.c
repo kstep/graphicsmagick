@@ -173,10 +173,10 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   width=image->columns;
   height=image->rows;
   if (image_info->density != (char *) NULL)
-    (void) XParseGeometry(image_info->density,&sans_offset,&sans_offset,
+    (void) ParseGeometry(image_info->density,&sans_offset,&sans_offset,
       &width,&height);
   else
-    (void) XParseGeometry(HistogramDensity,&sans_offset,&sans_offset,
+    (void) ParseGeometry(HistogramDensity,&sans_offset,&sans_offset,
       &width,&height);
   image->orphan=True;
   histogram_image=CloneImage(image,width,height,False);

@@ -1081,7 +1081,7 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   next_image=image;
   for (next_image=image; next_image != (Image *) NULL; )
   {
-    (void) XParseGeometry(next_image->page,&page_info.x,&page_info.y,
+    (void) ParseGeometry(next_image->page,&page_info.x,&page_info.y,
       &width,&height);
     if ((next_image->columns+page_info.x) > page_info.width)
       page_info.width=next_image->columns+page_info.x;
@@ -1114,7 +1114,7 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     else
       (void) fwrite("GIF89a",1,6,image->file);
   if (image_info->page != (char *) NULL)
-    (void) XParseGeometry(image_info->page,&page_info.x,&page_info.y,
+    (void) ParseGeometry(image_info->page,&page_info.x,&page_info.y,
       &page_info.width,&page_info.height);
   LSBFirstWriteShort(page_info.width,image->file);
   LSBFirstWriteShort(page_info.height,image->file);
@@ -1277,7 +1277,7 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       Write the image header.
     */
     if (image->page != (char *) NULL)
-      (void) XParseGeometry(image->page,&page_info.x,&page_info.y,
+      (void) ParseGeometry(image->page,&page_info.x,&page_info.y,
         &page_info.width,&page_info.height);
     LSBFirstWriteShort(page_info.x,image->file);
     LSBFirstWriteShort(page_info.y,image->file);

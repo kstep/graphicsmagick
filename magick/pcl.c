@@ -201,10 +201,10 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   (void) fprintf(image->file,"\033&l%uA",page_size);  /* papersize */
   density=72;
   if (image_info->density != (char *) NULL)
-    (void) XParseGeometry(image_info->density,&sans_offset,&sans_offset,
+    (void) ParseGeometry(image_info->density,&sans_offset,&sans_offset,
       &density,&density);
   else
-    (void) XParseGeometry("75x75",&sans_offset,&sans_offset,
+    (void) ParseGeometry("75x75",&sans_offset,&sans_offset,
       &density,&density);
   (void) fprintf(image->file,"\033*p%dx%dY",x,y);
   if (image->label != (char *) NULL)

@@ -14,8 +14,18 @@ extern "C" {
 #define MaxColors  Min(windows->visual_info->colormap_size,256)
 
 /*
-  Static declarations.
+  Constant declarations.
 */
+static const unsigned char
+  HighlightBitmap[8] =
+  {
+    0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
+  },
+  ShadowBitmap[8] =
+  {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+  };
+
 const char
   *NoiseTypes[] =
   {

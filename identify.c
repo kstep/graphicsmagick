@@ -64,8 +64,13 @@
 /*
   Include declarations.
 */
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #include "magick/magick.h"
 #include "magick/defines.h"
+#else
+#include "magick.h"
+#include "defines.h"
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

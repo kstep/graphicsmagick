@@ -45,6 +45,7 @@ extern "C" {
 #include <sys/shm.h>
 #include <X11/extensions/XShm.h>
 #endif
+#include "PreRvIcccm.h"
 #undef index
 #if defined(hpux9)
 #define XFD_SET  int
@@ -57,14 +58,6 @@ extern "C" {
 */
 #define MaxNumberPens  11
 #define MaxNumberFonts  11
-/*
-  3D effects.
-*/
-#define AccentuateModulate  UpScale(80)
-#define HighlightModulate  UpScale(125)
-#define ShadowModulate  UpScale(135)
-#define DepthModulate  UpScale(185)
-#define TroughModulate  UpScale(110)
 
 /*
   Enumeration declarations.
@@ -76,14 +69,6 @@ typedef enum
   OpaqueStencil,
   TransparentStencil
 } AnnotationStencil;
-
-typedef enum
-{
-  UndefinedMode,
-  FrameMode,
-  UnframeMode,
-  ConcatenateMode
-} MontageMode;
 
 typedef enum
 {
@@ -177,17 +162,6 @@ typedef struct _XDrawInfo
   XPoint
     *coordinate_info;
 } XDrawInfo;
-
-typedef struct _XColorlist
-{
-  char
-    *name;
-
-  unsigned char
-    red,
-    green,
-    blue;
-} XColorlist;
 
 typedef struct _XImportInfo
 {
@@ -496,23 +470,6 @@ typedef struct _XWindows
 } XWindows;
 
 /*
-  Constant declarations.
-*/
-extern const char
-  *BackgroundColor,
-  *BorderColor,
-  *ForegroundColor,
-  *MatteColor;
-
-extern const unsigned char
-  HighlightBitmap[8],
-  ShadowBitmap[8];
-
-extern const XColorlist
-  Colorlist[757],
-  XPMColorlist[235];
-
-/*
   X utilities routines.
 */
 extern Export char
@@ -544,7 +501,7 @@ extern Export unsigned int
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,
     unsigned int,unsigned int),
   XMakePixmap(Display *,const XResourceInfo *,XWindowInfo *),
-  XQueryColorDatabase(const char *,XColor *);
+  XQueryColorDatabase(const char *,ColorPacket *);
 
 extern Export void
   XAnimateBackgroundImage(Display *,XResourceInfo *,Image *),

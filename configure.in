@@ -516,6 +516,7 @@ then
     LDFLAGS="$LDFLAGS $X_LIBS"
     LIBS="-lX11 $X_EXTRA_LIBS $LIBS"
     CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+    AC_DEFINE(HasX11)
 
     AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
     AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory),,)

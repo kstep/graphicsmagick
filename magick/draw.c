@@ -129,13 +129,13 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     *pixel,
     *q;
 
-  register XSegment
+  register SegmentInfo
     *p;
 
   register unsigned char
     *r;
 
-  XSegment
+  SegmentInfo
     *segment_stack;
 
   unsigned char
@@ -177,8 +177,9 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
   /*
     Allocate segment stack.
   */
-  segment_stack=(XSegment *) AllocateMemory(MaxStacksize*sizeof(XSegment));
-  if (segment_stack == (XSegment *) NULL)
+  segment_stack=(SegmentInfo *)
+    AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
+  if (segment_stack == (SegmentInfo *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to floodfill image",
         "Memory allocation failed");
@@ -983,6 +984,9 @@ static unsigned short PixelOnLine(const PointInfo *pixel,
 Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
   const AnnotateInfo *annotate_info,const PointInfo *pixel,Image *image)
 {
+  ColorPacket
+    border_color;
+
   double
     alpha,
     beta,
@@ -1005,9 +1009,6 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 
   SegmentInfo
     line;
-
-  XColor
-    border_color;
 
   assert(primitive_info != (PrimitiveInfo *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
@@ -1249,7 +1250,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             target=(*PixelOffset(image,pixel->x,pixel->y));
             if (p->method == FillToBorderMethod)
               {
-                (void) XQueryColorDatabase(
+                (void) QueryColorDatabase(
                   annotate_info->image_info->border_color,&border_color);
                 target.red=XDownScale(border_color.red);
                 target.green=XDownScale(border_color.green);
@@ -1314,7 +1315,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             target=(*PixelOffset(image,pixel->x,pixel->y));
             if (p->method == FillToBorderMethod)
               {
-                (void) XQueryColorDatabase(
+                (void) QueryColorDatabase(
                   annotate_info->image_info->border_color,&border_color);
                 target.red=XDownScale(border_color.red);
                 target.green=XDownScale(border_color.green);
@@ -1452,10 +1453,10 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
   register RunlengthPacket
     *pixel;
 
-  register XSegment
+  register SegmentInfo
     *p;
 
-  XSegment
+  SegmentInfo
     *segment_stack;
 
   /*
@@ -1478,8 +1479,9 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
   */
   x=x_offset;
   y=y_offset;
-  segment_stack=(XSegment *) AllocateMemory(MaxStacksize*sizeof(XSegment));
-  if (segment_stack == (XSegment *) NULL)
+  segment_stack=(SegmentInfo *)
+    AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
+  if (segment_stack == (SegmentInfo *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to recolor image",
         "Memory allocation failed");
@@ -1607,7 +1609,8 @@ Export void OpaqueImage(Image *image,const char *opaque_color,
 #define OpaqueImageText  "  Setting opaque color in the image...  "
 
   ColorPacket
-    target;
+    target,
+    target_color;
 
   register int
     i;
@@ -1615,20 +1618,17 @@ Export void OpaqueImage(Image *image,const char *opaque_color,
   unsigned int
     status;
 
-  XColor
-    target_color;
-
   /*
     Determine RGB values of the opaque color.
   */
   assert(image != (Image *) NULL);
-  status=XQueryColorDatabase(opaque_color,&target_color);
+  status=QueryColorDatabase(opaque_color,&target_color);
   if (status == False)
     return;
   target.red=XDownScale(target_color.red);
   target.green=XDownScale(target_color.green);
   target.blue=XDownScale(target_color.blue);
-  status=XQueryColorDatabase(pen_color,&target_color);
+  status=QueryColorDatabase(pen_color,&target_color);
   if (status == False)
     return;
   /*

@@ -156,7 +156,7 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   register RunlengthPacket
     *p;
 
-  register const XColorlist
+  register const ColorlistInfo
     *q;
 
   unsigned int

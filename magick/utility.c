@@ -53,6 +53,7 @@
 */
 #include "magick.h"
 #include "defines.h"
+#include "proxy.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -260,7 +261,7 @@ Export unsigned int CloneString(char **destination,const char *source)
   *destination=(char *) NULL;
   if (source == (const char *) NULL)
     return(True);
-  *destination=(char *) 
+  *destination=(char *)
     AllocateMemory(Max(Extent(source)+1,MaxTextExtent)*sizeof(char));
   if (*destination == (char *) NULL)
     {
@@ -784,9 +785,9 @@ Export int GetGeometry(const char *image_geometry,int *x,int *y,
       }
   }
   /*
-    Parse geometry using XParseGeometry.
+    Parse geometry using ParseGeometry.
   */
-  flags|=XParseGeometry(geometry,x,y,width,height);
+  flags|=ParseGeometry(geometry,x,y,width,height);
   return(flags);
 }
 
@@ -1300,7 +1301,7 @@ Export char **ListColors(const char *pattern,int *number_colors)
   */
   assert(pattern != (char *) NULL);
   assert(number_colors != (int *) NULL);
-  max_colors=sizeof(Colorlist)/sizeof(XColorlist);
+  max_colors=sizeof(XColorlist)/sizeof(ColorlistInfo);
   colorlist=(char **) AllocateMemory(max_colors*sizeof(char *));
   if (colorlist == (char **) NULL)
     {
@@ -1315,13 +1316,13 @@ Export char **ListColors(const char *pattern,int *number_colors)
   database=fopen(RGBColorDatabase,"r");
   if (database == (FILE *) NULL)
     {
-      register const XColorlist
+      register const ColorlistInfo
         *p;
 
       /*
         Can't find server color database-- use our color list.
       */
-      for (p=Colorlist; p->name != (char *) NULL; p++)
+      for (p=XColorlist; p->name != (char *) NULL; p++)
         if (GlobExpression(p->name,pattern))
           {
             colorlist[*number_colors]=(char *)
@@ -2040,6 +2041,171 @@ Export int MultilineCensus(const char *label)
     if (*label == '\n')
       number_lines++;
   return(number_lines);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P a r s e G e o m e t r y                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ParseImageGeometry parses a geometry specification and returns the
+%  width, height, x, and y values.  It also returns flags that indicates
+%  which of the four values (width, height, xoffset, yoffset) were located
+%  in the string, and whether the x and y values are negative.  In addition,
+%  there are flags to report any meta characters (%, !, <, and >).
+%
+%  The format of the ParseImageGeometry routine is:
+%
+%      flags=ParseImageGeometry(image_geometry,x,y,width,height)
+%
+%  A description of each parameter follows:
+%
+%    o flags:  Method ParseImageGeometry returns a bitmask that indicates
+%      which of the four values were located in the geometry string.
+%
+%    o image_geometry:  Specifies a character string representing the geometry
+%      specification.
+%
+%    o x,y:  A pointer to an integer.  The x and y offset as determined by
+%      the geometry specification is returned here.
+%
+%    o width,height:  A pointer to an unsigned integer.  The width and height
+%      as determined by the geometry specification is returned here.
+%
+%
+*/
+
+static int ReadInteger(const char *p,char **q)
+{
+  int
+    sign;
+
+  register int
+    value;
+
+  value=0;
+  sign=1;
+  if (*p == '+')
+    p++;
+  else
+    if (*p == '-')
+      {
+        p++;
+        sign=(-1);
+      }
+  for ( ; (*p >= '0') && (*p <= '9'); p++)
+    value=(value*10)+(*p-'0');
+  *q=(char *) p;
+  if (sign >= 0)
+    return(value);
+  return(-value);
+}
+
+Export int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
+  unsigned int *height)
+{
+  char
+    *q;
+
+  int
+    mask;
+
+  RectangleInfo
+    bounds;
+
+  mask=NoValue;
+  if ((geometry == (const char *) NULL) || (*geometry == '\0'))
+    return(mask);
+  if (*geometry == '=')
+    geometry++;
+  if ((*geometry != '+') && (*geometry != '-') && (*geometry != 'x'))
+    {
+      /*
+        Parse width.
+      */
+      bounds.width=ReadInteger(geometry,&q);
+      if (geometry == q)
+        return(0);
+      geometry=q;
+      mask|=WidthValue;
+    }
+  if ((*geometry == 'x') || (*geometry == 'X'))
+    {
+      /*
+        Parse height.
+      */
+      geometry++;
+      bounds.height=ReadInteger(geometry,&q);
+      if (geometry == q)
+        return(0);
+      geometry=q;
+      mask|=HeightValue;
+    }
+  if ((*geometry == '+') || (*geometry == '-'))
+    {
+      /*
+        Parse x value.
+      */
+      if (*geometry == '-')
+        {
+          geometry++;
+          bounds.x=(-ReadInteger(geometry,&q));
+          if (geometry == q)
+            return (0);
+          geometry=q;
+          mask|=XNegative;
+        }
+      else
+        {
+          geometry++;
+          bounds.x=ReadInteger(geometry,&q);
+          if (geometry == q)
+            return(0);
+          geometry=q;
+        }
+      mask|=XValue;
+      if ((*geometry == '+') || (*geometry == '-'))
+        {
+          /*
+            Parse y value.
+          */
+          if (*geometry == '-')
+            {
+              geometry++;
+              bounds.y=(-ReadInteger(geometry,&q));
+              if (geometry == q)
+                return(0);
+              geometry=q;
+              mask|=YNegative;
+            }
+          else
+            {
+              geometry++;
+              bounds.y=ReadInteger(geometry,&q);
+              if (geometry == q)
+                return(0);
+              geometry=q;
+            }
+          mask|=YValue;
+        }
+    }
+  if (*geometry != '\0')
+    return(0);
+  if (mask & XValue)
+    *x=bounds.x;
+  if (mask & YValue)
+    *y=bounds.y;
+  if (mask & WidthValue)
+    *width=bounds.width;
+  if (mask & HeightValue)
+    *height=bounds.height;
+  return (mask);
 }
 
 /*

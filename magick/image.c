@@ -54,6 +54,7 @@
 */
 #include "magick.h"
 #include "defines.h"
+#include "proxy.h"
 
 /*
   Constant declaration.
@@ -70,6 +71,12 @@ const char
   *SaveImageText = "  Saving image...  ",
   *SaveImagesText = "  Saving images...  ",
   *WriteBinaryType = "wb";
+
+const char
+  *BackgroundColor = "#bdbdbd",  /* gray */
+  *BorderColor = "#bdbdbd",  /* gray */
+  *ForegroundColor = "#000",  /* black */
+  *MatteColor = "#bdbdbd";  /* gray */
 
 const InterlaceType
   DefaultInterlace = NoInterlace;
@@ -104,14 +111,14 @@ const InterlaceType
 */
 Export Image *AllocateImage(const ImageInfo *image_info)
 {
+  ColorPacket
+    color;
+
   Image
     *allocated_image;
 
   int
     flags;
-
-  XColor
-    color;
 
   /*
     Allocate image structure.
@@ -186,17 +193,17 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->fuzz=0;
   allocated_image->filter=LanczosFilter;
   allocated_image->blur=1.0;
-  (void) XQueryColorDatabase(BackgroundColor,&color);
+  (void) QueryColorDatabase(BackgroundColor,&color);
   allocated_image->background_color.red=XDownScale(color.red);
   allocated_image->background_color.green=XDownScale(color.green);
   allocated_image->background_color.blue=XDownScale(color.blue);
   allocated_image->background_color.index=Opaque;
-  (void) XQueryColorDatabase(BorderColor,&color);
+  (void) QueryColorDatabase(BorderColor,&color);
   allocated_image->border_color.red=XDownScale(color.red);
   allocated_image->border_color.green=XDownScale(color.green);
   allocated_image->border_color.blue=XDownScale(color.blue);
   allocated_image->border_color.index=Opaque;
-  (void) XQueryColorDatabase(MatteColor,&color);
+  (void) QueryColorDatabase(MatteColor,&color);
   allocated_image->matte_color.red=XDownScale(color.red);
   allocated_image->matte_color.green=XDownScale(color.green);
   allocated_image->matte_color.blue=XDownScale(color.blue);
@@ -231,7 +238,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
 
       (void) sscanf(image_info->size,"%ux%u",
         &allocated_image->columns,&allocated_image->rows);
-      flags=XParseGeometry(image_info->size,&allocated_image->offset,&y,
+      flags=ParseGeometry(image_info->size,&allocated_image->offset,&y,
         &allocated_image->columns,&allocated_image->rows);
       if ((flags & HeightValue) == 0)
         allocated_image->rows=allocated_image->columns;
@@ -243,7 +250,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
       {
         (void) sscanf(image_info->tile,"%ux%u",
           &allocated_image->columns,&allocated_image->rows);
-        flags=XParseGeometry(image_info->tile,&allocated_image->tile_info.x,
+        flags=ParseGeometry(image_info->tile,&allocated_image->tile_info.x,
           &allocated_image->tile_info.y,&allocated_image->columns,
           &allocated_image->rows);
         if ((flags & HeightValue) == 0)
@@ -273,21 +280,21 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->depth=image_info->depth;
   if (image_info->background_color != (char *) NULL)
     {
-      (void) XQueryColorDatabase(image_info->background_color,&color);
+      (void) QueryColorDatabase(image_info->background_color,&color);
       allocated_image->background_color.red=XDownScale(color.red);
       allocated_image->background_color.green=XDownScale(color.green);
       allocated_image->background_color.blue=XDownScale(color.blue);
     }
   if (image_info->border_color != (char *) NULL)
     {
-      (void) XQueryColorDatabase(image_info->border_color,&color);
+      (void) QueryColorDatabase(image_info->border_color,&color);
       allocated_image->border_color.red=XDownScale(color.red);
       allocated_image->border_color.green=XDownScale(color.green);
       allocated_image->border_color.blue=XDownScale(color.blue);
     }
   if (image_info->matte_color != (char *) NULL)
     {
-      (void) XQueryColorDatabase(image_info->matte_color,&color);
+      (void) QueryColorDatabase(image_info->matte_color,&color);
       allocated_image->matte_color.red=XDownScale(color.red);
       allocated_image->matte_color.green=XDownScale(color.green);
       allocated_image->matte_color.blue=XDownScale(color.blue);
@@ -369,6 +376,7 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
 */
 Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 {
+#if defined(HasX11)
   char
     *client_name;
 
@@ -395,6 +403,11 @@ Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
   (void) XAnimateImages(display,&resource,&client_name,1,image);
   XCloseDisplay(display);
   return(True);
+#else
+  MagickWarning(MissingDelegateWarning,"X11 library is not available",
+    image->filename);
+  return(False);
+#endif
 }
 
 /*
@@ -2012,7 +2025,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 
           x=0;
           y=0;
-          (void) XParseGeometry(image->page,&x,&y,&sans,&sans);
+          (void) ParseGeometry(image->page,&x,&y,&sans,&sans);
           (void) fprintf(file,"%ux%u%+d%+d ",image->columns,image->rows,x,y);
         }
       if (image->class == DirectClass)
@@ -2618,6 +2631,7 @@ Export void DestroyImages(Image *image)
 */
 Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
 {
+#if defined(HasX11)
   char
     *client_name;
 
@@ -2656,6 +2670,11 @@ Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
   }
   XCloseDisplay(display);
   return(True);
+#else
+  MagickWarning(MissingDelegateWarning,"X11 library is not available",
+    image->filename);
+  return(False);
+#endif
 }
 
 /*
@@ -2921,7 +2940,7 @@ void GetPixels(const Image *image,float *red_pixels,float *green_pixels,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method IsGeometry returns True if the geometry specification is valid
-%  as determined by XParseGeometry.
+%  as determined by ParseGeometry.
 %
 %  The format of the IsGeometry routine is:
 %
@@ -2952,7 +2971,7 @@ Export unsigned int IsGeometry(const char *geometry)
 
   if (geometry == (const char *) NULL)
     return(False);
-  flags=XParseGeometry((char *) geometry,&x,&y,&width,&height);
+  flags=ParseGeometry((char *) geometry,&x,&y,&width,&height);
   return((flags != NoValue) || sscanf(geometry,"%lf",&value));
 }
 
@@ -3139,7 +3158,7 @@ Export unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
 
   if (geometry == (const char *) NULL)
     return(False);
-  flags=XParseGeometry((char *) geometry,&x,&y,&width,&height);
+  flags=ParseGeometry((char *) geometry,&x,&y,&width,&height);
   if (pedantic)
     return((flags != NoValue) && !(flags & HeightValue));
   return(IsGeometry(geometry) && !(flags & HeightValue));
@@ -3473,6 +3492,9 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     *geometry,
     *option;
 
+  ColorPacket
+    target_color;
+
   Image
     *map_image,
     *region_image;
@@ -3500,9 +3522,6 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     matte,
     height,
     width;
-
-  XColor
-    target_color;
 
   /*
     Verify option length.
@@ -3556,7 +3575,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-background",option,6) == 0)
       {
         (void) CloneString(&local_info->background_color,argv[++i]);
-        (void) XQueryColorDatabase(local_info->background_color,&target_color);
+        (void) QueryColorDatabase(local_info->background_color,&target_color);
         (*image)->background_color.red=XDownScale(target_color.red);
         (*image)->background_color.green=XDownScale(target_color.green);
         (*image)->background_color.blue=XDownScale(target_color.blue);
@@ -3597,7 +3616,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         border_info.height=0;
         border_info.x=0;
         border_info.y=0;
-        flags=XParseGeometry(argv[++i],&border_info.x,&border_info.y,
+        flags=ParseGeometry(argv[++i],&border_info.x,&border_info.y,
           &border_info.width,&border_info.height);
         if ((flags & HeightValue) == 0)
           border_info.height=border_info.width;
@@ -3613,7 +3632,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-bordercolor",option,8) == 0)
       {
         (void) CloneString(&local_info->border_color,argv[++i]);
-        (void) XQueryColorDatabase(local_info->border_color,&target_color);
+        (void) QueryColorDatabase(local_info->border_color,&target_color);
         (*image)->border_color.red=XDownScale(target_color.red);
         (*image)->border_color.green=XDownScale(target_color.green);
         (*image)->border_color.blue=XDownScale(target_color.blue);
@@ -3939,7 +3958,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         frame_info.height=0;
         frame_info.outer_bevel=0;
         frame_info.inner_bevel=0;
-        flags=XParseGeometry(argv[++i],&frame_info.outer_bevel,
+        flags=ParseGeometry(argv[++i],&frame_info.outer_bevel,
           &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
         if ((flags & HeightValue) == 0)
           frame_info.height=frame_info.width;
@@ -4101,7 +4120,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-mattecolor",option,7) == 0)
       {
         (void) CloneString(&local_info->matte_color,argv[++i]);
-        (void) XQueryColorDatabase(local_info->matte_color,&target_color);
+        (void) QueryColorDatabase(local_info->matte_color,&target_color);
         (*image)->matte_color.red=XDownScale(target_color.red);
         (*image)->matte_color.green=XDownScale(target_color.green);
         (*image)->matte_color.blue=XDownScale(target_color.blue);
@@ -4264,7 +4283,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         raise_info.height=0;
         raise_info.x=0;
         raise_info.y=0;
-        flags=XParseGeometry(argv[++i],&raise_info.x,&raise_info.y,
+        flags=ParseGeometry(argv[++i],&raise_info.x,&raise_info.y,
           &raise_info.width,&raise_info.height);
         if ((flags & HeightValue) == 0)
           raise_info.height=raise_info.width;
@@ -4298,7 +4317,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         region_info.height=(*image)->rows;
         region_info.x=0;
         region_info.y=0;
-        (void) XParseGeometry(argv[++i],&region_info.x,&region_info.y,
+        (void) ParseGeometry(argv[++i],&region_info.x,&region_info.y,
           &region_info.width,&region_info.height);
         cropped_image=CropImage(*image,&region_info);
         if (cropped_image == (Image *) NULL)
@@ -4317,7 +4336,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         */
         x=0;
         y=0;
-        flags=XParseGeometry(argv[++i],&x,&y,&width,&height);
+        flags=ParseGeometry(argv[++i],&x,&y,&width,&height);
         rolled_image=RollImage(*image,x,y);
         if (rolled_image != (Image *) NULL)
           {
@@ -4942,7 +4961,7 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
   /*
-    Parse geometry using XParseGeometry.
+    Parse geometry using ParseGeometry.
   */
   former_width=(*width);
   former_height=(*height);
@@ -6581,7 +6600,7 @@ Export void TransformImage(Image **image,const char *crop_geometry,
       height=transformed_image->rows;
       crop_info.x=0;
       crop_info.y=0;
-      flags=XParseGeometry((char *) crop_geometry,&crop_info.x,&crop_info.y,
+      flags=ParseGeometry((char *) crop_geometry,&crop_info.x,&crop_info.y,
         &width,&height);
       if ((flags & WidthValue) == 0)
         width=(unsigned int) ((int) transformed_image->columns-crop_info.x);
@@ -7169,7 +7188,8 @@ Export void TransparentImage(Image *image,const char *color)
 #define TransparentImageText  "  Setting transparent color in the image...  "
 
   ColorPacket
-    target;
+    target,
+    target_color;
 
   register int
     i;
@@ -7180,14 +7200,11 @@ Export void TransparentImage(Image *image,const char *color)
   unsigned int
     status;
 
-  XColor
-    target_color;
-
   /*
     Determine RGB values of the transparent color.
   */
   assert(image != (Image *) NULL);
-  status=XQueryColorDatabase(color,&target_color);
+  status=QueryColorDatabase(color,&target_color);
   if (status == False)
     return;
   target.red=XDownScale(target_color.red);

@@ -54,7 +54,9 @@
 */
 #include "magick.h"
 #include "defines.h"
+#include "proxy.h"
 
+#if defined(HasX11)
 /*
   Define declarations.
 */
@@ -9398,3 +9400,4 @@ Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
   XWithdrawWindow(display,windows->widget.id,windows->widget.screen);
   XCheckRefreshWindows(display,windows);
 }
+#endif

@@ -397,7 +397,8 @@ Export void ColorizeImage(Image *image,const char *opacity,
 #define ColorizeImageText  "  Colorizing the image...  "
 
   ColorPacket
-    target;
+    target,
+    target_color;
 
   int
     blue_opacity,
@@ -414,16 +415,13 @@ Export void ColorizeImage(Image *image,const char *opacity,
   unsigned int
     status;
 
-  XColor
-    target_color;
-
   /*
     Determine RGB values of the pen color.
   */
   assert(image != (Image *) NULL);
   if (opacity == (char *) NULL)
     return;
-  status=XQueryColorDatabase(pen_color,&target_color);
+  status=QueryColorDatabase(pen_color,&target_color);
   if (status == False)
     return;
   target.red=XDownScale(target_color.red);

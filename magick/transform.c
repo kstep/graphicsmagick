@@ -270,13 +270,13 @@ Export void CoalesceImages(Image *image)
     x=0;
     y=0;
     if (p->previous->page != (char *) NULL)
-      (void) XParseGeometry(p->previous->page,&x,&y,&sans,&sans);
+      (void) ParseGeometry(p->previous->page,&x,&y,&sans,&sans);
     previous_box.x1=x;
     previous_box.y1=y;
     x=0;
     y=0;
     if (p->page != (char *) NULL)
-      (void) XParseGeometry(p->page,&x,&y,&sans,&sans);
+      (void) ParseGeometry(p->page,&x,&y,&sans,&sans);
     if ((x <= previous_box.x1) && (y <= previous_box.y1) && !p->matte &&
         (x+p->columns >= (p->previous->columns+previous_box.x1)) &&
         (y+p->rows >= (p->previous->rows+previous_box.y1)))

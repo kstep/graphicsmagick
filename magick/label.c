@@ -56,9 +56,9 @@
 #include "proxy.h"
 
 /*
-  Constant declarations.
+  Font declaration.
 */
-const char
+Export const char
   *DefaultXFont = "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*";
 
 /*
@@ -185,7 +185,7 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
     *p,
     *q;
 
-  XSegment
+  SegmentInfo
     bounds;
 
   /*
@@ -211,10 +211,11 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
     bounds.y2=character->rows;
   if (bounds.x1 >= bounds.x2)
     return;
-  for (y=bounds.y1; y < bounds.y2; y++)
+  for (y=bounds.y1; y < (int) bounds.y2; y++)
   {
-    p=((unsigned char *) character->bitmap)+y*character->cols+bounds.x1;
-    q=((unsigned char *) canvas->bitmap)+(y+y_off)*canvas->cols+bounds.x1+x_off;
+    p=((unsigned char *) character->bitmap)+y*character->cols+(int) bounds.x1;
+    q=((unsigned char *) canvas->bitmap)+(y+y_off)*canvas->cols+
+      (int) bounds.x1+x_off;
     for (x=bounds.x1; x < bounds.x2; x++)
       *q++|=(*p++);
   }
@@ -230,6 +231,9 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     geometry[MaxTextExtent],
     text[MaxTextExtent],
     page[MaxTextExtent];
+
+  ColorPacket
+    pen_color;
 
   FILE
     *file;
@@ -257,9 +261,6 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
   RunlengthPacket
     corner;
 
-  XColor
-    pen_color;
-
   /*
     Allocate image structure.
   */
@@ -273,9 +274,9 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
   if (local_info->font == (char *) NULL)
     (void) CloneString(&local_info->font,DefaultXFont);
   (void) strcpy(text,local_info->filename);
-  (void) XQueryColorDatabase("black",&pen_color);
+  (void) QueryColorDatabase("black",&pen_color);
   if (local_info->pen != (char *) NULL)
-    (void) XQueryColorDatabase(local_info->pen,&pen_color);
+    (void) QueryColorDatabase(local_info->pen,&pen_color);
   if (*local_info->font == '@')
     {
 #if defined(HasTTF)
@@ -581,6 +582,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     }
   if (*local_info->font == '-')
     {
+#if defined(HasX11)
       int
         status;
 
@@ -744,6 +746,10 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       }
       DestroyImageInfo(local_info);
       return(image);
+#else
+      MagickWarning(MissingDelegateWarning,"X11 library is not available",
+        (char *) NULL);
+#endif
     }
   /*
     Render label with a Postscript font.

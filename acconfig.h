@@ -41,6 +41,9 @@
 /* Define if the X Window System is missing or not being used.  */
 #undef X_DISPLAY_MISSING
 
+/* Define if you have X11 library */
+#undef HasX11
+
 /* Include patented LZW compression */
 #undef HasLZW
 

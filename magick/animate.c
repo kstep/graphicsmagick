@@ -53,6 +53,8 @@
 */
 #include "magick.h"
 #include "defines.h"
+#include "proxy.h"
+#if defined(HasX11)
 #include "animate.h"
 
 /*
@@ -2389,3 +2391,4 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   (void) chdir(resource_info->home_directory);
   return(loaded_image);
 }
+#endif
