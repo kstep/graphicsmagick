@@ -185,7 +185,7 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resize_image=ResizeImage(image,106,80,MitchellFilter,1.0,&amp;exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (resize_image == (Image *) NULL)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) PushImageList(&thumbnails,resize_image);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) PushImageList(&thumbnails,resize_image,exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(resize_image);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }

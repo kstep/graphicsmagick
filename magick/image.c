@@ -5500,7 +5500,8 @@ MagickExport Image *PopImageList(Image **images)
 %
 %  The format of the PushImageList method is:
 %
-%      unsigned int PushImageList(Image *images,const Image *image)
+%      unsigned int PushImageList(Image *images,const Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5508,9 +5509,12 @@ MagickExport Image *PopImageList(Image **images)
 %
 %    o image: The image.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport unsigned int PushImageList(Image **images,const Image *image)
+MagickExport unsigned int PushImageList(Image **images,const Image *image,
+  ExceptionInfo *exception)
 {
 	Image
 		*next;
@@ -5520,16 +5524,12 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image)
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     {
-      ExceptionInfo
-        exception;
-
-      GetExceptionInfo(&exception);
-      *images=CloneImage(image,0,0,True,&exception);
+      *images=CloneImage(image,0,0,True,exception);
       return(*images != (Image *) NULL);
     }
   assert((*images)->signature == MagickSignature);
   for (next=(*images); next->next != (Image *) NULL; next=next->next);
-  next->next=CloneImage(image,0,0,True,&(*images)->exception);
+  next->next=CloneImage(image,0,0,True,exception);
   if (next->next == (Image *) NULL)
     return(False);
   next->next->previous=next;
@@ -5553,7 +5553,8 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image)
 %
 %  The format of the SetImageList method is:
 %
-%      unsigned int SetImageList(Image *images,const Image *image)
+%      unsigned int SetImageList(Image *images,const Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -5561,10 +5562,12 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image)
 %
 %    o image: The image.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
 MagickExport unsigned int SetImageList(Image **images,const Image *image,
-	const unsigned long n)
+	const unsigned long n,ExceptionInfo exception)
 {
 	Image
 		*next;
@@ -5577,13 +5580,9 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     {
-      ExceptionInfo
-        exception;
-
       if (n > 0)
         return(False);
-      GetExceptionInfo(&exception);
-      *images=CloneImage(image,0,0,True,&exception);
+      *images=CloneImage(image,0,0,True,exception);
       return(*images != (Image *) NULL);
     }
   assert((*images)->signature == MagickSignature);
@@ -5593,7 +5592,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
       break;
   if (next == (Image *) NULL)
     return(False);
-  next->next=CloneImage(image,0,0,True,&(*images)->exception);
+  next->next=CloneImage(image,0,0,True,exception);
   if (next->next == (Image *) NULL)
     return(False);
   next->next->previous=next;
