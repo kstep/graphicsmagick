@@ -61,6 +61,7 @@
 */
 static void
   DefaultErrorHandler(const ExceptionType,const char *,const char *),
+  DefaultFatalErrorHandler(const ExceptionType,const char *,const char *),
   DefaultWarningHandler(const ExceptionType,const char *,const char *);
 
 /*
@@ -68,6 +69,9 @@ static void
 */
 static ErrorHandler
   error_handler = DefaultErrorHandler;
+
+static FatalErrorHandler
+  fatal_error_handler = DefaultFatalErrorHandler;
 
 static WarningHandler
   warning_handler = DefaultWarningHandler;
@@ -127,8 +131,7 @@ MagickExport ExceptionType CatchImageException(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DefaultErrorHandler displays an error reason and then terminates
-%  the program.
+%  Method DefaultErrorHandler displays an error reason.
 %
 %  The format of the DefaultErrorHandler method is:
 %
@@ -160,6 +163,53 @@ static const char *GetErrorMessageString(const int error_number)
 
 static void DefaultErrorHandler(const ExceptionType error,const char *reason,
   const char *description)
+{
+  if (reason == (char *) NULL)
+    {
+      DestroyMagick();
+      Exit(error);
+    }
+  (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
+    reason);
+  if (description != (char *) NULL)
+    (void) fprintf(stderr," (%.1024s)",description);
+  if ((error != OptionError) && errno)
+    (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
+  (void) fprintf(stderr,".\n");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D e f a u l t F a t a l E r r o r H a n d l e r                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DefaultFatalErrorHandler displays an error reason and then terminates
+%  the program.
+%
+%  The format of the DefaultFatalErrorHandler method is:
+%
+%      void MagickFatalError(const ExceptionType error,const char *reason,
+%        const char *description)
+%
+%  A description of each parameter follows:
+%
+%    o exception: Specifies the numeric error category.
+%
+%    o reason: Specifies the reason to display before terminating the
+%      program.
+%
+%    o description: Specifies any description to the reason.
+%
+%
+*/
+static void DefaultFatalErrorHandler(const ExceptionType error,
+  const char *reason,const char *description)
 {
   if (reason == (char *) NULL)
     {
@@ -372,6 +422,44 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k F a t al E r r o r                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickFatalError() calls the fatal error handler methods with an error
+%  reason.
+%
+%  The format of the MagickError method is:
+%
+%      void MagickFatalError(const ExceptionType error,const char *reason,
+%        const char *description)
+%
+%  A description of each parameter follows:
+%
+%    o exception: Specifies the numeric error category.
+%
+%    o reason: Specifies the reason to display before terminating the
+%      program.
+%
+%    o description: Specifies any description to the reason.
+%
+%
+*/
+MagickExport void MagickFatalError(const ExceptionType error,const char *reason,
+  const char *description)
+{
+  if (error_handler != (ErrorHandler) NULL)
+    (*error_handler)(error,reason,description);
+  errno=0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k W a r n i n g                                                 %
 %                                                                             %
 %                                                                             %
@@ -467,6 +555,40 @@ MagickExport void SetExceptionInfo(ExceptionInfo *exception,
 {
   assert(exception != (ExceptionInfo *) NULL);
   exception->severity=severity;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t F a t a l E r r o r H a n d l e r                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetFatalErrorHandler() sets the fatal error handler to the specified method
+%  and returns the previous fatal error handler.
+%
+%  The format of the SetErrorHandler method is:
+%
+%      ErrorHandler SetErrorHandler(ErrorHandler handler)
+%
+%  A description of each parameter follows:
+%
+%    o handler: The method to handle errors.
+%
+%
+*/
+MagickExport FatalErrorHandler SetFatalErrorHandler(ErrorHandler handler)
+{
+  FatalErrorHandler
+    previous_handler;
+
+  previous_handler=error_handler;
+  error_handler=handler;
+  return(previous_handler);
 }
 
 /*

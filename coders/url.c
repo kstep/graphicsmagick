@@ -139,7 +139,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (file == (FILE *) NULL)
     {
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenWarning,"Unable to open file",image)
+      ThrowReaderException(FileOpenError,"Unable to open file",image)
     }
   (void) strncpy(filename,image_info->magick,MaxTextExtent-1);
   (void) strcat(filename,":");
@@ -178,7 +178,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   (void) fclose(file);
   if (!IsAccessible(clone_info->filename))
-    ThrowException(exception,FileOpenWarning,"No data returned from:",filename);
+    ThrowException(exception,FileOpenError,"No data returned from:",filename);
   else
     {
       *clone_info->magick='\0';
@@ -191,7 +191,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateWarning,
+  ThrowException(exception,MissingDelegateError,
     "XML library is not available",image_info->filename);
   return((Image *) NULL);
 }

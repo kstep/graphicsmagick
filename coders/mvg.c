@@ -171,7 +171,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=OpenBlob(image_info,image,ReadBinaryType,exception);
       if (status == False)
-        ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+        ThrowReaderException(FileOpenError,"Unable to open file",image);
       while (ReadBlobString(image,primitive) != (char *) NULL)
       {
         for (p=primitive; (*p == ' ') || (*p == '\t'); p++);
@@ -185,7 +185,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionError,"Must specify image size",image);
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) strcpy(filename,"@");
@@ -304,10 +304,10 @@ static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   attribute=GetImageAttribute(image,"[MVG]");
   if (attribute == (ImageAttribute *) NULL)
-    ThrowWriterException(DelegateWarning,"no image vector graphics",image);
+    ThrowWriterException(DelegateError,"no image vector graphics",image);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) WriteBlob(image,strlen(attribute->value),attribute->value);
   CloseBlob(image);
   return(True);

@@ -101,7 +101,7 @@ static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateWarning,
+  ThrowException(exception,MissingDelegateError,
     "X11 library is not available",image_info->filename);
   return((Image *) NULL);
 }
@@ -220,7 +220,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   */
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Unable to connect to X server",
+    ThrowWriterException(ResourceLimitError,"Unable to connect to X server",
       image);
   /*
     Set our forgiving error handler.
@@ -244,7 +244,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
+  ThrowBinaryException(MissingDelegateError,"X11 library is not available",
     image->filename);
 }
 #endif

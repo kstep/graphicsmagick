@@ -666,7 +666,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
         description[MaxTextExtent];
 
       FormatString(description,"packed DIB at offset %ld", bmp_read->offset);
-      ThrowException(&ddata->image->exception,CorruptImageWarning,exception.reason,
+      ThrowException(&ddata->image->exception,CorruptImageError,exception.reason,
                      exception.description);
     }
   else
@@ -2496,7 +2496,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   image = AllocateImage(image_info);
   if (!OpenBlob(image_info,image,ReadBinaryType,exception))
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
 
   /*
    * Create WMF API
@@ -2516,7 +2516,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     {
       if (API)
         wmf_api_destroy(API);
-      ThrowReaderException(DelegateError, "Failed to intialize libwmf", image);
+      ThrowReaderException(DelegateFatalError, "Failed to intialize libwmf", image);
     }
 
   ddata = WMF_MAGICK_GetData(API);
@@ -2540,7 +2540,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(FileOpenError, "Unable to open file", image);
+      ThrowReaderException(FileOpenFatalError, "Unable to open file", image);
     }
 
   /*
@@ -2551,7 +2551,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(CorruptImageError, "Failed to scan file", image);
+      ThrowReaderException(CorruptImageFatalError, "Failed to scan file", image);
     }
 
   /*
@@ -2583,7 +2583,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(CorruptImageError,
+      ThrowReaderException(CorruptImageFatalError,
                            "Failed to compute output size", image);
     }
 
@@ -2742,7 +2742,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
-      ThrowReaderException(CorruptImageError, "Failed to render file", image);
+      ThrowReaderException(CorruptImageFatalError, "Failed to render file", image);
     }
 
   /*

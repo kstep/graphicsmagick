@@ -199,7 +199,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   rla_info.window.left=ReadBlobMSBShort(image);
   rla_info.window.right=ReadBlobMSBShort(image);
   rla_info.window.bottom=ReadBlobMSBShort(image);
@@ -256,7 +256,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   scanlines=(long *) AcquireMemory(image->rows*sizeof(long));
   if (scanlines == (long *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (*rla_info.description != '\0')
     (void) SetImageAttribute(image,"comment",rla_info.description);
   /*
@@ -373,7 +373,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MagickMonitor(LoadImageText,y,image->rows);
   }
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }

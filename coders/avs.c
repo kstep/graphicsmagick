@@ -132,14 +132,14 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read AVS image.
   */
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0))
-    ThrowReaderException(CorruptImageWarning,"Not a AVS image file",image);
+    ThrowReaderException(CorruptImageError,"Not a AVS image file",image);
   do
   {
     /*
@@ -153,13 +153,13 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     pixels=(unsigned char *) AcquireMemory(4*image->columns);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+      ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
         image);
     for (y=0; y < (long) image->rows; y++)
     {
       count=ReadBlob(image,4*image->columns,pixels);
       if (count == 0)
-        ThrowReaderException(CorruptImageWarning,"Unable to read image data",
+        ThrowReaderException(CorruptImageError,"Unable to read image data",
           image);
       p=pixels;
       q=SetImagePixels(image,0,y,image->columns,1);
@@ -182,7 +182,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     LiberateMemory((void **) &pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */
@@ -329,7 +329,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   scene=0;
   do
   {
@@ -344,7 +344,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     */
     pixels=(unsigned char *) AcquireMemory(image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
         image);
     /*
       Convert MIFF to AVS raster pixels.

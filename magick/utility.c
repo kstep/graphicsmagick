@@ -125,7 +125,7 @@ MagickExport const char *AcquireString(const char *source)
   assert(source != (const char *) NULL);
   destination=(char *) AcquireMemory(strlen(source)+1);
   if (destination == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to acquire string",
+    MagickFatalError(ResourceLimitFatalError,"Unable to acquire string",
       "Memory allocation failed");
   *destination='\0';
   if (source != (char *) NULL)
@@ -173,7 +173,7 @@ MagickExport char *AllocateString(const char *source)
     length+=strlen(source);
   destination=(char *) AcquireMemory(length+MaxTextExtent);
   if (destination == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate string",
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocate string",
       "Memory allocation failed");
   *destination='\0';
   if (source != (char *) NULL)
@@ -549,7 +549,7 @@ MagickExport unsigned int ConcatenateString(char **destination,
   ReacquireMemory((void **) &(*destination),
     strlen(*destination)+strlen(source)+MaxTextExtent);
   if (*destination == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to concatenate string",
+    MagickFatalError(ResourceLimitFatalError,"Unable to concatenate string",
       "Memory allocation failed");
   (void) strcat(*destination,source);
   return(True);
@@ -691,7 +691,8 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
   assert(argv != (char ***) NULL);
   for (i=1; i < *argc; i++)
     if (strlen((*argv)[i]) > (MaxTextExtent/2-1))
-      MagickError(ResourceLimitError,"Token length exceeds limit",(*argv)[i]);
+      MagickFatalError(ResourceLimitFatalError,"Token length exceeds limit",
+        (*argv)[i]);
   vector=(char **) AcquireMemory((*argc+MaxTextExtent)*sizeof(char *));
   if (vector == (char **) NULL)
     return(False);
@@ -2569,7 +2570,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   (*argc)++;
   argv=(char **) AcquireMemory((*argc+1)*sizeof(char *));
   if (argv == (char **) NULL)
-    MagickError(ResourceLimitError,"Unable to convert string to argv",
+    MagickFatalError(ResourceLimitFatalError,"Unable to convert string to argv",
       "Memory allocation failed");
   /*
     Convert string to an ASCII list.
@@ -2597,8 +2598,8 @@ MagickExport char **StringToArgv(const char *text,int *argc)
           q++;
     argv[i]=(char *) AcquireMemory(q-p+MaxTextExtent);
     if (argv[i] == (char *) NULL)
-      MagickError(ResourceLimitError,"Unable to convert string to argv",
-        "Memory allocation failed");
+      MagickFatalError(ResourceLimitFatalError,
+        "Unable to convert string to argv","Memory allocation failed");
     (void) strncpy(argv[i],p,q-p);
     argv[i][q-p]='\0';
     p=q;
@@ -2714,8 +2715,8 @@ MagickExport char **StringToList(const char *text)
           lines++;
       textlist=(char **) AcquireMemory((lines+MaxTextExtent)*sizeof(char *));
       if (textlist == (char **) NULL)
-        MagickError(ResourceLimitError,"Unable to convert text to list",
-          "Memory allocation failed");
+        MagickFatalError(ResourceLimitFatalError,
+          "Unable to convert text to list","Memory allocation failed");
       p=text;
       for (i=0; i < (long) lines; i++)
       {
@@ -2724,8 +2725,8 @@ MagickExport char **StringToList(const char *text)
             break;
         textlist[i]=(char *) AcquireMemory(q-p+MaxTextExtent);
         if (textlist[i] == (char *) NULL)
-          MagickError(ResourceLimitError,"Unable to convert text to list",
-            "Memory allocation failed");
+          MagickFatalError(ResourceLimitFatalError,
+            "Unable to convert text to list","Memory allocation failed");
         (void) strncpy(textlist[i],p,q-p);
         textlist[i][q-p]='\0';
         if (*q == '\r')
@@ -2747,14 +2748,14 @@ MagickExport char **StringToList(const char *text)
       lines=(strlen(text)/0x14)+1;
       textlist=(char **) AcquireMemory((lines+MaxTextExtent)*sizeof(char *));
       if (textlist == (char **) NULL)
-        MagickError(ResourceLimitError,"Unable to convert text",
+        MagickFatalError(ResourceLimitFatalError,"Unable to convert text",
           "Memory allocation failed");
       p=text;
       for (i=0; i < (long) lines; i++)
       {
         textlist[i]=(char *) AcquireMemory(2*MaxTextExtent);
         if (textlist[i] == (char *) NULL)
-          MagickError(ResourceLimitError,"Unable to convert text",
+          MagickFatalError(ResourceLimitFatalError,"Unable to convert text",
             "Memory allocation failed");
         FormatString(textlist[i],"0x%08lx: ",0x14*i);
         q=textlist[i]+strlen(textlist[i]);
@@ -2893,7 +2894,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
   status=NTSystemCommand(command);
 #endif
   if (verbose)
-    MagickWarning(DelegateWarning,command,!status ? strerror(status) :
+    MagickError(DelegateError,command,!status ? strerror(status) :
       (char *) NULL);
   return(status);
 }
@@ -2933,7 +2934,7 @@ MagickExport void TemporaryFilename(char *filename)
 
     name=(char *) tempnam((char *) NULL,filename);
     if (name == (char *) NULL)
-      MagickError(ResourceLimitError,
+      MagickFatalError(ResourceLimitFatalError,
         "Unable to create a name for a temporary file",(char *) NULL);
     (void) strncpy(filename,name,MaxTextExtent-1);
     LiberateMemory((void **) &name);

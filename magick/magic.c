@@ -372,7 +372,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
         */
         magic_info=(MagicInfo *) AcquireMemory(sizeof(MagicInfo));
         if (magic_info == (MagicInfo *) NULL)
-          MagickError(ResourceLimitError,"Unable to allocate magics",
+          MagickFatalError(ResourceLimitFatalError,"Unable to allocate magics",
             "Memory allocation failed");
         (void) memset(magic_info,0,sizeof(MagicInfo));
         magic_info->filename=AcquireString(filename);

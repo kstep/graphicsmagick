@@ -207,7 +207,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Decode image header;  header terminates one character beyond a ':'.
   */
@@ -226,7 +226,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     length=MaxTextExtent;
     values=(char *) AcquireMemory(length);
     if (values == (char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+      ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
         image);
     colors=0;
     image->depth=8;
@@ -264,7 +264,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             *p=c;
           }
           if (comment == (char *) NULL)
-            ThrowReaderException(ResourceLimitWarning,
+            ThrowReaderException(ResourceLimitError,
               "Memory allocation failed",image);
           *p='\0';
           (void) SetImageAttribute(image,"comment",comment);
@@ -300,7 +300,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   p=values+strlen(values);
                 }
               if (values == (char *) NULL)
-                ThrowReaderException(ResourceLimitWarning,
+                ThrowReaderException(ResourceLimitError,
                   "Memory allocation failed",image);
               *p++=c;
               c=ReadBlobByte(image);
@@ -518,7 +518,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       ReacquireMemory((void **) &image->generic_profile,
                         (i+1)*sizeof(ProfileInfo));
                     if (image->generic_profile == (ProfileInfo *) NULL)
-                      ThrowReaderException(ResourceLimitWarning,
+                      ThrowReaderException(ResourceLimitError,
                         "Memory allocation failed",image);
                     image->generic_profile[i].name=AllocateString(keyword+8);
                     image->generic_profile[i].length=atol(values);
@@ -639,7 +639,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
-      ThrowReaderException(CorruptImageWarning,
+      ThrowReaderException(CorruptImageError,
         "Incorrect image header in file",image);
     if (image->montage != (char *) NULL)
       {
@@ -651,7 +651,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         */
         image->directory=(char *) AcquireMemory(MaxTextExtent);
         if (image->directory == (char *) NULL)
-          ThrowReaderException(CorruptImageWarning,"Unable to read image data",
+          ThrowReaderException(CorruptImageError,"Unable to read image data",
             image);
         p=image->directory;
         do
@@ -665,7 +665,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               ReacquireMemory((void **) &image->directory,
                 (strlen(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
-                ThrowReaderException(CorruptImageWarning,
+                ThrowReaderException(CorruptImageError,
                   "Unable to read image data",image);
               p=image->directory+strlen(image->directory);
             }
@@ -681,7 +681,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         image->color_profile.info=(unsigned char *)
           AcquireMemory(image->color_profile.length);
         if (image->color_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageWarning,
+          ThrowReaderException(CorruptImageError,
             "Unable to read color profile",image);
         (void) ReadBlob(image,image->color_profile.length,
           image->color_profile.info);
@@ -694,7 +694,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         image->iptc_profile.info=(unsigned char *)
           AcquireMemory(image->iptc_profile.length);
         if (image->iptc_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageWarning,
+          ThrowReaderException(CorruptImageError,
             "Unable to read IPTC profile",image);
         (void) ReadBlob(image,image->iptc_profile.length,
           image->iptc_profile.info);
@@ -711,7 +711,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           image->generic_profile[i].info=(unsigned char *)
             AcquireMemory(image->generic_profile[i].length);
           if (image->generic_profile[i].info == (unsigned char *) NULL)
-            ThrowReaderException(CorruptImageWarning,
+            ThrowReaderException(CorruptImageError,
               "Unable to read generic profile",image);
           (void) ReadBlob(image,image->generic_profile[i].length,
             image->generic_profile[i].info);
@@ -723,7 +723,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           Create image colormap.
         */
         if (!AllocateImageColormap(image,colors != 0 ? colors : 256))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         if (colors != 0)
           {
@@ -740,7 +740,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             colormap=(unsigned char *)
               AcquireMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
-              ThrowReaderException(ResourceLimitWarning,
+              ThrowReaderException(ResourceLimitError,
                 "Memory allocation failed",image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
@@ -785,7 +785,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       AcquireMemory((size_t) (1.01*packet_size*image->columns+600));
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
         image);
     /*
       Read image pixels.
@@ -909,7 +909,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       index=(index << 8)+ReadBlobByte(image);
                     if (index >= image->colors)
                       {
-                        ThrowException(&image->exception,CorruptImageWarning,
+                        ThrowException(&image->exception,CorruptImageError,
                           "invalid colormap index",image->filename);
                         index=0;
                       }
@@ -974,7 +974,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         return((Image *) NULL);
       }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */
@@ -1251,7 +1251,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -1287,7 +1287,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     compress_pixels=(unsigned char *) AcquireMemory(length);
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
         image);
     /*
       Write MIFF header.
@@ -1500,7 +1500,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         packet_size=image->depth > 8 ? 6 : 3;
         colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
             image);
         /*
           Write colormap to file.

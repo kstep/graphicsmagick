@@ -238,7 +238,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
-      ThrowBinaryException(FileOpenWarning,"Unable to open file",
+      ThrowBinaryException(FileOpenError,"Unable to open file",
         image_info->filename)
     }
   /*
@@ -254,7 +254,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     {
       TIFFClose(tiff);
       (void) remove(filename);
-      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
         (char *) NULL)
     }
   /*
@@ -282,7 +282,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateWarning,"TIFF library is not available",
+  ThrowBinaryException(MissingDelegateError,"TIFF library is not available",
     image->filename);
 }
 #endif
@@ -433,14 +433,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Open temporary output file.
   */
   TemporaryFilename(postscript_filename);
   file=fopen(postscript_filename,WriteBinaryType);
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+    ThrowReaderException(FileOpenError,"Unable to write file",image);
   /*
     Set the page geometry.
   */
@@ -517,7 +517,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (ferror(file))
     {
       (void) fclose(file);
-      ThrowReaderException(FileOpenWarning,
+      ThrowReaderException(FileOpenError,
         "An error has occurred writing to file",image)
     }
   (void) fclose(file);
@@ -541,7 +541,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status)
     {
       (void) remove(postscript_filename);
-      ThrowReaderException(FileOpenWarning,"Portable Document delegate failed",
+      ThrowReaderException(FileOpenError,"Portable Document delegate failed",
         image)
     }
   DestroyImage(image);
@@ -551,7 +551,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
-    ThrowReaderException(CorruptImageWarning,
+    ThrowReaderException(CorruptImageError,
       "Portable Document delegate failed",image);
   do
   {
@@ -801,7 +801,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   if ((image->file == stdout) || image->pipet)
     {
       /*
@@ -812,7 +812,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       image->temporary=True;
       status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"Unable to open file",image);
     }
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
@@ -823,7 +823,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     case JPEGCompression:
     {
       compression=RunlengthEncodedCompression;
-      ThrowException(&image->exception,MissingDelegateWarning,
+      ThrowException(&image->exception,MissingDelegateError,
         "JPEG compression is not available",image->filename);
       break;
     }
@@ -832,7 +832,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     case LZWCompression:
     {
       compression=RunlengthEncodedCompression;
-      ThrowException(&image->exception,MissingDelegateWarning,
+      ThrowException(&image->exception,MissingDelegateError,
         "LZW compression is not available",image->filename);
       break;
     }
@@ -841,7 +841,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     case ZipCompression:
     {
       compression=RunlengthEncodedCompression;
-      ThrowException(&image->exception,MissingDelegateWarning,
+      ThrowException(&image->exception,MissingDelegateError,
         "ZLIB compression is not available",image->filename);
       break;
     }
@@ -854,7 +854,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   */
   xref=(off_t *) AcquireMemory(2048*sizeof(off_t));
   if (xref == (off_t *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
   memset(xref,0,2048*sizeof(off_t));
   /*
     Write Info object.
@@ -919,7 +919,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       }
       ReacquireMemory((void **) &xref,(count+2048)*sizeof(off_t));
       if (xref == (off_t *) NULL)
-        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowWriterException(ResourceLimitError,"Memory allocation failed",
           image);
     }
   (void) WriteBlobString(image,"]\n");
@@ -1178,17 +1178,17 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             TemporaryFilename(filename);
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateWarning,
+              ThrowWriterException(DelegateError,
                 "Unable to clone image",image);
             (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
             status=WriteImage(image_info,jpeg_image);
             DestroyImage(jpeg_image);
             if (status == False)
-              ThrowWriterException(DelegateWarning,"Unable to write image",
+              ThrowWriterException(DelegateError,"Unable to write image",
                 image);
             file=fopen(filename,ReadBinaryType);
             if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"Unable to open file",image);
             for (c=fgetc(file); c != EOF; c=fgetc(file))
               (void) WriteBlobByte(image,c);
             (void) fclose(file);
@@ -1204,7 +1204,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             length=number_pixels;
             pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitWarning,
+              ThrowWriterException(ResourceLimitError,
                 "Memory allocation failed",image);
             /*
               Dump Runlength encoded pixels.
@@ -1291,17 +1291,17 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             TemporaryFilename(filename);
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateWarning,
+              ThrowWriterException(DelegateError,
                 "Unable to clone image",image);
             (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
             status=WriteImage(image_info,jpeg_image);
             DestroyImage(jpeg_image);
             if (status == False)
-              ThrowWriterException(DelegateWarning,"Unable to write image",
+              ThrowWriterException(DelegateError,"Unable to write image",
                 image);
             file=fopen(filename,ReadBinaryType);
             if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"Unable to open file",image);
             for (c=fgetc(file); c != EOF; c=fgetc(file))
               (void) WriteBlobByte(image,c);
             (void) fclose(file);
@@ -1317,7 +1317,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             length=(image->colorspace == CMYKColorspace ? 4 : 3)*number_pixels;
             pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitWarning,
+              ThrowWriterException(ResourceLimitError,
                 "Memory allocation failed",image);
             /*
               Dump runoffset encoded pixels.
@@ -1417,7 +1417,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               length=number_pixels;
               pixels=(unsigned char *) AcquireMemory(length);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitWarning,
+                ThrowWriterException(ResourceLimitError,
                   "Memory allocation failed",image);
               /*
                 Dump Runlength encoded pixels.
@@ -1517,7 +1517,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       &geometry.width,&geometry.height);
     clone_image=CloneImage(image,0,0,True,&image->exception);
     if (clone_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
+      ThrowWriterException(ResourceLimitError,"Unable to scale image",
         image);
     if (clone_image->storage_class == PseudoClass)
       clone_image->filter=PointFilter;
@@ -1525,7 +1525,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       &image->exception);
     DestroyImage(clone_image);
     if (tile_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
+      ThrowWriterException(ResourceLimitError,"Unable to scale image",
         image);
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%lu 0 obj\n",object);
@@ -1602,17 +1602,17 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             TemporaryFilename(filename);
             jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateWarning,"Unable to clone image",
+              ThrowWriterException(DelegateError,"Unable to clone image",
                 image);
             (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
             status=WriteImage(image_info,jpeg_image);
             DestroyImage(jpeg_image);
             if (status == False)
-              ThrowWriterException(DelegateWarning,"Unable to write image",
+              ThrowWriterException(DelegateError,"Unable to write image",
                 image);
             file=fopen(filename,ReadBinaryType);
             if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"Unable to open file",image);
             for (c=fgetc(file); c != EOF; c=fgetc(file))
               (void) WriteBlobByte(image,c);
             (void) fclose(file);
@@ -1630,7 +1630,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowWriterException(ResourceLimitWarning,
+                ThrowWriterException(ResourceLimitError,
                   "Memory allocation failed",image)
               }
             /*
@@ -1712,17 +1712,17 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             TemporaryFilename(filename);
             jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateWarning,"Unable to clone image",
+              ThrowWriterException(DelegateError,"Unable to clone image",
                 image);
             (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
             status=WriteImage(image_info,jpeg_image);
             DestroyImage(jpeg_image);
             if (status == False)
-              ThrowWriterException(DelegateWarning,"Unable to write image",
+              ThrowWriterException(DelegateError,"Unable to write image",
                 image);
             file=fopen(filename,ReadBinaryType);
             if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"Unable to open file",image);
             for (c=fgetc(file); c != EOF; c=fgetc(file))
               (void) WriteBlobByte(image,c);
             (void) fclose(file);
@@ -1740,7 +1740,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowWriterException(ResourceLimitWarning,
+                ThrowWriterException(ResourceLimitError,
                   "Memory allocation failed",image)
               }
             /*
@@ -1836,7 +1836,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
-                  ThrowWriterException(ResourceLimitWarning,
+                  ThrowWriterException(ResourceLimitError,
                     "Memory allocation failed",image)
                 }
               /*
@@ -2003,7 +2003,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       */
       file=fopen(image->filename,ReadBinaryType);
       if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"Unable to open file",image);
       for (c=fgetc(file); c != EOF; c=fgetc(file))
         (void) fputc(c,encode_image.file);
       (void) fclose(file);
@@ -2076,7 +2076,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
   compressed_packets=(unsigned long) (1.001*length+12);
   compressed_pixels=(unsigned char *) AcquireMemory(compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       (char *) NULL);
   stream.next_in=pixels;
   stream.avail_in=(unsigned int) length;
@@ -2096,7 +2096,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
       compressed_packets=stream.total_out;
     }
   if (status)
-    ThrowBinaryException(DelegateWarning,"Unable to Zip compress image",
+    ThrowBinaryException(DelegateError,"Unable to Zip compress image",
       (char *) NULL)
   else
     for (i=0; i < (long) compressed_packets; i++)
@@ -2110,7 +2110,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateWarning,"ZLIB library is not available",
+  ThrowBinaryException(MissingDelegateError,"ZLIB library is not available",
     image->filename);
   return(False);
 }

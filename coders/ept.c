@@ -293,14 +293,14 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Open temporary output file.
   */
   TemporaryFilename(postscript_filename);
   file=fopen(postscript_filename,WriteBinaryType);
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+    ThrowReaderException(FileOpenError,"Unable to write file",image);
   FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
   (void) fputs(translate_geometry,file);
   /*
@@ -389,7 +389,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   if (ferror(file))
     {
       (void) fclose(file);
-      ThrowReaderException(FileOpenWarning,
+      ThrowReaderException(FileOpenError,
         "An error has occurred writing to file",image)
     }
   (void) rewind(file);
@@ -419,7 +419,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
       */
       file=fopen(postscript_filename,AppendBinaryType);
       if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+        ThrowReaderException(FileOpenError,"Unable to write file",image);
       (void) fputs("showpage\n",file);
       (void) fclose(file);
       status=ExecutePostscriptInterpreter(image_info->verbose,command);
@@ -435,7 +435,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
       image=ReadImage(image_info,exception);
       if (image != (Image *) NULL)
         return(image);
-      ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
+      ThrowReaderException(CorruptImageError,"Postscript delegate failed",
         image)
     }
   clone_info=CloneImageInfo(image_info);
@@ -444,7 +444,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   DestroyImageInfo(clone_info);
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
-    ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
+    ThrowReaderException(CorruptImageError,"Postscript delegate failed",
       image);
   do
   {
@@ -632,6 +632,6 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     (void) remove(ps_filename);
   (void) remove(tiff_filename);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   return(True);
 }

@@ -279,7 +279,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read PNM image.
   */
@@ -290,7 +290,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify PNM identifier.
     */
     if ((count == 0) || (format != 'P'))
-      ThrowReaderException(CorruptImageWarning,"Not a PNM image file",image);
+      ThrowReaderException(CorruptImageError,"Not a PNM image file",image);
     /*
       Initialize image structure.
     */
@@ -311,7 +311,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     number_pixels=image->columns*image->rows;
     if (number_pixels == 0)
-      ThrowReaderException(CorruptImageWarning,
+      ThrowReaderException(CorruptImageError,
         "Unable to read image: image dimensions are zero",image);
     scale=(Quantum *) NULL;
     if (image->storage_class == PseudoClass)
@@ -320,7 +320,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         if (format == '7')
           {
@@ -349,7 +349,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         scale=(Quantum *) AcquireMemory((max_value+1)*sizeof(Quantum));
         if (scale == (Quantum *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         for (i=0; i <= (long) max_value; i++)
           scale[i]=(Quantum) ((double) (MaxRGB*i)/max_value+MagickEpsilon);
@@ -378,7 +378,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             index=!PNMInteger(image,2);
             if (index >= image->colors)
               {
-                ThrowException(&image->exception,CorruptImageWarning,
+                ThrowException(&image->exception,CorruptImageError,
                   "invalid colormap index",image->filename);
                 index=0;
               }
@@ -415,7 +415,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             index=intensity;
             if (index >= image->colors)
               {
-                ThrowException(&image->exception,CorruptImageWarning,
+                ThrowException(&image->exception,CorruptImageError,
                   "invalid colormap index",image->filename);
                 index=0;
               }
@@ -500,7 +500,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               MagickMonitor(LoadImageText,y,image->rows);
         }
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",
+          ThrowReaderException(CorruptImageError,"Unexpected end-of-file",
             image);
         break;
       }
@@ -513,13 +513,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         packets=image->depth <= 8 ? 1 : 2;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+          ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
             image);
         for (y=0; y < (long) image->rows; y++)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
-            ThrowReaderException(CorruptImageWarning,
+            ThrowReaderException(CorruptImageError,
               "Unable to read image data",image);
           p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -537,7 +537,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             if (index >= image->colors)
               {
-                ThrowException(&image->exception,CorruptImageWarning,
+                ThrowException(&image->exception,CorruptImageError,
                   "invalid colormap index",image->filename);
                 index=0;
               }
@@ -552,7 +552,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         LiberateMemory((void **) &pixels);
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",
+          ThrowReaderException(CorruptImageError,"Unexpected end-of-file",
             image);
         break;
       }
@@ -564,13 +564,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         packets=image->depth <= 8 ? 3 : 6;
         pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+          ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
             image);
         for (y=0; y < (long) image->rows; y++)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
-            ThrowReaderException(CorruptImageWarning,
+            ThrowReaderException(CorruptImageError,
               "Unable to read image data",image);
           p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -614,12 +614,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",
+          ThrowReaderException(CorruptImageError,"Unexpected end-of-file",
             image);
         break;
       }
       default:
-        ThrowReaderException(CorruptImageWarning,"Not a PNM image file",image)
+        ThrowReaderException(CorruptImageError,"Not a PNM image file",image)
     }
     if (scale != (Quantum *) NULL)
       LiberateMemory((void **) &scale);
@@ -821,7 +821,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   scene=0;
   do
   {
@@ -1080,7 +1080,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         length=image->columns*sizeof(PixelPacket);
         pixels=(unsigned char *) AcquireMemory(length);
         if (pixels == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
             image);
         /*
           Convert image to a PNM image.
@@ -1153,7 +1153,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if ((red_map[i][j] == (unsigned short *) NULL) ||
                 (green_map[i][j] == (unsigned short *) NULL) ||
                 (blue_map[i][j] == (unsigned short *) NULL))
-              ThrowWriterException(ResourceLimitWarning,
+              ThrowWriterException(ResourceLimitError,
                 "Memory allocation failed",image);
           }
         /*

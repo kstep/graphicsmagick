@@ -301,7 +301,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read CUT image.
   */
@@ -312,7 +312,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
    Header.Reserved=ReadBlobLSBShort(image);
 
    if (Header.Width==0 || Header.Height==0 || Header.Reserved!=0)
-CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
+CUT_KO:  ThrowReaderException(CorruptImageError,"Not a CUT image file",image);
 
 /*---This code checks first line of image---*/
   EncodedByte=ReadBlobLSBShort(image);
@@ -455,7 +455,7 @@ NoPalette:
    image->colors=256;
    if (!AllocateImageColormap(image,image->colors))
      {
-NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+NoMemory:  ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image)
            }     
    
@@ -554,7 +554,7 @@ Finish:
   if(palette!=NULL) DestroyImage(palette);
   if(clone_info!=NULL) DestroyImageInfo(clone_info);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);       
 }

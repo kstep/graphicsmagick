@@ -170,7 +170,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Decode image header.
   */
@@ -255,10 +255,10 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     count++;
   }
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageWarning,"image size is zero",image);
+    ThrowReaderException(CorruptImageError,"image size is zero",image);
   image->depth=8;
   if (!AllocateImageColormap(image,256))
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -269,7 +269,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   */
   scanline=(unsigned char *) AcquireMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
+    ThrowReaderException(CorruptImageError,"Unable to read image data",image);
   for (y=0; y < (long) image->rows; y++)
   {
     if (!SetImagePixels(image,0,y,image->columns,1))
@@ -283,7 +283,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   }
   LiberateMemory((void **) &scanline);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }
@@ -409,7 +409,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Write header.
@@ -425,7 +425,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   */
   scanline=(unsigned char *) AcquireMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Write VICAR scanline.
   */

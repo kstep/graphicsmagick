@@ -193,7 +193,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType , exception );
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read HDF image.
   */
@@ -205,7 +205,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=DFR8getdims(image->filename,&width,&height,&is_palette);
     }
   if (status == -1)
-    ThrowReaderException(CorruptImageWarning,
+    ThrowReaderException(CorruptImageError,
       "Image file or does not contain any image data",image);
   do
   {
@@ -225,7 +225,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     hdf_pixels=(unsigned char *)
       AcquireMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
     if (image->storage_class == PseudoClass)
       {
@@ -236,11 +236,11 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         hdf_palette=(unsigned char *) AcquireMemory(768);
         if (hdf_palette == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         (void) DFR8getimage(image->filename,hdf_pixels,(int) image->columns,
           (int) image->rows,hdf_palette);
@@ -384,7 +384,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateWarning,
+  ThrowException(exception,MissingDelegateError,
     "HDF library is not available",image_info->filename);
   return((Image *) NULL);
 }
@@ -529,7 +529,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType, &image->exception );
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   CloseBlob(image);
   scene=0;
   do
@@ -542,7 +542,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     hdf_pixels=(unsigned char *)
       AcquireMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
         image);
     if (image->storage_class == DirectClass)
       {
@@ -703,7 +703,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 
             hdf_palette=(unsigned char *) AcquireMemory(768);
             if (hdf_palette == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitWarning,
+              ThrowWriterException(ResourceLimitError,
                 "Memory allocation failed",image);
             q=hdf_palette;
             for (i=0; i < (long) image->colors; i++)
@@ -762,7 +762,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateWarning,"HDF library is not available",
+  ThrowBinaryException(MissingDelegateError,"HDF library is not available",
     image->filename)
 }
 #endif

@@ -225,7 +225,8 @@ int main(int argc,char **argv)
   InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
-    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
+    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
+      (char *) NULL);
   /*
     Check for server name specified on the command line.
   */
@@ -245,7 +246,8 @@ int main(int argc,char **argv)
         */
         i++;
         if (i == argc)
-          MagickError(OptionError,"Missing server name on -display",option);
+          MagickFatalError(OptionFatalError,"Missing server name on -display",
+            option);
         server_name=argv[i];
         break;
       }
@@ -258,7 +260,7 @@ int main(int argc,char **argv)
   SetNotifyHandlers;
   display=XOpenDisplay(server_name);
   if (display == (Display *) NULL)
-    MagickError(OptionError,"Unable to connect to X server",
+    MagickFatalError(OptionFatalError,"Unable to connect to X server",
       XDisplayName(server_name));
   (void) XSetErrorHandler(XError);
   client_name=SetClientName((char *) NULL);
@@ -293,7 +295,7 @@ int main(int argc,char **argv)
   if (LocaleCompare("Partition",resource_value) == 0)
     image_info->interlace=PartitionInterlace;
   if (image_info->interlace == UndefinedInterlace)
-    MagickWarning(OptionWarning,"Unrecognized interlace type",resource_value);
+    MagickError(OptionError,"Unrecognized interlace type",resource_value);
   image_info->page=XGetResourceInstance(resource_database,client_name,
     "pageGeometry",(char *) NULL);
   resource_value=
@@ -338,7 +340,7 @@ int main(int argc,char **argv)
             image_info->adjoin=(*option == '-');
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'b':
@@ -354,12 +356,13 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing border color",option);
+                  MagickFatalError(OptionFatalError,"Missing border color",
+                    option);
                 (void) QueryColorDatabase(argv[i],&image_info->border_color);
               }
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'c':
@@ -371,7 +374,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  MagickError(OptionError,"Missing threshold",option);
+                  MagickFatalError(OptionFatalError,"Missing threshold",option);
                 SetCacheThreshold(atol(argv[i]));
               }
             break;
@@ -383,7 +386,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickError(OptionError,"Missing colors",option);
+                  MagickFatalError(OptionFatalError,"Missing colors",option);
                 quantize_info->number_colors=atol(argv[i]);
               }
             break;
@@ -395,7 +398,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing type",option);
+                  MagickFatalError(OptionFatalError,"Missing type",option);
                 option=argv[i];
                 quantize_info->colorspace=UndefinedColorspace;
                 if (LocaleCompare("cmyk",option) == 0)
@@ -427,7 +430,8 @@ int main(int argc,char **argv)
                 if (LocaleCompare("yuv",option) == 0)
                   quantize_info->colorspace=YUVColorspace;
                 if (quantize_info->colorspace == UndefinedColorspace)
-                  MagickError(OptionError,"Invalid colorspace type",option);
+                  MagickFatalError(OptionFatalError,"Invalid colorspace type",
+                    option);
               }
             break;
           }
@@ -437,7 +441,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing comment",option);
+                  MagickFatalError(OptionFatalError,"Missing comment",option);
               }
             break;
           }
@@ -448,7 +452,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing type",option);
+                  MagickFatalError(OptionFatalError,"Missing type",option);
                 option=argv[i];
                 image_info->compression=UndefinedCompression;
                 if (LocaleCompare("None",option) == 0)
@@ -470,7 +474,8 @@ int main(int argc,char **argv)
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  MagickError(OptionError,"Invalid compression type",option);
+                  MagickFatalError(OptionFatalError,"Invalid compression type",
+                    option);
               }
             break;
           }
@@ -480,11 +485,11 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickError(OptionError,"Missing geometry",option);
+                  MagickFatalError(OptionFatalError,"Missing geometry",option);
               }
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'd':
@@ -500,7 +505,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickError(OptionError,"Missing seconds",option);
+                  MagickFatalError(OptionFatalError,"Missing seconds",option);
               }
             break;
           }
@@ -511,7 +516,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickError(OptionError,"Missing geometry",option);
+                  MagickFatalError(OptionFatalError,"Missing geometry",option);
                 (void) CloneString(&image_info->density,argv[i]);
               }
             break;
@@ -523,7 +528,8 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickError(OptionError,"Missing image depth",option);
+                  MagickFatalError(OptionFatalError,"Missing image depth",
+                    option);
                 image_info->depth=atol(argv[i]);
               }
             break;
@@ -540,7 +546,8 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing server name",option);
+                  MagickFatalError(OptionFatalError,"Missing server name",
+                    option);
                 (void) CloneString(&image_info->server_name,argv[i]);
               }
             break;
@@ -551,7 +558,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickError(OptionError,"Missing method",option);
+                  MagickFatalError(OptionFatalError,"Missing method",option);
               }
             break;
           }
@@ -560,7 +567,7 @@ int main(int argc,char **argv)
             quantize_info->dither=(*option == '-');
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'e':
@@ -572,7 +579,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing type",option);
+                  MagickFatalError(OptionFatalError,"Missing type",option);
                 option=argv[i];
                 image_info->endian=UndefinedEndian;
                 if (LocaleCompare("LSB",option) == 0)
@@ -580,11 +587,12 @@ int main(int argc,char **argv)
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
                 if (image_info->endian == UndefinedEndian)
-                  MagickError(OptionError,"Invalid endian type",option);
+                  MagickFatalError(OptionFatalError,"Invalid endian type",
+                    option);
               }
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'f':
@@ -595,7 +603,7 @@ int main(int argc,char **argv)
             ximage_info.frame=(*option == '-');
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'g':
@@ -606,11 +614,11 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickError(OptionError,"Missing geometry",option);
+                  MagickFatalError(OptionFatalError,"Missing geometry",option);
               }
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'h':
@@ -620,7 +628,7 @@ int main(int argc,char **argv)
             ImportUsage();
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'i':
@@ -632,7 +640,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing type",option);
+                  MagickFatalError(OptionFatalError,"Missing type",option);
                 option=argv[i];
                 image_info->interlace=UndefinedInterlace;
                 if (LocaleCompare("No",option) == 0)
@@ -644,11 +652,12 @@ int main(int argc,char **argv)
                 if (LocaleCompare("Partition",option) == 0)
                   image_info->interlace=PartitionInterlace;
                 if (image_info->interlace == UndefinedInterlace)
-                  MagickError(OptionError,"Invalid interlace type",option);
+                  MagickFatalError(OptionFatalError,"Invalid interlace type",
+                    option);
               }
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'l':
@@ -659,11 +668,12 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing label name",option);
+                  MagickFatalError(OptionFatalError,"Missing label name",
+                    option);
               }
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'm':
@@ -679,14 +689,14 @@ int main(int argc,char **argv)
               }
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'n':
       {
         if (LocaleCompare("negate",option+1) == 0)
           break;
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'p':
@@ -698,7 +708,8 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing page geometry",option);
+                  MagickFatalError(OptionFatalError,"Missing page geometry",
+                    option);
                 image_info->page=GetPageGeometry(argv[i]);
               }
             break;
@@ -710,14 +721,14 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickError(OptionError,"Missing seconds",option);
+                  MagickFatalError(OptionFatalError,"Missing seconds",option);
                 resource_info.pause=atoi(argv[i]);
               }
             break;
           }
         if (LocaleCompare("ping",option+1) == 0)
           {
-            MagickWarning(OptionError,"Deprecated option",option);
+            MagickError(OptionFatalError,"Deprecated option",option);
             break;
           }
         if (LocaleCompare("pointsize",option+1) == 0)
@@ -727,12 +738,12 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickError(OptionError,"Missing size",option);
+                  MagickFatalError(OptionFatalError,"Missing size",option);
                 image_info->pointsize=atof(argv[i]);
               }
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'q':
@@ -744,12 +755,12 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickError(OptionError,"Missing quality",option);
+                  MagickFatalError(OptionFatalError,"Missing quality",option);
                 image_info->quality=atol(argv[i]);
               }
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'r':
@@ -760,7 +771,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickError(OptionError,"Missing geometry",option);
+                  MagickFatalError(OptionFatalError,"Missing geometry",option);
               }
             break;
           }
@@ -768,10 +779,10 @@ int main(int argc,char **argv)
           {
             i++;
             if ((i == argc) || !IsGeometry(argv[i]))
-               MagickError(OptionError,"Missing degrees",option);
+               MagickFatalError(OptionFatalError,"Missing degrees",option);
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 's':
@@ -783,7 +794,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickError(OptionError,"Missing geometry",option);
+                  MagickFatalError(OptionFatalError,"Missing geometry",option);
                 (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
@@ -794,7 +805,8 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickError(OptionError,"Missing scene number",option);
+                  MagickFatalError(OptionFatalError,"Missing scene number",
+                    option);
               }
             break;
           }
@@ -815,7 +827,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickError(OptionError,"Missing geometry",option);
+                  MagickFatalError(OptionFatalError,"Missing geometry",option);
                 (void) CloneString(&image_info->size,argv[i]);
               }
             break;
@@ -825,11 +837,11 @@ int main(int argc,char **argv)
             (void) strcpy(argv[i]+1,"sans");
             i++;
             if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-              MagickError(OptionError,"Missing snaps value",option);
+              MagickFatalError(OptionFatalError,"Missing snaps value",option);
             snapshots=atol(argv[i]);
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 't':
@@ -840,7 +852,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing color",option);
+                  MagickFatalError(OptionFatalError,"Missing color",option);
               }
             break;
           }
@@ -851,7 +863,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickError(OptionError,"Missing depth",option);
+                  MagickFatalError(OptionFatalError,"Missing depth",option);
                 quantize_info->tree_depth=atoi(argv[i]);
               }
             break;
@@ -865,7 +877,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if (i == argc)
-                  MagickError(OptionError,"Missing type",option);
+                  MagickFatalError(OptionFatalError,"Missing type",option);
                 option=argv[i];
                 if (LocaleCompare("Bilevel",option) == 0)
                   image_info->type=BilevelType;
@@ -888,18 +900,20 @@ int main(int argc,char **argv)
                 if (LocaleCompare("Optimize",option) == 0)
                   image_info->type=OptimizeType;
                 if (image_info->type == UndefinedType)
-                  MagickError(OptionError,"Invalid image type",option);
+                  MagickFatalError(OptionFatalError,"Invalid image type",
+                    option);
               }
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case 'w':
       {
         i++;
         if (i == argc)
-          MagickError(OptionError,"Missing id, name, or 'root'",option);
+          MagickFatalError(OptionFatalError,"Missing id, name, or 'root'",
+            option);
         (void) CloneString(&target_window,argv[i]);
         break;
       }
@@ -910,7 +924,7 @@ int main(int argc,char **argv)
             image_info->verbose=(*option == '-');
             break;
           }
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
       case '?':
@@ -920,7 +934,7 @@ int main(int argc,char **argv)
       }
       default:
       {
-        MagickError(OptionError,"Unrecognized option",option);
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
         break;
       }
     }
@@ -951,7 +965,8 @@ int main(int argc,char **argv)
     image=next_image;
   }
   if (image == (Image *) NULL)
-    MagickError(OptionError,"Missing an image file name",(char *) NULL);
+    MagickFatalError(OptionFatalError,"Missing an image file name",
+      (char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   status&=MogrifyImages(image_info,argc-1,argv,&image);

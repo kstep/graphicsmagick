@@ -306,7 +306,7 @@ static unsigned int Classify(Image *image,short **extrema,
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
-          ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
             image->filename);
         /*
           Initialize a new class.
@@ -326,7 +326,7 @@ static unsigned int Classify(Image *image,short **extrema,
       */
       cluster=(Cluster *) AcquireMemory(sizeof(Cluster));
       if (cluster == (Cluster *) NULL)
-        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
           image->filename);
       /*
         Initialize a new class.
@@ -455,7 +455,7 @@ static unsigned int Classify(Image *image,short **extrema,
       (void) fprintf(stderr,"\n");
     }
   if (number_clusters > (MaxRGB+1))
-    ThrowBinaryException(ResourceLimitWarning,"Unable to segment image",
+    ThrowBinaryException(ResourceLimitError,"Unable to segment image",
       "too many clusters");
   /*
     Speed up distance calculations.
@@ -463,7 +463,7 @@ static unsigned int Classify(Image *image,short **extrema,
   squares=(double *)
     AcquireMemory((Downscale(MaxRGB)+Downscale(MaxRGB)+1)*sizeof(double));
   if (squares == (double *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       image->filename);
   squares+=Downscale(MaxRGB);
   for (i=(-(int) Downscale(MaxRGB)); i <= (int) Downscale(MaxRGB); i++)
@@ -474,7 +474,7 @@ static unsigned int Classify(Image *image,short **extrema,
   colormap=(PixelPacket *)
     AcquireMemory((unsigned int) number_clusters*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       image->filename);
   image->matte=False;
   image->storage_class=PseudoClass;
@@ -1151,7 +1151,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
   derivative=(double *) AcquireMemory((MaxRGB+1)*sizeof(double));
   second_derivative=(double *) AcquireMemory((MaxRGB+1)*sizeof(double));
   if ((derivative == (double *) NULL) || (second_derivative == (double *) NULL))
-    MagickError(ResourceLimitError,"Unable to allocate derivatives",
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocate derivatives",
       "Memory allocation failed");
   i=0;
   for (tau=max_tau; tau >= min_tau; tau-=delta_tau)
@@ -1313,7 +1313,7 @@ static void ScaleSpace(const long *histogram,const double tau,
 
   gamma=(double *) AcquireMemory((MaxRGB+1)*sizeof(double));
   if (gamma == (double *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate gamma map",
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocate gamma map",
       "Memory allocation failed");
   alpha=1.0/(tau*sqrt((double) (2.0*MagickPI)));
   beta=(-1.0/(2.0*tau*tau));
@@ -1489,7 +1489,7 @@ MagickExport unsigned int SegmentImage(Image *image,
           LiberateMemory((void **) &extrema[i]);
           LiberateMemory((void **) &histogram[i]);
         }
-        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
           image->filename)
       }
   }

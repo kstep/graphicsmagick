@@ -331,7 +331,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   if (scanline == (PixelPacket *) NULL)
     {
       DestroyImage(magnify_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to magnify image",
+      ThrowImageException(ResourceLimitError,"Unable to magnify image",
         "Memory allocation failed")
     }
   /*
@@ -1055,7 +1055,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   assert(exception->signature == MagickSignature);
   assert((filter >= 0) && (filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
-    ThrowImageException(OptionWarning,"Unable to resize image",
+    ThrowImageException(OptionError,"Unable to resize image",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
     return(CloneImage(image,0,0,True,exception));
@@ -1077,7 +1077,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (contribution == (ContributionInfo *) NULL)
     {
       DestroyImage(resize_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to resize image",
+      ThrowImageException(ResourceLimitError,"Unable to resize image",
         "Memory allocation failed")
     }
   /*
@@ -1123,7 +1123,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (status == False)
     {
       DestroyImage(resize_image);
-      ThrowImageException(CacheWarning,"Unable to resize image",(char *) NULL)
+      ThrowImageException(CacheError,"Unable to resize image",(char *) NULL)
     }
   return(resize_image);
 }
@@ -1200,7 +1200,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if ((columns == 0) || (rows == 0))
-    ThrowImageException(OptionWarning,"Unable to resize image",
+    ThrowImageException(OptionError,"Unable to resize image",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,True,exception));
@@ -1217,7 +1217,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
       (y_offset == (double *) NULL))
     {
       DestroyImage(sample_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to sample image",
+      ThrowImageException(ResourceLimitError,"Unable to sample image",
         "Memory allocation failed")
     }
   /*
@@ -1383,7 +1383,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
       (x_vector == (ScalePacket *) NULL) || (y_vector == (ScalePacket *) NULL))
     {
       DestroyImage(scale_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to scale image",
+      ThrowImageException(ResourceLimitError,"Unable to scale image",
         "Memory allocation failed")
     }
   /*

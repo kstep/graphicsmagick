@@ -218,7 +218,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   histogram_image=CloneImage(image,geometry.width,geometry.height,True,
     &image->exception);
   if (histogram_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",
       image);
   SetImageType(histogram_image,TrueColorType);
   /*
@@ -231,7 +231,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       (blue == (long *) NULL))
     {
       DestroyImage(histogram_image);
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
         image)
     }
   /*

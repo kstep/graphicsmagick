@@ -262,7 +262,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info, image, ReadBinaryType, exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
 
   image->columns = ReadBlobMSBShort(image);
   image->rows = ReadBlobMSBShort(image);
@@ -279,7 +279,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     Initialize image colormap.
   */
   if (!AllocateImageColormap(image,1 << bpp))
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
 
   if(bpp < 8 && flags & PALM_IS_COMPRESSED_FLAG)    /* compressed size */
     {
@@ -316,7 +316,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
 
   one_row = (unsigned char *) AcquireMemory(bytes_per_row);
   if (one_row == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (compressionType == PALM_COMPRESSION_SCANLINE)
     lastrow = (unsigned char *) AcquireMemory(bytes_per_row);
 
@@ -534,7 +534,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info, image, WriteBinaryType, &exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
 
   for (bpp = 1;  (1 << bpp) < (long) image->colors;  bpp *= 2)
@@ -623,7 +623,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     lastrow = (unsigned char *) AcquireMemory(bytes_per_row);
   one_row = (unsigned char *) AcquireMemory(bytes_per_row);
   if (one_row == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,
+    ThrowWriterException(ResourceLimitError,
                                 "Memory allocation failed", image);
 
   for (y=0; y < (int) image->rows; y++)

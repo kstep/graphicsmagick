@@ -134,7 +134,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Set the page geometry.
   */
@@ -187,7 +187,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
-    ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
+    ThrowReaderException(DelegateError,"Unable to get type metrics",image);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   p=ReadBlobString(image,text);
   for (offset=2*page.y; p != (char *) NULL; )
@@ -378,7 +378,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   scene=0;
   do
   {

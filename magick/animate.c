@@ -157,7 +157,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       filelist=(char **) AcquireMemory(sizeof(char *));
       if (filelist == (char **) NULL)
         {
-          MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+          MagickError(ResourceLimitError,"Memory allocation failed",
             (char *) NULL);
           return((Image *) NULL);
         }
@@ -167,9 +167,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if ((status == False) || (number_files == 0))
         {
           if (number_files == 0)
-            MagickWarning(OptionWarning,"no images were found",filenames);
+            MagickError(OptionError,"no images were found",filenames);
           else
-            MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+            MagickError(ResourceLimitError,"Memory allocation failed",
               filenames);
           return((Image *) NULL);
         }
@@ -188,7 +188,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *clone_info->magick='\0';
         next=ReadImage(clone_info,&image->exception);
         if (image->exception.severity != UndefinedException)
-          MagickWarning(image->exception.severity,image->exception.reason,
+          MagickError(image->exception.severity,image->exception.reason,
             image->exception.description);
         if (next != (Image *) NULL)
           {
@@ -210,7 +210,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (image == (Image *) NULL)
         {
           XSetCursorState(display,windows,False);
-          MagickWarning(OptionWarning,"No images were loaded",filenames);
+          MagickError(OptionError,"No images were loaded",filenames);
           return((Image *) NULL);
         }
       while (image->previous != (Image *) NULL)
@@ -515,7 +515,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     }
   if (window_info.id == (Window) NULL)
     {
-      MagickWarning(OptionWarning,"No window with specified id exists",
+      MagickError(OptionError,"No window with specified id exists",
         resources.window_id);
       return;
     }
@@ -536,7 +536,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       */
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
-        MagickError(XServerError,"Unable to create standard colormap",
+        MagickFatalError(XServerFatalError,"Unable to create standard colormap",
           "Memory allocation failed");
       map_info->colormap=(Colormap) NULL;
       pixel.pixels=(unsigned long *) NULL;
@@ -548,7 +548,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       resources.visual_type=visual_type;
       visual_info=XBestVisualInfo(display,map_info,&resources);
       if (visual_info == (XVisualInfo *) NULL)
-        MagickError(XServerError,"Unable to get visual",resources.visual_type);
+        MagickFatalError(XServerFatalError,"Unable to get visual",
+          resources.visual_type);
       /*
         Initialize window info.
       */
@@ -590,8 +591,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
 
           coalesce_image=CoalesceImages(images,&images->exception);
           if (coalesce_image == (Image *) NULL)
-            MagickError(images->exception.severity,images->exception.reason,
-              images->exception.description);
+            MagickFatalError(images->exception.severity,
+              images->exception.reason,images->exception.description);
           images=coalesce_image;
         }
     }
@@ -629,7 +630,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   number_scenes=GetImageListSize(images);
   image_list=ImageListToArray(images,&images->exception);
   if (image_list == (Image **) NULL)
-    MagickError(ResourceLimitError,"Unable to animate images",
+    MagickFatalError(ResourceLimitFatalError,"Unable to animate images",
       "Memory allocation failed");
   for (i=0; i < (long) number_scenes; i++)
     if (image_list[i]->scene == 0)
@@ -665,7 +666,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   pixel.annotate_context=XCreateGC(display,window_info.id,GCBackground |
     GCForeground,&context_values);
   if (pixel.annotate_context == (GC) NULL)
-    MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
+    MagickFatalError(XServerFatalError,"Unable to create graphic context",
+      (char *) NULL);
   /*
     Initialize Image window attributes.
   */
@@ -690,7 +692,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   status=XMakeImage(display,&resources,&window_info,image_list[0],
     window_info.width,window_info.height);
   if (status == False)
-    MagickError(XServerError,"Unable to create X image",(char *) NULL);
+    MagickFatalError(XServerFatalError,"Unable to create X image",
+      (char *) NULL);
   window_info.x=0;
   window_info.y=0;
   if (resources.debug)
@@ -736,7 +739,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       */
       size_hints=XAllocSizeHints();
       if (size_hints == (XSizeHints *) NULL)
-        MagickError(ResourceLimitError,"Unable to display on window",
+        MagickFatalError(ResourceLimitFatalError,"Unable to display on window",
           "Memory allocation failed");
       size_hints->flags=(long) NULL;
       FormatString(default_geometry,"%lux%lu",width,height);
@@ -756,7 +759,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   window_info.pixmap=XCreatePixmap(display,window_info.id,(unsigned int) width,
     (unsigned int) height,window_info.depth);
   if (window_info.pixmap == (Pixmap) NULL)
-    MagickError(XServerError,"Unable to create X pixmap",(char *) NULL);
+    MagickFatalError(XServerFatalError,"Unable to create X pixmap",
+      (char *) NULL);
   /*
     Display pixmap on the window.
   */
@@ -778,7 +782,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     AcquireMemory(number_scenes*sizeof(Pixmap));
   if ((window_info.pixmaps == (Pixmap *) NULL) ||
       (window_info.matte_pixmaps == (Pixmap *) NULL))
-    MagickError(ResourceLimitError,"Unable to animate images",
+    MagickFatalError(ResourceLimitFatalError,"Unable to animate images",
       "Memory allocation failed");
   window_info.pixmaps[0]=window_info.pixmap;
   window_info.matte_pixmaps[0]=window_info.pixmap;
@@ -807,7 +811,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       (unsigned int) image_list[scene]->columns,
       (unsigned int) image_list[scene]->rows);
     if (status == False)
-      MagickError(XServerError,"Unable to create X image",(char *) NULL);
+      MagickFatalError(XServerFatalError,"Unable to create X image",
+        (char *) NULL);
     if (resources.debug)
       {
         (void) fprintf(stderr,"Image: [%lu] %.1024s %lux%lu ",
@@ -823,7 +828,8 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     window_info.pixmap=XCreatePixmap(display,window_info.id,
       (unsigned int) width,(unsigned int) height,window_info.depth);
     if (window_info.pixmap == (Pixmap) NULL)
-      MagickError(XServerError,"Unable to create X pixmap",(char *) NULL);
+      MagickFatalError(XServerFatalError,"Unable to create X pixmap",
+        (char *) NULL);
     /*
       Display pixmap on the window.
     */
@@ -1142,7 +1148,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
       windows=XSetWindows(XInitializeWindows(display,resource_info));
       if (windows == (XWindows *) NULL)
-        MagickError(XServerError,"Unable to create X windows",
+        MagickFatalError(XServerFatalError,"Unable to create X windows",
           "Memory allocation failed");
       /*
         Initialize window id's.
@@ -1165,7 +1171,8 @@ MagickExport Image *XAnimateImages(Display *display,
     (void) XFreeFont(display,windows->font_info);
   windows->font_info=XBestFont(display,resource_info,False);
   if (windows->font_info == (XFontStruct *) NULL)
-    MagickError(XServerError,"Unable to load font",resource_info->font);
+    MagickFatalError(XServerFatalError,"Unable to load font",
+      resource_info->font);
   /*
     Initialize Standard Colormap.
   */
@@ -1207,8 +1214,8 @@ MagickExport Image *XAnimateImages(Display *display,
 
           coalesce_image=CoalesceImages(images,&images->exception);
           if (coalesce_image == (Image *) NULL)
-            MagickError(images->exception.severity,images->exception.reason,
-              images->exception.description);
+            MagickFatalError(images->exception.severity,
+              images->exception.reason,images->exception.description);
           images=coalesce_image;
         }
     }
@@ -1246,7 +1253,7 @@ MagickExport Image *XAnimateImages(Display *display,
   number_scenes=GetImageListSize(images);
   image_list=ImageListToArray(images,&images->exception);
   if (image_list == (Image **) NULL)
-    MagickError(ResourceLimitError,"Unable to animate images",
+    MagickFatalError(ResourceLimitFatalError,"Unable to animate images",
       "Memory allocation failed");
   for (scene=0; scene < (long) number_scenes; scene++)
     if (image_list[scene]->scene == 0)
@@ -1305,14 +1312,16 @@ MagickExport Image *XAnimateImages(Display *display,
   pixel->annotate_context=
     XCreateGC(display,windows->context.id,context_mask,&context_values);
   if (pixel->annotate_context == (GC) NULL)
-    MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
+    MagickFatalError(XServerFatalError,"Unable to create graphic context",
+      (char *) NULL);
   context_values.background=pixel->depth_color.pixel;
   if (pixel->widget_context != (GC) NULL)
     (void) XFreeGC(display,pixel->widget_context);
   pixel->widget_context=
     XCreateGC(display,windows->context.id,context_mask,&context_values);
   if (pixel->widget_context == (GC) NULL)
-    MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
+    MagickFatalError(XServerFatalError,"Unable to create graphic context",
+      (char *) NULL);
   context_values.background=pixel->foreground_color.pixel;
   context_values.foreground=pixel->background_color.pixel;
   context_values.plane_mask=
@@ -1322,7 +1331,8 @@ MagickExport Image *XAnimateImages(Display *display,
   pixel->highlight_context=XCreateGC(display,windows->context.id,
     context_mask | GCPlaneMask,&context_values);
   if (pixel->highlight_context == (GC) NULL)
-    MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
+    MagickFatalError(XServerFatalError,"Unable to create graphic context",
+      (char *) NULL);
   (void) XDestroyWindow(display,windows->context.id);
   /*
     Initialize icon window.
@@ -1352,7 +1362,8 @@ MagickExport Image *XAnimateImages(Display *display,
   icon_pixel->annotate_context=XCreateGC(display,windows->icon.id,
     GCBackground | GCForeground,&context_values);
   if (icon_pixel->annotate_context == (GC) NULL)
-    MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
+    MagickFatalError(XServerFatalError,"Unable to create graphic context",
+      (char *) NULL);
   windows->icon.annotate_context=icon_pixel->annotate_context;
   /*
     Initialize Image window.
@@ -1619,7 +1630,8 @@ MagickExport Image *XAnimateImages(Display *display,
   status=XMakeImage(display,resource_info,&windows->image,display_image,
     (unsigned int) display_image->columns,(unsigned int) display_image->rows);
   if (status == False)
-    MagickError(XServerError,"Unable to create X image",(char *) NULL);
+    MagickFatalError(XServerFatalError,"Unable to create X image",
+      (char *) NULL);
   if (windows->image.mapped)
     XRefreshWindow(display,&windows->image,(XEvent *) NULL);
   /*
@@ -1631,7 +1643,7 @@ MagickExport Image *XAnimateImages(Display *display,
     AcquireMemory(number_scenes*sizeof(Pixmap));
   if ((windows->image.pixmaps == (Pixmap *) NULL) ||
       (windows->image.matte_pixmaps == (Pixmap *) NULL))
-    MagickError(ResourceLimitError,"Unable to animate images",
+    MagickFatalError(ResourceLimitFatalError,"Unable to animate images",
       "Memory allocation failed");
   windows->image.pixmaps[0]=windows->image.pixmap;
   windows->image.matte_pixmaps[0]=windows->image.matte_pixmap;
@@ -1661,7 +1673,8 @@ MagickExport Image *XAnimateImages(Display *display,
       (unsigned int) image_list[scene]->columns,
       (unsigned int) image_list[scene]->rows);
     if (status == False)
-      MagickError(XServerError,"Unable to create X image",(char *) NULL);
+      MagickFatalError(XServerFatalError,"Unable to create X image",
+        (char *) NULL);
     if (resource_info->debug)
       {
         (void) fprintf(stderr,"Image: [%lu] %.1024s %lux%lu ",
@@ -1996,7 +2009,7 @@ MagickExport Image *XAnimateImages(Display *display,
               }
             nexus=ReadImage(resource_info->image_info,&image->exception);
             if (image->exception.severity != UndefinedException)
-              MagickWarning(image->exception.severity,image->exception.reason,
+              MagickError(image->exception.severity,image->exception.reason,
                 image->exception.description);
             if (nexus != (Image *) NULL)
               state|=ExitState;
@@ -2335,7 +2348,7 @@ MagickExport Image *XAnimateImages(Display *display,
           MaxTextExtent-1);
         nexus=ReadImage(resource_info->image_info,&image->exception);
         if (image->exception.severity != UndefinedException)
-          MagickWarning(image->exception.severity,image->exception.reason,
+          MagickError(image->exception.severity,image->exception.reason,
             image->exception.description);
         if (nexus != (Image *) NULL)
           state|=ExitState;

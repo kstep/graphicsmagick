@@ -226,7 +226,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read XPM file.
   */
@@ -251,7 +251,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       p=xpm_buffer+strlen(xpm_buffer);
     }
   if (xpm_buffer == (char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Remove comments.
   */
@@ -267,7 +267,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if ((count != 4) || (width > 2) || (image->columns == 0) ||
       (image->rows == 0) || (image->colors == 0))
-    ThrowReaderException(CorruptImageWarning,"Not a XPM image file",image)
+    ThrowReaderException(CorruptImageError,"Not a XPM image file",image)
   image->depth=8;
   /*
     Remove unquoted characters.
@@ -289,7 +289,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   textlist=StringToList(xpm_buffer);
   LiberateMemory((void **) &xpm_buffer);
   if (textlist == (char **) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Initialize image structure.
   */
@@ -299,7 +299,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; textlist[i] != (char *) NULL; i++)
         LiberateMemory((void **) &textlist[i]);
       LiberateMemory((void **) &textlist);
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image)
     }
   /*
@@ -319,7 +319,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           LiberateMemory((void **) &textlist[i]);
         LiberateMemory((void **) &textlist);
         LiberateMemory((void **) &keys);
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image)
       }
     keys[j][width]='\0';
@@ -353,7 +353,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; textlist[i] != (char *) NULL; i++)
         LiberateMemory((void **) &textlist[i]);
       LiberateMemory((void **) &textlist);
-      ThrowReaderException(CorruptImageWarning,"Corrupt XPM image file",image)
+      ThrowReaderException(CorruptImageError,"Corrupt XPM image file",image)
     }
   j=0;
   key[width]='\0';
@@ -390,7 +390,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
       if (y < (long) image->rows)
-        ThrowReaderException(CorruptImageWarning,"Not enough pixel data",image);
+        ThrowReaderException(CorruptImageError,"Not enough pixel data",image);
     }
   /*
     Free resources.
@@ -657,7 +657,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);
   transparent=False;
   if (image->storage_class == PseudoClass)

@@ -132,14 +132,14 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   list=(char **) AcquireMemory(sizeof(char *));
   if (list == (char **) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   list[0]=(char *) AllocateString((char *) NULL);
   (void) strncpy(list[0],image_info->filename,MaxTextExtent-1);
   number_files=1;
   filelist=list;
   status=ExpandFilenames(&number_files,&filelist);
   if ((status == False) || (number_files == 0))
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   DestroyImage(image);
   /*
     Read each image and convert them to a tile.
@@ -174,7 +174,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   LiberateMemory((void **) &filelist);
   if (image == (Image *) NULL)
-    ThrowReaderException(CorruptImageWarning,"unable to read VID image",image);
+    ThrowReaderException(CorruptImageError,"unable to read VID image",image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   /*
@@ -184,7 +184,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   montage_image=MontageImages(image,montage_info,exception);
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
-    ThrowReaderException(CorruptImageWarning,"unable to read VID image",image);
+    ThrowReaderException(CorruptImageError,"unable to read VID image",image);
   DestroyImageList(image);
   LiberateMemory((void **) &list[0]);
   LiberateMemory((void **) &list);
@@ -302,7 +302,7 @@ static unsigned int WriteVIDImage(const ImageInfo *image_info,Image *image)
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   montage_image=MontageImages(image,montage_info,&image->exception);
   if (montage_image == (Image *) NULL)
-    ThrowWriterException(CorruptImageWarning,"unable to write VID image",image);
+    ThrowWriterException(CorruptImageError,"unable to write VID image",image);
   FormatString(montage_image->filename,"miff:%.1024s",image->filename);
   status=WriteImage(image_info,montage_image);
   DestroyImageList(montage_image);

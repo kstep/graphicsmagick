@@ -224,7 +224,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Initialize image header.
   */
@@ -332,7 +332,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   number_pixels=fits_info.columns*fits_info.rows;
   if ((!fits_info.simple) || (fits_info.number_axes < 1) ||
       (fits_info.number_axes > 4) || (number_pixels == 0))
-    ThrowReaderException(CorruptImageWarning,"image type not supported",image);
+    ThrowReaderException(CorruptImageError,"image type not supported",image);
   if (fits_info.bits_per_pixel == -32)
     {
       exponential[150]=1.0;
@@ -360,7 +360,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     image->storage_class=PseudoClass;
     image->scene=scene;
     if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+      ThrowReaderException(FileOpenError,"Unable to open file",image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -373,14 +373,14 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     number_pixels=image->columns*image->rows;
     fits_pixels=(unsigned char *) AcquireMemory(packet_size*number_pixels);
     if (fits_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
     /*
       Convert FITS pixels to pixel packets.
     */
     count=ReadBlob(image,packet_size*number_pixels,fits_pixels);
     if (count == 0)
-      ThrowReaderException(CorruptImageWarning,
+      ThrowReaderException(CorruptImageError,
         "Insufficient image data in file",image);
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
       {
@@ -560,7 +560,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     }
     LiberateMemory((void **) &fits_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */
@@ -711,7 +711,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Allocate image memory.
@@ -720,7 +720,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   fits_info=(char *) AcquireMemory(2880);
   pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
   if ((fits_info == (char *) NULL) || (pixels == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Initialize image header.
   */

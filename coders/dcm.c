@@ -2750,7 +2750,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read DCM preamble.
   */
@@ -2901,7 +2901,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               data=(unsigned char *) AcquireMemory(quantum*(length+1));
               if (data == (unsigned char *) NULL)
-                ThrowReaderException(ResourceLimitWarning,
+                ThrowReaderException(ResourceLimitError,
                   "Memory allocation failed",image);
               (void) ReadBlob(image,quantum*length,(char *) data);
               data[length*quantum]=0;
@@ -2919,10 +2919,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             (void) strncpy(transfer_syntax,(char *) data,MaxTextExtent-1);
             if (strcmp(transfer_syntax,"1.2.840.10008.1.2.2") == 0)
-              ThrowReaderException(CorruptImageWarning,
+              ThrowReaderException(CorruptImageError,
                 "big endian byte order not supported",image);
             if (strcmp(transfer_syntax,"1.2.840.10008.1.2.5") == 0)
-              ThrowReaderException(CorruptImageWarning,
+              ThrowReaderException(CorruptImageError,
                 "RLE compression not supported",image);
             break;
           }
@@ -3124,7 +3124,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             graymap=(unsigned short *)
               AcquireMemory(colors*sizeof(unsigned short));
             if (graymap == (unsigned short *) NULL)
-              ThrowReaderException(ResourceLimitWarning,
+              ThrowReaderException(ResourceLimitError,
                 "Unable to create graymap",image);
             for (i=0; i < (long) colors; i++)
               if (bytes_per_pixel == 1)
@@ -3144,7 +3144,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Initialize colormap.
             */
             if (!AllocateImageColormap(image,length/2))
-              ThrowReaderException(ResourceLimitWarning,
+              ThrowReaderException(ResourceLimitError,
                 "Unable to create colormap",image);
             p=data;
             for (i=0; i < (long) image->colors; i++)
@@ -3200,7 +3200,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     LiberateMemory((void **) &data);
   }
   if ((width == 0) || (height == 0))
-    ThrowReaderException(CorruptImageWarning,"Not a DCM image file",image);
+    ThrowReaderException(CorruptImageError,"Not a DCM image file",image);
   if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0) ||
       (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0))
     {
@@ -3225,7 +3225,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       TemporaryFilename(filename);
       file=fopen(filename,WriteBinaryType);
       if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+        ThrowReaderException(FileOpenError,"Unable to write file",image);
       (void) memset(magick,0,sizeof(magick));
       while ((c=ReadBlobByte(image)) != EOF)
       {
@@ -3260,7 +3260,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       scale=(Quantum *) AcquireMemory((max_value+1)*sizeof(Quantum));
       if (scale == (Quantum *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
       for (i=0; i <= (long) max_value; i++)
         scale[i]=(Quantum) ((unsigned long) (MaxRGB*i)/max_value);
@@ -3274,7 +3274,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=height;
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
       if (!AllocateImageColormap(image,Min(max_value,MaxRGB)+1))
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
     if (image_info->ping)
       break;
@@ -3421,7 +3421,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

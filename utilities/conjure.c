@@ -159,7 +159,8 @@ int main(int argc,char **argv)
   InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
-    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
+    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
+      (char *) NULL);
   if (argc < 2)
     ConjureUsage();
   GetExceptionInfo(&exception);
@@ -193,7 +194,8 @@ int main(int argc,char **argv)
         (void) SetImageAttribute(image_info->attributes,option+1,(char *) NULL);
         status&=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
         if (status == False)
-          MagickError(ResourceLimitError,"Unable to persist key",option);
+          MagickFatalError(ResourceLimitFatalError,"Unable to persist key",
+            option);
         i++;
         continue;
       }
@@ -203,11 +205,11 @@ int main(int argc,char **argv)
     (void) SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
     status&=SetImageAttribute(image_info->attributes,"filename",argv[i]);
     if (status == False)
-      MagickError(ResourceLimitError,"Unable to persist key",argv[i]);
+      MagickFatalError(ResourceLimitFatalError,"Unable to persist key",argv[i]);
     (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);
     image=ReadImage(image_info,&exception);
     if (exception.severity != UndefinedException)
-      MagickWarning(exception.severity,exception.reason,exception.description);
+      MagickError(exception.severity,exception.reason,exception.description);
     status&=image != (Image *) NULL;
     if (image != (Image *) NULL)
       DestroyImageList(image);

@@ -168,7 +168,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   image->columns=1;
   image->rows=1;
   SetImage(image,OpaqueOpacity);
@@ -196,7 +196,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         *q=(unsigned char) c;
       }
       if (image->iptc_profile.info == (unsigned char *) NULL)
-        ThrowReaderException(FileOpenWarning,"Memory allocation failed",image);
+        ThrowReaderException(FileOpenError,"Memory allocation failed",image);
       image->iptc_profile.length=q-image->iptc_profile.info;
     }
   if (LocaleCompare(image_info->magick,"APP1") == 0)
@@ -214,7 +214,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       if (image->generic_profile == (ProfileInfo *) NULL)
         {
           image->generic_profiles=0;
-          ThrowReaderException(FileOpenWarning,"Memory allocation failed",image)
+          ThrowReaderException(FileOpenError,"Memory allocation failed",image)
         }
       image->generic_profiles++;
       image->generic_profile[i].name=AllocateString((char *) NULL);
@@ -237,7 +237,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         *q=(unsigned char) c;
       }
       if (image->generic_profile[i].info == (unsigned char *) NULL)
-        ThrowReaderException(FileOpenWarning,"Memory allocation failed",image);
+        ThrowReaderException(FileOpenError,"Memory allocation failed",image);
       image->generic_profile[i].length=q-image->generic_profile[i].info;
     }
   if (LocaleCompare(image_info->magick,"ICM") == 0)
@@ -277,7 +277,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       tag_length=12;
       data=(unsigned char *) AcquireMemory(length+2);
       if (data == (unsigned char *) NULL)
-        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowWriterException(ResourceLimitError,"Memory allocation failed",
           image);
       (void) memcpy(data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
       q=data;
@@ -566,10 +566,10 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         Write 8BIM image.
       */
       if (image->iptc_profile.length == 0) 
-        ThrowWriterException(FileOpenWarning,"No 8BIM data is available",image);
+        ThrowWriterException(FileOpenError,"No 8BIM data is available",image);
       status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"Unable to open file",image);
       (void) WriteBlob(image,image->iptc_profile.length,
         (char *) image->iptc_profile.info);
     }
@@ -588,14 +588,14 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
             */
             status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+              ThrowWriterException(FileOpenError,"Unable to open file",image);
             (void) WriteBlob(image,(int) image->generic_profile[i].length,
               (char *) image->generic_profile[i].info);
             CloseBlob(image);
             return(True);
           }
       }
-      ThrowWriterException(FileOpenWarning,"No APP1 data is available",image)
+      ThrowWriterException(FileOpenError,"No APP1 data is available",image)
     }
   if (LocaleCompare(image_info->magick,"ICM") == 0)
     {
@@ -603,10 +603,10 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         Write ICM image.
       */
       if (image->color_profile.length == 0)
-        ThrowWriterException(FileOpenWarning,"No color profile available",image);
+        ThrowWriterException(FileOpenError,"No color profile available",image);
       status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+        ThrowWriterException(FileOpenError,"Unable to open file",image);
       (void) WriteBlob(image,image->color_profile.length,
         (char *) image->color_profile.info);
     }
@@ -619,13 +619,13 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         *info;
 
       if (image->iptc_profile.length == 0)
-        ThrowWriterException(FileOpenWarning,"No IPTC profile available",image);
+        ThrowWriterException(FileOpenError,"No IPTC profile available",image);
       status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       info=image->iptc_profile.info;
       length=image->iptc_profile.length;
       length=GetIPTCStream(&info,length);
       if (length == 0)
-        ThrowWriterException(FileOpenWarning,"No IPTC info was found",image);
+        ThrowWriterException(FileOpenError,"No IPTC info was found",image);
       (void) WriteBlob(image,length,info);
     }
   CloseBlob(image);

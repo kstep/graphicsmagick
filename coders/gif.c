@@ -156,14 +156,14 @@ static unsigned int DecodeImage(Image *image,const long opacity)
       (prefix == (short *) NULL) ||
       (suffix == (unsigned char *) NULL) ||
       (pixel_stack == (unsigned char *) NULL))
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       image->filename);
   /*
     Initialize GIF data stream decoder.
   */
   data_size=ReadBlobByte(image);
   if (data_size > 8)
-    ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
+    ThrowBinaryException(CorruptImageError,"Corrupt GIF image",
       image->filename);
   clear=1 << data_size;
   end_of_information=clear+1;
@@ -282,7 +282,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
       index=(*top_stack);
       if (index >= image->colors)
         {
-          ThrowException(&image->exception,CorruptImageWarning,
+          ThrowException(&image->exception,CorruptImageError,
             "invalid colormap index",image->filename);
           index=0;
         }
@@ -344,7 +344,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
         MagickMonitor(LoadImageText,y,image->rows);
   }
   if (y < (long) image->rows)
-    ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
+    ThrowBinaryException(CorruptImageError,"Corrupt GIF image",
       image->filename);
   LiberateMemory((void **) &pixel_stack);
   LiberateMemory((void **) &suffix);
@@ -823,14 +823,14 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Determine if this is a GIF file.
   */
   count=ReadBlob(image,6,(char *) magick);
   if ((count == 0) || ((LocaleNCompare((char *) magick,"GIF87",5) != 0) &&
       (LocaleNCompare((char *) magick,"GIF89",5) != 0)))
-    ThrowReaderException(CorruptImageWarning,"Not a GIF image file",image);
+    ThrowReaderException(CorruptImageError,"Not a GIF image file",image);
   global_colors=0;
   global_colormap=(unsigned char *) NULL;
   page.width=ReadBlobLSBShort(image);
@@ -841,7 +841,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   global_colors=1 << ((flag & 0x07)+1);
   global_colormap=(unsigned char *) AcquireMemory(3*Max(global_colors,256));
   if (global_colormap == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (BitSet(flag,0x80))
     (void) ReadBlob(image,3*global_colors,(char *) global_colormap);
   delay=0;
@@ -863,7 +863,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         count=ReadBlob(image,1,(char *) &c);
         if (count == 0)
-          ThrowReaderException(CorruptImageWarning,
+          ThrowReaderException(CorruptImageError,
             "Unable to read extension block",image);
         switch (c)
         {
@@ -968,12 +968,12 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     dispose=0;
     iterations=1;
     if ((image->columns == 0) || (image->rows == 0))
-      ThrowReaderException(CorruptImageWarning,"image size is 0",image);
+      ThrowReaderException(CorruptImageError,"image size is 0",image);
     /*
       Inititialize colormap.
     */
     if (!AllocateImageColormap(image,image->colors))
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
     if (!BitSet(flag,0x80))
       {
@@ -1000,7 +1000,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         colormap=(unsigned char *) AcquireMemory(3*image->colors);
         if (colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         (void) ReadBlob(image,3*image->colors,(char *) colormap);
         p=colormap;
@@ -1020,14 +1020,14 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     status=DecodeImage(image,opacity);
     if (status == False)
-      ThrowReaderException(CorruptImageWarning,"Corrupt GIF image",image);
+      ThrowReaderException(CorruptImageError,"Corrupt GIF image",image);
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
   }
   LiberateMemory((void **) &global_colormap);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageWarning,"image size is 0",image);
+    ThrowReaderException(CorruptImageError,"image size is 0",image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -1190,7 +1190,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   /*
     Determine image bounding box.
   */
@@ -1215,7 +1215,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   colormap=(unsigned char *) AcquireMemory(768);
   if ((global_colormap == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
   for (i=0; i < 768; i++)
     colormap[i]=0;
   /*
@@ -1267,7 +1267,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               {
                 LiberateMemory((void **) &global_colormap);
                 LiberateMemory((void **) &colormap);
-                ThrowWriterException(ResourceLimitWarning,
+                ThrowWriterException(ResourceLimitError,
                   "Memory allocation failed",image)
               }
             image->colormap[opacity]=image->background_color;
@@ -1451,7 +1451,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       {
         LiberateMemory((void **) &global_colormap);
         LiberateMemory((void **) &colormap);
-        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowWriterException(ResourceLimitError,"Memory allocation failed",
           image)
       }
     (void) WriteBlobByte(image,0x0);

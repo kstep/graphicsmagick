@@ -181,7 +181,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
-      ThrowException(exception,StreamWarning,"Unable to acquire pixel stream",
+      ThrowException(exception,StreamError,"Unable to acquire pixel stream",
         "image does not contain the stream geometry");
       return((PixelPacket *) NULL);
     }
@@ -189,7 +189,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   assert(stream_info->signature == MagickSignature);
   if (stream_info->type == UndefinedCache)
     {
-      ThrowException(exception,CacheWarning,"Pixel cache is not open",
+      ThrowException(exception,CacheError,"Pixel cache is not open",
         image->filename);
       return((PixelPacket *) NULL);
     }
@@ -207,7 +207,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
     if (offset != stream_info->length)
       ReacquireMemory((void **) &stream_info->pixels,offset);
   if (stream_info->pixels == (void *) NULL)
-    MagickError(ResourceLimitError,"Memory allocation failed",
+    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
       "unable to allocate cache info");
   stream_info->length=offset;
   stream_info->indexes=(IndexPacket *) NULL;
@@ -539,13 +539,13 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
-      ThrowException(&image->exception,StreamWarning,
+      ThrowException(&image->exception,StreamError,
         "Unable to set pixel stream","image does not contain the geometry");
       return((PixelPacket *) NULL);
     }
   if (image->fifo == (int (*)(const Image *,const void *,const size_t)) NULL)
     {
-      ThrowException(&image->exception,StreamWarning,
+      ThrowException(&image->exception,StreamError,
         "Unable to set pixel stream","no fifo is defined");
       return((PixelPacket *) NULL);
     }
@@ -576,7 +576,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
     if (offset != stream_info->length)
       ReacquireMemory((void **) &stream_info->pixels,offset);
   if (stream_info->pixels == (void *) NULL)
-    MagickError(ResourceLimitError,"Memory allocation failed",
+    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
       "unable to allocate cache info");
   stream_info->length=offset;
   stream_info->indexes=(IndexPacket *) NULL;

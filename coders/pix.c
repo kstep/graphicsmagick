@@ -130,7 +130,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read PIX image.
   */
@@ -141,7 +141,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   bits_per_pixel=ReadBlobMSBShort(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0) ||
       ((bits_per_pixel != 8) && (bits_per_pixel != 24)))
-    ThrowReaderException(CorruptImageWarning,"Not a PIX image file",image);
+    ThrowReaderException(CorruptImageError,"Not a PIX image file",image);
   do
   {
     /*
@@ -151,7 +151,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows= height;
     if (bits_per_pixel == 8)
       if (!AllocateImageColormap(image,MaxRGB+1))
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -200,7 +200,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->storage_class == PseudoClass)
       SyncImage(image);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

@@ -298,7 +298,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Determine if this is a PDB image file.
   */
@@ -318,7 +318,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pdb_info.number_records=ReadBlobMSBShort(image);
   if ((count == 0) || (memcmp(pdb_info.type,"vIMG",4) != 0) ||
       (memcmp(pdb_info.id,"View",4) != 0))
-    ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
+    ThrowReaderException(CorruptImageError,"Not a PDB image file",image);
   /*
     Read record header.
   */
@@ -327,7 +327,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   record_type=ReadBlobByte(image);
   if (((record_type != 0x00) && (record_type != 0x01)) ||
       (memcmp(tag,"\x40\x6f\x80",3) != 0))
-    ThrowReaderException(CorruptImageWarning,"Corrupt PDB image file",image);
+    ThrowReaderException(CorruptImageError,"Corrupt PDB image file",image);
   if ((offset-TellBlob(image)) == 6)
     {
       (void) ReadBlobByte(image);
@@ -340,7 +340,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       record_type=ReadBlobByte(image);
       if (((record_type != 0x00) && (record_type != 0x01)) ||
           (memcmp(tag,"\x40\x6f\x80",3) != 0))
-        ThrowReaderException(CorruptImageWarning,"Corrupt PDB image file",
+        ThrowReaderException(CorruptImageError,"Corrupt PDB image file",
           image);
       if ((offset-TellBlob(image)) == 6)
         {
@@ -372,7 +372,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->storage_class=PseudoClass;
   bits_per_pixel=pdb_image.type == 0 ? 2 : pdb_image.type == 2 ? 4 : 1;
   if (!AllocateImageColormap(image,1 << bits_per_pixel))
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -381,7 +381,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   packets=(bits_per_pixel*image->columns/8)*image->rows;
   pixels=(unsigned char *) AcquireMemory(packets+256);
   if (pixels == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (pdb_image.version != 0)
     (void) DecodeImage(image,pixels,packets);
   else
@@ -483,11 +483,11 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image)
+      ThrowReaderException(CorruptImageError,"Not a PDB image file",image)
   }
   LiberateMemory((void **) &pixels);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
   if ((offset-TellBlob(image)) == 0)
     {
       char
@@ -526,7 +526,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *(p+1)='\0';
         }
       if (comment == (char *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
       (void) SetImageAttribute(image,"comment",comment);
       LiberateMemory((void **) &comment);

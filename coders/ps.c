@@ -293,14 +293,14 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Open temporary output file.
   */
   TemporaryFilename(postscript_filename);
   file=fopen(postscript_filename,WriteBinaryType);
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+    ThrowReaderException(FileOpenError,"Unable to write file",image);
   FormatString(translate_geometry,"%g %g translate\n              ",0.0,0.0);
   (void) fputs(translate_geometry,file);
   /*
@@ -391,7 +391,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (ferror(file))
     {
       (void) fclose(file);
-      ThrowReaderException(FileOpenWarning,
+      ThrowReaderException(FileOpenError,
         "An error has occurred writing to file",image)
     }
   (void) rewind(file);
@@ -421,7 +421,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       file=fopen(postscript_filename,AppendBinaryType);
       if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+        ThrowReaderException(FileOpenError,"Unable to write file",image);
       (void) fputs("showpage\n",file);
       (void) fclose(file);
       status=ExecutePostscriptInterpreter(image_info->verbose,command);
@@ -437,7 +437,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=ReadImage(image_info,exception);
       if (image != (Image *) NULL)
         return(image);
-      ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
+      ThrowReaderException(CorruptImageError,"Postscript delegate failed",
         image)
     }
   clone_info=CloneImageInfo(image_info);
@@ -446,7 +446,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
-    ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
+    ThrowReaderException(CorruptImageError,"Postscript delegate failed",
       image);
   do
   {
@@ -937,7 +937,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   page=1;
   scene=0;
   do
@@ -1055,7 +1055,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             */
             preview_image=CloneImage(image,0,0,True,&image->exception);
             if (preview_image == (Image *) NULL)
-              ThrowWriterException(ResourceLimitWarning,
+              ThrowWriterException(ResourceLimitError,
                 "Memory allocation failed",image);
             /*
               Dump image as bitmap.

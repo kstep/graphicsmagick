@@ -110,7 +110,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionError,"Must specify image size",image);
   SetImage(image,OpaqueOpacity);
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   (void) strncpy(colorname,image_info->filename,MaxTextExtent-1);

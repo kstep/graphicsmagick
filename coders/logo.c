@@ -5509,10 +5509,10 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   logo_image=CloneImage(image,0,0,True,&image->exception);
   if (logo_image == (Image *) NULL)
-    ThrowWriterException(FileOpenWarning,"Unable to clone image",image);
+    ThrowWriterException(FileOpenError,"Unable to clone image",image);
   if (LocaleCompare(image_info->magick,"ROSE") == 0)
     {
       (void) strcpy(logo_image->magick,"PPM");
@@ -5527,7 +5527,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   if (blob == (void *) NULL)
     {
       DestroyImage(logo_image);
-      ThrowWriterException(FileOpenWarning,"Unable to write blob",image)
+      ThrowWriterException(FileOpenError,"Unable to write blob",image)
     }
   DestroyImage(logo_image);
   (void) WriteBlobString(image,"/*\n");

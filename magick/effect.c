@@ -401,7 +401,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         }
     }
   if (width < 3)
-    ThrowImageException(OptionWarning,"Unable to blur image",
+    ThrowImageException(OptionError,"Unable to blur image",
       "kernel radius is too small");
   /*
     Allocate blur image.
@@ -417,7 +417,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   if (scanline == (PixelPacket *) NULL)
     {
       DestroyImage(blur_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to blur image",
+      ThrowImageException(ResourceLimitError,"Unable to blur image",
         "Memory allocation failed")
     }
   /*
@@ -703,10 +703,10 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   assert(exception->signature == MagickSignature);
   width=(long) order;
   if ((width % 2) == 0)
-    ThrowImageException(OptionWarning,"Unable to convolve image",
+    ThrowImageException(OptionError,"Unable to convolve image",
       "kernel width must be an odd number");
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionWarning,"Unable to convolve image",
+    ThrowImageException(OptionError,"Unable to convolve image",
       "image smaller than kernel width");
   convolve_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (convolve_image == (Image *) NULL)
@@ -848,7 +848,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   if ((buffer == (Quantum *) NULL) || (pixels == (Quantum *) NULL))
     {
       DestroyImage(despeckle_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to despeckle image",
+      ThrowImageException(ResourceLimitError,"Unable to despeckle image",
         "Memory allocation failed")
     }
   /*
@@ -971,11 +971,11 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionWarning,"Unable to edge image",
+    ThrowImageException(OptionError,"Unable to edge image",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to edge image",
+    ThrowImageException(ResourceLimitError,"Unable to edge image",
       "Memory allocation failed");
   for (i=0; i < (width*width); i++)
     kernel[i]=(-1.0);
@@ -1043,7 +1043,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   width=GetOptimalKernelWidth(radius,0.5);
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to emboss image",
+    ThrowImageException(ResourceLimitError,"Unable to emboss image",
       "Memory allocation failed");
   i=0;
   j=width/2;
@@ -1274,11 +1274,11 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionWarning,"Unable to Gaussian blur image",
+    ThrowImageException(OptionError,"Unable to Gaussian blur image",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to Gaussian blur image",
+    ThrowImageException(ResourceLimitError,"Unable to Gaussian blur image",
       "Memory allocation failed");
   i=0;
   for (v=(-width/2); v <= (width/2); v++)
@@ -1689,7 +1689,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionWarning,"Unable to median filter image",
+    ThrowImageException(OptionError,"Unable to median filter image",
       "image smaller than kernel radius");
   median_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (median_image == (Image *) NULL)
@@ -1702,7 +1702,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   if (skiplist == (MedianPixelList *) NULL)
     {
       DestroyImage(median_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to median filter image",
+      ThrowImageException(ResourceLimitError,"Unable to median filter image",
         "Memory allocation failed")
     }
   /*
@@ -2048,11 +2048,11 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         }
     }
   if (width < 3)
-    ThrowImageException(OptionWarning,"Unable to motion blur image",
+    ThrowImageException(OptionError,"Unable to motion blur image",
       "kernel radius is too small");
   offsets=(PointInfo *) AcquireMemory(width*sizeof(PointInfo));
   if (offsets == (PointInfo *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to motion blur image",
+    ThrowImageException(ResourceLimitError,"Unable to motion blur image",
       "Memory allocation failed");
   /*
     Allocate blur image.
@@ -2176,7 +2176,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionWarning,"Unable to oil paint",
+    ThrowImageException(OptionError,"Unable to oil paint",
       "image smaller than radius");
   paint_image=CloneImage(image,0,0,True,exception);
   if (paint_image == (Image *) NULL)
@@ -2189,7 +2189,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   if (histogram == (unsigned long *) NULL)
     {
       DestroyImage(paint_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
+      ThrowImageException(ResourceLimitError,"Unable to oil paint",
         "Memory allocation failed")
     }
   /*
@@ -2551,7 +2551,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionWarning,"Unable to noise filter image",
+    ThrowImageException(OptionError,"Unable to noise filter image",
       "image smaller than kernel radius");
   noise_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (noise_image == (Image *) NULL)
@@ -2564,7 +2564,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   if (skiplist == (MedianPixelList *) NULL)
     {
       DestroyImage(noise_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to noise filter image",
+      ThrowImageException(ResourceLimitError,"Unable to noise filter image",
         "Memory allocation failed")
     }
   /*
@@ -2811,11 +2811,11 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,sigma);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionWarning,"Unable to sharpen image",
+    ThrowImageException(OptionError,"Unable to sharpen image",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
+    ThrowImageException(ResourceLimitError,"Unable to sharpen image",
       "Memory allocation failed");
   i=0;
   normalize=0.0;
@@ -3202,7 +3202,7 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
   assert(offset_image != (const Image *) NULL);
   if ((image->columns != offset_image->columns) ||
       (image->rows != offset_image->rows))
-    ThrowImageException(ResourceLimitWarning,"Unable to create stereo image",
+    ThrowImageException(ResourceLimitError,"Unable to create stereo image",
       "left and right image sizes differ");
   /*
     Initialize stereo image attributes.
@@ -3416,7 +3416,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (!AllocateImageColormap(image,2))
-    ThrowBinaryException(ResourceLimitWarning,"Unable to threshold image",
+    ThrowBinaryException(ResourceLimitError,"Unable to threshold image",
       "Memory allocation failed");
   for (y=0; y < (long) image->rows; y++)
   {
@@ -3628,7 +3628,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   if (sine_map == (double *) NULL)
     {
       DestroyImage(wave_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to wave image",
+      ThrowImageException(ResourceLimitError,"Unable to wave image",
         "Memory allocation failed")
     }
   for (x=0; x < (long) wave_image->columns; x++)

@@ -219,7 +219,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   CloseBlob(image);
   (void) TransformRGBImage(image,RGBColorspace);
   clone_info=CloneImageInfo(image_info);
@@ -570,7 +570,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   DestroyMontageInfo(montage_info);
   DestroyImageList(images);
   if (montage_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",
       image);
   if (montage_image->montage != (char *) NULL)
     {

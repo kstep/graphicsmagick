@@ -583,7 +583,7 @@ typedef struct {
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read WPG image.
   */
@@ -597,9 +597,9 @@ typedef struct {
    Header.Reserved=ReadBlobLSBShort(image);
 
   if (Header.FileId!=0x435057FF || (Header.ProductType>>8)!=0x16 )
-      ThrowReaderException(CorruptImageWarning,"Not a WPG image file",image);
+      ThrowReaderException(CorruptImageError,"Not a WPG image file",image);
   if(Header.EncryptKey!=0 )
-      ThrowReaderException(CorruptImageWarning,"Encrypted WPG image file",image);
+      ThrowReaderException(CorruptImageError,"Encrypted WPG image file",image);
 
   image->colors = 0;
 
@@ -696,7 +696,7 @@ UnpackRaster:
          image->colors=1 << image->depth;
          if (!AllocateImageColormap(image,image->colors))
       {
-NoMemory:    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+NoMemory:    ThrowReaderException(ResourceLimitError,"Memory allocation failed",
            image)
       }
          }
@@ -719,7 +719,7 @@ NoMemory:    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed
 
      if(UnpackWPGRaster(image)<0) /* The raster cannot be unpacked */
          {
-DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompress WPG raster",image)
+DecompressionFailed: ThrowReaderException(ResourceLimitError,"Cannot decompress WPG raster",image)
          }
 
      /* Allocate next image structure. */
@@ -763,7 +763,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 
        image->colors=WPG_Palette.NumOfEntries;
        if (!AllocateImageColormap(image,image->colors))
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
            image);
        for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
        {
@@ -849,7 +849,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
       break;
 
    default:
-     ThrowReaderException(CorruptImageWarning,"Unsupported level of WPG image",image)
+     ThrowReaderException(CorruptImageError,"Unsupported level of WPG image",image)
    }
 
 

@@ -152,7 +152,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Determine if this is a TIM file.
   */
@@ -163,7 +163,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify TIM identifier.
     */
     if (tim_info.id != 0x00000010)
-      ThrowReaderException(CorruptImageWarning,"Not a TIM image file",image);
+      ThrowReaderException(CorruptImageError,"Not a TIM image file",image);
     tim_info.flag=ReadBlobLSBLong(image);
     has_clut=!!(tim_info.flag & (1 << 3));
     pixel_mode=tim_info.flag & 0x07;
@@ -189,11 +189,11 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         width=ReadBlobLSBShort(image);
         height=ReadBlobLSBShort(image);
         if (!AllocateImageColormap(image,pixel_mode == 1 ? 256 : 16))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         tim_colormap=(unsigned char *) AcquireMemory(image->colors*2);
         if (tim_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         (void) ReadBlob(image,2*image->colors,(char *) tim_colormap);
         p=tim_colormap;
@@ -223,7 +223,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     width=(width*16)/bits_per_pixel;
     tim_data=(unsigned char *) AcquireMemory(image_size);
     if (tim_data == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",            image);
+      ThrowReaderException(ResourceLimitError,"Unable to allocate memory",            image);
     (void) ReadBlob(image,image_size,(char *) tim_data);
     tim_pixels=tim_data;
     /*
@@ -340,13 +340,13 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageWarning,"Not a TIM image file",image)
+        ThrowReaderException(CorruptImageError,"Not a TIM image file",image)
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
     LiberateMemory((void **) &tim_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

@@ -179,7 +179,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     return(False);
   text=TranslateText((ImageInfo *) NULL,image,draw_info->text);
   if (text == (char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
+    ThrowBinaryException(ResourceLimitError,"Unable to annotate image",
       "Memory allocation failed");
   textlist=StringToList(text);
   LiberateMemory((void **) &text);
@@ -192,7 +192,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   number_lines=i;
   text=(char *) AcquireMemory(length+MaxTextExtent);
   if (text == (char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
+    ThrowBinaryException(ResourceLimitError,"Unable to annotate image",
       "Memory allocation failed");
   SetGeometry(image,&geometry);
   if (draw_info->geometry != (char *) NULL)
@@ -467,8 +467,8 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
   encoding=(unsigned short *)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
-    MagickError(ResourceLimitError,"Unable to convert text to Textcode",
-      "Memory allocation failed");
+    MagickFatalError(ResourceLimitFatalError,
+      "Unable to convert text to Textcode","Memory allocation failed");
   q=encoding;
   for (p=text; *p != '\0'; p+=length)
   {
@@ -534,7 +534,7 @@ static unsigned short *EncodeText(const char *text,size_t *count)
   encoding=(unsigned short *)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
-    MagickError(ResourceLimitError,"Unable to convert text to Text",
+    MagickFatalError(ResourceLimitFatalError,"Unable to convert text to Text",
       "Memory allocation failed");
   q=encoding;
   for (p=text; *p != '\0'; p++)
@@ -648,8 +648,8 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
   unicode=(unsigned short *)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (unicode == (unsigned short *) NULL)
-    MagickError(ResourceLimitError,"Unable to convert text to Unicode",
-      "Memory allocation failed");
+    MagickFatalError(ResourceLimitFatalError,
+      "Unable to convert text to Unicode","Memory allocation failed");
   q=unicode;
   for (p=text; *p != '\0'; p+=length)
   {
@@ -1031,13 +1031,13 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   */
   status=FT_Init_FreeType(&library);
   if (status)
-    ThrowBinaryException(DelegateWarning,"Unable to open freetype library",
+    ThrowBinaryException(DelegateError,"Unable to open freetype library",
       draw_info->font);
   status=FT_New_Face(library,draw_info->font,0,&face);
   if (status)
     {
       (void) FT_Done_FreeType(library);
-      ThrowBinaryException(DelegateWarning,"Unable to read font",
+      ThrowBinaryException(DelegateError,"Unable to read font",
         draw_info->font)
     }
   (void) strncpy(font,draw_info->font,MaxTextExtent-1);
@@ -1070,7 +1070,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_wansung;
       status=FT_Select_Charmap(face,encoding_type);
       if (status)
-        ThrowBinaryException(DelegateWarning,"Unrecognized encoding",
+        ThrowBinaryException(DelegateError,"Unrecognized encoding",
           draw_info->encoding);
     }
   /*
@@ -1128,7 +1128,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       (void) FT_Done_Face(face);
       (void) FT_Done_FreeType(library);
-      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
         "Memory allocation failed")
     }
   /*
@@ -1296,7 +1296,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
 static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
-  ThrowBinaryException(MissingDelegateWarning,
+  ThrowBinaryException(MissingDelegateError,
     "FreeType library is not available",draw_info->font);
 }
 #endif
@@ -1411,7 +1411,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
-    ThrowBinaryException(FileOpenWarning,"Unable to open file",filename);
+    ThrowBinaryException(FileOpenError,"Unable to open file",filename);
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
   (void) fprintf(file,"/ReencodeType\n");
   (void) fprintf(file,"{\n");
@@ -1470,7 +1470,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   clone_info->antialias=draw_info->text_antialias;
   annotate_image=ReadImage(clone_info,&image->exception);
   if (image->exception.severity != UndefinedException)
-    MagickWarning(image->exception.severity,image->exception.reason,
+    MagickError(image->exception.severity,image->exception.reason,
       image->exception.description);
   DestroyImageInfo(clone_info);
   (void) remove(filename);
@@ -1644,7 +1644,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       */
       display=XOpenDisplay(draw_info->server_name);
       if (display == (Display *) NULL)
-        ThrowBinaryException(XServerWarning,"Unable to open X server",
+        ThrowBinaryException(XServerError,"Unable to open X server",
           draw_info->server_name);
       /*
         Get user defaults from X resource database.
@@ -1660,14 +1660,14 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       resource_info.foreground_color=AllocateString("#000000");
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
-        ThrowBinaryException(ResourceLimitWarning,"Unable to allocate colormap",
+        ThrowBinaryException(ResourceLimitError,"Unable to allocate colormap",
           "Memory allocation failed");
       /*
         Initialize visual info.
       */
       visual_info=XBestVisualInfo(display,map_info,&resource_info);
       if (visual_info == (XVisualInfo *) NULL)
-        ThrowBinaryException(XServerWarning,"Unable to get visual",
+        ThrowBinaryException(XServerError,"Unable to get visual",
           draw_info->server_name);
       map_info->colormap=(Colormap) NULL;
       pixel.pixels=(unsigned long *) NULL;
@@ -1685,7 +1685,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       */
       font_info=XBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)
-        ThrowBinaryException(XServerWarning,"Unable to load font",
+        ThrowBinaryException(XServerError,"Unable to load font",
           draw_info->font);
       if ((map_info == (XStandardColormap *) NULL) ||
           (visual_info == (XVisualInfo *) NULL) ||
@@ -1693,7 +1693,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
         {
           XFreeResources(display,visual_info,map_info,&pixel,font_info,
             &resource_info,(XWindowInfo *) NULL);
-          ThrowBinaryException(XServerWarning,"Unable to get X server font",
+          ThrowBinaryException(XServerError,"Unable to get X server font",
             draw_info->server_name)
         }
       cache_info=(*draw_info);
@@ -1712,7 +1712,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       (void) CloneString(&resource_info.font,draw_info->font);
       font_info=XBestFont(display,&resource_info,False);
       if (font_info == (XFontStruct *) NULL)
-        ThrowBinaryException(ResourceLimitWarning,"Unable to load font",
+        ThrowBinaryException(ResourceLimitError,"Unable to load font",
           draw_info->font);
     }
   cache_info=(*draw_info);
@@ -1758,7 +1758,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   pixel.pen_color.blue=XUpscale(draw_info->fill.blue);
   status=XAnnotateImage(display,&pixel,&annotate_info,image);
   if (status == 0)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
+    ThrowBinaryException(ResourceLimitError,"Unable to annotate image",
       "Memory allocation failed");
   return(True);
 }
@@ -1766,7 +1766,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
 static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
-  ThrowBinaryException(MissingDelegateWarning,
+  ThrowBinaryException(MissingDelegateError,
     "X11 library is not available",draw_info->font);
 }
 #endif

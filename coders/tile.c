@@ -112,9 +112,9 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionError,"Must specify image size",image);
   if (*image_info->filename == '\0')
-    ThrowReaderException(OptionWarning,"must specify an image name",image);
+    ThrowReaderException(OptionError,"must specify an image name",image);
   clone_info=CloneImageInfo(image_info);
   DetachBlob(clone_info->blob);
   *clone_info->magick='\0';

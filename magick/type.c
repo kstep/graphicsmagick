@@ -374,7 +374,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   }
   if (type_info != (TypeInfo *) NULL)
     {
-      ThrowException(exception,TypeWarning,"Font substitution required",
+      ThrowException(exception,TypeError,"Font substitution required",
         type_info->family);
       return(type_info);
     }
@@ -554,7 +554,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
         */
         type_info=(TypeInfo *) AcquireMemory(sizeof(TypeInfo));
         if (type_info == (TypeInfo *) NULL)
-          MagickError(ResourceLimitError,"Unable to allocate fonts",
+          MagickFatalError(ResourceLimitFatalError,"Unable to allocate fonts",
             "Memory allocation failed");
         (void) memset(type_info,0,sizeof(TypeInfo));
         type_info->filename=AcquireString(filename);

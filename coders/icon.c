@@ -182,13 +182,13 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   icon_file.reserved=ReadBlobLSBShort(image);
   icon_file.resource_type=ReadBlobLSBShort(image);
   icon_file.count=ReadBlobLSBShort(image);
   if ((icon_file.reserved != 0) || (icon_file.resource_type != 1) ||
       (icon_file.count > MaxIcons))
-    ThrowReaderException(CorruptImageWarning,"Not a ICO image file",image);
+    ThrowReaderException(CorruptImageError,"Not a ICO image file",image);
   for (i=0; i < icon_file.count; i++)
   {
     icon_file.directory[i].width=ReadBlobByte(image);
@@ -240,11 +240,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         Read Icon raster colormap.
       */
       if (!AllocateImageColormap(image,1 << icon_info.bits_per_pixel))
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
       icon_colormap=(unsigned char *) AcquireMemory(4*image->colors);
       if (icon_colormap == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
       (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
       p=icon_colormap;
@@ -407,7 +407,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         break;
       }
       default:
-        ThrowReaderException(CorruptImageWarning,"Not a ICO image file",image)
+        ThrowReaderException(CorruptImageError,"Not a ICO image file",image)
     }
     SyncImage(image);
     /*
@@ -444,7 +444,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
     }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */

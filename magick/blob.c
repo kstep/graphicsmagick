@@ -143,7 +143,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
   file=open(filename,O_WRONLY | O_CREAT | O_EXCL | O_BINARY,0777);
   if (file == -1)
     {
-      ThrowException(exception,BlobWarning,"Unable to write blob to a file",
+      ThrowException(exception,BlobError,"Unable to write blob to a file",
         filename);
       return(False);
     }
@@ -210,7 +210,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   SetExceptionInfo(exception,UndefinedException);
   if ((blob == (const void *) NULL) || (length == 0))
     {
-      ThrowException(exception,BlobWarning,"Zero-length blob not permitted",
+      ThrowException(exception,BlobError,"Zero-length blob not permitted",
         image_info->magick);
       return((Image *) NULL);
     }
@@ -288,7 +288,7 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
 
   clone_info=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
   if (clone_info == (BlobInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to clone blob info",
+    MagickFatalError(ResourceLimitFatalError,"Unable to clone blob info",
       "Memory allocation failed");
   GetBlobInfo(clone_info);
   if (blob_info == (BlobInfo *) NULL)
@@ -544,14 +544,14 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       if (blob != (unsigned char *) NULL)
         return(blob);
 #endif
-      ThrowException(exception,BlobWarning,"Unable to open file",filename);
+      ThrowException(exception,BlobError,"Unable to open file",filename);
       return((void *) NULL);
     }
   if ((fstat(file,&attributes) < 0) ||
       (attributes.st_size != (size_t) attributes.st_size))
     {
       (void) close(file);
-      ThrowException(exception,BlobWarning,"Unable to create blob",
+      ThrowException(exception,BlobError,"Unable to create blob",
         "Memory allocation failed");
       return((void *) NULL);
     }
@@ -560,7 +560,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   if (blob == (unsigned char *) NULL)
     {
       (void) close(file);
-      ThrowException(exception,BlobWarning,"Unable to create blob",
+      ThrowException(exception,BlobError,"Unable to create blob",
         "Memory allocation failed");
       return((void *) NULL);
     }
@@ -588,7 +588,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
         {
           (void) close(file);
           LiberateMemory((void **) &blob);
-          ThrowException(exception,BlobWarning,"Unable to read blob",filename);
+          ThrowException(exception,BlobError,"Unable to read blob",filename);
           return((void *) NULL);
         }
     }
@@ -752,7 +752,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
         AcquireMemory(clone_info->blob->extent+1);
       if (clone_info->blob->data == (unsigned char *) NULL)
         {
-          ThrowException(exception,BlobWarning,"Unable to create blob",
+          ThrowException(exception,BlobError,"Unable to create blob",
             "Memory allocation failed");
           DestroyImageInfo(clone_info);
           return((void *) NULL);
@@ -762,7 +762,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       status=WriteImage(clone_info,image);
       if (status == False)
         {
-          ThrowException(exception,BlobWarning,"Unable to write blob",
+          ThrowException(exception,BlobError,"Unable to write blob",
             clone_info->magick);
           LiberateMemory((void **) &image->blob->data);
           DestroyImageInfo(clone_info);
@@ -786,7 +786,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   DestroyImageInfo(clone_info);
   if (status == False)
     {
-      ThrowException(exception,BlobWarning,"Unable to write blob",
+      ThrowException(exception,BlobError,"Unable to write blob",
         image->filename);
       return((void *) NULL);
     }
@@ -798,7 +798,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   (void) strncpy(image->filename,filename,MaxTextExtent-1);
   if (blob == (unsigned char ) NULL)
     {
-      ThrowException(exception,BlobWarning,"Unable to read file",filename);
+      ThrowException(exception,BlobError,"Unable to read file",filename);
       return((void *) NULL);
     }
   return(blob);
@@ -1289,7 +1289,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   SetExceptionInfo(exception,UndefinedException);
   if ((blob == (const void *) NULL) || (length == 0))
     {
-      ThrowException(exception,BlobWarning,"Unrecognized image format",
+      ThrowException(exception,BlobError,"Unrecognized image format",
         image_info->magick);
       return((Image *) NULL);
     }

@@ -428,7 +428,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
   if ((mb_hash == (HuffmanTable **) NULL) ||
       (mw_hash == (HuffmanTable **) NULL) ||
       (scanline == (unsigned char *) NULL))
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       (char *) NULL);
   /*
     Initialize Huffman tables.
@@ -703,7 +703,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     width=Max(image->columns,1728);
   scanline=(unsigned char *) AcquireMemory(width+1);
   if (scanline == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       (char *) NULL);
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
@@ -1002,7 +1002,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateWarning,"LZW library is not available",
+  ThrowBinaryException(MissingDelegateError,"LZW library is not available",
     (char *) NULL)
 }
 #endif
@@ -1062,7 +1062,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
   assert(pixels != (unsigned char *) NULL);
   packbits=(unsigned char *) AcquireMemory(128);
   if (packbits == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       (char *) NULL);
   i=(long) length;
   while (i != 0)

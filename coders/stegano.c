@@ -129,7 +129,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionError,"Must specify image size",image);
   clone_info=CloneImageInfo(image_info);
   DetachBlob(clone_info->blob);
   *clone_info->magick='\0';
@@ -139,7 +139,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     return((Image *) NULL);
   watermark->depth=QuantumDepth;
   if (!AllocateImageColormap(image,MaxRGB+1))
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (image_info->ping)
     {
       CloseBlob(image);

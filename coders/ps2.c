@@ -159,7 +159,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
-      ThrowBinaryException(FileOpenWarning,"Unable to open file",
+      ThrowBinaryException(FileOpenError,"Unable to open file",
         image_info->filename)
     }
   /*
@@ -175,7 +175,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     {
       TIFFClose(tiff);
       (void) remove(filename);
-      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
         (char *) NULL)
     }
   /*
@@ -203,7 +203,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateWarning,"TIFF library is not available",
+  ThrowBinaryException(MissingDelegateError,"TIFF library is not available",
     image->filename);
 }
 #endif
@@ -540,7 +540,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -550,7 +550,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     case JPEGCompression:
     {
       compression=RunlengthEncodedCompression;
-      ThrowException(&image->exception,MissingDelegateWarning,
+      ThrowException(&image->exception,MissingDelegateError,
         "JPEG compression is not available",image->filename);
       break;
     }
@@ -559,7 +559,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     case LZWCompression:
     {
       compression=RunlengthEncodedCompression;
-      ThrowException(&image->exception,MissingDelegateWarning,
+      ThrowException(&image->exception,MissingDelegateError,
         "LZW compression is not available",image->filename);
       break;
     }
@@ -568,7 +568,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     case ZipCompression:
     {
       compression=RunlengthEncodedCompression;
-      ThrowException(&image->exception,MissingDelegateWarning,
+      ThrowException(&image->exception,MissingDelegateError,
         "ZLIB compression is not available",image->filename);
       break;
     }
@@ -798,17 +798,17 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             TemporaryFilename(filename);
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateWarning,"Unable to clone image",
+              ThrowWriterException(DelegateError,"Unable to clone image",
                 image);
             (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
             status=WriteImage(image_info,jpeg_image);
             DestroyImage(jpeg_image);
             if (status == False)
-              ThrowWriterException(DelegateWarning,"Unable to write image",
+              ThrowWriterException(DelegateError,"Unable to write image",
                 image);
             file=fopen(filename,ReadBinaryType);
             if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenWarning,"Unable to open file",
+              ThrowWriterException(FileOpenError,"Unable to open file",
                 image);
             for (c=fgetc(file); c != EOF; c=fgetc(file))
               (void) WriteBlobByte(image,c);
@@ -828,7 +828,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             length=number_pixels;
             pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitWarning,
+              ThrowWriterException(ResourceLimitError,
                 "Memory allocation failed",image);
             /*
               Dump Runlength encoded pixels.
@@ -918,17 +918,17 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               TemporaryFilename(filename);
               jpeg_image=CloneImage(image,0,0,True,&image->exception);
               if (jpeg_image == (Image *) NULL)
-                ThrowWriterException(DelegateWarning,"Unable to clone image",
+                ThrowWriterException(DelegateError,"Unable to clone image",
                   image);
               (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
               status=WriteImage(image_info,jpeg_image);
               DestroyImage(jpeg_image);
               if (status == False)
-                ThrowWriterException(DelegateWarning,"Unable to write image",
+                ThrowWriterException(DelegateError,"Unable to write image",
                   image);
               file=fopen(filename,ReadBinaryType);
               if (file == (FILE *) NULL)
-                ThrowWriterException(FileOpenWarning,"Unable to open file",
+                ThrowWriterException(FileOpenError,"Unable to open file",
                   image);
               for (c=fgetc(file); c != EOF; c=fgetc(file))
                 (void) WriteBlobByte(image,c);
@@ -949,7 +949,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 number_pixels;
               pixels=(unsigned char *) AcquireMemory(length);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitWarning,
+                ThrowWriterException(ResourceLimitError,
                   "Memory allocation failed",image);
               /*
                 Dump Packbit encoded pixels.
@@ -1080,7 +1080,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               length=number_pixels;
               pixels=(unsigned char *) AcquireMemory(length);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitWarning,
+                ThrowWriterException(ResourceLimitError,
                   "Memory allocation failed",image);
               /*
                 Dump Runlength encoded pixels.

@@ -203,13 +203,13 @@ static unsigned int EmitMessage(j_common_ptr jpeg_info,int level)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
           (jpeg_info->err->trace_level >= 3))
-        ThrowBinaryException(CorruptImageWarning,(char *) message,
+        ThrowBinaryException(CorruptImageError,(char *) message,
           image->filename);
       jpeg_info->err->num_warnings++;
     }
   else
     if (jpeg_info->err->trace_level >= level)
-      ThrowBinaryException(DelegateWarning,(char *) message,image->filename);
+      ThrowBinaryException(DelegateError,(char *) message,image->filename);
   return(True);
 }
 
@@ -291,7 +291,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
     return(True);
   comment=(char *) AcquireMemory(length+1);
   if (comment == (char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       (char *) NULL);
   /*
     Read comment.
@@ -343,7 +343,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   if (image->generic_profile == (ProfileInfo *) NULL)
     {
       image->generic_profiles=0;
-      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
         (char *) NULL)
     }
   image->generic_profile[i].name=AllocateString((char *) NULL);
@@ -351,7 +351,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     jpeg_info->unread_marker-JPEG_APP0);
   image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
   if (image->generic_profile[i].info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       (char *) NULL);
   /*
     Read generic profile.
@@ -413,7 +413,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     ReacquireMemory((void **) &image->color_profile.info,
       image->color_profile.length+length);
   if (image->color_profile.info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       (char *) NULL);
   /*
     Read color profile.
@@ -518,7 +518,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
         image->iptc_profile.length=0;
     }
   if (image->iptc_profile.info == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       (char *) NULL);
   /*
     Read the payload of this binary data.
@@ -628,7 +628,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Initialize image structure.
   */
@@ -707,7 +707,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->compression=jpeg_info.process == JPROC_LOSSLESS ?
     LosslessJPEGCompression : JPEGCompression;
   if (jpeg_info.data_precision > QuantumDepth)
-    MagickWarning(OptionWarning,
+    MagickError(OptionError,
       "12-bit JPEG not supported. Reducing pixel data to 8 bits",(char *) NULL);
 #else
   image->interlace=jpeg_info.progressive_mode ? PlaneInterlace : NoInterlace;
@@ -723,7 +723,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->depth=jpeg_info.data_precision <= 8 ? 8 : QuantumDepth;
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
     if (!AllocateImageColormap(image,1 << jpeg_info.data_precision))
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
   if (image_info->ping)
     {
@@ -734,7 +734,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_pixels=(JSAMPLE *)
     AcquireMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Convert JPEG pixels to pixel packets.
   */
@@ -835,7 +835,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 static Image *ReadJPEGImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateWarning,
+  ThrowException(exception,MissingDelegateError,
     "JPEG library is not available",image_info->filename);
   return((Image *) NULL);
 }
@@ -995,12 +995,12 @@ static unsigned int JPEGWarningHandler(j_common_ptr jpeg_info,int level)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
           (jpeg_info->err->trace_level >= 3))
-        ThrowBinaryException(DelegateWarning,(char *) message,image->filename);
+        ThrowBinaryException(DelegateError,(char *) message,image->filename);
       jpeg_info->err->num_warnings++;
     }
   else
     if (jpeg_info->err->trace_level >= level)
-      ThrowBinaryException(DelegateWarning,(char *) message,image->filename);
+      ThrowBinaryException(DelegateError,(char *) message,image->filename);
   return(True);
 }
 
@@ -1163,7 +1163,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   /*
     Initialize JPEG parameters.
   */
@@ -1279,7 +1279,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       (image_info->quality > 100))
 #if defined(C_LOSSLESS_SUPPORTED)
     if (image_info->quality < 100)
-      ThrowException(&image->exception,OptionWarning,
+      ThrowException(&image->exception,OptionError,
         "Lossless JPEG is being converted to lossy JPEG",(char *) NULL);
     else
       {
@@ -1327,7 +1327,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_pixels=(JSAMPLE *)
     AcquireMemory(jpeg_info.input_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
   scanline[0]=(JSAMPROW) jpeg_pixels;
   if (jpeg_info.data_precision > 8)
     {
@@ -1461,7 +1461,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateWarning,"JPEG library is not available",
+  ThrowBinaryException(MissingDelegateError,"JPEG library is not available",
     image->filename);
 }
 #endif

@@ -195,20 +195,20 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     {
-      ThrowException(exception,MissingDelegateWarning,"no tag found",
+      ThrowException(exception,MissingDelegateError,"no tag found",
         decode ? decode : encode);
       return((char *) NULL);
     }
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
-      ThrowException(exception,ResourceLimitWarning,"Memory allocation failed",
+      ThrowException(exception,ResourceLimitError,"Memory allocation failed",
         decode ? decode : encode);
       return((char *) NULL);
     }
   command=TranslateText(image_info,image,commands[0]);
   if (command == (char *) NULL)
-    ThrowException(exception,ResourceLimitWarning,"Memory allocation failed",
+    ThrowException(exception,ResourceLimitError,"Memory allocation failed",
       commands[0]);
   /*
     Free resources.
@@ -369,7 +369,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (DelegateInfo *) NULL)
     {
-      ThrowException(exception,MissingDelegateWarning,"no tag found",
+      ThrowException(exception,MissingDelegateError,"no tag found",
         decode ? decode : encode);
       return(False);
     }
@@ -396,7 +396,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           delegate_info->encode : delegate_info->decode);
         if (magick == (char *) NULL)
           {
-            ThrowException(exception,DelegateWarning,"delegate failed",
+            ThrowException(exception,DelegateError,"delegate failed",
               decode ? decode : encode);
             return(False);
           }
@@ -418,7 +418,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           if (status == False)
             {
               DestroyImageInfo(clone_info);
-              ThrowException(exception,DelegateWarning,"delegate failed",
+              ThrowException(exception,DelegateError,"delegate failed",
                 decode ? decode : encode);
               return(False);
             }
@@ -434,7 +434,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
-      ThrowException(exception,ResourceLimitWarning,"Memory allocation failed",
+      ThrowException(exception,ResourceLimitError,"Memory allocation failed",
         decode ? decode : encode);
       return(False);
     }
@@ -456,7 +456,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     (void) remove(image_info->zero);
     (void) remove(image_info->unique);
     if (status != False)
-      ThrowException(exception,DelegateWarning,"delegate failed",commands[i]);
+      ThrowException(exception,DelegateError,"delegate failed",commands[i]);
     LiberateMemory((void **) &commands[i]);
   }
   for ( ; commands[i] != (char *) NULL; i++)
@@ -646,8 +646,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
         */
         delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
         if (delegate_info == (DelegateInfo *) NULL)
-          MagickError(ResourceLimitError,"Unable to allocate delegate",
-            "Memory allocation failed");
+          MagickFatalError(ResourceLimitFatalError,
+            "Unable to allocate delegate","Memory allocation failed");
         (void) memset(delegate_info,0,sizeof(DelegateInfo));
         delegate_info->filename=AcquireString(filename);
         delegate_info->signature=MagickSignature;

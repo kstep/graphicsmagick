@@ -177,14 +177,14 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read DPX image.
   */
   count=ReadBlob(image,4,(char *) magick);
   if ((count == 0) || ((LocaleNCompare((char *) magick,"SDPX",4) != 0) &&
       (LocaleNCompare((char *) magick,"XPDS",4) != 0)))
-    ThrowReaderException(CorruptImageWarning,"Not a DPX image file",image);
+    ThrowReaderException(CorruptImageError,"Not a DPX image file",image);
   headersize=ReadBlobMSBLong(image); 
   for (i=0; i < 764; i++)
     (void) ReadBlobByte(image);
@@ -253,11 +253,11 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageWarning,"color type not supported",
+      ThrowReaderException(CorruptImageError,"color type not supported",
         image)
   }
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }
@@ -379,7 +379,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);
   (void) WriteBlobMSBLong(image,0x53445058);
   (void) WriteBlobMSBLong(image,0x2000);

@@ -509,7 +509,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Determine if this is a BMP file.
   */
@@ -542,7 +542,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if ((count == 0) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
         (LocaleNCompare((char *) magick,"CI",2) != 0)))
-      ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
+      ThrowReaderException(CorruptImageError,"Not a BMP image file",image);
     bmp_info.file_size=ReadBlobLSBLong(image);
     (void) ReadBlobLSBLong(image);
     bmp_info.offset_bits=ReadBlobLSBLong(image);
@@ -682,13 +682,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case BI_BITFIELDS:
         break;
       case BI_JPEG:
-        ThrowReaderException(CorruptImageWarning,
+        ThrowReaderException(CorruptImageError,
           "JPEG compression not supported",image)
       case BI_PNG:
-        ThrowReaderException(CorruptImageWarning,
+        ThrowReaderException(CorruptImageError,
           "PNG compression not supported",image)
       default:
-        ThrowReaderException(CorruptImageWarning,
+        ThrowReaderException(CorruptImageError,
           "Unrecognized compression method",image)
     }
     image->columns=bmp_info.width;
@@ -714,11 +714,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read BMP raster colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         bmp_colormap=(unsigned char *) AcquireMemory(4*image->colors);
         if (bmp_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         if ((bmp_info.size == 12) || (bmp_info.size == 64))
           packet_size=3;
@@ -751,7 +751,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels=(unsigned char *)
       AcquireMemory(Max(bytes_per_line,image->columns+1)*image->rows);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
@@ -763,7 +763,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         status=DecodeImage(image,bmp_info.compression,pixels);
         if (status == False)
-          ThrowReaderException(CorruptImageWarning,"runlength decoding failed",
+          ThrowReaderException(CorruptImageError,"runlength decoding failed",
             image);
       }
     /*
@@ -947,7 +947,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bmp_info.compression != BI_RGB &&
             bmp_info.compression != BI_BITFIELDS)
-          ThrowReaderException(CorruptImageWarning,
+          ThrowReaderException(CorruptImageError,
             "Compression mode != 0 or 3 in 16-bit BMP image file",image)
         bytes_per_line=2*(image->columns+image->columns%2);
         image->storage_class=DirectClass;
@@ -1032,7 +1032,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bmp_info.compression != BI_RGB &&
             bmp_info.compression != BI_BITFIELDS)
-          ThrowReaderException(CorruptImageWarning,
+          ThrowReaderException(CorruptImageError,
             "Compression mode != 0 or 3 in 32-bit BMP image file",image)
         bytes_per_line=4*(image->columns);
         for (y=(long) image->rows-1; y >= 0; y--)
@@ -1080,11 +1080,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image)
+        ThrowReaderException(CorruptImageError,"Not a BMP image file",image)
     }
     LiberateMemory((void **) &pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     if (bmp_info.height < 0)
       {
         Image
@@ -1268,7 +1268,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   scene=0;
   do
   {
@@ -1354,7 +1354,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     */
     pixels=(unsigned char *) AcquireMemory(bmp_info.image_size);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
         image);
     switch (bmp_info.bits_per_pixel)
     {
@@ -1462,7 +1462,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           if (pixels == (unsigned char *) NULL)
             {
               LiberateMemory((void **) &pixels);
-              ThrowWriterException(ResourceLimitWarning,
+              ThrowWriterException(ResourceLimitError,
                 "Memory allocation failed",image)
             }
           bmp_info.file_size-=bmp_info.image_size;
@@ -1575,7 +1575,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         bmp_colormap=(unsigned char *)
           AcquireMemory(4*(1 << bmp_info.bits_per_pixel));
         if (bmp_colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
             image);
         q=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)

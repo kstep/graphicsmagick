@@ -151,7 +151,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read ART image.
   */
@@ -164,7 +164,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   k=(unsigned char) ((-ldblk) & 0x01);
 
    if(GetBlobSize(image)!=(8+((long)ldblk+k)*height))
-     ThrowReaderException(CorruptImageWarning,"Not a ART image file",image);
+     ThrowReaderException(CorruptImageError,"Not a ART image file",image);
 
 
  image->columns=width;
@@ -179,7 +179,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 /* ----- Load RLE compressed raster ----- */
  BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
  if(BImgBuff==NULL)
-NoMemory: ThrowReaderException(CorruptImageWarning,"Memory exhausted",image);
+NoMemory: ThrowReaderException(CorruptImageError,"Memory exhausted",image);
 
  for(i=0;i< (int) height;i++)
       {
@@ -189,7 +189,7 @@ NoMemory: ThrowReaderException(CorruptImageWarning,"Memory exhausted",image);
       }
  if(BImgBuff!=NULL) free(BImgBuff);
  if (EOFBlob(image))
-   ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+   ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
  CloseBlob(image);
  return(image);
 }

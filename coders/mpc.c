@@ -171,7 +171,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
   AppendImageFormat("cache",cache_filename);
   c=ReadBlobByte(image);
@@ -225,7 +225,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *p=c;
           }
           if (comment == (char *) NULL)
-            ThrowReaderException(ResourceLimitWarning,
+            ThrowReaderException(ResourceLimitError,
               "Memory allocation failed",image);
           *p='\0';
           (void) SetImageAttribute(image,"comment",comment);
@@ -261,7 +261,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   p=values+strlen(values);
                 }
               if (values == (char *) NULL)
-                ThrowReaderException(ResourceLimitWarning,
+                ThrowReaderException(ResourceLimitError,
                   "Memory allocation failed",image);
               *p++=c;
               c=ReadBlobByte(image);
@@ -500,7 +500,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       ReacquireMemory((void **) &image->generic_profile,
                         (i+1)*sizeof(ProfileInfo));
                     if (image->generic_profile == (ProfileInfo *) NULL)
-                      ThrowReaderException(ResourceLimitWarning,
+                      ThrowReaderException(ResourceLimitError,
                         "Memory allocation failed",image);
                     image->generic_profile[i].name=AllocateString(keyword+8);
                     image->generic_profile[i].length=atol(values);
@@ -646,10 +646,10 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
-      ThrowReaderException(CorruptImageWarning,"Incorrect image header in file",
+      ThrowReaderException(CorruptImageError,"Incorrect image header in file",
         image);
     if (quantum_depth != QuantumDepth)
-      ThrowReaderException(CacheWarning,"Inconsistent peristent cache depth",
+      ThrowReaderException(CacheError,"Inconsistent peristent cache depth",
         image);
     if (image->montage != (char *) NULL)
       {
@@ -661,7 +661,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         image->directory=AllocateString((char *) NULL);
         if (image->directory == (char *) NULL)
-          ThrowReaderException(CorruptImageWarning,"Unable to read image data",
+          ThrowReaderException(CorruptImageError,"Unable to read image data",
             image);
         p=image->directory;
         do
@@ -675,7 +675,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ReacquireMemory((void **) &image->directory,
                 (strlen(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
-                ThrowReaderException(CorruptImageWarning,
+                ThrowReaderException(CorruptImageError,
                   "Unable to read image data",image);
               p=image->directory+strlen(image->directory);
             }
@@ -691,7 +691,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->color_profile.info=(unsigned char *)
           AcquireMemory(image->color_profile.length);
         if (image->color_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageWarning,
+          ThrowReaderException(CorruptImageError,
             "Unable to read color profile",image);
         (void) ReadBlob(image,image->color_profile.length,
           image->color_profile.info);
@@ -704,7 +704,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->iptc_profile.info=(unsigned char *)
           AcquireMemory(image->iptc_profile.length);
         if (image->iptc_profile.info == (unsigned char *) NULL)
-          ThrowReaderException(CorruptImageWarning,
+          ThrowReaderException(CorruptImageError,
             "Unable to read IPTC profile",image);
         (void) ReadBlob(image,image->iptc_profile.length,
           image->iptc_profile.info);
@@ -721,7 +721,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->generic_profile[i].info=(unsigned char *)
             AcquireMemory(image->generic_profile[i].length);
           if (image->generic_profile[i].info == (unsigned char *) NULL)
-            ThrowReaderException(CorruptImageWarning,
+            ThrowReaderException(CorruptImageError,
               "Unable to read generic profile",image);
           (void) ReadBlob(image,image->generic_profile[i].length,
             image->generic_profile[i].info);
@@ -733,7 +733,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create image colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         if (image->colors == 0)
           for (i=0; i < 256; i++)
@@ -757,7 +757,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             packet_size=image->colors > 256 ? 6 : 3;
             colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
-              ThrowReaderException(ResourceLimitWarning,
+              ThrowReaderException(ResourceLimitError,
                 "Memory allocation failed",image);
             (void) ReadBlob(image,packet_size*image->colors,colormap);
             p=colormap;
@@ -782,7 +782,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -793,7 +793,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         status=PersistCache(image,cache_filename,True,&offset,exception);
         if (status == False)
-          ThrowReaderException(CacheWarning,"Unable to perist pixel cache",
+          ThrowReaderException(CacheError,"Unable to perist pixel cache",
             image);
       }
     /*
@@ -947,7 +947,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
   AppendImageFormat("cache",cache_filename);
   scene=0;
@@ -1246,7 +1246,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     */
     status=PersistCache(image,cache_filename,False,&offset,&image->exception);
     if (status == False)
-      ThrowWriterException(CacheWarning,"Unable to perist pixel cache",image);
+      ThrowWriterException(CacheError,"Unable to perist pixel cache",image);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

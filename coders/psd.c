@@ -246,11 +246,11 @@ static unsigned int DecodeImage(Image *image,const int channel)
     Guarentee the correct number of pixel packets.
   */
   if (number_pixels > 0)
-    ThrowBinaryException(CorruptImageWarning,
+    ThrowBinaryException(CorruptImageError,
       "insufficient image data in file",image->filename)
   else
     if (number_pixels < 0)
-      ThrowBinaryException(CorruptImageWarning,"too much image data in file",
+      ThrowBinaryException(CorruptImageError,"too much image data in file",
         image->filename);
   return(True);
 }
@@ -547,7 +547,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read image header.
   */
@@ -555,7 +555,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   psd_info.version=ReadBlobMSBShort(image);
   if ((count == 0) || (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
       (psd_info.version != 1))
-    ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
+    ThrowReaderException(CorruptImageError,"Not a PSD image file",image);
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
   psd_info.rows=ReadBlobMSBLong(image);
@@ -580,7 +580,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (psd_info.mode == DuotoneMode))
     {
       if (!AllocateImageColormap(image,256))
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
       image->matte=psd_info.channels >= 2;
     }
@@ -597,7 +597,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           */
           data=(unsigned char *) AcquireMemory(length);
           if (data == (unsigned char *) NULL)
-            ThrowReaderException(ResourceLimitWarning,
+            ThrowReaderException(ResourceLimitError,
               "Resource memory allocation failed",image);
           ReadBlob(image,length,data);
           LiberateMemory((void **) &data);
@@ -608,7 +608,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Read PSD raster colormap.
           */
           if (!AllocateImageColormap(image,length/3))
-            ThrowReaderException(ResourceLimitWarning,
+            ThrowReaderException(ResourceLimitError,
               "Memory allocation failed",image);
           for (i=0; i < (long) image->colors; i++)
             image->colormap[i].red=Upscale(ReadBlobByte(image));
@@ -629,11 +629,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       data=(unsigned char *) AcquireMemory(length);
       if (data == (unsigned char *) NULL)
-        ThrowReaderException(ResourceLimitWarning,
+        ThrowReaderException(ResourceLimitError,
           "8BIM resource memory allocation failed",image);
       count=ReadBlob(image,length,(char *) data);
       if ((count == 0) || (LocaleNCompare((char *) data,"8BIM",4) != 0))
-        ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
+        ThrowReaderException(CorruptImageError,"Not a PSD image file",image);
       image->iptc_profile.info=data;
       image->iptc_profile.length=length;
     }
@@ -671,7 +671,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       layer_info=(LayerInfo *) AcquireMemory(number_layers*sizeof(LayerInfo));
       if (layer_info == (LayerInfo *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
       (void) memset(layer_info,0,number_layers*sizeof(LayerInfo));
       for (i=0; i < number_layers; i++)
@@ -688,7 +688,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         count=ReadBlob(image,4,(char *) type);
         if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
-          ThrowReaderException(CorruptImageWarning,"Not a PSD image file",
+          ThrowReaderException(CorruptImageError,"Not a PSD image file",
             image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
         layer_info[i].opacity=(Quantum) (MaxRGB-Upscale(ReadBlobByte(image)));
@@ -760,7 +760,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (j=0; j < i; j++)
               DestroyImage(layer_info[j].image);
-            ThrowReaderException(ResourceLimitWarning,
+            ThrowReaderException(ResourceLimitError,
               "Memory allocation failed",image)
           }
         SetImage(layer_info[i].image,OpaqueOpacity);
@@ -1308,14 +1308,14 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   packet_size=image->depth > 8 ? 6 : 3;
   if (image->matte)
     packet_size+=image->depth > 8 ? 2 : 1;
   pixels=(unsigned char *)
     AcquireMemory(packet_size*image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
   (void) WriteBlob(image,4,"8BPS");
   (void) WriteBlobMSBShort(image,1);  /* version */
   for ( i=1; i<=6; i++)

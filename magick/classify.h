@@ -173,7 +173,20 @@ typedef enum
   CacheError = 445,
   XServerError = 485,
   RegistryError = 490,
-  ConfigurationError = 495
+  ConfigurationError = 495,
+  ResourceLimitFatalError = 700,
+  TypeFatalError = 705,
+  OptionFatalError = 710,
+  DelegateFatalError = 715,
+  MissingDelegateFatalError = 720,
+  CorruptImageFatalError = 725,
+  FileOpenFatalError = 730,
+  BlobFatalError = 735,
+  StreamFatalError = 740,
+  CacheFatalError = 745,
+  XServerFatalError = 785,
+  RegistryFatalError = 790,
+  ConfigurationFatalError = 795
 } ExceptionType;
 
 typedef enum

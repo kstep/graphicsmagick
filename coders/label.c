@@ -148,7 +148,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     }
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
-    ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
+    ThrowReaderException(DelegateError,"Unable to get type metrics",image);
   FormatString(geometry,"+%g+%g",metrics.max_advance/4,metrics.ascent);
   if (image->columns == 0)
     image->columns=(unsigned long)

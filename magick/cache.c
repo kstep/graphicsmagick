@@ -221,7 +221,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   if (cache_info->type == UndefinedCache)
     {
-      ThrowException(exception,CacheWarning,"Pixel cache is not open",
+      ThrowException(exception,CacheError,"Pixel cache is not open",
         image->filename);
       return((PixelPacket *) NULL);
     }
@@ -249,7 +249,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
         status|=ReadCacheIndexes(image->cache,nexus);
       if (status == False)
         {
-          ThrowException(exception,CacheWarning,
+          ThrowException(exception,CacheError,
             "Unable to acquire pixels from cache",image->filename);
           return((PixelPacket *) NULL);
         }
@@ -538,7 +538,7 @@ static unsigned int ClipCacheNexus(Image *image,const unsigned long nexus)
   image_nexus=GetNexus(image->cache);
   mask_nexus=GetNexus(image->clip_mask->cache);
   if ((image_nexus == 0) || (mask_nexus == 0))
-    ThrowBinaryException(CacheWarning,"Unable to get nexus",image->filename);
+    ThrowBinaryException(CacheError,"Unable to get nexus",image->filename);
   cache_info=(CacheInfo *) image->cache;
   nexus_info=cache_info->nexus_info+nexus;
   p=GetCacheNexus(image,nexus_info->x,nexus_info->y,nexus_info->columns,
@@ -885,7 +885,7 @@ MagickExport void GetCacheInfo(Cache *cache)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) AcquireMemory(sizeof(CacheInfo));
   if (cache_info == (CacheInfo *) NULL)
-    MagickError(ResourceLimitError,"Memory allocation failed",
+    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
       "unable to allocate cache info");
   (void) memset(cache_info,0,sizeof(CacheInfo));
   cache_info->colorspace=RGBColorspace;
@@ -988,7 +988,7 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
     status|=ReadCacheIndexes(image->cache,nexus);
   if (status == False)
     {
-      ThrowException(&image->exception,CacheWarning,
+      ThrowException(&image->exception,CacheError,
         "Unable to get pixels from cache",image->filename);
       return((PixelPacket *) NULL);
     }
@@ -1527,7 +1527,7 @@ static unsigned int ModifyCache(Image *image)
   cache_info->reference_count--;
   clone_image=(Image *) AcquireMemory(sizeof(Image));
   if (clone_image == (Image *) NULL)
-    MagickError(ResourceLimitError,"Unable to clone image",
+    MagickFatalError(ResourceLimitFatalError,"Unable to clone image",
       "Memory allocation failed");
   *clone_image=(*image);
   GetCacheInfo(&image->cache);
@@ -1550,7 +1550,7 @@ static unsigned int ModifyCache(Image *image)
   LiberateMemory((void **) &clone_image);
   LiberateSemaphoreInfo(&cache_info->semaphore);
   if (y < (long) image->rows)
-    ThrowBinaryException(CacheWarning,"Unable to clone cache",image->filename);
+    ThrowBinaryException(CacheError,"Unable to clone cache",image->filename);
   return(True);
 }
 
@@ -1608,7 +1608,7 @@ extern "C" {
 
 static void CacheSignalHandler(int status)
 {
-  MagickError(ResourceLimitError,"Unable to extend pixel cache",
+  MagickFatalError(ResourceLimitFatalError,"Unable to extend pixel cache",
     "Disk allocation failed");
   DestroyMagick();
   Exit(status);
@@ -1689,7 +1689,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
       cache_info->nexus_info=(NexusInfo *)
         AcquireMemory((cache_info->rows+3)*sizeof(NexusInfo));
       if (cache_info->nexus_info == (NexusInfo *) NULL)
-        MagickError(ResourceLimitError,"Memory allocation failed",
+        MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
           "unable to allocate cache nexus_info");
       (void) memset(cache_info->nexus_info,0,
         (cache_info->rows+3)*sizeof(NexusInfo));
@@ -1702,7 +1702,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     size+=sizeof(IndexPacket);
   offset=size*number_pixels;
   if (cache_info->columns != (offset/cache_info->rows/size))
-    ThrowBinaryException(ResourceLimitWarning,"Pixel cache allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Pixel cache allocation failed",
       image->filename);
   cache_info->length=offset;
   if (cache_info->length == (size_t) cache_info->length)
@@ -1716,7 +1716,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           {
             ReacquireMemory((void **) &cache_info->pixels,cache_info->length);
             if (cache_info->pixels == (void *) NULL)
-              ThrowBinaryException(ResourceLimitWarning,
+              ThrowBinaryException(ResourceLimitError,
                 "Memory allocation failed",image->filename);
             pixels=cache_info->pixels;
           }
@@ -1762,11 +1762,11 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     }
   }
   if (file == -1)
-    ThrowBinaryException(CacheWarning,"Unable to open cache",image->filename);
+    ThrowBinaryException(CacheError,"Unable to open cache",image->filename);
   if (!ExtendCache(file,cache_info->offset+cache_info->length))
     {
       close(file);
-      ThrowBinaryException(CacheWarning,"Unable to extend cache",
+      ThrowBinaryException(CacheError,"Unable to extend cache",
         image->filename)
     }
   cache_info->storage_class=image->storage_class;
@@ -2458,7 +2458,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
     if (nexus_info->length != offset)
       ReacquireMemory((void **) &nexus_info->staging,offset);
   if (nexus_info->staging == (PixelPacket *) NULL)
-    MagickError(ResourceLimitError,"Memory allocation failed",
+    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
       "unable to allocate cache nexus_info");
   nexus_info->length=offset;
   nexus_info->pixels=nexus_info->staging;
@@ -2647,7 +2647,7 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->cache == (Cache) NULL)
-    ThrowBinaryException(CacheWarning,"pixel cache is not open",
+    ThrowBinaryException(CacheError,"pixel cache is not open",
       image->filename);
   image->taint=True;
   if (IsNexusInCore(image->cache,nexus))
@@ -2660,7 +2660,7 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
       (image->colorspace == CMYKColorspace))
     status|=WriteCacheIndexes(image->cache,nexus);
   if (status == False)
-    ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
+    ThrowBinaryException(CacheError,"Unable to sync pixel cache",
       image->filename);
   return(status);
 }

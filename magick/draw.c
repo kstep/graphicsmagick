@@ -208,8 +208,8 @@ MagickExport DrawContext DrawAllocateContext(void)
   /* Allocate initial drawing context */
   context = (DrawContext) AcquireMemory(sizeof(struct _DrawContext));
   if(context == (DrawContext) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate initial drawing context",
-                "Memory allocation failed");
+    MagickFatalError(ResourceLimitFatalError,
+      "Unable to allocate initial drawing context","Memory allocation failed");
 
   /* MVG output string and housekeeping */
   context->mvg = NULL;
@@ -220,12 +220,12 @@ MagickExport DrawContext DrawAllocateContext(void)
   context->index = 0;
   context->graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
   if(context->graphic_context == (DrawInfo **) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate draw info",
-                "Memory allocation failed");
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocate draw info",
+      "Memory allocation failed");
   context->graphic_context[context->index]=(DrawInfo *) AcquireMemory(sizeof(DrawInfo));
   if(context->graphic_context[context->index]==(DrawInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocatedraw info",
-                "Memory allocation failed");
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocatedraw info",
+      "Memory allocation failed");
   GetDrawInfo((const ImageInfo *)NULL,context->graphic_context[context->index]);
 
   /* Pretty-printing depth */
@@ -241,8 +241,8 @@ MagickExport DrawContext DrawAllocateContext(void)
   context->temp_images =
     (long *) AcquireMemory(context->max_temp_image_index * sizeof(long));
   if(context->temp_images == (long *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate image reference array",
-                "Memory allocation failed");
+    MagickFatalError(ResourceLimitFatalError,
+      "Unable to allocate image reference array","Memory allocation failed");
 
   /* Structure unique signature */
   context->signature = MagickSignature;

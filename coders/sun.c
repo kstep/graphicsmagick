@@ -281,7 +281,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read SUN raster header.
   */
@@ -292,7 +292,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify SUN identifier.
     */
     if (sun_info.magic != 0x59a66a95)
-      ThrowReaderException(CorruptImageWarning,"Not a SUN raster image",image);
+      ThrowReaderException(CorruptImageError,"Not a SUN raster image",image);
     sun_info.width=ReadBlobMSBLong(image);
     sun_info.height=ReadBlobMSBLong(image);
     sun_info.depth=ReadBlobMSBLong(image);
@@ -322,7 +322,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Create linear color ramp.
             */
             if (!AllocateImageColormap(image,image->colors))
-              ThrowReaderException(ResourceLimitWarning,
+              ThrowReaderException(ResourceLimitError,
                 "Memory allocation failed",image);
           }
         break;
@@ -336,11 +336,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read SUN raster colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         sun_colormap=(unsigned char *) AcquireMemory(image->colors);
         if (sun_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (long) image->colors; i++)
@@ -364,14 +364,14 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         sun_colormap=(unsigned char *) AcquireMemory(sun_info.maplength);
         if (sun_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         (void) ReadBlob(image,sun_info.maplength,(char *) sun_colormap);
         LiberateMemory((void **) &sun_colormap);
         break;
       }
       default:
-        ThrowReaderException(CorruptImageWarning,
+        ThrowReaderException(CorruptImageError,
           "Colormap type is not supported",image)
     } 
     image->matte=(sun_info.depth == 32);
@@ -384,11 +384,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     sun_data=(unsigned char *) AcquireMemory(sun_info.length);
     if (sun_data == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
     count=ReadBlob(image,sun_info.length,(char *) sun_data);
     if ((count == 0) && (sun_info.type != RT_ENCODED))
-      ThrowReaderException(CorruptImageWarning,"Unable to read image data",
+      ThrowReaderException(CorruptImageError,"Unable to read image data",
         image);
     sun_pixels=sun_data;
     if (sun_info.type == RT_ENCODED)
@@ -403,7 +403,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bytes_per_line=2*(sun_info.width*sun_info.depth+15)/16;
         sun_pixels=(unsigned char *) AcquireMemory(bytes_per_line*height);
         if (sun_pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowReaderException(ResourceLimitError,"Memory allocation failed",
             image);
         (void) DecodeImage(sun_data,sun_info.length,sun_pixels);
         LiberateMemory((void **) &sun_data);
@@ -499,7 +499,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SyncImage(image);
     LiberateMemory((void **) &sun_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */
@@ -680,7 +680,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   scene=0;
   do
   {
@@ -760,7 +760,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         length=image->columns*sizeof(PixelPacket);
         pixels=(unsigned char *) AcquireMemory(length);
         if (pixels == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+          ThrowWriterException(ResourceLimitError,"Memory allocation failed",
             image);
         /*
           Convert DirectClass packet to SUN RGB pixel.

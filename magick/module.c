@@ -268,7 +268,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
 
           FormatString(message,"failed to load module \"%.1024s\"",
             module_name);
-          ThrowException(&(*image)->exception,MissingDelegateWarning,message,
+          ThrowException(&(*image)->exception,MissingDelegateError,message,
             lt_dlerror());
           LiberateMemory((void **) &module_name);
           return(status);
@@ -489,8 +489,8 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
         Read modules.
       */
       if (lt_dlinit() != 0)
-        MagickError(DelegateError,"unable to initialize module loader",
-          lt_dlerror());
+        MagickFatalError(DelegateFatalError,
+          "Unable to initialize module loader",lt_dlerror());
       OpenStaticModules();
       (void) ReadConfigurationFile(ModuleFilename,exception);
     }
@@ -698,7 +698,7 @@ MagickExport unsigned int OpenModule(const char *module,
       if (handle == (ModuleHandle) NULL)
         {
           FormatString(message,"failed to load module \"%.1024s\"",path);
-          ThrowException(exception,MissingDelegateWarning,message,lt_dlerror());
+          ThrowException(exception,MissingDelegateError,message,lt_dlerror());
         }
       LiberateMemory((void **) &path);
     }
@@ -725,7 +725,7 @@ MagickExport unsigned int OpenModule(const char *module,
   method=(void (*)(void)) lt_dlsym(handle,name);
   if (method == (void (*)(void)) NULL)
     {
-      ThrowException(exception,MissingDelegateWarning,"failed to find symbol",
+      ThrowException(exception,MissingDelegateError,"failed to find symbol",
         lt_dlerror());
       return(False);
     }
@@ -899,8 +899,8 @@ static unsigned int ReadConfigurationFile(const char *basename,
         */
         module_info=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
         if (module_info == (ModuleInfo *) NULL)
-          MagickError(ResourceLimitError,"Unable to allocate module magick",
-            "Memory allocation failed");
+          MagickFatalError(ResourceLimitFatalError,
+            "Unable to allocate module magick","Memory allocation failed");
         (void) memset(module_info,0,sizeof(ModuleInfo));
         module_info->filename=AcquireString(filename);
         module_info->signature=MagickSignature;
@@ -1087,7 +1087,7 @@ static CoderInfo *SetCoderInfo(const char *tag)
   assert(tag != (const char *) NULL);
   entry=(CoderInfo *) AcquireMemory(sizeof(CoderInfo));
   if (entry == (CoderInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate module info",
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocate module info",
       "Memory allocation failed");
   (void) memset(entry,0,sizeof(CoderInfo));
   entry->tag=AcquireString(tag);
@@ -1227,7 +1227,7 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
   ModuleToTag(coder_info->tag,"Unregister%sImage",name);
   method=(void (*)(void)) lt_dlsym((ModuleHandle) coder_info->handle,name);
   if (method == (void (*)(void)) NULL)
-    MagickWarning(DelegateWarning,"failed to find symbol",lt_dlerror());
+    MagickError(DelegateError,"failed to find symbol",lt_dlerror());
   else
     method();
   (void) lt_dlclose((ModuleHandle) coder_info->handle);

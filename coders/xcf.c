@@ -593,7 +593,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
       fail = False;
 
       if (offset == 0)
-      ThrowBinaryException(FileOpenWarning,"not enough tiles found in level",image->filename);
+      ThrowBinaryException(FileOpenError,"not enough tiles found in level",image->filename);
 
       /* save the current position as it is where the
        *  next tile offset is stored.
@@ -635,9 +635,9 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
       fail = True;
       break;
     case COMPRESS_ZLIB:
-      ThrowBinaryException(FileOpenWarning,"xcf: zlib compression unimplemented",image->filename)
+      ThrowBinaryException(FileOpenError,"xcf: zlib compression unimplemented",image->filename)
     case COMPRESS_FRACTAL:
-      ThrowBinaryException(FileOpenWarning,"xcf: fractal compression unimplemented",image->filename)
+      ThrowBinaryException(FileOpenError,"xcf: fractal compression unimplemented",image->filename)
   }
 
   /* composite the tile onto the layer's image, and then destroy it */
@@ -668,7 +668,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
 
 
   if (offset != 0)
-    ThrowBinaryException(FileOpenWarning,"encountered garbage after reading level",image->filename)
+    ThrowBinaryException(FileOpenError,"encountered garbage after reading level",image->filename)
 
   return 1;
 }
@@ -953,7 +953,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
 
   /* skip over "gimp xcf ..." */
   for (i=0; i < 14; i++)
@@ -976,7 +976,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   } else if ( image_type == GIMP_GRAY ) {
     image->colorspace=GRAYColorspace;
   } else if ( image_type == GIMP_INDEXED )
-    ThrowReaderException(FileOpenWarning,"Indexed colors not currently supported",image);
+    ThrowReaderException(FileOpenError,"Indexed colors not currently supported",image);
   SetImage(image,OpaqueOpacity);  /* until we know otherwise...*/
   image->matte=True;  /* XCF always has a matte! */
 
@@ -1033,7 +1033,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (doc_info.compression != COMPRESS_RLE) &&
         (doc_info.compression != COMPRESS_ZLIB) &&
         (doc_info.compression != COMPRESS_FRACTAL))
-          ThrowReaderException(CorruptImageWarning,"Unknown compression type",image);
+          ThrowReaderException(CorruptImageError,"Unknown compression type",image);
       }
       break;
 
@@ -1177,7 +1177,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /* allocate our array of layer info blocks */
     layer_info=(XCFLayerInfo *) AcquireMemory(number_layers*sizeof(XCFLayerInfo));
     if (layer_info == (XCFLayerInfo *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed", image);
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed", image);
     (void) memset(layer_info,0,number_layers*sizeof(XCFLayerInfo));
 
     while (True)
@@ -1211,7 +1211,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int j;
         for (j=0; j < current_layer; j++)
           DestroyImage(layer_info[j].image);
-        ThrowReaderException(ResourceLimitWarning, "Memory allocation failed",image)
+        ThrowReaderException(ResourceLimitError, "Memory allocation failed",image)
       }
 
       /* restore the saved position so we'll be ready to

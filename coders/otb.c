@@ -131,7 +131,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Initialize image structure.
   */
@@ -147,13 +147,13 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->rows=ReadBlobMSBShort(image);
     }
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageWarning,"Not a OTB image file",image);
+    ThrowReaderException(CorruptImageError,"Not a OTB image file",image);
   depth=ReadBlobByte(image);
   if (depth != 1)
-    ThrowReaderException(CorruptImageWarning,"Only OTB level 0 files supported",
+    ThrowReaderException(CorruptImageError,"Only OTB level 0 files supported",
       image);
   if (!AllocateImageColormap(image,2))
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -176,7 +176,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           byte=ReadBlobByte(image);
           if (byte == EOF)
-            ThrowReaderException(CorruptImageWarning,"Corrupt OTB image",
+            ThrowReaderException(CorruptImageError,"Corrupt OTB image",
               image);
         }
       indexes[x]=(byte & (0x01 << (7-bit))) ? 0 : 1;
@@ -191,7 +191,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   SyncImage(image);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }
@@ -322,7 +322,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Convert image to a bi-level image.

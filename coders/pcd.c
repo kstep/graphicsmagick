@@ -179,7 +179,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   assert(chroma2 != (unsigned char *) NULL);
   buffer=(unsigned char *) AcquireMemory(0x800);
   if (buffer == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       (char *) NULL);
   sum=0;
   bits=32;
@@ -192,7 +192,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     if (pcd_table[i] == (PCDTable *) NULL)
       {
         LiberateMemory((void **) &buffer);
-        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
           (char *) NULL)
       }
     r=pcd_table[i];
@@ -269,7 +269,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
           }
           default:
           {
-            ThrowBinaryException(CorruptImageWarning,"Corrupt PCD image",
+            ThrowBinaryException(CorruptImageError,"Corrupt PCD image",
               image->filename)
           }
         }
@@ -286,7 +286,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       r++;
     if (((unsigned long) (q-luma) > number_pixels) || (r == (PCDTable *) NULL))
       {
-        ThrowException(&image->exception,CorruptImageWarning,
+        ThrowException(&image->exception,CorruptImageError,
           "Corrupt PCD image, skipping to sync byte",image->filename);
         while ((sum & 0x00fff000) != 0x00fff000)
           PCDGetBits(8);
@@ -415,7 +415,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   montage_image=MontageImages(image,montage_info,exception);
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   DestroyImage(image);
   return(montage_image);
 }
@@ -476,18 +476,18 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Determine if this is a PCD file.
   */
   header=(unsigned char *) AcquireMemory(3*0x800);
   if (header == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   count=ReadBlob(image,3*0x800,(char *) header);
   overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
   if ((count == 0) ||
       ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && !overview))
-    ThrowReaderException(CorruptImageWarning,"Not a PCD image file",image);
+    ThrowReaderException(CorruptImageError,"Not a PCD image file",image);
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
   LiberateMemory((void **) &header);
@@ -540,7 +540,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   luma=(unsigned char *) AcquireMemory(number_pixels+1);
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Advance to image data.
   */
@@ -729,7 +729,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     (void) TransformRGBImage(image,YCCColorspace);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
   if ((rotate == 1) || (rotate == 3))
     {
       double
@@ -1013,7 +1013,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,pcd_image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",pcd_image);
+    ThrowWriterException(FileOpenError,"Unable to open file",pcd_image);
   (void) TransformRGBImage(pcd_image,RGBColorspace);
   /*
     Write PCD image header.

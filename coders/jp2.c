@@ -307,17 +307,17 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   /*
     Initialize JPEG 2000 API.
   */
   jas_init();
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to manage JP2 stream",image);
+    ThrowReaderException(FileOpenError,"Unable to manage JP2 stream",image);
   jp2_image=jas_image_decode(jp2_stream,-1,0);
   if (jp2_image == (jas_image_t *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to decode image file",image);
+    ThrowReaderException(FileOpenError,"Unable to decode image file",image);
   /*
     Convert JPEG 2000 pixels.
   */
@@ -339,7 +339,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     if (pixels[i] == (jas_matrix_t *) NULL)
       {
         jas_image_destroy(jp2_image);
-        ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+        ThrowReaderException(ResourceLimitError,"Unable to allocate memory",
           image)
       }
   }
@@ -380,7 +380,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateWarning,
+  ThrowException(exception,MissingDelegateError,
     "JP2 library is not available",image_info->filename);
   return((Image *) NULL);
 }
@@ -537,7 +537,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   /*
     Intialize JPEG 2000 API.
   */
@@ -545,7 +545,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   jas_init();
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
-    ThrowWriterException(FileOpenWarning,"Unable to manage JP2 stream",image);
+    ThrowWriterException(FileOpenError,"Unable to manage JP2 stream",image);
   number_components=image->matte ? 4 : 3;
   if ((image_info->type != TrueColorType) &&
       IsGrayImage(image,&image->exception))
@@ -562,7 +562,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   jp2_image=jas_image_create((short)number_components,component_info,
     number_components == 1 ? JAS_IMAGE_CM_GRAY : JAS_IMAGE_CM_RGB);
   if (jp2_image == (jas_image_t *) NULL)
-    ThrowWriterException(FileOpenWarning,"Unable to create image",image);
+    ThrowWriterException(FileOpenError,"Unable to create image",image);
   /*
     Convert to JPEG 2000 pixels.
   */
@@ -574,7 +574,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         for (x=0; x < i; x++)
           jas_matrix_destroy(pixels[x]);
         jas_image_destroy(jp2_image);
-        ThrowWriterException(ResourceLimitWarning,"Unable to allocate memory",
+        ThrowWriterException(ResourceLimitError,"Unable to allocate memory",
           image)
       }
   }
@@ -612,7 +612,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   FormatString(options,"rate=%lf",(double) image_info->quality/100.0);
   status=jas_image_encode(jp2_image,jp2_stream,format,options);
   if (status)
-    ThrowWriterException(FileOpenWarning,"Unable to encode image file",image);
+    ThrowWriterException(FileOpenError,"Unable to encode image file",image);
   (void) jas_stream_close(jp2_stream);
   jas_image_destroy(jp2_image);
   CloseBlob(image);
@@ -621,7 +621,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateWarning,"JP2 library is not available",
+  ThrowBinaryException(MissingDelegateError,"JP2 library is not available",
     image->filename);
 }
 #endif

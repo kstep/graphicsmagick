@@ -267,7 +267,7 @@ static char **GetStyleTokens(const char *text,int *number_tokens)
       (*number_tokens)+=2;
   tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
   if (tokens == (char **) NULL)
-    MagickError(ResourceLimitError,"Unable to convert string to tokens",
+    MagickFatalError(ResourceLimitFatalError,"Unable to convert string to tokens",
       "Memory allocation failed");
   /*
     Convert string to an ASCII list.
@@ -317,7 +317,7 @@ static char **GetTransformTokens(const char *text,int *number_tokens)
   }
   tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
   if (tokens == (char **) NULL)
-    MagickError(ResourceLimitError,"Unable to convert string to tokens",
+    MagickFatalError(ResourceLimitFatalError,"Unable to convert string to tokens",
       "Memory allocation failed");
   /*
     Convert string to an ASCII list.
@@ -703,7 +703,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
   svg_info->n++;
   ReacquireMemory((void **) &svg_info->scale,(svg_info->n+1)*sizeof(double));
   if (svg_info->scale == (double *) NULL)
-    MagickError(ResourceLimitError,"Unable to convert SVG image",
+    MagickFatalError(ResourceLimitFatalError,"Unable to convert SVG image",
       "Memory allocation failed");
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
   color=AllocateString("none");
@@ -2399,8 +2399,8 @@ static void SVGWarning(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  svg_info->exception->severity=DelegateWarning;
-  ThrowException(svg_info->exception,DelegateWarning,reason,(char *) NULL);
+  svg_info->exception->severity=DelegateError;
+  ThrowException(svg_info->exception,DelegateError,reason,(char *) NULL);
   va_end(operands);
 }
 
@@ -2432,7 +2432,7 @@ static void SVGError(void *context,const char *format,...)
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
   (void) CloneString(&svg_info->exception->reason,reason);
-  ThrowException(svg_info->exception,DelegateError,reason,(char *) NULL);
+  ThrowException(svg_info->exception,DelegateFatalError,reason,(char *) NULL);
   va_end(operands);
 }
 
@@ -2607,14 +2607,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Open draw file.
   */
   TemporaryFilename(filename);
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Parse SVG file.
   */
@@ -2627,7 +2627,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.text=AllocateString("");
   svg_info.scale=(double *) AcquireMemory(sizeof(double));
   if (svg_info.scale == (double *) NULL)
-    MagickError(ResourceLimitError,"Unable to convert SVG image",
+    MagickFatalError(ResourceLimitFatalError,"Unable to convert SVG image",
       "Memory allocation failed");
   svg_info.scale[0]=1.0;
   IdentityAffine(&svg_info.affine);
@@ -2702,7 +2702,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateWarning,
+  ThrowException(exception,MissingDelegateError,
     "XML library is not available",image_info->filename);
   return((Image *) NULL);
 }
@@ -2865,7 +2865,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   fit_info=new_fitting_opts();
   output_writer=output_get_handler("svg");
   if (output_writer == NULL)
-    ThrowWriterException(FileOpenWarning,"Unable to write svg format",image);
+    ThrowWriterException(FileOpenError,"Unable to write svg format",image);
   image_type=GetImageType(image);
   number_planes=3;
   if ((image_type == BilevelType) || (image_type == GrayscaleType))
@@ -2876,7 +2876,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   number_pixels=image->columns*image->rows;
   bitmap.bitmap=(unsigned char *) AcquireMemory(number_planes*number_pixels);
   if (bitmap.bitmap == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",
       image);
   point=0;
   for (j=0; j < image->rows; j++)
@@ -2905,7 +2905,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   splines=fitted_splines(pixels,&fit_info);
   output_file=fopen(image->filename,"w");
   if (output_file == (FILE *) NULL)
-    ThrowWriterException(FileOpenWarning,"Unable to open the output file",
+    ThrowWriterException(FileOpenError,"Unable to open the output file",
       image);
   output_writer(output_file,image->filename,0,0,image_header.width,
     image_header.height,splines);
@@ -3040,10 +3040,10 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   attribute=GetImageAttribute(image,"[MVG]");
   if ((attribute == (ImageAttribute *) NULL) ||
       (attribute->value == (char *) NULL))
-    ThrowWriterException(DelegateWarning,"no image vector graphics",image);
+    ThrowWriterException(DelegateError,"no image vector graphics",image);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   /*
     Write SVG header.
   */
@@ -3062,7 +3062,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   primitive_info=(PrimitiveInfo *)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
   IdentityAffine(&affine);
   token=AllocateString(attribute->value);
   active=False;
@@ -3393,7 +3393,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               {
                 n--;
                 if (n < 0)
-                  ThrowWriterException(CorruptImageWarning,
+                  ThrowWriterException(CorruptImageError,
                     "unbalanced graphic context push/pop",image);
                 (void) WriteBlobString(image,"</g>\n");
               }
@@ -3749,7 +3749,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         number_points*sizeof(PrimitiveInfo));
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
-          ThrowException(&image->exception,ResourceLimitWarning,
+          ThrowException(&image->exception,ResourceLimitError,
             "Unable to draw image","Memory allocation failed");
           break;
         }
@@ -3943,7 +3943,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               number_points*sizeof(PrimitiveInfo));
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
-                ThrowException(&image->exception,ResourceLimitWarning,
+                ThrowException(&image->exception,ResourceLimitError,
                   "Unable to draw image","Memory allocation failed");
                 break;
               }

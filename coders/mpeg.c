@@ -161,7 +161,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   CloseBlob(image);
   /*
     Convert MPEG to PPM with delegate.
@@ -565,7 +565,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   CloseBlob(image);
   /*
     Determine if the sequence of images have identical page info.
@@ -607,7 +607,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
           FormatString(filename,"%.1024s.niq",basename);
           (void) remove(filename);
         }
-      ThrowWriterException(DelegateWarning,"Unable to write MPEG parameters",
+      ThrowWriterException(DelegateError,"Unable to write MPEG parameters",
         image)
     }
   count=0;

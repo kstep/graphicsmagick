@@ -176,7 +176,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   (void) strncpy(magick,image->magick,MaxTextExtent-1);
   /*
     Open draw file.
@@ -184,7 +184,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   TemporaryFilename(filename);
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   y=20;
   (void) fprintf(file,"push graphic-context\n");
   (void) fprintf(file,"viewbox 0 0 800 480\n");

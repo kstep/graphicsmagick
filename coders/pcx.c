@@ -261,7 +261,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Determine if this is a PCX file.
   */
@@ -276,10 +276,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       magic=ReadBlobLSBLong(image);
       if (magic != 987654321)
-        ThrowReaderException(CorruptImageWarning,"Not a DCX image file",image);
+        ThrowReaderException(CorruptImageError,"Not a DCX image file",image);
       page_table=(off_t *) AcquireMemory(1024*sizeof(off_t));
       if (page_table == (off_t *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);
       for (id=0; id < 1024; id++)
       {
@@ -298,7 +298,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     pcx_info.version=ReadBlobByte(image);
     if ((count == 0) || (pcx_info.identifier != 0x0a))
-      ThrowReaderException(CorruptImageWarning,"Not a PCX image file",image);
+      ThrowReaderException(CorruptImageError,"Not a PCX image file",image);
     pcx_info.encoding=ReadBlobByte(image);
     pcx_info.bits_per_pixel=ReadBlobByte(image);
     pcx_info.left=ReadBlobLSBShort(image);
@@ -319,7 +319,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->colors=16;
     pcx_colormap=(unsigned char *) AcquireMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
     (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
     pcx_info.reserved=ReadBlobByte(image);
@@ -329,7 +329,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
         image->colors=1 << (pcx_info.bits_per_pixel*pcx_info.planes);
     if (!AllocateImageColormap(image,image->colors))
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
     if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
       image->storage_class=DirectClass;
@@ -355,7 +355,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     scanline=(unsigned char *) AcquireMemory(image->columns*pcx_info.planes);
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
     /*
       Uncompress image data.
@@ -389,7 +389,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Initialize image colormap.
           */
           if (image->colors > 256)
-            ThrowReaderException(CorruptImageWarning,
+            ThrowReaderException(CorruptImageError,
               "PCX colormap exceeded 256 colors",image);
           if ((pcx_info.bits_per_pixel*pcx_info.planes) == 1)
             {
@@ -574,7 +574,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     LiberateMemory((void **) &scanline);
     LiberateMemory((void **) &pcx_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */
@@ -759,7 +759,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);
   page_table=(off_t *) NULL;
   if (image_info->adjoin)
@@ -770,7 +770,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobLSBLong(image,0x3ADE68B1L);
       page_table=(off_t *) AcquireMemory(1024*sizeof(off_t));
       if (page_table == (off_t *) NULL)
-        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        ThrowWriterException(ResourceLimitError,"Memory allocation failed",
           image);
       for (scene=0; scene < 1024; scene++)
         (void) WriteBlobLSBLong(image,0x00000000L);
@@ -837,7 +837,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     */
     pcx_colormap=(unsigned char *) AcquireMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
         image);
     for (i=0; i < (3*256); i++)
       pcx_colormap[i]=0;
@@ -859,7 +859,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     length=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
     pcx_pixels=(unsigned char *) AcquireMemory(length);
     if (pcx_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
         image);
     q=pcx_pixels;
     if (image->storage_class == DirectClass)
@@ -1031,7 +1031,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       LiberateMemory((void **) &page_table);
     }
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to write file",image);
+    ThrowWriterException(FileOpenError,"Unable to write file",image);
   CloseBlob(image);
   return(True);
 }

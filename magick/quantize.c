@@ -385,7 +385,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
     ReacquireMemory((void **) &image->colormap,
       Max(cube_info->colors,256)*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
+    ThrowBinaryException(ResourceLimitError,"Unable to quantize image",
       "Memory allocation failed");
   cube_info->colormap=image->colormap;
   cube_info->colors=0;
@@ -616,7 +616,7 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
             node_info->census|=(1 << id);
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              ThrowException(exception,ResourceLimitWarning,
+              ThrowException(exception,ResourceLimitError,
                 "Unable to quantize image","Memory allocation failed");
             if (level == cube_info->depth)
               cube_info->colors++;
@@ -682,7 +682,7 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 
   clone_info=(QuantizeInfo *) AcquireMemory(sizeof(QuantizeInfo));
   if (clone_info == (QuantizeInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to clone quantize info",
+    MagickFatalError(ResourceLimitFatalError,"Unable to clone quantize info",
       "Memory allocation failed");
   GetQuantizeInfo(clone_info);
   if (quantize_info == (QuantizeInfo *) NULL)
@@ -1538,7 +1538,7 @@ MagickExport unsigned int MapImage(Image *image,const Image *map_image,
   quantize_info.colorspace=image->matte ? TransparentColorspace : RGBColorspace;
   cube_info=GetCubeInfo(&quantize_info,8);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to map image",
+    ThrowBinaryException(ResourceLimitError,"Unable to map image",
       "Memory allocation failed");
   status=Classification(cube_info,map_image,&image->exception);
   if (status != False)
@@ -1628,7 +1628,7 @@ MagickExport unsigned int MapImages(Image *images,const Image *map_image,
   */
   cube_info=GetCubeInfo(&quantize_info,8);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to map image sequence",
+    ThrowBinaryException(ResourceLimitError,"Unable to map image sequence",
       "Memory allocation failed");
   status=Classification(cube_info,map_image,&image->exception);
   if (status != False)
@@ -1713,7 +1713,7 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
   */
   (void) NormalizeImage(image);
   if (!AllocateImageColormap(image,2))
-    ThrowBinaryException(ResourceLimitWarning,"Unable to dither image",
+    ThrowBinaryException(ResourceLimitError,"Unable to dither image",
       "Memory allocation failed");
   /*
     Dither image with the ordered dithering technique.
@@ -2028,7 +2028,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   */
   cube_info=GetCubeInfo(quantize_info,depth);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
+    ThrowBinaryException(ResourceLimitError,"Unable to quantize image",
       "Memory allocation failed");
   if (quantize_info->colorspace != RGBColorspace)
     (void) RGBTransformImage(image,quantize_info->colorspace);
@@ -2148,7 +2148,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   */
   cube_info=GetCubeInfo(quantize_info,depth);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,
+    ThrowBinaryException(ResourceLimitError,
       "Unable to quantize image sequence","Memory allocation failed");
   image=images;
   for (i=0; image != (Image *) NULL; i++)

@@ -236,7 +236,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Initialize the printer.
@@ -375,13 +375,13 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           */
           clone_image=CloneImage(image,0,0,True,&image->exception);
           if (clone_image == (Image *) NULL)
-            ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
+            ThrowWriterException(ResourceLimitError,"Unable to scale image",
               image);
           monochrome_image=ZoomImage(clone_image,geometry.width,geometry.height,
             &image->exception);
           DestroyImage(clone_image);
           if (monochrome_image == (Image *) NULL)
-            ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
+            ThrowWriterException(ResourceLimitError,"Unable to scale image",
               image);
         }
       if (!IsMonochromeImage(monochrome_image,&monochrome_image->exception))

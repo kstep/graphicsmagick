@@ -330,7 +330,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     ConcatenateString(&search_path,path);
   }
 #endif
-  ThrowException(exception,ConfigurationWarning,
+  ThrowException(exception,ConfigurationError,
     "Unable to open configuration file",search_path);
   LiberateMemory((void **) &search_path);
   LiberateMemory((void **) &path);
@@ -764,7 +764,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
   assert(name != (const char *) NULL);
   magick_info=(MagickInfo *) AcquireMemory(sizeof(MagickInfo));
   if (magick_info == (MagickInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate image",
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocate image",
       "Memory allocation failed");
   (void) memset(magick_info,0,sizeof(MagickInfo));
   magick_info->name=AcquireString(name);

@@ -491,7 +491,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
       scanline_length=ReadBlobByte(blob);
     if (scanline_length >= row_bytes)
       {
-        ThrowException(&image->exception,CorruptImageWarning,
+        ThrowException(&image->exception,CorruptImageError,
           "Unable to uncompress image","scanline length exceeds row bytes");
         break;
       }
@@ -773,7 +773,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Read PICT header.
   */
@@ -783,17 +783,17 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   ReadRectangle(frame);
   while ((c=ReadBlobByte(image)) == 0);
   if (c != 0x11)
-    ThrowReaderException(CorruptImageWarning,"Not a PICT image file",image);
+    ThrowReaderException(CorruptImageError,"Not a PICT image file",image);
   version=ReadBlobByte(image);
   if (version == 2)
     {
       c=ReadBlobByte(image);
       if (c != 0xff)
-        ThrowReaderException(CorruptImageWarning,"Not a PICT image file",image);
+        ThrowReaderException(CorruptImageError,"Not a PICT image file",image);
     }
   else
     if (version != 1)
-      ThrowReaderException(CorruptImageWarning,"Not a PICT image file",image);
+      ThrowReaderException(CorruptImageError,"Not a PICT image file",image);
   /*
     Create black canvas.
   */
@@ -870,7 +870,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 break;
               }
             if (pattern != 1)
-              ThrowReaderException(CorruptImageWarning,"Unknown pattern type",
+              ThrowReaderException(CorruptImageError,"Unknown pattern type",
                 image);
             length=ReadBlobMSBShort(image);
             ReadRectangle(frame);
@@ -1006,7 +1006,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 if (!AllocateImageColormap(tile_image,tile_image->colors))
                   {
                     DestroyImage(tile_image);
-                    ThrowReaderException(ResourceLimitWarning,
+                    ThrowReaderException(ResourceLimitError,
                       "Memory allocation failed",image)
                   }
                 if (bytes_per_line & 0x8000)
@@ -1058,7 +1058,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowReaderException(ResourceLimitWarning,
+                ThrowReaderException(ResourceLimitError,
                   "Memory allocation failed",image)
               }
             /*
@@ -1163,7 +1163,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 image->color_profile.info=(unsigned char *)
                   AcquireMemory(length);
                 if (image->color_profile.info == (unsigned char *) NULL)
-                  ThrowReaderException(ResourceLimitWarning,
+                  ThrowReaderException(ResourceLimitError,
                     "Memory allocation failed",image);
                 image->color_profile.length=length;
                 (void) memcpy(image->color_profile.info,info,length);
@@ -1174,7 +1174,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 image->iptc_profile.info=(unsigned char *)
                   AcquireMemory(length);
                 if (image->iptc_profile.info == (unsigned char *) NULL)
-                  ThrowReaderException(ResourceLimitWarning,
+                  ThrowReaderException(ResourceLimitError,
                     "Memory allocation failed",image);
                 image->iptc_profile.length=length;
                 (void) memcpy(image->iptc_profile.info,info,length);
@@ -1231,7 +1231,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         TemporaryFilename(clone_info->filename);
         file=fopen(clone_info->filename,WriteBinaryType);
         if (file == (FILE *) NULL)
-          ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+          ThrowReaderException(FileOpenError,"Unable to write file",image);
         length=ReadBlobMSBLong(image);
         for (i=0; i < 6; i++)
           (void) ReadBlobMSBLong(image);
@@ -1282,7 +1282,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       }
   }
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+    ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }
@@ -1456,11 +1456,11 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((image->columns > 65535L) || (image->rows > 65535L))
-    ThrowWriterException(ResourceLimitWarning,
+    ThrowWriterException(ResourceLimitError,
       "Width or height limit exceeded",image);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);
   /*
     Initialize image info.
@@ -1516,7 +1516,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if ((buffer == (unsigned char *) NULL) ||
       (packed_scanline == (unsigned char *) NULL) ||
       (scanline == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitError,"Memory allocation failed",image);
   /*
     Write header, header size, size bounding box, version, and reserved.
   */

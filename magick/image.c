@@ -117,7 +117,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   */
   allocate_image=(Image *) AcquireMemory(sizeof(Image));
   if (allocate_image == (Image *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate image",
+    MagickFatalError(ResourceLimitFatalError,"Unable to allocate image",
       "Memory allocation failed");
   (void) memset(allocate_image,0,sizeof(Image));
   /*
@@ -383,7 +383,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
+  ThrowBinaryException(MissingDelegateError,"X11 library is not available",
     image->filename);
   return(False);
 }
@@ -445,7 +445,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(OptionWarning,"Unable to append images",
+    ThrowImageException(OptionError,"Unable to append images",
       "an image sequence is required");
   width=image->columns;
   height=image->rows;
@@ -579,12 +579,12 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(OptionWarning,"Unable to average image sequence",
+    ThrowImageException(OptionError,"Unable to average image sequence",
       "image sequence required");
   for (next=image; next != (Image *) NULL; next=next->next)
   {
     if ((next->columns != image->columns) || (next->rows != image->rows))
-      ThrowImageException(OptionWarning,"Unable to average image sequence",
+      ThrowImageException(OptionError,"Unable to average image sequence",
         "image widths or heights differ");
   }
   /*
@@ -593,7 +593,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
   number_pixels=image->columns*image->rows;
   sum=(SumPacket *) AcquireMemory(number_pixels*sizeof(SumPacket));
   if (sum == (SumPacket *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to average image sequence",
+    ThrowImageException(ResourceLimitError,"Unable to average image sequence",
       "Memory allocation failed");
   (void) memset(sum,0,number_pixels*sizeof(SumPacket));
   /*
@@ -902,7 +902,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       length=Max(image->colors,MaxRGB+1)*sizeof(PixelPacket);
       clone_image->colormap=(PixelPacket *) AcquireMemory(length);
       if (clone_image->colormap == (PixelPacket *) NULL)
-        ThrowImageException(ResourceLimitWarning,"Unable to clone image",
+        ThrowImageException(ResourceLimitError,"Unable to clone image",
           "Memory allocation failed");
       length=image->colors*sizeof(PixelPacket);
       (void) memcpy(clone_image->colormap,image->colormap,length);
@@ -922,7 +922,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       clone_image->color_profile.info=(unsigned char *)
         AcquireMemory(clone_image->color_profile.length);
       if (clone_image->color_profile.info == (unsigned char *) NULL)
-        ThrowImageException(ResourceLimitWarning,"Unable to clone image",
+        ThrowImageException(ResourceLimitError,"Unable to clone image",
           "Memory allocation failed");
       (void) memcpy(clone_image->color_profile.info,
         image->color_profile.info,clone_image->color_profile.length);
@@ -937,7 +937,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       clone_image->iptc_profile.info=(unsigned char *)
         AcquireMemory(clone_image->iptc_profile.length);
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
-        ThrowImageException(ResourceLimitWarning,"Unable to clone image",
+        ThrowImageException(ResourceLimitError,"Unable to clone image",
           "Memory allocation failed");
       (void) memcpy(clone_image->iptc_profile.info,
         image->iptc_profile.info,clone_image->iptc_profile.length);
@@ -951,7 +951,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       clone_image->generic_profile=(ProfileInfo *)
         AcquireMemory(image->generic_profiles*sizeof(ProfileInfo));
       if (clone_image->generic_profile == (ProfileInfo *) NULL)
-        ThrowImageException(ResourceLimitWarning,"Unable to clone image",
+        ThrowImageException(ResourceLimitError,"Unable to clone image",
           "Memory allocation failed");
       length=image->generic_profiles*sizeof(ProfileInfo);
       (void) memcpy(clone_image->generic_profile,image->generic_profile,
@@ -966,7 +966,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         clone_image->generic_profile[i].info=
           (unsigned char *) AcquireMemory(length);
         if (clone_image->generic_profile[i].info == (unsigned char *) NULL)
-          ThrowImageException(ResourceLimitWarning,"Unable to clone image",
+          ThrowImageException(ResourceLimitError,"Unable to clone image",
             "Memory allocation failed");
         (void) memcpy(clone_image->generic_profile[i].info,
           image->generic_profile[i].info,length);
@@ -1088,7 +1088,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 
   clone_info=(ImageInfo *) AcquireMemory(sizeof(ImageInfo));
   if (clone_info == (ImageInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to clone image info",
+    MagickFatalError(ResourceLimitFatalError,"Unable to clone image info",
       "Memory allocation failed");
   GetImageInfo(clone_info);
   if (image_info == (ImageInfo *) NULL)
@@ -2693,7 +2693,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
+  ThrowBinaryException(MissingDelegateError,"X11 library is not available",
     image->filename);
   return(False);
 }
@@ -3534,7 +3534,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     return(True);
   for (i=0; i < argc; i++)
     if (strlen(argv[i]) > (MaxTextExtent/2-1))
-      MagickError(OptionWarning,"Option length exceeds limit",argv[i]);
+      MagickFatalError(OptionError,"Option length exceeds limit",argv[i]);
   /*
     Initialize method variables.
   */
@@ -5670,7 +5670,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   z_map=(double *) AcquireMemory(3*(MaxRGB+1)*sizeof(double));
   if ((x_map == (double *) NULL) || (y_map == (double *) NULL) ||
       (z_map == (double *) NULL))
-    ThrowBinaryException(ResourceLimitWarning,
+    ThrowBinaryException(ResourceLimitError,
       "Unable to transform color space","Memory allocation failed");
   tx=0;
   ty=0;
@@ -6113,7 +6113,7 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
   if (clip_mask != (const Image *) NULL)
     if ((clip_mask->columns != image->columns) ||
         (clip_mask->rows != image->rows))
-      ThrowBinaryException(OptionWarning,"Unable to set clip mask",
+      ThrowBinaryException(OptionError,"Unable to set clip mask",
         "image widths or heights differ");
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
@@ -6461,7 +6461,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       FormatString(image_info->filename,"%.1024s",image->filename);
       file=fopen(image->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
-        ThrowBinaryException(MissingDelegateWarning,"Unable to write file",
+        ThrowBinaryException(MissingDelegateError,"Unable to write file",
           image->filename);
       i=0;
       for (c=fgetc(image->file); c != EOF; c=fgetc(image->file))
@@ -6813,7 +6813,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   */
   pixels=(unsigned short *) AcquireMemory(image->colors*sizeof(unsigned short));
   if (pixels == (unsigned short *) NULL)
-    ThrowBinaryException(MissingDelegateWarning,"Unable to sort colormap",
+    ThrowBinaryException(MissingDelegateError,"Unable to sort colormap",
       "Memory allocation failed");
   /*
     Assign index values to colormap entries.
@@ -6902,7 +6902,7 @@ MagickExport void SyncImage(Image *image)
     {
       if (indexes[x] >= image->colors)
         {
-          ThrowException(&image->exception,CorruptImageWarning,
+          ThrowException(&image->exception,CorruptImageError,
             "invalid colormap index",image->filename);
           indexes[x]=0;
         }
@@ -7133,7 +7133,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   blue_map=(double *) AcquireMemory(3*(MaxRGB+1)*sizeof(double));
   if ((red_map == (double *) NULL) || (green_map == (double *) NULL) ||
       (blue_map == (double *) NULL))
-    ThrowBinaryException(MissingDelegateWarning,
+    ThrowBinaryException(MissingDelegateError,
       "Unable to transform colorspace","Memory allocation failed");
   switch (colorspace)
   {

@@ -200,7 +200,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);
   transparent=False;
   i=0;
@@ -224,7 +224,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           number_pixels=image->columns*image->rows;
           matte_image=(unsigned char *) AcquireMemory(number_pixels);
           if (matte_image == (unsigned char *) NULL)
-            ThrowWriterException(ResourceLimitWarning,
+            ThrowWriterException(ResourceLimitError,
               "Memory allocation failed",image);
           for (y=0; y < (long) image->rows; y++)
           {

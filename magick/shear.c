@@ -968,7 +968,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   */
   integral_image=IntegralRotateImage(image,rotations,exception);
   if (integral_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
+    ThrowImageException(ResourceLimitError,"Unable to rotate image",
       "Memory allocation failed");
   SetImageType(integral_image,integral_image->background_color.opacity !=
     OpaqueOpacity ? TrueColorMatteType : TrueColorType);
@@ -998,7 +998,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   rotate_image=BorderImage(integral_image,&border_info,exception);
   DestroyImage(integral_image);
   if (rotate_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to rotate image",
+    ThrowImageException(ResourceLimitError,"Unable to rotate image",
       "Memory allocation failed");
   /*
     Rotate the image.
@@ -1084,14 +1084,14 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if ((x_shear == 180.0) || (y_shear == 180.0))
-    ThrowImageException(OptionWarning,"Unable to shear image",
+    ThrowImageException(OptionError,"Unable to shear image",
       "angle is discontinuous");
   /*
     Initialize shear angle.
   */
   integral_image=IntegralRotateImage(image,0,exception);
   if (integral_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to shear image",
+    ThrowImageException(ResourceLimitError,"Unable to shear image",
       "Memory allocation failed");
   SetImageType(integral_image,integral_image->background_color.opacity !=
     OpaqueOpacity ?  TrueColorMatteType : TrueColorType);
@@ -1114,7 +1114,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   border_info.height=y_offset;
   shear_image=BorderImage(integral_image,&border_info,exception);
   if (shear_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to shear image",
+    ThrowImageException(ResourceLimitError,"Unable to shear image",
       "Memory allocation failed");
   DestroyImage(integral_image);
   /*

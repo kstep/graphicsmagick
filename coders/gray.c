@@ -129,10 +129,10 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionWarning,"Must specify image size",image);
+    ThrowReaderException(OptionError,"Must specify image size",image);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   /*
@@ -141,7 +141,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   packet_size=image->depth > 8 ? 2 : 1;
   scanline=(unsigned char *) AcquireMemory(packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
     {
@@ -159,7 +159,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       Convert raster image to pixel packets.
     */
     if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -184,7 +184,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     for (j=0; j < (long) count; j++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */
@@ -402,7 +402,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   /*
     Convert image to gray scale PseudoColor class.
   */
@@ -416,7 +416,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     packet_size=image->depth > 8 ? 2: 1;
     scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
     if (scanline == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
         image);
     /*
       Convert MIFF to GRAY raster scanline.

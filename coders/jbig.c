@@ -148,7 +148,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
   /*
     Initialize JBIG toolkit.
   */
@@ -165,7 +165,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   */
   buffer=(unsigned char *) AcquireMemory(MaxBufferSize);
   if (buffer == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   status=JBG_EAGAIN;
   do
   {
@@ -189,7 +189,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   if (!AllocateImageColormap(image,2))
     {
       LiberateMemory((void **) &buffer);
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         image)
     }
   image->colormap[0].red=0;
@@ -246,7 +246,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
 static Image *ReadJBIGImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateWarning,
+  ThrowException(exception,MissingDelegateError,
     "JBIG library is not available",image_info->filename);
   return((Image *) NULL);
 }
@@ -424,7 +424,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   scene=0;
   do
   {
@@ -435,7 +435,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     number_packets=((image->columns+7) >> 3)*image->rows;
     pixels=(unsigned char *) AcquireMemory(number_packets);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      ThrowWriterException(ResourceLimitError,"Memory allocation failed",
         image);
     /*
       Convert pixels to a bitmap.
@@ -520,7 +520,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateWarning,"JBIG library is not available",
+  ThrowBinaryException(MissingDelegateError,"JBIG library is not available",
     image->filename);
 }
 #endif

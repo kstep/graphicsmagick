@@ -51,6 +51,9 @@ typedef void
   (*ErrorHandler)(const ExceptionType,const char *,const char *);
 
 typedef void
+  (*FatalErrorHandler)(const ExceptionType,const char *,const char *);
+
+typedef void
   (*WarningHandler)(const ExceptionType,const char *,const char *);
 
 /*
@@ -58,6 +61,9 @@ typedef void
 */
 extern MagickExport ErrorHandler
   SetErrorHandler(ErrorHandler);
+
+extern MagickExport FatalErrorHandler
+  SetFatalErrorHandler(FatalErrorHandler);
 
 extern MagickExport ExceptionType
   CatchImageException(Image *);
@@ -67,6 +73,7 @@ extern MagickExport void
   GetImageException(Image *,ExceptionInfo *),
   GetExceptionInfo(ExceptionInfo *),
   MagickError(const ExceptionType,const char *,const char *),
+  MagickFatalError(const ExceptionType,const char *,const char *),
   MagickWarning(const ExceptionType,const char *,const char *),
   SetExceptionInfo(ExceptionInfo *,ExceptionType),
   ThrowException(ExceptionInfo *,const ExceptionType,const char *,const char *);
