@@ -187,9 +187,6 @@ extern MagickExport ClassType
 extern MagickExport ColorspaceType
   GetCacheColorspace(const Cache);
 
-extern MagickExport const VirtualPixelMethod
-  GetImageVirtualPixelMethod(const Image *);
-
 extern MagickExport const PixelPacket
   *AcquireCacheNexus(const Image *,const long,const long,const unsigned long,
     const unsigned long,const unsigned long,ExceptionInfo *);
@@ -212,6 +209,9 @@ extern MagickExport unsigned int
 extern MagickExport unsigned long
   GetNexus(Cache),
   GetPixelCacheArea(const Image *);
+
+extern MagickExport VirtualPixelMethod
+  GetImageVirtualPixelMethod(const Image *);
 
 extern MagickExport void
   AllocateCacheNexus(CacheInfo *),

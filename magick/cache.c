@@ -1091,7 +1091,7 @@ MagickExport PixelPacket *GetImagePixels(Image *image,const long x,const long y,
 %
 %  The format of the GetImageVirtualPixelMethod() method is:
 %
-%      const VirtualPixelMethod GetImageVirtualPixelMethod(Image *image)
+%      VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1099,8 +1099,7 @@ MagickExport PixelPacket *GetImagePixels(Image *image,const long x,const long y,
 %
 %
 */
-MagickExport const VirtualPixelMethod GetImageVirtualPixelMethod(
-  const Image *image)
+MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 {
   CacheInfo
     *cache_info;
