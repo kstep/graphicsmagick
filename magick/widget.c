@@ -1741,9 +1741,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         XGetWidgetInfo((char *) NULL,&mode_info);
         mode_info.active=True;
         mode_info.bevel_width=0;
-        mode_info.width=action_info.x-reply_info.x-QuantumMargin;
+        mode_info.width=action_info.x-(QuantumMargin << 1);
         mode_info.height=action_info.height;
-        mode_info.x=reply_info.x;
+        mode_info.x=QuantumMargin;
         mode_info.y=action_info.y;
         /*
           Initialize scroll information.
@@ -2005,9 +2005,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           &windows->widget.pixel_info->matte_color);
         mode_info.text=colorname;
         FormatString(mode_info.text,"#%02x%02x%02x",
-          ScaleShortToQuantum(windows->widget.pixel_info->matte_color.red),
-          ScaleShortToQuantum(windows->widget.pixel_info->matte_color.green),
-          ScaleShortToQuantum(windows->widget.pixel_info->matte_color.blue));
+          windows->widget.pixel_info->matte_color.red,
+          windows->widget.pixel_info->matte_color.green,
+          windows->widget.pixel_info->matte_color.blue);
         XDrawBeveledButton(display,&windows->widget,&mode_info);
         windows->widget.pixel_info->matte_color=color;
         state&=(~RedrawActionState);
