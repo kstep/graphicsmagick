@@ -1345,6 +1345,8 @@ int main(int argc,char **argv)
           if ((status == False) || image_info.adjoin)
             break;
         }
+        for (p=image; p != (Image *) NULL; p=p->next)
+          scene--;
         if (image_info.verbose)
           DescribeImage(image,stdout,False);
         if ((Latin1Compare(image_info.filename,"-") != 0) ||

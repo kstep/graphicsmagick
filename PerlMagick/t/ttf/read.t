@@ -17,14 +17,14 @@ chdir 't/ttf' || die 'Cd failed';
 #
 # 1) Test default ImageMagick read operation on font
 #
-testRead( 'input.ttf', 'd9925b776eb0e8e0e126d9e510710f07' );
+testRead( 'input.ttf', 'baaf49ac19e459bd9cdf877024a9ffb8' );
 
 #
 # 2) Test drawing text using font
 #
 ++$test;
 $infile = 'input.ttf';
-$md5    = 'dc0511fee04057fdaa58c41642f1a898';
+$md5    = 'e513ad26bd10ead0f98e7b571855340f';
 
 $image=Image::Magick->new;
 $x=$image->Set(font=>"\@$infile", pen=>'#0000FF', pointsize=>14);
@@ -37,7 +37,6 @@ if( "$x" ) {
     print "ReadImage failed!";
     print "not ok $test\n";
   } else {
-    $image->SignatureImage();
     $signature=$image->Get('signature');
     if ( $signature ne $md5 ) {
       print "Got: $signature, expected: $md5\n";

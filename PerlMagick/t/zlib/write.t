@@ -21,7 +21,7 @@ chdir 't/zlib' || die 'Cd failed';
 testReadWrite( 'input.miff',
 	       'output.miff',
 	       q/compress=>'Zip'/,
-	       '8de05f913b3269ce6acafbfba975837f' );
+	       'ae64e066b6ec4294074de1226bd8d08a' );
 
 $test = 0;  # Quench PERL compliaint
 

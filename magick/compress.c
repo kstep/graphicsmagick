@@ -678,6 +678,7 @@ Export unsigned int GIFDecodeImage(Image *image)
   image->packets=0;
   q=image->pixels;
   q->length=MaxRunlength;
+  q->length=0;
   for (i=0; i < (image->columns*image->rows); )
   {
     if (top_stack == pixel_stack)
@@ -1190,6 +1191,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   image->packets=0;
   q=image->pixels;
   q->length=MaxRunlength;
+  q->length=0;
   for (y=0; ((y < image->rows) && (null_lines < 3)); )
   {
     /*
@@ -2740,17 +2742,8 @@ Export unsigned int PICTEncodeImage(Image *image,unsigned char *scanline,
     Write the number of and the packed packets.
   */
   packets=(int) (q-pixels);
-  if ((bytes_per_line-1) > 250)
-    {
-      MSBFirstWriteShort((unsigned short) packets,image->file);
-      packets+=2;
-    }
-  else
-    {
-      index=(unsigned char) packets;
-      (void) fputc((char) index,image->file);
-      packets++;
-    }
+  MSBFirstWriteShort((unsigned short) packets,image->file);
+  packets+=2;
   while (q != pixels)
   {
     q--;

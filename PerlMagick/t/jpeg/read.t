@@ -16,12 +16,12 @@ chdir 't/jpeg' || die 'Cd failed';
 #
 # 1) Test non-interlaced image read
 # 
-testRead( 'input.jpg', '67646163ce13f2ee08c2cfce772386a7' );
+testRead( 'input.jpg', '2cdf3d196a7974c33e788c032cb918e0' );
 
 #
 # 2) Test plane-interlaced image read
 # 
 ++$test;
-testRead( 'input_plane.jpg', '67646163ce13f2ee08c2cfce772386a7' );
+testRead( 'input_plane.jpg', '2cdf3d196a7974c33e788c032cb918e0' );
 
 

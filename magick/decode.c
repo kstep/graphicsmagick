@@ -178,6 +178,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info)
     */
     q=image->pixels;
     q->length=MaxRunlength;
+    q->length=0;
     for (y=0; y < image->rows; y++)
     {
       for (x=0; x < image->columns; x++)
@@ -840,6 +841,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    PrematureExit(OptionWarning,"must specify image size",image);
   if (image_info->interlace != PartitionInterlace)
     {
       /*
@@ -1110,6 +1113,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
     }
     TransformRGBImage(image,CMYKColorspace);
     CondenseImage(image);
+    if (feof(image->file))
+      MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -2431,6 +2436,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
   index=0;
   q=image->pixels;
   q->length=MaxRunlength;
+  q->length=0;
   for (y=0; y < image->rows; y++)
   {
     if ((y % tile_height) == 0)
@@ -2531,7 +2537,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingPluginWarning,"FPX library is not available",
     image_info->filename);
-  return(ReadMIFFImage(image_info));
+  return((Image *) NULL);
 }
 #endif
 
@@ -3132,6 +3138,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    PrematureExit(OptionWarning,"must specify image size",image);
   /*
     Open image file.
   */
@@ -3193,6 +3201,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info)
         image->file);
     q=image->pixels;
     q->length=MaxRunlength;
+    q->length=0;
     for (y=0; y < image->rows; y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
@@ -3236,6 +3245,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info)
     image->packets=packets;
     SyncImage(image);
     CondenseImage(image);
+    if (feof(image->file))
+      MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -3536,7 +3547,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingPluginWarning,"HDF library is not available",
     image_info->filename);
-  return(ReadMIFFImage(image_info));
+  return((Image *) NULL);
 }
 #endif
 
@@ -3907,6 +3918,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info)
   p=jbg_dec_getimage(&jbig_info,0);
   q=image->pixels;
   q->length=MaxRunlength;
+  q->length=0;
   for (y=0; y < image->rows; y++)
   {
     bit=0;
@@ -3958,7 +3970,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingPluginWarning,"JBIG library is not available",
     image_info->filename);
-  return(ReadMIFFImage(image_info));
+  return((Image *) NULL);
 }
 #endif
 
@@ -4303,6 +4315,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
   scanline[0]=(JSAMPROW) jpeg_pixels;
   q=image->pixels;
   q->length=MaxRunlength;
+  q->length=0;
   for (y=0; y < image->rows; y++)
   {
     (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
@@ -4401,7 +4414,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingPluginWarning,"JPEG library is not available",
     image_info->filename);
-  return(ReadMIFFImage(image_info));
+  return((Image *) NULL);
 }
 #endif
 
@@ -6289,6 +6302,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info)
   byte=0;
   q=image->pixels;
   q->length=MaxRunlength;
+  q->length=0;
   for (y=0; y < image->rows; y++)
   {
     bit=0;
@@ -6530,6 +6544,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info)
     */
     q=image->pixels;
     q->length=MaxRunlength;
+    q->length=0;
     for (y=0; y < image->rows; y++)
     {
       for (x=0; x < image->columns; x++)
@@ -7115,7 +7130,7 @@ static Image *ReadPCLImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingPluginWarning,"Cannot read PCL images",
     image_info->filename);
-  return(ReadMIFFImage(image_info));
+  return((Image *) NULL);
 }
 
 /*
@@ -7428,6 +7443,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info)
     index=0;
     q=image->pixels;
     q->length=MaxRunlength;
+    q->length=0;
     for (y=0; y < image->rows; y++)
     {
       p=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
@@ -8284,6 +8300,7 @@ Export Image *ReadPICTImage(ImageInfo *image_info)
           p=pixels;
           q=tiled_image->pixels;
           q->length=MaxRunlength;
+          q->length=0;
           for (y=0; y < tiled_image->rows; y++)
           {
             for (x=0; x < tiled_image->columns; x++)
@@ -9104,6 +9121,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
     */
     q=image->pixels;
     q->length=MaxRunlength;
+    q->length=0;
     if (image->class == DirectClass)
       {
         Quantum
@@ -9379,7 +9397,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingPluginWarning,"PNG library is not available",
     image_info->filename);
-  return(ReadMIFFImage(image_info));
+  return((Image *) NULL);
 }
 #endif
 
@@ -9476,10 +9494,10 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
               (char *) NULL);
             return(0);
           }
-        *p++='\n';
         if (Latin1Compare(q,"END_OF_COMMENT") == 0)
           p=q;
         *p='\0';
+        c=fgetc(image->file);
       }
   } while (!isdigit(c));
   if (base == 2)
@@ -9651,6 +9669,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
     */
     q=image->pixels;
     q->length=MaxRunlength;
+    q->length=0;
     switch (format)
     {
       case '1':
@@ -9841,6 +9860,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
               index=fgetc(image->file);
             else
               index=LSBFirstReadShort(image->file);
+            if (index > max_value)
+              index=max_value;
             if ((index == q->index) && ((int) q->length < MaxRunlength))
               q->length++;
             else
@@ -9936,6 +9957,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
       SyncImage(image);
     else
       (void) IsPseudoClass(image);
+    if (feof(image->file))
+      MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     /*
       Proceed to next image.
     */
@@ -10873,6 +10896,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    PrematureExit(OptionWarning,"must specify image size",image);
   if (image_info->interlace != PartitionInterlace)
     {
       /*
@@ -11167,6 +11192,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
+    if (feof(image->file))
+      MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     /*
       Proceed to next image.
     */
@@ -13714,6 +13741,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
       range=max_sample_value;
     q=image->pixels;
     q->length=MaxRunlength;
+    q->length=0;
     method=0;
     if ((samples_per_pixel > 1) || TIFFIsTiled(tiff))
       {
@@ -14125,7 +14153,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingPluginWarning,"TIFF library is not available",
     image_info->filename);
-  return(ReadMIFFImage(image_info));
+  return((Image *) NULL);
 }
 #endif
 
@@ -14655,7 +14683,7 @@ static Image *ReadUILImage(const ImageInfo *image_info)
 {
   MagickWarning(MissingPluginWarning,"Cannot read UIL images",
     image_info->filename);
-  return(ReadMIFFImage(image_info));
+  return((Image *) NULL);
 }
 
 
@@ -14711,6 +14739,8 @@ static Image *ReadUYVYImage(const ImageInfo *image_info)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    PrematureExit(OptionWarning,"must specify image size",image);
   /*
     Open image file.
   */
@@ -16965,6 +16995,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   q=image->pixels;
   q->length=MaxRunlength;
+  q->length=0;
   switch (image->class)
   {
     case DirectClass:
@@ -17216,6 +17247,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    PrematureExit(OptionWarning,"must specify image size",image);
   if (image_info->interlace != PartitionInterlace)
     {
       /*
@@ -17527,6 +17560,16 @@ Export Image *ReadImage(ImageInfo *image_info)
       magic_number[MaxTextExtent-1]='\0';
       if (strncmp(magic_number,"BM",2) == 0)
         (void) strcpy(decode_info.magick,"BMP");
+      if (strncmp(magic_number,"IC",2) == 0)
+        (void) strcpy(decode_info.magick,"BMP");
+      if (strncmp(magic_number,"PI",2) == 0)
+        (void) strcpy(decode_info.magick,"BMP");
+      if (strncmp(magic_number,"CI",2) == 0)
+        (void) strcpy(decode_info.magick,"BMP");
+      if (strncmp(magic_number,"CP",2) == 0)
+        (void) strcpy(decode_info.magick,"BMP");
+      if (strncmp(magic_number,"BEGMF",3) == 0)
+        (void) strcpy(decode_info.magick,"CGM");
       if (strncmp(magic_number,"\305\320\323\306",4) == 0)
         (void) strcpy(decode_info.magick,"EPT");
       if (strncmp(magic_number,"IT0",3) == 0)
@@ -17544,9 +17587,9 @@ Export Image *ReadImage(ImageInfo *image_info)
       if ((strncmp(magic_number,"<HTML",5) == 0) ||
           (strncmp(magic_number,"<html",5) == 0))
         (void) strcpy(decode_info.magick,"HTML");
-      if (strncmp(magic_number,"\001\332",2) == 0)
-        (void) strcpy(decode_info.magick,"SGI");
-      if (strncmp(magic_number,"\377\330\377",3) == 0)
+      if (strncmp(magic_number,"\377\330\377\340",4) == 0)
+        (void) strcpy(decode_info.magick,"JPEG");
+      if (strncmp(magic_number,"\377\330\377\356",4) == 0)
         (void) strcpy(decode_info.magick,"JPEG");
       if (strncmp(magic_number,"id=ImageMagick",14) == 0)
         (void) strcpy(decode_info.magick,"MIFF");
@@ -17557,16 +17600,20 @@ Export Image *ReadImage(ImageInfo *image_info)
           (void) strcpy(decode_info.magick,"MPEG");
       if (strncmp(magic_number,"PCD_",4) == 0)
         (void) strcpy(decode_info.magick,"PCD");
+      if (strncmp(magic_number,"\033E\033",3) == 0)
+        (void) strcpy(decode_info.magick,"PCL");
       if (strncmp(magic_number,"\12\2",2) == 0)
         (void) strcpy(decode_info.magick,"PCX");
       if (strncmp(magic_number,"\12\5",2) == 0)
         (void) strcpy(decode_info.magick,"PCX");
-      if (strncmp(magic_number,"%!PDF",5) == 0)
+      if (strncmp(magic_number,"%PDF-",5) == 0)
         (void) strcpy(decode_info.magick,"PDF");
       if ((*magic_number == 'P') && isdigit((int) (magic_number[1])))
         (void) strcpy(decode_info.magick,"PNM");
       if (strncmp(magic_number,"\211PNG\r\n\032\n",8) == 0)
         (void) strcpy(decode_info.magick,"PNG");
+      if (strncmp(magic_number,"\004%!",3) == 0)
+        (void) strcpy(decode_info.magick,"PS");
       if (strncmp(magic_number,"%!",2) == 0)
         (void) strcpy(decode_info.magick,"PS");
       if (strncmp(magic_number,"8BPS",4) == 0)
@@ -17575,10 +17622,14 @@ Export Image *ReadImage(ImageInfo *image_info)
         (void) strcpy(decode_info.magick,"RAD");
       if (strncmp(magic_number,"\122\314",2) == 0)
         (void) strcpy(decode_info.magick,"RLE");
+      if (strncmp(magic_number,"\001\332",2) == 0)
+        (void) strcpy(decode_info.magick,"SGI");
       if (strncmp(magic_number,"\131\246\152\225",4) == 0)
         (void) strcpy(decode_info.magick,"SUN");
-      if ((strncmp(magic_number,"\115\115\000\052",4) == 0) ||
-          (strncmp(magic_number,"\111\111\052\000",4) == 0))
+      if ((magic_number[0] == 0x4D) && (magic_number[1] == 0x4D))
+        if ((magic_number[2] == 0x00) && (magic_number[3] == (char) 0x2A))
+          (void) strcpy(decode_info.magick,"TIFF");
+      if (strncmp(magic_number,"\111\111\052\000",4) == 0)
         (void) strcpy(decode_info.magick,"TIFF");
       if ((strncmp(magic_number,"LBLSIZE",7) == 0) ||
           (strncmp(magic_number,"NJPL1I",6) == 0))

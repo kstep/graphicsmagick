@@ -3735,11 +3735,10 @@ Get(ref, ...)
 		    else if (strEQcase(arg, "sign"))
 		    {
 			if (image)
-			  {
-			    if (!image->signature)
-		    		SignatureImage(image);
-			    s = newSVpv(image->signature, 0);
-			  }
+			    {
+				SignatureImage(image);
+				s = newSVpv(image->signature, 0);
+			    }
 		    }
 		    break;
 		case 'T': case 't':

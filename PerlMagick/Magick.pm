@@ -24,7 +24,7 @@ require AutoLoader;
 	MissingPluginWarning CorruptImageWarning FileOpenWarning
     );
 
-$VERSION = '1.45';
+$VERSION = '1.46';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()

@@ -20,7 +20,7 @@ chdir 't/tiff' || die 'Cd failed';
 testReadWrite( 'input_256.tiff',
 	       'output_256.tiff',
 	       q/quality=>54/,
-	       'e026b9f6e8d28422055dda3013e6e579' );
+	       '6098df40d515cdc35541d05928c0ea1b' );
 
 #
 # 2) Test truecolor image
@@ -29,7 +29,7 @@ testReadWrite( 'input_256.tiff',
 testReadWrite( 'input_truecolor.tiff',
 	       'output_truecolor.tiff',
 	       q/quality=>55/,
-	       '3774342c000dde64d8c7c309061251d6' );
+	       'ae1ef2c41e1750186bc03d867a9b47bf' );
 
 #
 # 3) Test monochrome image
@@ -38,4 +38,4 @@ testReadWrite( 'input_truecolor.tiff',
 testReadWrite(  'input_mono.tiff',
 		'output_mono.tiff',
 		q//,
-		'17fc11e2b072769329e2e8df4f9e6fe1' );
+		'f194ead12be5179c3930fa7a59e9af45' );

@@ -501,7 +501,8 @@ int main(int argc,char **argv)
                   (void) XParseGeometry(argv[i],&x,&x,&resource_info.delay,
                     &resource_info.pause);
                 }
-              }
+              break;
+            }
           if (strncmp("density",option+1,3) == 0)
             {
               image_info.density=(char *) NULL;

@@ -17,4 +17,4 @@ chdir 't/zlib' || die 'Cd failed';
 #
 # 1) Test reading Zip compressed MIFF
 # 
-testRead( 'input.miff', '8de05f913b3269ce6acafbfba975837f' );
+testRead( 'input.miff', '0acbc70bac502726c1b72d3c3ff4d0fe' );

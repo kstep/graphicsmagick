@@ -1,6 +1,9 @@
 Revision history for Perl extension Image::Magick.
 
-1.45 Dat Sep 12 1998
+1.46 Sat Tue 22 1998
+	- This is hopefully the final release that with ImageMagick 4.1
+	  will allow Perlmagick to pass all 231 regression tests.
+1.45 Sat Sep 12 1998
 	- Revised the suite of tests (thanks to Bob Friesenhahn).  For
 	  consistency across all methods, you can now say
 	  Read(filename=>'image.gif').  Added chromaticity attributes.

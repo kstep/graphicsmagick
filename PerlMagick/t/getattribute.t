@@ -79,7 +79,7 @@ testGetAttribute('input.miff','packets','2534');
 testGetAttribute('input.miff','rows','46');
 
 ++$test;
-testGetAttribute('input.miff','signature','25c550da420eeb782f57dd88c689e819');
+testGetAttribute('input.miff','signature','30fe8b9fee6480481f3aa4e9931499f6');
 
 ++$test;
 testGetAttribute('input.miff','text',undef);

@@ -8,7 +8,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 
-BEGIN { $| = 1; $test=1; print "1..36\n"; }
+BEGIN { $| = 1; $test=1; print "1..35\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -23,15 +23,7 @@ chdir 't' || die 'Cd failed';
 testReadWrite( 'AVS:input.avs',
                'AVS:output.avs',
                q//,
-               '93bd185340123477f0a0e6622392a5b4' );
-#
-# Joint Bi-level Image experts Group file interchange format
-#
-++$test;
-testReadWrite( 'BIE:input.bie',
-               'BIE:output.bie',
-               q//,
-               '1a8d5855273e27302856c727934c9f9a' );
+               'f3e5ab88e328da3044c1fc177a7e2978' );
 
 #
 # Microsoft Windows bitmap image file
@@ -40,7 +32,7 @@ testReadWrite( 'BIE:input.bie',
 testReadWrite( 'BMP:input.bmp',
                'BMP:output.bmp',
                q//,
-               '25c550da420eeb782f57dd88c689e819' );
+               '30fe8b9fee6480481f3aa4e9931499f6' );
 
 #
 # Microsoft Windows 24-bit bitmap image file
@@ -49,7 +41,7 @@ testReadWrite( 'BMP:input.bmp',
 testReadWrite( 'BMP24:input.bmp24',
                'BMP24:output.bmp24',
                q//,
-               '3a17784c61a87a98f8e25f1977b9d363' );
+               'e9b162b8431709942886f79b7b7c11bb');
 
 #
 # ZSoft IBM PC multi-page Paintbrush file
@@ -58,7 +50,7 @@ testReadWrite( 'BMP24:input.bmp24',
 testReadWrite( 'DCX:input.dcx',
                'DCX:output.dcx',
                q//,
-               '25c550da420eeb782f57dd88c689e819' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # Microsoft Windows bitmap image file
@@ -67,7 +59,7 @@ testReadWrite( 'DCX:input.dcx',
 testReadWrite( 'DIB:input.dib',
                'DIB:output.dib',
                q//,
-               '5cb2c2f3d73b57302059da592506be22' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # Flexible Image Transport System
@@ -76,7 +68,7 @@ testReadWrite( 'DIB:input.dib',
 testReadWrite( 'FITS:input.fits',
                'FITS:output.fits',
                q//,
-               '21e7890c853c980821f28d233386f872' );
+               '402072120da1513decd3efc060473f60' );
 
 #
 # CompuServe graphics interchange format
@@ -85,7 +77,7 @@ testReadWrite( 'FITS:input.fits',
 testReadWrite( 'GIF:input.gif',
                'GIF:output.gif',
                q//,
-               '25c550da420eeb782f57dd88c689e819' );
+               'd5a97a3cec301d8848102f513ceb3f3c' );
 
 #
 # CompuServe graphics interchange format (1987)
@@ -94,7 +86,7 @@ testReadWrite( 'GIF:input.gif',
 testReadWrite( 'GIF87:input.gif87',
                'GIF87:output.gif87',
                q//,
-               '25c550da420eeb782f57dd88c689e819' );
+               'd5a97a3cec301d8848102f513ceb3f3c' );
 
 #
 # Magick image file format
@@ -103,7 +95,7 @@ testReadWrite( 'GIF87:input.gif87',
 testReadWrite( 'MIFF:input.miff',
                'MIFF:output.miff',
                q//,
-               '25c550da420eeb782f57dd88c689e819' );
+               '30fe8b9fee6480481f3aa4e9931499f6' );
 
 #
 # MTV Raytracing image format
@@ -112,7 +104,7 @@ testReadWrite( 'MIFF:input.miff',
 testReadWrite( 'MTV:input.mtv',
                'MTV:output.mtv',
                q//,
-               '3a17784c61a87a98f8e25f1977b9d363' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # Xv's visual schnauzer format.
@@ -121,25 +113,25 @@ testReadWrite( 'MTV:input.mtv',
 testReadWrite( 'P7:input_p7.p7',
                'P7:output_p7.p7',
                q//,
-               'ce0023b15e3ae5f140d4fc5f1bdfe6ab' );
+               '511e64f36f12cb8283b48bc3153aa98a' );
 
 #
 # Portable bitmap format (black and white), ASCII format
 #
 ++$test;
-testReadWrite( 'input_p1.pbm',
-               'output_p1.pbm',
+testReadWrite( 'PBM:input_p1.pbm',
+               'PBM:output_p1.pbm',
                q/compress=>'None'/,
-               '5ee57461fb1810e09ed6ddc6ffb11c7d' );
+               '61ed9c1e08dac993e5f020de8195e009' );
 
 #
 # Portable bitmap format (black and white), binary format
 #
 ++$test;
-testReadWrite( 'input_p4.pbm',
-               'output_p4.pbm',
+testReadWrite( 'PBM:input_p4.pbm',
+               'PBM:output_p4.pbm',
                q//,
-               '5ee57461fb1810e09ed6ddc6ffb11c7d' );
+               '61ed9c1e08dac993e5f020de8195e009' );
 
 #
 # ZSoft IBM PC Paintbrush file
@@ -148,25 +140,16 @@ testReadWrite( 'input_p4.pbm',
 testReadWrite( 'PCX:input.pcx',
                'PCX:output.pcx',
                q//,
-               '25c550da420eeb782f57dd88c689e819' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # Portable graymap format (gray scale), ASCII format
 #
 ++$test;
-testReadWrite( 'input_p2.pgm',
-               'output_p2.pgm',
+testReadWrite( 'PGM:input_p2.pgm',
+               'PGM:output_p2.pgm',
                q/compress=>'None'/,
-               '2cf0b0506d5464a70978557fbb02ff22' );
-
-#
-# Portable graymap format (gray scale), binary format
-#
-++$test;
-testReadWrite( 'input_p5.pgm',
-               'output_p5.pgm',
-               q//,
-               '2cf0b0506d5464a70978557fbb02ff22' );
+               'a3bec36f28fc5e83c2ddfaa4486f4f00' );
 
 #
 # Apple Macintosh QuickDraw/PICT file
@@ -175,25 +158,34 @@ testReadWrite( 'input_p5.pgm',
 testReadWrite( 'PICT:input.pict',
                'PICT:output.pict',
                q//,
-               'a166b7ae4fdb91cf89f612761f22317e' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # Portable pixmap format (color), ASCII format
 #
 ++$test;
-testReadWrite( 'input_p3.ppm',
-               'output_p3.ppm',
+testReadWrite( 'PPM:input_p3.ppm',
+               'PPM:output_p3.ppm',
                q/compress=>'None'/,
-               'd5fdeba9d1e28db7c07f1485d0d64697' );
+               'e9b162b8431709942886f79b7b7c11bb' );
+
+#
+# Portable graymap format (gray scale), binary format
+#
+++$test;
+testReadWrite( 'PGM:input_p5.pgm',
+               'PGM:output_p5.pgm',
+               q//,
+               'a3bec36f28fc5e83c2ddfaa4486f4f00' );
 
 #
 # Portable pixmap format (color), binary format
 #
 ++$test;
-testReadWrite( 'input_p6.ppm',
-               'output_p6.ppm',
+testReadWrite( 'PPM:input_p6.ppm',
+               'PPM:output_p6.ppm',
                q//,
-               'd5fdeba9d1e28db7c07f1485d0d64697' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # Adobe Photoshop bitmap file
@@ -202,7 +194,7 @@ testReadWrite( 'input_p6.ppm',
 testReadWrite( 'PSD:input.psd',
                'PSD:output.psd',
                q//,
-               '25c550da420eeb782f57dd88c689e819' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # Irix RGB image file
@@ -211,7 +203,7 @@ testReadWrite( 'PSD:input.psd',
 testReadWrite( 'SGI:input.sgi',
                'SGI:output.sgi',
                q//,
-               'a05c5863b2d073046329b0b71d5e85e9' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # SUN 1-bit Rasterfile
@@ -220,7 +212,7 @@ testReadWrite( 'SGI:input.sgi',
 testReadWrite( 'SUN:input.im1',
                'SUN:output.im1',
                q//,
-               '5ee57461fb1810e09ed6ddc6ffb11c7d' );
+               'd3ade8d6b9a7c216a8e7975450bb3d18' );
 
 #
 # SUN 8-bit Rasterfile
@@ -229,7 +221,7 @@ testReadWrite( 'SUN:input.im1',
 testReadWrite( 'SUN:input.im8',
                'SUN:output.im8',
                q//,
-               '25c550da420eeb782f57dd88c689e819' );
+               '30fe8b9fee6480481f3aa4e9931499f6' );
 
 #
 # SUN True-Color Rasterfile
@@ -238,7 +230,7 @@ testReadWrite( 'SUN:input.im8',
 testReadWrite( 'SUN:input.im24',
                'SUN:output.im24',
                q//,
-               '5cb2c2f3d73b57302059da592506be22' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # Truevision Targa image file
@@ -247,7 +239,7 @@ testReadWrite( 'SUN:input.im24',
 testReadWrite( 'TGA:input.tga',
                'TGA:output.tga',
                q//,
-               '25c550da420eeb782f57dd88c689e819' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 
 #
@@ -257,7 +249,7 @@ testReadWrite( 'TGA:input.tga',
 testReadWrite( 'VIFF:input.viff',
                'VIFF:output.viff',
                q//,
-               '5cb2c2f3d73b57302059da592506be22' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 #
 # X Windows system bitmap (black and white only)
 #
@@ -265,7 +257,7 @@ testReadWrite( 'VIFF:input.viff',
 testReadWrite( 'XBM:input.xbm',
                'XBM:output.xbm',
                q//,
-               '1a8d5855273e27302856c727934c9f9a' );
+               'd3ade8d6b9a7c216a8e7975450bb3d18' );
 
 #
 # X Windows system pixmap file (color)
@@ -274,7 +266,7 @@ testReadWrite( 'XBM:input.xbm',
 testReadWrite( 'XPM:input.xpm',
                'XPM:output.xpm',
                q//,
-               '8c6c6cb0311fb938c42bf9c2d169b9e8' );
+               'de76ba1b3c4eeacf4817b60f883889b9' );
 
 #
 # X Windows system window dump file (color)
@@ -283,7 +275,7 @@ testReadWrite( 'XPM:input.xpm',
 testReadWrite( 'XWD:input.xwd',
                'XWD:output.xwd',
                q//,
-               '25c550da420eeb782f57dd88c689e819' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # GRAY format
@@ -293,7 +285,7 @@ testReadWriteSized( 'GRAY:input_70x46.gray',
 		    'GRAY:output_70x46.gray',
 		    '70x46',
 		    q//,
-		    '42129d46fc552e41c3e23977e7b6e09f' );
+		    '17e5358049cdf0613e54f0f2eb42701d' );
 
 #
 # RGB format
@@ -303,7 +295,7 @@ testReadWriteSized( 'RGB:input_70x46.rgb',
 		    'RGB:output_70x46.rgb',
 		    '70x46',
 		    q//,
-		    '5cb2c2f3d73b57302059da592506be22' );
+		    'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # RGBA format
@@ -313,7 +305,7 @@ testReadWriteSized( 'RGBA:input_70x46.rgba',
 		    'RGBA:output_70x46.rgba',
 		    '70x46',
 		    q//,
-		    '5cb2c2f3d73b57302059da592506be22' );
+		    'cbea6d67fef0a219335af34069e36fac' );
 
 #
 # CMYK format
@@ -323,7 +315,7 @@ testReadWriteSized( 'CMYK:input_70x46.cmyk',
 		    'CMYK:output_70x46.cmyk',
 		    '70x46',
 		    q//,
-		    '5cb2c2f3d73b57302059da592506be22' );
+		    'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # UYVY format
@@ -333,7 +325,7 @@ testReadWriteSized( 'UYVY:input_70x46.uyvy',
 		    'UYVY:output_70x46.uyvy',
 		    '70x46',
 		    q//,
-		    '515bb4d72a3219513d5dd4c82f0aa3c4' );
+		    'b063c2f7ad1a48a58d3f80291b780180' );
 
 #
 # YUV format
@@ -343,7 +335,7 @@ testReadWriteSized( 'YUV:input_70x46.yuv',
 		    'YUV:output_70x46.yuv',
 		    '70x46',
 		    q//,
-		    '0b6a70f64d39a96e3c6823f27c28bdbd' );
+		    'c14b9bfbfba0105196ce2cccda7405ce' );
 
 
 1;

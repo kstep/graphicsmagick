@@ -987,6 +987,7 @@ Image *ReadPICTImage(ImageInfo *image_info)
   index=0;
   q=image->pixels;
   q->length=MaxRunlength;
+  q->index=0;
   for (y=0; y < image->rows; y++)
   {
     for (x=0; x < image->columns; x++)

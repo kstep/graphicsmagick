@@ -77,7 +77,6 @@
 */
 static unsigned int
   WriteMIFFImage(const ImageInfo *,Image *),
-  WritePNMImage(const ImageInfo *,Image *),
   WritePSImage(const ImageInfo *,Image *),
   WriteTIFFImage(const ImageInfo *,Image *),
   WriteXImage(const ImageInfo *image_info,Image *image),
@@ -6534,7 +6533,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     Allocate memory.
   */
   bytes_per_line=image->columns;
-  if (image->class == DirectClass)
+  if (!IsPseudoClass(image))
     bytes_per_line*=image->matte ? 4 : 3;
   buffer=(unsigned char *)
     AllocateMemory(PictHeaderSize*sizeof(unsigned char));
@@ -7398,6 +7397,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 {
 #define MaxRawValue  255
 
+  char
+    *magick;
+
   register int
     i,
     j;
@@ -7412,6 +7414,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     scene,
     x;
 
+  unsigned short
+    index;
+
   /*
     Open output image file.
   */
@@ -7424,10 +7429,12 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     /*
       Promote/Demote image based on image type.
     */
+    (void) IsPseudoClass(image);
     if (Latin1Compare(image_info->magick,"PPM") == 0)
       image->class=DirectClass;
-    if (((Latin1Compare(image_info->magick,"PGM") == 0) && !IsGrayImage(image)) ||
-        ((Latin1Compare(image_info->magick,"PBM") == 0) && !IsMonochromeImage(image)))
+    magick=(char *) image_info->magick;
+    if (((Latin1Compare(magick,"PGM") == 0) && !IsGrayImage(image)) ||
+        ((Latin1Compare(magick,"PBM") == 0) && !IsMonochromeImage(image)))
       {
         QuantizeInfo
           quantize_info;
@@ -7463,7 +7470,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         if ((image_info->compression == NoCompression) ||
             (MaxRGB > MaxRawValue))
           format='3';
-        if ((Latin1Compare(image_info->magick,"PPM") != 0) && IsGrayImage(image))
+        if ((Latin1Compare(magick,"PPM") != 0) && IsGrayImage(image))
           {
             /*
               Grayscale PNM image.
@@ -7472,7 +7479,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if ((image_info->compression == NoCompression) ||
                 (MaxRGB > MaxRawValue))
               format='2';
-            if (Latin1Compare(image_info->magick,"PGM") != 0)
+            if (Latin1Compare(magick,"PGM") != 0)
               if (image->colors == 2)
                 {
                   format='4';
@@ -7481,7 +7488,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 }
           }
       }
-    if (Latin1Compare(image_info->magick,"P7") == 0)
+    if (Latin1Compare(magick,"P7") == 0)
       {
         format='7';
         (void) fprintf(image->file,"P7 332\n");
@@ -7500,7 +7507,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         for (p=image->comments; *p != '\0'; p++)
         {
           (void) fputc(*p,image->file);
-          if (*p == '\n')
+          if ((*p == '\n') && (*(p+1) != '\0'))
             (void) fprintf(image->file,"#");
         }
         (void) fputc('\n',image->file);
@@ -7552,9 +7559,10 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         (void) fprintf(image->file,"%d\n",MaxRGB);
         for (i=0; i < image->packets; i++)
         {
+          index=DownScale(Intensity(*p));
           for (j=0; j <= ((int) p->length); j++)
           {
-            (void) fprintf(image->file,"%d ",p->red);
+            (void) fprintf(image->file,"%d ",index);
             x++;
             if (x == 12)
               {
@@ -7650,8 +7658,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         (void) fprintf(image->file,"%u\n",DownScale(MaxRGB));
         for (i=0; i < image->packets; i++)
         {
+          index=DownScale(Intensity(*p));
           for (j=0; j <= ((int) p->length); j++)
-            (void) fputc(DownScale(p->red),image->file);
+            (void) fputc(index,image->file);
           p++;
           if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
             ProgressMonitor(SaveImageText,i,image->packets);

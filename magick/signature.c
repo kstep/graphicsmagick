@@ -509,7 +509,8 @@ Export void SignatureImage(Image *image)
     WriteQuantum(p->red,q);
     WriteQuantum(p->green,q);
     WriteQuantum(p->blue,q);
-    WriteQuantum(p->index,q);
+    if (image->matte)
+      WriteQuantum(p->index,q);
     for (j=0; j <= ((int) p->length); j++)
       UpdateMessageDigest(&message_digest,message,q-message);
     p++;
