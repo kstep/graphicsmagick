@@ -2302,9 +2302,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         *tag,
         *text;
 
-      int
-        c;
-
       unsigned short
         length;
 
