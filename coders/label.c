@@ -116,6 +116,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   */
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  QueryColorDatabase("black",&draw_info->fill);
   draw_info->gravity=WestGravity;
   draw_info->text=AllocateString(image_info->filename);
   status=GetFontMetrics(image,draw_info,&metrics);
@@ -123,9 +124,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     ThrowReaderException(DelegateWarning,"Unable to get font metrics",image);
   image->columns=metrics.width;
   image->rows=metrics.height;
-  image->background_color.red=(~draw_info->fill.red);
-  image->background_color.green=(~draw_info->fill.green);
-  image->background_color.blue=(~draw_info->fill.blue);
+  QueryColorDatabase("white",&image->background_color);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
   image->matte=True;
@@ -136,8 +135,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      if (ColorMatch(*q,image->background_color,0))
-        q->opacity=TransparentOpacity;
+      q->opacity=Intensity(*q);
+      q->red=image_info->pen.red;
+      q->green=image_info->pen.green;
+      q->blue=image_info->pen.blue;
       q++;
     }
     if (!SyncImagePixels(image))
