@@ -3116,12 +3116,10 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
 {
 #define EmbedBit(byte) \
 { \
-  p=AcquireImagePixels(watermark,(long) (j % watermark->columns), \
-    (long) (j/watermark->columns),1,1,exception); \
-  if (p == (const PixelPacket *) NULL) \
-    break;  \
+  pixel=AcquireOnePixel(watermark,(long) (j % watermark->columns), \
+    (long) (j/watermark->columns),exception); \
   (byte)&=(~0x01); \
-  (byte)|=((unsigned long) Intensity(*p) >> shift) & 0x01; \
+  (byte)|=((unsigned long) Intensity(pixel) >> shift) & 0x01; \
   j++; \
   if (j == (long) (watermark->columns*watermark->rows)) \
     { \
@@ -3142,8 +3140,8 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
     shift,
     y;
 
-  register const PixelPacket
-    *p;
+  PixelPacket
+    pixel;
 
   register IndexPacket
     *indexes;
