@@ -2,7 +2,7 @@
 	* BUGFIX: Fixed bug, introduced on 12/18/02, in which a misplaced
 	 "}" caused an assertion failure after reading any opaque JNG image.
 	* Added CloseBlob before returning a NULL JNG image.
-	* Merged png.c with IM-5.3.3-1, including a seemingly pointless
+	* Merged png.c with IM-5.5.3-1, including a seemingly pointless
 	rename of SaveImagText string to SaveImageTag.
 
 2002-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
