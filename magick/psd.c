@@ -684,6 +684,9 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
     }
   else
     {
+      int
+        channel_map[24];
+
       /*
         Read uncompressed pixel data as separate planes.
       */
@@ -696,6 +699,8 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
       else
         if (image->depth > 8)
           packet_size++;
+      for (i=0; i < psd_header.channels; i++)
+        channel_map[i]=!image->matte ? i : i-1;
       scanline=(unsigned char *)
         AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
       if (scanline == (unsigned char *) NULL)
@@ -705,10 +710,10 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         for (y=0; y < (int) image->rows; y++)
         {
           q=GetPixelCache(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
+          status=ReadBlob(image,packet_size*image->columns,(char *) scanline);
+          if ((status == False) || (q == (PixelPacket *) NULL))
             break;
-          (void) ReadBlob(image,packet_size*image->columns,(char *) scanline);
-          switch (i)
+          switch (channel_map[i])
           {
             case 0:
             {
@@ -899,6 +904,14 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   else
     {
       packet_size=image->depth > 8 ? 2 : 1;
+      if (image->matte)
+        for (y=0; y < (int) image->rows; y++)
+        {
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          (void) WritePixelCache(image,OpacityQuantum,pixels);
+          (void) WriteBlob(image,packet_size*image->columns,pixels);
+        }
       for (y=0; y < (int) image->rows; y++)
       {
         if (!GetPixelCache(image,0,y,image->columns,1))
@@ -929,15 +942,12 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           (void) WritePixelCache(image,BlueQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
-      if (image->matte || (image->colorspace == CMYKColorspace))
+      if (image->colorspace == CMYKColorspace)
         for (y=0; y < (int) image->rows; y++)
         {
           if (!GetPixelCache(image,0,y,image->columns,1))
             break;
-          if (image->colorspace == CMYKColorspace)
-            (void) WritePixelCache(image,BlackQuantum,pixels);
-          else
-            (void) WritePixelCache(image,OpacityQuantum,pixels);
+          (void) WritePixelCache(image,BlackQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
         }
     }
