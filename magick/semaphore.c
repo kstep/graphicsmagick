@@ -180,14 +180,14 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
         LiberateMemory((void **) &semaphore_info);
         return((SemaphoreInfo *) NULL);
       }
-    }
+  }
 #endif
 #if defined(HasPTHREADS)
-    if (pthread_mutex_init(&semaphore_info->id,NULL) != 0)
-      {
-        LiberateMemory((void **) &semaphore_info);
-        return((SemaphoreInfo *) NULL);
-      }
+  if (pthread_mutex_init(&semaphore_info->id,NULL) != 0)
+    {
+      LiberateMemory((void **) &semaphore_info);
+      return((SemaphoreInfo *) NULL);
+    }
 #endif
   semaphore_info->signature=MagickSignature;
   return(semaphore_info);
@@ -318,7 +318,7 @@ MagickExport int LockSemaphore(SemaphoreInfo *semaphore_info)
 %
 %  The format of the LockSemaphore method is:
 %
-%      int UnlockSemaphore(&SemaphoreInfo *semaphore_info)
+%      int UnlockSemaphore(SemaphoreInfo *semaphore_info)
 %
 %  A description of each parameter follows:
 %
@@ -334,7 +334,7 @@ MagickExport int UnlockSemaphore(SemaphoreInfo *semaphore_info)
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
 #if defined(_VISUALC_) && defined(_MT)
-  if (ReleaseSemaphore(&semaphore_info->id,1,NULL) == FALSE)
+  if (ReleaseSemaphore(semaphore_info->id,1,NULL) == FALSE)
     return(False);
 #endif
 #if defined(HasPTHREADS)
