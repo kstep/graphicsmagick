@@ -1869,12 +1869,12 @@ MagickExport Image *XAnimateImages(Display *display,
             event.xclient.format,(unsigned long) event.xclient.data.l[0]);
         if (event.xclient.message_type == windows->im_protocols)
           {
-            if (*event.xclient.data.l == windows->im_update_colormap)
+            if (*event.xclient.data.l == (long) windows->im_update_colormap)
               {
                 /*
                   Update graphic context and window colormap.
                 */
-                for (i=0; i < (int) number_windows; i++)
+                for (i=0; i < number_windows; i++)
                 {
                   if (magick_windows[i]->id == windows->icon.id)
                     continue;
@@ -1902,7 +1902,7 @@ MagickExport Image *XAnimateImages(Display *display,
                   XInstallColormap(display,map_info->colormap);
                 break;
               }
-            if (*event.xclient.data.l == windows->im_exit)
+            if (*event.xclient.data.l == (long) windows->im_exit)
               {
                 state|=ExitState;
                 break;
@@ -1973,13 +1973,13 @@ MagickExport Image *XAnimateImages(Display *display,
         */
         if (event.xclient.message_type != windows->wm_protocols)
           break;
-        if (*event.xclient.data.l == windows->wm_take_focus)
+        if (*event.xclient.data.l == (long) windows->wm_take_focus)
           {
             XSetInputFocus(display,event.xclient.window,RevertToParent,
               event.xclient.data.l[1]);
             break;
           }
-        if (*event.xclient.data.l != windows->wm_delete_window)
+        if (*event.xclient.data.l != (long) windows->wm_delete_window)
           break;
         XWithdrawWindow(display,event.xclient.window,visual_info->screen);
         if (event.xclient.window == windows->image.id)

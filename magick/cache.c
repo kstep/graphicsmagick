@@ -272,8 +272,10 @@ static unsigned int CompressCache(Cache cache)
   int
     y;
 
+  long
+    count;
+
   size_t
-    count,
     length;
 
   assert(cache != (Cache) NULL);
@@ -302,7 +304,7 @@ static unsigned int CompressCache(Cache cache)
   for (y=0; y < (int) cache_info->rows; y++)
   {
     count=read(cache_info->file,pixels,cache_info->columns*sizeof(PixelPacket));
-    if ((size_t) gzwrite(file,pixels,(unsigned) count) != count)
+    if ((long) gzwrite(file,pixels,(unsigned) count) != count)
       break;
   }
   if (y == (int) cache_info->rows)
@@ -312,7 +314,7 @@ static unsigned int CompressCache(Cache cache)
       {
         count=read(cache_info->file,pixels,
           cache_info->columns*sizeof(IndexPacket));
-        if ((size_t) gzwrite(file,pixels,(unsigned) count) != count)
+        if ((long) gzwrite(file,pixels,(unsigned) count) != count)
           break;
       }
   LiberateMemory((void **) &pixels);
@@ -2215,8 +2217,10 @@ static unsigned int UncompressCache(Cache cache)
   int
     y;
 
+  long
+    count;
+
   size_t
-    count,
     length;
 
   assert(cache != (Cache) NULL);
@@ -2246,7 +2250,7 @@ static unsigned int UncompressCache(Cache cache)
   for (y=0; y < (int) cache_info->rows; y++)
   {
     length=cache_info->columns*sizeof(PixelPacket);
-    count=(size_t) gzread(file,pixels,(unsigned int) length);
+    count=(long) gzread(file,pixels,(unsigned int) length);
     if (write(cache_info->file,pixels,count) != count)
       break;
   }
@@ -2256,7 +2260,7 @@ static unsigned int UncompressCache(Cache cache)
       for (y=0; y < (int) cache_info->rows; y++)
       {
         length=cache_info->columns*sizeof(IndexPacket);
-        count=(size_t) gzread(file,pixels,(unsigned int) length);
+        count=(long) gzread(file,pixels,(unsigned int) length);
         if (write(cache_info->file,pixels,count) != count)
           break;
       }
@@ -2408,7 +2412,7 @@ static unsigned int WriteCacheInfo(Image *image)
   FILE
     *file;
 
-  register int
+  register size_t
     i;
 
   /*
@@ -2422,7 +2426,7 @@ static unsigned int WriteCacheInfo(Image *image)
   (void) fprintf(file,"cache=%.1024s  quantum-depth=%d\n",
     cache_info->cache_filename,QuantumDepth);
   if (image->storage_class == PseudoClass)
-    (void) fprintf(file,"class=PseudoClass  colors=%u  matte=%s\n",
+    (void) fprintf(file,"class=PseudoClass  colors=%lu  matte=%s\n",
       image->colors,image->matte ? "True" : "False");
   else
     if (image->colorspace == CMYKColorspace)
@@ -2525,7 +2529,7 @@ static unsigned int WriteCacheInfo(Image *image)
       /*
         Generic profile.
       */
-      for (i=0; i < (int) image->generic_profiles; i++)
+      for (i=0; i < image->generic_profiles; i++)
         (void) fprintf(file,"profile-%s=%lu\n",
           image->generic_profile[i].name == (char *) NULL ? "generic" :
           image->generic_profile[i].name,(unsigned long)
@@ -2573,7 +2577,7 @@ static unsigned int WriteCacheInfo(Image *image)
       /*
         Generic profile.
       */
-      for (i=0; i < (int) image->generic_profiles; i++)
+      for (i=0; i < image->generic_profiles; i++)
       {
         if (image->generic_profile[i].length == 0)
           continue;
@@ -2604,14 +2608,14 @@ static unsigned int WriteCacheInfo(Image *image)
       */
       q=colormap;
       if (image->colors <= 256)
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           *q++=image->colormap[i].red;
           *q++=image->colormap[i].green;
           *q++=image->colormap[i].blue;
         }
       else
-        for (i=0; i < (int) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           *q++=image->colormap[i].red >> 8;
           *q++=image->colormap[i].red & 0xff;

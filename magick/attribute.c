@@ -371,9 +371,6 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     start,
     stop;
 
-  long
-    count;
-
   register size_t
     i;
 
@@ -385,6 +382,9 @@ static int Generate8BIMAttribute(Image *image,const char *key)
 
   unsigned int
     status;
+
+  unsigned long
+    count;
 
   if (image->iptc_profile.length == 0)
     return(False);

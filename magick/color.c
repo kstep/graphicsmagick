@@ -1611,7 +1611,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
 %
 %  The format of the ValidateColormapIndex method is:
 %
-%      IndexPacket ValidateColormapIndex(Image *image,const long index)
+%      IndexPacket ValidateColormapIndex(Image *image,const unsigned long index)
 %
 %  A description of each parameter follows:
 %
@@ -1624,11 +1624,12 @@ static unsigned int ReadConfigurationFile(const char *basename,
 %
 %
 */
-MagickExport IndexPacket ValidateColormapIndex(Image *image,const long index)
+MagickExport IndexPacket ValidateColormapIndex(Image *image,
+  const unsigned long index)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if ((index >= 0) && (index < image->colors))
+  if (index < image->colors)
     return((IndexPacket) index);
   ThrowException(&image->exception,CorruptImageWarning,
     "invalid colormap index",image->filename);
