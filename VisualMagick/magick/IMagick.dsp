@@ -542,6 +542,10 @@ SOURCE=..\..\magick\vms.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\magick\wbmp.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\magick\widget.c
 # End Source File
 # Begin Source File
