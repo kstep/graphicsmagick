@@ -85,6 +85,7 @@ What did I do wrong?</a></li>
 my image. How can I do that?</a></li>
 
 <li>
+<li>
 <a href="#C20">How can I add one of those cool bevels to my image that
 I see used on the Web?</a></li>
 
@@ -120,6 +121,10 @@ format?</a></li>
 
 <li>
 <a href="#C29">How can I draw with text using 'convert' under Windows NT?</a></li>
+
+<li>
+<a href="#C30">Why are my JPEG and GIF files larger than expected?</a></li>
+
 </ol>
 
 <dl>
@@ -738,6 +743,22 @@ Ghostscript's 'gs' program to be in the PATH):</dd>
 <dd>
 <tt></tt></dd>
 
+<br>
+<hr size=5 width=325>
+<dt>
+<a NAME="C30"></a><b>30. Why are my JPEG and GIF files larger than expected?</b></dt>
+
+<dd>
+LZW compression is disabled by default for GIF (also TIFF) formats, because of
+the UniSys patent.  You can rebuild ImageMagick with it enabled, after you
+have obtained a license from UniSys.  Or you can use a third-party commercial
+UniSys-licensed application to recompress them.</dd>
+
+<dd>
+Your JPEG files may contain "profiles" such as Exif or IPTC, or they may
+contain uncompressed thumbnails.  You can use the +profile "*" commandline
+option or an equivalent API method to remove them.</dd>
+</dl>
 <br>
 <hr>
 <p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=MIDDLE></a><font size="-2">
