@@ -1435,6 +1435,10 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       else
         (void) WriteBlobString(image,"false\n");
     }
+    else
+    {
+        (void) WriteBlobString(image,"false\n");
+    }
 
     /*
       Output data in one of three ways:

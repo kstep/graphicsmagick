@@ -1,3 +1,8 @@
+2003-09-23  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* coders/ps3.c: Fixed handling the case when no -coder-options are
+	provided to the PS3 coder.
+
 2003-09-22  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* coders/ps3.c: Changed %%Creator version to use
