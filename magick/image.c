@@ -851,6 +851,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
           "Memory allocation failed");
       memcpy(clone_image->colormap,image->colormap,length);
     }
+  clone_image->color_profile.name=AllocateString(image->color_profile.name);
   if (image->color_profile.length > 0)
     {
       /*
@@ -863,6 +864,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
           "Memory allocation failed");
       memcpy(clone_image->color_profile.info,image->color_profile.info,length);
     }
+  clone_image->iptc_profile.name=AllocateString(image->iptc_profile.name);
   if (image->iptc_profile.length > 0)
     {
       /*
@@ -884,6 +886,10 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
           "Memory allocation failed");
       for (i=0; i < image->generic_profiles; i++)
       {
+        clone_image->generic_profile[i].name=
+          AllocateString(image->generic_profile[i].name);
+        if (image->generic_profile[i].length == 0)
+          continue;
         length=image->generic_profile[i].length;
         clone_image->generic_profile[i].info=
           (unsigned char *) AcquireMemory(length);

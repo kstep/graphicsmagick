@@ -603,7 +603,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
   jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadColorProfile);
   jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,ReadNewsProfile);
-  if (0)
   for (i=1; i < 16; i++)
     if ((i != 2) && (i != 13) && (i != 14))
       jpeg_set_marker_processor(&jpeg_info,JPEG_APP0+i,ReadGenericProfile);
@@ -1164,7 +1163,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     WriteColorProfile(&jpeg_info,image);
   if (image->iptc_profile.length > 0)
     WriteNewsProfile(&jpeg_info,image);
-  if (0)
   for (i=0; i < image->generic_profiles; i++)
   {
     register int
