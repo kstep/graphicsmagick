@@ -369,7 +369,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Create linear colormap.
       */
-      if (!AllocateImageColormap(image,MaxRGB+1))
+      if (!AllocateImageColormap(image,MaxColormapSize))
         {
           FPX_ClearSystem();
           ThrowReaderException(ResourceLimitError,"Memory allocation failed",
@@ -475,7 +475,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q->blue=index;
         }
       if (image->matte)
-        q->opacity=MaxRGB-ScaleCharToQuantum(*a);
+        q->opacity=255-ScaleCharToQuantum(*a);
       q++;
       r+=red_component->columnStride;
       g+=green_component->columnStride;
