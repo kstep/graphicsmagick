@@ -183,6 +183,9 @@
 /* Define if you have Ghostscript library */
 #undef HasGS
 
+/* Define if you have HDF library */
+#undef HasHDF
+
 /* Define if you have JBIG library */
 #undef HasJBIG
 

@@ -269,11 +269,11 @@ AC_ARG_WITH(gslib,
 	      [with_gslib=$withval],
 	      [with_gslib='yes'])
 
-# Disable HDF.
-#AC_ARG_WITH(hdf,
-#	      [  --without-hdf           disable HDF support],
-#	      [with_hdf=$withval],
-#	      [with_hdf='yes'])
+# Enable HDF.
+AC_ARG_WITH(hdf,
+	      [  --with-hdf              enable HDF support],
+	      [with_hdf=$withval],
+	      [with_hdf='no'])
 
 # Disable JBIG.
 AC_ARG_WITH(jbig,
@@ -1034,32 +1034,32 @@ AC_SUBST(LIB_TIFF)
 #
 have_hdf='no'
 LIB_HDF=''
-#if test "$with_hdf" != 'no'
-#then
-#    AC_MSG_CHECKING(for HDF support )
-#    AC_MSG_RESULT()
-#    failed=0;
-#    passed=0;
-#    AC_CHECK_HEADER(hdf5.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-#    AC_CHECK_LIB(hdf5,H5FDread,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-#    AC_MSG_CHECKING(if HDF package is complete)
-#    if test $passed -gt 0
-#    then
-#    if test $failed -gt 0
-#    then
-#	AC_MSG_RESULT(no -- some components failed test)
-#        have_hdf='no (failed tests)'
-#    else
-#	LIB_HDF='-lhdf5'
-#	LIBS="$LIB_HDF $LIBS"
-#	AC_DEFINE(HasHDF,,Define if you have HDF library)
-#	AC_MSG_RESULT(yes)
-#        have_hdf='yes'
-#    fi
-#    else
-#        AC_MSG_RESULT(no)
-#    fi
-#fi
+if test "$with_hdf" != 'no'
+then
+    AC_MSG_CHECKING(for HDF support )
+    AC_MSG_RESULT()
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(hdf5.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(hdf5,H5FDread,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if HDF package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_hdf='no (failed tests)'
+    else
+	LIB_HDF='-lhdf5'
+	LIBS="$LIB_HDF $LIBS"
+	AC_DEFINE(HasHDF,,Define if you have HDF library)
+	AC_MSG_RESULT(yes)
+        have_hdf='yes'
+    fi
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
 AM_CONDITIONAL(HasHDF, test "$have_hdf" != 'no')
 AC_SUBST(LIB_HDF)
 
@@ -1689,7 +1689,7 @@ echo "BZLIB             --with-bzlib=$with_bzlib          	$have_bzlib"
 echo "DPS               --with-dps=$with_dps              	$have_dps"
 echo "FlashPIX          --with-fpx=$with_fpx              	$have_fpx"
 echo "Ghostscript lib   --with-gslib=$with_gslib       	$have_gslib"
-#echo "HDF               --with-hdf=$with_hdf          	$have_hdf"
+echo "HDF               --with-hdf=$with_hdf          	$have_hdf"
 echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
 echo "JPEG v1           --with-jpeg=$with_jpeg        	$have_jpeg"
 echo "JPEG v2           --with-jp2=$with_jp2          	$have_jp2"

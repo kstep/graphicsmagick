@@ -32,9 +32,8 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
-# hdf.c removed until it serves some purpose
 MAGICK_CODER_SRCS = art.c avi.c avs.c 8bim.c bmp.c cmyk.c cut.c dcm.c dps.c \
-  dpx.c ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c histogram.c  \
+  dpx.c ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c histogram.c  \
   html.c icm.c icon.c iptc.c jbig.c jpeg.c jp2.c label.c logo.c map.c mat.c \
   matte.c miff.c mono.c mpc.c mtv.c mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c \
   pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c \
@@ -69,10 +68,9 @@ pkg_DATA = modules.mgk
 pkgdata_DATA = 
 
 # Modules which are to be built
-# hdf.la removed until it serves some purpose
 pkg_LTLIBRARIES   = 8bim.la art.la avi.la avs.la bmp.la cmyk.la cut.la \
   dcm.la dps.la dpx.la ept.la fax.la fpx.la fits.la gif.la gray.la gradient.la \
-  histogram.la html.la icm.la icon.la iptc.la jbig.la jpeg.la jp2.la \
+  hdf.la histogram.la html.la icm.la icon.la iptc.la jbig.la jpeg.la jp2.la \
   label.la logo.la map.la mat.la matte.la miff.la mono.la mpc.la mtv.la mvg.la \
   null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la pix.la plasma.la \
   png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
@@ -169,9 +167,9 @@ gradient_la_LDFLAGS = -no-undefined -module -avoid-version
 gradient_la_LIBADD  = ../magick/libMagick.la
 
 # HDF module
-#hdf_la_SOURCES      = hdf.c
-#hdf_la_LDFLAGS      = -no-undefined -module -avoid-version
-#hdf_la_LIBADD       = ../magick/libMagick.la @LIB_HDF@ @LIB_JPEG@ @LIB_ZLIB@
+hdf_la_SOURCES      = hdf.c
+hdf_la_LDFLAGS      = -no-undefined -module -avoid-version
+hdf_la_LIBADD       = ../magick/libMagick.la @LIB_HDF@ @LIB_JPEG@ @LIB_ZLIB@
 
 # HISTOGRAM module
 histogram_la_SOURCES = histogram.c
