@@ -1104,11 +1104,12 @@ for details.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-scene">-scene</a> <i>&lt;value</i>{<i>-value</i>}<i>&gt;</i>
+    <a name="-scene">-scene</a> <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>image scene number or range</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set scene number</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use this option
+This option sets the scene number of an image or the first image in
+an image sequence.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1313,34 +1314,6 @@ color="#FFFFFF"><font size="+1">
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
-<p>
-By default, the image format is determined by its magic number. To specify
-a particular image format, precede the filename with an image format name
-and a colon (i.e. ps:image) or specify the image type as the filename suffix
-(i.e. image.ps). See <strong>convert(1)</strong> for a list of valid image formats.
-<p>
-When you specify <strong>X</strong> as your image type, the filename has special
-meaning. It specifies an X window by id, name, or
-<strong>root</strong>. If no filename
-is specified, the window is selected by clicking the mouse in the desired
-window.
-<p>
-Specify <em>image</em> as - for standard input,
-<em>composited</em> as - for
-standard output. If <em>image</em> has the extension <strong>.Z</strong> or <strong>.gz</strong>,
-the file is uncompressed with
-<strong>uncompress</strong> or <strong>gunzip</strong> respectively.
-If <em>composited</em> has the extension <strong>.Z</strong> or <strong>.gz</strong>, the file
-size is compressed using with <strong>compress</strong> or <strong>gzip</strong> respectively.
-Finally, precede the image file name with | to pipe to or from a system
-command.
-<p>
-Use an optional index enclosed in brackets after a file name to specify
-a desired subimage of a multi-resolution image format like Photo CD (e.g.
-img0001.pcd[4]) or a range for MPEG images (e.g. video.mpg[50-75]). A subimage
-specification can be disjoint (e.g. image.tiff[2,7,4]). For raw images,
-specify a subimage with a geometry
-(e.g. -size 640x512 image.rgb[320x256+50+50]).
 <p>
 The optional <strong>mask</strong> can be used to provide matte information for
 <strong>composite</strong>

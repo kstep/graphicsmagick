@@ -496,7 +496,7 @@ for this color difference. Reasonable values extend from \fB0.8\fP to
 
 You can apply separate gamma values to the red, green, and blue channels
 of the image with a gamma value list delineated with slashes
-(i.e. \fB1.7\fP/\fB2.3\fP/\fB1.2\fP).
+(e.g., \fB1.7\fP/\fB2.3\fP/\fB1.2\fP).
 
 
 Use \fB+gamma\fP \fIvalue\fP
@@ -844,10 +844,11 @@ is present.  Offsets, if present in the geometry string, are ignored, and
 the \fB-gravity\fP option has no effect.
 
 .TP
-.B "-scene \fI<value{-value}>"\fP
-\fRimage scene number or range
+.B "-scene \fI<value>"\fP
+\fRset scene number
 
-Use this option
+This option sets the scene number of an image or the first image in
+an image sequence.
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
@@ -1051,8 +1052,8 @@ be overwritten.
 
 By default, the image is written in the format that it was read in as.
 To specify a particular image format, prefix \fIfile\fP with the image
-type and a colon (i.e. ps:image) or specify the image type as the filename
-suffix (i.e. image.ps). See convert(1) for a list of valid image formats.
+type and a colon (e.g., ps:image) or specify the image type as the filename
+suffix (e.g., image.ps). See convert(1) for a list of valid image formats.
 Specify file as - for standard output. If file has the
 extension \fB.Z\fP or
 \fB.gz\fP, the file size is \fBcompressed\fP using with compress or
@@ -1068,42 +1069,6 @@ See
 "X Resources", below,
 for details.
 .SH FILES AND FORMATS
-
-By default, the image format is determined by its magic number. To specify
-a particular image format, precede the filename
-with an image format name and a colon (i.e. ps:image) or specify the image
-type as the filename suffix (i.e. image.ps).
-When you specify \fBX\fP as your image type, the filename has special
-meaning. It specifies an X window by id, name, or
-\fBroot\fP. If no filename
-is specified, the window is selected by clicking the mouse in the desired
-window.
-
-Specify file as - for standard input. If file has the extension \fB.Z\fP
-or \fB.gz\fP, the file is uncompressed with
-\fBuncompress\fP or \fBgunzip\fP
-respectively. Precede the image file name | to pipe from a system command.
-
-Use an optional index enclosed in brackets after a file name to specify
-a desired subimage of a multi-resolution image format like Photo CD (e.g.
-img0001.pcd[4])
-or a range for MPEG images (e.g.
-video.mpg[50-75]). A subimage
-specification can be disjoint (e.g. image.tiff[2,7,4]). For raw
-images, specify a subimage with a geometry (e.g. -size 640x512
-image.rgb[320x256+50+50]).
-
-Single images are read with the filename you specify. Alternatively,
-you can display an image sequence with a single filename. Define the range
-of the image sequence with -scene. Each image in the range is read with
-the filename followed by a period (\fB.\fP) and the scene number.  You
-can change this behavior by embedding a \fB%0Nd, %0No, or %0Nx printf\fP
-format specification in the file name. For example,
-
-    -scene 0-9 image%02d.miff
-
-displays files image00.miff, image01.miff, through
-image09.miff.
 .SH MOUSE BUTTONS
 
 The effects of each button press is described below. Three buttons are

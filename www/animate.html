@@ -594,7 +594,7 @@ for this color difference. Reasonable values extend from <strong>0.8</strong> to
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 You can apply separate gamma values to the red, green, and blue channels
 of the image with a gamma value list delineated with slashes
-(i.e. <strong>1.7</strong>/<strong>2.3</strong>/<strong>1.2</strong>).
+(e.g., <strong>1.7</strong>/<strong>2.3</strong>/<strong>1.2</strong>).
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>+gamma</strong> <em>value</em>
@@ -865,11 +865,25 @@ for details.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-scene">-scene</a> <i>&lt;value</i>{<i>-value</i>}<i>&gt;</i>
+    <a name="-scenes">-scenes</a> <i>&lt;value-value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>image scene number or range</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>range of image scene numbers to read</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use this option
+Each image in the range is read
+with the filename followed by a period (<strong>.</strong>) and the decimal scene
+number.  You
+can change this behavior by embedding a <strong>%0Nd, %0No, or %0Nx printf</strong>
+format specification in the file name. For example,
+<pre>
+    montage -scenes 5-7 image.miff
+</pre>
+<p>
+makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and&lt;//p&gt; 
+<pre>
+    animate -scenes 0-12 image%02d.miff
+</pre>
+<p>
+animates files image00.miff, image01.miff, through image12.miff.&lt;//p&gt; 
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1098,6 +1112,15 @@ The image will not display on the root window if the image has more
 unique colors than the target window colormap allows.  Use
 <strong>-colors</strong> to reduce the number of colors.
 </font></td></tr></table>
+<p>
+Any option you specify on the command line remains in effect until it is
+explicitly changed by specifying the option again with a different effect.
+For example, to animate two images, the first with 32 colors and the second
+with only 16 colors, use:
+<br>&nbsp;<br>
+<pre>
+     animate -colors 32 cockatoo.1 -colors 16 cockatoo.2
+</pre>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -1112,53 +1135,6 @@ color="#FFFFFF"><font size="+1">
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
-<p>
-Any option you specify on the command line remains in effect until it is
-explicitly changed by specifying the option again with a different effect.
-For example, to animate two images, the first with 32 colors and the second
-with only 16 colors, use:
-<br>&nbsp;<br>
-<pre>
-     animate -colors 32 cockatoo.1 -colors 16 cockatoo.2
-</pre>
-<p>
-By default, the image format is determined by its magic number. To specify
-a particular image format, precede the filename with an image format name
-and a colon (i.e. ps:image) or specify the image type as the filename suffix
-(i.e. image.ps). See <strong>convert(1)</strong> for a list of valid image formats.
-<p>
-When you specify <strong>X</strong> as your image type, the filename has special
-meaning. It specifies an X window by id, name, or
-<strong>root</strong>. If no filename
-is specified, the window is selected by clicking the mouse in the desired
-window.
-<p>
-Specify <em>file</em> as - for standard input.  If <em>file</em> has the extension
-<strong>.Z</strong>
-or <strong>.gz</strong>, the file is uncompressed with
-<strong>uncompress</strong> or <strong>gunzip</strong>
-respectively. Precede the image file name with | to pipe from a system
-command.
-<p>
-Use an optional index enclosed in brackets after a file name to specify
-a desired subimage of a multi-resolution image format like Photo CD (e.g.
-img0001.pcd[4]) or a range for MPEG images (e.g. video.mpg[50-75]). A subimage
-specification can be disjoint (e.g. image.tiff[2,7,4]). For raw images,
-specify a subimage with a geometry
-(e.g. -size 640x512 image.rgb[320x256+50+50]).
-<p>
-Single images are read with the filename you specify. Alternatively, you
-can animate an image sequence with a single filename. Define the range
-of the image sequence with <strong>-scene</strong>. Each image in the range is read
-with the filename followed by a period (<strong>.</strong>) and the scene number.  You
-can change this behavior by embedding a <strong>%0Nd, %0No, or %0Nx printf</strong>
-format specification in the file name. For example,
-<br>&nbsp;<br>
-<pre>
-    animate -scene 0-9 image%02d.miff
-</pre>
-<p>
-animates files image00.miff, image01.miff, through image09.miff.
 <p>Image filenames may appear in any order on the command line if the image
 format is <em>MIFF</em> (refer to <strong>miff(5)</strong> and the
 <strong>scene</strong> keyword

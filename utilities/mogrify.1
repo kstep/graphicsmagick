@@ -572,7 +572,7 @@ for this color difference. Reasonable values extend from \fB0.8\fP to
 
 You can apply separate gamma values to the red, green, and blue channels
 of the image with a gamma value list delineated with slashes
-(i.e. \fB1.7\fP/\fB2.3\fP/\fB1.2\fP).
+(e.g., \fB1.7\fP/\fB2.3\fP/\fB1.2\fP).
 
 
 Use \fB+gamma\fP \fIvalue\fP
@@ -1063,10 +1063,11 @@ is present.  Offsets, if present in the geometry string, are ignored, and
 the \fB-gravity\fP option has no effect.
 
 .TP
-.B "-scene \fI<value{-value}>"\fP
-\fRimage scene number or range
+.B "-scene \fI<value>"\fP
+\fRset scene number
 
-Use this option
+This option sets the scene number of an image or the first image in
+an image sequence.
 .TP
 .B "-seed \fI<value>"\fP
 \fRpseudo-random number generator seed value
@@ -1274,48 +1275,6 @@ Specify \fIamplitude\fP and \fIwavelength\fP to effect the characteristics
 of the wave.
 
 .SH FILES AND FORMATS
-
-By default, the image format is determined by its magic number. To specify
-a particular image format, precede the filename with an image format name
-and a colon (\fIi.e.\fP\fBps:image\fP) or specify the image type as the
-filename suffix
-
-When you specify \fBX\fP as your image type, the filename has special
-meaning. It specifies an X window by \fBid, name\fP, or
-\fBroot\fP. If
-no filename is specified, the window is selected by clicking the mouse
-in the desired window.
-Specify \fIinput_file\fP as - for standard input,
-\fIoutput_file\fP
-as - for standard output. If \fIinput_file\fP has the extension \fB.Z\fP
-or
-\fB.gz\fP, the file is uncompressed with \fBuncompress\fP or \fBgunzip\fP
-respectively. If \fIoutput_file\fP has the extension \fB.Z\fP or
-\fB.gz\fP,
-the file size is compressed using with \fBcompress\fP or \fBgzip\fP
-respectively.
-Finally, precede the image file name with | to pipe to or from a system
-command.
-
-Use an optional index enclosed in brackets after a file name to specify
-a desired subimage of a multi-resolution image format like Photo CD (e.g.
-img0001.pcd[4]) or a range for MPEG images (e.g. video.mpg[50-75]). A subimage
-specification can be disjoint (e.g. image.tiff[2,7,4]). For raw images,
-specify a subimage with a geometry (e.g. -size 640x512 image.rgb[320x256+50+50]).
-Single images are written with the filename you specify. However, multi-part
-images (i.e. a multi-page PostScript document with \fB+adjoin\fP specified)
-are written
-with the filename followed by a period (\fB.\fP) and the scene number.  You
-can change this behavior by embedding a \fB%0Nd, %0No, or %0Nx printf\fP
-format specification in the file name. For example,
-
-    image%02d.miff
-
-converts files image00.miff, image01.miff, etc.
-
-Prepend an at sign @ to a filename to read a list of image
-filenames from that file. This is convenient in the event you have too
-many image filenames to fit on the command line.
 .SH IMAGE SEGMENTATION
 
 Use \fB-segment\fP to segment an image by analyzing the histograms of
