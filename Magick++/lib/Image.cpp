@@ -2692,7 +2692,6 @@ void Magick::Image::size ( const Geometry &geometry_ )
 Magick::Geometry Magick::Image::size ( void ) const
 {
   return Magick::Geometry( constImage()->columns, constImage()->rows );
-  //  return constOptions()->size( );
 }
 
 // enabled/disable stroke anti-aliasing

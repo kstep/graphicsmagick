@@ -1,3 +1,8 @@
+2001-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (fileSize): Decided to change return type to off_t
+ 	for increased range and portability.
+
 2001-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (fileSize): Changed return value to double.
