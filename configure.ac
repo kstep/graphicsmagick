@@ -1233,6 +1233,7 @@ AC_SUBST(LIB_XML)
 
 have_wmf='no'
 LIB_WMF=''
+LIB_WMF_DEPS=''
 OLIBS="$LIBS"
 if test "$with_wmf" != 'no'
 then
@@ -1247,15 +1248,7 @@ then
   if test "$have_libwmf_ipa_h" = 'yes'
   then
 
-    LIB_WMF_DEPS=''
-    WMF_CONFIG_LIBS=`libwmf-config --libs`
-    for lib in xml2 expat freetype jpeg png z
-    do
-      testlib="-l${lib}"
-      echo "$WMF_CONFIG_LIBS" | grep -- "$testlib" > /dev/null && LIB_WMF_DEPS="$LIB_WMF_DEPS $testlib"
-    done
-
-    AC_CHECK_LIB(wmflite,wmf_lite_create,have_libwmflite='yes',,$LIB_WMF_DEPS)
+    AC_CHECK_LIB(wmflite,wmf_lite_create,have_libwmflite='yes',,)
     if test "$have_libwmflite" = 'yes'
     then
       AC_DEFINE(HasWMFlite,,Define if you have wmflite library)
@@ -1267,6 +1260,15 @@ then
       AC_CHECK_HEADERS(libwmf/font.h)
       have_wmf='yes'
     else
+
+      LIB_WMF_DEPS=''
+      WMF_CONFIG_LIBS=`libwmf-config --libs`
+      for lib in xml2 expat freetype jpeg png z
+      do
+        testlib="-l${lib}"
+        echo "$WMF_CONFIG_LIBS" | grep -- "$testlib" > /dev/null && LIB_WMF_DEPS="$LIB_WMF_DEPS $testlib"
+      done
+
       AC_CHECK_LIB(wmf,wmf_api_create,have_libwmf='yes',,$LIB_WMF_DEPS)
       if test "$have_libwmf" = 'yes'
       then

@@ -1,4 +1,7 @@
 2002-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Makefile.am : $(DESTDIR) already contains trailing '/'.
+
+2002-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* coders/wmf.c (wmf_magick_device_begin): Fix non-opaque fills.
 	  Now properly fills with texture image.
 

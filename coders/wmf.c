@@ -2117,6 +2117,7 @@ static void magick_render_mvg(wmfAPI * API)
   GetImageInfo(image_info);
   draw_info = (DrawInfo *) AcquireMemory(sizeof(DrawInfo));
   GetDrawInfo(image_info, draw_info);
+  draw_info->debug = ddata->image_info->debug;
   draw_info->primitive = ddata->mvg;
   /* puts(draw_info->primitive); */
   DrawImage(ddata->image, draw_info);
@@ -2395,31 +2396,31 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   /*
    * Set solid background color
    */
-{
-  unsigned long
-    column,
-    row;
+  {
+    unsigned long
+      column,
+      row;
 
-  PixelPacket
-    *pixel,
-    background_color;
+    PixelPacket
+      *pixel,
+      background_color;
 
-  background_color = image_info->background_color;
-  image->background_color = background_color;
-  if(background_color.opacity != OpaqueOpacity)
-    image->matte = True;
+    background_color = image_info->background_color;
+    image->background_color = background_color;
+    if(background_color.opacity != OpaqueOpacity)
+      image->matte = True;
 
-  for (row=0; row < (long) image->rows; row++)
-    {
-      pixel=SetImagePixels(image,0,row,image->columns,1);
-      if (pixel == (PixelPacket *) NULL)
-        break;
-      for (column=image->columns; column; column--)
-        *pixel++ = background_color;
-      if (!SyncImagePixels(image))
-        break;
-    }
-}
+    for (row=0; row < (long) image->rows; row++)
+      {
+        pixel=SetImagePixels(image,0,row,image->columns,1);
+        if (pixel == (PixelPacket *) NULL)
+          break;
+        for (column=image->columns; column; column--)
+          *pixel++ = background_color;
+        if (!SyncImagePixels(image))
+          break;
+      }
+  }
   /*
    * Play file to generate MVG drawing commands
    *

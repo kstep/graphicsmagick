@@ -76,18 +76,18 @@ dist-hook:
 pkgdocdir = @MagickSharePath@
 DOCDIRS = images www www/api www/api/types www/Magick++
 install-data-html:
-	$(mkinstalldirs) $(DESTDIR)/$(pkgdocdir)
-	$(INSTALL_DATA) $(srcdir)/ImageMagick.html $(DESTDIR)/$(pkgdocdir)
+	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
+	$(INSTALL_DATA) $(srcdir)/ImageMagick.html $(DESTDIR)$(pkgdocdir)
 	for dir in $(DOCDIRS) ; do \
-	  $(mkinstalldirs) $(DESTDIR)/$(pkgdocdir)/$$dir && \
-	  $(INSTALL_DATA) $(srcdir)/$$dir/*.* $(DESTDIR)/$(pkgdocdir)/$$dir ; \
+	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
+	  $(INSTALL_DATA) $(srcdir)/$$dir/*.* $(DESTDIR)$(pkgdocdir)/$$dir ; \
 	done
 
 # Uninstall HTML files
 uninstall-data-html:
-	rm -f $(DESTDIR)/$(pkgdocdir)/ImageMagick.html
+	rm -f $(DESTDIR)$(pkgdocdir)/ImageMagick.html
 	for dir in $(DOCDIRS) ; do \
-	  rm -rf $(DESTDIR)/$(pkgdocdir)/$$dir ; \
+	  rm -rf $(DESTDIR)$(pkgdocdir)/$$dir ; \
 	done
 
 if WITH_PERL
