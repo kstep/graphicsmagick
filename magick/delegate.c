@@ -73,7 +73,7 @@ static char
   *DelegateMap =
     "<?xml version=\"1.0\"?>"
     "<delegatemap>"
-    "  <delegate decode=\"Unknown\" command=\"unknown\" />"
+    "  <delegate stealth=\"True\" />"
     "</delegatemap>";
 
 /*

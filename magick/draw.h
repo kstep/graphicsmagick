@@ -126,6 +126,9 @@ typedef struct _TypeInfo
     *version,
     *encoding;
 
+  unsigned int
+    stealth;
+
   struct _TypeInfo
     *previous,
     *next;

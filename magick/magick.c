@@ -344,10 +344,17 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
     LiberateSemaphoreInfo(&magick_semaphore);
   else
     {
+      MagickInfo
+        *entry;
+
       /*
         Register image formats.
       */
       LiberateSemaphoreInfo(&magick_semaphore);
+      entry=SetMagickInfo("IMPLICIT");
+      entry->stealth=True;
+      entry->module=AllocateString("MIFF");
+      (void) RegisterMagickInfo(entry);
       (void) GetModuleInfo((char *) NULL,exception);
     }
   if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))

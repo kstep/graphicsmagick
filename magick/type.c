@@ -66,7 +66,7 @@ static char
   *TypeMap =
     "<?xml version=\"1.0\"?>"
     "<typemap>"
-    "  <type name=\"Unknown\" />"
+    "  <type stealth=\"True\" />"
     "</typemap>";
 
 /*
@@ -234,6 +234,8 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     "------------------------\n");
   for ( ; p != (const TypeInfo *) NULL; p=p->next)
   {
+    if (!p->stealth)
+      continue;
     (void) fprintf(file,"%.1024s",p->name);
     for (i=(long) strlen(p->name); i <= 28; i++)
       (void) fprintf(file," ");
@@ -415,6 +417,16 @@ static unsigned int ReadConfigurationFile(const char *basename,
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
             type_list->name=AllocateString(token);
+            break;
+          }
+        break;
+      }
+      case 'S':
+      case 's':
+      {
+        if (LocaleCompare((char *) keyword,"stealth") == 0)
+          {
+            type_list->stealth=LocaleCompare(token,"True") == 0;
             break;
           }
         break;
