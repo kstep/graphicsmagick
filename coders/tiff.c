@@ -470,7 +470,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     range=max_sample_value-min_sample_value;
     if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff))
       {
-        image->colors=1 << image->depth;
+        image->colors=1 << bits_per_sample;
         if (range <= (int) image->colors)
           image->colors=range+1;
         if (!AllocateImageColormap(image,image->colors))
