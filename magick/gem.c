@@ -727,7 +727,7 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   p=AcquireImagePixels(image,(long) x_offset,(long) y_offset,2,1,exception);
-  q=AcquireImagePixels(image,(long) x_offset,(long) (y_offset+1),2,1,exception);
+  q=AcquireImagePixels(image,(long) x_offset,(long) y_offset+1,2,1,exception);
   if ((p == (const PixelPacket *) NULL) || (q == (const PixelPacket *) NULL))
     return(AcquireOnePixel(image,(long) x_offset,(long) y_offset,exception));
   alpha=x_offset-floor(x_offset);

@@ -32,7 +32,6 @@
 		<LI><A HREF="#referencecache">ReferenceCache</A>
 		<LI><A HREF="#setimagepixels">SetImagePixels</A>
 		<LI><A HREF="#setimagevirtualpixeltype">SetImageVirtualPixelType</A>
-		<LI><A HREF="#syncimagepixels">SyncImagePixels</A>
 	</UL>
 
 </UL>
@@ -58,7 +57,7 @@
 <P>unsigned int  <STRONG>ModifyCache</STRONG>( Image *image );</P>
 <P>Cache  <STRONG>ReferenceCache</STRONG>( Cache cache_info );</P>
 <P>PixelPacket * <STRONG>SetImagePixels</STRONG>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
-<P><STRONG>SetImageVirtualPixelType</STRONG>( Image *image, const VirtualPixelType type, const PixelPacket *pixel );</P>
+<P><STRONG>SetImageVirtualPixelType</STRONG>( Image *image, const VirtualPixelType type );</P>
 <P>unsigned int  <STRONG>SyncImagePixels</STRONG>( Image *image );</P>
 <P>
 <HR>
@@ -223,7 +222,7 @@ These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimagevirtualpixeltype">SetImageVirtualPixelType</A></H2>
-<blockquote>SetImageVirtualPixelType() sets the type of "virtual" pixels for the image. A virtual pixel is any pixel access that is outside the boundaries of the image cache. </blockquote><blockquote>The format of the SetImageVirtualPixelType() method is: </blockquote><blockquote>SetImageVirtualPixelType ( <A HREF="types/Image.html">Image</A> *image, const VirtualPixelType type, const <A HREF="types/PixelPacket.html">PixelPacket</A> *pixel ); </blockquote><P>
+<blockquote>SetImageVirtualPixelType() sets the type of "virtual" pixels for the image. A virtual pixel is any pixel access that is outside the boundaries of the image cache. </blockquote><blockquote>The format of the SetImageVirtualPixelType() method is: </blockquote><blockquote>SetImageVirtualPixelType ( <A HREF="types/Image.html">Image</A> *image, const VirtualPixelType type ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
@@ -243,14 +242,7 @@ choose from these access types:
       TileVPType:  the image extends periodically or tiled.  The pixels
       wrap around the edges of the image.
       MirrorVPType:  mirror the image at the boundaries.
-=over 4</PRE>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_pixel%3A">pixel:</A></STRONG><BR>
-<DD>
-the constant pixel value for the ConstantVPType method.  This value is ignored for other access methods.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="syncimagepixels">SyncImagePixels</A></H2>
+=head2 SyncImagePixels</PRE>
 <blockquote>Method SyncImagePixels() saves the image pixels to the in-memory or disk cache. The method returns True if the pixel region is synced, otherwise False. </blockquote><blockquote>The format of the SyncImagePixels() method is: </blockquote><blockquote>unsigned int SyncImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
