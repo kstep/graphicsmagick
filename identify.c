@@ -187,6 +187,7 @@ int main(int argc,char **argv)
                     if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                       MagickError(OptionError,"Missing threshold",option);
                   }
+                SetCacheThreshold(atoi(argv[i]));
                 break;
               }
             MagickError(OptionError,"Unrecognized option",option);

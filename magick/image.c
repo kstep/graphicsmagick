@@ -4136,11 +4136,6 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         (void) CloneString(&local_info->box,argv[++i]);
         continue;
       }
-    if (strncmp("-cache",option,4) == 0)
-      {
-        SetCacheThreshold(atoi(argv[++i]));
-        continue;
-      }
     if (strncmp("-charcoal",option,3) == 0)
       {
         char
@@ -6785,7 +6780,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
       {
         if (i < MaxTextExtent)
           magick[i++]=c;
-        (void) putc(c,file);
+        (void) fputc(c,file);
       }
       (void) fclose(file);
     }

@@ -437,6 +437,7 @@ int main(int argc,char **argv)
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing threshold",option);
                 }
+              SetCacheThreshold(atoi(argv[i]));
               break;
             }
           if (strncmp("charcoal",option+1,3) == 0)
