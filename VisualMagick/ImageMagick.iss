@@ -495,12 +495,12 @@ Source: "bin\IM_MOD_RL*.dll"; DestDir: "{app}\modules"; CopyMode: alwaysoverwrit
 Source: "bin\X11.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "bin\Xext.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; Configuration files
-Source: "..\magick\colors.mgk"; DestDir: "{app}\config"; CopyMode: onlyifdoesntexist
-Source: "bin\delegates.mgk"; DestDir: "{app}\config"; CopyMode: onlyifdoesntexist
-Source: "..\magick\magic.mgk"; DestDir: "{app}\config"; CopyMode: onlyifdoesntexist
-Source: "..\coders\modules.mgk"; DestDir: "{app}\modules"; CopyMode: onlyifdoesntexist
-Source: "bin\type-ghostscript.mgk"; DestDir: "{app}\config"; CopyMode: onlyifdoesntexist
-Source: "bin\type.mgk"; DestDir: "{app}\config"; CopyMode: onlyifdoesntexist
+Source: "..\magick\colors.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
+Source: "bin\delegates.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
+Source: "..\magick\magic.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
+Source: "..\coders\modules.mgk"; DestDir: "{app}\modules"; CopyMode: alwaysoverwrite
+Source: "bin\type-ghostscript.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
+Source: "bin\type.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
 ; Release documentation files
 Source: "..\ChangeLog"; DestDir: "{app}"; CopyMode: alwaysoverwrite; DestName: "ChangeLog.txt"
 Source: "..\Copyright.txt"; DestDir: "{app}"; CopyMode: alwaysoverwrite
@@ -538,6 +538,54 @@ Source: "bin\ImageMagickObject.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\contrib\win32\ATL\ImageMagickObject\README.txt"; DestDir: "{app}\ImageMagickObject"; CopyMode: alwaysoverwrite
 Source: "..\contrib\win32\ATL\ImageMagickObject\Tests\VBTest\*"; DestDir: "{app}\ImageMagickObject\VBExample"; CopyMode: alwaysoverwrite
 Source: "..\contrib\win32\ATL\ImageMagickObject\Tests\WSHTest\*"; DestDir: "{app}\ImageMagickObject\WSHExample"; CopyMode: alwaysoverwrite
+;  Development libraries
+Source: "lib\CORE_RL_Magick++_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_bzlib_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_fpx_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_jbig_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_jp2_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_jpeg_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_lcms_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_libxml_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+Source: "lib\CORE_RL_magick_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_png_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_tiff_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_ttf_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_wmf_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;Source: "lib\CORE_RL_zlib_.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+Source: "lib\X11.lib"; DestDir: "{app}\lib"; CopyMode: alwaysoverwrite
+;  Development headers
+Source: "..\magick\api.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\attribute.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\blob.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\cache.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\cache_view.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\classify.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\command.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\compress.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\delegate.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\draw.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\error.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\gem.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\image.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\list.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\magic.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\magick_config.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\magick.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\module.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\monitor.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\PreRvIcccm.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\quantize.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\registry.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\render.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\semaphore.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\timer.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\utility.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\version.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\widget.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\magick\xwindow.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\Magick++\lib\Magick++.h"; DestDir: "{app}\include"; CopyMode: alwaysoverwrite
+Source: "..\Magick++\lib\Magick++\*.h"; DestDir: "{app}\include\Magick++"; CopyMode: alwaysoverwrite
 
 [Icons]
 Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
