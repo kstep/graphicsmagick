@@ -327,7 +327,7 @@ static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
       /*
         Append an image sequence.
       */
-      append_image=AppendImages(*image,option_info->append == 1,exception);
+      append_image=AppendImages(*image,option_info->append > 0,exception);
       if (append_image != (Image *) NULL)
         {
           DestroyImageList(*image);
@@ -752,7 +752,7 @@ MagickExport unsigned int ConvertUtility(int argc,char **argv)
             }
           if (LocaleCompare("append",option+1) == 0)
             {
-              option_info.append=(*option) == '-' ? -1 : 1;
+              option_info.append=(*option) == '-' ? 1 : -1;
               break;
             }
           if (LocaleCompare("average",option+1) == 0)

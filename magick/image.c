@@ -406,9 +406,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  The AppendImages() method takes a set of images and appends them to each
-%  other.  All the input images must have the same width or height. Images of
-%  the same width are stacked top-to-bottom. Images with the same height are
-%  stacked left-to-right.
+%  other top-to-bottom if the stack parameter is true, otherwise left-to-right.
 %
 %  The format of the AppendImage method is:
 %
@@ -419,8 +417,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
 %
 %    o image: The image sequence.
 %
-%    o stack: A value other than 0 stacks the images of the same width and
-%      the same height top-to-bottom.
+%    o stack: A value other than 0 stacks the images top-to-bottom.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -438,7 +435,8 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
     *next;
 
   register long
-    i;
+    x,
+    y;
 
   unsigned long
     height,
@@ -452,42 +450,33 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  next=image;
   if (image->next == (Image *) NULL)
     ThrowImageException(OptionWarning,"Unable to append image sequence",
       "image sequence required");
-  for (next=image->next; next != (Image *) NULL; next=next->next)
-  {
-    if ((next->columns != image->columns) && (next->rows != image->rows))
-      ThrowImageException(OptionWarning,"Unable to append image sequence",
-        "image widths and heights differ");
-    if (stack)
-      if ((next->columns != image->columns) || (next->rows != image->rows))
-        ThrowImageException(OptionWarning,"Unable to append image sequence",
-          "image widths or heights differ");
-  }
   width=image->columns;
   height=image->rows;
   for (next=image->next; next != (Image *) NULL; next=next->next)
   {
+    if (stack)
+      {
+        if (next->columns > width)
+          width=next->columns;
+        height+=next->rows;
+        continue;
+      }
     width+=next->columns;
-    height+=next->rows;
+    if (next->rows > height)
+      height=next->rows;
   }
   /*
     Initialize append next attributes.
   */
-  if (((image->columns*GetImageListSize(image)) == width) && stack)
-    append_image=CloneImage(image,image->columns,height,True,exception);
-  else
-    append_image=CloneImage(image,width,image->rows,True,exception);
+  append_image=CloneImage(image,width,height,True,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
   scene=0;
-  if (((image->columns*GetImageListSize(image)) == width) && stack)
+  if (stack)
     {
-      register long
-        y;
-
       /*
         Stack top-to-bottom.
       */
@@ -501,52 +490,20 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
         MagickMonitor(AppendImageText,scene,GetImageListSize(image));
         scene++;
       }
+      return(append_image);
     }
-  else
-    {
-      register long
-        x;
-
-      /*
-        Stack left-to-right.
-      */
-      x=0;
-      for (next=image; next != (Image *) NULL; next=next->next)
-      {
-        if (next->storage_class == DirectClass)
-          SetImageType(append_image,TrueColorType);
-        (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
-        x+=next->columns;
-        MagickMonitor(AppendImageText,scene++,GetImageListSize(image));
-      }
-    }
-  if (append_image->storage_class == PseudoClass)
-    {
-      unsigned int
-        global_colormap;
-
-      /*
-        Determine if the sequence of image has the identical colormap.
-      */
-      global_colormap=True;
-      for (next=image; next != (Image *) NULL; next=next->next)
-      {
-        if ((next->storage_class == DirectClass) ||
-            (next->colors != image->colors))
-          {
-            global_colormap=False;
-            break;
-          }
-        for (i=0; i < (long) image->colors; i++)
-          if (!ColorMatch(&next->colormap[i],&image->colormap[i],next->fuzz))
-            {
-              global_colormap=False;
-              break;
-            }
-      }
-      if (!global_colormap)
-        SetImageType(append_image,TrueColorType);
-    }
+  /*
+    Stack left-to-right.
+  */
+  x=0;
+  for (next=image; next != (Image *) NULL; next=next->next)
+  {
+    if (next->storage_class == DirectClass)
+      SetImageType(append_image,TrueColorType);
+    (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
+    x+=next->columns;
+    MagickMonitor(AppendImageText,scene++,GetImageListSize(image));
+  }
   return(append_image);
 }
 
