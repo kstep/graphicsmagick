@@ -157,8 +157,8 @@ const ColorlistInfo
     { "black", 0, 0, 0 },
     { "blanched almond", 255, 235, 205 },
     { "blanchedalmond", 255, 235, 205 },
-    { "blue violet", 138, 43, 226 },
     { "blue", 0, 0, 255 },
+    { "blue violet", 138, 43, 226 },
     { "blue1", 0, 0, 255 },
     { "blue2", 0, 0, 238 },
     { "blue3", 0, 0, 205 },
@@ -417,8 +417,8 @@ const ColorlistInfo
     { "gray97", 247, 247, 247 },
     { "gray98", 250, 250, 250 },
     { "gray99", 252, 252, 252 },
-    { "green yellow", 173, 255, 47 },
     { "green", 0, 255, 0 },
+    { "green yellow", 173, 255, 47 },
     { "green1", 0, 255, 0 },
     { "green2", 0, 238, 0 },
     { "green3", 0, 205, 0 },
@@ -555,8 +555,8 @@ const ColorlistInfo
     { "khaki2", 238, 230, 133 },
     { "khaki3", 205, 198, 115 },
     { "khaki4", 139, 134, 78 },
-    { "lavender blush", 255, 240, 245 },
     { "lavender", 230, 230, 250 },
+    { "lavender blush", 255, 240, 245 },
     { "lavenderblush", 255, 240, 245 },
     { "lavenderblush1", 255, 240, 245 },
     { "lavenderblush2", 238, 224, 229 },
@@ -573,8 +573,8 @@ const ColorlistInfo
     { "light blue", 173, 216, 230 },
     { "light coral", 240, 128, 128 },
     { "light cyan", 224, 255, 255 },
-    { "light goldenrod yellow", 250, 250, 210 },
     { "light goldenrod", 238, 221, 130 },
+    { "light goldenrod yellow", 250, 250, 210 },
     { "light gray", 211, 211, 211 },
     { "light green", 144, 238, 144 },
     { "light grey", 211, 211, 211 },
@@ -692,8 +692,8 @@ const ColorlistInfo
     { "navajowhite2", 238, 207, 161 },
     { "navajowhite3", 205, 179, 139 },
     { "navajowhite4", 139, 121, 94 },
-    { "navy blue", 0, 0, 128 },
     { "navy", 0, 0, 128 },
+    { "navy blue", 0, 0, 128 },
     { "navyblue", 0, 0, 128 },
     { "old lace", 253, 245, 230 },
     { "oldlace", 253, 245, 230 },
@@ -703,8 +703,8 @@ const ColorlistInfo
     { "olivedrab2", 179, 238, 58 },
     { "olivedrab3", 154, 205, 50 },
     { "olivedrab4", 105, 139, 34 },
-    { "orange red", 255, 69, 0 },
     { "orange", 255, 165, 0 },
+    { "orange red", 255, 69, 0 },
     { "orange1", 255, 165, 0 },
     { "orange2", 238, 154, 0 },
     { "orange3", 205, 133, 0 },
@@ -864,8 +864,8 @@ const ColorlistInfo
     { "turquoise2", 0, 229, 238 },
     { "turquoise3", 0, 197, 205 },
     { "turquoise4", 0, 134, 139 },
-    { "violet red", 208, 32, 144 },
     { "violet", 238, 130, 238 },
+    { "violet red", 208, 32, 144 },
     { "violetred", 208, 32, 144 },
     { "violetred1", 255, 62, 150 },
     { "violetred2", 238, 58, 140 },
@@ -876,11 +876,11 @@ const ColorlistInfo
     { "wheat2", 238, 216, 174 },
     { "wheat3", 205, 186, 150 },
     { "wheat4", 139, 126, 102 },
-    { "white smoke", 245, 245, 245 },
     { "white", 255, 255, 255 },
+    { "white smoke", 245, 245, 245 },
     { "whitesmoke", 245, 245, 245 },
-    { "yellow green", 154, 205, 50 },
     { "yellow", 255, 255, 0 },
+    { "yellow green", 154, 205, 50 },
     { "yellow1", 255, 255, 0 },
     { "yellow2", 238, 238, 0 },
     { "yellow3", 205, 205, 0 },
@@ -1757,7 +1757,6 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
     colorname[MaxTextExtent],
     text[MaxTextExtent];
 
-
   int
     blue,
     count,
@@ -1870,17 +1869,21 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
   */
   left=0;
   right=NumberXColors-2;
-  for (mid=(right+left)/2 ; mid > 1; mid=(right+left)/2)
+  for (mid=(right+left)/2 ; right != left; mid=(right+left)/2)
   {
     i=Latin1Compare(target,XColorlist[mid].name);
     if (i < 0)
       {
+        if (right == mid)
+          mid--;
         right=mid;
         continue;
       }
     if (i > 0)
       {
-        left=mid+1;
+        if (left == mid)
+          mid++;
+        left=mid;
         continue;
       }
     color->red=XColorlist[mid].red;
