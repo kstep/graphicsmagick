@@ -4,11 +4,18 @@ use Config;
 # the contents of the Makefile that is written.
 #
 # NOTE: The current ActiveState binary distribution does not completely setup
-# the values in Config.pm. You must manually modify the values of libpth to
-# add the VisualC++ library path. It should look something like this in order
-# to work properly.
+# the values in C:/Perl/lib/Config.pm. You must manually modify the values of
+# libpth to add the VisualC++ library path. It should look similar to one of
+# the following examples in order to work properly.
 #
+#  Random developer
 #   libpth='"C:\Perl\lib\CORE" "D:\DevStudio\VC98\lib"'
+#
+#  Visual Studio 6.0 default install:
+#   libpth='"C:\Program Files\Microsoft Visual Studio\VC98\lib" "C:\Perl\lib\CORE"'
+#
+#  Visual Studio 7.0 default install:
+#   libpth='"C:\Program Files\Microsoft Visual Studio .NET\vc7\lib" "C:\Perl\lib\CORE"'
 #
 WriteMakefile(
     'ABSTRACT'  => 'ImageMagick PERL Extension',
@@ -108,7 +115,7 @@ sub MY::test
    #   xfig	Xfig format		'transfig' program
    #   zlib	Zip compression		Zlib library
    #
-   my @DELEGATES = qw/ bzlib cgm jbig jpeg mpeg png ps tiff ttf x xfig zlib/;
+   my @DELEGATES = qw/ bzlib cgm hpgl jbig jpeg mpeg png ps tiff ttf wmf x xfig zlib/;
 
    package MY; # so that "SUPER" works right
    my $inherited = shift->SUPER::test(@_);
@@ -120,6 +127,7 @@ sub MY::test
     " t/jpeg/write.t" .
     " t/jbig/read.t" .
     " t/jbig/write.t" .
+    " t/hpgl/read.t" .
     " t/ttf/read.t" .
     " t/png/read.t" .
     " t/png/write.t" .
@@ -129,6 +137,7 @@ sub MY::test
     " t/zlib/write.t" .
     " t/ps/read.t" .
     " t/ps/write.t" .
+    " t/wmf/read.t" .
     " t/write.t" .
     " t/setattribute.t" .
     " t/getattribute.t";
