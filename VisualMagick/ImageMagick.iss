@@ -34,6 +34,8 @@
 
 [Setup]
 AppName=ImageMagick
+; When updating the version string, remember to also update the version in
+; the [Registry] section
 AppVerName=ImageMagick version 5.4.7
 AppCopyright=Copyright (C) 2002 ImageMagick Studio
 ; To install under "C:\Program Files ImageMagick":
@@ -46,6 +48,14 @@ OutputDir=bin
 OutputBaseFilename=ImageMagick-win2k
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
+
+; Windows registry settings
+[Registry]
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.7"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}"; Flags: uninsdeletekey
 
 [Files]
 ; Executables
