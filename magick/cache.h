@@ -65,9 +65,6 @@ typedef struct _CacheInfo
   int
     file;
 
-  off_t
-    offset;
-
   unsigned int
     persist;
 

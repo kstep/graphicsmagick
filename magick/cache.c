@@ -115,48 +115,6 @@ MagickExport void
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   A l l o c a t e C a c h e N e x t u s                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method AllocateCacheNexus allocates the cache nexus.
-%
-%  The format of the AllocateCacheNexus method is:
-%
-%      AllocateCacheNexus(CacheInfo *cache_info)
-%
-%  A description of each parameter follows:
-%
-%    o cache_info: Specifies a pointer to a Cache structure.
-%
-%
-*/
-MagickExport void AllocateCacheNexus(CacheInfo *cache_info)
-{
-  register int
-    id;
-
-  /*
-    Allocate cache nexus.
-  */
-  assert(cache_info != (CacheInfo *) NULL);
-  cache_info->nexus=(NexusInfo *)
-    AcquireMemory((cache_info->rows+1)*sizeof(NexusInfo));
-  if (cache_info->nexus == (NexusInfo *) NULL)
-    MagickError(ResourceLimitError,"Memory allocation failed",
-      "unable to allocate cache nexus");
-  memset(cache_info->nexus,0,(cache_info->rows+1)*sizeof(NexusInfo));
-  for (id=1; id <= cache_info->rows; id++)
-    cache_info->nexus[id].available=True;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   C l o s e C a c h e                                                       %
 %                                                                             %
 %                                                                             %
@@ -202,7 +160,7 @@ static void CloseCache(Cache cache)
 %  Method ClosePixelCache closes the pixel cache.  Use this method to prevent
 %  the too many file descriptors from being allocated when reading an image
 %  sequence.  File descriptors are only used for a disk-based cache.  This is
-%  a no-op for a memory-based cache.
+%  essentially a no-op for a memory-based cache.
 %
 %  The format of the ClosePixelCache method is:
 %
@@ -282,7 +240,7 @@ static void DestroyCacheInfo(Cache cache)
       length=number_pixels*sizeof(PixelPacket);
       if (cache_info->storage_class == PseudoClass)
         length+=number_pixels*sizeof(IndexPacket);
-      (void) UnmapBlob(cache_info->pixels,cache_info->offset+length);
+      (void) UnmapBlob(cache_info->pixels,length);
     }
     case DiskCache:
     {
@@ -643,9 +601,8 @@ MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
 %    o pixels: Method GetNexusPixels returns the indexes associated with the
 %      the specified cache nexus.
 %
-%    o cache: Specifies a pointer to a Cache structure.
-%
 %    o id: specifies which cache nexus to return the pixels.
+%
 %
 %
 */
@@ -911,9 +868,6 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
     length,
     number_pixels;
 
-  size_t
-    offset;
-
   void
     *allocation;
 
@@ -944,9 +898,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
   cache_info->rows=rows;
   cache_info->columns=columns;
   number_pixels=cache_info->columns*cache_info->rows;
-  if (cache_info->storage_class == UndefinedClass)
-    AllocateCacheNexus(cache_info);
-  else
+  if (cache_info->storage_class != UndefinedClass)
     {
       /*
         Free memory-based cache resources.
@@ -954,7 +906,34 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       if (cache_info->type == MemoryCache)
         (void) GetCacheMemory(length);
       if (cache_info->type == MemoryMappedCache)
-        (void) UnmapBlob(cache_info->pixels,cache_info->offset+length);
+        (void) UnmapBlob(cache_info->pixels,(size_t) length);
+    }
+  else
+    {
+      register int
+        i;
+
+      /*
+        Allocate cache nexus.
+      */
+      cache_info->nexus=(NexusInfo *)
+        AcquireMemory((cache_info->rows+1)*sizeof(NexusInfo));
+      if (cache_info->nexus == (NexusInfo *) NULL)
+        MagickError(ResourceLimitError,"Memory allocation failed",
+          "unable to allocate cache nexus");
+      for (i=0; i <= cache_info->rows; i++)
+      {
+        cache_info->nexus[i].available=True;
+        cache_info->nexus[i].columns=0;
+        cache_info->nexus[i].rows=0;
+        cache_info->nexus[i].x=0;
+        cache_info->nexus[i].y=0;
+        cache_info->nexus[i].length=0;
+        cache_info->nexus[i].line=(void *) NULL;
+        cache_info->nexus[i].pixels=(PixelPacket *) NULL;
+        cache_info->nexus[i].indexes=(IndexPacket *) NULL;
+      }
+      cache_info->nexus[0].available=False;
     }
   length=number_pixels*sizeof(PixelPacket);
   if (storage_class == PseudoClass)
@@ -999,28 +978,34 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
         return(False);
     }
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  if (ftruncate(cache_info->file,cache_info->offset+length) == -1)
+  if (ftruncate(cache_info->file,length) == -1)
     return(False);
 else
-  if (lseek(cache_info->file,cache_info->offset+length,SEEK_SET) == -1)
+  if (lseek(cache_info->file,length,SEEK_SET) == -1)
     return(False);
   if (write(cache_info->file,&null,sizeof(null)) == -1)
     return(False);
 #endif
   cache_info->storage_class=storage_class;
-  cache_info->type=DiskCache;
-  allocation=MapBlob(cache_info->file,IOMode,&offset);
-  if (allocation != (void *) NULL)
+  if (cache_info->type != DiskCache)
     {
-      /*
-        Create memory-mapped pixel cache.
-      */
-      cache_info->type=MemoryMappedCache;
-      cache_info->pixels=(PixelPacket *)
-        ((char *) allocation+cache_info->offset);
-      if (cache_info->storage_class == PseudoClass)
-        cache_info->indexes=(IndexPacket *) (cache_info->pixels+number_pixels);
-      CloseCache(cache);
+      size_t
+        offset;
+
+      cache_info->type=DiskCache;
+      allocation=MapBlob(cache_info->file,IOMode,&offset);
+      if (allocation != (void *) NULL)
+        {
+          /*
+            Create memory-mapped pixel cache.
+          */
+          cache_info->type=MemoryMappedCache;
+          cache_info->pixels=(PixelPacket *) allocation;
+          if (cache_info->storage_class == PseudoClass)
+            cache_info->indexes=(IndexPacket *)
+              (cache_info->pixels+number_pixels);
+          CloseCache(cache);
+        }
     }
   return(True);
 }
@@ -1109,8 +1094,8 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
   number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (int) nexus->rows; y++)
   {
-    count=lseek(cache_info->file,cache_info->offset+
-      number_pixels*sizeof(PixelPacket)+offset*sizeof(IndexPacket),SEEK_SET);
+    count=lseek(cache_info->file,number_pixels*sizeof(PixelPacket)+offset*
+      sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=read(cache_info->file,(char *) indexes,
@@ -1203,8 +1188,7 @@ MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
     }
   for (y=0; y < (int) nexus->rows; y++)
   {
-    count=lseek(cache_info->file,cache_info->offset+offset*sizeof(PixelPacket),
-      SEEK_SET);
+    count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=read(cache_info->file,(char *) pixels,
@@ -1590,8 +1574,8 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
   number_pixels=cache_info->columns*cache_info->rows;
   for (y=0; y < (int) nexus->rows; y++)
   {
-    count=lseek(cache_info->file,cache_info->offset+number_pixels*
-      sizeof(PixelPacket)+offset*sizeof(IndexPacket),SEEK_SET);
+    count=lseek(cache_info->file,number_pixels*sizeof(PixelPacket)+offset*
+      sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=write(cache_info->file,(char *) indexes,
@@ -1684,8 +1668,7 @@ MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
     }
   for (y=0; y < (int) nexus->rows; y++)
   {
-    count=lseek(cache_info->file,cache_info->offset+offset*sizeof(PixelPacket),
-      SEEK_SET);
+    count=lseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
     if (count == -1)
       return(False);
     count=write(cache_info->file,(char *) pixels,

@@ -434,7 +434,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
         new_number_colors++;
         if (opacity[i] != OpaqueOpacity)
           have_transparency=True;
-      }
+      } 
   if ((!have_transparency || (opacity[0] == TransparentOpacity)) &&
       (new_number_colors == number_colors))
     {
@@ -546,7 +546,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
   if(remap_needed)
     {
       /*
-        Remap pixels.
+      Remap pixels.
       */
       printf("remapping.\n");
       for (y=0; y < (int) image->rows; y++)
@@ -2193,15 +2193,20 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (LocaleCompare(image_info->magick,"MNG") == 0)
       {
         png_set_sig_bytes(ping,8);
-#ifdef PNG_READ_EMPTY_PLTE_SUPPORTED
-        png_permit_empty_plte(ping,True);
+#if defined(PNG_MNG_FEATURES_SUPPORTED)
+        png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
         png_set_read_fn(ping,image,png_get_data);
 #else
+#  ifdef PNG_READ_EMPTY_PLTE_SUPPORTED
+        png_permit_empty_plte(ping,True);
+        png_set_read_fn(ping,image,png_get_data);
+#  else
         mng_info->image=image;
         mng_info->bytes_in_read_buffer=0;
         mng_info->found_empty_plte=False;
         mng_info->have_saved_bkgd_index=False;
         png_set_read_fn(ping,mng_info,mng_get_data);
+#  endif
 #endif
       }
     else
@@ -2216,15 +2221,47 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->depth=8;
           }
       }
-#if defined(PNG_READ_iCCP_SUPPORTED)
+#if (PNG_LIBPNG_VER > 10008) && defined(PNG_READ_iCCP_SUPPORTED)
     if (ping_info->valid & PNG_INFO_iCCP)
       {
         int
           compression;
 
-        png_get_iCCP(ping,ping_info,&image->color_profile.name,
-          &compression,(png_charpp) &image->color_profile.info,
+        png_charp
+          info,
+          name;
+
+        png_get_iCCP(ping,ping_info,&name,(int *) &compression,&info,
           (png_uint_32 *) &image->color_profile.length);
+
+        if(image->color_profile.name)
+           LiberateMemory((void **) &image->color_profile.name);
+        if(image->color_profile.info)
+            LiberateMemory((void **) &image->color_profile.info);
+        if(image->color_profile.length)
+          {
+#ifdef PNG_FREE_ME_SUPPORTED
+            image->color_profile.name=name;
+            image->color_profile.info=(unsigned char *) info;
+            png_data_freer(ping, ping_info, PNG_USER_WILL_FREE_DATA,
+               PNG_FREE_ICCP);
+#else
+            /* libpng will destroy name and info so we must copy them now. */
+            image->color_profile.info=(unsigned char *) AcquireMemory(length);
+            if (image->color_profile.info == (unsigned char *) NULL)
+              {
+                 MagickWarning(OptionWarning, "Unable to allocate ICC profile",
+                    "Memory allocation failed");
+                 image->color_profile.length=0;
+              }
+            else
+              {
+                 memcpy(image->color_profile.info,(unsigned char *) info,length);
+                 image->color_profile.name=AllocateString(name);
+              }
+#endif
+        }
+
       }
 #endif
 #if defined(PNG_READ_sRGB_SUPPORTED)
@@ -3608,25 +3645,32 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          MSBFirstWriteLong(image,crc32(0,chunk,13));
        }
      /*
-       Write MNG BACK chunk and global bKGD chunk
+       Write MNG BACK chunk and global bKGD chunk, if the image is transparent
+       or does not cover the entire frame.
      */
-     MSBFirstWriteLong(image,6L);
-     PNGType(chunk,mng_BACK);
-     red=UpScale(image->background_color.red);
-     green=UpScale(image->background_color.green);
-     blue=UpScale(image->background_color.blue);
-     PNGShort(chunk+4,red);
-     PNGShort(chunk+6,green);
-     PNGShort(chunk+8,blue);
-     (void) WriteBlob(image,10,(char *) chunk);
-     MSBFirstWriteLong(image,crc32(0,chunk,10));
-     if (equal_backgrounds)
+     if (image->matte || image->page.x > 0 || image->page.y > 0 ||
+         image->page.width && (image->page.width+image->page.x < page.width) || 
+         image->page.height && (image->page.height+image->page.y < page.height))
        {
          MSBFirstWriteLong(image,6L);
-         PNGType(chunk,mng_bKGD);
+         PNGType(chunk,mng_BACK);
+         red=UpScale(image->background_color.red);
+         green=UpScale(image->background_color.green);
+         blue=UpScale(image->background_color.blue);
+         PNGShort(chunk+4,red);
+         PNGShort(chunk+6,green);
+         PNGShort(chunk+8,blue);
          (void) WriteBlob(image,10,(char *) chunk);
          MSBFirstWriteLong(image,crc32(0,chunk,10));
+         if (equal_backgrounds)
+           {
+             MSBFirstWriteLong(image,6L);
+             PNGType(chunk,mng_bKGD);
+             (void) WriteBlob(image,10,(char *) chunk);
+             MSBFirstWriteLong(image,crc32(0,chunk,10));
+           }
        }
+
      if (!need_local_plte && IsPseudoClass(image) && !all_images_are_gray)
        {
          long
@@ -3765,8 +3809,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Prepare PNG for writing.
     */
-#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+#if defined(PNG_MNG_FEATURES_SUPPORTED)
+        png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
+#else
+# ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
     png_permit_empty_plte(ping,True);
+# endif
 #endif
     ping_info->width=image->columns;
     ping_info->height=image->rows;
@@ -4073,10 +4121,18 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.gray*=0x0101;
           }
       }
-#if defined(PNG_WRITE_iCCP_SUPPORTED)
-    if (ping_info->valid & PNG_INFO_iCCP)
-      png_set_iCCP(ping,ping_info,image->color_profile.name,0,
-        (char *) &image->color_profile.info,image->color_profile.length);
+#if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
+    if(image->color_profile.length)
+      {
+        if(image->color_profile.name == (png_charp) NULL)
+          png_set_iCCP(ping,ping_info,(png_charp) "ICC Profile",
+             (int) 0, (png_charp) image->color_profile.info,
+             (png_uint_32) image->color_profile.length);
+        else
+          png_set_iCCP(ping,ping_info,(png_charp) image->color_profile.name,
+             (int) 0, (png_charp) image->color_profile.info,
+             (png_uint_32) image->color_profile.length);
+      }
 #endif
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
     if (!have_write_global_srgb &&
@@ -4121,7 +4177,16 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize compression level and filtering.
     */
-    png_set_compression_level(ping,Min(image_info->quality/10,9));
+    png_set_compression_mem_level(ping, 9);
+    if(image_info->quality > 9)
+       png_set_compression_level(ping,Min(image_info->quality/10,9));
+    else
+       png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
+#if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
+    /* This became available in libpng-1.0.9.  Output must be a MNG. */
+    if (image_info->adjoin && ((image_info->quality % 10) == 7))
+      ping_info->filter_type=PNG_INTRAPIXEL_DIFFERENCING;
+#endif
     if ((image_info->quality % 10) > 5)
       png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
     else
