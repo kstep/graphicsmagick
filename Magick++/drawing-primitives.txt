@@ -1,6 +1,78 @@
+Summary of MVG Primitives and Syntax
+====================================
 
-Drawing Primitives
-==================
+MVG ignores all white-space between commands. This allows
+multiple MVG commands per line. It is common convention to
+terminate each MVG command with a new line to make MVG easier
+to edit and read. This syntax description uses indentation in
+MVG sequences to aid with understanding. Indentation is
+supported but is not required.
+
+Metafile wrapper syntax (to support stand-alone MVG files)
+----------------------------------------------------------
+
+  push graphic-context
+   viewbox 0 0 width height
+    [ any other MVG commands ]
+  pop graphic-context
+
+
+Pattern syntax (saving and restoring context)
+---------------------------------------------
+
+  push pattern id x,y width,height
+   push graphic-context
+    [ drawing commands ]
+   pop graphic-context
+  pop pattern
+
+an example is (%s is a identifier string)
+
+  push defs
+   push pattern %s 10,10 20,20
+    push graphic-context
+     fill red
+     rectangle 5,5 15,15
+    pop graphic-context
+    push graphic-context
+     fill green
+     rectangle 10,10 20,20
+    pop graphic-context
+   pop pattern
+  pop defs
+
+For image tiling use
+
+  push pattern id x,y width,height
+   image Copy ...
+  pop pattern
+
+Note you can use the pattern for either the fill or stroke like
+
+  stroke url(#%s)
+
+    or
+
+  fill url(#%s)
+
+Clip-path syntax
+----------------
+
+ The clip path defines a clipping area, where only the contained
+ area will be drawn upon.  Areas outside of the clipping area are
+ masked.
+
+  push defs
+   push clip-path %s
+    push graphic-context
+     rectangle 10,10 20,20
+    pop graphic-context
+   pop clip-path
+  pop defs
+  clip-path url(#%s)
+
+Individual Drawing Primitives
+=============================
 
 "affine is just a compact way to represent a 3x3 translation matrix.
 Locations 0 & 3 are scaling for x,y; 1 & 2 are rotation for x,y; 4 & 5
@@ -72,58 +144,4 @@ text x,y "some text"
 text-antialias (0|1)
 translate x,y
 viewbox x1,y1 x1,y2 (e.g. "viewbox 0 0 640 480")
-
-Pattern syntax (saving and restoring context)
----------------------------------------------
-
-  push pattern id x,y width,height
-  push graphic-context
-  [ drawing commands ]
-  pop graphic-context
-  pop pattern
-
-an example is (%s is a identifier string)
-
-  push defs
-  push pattern %s 10,10 20,20
-  push graphic-context
-  fill red
-  rectangle 5,5 15,15
-  pop graphic-context
-  push graphic-context
-  fill green
-  rectangle 10,10 20,20
-  pop graphic-context
-  pop pattern
-  pop defs
-
-For image tiling use
-
-  push pattern id x,y width,height
-    image Copy ...
-  pop pattern
-
-Note you can use the pattern for either the fill or stroke like
-
-  stroke url(#%s)
-
-    or
-
-  fill url(#%s)
-
-Clip-path syntax
-----------------
-
- The clip path defines a clipping area, where only the contained
- area will be drawn upon.  Areas outside of the clipping area are
- masked.
-
-  push defs
-  push clip-path %s
-  push graphic-context
-  rectangle 10,10 20,20
-  pop graphic-context
-  pop clip-path
-  pop defs
-  clip-path url(#%s)
 
