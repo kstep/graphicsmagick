@@ -1361,10 +1361,8 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
     {
       double
         distance,
-        distance_squared,
-        min_distance;
+        distance_squared;
 
-      min_distance=4.0*(MaxRGB+1)*(MaxRGB+1);
       for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
       {
         if ((p->compliance != AllCompliance) && (p->compliance != compliance))
@@ -1377,14 +1375,11 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
         distance_squared+=distance*distance;
         distance=color->opacity-(int) p->color.opacity;
         distance_squared+=distance*distance;
-        if (distance_squared < min_distance)
-          {
-            min_distance=distance_squared;
-            (void) strcpy(name,p->name);
-          }
-      }
-      if (min_distance == 0.0)
+        if (distance_squared != 0.0)
+          continue;
+        (void) strcpy(name,p->name);
         return(True);
+      }
     }
   if (color->opacity == OpaqueOpacity)
     {

@@ -6391,10 +6391,8 @@ QueryColorname(ref,...)
     for (i=1; i < items; i++)
     {
       (void) QueryColorDatabase(SvPV(ST(i),na),&target_color);
-      if (!QueryColorname(image,&target_color,AllCompliance,message))
-        s=(&sv_undef);
-      else
-        s=sv_2mortal(newSVpv(message,0));
+      (void) QueryColorname(image,&target_color,AllCompliance,message)l
+      s=sv_2mortal(newSVpv(message,0));
       PUSHs(s);
     }
     SvREFCNT_dec(error_list);
