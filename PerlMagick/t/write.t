@@ -32,8 +32,8 @@ testReadWrite( 'BMP:input.bmp',
 
 print("Microsoft Windows 24-bit bitmap image file ...\n");
 ++$test;
-testReadWrite( 'BMP24:input.bmp24',
-               'BMP24:output.bmp24',
+testReadWrite( 'BMP:input.bmp24',
+               'BMP:output.bmp24',
                q//,
                'eb4d6e084afe2835a1ad28ad7fc12ced');
 

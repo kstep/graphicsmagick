@@ -24,7 +24,7 @@ testRead( 'input.bmp', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("Microsoft Windows 24-bit bitmap image file ...\n");
 ++$test;
-testRead( 'input.bmp24', 'eb4d6e084afe2835a1ad28ad7fc12ced');
+testRead( 'bmp24:input.bmp24', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("ZSoft IBM PC multi-page Paintbrush file ...\n");
 ++$test;
@@ -144,7 +144,7 @@ print("SUN 8-bit Rasterfile ...\n");
 testRead( 'input.im8', '45e5c63ac641eda9bedd4f42a7f6b4cd');
 print("SUN TrueColor Rasterfile ...\n");
 ++$test;
-testRead( 'input.im24', 'eb4d6e084afe2835a1ad28ad7fc12ced');
+testRead( 'sun:input.im24', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("Truevision Targa image file ...\n");
 ++$test;
