@@ -364,6 +364,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       {
         if (i == 0)
           {
+            (void) strcpy(factor,"30.0x30.0");
             (void) strcpy(label,"+shade");
             commands[argc++]="+shade";
             break;

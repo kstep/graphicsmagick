@@ -788,8 +788,10 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   /*
     Set image summary info.
   */
+  summary_info.title_valid=False;
   summary_info.subject_valid=False;
   summary_info.author_valid=False;
+  summary_info.comments_valid=False;
   summary_info.keywords_valid=False;
   summary_info.OLEtemplate_valid=False;
   summary_info.last_author_valid=False;
