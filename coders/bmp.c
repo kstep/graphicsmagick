@@ -165,7 +165,7 @@ static unsigned int
 %
 */
 static unsigned int DecodeImage(Image *image,const unsigned long compression,
-  unsigned bytes_per_line,unsigned char *pixels)
+  unsigned long bytes_per_line,unsigned char *pixels)
 {
   long
     byte,
