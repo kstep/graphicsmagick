@@ -116,12 +116,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
-  image->columns=(unsigned long)
-    floor(metrics.width+0.5*metrics.max_advance+0.5);
+  image->columns=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
   image->rows=(unsigned long) floor(metrics.height+0.5);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
+  TransformImage(&image,"0x0",(char *) NULL);
   return(image);
 }
 
