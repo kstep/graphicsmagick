@@ -31,6 +31,9 @@ extern "C" {
 
 #include <stdarg.h>
 #include <stdio.h>
+#if defined(WIN32) && defined(_DEBUG)
+#define _CRTDBG_MAP_ALLOC
+#endif
 #include <stdlib.h>
 #if !defined(WIN32)
 # include <unistd.h>
