@@ -33,6 +33,7 @@
   <module name="JBIG" alias="JBG"/>
   <module name="JPEG" alias="JPG"/>
   <module name="PNG" alias="MNG"/>
+  <module name="MPEG" alias="MPG"/>
   <module name="LOGO" alias="NETSCAPE"/>
   <module name="PNM" alias="P7"/>
   <module name="UYVY" alias="PAL"/>

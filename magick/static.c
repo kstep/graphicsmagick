@@ -38,6 +38,7 @@ void OpenStaticModules(void)
   RegisterMIFFImage();
   RegisterMONOImage();
   RegisterMPCImage();
+  RegisterMPEGImage();
   RegisterMTVImage();
   RegisterMVGImage();
   RegisterNULLImage();

@@ -307,7 +307,8 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
   return((tsize_t) WriteBlob((Image *) image,(size_t) size,data));
 }
 
-static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadTIFFImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
     *text;
