@@ -1,4 +1,9 @@
-2004-07-28  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+2004-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Support reading RGB/CMYK scanline
+	oriented TIFF images with arbitrary depth.
+
+2004-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am:  Update to Automake 1.9.
 

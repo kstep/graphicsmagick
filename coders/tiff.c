@@ -489,9 +489,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   register long
     i;
 
-  register unsigned char
-    *p;
-
   TIFF
     *tiff;
 
@@ -969,7 +966,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 break;
         }
         MagickFreeMemory(scanline);
-/*         image->depth=GetImageDepth(image,exception); */
         break;
       }
       case DirectClassScanLineMethod:
@@ -977,10 +973,28 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
+        double
+          quantum_scale;
+        
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Using DirectClassScanLine read method with %u bits per sample",
                bits_per_sample);
+
+        /*
+          Compute factor to use to scale TIFF sample to Quantum.
+        */
+        if (QuantumDepth > bits_per_sample)
+          quantum_scale=(double) (MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample)));
+        else if (bits_per_sample > QuantumDepth)
+          quantum_scale=(double) MaxRGB / ((0x01U << (bits_per_sample-1)) +
+                                           ((0x01U << (bits_per_sample-1))-1));
+        else
+          quantum_scale=1.0;
+
+        /*
+          Allocate memory for one 16-bit CMYK scanline (largest size).
+        */
         scanline=MagickAllocateMemory(unsigned char *,8*TIFFScanlineSize(tiff));
         if (scanline == (unsigned char *) NULL)
           {
@@ -990,51 +1004,76 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
+
         for (y=0; y < (long) image->rows; y++)
         {
+          register IndexPacket
+            *indexes;
+
+          BitStreamReadHandle
+            stream;
+
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
+
+          indexes=GetIndexes(image);
           (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
+
+          /*
+            Ensure the header byte-order is most-significant byte first.
+          */
           if (bits_per_sample > 8)
             {
               unsigned long
                 lsb_first;
-
-              /*
-                Ensure the header byte-order is most-significant byte first.
-              */
+              
               lsb_first=1;
               if (*(char *) &lsb_first)
                 MSBOrderShort(scanline,8*TIFFScanlineSize(tiff));
             }
-          if (bits_per_sample == 4)
-            {
-              register unsigned char
-                *r;
 
-              width=TIFFScanlineSize(tiff);
-              p=scanline+width-1;
-              r=scanline+(width << 1)-1;
-              for (x=0; x < (long) width; x++)
-              {
-                *r--=((*p) & 0xf) << 4;
-                *r--=((*p >> 4) & 0xf) << 4;
-                p--;
-              }
-            }
-          if (image->colorspace == CMYKColorspace)
+
+          width=TIFFScanlineSize(tiff);
+          BitStreamInitializeRead(&stream,scanline);
+          
+#define GET_QUANTUM(stream,bits_per_sample,quantum_scale) \
+  ((Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale))
+          
+          for (x = (long) width; x > 0; --x)
             {
-              if (!image->matte)
-                (void) PushImagePixels(image,CMYKQuantum,scanline);
+              /* red or cyan */
+              q->red=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+              /* green or magenta */
+              q->green=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+              /* blue or yellow */
+              q->blue=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+              
+              if (image->colorspace == CMYKColorspace)
+                {
+                  /* black */
+                  q->opacity=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                  /* cmyk opacity */
+                  if (image->matte)
+                    {
+                      register unsigned int
+                        quantum;
+                      
+                      quantum=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                      *indexes=(IndexPacket) (MaxRGB-quantum);
+                    }
+                }
               else
-                (void) PushImagePixels(image,CMYKAQuantum,scanline);
+                {
+                  /* rgb opacity */
+                  if (image->matte)
+                    q->opacity=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                }
+              
+              indexes++;
+              q++;
             }
-          else
-            if (!image->matte)
-              (void) PushImagePixels(image,RGBQuantum,scanline);
-            else
-              (void) PushImagePixels(image,RGBAQuantum,scanline);
+          
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
