@@ -65,7 +65,8 @@ typedef enum
   BlendCompositeOp,
   DisplaceCompositeOp,
   AnnotateCompositeOp,
-  ModulateCompositeOp
+  ModulateCompositeOp,
+  ThresholdCompositeOp
 } CompositeOperator;
 
 typedef enum

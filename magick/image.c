@@ -1112,11 +1112,13 @@ MagickExport unsigned int CompositeImage(Image *image,
     *q;
 
   double
+    amount,
     saturation_scale,
     brightness_scale,
     brightness,
     hue,
-    saturation;
+    saturation,
+    threshold;
 
   /*
     Prepare composite image.
@@ -1251,6 +1253,21 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
       brightness_scale/=100.0;
       saturation_scale/=100.0;
+      break;
+    }
+    case ThresholdCompositeOp:
+    {
+      amount=0.5;
+      threshold=0.05;
+      if (composite_image->geometry != (char *) NULL)
+        {
+          /*
+            Determine the amount and threshold.
+          */
+          sscanf(composite_image->geometry,"%lfx%lf\n",
+            &amount,&threshold);
+        }
+      threshold*=255.0;
       break;
     }
     case ReplaceCompositeOp:
@@ -1546,6 +1563,25 @@ MagickExport unsigned int CompositeImage(Image *image,
           blue=p->blue;
           if (composite_image->matte)
             opacity=p->opacity;
+          break;
+        }
+        case ThresholdCompositeOp:
+        {
+          red=AbsoluteValue(p->red-(int) q->red);
+          if ((red*2.0) < threshold)
+            red=q->red;
+          else
+            red=q->red+(red*amount);
+          green=AbsoluteValue(p->green-(int) q->green);
+          if ((green*2.0) < threshold)
+            green=q->green;
+          else
+            green=q->green+(green*amount);
+          blue=AbsoluteValue(p->blue-(int) q->blue);
+          if ((blue*2.0) < threshold)
+            blue=q->blue;
+          else
+            blue=q->blue+(blue*amount);
           break;
         }
         case ModulateCompositeOp:

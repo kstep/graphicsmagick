@@ -179,10 +179,11 @@ int main(int argc,char **argv)
 
   char
     *displacement_geometry,
-    *watermark_geometry,
     *filename,
     *geometry,
     *option,
+    *unsharp_geometry,
+    *watermark_geometry,
     *write_filename;
 
   CompositeOperator
@@ -267,6 +268,7 @@ int main(int argc,char **argv)
   stereo=False;
   tile=False;
   watermark_geometry=(char *) NULL;
+  unsharp_geometry=(char *) NULL;
   write_filename=argv[argc-1];
   /*
     Check command syntax.
@@ -345,7 +347,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing threshold",option);
+                    MagickError(OptionError,"Missing unsharp",option);
                 }
               SetCacheThreshold(atoi(argv[i]));
               break;
@@ -766,7 +768,6 @@ int main(int argc,char **argv)
               tile=(*option == '-');
               break;
             }
-          MagickError(OptionError,"Unrecognized option",option);
           if (LocaleNCompare("treedepth",option+1,3) == 0)
             {
               if (*option == '-')
@@ -774,6 +775,24 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing depth",option);
+                }
+              break;
+            }
+          MagickError(OptionError,"Unrecognized option",option);
+          break;
+        }
+        case 'u':
+        {
+          if (LocaleCompare("unsharp",option+1) == 0)
+            {
+              CloneString(&unsharp_geometry,(char *) NULL);
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing geometry",option);
+                  (void) CloneString(&unsharp_geometry,argv[i]);
+                  compose=ThresholdCompositeOp;
                 }
               break;
             }
@@ -928,6 +947,8 @@ int main(int argc,char **argv)
     CloneString(&composite_image->geometry,displacement_geometry);
   if (compose == ModulateCompositeOp)
     CloneString(&composite_image->geometry,watermark_geometry);
+  if (compose == ThresholdCompositeOp)
+    CloneString(&composite_image->geometry,unsharp_geometry);
   /*
     Combine image.
   */
