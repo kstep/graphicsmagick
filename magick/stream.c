@@ -452,7 +452,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
-  number_pixels=stream_info->columns*stream_info->rows;
+  number_pixels=columns*rows;
   length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
@@ -460,11 +460,12 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   if (stream_info->pixels == (PixelPacket *) NULL)
     stream_info->pixels=(PixelPacket *) AcquireMemory(length);
   else
-    if (number_pixels != (off_t) (columns*rows))
+    if (length != stream_info->length)
       ReacquireMemory((void **) &stream_info->pixels,length);
   if (stream_info->pixels == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
+  stream_info->length=length;
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))

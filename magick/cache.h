@@ -55,6 +55,9 @@ typedef struct _CacheInfo
     columns,
     rows;
 
+  off_t
+    length;
+
   PixelPacket
     *pixels;
 
