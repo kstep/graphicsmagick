@@ -1,5 +1,6 @@
 2004-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS: Updated NEWS file.
 	* magick/constitute.c (DispatchImage): Support 8-bit output to
 	common formats BGR, BGRO, BGRP, RGB, RGBO, and I as special cases
 	in order to improve performance.

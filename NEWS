@@ -1,4 +1,31 @@
-This file was last updated on May 2, 2004.
+This file was last updated on June 5, 2004.
+
+Significant changes associated with GraphicsMagick 1.1.2 (TBD)
+
+  Bugs fixed:
+    * The source RPM package was not installing the *-config scripts with
+    execute permissions.
+    * Under Windows, the Ghostscript fonts were not being found for
+    Ghostscript 8.X.X installs.
+    * For the "moby" (shared, non-module) build, loading all modules was
+    reporting an error while running the test suite due to not locating the
+    LOGO module.  The "moby" build was not really able to load external
+    modules at all.
+    * Fixed building under the current MinGW development environment.
+    * Fixed usage message for `mogrify' (was missing -operator).
+    * Fixes for SetImageOpacity().
+
+  Improvements:
+    * Significant performance improvments (4X) in DispatchImage() and
+    ConstituteImage() for byte-sized input/output and the patterns BGR,
+    BGRO, BGRP, RGB, RGBO, and I.
+    * The module loader now properly considers the module loading path in
+    all cases.  This means that modules may be located in multiple directories
+    and the user may supply his own modules in some other location.  Module
+    loading now works as intended for the "moby" build even though the
+    standard modules are included in the GraphicsMagick shared library or DLL.
+    * Under Windows, initialization time should be somewhat improved while
+    loading the type.mgk (font description) file.
 
 Significant changes associated with GraphicsMagick 1.1.1 (released May 2, 2004))
 
