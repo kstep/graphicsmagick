@@ -100,7 +100,7 @@ static void DestroyMagickInfo(void)
   register MagickInfo
     *p;
 
-  AcquireSemaphore(&magick_semaphore);
+  AcquireSemaphore(&magick_semaphore,(void (*)(void)) NULL);
   for (p=magick_list; p != (MagickInfo *) NULL; )
   {
     magick_info=p;
@@ -160,7 +160,7 @@ MagickExport char *GetImageMagick(const unsigned char *magick,
     *p;
 
   assert(magick != (const unsigned char *) NULL);
-  AcquireSemaphore(&magick_semaphore);
+  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (p->magick && p->magick(magick,length))
       break;
@@ -289,7 +289,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
     OpenModules(exception);
 #endif
-  AcquireSemaphore(&magick_semaphore);
+  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
   if (magick_list != (MagickInfo *) NULL)
     LiberateSemaphore(&magick_semaphore);
   else
@@ -383,14 +383,13 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
       RegisterYUVImage();
 #endif
       LiberateSemaphore(&magick_semaphore);
-      atexit(DestroyMagickInfo);
     }
   if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
     return(magick_list);
   /*
     Find name in list
   */
-  AcquireSemaphore(&magick_semaphore);
+  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
       break;
@@ -402,7 +401,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
   LiberateSemaphore(&magick_semaphore);
 #if defined(HasMODULES)
   (void) OpenModule(name,exception);
-  AcquireSemaphore(&magick_semaphore);
+  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
       break;
@@ -532,7 +531,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   p=GetMagickInfo("*",exception);
   if (p == (MagickInfo *) NULL)
     return(False);
-  AcquireSemaphore(&magick_semaphore);
+  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
   for ( ; p != (MagickInfo *) NULL; p=p->next)
     if (p->stealth != True)
       (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->name ? p->name : "",
@@ -626,7 +625,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
   UnregisterMagickInfo(magick_info->name);
-  AcquireSemaphore(&magick_semaphore);
+  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
   magick_info->previous=(MagickInfo *) NULL;
   magick_info->next=(MagickInfo *) NULL;
   if (magick_list == (MagickInfo *) NULL)
@@ -1013,7 +1012,7 @@ MagickExport unsigned int UnregisterMagickInfo(const char *name)
 
   assert(name != (const char *) NULL);
   status=False;
-  AcquireSemaphore(&magick_semaphore);
+  AcquireSemaphore(&magick_semaphore,DestroyMagickInfo);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->name,name) != 0)

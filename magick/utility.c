@@ -412,8 +412,8 @@ extern "C" {
 
 static void DestroyUtility(void)
 {
-  AcquireSemaphore(&ps_semaphore);
-  DestroySemaphore(ps_semaphore);
+  AcquireSemaphore(&ps_semaphore,(void (*)(void)) NULL);
+  DestroySemaphore(&ps_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -439,8 +439,7 @@ MagickExport unsigned int ExecutePostscriptInterpreter(const unsigned int
   register int
     i;
 
-  atexit(DestroyUtility);
-  AcquireSemaphore(&ps_semaphore);
+  AcquireSemaphore(&ps_semaphore,DestroyUtility);
   if (verbose)
     (void) fputs(command,stdout);
   status=gsapi_new_instance(&interpreter,(void *) NULL);

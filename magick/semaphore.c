@@ -114,7 +114,7 @@ struct SemaphoreInfo
 %
 %  The format of the AcquireSemaphore method is:
 %
-%      AcquireSemaphore(SemaphoreInfo **semaphore_info)
+%      AcquireSemaphore(SemaphoreInfo **semaphore_info,void (*exit)(void)))
 %
 %  A description of each parameter follows:
 %
@@ -122,22 +122,8 @@ struct SemaphoreInfo
 %
 %
 */
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static void DestroySemaphoreInfo(void)
-{
-#if defined(WIN32)
-  DeleteCriticalSection(&critical_section);
-#endif
-}
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
-MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info)
+MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info,
+  void (*exit)(void))
 {
 #if defined(HasPTHREADS)
   pthread_mutex_lock(&semaphore_mutex);
@@ -150,10 +136,11 @@ MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info)
     }
   EnterCriticalSection(&critical_section);
 #endif
-  atexit(DestroySemaphoreInfo);
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     *semaphore_info=AllocateSemaphoreInfo();
   (void) LockSemaphore(*semaphore_info);
+  if (exit != (void (*)(void)) NULL)
+    atexit(exit);
 #if defined(HasPTHREADS)
   pthread_mutex_unlock(&semaphore_mutex);
 #endif

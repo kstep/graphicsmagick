@@ -589,7 +589,7 @@ extern "C" {
 
 static void DestroyCache(void)
 {
-  AcquireSemaphore(&cache_semaphore);
+  AcquireSemaphore(&cache_semaphore,(void (*)(void)) NULL);
   DestroySemaphore(cache_semaphore);
 }
 
@@ -599,8 +599,7 @@ static void DestroyCache(void)
 
 static off_t GetCacheMemory(const off_t memory)
 {
-  atexit(DestroyCache);
-  AcquireSemaphore(&cache_semaphore);
+  AcquireSemaphore(&cache_semaphore,DestroyCache);
   free_memory+=memory;
   LiberateSemaphore(&cache_semaphore);
   return(free_memory);

@@ -104,7 +104,7 @@ MagickExport void DestroyFontInfo(void)
   register FontInfo
     *p;
 
-  AcquireSemaphore(&font_semaphore);
+  AcquireSemaphore(&font_semaphore,(void (*)(void)) NULL);
   for (p=font_list; p != (FontInfo *) NULL; )
   {
     if (p->filename != (char *) NULL)
@@ -173,18 +173,10 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
   register FontInfo
     *p;
 
-  AcquireSemaphore(&font_semaphore);
-  if (font_list != (FontInfo *) NULL)
-    LiberateSemaphore(&font_semaphore);
-  else
-    {
-      /*
-        Read fonts.
-      */
-      (void) ReadConfigurationFile(FontFilename,exception);
-      LiberateSemaphore(&font_semaphore);
-      atexit(DestroyFontInfo);
-    }
+  AcquireSemaphore(&font_semaphore,DestroyFontInfo);
+  if (font_list == (FontInfo *) NULL)
+    (void) ReadConfigurationFile(FontFilename,exception);
+  LiberateSemaphore(&font_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(font_list);
   /*

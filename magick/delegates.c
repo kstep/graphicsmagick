@@ -113,7 +113,7 @@ static void DestroyDelegateInfo(void)
   register DelegateInfo
     *p;
 
-  AcquireSemaphore(&delegate_semaphore);
+  AcquireSemaphore(&delegate_semaphore,(void (*)(void)) NULL);
   for (p=delegate_list; p != (DelegateInfo *) NULL; )
   {
     if (p->filename != (char *) NULL)
@@ -176,18 +176,10 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
   register DelegateInfo
     *p;
 
-  AcquireSemaphore(&delegate_semaphore);
-  if (delegate_list != (DelegateInfo *) NULL)
-    LiberateSemaphore(&delegate_semaphore);
-  else
-    {
-      /*
-        Read delegates.
-      */
-      (void) ReadConfigurationFile(DelegateFilename,exception);
-      LiberateSemaphore(&delegate_semaphore);
-      atexit(DestroyDelegateInfo);
-    }
+  AcquireSemaphore(&delegate_semaphore,DestroyDelegateInfo);
+  if (delegate_list == (DelegateInfo *) NULL)
+    (void) ReadConfigurationFile(DelegateFilename,exception);
+  LiberateSemaphore(&delegate_semaphore);
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     return(delegate_list);
   /*

@@ -103,7 +103,7 @@ MagickExport void DestroyMagicInfo(void)
   register MagicInfo
     *p;
 
-  AcquireSemaphore(&magic_semaphore);
+  AcquireSemaphore(&magic_semaphore,(void (*)(void)) NULL);
   for (p=magic_list; p != (MagicInfo *) NULL; )
   {
     if (p->filename != (char *) NULL)
@@ -166,18 +166,10 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
   register MagicInfo
     *p;
 
-  AcquireSemaphore(&magic_semaphore);
-  if (magic_list != (MagicInfo *) NULL)
-    LiberateSemaphore(&magic_semaphore);
-  else
-    {
-      /*
-        Read magic list.
-      */
-      (void) ReadConfigurationFile(MagicFilename,exception);
-      LiberateSemaphore(&magic_semaphore);
-      atexit(DestroyMagicInfo);
-    }
+  AcquireSemaphore(&magic_semaphore,DestroyMagicInfo);
+  if (magic_list == (MagicInfo *) NULL)
+    (void) ReadConfigurationFile(MagicFilename,exception);
+  LiberateSemaphore(&magic_semaphore);
   if ((magic == (const unsigned char *) NULL) || (length == 0))
     return(magic_list);
   /*

@@ -161,8 +161,8 @@ extern "C" {
 
 static void DestroyTIFF(void)
 {
-  AcquireSemaphore(&tiff_semaphore);
-  DestroySemaphore(&tiff_semaphore);
+  AcquireSemaphore(&tiff_semaphore,(void (*)(void)) NULL);
+  DestroySemaphore(tiff_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -376,8 +376,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   }
   (void) fclose(file);
   (void) strcpy(image->filename,image_info->filename);
-  atexit(DestroyTIFF);
-  AcquireSemaphore(&tiff_semaphore);
+  AcquireSemaphore(&tiff_semaphore,DestroyTIFF);
   tiff_exception=exception;
   TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);

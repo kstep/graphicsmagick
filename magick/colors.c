@@ -171,7 +171,7 @@ MagickExport void DestroyColorInfo(void)
   register ColorInfo
     *p;
 
-  AcquireSemaphore(&color_semaphore);
+  AcquireSemaphore(&color_semaphore,(void (*)(void)) NULL);
   for (p=color_list; p != (ColorInfo *) NULL; )
   {
     if (p->filename != (char *) NULL)
@@ -313,18 +313,10 @@ MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
   register char
     *q;
 
-  AcquireSemaphore(&color_semaphore);
-  if (color_list != (ColorInfo *) NULL)
-    LiberateSemaphore(&color_semaphore);
-  else
-    {
-      /*
-        Read color list.
-      */
-      (void) ReadConfigurationFile(ColorFilename,exception);
-      LiberateSemaphore(&color_semaphore);
-      atexit(DestroyColorInfo);
-    }
+  AcquireSemaphore(&color_semaphore,DestroyColorInfo);
+  if (color_list == (ColorInfo *) NULL)
+    (void) ReadConfigurationFile(ColorFilename,exception);
+  LiberateSemaphore(&color_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(color_list);
   /*

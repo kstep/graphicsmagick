@@ -157,7 +157,7 @@ static void DestroyModuleInfo(void)
   /*
     Free module list and aliases.
   */
-  AcquireSemaphore(&module_semaphore);
+  AcquireSemaphore(&module_semaphore,(void (*)(void)) NULL);
   for (q=module_aliases; q != (ModuleAlias *) NULL; )
   {
     if (q->filename != (char *) NULL)
@@ -300,10 +300,8 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
   register ModuleAlias
     *p;
 
-  AcquireSemaphore(&module_semaphore);
-  if (module_aliases != (ModuleAlias *) NULL)
-    LiberateSemaphore(&module_semaphore);
-  else
+  AcquireSemaphore(&module_semaphore,DestroyModuleInfo);
+  if (module_aliases == (ModuleAlias *) NULL)
     {
       /*
         Initialize ltdl.
@@ -315,9 +313,8 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
         Read modules.
       */
       (void) ReadConfigurationFile("modules.mgk",exception);
-      LiberateSemaphore(&module_semaphore);
-      atexit(DestroyModuleInfo);
     }
+  LiberateSemaphore(&module_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(module_aliases);
   for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
@@ -364,10 +361,8 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
     *p;
 
   (void) GetMagicInfo((unsigned char *) NULL,0,exception);
-  AcquireSemaphore(&module_semaphore);
-  if (module_list != (ModuleInfo *) NULL)
-    LiberateSemaphore(&module_semaphore);
-  else
+  AcquireSemaphore(&module_semaphore,DestroyModuleInfo);
+  if (module_list == (ModuleInfo *) NULL)
     {
       /*
         Initialize ltdl.
@@ -379,9 +374,8 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
         Read modules.
       */
       (void) ReadConfigurationFile("modules.mgk",exception);
-      LiberateSemaphore(&module_semaphore);
-      atexit(DestroyModuleInfo);
     }
+  LiberateSemaphore(&module_semaphore);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     return(module_list);
   for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
