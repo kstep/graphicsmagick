@@ -1947,10 +1947,10 @@ void Magick::Image::colorMap ( unsigned int index_,
 
   if ( (!constImage()->colormap) || (index_ > constImage()->colors - 1) )
     {
-      // ImageMagick is limited a maximum 256 entries in the colormap
-      if ( index_ > 255 )
+      // ImageMagick is limited a maximum MaxRGB entries in the colormap
+      if (index_ > MaxRGB )
         throwExceptionExplicit( OptionError,
-                                "Color index greater than maximum supported index (255)" );
+                                "Color index greater than MaxRGB" );
 
       // Allocate new colormap
       PixelPacket *colormap
