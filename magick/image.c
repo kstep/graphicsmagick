@@ -2669,12 +2669,21 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   memset(&image->error,0,sizeof(ErrorInfo));
   (void) GetNumberColors(image,(FILE *) NULL,&image->exception);
   if ((image->rows != reference->rows) ||
-      (image->columns != reference->columns) ||
-      (image->interlace != reference->interlace) ||
-      (image->colorspace != reference->colorspace) ||
-      (image->matte != reference->matte))
+      (image->columns != reference->columns))
     ThrowBinaryException(OptionError,"Unable to compare images",
-      "images differ in size, interlace, colorspace, or opacity");
+      "images size differs");
+
+  if (image->interlace != reference->interlace)
+    ThrowBinaryException(OptionError,"Unable to compare images",
+      "images interlace differs");
+
+  if (image->colorspace != reference->colorspace)
+    ThrowBinaryException(OptionError,"Unable to compare images",
+      "images colorspace differs");
+  
+  if(image->matte != reference->matte)
+    ThrowBinaryException(OptionError,"Unable to compare images",
+      "images opacity differs");
   /*
     For each pixel, collect error statistics.
   */
