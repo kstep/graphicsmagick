@@ -524,7 +524,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
     *clone;
 
   clone=CloneImageList(image,exception);
-  return(InsertImageInList(images,clone,offset));
+  return(InsertImageInList(images,offset,clone));
 }
 
 /*

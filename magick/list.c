@@ -543,21 +543,21 @@ MagickExport Image **ImageListToArray(const Image *images,
 %
 %  The format of the InsertImageInList method is:
 %
-%      unsigned int InsertImageInList(Image **images,Image *image,
-%        const long offset)
+%      unsigned int InsertImageInList(Image **images,const long offset,
+%        Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o images: The image list.
 %
-%    o image: The image.
-%
 %    o offset: The position within the list.
+%
+%    o image: The image.
 %
 %
 */
-MagickExport unsigned int InsertImageInList(Image **images,Image *image,
-  const long offset)
+MagickExport unsigned int InsertImageInList(Image **images,const long offset,
+  Image *image)
 {
   register Image
     *p;

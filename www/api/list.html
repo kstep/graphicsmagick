@@ -59,7 +59,7 @@
 <p>Image * <strong>GetNextImageInList</strong>( const Image *images );</p>
 <p>Image * <strong>GetPreviousImageInList</strong>( const Image *images );</p>
 <p>Image **  <strong>ImageListToArray</strong>( const Image *images, ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>InsertImageInList</strong>( Image ** images, Image *image, const long offset );</p>
+<p>unsigned int  <strong>InsertImageInList</strong>( Image ** images, const long offset, Image *image );</p>
 <p>Image * <strong>NewImageList</strong>( void );</p>
 <p>unsigned int  <strong>PrependImageToList</strong>( Image *images, Image *image );</p>
 <p>Image * <strong>RemoveFirstImageFromList</strong>( Image ** images );</p>
@@ -231,7 +231,7 @@ Return any errors or warnings in this structure.
 </p>
 <h2><a name="insertimageinlist">InsertImageInList</a></h2>
 <blockquote>InsertImageInList() inserts an image in the list at the specified offset. </blockquote><p>The format of the InsertImageInList method is:</p>
-<blockquote>unsigned int InsertImageInList ( <A HREF="types/Image.html">Image</A> **images, <A HREF="types/Image.html">Image</A> *image, const long offset ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>unsigned int InsertImageInList ( <A HREF="types/Image.html">Image</A> **images, const long offset, <A HREF="types/Image.html">Image</A> *image ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>
@@ -239,16 +239,16 @@ Return any errors or warnings in this structure.
 The image list.
 </dd>
 <p></p>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
-The image.
-</dd>
-<p></p>
 <dt><strong>o offset:</strong><br />
 </dt>
 <dd>
 The position within the list.
+</dd>
+<p></p>
+<dt><strong>o image:</strong><br />
+</dt>
+<dd>
+The image.
 </dd>
 <p></p></dl>
 <p>

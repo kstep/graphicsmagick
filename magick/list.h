@@ -26,7 +26,7 @@ extern MagickExport long
 extern MagickExport unsigned int
   AppendImageToList(Image **,Image *),
   DeleteImageFromList(Image **,const long),
-  InsertImageInList(Image **,Image *,const long),
+  InsertImageInList(Image **,const long,Image *),
   PrependImageToList(Image **,Image *),
   SpliceImageIntoList(Image **,const long,const unsigned long,Image *);
 
