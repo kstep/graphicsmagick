@@ -2826,6 +2826,48 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e L i s t                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImageList returns an image at the specified position in the image
+%  list.
+%
+%  The format of the GetImageList method is:
+%
+%      Image *GetImageList(Image *images,const unsigned long n)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o n: The position within the list.
+%
+%
+*/
+MagickExport Image *GetImageList(Image *images,const unsigned long n)
+{
+  register long
+    i;
+
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  assert(images->signature == MagickSignature);
+  while (images->previous != (Image *) NULL)
+    images=images->previous;
+  for (i=0; images != (Image *) NULL; images=images->next)
+    if (i++ == n)
+      break;
+  return(images);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e T y p e                                                   %
 %                                                                             %
 %                                                                             %
@@ -2912,50 +2954,6 @@ MagickExport Image *GetNextImage(Image *image)
   *image->next->blob=(*image->blob);
   image->next->file=image->file;
   return(image->next);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t N u m b e r S c e n e s                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetNumberScenes returns the number of images in an image sequence.
-%
-%  The format of the GetNumberScenes method is:
-%
-%      unsigned int GetNumberScenes(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%
-*/
-MagickExport unsigned int GetNumberScenes(const Image *image)
-{
-  const Image
-    *next;
-
-  unsigned int
-    number_scenes;
-
-  /*
-    Compute the number of scenes in the image.
-  */
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  next=image;
-  for (number_scenes=0; next != (Image *) NULL; number_scenes++)
-    next=next->next;
-  return(number_scenes);
 }
 
 /*
@@ -5218,6 +5216,29 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   N e w I m a g e L i s t                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method NetImageList starts a number image list simply by returning NULL.
+%
+%  The format of the NewImageList method is:
+%
+%      Image *NewImageList(void)
+%
+*/
+MagickExport Image *NewImageList(void)
+{
+  return((Image *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   P a r s e I m a g e G e o m e t r y                                       %
 %                                                                             %
 %                                                                             %
@@ -5419,6 +5440,165 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
         }
     }
   return(flags);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P o p I m a g e L i s t                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method PopImageList returns the first image on the list and updates the
+%  image list pointer.
+%
+%  The format of the PopImageList method is:
+%
+%      Image *PopImageList(Image **images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport Image *PopImageList(Image **images)
+{
+  Image
+    *image;
+
+  assert(images != (Image **) NULL);
+  if ((*images) == (Image *) NULL)
+    return((Image *) NULL);
+  assert((*images)->signature == MagickSignature);
+  while ((*images)->previous != (Image *) NULL)
+    (*images)=(*images)->previous;
+  image=(*images);
+  *images=(*images)->next;
+  if ((*images) != (Image *) NULL)
+    (*images)->previous=(Image *) NULL;
+  image->next=(Image *) NULL;
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P u s h I m a g e L i s t                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method PushImageList adds an image to the end of the image list.
+%
+%  The format of the PushImageList method is:
+%
+%      unsigned int PushImageList(Image *images,const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport unsigned int PushImageList(Image **images,const Image *image)
+{
+	Image
+		*next;
+
+  assert(images != (Image **) NULL);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if ((*images) == (Image *) NULL)
+    {
+      ExceptionInfo
+        exception;
+
+      GetExceptionInfo(&exception);
+      *images=CloneImage(image,0,0,True,&exception);
+      return(*images != (Image *) NULL);
+    }
+  assert((*images)->signature == MagickSignature);
+  for (next=(*images); next->next != (Image *) NULL; next=next->next);
+  next->next=CloneImage(image,0,0,True,&(*images)->exception);
+  if (next->next == (Image *) NULL)
+    return(False);
+  next->next->previous=next;
+  next->next->next=(Image *) NULL;
+	return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e L i s t                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetImageList inserts an image into the list at the specified
+%  position.
+%
+%  The format of the SetImageList method is:
+%
+%      unsigned int SetImageList(Image *images,const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport unsigned int SetImageList(Image **images,const Image *image,
+	const unsigned long n)
+{
+	Image
+		*next;
+
+  register long
+    i;
+
+  assert(images != (Image **) NULL);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if ((*images) == (Image *) NULL)
+    {
+      ExceptionInfo
+        exception;
+
+      if (n > 0)
+        return(False);
+      GetExceptionInfo(&exception);
+      *images=CloneImage(image,0,0,True,&exception);
+      return(*images != (Image *) NULL);
+    }
+  assert((*images)->signature == MagickSignature);
+  for (next=(*images); next->next != (Image *) NULL; next=next->next);
+  for (i=0; next != (Image *) NULL; next=next->next)
+    if (i++ == n)
+      break;
+  if (next == (Image *) NULL)
+    return(False);
+  next->next=CloneImage(image,0,0,True,&(*images)->exception);
+  if (next->next == (Image *) NULL)
+    return(False);
+  next->next->previous=next;
+  next->next->next=(Image *) NULL;
+  return(True);
 }
 
 /*
@@ -6345,6 +6525,50 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     default:
       break;
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S i z e I m a g e L i s t                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SizeImageList returns the number of images in the image list.
+%
+%  The format of the SizeImageList method is:
+%
+%      unsigned long SizeImageList(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+
+MagickExport unsigned int GetNumberScenes(const Image *image)
+{
+  return(SizeImageList(image));
+}
+
+MagickExport unsigned long SizeImageList(const Image *images)
+{
+  register long
+    i;
+
+  if (images == (Image *) NULL)
+    return(0);
+  assert(images->signature == MagickSignature);
+  while (images->previous != (Image *) NULL)
+    images=images->previous;
+  for (i=0; images != (Image *) NULL; images=images->next)
+    i++;
+  return(i);
 }
 
 /*

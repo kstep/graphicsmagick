@@ -656,6 +656,7 @@ extern MagickExport Image
   *FlipImage(const Image *,ExceptionInfo *),
   *FlopImage(const Image *,ExceptionInfo *),
   *FrameImage(const Image *,const FrameInfo *,ExceptionInfo *),
+  *GetImageList(Image *,const unsigned long),
   *GetNextImage(Image *),
   *GaussianBlurImage(const Image *,const double,const double,ExceptionInfo *),
   *ImplodeImage(const Image *,const double,ExceptionInfo *),
@@ -668,8 +669,10 @@ extern MagickExport Image
   *MosaicImages(const Image *,ExceptionInfo *),
   *MotionBlurImage(const Image *,const double,const double,const double,
     ExceptionInfo *),
+  *NewImageList(void),
   *OilPaintImage(const Image *,const double,ExceptionInfo *),
   *PingImage(const ImageInfo *,ExceptionInfo *),
+  *PopImageList(Image **),
   *ReadImage(const ImageInfo *,ExceptionInfo *),
   *ReadStream(const ImageInfo *,
     int (*)(const Image *,const void *,const size_t),ExceptionInfo *),
@@ -765,6 +768,7 @@ extern MagickExport unsigned int
   PlasmaImage(Image *,const SegmentInfo *,int,int),
   PopImagePixels(const Image *,const QuantumType,unsigned char *),
   ProfileImage(Image *,const char *,const char *),
+  PushImageList(Image **,const Image *),
   PushImagePixels(Image *,const QuantumType,const unsigned char *),
   QueryColorDatabase(const char *,PixelPacket *),
   QueryColorname(const Image *,const PixelPacket *,const ComplianceType,char *,
@@ -774,6 +778,7 @@ extern MagickExport unsigned int
   SetImageClipMask(Image *,Image *),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
+  SetImageList(Image **,const Image *,const unsigned long),
   SignatureImage(Image *),
   SortColormapByIntensity(Image *),
   SyncImagePixels(Image *),
@@ -787,7 +792,8 @@ extern MagickExport unsigned int
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *),
-  GetNumberColors(const Image *,FILE *,ExceptionInfo *);
+  GetNumberColors(const Image *,FILE *,ExceptionInfo *),
+  SizeImageList(const Image *);
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),

@@ -10,7 +10,7 @@
 </head>
 <body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
 
-<center><img SRC="../images/magick_small.png" alt="" width="114" height="118"></center>
+<center><img SRC="../images/magick_small.png" alt="" width=114 height=118></center>
 
 <p><br>
 <br>
@@ -159,7 +159,9 @@ format.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Image
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *image,
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *resize_image;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *images,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *resize_image,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *thumbnails;
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ImageInfo
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *image_info;
@@ -171,24 +173,29 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GetExceptionInfo(&exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image_info=CloneImageInfo((ImageInfo *) NULL);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info->filename,"image.jpg");
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=ReadImage(image_info,&amp;exception);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (image == (Image *) NULL)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; images=ReadImage(image_info,&amp;exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (images == (Image *) NULL)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn the image into a thumbnail.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn the images into a thumbnail sequence.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resize_image=ResizeImage(image,106,80,MitchellFilter,1.0,&amp;exception);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (resize_image == (Image *) NULL)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=resize_image;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; thumbnails=NewImageList();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while ((image=PopImageList(&images)) != (Image *) NULL)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; resize_image=ResizeImage(image,106,80,MitchellFilter,1.0,&amp;exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (resize_image == (Image *) NULL)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) PushImageList(&thumbnails,resize_image);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(resize_image);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Write the image as PNG and destroy it.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Write the image as MIFF and destroy it.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image->filename,"image.png");
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WriteImage(image_info,image);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(thumbnails->filename,"image.png");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WriteImage(image_info,thumbnails);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImageInfo(image_info);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(thumbnails);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyMagick();
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return(0);
 &nbsp;&nbsp;&nbsp; }</pre>
