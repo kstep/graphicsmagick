@@ -359,7 +359,8 @@ static struct
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
       {"skewY", DoubleReference}, {"tile", ImageReference},
-      {"pointsize", DoubleReference}, {"antialias", BooleanTypes} } },
+      {"pointsize", DoubleReference}, {"antialias", BooleanTypes},
+      {"density", StringReference} } },
     { "Equalize", },
     { "Gamma", { {"gamma", StringReference}, {"red", DoubleReference},
       {"green", DoubleReference}, {"blue", DoubleReference} } },
@@ -4886,6 +4887,9 @@ Mogrify(ref,...)
               draw_info->stroke_antialias=argument_list[17].int_reference;
               draw_info->text_antialias=argument_list[17].int_reference;
             }
+          if (attribute_flag[18])
+            (void) CloneString(&draw_info->density,
+              argument_list[18].string_reference);
           DrawImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;
