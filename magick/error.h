@@ -24,11 +24,11 @@ extern "C" {
 }
 #define ThrowReaderException(code,reason,image) \
 { \
-  if (image == (Image *) NULL) \
+  if ((image) == (Image *) NULL) \
     ThrowException(exception,code,reason,(char *) NULL); \
   else \
     { \
-      ThrowException(exception,code,reason,image->filename); \
+      ThrowException(exception,code,reason,(image)->filename); \
       DestroyImages(image); \
     } \
   return((Image *) NULL); \
@@ -36,10 +36,10 @@ extern "C" {
 #define ThrowWriterException(code,reason,image) \
 { \
   assert(image != (Image *) NULL); \
-  ThrowException(&image->exception,code,reason,image->filename); \
+  ThrowException(&(image)->exception,code,reason,(image)->filename); \
   if (image_info->adjoin) \
-    while (image->previous != (Image *) NULL) \
-      image=image->previous; \
+    while ((image)->previous != (Image *) NULL) \
+      (image)=(image)->previous; \
   CloseBlob(image); \
   return(False); \
 }
