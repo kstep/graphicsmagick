@@ -384,16 +384,6 @@ may result in larger-than-expected GIF files.
 \fI"Lossless"\fP refers to lossless JPEG, which is only available if
 the JPEG library has been patched to support it.
 .TP
-.B "-copy \fI<filename>"\fP
-\fRcopy a previously read image
-
-After some options have been processed, a previously processed input image
-can be reread with the \fB-copy\fP option.  This can allow ImageMagick to
-skip the decoding process, if it happens to have stored a copy of the original
-decoded image.  If there is no stored copy, the \fB-copy\fP option is
-ignored and the file is read and decoded in the normal manner.
-
-.TP
 .B "-debug"
 \fRenable debug printout
 .TP
@@ -775,13 +765,6 @@ For further information, see the PNG
 specification.
 
 .TP
-.B "-replace \fI<filename>"\fP
-\fRreplace an image
-
-The image will be written out, and then processing will continue with the
-same image in its current state if there are additional options.  To
-restart from its original state, use the \fB-copy\fP option.
-.TP
 .B "-resize \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
 \fRresize and locate an image
 
@@ -913,6 +896,22 @@ Use the given radius and standard deviation (sigma).
 .TP
 .B "-watermark \fI<brightness>x<saturation>"\fP
 \fRpercent brightness and saturation of a watermark
+.TP
+.B "-write \fI<filename>"\fP
+\fRwrite or reread an image sequence [\fIconvert, composite\fP]
+
+The image sequence following the \fB-write\fP \fIfilename\fPoption will 
+be written out, and then processing will continue with the
+same image in its current state if there are additional options.  To
+restart from its original state, use the \fB+write\fP \fIfilename\fP
+option.
+
+After some options have been processed, a previously processed input image
+can be reread with the \fB+write\fP option.  This can allow ImageMagick to
+skip the decoding process, if it happens to have stored a copy of the original
+decoded image.  If there is no stored copy, the \fB+write\fP option is
+ignored and the file is read and decoded in the normal manner.
+
 .SH FILES AND FORMATS
 
 By default, the image format is determined by its magic number, i.e., the

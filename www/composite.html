@@ -476,24 +476,6 @@ the JPEG library has been patched to support it.</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-copy">-copy</a> <i>&lt;filename&gt;</i>
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>copy a previously read image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-After some options have been processed, a previously processed input image
-can be reread with the <strong>-copy</strong> option.  This can allow ImageMagick to
-skip the decoding process, if it happens to have stored a copy of the original
-decoded image.  If there is no stored copy, the <strong>-copy</strong> option is
-ignored and the file is read and decoded in the normal manner.
-</font></td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
     <a name="-debug">-debug</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>enable debug printout</td></tr></table>
@@ -1048,21 +1030,6 @@ specification.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-replace">-replace</a> <i>&lt;filename&gt;</i>
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>replace an image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The image will be written out, and then processing will continue with the
-same image in its current state if there are additional options.  To
-restart from its original state, use the <strong>-copy</strong> option.</font></td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
     <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize and locate an image</td></tr></table>
@@ -1300,6 +1267,30 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-watermark">-watermark</a> <i>&lt;brightness&gt;x&lt;saturation&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>percent brightness and saturation of a watermark</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="-write">-write</a> <i>&lt;filename&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write or reread an image sequence [<em>convert, composite</em>]</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The image sequence following the <strong>-write</strong> <em>filename</em>option will 
+be written out, and then processing will continue with the
+same image in its current state if there are additional options.  To
+restart from its original state, use the <strong>+write</strong> <em>filename</em>
+option.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+After some options have been processed, a previously processed input image
+can be reread with the <strong>+write</strong> option.  This can allow ImageMagick to
+skip the decoding process, if it happens to have stored a copy of the original
+decoded image.  If there is no stored copy, the <strong>+write</strong> option is
+ignored and the file is read and decoded in the normal manner.
+</font></td></tr></table>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

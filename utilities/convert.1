@@ -756,16 +756,6 @@ the image
 or \fB+contrast\fP to reduce the image contrast.
 
 .TP
-.B "-copy \fI<filename>"\fP
-\fRcopy a previously read image
-
-After some options have been processed, a previously processed input image
-can be reread with the \fB-copy\fP option.  This can allow ImageMagick to
-skip the decoding process, if it happens to have stored a copy of the original
-decoded image.  If there is no stored copy, the \fB-copy\fP option is
-ignored and the file is read and decoded in the normal manner.
-
-.TP
 .B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
 \fRpreferred size and location of the cropped image
 
@@ -1651,13 +1641,6 @@ Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
 
 Negative offsets are treated in the same manner as in \fB-crop\fP.
 .TP
-.B "-replace \fI<filename>"\fP
-\fRreplace an image
-
-The image will be written out, and then processing will continue with the
-same image in its current state if there are additional options.  To
-restart from its original state, use the \fB-copy\fP option.
-.TP
 .B "-resize \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
 \fRresize and locate an image
 
@@ -1927,6 +1910,22 @@ Use the given radius and standard deviation (sigma).
 
 Specify \fIamplitude\fP and \fIwavelength\fP to effect the characteristics
 of the wave.
+
+.TP
+.B "-write \fI<filename>"\fP
+\fRwrite or reread an image sequence [\fIconvert, composite\fP]
+
+The image sequence following the \fB-write\fP \fIfilename\fPoption will 
+be written out, and then processing will continue with the
+same image in its current state if there are additional options.  To
+restart from its original state, use the \fB+write\fP \fIfilename\fP
+option.
+
+After some options have been processed, a previously processed input image
+can be reread with the \fB+write\fP option.  This can allow ImageMagick to
+skip the decoding process, if it happens to have stored a copy of the original
+decoded image.  If there is no stored copy, the \fB+write\fP option is
+ignored and the file is read and decoded in the normal manner.
 
 .SH FILES AND FORMATS
 
