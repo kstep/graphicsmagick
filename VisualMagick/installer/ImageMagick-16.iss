@@ -52,7 +52,7 @@
 AppName=ImageMagick 5.5.1 Q:16
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.5.1 Q:16 Beta (September 18, 2002)
+AppVerName=ImageMagick 5.5.1 Q:16 Beta (September 28, 2002)
 AppVersion=5.5.1
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
@@ -69,7 +69,7 @@ InfoBeforeFile=before.txt
 InfoAfterFile=after.txt
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=..\bin
-OutputBaseFilename=ImageMagick-5.5.1-win2k
+OutputBaseFilename=ImageMagick-5.5.1-Q16-win2k
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
