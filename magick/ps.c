@@ -61,7 +61,7 @@
 const char
   *AppendBinaryType = "ab",
   *PSDensityGeometry = "72x72",
-  *PSPageGeometry = "612x792+43+43>";
+  *PSPageGeometry = "612x792>";
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
