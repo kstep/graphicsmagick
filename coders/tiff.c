@@ -1705,12 +1705,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       WriteNewsProfile(tiff,TIFFTAG_RICHTIFFIPTC,image);
 #endif
 #endif
-    if (image_info->adjoin && (GetImageListSize(image) > 1))
+    if (image_info->adjoin && (GetImageFromListSize(image) > 1))
       {
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
         if (image->scene != 0)
           (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short)
-            image->scene,GetImageListSize(image));
+            image->scene,GetImageFromListSize(image));
       }
     attribute=GetImageAttribute(image,"artist");
     if (attribute != (const ImageAttribute *) NULL)
@@ -1990,8 +1990,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     (void) TIFFWriteDirectory(tiff);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImage(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+    image=GetNextImageInList(image);
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageFromListSize(image),&image->exception))
       break;
   } while (image_info->adjoin);
   while (image->previous != (Image *) NULL)

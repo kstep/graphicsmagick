@@ -674,7 +674,7 @@ MagickExport Image *MorphImages(const Image *image,
     morph_images->next->previous=morph_images;
     morph_images=morph_images->next;
     (void) SetMonitorHandler(handler);
-    if (!MagickMonitor(MorphImageText,scene,GetImageListSize(image),exception))
+    if (!MagickMonitor(MorphImageText,scene,GetImageFromListSize(image),exception))
       break;
     scene++;
   }

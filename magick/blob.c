@@ -1569,7 +1569,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                     format[MaxTextExtent];
 
                   (void) strncpy(format,p,MaxTextExtent-1);
-                  FormatString(p,format,GetImageListIndex(image));
+                  FormatString(p,format,GetImageIndexInList(image));
                   break;
                 }
             }
@@ -1579,7 +1579,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                 {
                   if (LocaleCompare(filename,image->filename) == 0)
                     FormatString(filename,"%.1024s.%lu",image->filename,
-                      GetImageListIndex(image));
+                      GetImageIndexInList(image));
                   if (image->next != (Image *) NULL)
                     (void) strncpy(image->next->magick,image->magick,
                       MaxTextExtent-1);

@@ -1815,8 +1815,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &compress_pixels);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImage(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
+    image=GetNextImageInList(image);
+    status=MagickMonitor(SaveImagesText,scene++,GetImageFromListSize(image),
       &image->exception);
     if (status == False)
       break;

@@ -320,8 +320,8 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
     status=HuffmanEncodeImage(clone_info,image);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImage(image);
-    status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
+    image=GetNextImageInList(image);
+    status=MagickMonitor(SaveImagesText,scene++,GetImageFromListSize(image),
       &image->exception);
     if (status == False)
       break;

@@ -632,7 +632,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   /*
     Sort images by increasing scene number.
   */
-  number_scenes=GetImageListSize(images);
+  number_scenes=GetImageFromListSize(images);
   image_list=ImageListToArray(images,&images->exception);
   if (image_list == (Image **) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -1262,7 +1262,7 @@ MagickExport Image *XAnimateImages(Display *display,
   /*
     Sort images by increasing scene number.
   */
-  number_scenes=GetImageListSize(images);
+  number_scenes=GetImageFromListSize(images);
   image_list=ImageListToArray(images,&images->exception);
   if (image_list == (Image **) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",

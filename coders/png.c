@@ -4003,7 +4003,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 length=image->columns;
 
-                DeleteImageList(&image,GetImageListIndex(image));
+                DeleteImageFromList(&image,GetImageIndexInList(image));
 
                 image=large_image;
 
@@ -6653,8 +6653,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     CatchImageException(image);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImage(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+    image=GetNextImageInList(image);
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageFromListSize(image),&image->exception))
       break;
   } while (adjoin);
   if (write_mng)

@@ -1853,7 +1853,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     if (cache_info->type == MapCache)
       (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
   FormatString(cache_info->filename,"%.1024s[%ld]",image->filename,
-    GetImageListIndex(image));
+    GetImageIndexInList(image));
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
   number_pixels=cache_info->columns*cache_info->rows;

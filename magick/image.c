@@ -495,7 +495,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
           SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
         y+=next->rows;
-        status=MagickMonitor(AppendImageText,scene,GetImageListSize(image),
+        status=MagickMonitor(AppendImageText,scene,GetImageFromListSize(image),
           exception);
         if (status == False)
           break;
@@ -513,7 +513,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
       SetImageType(append_image,TrueColorType);
     (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
     x+=next->columns;
-    status=MagickMonitor(AppendImageText,scene++,GetImageListSize(image),
+    status=MagickMonitor(AppendImageText,scene++,GetImageFromListSize(image),
       exception);
     if (status == False)
       break;
@@ -4939,10 +4939,10 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   */
   status=True;
   mogrify_images=NewImageList();
-  number_images=GetImageListSize(*images);
+  number_images=GetImageFromListSize(*images);
   for (i=0; i < (long) number_images; i++)
   {
-    image=ShiftImageList(images);
+    image=RemoveImageFromList(images);
     handler=SetMonitorHandler((MonitorHandler) NULL);
     status&=MogrifyImage(image_info,argc,argv,&image);
     (void) SetMonitorHandler(handler);
@@ -4950,7 +4950,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
       image->scene+=i;
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
-    PushImageList(&mogrify_images,image,&image->exception);
+    PushImageOnList(&mogrify_images,image,&image->exception);
     DestroyImage(image);
     if (!MagickMonitor(MogrifyImageText,i,number_images,&image->exception))
       break;

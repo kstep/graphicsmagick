@@ -1345,6 +1345,9 @@
         <Message name="UnableToCreateColormap">
           Unable to create colormap
         </Message>
+        <Message name="UnableToCreateImageGroup">
+          unable to create image group
+        </Message>
         <Message name="UnableToCreateColorTransform">
           unable to create color transform
         </Message>
