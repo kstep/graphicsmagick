@@ -119,6 +119,9 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   int
     flags;
 
+  register int
+    i;
+
   /*
     Allocate image structure.
   */
@@ -176,6 +179,8 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->iptc_profile.name=(char *) NULL;
   allocate_image->iptc_profile.length=0;
   allocate_image->iptc_profile.info=(unsigned char *) NULL;
+  allocate_image->generic_profiles=0;
+  allocate_image->generic_profile=(ProfileInfo *) NULL;
   (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color);
   (void) QueryColorDatabase(BorderColor,&allocate_image->border_color);
   (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color);
@@ -819,6 +824,9 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
   ImageAttribute
     *attribute;
 
+  register int
+    i;
+
   unsigned long
     length;
 
@@ -873,6 +881,25 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
       memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,length);
+    }
+  if (image->generic_profiles != 0)
+    {
+      clone_image->generic_profile=(ProfileInfo *)
+        AcquireMemory(image->generic_profiles*sizeof(ProfileInfo));
+      if (clone_image->generic_profile == (ProfileInfo *) NULL)
+        ThrowImageException(ResourceLimitWarning,"Unable to clone image",
+          "Memory allocation failed");
+      for (i=0; i < image->generic_profiles; i++)
+      {
+        length=image->generic_profile[i].length;
+        clone_image->generic_profile[i].info=
+          (unsigned char *) AcquireMemory(length);
+        if (clone_image->generic_profile[i].info == (unsigned char *) NULL)
+          ThrowImageException(ResourceLimitWarning,"Unable to clone image",
+            "Memory allocation failed");
+        memcpy(clone_image->generic_profile[i].info,
+          image->generic_profile[i].info,length);
+      }
     }
   GetBlobInfo(&clone_image->blob);
   clone_image->cache=(void *) NULL;
@@ -2023,6 +2050,14 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           }
       }
     }
+  for (i=0; i < image->generic_profiles; i++)
+  {
+    if (image->generic_profile[i].length <= 0)
+      continue;
+    (void) fprintf(file,"  %s Profile: %u bytes\n",
+      image->generic_profile[i].name == (char *) NULL ? "Generic" :
+      image->generic_profile[i].name,image->generic_profile[i].length);
+  }
   if ((image->tile_info.width*image->tile_info.height) != 0)
     (void) fprintf(file,"  Tile Geometry: %ux%u%+d%+d\n",image->tile_info.width,
       image->tile_info.height,image->tile_info.x,image->tile_info.y);
@@ -2208,6 +2243,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
 */
 MagickExport void DestroyImage(Image *image)
 {
+  register int
+    i;
+
   /*
     Close image.
   */
@@ -2236,13 +2274,31 @@ MagickExport void DestroyImage(Image *image)
   /*
     Deallocate the image ICC profile.
   */
+  if (image->color_profile.name != (char *) NULL)
+    LiberateMemory((void **) &image->color_profile.name);
   if (image->color_profile.length > 0)
     LiberateMemory((void **) &image->color_profile.info);
   /*
     Deallocate the image IPTC profile.
   */
+  if (image->iptc_profile.name != (char *) NULL)
+    LiberateMemory((void **) &image->iptc_profile.name);
   if (image->iptc_profile.length > 0)
     LiberateMemory((void **) &image->iptc_profile.info);
+  if (image->generic_profiles != 0)
+    {
+      /*
+        Deallocate any generic profiles.
+      */
+      for (i=0; i < image->generic_profiles; i++)
+      {
+        if (image->generic_profile[i].name != (char *) NULL)
+          LiberateMemory((void **) &image->generic_profile[i].name);
+        if (image->generic_profile[i].length > 0)
+          LiberateMemory((void **) &image->generic_profile[i].info);
+      }
+      LiberateMemory((void **) &image->generic_profile);
+    }
   /*
     Deallocate the image text attributes.
   */

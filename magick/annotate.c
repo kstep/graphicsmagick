@@ -194,6 +194,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
   */
   matte=image->matte;
   image_info->font=AllocateString(annotate_info->font);
+  image_info->density=AllocateString(annotate_info->density);
   image_info->pointsize=annotate_info->pointsize;
   for (i=0; i < 6; i++)
     image_info->affine[i]=annotate_info->affine[i];
@@ -415,6 +416,8 @@ MagickExport AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
     clone_info->text=AllocateString(annotate_info->text);
   if (annotate_info->font != (char *) NULL)
     clone_info->font=AllocateString(annotate_info->font);
+  if (annotate_info->density != (char *) NULL)
+    clone_info->density=AllocateString(annotate_info->density);
   if (annotate_info->font_name != (char *) NULL)
     clone_info->font_name=AllocateString(annotate_info->font_name);
   return(clone_info);
@@ -454,6 +457,8 @@ MagickExport void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
     LiberateMemory((void **) &annotate_info->text);
   if (annotate_info->font != (char *) NULL)
     LiberateMemory((void **) &annotate_info->font);
+  if (annotate_info->density != (char *) NULL)
+    LiberateMemory((void **) &annotate_info->density);
   if (annotate_info->font_name != (char *) NULL)
     LiberateMemory((void **) &annotate_info->font_name);
   LiberateMemory((void **) &annotate_info);
@@ -512,6 +517,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->geometry=(char *) NULL;
   annotate_info->text=(char *) NULL;
   annotate_info->font=AllocateString(image_info->font);
+  annotate_info->density=AllocateString(image_info->density);
   annotate_info->antialias=image_info->antialias;
   annotate_info->gravity=NorthWestGravity;
   annotate_info->pointsize=image_info->pointsize;

@@ -85,14 +85,11 @@
 %
 %  The format of the Usage method is:
 %
-%      void Usage(const char *client_name)
-%
-%    o client_name: a character string representing the name of the client
-%      program.
+%      void Usage()
 %
 %
 */
-static void Usage(const char *client_name)
+static void Usage()
 {
   const char
     **p;
@@ -110,7 +107,8 @@ static void Usage(const char *client_name)
 
   (void) printf("Version: %.1024s\n",MagickVersion);
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ options ... ] file [ file ... ]\n",client_name);
+  (void) printf("Usage: %.1024s [ options ... ] file [ file ... ]\n",
+    SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -133,7 +131,6 @@ static void Usage(const char *client_name)
 int main(int argc,char **argv)
 {
   char
-    *client_name,
     *format,
     *option;
 
@@ -165,7 +162,6 @@ int main(int argc,char **argv)
   */
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
-  client_name=SetClientName((char *) NULL);
   format=(char *) NULL;
   for (i=1; i < argc; i++)
   {
@@ -184,7 +180,7 @@ int main(int argc,char **argv)
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 2)
-    Usage(client_name);
+    Usage();
   /*
     Set defaults.
   */
@@ -235,7 +231,7 @@ int main(int argc,char **argv)
           {
             if (LocaleNCompare("help",option+1,2) == 0)
               {
-                Usage(client_name);
+                Usage();
                 break;
               }
             MagickError(OptionError,"Unrecognized option",option);
@@ -280,7 +276,7 @@ int main(int argc,char **argv)
           }
           case '?':
           {
-            Usage(client_name);
+            Usage();
             break;
           }
           default:
@@ -328,7 +324,10 @@ int main(int argc,char **argv)
       }
     image=ReadImage(image_info,&exception);
     if (image == (Image *) NULL)
-      MagickWarning(exception.severity,exception.message,exception.qualifier);
+      {
+        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        continue;
+      }
     for (p=image; p != (Image *) NULL; p=p->next)
     {
       if (p->scene == 0)

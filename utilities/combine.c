@@ -106,14 +106,11 @@
 %
 %  The format of the Usage method is:
 %
-%      void Usage(const char *client_name)
-%
-%    o client_name: a character string representing the name of the client
-%      program.
+%      void Usage()
 %
 %
 */
-static void Usage(const char *client_name)
+static void Usage()
 {
   const char
     **p;
@@ -156,7 +153,7 @@ static void Usage(const char *client_name)
   (void) printf("Version: %.1024s\n",MagickVersion);
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
   (void) printf("Usage: %.1024s [options ...] image composite [mask] combined\n",
-    client_name);
+    SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -181,7 +178,6 @@ int main(int argc,char **argv)
 #define NotInitialized  (unsigned int) (~0)
 
   char
-    *client_name,
     *displacement_geometry,
     *watermark_geometry,
     *filename,
@@ -235,7 +231,6 @@ int main(int argc,char **argv)
   if (LocaleCompare("-combine",argv[0]) == 0)
     {
       sendmode=FileTransmitType;
-      client_name=SetClientName((char *) NULL);
       if (argc < 4)
         return(False);
     }
@@ -244,13 +239,12 @@ int main(int argc,char **argv)
       sendmode=UndefinedTransmitType;
       ReadCommandlLine(argc,&argv);
       MagickIncarnate(*argv);
-      client_name=SetClientName((char *) NULL);
       status=ExpandFilenames(&argc,&argv);
       if (status == False)
         MagickError(ResourceLimitError,"Memory allocation failed",
           (char *) NULL);
       if (argc < 4)
-        Usage(client_name);
+        Usage();
     }
   /*
     Set default.
@@ -622,7 +616,7 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("help",option+1,2) == 0)
             {
-              Usage(client_name);
+              Usage();
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -881,7 +875,7 @@ int main(int argc,char **argv)
         }
         case '?':
         {
-          Usage(client_name);
+          Usage();
           break;
         }
         default:
@@ -892,7 +886,7 @@ int main(int argc,char **argv)
       }
   }
   if ((image == (Image *) NULL) || (composite_image == (Image *) NULL))
-    Usage(client_name);
+    Usage();
   if (i != (argc-1))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   if (mask_image != (Image *) NULL)

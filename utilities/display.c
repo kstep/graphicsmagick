@@ -158,15 +158,13 @@
 %
 %  The format of the Usage method is:
 %
-%      void Usage(const char *client_name)
+%      void Usage()
 %
 %  A description of each parameter follows:
 %
-%    o client_name: a character string representing the name of the client
-%      program.
 %
 */
-static void Usage(const char *client_name)
+static void Usage()
 {
   const char
     **p;
@@ -238,7 +236,7 @@ static void Usage(const char *client_name)
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
   (void) printf(
     "Usage: %.1024s [-options ...] file [ [-options ...] file ...]\n",
-    client_name);
+    SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
@@ -351,7 +349,6 @@ int main(int argc,char **argv)
   */
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
-  client_name=SetClientName((char *) NULL);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
@@ -397,7 +394,7 @@ int main(int argc,char **argv)
         break;
       }
     if (LocaleNCompare("help",option+1,2) == 0)
-      Usage(client_name);
+      Usage();
   }
   /*
     Get user defaults from X resource database.
@@ -407,6 +404,7 @@ int main(int argc,char **argv)
     MagickError(XServerError,"Unable to connect to X server",
       XDisplayName(server_name));
   XSetErrorHandler(XError);
+  client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
   image_info=resource_info.image_info;
@@ -861,7 +859,7 @@ int main(int argc,char **argv)
         case 'h':
         {
           if (LocaleNCompare("help",option+1,2) == 0)
-            Usage(client_name);
+            Usage();
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
@@ -1299,7 +1297,7 @@ int main(int argc,char **argv)
         }
         case '?':
         {
-          Usage(client_name);
+          Usage();
           break;
         }
         default:

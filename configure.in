@@ -37,12 +37,6 @@ test "x$prefix" = xNONE && prefix=$ac_default_prefix
 test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
 
 
-# Set default CFLAGS (if not already set)
-if test "${CFLAGS}x" = 'x';
-then
-  CFLAGS='-O'
-fi
-
 # Check for programs
 AC_PROG_CC
 AM_PROG_LD
@@ -375,7 +369,7 @@ fi
 #
 # Most delegates have includes in the same directory as the library
 #
-for dir in bzlib hdf/hdf/src jbig/libjbig jpeg lcms/source  png tiff/libtiff ttf ttf/lib ttf/lib/.libs xml xml/.libs zlib
+for dir in bzlib hdf/hdf/src jbig/libjbig jpeg lcms/source  png tiff/libtiff ttf ttf/include ttf/lib/.libs ttf/obj/.libs xml xml/.libs zlib
 do
   if test -d "$builddir/$dir"
   then

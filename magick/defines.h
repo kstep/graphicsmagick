@@ -156,6 +156,7 @@ extern "C" {
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).green == (color).blue))
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
+#define MaxApplicationProfiles  16
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
 #if !defined(M_PI)
 #define M_PI  3.14159265358979323846

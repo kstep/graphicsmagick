@@ -101,7 +101,8 @@ typedef struct _AnnotateInfo
   char
     *geometry,
     *text,
-    *font;
+    *font,
+    *density;
 
   unsigned int
     antialias;
@@ -375,6 +376,12 @@ typedef struct _Image
   ProfileInfo
     color_profile,
     iptc_profile;
+
+  unsigned int
+    generic_profiles;
+
+  ProfileInfo
+    *generic_profile;
 
   ResolutionType
     units;

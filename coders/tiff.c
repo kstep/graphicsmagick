@@ -304,6 +304,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   register unsigned char
     *p;
 
+  static SemaphoreInfo
+    *tiff_semaphore = (SemaphoreInfo *) NULL;
+
   TIFF
     *tiff;
 
@@ -335,22 +338,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     units,
     value;
 
-#if defined(HasPTHREADS)
-  static pthread_mutex_t
-    tiff_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-  pthread_mutex_lock(&tiff_mutex);
-#endif
   /*
     Open image.
   */
+  AcquireSemaphore(tiff_semaphore);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     {
-#if defined(HasPTHREADS)
-      pthread_mutex_unlock(&tiff_mutex);
-#endif
+      LiberateSemaphore(tiff_semaphore);
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);
     }
   if ((image->file == stdin) || image->pipe)
@@ -368,9 +364,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       file=fopen(image_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         {
-#if defined(HasPTHREADS)
-          pthread_mutex_unlock(&tiff_mutex);
-#endif
+          LiberateSemaphore(tiff_semaphore);
           ThrowReaderException(FileOpenWarning,"Unable to write file",image);
         }
       c=ReadByte(image);
@@ -388,9 +382,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
     {
-#if defined(HasPTHREADS)
-      pthread_mutex_unlock(&tiff_mutex);
-#endif
+      LiberateSemaphore(tiff_semaphore);
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);
     }
   if (image_info->subrange != 0)
@@ -403,9 +395,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       status=TIFFReadDirectory(tiff);
       if (status == False)
         {
-#if defined(HasPTHREADS)
-          pthread_mutex_unlock(&tiff_mutex);
-#endif
+          LiberateSemaphore(tiff_semaphore);
           ThrowReaderException(CorruptImageWarning,"Unable to read subimage",
             image);
         }
@@ -494,9 +484,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
-#if defined(HasPTHREADS)
-            pthread_mutex_unlock(&tiff_mutex);
-#endif
+            LiberateSemaphore(tiff_semaphore);
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -573,9 +561,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-#if defined(HasPTHREADS)
-            pthread_mutex_unlock(&tiff_mutex);
-#endif
+            LiberateSemaphore(tiff_semaphore);
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -770,9 +756,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
-#if defined(HasPTHREADS)
-            pthread_mutex_unlock(&tiff_mutex);
-#endif
+            LiberateSemaphore(tiff_semaphore);
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -851,9 +835,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-#if defined(HasPTHREADS)
-            pthread_mutex_unlock(&tiff_mutex);
-#endif
+            LiberateSemaphore(tiff_semaphore);
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
@@ -862,9 +844,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             LiberateMemory((void **) &pixels);
             TIFFClose(tiff);
-#if defined(HasPTHREADS)
-            pthread_mutex_unlock(&tiff_mutex);
-#endif
+            LiberateSemaphore(tiff_semaphore);
             ThrowReaderException(CorruptImageWarning,"Unable to read image",
               image);
           }
@@ -929,9 +909,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
-#if defined(HasPTHREADS)
-  pthread_mutex_unlock(&tiff_mutex);
-#endif
+  LiberateSemaphore(tiff_semaphore);
   return(image);
 }
 #else

@@ -13,6 +13,7 @@ extern "C" {
 */
 #define ThrowException(exception,code,reason,description) \
 { \
+  assert(exception != (ExceptionInfo *) NULL); \
   if (code >= (exception)->severity) \
     { \
       (exception)->severity=code; \
@@ -22,6 +23,7 @@ extern "C" {
 }
 #define ThrowBinaryException(code,reason,description) \
 { \
+  assert(image != (Image *) NULL); \
   ThrowException(&image->exception,code,reason,description); \
   return(False); \
 }
@@ -43,6 +45,7 @@ extern "C" {
 }
 #define ThrowWriterException(code,reason,image) \
 { \
+  assert(image != (Image *) NULL); \
   ThrowException(&image->exception,code,reason,image->filename); \
   if (image_info->adjoin) \
     while (image->previous != (Image *) NULL) \

@@ -342,6 +342,59 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   return(True);
 }
 
+static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
+{
+  Image
+    *image;
+
+  register int
+    i,
+    j;
+
+  register unsigned char
+    *p;
+
+  /*
+    Allocate generic profile.
+  */
+  image=(Image *) jpeg_info->client_data;
+  i=image->generic_profiles;
+  if (image->generic_profile == (ProfileInfo *) NULL)
+    image->generic_profile=(ProfileInfo *) AcquireMemory(sizeof(ProfileInfo));
+  else
+    ReacquireMemory((void **) &image->generic_profile,
+      (i+1)*sizeof(ProfileInfo));
+  if (image->generic_profile == (ProfileInfo *) NULL)
+    {
+      image->generic_profiles=0;
+      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+    }
+  /*
+    Determine length of generic profile.
+  */
+  image->generic_profile[i].name=AllocateString("");
+  FormatString(image->generic_profile[i].name,"JPEG-%d",
+    jpeg_info->unread_marker-JPEG_APP0);
+  image->generic_profile[i].length=GetCharacter(jpeg_info) << 8;
+  image->generic_profile[i].length+=GetCharacter(jpeg_info);
+  image->generic_profile[i].length-=2;
+  image->generic_profile[i].info=(unsigned char *)
+    AcquireMemory(image->generic_profile[i].length+1);
+  if (image->generic_profile[i].info == (unsigned char *) NULL)
+    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+      (char *) NULL);
+  /*
+    Read generic profile.
+  */
+  p=image->generic_profile[i].info;
+  for (j=0; j < image->generic_profile[i].length; j++)
+    *p++=GetCharacter(jpeg_info);
+  *p='\0';
+  image->generic_profiles++;
+  return(True);
+}
+
 static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
 {
   Image
@@ -550,13 +603,15 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
   jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadColorProfile);
   jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,ReadNewsProfile);
+  for (i=1; i < 16; i++)
+    if ((i != 2) && (i != 13) && (i != 14))
+      jpeg_set_marker_processor(&jpeg_info,JPEG_APP0+i,ReadGenericProfile);
   i=jpeg_read_header(&jpeg_info,True);
   if (jpeg_info.out_color_space == JCS_CMYK)
     image->colorspace=CMYKColorspace;
   if (jpeg_info.saw_JFIF_marker)
     {
-      if ((jpeg_info.density_unit != 0) || (jpeg_info.X_density != 1.0) ||
-          (jpeg_info.Y_density != 1.0))
+      if ((jpeg_info.X_density != 1) && (jpeg_info.Y_density != 1))
         {
           /*
             Set image resolution.
@@ -1096,6 +1151,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     jpeg_simple_progression(&jpeg_info);
 #endif
   jpeg_start_compress(&jpeg_info,True);
+  /*
+    Write JPEG profiles.
+  */
   attribute=GetImageAttribute(image,"Comment");
   if ((attribute != (ImageAttribute *) NULL) && (attribute->value != NULL))
     for (i=0; i < Extent(attribute->value); i+=65533)
@@ -1105,6 +1163,18 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     WriteColorProfile(&jpeg_info,image);
   if (image->iptc_profile.length > 0)
     WriteNewsProfile(&jpeg_info,image);
+  for (i=0; i < image->generic_profiles; i++)
+  {
+    register int
+      j;
+
+    if (LocaleNCompare(image->generic_profile[i].name,"JPEG-",5) != 0)
+      continue;
+    x=atoi(image->generic_profile[i].name+5);
+    for (j=0; j < image->generic_profile[i].length; j+=65533)
+      jpeg_write_marker(&jpeg_info,JPEG_APP0+x,image->generic_profile[i].info+j,
+        Min(image->generic_profile[i].length-j,65533));
+  }
   /*
     Convert MIFF to JPEG raster pixels.
   */
