@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2002
 //
 // Test STL montageImages function
 //
@@ -59,7 +59,7 @@ int main( int /*argc*/, char **argv)
         }
     }
 
-    if ( montage[0].columns() != 768 || montage[0].rows() != 124 )
+    if ( montage[0].columns() != 768 || montage[0].rows() != 126 )
       {
 	++failures;
 	cout << "Line: " << __LINE__ 
@@ -108,7 +108,7 @@ int main( int /*argc*/, char **argv)
         }
     }
 
-    if ( montage[0].columns() != 132 || montage[0].rows() != 68 )
+    if ( montage[0].columns() != 132 || montage[0].rows() != 70 )
       {
 	++failures;
 	cout << "Line: " << __LINE__ 
