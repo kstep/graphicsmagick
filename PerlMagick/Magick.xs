@@ -1866,7 +1866,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SetAttribute returns the index of string in the list
+%    o status: Method SetupList returns the index of string in the list
 %      otherwise -1.
 %
 %    o list: a list of strings.
@@ -7545,8 +7545,11 @@ Set(ref,...)
       }
     reference=SvRV(ST(0));
     image=SetupList(reference,&info,(SV ***) NULL);
-    for (i=2; i < items; i+=2)
-      SetAttribute(info,image,SvPV(ST(i-1),na),ST(i));
+    if (items <= 2)
+      SetAttribute(info,image,"size",ST(1));
+    else
+      for (i=2; i < items; i+=2)
+        SetAttribute(info,image,SvPV(ST(i-1),na),ST(i));
 
   MethodException:
     sv_setiv(error_list,(IV) (SvCUR(error_list) != 0));
