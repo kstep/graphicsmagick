@@ -656,7 +656,7 @@ extern MagickExport Image
   *FlipImage(const Image *,ExceptionInfo *),
   *FlopImage(const Image *,ExceptionInfo *),
   *FrameImage(const Image *,const FrameInfo *,ExceptionInfo *),
-  *GetImageList(Image *,const unsigned long),
+  *GetImageList(Image *,const unsigned long,ExceptionInfo *),
   *GetNextImage(Image *),
   *GaussianBlurImage(const Image *,const double,const double,ExceptionInfo *),
   *ImplodeImage(const Image *,const double,ExceptionInfo *),

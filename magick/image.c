@@ -2893,7 +2893,8 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %
 %  The format of the GetImageList method is:
 %
-%      Image *GetImageList(Image *images,const unsigned long n)
+%      Image *GetImageList(Image *images,const unsigned long n,
+%        ExceptionInfo *esception)
 %
 %  A description of each parameter follows:
 %
@@ -2901,9 +2902,13 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %
 %    o n: The position within the list.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
+%
 %
 */
-MagickExport Image *GetImageList(Image *images,const unsigned long n)
+MagickExport Image *GetImageList(Image *images,const unsigned long n,
+  ExceptionInfo *exception)
 {
   register long
     i;
@@ -2916,7 +2921,9 @@ MagickExport Image *GetImageList(Image *images,const unsigned long n)
   for (i=0; images != (Image *) NULL; images=images->next)
     if (i++ == n)
       break;
-  return(images);
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  return(CloneImage(images,0,0,True,exception));
 }
 
 /*
