@@ -46,12 +46,15 @@ private:
 	void begin_project(ofstream &dsw,
           const char *name, const char *filename);
 	void end_project(ofstream &dsw);
-	void add_project_dependency(ofstream &dsw, const char *dep_name);
-  void process_project_type(ofstream &dsw, const int runtime,
+	void add_project_dependency(ofstream &dsw,
+          const char *dep_name);
+  void process_project_type(ofstream &dsw,
+          const char *root, const int runtime,
           const char *stype, const int btype);
 	void write_lib_dsp(
     bool dll,
     int runtime,
+    int project_type,
 		std::string directory,
 		std::string name,
 		std::string libname,
@@ -60,33 +63,43 @@ private:
 		std::list<std::string> &libs_list_release,
 		std::list<std::string> &libs_list_debug,
 		std::list<std::string> &defines_list,
-		std::list<std::string> &includes_list);
+		std::list<std::string> &includes_list,
+	  std::list<std::string> &source_list,
+	  std::list<std::string> &exclude_list);
 	void write_exe_dsp(
     int runtime,
-		std::string directory,
+    int project_type,
+		std::string staging,
 		std::string name,
-		std::string libname,
 		std::string prefix,
 		std::list<std::string> &libs_list_shared,
 		std::list<std::string> &libs_list_release,
 		std::list<std::string> &libs_list_debug,
 		std::list<std::string> &defines_list,
-		std::list<std::string> &includes_list);
+		std::list<std::string> &includes_list,
+	  std::list<std::string> &source_list,
+	  std::list<std::string> &exclude_list);
 	void begin_group(ofstream &dsp, const char *group_name);
 	void end_group(ofstream &dsp);
 	void add_file(ofstream &dsp, const char *filename);
-	void generate_dir(ofstream &dsp, const char *dir, const char *specS);
+	void generate_dir(ofstream &dsp, const char *dir,
+          const char *specS, int nestinglevel, int project_type,
+          std::list<std::string> &exclude_list);
   void process_utility(ofstream &dsw,
-          WIN32_FIND_DATA	&data, const char *filename, int runtime);
+          const char *root, const char *filename,
+          int runtime, int project_type);
   void process_library(ofstream &dsw, const char *filename,
-          bool dll, int runtime);
+          bool dll, int runtime, int project_type);
   void process_3rd_party_library(ofstream &dsw, const char *filename,
-          int runtime);
+          int runtime, int project_type);
   void process_module(ofstream &dsw,
-          WIN32_FIND_DATA	&data, const char *filename, int runtime);
+          WIN32_FIND_DATA	&data, const char *filename,
+          int runtime, int project_type);
   void process_one_folder(ofstream &dsw,
-          WIN32_FIND_DATA	&data, int project_type, int projectType);
+          const char *root, WIN32_FIND_DATA	&data,
+          int project_type, int projectType);
   void generate_global_dependencies(ofstream &dsw, int runtime);
+  bool is_project_type(const char *root, const int project_type);
 };
 
 BOOL BrowseForFolder(HWND hOwner, char* szTitle, char* szRetval);

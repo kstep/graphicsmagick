@@ -53,7 +53,6 @@ CString debug_loc;
 CString bin_loc;
 CString lib_loc;
 std::list<std::string> libs_list_shared;
-std::list<std::string> defines_list;
 std::list<std::string> dependency_list;
 
 void CConfigureApp::generate_global_dependencies(
@@ -113,7 +112,7 @@ void CConfigureApp::generate_global_dependencies(
     strDepends = (*it2).c_str();
     if (strDepends.FindNoCase("CORE_",0) == 0)
     {
-      if (strDepends.Find("CORE_Magick",0) == 0)
+      if (strDepends.FindNoCase("CORE_Magick",0) == 0)
         continue;
 		  add_project_dependency(dsw, strDepends );
     }
@@ -147,35 +146,224 @@ void CConfigureApp::generate_global_dependencies(
 	}
 }
 
+static void add_includes(std::list<std::string> &includes_list,
+  std::string &libpath, int levels)
+{
+	WIN32_FIND_DATA	libdata;
+	HANDLE libhandle = FindFirstFile(libpath.c_str(), &libdata);
+	if (libhandle != INVALID_HANDLE_VALUE)
+  {
+    FindClose(libhandle);
+		if ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+    {
+      std::string ipath = "..\\";
+      for (int i=0; i<levels; i++)
+        ipath += "..\\";
+      ipath += libpath;
+		  includes_list.push_back(ipath);
+
+      ipath = libpath;
+      ipath += "\\*";
+      libhandle = FindFirstFile(ipath.c_str(), &libdata);
+	    if (libhandle != INVALID_HANDLE_VALUE)
+      {
+	      static const char *exclude_from_build[] =
+	      {
+		      ".",
+		      "..",
+		      "CVS",
+		      NULL
+	      };
+
+	      do
+	      {
+		      bool skip = false;
+
+		      for (int i=0; exclude_from_build[i] != NULL; i++)
+			      if (stricmp(libdata.cFileName, exclude_from_build[i]) == 0)
+              skip = true;
+
+		      if (skip) continue;
+
+		      if ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+          {
+            ipath = libpath;
+            ipath += "\\";
+			      add_includes(includes_list, ipath + libdata.cFileName, levels);
+          }
+	      } while (FindNextFile(libhandle, &libdata));
+        FindClose(libhandle);
+      }
+    }
+  }
+}
+
+static bool process_one_entry(const char *entry, int nLinesRead,
+  std::list<std::string> &defines_list,
+  std::list<std::string> &includes_list,
+  std::list<std::string> &source_list,
+  std::list<std::string> &exclude_list)
+{
+  CStringEx sTempString = entry;
+  // check for a valid file by looking for the magick
+  // sequence in the first four characters of the file.
+  if ((nLinesRead == 0) &&
+	  (sTempString.Left(4) != "#ECF"))
+		  return true;
+  // skip any blank lines
+  if (sTempString.GetLength() <= 0)
+	  return true;
+  // skip over any comments first - we allow three types
+  if (sTempString[0] == _T('#'))
+	  return true;
+  if (sTempString.Left(3) == TEXT("rem"))
+	  return true;
+  if (sTempString.Left(3) == TEXT(";"))
+	  return true;
+  // now see if the line will parse as a name=value pair
+  CString sName = sTempString.GetField(_T(" = "),0);
+  CString sValue = sTempString.GetField(_T(" = "),1);
+  if (!sName.IsEmpty() && !sValue.IsEmpty())
+  {
+    std::string temp = sValue;
+    if (sName.CompareNoCase(_T("DEFINE")) == 0)
+	    defines_list.push_back(temp);
+    temp = sValue;
+    if (sName.CompareNoCase(_T("INCLUDE")) == 0)
+	    includes_list.push_back(temp);
+    if (sName.CompareNoCase(_T("SOURCE")) == 0)
+	    source_list.push_back(temp);
+    if (sName.CompareNoCase(_T("EXCLUDE")) == 0)
+	    exclude_list.push_back(temp);
+  }
+  return true;
+}
+
+int load_environment_file( const char *inputfile,
+  std::list<std::string> &defines_list,
+  std::list<std::string> &includes_list,
+  std::list<std::string> &source_list,
+  std::list<std::string> &exclude_list)
+{
+  char szBuf[2048];
+  int nLinesRead = 0;
+  ifstream inpStream;
+  inpStream.open( inputfile, ios::in | ios::nocreate );
+  if ( inpStream ) {
+    for (;;) {
+      inpStream.getline( szBuf, 2047, '\n' );
+      if ( inpStream.eof() ) {
+        // last line may contain text also
+        // (if it's not terminated with '\n' EOF is returned)
+        return process_one_entry( szBuf, nLinesRead,
+                  defines_list, includes_list, source_list, exclude_list );
+      }
+      if ( !inpStream.good() ||
+        !process_one_entry( szBuf, nLinesRead,
+            defines_list, includes_list, source_list, exclude_list) )
+        return false;      
+      nLinesRead++;
+    }
+  }
+  inpStream.close();
+  inpStream.clear();
+  return true;
+}
+
+static bool doesDirExist(const char *name)
+{
+  // check to see if the path exists
+  std::string libpath;
+	WIN32_FIND_DATA	libdata;
+	HANDLE libhandle = FindFirstFile(name, &libdata);
+	if (libhandle != INVALID_HANDLE_VALUE)
+  {
+    FindClose(libhandle);
+		return ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
+            FILE_ATTRIBUTE_DIRECTORY);
+  }
+  return false;
+}
+
 void CConfigureApp::process_utility(ofstream &dsw,
-  WIN32_FIND_DATA	&data, const char *filename, int runtime)
+  const char *root, const char *filename, int runtime, int project_type)
 {
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
   std::string extn = basename.GetField('.',1);
   std::string prefix = "UTIL_";
-  std::string staging = data.cFileName;
+  std::string staging = root;
 
 	std::list<std::string> libs_list_release;
 	std::list<std::string> libs_list_debug;
 	std::list<std::string> includes_list;
+  std::list<std::string> defines_list;
+  std::list<std::string> source_list;
+  std::list<std::string> exclude_list;
+
+  if (runtime == MULTITHREADEDDLL)
+	{
+		defines_list.push_back("_DLL");
+		defines_list.push_back("_MAGICKMOD_");
+  }
+  else
+  {
+		defines_list.push_back("_LIB");
+  }
+
+  CStringEx strDepends = staging.c_str();
+  {
+    std::string libpath;
+
+    int levels = strDepends.GetFieldCount('\\');
+    for (int i=0; i<levels; i++)
+      libpath += "..\\";
+		includes_list.push_back(libpath);
+
+    libpath = "..\\magick";
+    levels = strDepends.GetFieldCount('\\');
+    add_includes(includes_list, libpath, levels-2);
+  }
+  if (strDepends.FindNoCase("..\\SDL",0) == 0)
+  {
+    std::string libpath;
+    libpath = "..\\SDL";
+
+    int levels = strDepends.GetFieldCount('\\');
+    add_includes(includes_list, libpath, levels-2);
+  }
+  if (strDepends.FindNoCase("..\\Magick++",0) == 0)
+  {
+    std::string libpath;
+    libpath = "..\\Magick++";
+
+    int levels = strDepends.GetFieldCount('\\');
+    add_includes(includes_list, libpath, levels-2);
+  }
+
+  std::string envpath;
+  envpath = staging;
+  envpath += "\\UTILITY.txt";
+  load_environment_file(envpath.c_str(),
+    defines_list, includes_list, source_list, exclude_list);
 
 	write_exe_dsp(
     runtime,
+		project_type,
     staging,
-		"",
 		name,
 		prefix,
 		libs_list_shared,
 		libs_list_release,
 		libs_list_debug,
 		defines_list,
-    includes_list);
+    includes_list,
+    source_list,
+    exclude_list);
 
   std::string project;
   name = prefix + name;
-  project += ".\\";
-  project += staging;
+  project = staging.substr(1);
   project += "\\";
   project += name;
 	dependency_list.push_back(name.c_str());
@@ -287,62 +475,18 @@ void CConfigureApp::process_utility(ofstream &dsw,
 		    add_project_dependency(dsw, "CORE_MagickArgs");
 		    add_project_dependency(dsw, "CORE_Magick++");
       }
+      CStringEx strDepends = staging.c_str();
+      if (strDepends.Find("..\\SDL",0) == 0)
+      {
+		    add_project_dependency(dsw, "CORE_SDL");
+      }
 	    end_project(dsw);
       break;
   }
 }
 
-static void add_includes(std::list<std::string> &includes_list,
-  std::string &libpath)
-{
-	WIN32_FIND_DATA	libdata;
-	HANDLE libhandle = FindFirstFile(libpath.c_str(), &libdata);
-	if (libhandle != INVALID_HANDLE_VALUE)
-  {
-    FindClose(libhandle);
-		if ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-    {
-      std::string ipath = "..\\";
-      ipath += libpath;
-		  includes_list.push_back(ipath);
-      ipath = libpath;
-      ipath += "\\*";
-      libhandle = FindFirstFile(ipath.c_str(), &libdata);
-	    if (libhandle != INVALID_HANDLE_VALUE)
-      {
-	      static const char *exclude_from_build[] =
-	      {
-		      ".",
-		      "..",
-		      "CVS",
-		      NULL
-	      };
-
-	      do
-	      {
-		      bool skip = false;
-
-		      for (int i=0; exclude_from_build[i] != NULL; i++)
-			      if (stricmp(libdata.cFileName, exclude_from_build[i]) == 0)
-              skip = true;
-
-		      if (skip) continue;
-
-		      if ((libdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-          {
-            ipath = libpath;
-            ipath += "\\";
-			      add_includes(includes_list, ipath + libdata.cFileName);
-          }
-	      } while (FindNextFile(libhandle, &libdata));
-        FindClose(libhandle);
-      }
-    }
-  }
-}
-
 void CConfigureApp::process_library(ofstream &dsw,
-                      const char *filename, bool dll, int runtime)
+    const char *filename, bool dll, int runtime, int project_type)
 {
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
@@ -351,18 +495,52 @@ void CConfigureApp::process_library(ofstream &dsw,
 	std::list<std::string> libs_list_release;
 	std::list<std::string> libs_list_debug;
 	std::list<std::string> includes_list;
+  std::list<std::string> defines_list;
+  std::list<std::string> source_list;
+  std::list<std::string> exclude_list;
+
+  if (runtime == MULTITHREADEDDLL)
+	{
+		defines_list.push_back("_DLL");
+		defines_list.push_back("_MAGICKMOD_");
+  }
+  else
+  {
+		defines_list.push_back("_LIB");
+  }
 
 	includes_list.push_back("..\\..\\zlib");
 	includes_list.push_back("..\\..\\tiff\\libtiff");
 
+  if (project_type == LIBRARY)
+  {
+	  defines_list.push_back("_MAGICKLIB_");
+  }
+
   std::string libpath;
   libpath = "..\\";
   libpath += name;
-  add_includes(includes_list, libpath);
+  add_includes(includes_list, libpath, 0);
+
+  std::string envpath;
+  envpath = libpath;
+  if (project_type == LIBRARY)
+  {
+    envpath += "\\LIBRARY.txt";
+    load_environment_file(envpath.c_str(),
+      defines_list, includes_list, source_list, exclude_list);
+  }
+  if (project_type == STATICLIB)
+  {
+    envpath += "\\STATICLIB.txt";
+    load_environment_file(envpath.c_str(),
+      defines_list, includes_list, source_list, exclude_list);
+  }
 
 	write_lib_dsp(
     dll,
     runtime, // multi-threaded
+    project_type,
     filename,
 		"*",
 		name,
@@ -371,7 +549,9 @@ void CConfigureApp::process_library(ofstream &dsw,
 		libs_list_release,
 		libs_list_debug,
 		defines_list,
-    includes_list);
+    includes_list,
+    source_list,
+    exclude_list);
 
   std::string staging = filename;
   std::string project;
@@ -445,7 +625,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 }
 
 void CConfigureApp::process_3rd_party_library(ofstream &dsw,
-                      const char *filename, int runtime)
+  const char *filename, int runtime, int project_type)
 {
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
@@ -454,6 +634,23 @@ void CConfigureApp::process_3rd_party_library(ofstream &dsw,
 	std::list<std::string> libs_list_release;
 	std::list<std::string> libs_list_debug;
 	std::list<std::string> includes_list;
+  std::list<std::string> defines_list;
+
+  if (runtime == MULTITHREADEDDLL)
+	{
+		defines_list.push_back("_DLL");
+		defines_list.push_back("_MAGICKMOD_");
+  }
+  else
+  {
+		defines_list.push_back("_LIB");
+  }
+
+  if (project_type == LIBRARY)
+  {
+	  defines_list.push_back("_MAGICKLIB_");
+  }
+
   std::string libpath;
   bool do_extra_stuff = false;
 
@@ -551,7 +748,7 @@ do_it_again:
 }
 
 void CConfigureApp::process_module(ofstream &dsw,
-  WIN32_FIND_DATA	&data, const char *filename, int runtime)
+  WIN32_FIND_DATA	&data, const char *filename, int runtime, int project_type)
 {
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
@@ -564,19 +761,34 @@ void CConfigureApp::process_module(ofstream &dsw,
   // as this file format and add an include directive in
   // order to allow it to see its include files
 	std::list<std::string> includes_list;
+  std::list<std::string> defines_list;
+  std::list<std::string> source_list;
+  std::list<std::string> exclude_list;
+
   if (name.compare("png") == 0)
   {
 		includes_list.push_back("..\\..\\zlib");
   }
   if (name.compare("label") == 0)
   {
-		includes_list.push_back("..\\..\\ttf");
-		includes_list.push_back("..\\..\\ttf\\lib");
+    if (doesDirExist("..\\..\\freetype"))
+    {
+		  includes_list.push_back("..\\..\\freetype\\include");
+    }
+    else
+    {
+		  includes_list.push_back("..\\..\\ttf");
+		  includes_list.push_back("..\\..\\ttf\\lib");
+    }
   }
   if (name.compare("miff") == 0)
   {
 		includes_list.push_back("..\\..\\zlib");
 		includes_list.push_back("..\\..\\bzlib");
+  }
+  if (name.compare("svg") == 0)
+  {
+		includes_list.push_back("..\\..\\libxml");
   }
 
   // generate the includes paths required for this module
@@ -635,6 +847,7 @@ void CConfigureApp::process_module(ofstream &dsw,
  	write_lib_dsp(
     (runtime == MULTITHREADEDDLL),
     runtime, // multi-threaded
+    project_type,
     data.cFileName,
 		"",
 		name,
@@ -643,7 +856,9 @@ void CConfigureApp::process_module(ofstream &dsw,
 		libs_list_release,
 		libs_list_debug,
 		defines_list,
-    includes_list);
+    includes_list,
+    source_list,
+    exclude_list);
 
   std::string project;
   std::string pname;
@@ -680,7 +895,10 @@ void CConfigureApp::process_module(ofstream &dsw,
 	        add_project_dependency(dsw, dependency.c_str());
         if (name.compare("label") == 0)
         {
-		      add_project_dependency(dsw, "LIBR_ttf");
+          if (doesDirExist("..\\..\\freetype"))
+		        add_project_dependency(dsw, "LIBR_freetype");
+          else
+		        add_project_dependency(dsw, "LIBR_ttf");
           if (useX11Stubs)
 		        add_project_dependency(dsw, "CORE_xlib");
         }
@@ -703,6 +921,10 @@ void CConfigureApp::process_module(ofstream &dsw,
           if (useX11Stubs)
 		        add_project_dependency(dsw, "CORE_xlib");
         }
+        if (name.compare("svg") == 0)
+        {
+		      add_project_dependency(dsw, "CORE_libxml");
+        }
       }
 	    end_project(dsw);
       break;
@@ -710,7 +932,8 @@ void CConfigureApp::process_module(ofstream &dsw,
 }
 
 void CConfigureApp::process_one_folder(ofstream &dsw,
-  WIN32_FIND_DATA	&data, int project_type, int projectType)
+  const char *root, WIN32_FIND_DATA	&data,
+  int project_type, int runtimeOption)
 {
   CString subpath;
 
@@ -718,8 +941,8 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
   {
   case UTILITY:
     {
-	    subpath = "..\\..\\";
-      subpath += data.cFileName;
+      subpath = "..\\";
+	    subpath += root;
       subpath += "\\*.c";
 	    WIN32_FIND_DATA	subdata;
 	    HANDLE subhandle = FindFirstFile(subpath, &subdata);
@@ -727,33 +950,31 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       {
 	      do
 	      {
-          process_utility(dsw, data, subdata.cFileName, projectType);
+          process_utility(dsw, root, subdata.cFileName, runtimeOption, project_type);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
 
-	    subpath = "..\\..\\";
-      subpath += data.cFileName;
+      subpath = "..\\";
+	    subpath += root;
       subpath += "\\*.cpp";
 	    subhandle = FindFirstFile(subpath, &subdata);
 	    if (subhandle != INVALID_HANDLE_VALUE)
       {
 	      do
 	      {
-          process_utility(dsw, data, subdata.cFileName, projectType);
+          process_utility(dsw, root, subdata.cFileName, runtimeOption, project_type);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
     }
     break;
   case LIBRARY:
-	  defines_list.push_back("_MAGICKLIB_");
-    process_library(dsw, data.cFileName, (projectType == MULTITHREADEDDLL),
-        projectType);
-	  defines_list.pop_back();
+    process_library(dsw, data.cFileName, (runtimeOption == MULTITHREADEDDLL),
+        runtimeOption, project_type);
     break;
   case STATICLIB:
-    process_library(dsw, data.cFileName, false, projectType);
+    process_library(dsw, data.cFileName, false, runtimeOption, project_type);
     break;
   case MODULE:
     {
@@ -766,7 +987,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       {
 	      do
 	      {
-          process_module(dsw, data, subdata.cFileName, projectType);
+          process_module(dsw, data, subdata.cFileName, runtimeOption, project_type);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
@@ -779,29 +1000,63 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       {
 	      do
 	      {
-          process_module(dsw, data, subdata.cFileName, projectType);
+          process_module(dsw, data, subdata.cFileName, runtimeOption, project_type);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
     }
     break;
   case THIRDPARTY:
-	  defines_list.push_back("_MAGICKLIB_");
-    process_3rd_party_library(dsw, data.cFileName, projectType);
-	  defines_list.pop_back();
+    process_3rd_party_library(dsw, data.cFileName, runtimeOption, project_type);
     break;
   }
 }
 
+bool CConfigureApp::is_project_type(const char *root, const int project_type)
+{
+  HANDLE handle;
+  WIN32_FIND_DATA	data;
+
+  std::string searchpath = root;
+  searchpath += "\\";
+  switch (project_type)
+  {
+  case UTILITY:
+    searchpath += "UTILITY.txt";
+    break;
+  case LIBRARY:
+    searchpath += "LIBRARY.txt";
+    break;
+  case STATICLIB:
+    searchpath += "STATICLIB.txt";
+    break;
+  case MODULE:
+    searchpath += "MODULE.txt";
+    break;
+  case THIRDPARTY:
+    searchpath += "THIRDPARTY.txt";
+    break;
+  default:
+    return false;
+  }
+  handle = FindFirstFile(searchpath.c_str(), &data);
+  FindClose(handle);
+  if (handle != INVALID_HANDLE_VALUE)
+    return true;
+  return false;
+}
+
 void CConfigureApp::process_project_type(ofstream &dsw,
-      int runtime, const char *stype, const int btype)
+      const char *root, int runtime, const char *stype, const int btype)
 {
     int project_type = DISABLED;
     HANDLE tophandle;
     // Scan all top level directories and process the ones
     // that we are allowed to.
 	  WIN32_FIND_DATA	topdata;
-	  tophandle = FindFirstFile("..\\*.", &topdata);
+    std::string rootpath = root;
+    rootpath += "\\*";
+	  tophandle = FindFirstFile(rootpath.c_str(), &topdata);
 	  do
 	  {
 	    if (tophandle == INVALID_HANDLE_VALUE)
@@ -817,7 +1072,8 @@ void CConfigureApp::process_project_type(ofstream &dsw,
         if (stricmp(topdata.cFileName,"..") == 0)
           continue;
 
-        std::string searchpath = "..\\";
+        std::string searchpath = root;
+        searchpath += "\\";
         searchpath += topdata.cFileName;
         searchpath += "\\";
         searchpath += stype;
@@ -827,7 +1083,9 @@ void CConfigureApp::process_project_type(ofstream &dsw,
           continue;
         FindClose(handle);
 
-        searchpath = "..\\..\\";
+        searchpath = "..\\";
+        searchpath += root;
+        searchpath += "\\";
         searchpath += topdata.cFileName;
 
 	      handle = FindFirstFile(searchpath.c_str(), &data);
@@ -836,7 +1094,19 @@ void CConfigureApp::process_project_type(ofstream &dsw,
         FindClose(handle);
 		    if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
                 FILE_ATTRIBUTE_DIRECTORY)
-          process_one_folder(dsw, data, btype, runtime);
+        {
+          rootpath = root;
+          rootpath += "\\";
+          rootpath += topdata.cFileName;
+          process_one_folder(dsw,rootpath.c_str(),data,btype,runtime);
+          if (btype == UTILITY)
+          {
+            rootpath = root;
+            rootpath += "\\";
+            rootpath += data.cFileName;
+            process_project_type(dsw,rootpath.c_str(),runtime,stype,btype);
+          }
+        }
       }
 	  } while (FindNextFile(tophandle, &topdata));
     FindClose(tophandle);
@@ -908,26 +1178,33 @@ BOOL CConfigureApp::InitInstance()
 		  libs_list_shared.push_back("kernel32.lib");
 		  libs_list_shared.push_back("user32.lib");
 		  libs_list_shared.push_back("gdi32.lib");
+		  libs_list_shared.push_back("odbc32.lib");
+		  libs_list_shared.push_back("odbccp32.lib");
 		  libs_list_shared.push_back("ole32.lib");
 		  libs_list_shared.push_back("oleaut32.lib");
-			defines_list.push_back("_DLL");
-		  defines_list.push_back("_MAGICKMOD_");
+		  libs_list_shared.push_back("winmm.lib");
+		  libs_list_shared.push_back("dxguid.lib");
+		  libs_list_shared.push_back("wsock32.lib");
 		}
     else
     {
 		  libs_list_shared.push_back("kernel32.lib");
 		  libs_list_shared.push_back("user32.lib");
 		  libs_list_shared.push_back("gdi32.lib");
+		  libs_list_shared.push_back("odbc32.lib");
+		  libs_list_shared.push_back("odbccp32.lib");
 		  libs_list_shared.push_back("ole32.lib");
 		  libs_list_shared.push_back("oleaut32.lib");
-		  defines_list.push_back("_LIB");
+		  libs_list_shared.push_back("winmm.lib");
+		  libs_list_shared.push_back("dxguid.lib");
+		  libs_list_shared.push_back("wsock32.lib");
     }
 
-    process_project_type(dsw,projectType,"THIRDPARTY.txt",THIRDPARTY);
-    process_project_type(dsw,projectType,"LIBRARY.txt",   LIBRARY);
-    process_project_type(dsw,projectType,"STATICLIB.txt", STATICLIB);
-    process_project_type(dsw,projectType,"MODULE.txt",    MODULE);
-    process_project_type(dsw,projectType,"UTILITY.txt",   UTILITY);
+    process_project_type(dsw,"..",projectType,"THIRDPARTY.txt",THIRDPARTY);
+    process_project_type(dsw,"..",projectType,"LIBRARY.txt",   LIBRARY);
+    process_project_type(dsw,"..",projectType,"STATICLIB.txt", STATICLIB);
+    process_project_type(dsw,"..",projectType,"MODULE.txt",    MODULE);
+    process_project_type(dsw,"..",projectType,"UTILITY.txt",   UTILITY);
 
 	  begin_project(dsw, "All", ".\\All\\All.dsp");
     generate_global_dependencies(dsw, projectType);
@@ -1010,6 +1287,7 @@ typedef struct _ConfigureInfo
 void CConfigureApp::write_lib_dsp(
   bool dll,
   int runtime,
+  int project_type,
 	std::string directory,
 	std::string search,
 	std::string dspname,
@@ -1018,7 +1296,9 @@ void CConfigureApp::write_lib_dsp(
 	std::list<std::string> &libs_list_release,
 	std::list<std::string> &libs_list_debug,
 	std::list<std::string> &defines_list,
-	std::list<std::string> &includes_list)
+	std::list<std::string> &includes_list,
+	std::list<std::string> &source_list,
+  std::list<std::string> &exclude_list)
 {
 	CString filename = "..\\";
   filename += directory.c_str();
@@ -1352,22 +1632,20 @@ void CConfigureApp::write_lib_dsp(
     valid_dirs[] = {
     { "\\",          ".c",   "src"     },
     { "\\",          ".cpp", "src"     },
-#ifdef USETHIS
-    { "\\lib\\",     ".c",   "src"     },
-    { "\\lib\\",     ".cpp", "src"     },
-    { "\\src\\",     ".c",   "src"     },
-    { "\\src\\",     ".cpp", "src"     },
-#endif
     { "\\",          ".h",   "include" },
-#ifdef USETHIS
-    { "\\lib\\",     ".h",   "include" },
-    { "\\include\\", ".h",   "include" },
-#endif
     { NULL,          NULL,   NULL      }
   };
 
   group = valid_dirs[0].group;
 	begin_group(dsp, group);
+  {
+		for (std::list<std::string>::iterator it = source_list.begin();
+			  it != source_list.end();
+			    it++)
+		{
+	    add_file(dsp, (*it).c_str());
+		}
+	}
   for (int i=0; valid_dirs[i].name != NULL; i++)
   {
     if (group.CompareNoCase(valid_dirs[i].group) != 0)
@@ -1384,7 +1662,7 @@ void CConfigureApp::write_lib_dsp(
     else
 	    spec = dspname.c_str();
     spec += valid_dirs[i].extn;
-	  generate_dir(dsp, dir, spec);
+	  generate_dir(dsp, dir, spec, 0, project_type, exclude_list);
   }
 	end_group(dsp);
 
@@ -1395,18 +1673,19 @@ void CConfigureApp::write_lib_dsp(
 
 void CConfigureApp::write_exe_dsp(
   int runtime,
+  int project_type,
 	std::string directory,
-	std::string search,
 	std::string dspname,
 	std::string prefix,
 	std::list<std::string> &libs_list_shared,
 	std::list<std::string> &libs_list_release,
 	std::list<std::string> &libs_list_debug,
 	std::list<std::string> &defines_list,
-	std::list<std::string> &includes_list)
+	std::list<std::string> &includes_list,
+	std::list<std::string> &source_list,
+  std::list<std::string> &exclude_list)
 {
-	CString filename = "..\\";
-  filename += directory.c_str();
+	CString filename = directory.c_str();
   filename += "\\";
 	filename += prefix.c_str();
 	filename += dspname.c_str();
@@ -1433,6 +1712,30 @@ void CConfigureApp::write_exe_dsp(
   libname += dspname.c_str();
 
 	ofstream dsp(filename);
+
+  CString bin_path;
+  CString debug_path;
+  CString release_path;
+  CStringEx getcount = directory.c_str();
+  int levels = getcount.GetFieldCount('\\');
+  if (project_type == UTILITY && (bin_loc[0]=='.'))
+  {
+    for (int j=0; j<(levels-2); j++)
+      bin_path += "..\\";
+  }
+  bin_path += bin_loc;
+  if (project_type == UTILITY && (debug_loc[0]=='.'))
+  {
+    for (int j=0; j<(levels-2); j++)
+      debug_path += "..\\";
+  }
+  debug_path += debug_loc;
+  if (project_type == UTILITY && (release_loc[0]=='.'))
+  {
+    for (int j=0; j<(levels-2); j++)
+      release_path += "..\\";
+  }
+  release_path += release_loc;
 
 	dsp << "# Microsoft Developer Studio Project File - Name=\"" << libname << "\" - Package Owner=<4>" << endl;
 	dsp << "# Microsoft Developer Studio Generated Build File, Format Version 6.00" << endl;
@@ -1471,8 +1774,8 @@ void CConfigureApp::write_exe_dsp(
 
 	dsp << "# PROP Use_MFC 0" << endl;
 	dsp << "# PROP Use_Debug_Libraries 0" << endl;
-	dsp << "# PROP Output_Dir \"" << bin_loc << "\"" << endl;
-	dsp << "# PROP Intermediate_Dir \"" << release_loc << libname << "\"" << endl;
+	dsp << "# PROP Output_Dir \"" << bin_path << "\"" << endl;
+	dsp << "# PROP Intermediate_Dir \"" << release_path << libname << "\"" << endl;
 	dsp << "# PROP Target_Dir \"\"" << endl;
 	dsp << "LIB32=link.exe -lib" << endl;
 	dsp << "# ADD CPP /nologo";
@@ -1546,11 +1849,11 @@ void CConfigureApp::write_exe_dsp(
   if (decorateFilenames)
     outname += "RL_";
   outname += dspname.c_str();
-  dsp << "/pdb:\"" << bin_loc << outname;
+  dsp << "/pdb:\"" << bin_path << outname;
   if (decorateFilenames)
     dsp << "_";
   dsp << ".pdb\"";
-  dsp << " /out:\"" << bin_loc << outname;
+  dsp << " /out:\"" << bin_path << outname;
   if (decorateFilenames)
     dsp << "_";
   dsp << ".exe\"";
@@ -1562,8 +1865,8 @@ void CConfigureApp::write_exe_dsp(
 
 	dsp << "# PROP Use_MFC 0" << endl;
 	dsp << "# PROP Use_Debug_Libraries 1" << endl;
-	dsp << "# PROP Output_Dir \"" << bin_loc << "\"" << endl;
-	dsp << "# PROP Intermediate_Dir \"" << debug_loc << libname << "\"" << endl;
+	dsp << "# PROP Output_Dir \"" << bin_path << "\"" << endl;
+	dsp << "# PROP Intermediate_Dir \"" << debug_path << libname << "\"" << endl;
 	dsp << "# PROP Target_Dir \"\"" << endl;
 	dsp << "LIB32=link.exe -lib" << endl;
 	dsp << "# ADD CPP /nologo";
@@ -1637,11 +1940,11 @@ void CConfigureApp::write_exe_dsp(
     outname += "DB_";
   outname += dspname.c_str();
 	dsp << " /nologo /subsystem:console /incremental:no /debug /machine:I386 ";
-  dsp << "/pdb:\"" << bin_loc << outname;
+  dsp << "/pdb:\"" << bin_path << outname;
   if (decorateFilenames)
     dsp << "_";
   dsp << ".pdb\"";
-  dsp << " /out:\"" << bin_loc << outname;
+  dsp << " /out:\"" << bin_path << outname;
   if (decorateFilenames)
     dsp << "_";
   dsp << ".exe\"";
@@ -1662,22 +1965,20 @@ void CConfigureApp::write_exe_dsp(
     valid_dirs[] = {
     { "\\",          ".c",   "src"     },
     { "\\",          ".cpp", "src"     },
-#ifdef USETHIS
-    { "\\lib\\",     ".c",   "src"     },
-    { "\\lib\\",     ".cpp", "src"     },
-    { "\\src\\",     ".c",   "src"     },
-    { "\\src\\",     ".cpp", "src"     },
-#endif
     { "\\",          ".h",   "include" },
-#ifdef USETHIS
-    { "\\lib\\",     ".h",   "include" },
-    { "\\include\\", ".h",   "include" },
-#endif
     { NULL,          NULL,   NULL      }
   };
 
   group = valid_dirs[0].group;
 	begin_group(dsp, group);
+  {
+		for (std::list<std::string>::iterator it = source_list.begin();
+			  it != source_list.end();
+			    it++)
+		{
+	    add_file(dsp, (*it).c_str());
+		}
+	}
   for (int i=0; valid_dirs[i].name != NULL; i++)
   {
     if (group.CompareNoCase(valid_dirs[i].group) != 0)
@@ -1686,15 +1987,12 @@ void CConfigureApp::write_exe_dsp(
       group = valid_dirs[i].group;
 	    begin_group(dsp, group);
     }
-	  dir = "..\\";
-    dir += directory.c_str();
+
+    dir = directory.c_str();
     dir += valid_dirs[i].name;
-    if (search.length() > 0)
-	    spec = search.c_str();
-    else
-	    spec = dspname.c_str();
+	  spec = dspname.c_str();
     spec += valid_dirs[i].extn;
-	  generate_dir(dsp, dir, spec);
+	  generate_dir(dsp, dir, spec, 0, project_type, exclude_list);
   }
 	end_group(dsp);
 
@@ -1704,7 +2002,9 @@ void CConfigureApp::write_exe_dsp(
 }
 
 void CConfigureApp::generate_dir(ofstream &dsp,
-    const char *dir, const char *spec)
+    const char *dir, const char *spec,
+    int nestinglevel, int project_type,
+    std::list<std::string> &exclude_list)
 {
 	static const char *exclude_from_build[] =
 	{
@@ -1729,13 +2029,19 @@ void CConfigureApp::generate_dir(ofstream &dsp,
 		  bool skip = false;
 
 		  for (int i=0; exclude_from_build[i] != NULL; i++)
+      {
 			  if (stricmp(data.cFileName, exclude_from_build[i]) == 0)
           skip = true;
+      }
 
 		  if (skip) continue;
 
 		  if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
-			  generate_dir(dsp, path + data.cFileName, spec);
+      {
+        if (is_project_type(path  + data.cFileName, project_type) == true)
+			    generate_dir(dsp, path + data.cFileName, spec,
+            ++nestinglevel, project_type, exclude_list);
+      }
 	  } while (FindNextFile(handle, &data));
     FindClose(handle);
   }
@@ -1753,11 +2059,30 @@ void CConfigureApp::generate_dir(ofstream &dsp,
 			  if (stricmp(data.cFileName, exclude_from_build[i]) == 0)
           skip = true;
 
+		  for (std::list<std::string>::iterator it = exclude_list.begin();
+			    it != exclude_list.end();
+			      it++)
+		  {
+			  if (stricmp(data.cFileName, (*it).c_str()) == 0)
+          skip = true;
+		  }
+
 		  if (skip) continue;
 
 		  if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
 			  continue;
-	    add_file(dsp, otherpath + data.cFileName);
+      if (project_type == UTILITY)
+      {
+        CStringEx getcount = path;
+        int levels = getcount.GetFieldCount('\\');
+        CStringEx relpath = "..\\";
+        for (int j=0; j<(levels-3); j++)
+          relpath += "..\\";
+        relpath += path;
+	      add_file(dsp, relpath + data.cFileName);
+      }
+      else
+	      add_file(dsp, otherpath + data.cFileName);
 
 	  } while (FindNextFile(handle, &data));
     FindClose(handle);
@@ -1979,3 +2304,5 @@ int ReadTemplateFile( CString inputfile, CString outputfile )
   inpStream.clear();
   return nLinesRead;
 }
+
+
