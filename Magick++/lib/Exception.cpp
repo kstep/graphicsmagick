@@ -226,6 +226,6 @@ void Magick::throwException( const ExceptionInfo &exception_ )
     return;
 
   throwExceptionExplicit( exception_.severity,
-			  exception_.message,
-			  exception_.qualifier );
+			  exception_.reason,
+			  exception_.description );
 }
