@@ -182,6 +182,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  draw_info->fill=image_info->pen;
   (void) CloneString(&draw_info->text,image_info->filename);
   FormatString(geometry,"0x0%+ld%+ld",page.x,page.y);
   (void) CloneString(&draw_info->geometry,geometry);

@@ -181,11 +181,8 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     ThrowReaderException(ResourceLimitError,"Unable to allocate image",image);
-  image->columns = 800;
-  image->rows = 480;
-  draw_info=CloneDrawInfo(image_info, (DrawInfo *) NULL);
-  if (draw_info == (DrawInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"Unable to allocate image",image);
+  image->columns=800;
+  image->rows=480;
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"Unable to open file",image);
@@ -209,6 +206,8 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Prepare drawing commands
   */
   y=20;
+  draw_info=CloneDrawInfo(image_info, (DrawInfo *) NULL);
+  draw_info->fill=image_info->pen;
   context=DrawAllocateContext(draw_info,image);
   (void) DrawPushGraphicContext(context);
   (void) DrawSetViewbox(context,0,0,image->columns,image->rows);
@@ -220,7 +219,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     y+=i+12;
     (void) DrawSetFontSize(context,18);
-    (void) FormatString(buffer,"'%ld'",i);
+    (void) FormatString(buffer,"%ld",i);
     (void) DrawAnnotation(context,10,y,(const unsigned char *) buffer);
     (void) DrawSetFontSize(context,i);
     (void) DrawAnnotation(context,50,y,(const unsigned char *)
@@ -229,6 +228,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       i+=6;
   }
   (void) DrawPopGraphicContext(context);
+  (void) DrawRender(context);
   /*
     Free resources.
   */
