@@ -1,3 +1,11 @@
+2003-04-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/windows.html: Updated for GraphicsMagick 1.0 and to
+	link to ImageMagickObject.html.
+	* www/programming.html: Added link to ImageMagickObject.html.
+	* www/ImageMagickObject.html: New file to provide some
+	documentation for ImageMagickObject.
+
 2003-04-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* FlashPIX: Applied patches from FreeBSD.  Bumped package
