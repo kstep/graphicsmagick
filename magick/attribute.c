@@ -904,7 +904,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
             }
             case EXIF_FMT_SINGLE:
             {
-              FormatString(s,"%f",(double)*(float *) pval);
+              FormatString(s,"%f",(double) *(float *) pval);
               value=AllocateString(s);
               break;
             }

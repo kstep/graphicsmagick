@@ -519,6 +519,6 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
   ThrowBinaryException(MissingDelegateError,"JBIG library is not available",
-    image->filename);
+    image->filename)
 }
 #endif

@@ -965,7 +965,7 @@ MagickExport unsigned int GetExecutionPath(char *path)
 #endif
 #if defined(HAVE_GETEXECNAME)
   {
-    char
+    const char
       *execution_path;
 
     execution_path=getexecname();

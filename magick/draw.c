@@ -912,7 +912,7 @@ MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_ur
 
   if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(OptionWarning, "URL not found", fill_url);
+      ThrowDrawException(OptionWarning, "URL not found", fill_url)
     }
   else
     {
@@ -1242,7 +1242,7 @@ MagickExport void DrawComposite(DrawContext context,
         buffer[MaxTextExtent];
 
       FormatString(buffer,"%ld bytes", (4L*blob_length/3L+4L));
-      ThrowDrawException(ResourceLimitWarning, "allocating Base64 memory",buffer);
+      ThrowDrawException(ResourceLimitWarning, "allocating Base64 memory",buffer)
     }
 
   mode = "copy";
@@ -1876,7 +1876,7 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
     }
   else
     {
-      ThrowDrawException(CorruptImageError,"unbalanced graphic context push/pop",NULL);
+      ThrowDrawException(CorruptImageError,"unbalanced graphic context push/pop",NULL)
     }
 }
 
@@ -1946,7 +1946,7 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
   if (context->graphic_context == (DrawInfo **) NULL)
     {
       ThrowDrawException(ResourceLimitError, "Unable to draw image",
-                         "Memory allocation failed");
+                         "Memory allocation failed")
     }
   CurrentContext=
     CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
@@ -2153,7 +2153,7 @@ MagickExport void DrawSetStrokePatternURL(DrawContext context, const char* strok
 
   if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(OptionWarning, "URL not found", stroke_url);
+      ThrowDrawException(OptionWarning, "URL not found", stroke_url)
     }
   else
     {
@@ -2253,7 +2253,7 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
           else
             {
               ThrowDrawException(ResourceLimitError, "Unable to draw image",
-                                 "Memory allocation failed");
+                                 "Memory allocation failed")
             }
         }
       

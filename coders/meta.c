@@ -874,7 +874,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
 
           pinfo = (ProfileInfo *) image_info->client_data;
           if ((pinfo == (ProfileInfo *) NULL) ||
-              (pinfo->info == (unsigned char *) NULL) || (pinfo->length <= 0))
+              (pinfo->info == (unsigned char *) NULL) || (pinfo->length == 0))
             {
               DetachBlob(buff->blob);
               LiberateMemory((void **) &blob);

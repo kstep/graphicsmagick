@@ -443,7 +443,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       {
         TIFFClose(tiff);
         ThrowReaderException(CorruptImageWarning,"Unable to read CIELAB images",
-          image);
+          image)
       }
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
