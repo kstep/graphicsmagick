@@ -1,7 +1,13 @@
+2001-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+        * Eliminated libMagick.so dependency on libxml by not listing
+          -lxml when doing modules link.
+
 2001-10-18  Cristy  <cristy@mystic.es.dupont.com>
 	* Eliminated the libMagick.so dependancy on libtiff by moving
 	  Huffman2DEncodeImage() from magick/compress.c to coders/pdf.c,
 	  coders/ps2.c and coders/ps3.c (suggested by Bob Friesenhahn).
+          This change has the side-effect of elminating dependency
+          on libpng and libjpeg as well (which libtiff may depend on).
 
 2001-10-16  Cristy  <cristy@mystic.es.dupont.com>
 	* Convert now supports -channel {Cyan,Magenta,Yellow,Black}.
