@@ -9,6 +9,12 @@ EXCLUDE = ahhint.c
 EXCLUDE = ahmodule.c
 EXCLUDE = ahoptim.c
 #
+EXCLUDE = cffdrivr.c
+EXCLUDE = cffgload.c
+EXCLUDE = cffload.c
+EXCLUDE = cffobjs.c
+EXCLUDE = cffparse.c
+#
 EXCLUDE = ftcalc.c
 EXCLUDE = ftobjs.c
 EXCLUDE = ftstream.c
@@ -59,6 +65,10 @@ EXCLUDE = t1load.c
 EXCLUDE = t1objs.c
 EXCLUDE = t1parse.c
 EXCLUDE = t1tokens.c
+#
+EXCLUDE = pcfdriver.c
+EXCLUDE = pcfread.c
+EXCLUDE = pcfutil.c
 #
 EXCLUDE = z1afm.c
 EXCLUDE = z1driver.c
