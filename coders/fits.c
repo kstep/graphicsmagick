@@ -120,7 +120,8 @@ static unsigned int IsFITS(const unsigned char *magick,
 %
 %  The format of the ReadFITSImage method is:
 %
-%      Image *ReadFITSImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadFITSImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %

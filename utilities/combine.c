@@ -987,8 +987,6 @@ int main(int argc,char **argv)
     DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);
   DestroyImageInfo(image_info);
-  DestroyDelegateInfo();
-  DestroyMagickInfo();
   FreeMemory((void **) &argv);
   Exit(0);
   return(False);

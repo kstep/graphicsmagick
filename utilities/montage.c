@@ -1223,8 +1223,6 @@ int main(int argc,char **argv)
   DestroyImages(montage_image);
   DestroyMontageInfo(montage_info);
   DestroyImageInfo(image_info);
-  DestroyDelegateInfo();
-  DestroyMagickInfo();
   FreeMemory((void **) &argv);
   return(False);
 }

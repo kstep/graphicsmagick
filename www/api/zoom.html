@@ -36,7 +36,6 @@
 <FONT SIZE=-1>NAME</FONT></A></H1>
 <P>zoom - Methods to Resize an Image</P>
 <P>
-<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
@@ -46,7 +45,6 @@
 <P>Image * <STRONG>ScaleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ZoomImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception );</P>
 <P>
-<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
 <H1><A NAME="function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
@@ -132,7 +130,7 @@ return any errors or warnings in this structure.
 <P>
 <H2><A NAME="scaleimage">ScaleImage</A></H2>
 <P>Method ScaleImage creates a new image that is a scaled size of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  To scale a scanline from x pixels to y pixels, each new pixel represents x/y old pixels.  To read x/y pixels, read (x/y rounded up) pixels but only count the required fraction of the last old pixel read in your new pixel.  The remainder of the old pixel will be counted in the next new pixel.</P>
-<P>The scaling algorithm was suggested by <A HREF="mailto:rjohnson@shell.com">rjohnson@shell.com</A> and is adapted from <CODE>pnmscale</CODE> of 
+<P>The scaling algorithm was suggested by <A HREF="mailto:rjohnson@shell.com">rjohnson@shell.com</A> and is adapted from <CODE>pnmscale(1)</CODE> of 
 <FONT SIZE=-1>PBMPLUS</FONT> by Jef Poskanzer.</P>
 <P>The format of the ScaleImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
@@ -189,7 +187,6 @@ An integer that specifies the number of rows in the scaled image.
 <DD>
 return any errors or warnings in this structure.
 </DL></DL>
-<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

@@ -975,8 +975,6 @@ int main(int argc,char **argv)
         loaded_image=XAnimateImages(display,&resource_info,argv,argc,image);
       }
     }
-  DestroyDelegateInfo();
-  DestroyMagickInfo();
   FreeMemory((void **) &argv);
   Exit(0);
 #endif

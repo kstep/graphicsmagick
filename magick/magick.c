@@ -80,10 +80,10 @@ static MagickInfo
 %
 %  The format of the DestroyMagickInfo method is:
 %
-%      void DestroyMagickInfo()
+%      void DestroyMagickInfo(void)
 %
 */
-MagickExport void DestroyMagickInfo()
+MagickExport void DestroyMagickInfo(void)
 {
   MagickInfo
     *entry;
@@ -225,6 +225,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterXWDImage();
       RegisterYUVImage();
 #endif
+      atexit(DestroyMagickInfo);
     }
   magick_info=magick_list;
   if ((tag != (char *) NULL) && (*tag != '\0'))

@@ -33,20 +33,18 @@
 <P>stream - Image Pixel 
 <FONT SIZE=-1>FIFO</FONT></P>
 <P>
-<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>unsigned int  <STRONG>StreamImage</STRONG>( const ImageInfo *image_info, void(* Stream )( const Image *), ExceptionInfo *exception );</P>
 <P>
-<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
 <H1><A NAME="function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="streamimage">StreamImage</A></H2>
-<P>Method StreamImage makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the <CODE>ReadImage</CODE> method.</P>
+<P>Method StreamImage makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the <CODE>ReadImage()</CODE> method.</P>
 <P>The format of the StreamImage method is:</P>
 <blockquote>unsigned int StreamImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, void ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *), <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -67,7 +65,6 @@ a callback method.
 <DD>
 return any errors or warnings in this structure.
 </DL></DL>
-<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

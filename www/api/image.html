@@ -68,7 +68,6 @@
 <FONT SIZE=-1>NAME</FONT></A></H1>
 <P>image - ImageMagick Image Methods</P>
 <P>
-<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
@@ -110,7 +109,6 @@
 <P>void  <STRONG>TextureImage</STRONG>( Image *image, Image *texture );</P>
 <P>unsigned int  <STRONG>TransformRGBImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
 <P>
-<A HREF="#__index__"><SMALL>page index</SMALL></A>
 <HR>
 <H1><A NAME="function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
@@ -207,7 +205,7 @@ return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
-<P>Method CloneImage returns a copy of all fields of the input image.  The image pixels and indexes are copied only if the columns and rows of the cloned image are the same as the original otherwise the pixel data is undefined and must be initialized with <CODE>SetImagePixels</CODE> and <CODE>SyncImagePixels</CODE> methods.</P>
+<P>Method CloneImage returns a copy of all fields of the input image.  The image pixels and indexes are copied only if the columns and rows of the cloned image are the same as the original otherwise the pixel data is undefined and must be initialized with <CODE>SetImagePixels()</CODE> and <CODE>SyncImagePixels()</CODE> methods.</P>
 <P>The format of the CloneImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -738,7 +736,6 @@ The address of a structure of type Image; returned from ReadImage.
 <DD>
 An unsigned integer value defines which colorspace to transform the image to.
 </DL></DL>
-<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
 
 </BODY>
 

@@ -205,10 +205,10 @@ MagickExport void ExitModules(void)
       /*
         Unload and unregister all loaded modules.
       */
-      while ((p=GetModuleInfo((char *)NULL)) != (ModuleInfo *) NULL)
+      while ((p=GetModuleInfo((char *) NULL)) != (ModuleInfo *) NULL)
         UnloadDynamicModule(p->tag);
       /*
-	Free memory associated with ModuleAliases list.
+        Free memory associated with ModuleAliases list.
       */
       for (alias=module_aliases; alias != (ModuleAliases *) NULL; )
       {

@@ -1496,8 +1496,6 @@ int main(int argc,char **argv)
       XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
       XSync(display,False);
     }
-  DestroyDelegateInfo();
-  DestroyMagickInfo();
   FreeMemory((void **) &argv);
   Exit(0);
 #endif

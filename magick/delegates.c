@@ -68,10 +68,10 @@ const char
   *DelegateFilename = "delegates.mgk";
 
 /*
-  Forward declaractions.
+  Global declaractions.
 */
-static unsigned int
-  ReadDelegates(const char *,const char *);
+static DelegateInfo
+  *delegates = (DelegateInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -101,9 +101,6 @@ MagickExport void DestroyDelegateInfo(void)
   register DelegateInfo
     *p;
 
-  delegates=SetDelegateInfo((DelegateInfo *) NULL);
-  if (delegates == (DelegateInfo *) NULL)
-    return;
   for (p=delegates; p != (DelegateInfo *) NULL; )
   {
     if (p->commands != (char *) NULL)
@@ -112,6 +109,7 @@ MagickExport void DestroyDelegateInfo(void)
     p=p->next;
     FreeMemory((void **) &delegate);
   }
+  delegates=(DelegateInfo *) NULL;
 }
 
 /*
@@ -159,16 +157,8 @@ MagickExport unsigned int GetDelegateInfo(const char *decode_tag,
   assert(delegate_info != (DelegateInfo *) NULL);
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
   if (delegates == (DelegateInfo *) NULL)
-    {
-      (void) ReadDelegates(DelegatePath,(char *) NULL);
-      (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),DirectorySeparator);
-      (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
-      (void) ReadDelegates((char *) NULL,(char *) NULL);
-      delegates=SetDelegateInfo((DelegateInfo *) NULL);
-      if (delegates->next == (DelegateInfo *) NULL)
-        MagickWarning(DelegateWarning,"no delegates configuration file found",
-          DelegateFilename);
-    }
+    MagickWarning(DelegateWarning,"no delegates configuration file found",
+      DelegateFilename);
   /*
     Search for requested delegate.
   */
@@ -526,29 +516,8 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
     file=stdout;
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
   if (delegates == (DelegateInfo *) NULL)
-    {
-      DelegateInfo
-        delegate_info;
-
-      /*
-        The delegate list is empty, read delegates from the configuration file.
-      */
-      *delegate_info.decode_tag='\0';
-      delegate_info.direction=0;
-      *delegate_info.encode_tag='\0';
-      delegate_info.commands=(char *) NULL;
-      (void) SetDelegateInfo(&delegate_info);
-      (void) ReadDelegates(DelegatePath,(char *) NULL);
-      (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),"/");
-      (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
-      (void) ReadDelegates((char *) NULL,(char *) NULL);
-      delegates=SetDelegateInfo((DelegateInfo *) NULL);
-      if (delegates->next == (DelegateInfo *) NULL)
-        MagickWarning(DelegateWarning,"no delegates configuration file found",
-          DelegateFilename);
-    }
-  if (delegates == (DelegateInfo *) NULL)
-    return(False);
+    MagickWarning(DelegateWarning,"no delegates configuration file found",
+      DelegateFilename);
   (void) fprintf(file,"\nImageMagick uses these delegates to read or write "
     "image formats it does not\ndirectly support:\n\n");
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
@@ -622,6 +591,12 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
   unsigned int
     number_delegates;
 
+#if defined(HasPTHREADS)
+  static pthread_mutex_t
+    delegate_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+  pthread_mutex_lock(&delegate_mutex);
+#endif
   /*
     Determine delegate filename.
   */
@@ -703,6 +678,9 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
     number_delegates++;
     FreeMemory((void **) &delegate_info.commands);
   }
+#if defined(HasPTHREADS)
+  pthread_mutex_unlock(&delegate_mutex);
+#endif
   return(number_delegates != 0);
 }
 
@@ -743,11 +721,15 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   register DelegateInfo
     *p;
 
-  static DelegateInfo
-    *delegates = (DelegateInfo *) NULL;
-
   if (delegate_info == (DelegateInfo *) NULL)
-    return(delegates);
+    {
+      (void) ReadDelegates(DelegatePath,(char *) NULL);
+      (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),DirectorySeparator);
+      (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
+      (void) ReadDelegates((char *) NULL,(char *) NULL);
+      atexit(DestroyDelegateInfo);
+      return(delegates);
+    }
   /*
     Initialize new delegate.
   */

@@ -868,8 +868,6 @@ int main(int argc,char **argv)
   if (image_info->verbose)
     DescribeImage(image,stderr,False);
   DestroyImages(image);
-  DestroyDelegateInfo();
-  DestroyMagickInfo();
   FreeMemory((void **) &argv);
   Exit(0);
 #endif
