@@ -99,7 +99,7 @@
 #include "libwmf/defs.h"
 #include "libwmf/ipa.h"
 #if HAVE_LIBWMF_FONT_H
-#include "libwmf/font.h"
+# include "libwmf/font.h"
 #endif /* HAVE_LIBWMF_FONT_H */
 #include "libwmf/color.h"
 #include "libwmf/macro.h"
@@ -1599,16 +1599,17 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   wmf_options_flags |= WMF_OPT_IGNORE_NONFATAL;
 
   /* Use ImageMagick's font map file */
-/*   { */
-/*     char *p = GetMagickConfigurePath(TypeFilename); */
-/*     if(p!=NULL) */
-/*       { */
-/*         strcpy(font_map_path, p); */
-/*         wmf_options_flags |= WMF_OPT_XTRA_FONTS; */
-/*         wmf_options_flags |= WMF_OPT_XTRA_FONTMAP; */
-/*         wmf_api_options.xtra_fontmap_file = font_map_path; */
-/*       } */
-/*   } */
+  {
+    char *p = GetMagickConfigurePath(TypeFilename);
+    if(p!=NULL)
+      {
+        strcpy(font_map_path, p);
+        wmf_options_flags |= WMF_OPT_XTRA_FONTS;
+        wmf_options_flags |= WMF_OPT_XTRA_FONTMAP;
+        wmf_api_options.xtra_fontmap_file = font_map_path;
+      }
+  }
+
   wmf_error = wmf_api_create (&API,wmf_options_flags,&wmf_api_options);
   if ( wmf_error != wmf_E_None )
     {
@@ -1681,18 +1682,37 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   sprintf( buff, "%ix%i", (int)wmf_width, (int)wmf_height );
   (void) CloneString(&(clone_info->size), buff);
   if(image_info->texture == (char*)NULL)
-    sprintf(clone_info->filename,
+    {
+      if(QueryColorDatabase("none", &clone_info->background_color))
+        {
+          if(!(image_info->background_color.red == clone_info->background_color.red &&
+               image_info->background_color.green == clone_info->background_color.green &&
+               image_info->background_color.blue == clone_info->background_color.blue &&
+               image_info->background_color.opacity == clone_info->background_color.opacity))
+            {
+              printf("Setting background white\n");
+              QueryColorDatabase("white", &clone_info->background_color);
+            }
+          else
+            printf("Not setting background color\n");
+        }
+      else
+        printf("QueryColorDatabase failed!\n");
+
+      sprintf(clone_info->filename,
 #if QuantumDepth == 8
-            "XC:#%02x%02x%02x%02x",
+              "XC:#%02x%02x%02x%02x",
 #elif QuantumDepth == 16
-            "XC:#%04x%04x%04x%04x",
+              "XC:#%04x%04x%04x%04x",
 #endif    
-            image_info->background_color.red,
-            image_info->background_color.green,
-            image_info->background_color.blue,
-            image_info->background_color.opacity);
+              clone_info->background_color.red,
+              clone_info->background_color.green,
+              clone_info->background_color.blue,
+              clone_info->background_color.opacity);
+    }
   else
     sprintf(clone_info->filename,"TILE:%.1024s",image_info->texture);
+  printf("filename: %s\n", clone_info->filename);
   GetExceptionInfo(exception);
   DestroyImage(image);
   image=ReadImage( clone_info, exception );
