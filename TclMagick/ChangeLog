@@ -1,4 +1,9 @@
-2004-02-14  Rolf Schroedter <rolf.schroedter@dlr.de>
+2004-02-27  Rolf Schroedter <rolf.schroedter@dlr.de>
+	* Fixed ClipImage and ClipPathImage tests
+
+	* [magick library] list now includes -maxrgb
+
+2004-02-25  Rolf Schroedter <rolf.schroedter@dlr.de>
 	* New API
 	    magick library -maxrgb
 	    
