@@ -23,6 +23,23 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Added --disable-installed option to configure to support
+    building an ImageMagick which is not installed via
+    hard-coded paths. This is intended to be used for the
+    ad-hoc binary distributions built by ImageMagick Studio.
+  * The UseInstalledImageMagick define is to be used by builds
+    formally installed under a prefix, or via the Windows
+    registry.
+  * Replaced GetMagickConfigurePath() with the three functions
+    FindConfigurationFile(), FindFontFile(), and FindModuleFile().
+  * Re-implemented InitializeMagick() to try harder at finding
+    the uninstalled ImageMagick without the help of MAGICK_HOME.
+    In the future, it can try even harder.
+  * Unix binaries packages (built with --disable-installed) should
+    now work using the same file layout as the distribution file.
+    There is no longer a need to put all files in the same directory.
+
 2002-08-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Under Windows, define UseInstalledImageMagick to locate
     components using the registry rather than scanning the

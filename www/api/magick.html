@@ -23,7 +23,6 @@
 		<LI><A HREF="#destroymagick">DestroyMagick</A>
 		<LI><A HREF="#destroymagickinfo">DestroyMagickInfo</A>
 		<LI><A HREF="#getimagemagick">GetImageMagick</A>
-		<LI><A HREF="#getmagickconfigurepath">GetMagickConfigurePath</A>
 		<LI><A HREF="#getmagickinfo">GetMagickInfo</A>
 		<LI><A HREF="#getmagickversion">GetMagickVersion</A>
 		<LI><A HREF="#initializemagick">InitializeMagick</A>
@@ -50,7 +49,6 @@
 <P><STRONG>DestroyMagick</STRONG>( void );</P>
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
 <P>const char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const size_t length );</P>
-<P>char * <STRONG>GetMagickConfigurePath</STRONG>( const char *filename, const unsigned int circumscribe, ExceptionInfo *exception );</P>
 <P>const MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *name, Exception *exception );</P>
 <P>const char * <STRONG>GetMagickVersion</STRONG>( unsigned int *version );</P>
 <P><STRONG>InitializeMagick</STRONG>( const char *path );</P>
@@ -87,40 +85,6 @@ The image format we are searching for.
 The length of the binary string.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="getmagickconfigurepath">GetMagickConfigurePath</A></H2>
-<blockquote>GetMagickConfigurePath() searches a number of pre-defined locations for the specified ImageMagick configuration file and returns the path. The search order follows: </blockquote><PRE>
-           &lt;current directory&gt;/
-           &lt;client path&gt;/ (if known)
-           $MAGICK_HOME/
-           $HOME/.magick/
-           $MAGICK_FONT_PATH
-           Windows Resource
-           MagickLibPath (if defined at compile time)
-           MagickModulesPath  (if defined at compile time)
-           MagickSharePath (if defined at compile time)</PRE>
-<P>The format of the GetMagickConfigurePath method is:</P>
-<blockquote>char *GetMagickConfigurePath ( const char *filename, const unsigned int circumscribe, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_path%3A">path:</A></STRONG><BR>
-<DD>
-Method GetMagickConfigurePath returns the path if the configuration file is found, otherwise 
-<FONT SIZE=-1>NULL</FONT> is returned.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> character string representing the desired configuration file.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_circumscribe%3A">circumscribe:</A></STRONG><BR>
-<DD>
-circumscribe search to hard-coded paths only.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
-<DD>
-Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="getmagickinfo">GetMagickInfo</A></H2>
 <blockquote>GetMagickInfo() returns a pointer <A HREF="types/MagickInfo.html">MagickInfo</A> structure that matches the specified name. If name is NULL, the head of the image format list is returned. </blockquote><P>The format of the GetMagickInfo method is:</P>
 <blockquote>const <A HREF="types/MagickInfo.html">MagickInfo</A> *GetMagickInfo ( const char *name, Exception *exception ); </blockquote><P>
@@ -130,7 +94,7 @@ Return any errors or warnings in this structure.
 <DD>
 The image format we are looking for.
 <P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
@@ -150,7 +114,7 @@ The ImageMagick version is returned as a number.
 <blockquote>InitializeMagick ( const char *path ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>path:</STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_path%3A">path:</A></STRONG><BR>
 <DD>
 The execution path of the current ImageMagick client.
 <P></P></DL></DL>

@@ -334,7 +334,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagedepth">GetImageDepth</A></H2>
-<blockquote>GetImageDepth() returns the depth of the image, either 8 or 16 bits. By default, pixels components are stored as 16-bit two byte unsigned short integers that range in value from 0 to 65535. However, If all the pixels have lower-order bytes that are identical to their higher-order bytes, the image depth is 8-bit. </blockquote><P>The format of the GetImageDepth method is:</P>
+<blockquote>GetImageDepth() returns the depth of the image, either 8 or 16 bits. By default, pixels components are stored as 16-bit two byte unsigned short integers that range in value from 0 to 65535L. However, If all the pixels have lower-order bytes that are identical to their higher-order bytes, the image depth is 8-bit. </blockquote><P>The format of the GetImageDepth method is:</P>
 <blockquote>unsigned long GetImageDepth ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
