@@ -1,3 +1,8 @@
+2003-11-03  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick: Released DLL Version. Please read BCBMagick/readme.txt
+	for details about installation and/or use.
+
 2003-11-03  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* magick/utility.c (GetPathComponent): Added x, X, and +
