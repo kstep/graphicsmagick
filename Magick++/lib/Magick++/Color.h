@@ -151,7 +151,8 @@ namespace Magick
   {
   public:
     ColorHSL ( double hue_, double saturation_, double luminosity_ );
-    ColorHSL ( );
+    ColorHSL ( void );
+    ColorHSL ( const Color & color_ );
     /* virtual */  ~ColorHSL ( );
     
     void           hue ( double hue_ );
@@ -162,6 +163,9 @@ namespace Magick
     
     void           luminosity ( double luminosity_ );
     double         luminosity ( void ) const;
+
+    // Assignment operator from base class
+    ColorHSL& operator= ( const Color& color_ );
 
   protected:
     // Constructor to construct with PixelPacket*
@@ -178,10 +182,14 @@ namespace Magick
   public:
     ColorGray ( double shade_ );
     ColorGray ( void );
+    ColorGray ( const Color & color_ );
     /* virtual */ ~ColorGray ();
-    
+
     void           shade ( double shade_ );
     double         shade ( void ) const;
+
+    // Assignment operator from base class
+    ColorGray& operator= ( const Color& color_ );
 
   protected:
     // Constructor to construct with PixelPacket*
@@ -198,10 +206,14 @@ namespace Magick
   public:
     ColorMono ( bool mono_ );
     ColorMono ( void );
+    ColorMono ( const Color & color_ );
     /* virtual */ ~ColorMono ();
     
     void           mono ( bool mono_ );
     bool           mono ( void ) const;
+
+    // Assignment operator from base class
+    ColorMono& operator= ( const Color& color_ );
 
   protected:
     // Constructor to construct with PixelPacket*
@@ -216,8 +228,8 @@ namespace Magick
   {
   public:
     ColorRGB ( double red_, double green_, double blue_ );
-    ColorRGB ( const std::string x11color_ );
     ColorRGB ( void );
+    ColorRGB ( const Color & color_ );
     /* virtual */  ~ColorRGB ( void );
     
     void           red ( double red_ );
@@ -228,6 +240,9 @@ namespace Magick
     
     void           blue ( double blue_ );
     double         blue ( void ) const;
+
+    // Assignment operator from base class
+    ColorRGB& operator= ( const Color& color_ );
 
   protected:
     // Constructor to construct with PixelPacket*
@@ -246,6 +261,7 @@ namespace Magick
   public:
     ColorYUV ( double y_, double u_, double v_ );
     ColorYUV ( void );
+    ColorYUV ( const Color & color_ );
     /* virtual */ ~ColorYUV ( void );
     
     void           u ( double u_ );
@@ -256,6 +272,9 @@ namespace Magick
     
     void           y ( double y_ );
     double         y ( void ) const;
+
+    // Assignment operator from base class
+    ColorYUV& operator= ( const Color& color_ );
 
   protected:
     // Constructor to construct with PixelPacket*

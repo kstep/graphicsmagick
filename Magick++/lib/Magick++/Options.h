@@ -68,8 +68,8 @@ namespace Magick
     Color           boxColor ( void ) const;
     
     // Colors within this distance are considered equal
-    void            colorFuzz ( unsigned int fuzz_ );
-    unsigned int    colorFuzz ( void ) const;
+    void            colorFuzz ( double fuzz_ );
+    double          colorFuzz ( void ) const;
     
     // Compression type ( NoCompression, BZipCompression,
     // FaxCompression, JPEGCompression, LZWCompression,
@@ -235,11 +235,11 @@ inline bool Magick::Options::adjoin ( void ) const
   return (bool)_imageInfo->adjoin;
 }
 
-inline void Magick::Options::colorFuzz ( unsigned int fuzz_ )
+inline void Magick::Options::colorFuzz ( double fuzz_ )
 {
   _imageInfo->fuzz = fuzz_;
 }
-inline unsigned int Magick::Options::colorFuzz ( void ) const
+inline double Magick::Options::colorFuzz ( void ) const
 {
   return _imageInfo->fuzz;
 }

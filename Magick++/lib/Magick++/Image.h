@@ -492,8 +492,8 @@ namespace Magick
     ClassType       classType ( void ) const;
     
     // Colors within this distance are considered equal
-    void            colorFuzz ( unsigned int fuzz_ );
-    unsigned int    colorFuzz ( void ) const;
+    void            colorFuzz ( double fuzz_ );
+    double          colorFuzz ( void ) const;
     
     // Color at colormap position index_
     void            colorMap ( unsigned int index_, const Color &color_ );

@@ -1659,16 +1659,15 @@ Magick::ClassType Magick::Image::classType ( void ) const
   return (Magick::ClassType)constImage()->c_class;
 }
 
-void Magick::Image::colorFuzz ( unsigned int fuzz_ )
+void Magick::Image::colorFuzz ( double fuzz_ )
 {
   modifyImage();
   image()->fuzz = fuzz_;
   options()->colorFuzz( fuzz_ );
 }
-unsigned int Magick::Image::colorFuzz ( void ) const
+double Magick::Image::colorFuzz ( void ) const
 {
   return constOptions()->colorFuzz( );
-//   return constImage()->fuzz;
 }
 
 // Set color in colormap at index

@@ -1463,7 +1463,7 @@ namespace Magick
   class colorFuzzImage : public std::unary_function<Image&,void>
   {
   public:
-    colorFuzzImage( unsigned int fuzz_ )
+    colorFuzzImage( double fuzz_ )
       : _fuzz( fuzz_ ) { }
 
     void operator()( Image &image_ )
@@ -1471,7 +1471,7 @@ namespace Magick
 	image_.colorFuzz( _fuzz );
       }
   private:
-    const unsigned int _fuzz;
+    const double _fuzz;
   };
 
   // Color at colormap position index_

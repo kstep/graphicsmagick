@@ -1,3 +1,11 @@
+2000-07-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (colorFuzz): Changed type to 'double' from
+	'unsigned int' to match change in ImageMagick.
+
+	* lib/Color.cpp (Color*): Added copy constructor from base class.
+	(operator =): Added assignment operator from base class.
+
 2000-06-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h : Changed enumeration FilterType to

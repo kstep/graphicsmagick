@@ -78,7 +78,7 @@ int Magick::operator <= ( const Magick::Color& left_,
 //
 
 // Copy constructor
-Magick::Color::Color ( const Color & color_ )
+Magick::Color::Color ( const Magick::Color & color_ )
   : _pixel( new PixelPacket ),
     _pixelOwn( true ),
     _pixelType( color_._pixelType )
@@ -87,7 +87,7 @@ Magick::Color::Color ( const Color & color_ )
 }
 
 // Assignment operator
-Magick::Color& Magick::Color::operator = ( const Color& color_ )
+Magick::Color& Magick::Color::operator = ( const Magick::Color& color_ )
 {
   // If not being set to ourself
   if ( this != &color_ )
@@ -222,13 +222,22 @@ Magick::ColorHSL::ColorHSL ( double hue_,
   redQuantum   ( red );
   greenQuantum ( green );
   blueQuantum  ( blue );
+
 }
 
+// Null constructor
 Magick::ColorHSL::ColorHSL ( )
   : Color ()
 {
 }
 
+// Copy constructor from base class
+Magick::ColorHSL::ColorHSL ( const Magick::Color & color_ )
+  : Color( color_ )
+{
+}
+
+// Destructor
 Magick::ColorHSL::~ColorHSL ( )
 {
   // Nothing to do
@@ -348,6 +357,13 @@ double Magick::ColorHSL::luminosity ( void ) const
   return luminosity_val;
 }
 
+// Assignment from base class
+Magick::ColorHSL& Magick::ColorHSL::operator = ( const Magick::Color& color_ )
+{
+  *static_cast<Magick::Color*>(this) = color_;
+  return *this;
+}
+
 //
 // ColorGray Implementation
 //
@@ -358,11 +374,19 @@ Magick::ColorGray::ColorGray ( double shade_ )
 {
 }
 
+// Null constructor
 Magick::ColorGray::ColorGray ( void )
   : Color ()
 {
 }
 
+// Copy constructor from base class
+Magick::ColorGray::ColorGray ( const Magick::Color & color_ )
+  : Color( color_ )
+{
+}
+
+// Destructor
 Magick::ColorGray::~ColorGray ()
 {
   // Nothing to do
@@ -381,6 +405,13 @@ double Magick::ColorGray::shade ( void ) const
   return ScaleQuantumToDouble ( greenQuantum() );
 }
 
+// Assignment from base class
+Magick::ColorGray& Magick::ColorGray::operator = ( const Magick::Color& color_ )
+{
+  *static_cast<Magick::Color*>(this) = color_;
+  return *this;
+}
+
 //
 // ColorMono Implementation
 //
@@ -391,11 +422,19 @@ Magick::ColorMono::ColorMono ( bool mono_  )
 {
 }
 
+// Null constructor
 Magick::ColorMono::ColorMono ( void )
   : Color ()
 {
 }
 
+// Copy constructor from base class
+Magick::ColorMono::ColorMono ( const Magick::Color & color_ )
+  : Color( color_ )
+{
+}
+
+// Destructor
 Magick::ColorMono::~ColorMono ()
 {
   // Nothing to do
@@ -416,9 +455,18 @@ bool Magick::ColorMono::mono ( void ) const
     return false;
 }
 
+// Assignment from base class
+Magick::ColorMono& Magick::ColorMono::operator = ( const Magick::Color& color_ )
+{
+  *static_cast<Magick::Color*>(this) = color_;
+  return *this;
+}
+
 //
 // ColorRGB Implementation
 //
+
+// Construct from red, green, and blue, components
 Magick::ColorRGB::ColorRGB ( double red_,
 			     double green_,
 			     double blue_ )
@@ -427,19 +475,28 @@ Magick::ColorRGB::ColorRGB ( double red_,
 	    ScaleDoubleToQuantum(blue_) )
 {
 }
-Magick::ColorRGB::ColorRGB ( const std::string x11color_ )
-  : Color( x11color_ )
-{
-}
+// Null constructor
 Magick::ColorRGB::ColorRGB ( void )
   : Color ()
 {
 }
+// Copy constructor from base class
+Magick::ColorRGB::ColorRGB ( const Magick::Color & color_ )
+  : Color( color_ )
+{
+}
+// Destructor
 Magick::ColorRGB::~ColorRGB ( void )
 {
   // Nothing to do
 }
 
+// Assignment from base class
+Magick::ColorRGB& Magick::ColorRGB::operator = ( const Magick::Color& color_ )
+{
+  *static_cast<Magick::Color*>(this) = color_;
+  return *this;
+}
 
 //
 // ColorYUV Implementation
@@ -459,6 +516,8 @@ Magick::ColorRGB::~ColorRGB ( void )
 //         U and V, normally -0.5 through 0.5, are normalized to the range 0
 //         through MaxRGB.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
 //
+
+// Construct from color components
 Magick::ColorYUV::ColorYUV ( double y_,
 			     double u_,
 			     double v_ )
@@ -467,12 +526,17 @@ Magick::ColorYUV::ColorYUV ( double y_,
 	    ScaleDoubleToQuantum(y_ + 2.02790 * u_ ) )
 {
 }
-
+// Null constructor
 Magick::ColorYUV::ColorYUV ( void )
   : Color ()
 {
 }
-
+// Copy constructor from base class
+Magick::ColorYUV::ColorYUV ( const Magick::Color & color_ )
+  : Color( color_ )
+{
+}
+// Destructor
 Magick::ColorYUV::~ColorYUV ( void )
 {
   // Nothing to do
@@ -524,4 +588,11 @@ double Magick::ColorYUV::y ( void ) const
 {
   return ScaleQuantumToDouble(  0.29900 * redQuantum() + 0.58700 *
 				greenQuantum() + 0.11400 * blueQuantum() );
+}
+
+// Assignment from base class
+Magick::ColorYUV& Magick::ColorYUV::operator = ( const Magick::Color& color_ )
+{
+  *static_cast<Magick::Color*>(this) = color_;
+  return *this;
 }
