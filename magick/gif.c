@@ -877,8 +877,6 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
     /*
       Inititialize colormap.
     */
-    if (image->pixels != (PixelPacket *) NULL)
-      FreeMemory(image->pixels);
     image->colormap=(PixelPacket *)
       AllocateMemory(image->colors*sizeof(PixelPacket));
     if (image->colormap == (PixelPacket *) NULL)
@@ -935,9 +933,6 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
   }
   if (global_colormap != (unsigned char *) NULL)
     FreeMemory(global_colormap);
-  if (image->pixels == (PixelPacket *) NULL)
-    ReaderExit(CorruptImageWarning,"Corrupt GIF image or subimage not found",
-      image);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
