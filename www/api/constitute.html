@@ -132,7 +132,7 @@ This array of values contain the pixel components as defined by the map and type
 <P></P></DL></DL>
 <P>
 <H2><A NAME="pingimage">PingImage</A></H2>
-<P>Method PingImage returns the image size in bytes if it exists and can be the image is returned as well.  Note, only the first image in a multi-frame image file is pinged.</P>
+<P>Method PingImage returns the image size in bytes if it exists and can be read (at least up until it reveals it's size). The width and height of the image is returned as well.  Note, only the first image in a multi-frame image file is pinged.</P>
 <P>The format of the PingImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>

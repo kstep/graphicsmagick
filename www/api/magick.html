@@ -49,8 +49,8 @@
 <P>char * <STRONG>GetMagickConfigurePath</STRONG>( const char *filename );</P>
 <P>MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *tag, Exception *exception );</P>
 <P>char * <STRONG>GetMagickVersion</STRONG>( unsigned int *version );</P>
-<P>void  <STRONG>ListMagickInfo</STRONG>( 
-<FONT SIZE=-1>FILE</FONT> *file );</P>
+<P>unsigned int  <STRONG>ListMagickInfo</STRONG>( 
+<FONT SIZE=-1>FILE</FONT> *file, ExceptionInfo *exception );</P>
 <P><STRONG>MagickIncarnate</STRONG>( const char *path );</P>
 <P>MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( MagickInfo *entry );</P>
 <P>MagickInfo * <STRONG>SetMagickInfo</STRONG>( const char *tag );</P>
@@ -149,7 +149,7 @@ The ImageMagick version is returned as a number.
 <H2><A NAME="listmagickinfo">ListMagickInfo</A></H2>
 <P>Method ListMagickInfo lists the image formats to a file.</P>
 <P>The format of the ListMagickInfo method is:</P>
-<blockquote>void ListMagickInfo ( FILE *file ); </blockquote><P>
+<blockquote>unsigned int ListMagickInfo ( FILE *file, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_file%3A">file:</A></STRONG><BR>
@@ -157,6 +157,10 @@ The ImageMagick version is returned as a number.
 
 <FONT SIZE=-1>A</FONT> pointer to a 
 <FONT SIZE=-1>FILE</FONT> structure.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="magickincarnate">MagickIncarnate</A></H2>
