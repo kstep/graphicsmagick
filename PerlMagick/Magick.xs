@@ -1093,7 +1093,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               return;
             }
           if (info)
-            info->image_info->antialias=sp != 0;
+            {
+              info->image_info->antialias=sp != 0;
+              info->draw_info->text_antialias=sp != 0;
+            }
           return;
         }
       break;
@@ -1122,7 +1125,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           (void) QueryColorDatabase(SvPV(sval,na),&target_color);
           if (info)
-            info->image_info->border_color=target_color;
+            {
+              info->image_info->border_color=target_color;
+              info->draw_info->border_color=target_color;
+            }
           for ( ; image; image=image->next)
             image->border_color=target_color;
           return;
@@ -1226,7 +1232,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               return;
             }
           if (info)
-            info->image_info->debug=sp != 0;
+            {
+              info->image_info->debug=sp != 0;
+              info->draw_info->debug=sp != 0;
+            }
           return;
         }
       if (LocaleCompare(attribute,"delay") == 0)
@@ -1244,7 +1253,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               return;
             }
           if (info)
-            (void) CloneString(&info->image_info->density,SvPV(sval,na));
+            {
+              (void) CloneString(&info->image_info->density,SvPV(sval,na));
+              (void) CloneString(&info->draw_info->density,SvPV(sval,na));
+            }
           for ( ; image; image=image->next)
           {
             int
@@ -1291,7 +1303,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           display:
           if (info)
-            (void) CloneString(&info->image_info->server_name,SvPV(sval,na));
+            {
+              (void) CloneString(&info->image_info->server_name,SvPV(sval,na));
+              (void) CloneString(&info->draw_info->server_name,SvPV(sval,na));
+            }
           return;
         }
       break;
@@ -1343,7 +1358,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"font") == 0)
         {
           if (info)
-            (void) CloneString(&info->image_info->font,SvPV(sval,na));
+            {
+              (void) CloneString(&info->image_info->font,SvPV(sval,na));
+              (void) CloneString(&info->draw_info->font,SvPV(sval,na));
+            }
           return;
         }
       if (LocaleCompare(attribute,"fuzz") == 0)
@@ -1569,7 +1587,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"pointsize") == 0)
         {
           if (info)
-            (void) sscanf(SvPV(sval,na),"%lf",&info->image_info->pointsize);
+            {
+              (void) sscanf(SvPV(sval,na),"%lf",&info->image_info->pointsize);
+              (void) sscanf(SvPV(sval,na),"%lf",&info->draw_info->pointsize);
+            }
           return;
         }
       if (LocaleCompare(attribute,"preview") == 0)
