@@ -338,7 +338,6 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   double
     blue_gamma,
     green_gamma,
-    opacity_gamma,
     red_gamma;
 
   int
@@ -364,9 +363,8 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   red_gamma=1.0;
   green_gamma=1.0;
   blue_gamma=1.0;
-  opacity_gamma=1.0;
-  count=sscanf(gamma,"%lf%*[,/]%lf%*[,/]%lf%*[,/]%lf",&red_gamma,&green_gamma,
-    &blue_gamma,&opacity_gamma);
+  count=sscanf(gamma,"%lf%*[,/]%lf%*[,/]%lf",&red_gamma,&green_gamma,
+    &blue_gamma);
   if (count == 1)
     {
       if (red_gamma == 1.0)
@@ -393,9 +391,6 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
     if (blue_gamma != 0.0)
       gamma_map[i].blue=(Quantum)
         ((pow((double) i/MaxRGB,1.0/blue_gamma)*MaxRGB)+0.5);
-    if (opacity_gamma != 0.0)
-      gamma_map[i].opacity=(Quantum)
-        ((pow((double) i/MaxRGB,1.0/opacity_gamma)*MaxRGB)+0.5);
   }
   switch (image->storage_class)
   {
@@ -415,7 +410,6 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
           q->red=gamma_map[q->red].red;
           q->green=gamma_map[q->green].green;
           q->blue=gamma_map[q->blue].blue;
-          q->opacity=gamma_map[q->opacity].opacity;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -441,7 +435,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
     }
   }
   if (image->gamma != 0.0)
-    image->gamma*=(red_gamma+green_gamma+blue_gamma+opacity_gamma)/4.0;
+    image->gamma*=(red_gamma+green_gamma+blue_gamma)/3.0;
   LiberateMemory((void **) &gamma_map);
   return(True);
 }
