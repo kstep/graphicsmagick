@@ -267,6 +267,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   /*
     Determine length of comment.
   */
+  image=(Image *) jpeg_info->client_data;
   length=GetCharacter(jpeg_info) << 8;
   length+=GetCharacter(jpeg_info);
   length-=2;
@@ -282,7 +283,6 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   for (p=comment; --length >= 0; p++)
     *p=GetCharacter(jpeg_info);
   *p='\0';
-  image=(Image *) jpeg_info->client_data;
   (void) SetImageAttribute(image,"Comment",comment);
   LiberateMemory((void **) &comment);
   return(True);
