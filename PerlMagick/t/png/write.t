@@ -40,7 +40,7 @@ testReadWrite( 'input_16.png',
 	       'output_16.png',
 	       q/quality=>55/,
                'fcdc12cc9144c09c01c6085d9db307c8',
-               '890af6c2fae2ed79795143815900e950' );
+               '283037a3703baa1595b6c146a4187baa' );
 #
 # 4) Test pseudocolor image
 #

@@ -982,7 +982,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
   {
     case IndexQuantum:
     {
-      if (image->colors <= 256)
+      if (image->depth <= 8)
         {
           for (x=0; x < (int) image->columns; x++)
             *q++=indexes[x];
@@ -1303,7 +1303,7 @@ MagickExport unsigned int PushImagePixels(const Image *image,
   {
     case IndexQuantum:
     {
-      if (image->colors <= 256)
+      if (image->depth <= 8)
         {
           for (x=0; x < (int) image->columns; x++)
           {
@@ -1324,7 +1324,7 @@ MagickExport unsigned int PushImagePixels(const Image *image,
     }
     case IndexOpacityQuantum:
     {
-      if (image->colors <= 256)
+      if (image->depth <= 8)
         {
           for (x=0; x < (int) image->columns; x++)
           {
@@ -1350,7 +1350,7 @@ MagickExport unsigned int PushImagePixels(const Image *image,
     }
     case GrayQuantum:
     {
-      if (image->colors <= 256)
+      if (image->depth <= 8)
         {
           for (x=0; x < (int) image->columns; x++)
           {
@@ -1371,7 +1371,7 @@ MagickExport unsigned int PushImagePixels(const Image *image,
     }
     case GrayOpacityQuantum:
     {
-      if (image->colors <= 256)
+      if (image->depth <= 8)
         {
           for (x=0; x < (int) image->columns; x++)
           {
