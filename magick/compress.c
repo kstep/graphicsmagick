@@ -301,7 +301,7 @@ MagickExport void Ascii85Encode(Image *image,const unsigned long code)
     for (q=Ascii85Tuple(p); *q; q++)
     {
       image->ascii85.line_break--;
-      if ((image->ascii85.line_break < 0) && (*(q+1) != '%'))
+      if ((image->ascii85.line_break < 0) && (*q != '%'))
         {
           (void) WriteBlobByte(image,'\n');
           image->ascii85.line_break=2*MaxLineExtent;
