@@ -1192,9 +1192,6 @@ static unsigned int UnloadModule(const char *module)
     MagickWarning(DelegateWarning,"failed to find symbol",lt_dlerror());
   else
     method();
-  /*
-    Close and remove module from list.
-  */
   (void) lt_dlclose((ModuleHandle) coder_info->handle);
   return(True);
 }

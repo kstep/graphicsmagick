@@ -401,7 +401,6 @@ static char * CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
     return(OverCompositeOp);
 
 */
-		default: break;
 	}
 
 	return outMode;
@@ -1255,9 +1254,6 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 
   ImageAttribute 
 	*theAttr;
-
-  char 
-    *value = NULL;
 
   Image
 	  * tmp_image = (Image *) NULL,
