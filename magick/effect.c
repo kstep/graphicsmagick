@@ -1720,6 +1720,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
     if (QuantumTick(y,median_image->rows))
       MagickMonitor(MedianFilterImageText,y,median_image->rows);
   }
+  LiberateMemory((void **) &window);
   return(median_image);
 }
 
