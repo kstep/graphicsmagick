@@ -1,4 +1,3 @@
-.TH identify 1 "$Date$" "ImageMagick"
 .SH NAME
 import - capture some or all of an X server screen and save the image to
 a file.
@@ -507,14 +506,20 @@ defined as \fBbackground\fP (class \fBbackgroundColor\fP). See \fIX(1)\fP
 for details.
 
 .TP
-.B "-scene \fIvalue{-value}"\fP
-\fRimage scene number or range
+.B "-scene \fIvalue"\fP
+\fRnumber of screen snapshots
 
-Use this option to specify an image sequence with a single filename. See
-the discussion of \fIfile\fP below for details.
+Use this option to grab more than one image from the X server screen to create
+an animation sequence.
 .TP
 .B "-screen"
 \fRspecify the screen to capture
+
+This option indicates that the GetImage request used to obtain the image
+should be done on the root window, rather than directly on the specified
+window.  In this way, you can obtain pieces of other windows that overlap
+the specified window, and more importantly, you can capture menus or other
+popups that are independent windows but appear over the specified window.
 .TP
 .B "-select"
 \fRselect something in import
