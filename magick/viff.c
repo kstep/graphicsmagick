@@ -659,9 +659,9 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
               break;
             for (x=0; x < (int) image->columns; x++)
             {
-              q->red=(*p);
-              q->green=(*(p+offset));
-              q->blue=(*(p+offset*2));
+              q->red=UpScale(*p);
+              q->green=UpScale(*(p+offset));
+              q->blue=UpScale(*(p+offset*2));
               if (image->colors != 0)
                 {
                   q->red=image->colormap[q->red].red;
