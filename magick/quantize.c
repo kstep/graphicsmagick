@@ -1191,7 +1191,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,int depth)
     cube_info->weights[i]/=weight;
   if (QuantumDepth == 16)
     for (i=0; i < ExceptionQueueLength; i++)
-      cube_info->weights[i]/=256.0;
+      cube_info->weights[i]/=257.0;
   return(cube_info);
 }
 
