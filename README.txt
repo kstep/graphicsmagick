@@ -159,7 +159,7 @@ UNIX/Cygwin COMPILATION
    --without-dps           disable Display Postscript support
    --without-fpx           disable FlashPIX support
    --without-gslib         disable Ghostscript library support
-   --without-hdf           disable HDF support
+   --with-hdf              enable HDF support
    --without-jbig          disable JBIG support
    --without-jpeg          disable JPEG support
    --without-lcms          disable LCMS support
@@ -453,12 +453,13 @@ MAGICK DELEGATES
       attempt to use it unless the option --without-gslib is passed to
       configure.
 
-    o ImageMagick requires the NCSA HDF library available via anonymous
+    o ImageMagick requires the NCSA HDF5 library available via anonymous
       FTP as
 
 	  ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current
 
-      to read and write the HDF image format.
+      to read and write the HDF image format.  By default HDF support is
+      disabled because HDF5 is not yet complete.
 
     o ImageMagick requires hp2xx available from
 
