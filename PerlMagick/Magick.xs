@@ -51,7 +51,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% PerlMagick, version 1.52, is an objected-oriented Perl interface to
+% PerlMagick, version 4.26, is an objected-oriented Perl interface to
 % ImageMagick.  Use the module to read,manipulate,or write an image or
 % image sequence from within a Perl script.  This makes it very suitable
 % for Web CGI scripts.  You must have ImageMagick 4.1.5 or above and Perl

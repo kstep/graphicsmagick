@@ -158,7 +158,7 @@ testReadWrite( 'PGM:input_p2.pgm',
 testReadWrite( 'PICT:input.pict',
                'PICT:output.pict',
                q//,
-               'e9b162b8431709942886f79b7b7c11bb' );
+               '2cdf3d196a7974c33e788c032cb918e0' );
 
 #
 # Portable pixmap format (color), ASCII format
@@ -266,7 +266,7 @@ testReadWrite( 'XBM:input.xbm',
 testReadWrite( 'XPM:input.xpm',
                'XPM:output.xpm',
                q//,
-               'd5a97a3cec301d8848102f513ceb3f3c' );
+               '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # X Windows system window dump file (color)

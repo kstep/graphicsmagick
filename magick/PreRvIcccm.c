@@ -50,6 +50,7 @@
 
 #include "magick.h"
 #include "defines.h"
+#include "xwindows.h"
 
 #if defined(PRE_R6_ICCCM)
 /*

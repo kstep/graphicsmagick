@@ -2693,7 +2693,7 @@ Export char **StringToList(const char *text)
         for (q=(char *) p; *q != '\0'; q++)
           if ((*q == '\r') || (*q == '\n'))
             break;
-        textlist[i]=(char *) AllocateMemory((q-p+1)*sizeof(char));
+        textlist[i]=(char *) AllocateMemory((q-p+2)*sizeof(char));
         if (textlist[i] == (char *) NULL)
           {
             MagickWarning(ResourceLimitWarning,"Unable to convert text",

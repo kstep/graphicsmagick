@@ -153,7 +153,7 @@ testRead( 'input_p5.pgm', '4d21ec5c0ed543eeb6d478515c66ff14' );
 # Apple Macintosh QuickDraw/PICT file
 #
 ++$test;
-testRead( 'input.pict', 'e9b162b8431709942886f79b7b7c11bb' );
+testRead( 'input.pict', 'd25208a1f7e2f4314181a73eb88f5371' );
 
 #
 # Alias/Wavefront RLE image format
@@ -235,7 +235,7 @@ testRead( 'xc:black', 'cb18a5d28e77522dfec6a6255bc3847e' );
 # X Windows system pixmap file (color)
 #
 ++$test;
-testRead( 'input.xpm', 'd5a97a3cec301d8848102f513ceb3f3c' );
+testRead( 'input.xpm', '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # X Windows system window dump file (color)

@@ -91,7 +91,7 @@
 %    23 May 1999 -- glennrp):
 %
 %    (At this point, decode is supposed to be in full MNG-LC compliance)
-% 
+%
 %    Recognize and ignore certain MNG chunks (presently, all unrecognized
 %    MNG chunks are ignored, but this can be unsafe).
 %
@@ -99,12 +99,12 @@
 %    efficiently by linking in the duplicate frames.].
 %
 %    Decode JNG datastreams.
-% 
+%
 %    Decode and act on the MHDR simplicity profile (offer option to reject
 %    files or attempt to process them anyway when the profile isn't LC or VLC).
-% 
+%
 %    Decode global cHRM chunk.
-% 
+%
 %    Upgrade to full MNG without Delta-PNG.
 %
 %        o  BACK [done a while ago except for background image ID]
@@ -116,9 +116,9 @@
 %        o  SHOW
 %        o  PAST
 %        o  BASI
-% 
+%
 %    Upgrade to full MNG with Delta-PNG.
-% 
+%
 %    Decode and act on the iCCP chunk (wait for libpng implementation).
 %
 %    Decode and act on the iTXt chunk (wait for libpng implementation).
@@ -143,13 +143,14 @@
 */
 
 /*
-  Define this to 96 to get proposed MNG-0.96 capabilities, or to 95
-  to get MNG-0.95 capabilities (in MNG-0.95, object does not "exist"
-  until the embedded image is received and the object attributes for
-  object 0 are discarded immediately; in MNG-0.96 proposal, they "exist"
+  Define this to 96 to get proposed MNG-0.96 capabilities (Draft 0.95b),
+  or to 95 to get MNG-0.95 capabilities (in MNG-0.95a, object does not
+  "exist" until the embedded image is received and the object attributes for
+  object 0 are discarded immediately; in MNG-0.95b proposal, they "exist"
   when the DEFI chunk is found and the object attributes for object 0
   persist until redefined.)
 */
+
 #define MNG_LEVEL 96
 
 /*
@@ -157,7 +158,7 @@
   defined, an attempt will be made to recover from some errors,
   including
       o global PLTE too short
-  #define MNG_LOOSE 
+  #define MNG_LOOSE
  */
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -383,7 +384,7 @@ MngBox mng_read_box(MngBox previous_box, char delta_type, unsigned char *p)
        box.top    += previous_box.top;
        box.bottom += previous_box.bottom;
      }
-   return box; 
+   return box;
 }
 
 MngPair mng_read_pair(MngPair previous_pair, char delta_type, unsigned char *p)
@@ -399,7 +400,7 @@ MngPair mng_read_pair(MngPair previous_pair, char delta_type, unsigned char *p)
        pair.a += previous_pair.a;
        pair.b += previous_pair.b;
      }
-   return pair; 
+   return pair;
 }
 
 long mng_get_long(unsigned char *p)
@@ -520,6 +521,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     max_packets,
     length;
 
+  long
+    image_count=0;
+
   unsigned short
     index,
     value;
@@ -551,7 +555,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   int
     first_mng_object,
     image_found,
-    have_page,
     have_mng_structure,
     object_id,
     term_chunk_found,
@@ -646,7 +649,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   frame_delay=0;
   final_delay=100;
   ticks_per_second=100;
-  have_page=0;
   object_id=0;
   skip_to_iend = False;
   term_chunk_found = False;
@@ -680,9 +682,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
            status=False;
         if(m->verbose)
           {
+            char
+               chunk_name[6];
+
             if(skip_to_iend)
               {
-                if (type[0] == 74)   /* 'J' */
+                if (type[0] == 0x4a)   /* 'J' */
                   printf("Skipping JNG ");
                 else
                   printf("Skipping PNG ");
@@ -693,13 +698,30 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                  printf("PNG ");
                else
                  {
-                   if (type[0] == 74)   /* 'J' */
+                   if (type[0] == 0x4a)   /* 'J' */
                      printf("Skipping JNG ");
                    else
                      printf("MNG ");
                  }
               }
-            printf("chunk %s, length=%lu\n",type,length);
+            for (i=0; i<4; i++)
+              {
+                const char
+                   upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                   lower[] = "abcdefghijklmnopqrstuvwxyz";
+
+                if (type[i] >= 0x41 && type[i] <= 0x5A)
+                    chunk_name[i] = upper[type[i]-0x41];
+                else if (type[i] >= 0x61 && type[i] <= 0x7A)
+                    chunk_name[i] = lower[type[i]-0x61];
+                else
+                  {
+                    printf("Invalid byte (0x%x) in chunk name\n",type[i]);
+                    chunk_name[i]=0x3f;   /* '?' */
+                  }
+              }
+            chunk_name[5]=0;
+            printf("chunk %s, length=%lu\n",chunk_name,length);
           }
         if (status == False)
           {
@@ -876,6 +898,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             if (length>2)
                   m->visible[object_id]=!p[2];
             else
+               if (MNG_LEVEL < 96)
                   m->visible[object_id]=True;
             /*
               Extract object offset info.
@@ -889,23 +912,32 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 pair = mng_read_pair(pair, 0, &p[4]);
                 m->x_off[object_id]=pair.a;
                 m->y_off[object_id]=pair.b;
-                FormatString(page_geometry,"%lux%lu%+ld%+ld",mng_width,
-                  mng_height,m->x_off[object_id], m->y_off[object_id]);
-                have_page=1;
               }
             else
+               if (MNG_LEVEL < 96)
               {
                 m->x_off[object_id]=0;
                 m->y_off[object_id]=0;
               }
-                
+
             /*
               Extract object clipping info.
             */
             if (length>27)
                 m->object_clip[object_id]=mng_read_box(frame,0,&p[12]);
             else
+              if (MNG_LEVEL < 96)
                 m->object_clip[object_id]=frame;
+
+            if(m->verbose)
+              {
+                printf("  DEFI object_id=%d geometry=%ldx%ld%+ld%+ld\n",
+                  object_id, mng_width, mng_height, m->x_off[object_id],
+                  m->y_off[object_id]);
+                printf("  clipping boundaries: L=%ld R=%ld T=%ld B=%ld\n",
+                  m->object_clip[object_id].left,m->object_clip[object_id].right,
+                  m->object_clip[object_id].top,m->object_clip[object_id].bottom);
+              }
 
             FreeMemory((char *) chunk);
             continue;
@@ -1102,6 +1134,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 {
                   image->restart_animation_here = True;
                   term_chunk_found=False;
+                  if(m->verbose)
+                    printf("Setting restart_animation_here (1)\n");
                 }
 
               image->columns=subframe_width;
@@ -1234,7 +1268,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     m->x_off[i]=new_pair.a;
                     m->y_off[i]=new_pair.b;
                     if(m->verbose)
-                      printf("  new x[%d]=%ld, y[%d]=%ld\n",
+                      printf("  MOVE to x[%d]=%ld, y[%d]=%ld\n",
                          i,m->x_off[i],i,m->y_off[i]);
                   }
               }
@@ -1352,7 +1386,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           {
             /* DEFI "noshow" flag only persists for one embedded object
                when object_id is zero, in MNG-0.95.  For other object_id's,
-               it remains in effect until reset by another DEFI chunk. */  
+               it remains in effect until reset by another DEFI chunk. */
 
             if (object_id == 0 && MNG_LEVEL < 96)
               m->visible[object_id]=True;
@@ -1407,6 +1441,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   {
                     image->restart_animation_here = True;
                     term_chunk_found=False;
+                  if(m->verbose)
+                    printf("Setting restart_animation_here (2)\n");
                   }
 
                 delay = image->delay;
@@ -1481,7 +1517,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             if (MNG_LEVEL < 96)
               m->exists[0]=False;
           }
-        
+
         /* Read the PNG image */
 
         /* Seek back to the beginning of the IHDR chunk's length field */
@@ -1499,13 +1535,15 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 return((Image *) NULL);
               }
             image=image->next;
+            ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+              (unsigned int) image->filesize);
+          }
               if(term_chunk_found)
                 {
                   image->restart_animation_here = True;
                   term_chunk_found=False;
-                }
-            ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
-              (unsigned int) image->filesize);
+            if(m->verbose)
+              printf("Setting restart_animation_here (3)\n");
           }
 
           if(framing_mode == 1 || framing_mode == 3)
@@ -1516,15 +1554,13 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           else
               image->delay=0;
 
-        if (have_page && image_info->page == (char *) NULL)
-          {
+        FormatString(page_geometry,"%lux%lu%+ld%+ld",mng_width,
+          mng_height,m->x_off[object_id], m->y_off[object_id]);
             if (image->page != (char *) NULL)
               FreeMemory((char *) image->page);
           image->page=PostscriptGeometry(page_geometry);
-          }
-        if(object_id == 0)have_page=0;
-      }
 
+      }
 
 
     /*
@@ -2233,8 +2269,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     p->file=(FILE *)NULL;
                     DestroyImage(p);
                     FormatString(page_geometry,"%lux%lu%+ld%+ld",
-                      image->columns, image->rows, (int)crop_box.left,
-                      (int)crop_box.top);
+                      image->columns, image->rows, crop_box.left,
+                      crop_box.top);
                     if (image->page != (char *) NULL)
                       FreeMemory((char *) image->page);
                     image->page=PostscriptGeometry(page_geometry);
@@ -2264,7 +2300,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->matte=True;
 
                 FormatString(page_geometry,"1x1%+ld%+ld",
-                  (int)crop_box.left, (int)crop_box.top);
+                  crop_box.left, crop_box.top);
                 if (image->page != (char *) NULL)
                   FreeMemory((char *) image->page);
                 image->page=PostscriptGeometry(page_geometry);
@@ -2281,18 +2317,70 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               printf("frames coalesced.\n");
       }
       }
-
   } while (Latin1Compare(image_info->magick,"MNG") == 0);
-  if(ticks_per_second)
-     image->delay=100*final_delay/ticks_per_second;
-  else
-     image->delay=final_delay;
+
 #ifndef ALWAYS_VERBOSE
   if(image_info->verbose)
 #endif
     printf("Supposedly there are %d visible images.\n",image_found);
+
+  if(image_info->insert_backdrops && !image_found && mng_width > 0 &&
+      mng_height > 0)
+    {
+      /* insert a background layer if nothing else was found. */
+
+        char
+           background_page_geometry[MaxTextExtent];
+
+        if (image->pixels != (RunlengthPacket *) NULL)
+          {
+            /*
+              Allocate next image structure.
+            */
+            AllocateNextImage(image_info,image);
+            if (image->next == (Image *) NULL)
+              {
+                DestroyImages(image);
+                MngFreeStruct(m,&have_mng_structure);
+                return((Image *) NULL);
+              }
+            image=image->next;
+          }
+        image->columns=mng_width;
+        image->rows=mng_height;
+        FormatString(background_page_geometry,"%lux%lu%+ld%+ld",
+          mng_width, mng_height, 0, 0);
+        if (image->page != (char *) NULL)
+          FreeMemory((char *) image->page);
+        image->page=PostscriptGeometry(background_page_geometry);
+        image->packets=image->columns*image->rows;
+        image->pixels=(RunlengthPacket *)
+          AllocateMemory(image->packets*sizeof(RunlengthPacket));
+        if (image->pixels == (RunlengthPacket *) NULL)
   {
-  long image_count=0;
+            MagickWarning(ResourceLimitWarning,
+             "Memory allocation failed for background layer", (char *) NULL);
+            MngFreeStruct(m,&have_mng_structure);
+            return((Image *) NULL);
+          }
+        image->background_color = mng_background_color;
+        if(mandatory_back)
+           image->matte = False;
+        else
+           image->matte = True;
+        SetImage(image);
+        CondenseImage(image);
+        image_found++;
+#ifndef ALWAYS_VERBOSE
+        if(image_info->verbose)
+#endif
+          printf("Inserted an empty %s frame behind empty MNG.\n",
+             background_page_geometry);
+      }
+  if(ticks_per_second)
+     image->delay=100*final_delay/ticks_per_second;
+  else
+     image->delay=final_delay;
   while (image->previous != (Image *) NULL)
     {
       image_count++;
@@ -2308,7 +2396,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         MagickWarning(DelegateWarning,
          "Linked list is corrupted; next_image is NULL",image_info->filename);
     }
-  }
   if(ticks_per_second && image_found > 1 && image->next == (Image *)NULL)
     MagickWarning(DelegateWarning,
      "image->next for first image is NULL but shouldn't be.",
@@ -2373,19 +2460,19 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %
 %
 %  To do (as of version 4.2.6, 22 May 1999 -- glennrp):
-% 
+%
 %    Figure out what to do with "dispose=<restore-to-previous>"
 %    This will be complicated if we limit ourselves to generating
 %    MNG-LC files.  For now we ignore the disposal method and
 %    simply overlay the next image on it.
-% 
+%
 %    Check for identical PLTE's or PLTE/tRNS combinations and use a
 %    global MNG PLTE or PLTE/tRNS combination when appropriate.
-% 
+%
 %    Improve selection of color type (use indexed-colour or indexed-colour
 %    with tRNS when 256 or fewer colors or 256 color-alpha combinations
 %    are present).
-% 
+%
 %    Check for identical sRGB and replace with a global sRGB (and remove
 %    gAMA/cHRM if sRGB is found; check for identical gAMA/cHRM and
 %    replace with global gAMA/cHRM.
@@ -2396,7 +2483,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %
 %    Provide an option to force LC files (to ensure exact framing rate)
 %    instead of VLC (i.e., specify file type MNG-LC on the command line).
-% 
+%
 %    Provide an option to force VLC files instead of LC (i.e., specify
 %    file type MNG-VLC on the command line), even when offsets are present.
 %    This will involve expanding the embedded images with a transparent
