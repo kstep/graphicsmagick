@@ -62,6 +62,7 @@
 #include "monitor.h"
 #include "quantize.h"
 #include "static.h"
+#include "tempfile.h"
 #include "transform.h"
 #include "utility.h"
 #if defined(HasPNG)
@@ -3004,9 +3005,6 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         !memcmp(type,mng_JdAA,4) ||
         !memcmp(type,mng_IDAT,4) || !memcmp(type,mng_JDAA,4)))
       {
-        char
-          basename[MaxTextExtent];
-
         /*
            o create color_image
            o open color_blob, attached to color_image
@@ -3027,8 +3025,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Creating color_blob.");
-        TemporaryFilename(basename);
-        FormatString(color_image->filename,"%.1024sC.jpg",basename);
+        AcquireTemporaryFileName(color_image->filename);
         status=OpenBlob(color_image_info,color_image,WriteBinaryBlobMode,
             exception);
         if (status == False)
@@ -3051,12 +3048,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "    Creating alpha_blob.");
-            if (jng_alpha_compression_method == 0)
-              FormatString(alpha_image->filename,"%.1024sA.png",basename);
-            else
-              FormatString(alpha_image->filename,"%.1024sA.jpg",basename);
-            FormatString(alpha_image_info->filename,"%.1024s",
-              alpha_image->filename);
+            AcquireTemporaryFileName(alpha_image->filename);
             status=OpenBlob(alpha_image_info,alpha_image,WriteBinaryBlobMode,
                 exception);
             if (status == False)
@@ -3306,10 +3298,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   color_image_info->ping=False;   /* To do: avoid this */
   jng_image=ReadImage(color_image_info,exception);
 
-  (void) remove(color_image->filename);
-  if (logging)
-     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-         "    Removed %.1024s",color_image->filename);
+  LiberateTemporaryFile(color_image->filename);
   DestroyImage(color_image);
   DestroyImageInfo(color_image_info);
 
@@ -3347,6 +3336,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                "    Reading opacity from alpha_blob.");
    
+         FormatString(alpha_image_info->filename,"%.1024s",
+             alpha_image->filename);
+
          jng_image=ReadImage(alpha_image_info,exception);
    
          for (y=0; y < (long) image->rows; y++)
@@ -3367,10 +3359,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
            if (!SyncImagePixels(image))
              break;
          }
-         (void) remove(alpha_image->filename);
-         if (logging)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "    Removed %.1024s",alpha_image->filename);
+         LiberateTemporaryFile(alpha_image->filename);
          DestroyImage(alpha_image);
          DestroyImageInfo(alpha_image_info);
          DestroyImage(jng_image);
@@ -7262,7 +7251,6 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
     *jpeg_image_info;
 
   char
-    basename[MaxTextExtent],
     *blob;
 
   size_t
@@ -7289,7 +7277,6 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   jpeg_image=(Image *) NULL;
   jpeg_image_info=(ImageInfo *) NULL;
 
-  TemporaryFilename(basename);
   status=True;
   transparent=image_info->type==GrayscaleMatteType ||
      image_info->type==TrueColorMatteType;
@@ -7335,6 +7322,9 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
         jpeg_image_info->quality=jng_quality;
       jpeg_image_info->type=GrayscaleType;
       SetImageType(jpeg_image,GrayscaleType);
+      AcquireTemporaryFileName(jpeg_image->filename);
+      FormatString(jpeg_image_info->filename,"%.1024s",
+          jpeg_image->filename);
     }
 
   /* To do: check bit depth of PNG alpha channel */
@@ -7352,8 +7342,6 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
             *attribute;
 
           /* Encode opacity as a grayscale PNG blob */
-          FormatString(jpeg_image_info->filename,"%.1024sA.png",basename);
-          FormatString(jpeg_image->filename,"%.1024sA.png",basename);
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             &image->exception);
           if (logging)
@@ -7377,8 +7365,6 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       else
         {
           /* Encode opacity as a grayscale JPEG blob */
-          FormatString(jpeg_image_info->filename,"%.1024sA.jpg",basename);
-          FormatString(jpeg_image->filename,"%.1024sA.jpg",basename);
 
           status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
             &image->exception);
@@ -7399,10 +7385,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
 
         }
       /* Destroy JPEG image and image_info */
-      (void) remove(jpeg_image_info->filename);
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Removed %.1024s",jpeg_image_info->filename);
+      LiberateTemporaryFile(jpeg_image_info->filename);
       DestroyImage(jpeg_image);
       DestroyImageInfo(jpeg_image_info);
     }
@@ -7671,15 +7654,16 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   jpeg_image->blob=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
   GetBlobInfo(jpeg_image->blob);
 
-  FormatString(jpeg_image_info->filename,"%.1024sJ.jpg",basename);
-  FormatString(jpeg_image->filename,"%.1024sJ.jpg",basename);
+  AcquireTemporaryFileName(jpeg_image->filename);
+  FormatString(jpeg_image_info->filename,"%.1024s",jpeg_image->filename);
 
   status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
     &image->exception);
 
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "  Created jpeg_image, %lu x %lu.",jpeg_image->columns,jpeg_image->rows);
+        "  Created jpeg_image, %lu x %lu.",jpeg_image->columns,
+        jpeg_image->rows);
 
   if (jng_color_type == 8 || jng_color_type == 12)
     jpeg_image_info->type=GrayscaleType;
@@ -7710,10 +7694,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),(unsigned char *)
       blob,length));
 
-  (void) remove(jpeg_image_info->filename);
-  if (logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    Removed %.1024s",jpeg_image_info->filename);
+  LiberateTemporaryFile(jpeg_image_info->filename);
   DestroyImage(jpeg_image);
   DestroyImageInfo(jpeg_image_info);
   LiberateMemory((void **) &blob);
