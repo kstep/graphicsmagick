@@ -1,5 +1,19 @@
 2003-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/enhance.c (NormalizeImage): Only normalize the
+	opacity channel if image->matte is true. This results
+ 	in some (15%) speedup. While it can be argued that the
+	'K' in CMYK should be normalized, it can also be argued
+	that this is senseless since 'K' is not a "linear" measure
+	like C, M, & Y are, and there may not be any any value
+	to normalizing CMY at all.
+	(EqualizeImage): Only equalize the opacity channel if
+	image->matte is true.  This results in a 23% speedup.
+	(GammaImage): Minor loop optimization.
+	(LevelImage): Don't level the opacity channel.  Doing so
+	doesn't make any sense.
+	(LevelImageChannel): Put loops inside switch statement
+	rather than around it.
 	* PerlMagick/t/tiff/read.t: Added grayscale 12-bit and
 	16-bit TIFF read tests.
 

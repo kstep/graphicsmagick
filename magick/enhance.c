@@ -225,27 +225,45 @@ MagickExport unsigned int EqualizeImage(Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      histogram[ScaleQuantumToMap(p->red)].red++;
-      histogram[ScaleQuantumToMap(p->green)].green++;
-      histogram[ScaleQuantumToMap(p->blue)].blue++;
-      histogram[ScaleQuantumToMap(p->opacity)].opacity++;
-      p++;
-    }
+    if (image->matte)
+      for (x=(long) image->columns; x > 0; x--)
+        {
+          histogram[ScaleQuantumToMap(p->red)].red++;
+          histogram[ScaleQuantumToMap(p->green)].green++;
+          histogram[ScaleQuantumToMap(p->blue)].blue++;
+          histogram[ScaleQuantumToMap(p->opacity)].opacity++;
+          p++;
+        }
+    else
+      for (x=(long) image->columns; x > 0; x--)
+        {
+          histogram[ScaleQuantumToMap(p->red)].red++;
+          histogram[ScaleQuantumToMap(p->green)].green++;
+          histogram[ScaleQuantumToMap(p->blue)].blue++;
+          p++;
+        }
   }
   /*
     Integrate the histogram to get the equalization map.
   */
-  memset(&intensity,0,sizeof(DoublePixelPacket));
-  for (i=0; i <= (long) MaxMap; i++)
-  {
-    intensity.red+=histogram[i].red;
-    intensity.green+=histogram[i].green;
-    intensity.blue+=histogram[i].blue;
-    intensity.opacity+=histogram[i].opacity;
-    map[i]=intensity;
-  }
+  memset(&intensity,0,sizeof(DoublePixelPacket));  
+  if (image->matte)
+    for (i=0; i <= (long) MaxMap; i++)
+      {
+        intensity.red+=histogram[i].red;
+        intensity.green+=histogram[i].green;
+        intensity.blue+=histogram[i].blue;
+        intensity.opacity+=histogram[i].opacity;
+        map[i]=intensity;
+      }
+  else
+    for (i=0; i <= (long) MaxMap; i++)
+      {
+        intensity.red+=histogram[i].red;
+        intensity.green+=histogram[i].green;
+        intensity.blue+=histogram[i].blue;
+        map[i]=intensity;
+      }
   low=map[0];
   high=map[MaxMap];
   memset(equalize_map,0,(MaxMap+1)*sizeof(PixelPacket));
@@ -260,9 +278,10 @@ MagickExport unsigned int EqualizeImage(Image *image)
     if (high.blue != low.blue)
       equalize_map[i].blue=ScaleMapToQuantum(
         (MaxMap*(map[i].blue-low.blue))/(high.blue-low.blue));
-    if (high.opacity != low.opacity)
-      equalize_map[i].opacity=ScaleMapToQuantum(
-        (MaxMap*(map[i].opacity-low.opacity))/(high.opacity-low.opacity));
+    if (image->matte)
+      if (high.opacity != low.opacity)
+        equalize_map[i].opacity=ScaleMapToQuantum(
+         (MaxMap*(map[i].opacity-low.opacity))/(high.opacity-low.opacity));
   }
   LiberateMemory((void **) &histogram);
   LiberateMemory((void **) &map);
@@ -282,18 +301,30 @@ MagickExport unsigned int EqualizeImage(Image *image)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          if (low.red != high.red)
-            q->red=equalize_map[ScaleQuantumToMap(q->red)].red;
-          if (low.green != high.green)
-            q->green=equalize_map[ScaleQuantumToMap(q->green)].green;
-          if (low.blue != high.blue)
-            q->blue=equalize_map[ScaleQuantumToMap(q->blue)].blue;
-          if (low.opacity != high.opacity)
-            q->opacity=equalize_map[ScaleQuantumToMap(q->opacity)].opacity;
-          q++;
-        }
+        if (image->matte)
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              if (low.red != high.red)
+                q->red=equalize_map[ScaleQuantumToMap(q->red)].red;
+              if (low.green != high.green)
+                q->green=equalize_map[ScaleQuantumToMap(q->green)].green;
+              if (low.blue != high.blue)
+                q->blue=equalize_map[ScaleQuantumToMap(q->blue)].blue;
+              if (low.opacity != high.opacity)
+                q->opacity=equalize_map[ScaleQuantumToMap(q->opacity)].opacity;
+              q++;
+            }
+        else
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              if (low.red != high.red)
+                q->red=equalize_map[ScaleQuantumToMap(q->red)].red;
+              if (low.green != high.green)
+                q->green=equalize_map[ScaleQuantumToMap(q->green)].green;
+              if (low.blue != high.blue)
+                q->blue=equalize_map[ScaleQuantumToMap(q->blue)].blue;
+              q++;
+            }
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
@@ -434,7 +465,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
         {
           q->red=gamma_map[ScaleQuantumToMap(q->red)].red;
           q->green=gamma_map[ScaleQuantumToMap(q->green)].green;
@@ -586,13 +617,11 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
         {
           q->red=ScaleMapToQuantum(levels_map[ScaleQuantumToMap(q->red)]);
           q->green=ScaleMapToQuantum(levels_map[ScaleQuantumToMap(q->green)]);
           q->blue=ScaleMapToQuantum(levels_map[ScaleQuantumToMap(q->blue)]);
-          q->opacity=
-            ScaleMapToQuantum(levels_map[ScaleQuantumToMap(q->opacity)]);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -694,114 +723,129 @@ MagickExport unsigned int LevelImageChannel(Image *image,
   black=ScaleQuantumToMap(black_point);
   white=ScaleQuantumToMap(white_point);
   for (i=0; i <= MaxMap; i++)
-  {
-    if (i < black)
-      {
-        levels_map[i]=0;
-        continue;
-      }
-    if (i > white)
-      {
-        levels_map[i]=MaxMap;
-        continue;
-      }
-    levels_map[i]=MaxMap*(pow(((double) i-black)/
-      (white-black),1.0/mid_point));
-  }
+    {
+      if (i < black)
+        {
+          levels_map[i]=0;
+          continue;
+        }
+      if (i > white)
+        {
+          levels_map[i]=MaxMap;
+          continue;
+        }
+      levels_map[i]=MaxMap*(pow(((double) i-black)/
+        (white-black),1.0/mid_point));
+    }
   switch (image->storage_class)
-  {
+    {
     case DirectClass:
     default:
-    {
-      /*
-        Level DirectClass image.
-      */
-      for (y=0; y < (long) image->rows; y++)
       {
-        q=GetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          switch (channel)
+        /*
+          Level DirectClass image.
+        */
+        for (y=0; y < (long) image->rows; y++)
           {
-            case RedChannel:
-            case CyanChannel:
-            {
-              q->red=ScaleMapToQuantum(levels_map[ScaleQuantumToMap(q->red)]);
+            q=GetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
               break;
-            }
-            case GreenChannel:
-            case MagentaChannel:
-            {
-              q->green=ScaleMapToQuantum(
-                levels_map[ScaleQuantumToMap(q->green)]);
+            switch (channel)
+              {
+              case RedChannel:
+              case CyanChannel:
+                {
+                  for (x=(long) image->columns; x > 0; x--)
+                    {
+                      q->red=ScaleMapToQuantum(
+                        levels_map[ScaleQuantumToMap(q->red)]);
+                      q++;
+                    }
+                  break;
+                }
+              case GreenChannel:
+              case MagentaChannel:
+                {
+                  for (x=(long) image->columns; x > 0; x--)
+                    {
+                      q->green=ScaleMapToQuantum(
+                        levels_map[ScaleQuantumToMap(q->green)]);
+                      q++;
+                    }
+                  break;
+                }
+              case BlueChannel:
+              case YellowChannel:
+                {
+                  for (x=(long) image->columns; x > 0; x--)
+                    {
+                      q->blue=ScaleMapToQuantum(
+                        levels_map[ScaleQuantumToMap(q->blue)]);
+                      q++;
+                    }
+                  break;
+                }
+              case OpacityChannel:
+              case BlackChannel:
+                {
+                  for (x=(long) image->columns; x > 0; x--)
+                    {
+                      q->opacity=ScaleMapToQuantum(
+                        levels_map[ScaleQuantumToMap(q->opacity)]);
+                      q++;
+                    }
+                  break;
+                }
+              default:
+                break;
+              }          
+            if (!SyncImagePixels(image))
               break;
-            }
-            case BlueChannel:
-            case YellowChannel:
-            {
-              q->blue=ScaleMapToQuantum(levels_map[ScaleQuantumToMap(q->blue)]);
-              break;
-            }
-            case OpacityChannel:
-            case BlackChannel:
-            {
-              q->opacity=ScaleMapToQuantum(
-                levels_map[ScaleQuantumToMap(q->opacity)]);
-              break;
-            }
-            default:
-              break;
+            if (QuantumTick(y,image->rows))
+              if (!MagickMonitor(LevelImageText,y,image->rows,
+                &image->exception))
+                break;
           }
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-        if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(LevelImageText,y,image->rows,&image->exception))
-            break;
+        break;
       }
-      break;
-    }
     case PseudoClass:
-    {
-      /*
-        Level PseudoClass image.
-      */
-      for (i=0; i < (long) image->colors; i++)
       {
-        switch (channel)
-        {
-          case RedChannel:
-          case CyanChannel:
+        /*
+          Level PseudoClass image.
+        */
+        for (i=0; i < (long) image->colors; i++)
           {
-            image->colormap[i].red=ScaleMapToQuantum(
-              levels_map[ScaleQuantumToMap(image->colormap[i].red)]);
-            break;
+            switch (channel)
+              {
+              case RedChannel:
+              case CyanChannel:
+                {
+                  image->colormap[i].red=ScaleMapToQuantum(
+                    levels_map[ScaleQuantumToMap(image->colormap[i].red)]);
+                  break;
+                }
+              case GreenChannel:
+              case MagentaChannel:
+                {
+                  image->colormap[i].green=ScaleMapToQuantum(
+                    levels_map[ScaleQuantumToMap(image->colormap[i].green)]);
+                  break;
+                }
+              case BlueChannel:
+              case YellowChannel:
+                {
+                  image->colormap[i].blue=ScaleMapToQuantum(
+                    levels_map[ScaleQuantumToMap(image->colormap[i].blue)]);
+                  break;
+                }
+              default:
+                break;
+              }
           }
-          case GreenChannel:
-          case MagentaChannel:
-          {
-            image->colormap[i].green=ScaleMapToQuantum(
-              levels_map[ScaleQuantumToMap(image->colormap[i].green)]);
-            break;
-          }
-          case BlueChannel:
-          case YellowChannel:
-          {
-            image->colormap[i].blue=ScaleMapToQuantum(
-              levels_map[ScaleQuantumToMap(image->colormap[i].blue)]);
-            break;
-          }
-          default:
-            break;
-        }
+        SyncImage(image);
+        break;
       }
-      SyncImage(image);
-      break;
     }
-  }
   LiberateMemory((void **) &levels_map);
   return(True);
 }
@@ -1134,14 +1178,23 @@ MagickExport unsigned int NormalizeImage(Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      histogram[ScaleQuantumToMap(p->red)].red++;
-      histogram[ScaleQuantumToMap(p->green)].green++;
-      histogram[ScaleQuantumToMap(p->blue)].blue++;
-      histogram[ScaleQuantumToMap(p->opacity)].opacity++;
-      p++;
-    }
+    if (image->matte)
+      for (x=(long) image->columns; x > 0; x--)
+        {
+          histogram[ScaleQuantumToMap(p->red)].red++;
+          histogram[ScaleQuantumToMap(p->green)].green++;
+          histogram[ScaleQuantumToMap(p->blue)].blue++;
+          histogram[ScaleQuantumToMap(p->opacity)].opacity++;
+          p++;
+        }
+    else
+      for (x=(long) image->columns; x > 0; x--)
+        {
+          histogram[ScaleQuantumToMap(p->red)].red++;
+          histogram[ScaleQuantumToMap(p->green)].green++;
+          histogram[ScaleQuantumToMap(p->blue)].blue++;
+          p++;
+        }
   }
   /*
     Find the histogram boundaries by locating the 0.1 percent levels.
@@ -1252,40 +1305,43 @@ MagickExport unsigned int NormalizeImage(Image *image)
           break;
       }
     }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
-  for (low.opacity=0; low.opacity < MaxRange(MaxRGB); low.opacity++)
-  {
-    intensity.opacity+=histogram[(long) low.opacity].opacity;
-    if (intensity.opacity > threshold_intensity)
-      break;
-  }
-  memset(&intensity,0,sizeof(DoublePixelPacket));
-  for (high.opacity=MaxRange(MaxRGB); high.opacity != 0; high.opacity--)
-  {
-    intensity.opacity+=histogram[(long) high.opacity].opacity;
-    if (intensity.opacity > threshold_intensity)
-      break;
-  }
-  if (low.opacity == high.opacity)
+  if (image->matte)
     {
-      /*
-        Unreasonable contrast;  use zero threshold to determine boundaries.
-      */
-      threshold_intensity=0;
       memset(&intensity,0,sizeof(DoublePixelPacket));
       for (low.opacity=0; low.opacity < MaxRange(MaxRGB); low.opacity++)
-      {
-        intensity.opacity+=histogram[(long) low.opacity].opacity;
-        if (intensity.opacity > threshold_intensity)
-          break;
-      }
+        {
+          intensity.opacity+=histogram[(long) low.opacity].opacity;
+          if (intensity.opacity > threshold_intensity)
+            break;
+        }
       memset(&intensity,0,sizeof(DoublePixelPacket));
       for (high.opacity=MaxRange(MaxRGB); high.opacity != 0; high.opacity--)
-      {
-        intensity.opacity+=histogram[(long) high.opacity].opacity;
-        if (intensity.opacity > threshold_intensity)
-          break;
-      }
+        {
+          intensity.opacity+=histogram[(long) high.opacity].opacity;
+          if (intensity.opacity > threshold_intensity)
+            break;
+        }
+      if (low.opacity == high.opacity)
+        {
+          /*
+            Unreasonable contrast;  use zero threshold to determine boundaries.
+          */
+          threshold_intensity=0;
+          memset(&intensity,0,sizeof(DoublePixelPacket));
+          for (low.opacity=0; low.opacity < MaxRange(MaxRGB); low.opacity++)
+            {
+              intensity.opacity+=histogram[(long) low.opacity].opacity;
+              if (intensity.opacity > threshold_intensity)
+                break;
+            }
+          memset(&intensity,0,sizeof(DoublePixelPacket));
+          for (high.opacity=MaxRange(MaxRGB); high.opacity != 0; high.opacity--)
+            {
+              intensity.opacity+=histogram[(long) high.opacity].opacity;
+              if (intensity.opacity > threshold_intensity)
+                break;
+            }
+        }
     }
   LiberateMemory((void **) &histogram);
   /*
@@ -1321,15 +1377,18 @@ MagickExport unsigned int NormalizeImage(Image *image)
         if (low.blue != high.blue)
           normalize_map[i].blue=
             ScaleMapToQuantum((MaxMap*(i-low.blue))/(high.blue-low.blue));
-    if (i < (long) low.opacity)
-      normalize_map[i].opacity=0;
-    else
-      if (i > (long) high.opacity)
-        normalize_map[i].opacity=MaxMap;
-      else
-        if (low.opacity != high.opacity)
-          normalize_map[i].opacity=ScaleMapToQuantum(
-            (MaxMap*(i-low.opacity))/(high.opacity-low.opacity));
+    if (image->matte)
+      {
+        if (i < (long) low.opacity)
+          normalize_map[i].opacity=0;
+        else
+          if (i > (long) high.opacity)
+            normalize_map[i].opacity=MaxMap;
+          else
+            if (low.opacity != high.opacity)
+              normalize_map[i].opacity=ScaleMapToQuantum(
+                (MaxMap*(i-low.opacity))/(high.opacity-low.opacity));
+      }
   }
   /*
     Normalize the image.
@@ -1351,18 +1410,30 @@ MagickExport unsigned int NormalizeImage(Image *image)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          if (low.red != high.red)
-            q->red=normalize_map[ScaleQuantumToMap(q->red)].red;
-          if (low.green != high.green)
-            q->green=normalize_map[ScaleQuantumToMap(q->green)].green;
-          if (low.blue != high.blue)
-            q->blue=normalize_map[ScaleQuantumToMap(q->blue)].blue;
-          if (low.opacity != high.opacity)
-            q->opacity=normalize_map[ScaleQuantumToMap(q->opacity)].opacity;
-          q++;
-        }
+        if (image->matte)
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              if (low.red != high.red)
+                q->red=normalize_map[ScaleQuantumToMap(q->red)].red;
+              if (low.green != high.green)
+                q->green=normalize_map[ScaleQuantumToMap(q->green)].green;
+              if (low.blue != high.blue)
+                q->blue=normalize_map[ScaleQuantumToMap(q->blue)].blue;
+              if (low.opacity != high.opacity)
+                q->opacity=normalize_map[ScaleQuantumToMap(q->opacity)].opacity;
+              q++;
+            }
+        else
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              if (low.red != high.red)
+                q->red=normalize_map[ScaleQuantumToMap(q->red)].red;
+              if (low.green != high.green)
+                q->green=normalize_map[ScaleQuantumToMap(q->green)].green;
+              if (low.blue != high.blue)
+                q->blue=normalize_map[ScaleQuantumToMap(q->blue)].blue;
+              q++;
+            }
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
