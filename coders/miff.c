@@ -1820,7 +1820,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       break;
     image=GetNextImage(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
-      &image->exception))
+      &image->exception);
     if (status == False)
       break;
   } while (image_info->adjoin);
