@@ -114,7 +114,6 @@ static unsigned int RemoveTemporaryFileFromList(const char *filename)
   selected from a "safe" set of characters which are unlikely to
   be interpreted by a shell or program and cause confusion.
 */
-#if defined(P_tmpdir) || defined(HAVE_TEMPNAM)
 static void ComposeTemporaryFileName(char *name)
 {
   static const char SafeChars[]
@@ -129,7 +128,6 @@ static void ComposeTemporaryFileName(char *name)
         *c=SafeChars[((sizeof(SafeChars)-1)*rand())/RAND_MAX];
     }
 }
-#endif
 
 
 /*
