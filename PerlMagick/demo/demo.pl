@@ -44,7 +44,7 @@ $example->AddNoise("LaplacianNoise");
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Annotate');
-$example->Annotate(text=>'Magick',geometry=>'+0+20',font=>'@Generic.ttf',
+$example->Annotate(text=>'Magick',geometry=>'+0+20',font=>'Generic.ttf',
   fill=>'gold',gravity=>'North',pointsize=>14);
 push(@$images,$example);
 $example=$model->Clone();
@@ -236,7 +236,7 @@ push(@$images,$example);
 print "Montage image...\n";
 $montage=$images->Montage(filename=>'PerlMagick',geometry=>'130x194+10+5>',
   gravity=>'Center',bordercolor=>'green',borderwidth=>1,tile=>'5x1000',
-  compose=>'over',background=>'#ffffff',font=>'@Generic.ttf',pointsize=>18,
+  compose=>'over',background=>'#ffffff',font=>'Generic.ttf',pointsize=>18,
   fill=>'#600');
 $logo=Image::Magick->new();
 $logo->Read('logo:');
