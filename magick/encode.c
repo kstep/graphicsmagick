@@ -3344,21 +3344,6 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (image->units == PixelsPerCentimeterResolution)
         jpeg_info.density_unit=2;
     }
-  CondenseImage(image);
-  if (image->class == DirectClass)
-    {
-      if (image->packets >= ((3*image->columns*image->rows) >> 2))
-        image->compression=NoCompression;
-    }
-  else
-    if (image->packets >= ((image->columns*image->rows) >> 1))
-      image->compression=NoCompression;
-  if (image->compression != NoCompression)
-    for (i=0; i < MAX_COMPONENTS; i++)
-    {
-      jpeg_info.comp_info[i].h_samp_factor=1;
-      jpeg_info.comp_info[i].v_samp_factor=1;
-    }
   jpeg_set_quality(&jpeg_info,image_info->quality,True);
   jpeg_info.optimize_coding=True;
 #if (JPEG_LIB_VERSION >= 61)
@@ -11264,9 +11249,6 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
 #endif
 
-  CompressionType
-    compression;
-
   Image
     encode_image;
 
@@ -11370,11 +11352,6 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   tiff=TIFFOpen(image->filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);
-  compression=image_info->compression;
-#if defined(HasLZW)
-  if (compression == UndefinedCompression)
-    compression=LZWCompression;
-#endif
   scene=0;
   do
   {
@@ -11389,15 +11366,17 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
     if (image->depth > 8)
       TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
-    compress_tag=COMPRESSION_NONE;
-    if (compression == JPEGCompression)
-      compress_tag=COMPRESSION_JPEG;
-    if (compression == LZWCompression)
-      compress_tag=COMPRESSION_LZW;
-    if (compression == RunlengthEncodedCompression)
-      compress_tag=COMPRESSION_PACKBITS;
-    if (compression == ZipCompression)
-      compress_tag=COMPRESSION_DEFLATE;
+    switch (image->compression)
+    {
+      case FaxCompression: compress_tag=COMPRESSION_CCITTFAX3; break;
+      case Group4Compression: compress_tag=COMPRESSION_CCITTFAX4; break;
+      case JPEGCompression: compress_tag=COMPRESSION_JPEG; break;
+      case LZWCompression: compress_tag=COMPRESSION_LZW; break;
+      case RunlengthEncodedCompression:
+        compress_tag=COMPRESSION_PACKBITS; break;
+      case ZipCompression: compress_tag=COMPRESSION_DEFLATE; break;
+      default: compress_tag=COMPRESSION_NONE; break;
+    }
     if (((image_info->colorspace == UndefinedColorspace) &&
          (image->colorspace == CMYKColorspace)) ||
          (image_info->colorspace == CMYKColorspace))
@@ -11443,18 +11422,24 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             {
               if (IsMonochromeImage(image))
                 photometric=PHOTOMETRIC_MINISWHITE;
-              if (image->compression != NoCompression)
-                {
-                  compress_tag=COMPRESSION_CCITTFAX3;
-                  if (image->compression == Group4Compression)
-                    compress_tag=COMPRESSION_CCITTFAX4;
-                }
               TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
+              compress_tag=COMPRESSION_CCITTFAX4;
             }
           else
             if (IsGrayImage(image))
               photometric=PHOTOMETRIC_MINISBLACK;
         }
+    switch (image_info->compression)
+    {
+      case FaxCompression: compress_tag=COMPRESSION_CCITTFAX3; break;
+      case Group4Compression: compress_tag=COMPRESSION_CCITTFAX4; break;
+      case JPEGCompression: compress_tag=COMPRESSION_JPEG; break;
+      case LZWCompression: compress_tag=COMPRESSION_LZW; break;
+      case RunlengthEncodedCompression:
+        compress_tag=COMPRESSION_PACKBITS; break;
+      case ZipCompression: compress_tag=COMPRESSION_DEFLATE; break;
+      default: break;
+    }
     TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
     TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);

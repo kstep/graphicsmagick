@@ -937,7 +937,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"background"))
         {
           if (info)
-            (void) CloneString(&info->image_info->background_color,SvPV(sval,na));
+            (void) CloneString(&info->image_info->background_color,
+              SvPV(sval,na));
           (void) XQueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
@@ -1029,8 +1030,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                   if ((ColorspaceType) sp == CMYKColorspace)
                     TransformRGBImage(image,RGBColorspace);
             }
-          return;
         }
+      if (strEQcase(attribute,"colors"))
+        return;
       if (strEQcase(attribute,"compres"))
         {
           sp=SvPOK(sval) ? LookupStr(CompressionTypes,SvPV(sval,na)) :
