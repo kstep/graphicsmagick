@@ -407,7 +407,15 @@ namespace Magick
 
     // Quantize image (reduce number of colors)
     void            quantize ( const bool measureError_ = false );
-    
+
+    // Execute a named process module using an argc/argv syntax similar to
+    // that accepted by a C 'main' routine. An exception is thrown if the
+    // requested process module doesn't exist, fails to load, or fails during
+    // execution.
+    void Magick::Image::process( std::string name_,
+                                 const int argc,
+                                 char **argv );
+
     // Raise image (lighten or darken the edges of an image to give a
     // 3-D raised or lowered effect)
     void            raise ( const Geometry &geometry_ = raiseGeometryDefault,
@@ -613,6 +621,11 @@ namespace Magick
     // extension) for.
     void            animationIterations ( const unsigned int iterations_ );
     unsigned int    animationIterations ( void ) const;
+
+    // Access/Update a named image attribute
+    void            attribute ( const std::string name_,
+                                const std::string value_ );
+    std::string     attribute ( const std::string name_ );
     
     // Image background color
     void            backgroundColor ( const Color &color_ );

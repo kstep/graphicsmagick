@@ -1160,6 +1160,21 @@ void Magick::Image::ping ( const Blob& blob_ )
   throwException( exceptionInfo );
 }
 
+// Execute a named process module using an argc/argv syntax similar to
+// that accepted by a C 'main' routine. An exception is thrown if the
+// requested process module doesn't exist, fails to load, or fails during
+// execution.
+void Magick::Image::process( std::string name_, const int argc, char **argv )
+{
+  modifyImage();
+
+  unsigned int status = 
+    ExecuteModuleProcess( name_.c_str(), &image(), argc, argv );
+
+  if (status == false)
+    throwException( image()->exception );
+}
+
 // Quantize colors in image using current quantization settings
 // Set measureError_ to true in order to measure quantization error
 void Magick::Image::quantize ( const bool measureError_  )
@@ -1790,6 +1805,23 @@ unsigned int Magick::Image::animationIterations ( void ) const
   return constImage()->iterations;
 }
 
+// Access/Update a named image attribute
+void Magick::Image::attribute ( const std::string name_,
+                                const std::string value_ )
+{
+  SetImageAttribute( image(), name_.c_str(), value_.c_str() );
+}
+std::string Magick::Image::attribute ( const std::string name_ )
+{
+  const ImageAttribute * image_attribute =
+    GetImageAttribute( constImage(), name_.c_str() );
+
+  if ( image_attribute )
+    return std::string( image_attribute->value );
+
+  return std::string(); // Intentionally no exception
+}
+
 // Background color
 void Magick::Image::backgroundColor ( const Color &color_ )
 {
@@ -2160,11 +2192,11 @@ void Magick::Image::comment ( const std::string &comment_ )
 }
 std::string Magick::Image::comment ( void ) const
 {
-  const ImageAttribute * attribute =
+  const ImageAttribute * image_attribute =
     GetImageAttribute( constImage(), "Comment" );
 
-  if ( attribute )
-    return std::string( attribute->value );
+  if ( image_attribute )
+    return std::string( image_attribute->value );
 
   return std::string(); // Intentionally no exception
 }

@@ -1,3 +1,9 @@
+2003-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (process): New method to execute process modules.
+	* lib/Image.cpp (attribute): New method to get and set named image
+	attributes.
+
 2003-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Color.cpp: Ensure that all non-default constructors set

@@ -915,6 +915,21 @@ valid after calling ping.</font></td>
       <td><font size="-1">const Blob &amp;blob_</font></td>
     </tr>
     <tr>
+      <td style="text-align: center; vertical-align: middle;"><small><a
+ name="process"></a>process<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>std::string name_,
+const int argc_, char **argv_<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>Execute the named
+process module, passing any arguments via an argument vector, with
+argc_ specifying the number of arguments in the vector, and argv_
+passing the address of an array of null-terminated C strings which
+constitute the argument vector. An exception is thrown if the requested
+process module does not exist, fails to load, or fails during execution.</small><br>
+      </td>
+    </tr>
+    <tr>
       <td>
       <center><a name="quantize"></a> <font size="-1">quantize</font></center>
       </td>
@@ -1369,7 +1384,7 @@ obtain them are shown in the following table: <br>
   <caption>Image Attributes</caption> <tbody>
     <tr>
       <td>
-      <center><b>Attribute</b></center>
+      <center><b>Function</b></center>
       </td>
       <td>
       <center><b>Type</b></center>
@@ -1426,6 +1441,25 @@ sequence&nbsp; of GIF  images  within Netscape.</font></td>
       <td><font size="-1">unsigned int iterations_</font></td>
       <td><font size="-1">Number of iterations to loop an animation
 (e.g. Netscape   loop extension) for.</font></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: middle; text-align: center;"><small><a
+ name="attribute"></a>attribute<br>
+      </small></td>
+      <td style="vertical-align: middle;"><small>string<br>
+      </small></td>
+      <td style="vertical-align: top;" valign="top"><small>const
+std::string name_<br>
+      </small></td>
+      <td style="vertical-align: top;" valign="top"><small>const
+std::string name_, const std::string value_</small></td>
+      <td style="vertical-align: middle;"><small>An arbitrary named
+image attribute. Any number of named attributes may be attached to the
+image. For example, the image comment is a named image attribute with
+the name "comment". EXIF tags are attached to the image as named
+attributes. Use the syntax "[EXIF:&lt;tag&gt;]" to request an EXIF tag
+similar to "[EXIF:DateTime]".</small><br>
+      </td>
     </tr>
     <tr>
       <td>
@@ -1531,15 +1565,15 @@ ChannelType channel_<br>
 channel_, const unsigned int depth_<br>
       </small></td>
       <td style="vertical-align: middle;"><small>Channel modulus depth.
-The channel modulus depth represents the minimum number of bits
-required to support the channel without loss. Setting the channel's
-modulus depth modifies the channel (i.e. discards resolution) if the
-requested modulus depth is less than the current modulus depth,
-otherwise the channel is not altered. There is no attribute associated
-with the modulus depth so the current modulus depth is obtained by
-inspecting the pixels. As a result, the depth returned may be less than
-the most recently set channel depth. Subsequent image processing may
-result in increasing the channel depth.<br>
+The channel modulus depth represents the minimum number of bits required
+to support the channel without loss. Setting the channel's modulus
+depth modifies the channel (i.e. discards resolution) if the requested
+modulus depth is less than the current modulus depth, otherwise the
+channel is not altered. There is no attribute associated with the
+modulus depth so the current modulus depth is obtained by inspecting
+the pixels. As a result, the depth returned may be less than the most
+recently set channel depth. Subsequent image processing may result in
+increasing the channel depth.<br>
       </small></td>
     </tr>
     <tr>
@@ -2484,9 +2518,9 @@ class provides the more general form of the interface.
 <p>Obtain existing image pixels via <i>getPixels()</i>.   Create a new
 pixel region using <i>setPixels().</i></p>
 <p>In order to ensure that only the current generation of the image is
-modified, the Image's <a href="#modifyImage">modifyImage()</a>
-method should be invoked to reduce the reference count on the underlying
-image to one. If this is not done, then it is possible for a previous
+modified, the Image's <a href="#modifyImage">modifyImage()</a> method
+should be invoked to reduce the reference count on the underlying image
+to one. If this is not done, then it is possible for a previous
 generation of the image to be modified due to the use of reference
 counting when copying or constructing an Image.<br>
 </p>

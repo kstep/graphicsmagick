@@ -554,6 +554,7 @@ namespace Magick
   using MagickLib::EdgeImage;
   using MagickLib::EmbossImage;
   using MagickLib::EnhanceImage;
+  using MagickLib::ExecuteModuleProcess;
   using MagickLib::EqualizeImage;
   using MagickLib::ExceptionInfo;
   using MagickLib::ExceptionType;
@@ -575,7 +576,6 @@ namespace Magick
   using MagickLib::GetDrawInfo;
   using MagickLib::GetExceptionInfo;
   using MagickLib::GetGeometry;
-  using MagickLib::GetImageAttribute;
   using MagickLib::GetImageAttribute;
   using MagickLib::GetImageBoundingBox;
   using MagickLib::GetImageChannelDepth;
