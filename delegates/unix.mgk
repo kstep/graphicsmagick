@@ -111,13 +111,13 @@ eps<=>ps
 	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
-	GET %m:%i > %o 2>&1
+	wget --quiet --output-document=%o %m:%i
 
 fig=>
 	fig2dev -L ps %i %o
 
 ftp=>
-	GET %m:%i > %o 2>&1
+	wget --quiet --output-document=%o %m:%i
 
 # Gnuplot format (rendered as Postscript)
 # Add additional gnuplot commands to the input file to adjust output.
@@ -146,7 +146,7 @@ html=>
 	html2ps -o %o %i
 
 http=>
-	GET %m:%i > %o 2>&1
+	wget --quiet --output-document=%o %m:%i
 
 man=>
 	groff -man -Tps %i > %o
