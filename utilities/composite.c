@@ -298,47 +298,48 @@ static void CompositeUsage(void)
   static const char
     *options[]=
     {
-      "-cache threshold    number of megabytes available to the pixel cache",
-      "-colors value       preferred number of colors in the image",
-      "-colorspace type    alternate image colorspace",
-      "-comment string     annotate image with comment",
-      "-compose operator   composite operator",
-      "-compress type      type of image compression",
-      "-debug              display copious debugging information",
-      "-density geometry   vertical and horizontal density of the image",
-      "-depth value        depth of the image",
-      "-displace geometry  shift image pixels as defined by a displacement map",
-      "-display server     obtain image or font from this X server",
-      "-dispose method     GIF disposal method",
-      "-dissolve value     dissolve the two images a given percent",
-      "-dither             apply Floyd/Steinberg error diffusion to image",
-      "-filter type        use this filter when resizing an image",
-      "-font name          font for rendering text",
-      "-geometry geometry  location of the composite image",
-      "-gravity type       which direction to gravitate towards",
-      "-help               print program options",
-      "-interlace type     None, Line, Plane, or Partition",
-      "-label name         ssign a label to an image",
-      "-matte              store matte channel if the image has one",
-      "-monochrome         transform image to black and white",
-      "-negate             replace every pixel with its complementary color ",
-      "-page geometry      size and location of an image canvas",
-      "-profile filename   add ICM or IPTC information profile to image",
-      "-quality value      JPEG/MIFF/PNG compression level",
-      "-resize geometry    resize the image",
-      "-rotate degrees     apply Paeth rotation to the image",
-      "-scene value        image scene number",
-      "-sharpen geometry   sharpen the image",
-      "-size geometry      width and height of image",
-      "-stegano offset     hide watermark within an image",
-      "-stereo             combine two image to create a stereo anaglyph",
-      "-tile               repeat composite operation across image",
-      "-treedepth value    depth of the color tree",
-      "-type type          image type",
-      "-units type         PixelsPerInch, PixelsPerCentimeter, or Undefined",
-      "-unsharp geometry   sharpen the image",
-      "-verbose            print detailed information about the image",
-      "-watermark geometry percent brightness and saturation of a watermark",
+      "-cache threshold     number of megabytes available to the pixel cache",
+      "-colors value        preferred number of colors in the image",
+      "-colorspace type     alternate image colorspace",
+      "-comment string      annotate image with comment",
+      "-compose operator    composite operator",
+      "-compress type       type of image compression",
+      "-debug               display copious debugging information",
+      "-density geometry    vertical and horizontal density of the image",
+      "-depth value         depth of the image",
+      "-displace geometry   shift image pixels defined by a displacement map",
+      "-display server      obtain image or font from this X server",
+      "-dispose method      GIF disposal method",
+      "-dissolve value      dissolve the two images a given percent",
+      "-dither              apply Floyd/Steinberg error diffusion to image",
+      "-filter type         use this filter when resizing an image",
+      "-font name           font for rendering text",
+      "-geometry geometry   location of the composite image",
+      "-gravity type        which direction to gravitate towards",
+      "-help                print program options",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-label name          ssign a label to an image",
+      "-matte               store matte channel if the image has one",
+      "-monochrome          transform image to black and white",
+      "-negate              replace every pixel with its complementary color ",
+      "-page geometry       size and location of an image canvas",
+      "-profile filename    add ICM or IPTC information profile to image",
+      "-quality value       JPEG/MIFF/PNG compression level",
+      "-resize geometry     resize the image",
+      "-rotate degrees      apply Paeth rotation to the image",
+      "-scene value         image scene number",
+      "-sharpen geometry    sharpen the image",
+      "-size geometry       width and height of image",
+      "-stegano offset      hide watermark within an image",
+      "-stereo              combine two image to create a stereo anaglyph",
+      "-tile                repeat composite operation across image",
+      "-treedepth value     depth of the color tree",
+      "-type type           image type",
+      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
+      "-unsharp geometry    sharpen the image",
+      "-verbose             print detailed information about the image",
+      "-watermark geometry  percent brightness and saturation of a watermark",
+			"-write filename      write images to this file",
       (char *) NULL
     };
 
@@ -677,46 +678,6 @@ unsigned int CompositeUtility(int argc,char **argv)
               }
             break;
           }
-        if (LocaleCompare("copy",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                Image
-                  *clone_image;
-
-                ImageInfo
-                  *clone_info;
-
-                i++;
-                if (i == argc)
-                  MagickError(OptionError,"Missing output filename",option);
-                if (image == (Image *) NULL)
-                  MagickError(OptionError,"Missing source image",(char *) NULL);
-                clone_info=CloneImageInfo(image_info);
-                clone_image=CloneImage(image,0,0,True,&image->exception);
-                if (clone_image == (Image *) NULL)
-                  MagickError(OptionError,"Missing an image file name",
-                    (char *) NULL);
-                status&=MogrifyImages(image_info,i-j,argv+j,&clone_image);
-                (void) CatchImageException(clone_image);
-                status&=CompositeImageList(clone_info,&clone_image,
-                  composite_image,mask_image,&option_info,argv[i],&exception);
-                if (composite_image != (Image *) NULL)
-                  {
-                    DestroyImages(composite_image);
-                    composite_image=(Image *) NULL;
-                  }
-                if (mask_image != (Image *) NULL)
-                  {
-                    DestroyImages(mask_image);
-                    mask_image=(Image *) NULL;
-                  }
-                DestroyImages(clone_image);
-                DestroyImageInfo(clone_info);
-                j=i+1;
-              }
-            break;
-          }
         MagickError(OptionError,"Unrecognized option",option);
         break;
       }
@@ -1051,33 +1012,6 @@ unsigned int CompositeUtility(int argc,char **argv)
               MagickError(OptionError,"Missing degrees",option);
             break;
           }
-        if (LocaleCompare("replace",option+1) == 0)
-          {
-            i++;
-            if (*option == '-')
-              {
-                if (i == argc)
-                  MagickError(OptionError,"Missing output filename",option);
-                if (image == (Image *) NULL)
-                  MagickError(OptionError,"Missing source image",(char *) NULL);
-                status&=MogrifyImages(image_info,i-j,argv+j,&image);
-                (void) CatchImageException(image);
-                status&=CompositeImageList(image_info,&image,composite_image,
-                  mask_image,&option_info,argv[i],&exception);
-                if (composite_image != (Image *) NULL)
-                  {
-                    DestroyImages(composite_image);
-                    composite_image=(Image *) NULL;
-                  }
-                if (mask_image != (Image *) NULL)
-                  {
-                    DestroyImages(mask_image);
-                    mask_image=(Image *) NULL;
-                  }
-                j=i+1;
-              }
-            break;
-          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -1254,6 +1188,13 @@ unsigned int CompositeUtility(int argc,char **argv)
                 (void) CloneString(&option_info.watermark_geometry,argv[i]);
                 option_info.compose=ModulateCompositeOp;
               }
+            break;
+          }
+        if (LocaleCompare("write",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              MagickError(OptionError,"Missing filename",option);
             break;
           }
         MagickError(OptionError,"Unrecognized option",option);
