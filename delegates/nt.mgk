@@ -1,4 +1,4 @@
-# ImageMagick delegates for Unix.  The format is as follows.  Each
+# ImageMagick delegates for Windows NT.  The format is as follows.  Each
 # delegate begins with a tag and/or format separated by a operator tag
 # (<=, <=>, =>).  This line must be followed by one or more commands
 # preceded with a tab (\t) character.  If a command exceeds the length of

@@ -267,7 +267,7 @@ typedef enum
 
 typedef enum
 {
-  DoRed = 0x0000,
+  DoRed = 0x0001,
   DoGreen = 0x0002,
   DoBlue = 0x0004,
   DoMatte = 0x0008

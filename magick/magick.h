@@ -19,16 +19,23 @@
 /*
   System include declarations.
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+#include <cstdio>
+#include <cstdlib>
+#include <cstdarg>
+#include <cstring>
+#else
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
+#endif
 #if defined(_VISUALC_)
 #include <direct.h>
 #else
 #include <unistd.h>
 #endif
 #include <ctype.h>
-#include <string.h>
 #include <signal.h>
 #include <locale.h>
 #include <errno.h>
@@ -125,34 +132,6 @@ extern "C" {
 #include "delegates.h"
 #include "version.h"
 #endif
-
-/*
-  Typedef declarations.
-*/
-typedef struct _MagickInfo
-{
-  char
-    *magick;
-
-  Image
-    *(*decoder)(const ImageInfo *);
-
-  unsigned int
-    (*encoder)(const ImageInfo *,Image *),
-    adjoin;
-
-  const char
-    *description;
-} MagickInfo;
-
-/*
-  Magick utilities methods.
-*/
-extern Export const MagickInfo
-  *GetMagickInfo(const char *);
-
-extern Export void
-  ListMagickInfo(FILE *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -1514,6 +1514,7 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       red=scanline;
       green=scanline+image->columns;
       blue=scanline+2*image->columns;
+      index=(unsigned char *) NULL;
       if (image->matte)
         {
           index=scanline;

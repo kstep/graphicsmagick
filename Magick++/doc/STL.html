@@ -156,6 +156,20 @@ if this is a problem.</font></td>
 
 <tr>
 <td>
+<center><a NAME="mapImages"></a><font size=-1>mapImages</font></center>
+</td>
+
+<td><font size=-1>InputIterator first_, InputIterator last_, const Image&amp;
+mapImage_, bool dither_,&nbsp; bool measureError_ = false</font></td>
+
+<td><font size=-1>Replace the colors of a sequence of images with the closest
+color from a reference image. Set <i>dither_</i> to <i>true</i> to enable
+dithering.&nbsp; Set <i>measureError_</i> to <i>true</i> in order to evaluate
+quantization error.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="montageImages"></a><font size=-1>montageImages</font></center>
 </td>
 
@@ -172,7 +186,7 @@ first image frame (<a href="Image.html#backgroundColor">backgroundColor,</a><a h
 <a href="Image.html#matteColor">matteColor</a>,
 <a href="Image.html#penColor">penColor,</a><a href="Image.html#font">font,</a>
 and <a href="Image.html#fontPointsize">fontPointsize</a>) are also used
-as options by montageImages().</font></td>
+as options by <i>montageImages().</i></font></td>
 </tr>
 
 <tr>
@@ -220,6 +234,17 @@ image%02d.miff).</font>
 format is selected which is capable of supporting fewer colors than the
 original image or quantization has been requested, the original image will
 be quantized to fewer colors. Use a copy of the original if this is a problem.</font></td>
+</tr>
+
+<tr>
+<td><a NAME="quantizeImages"></a><font size=-1>quantizeImages</font></td>
+
+<td><font size=-1>InputIterator first_, InputIterator last_, bool measureError_
+= false</font></td>
+
+<td><font size=-1>Quantize colors in images using current quantization
+settings. Set <i>measureError_</i> to <i>true</i> in order to measure quantization
+error.</font></td>
 </tr>
 </table>
 

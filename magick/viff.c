@@ -152,7 +152,6 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
   } ViffHeader;
 
   double
-    max_value,
     min_value,
     scale_factor,
     value;
@@ -402,18 +401,18 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
             case VFF_MAPTYP_DOUBLE: value=((double *) viff_colormap)[i]; break;
             default: value=viff_colormap[i]; break;
           }
-          if (i < image->colors)
+          if (i < (int) image->colors)
             {
               image->colormap[i].red=UpScale((unsigned int) value);
               image->colormap[i].green=UpScale((unsigned int) value);
               image->colormap[i].blue=UpScale((unsigned int) value);
             }
           else
-            if (i < 2*image->colors)
+            if (i < (int) 2*image->colors)
               image->colormap[i % image->colors].green=
                 UpScale((unsigned int) value);
             else
-              if (i < 3*image->colors)
+              if (i < (int) 3*image->colors)
                 image->colormap[i % image->colors].blue=
                   UpScale((unsigned int) value);
         }
@@ -465,8 +464,13 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         }
         default: break;
       }
+    min_value=0.0;
+    scale_factor=1.0;
     if (viff_header.map_scheme == VFF_MS_NONE)
       {
+        double
+          max_value;
+
         /*
           Determine scale factor.
         */

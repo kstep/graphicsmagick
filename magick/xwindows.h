@@ -1,8 +1,8 @@
 /*
   X11 Utility Methods for ImageMagick.
 */
-#ifndef _X_H
-#define _X_H
+#ifndef _XWINDOWS_H
+#define _XWINDOWS_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -586,7 +586,6 @@ extern Export XWindows
 #if !defined(PWinGravity)
 #define PRE_R4_ICCCM
 #endif
-#include "PreRvIcccm.h"
 #include "widget.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)

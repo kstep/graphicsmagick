@@ -284,6 +284,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     pages,
     photometric,
     samples_per_pixel,
+    sans,
     units,
     value;
 
@@ -700,7 +701,8 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
           }
         TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
           &sample_info);
-        image->matte=extra_samples == 1;
+        if (image->colorspace != CMYKColorspace)
+          image->matte=extra_samples == 1;
         for (y=0; y < (int) image->rows; y++)
         {
           TIFFReadScanline(tiff,(char *) scanline,y,0);
@@ -739,8 +741,10 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             ReadQuantum(green,p);
             ReadQuantum(blue,p);
             index=0;
-            if (samples_per_pixel == 4)
+            if (samples_per_pixel > 3)
               ReadQuantum(index,p);
+            for (i=4; i < samples_per_pixel; i++)
+              ReadQuantum(sans,p);
             if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
                 (index == q->index) && ((int) q->length < MaxRunlength))
               q->length++;
@@ -1300,10 +1304,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
     TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
-    if (Latin1Compare(image_info->magick,"TIF") == 0)
-      TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
-    else
-      TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
+    TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
     TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
     if (photometric == PHOTOMETRIC_RGB)

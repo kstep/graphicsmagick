@@ -204,10 +204,10 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
       Pop segment off stack.
     */
     p--;
-    x1=p->x1;
-    x2=p->x2;
-    offset=p->y2;
-    y=p->y1+offset;
+    x1=(int) p->x1;
+    x2=(int) p->x2;
+    offset=(int) p->y2;
+    y=(int) p->y1+offset;
     /*
       Recolor neighboring pixels.
     */
@@ -1503,10 +1503,10 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
       Pop segment off stack.
     */
     p--;
-    x1=p->x1;
-    x2=p->x2;
-    offset=p->y2;
-    y=p->y1+offset;
+    x1=(int) p->x1;
+    x2=(int) p->x2;
+    offset=(int) p->y2;
+    y=(int) p->y1+offset;
     /*
       Recolor neighboring pixels.
     */

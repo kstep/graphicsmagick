@@ -38,7 +38,7 @@ MAGICK_LIB	= magick/libMagick.la # libtool library name
 INCLUDES	= -I$(srcdir) $(X_CFLAGS)
 
 # Subdirectories to build
-SUBDIRS = delegates magick xtp xlib
+SUBDIRS = delegates magick xtp
 
 # Executables to build
 bin_PROGRAMS = animate combine convert display identify import mogrify montage

@@ -507,6 +507,22 @@ typedef struct _AnnotateInfo
   RectangleInfo
     bounds;
 } AnnotateInfo;
+
+typedef struct _MagickInfo
+{
+  char
+    *magick;
+
+  Image
+    *(*decoder)(const ImageInfo *);
+
+  unsigned int
+    (*encoder)(const ImageInfo *,Image *),
+    adjoin;
+
+  const char
+    *description;
+} MagickInfo;
 
 /*
   Image const declarations.
@@ -658,6 +674,9 @@ extern Export int
   ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
 
+extern Export const MagickInfo
+  *GetMagickInfo(const char *);
+
 extern Export unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),
   DisplayImages(const ImageInfo *image_info,Image *image),
@@ -754,6 +773,7 @@ extern Export void
   GetPixels(const Image *,float *,float *,float *,float *),
   LabelImage(Image *,const char *),
   LayerImage(Image *,const LayerType),
+  ListMagickInfo(FILE *),
   MatteFloodfillImage(Image *,const RunlengthPacket *,const unsigned int,
     const int x,const int y,const PaintMethod),
   MatteImage(Image *),

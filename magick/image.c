@@ -3849,6 +3849,11 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         if (count != 2)
           (*image)->y_resolution=(*image)->x_resolution;
       }
+    if (strncmp("-depth",option,4) == 0)
+      {
+        (*image)->depth=atoi(argv[++i]) <= 8 ? 8 : 16;
+        continue;
+      }
     if (strncmp("-despeckle",option,4) == 0)
       {
         Image

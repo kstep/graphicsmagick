@@ -2174,7 +2174,7 @@ namespace Magick
   template <class InputIterator>
   void quantizeImages( InputIterator first_,
 		       InputIterator last_,
-		       bool measureError_ ) {
+		       bool measureError_ = false ) {
     linkImages( first_, last_ );
 
     MagickLib::QuantizeImages( first_->options()->quantizeInfo(),

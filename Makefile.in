@@ -111,6 +111,7 @@ DELEGATES = @DELEGATES@
 DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
 DVIDecodeDelegate = @DVIDecodeDelegate@
+EXEEXT = @EXEEXT@
 EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
@@ -143,6 +144,7 @@ MVDelegate = @MVDelegate@
 MogrifyDelegate = @MogrifyDelegate@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PERL = @PERL@
 PGPDecodeDelegate = @PGPDecodeDelegate@
@@ -177,7 +179,7 @@ MAGICK_LIB = magick/libMagick.la # libtool library name
 INCLUDES = -I$(srcdir) $(X_CFLAGS)
 
 # Subdirectories to build
-SUBDIRS = delegates magick xtp xlib
+SUBDIRS = delegates magick xtp
 
 # Executables to build
 bin_PROGRAMS = animate combine convert display identify import mogrify montage
@@ -220,40 +222,43 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ./magick/config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  animate$(EXEEXT) combine$(EXEEXT) convert$(EXEEXT) \
+display$(EXEEXT) identify$(EXEEXT) import$(EXEEXT) mogrify$(EXEEXT) \
+montage$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I./magick
 LIBS = @LIBS@
-animate_OBJECTS =  animate.o
+animate_OBJECTS =  animate.$(OBJEXT)
 animate_LDADD = $(LDADD)
 animate_DEPENDENCIES =  magick/libMagick.la
 animate_LDFLAGS = 
-combine_OBJECTS =  combine.o
+combine_OBJECTS =  combine.$(OBJEXT)
 combine_LDADD = $(LDADD)
 combine_DEPENDENCIES =  magick/libMagick.la
 combine_LDFLAGS = 
-convert_OBJECTS =  convert.o
+convert_OBJECTS =  convert.$(OBJEXT)
 convert_LDADD = $(LDADD)
 convert_DEPENDENCIES =  magick/libMagick.la
 convert_LDFLAGS = 
-display_OBJECTS =  display.o
+display_OBJECTS =  display.$(OBJEXT)
 display_LDADD = $(LDADD)
 display_DEPENDENCIES =  magick/libMagick.la
 display_LDFLAGS = 
-identify_OBJECTS =  identify.o
+identify_OBJECTS =  identify.$(OBJEXT)
 identify_LDADD = $(LDADD)
 identify_DEPENDENCIES =  magick/libMagick.la
 identify_LDFLAGS = 
-import_OBJECTS =  import.o
+import_OBJECTS =  import.$(OBJEXT)
 import_LDADD = $(LDADD)
 import_DEPENDENCIES =  magick/libMagick.la
 import_LDFLAGS = 
-mogrify_OBJECTS =  mogrify.o
+mogrify_OBJECTS =  mogrify.$(OBJEXT)
 mogrify_LDADD = $(LDADD)
 mogrify_DEPENDENCIES =  magick/libMagick.la
 mogrify_LDFLAGS = 
-montage_OBJECTS =  montage.o
+montage_OBJECTS =  montage.$(OBJEXT)
 montage_LDADD = $(LDADD)
 montage_DEPENDENCIES =  magick/libMagick.la
 montage_LDFLAGS = 
@@ -282,7 +287,7 @@ OBJECTS = $(animate_OBJECTS) $(combine_OBJECTS) $(convert_OBJECTS) $(display_OBJ
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps Makefile
 
@@ -326,6 +331,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -334,6 +344,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -361,36 +372,36 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-animate: $(animate_OBJECTS) $(animate_DEPENDENCIES)
-	@rm -f animate
+animate$(EXEEXT): $(animate_OBJECTS) $(animate_DEPENDENCIES)
+	@rm -f animate$(EXEEXT)
 	$(LINK) $(animate_LDFLAGS) $(animate_OBJECTS) $(animate_LDADD) $(LIBS)
 
-combine: $(combine_OBJECTS) $(combine_DEPENDENCIES)
-	@rm -f combine
+combine$(EXEEXT): $(combine_OBJECTS) $(combine_DEPENDENCIES)
+	@rm -f combine$(EXEEXT)
 	$(LINK) $(combine_LDFLAGS) $(combine_OBJECTS) $(combine_LDADD) $(LIBS)
 
-convert: $(convert_OBJECTS) $(convert_DEPENDENCIES)
-	@rm -f convert
+convert$(EXEEXT): $(convert_OBJECTS) $(convert_DEPENDENCIES)
+	@rm -f convert$(EXEEXT)
 	$(LINK) $(convert_LDFLAGS) $(convert_OBJECTS) $(convert_LDADD) $(LIBS)
 
-display: $(display_OBJECTS) $(display_DEPENDENCIES)
-	@rm -f display
+display$(EXEEXT): $(display_OBJECTS) $(display_DEPENDENCIES)
+	@rm -f display$(EXEEXT)
 	$(LINK) $(display_LDFLAGS) $(display_OBJECTS) $(display_LDADD) $(LIBS)
 
-identify: $(identify_OBJECTS) $(identify_DEPENDENCIES)
-	@rm -f identify
+identify$(EXEEXT): $(identify_OBJECTS) $(identify_DEPENDENCIES)
+	@rm -f identify$(EXEEXT)
 	$(LINK) $(identify_LDFLAGS) $(identify_OBJECTS) $(identify_LDADD) $(LIBS)
 
-import: $(import_OBJECTS) $(import_DEPENDENCIES)
-	@rm -f import
+import$(EXEEXT): $(import_OBJECTS) $(import_DEPENDENCIES)
+	@rm -f import$(EXEEXT)
 	$(LINK) $(import_LDFLAGS) $(import_OBJECTS) $(import_LDADD) $(LIBS)
 
-mogrify: $(mogrify_OBJECTS) $(mogrify_DEPENDENCIES)
-	@rm -f mogrify
+mogrify$(EXEEXT): $(mogrify_OBJECTS) $(mogrify_DEPENDENCIES)
+	@rm -f mogrify$(EXEEXT)
 	$(LINK) $(mogrify_LDFLAGS) $(mogrify_OBJECTS) $(mogrify_LDADD) $(LIBS)
 
-montage: $(montage_OBJECTS) $(montage_DEPENDENCIES)
-	@rm -f montage
+montage$(EXEEXT): $(montage_OBJECTS) $(montage_DEPENDENCIES)
+	@rm -f montage$(EXEEXT)
 	$(LINK) $(montage_LDFLAGS) $(montage_OBJECTS) $(montage_LDADD) $(LIBS)
 
 install-man1:

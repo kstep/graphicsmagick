@@ -110,6 +110,7 @@ DELEGATES = @DELEGATES@
 DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
 DVIDecodeDelegate = @DVIDecodeDelegate@
+EXEEXT = @EXEEXT@
 EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
@@ -142,6 +143,7 @@ MVDelegate = @MVDelegate@
 MogrifyDelegate = @MogrifyDelegate@
 NM = @NM@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PERL = @PERL@
 PGPDecodeDelegate = @PGPDecodeDelegate@
@@ -187,9 +189,10 @@ EXTRA_DIST = Imakefile xtp.1
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../magick/config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  xtp$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
-xtp_OBJECTS =  xtp.o network.o regular.o
+xtp_OBJECTS =  xtp.$(OBJEXT) network.$(OBJEXT) regular.$(OBJEXT)
 xtp_LDADD = $(LDADD)
 xtp_DEPENDENCIES = 
 xtp_LDFLAGS = 
@@ -214,7 +217,7 @@ OBJECTS = $(xtp_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps xtp/Makefile
 
@@ -251,6 +254,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -259,6 +267,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -286,8 +295,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-xtp: $(xtp_OBJECTS) $(xtp_DEPENDENCIES)
-	@rm -f xtp
+xtp$(EXEEXT): $(xtp_OBJECTS) $(xtp_DEPENDENCIES)
+	@rm -f xtp$(EXEEXT)
 	$(LINK) $(xtp_LDFLAGS) $(xtp_OBJECTS) $(xtp_LDADD) $(LIBS)
 
 install-man1:

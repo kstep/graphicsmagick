@@ -30,7 +30,15 @@ AM_PROG_CC_STDC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
-#AC_PROG_RANLIB
+
+# Tests for Windows
+AC_CYGWIN
+AC_EXEEXT
+AC_OBJEXT
+AC_MINGW32
+# Declare that the library is prepared to build a DLL
+# Must also pass -no-undefined to libtool in Makefile
+AC_LIBTOOL_WIN32_DLL
 
 # Configure libtool
 AM_ENABLE_SHARED(no)
@@ -525,21 +533,6 @@ then
 
     AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIB_XT='-lXt',,)
     LIBS="$LIB_XEXT $LIB_XT $LIBS"
-else
-    dnl Check for X11 stubs library
-    AC_MSG_CHECKING(for X11 stubs library)
-    if test -f "$srcdir/xlib/X11_stubs.c"
-    then
-	CPPFLAGS="$CPPFLAGS -I$srcdirfull/xlib"
-	X11STUBSDIR="$srcdir/xlib"
-	X11STUBSLANAME="libX11_stubs.la"
-	X11STUBSLA="xlib/$X11STUBSLANAME"
-	X11STUBSLIB="-lX11_stubs"
-	AC_MSG_RESULT(yes)
-    else
-	AC_MSG_RESULT(no)
-	AC_MSG_ERROR(ImageMagick requires X11 library or X11 stubs library to build)
-    fi
 fi
 AC_SUBST(X11STUBSDIR)
 AC_SUBST(X11STUBSLANAME)
@@ -1237,7 +1230,7 @@ AC_SUBST(X_PRE_LIBS)
 AC_SUBST(X_LIBS)
 AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile magick/Magick-config xtp/Makefile xlib/Makefile PerlMagick/Makefile.PL)
+AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile magick/Magick-config xtp/Makefile PerlMagick/Makefile.PL)
 
 echo ""
 
@@ -1279,7 +1272,7 @@ then
   echo "  X_EXTRA_LIBS = $X_EXTRA_LIBS"
 else
   echo ""
-  echo "  Using X11 stubs library"
+  echo "  Not using X11."
 fi
 echo ""
 echo "Final Compilation Flags:"
