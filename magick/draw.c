@@ -877,6 +877,7 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
   path_info[n].code=EndCode;
   path_info[n].point.x=0.0;
   path_info[n].point.y=0.0;
+  ReacquireMemory((void **) &path_info,(n+1)*sizeof(PathInfo));
   if (draw_info->debug)
     PrintPathInfo(path_info);
   return(path_info);
