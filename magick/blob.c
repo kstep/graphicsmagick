@@ -56,6 +56,10 @@
 #include "magick.h"
 #include "defines.h"
 #include <signal.h>
+
+#if !defined(BlobQuantum)
+#define BlobQuantum  65535
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
