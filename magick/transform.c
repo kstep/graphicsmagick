@@ -1011,15 +1011,14 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
       /*
         Remove an ICM, IPTC, or generic profile from the image.
       */
-      if ((LocaleCompare("8bim",name) == 0) ||
-          (LocaleCompare("iptc",name) == 0) || (LocaleCompare("*",name) == 0))
+      if (GlobExpression("8bim",name) || GlobExpression("iptc",name))
         {
           if (image->iptc_profile.length != 0)
             LiberateMemory((void **) &image->iptc_profile.info);
           image->iptc_profile.length=0;
           image->iptc_profile.info=(unsigned char *) NULL;
         }
-      if ((LocaleCompare("icm",name) == 0) || (LocaleCompare("*",name) == 0))
+      if (GlobExpression("icm",name))
         {
           if (image->color_profile.length != 0)
             LiberateMemory((void **) &image->color_profile.info);
@@ -1028,8 +1027,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         }
       for (i=0; i < (long) image->generic_profiles; i++)
       {
-        if ((LocaleCompare(image->generic_profile[i].name,name) != 0) &&
-            (LocaleCompare("*",name) != 0))
+        if (!GlobExpression(image->generic_profile[i].name,name))
           continue;
         if (image->generic_profile[i].name != (char *) NULL)
           LiberateMemory((void **) &image->generic_profile[i].name);
