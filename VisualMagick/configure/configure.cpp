@@ -63,6 +63,105 @@ std::list<std::string> libs_list_shared;
 std::list<std::string> defines_list;
 std::list<std::string> dependency_list;
 
+void CConfigureApp::generate_global_dependencies(
+    ofstream &dsw, int runtime)
+{
+  switch (runtime)
+  {
+    case MULTITHREADEDSTATIC:
+    case SINGLETHREADEDSTATIC:
+    case MULTITHREADEDSTATICDLL:
+      {
+        CStringEx strDepends;
+		    for (
+			    std::list<std::string>::iterator it1a = dependency_list.begin();
+			    it1a != dependency_list.end();
+			    it1a++)
+		    {
+          strDepends = (*it1a).c_str();
+          if (strDepends.FindNoCase("LIBR_zlib",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
+
+		    for (
+			    std::list<std::string>::iterator it1b = dependency_list.begin();
+			    it1b != dependency_list.end();
+			    it1b++)
+		    {
+          strDepends = (*it1b).c_str();
+          if (strDepends.FindNoCase("LIBR_bzlib",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
+
+		    for (
+			    std::list<std::string>::iterator it1c = dependency_list.begin();
+			    it1c != dependency_list.end();
+			    it1c++)
+		    {
+          strDepends = (*it1c).c_str();
+          if (strDepends.FindNoCase("LIBR_jpeg",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
+
+		    for (
+			    std::list<std::string>::iterator it1 = dependency_list.begin();
+			    it1 != dependency_list.end();
+			    it1++)
+		    {
+          strDepends = (*it1).c_str();
+          if (strDepends.FindNoCase("LIBR_zlib",0) == 0)
+            continue;
+          if (strDepends.FindNoCase("LIBR_bzlib",0) == 0)
+            continue;
+          if (strDepends.FindNoCase("LIBR_jpeg",0) == 0)
+            continue;
+          if (strDepends.FindNoCase("LIBR_",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
+		    for (
+			    std::list<std::string>::iterator it2 = dependency_list.begin();
+			    it2 != dependency_list.end();
+			    it2++)
+		    {
+          strDepends = (*it2).c_str();
+          if (strDepends.FindNoCase("CORE_",0) == 0)
+          {
+            if (strDepends.Find("CORE_Magick",0) == 0)
+              continue;
+		        add_project_dependency(dsw, strDepends );
+          }
+		    }
+		    for (
+			    std::list<std::string>::iterator it3 = dependency_list.begin();
+			    it3 != dependency_list.end();
+			    it3++)
+		    {
+          strDepends = (*it3).c_str();
+          if (strDepends.FindNoCase("CORE_Magick",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
+		    for (
+			    std::list<std::string>::iterator it4 = dependency_list.begin();
+			    it4 != dependency_list.end();
+			    it4++)
+		    {
+          strDepends = (*it4).c_str();
+          if (strDepends.FindNoCase("IM_MOD_",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
+      }
+      break;
+    default:
+    case MULTITHREADEDDLL:
+	    add_project_dependency(dsw, "CORE_magick");
+      if (useX11Stubs)
+	      add_project_dependency(dsw, "CORE_xlib");
+		  add_project_dependency(dsw, "CORE_MagickArgs");
+		  add_project_dependency(dsw, "CORE_Magick++");
+      break;
+  }
+}
+
 void CConfigureApp::process_utility(ofstream &dsw,
   WIN32_FIND_DATA	&data, const char *filename, int runtime)
 {
@@ -219,6 +318,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 	std::list<std::string> includes_list;
 
 	includes_list.push_back("..\\..\\zlib");
+	includes_list.push_back("..\\..\\tiff\\libtiff");
 
   std::string libpath;
   libpath = "..\\..\\";
@@ -302,6 +402,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 	          add_project_dependency(dsw, "CORE_xlib");
 	        add_project_dependency(dsw, "LIBR_JPEG");
 	        add_project_dependency(dsw, "LIBR_ZLIB");
+	        add_project_dependency(dsw, "LIBR_TIFF");
         }
         if (name.compare("Magick++") == 0)
         {
@@ -590,14 +691,6 @@ void CConfigureApp::process_module(ofstream &dsw,
         {
 	        add_project_dependency(dsw, "LIBR_ZLIB");
         }
-        if (name.compare("pdf") == 0)
-        {
-	        add_project_dependency(dsw, "IM_MOD_tiff");
-        }
-        if (name.compare("ps2") == 0)
-        {
-	        add_project_dependency(dsw, "IM_MOD_tiff");
-        }
         if (name.compare("x") == 0)
         {
           if (useX11Stubs)
@@ -830,6 +923,10 @@ BOOL CConfigureApp::InitInstance()
     process_project_type(dsw,projectType,"MODULE.txt",    MODULE);
     process_project_type(dsw,projectType,"UTILITY.txt",   UTILITY);
 
+	  begin_project(dsw, "All", ".\\All\\All.dsp");
+    generate_global_dependencies(dsw, projectType);
+    end_project(dsw);
+
 		write_dsw_end(dsw);
 	}
 /*	else if (nResponse == IDCANCEL)
@@ -851,9 +948,6 @@ void CConfigureApp::write_dsw_start(ofstream &dsw)
 	dsw << endl;
 	dsw << "###############################################################################" << endl;
 	dsw << endl;
-
-	begin_project(dsw, "iptcutil", ".\\iptcutils\\iptcutil.dsp");
-	end_project(dsw);
 }
 
 void CConfigureApp::write_dsw_end(ofstream &dsw)

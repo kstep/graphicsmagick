@@ -86,6 +86,7 @@ private:
           WIN32_FIND_DATA	&data, const char *filename, int runtime);
   void process_one_folder(ofstream &dsw,
           WIN32_FIND_DATA	&data, int project_type, int projectType);
+  void generate_global_dependencies(ofstream &dsw, int runtime);
 };
 
 BOOL BrowseForFolder(HWND hOwner, char* szTitle, char* szRetval);
