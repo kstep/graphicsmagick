@@ -898,7 +898,8 @@ The events parameter specifies which events are to be logged.  It
 can be either None, All, or a comma-separated list
 consisting of one or more of the following domains: Annotate,
 Blob, Cache, Coder, Configure,
-Locale, Render, X11, or User.
+Locale, Render, Transform,
+X11, or User.
 For example, to log cache and blob events, use
 
     convert -debug "Cache,Blob" rose: rose.png
@@ -1652,6 +1653,33 @@ Choices are: \fBDelegate\fP, \fBFormat\fP, \fBMagic\fP,
 
 This option lists entries from the ImageMagick configuration files.
 
+.TP
+.B "-log \fI<string>"\fP
+
+This option specifies the format for the log printed when the \fB-debug\fP
+option is active.
+
+You can display the following components by embedding
+special format characters:
+
+     %d   domain
+     %e   event
+     %f   function
+     %l   line
+     %m   module
+     %p   process ID
+     %r   real CPU time
+     %t   wall clock time
+     %u   user CPU time
+     %%   percent sign
+     \\n   newline
+     \\r   carriage return
+
+For example:
+
+    convert -debug coders -log "%u %m:%l %e" in.gif out.png
+
+The default behavior is to print all of the components.
 .TP
 .B "-loop \fI<iterations>"\fP
 \fRadd Netscape loop extension to your GIF animation
