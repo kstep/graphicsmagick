@@ -39,24 +39,9 @@ STDMANPAGES = ImageMagick.1  composite.1 conjure.1 convert.1  identify.1 \
 X11MANPAGES = animate.1 display.1 import.1
 ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
 
-# Executables to build
-#if HasX11
-#X11PROGRAMS = animate display import
-#MANPAGES = $(ALLMANPAGES)
-#else
-#X11PROGRAMS =
-#MANPAGES = $(STDMANPAGES)
-#endif
-
-#if HasXML
-#XMLPROGRAMS = conjure
-#else
-#XMLPROGRAMS = 
-#endif
 
 MANPAGES = $(ALLMANPAGES)
 
-#bin_PROGRAMS = composite $(XMLPROGRAMS) convert identify mogrify montage $(X11PROGRAMS)
 bin_PROGRAMS = gm
 
 # Libtool libraries, dependencies, and linker flags used by most executables
@@ -71,42 +56,6 @@ endif # WITH_LTDL
 gm_LDADD           = $(COMMONLDADD)
 gm_LDFLAGS         = $(COMMONLDFLAGS)
 gm_SOURCES         = gm.c
-
-#animate_LDADD     = $(COMMONLDADD)
-#animate_LDFLAGS   = $(COMMONLDFLAGS)
-#animate_SOURCES   = animate.c
-
-#composite_LDADD     = $(COMMONLDADD)
-#composite_LDFLAGS   = $(COMMONLDFLAGS)
-#composite_SOURCES   = composite.c
-
-#conjure_LDADD     = $(COMMONLDADD) @LIB_XML@
-#conjure_LDFLAGS   = $(COMMONLDFLAGS)
-#conjure_SOURCES   = conjure.c
-
-#convert_LDADD     = $(COMMONLDADD)
-#convert_LDFLAGS   = $(COMMONLDFLAGS)
-#convert_SOURCES   = convert.c
-
-#display_LDADD     = $(COMMONLDADD)
-#display_LDFLAGS   = $(COMMONLDFLAGS)
-#display_SOURCES   = display.c
-
-#identify_LDADD    = $(COMMONLDADD)
-#identify_LDFLAGS  = $(COMMONLDFLAGS)
-#identify_SOURCES  = identify.c
-
-#import_LDADD      = $(COMMONLDADD)
-#import_LDFLAGS    = $(COMMONLDFLAGS)
-#import_SOURCES    = import.c
-
-#mogrify_LDADD     = $(COMMONLDADD)
-#mogrify_LDFLAGS   = $(COMMONLDFLAGS)
-#mogrify_SOURCES   = mogrify.c
-
-#montage_LDADD     = $(COMMONLDADD)
-#montage_LDFLAGS   = $(COMMONLDFLAGS)
-#montage_SOURCES   = montage.c
 
 # Manual pages to install
 man_MANS = $(MANPAGES)

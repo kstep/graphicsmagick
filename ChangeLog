@@ -1,4 +1,8 @@
 2002-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* utilities: Removed legacy ImageMagick utilities which
+	have been rolled up into gm.c/command.c.
+
+2002-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* PerlMagick/Magick.xs: Fixed FormatString() format
 	problems identified by the compiler.
 
