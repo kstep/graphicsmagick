@@ -367,12 +367,14 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       "    %%",
       "    %% Image is grayscale.",
       "    %%",
+      "    currentfile buffer readline pop",
+      "    token pop /bits exch def pop",
       "    /DeviceGray setcolorspace",
       "    <<",
       "      /ImageType 1",
       "      /Width columns",
       "      /Height rows",
-      "      /BitsPerComponent 1",
+      "      /BitsPerComponent bits",
       "      /Decode [0 1]",
       "      /ImageMatrix [columns 0 0 rows neg 0 rows]",
       "      compression 0 gt",
@@ -578,13 +580,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    if (compression == FaxCompression)
-      if ((image->storage_class == DirectClass) ||
-          !IsMonochromeImage(image,&image->exception))
-        SetImageType(image,BilevelType);
-    if ((compression != NoCompression) &&
-        (compression != RunlengthEncodedCompression))
-      image->storage_class=DirectClass;
     /*
       Scale image to size of Postscript page.
     */
@@ -758,25 +753,30 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         }
         LiberateMemory((void **) &labels);
       }
-    FormatString(buffer,"%lu %lu\n%u\n%d\n%d\n",image->columns,image->rows,
-      (int) (image->storage_class == PseudoClass),
-      (int) (image->colorspace == CMYKColorspace),
-      (int) (compression == NoCompression));
-    (void) WriteBlobString(image,buffer);
     number_pixels=image->columns*image->rows;
-    if (compression == FaxCompression)
+    if ((image_info->type != TrueColorType) &&
+        IsGrayImage(image,&image->exception))
       {
-        (void) WriteBlobByte(image,'0');
-        (void) WriteBlobByte(image,'\n');
-        if (LocaleCompare(CCITTParam,"0") == 0)
-          (void) HuffmanEncodeImage(image_info,image);
-        else
-          (void) Huffman2DEncodeImage(image_info,image);
-      }
-    else
-      if (image->storage_class == DirectClass)
+        FormatString(buffer,"%lu %lu\n1\n%d\n",image->columns,image->rows,
+          (int) (image->colorspace == CMYKColorspace));
+        (void) WriteBlobString(image,buffer);
+        FormatString(buffer,"%d\n",(int) (compression != FaxCompression));
+        (void) WriteBlobString(image,buffer);
+        (void) WriteBlobString(image,"0\n");
+        FormatString(buffer,"%d\n",compression == FaxCompression ? 1 : 8);
+        (void) WriteBlobString(image,buffer);
         switch (compression)
         {
+          case FaxCompression:
+          {
+            if (LocaleCompare(CCITTParam,"0") == 0)
+              {
+                (void) HuffmanEncodeImage(image_info,image);
+                break;
+              }
+            (void) Huffman2DEncodeImage(image_info,image);
+            break;
+          }
           case JPEGCompression:
           {
             char
@@ -807,7 +807,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 image);
             file=fopen(filename,ReadBinaryType);
             if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+              ThrowWriterException(FileOpenWarning,"Unable to open file",
+                image);
             for (c=fgetc(file); c != EOF; c=fgetc(file))
               (void) WriteBlobByte(image,c);
             (void) fclose(file);
@@ -823,13 +824,13 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             /*
               Allocate pixel array.
             */
-            length=(image->colorspace == CMYKColorspace ? 4 : 3)*number_pixels;
+            length=number_pixels;
             pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
             /*
-              Dump Packbit encoded pixels.
+              Dump Runlength encoded pixels.
             */
             q=pixels;
             for (y=0; y < (long) image->rows; y++)
@@ -840,26 +841,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                if (image->matte && (p->opacity == TransparentOpacity))
-                  {
-                    *q++=Downscale(MaxRGB);
-                    *q++=Downscale(MaxRGB);
-                    *q++=Downscale(MaxRGB);
-                  }
-                else
-                  if (image->colorspace != CMYKColorspace)
-                    {
-                      *q++=Downscale(p->red);
-                      *q++=Downscale(p->green);
-                      *q++=Downscale(p->blue);
-                    }
-                  else
-                    {
-                      *q++=Downscale(p->red);
-                      *q++=Downscale(p->green);
-                      *q++=Downscale(p->blue);
-                      *q++=Downscale(p->opacity);
-                    }
+                *q++=Downscale(Intensity(p));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -870,18 +852,18 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               status=LZWEncodeImage(image,length,pixels);
             else
               status=PackbitsEncodeImage(image,length,pixels);
+            LiberateMemory((void **) &pixels);
             if (!status)
               {
                 CloseBlob(image);
                 return(False);
               }
-            LiberateMemory((void **) &pixels);
             break;
           }
           case NoCompression:
           {
             /*
-              Dump uncompressed DirectColor packets.
+              Dump uncompressed PseudoColor packets.
             */
             Ascii85Initialize(image);
             for (y=0; y < (long) image->rows; y++)
@@ -892,26 +874,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                if (image->matte && (p->opacity == TransparentOpacity))
-                  {
-                    Ascii85Encode(image,Downscale(MaxRGB));
-                    Ascii85Encode(image,Downscale(MaxRGB));
-                    Ascii85Encode(image,Downscale(MaxRGB));
-                  }
-                else
-                  if (image->colorspace != CMYKColorspace)
-                    {
-                      Ascii85Encode(image,Downscale(p->red));
-                      Ascii85Encode(image,Downscale(p->green));
-                      Ascii85Encode(image,Downscale(p->blue));
-                    }
-                  else
-                    {
-                      Ascii85Encode(image,Downscale(p->red));
-                      Ascii85Encode(image,Downscale(p->green));
-                      Ascii85Encode(image,Downscale(p->blue));
-                      Ascii85Encode(image,Downscale(p->opacity));
-                    }
+                Ascii85Encode(image,Downscale(Intensity(p)));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -922,11 +885,176 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             break;
           }
         }
+      }
+    else
+      if ((image->storage_class == DirectClass) ||
+          (compression == JPEGCompression))
+        {
+          FormatString(buffer,"%lu %lu\n0\n%d\n",image->columns,image->rows,
+            (int) (image->colorspace == CMYKColorspace));
+          (void) WriteBlobString(image,buffer);
+          FormatString(buffer,"%d\n",(int) (compression == NoCompression));
+          (void) WriteBlobString(image,buffer);
+          switch (compression)
+          {
+            case JPEGCompression:
+            {
+              char
+                filename[MaxTextExtent];
+
+              FILE
+                *file;
+
+              Image
+                *jpeg_image;
+
+              int
+                c;
+
+              /*
+                Write image to temporary file in JPEG format.
+              */
+              TemporaryFilename(filename);
+              jpeg_image=CloneImage(image,0,0,True,&image->exception);
+              if (jpeg_image == (Image *) NULL)
+                ThrowWriterException(DelegateWarning,"Unable to clone image",
+                  image);
+              (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
+              status=WriteImage(image_info,jpeg_image);
+              DestroyImage(jpeg_image);
+              if (status == False)
+                ThrowWriterException(DelegateWarning,"Unable to write image",
+                  image);
+              file=fopen(filename,ReadBinaryType);
+              if (file == (FILE *) NULL)
+                ThrowWriterException(FileOpenWarning,"Unable to open file",
+                  image);
+              for (c=fgetc(file); c != EOF; c=fgetc(file))
+                (void) WriteBlobByte(image,c);
+              (void) fclose(file);
+              (void) remove(filename);
+              break;
+            }
+            case RunlengthEncodedCompression:
+            default:
+            {
+              register unsigned char
+                *q;
+
+              /*
+                Allocate pixel array.
+              */
+              length=(image->colorspace == CMYKColorspace ? 4 : 3)*
+                number_pixels;
+              pixels=(unsigned char *) AcquireMemory(length);
+              if (pixels == (unsigned char *) NULL)
+                ThrowWriterException(ResourceLimitWarning,
+                  "Memory allocation failed",image);
+              /*
+                Dump Packbit encoded pixels.
+              */
+              q=pixels;
+              for (y=0; y < (long) image->rows; y++)
+              {
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (long) image->columns; x++)
+                {
+                  if (image->matte && (p->opacity == TransparentOpacity))
+                    {
+                      *q++=Downscale(MaxRGB);
+                      *q++=Downscale(MaxRGB);
+                      *q++=Downscale(MaxRGB);
+                    }
+                  else
+                    if (image->colorspace != CMYKColorspace)
+                      {
+                        *q++=Downscale(p->red);
+                        *q++=Downscale(p->green);
+                        *q++=Downscale(p->blue);
+                      }
+                    else
+                      {
+                        *q++=Downscale(p->red);
+                        *q++=Downscale(p->green);
+                        *q++=Downscale(p->blue);
+                        *q++=Downscale(p->opacity);
+                      }
+                  p++;
+                }
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    MagickMonitor(SaveImageText,y,image->rows);
+              }
+              if (compression == LZWCompression)
+                status=LZWEncodeImage(image,length,pixels);
+              else
+                status=PackbitsEncodeImage(image,length,pixels);
+              if (!status)
+                {
+                  CloseBlob(image);
+                  return(False);
+                }
+              LiberateMemory((void **) &pixels);
+              break;
+            }
+            case NoCompression:
+            {
+              /*
+                Dump uncompressed DirectColor packets.
+              */
+              Ascii85Initialize(image);
+              for (y=0; y < (long) image->rows; y++)
+              {
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (long) image->columns; x++)
+                {
+                  if (image->matte && (p->opacity == TransparentOpacity))
+                    {
+                      Ascii85Encode(image,Downscale(MaxRGB));
+                      Ascii85Encode(image,Downscale(MaxRGB));
+                      Ascii85Encode(image,Downscale(MaxRGB));
+                    }
+                  else
+                    if (image->colorspace != CMYKColorspace)
+                      {
+                        Ascii85Encode(image,Downscale(p->red));
+                        Ascii85Encode(image,Downscale(p->green));
+                        Ascii85Encode(image,Downscale(p->blue));
+                      }
+                    else
+                      {
+                        Ascii85Encode(image,Downscale(p->red));
+                        Ascii85Encode(image,Downscale(p->green));
+                        Ascii85Encode(image,Downscale(p->blue));
+                        Ascii85Encode(image,Downscale(p->opacity));
+                      }
+                  p++;
+                }
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    MagickMonitor(SaveImageText,y,image->rows);
+              }
+              Ascii85Flush(image);
+              break;
+            }
+          }
+        }
       else
         {
           /*
             Dump number of colors and colormap.
           */
+          FormatString(buffer,"%lu %lu\n1\n%d\n",image->columns,image->rows,
+            (int) (image->colorspace == CMYKColorspace));
+          (void) WriteBlobString(image,buffer);
+          FormatString(buffer,"%d\n",(int) (compression == NoCompression));
+          (void) WriteBlobString(image,buffer);
           FormatString(buffer,"%lu\n",image->colors);
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (long) image->colors; i++)
