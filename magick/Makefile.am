@@ -82,11 +82,15 @@ include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache.h cache_view.h \
   memory.h monitor.h quantize.h timer.h utility.h version.h widget.h xwindows.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h cache.h defines.h display.h mac.h mng.h nt.h vms.h
+noinst_HEADERS = animate.h cache.h defines.h display.h mac.h mng.h modules.h\
+  nt.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c nt.c \
-  vms.c $(MAGICK_BASE_SRCS)
+EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c \
+  modules.mgk nt.c vms.c $(MAGICK_BASE_SRCS)
+
+# Architecture-independent data files
+pkgdata_DATA = modules.mgk
 
 #
 # Libtool Modules

@@ -247,12 +247,17 @@ include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache.h cache_view.h \
 
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h cache.h defines.h display.h mac.h mng.h nt.h vms.h
+noinst_HEADERS = animate.h cache.h defines.h display.h mac.h mng.h modules.h\
+  nt.h vms.h
+
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c nt.c \
-  vms.c $(MAGICK_BASE_SRCS)
+EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c \
+  modules.mgk nt.c vms.c $(MAGICK_BASE_SRCS)
 
+
+# Architecture-independent data files
+pkgdata_DATA = modules.mgk
 
 #
 # Libtool Modules
@@ -909,10 +914,12 @@ $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) \
 $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) \
 $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) \
 $(xc_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
+DATA =  $(pkgdata_DATA)
+
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
-DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
-Magick-config.in Makefile.am Makefile.in config.h.in
+DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) $(pkgdata_DATA) \
+./stamp-h.in Magick-config.in Makefile.am Makefile.in config.h.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -1313,6 +1320,24 @@ uninstall-binSCRIPTS:
 	  rm -f $(DESTDIR)$(bindir)/$$f; \
 	done
 
+install-pkgdataDATA: $(pkgdata_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
+	@list='$(pkgdata_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f; \
+	done
+
+uninstall-pkgdataDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pkgdata_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pkgdatadir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgdatadir)/$$f; \
+	done
+
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(includedir)
@@ -1528,22 +1553,25 @@ all-recursive-am: config.h
 install-exec-am: install-libLTLIBRARIES install-binSCRIPTS
 install-exec: install-exec-am
 
-install-data-am: install-pkgLTLIBRARIES install-includeHEADERS
+install-data-am: install-pkgLTLIBRARIES install-pkgdataDATA \
+		install-includeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
 uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgLTLIBRARIES \
-		uninstall-binSCRIPTS uninstall-includeHEADERS
+		uninstall-binSCRIPTS uninstall-pkgdataDATA \
+		uninstall-includeHEADERS
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(HEADERS) config.h
+all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(DATA) $(HEADERS) config.h
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(pkgdir) \
-		$(DESTDIR)$(bindir) $(DESTDIR)$(includedir)
+		$(DESTDIR)$(bindir) $(DESTDIR)$(pkgdatadir) \
+		$(DESTDIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -1598,11 +1626,11 @@ uninstall-pkgLTLIBRARIES install-pkgLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-binSCRIPTS install-binSCRIPTS \
-uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir \
-mostlyclean-depend distclean-depend clean-depend \
-maintainer-clean-depend info-am info dvi-am dvi check check-am \
-installcheck-am installcheck all-recursive-am install-exec-am \
+uninstall-pkgdataDATA install-pkgdataDATA uninstall-includeHEADERS \
+install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir mostlyclean-depend distclean-depend \
+clean-depend maintainer-clean-depend info-am info dvi-am dvi check \
+check-am installcheck-am installcheck all-recursive-am install-exec-am \
 install-exec install-data-am install-data install-am install \
 uninstall-am uninstall all-redirect all-am all install-strip \
 installdirs mostlyclean-generic distclean-generic clean-generic \

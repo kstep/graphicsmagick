@@ -141,33 +141,17 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   if (magick_info == (MagickInfo *) NULL)
     {
 #if defined(HasLTDL)
-      char
-        **module_list,
-	**p;
-
-      int
-	i;
+      /* Cache format is treated specially */
+      RegisterCacheImage();
 
       /* Initialize ltdl */
       InitializeModules();
 
+#if 0
       /* Load all modules */
-      module_list = ListModules();
-      if(module_list == (char**)NULL)
-	return (MagickInfo *)NULL;
+      LoadAllModules();
+#endif
 
-      p = module_list;
-      while(*p)
-	LoadModule(*p++);
-
-      /* Free list memory */
-      i=0;
-      while(module_list[i])
-	FreeMemory((void**)&module_list[i++]);
-      FreeMemory((void **) &module_list);
-
-      /* Cache format is treated specially */
-      RegisterCacheImage();
 #else
       Register8BIMImage();
       RegisterAVSImage();
@@ -245,6 +229,14 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
     if (Latin1Compare(p->tag,tag) == 0)
       return(p);
+#if defined(HasLTDL)
+  /* Try loading format module */
+  if(LoadModule(tag))
+    for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
+      if (Latin1Compare(p->tag,tag) == 0)
+	return(p);
+#endif
+printf( "Didn't find coder for %s\n", tag );
   return((MagickInfo *) NULL);
 }
 
@@ -276,6 +268,13 @@ Export void ListMagickInfo(FILE *file)
   register MagickInfo
     *p;
 
+#if defined(HasLTDL)
+      /* Initialize ltdl */
+      InitializeModules();
+
+      /* Load all modules */
+      LoadAllModules();
+#endif
   if (file == (FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"\nHere is a list of image formats recognized by "

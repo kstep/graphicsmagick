@@ -63,6 +63,8 @@
 */
 static ModuleInfo
   *module_info = (ModuleInfo *) NULL;
+static ModuleAliases
+  *module_aliases = (ModuleAliases *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -203,6 +205,18 @@ Export void InitializeModules(void)
   static int
     initialized = 0;
 
+  char
+    aliases[MaxTextExtent],
+    alias[MaxTextExtent],
+    module[MaxTextExtent];
+
+  ModuleAliases
+    *entry,
+    *p;
+
+  FILE*
+    file;
+
   if (!initialized)
     {
       /* Initialize ltdl */
@@ -215,7 +229,89 @@ Export void InitializeModules(void)
       
       /* Set ltdl module search path */
       lt_dlsetsearchpath( CoderModuleDirectory );
+
+      /* Load module aliases */
+      strcpy(aliases, DelegatePath);
+      strcat(aliases, DirectorySeparator);
+      strcat(aliases, "modules.mgk");
+
+      file = fopen(aliases, "r");
+      if(file != (FILE*) NULL)
+	{
+	  p=(ModuleAliases*) NULL;
+	  while(!feof(file))
+	    {
+	      if(fscanf(file, "%s %s", alias, module) == 2)
+		{
+		  entry = (ModuleAliases*)AllocateMemory(sizeof(ModuleAliases));
+		  if(entry != (ModuleAliases*) NULL)
+		    {
+		      entry->alias = AllocateString(alias);
+		      entry->module = AllocateString(module);
+		      entry->next = (ModuleAliases*) NULL;
+
+		      if (module_aliases != (ModuleAliases*) NULL)
+			{
+			  p->next = entry;
+			  p=p->next;
+			}
+		      else
+			{
+			  module_aliases = entry;
+			  p=module_aliases;
+			}
+		    }
+		}
+	    }
+	  fclose(file);
+	}
+      /*module_aliases*/
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o a d A l l M o d u l e s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LoadAllModules loads all available modules.
+%
+%  The format of the LoadAllModules method is:
+%
+%      void LoadAllModules()
+%
+*/
+Export int LoadAllModules(void)
+{
+  char
+    **module_list,
+    **p;
+
+  int
+    i;
+
+  /* Load all modules */
+  module_list = ListModules();
+  if(module_list == (char**)NULL)
+    return False;
+
+  p = module_list;
+  while(*p)
+    LoadModule(*p++);
+
+  /* Free list memory */
+  i=0;
+  while(module_list[i])
+    FreeMemory((void**)&module_list[i++]);
+  FreeMemory((void **) &module_list);
+
+  return True;
 }
 
 /*
@@ -312,6 +408,7 @@ Export int LoadModule(const char* module)
     *dest,
     func_name[MaxTextExtent],
     module_file[MaxTextExtent],
+    module_name[MaxTextExtent],
     *source;
 
   ModuleHandle
@@ -320,13 +417,28 @@ Export int LoadModule(const char* module)
   ModuleInfo
     *module_info;
 
+  ModuleAliases
+    *p;
+
   void (*register_func)(void);
+
+  /* Assign module name from alias */
+  strcpy(module_name,module);
+  if(module_aliases != (ModuleAliases*)NULL)
+    {
+      for(p=module_aliases; p->next != (ModuleAliases*)NULL; p=p->next)
+	if(Latin1Compare(p->alias,module) == 0)
+	  {
+	    strcpy(module_name,p->module);
+	    break;
+	  }
+    }
 
   /*
     Build module file name from module name
   */
   dest=module_file;
-  source=(char*)module;
+  source=module_name;
   while(*source)
     {
       *dest = tolower(*source);
@@ -349,7 +461,7 @@ Export int LoadModule(const char* module)
   /*
     Add module to module list
   */
-  module_info=SetModuleInfo(module);
+  module_info=SetModuleInfo(module_name);
   if (module_info==(ModuleInfo*)NULL)
     {
       lt_dlclose(handle);
@@ -366,10 +478,10 @@ Export int LoadModule(const char* module)
   strcpy(func_name, "Register");
 
   /* Hack due to 8BIM vs bim.c naming difference */
-  if(!strcmp("BIM", module))
+  if(!strcmp("BIM", module_name))
     strcat(func_name,"8");
 
-  strcat(func_name,module);
+  strcat(func_name,module_name);
   strcat(func_name, "Image");
 
   /*

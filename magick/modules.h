@@ -13,6 +13,7 @@ extern "C" {
   typedef lt_dlhandle ModuleHandle;
 #endif /* HasLTDL */
 
+  /* Information on loaded modules */
 typedef struct _ModuleInfo
 {
   char
@@ -29,6 +30,17 @@ typedef struct _ModuleInfo
     *next;
 } ModuleInfo;
 
+  /* Magick to module translation */
+typedef struct _ModuleAliases
+{
+  char
+    *alias,
+    *module;
+
+  struct _ModuleAliases
+    *next;
+} ModuleAliases;
+
   /*
     Modules declarations.
   */
@@ -38,6 +50,7 @@ extern Export void
   InitializeModules(void);
 
 extern Export int
+  LoadAllModules(void),
   LoadModule(const char* module),
   UnregisterModuleInfo(const char *tag),
   UnloadModule(const char* module);

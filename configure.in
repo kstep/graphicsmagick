@@ -632,15 +632,16 @@ AC_SUBST(LIB_BZLIB)
 #
 # Find the X11 include and library directories.
 #
-AC_PATH_X
-AC_PATH_XTRA
-
 LIB_X11=''
 LIB_XEXT=''
 LIB_XT=''
 if test "$with_x" != 'no'
 then
     with_x='yes'dnl Ensure value is set
+
+    AC_PATH_X
+    AC_PATH_XTRA
+
     LDFLAGS="$LDFLAGS $X_LIBS"
     LIB_X11="-lX11 $X_EXTRA_LIBS"
     LIBS="$LIB_X11 $LIBS"
@@ -957,9 +958,9 @@ AC_SUBST(LIB_JBIG)
 # Configure Delegates
 #
 
-# Define directory where ImageMagick/delegates.h lives. (default /usr/local/share)
+# Define directory where ImageMagick/delegates.mgk lives. (default /usr/local/share)
 eval DelegatePath="${DATA_DIR}/ImageMagick/"
-AC_DEFINE_UNQUOTED(DelegatePath,"$DelegatePath",Define directory where ImageMagick/delegates.h lives.)
+AC_DEFINE_UNQUOTED(DelegatePath,"$DelegatePath",Define directory where ImageMagick/delegates.mgk lives.)
 
 # Locate delegates
 AC_PATH_PROG(BZIPDelegate, bzip2, bzip2)
