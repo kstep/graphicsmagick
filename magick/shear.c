@@ -101,6 +101,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
   int
     y;
 
+  RectangleInfo
+    page_info;
+
   register int
     x;
 
@@ -112,6 +115,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
     Initialize rotated image attributes.
   */
   assert(image != (Image *) NULL);
+  page_info=image->page_info;
   rotations%=4;
   if ((rotations == 1) || (rotations == 3))
     rotate_image=CloneImage(image,image->rows,image->columns,False);
@@ -170,6 +174,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
+      Swap(page_info.width,page_info.height);
+      Swap(page_info.x,page_info.y);
+      page_info.x=page_info.width-rotate_image->columns-page_info.x;
       break;
     }
     case 2:
@@ -194,6 +201,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
+      page_info.x=page_info.width-rotate_image->columns-page_info.x;
+      page_info.y=page_info.height-rotate_image->rows-page_info.y;
       break;
     }
     case 3:
@@ -218,9 +227,13 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
+      Swap(page_info.width,page_info.height);
+      Swap(page_info.x,page_info.y);
+      page_info.y=page_info.height-rotate_image->rows-page_info.y;
       break;
     }
   }
+  rotate_image->page_info=page_info;
   return(rotate_image);
 }
 
