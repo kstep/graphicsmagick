@@ -1,3 +1,6 @@
+2002-06-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Identify PICT files via magic.mgk.
+
 2002-06-18  Cristy  <cristy@mystic.es.dupont.com>
   * Added PerlMagick threading support (patch by Doug MacEachern).
 
