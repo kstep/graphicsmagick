@@ -860,6 +860,7 @@ MagickExport unsigned int ClipImage(Image *image)
   DestroyImageInfo(image_info);
   if (clip_mask == (Image *) NULL)
     return(False);
+  (void) NegateImage(clip_mask,False);
   (void) SetImageClipMask(image,clip_mask);
   DestroyImage(clip_mask);
   return(True);

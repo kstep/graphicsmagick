@@ -552,8 +552,14 @@ static unsigned int ClipCacheNexus(Image *image,const unsigned long nexus)
     {
       for (x=0; x < (long) nexus_info->columns; x++)
       {
+        if (q->red == TransparentOpacity)
+          r->red=p->red;
+        if (q->green == TransparentOpacity)
+          r->green=p->green;
+        if (q->blue == TransparentOpacity)
+          r->blue=p->blue;
         if (q->opacity == TransparentOpacity)
-          *r=(*p);
+          r->opacity=p->opacity;
         p++;
         q++;
         r++;

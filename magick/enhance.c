@@ -696,8 +696,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
 %
 %  A description of each parameter follows:
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
 %
 */

@@ -1243,6 +1243,7 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info,
         &image->exception);
       if (clip_mask == (Image *) NULL)
         return(False);
+      (void) NegateImage(clip_mask,False);
       (void) SetImageClipMask(image,clip_mask);
       DestroyImage(clip_mask);
     }
