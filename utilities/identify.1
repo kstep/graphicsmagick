@@ -1,5 +1,4 @@
-.TH identify 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
-<title>Identify</title>
+.TH identify 1 "Date: 2002/02/15 01:00:00" "ImageMagick"
 .SH NAME
 identify - describe an image or image sequence.
 .SH SYNOPSIS
@@ -17,7 +16,8 @@ format of the image (JPEG, PNM, etc.), and finally the number of seconds
 it took to read and process the image. An example line output
 from \fBidentify\fP follows:
 
-    images/aquarium.miff 640x480 PseudoClass 256c 308135b MIFF 1s
+    images/aquarium.miff 640x480 PseudoClass 256c
+           308135b MIFF 1s
 
 If -verbose is set, expect additional output including any image
 comment:
@@ -26,7 +26,8 @@ comment:
     Image: images/aquarium.miff
     class: PseudoClass
     colors: 256
-    signature: eb5dca81dd93ae7e6ffae99a527eb5dca81dd93ae7e6ffae99a5275a53e
+    signature: eb5dca81dd93ae7e6ffae99a527eb5dca81dd
+               93ae7e6ffae99a5275a53e
     matte: False
     geometry: 640x480
        depth: 8
@@ -40,76 +41,25 @@ Options are processed in command line order. Any option you specify on
 the command line remains in effect for the set of images immediately
 following, until the set is terminated by the appearance of any option
 or \fB-noop\fP.
+
+For a more detailed description of each option, see
+\fIimagemagick(1)\fP.
+
 .TP
 .B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache
-
-Image pixels are stored in memory until 80 megabytes of memory have been
-consumed. Subsequent pixel operations are cached on disk. Operations to
-memory are significantly faster but if your computer does not have a sufficient
-amount of free memory you may want to adjust this threshold value.
-
 .TP
 .B "-debug"
 \fRenable debug printout
 .TP
 .B "-density \fI<width>x<height>"\fP
 \fRvertical and horizontal resolution in pixels of the image
-
-This option specifies an image density when decoding a \fIPostScript\fP
-or Portable Document page. The default is 72 dots per inch in the horizontal
-and vertical direction. This option is used in concert with \fB-page\fP.
-
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
-
-This is the number of bits in a color sample within a pixel. The only
-acceptable values are 8 or 16.  Use this option to specify the depth of
-raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
-the depth of any image after it has been read.
-
 .TP
 .B "-format \fI<string>"\fP
 \fRoutput formatted image characteristics
-
-Use this option to print information about the image in a format of your
-choosing.  You can include the image filename, type, width, height,
-or other image attributes by embedding special format characters:
-
-     %b   file size
-     %c   comment
-     %d   directory
-     %e   filename extention
-     %f   filename
-     %h   height
-     %i   input filename
-     %k   number of unique colors
-     %l   label
-     %m   magick
-     %n   number of scenes
-     %o   output filename
-     %p   page number
-     %q   quantum depth
-     %s   scene number
-     %t   top of filename
-     %u   unique temporary filename
-     %w   width
-     %x   x resolution
-     %y   y resolution
-     %#   signature
-     \\n   newline
-     \\r   carriage return
-
-For example,
-
-     -format "%m:%f %wx%h"
-
-displays \fBMIFF:bird.miff 512x480\fP for an image
-titled \fBbird.miff\fP and whose width is 512 and height is 480.
-
-If the first character of \fIstring\fP is \fB@\fP, the format
-is read from a file titled by the remaining characters in the string.
 .TP
 .B "-help"
 \fRprint usage instructions
@@ -119,41 +69,9 @@ is read from a file titled by the remaining characters in the string.
 .TP
 .B "-size \fI<width>x<height>{+offset}"\fP
 \fRwidth and height of the image
-
-Use this option to specify the width and height of raw images whose dimensions
-are unknown such as \fBGRAY\fP,
-\fBRGB\fP, or \fBCMYK\fP. In addition
-to width and height, use
-\fB-size\fP with an offset to skip any header information in
-the image or tell the number of colors in a \fBMAP\fP image
-file, (e.g. -size 640x512+256).
-
-
-For Photo CD images, choose from these sizes:
-
-     192x128
-     384x256
-     768x512
-     1536x1024
-     3072x2048
-
-Finally, use this option to choose a particular resolution layer of a JBIG
-or JPEG image (e.g. -size 1024x768).
-
 .TP
 .B "-verbose"
 \fRprint detailed information about the image
-
-This information is printed: image scene number; image name; image size;
-the image class (\fIDirectClass\fP or \fIPseudoClass\fP); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to miff for a description of the image class.
-
-
-If \fB-colors\fP is also specified, the total unique colors in the image
-and color reduction error values are printed. Refer to quantize
-for a description of these values.
-
 .SH SEE ALSO
 
 display(1), animate(1), montage(1), mogrify(1),  convert(1),

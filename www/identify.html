@@ -99,7 +99,8 @@ format of the image (JPEG, PNM, etc.), and finally the number of seconds
 it took to read and process the image. An example line output
 from <strong>identify</strong> follows:
 <pre>
-    images/aquarium.miff 640x480 PseudoClass 256c 308135b MIFF 1s
+    images/aquarium.miff 640x480 PseudoClass 256c
+           308135b MIFF 1s
 </pre>
 <p>
 If <tt>-verbose</tt> is set, expect additional output including any image
@@ -109,7 +110,8 @@ comment:
     Image: images/aquarium.miff
     class: PseudoClass
     colors: 256
-    signature: eb5dca81dd93ae7e6ffae99a527eb5dca81dd93ae7e6ffae99a5275a53e
+    signature: eb5dca81dd93ae7e6ffae99a527eb5dca81dd
+               93ae7e6ffae99a5275a53e
     matte: False
     geometry: 640x480
        depth: 8
@@ -137,6 +139,10 @@ Options are processed in command line order. Any option you specify on
 the command line remains in effect for the set of images immediately
 following, until the set is terminated by the appearance of any option
 or <strong>-noop</strong>.
+<p>
+For a more detailed description of each option, see
+<a href="imagemagick.html"><em>imagemagick(1)</em></a>.
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -148,12 +154,6 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-cache">-cache</a> <i>&lt;threshold&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>megabytes of memory available to the pixel cache</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Image pixels are stored in memory until 80 megabytes of memory have been
-consumed. Subsequent pixel operations are cached on disk. Operations to
-memory are significantly faster but if your computer does not have a sufficient
-amount of free memory you may want to adjust this threshold value.
-</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -176,11 +176,6 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-density">-density</a> <i>&lt;width&gt;x&lt;height&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>vertical and horizontal resolution in pixels of the image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This option specifies an image density when decoding a <em>PostScript</em>
-or Portable Document page. The default is 72 dots per inch in the horizontal
-and vertical direction. This option is used in concert with <strong>-page</strong>.
-</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -192,12 +187,6 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-depth">-depth</a> <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This is the number of bits in a color sample within a pixel. The only
-acceptable values are 8 or 16.  Use this option to specify the depth of
-raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
-the depth of any image after it has been read.
-</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -209,46 +198,6 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-format">-format</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>output formatted image characteristics</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use this option to print information about the image in a format of your
-choosing.  You can include the image filename, type, width, height,
-or other image attributes by embedding special format characters:</font></td></tr></table>
-<pre>
-     %b   file size
-     %c   comment
-     %d   directory
-     %e   filename extention
-     %f   filename
-     %h   height
-     %i   input filename
-     %k   number of unique colors
-     %l   label
-     %m   magick
-     %n   number of scenes
-     %o   output filename
-     %p   page number
-     %q   quantum depth
-     %s   scene number
-     %t   top of filename
-     %u   unique temporary filename
-     %w   width
-     %x   x resolution
-     %y   y resolution
-     %#   signature
-     \n   newline
-     \r   carriage return
-</pre>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-For example,</font></td></tr></table>
-<pre>
-     -format "%m:%f %wx%h"
-</pre>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-displays <strong>MIFF:bird.miff 512x480</strong> for an image
-titled <strong>bird.miff</strong> and whose width is 512 and height is 480.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the first character of <em>string</em> is <strong>@</strong>, the format
-is read from a file titled by the remaining characters in the string.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -282,28 +231,6 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-size">-size</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+offset</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>width and height of the image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use this option to specify the width and height of raw images whose dimensions
-are unknown such as <strong>GRAY</strong>,
-<strong>RGB</strong>, or <strong>CMYK</strong>. In addition
-to width and height, use
-<strong>-size</strong> with an offset to skip any header information in
-the image or tell the number of colors in a <strong>MAP</strong> image
-file, (e.g. -size 640x512+256).
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-For Photo CD images, choose from these sizes:</font></td></tr></table>
-<pre>
-     192x128
-     384x256
-     768x512
-     1536x1024
-     3072x2048
-</pre>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Finally, use this option to choose a particular resolution layer of a JBIG
-or JPEG image (e.g. -size 1024x768).
-</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -315,17 +242,6 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-verbose">-verbose</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print detailed information about the image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This information is printed: image scene number; image name; image size;
-the image class (<em>DirectClass</em> or <em>PseudoClass</em>); the total number
-of unique colors; and the number of seconds to read and transform the image.
-Refer to <a href="miff.html">miff</a> for a description of the image class.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If <strong>-colors</strong> is also specified, the total unique colors in the image
-and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
-for a description of these values.
-</font></td></tr></table>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

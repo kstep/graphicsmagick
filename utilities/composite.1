@@ -1,977 +1,14 @@
-.TH composite 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
-<title>Composite</title>
+.TH composite 1 "Date: 2002/02/15 01:00:00" "ImageMagick"
 .SH NAME
 composite - composite images together.
 .SH SYNOPSIS
 
-\fBcomposite\fP [ \fIoptions\fP ... ] \fIimage composite\fP [ \fImask\fP
-] \fIcomposited\fP
+\fBcomposite\fP \fB[\fP \fIoptions\fP \fB... ]\fP \fIimage composite\fP
+\fB[\fP \fImask\fP \fB]\fP \fIcomposited\fP
+
 .SH DESCRIPTION
 
 \fBcomposite\fP composite images to create new images.
-.SH EXAMPLES
-
-To composite an image of a cockatoo with a perch, use:
-
-    composite cockatoo.miff perch.ras composite.miff
-
-To compute the difference between images in a series, use:
-
-    composite -compose difference series.1 series.2 \\
-              difference.miff
-
-To composite an image of a cockatoo with a perch starting at location (100,150),
-use:
-
-    composite -geometry +100+150 cockatoo.miff \\
-              perch.ras composite.miff
-
-To tile a logo across your image of a cockatoo, use
-
-    convert +shade 30x60 cockatoo.miff mask.miff
-    composite -compose bumpmap -tile logo.png \\
-              cockatoo.miff mask.miff composite.miff
-
-To composite a red, green, and blue color plane into a single composite image,
-try
-
-    composite -compose CopyGreen red.png green.png \\
-              red-green.png
-    composite -compose CopyBlue red-green.png blue.png \\
-              composite.png
-.SH OPTIONS
-
-Options are processed in command line order. Any option you specify on
-the command line remains in effect only for the image that follows.  All
-options are reset to their default values after each image is read.
-.TP
-.B "-background \fI<color>"\fP
-\fRthe background color
-
-The color is specified using the format described in the "Color Names"
-section of \fIX(1)\fP.
-.TP
-.B "-cache \fI<threshold>"\fP
-\fRmegabytes of memory available to the pixel cache
-
-Image pixels are stored in memory until 80 megabytes of memory have been
-consumed. Subsequent pixel operations are cached on disk. Operations to
-memory are significantly faster but if your computer does not have a sufficient
-amount of free memory you may want to adjust this threshold value.
-
-.TP
-.B "-colors \fI<value>"\fP
-\fRpreferred number of colors in the image
-
-The actual number of colors in the image may be less than your request,
-but never more. Note, this is a color reduction option. Images with less
-unique colors than specified with this option will have any duplicate or
-unused colors removed. Refer to quantize for
-more details.
-
-
-Note, options \fB-dither\fP, \fB-colorspace\fP, and \fB-treedepth\fP
-affect the color reduction algorithm.
-
-.TP
-.B "-colorspace \fI<value>"\fP
-\fRthe type of colorspace
-
-Choices are: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
-\fBTransparent\fP,
-\fBXYZ\fP,
-\fBYCbCr\fP, \fBYIQ\fP, \fBYPbPr\fP,
-\fBYUV\fP, or \fBCMYK\fP.
-
-
-Color reduction, by default, takes place in the RGB color space. Empirical
-evidence suggests that distances in color spaces such as YUV or YIQ correspond
-to perceptual color differences more closely than do distances in RGB space.
-These color spaces may give better results when color reducing an image.
-Refer to quantize for more details.
-
-
-The \fBTransparent\fP color space behaves uniquely in that it preserves
-the matte channel of the image if it exists.
-
-
-The \fB-colors\fP or \fB-monochrome\fP option is required for this
-option to take effect.
-
-.TP
-.B "-comment \fI<string>"\fP
-\fRannotate an image with a comment
-
-Use this option to assign a specific comment to the image. You can include the
-image filename, type, width, height, or other image attribute by embedding
-special format characters:
-
-
-     %b   file size
-     %c   comment
-     %d   directory
-     %e   filename extention
-     %f   filename
-     %h   height
-     %i   input filename
-     %k   number of unique colors
-     %l   label
-     %m   magick
-     %n   number of scenes
-     %o   output filename
-     %p   page number
-     %q   quantum depth
-     %s   scene number
-     %t   top of filename
-     %u   unique temporary filename
-     %w   width
-     %x   x resolution
-     %y   y resolution
-     %#   signature
-     \\n   newline
-     \\r   carriage return
-
-For example,
-
-
-     -comment "%m:%f %wx%h"
-
-produces an image comment of \fBMIFF:bird.miff 512x480\fP for an image
-titled \fBbird.miff\fP and whose width is 512 and height is 480.
-
-
-If the first character of \fIstring\fP is \fI@\fP, the image comment
-is read from a file titled by the remaining characters in the string.
-
-.TP
-.B "-compose \fI<operator>"\fP
-\fRthe type of image composition
-
-By default, each of the composite image pixels are replaced by the
-corresponding image tile pixel. You can choose an alternate composite
-operation:
-
-
-     Over
-     In
-     Out
-     Atop
-     Xor
-     Plus
-     Minus
-     Add
-     Subtract
-     Difference
-     Multiply
-     Bumpmap
-     Copy
-     CopyRed
-     CopyGreen
-     CopyBlue
-     CopyOpacity
-
-How each operator behaves is described below.
-
-.in 15
-
-.in 15
-.B "Over"
-.in 20
- \fR
-.in 20
-
-The result will be the union of the two image shapes, with opaque areas of
-\fIcomposite image\fP obscuring \fIimage\fP in the region of overlap.
-
-.in 15
-.in 15
-.B "In"
-.in 20
- \fR
-.in 20
-
-The result is simply \fIcomposite image\fP cut by the shape
-of \fIimage\fP.
-None of the image data of \fIimage\fP will be in the result.
-
-.in 15
-.in 15
-.B "Out"
-.in 20
- \fR
-.in 20
-
-The resulting image is \fIcomposite image\fP with the shape
-of \fIimage\fP cut out.
-
-.in 15
-.in 15
-.B "Atop"
-.in 20
- \fR
-.in 20
-
-The result is the same shape as image \fIimage\fP,
-with \fIcomposite image\fP
-obscuring \fIimage\fP where the image shapes overlap.  Note this differs
-from \fBover\fP because the portion of \fIcomposite image\fP outside
-\fIimage\fP's shape does not appear in the result.
-
-.in 15
-.in 15
-.B "Xor"
-.in 20
- \fR
-.in 20
-
-The result is the image data from both \fIcomposite image\fP and
-\fIimage\fP
-that is outside the overlap region.  The overlap region will be blank.
-
-.in 15
-.in 15
-.B "Plus"
-.in 20
- \fR
-.in 20
-
-The result is just the sum of the image data.  Output values are
-cropped to 255 (no overflow).  This operation is independent of the
-matte channels.
-
-.in 15
-.in 15
-.B "Minus"
-.in 20
- \fR
-.in 20
-
-The result of \fIcomposite image\fP - \fIimage\fP, with underflow
-cropped to
-zero.  The matte channel is ignored (set to 255, full coverage).
-
-.in 15
-.in 15
-.B "Add"
-.in 20
- \fR
-.in 20
-
-The result of \fIcomposite image\fP + \fIimage\fP, with overflow wrapping
-around (\fImod\fP 256).
-
-.in 15
-.in 15
-.B "Subtract"
-.in 20
- \fR
-.in 20
-
-The result of \fIcomposite image\fP - \fIimage\fP, with underflow wrapping
-around (\fImod\fP 256).  The \fBadd\fP and \fBsubtract\fP operators can be
-used to perform reversible transformations.
-
-.in 15
-.in 15
-.B "Difference"
-.in 20
- \fR
-.in 20
-
-The result of abs(\fIcomposite image\fP - \fIimage\fP).  This is useful
-for comparing two very similar images.
-
-.in 15
-.in 15
-.B "Multiply"
-.in 20
- \fR
-.in 20
-
-The result of \fIcomposite image\fP * \fIimage\fP.  This is useful for
-the creation of drop-shadows.
-
-.in 15
-.in 15
-.B "Bumpmap"
-.in 20
- \fR
-.in 20
-
-The result \fIimage\fP shaded by \fIcomposite image\fP.
-
-.in 15
-.in 15
-.B "Copy"
-.in 20
- \fR
-.in 20
-
-The resulting image is \fIimage\fP replaced with \fIcomposite image\fP.
-Here the matte information is ignored.
-
-.in 15
-.in 15
-.B "CopyRed"
-.in 20
- \fR
-.in 20
-
-The resulting image is the red layer in \fIimage\fP replaced with the red
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
-
-.in 15
-.in 15
-.B "CopyGreen"
-.in 20
- \fR
-.in 20
-
-The resulting image is the green layer in \fIimage\fP replaced with the green
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
-
-.in 15
-.in 15
-.B "CopyBlue"
-.in 20
- \fR
-.in 20
-
-The resulting image is the blue layer in \fIimage\fP replaced with the blue
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
-
-.in 15
-.in 15
-.B "CopyOpacity"
-.in 20
- \fR
-.in 20
-
-The resulting image is the matte layer in \fIimage\fP replaced with the matte
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
-
-.in 15
-
-
-The image compositor requires a matte, or alpha channel in the image
-for some operations.  This extra channel usually defines a mask which
-represents a sort of a cookie-cutter for the image.  This is the case
-when matte is 255 (full coverage) for pixels inside the shape, zero
-outside, and between zero and 255 on the boundary.  For certain
-operations, if \fIimage\fP does not have a matte channel, it is initialized
-with 0 for any pixel matching in color to pixel location (0,0), otherwise
-255 (to work properly \fBborderwidth\fP must be 0).
-
-.TP
-.B "-compress \fI<type>"\fP
-\fRthe type of image compression
-
-Choices are: \fINone\fP, \fIBZip\fP, \fIFax\fP,
-\fIGroup4\fP,
-\fIJPEG\fP, \fILossless\fP,
-\fILZW\fP, \fIRLE\fP or \fIZip\fP.
-
-
-Specify \fB+compress\fP to store the binary image in an uncompressed format.
-The default is the compression type of the specified image file.
-
-
-If \fILZW\fP compression is specified but LZW compression has not been enabled,
-the image data will be written
-in an uncompressed LZW format that can be read by LZW decoders.  This
-may result in larger-than-expected GIF files.
-
-\fI"Lossless"\fP refers to lossless JPEG, which is only available if
-the JPEG library has been patched to support it.
-.TP
-.B "-debug"
-\fRenable debug printout
-.TP
-.B "-density \fI<width>x<height>"\fP
-\fRvertical and horizontal resolution in pixels of the image
-
-This option specifies an image density when decoding a \fIPostScript\fP
-or Portable Document page. The default is 72 dots per inch in the horizontal
-and vertical direction. This option is used in concert with \fB-page\fP.
-
-.TP
-.B "-depth \fI<value>"\fP
-\fRdepth of the image
-
-This is the number of bits in a color sample within a pixel. The only
-acceptable values are 8 or 16.  Use this option to specify the depth of
-raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
-the depth of any image after it has been read.
-
-.TP
-.B "-displace \fI<horizontal scale>x<vertical scale>"\fP
-\fRshift image pixels as defined by a displacement map
-
-With this option, \fIcomposite image\fP is used as a displacement map.  Black,
-within the displacement map, is a maximum positive displacement.  White is a
-maximum negative displacement and middle gray is neutral.  The displacement
-is scaled to determine the pixel shift.  By default, the displacement applies
-in both the horizontal and vertical directions.  However, if you specify
-\fImask\fP, \fIcomposite image\fP is the horizontal X displacement and
-\fImask\fP the vertical Y displacement.
-
-.TP
-.B "-display \fI<host:display[.screen]>"\fP
-\fRspecifies the X server to contact
-.TP
-.B "-dispose \fI<method>"\fP
-\fRGIF disposal method
-
-Here are the valid methods:
-
-
-     0     No disposal specified.
-     1     Do not dispose between frames.      
-     2     Overwrite frame with background color from header.
-     3     Overwrite with previous frame.
-.TP
-.B "-dissolve \fI<percent>"\fP
-\fRdissolve an image into another by the given percent
-
-The opacity of the composite image is multiplied by the given percent,
-then it is composited over the main image.
-.TP
-.B "-dither"
-\fRapply Floyd/Steinberg error diffusion to the image
-
-The basic strategy of dithering is to trade intensity resolution for spatial
-resolution by averaging the intensities of several neighboring pixels.
-Images which suffer from severe contouring when reducing colors can be
-improved with this option.
-
-
-The \fB-colors\fP or \fB-monochrome\fP option is required for this option
-to take effect.
-
-
-Use \fB+dither\fP to turn off dithering and to render Postscript without
-text or graphic aliasing.
-
-.TP
-.B "-filter \fI<type>"\fP
-\fRuse this type of filter when resizing an image
-
-Use this option to affect the resizing operation of an image (see
-\fB-geometry\fP).
-Choose from these filters:
-
-
-     Point
-     Box
-     Triangle
-     Hermite
-     Hanning
-     Hamming
-     Blackman
-     Gaussian
-     Quadratic
-     Cubic
-     Catrom
-     Mitchell
-     Lanczos
-     Bessel
-     Sinc
-
-The default filter is \fBLanczos\fP
-
-.TP
-.B "-font \fI<name>"\fP
-\fRuse this font when annotating the image with text
-
-You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
-font.  For example, Arial.ttf is a Truetype font, ps:helvetica
-is Postscript, and x:fixed is OPTION1. 
-
-.TP
-.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@} {!}{<}{>}"\fP
-\fRpreferred size and location of the Image window.
-
-By default, the window size is the image
-size and the location is chosen by you when it is mapped.
-
-
-By default, the width and height are maximum values. That is, the image
-is expanded or contracted to fit the width and height value while maintaining
-the aspect ratio of the image. \fIAppend an exclamation point to the geometry
-to force the image size to exactly the size you specify\fP. For example,
-if you specify 640x480! the image width is set to 640 pixels and
-height to 480.
-
-
-If only the width is specified, the width assumes the
-value and the height is chosen to maintain the aspect ratio of the image.
-Similarly, if only the height is specified (e.g., -geometry x256),
-the width is chosen to maintain the aspect ratio. 
-
-
-To specify a percentage width or height instead, append %. The image size
-is multiplied by the width and height percentages to obtain the final image
-dimensions. To increase the size of an image, use a value greater than
-100 (e.g. 125%). To decrease an image's size, use a percentage less than
-100.
-
-
-Use @ to specify the maximum area in pixels of an image.
-
-
-Use > to change the dimensions of the image \fIonly\fP if
-its size exceeds the geometry specification. < resizes the image
-\fIonly\fP
-if its dimensions is less than the geometry specification. For example,
-if you specify '640x480>' and the image size is 512x512, the image
-size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.  Enclose the geometry specification in quotation marks to
-prevent the < or > from being interpreted by your shell
-as a file redirection.
-
-
-When used as a \fIcomposite\fP option, \fB-geometry\fP
-gives the dimensions of the image and its location with respect
-to the composite image.  If the \fB-gravity\fP option is present
-with \fINorthEast, East,\fP or \fISouthEast\fP gravity, the x offset
-represents the distance from the right edge of the image to the right edge of
-the composite image.  Similarly, if the \fB-gravity\fP option is present
-with \fISouthWest, South,\fP or \fISouthEast\fP gravity, the y offset
-is measured between the bottom edges. Accordingly, a positive offset will
-never point in the direction outside of the image.
-
-.TP
-.B "-gravity \fI<type>"\fP
-\fRdirection primitive  gravitates to when annotating the image.
-
-Choices are: NorthWest, North,
-NorthEast, West, Center, East, SouthWest, South, SouthEast.
-
-
-The direction you choose specifies where to position the text or other
-graphic primitive when annotating
-the image. For example \fICenter\fP gravity forces the text to be centered
-within the image. By default, the image gravity is \fINorthWest\fP.
-See \fB-draw\fP for more details about graphic primitives.
-
-
-The \fB-gravity\fP option is also used in concert with the \fB-geometry\fP
-option and other options that take \fB<geometry>\fP as a parameter, such
-as the \fB-crop\fP option.  See \fB-geometry\fP for details of how the
-\fB-gravity\fP option interacts with the 
-\fB<x_offset>\fP and \fB<y_offset>\fP parameters of a geometry
-specification.
-
-When used as an option to \fIcomposite\fP, \fB-gravity\fP
-gives the direction that the image gravitates within the composite.
-
-.TP
-.B "-help"
-\fRprint usage instructions
-.TP
-.B "-interlace \fI<type>"\fP
-\fRthe type of interlacing scheme
-
-Choices are: \fBNone, Line, Plane,\fP
-or \fBPartition\fP. The default is \fBNone\fP.
-
-
-This option is used to specify the type of interlacing scheme for raw image
-formats such as \fBRGB\fP or \fBYUV\fP.
-
-\fBNone\fP means do not interlace
-(RGBRGBRGBRGBRGBRGB...),
-
-\fBLine\fP uses scanline interlacing
-(RRR...GGG...BBB...RRR...GGG...BBB...),
-and
-
-\fBPlane\fP uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).
-\fBPartition\fP
-is like plane except the different planes are saved to individual files
-(e.g. image.R, image.G, and image.B).
-
-
-Use \fBLine\fP or \fBPlane\fP to create an
-\fBinterlaced PNG\fP or \fB GIF\fP or
-\fBprogressive JPEG\fP image.
-
-.TP
-.B "-label \fI<name>"\fP
-\fRassign a label to an image
-
-Use this option to assign a specific label to the image. Optionally you
-can include the image filename, type, width, height, or other image attribute
-by embedding special format character. See \fB-comment\fP for details.
-
-
-For example,
-
-
-     -label "%m:%f %wx%h"
-
-produces an image label of \fBMIFF:bird.miff 512x480\fP for an image titled
-\fBbird.miff\fP
-and whose width is 512 and height is 480.
-
-
-If the first character of \fIstring\fP is \fI@\fP, the image label is
-read from a file titled by the remaining characters in the string.
-
-
-When converting to \fIPostScript\fP, use this option to specify a header
-string to print above the image. Specify the label font with
-\fB-font\fP.
-
-.TP
-.B "-matte"
-\fRstore matte channel if the image has one
-
-If the image does not have a matte channel, create an opaque one.
-
-
-Use \fB+matte\fP to ignore the matte channel and to avoid writing a
-matte channel in the output file.
-.TP
-.B "-monochrome"
-\fRtransform the image to black and white
-.TP
-.B "-negate"
-\fRreplace every pixel with its complementary color
-
-The red, green, and blue intensities of an image are negated.
-White becomes black,
-yellow becomes blue, etc.
-Use \fB+negate\fP
-to only negate the grayscale pixels of the image.
-
-.TP
-.B "-page \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{!}{<}{>}"\fP
-\fRsize and location of an image canvas
-
-Use this option to specify the dimensions of the
-\fIPostScript\fP page
-in dots per inch or a TEXT page in pixels. The choices for a Postscript
-page are:
-
-
-     11x17         792  1224 
-     Ledger       1224   792    
-     Legal         612  1008
-     Letter        612   792
-     LetterSmall   612   792
-     ArchE        2592  3456
-     ArchD        1728  2592
-     ArchC        1296  1728
-     ArchB         864  1296
-     ArchA         648   864
-     A0           2380  3368
-     A1           1684  2380
-     A2           1190  1684
-     A3            842  1190
-     A4            595   842
-     A4Small       595   842
-     A5            421   595
-     A6            297   421
-     A7            210   297
-     A8            148   210
-     A9            105   148
-     A10            74   105
-     B0           2836  4008
-     B1           2004  2836
-     B2           1418  2004
-     B3           1002  1418
-     B4            709  1002
-     B5            501   709
-     C0           2600  3677
-     C1           1837  2600
-     C2           1298  1837
-     C3            918  1298
-     C4            649   918
-     C5            459   649
-     C6            323   459
-     Flsa          612   936 
-     Flse          612   936
-     HalfLetter    396   612
-
-For convenience you can specify the page size by media (e.g. A4, Ledger,
-etc.). Otherwise, \fB-page\fP behaves much like
-\fB-geometry\fP (e.g.  -page letter+43+43>).
-
-
-To position a GIF image, use \fB-page\fP\fI{+-}<x offset>{+-}<y
-offset>\fP (e.g. -page +100+200).
-
-
-For a Postscript page, the image is sized as in \fB-geometry\fP and positioned
-relative to the lower left hand corner of the page by
-{+-}<\fBx\fP\fIoffset\fP>{+-}<\fBy\fP
-\fIoffset>\fP. Use
--page 612x792>, for example, to center the
-image within the page. If the image size exceeds the Postscript page, it
-is reduced to fit the page.
-The default gravity for the \fB-page\fP
-option is \fINorthWest\fP, i.e., positive \fBx\fP and
-\fBy\fP \fIoffset\fP are measured rightward and downward from the top
-left corner of the page, unless the \fB-gravity\fP option is present with
-a value other than \fINorthWest\fP.
-
-
-The default page dimensions for a TEXT image is 612x792.
-
-
-This option is used in concert with \fB-density\fP.
-
-.TP
-.B "-profile \fI<filename>"\fP
-\fRadd ICM, IPTC, or generic profile  to image
-
--profile filename adds an ICM (ICC color management), IPTC
-(newswire information), or a generic profile to the image.
-
-Use +profile icm, +profile iptc,
-or +profile profile_name to remove the respective
-profile.  Use identify -verbose to find out what profiles are in the
-image file.  Use +profile "*" to remove all profiles.
-
-.TP
-.B "-quality \fI<value>"\fP
-\fRJPEG/MIFF/PNG compression level
-
-For the JPEG image format, quality is 0 (worst) to 100 (best). The default
-quality is 75.
-
-
-Quality for the MIFF and PNG image format sets the amount of image compression
-(quality / 10) and filter-type (quality % 10). Compression quality values
-range from 0 (worst) to 100 (best). If filter-type is 4 or less, the specified
-filter-type is used for all scanlines:
-
-
-     0: none
-     1: sub
-     2: up
-     3: average
-     4: Paeth
-
-If filter-type is 5, adaptive filtering is used when quality is greater
-than 50 and the image does not have a color map, otherwise no filtering
-is used.
-
-
-If filter-type is 6 or more, adaptive filtering with \fIminimum-sum-of-absolute-values\fP
-is used.
-
-
-The default is quality is 75. Which means nearly the best compression with
-adaptive filtering.
-
-
-For further information, see the PNG
-specification.
-
-.TP
-.B "-resize \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
-\fRresize and locate an image
-
-When used as a \fIcomposite\fP option, \fB-resize\fP conveys the preferred
-size and location of the output image, while \fB-geometry\fP conveys
-the size and placement of the \fIcomposite image\fP within the main
-image.
-.TP
-.B "-rotate \fI<degrees{<}{>}>"\fP
-\fRapply Paeth image rotation to the image
-
-Use > to rotate the image only if its width exceeds the height.
-< rotates the image \fIonly\fP if its width is less than the
-height. For example, if you specify -rotate "-90>" and the image
-size is 480x640, the image is not rotated.  However, if the
-image is 640x480, it is rotated by -90 degrees.  If you use > or
-<, enclose it in quotation marks to prevent it from being
-misinterpreted as a file redirection.
-
-
-Empty triangles left over from rotating the image are filled with the color
-defined as \fBbackground\fP (class \fBbackgroundColor\fP). See \fIX(1)\fP
-for details.
-
-.TP
-.B "-scene \fI<value>"\fP
-\fRset scene number
-
-This option sets the scene number of an image or the first image in
-an image sequence.
-.TP
-.B "-sharpen \fI<radius>x<sigma>"\fP
-\fRsharpen the image
-
-Use a gaussian operator of the given radius and
-standard deviation (sigma). 
-
-.TP
-.B "-size \fI<width>x<height>{+offset}"\fP
-\fRwidth and height of the image
-
-Use this option to specify the width and height of raw images whose dimensions
-are unknown such as \fBGRAY\fP,
-\fBRGB\fP, or \fBCMYK\fP. In addition
-to width and height, use
-\fB-size\fP with an offset to skip any header information in
-the image or tell the number of colors in a \fBMAP\fP image
-file, (e.g. -size 640x512+256).
-
-
-For Photo CD images, choose from these sizes:
-
-     192x128
-     384x256
-     768x512
-     1536x1024
-     3072x2048
-
-Finally, use this option to choose a particular resolution layer of a JBIG
-or JPEG image (e.g. -size 1024x768).
-
-.TP
-.B "-stegano \fI<offset>"\fP
-\fRhide watermark within an image
-
-Use an offset to start the image hiding some number of pixels from the
-beginning of the image.  Note this offset and the image size.  You will
-need this information to recover the steganographic image
-(e.g. display -size 320x256+35 stegano:image.png).
-
-.TP
-.B "-stereo"
-\fRcomposite two images to create a stereo anaglyph
-
-The left side of the stereo pair is saved as the red channel of the output
-image.  The right side is saved as the green channel.  Red-green stereo
-glasses are required to properly view the stereo image.
-
-.TP
-.B "-treedepth \fI<value>"\fP
-\fRtree depth for the color reduction algorithm
-
-Normally, this integer value is zero or one. A zero or one tells display
-to choose an optimal tree depth for the color reduction algorithm
-
-An optimal depth generally allows the best representation of the source
-image with the fastest computational speed and the least amount of memory.
-However, the default depth is inappropriate for some images. To assure
-the best representation, try values between 2 and 8 for this parameter.
-Refer to
-quantize for more details.
-
-
-The \fB-colors\fP or \fB-monochrome\fP option is required for this option
-to take effect.
-
-.TP
-.B "-trim"
-\fRtrim an image
-
-This option removes any edges that are exactly the same color as the
-corner pixels.  Use \fB-fuzz\fP to make \fB-trim\fP remove edges that
-are nearly the same color as the corner pixels.
-.TP
-.B "-type \fI<type>"\fP
-\fRthe image type
-
-Choose from:
-\fBBilevel\fP, \fBGrayscale\fP, \fBPalette\fP,
-\fBPaletteMatte\fP, \fBTrueColor\fP, \fBTrueColorMatte\fP,
-\fBColorSeparation\fP, \fBColorSeparationMatte\fP, or \fBOptimize\fP.
-
-.TP
-.B "-units \fI<type>"\fP
-\fRthe type of image resolution
-
-Choose from: \fBUndefined\fP, \fBPixelsPerInch\fP, or
-\fBPixelsPerCentimeter\fP.
-
-.TP
-.B "-unsharp \fI<radius>x<sigma>"\fP
-\fRsharpen the image with an unsharp mask operator
-
-Use the given radius and standard deviation (sigma).
-
-.TP
-.B "-verbose"
-\fRprint detailed information about the image
-.TP
-.B "-watermark \fI<brightness>x<saturation>"\fP
-\fRpercent brightness and saturation of a watermark
-.TP
-.B "-write \fI<filename>"\fP
-\fRwrite  an image sequence [\fIconvert, composite\fP]
-
-The image sequence following the \fB-write\fP \fIfilename\fPoption is 
-written out, and then processing continues with the
-same image in its current state if there are additional options.  To
-restore the image to its original state after writing it, use
-the \fB+write\fP \fIfilename\fP option.
-.SH FILES AND FORMATS
-
-By default, the image format is determined by its magic number, i.e., the
-first few bytes of the file. To specify
-a particular image format, precede the filename with an image format name
-and a colon (\fIi.e.\fP\fBps:image\fP) or specify the image type as the
-filename suffix.
-The magic number takes precedence over the filename suffix
-and the prefix takes precedence over the magic number and the suffix
-in input files.
-The prefix takes precedence over the filename
-suffix in output files.  To read the "built-in" formats (GRANITE, H, LOGO,
-NETSCAPE, PLASMA, and ROSE) use a prefix (including the colon) without a
-filename or suffix.  To read the XC format, follow the colon with a color
-specification.  To read the CAPTION format, follow the colon with a text
-string or with a filename prefixed with the at symbol (\fB@\fP).
-
-
-When you specify \fBX\fP as your image type, the filename has special
-meaning. It specifies an X window by \fBid, name\fP, or
-\fBroot\fP. If
-no filename is specified, the window is selected by clicking the mouse
-in the desired window.
-
-Specify \fIinput_file\fP as \fB-\fP for standard input,
-\fIoutput_file\fP
-as \fB-\fP for standard output. If \fIinput_file\fP has the extension
-\fB.Z\fP or
-\fB.gz\fP, the file is uncompressed with \fBuncompress\fP or \fBgunzip\fP
-respectively. If \fIoutput_file\fP has the extension \fB.Z\fP or
-\fB.gz\fP,
-the file is compressed using with \fIcompress\fP or \fIgzip\fP
-respectively.
-
-Finally, when running on platforms that allow it, precede the image file name
-with \fB|\fP to pipe to or from a system command (this feature is not
-available on VMS, Win32 and Macintosh platforms).
-
-Use an optional index enclosed in brackets after an input file name to specify
-a desired subimage of a multi-resolution image format like Photo CD
-(e.g. img0001.pcd[4]) or a range for MPEG images
-(e.g. video.mpg[50-75]). A subimage
-specification can be disjoint (e.g. image.tiff[2,7,4]). For raw images,
-specify a subimage with a geometry
-(e.g. -size 640x512 image.rgb[320x256+50+50]).
-Single images are written with the filename you specify. However, multi-part
-images (e.g., a multi-page PostScript document with \fB+adjoin\fP specified)
-are written
-with the filename followed by a period (\fB.\fP) and the scene number.  You
-can change this behavior by embedding a %0Nd, %0No,
-or %0Nx \fIprintf\fP
-format specification in the file name. For example,
-
-    image%02d.miff
-
-writes files \fIimage00.miff, image01.miff,\fP etc.
-
-When running a commandline utility, you can
-prepend an at sign @ to a filename to read a list of image
-filenames from that file. This is convenient in the event you have too
-many image filenames to fit on the command line.
 
 The optional \fBmask\fP can be used to provide matte information for
 \fBcomposite\fP
@@ -982,6 +19,174 @@ matte information.
 
 If \fIcomposited\fP already exists, you will be prompted as to whether it
 should be overwritten.
+.SH EXAMPLES
+
+To composite an image of a cockatoo with a perch, use:
+
+    composite cockatoo.miff perch.ras composite.miff
+
+To compute the difference between images in a series, use:
+
+    composite -compose difference series.1 series.2
+              difference.miff
+
+To composite an image of a cockatoo with a perch starting at location (100,150),
+use:
+
+    composite -geometry +100+150 cockatoo.miff
+              perch.ras composite.miff
+
+To tile a logo across your image of a cockatoo, use
+
+    convert +shade 30x60 cockatoo.miff mask.miff
+    composite -compose bumpmap -tile logo.png
+              cockatoo.miff mask.miff composite.miff
+
+To composite a red, green, and blue color plane into a single composite image,
+try
+
+    composite -compose CopyGreen red.png green.png
+              red-green.png
+    composite -compose CopyBlue red-green.png blue.png
+              composite.png
+.SH OPTIONS
+
+Options are processed in command line order. Any option you specify on
+the command line remains in effect only for the image that follows.  All
+options are reset to their default values after each image is read.
+
+For a more detailed description of each option, see
+\fIimagemagick(1)\fP.
+
+.TP
+.B "-background \fI<color>"\fP
+\fRthe background color
+.TP
+.B "-cache \fI<threshold>"\fP
+\fRmegabytes of memory available to the pixel cache
+.TP
+.B "-colors \fI<value>"\fP
+\fRpreferred number of colors in the image
+.TP
+.B "-colorspace \fI<value>"\fP
+\fRthe type of colorspace
+.TP
+.B "-comment \fI<string>"\fP
+\fRannotate an image with a comment
+.TP
+.B "-compose \fI<operator>"\fP
+\fRthe type of image composition
+.TP
+.B "-compress \fI<type>"\fP
+\fRthe type of image compression
+.TP
+.B "-debug"
+\fRenable debug printout
+.TP
+.B "-density \fI<width>x<height>"\fP
+\fRvertical and horizontal resolution in pixels of the image
+.TP
+.B "-depth \fI<value>"\fP
+\fRdepth of the image
+.TP
+.B "-displace \fI<horizontal scale>x<vertical scale>"\fP
+\fRshift image pixels as defined by a displacement map
+.TP
+.B "-display \fI<host:display[.screen]>"\fP
+\fRspecifies the X server to contact
+.TP
+.B "-dispose \fI<method>"\fP
+\fRGIF disposal method
+.TP
+.B "-dissolve \fI<percent>"\fP
+\fRdissolve an image into another by the given percent
+.TP
+.B "-dither"
+\fRapply Floyd/Steinberg error diffusion to the image
+.TP
+.B "-filter \fI<type>"\fP
+\fRuse this type of filter when resizing an image
+.TP
+.B "-font \fI<name>"\fP
+\fRuse this font when annotating the image with text
+.TP
+.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@} {!}{<}{>}"\fP
+\fRpreferred size and location of the Image window.
+.TP
+.B "-gravity \fI<type>"\fP
+\fRdirection primitive  gravitates to when annotating the image.
+.TP
+.B "-help"
+\fRprint usage instructions
+.TP
+.B "-interlace \fI<type>"\fP
+\fRthe type of interlacing scheme
+.TP
+.B "-label \fI<name>"\fP
+\fRassign a label to an image
+.TP
+.B "-matte"
+\fRstore matte channel if the image has one
+.TP
+.B "-monochrome"
+\fRtransform the image to black and white
+.TP
+.B "-negate"
+\fRreplace every pixel with its complementary color
+.TP
+.B "-page \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{!}{<}{>}"\fP
+\fRsize and location of an image canvas
+.TP
+.B "-profile \fI<filename>"\fP
+\fRadd ICM, IPTC, or generic profile  to image
+.TP
+.B "-quality \fI<value>"\fP
+\fRJPEG/MIFF/PNG compression level
+.TP
+.B "-resize \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
+\fRresize and locate an image
+.TP
+.B "-rotate \fI<degrees{<}{>}>"\fP
+\fRapply Paeth image rotation to the image
+.TP
+.B "-scene \fI<value>"\fP
+\fRset scene number
+.TP
+.B "-sharpen \fI<radius>x<sigma>"\fP
+\fRsharpen the image
+.TP
+.B "-size \fI<width>x<height>{+offset}"\fP
+\fRwidth and height of the image
+.TP
+.B "-stegano \fI<offset>"\fP
+\fRhide watermark within an image
+.TP
+.B "-stereo"
+\fRcomposite two images to create a stereo anaglyph
+.TP
+.B "-treedepth \fI<value>"\fP
+\fRtree depth for the color reduction algorithm
+.TP
+.B "-trim"
+\fRtrim an image
+.TP
+.B "-type \fI<type>"\fP
+\fRthe image type
+.TP
+.B "-units \fI<type>"\fP
+\fRthe type of image resolution
+.TP
+.B "-unsharp \fI<radius>x<sigma>"\fP
+\fRsharpen the image with an unsharp mask operator
+.TP
+.B "-verbose"
+\fRprint detailed information about the image
+.TP
+.B "-watermark \fI<brightness>x<saturation>"\fP
+\fRpercent brightness and saturation of a watermark
+.TP
+.B "-write \fI<filename>"\fP
+\fRwrite  an image sequence [\fIconvert, composite\fP]
 .SH ENVIRONMENT
 .TP
 .B "DISPLAY"
