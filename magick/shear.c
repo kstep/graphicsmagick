@@ -348,11 +348,11 @@ static void XShearImage(Image *image,const double degrees,
             q=p-step;
             (void) memcpy(q,p,width*sizeof(PixelPacket));
             /*
-              Set old row to border color.
+              Set old row to background color.
             */
             q+=width;
             for (i=0; i < (long) step; i++)
-              *q++=image->border_color;
+              *q++=image->background_color;
             break;
           }
           case RIGHT:
@@ -368,10 +368,10 @@ static void XShearImage(Image *image,const double degrees,
             for (i=0; i < (long) width; i++)
               *--q=(*--p);
             /*
-              Set old row to border color.
+              Set old row to background color.
             */
             for (i=0; i < (long) step; i++)
-              *--q=image->border_color;
+              *--q=image->background_color;
             break;
           }
         }
@@ -383,7 +383,7 @@ static void XShearImage(Image *image,const double degrees,
       Fractional displacement.
     */
     step++;
-    pixel=image->border_color;
+    pixel=image->background_color;
     switch (direction)
     {
       case LEFT:
@@ -424,16 +424,16 @@ static void XShearImage(Image *image,const double degrees,
           q++;
         }
         /*
-          Set old row to border color.
+          Set old row to background color.
         */
         red=(double) (pixel.red*(MaxRGB-alpha)+
-          image->border_color.red*alpha)/MaxRGB;
+          image->background_color.red*alpha)/MaxRGB;
         green=(double) (pixel.green*(MaxRGB-alpha)+
-          image->border_color.green*alpha)/MaxRGB;
+          image->background_color.green*alpha)/MaxRGB;
         blue=(double) (pixel.blue*(MaxRGB-alpha)+
-          image->border_color.blue*alpha)/MaxRGB;
+          image->background_color.blue*alpha)/MaxRGB;
         opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-          image->border_color.opacity*alpha)/MaxRGB;
+          image->background_color.opacity*alpha)/MaxRGB;
         q->red=(Quantum)
           ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
         q->green=(Quantum)
@@ -443,7 +443,7 @@ static void XShearImage(Image *image,const double degrees,
         q->opacity=(Quantum)
           ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
         for (i=0; i < (step-1); i++)
-          *++q=image->border_color;
+          *++q=image->background_color;
         break;
       }
       case RIGHT:
@@ -478,17 +478,17 @@ static void XShearImage(Image *image,const double degrees,
           pixel=(*p);
         }
         /*
-          Set old row to border color.
+          Set old row to background color.
         */
         q--;
         red=(double) (pixel.red*(MaxRGB-alpha)+
-          image->border_color.red*alpha)/MaxRGB;
+          image->background_color.red*alpha)/MaxRGB;
         green=(double) (pixel.green*(MaxRGB-alpha)+
-          image->border_color.green*alpha)/MaxRGB;
+          image->background_color.green*alpha)/MaxRGB;
         blue=(double) (pixel.blue*(MaxRGB-alpha)+
-          image->border_color.blue*alpha)/MaxRGB;
+          image->background_color.blue*alpha)/MaxRGB;
         opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-          image->border_color.opacity*alpha)/MaxRGB;
+          image->background_color.opacity*alpha)/MaxRGB;
         q->red=(Quantum)
           ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
         q->green=(Quantum)
@@ -498,7 +498,7 @@ static void XShearImage(Image *image,const double degrees,
         q->opacity=(Quantum)
           ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
         for (i=0; i < (step-1); i++)
-          *--q=image->border_color;
+          *--q=image->background_color;
         break;
       }
     }
@@ -612,11 +612,11 @@ static void YShearImage(Image *image,const double degrees,
             q=p-step;
             (void) memcpy(q,p,height*sizeof(PixelPacket));
             /*
-              Set old column to border color.
+              Set old column to background color.
             */
             q+=height;
             for (i=0; i < (long) step; i++)
-              *q++=image->border_color;
+              *q++=image->background_color;
             break;
           }
           case DOWN:
@@ -632,10 +632,10 @@ static void YShearImage(Image *image,const double degrees,
             for (i=0; i < (long) height; i++)
               *--q=(*--p);
             /*
-              Set old column to border color.
+              Set old column to background color.
             */
             for (i=0; i < (long) step; i++)
-              *--q=image->border_color;
+              *--q=image->background_color;
             break;
           }
         }
@@ -647,7 +647,7 @@ static void YShearImage(Image *image,const double degrees,
       Fractional displacment.
     */
     step++;
-    pixel=image->border_color;
+    pixel=image->background_color;
     switch (direction)
     {
       case UP:
@@ -682,16 +682,16 @@ static void YShearImage(Image *image,const double degrees,
           q++;
         }
         /*
-          Set old column to border color.
+          Set old column to background color.
         */
         red=(double) (pixel.red*(MaxRGB-alpha)+
-          image->border_color.red*alpha)/MaxRGB;
+          image->background_color.red*alpha)/MaxRGB;
         green=(double) (pixel.green*(MaxRGB-alpha)+
-          image->border_color.green*alpha)/MaxRGB;
+          image->background_color.green*alpha)/MaxRGB;
         blue=(double) (pixel.blue*(MaxRGB-alpha)+
-          image->border_color.blue*alpha)/MaxRGB;
+          image->background_color.blue*alpha)/MaxRGB;
         opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-          image->border_color.opacity*alpha)/MaxRGB;
+          image->background_color.opacity*alpha)/MaxRGB;
         q->red=(Quantum)
           ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
         q->green=(Quantum)
@@ -701,7 +701,7 @@ static void YShearImage(Image *image,const double degrees,
         q->opacity=(Quantum)
           ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
         for (i=0; i < (step-1); i++)
-          *++q=image->border_color;
+          *++q=image->background_color;
         break;
       }
       case DOWN:
@@ -736,17 +736,17 @@ static void YShearImage(Image *image,const double degrees,
           pixel=(*p);
         }
         /*
-          Set old column to border color.
+          Set old column to background color.
         */
         q--;
         red=(double) (pixel.red*(MaxRGB-alpha)+
-          image->border_color.red*alpha)/MaxRGB;
+          image->background_color.red*alpha)/MaxRGB;
         green=(double) (pixel.green*(MaxRGB-alpha)+
-          image->border_color.green*alpha)/MaxRGB;
+          image->background_color.green*alpha)/MaxRGB;
         blue=(double) (pixel.blue*(MaxRGB-alpha)+
-          image->border_color.blue*alpha)/MaxRGB;
+          image->background_color.blue*alpha)/MaxRGB;
         opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-          image->border_color.opacity*alpha)/MaxRGB;
+          image->background_color.opacity*alpha)/MaxRGB;
         q->red=(Quantum)
           ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
         q->green=(Quantum)
@@ -756,7 +756,7 @@ static void YShearImage(Image *image,const double degrees,
         q->opacity=(Quantum)
           ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
         for (i=0; i < (step-1); i++)
-          *--q=image->border_color;
+          *--q=image->background_color;
         break;
       }
     }

@@ -4436,7 +4436,7 @@ Mogrify(ref,...)
             argument_list[0].double_reference=90.0;
           if (attribute_flag[1])
              QueryColorDatabase(argument_list[1].string_reference,
-               &image->border_color);
+               &image->background_color);
           image=RotateImage(image,argument_list[0].double_reference,&exception);
           break;
         }
@@ -4522,7 +4522,7 @@ Mogrify(ref,...)
               &y_shear);
           if (attribute_flag[3])
              QueryColorDatabase(argument_list[3].string_reference,
-               &image->border_color);
+               &image->background_color);
           image=ShearImage(image,x_shear,y_shear,&exception);
           break;
         }
