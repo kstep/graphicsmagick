@@ -2081,7 +2081,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (primitive_type == UndefinedPrimitive)
       {
         if (graphic_context[n]->debug)
-          (void) fprintf(stdout,"  %.*s\n",q-p,p);
+          (void) fprintf(stdout,"  %.*s\n",(int) (q-p),p);
         continue;
       }
     /*
@@ -2429,7 +2429,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (primitive_info == (PrimitiveInfo *) NULL)
       break;
     if (graphic_context[n]->debug)
-      (void) fprintf(stdout,"  %.*s\n",q-p,p);
+      (void) fprintf(stdout,"  %.*s\n",(int) (q-p),p);
     if (status == False)
       break;
     if ((*q == '"') || (*q == '\''))
