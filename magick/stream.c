@@ -350,7 +350,8 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %  The format of the ReadStream method is:
 %
 %      unsigned int ReadStream(const ImageInfo *image_info,
-%        void (*Stream)(const Image *),ExceptionInfo *exception)
+%        void (*Stream)(const Image *,const void *,const size_t),
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -366,7 +367,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %
 */
 MagickExport unsigned int ReadStream(const ImageInfo *image_info,
-  int (*fifo)(const void *,const size_t),ExceptionInfo *exception)
+  int (*fifo)(const Image *,const void *,const size_t),ExceptionInfo *exception)
 {
   Image
     *image;
@@ -531,7 +532,7 @@ static unsigned int SyncPixelStream(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
-  return(image->fifo(stream_info->pixels,image->columns));
+  return(image->fifo(image,stream_info->pixels,image->columns));
 }
 
 /*
@@ -552,7 +553,7 @@ static unsigned int SyncPixelStream(Image *image)
 %  The format of the WriteStream method is:
 %
 %      unsigned int WriteStream(const ImageInfo *image_info,Image *,
-%        void (*Stream)(const Image *))
+%        void (*Stream)(const Image *,const void *,const size_t))
 %
 %  A description of each parameter follows:
 %
@@ -565,8 +566,8 @@ static unsigned int SyncPixelStream(Image *image)
 %
 %
 */
-MagickExport unsigned int WriteStream(ImageInfo *image_info,Image *image,
-  int (*fifo)(const void *,const size_t))
+MagickExport unsigned int WriteStream(const ImageInfo *image_info,Image *image,
+  int (*fifo)(const Image *,const void *,const size_t))
 {
   unsigned int
     status;
