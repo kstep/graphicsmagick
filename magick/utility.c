@@ -2432,7 +2432,7 @@ MagickExport void TemporaryFilename(char *filename)
     char
       *name;
 
-    name=(char *) tempnam("./",filename);
+    name=(char *) tempnam(".",filename);
     if (name == (char *) NULL)
       MagickError(ResourceLimitError,
         "Unable to create a name for a temporary file",(char *) NULL);
