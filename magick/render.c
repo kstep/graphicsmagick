@@ -659,7 +659,7 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
     /*
       Eliminate duplicate points.
     */
-    if ((fabs(q.x-primitive_info[i].point.x) > MagickEpsilon) ||
+    if ((i == 0) || (fabs(q.x-primitive_info[i].point.x) > MagickEpsilon) ||
         (fabs(q.y-primitive_info[i].point.y) > MagickEpsilon))
       {
         path_info[n].code=code;
