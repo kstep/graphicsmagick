@@ -179,7 +179,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     for (y=0; y < count; y++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+      ThrowReaderException(CorruptImageWarning,"not enough scanline",image);
     SyncImage(image);
     /*
       Proceed to next image.
@@ -307,7 +307,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     y;
 
   unsigned char
-    *pixels;
+    *scanline;
 
   unsigned int
     packet_size,
@@ -327,28 +327,28 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
-      Allocate memory for pixels.
+      Allocate memory for scanline.
     */
     TransformRGBImage(image,RGBColorspace);
     packet_size=image->depth > 8 ? 2: 1;
-    pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
-    if (pixels == (unsigned char *) NULL)
+    scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
+    if (scanline == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
     /*
-      Convert MIFF to GRAY raster pixels.
+      Convert MIFF to GRAY raster scanline.
     */
     for (y=0; y < (int) image->rows; y++)
     {
       if (!GetImagePixels(image,0,y,image->columns,1))
         break;
-      (void) PopImagePixels(image,GrayQuantum,pixels);
-      (void) WriteBlob(image,packet_size*image->columns,pixels);
+      (void) PopImagePixels(image,GrayQuantum,scanline);
+      (void) WriteBlob(image,packet_size*image->columns,scanline);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           MagickMonitor(SaveImageText,y,image->rows);
     }
-    LiberateMemory((void **) &pixels);
+    LiberateMemory((void **) &scanline);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

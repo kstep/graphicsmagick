@@ -262,7 +262,6 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   }
   if ((image->columns*image->rows) == 0)
     ThrowReaderException(CorruptImageWarning,"image size is zero",image);
-  image->depth=8;
   if (!AllocateImageColormap(image,256))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   if (image_info->ping)
@@ -280,6 +279,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   /*
     Read VICAR pixels.
   */
+  image->depth=8;
   for (y=0; y < (int) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
@@ -453,7 +453,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     Allocate memory for scanline.
   */
   scanline=(unsigned char *)
-    AcquireMemory(image->columns*sizeof(PixelPacket));
+    AcquireMemory(image->columns*sizeof(unsigned char));
   if (scanline == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
