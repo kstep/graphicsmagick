@@ -2474,7 +2474,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_read_end(ping,ping_info);
 
   if (image_info->number_scenes != 0 && mng_info->scenes_found-1 <
-      (long) image_info->first_scene)
+      (long) image_info->first_scene && image->delay != 0.)
     {
       png_destroy_read_struct(&ping,&ping_info,&end_info);
       MagickFreeMemory(png_pixels);
@@ -6788,7 +6788,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Setting up sRGB chunk");
-      (void) png_set_sRGB(ping,ping_info,(int) (image->rendering_intent-1));
+      if (image->rendering_intent != UndefinedIntent)
+        (void) png_set_sRGB(ping,ping_info,(int) (image->rendering_intent-1));
+      else
+        (void) png_set_sRGB(ping,ping_info,PerceptualIntent);
       png_set_gAMA(ping,ping_info,0.45455);
     }
   not_valid=(!ping_info->valid);
@@ -7437,7 +7440,10 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       (void) WriteBlobMSBULong(image,1L);
       PNGType(chunk,mng_sRGB);
       LogPNGChunk(logging,mng_sRGB,1L);
-      chunk[4]=(int) image->rendering_intent-1;
+      if (image->rendering_intent != UndefinedIntent)
+        chunk[4]=(int) image->rendering_intent-1;
+      else
+        chunk[4]=(int) PerceptualIntent-1;
       (void) WriteBlob(image,5,(char *) chunk);
       (void) WriteBlobMSBULong(image,crc32(0,chunk,5));
     }
@@ -8210,7 +8216,10 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
          (void) WriteBlobMSBULong(image,1L);
          PNGType(chunk,mng_sRGB);
          LogPNGChunk(logging,mng_sRGB,1L);
-         chunk[4]=(int) image->rendering_intent-1;
+         if (image->rendering_intent != UndefinedIntent)
+           chunk[4]=(int) image->rendering_intent-1;
+         else
+           chunk[4]=(int) PerceptualIntent-1;
          (void) WriteBlob(image,5,(char *) chunk);
          (void) WriteBlobMSBULong(image,crc32(0,chunk,5));
          mng_info->have_write_global_srgb=True;
