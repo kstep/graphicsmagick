@@ -259,9 +259,9 @@ MagickExport void DestroySemaphore(void)
 MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
-  assert((*semaphore_info)->signature == MagickSignature);
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     return;
+  assert((*semaphore_info)->signature == MagickSignature);
 #if defined(HasPTHREADS)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
