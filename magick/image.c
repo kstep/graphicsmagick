@@ -3178,6 +3178,55 @@ MagickExport Image *ReferenceImage(Image *image)
 %
 %
 */
+static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
+{
+  const char *
+    log_colorspace = NULL;
+  
+  switch (colorspace)
+    {
+    case UndefinedColorspace:
+      log_colorspace="Undefined";
+      break;
+    case RGBColorspace:
+      log_colorspace="RGB";
+      break;
+    case GRAYColorspace:
+      log_colorspace="GRAY";
+      break;
+    case TransparentColorspace:
+      log_colorspace="Transparent";
+      break;
+    case OHTAColorspace:
+      log_colorspace="OHTA";
+      break;
+    case XYZColorspace:
+      log_colorspace="XYZ";
+      break;
+    case YCbCrColorspace:
+      log_colorspace="YCbCr";
+      break;
+    case YCCColorspace:
+      log_colorspace="YCC";
+      break;
+    case YIQColorspace:
+      log_colorspace="YIQ";
+      break;
+    case YPbPrColorspace:
+      log_colorspace="YPbPr";
+      break;
+    case YUVColorspace:
+      log_colorspace="YUV";
+      break;
+    case CMYKColorspace:
+      log_colorspace="CMYK";
+      break;
+    case sRGBColorspace:
+      log_colorspace="sRGB";
+      break;
+    }
+  return log_colorspace;
+}
 MagickExport unsigned int RGBTransformImage(Image *image,
   const ColorspaceType colorspace)
 {
@@ -3213,6 +3262,19 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     return(True);
   if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
     return(True);
+
+  {
+    /*
+      Log colorspace transform event
+    */
+    const char *
+      log_colorspace = ColorspaceTypeToString(colorspace);
+
+    if (log_colorspace != NULL)
+      LogMagickEvent(TransformEvent,GetMagickModule(),
+                     "Transform colorspace from RGB to %s", log_colorspace);    
+  }
+
   if (colorspace == CMYKColorspace)
     {
       IndexPacket
@@ -3227,8 +3289,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       /*
         Convert RGB to CMYK colorspace.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from RGB to CMYK");
+      if (image->storage_class == PseudoClass)
+        SyncImage(image);
       image->storage_class=DirectClass;
       image->colorspace=CMYKColorspace;
       for (y=0; y < (long) image->rows; y++)
@@ -3279,8 +3341,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
           G = 0.29900*R+0.58700*G+0.11400*B
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from RGB to GRAY");
       for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.299*i;
@@ -3307,8 +3367,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from RGB to OHTA");
       primary_info.y=65536L/2;
       primary_info.z=65536L/2;
       for (i=0; i <= 65535L; i++)
@@ -3336,8 +3394,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
         sRGB is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from RGB to sRGB");
       primary_info.y=ScaleQuantumToShort(ScaleCharToQuantum(156));
       primary_info.z=ScaleQuantumToShort(ScaleCharToQuantum(137));
       for (i=0; i <= (long) (0.018*65535L); i++)
@@ -3375,8 +3431,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           Y = 0.212671*X+0.715160*Y+0.072169*Z
           Z = 0.019334*X+0.119193*Y+0.950227*Z
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from RGB to XYZ");
       for (i=0; i <= 65535L; i++)
       {
         x_map[i+X]=0.412453*i;
@@ -3403,8 +3457,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from RGB to YCbCr");
       primary_info.y=65536L/2;
       primary_info.z=65536L/2;
       for (i=0; i <= 65535L; i++)
@@ -3432,8 +3484,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 
         YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from RGB to YCC");
       primary_info.y=ScaleQuantumToShort(ScaleCharToQuantum(156));
       primary_info.z=ScaleQuantumToShort(ScaleCharToQuantum(137));
       for (i=0; i <= (long) (0.018*65535L); i++)
@@ -3474,8 +3524,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from RGB to YIQ");
       primary_info.y=65536L/2;
       primary_info.z=65536L/2;
       for (i=0; i <= 65535L; i++)
@@ -3504,8 +3552,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         Pb and Pr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from RGB to YPbPr");
       primary_info.y=65536L/2;
       primary_info.z=65536L/2;
       for (i=0; i <= 65535L; i++)
@@ -3535,8 +3581,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         U and V, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from RGB to YUV");
       primary_info.y=65536L/2;
       primary_info.z=65536L/2;
       for (i=0; i <= 65535L; i++)
@@ -4765,6 +4809,19 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->colorspace == colorspace)
     return(True);
+
+  {
+    /*
+      Log colorspace transform event
+    */
+    const char *
+      log_colorspace = ColorspaceTypeToString(colorspace);
+
+    if (log_colorspace != NULL)
+      LogMagickEvent(TransformEvent,GetMagickModule(),
+                     "Transform colorspace from %s to RGB", log_colorspace);    
+  }
+
   if ((image->colorspace == CMYKColorspace) && (colorspace == RGBColorspace))
     {
       IndexPacket
@@ -4773,8 +4830,6 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       /*
         Transform image from CMYK to RGB.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from CMYK to RGB");
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
@@ -4820,10 +4875,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           B = I1-1.00000*I2-0.66668*I3
 
         I and Q, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxRGB.
+        through MaxMap.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from OHTA to RGB");
       for (i=0; i <= MaxMap; i++)
       {
         red_map[i+R]=i;
@@ -4849,8 +4902,6 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 
         sRGB is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from SRGB to RGB");
       for (i=0; i <= MaxMap; i++)
       {
         red_map[i+R]=1.40200*i;
@@ -4874,8 +4925,6 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           G = -0.969256*R+1.875992*G+0.041556*B
           B =  0.055648*R-0.204043*G+1.057311*B
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from XYZ to RGB");
       for (i=0; i <= MaxMap; i++)
       {
         red_map[i+R]=3.240479*i;
@@ -4900,10 +4949,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           B = Y+1.772000*Cb
 
         Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxRGB.
+        through MaxMap.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from YCbCr to RGB");
       for (i=0; i <= MaxMap; i++)
       {
         red_map[i+R]=i;
@@ -4929,8 +4976,6 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 
         YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from YCC to RGB");
       for (i=0; i <= MaxMap; i++)
       {
         red_map[i+R]=1.3584*i;
@@ -4955,10 +5000,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           B = Y-1.10370*I+1.70060*Q
 
         I and Q, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxRGB.
+        through MaxMap.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from YIQ to RGB");
       for (i=0; i <= MaxMap; i++)
       {
         red_map[i+R]=i;
@@ -4983,10 +5026,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           B = Y+1.772000*C1
 
         Pb and Pr, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxRGB.
+        through MaxMap.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from YPbPr to RGB");
       for (i=0; i <= MaxMap; i++)
       {
         red_map[i+R]=i;
@@ -5012,10 +5053,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           B = Y+2.02790*U
 
         U and V, normally -0.5 through 0.5, must be normalized to the range 0
-        through MaxRGB.
+        through MaxMap.
       */
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from YUV to RGB");
       for (i=0; i <= MaxMap; i++)
       {
         red_map[i+R]=i;
