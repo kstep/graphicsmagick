@@ -1,3 +1,8 @@
+2001-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (quantize): Remove conditions on whether
+ 	quantization should be done.  Now quantization is always done.
+
 2001-06-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Image.h (blur,charcoal,emboss,sharpen): Changed

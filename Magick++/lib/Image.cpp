@@ -1045,10 +1045,8 @@ void Magick::Image::quantize ( bool measureError_  )
 {
   modifyImage();
 
-  if ( ( classType() == DirectClass ) ||
-       ( totalColors() > options()->quantizeColors() ))
-    QuantizeImage( options()->quantizeInfo(),
-			      image() );
+  QuantizeImage( options()->quantizeInfo(),
+                 image() );
 
   if ( measureError_ )
     QuantizationError( image() );
