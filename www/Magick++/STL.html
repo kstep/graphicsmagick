@@ -569,9 +569,11 @@ and allows batching draw objects together in a list for repeated use.</font></td
 <center><a NAME="edgeImage"></a><font size=-1>edgeImage</font></center>
 </td>
 
-<td><font size=-1>unsigned int order_ = 3</font></td>
+<td><font size=-1>unsigned int radius_ = 0.0</font></td>
 
-<td><font size=-1>Edge image (hilight edges in image)</font></td>
+<td><font size=-1>Edge image (hilight edges in image).&nbsp; The radius
+is the radius of the pixel neighborhood.. Specify a radius of zero for
+automatic radius selection.</font></td>
 </tr>
 
 <tr NOSAVE>
@@ -818,7 +820,7 @@ method_</font></td>
 <tr>
 <td><a NAME="medianFilterImage"></a><font size=-1>medianFilterImage</font></td>
 
-<td><font size=-1>unsigned int radius_</font></td>
+<td><font size=-1>const double radius_ = 0.0</font></td>
 
 <td><font size=-1>Filter image by replacing each pixel component with the
 median color in a circular neighborhood</font></td>
