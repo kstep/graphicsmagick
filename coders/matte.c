@@ -166,7 +166,7 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     CloneImage(image,image->columns,image->rows,True,&image->exception);
   if (matte_image == (Image *) NULL)
     return(False);
-  if (!AllocateImageColormap(matte_image,(OpaqueOpacity-TransparentOpacity)+1))
+  if (!AllocateImageColormap(matte_image,MaxRGB+1))
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   SyncImage(matte_image);
   (void) strcpy(matte_image->magick,"MIFF");
