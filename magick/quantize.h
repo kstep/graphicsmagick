@@ -43,6 +43,7 @@ extern MagickExport QuantizeInfo
   *CloneQuantizeInfo(const QuantizeInfo *);
 
 extern MagickExport unsigned int
+  GetImageQuantizationError(Image *),
   MapImage(Image *,const Image *,const unsigned int),
   MapImages(Image *,const Image *,const unsigned int),
   OrderedDitherImage(Image *),

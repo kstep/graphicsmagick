@@ -462,7 +462,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
     }
   if (cube_info->quantize_info->measure_error)
     {
-      (void) QuantizationError(image);
+      (void) GetImageQuantizationError(image);
       SyncImage(image);
     }
   return(True);
@@ -1318,6 +1318,130 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  G e t I m a g e Q u a n t i z a t i o n E r r o r                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageQuantizationError() measures the difference between the original
+%  and quantized images.  This difference is the total quantization error.
+%  The error is computed by summing over all pixels in an image the distance
+%  squared in RGB space between each reference pixel value and its quantized
+%  value.  These values are computed:
+%
+%    o mean_error_per_pixel:  This value is the mean error for any single
+%      pixel in the image.
+%
+%    o normalized_mean_square_error:  This value is the normalized mean
+%      quantization error for any single pixel in the image.  This distance
+%      measure is normalized to a range between 0 and 1.  It is independent
+%      of the range of red, green, and blue values in the image.
+%
+%    o normalized_maximum_square_error:  Thsi value is the normalized
+%      maximum quantization error for any single pixel in the image.  This
+%      distance measure is normalized to a range between 0 and 1.  It is
+%      independent of the range of red, green, and blue values in your image.
+%
+%
+%  The format of the GetImageQuantizationError method is:
+%
+%      unsigned int GetImageQuantizationError(Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o image: Specifies a pointer to an Image structure;  returned from
+%      ReadImage.
+%
+%
+*/
+
+MagickExport unsigned int QuantizationError(Image *image)
+{
+  QuantizationError(image);
+}
+
+MagickExport unsigned int GetImageQuantizationError(Image *image)
+{
+  double
+    distance,
+    maximum_error_per_pixel,
+		normalize,
+    total_error;
+
+  DoublePixelPacket
+    pixel;
+
+  IndexPacket
+    index;
+
+  long
+    count,
+    y;
+
+  register const PixelPacket
+    *p;
+
+  register IndexPacket
+    *indexes;
+
+  register long
+    x;
+
+  /*
+    Initialize measurement.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
+  image->mean_error_per_pixel=0.0;
+  image->normalized_mean_error=0.0;
+  image->normalized_maximum_error=0.0;
+  if (image->storage_class == DirectClass)
+    return(True);
+  /*
+    For each pixel, collect error statistics.
+  */
+  maximum_error_per_pixel=0;
+  total_error=0;
+  for (y=0; y < (long) image->rows; y++)
+  {
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetIndexes(image);
+    for (x=0; x < (long) image->columns; x+=count)
+    {
+      index=indexes[x];
+      pixel.red=p->red-(double) image->colormap[index].red;
+      pixel.green=p->green-(double) image->colormap[index].green;
+      pixel.blue=p->blue-(double) image->colormap[index].blue;
+      for (count=1; (x+count) < (long) image->columns; count++)
+        if (!ColorMatch(p,p+count))
+          break;
+      distance=count*pixel.red*pixel.red+count*pixel.green*pixel.green+
+        count*pixel.blue*pixel.blue;
+      total_error+=distance;
+      if (distance > maximum_error_per_pixel)
+        maximum_error_per_pixel=distance;
+      p+=count;
+    }
+  }
+  /*
+    Compute final error statistics.
+  */
+  normalize=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
+  image->mean_error_per_pixel=total_error/image->columns/image->rows;
+  image->normalized_mean_error=image->mean_error_per_pixel/normalize;
+  image->normalized_maximum_error=maximum_error_per_pixel/normalize;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t Q u a n t i z e I n f o                                             %
 %                                                                             %
 %                                                                             %
@@ -1823,124 +1947,6 @@ static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
         PruneLevel(cube_info,node_info->child[id]);
   if (node_info->level == cube_info->depth)
     PruneChild(cube_info,node_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  Q u a n t i z a t i o n E r r o r                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method QuantizationError measures the difference between the original
-%  and quantized images.  This difference is the total quantization error.
-%  The error is computed by summing over all pixels in an image the distance
-%  squared in RGB space between each reference pixel value and its quantized
-%  value.  These values are computed:
-%
-%    o mean_error_per_pixel:  This value is the mean error for any single
-%      pixel in the image.
-%
-%    o normalized_mean_square_error:  This value is the normalized mean
-%      quantization error for any single pixel in the image.  This distance
-%      measure is normalized to a range between 0 and 1.  It is independent
-%      of the range of red, green, and blue values in the image.
-%
-%    o normalized_maximum_square_error:  Thsi value is the normalized
-%      maximum quantization error for any single pixel in the image.  This
-%      distance measure is normalized to a range between 0 and 1.  It is
-%      independent of the range of red, green, and blue values in your image.
-%
-%
-%  The format of the QuantizationError method is:
-%
-%      unsigned int QuantizationError(Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o image: Specifies a pointer to an Image structure;  returned from
-%      ReadImage.
-%
-%
-*/
-MagickExport unsigned int QuantizationError(Image *image)
-{
-  double
-    distance,
-    maximum_error_per_pixel,
-		normalize,
-    total_error;
-
-  DoublePixelPacket
-    pixel;
-
-  IndexPacket
-    index;
-
-  long
-    count,
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register IndexPacket
-    *indexes;
-
-  register long
-    x;
-
-  /*
-    Initialize measurement.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
-  image->mean_error_per_pixel=0.0;
-  image->normalized_mean_error=0.0;
-  image->normalized_maximum_error=0.0;
-  if (image->storage_class == DirectClass)
-    return(True);
-  /*
-    For each pixel, collect error statistics.
-  */
-  maximum_error_per_pixel=0;
-  total_error=0;
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x+=count)
-    {
-      index=indexes[x];
-      pixel.red=p->red-(double) image->colormap[index].red;
-      pixel.green=p->green-(double) image->colormap[index].green;
-      pixel.blue=p->blue-(double) image->colormap[index].blue;
-      for (count=1; (x+count) < (long) image->columns; count++)
-        if (!ColorMatch(p,p+count))
-          break;
-      distance=count*pixel.red*pixel.red+count*pixel.green*pixel.green+
-        count*pixel.blue*pixel.blue;
-      total_error+=distance;
-      if (distance > maximum_error_per_pixel)
-        maximum_error_per_pixel=distance;
-      p+=count;
-    }
-  }
-  /*
-    Compute final error statistics.
-  */
-  normalize=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
-  image->mean_error_per_pixel=total_error/image->columns/image->rows;
-  image->normalized_mean_error=image->mean_error_per_pixel/normalize;
-  image->normalized_maximum_error=maximum_error_per_pixel/normalize;
-  return(True);
 }
 
 /*

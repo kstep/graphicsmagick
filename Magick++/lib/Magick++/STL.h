@@ -1908,7 +1908,7 @@ namespace Magick
 	// Calculate quantization error
 	if ( measureError_ )
 	  {
-	    MagickLib::QuantizationError( image );
+	    MagickLib::GetImageQuantizationError( image );
 	    if ( image->exception.severity > MagickLib::UndefinedException )
 	      {
 		unlinkImages( first_, last_ );
@@ -2051,7 +2051,7 @@ namespace Magick
       {
 	// Calculate quantization error
 	if ( measureError_ )
-	  MagickLib::QuantizationError( image );
+	  MagickLib::GetImageQuantizationError( image );
 
 	// Update DirectClass representation of pixels
 	MagickLib::SyncImage( image );

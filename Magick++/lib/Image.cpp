@@ -1099,7 +1099,7 @@ void Magick::Image::quantize ( const bool measureError_  )
                  image() );
 
   if ( measureError_ )
-    QuantizationError( image() );
+    GetImageQuantizationError( image() );
 
   // Udate DirectClass representation of pixels
   SyncImage( image() );
