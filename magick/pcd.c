@@ -907,40 +907,40 @@ Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,pcd_image,WriteBinaryType);
   if (pcd_image->file == (FILE *) NULL)
     WriterExit(FileOpenWarning,"Unable to open file",pcd_image);
-  TransformRGBImage(image,RGBColorspace);
+  TransformRGBImage(pcd_image,RGBColorspace);
   /*
     Write PCD image header.
   */
   for (i=0; i < 32; i++)
-    (void) WriteByte(image,0xff);
+    (void) WriteByte(pcd_image,0xff);
   for (i=0; i < 4; i++)
-    (void) WriteByte(image,0x0e);
+    (void) WriteByte(pcd_image,0x0e);
   for (i=0; i < 8; i++)
-    (void) WriteByte(image,'\0');
+    (void) WriteByte(pcd_image,'\0');
   for (i=0; i < 4; i++)
-    (void) WriteByte(image,0x01);
+    (void) WriteByte(pcd_image,0x01);
   for (i=0; i < 4; i++)
-    (void) WriteByte(image,0x05);
+    (void) WriteByte(pcd_image,0x05);
   for (i=0; i < 8; i++)
-    (void) WriteByte(image,'\0');
+    (void) WriteByte(pcd_image,'\0');
   for (i=0; i < 4; i++)
-    (void) WriteByte(image,0x0A);
+    (void) WriteByte(pcd_image,0x0A);
   for (i=0; i < 36; i++)
-    (void) WriteByte(image,'\0');
+    (void) WriteByte(pcd_image,'\0');
   for (i=0; i < 4; i++)
-    (void) WriteByte(image,0x01);
+    (void) WriteByte(pcd_image,0x01);
   for (i=0; i < 1944; i++)
-    (void) WriteByte(image,'\0');
-  (void) WriteBlob(image,7,"PCD_IPI");
-  (void) WriteByte(image,0x06);
+    (void) WriteByte(pcd_image,'\0');
+  (void) WriteBlob(pcd_image,7,"PCD_IPI");
+  (void) WriteByte(pcd_image,0x06);
   for (i=0; i < 1530; i++)
-    (void) WriteByte(image,'\0');
+    (void) WriteByte(pcd_image,'\0');
   if (image->columns < image->rows)
-    (void) WriteByte(image,'\1');
+    (void) WriteByte(pcd_image,'\1');
   else
-    (void) WriteByte(image,'\0');
+    (void) WriteByte(pcd_image,'\0');
   for (i=0; i < 3*0x800-1539; i++)
-    (void) WriteByte(image,'\0');
+    (void) WriteByte(pcd_image,'\0');
   /*
     Write PCD tiles.
   */
