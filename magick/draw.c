@@ -453,7 +453,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       if (file == (FILE *) NULL)
         {
           DestroyAnnotateInfo(clone_info);
-          ThrowImageException(FileOpenWarning,"Unable to read primitive file",
+          ThrowBinaryException(FileOpenWarning,"Unable to read primitive file",
             primitive+1);
         }
       length=MaxTextExtent;
@@ -489,7 +489,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       if (primitive == (char *) NULL)
         {
           DestroyAnnotateInfo(clone_info);
-          ThrowImageException(ResourceLimitWarning,"Unable to draw image",
+          ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
             "Memory allocation failed");
         }
       *q='\0';
@@ -509,7 +509,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       if (indirection)
         FreeMemory(primitive);
       DestroyAnnotateInfo(clone_info);
-      ThrowImageException(ResourceLimitWarning,"Unable to draw image",
+      ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
   /*
@@ -585,7 +585,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       if (n == 0)
         (void) sscanf(p,"%lf %lf%n",&point.x,&point.y,&n);
       if (n == 0)
-        ThrowImageException(OptionWarning,
+        ThrowBinaryException(OptionWarning,
           "Non-conforming drawing primitive definition",p);
       if (point.x < bounds.x1)
         bounds.x1=point.x;
@@ -614,7 +614,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       if (indirection)
         FreeMemory(primitive);
       DestroyAnnotateInfo(clone_info);
-      ThrowImageException(ResourceLimitWarning,"Unable to draw image",
+      ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
     primitive_info[j].coordinates=x;
@@ -872,7 +872,7 @@ Export unsigned int DrawImage(Image *image,const AnnotateInfo *annotate_info)
       if (indirection)
         FreeMemory(primitive);
       DestroyAnnotateInfo(clone_info);
-      ThrowImageException(OptionWarning,
+      ThrowBinaryException(OptionWarning,
         "Non-conforming drawing primitive definition",keyword);
     }
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
