@@ -722,6 +722,8 @@ Export unsigned int ReadCacheIndexes(Cache cache,
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  if (cache_info->class != PseudoClass)
+    return(False);
   offset=region_info->y*cache_info->columns+region_info->x;
   if (cache_info->type != DiskCache)
     {
@@ -975,6 +977,8 @@ Export unsigned int WriteCacheIndexes(Cache cache,
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
+  if (cache_info->class != PseudoClass)
+    return(False);
   offset=region_info->y*cache_info->columns+region_info->x;
   if (cache_info->type != DiskCache)
     {
