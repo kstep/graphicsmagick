@@ -118,6 +118,7 @@ if test "$ac_cv_cxx_default_template_parameters" = yes; then
   AC_DEFINE(HAVE_DEFAULT_TEMPLATE_PARAMETERS,,
             [define if the compiler supports default template parameters])
 fi
+rm -rf SunWS_cache
 ])
 
 
@@ -218,6 +219,7 @@ list<int>::iterator iter = x.begin(); if (iter != x.end()) ++iter; return 0;],
 if test "$ac_cv_cxx_have_stl" = yes; then
   AC_DEFINE(HAVE_STL,,[define if the compiler supports Standard Template Library])
 fi
+rm -rf SunWS_cache
 ])
 
 dnl @synopsis AC_CXX_MEMBER_TEMPLATES_OUTSIDE_CLASS
@@ -247,6 +249,7 @@ if test "$ac_cv_cxx_member_templates_outside_class" = yes; then
   AC_DEFINE(HAVE_MEMBER_TEMPLATES_OUTSIDE_CLASS,,
             [define if the compiler supports member templates outside the class declaration])
 fi
+rm -rf SunWS_cache
 ])
 
 
@@ -376,6 +379,7 @@ A<double> d; A<int> i; f(d); f(i); return 0;],
 if test "$ac_cv_cxx_templates" = yes; then
   AC_DEFINE(HAVE_TEMPLATES,,[define if the compiler supports basic templates])
 fi
+rm -rf SunWS_cache
 ])
 
 

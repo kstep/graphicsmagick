@@ -67,8 +67,12 @@ Work remaining to be completed on libwmf portion of this module:
 #include "defines.h"
 
 #if defined(HasWMF2)
-#endif /* HasWMF2 */
-#if defined(HasWMF)
+ /* HasWMF2 */
+static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+{
+  return (Image *)NULL;
+}
+#elif defined(HasWMF)
 #include <wmfapi.h>
 
 /*
@@ -1844,7 +1848,7 @@ ModuleExport void RegisterWMFImage(void)
   entry->blob_support=False;
   entry->module=AllocateString("WMF");
   RegisterMagickInfo(entry);
-#endif
+#endif /* defined(HasWMF) || defined(HasWMF2) */
 }
 
 /*
@@ -1870,5 +1874,5 @@ ModuleExport void UnregisterWMFImage(void)
 {
 #if defined(HasWMF) || defined(HasWMF2)
   UnregisterMagickInfo("WMF");
-#endif
+#endif /* defined(HasWMF) || defined(HasWMF2) */
 }

@@ -1,4 +1,14 @@
-This file records noteworthy changes in Magick++
+This file records noteworthy changes in Magick++.  As of Magick++
+5.2.3, Magick++ release numbering tracks ImageMagick release
+numbering.
+
+(5.3.5)
+  * Default radius and sigma parameters were changed on the blur,
+    charcoal, emboss, and sharpen methods to match ImageMagick defaults.
+  * Fixes to Magick++ demos to restore appearance.
+
+(5.3.1-5.3.4)
+  * No changes.
 
 (5.3.0)
   * Released with ImageMagick 5.3.0

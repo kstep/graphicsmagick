@@ -69,6 +69,12 @@ MAILING LIST
 
 UNIX/Cygwin COMPILATION
 
+  Note:
+
+    Platform specific notes regarding specific operating systems may be
+    found in the PLATFORMS.txt file. This file (README.txt) provides
+    generic instructions which work in most common cases.
+
   Type:
 
     gzip -dc ImageMagick-5.3.5.tar.gz | tar xvf -

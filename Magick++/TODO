@@ -2,6 +2,11 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Use verbose flag on image to enable run-time tracing.
+
+* Add microtimer support for image processing operations so that the
+  processing time for the last operation is immediately available.
+
 * Add support for ShaveImage().
 
 * Add support for FlattenImage() and OrderedDitherImage().
@@ -22,14 +27,16 @@ Items large and small which remain to be worked on.
 * Fix documentation for drawing rounded rectangle.  Parameters
   represent corners, not center.
 
-* Manage Options instance seperate from Image instance.
+* Manage Options instance seperate from Image instance.  Possibly take
+  this to the extreme by managing each contained structure
+  independently.
 
 * Support options stack similar to graphic-context.
 
 * Provide interface to obtain font metrics for fonts handled by
   FreeType.  Would use the GetFontMetrics() API.
 
-* Add suppport for new drawing primitives:
+* Add support for new drawing primitives (some are not yet implemented):
   - clip-path %s  (%s is the name of the clip path
   - pop clip-path
   - push clip-path-%s  (%s is the name of the clip path)

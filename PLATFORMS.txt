@@ -44,8 +44,13 @@ FreeBSD 3.X and 4.X
 
   Solution
   
-    Either reboot the system (which automatically runs ldconfig) or read
-    the ldconfig manual page to see how invoke it to refresh its cache.
+    Either reboot the system (which automatically runs ldconfig) or
+    execute
+
+      /sbin/ldconfig -m ${PREFIX}/lib
+
+    where ${PREFIX} is the prefix used when configuring ImageMagick
+    (default /usr/local).
 
 Digital Unix and OSF/1
 ======================
