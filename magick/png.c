@@ -242,7 +242,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
       png_size_t
         check;
 
-      check=(png_size_t) ReadBlob(image,(unsigned long) length,(char *)data);
+      check=(png_size_t) ReadBlob(image,(size_t) length,(char *)data);
       if (check != length)
         png_error(png_ptr,"Read Error");
     }
@@ -287,7 +287,7 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
         fread() returns 0 on error, so it is OK to store this in a png_size_t
         instead of an int, which is what fread() actually returns.
       */
-      check=(png_size_t) ReadBlob(image,(unsigned long) length,(char *)data);
+      check=(png_size_t) ReadBlob(image,(size_t) length,(char *)data);
       if (check != length)
         png_error(png_ptr,"Read Error");
       if (length == 4)
@@ -295,7 +295,7 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
           if ((data[0] == 0) && (data[1] == 0) && (data[2] == 0) &&
               (data[3] == 0))
             {
-              check=(png_size_t)ReadBlob(image,(unsigned long) length,
+              check=(png_size_t)ReadBlob(image,(size_t) length,
                 (char *) mng_info->read_buffer);
               mng_info->read_buffer[4]=0;
               mng_info->bytes_in_read_buffer=4;
@@ -310,7 +310,7 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
           if ((data[0] == 0) && (data[1] == 0) && (data[2] == 0) &&
               (data[3] == 1))
             {
-              check=(png_size_t) ReadBlob(image,(unsigned long) length,
+              check=(png_size_t) ReadBlob(image,(size_t) length,
                 (char *) mng_info->read_buffer);
               mng_info->read_buffer[4]=0;
               mng_info->bytes_in_read_buffer=4;
@@ -321,8 +321,8 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
                       Skip the bKGD data byte and CRC.
                     */
                     check=(png_size_t)
-                      ReadBlob(image,5L,(char *) mng_info->read_buffer);
-                    check=(png_size_t) ReadBlob(image,(unsigned long) length,
+                      ReadBlob(image,5,(char *) mng_info->read_buffer);
+                    check=(png_size_t) ReadBlob(image,(size_t) length,
                       (char *) mng_info->read_buffer);
                     mng_info->saved_bkgd_index=mng_info->read_buffer[0];
                     mng_info->have_saved_bkgd_index=True;
@@ -345,7 +345,7 @@ static void png_put_data(png_structp png_ptr,png_bytep data,png_size_t length)
       png_size_t
         check;
 
-      check=(png_size_t)WriteBlob(image,(unsigned long) length,(char *) data);
+      check=(png_size_t) WriteBlob(image,(unsigned long) length,(char *) data);
       if (check != length)
         png_error(png_ptr, "Write Error");
     }
@@ -513,6 +513,7 @@ static void MNGCoalesce(Image *image)
   CoalesceImages(p);
   p->file=(FILE *) NULL;
   p->orphan=False;
+  p->blob_info.mapped=False;
   DestroyImage(p);
   image->delay=delay;
 }
@@ -718,7 +719,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       */
       mng_info=(MngInfo *) AllocateMemory(sizeof(MngInfo));
       if (mng_info == (MngInfo *) NULL)
-        ReaderExit(ResourceLimitWarning,"b. Memory allocation failed", image);
+        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       have_mng_structure=True;
       mng_info->image=image;
       mng_info->global_plte=(png_colorp) NULL;
@@ -827,7 +828,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               AllocateMemory(length*sizeof(unsigned char));
             if (chunk == (unsigned char *) NULL)
               ReaderExit(ResourceLimitWarning,
-               "Unable to allocate memory for chunk data", image);
+               "Unable to allocate memory for chunk data",image);
             for (i=0; i < (int) length; i++)
               chunk[i]=ReadByte(image);
             p=chunk;
@@ -884,7 +885,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     MngInfoFreeStruct(mng_info,&have_mng_structure);
                     return((Image *) NULL);
                   }
+                image->next->blob_info=image->blob_info;
                 image=image->next;
+                mng_info->image=image;
               }
 
             if (mng_width > 65535 || mng_height > 65535)
@@ -1197,7 +1200,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     MngInfoFreeStruct(mng_info,&have_mng_structure);
                     return((Image *) NULL);
                   }
+                image->next->blob_info=image->blob_info;
                 image=image->next;
+                mng_info->image=image;
                 if (term_chunk_found)
                   {
                     image->restart_animation_here=True;
@@ -1535,7 +1540,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     MngInfoFreeStruct(mng_info,&have_mng_structure);
                     return((Image *) NULL);
                   }
+                image->next->blob_info=image->blob_info;
                 image=image->next;
+                mng_info->image=image;
                 if (term_chunk_found)
                   {
                     image->restart_animation_here=True;
@@ -1601,7 +1608,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 MngInfoFreeStruct(mng_info,&have_mng_structure);
                 return((Image *) NULL);
               }
+            image->next->blob_info=image->blob_info;
             image=image->next;
+            mng_info->image=image;
             ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
               (unsigned int) image->filesize);
           }
@@ -1632,25 +1641,25 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     */
 #ifdef PNG_USER_MEM_SUPPORTED
    ping=png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (void *) NULL,
-     PNGErrorHandler,PNGWarningHandler, (void *) NULL,
+     PNGErrorHandler,PNGWarningHandler,(void *) NULL,
      (png_malloc_ptr) png_IM_malloc,(png_free_ptr) png_IM_free);
 #else
     ping=png_create_read_struct(PNG_LIBPNG_VER_STRING,(void *) NULL,
       PNGErrorHandler,PNGWarningHandler);
 #endif
     if (ping == (png_struct *) NULL)
-      ReaderExit(ResourceLimitWarning,"g. Memory allocation failed",image);
+      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     ping_info=png_create_info_struct(ping);
     if (ping_info == (png_info *) NULL)
       {
         png_destroy_read_struct(&ping,(png_info **) NULL,(png_info **) NULL);
-        ReaderExit(ResourceLimitWarning,"h. Memory allocation failed",image);
+        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       }
     end_info=png_create_info_struct(ping);
     if (end_info == (png_info *) NULL)
       {
         png_destroy_read_struct(&ping,&ping_info,(png_info **) NULL);
-        ReaderExit(ResourceLimitWarning,"i. Memory allocation failed",image);
+        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       }
     image->pixels=(PixelPacket *) NULL;
     png_pixels=(unsigned char *) NULL;
@@ -1686,10 +1695,11 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         png_permit_empty_plte(ping,True);
         png_set_read_fn(ping,image,png_get_data);
 #else
-        png_set_read_fn(ping,mng_info,mng_get_data);
+        mng_info->image=image;
         mng_info->bytes_in_read_buffer=0;
         mng_info->found_empty_plte=False;
         mng_info->have_saved_bkgd_index=False;
+        png_set_read_fn(ping,mng_info,mng_get_data);
 #endif
       }
     else
@@ -2324,6 +2334,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     p->pixels=(PixelPacket *)NULL;
                     p->orphan=True;  /* don't mess up links or close FILE */
                     p->file=(FILE *)NULL;
+                    p->blob_info.mapped=False;
                     DestroyImage(p);
                     image->page_info.width=image->columns;
                     image->page_info.height=image->rows;
@@ -2354,6 +2365,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             image->background_color = mng_background_color;
             MNGCoalesce(image);
           }
+#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
+        image=mng_info->image;
+#endif
       }
   } while (Latin1Compare(image_info->magick,"MNG") == 0);
   if (image_info->insert_backdrops && !image_found && (mng_width > 0) &&
@@ -2375,6 +2389,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               return((Image *) NULL);
             }
           image=image->next;
+          image->next->blob_info=image->blob_info;
         }
       image->columns=mng_width;
       image->rows=mng_height;
@@ -3588,9 +3603,11 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
     if (ping_info->text == (png_text *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
-    /* Write a Software tEXt chunk only in the first PNG datastream */
+    /*
+      Write a Software tEXt chunk only in the first PNG datastream.
+    */
     if (image->scene == 0)
-    WriteTextChunk(image_info,ping_info,"Software",MagickVersion);
+      WriteTextChunk(image_info,ping_info,"Software",MagickVersion);
     if (!image_info->adjoin)
       {
         SignatureImage(image);
