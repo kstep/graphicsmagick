@@ -53,9 +53,22 @@
 </tr>
 </table>
 <p>
+2003-04-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/pict.c (ReadPICTImage): Ensure that PICT decoder don't
+        loop forever with an EOF condition if none of the PICT op-codes
+        encountered result in a condition which terminates the input loop.
+        If EOF is dectected while in the input loop a "corrupt image"
+        "unexpected end of file" error is reported.
+
+</UL>
+<p>
 2003-04-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/magick.c, magick/blob.c, magick/studio.h: Added
+        Compilation fixes recommended by Harold Bien for for Borland C++.
   <LI> www/contribute.html: Added text regarding contributing to
         GraphicsMagick.<BR>
   <LI> www/api/types.html: Documentation for GraphicsMagick API types

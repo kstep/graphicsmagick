@@ -119,6 +119,7 @@ typedef struct _PICTRectangle
     right;
 } PICTRectangle;
 
+#define MaxPICTCode 0xa1
 static const PICTCode
   codes[] =
   {
@@ -807,7 +808,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       code=ReadBlobByte(image);
     if (version == 2)
       code=ReadBlobMSBShort(image);
-    if (code > 0xa1)
+    if (EOFBlob(image))
+        ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+    if ((code < 0) || (code > MaxPICTCode) )
       {
         if (IsEventLogging())
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%04X:",code);
