@@ -68,7 +68,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+#define PERL_NO_GET_CONTEXT  /* faster */
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
@@ -91,6 +91,11 @@ extern "C" {
   Define declarations.
 */
 #define ArrayReference  (char **) 4
+#ifndef aTHX_
+#define aTHX_
+#define pTHX_
+#define dTHX
+#endif
 #define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
 #define DoubleReference  (char **) 2
 #define EndOf(array)  (&array[NumberOf(array)])
@@ -98,6 +103,12 @@ extern "C" {
 #define ImageReference  (char **) 3
 #define IntegerReference  (char **) 1
 #define MaxArguments  28
+#define MY_CXT_KEY  PackageName "::ContextKey_" XS_VERSION
+#ifndef START_MY_CXT
+#define MY_CXT_INIT
+#define MY_CXT  my_cxt
+#define dMY_CXT
+#endif
 #ifndef na
 #define na  PL_na
 #endif
@@ -112,20 +123,12 @@ extern "C" {
 /*
   Typedef and structure declarations.
 */
-typedef void
-  *Image__Magick;  /* data type for the Image::Magick package */
-
-struct PackageInfo
+typedef struct _Arguments
 {
-  ImageInfo
-    *image_info;
-
-  DrawInfo
-    *draw_info;
-
-  QuantizeInfo
-    *quantize_info;
-};
+  char
+    *method,
+    **type;
+} Arguments;
 
 struct ArgumentList
 {
@@ -147,6 +150,30 @@ struct ArgumentList
   size_t
     length;
 };
+
+typedef struct _my_cxt_t
+{
+  jmp_buf
+    *error_jump;  /* long jump return for FATAL errors */
+
+  SV
+    *error_list;  /* Perl variable for storing messages */
+} my_cxt_t;
+
+struct PackageInfo
+{
+  ImageInfo
+    *image_info;
+
+  DrawInfo
+    *draw_info;
+
+  QuantizeInfo
+    *quantize_info;
+};
+
+typedef void
+  *Image__Magick;  /* data type for the Image::Magick package */
 
 /*
   Static declarations.
@@ -260,13 +287,6 @@ static char
   {
     "Normal", "Italic", "Oblique", "Any", (char *) NULL
   };
-
-typedef struct _Arguments
-{
-  char
-    *method,
-    **type;
-} Arguments;
 
 static struct
   Methods
@@ -432,24 +452,19 @@ static struct
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
       {"skewY", DoubleReference} } },
   };
-
-/*
-  Variable declarations.
-*/
-char
-  *client_name = "Image::Magick";
 
-static jmp_buf
-  *error_jump;  /* long jump return for FATAL errors */
-
-SV
-  *error_list;  /* Perl variable for storing messages */
+#ifdef START_MY_CXT
+  START_MY_CXT
+#else
+  static my_cxt_t
+    my_cxt = { (jmp_buf *) NULL, (SV *) NULL };
+#endif
 
 /*
   Forward declarations.
 */
 static Image
-  *SetupList(SV *,struct PackageInfo **,SV ***);
+  *SetupList(pTHX_ SV *,struct PackageInfo **,SV ***);
 
 static int
   strEQcase(const char *,const char *);
@@ -489,7 +504,7 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
   clone_info=(struct PackageInfo *) AcquireMemory(sizeof(struct PackageInfo));
   if (!info)
     {
-      InitializeMagick(client_name);
+      InitializeMagick(PackageName);
       clone_info->image_info=CloneImageInfo((ImageInfo *) NULL);
       clone_info->draw_info=
         CloneDrawInfo(clone_info->image_info,(DrawInfo *) NULL);
@@ -704,7 +719,7 @@ static void DestroyPackageInfo(struct PackageInfo *info)
 %
 %
 */
-static Image *GetList(SV *reference,SV ***reference_vector,int *current,
+static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,int *current,
   int *last)
 {
   Image
@@ -744,7 +759,7 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
         rv=av_fetch(av,i,0);
         if (rv && *rv && sv_isobject(*rv))
           {
-            image=GetList(SvRV(*rv),reference_vector,current,last);
+            image=GetList(aTHX_ SvRV(*rv),reference_vector,current,last);
             if (!image)
               continue;
             if (image == previous)
@@ -813,12 +828,12 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
 %
 %  Method GetPackageInfo looks up or creates an info structure for the given
 %  Image__Magick reference.  If it does create a new one, the information in
-%  oldinfo is used to initialize it.
+%  package_info is used to initialize it.
 %
 %  The format of the GetPackageInfo routine is:
 %
 %      struct PackageInfo *GetPackageInfo(void *reference,
-%        struct PackageInfo *oldinfo)
+%        struct PackageInfo *package_info)
 %
 %  A description of each parameter follows:
 %
@@ -826,33 +841,33 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
 %
 %
 */
-static struct PackageInfo *GetPackageInfo(void *reference,
-  struct PackageInfo *oldinfo)
+static struct PackageInfo *GetPackageInfo(pTHX_ void *reference,
+  struct PackageInfo *package_info)
 {
   char
     message[MaxTextExtent];
 
   struct PackageInfo
-    *info;
+    *clone_info;
 
   SV
     *sv;
 
-  FormatString(message,"%s::A_%lx_Z",PackageName,(long) reference);
+  FormatString(message,"%s::Ref%lx_%s",PackageName,(long) reference,
+   XS_VERSION);
   sv=perl_get_sv(message,(TRUE | 0x02));
   if (!sv)
     {
-      MagickError(ResourceLimitError,"Unable to create info variable",
-        message);
-      return(oldinfo);
+      MagickError(ResourceLimitError,"Unable to create info variable",message);
+      return(package_info);
     }
   if (SvREFCNT(sv) == 0)
     (void) SvREFCNT_inc(sv);
-  if (SvIOKp(sv) && (info=(struct PackageInfo *) SvIV(sv)))
-    return(info);
-  info=ClonePackageInfo(oldinfo);
-  sv_setiv(sv,(IV) info);
-  return(info);
+  if (SvIOKp(sv) && (clone_info=(struct PackageInfo *) SvIV(sv)))
+    return(clone_info);
+  clone_info=ClonePackageInfo(package_info);
+  sv_setiv(sv,(IV) clone_info);
+  return(clone_info);
 }
 
 /*
@@ -946,6 +961,8 @@ static void MagickErrorHandler(const ExceptionType error,const char *message,
   int
     error_number;
 
+  dTHX;  /* perl context */
+  dMY_CXT;
   error_number=errno;
   errno=0;
   FormatString(text,"Exception %d: %.1024s%s%.1024s%s%s%.64s%s",error,
@@ -953,22 +970,22 @@ static void MagickErrorHandler(const ExceptionType error,const char *message,
     qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
     error_number ? " [" : "",error_number ? strerror(error_number) : "",
     error_number? "]" : "");
-  if ((error_list == NULL) || (error_jump == NULL))
+  if ((MY_CXT.error_list == NULL) || (MY_CXT.error_jump == NULL))
     {
       /*
         Set up message buffer.
       */
       warn("%s",text);
-      if (error_jump == NULL)
+      if (MY_CXT.error_jump == NULL)
         exit((int) error % 100);
     }
-  if (error_list)
+  if (MY_CXT.error_list)
     {
-      if (SvCUR(error_list))
-        sv_catpv(error_list,"\n");
-      sv_catpv(error_list,text);
+      if (SvCUR(MY_CXT.error_list))
+        sv_catpv(MY_CXT.error_list,"\n");
+      sv_catpv(MY_CXT.error_list,text);
     }
-  longjmp(*error_jump,(int) error);
+  longjmp(*MY_CXT.error_jump,(int) error);
 }
 
 /*
@@ -1002,6 +1019,7 @@ static void MagickErrorHandler(const ExceptionType error,const char *message,
 %
 %
 */
+
 static void MagickWarningHandler(const ExceptionType warning,
   const char *message,const char *qualifier)
 {
@@ -1011,6 +1029,8 @@ static void MagickWarningHandler(const ExceptionType warning,
   int
     error_number;
 
+  dTHX;  /* perl context */
+  dMY_CXT;
   error_number=errno;
   errno=0;
   if (!message)
@@ -1019,18 +1039,18 @@ static void MagickWarningHandler(const ExceptionType warning,
     message,qualifier ? " (" : "",qualifier ? qualifier : "",
     qualifier? ")" : "",error_number ? " [" : "",
     error_number ? strerror(error_number) : "",error_number ? "]" : "");
-  if (error_list == NULL)
+  if (MY_CXT.error_list == NULL)
     {
       /*
         Set up message buffer.
       */
       warn("%s",text);
-      if (error_list == NULL)
+      if (MY_CXT.error_list == NULL)
         return;
     }
-  if (SvCUR(error_list))
-    sv_catpv(error_list,"\n");  /* add \n separator between messages */
-  sv_catpv(error_list,text);
+  if (SvCUR(MY_CXT.error_list))
+    sv_catpv(MY_CXT.error_list,"\n");  /* add \n separator between messages */
+  sv_catpv(MY_CXT.error_list,text);
 }
 
 /*
@@ -1063,8 +1083,8 @@ static void MagickWarningHandler(const ExceptionType warning,
 %
 %
 */
-static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
-  SV *sval)
+static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
+  char *attribute,SV *sval)
 {
   double
     blue,
@@ -1218,8 +1238,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             SvIV(sval);
           if (sp < 0)
             {
-              MagickError(OptionError,"Invalid colorspace type",
-                SvPV(sval,na));
+              MagickError(OptionError,"Invalid colorspace type",SvPV(sval,na));
               return;
             }
           if (info)
@@ -1234,8 +1253,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             SvIV(sval);
           if (sp < 0)
             {
-              MagickError(OptionError,"Invalid compression type",
-                SvPV(sval,na));
+              MagickError(OptionError,"Invalid compression type",SvPV(sval,na));
               return;
             }
           if (info)
@@ -1318,8 +1336,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 SvIV(sval);
               if (sp < 0)
                 {
-                  MagickError(OptionError,"Invalid dither type",
-                    SvPV(sval,na));
+                  MagickError(OptionError,"Invalid dither type",SvPV(sval,na));
                   return;
                 }
               info->image_info->dither=sp != 0;
@@ -1347,8 +1364,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           sp=SvPOK(sval) ? LookupStr(EndianTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
-              MagickError(OptionError,"Invalid endian value",
-                SvPV(sval,na));
+              MagickError(OptionError,"Invalid endian value",SvPV(sval,na));
               return;
             }
           if (info)
@@ -1481,8 +1497,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           sp=SvPOK(sval) ? LookupStr(InterlaceTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
-              MagickError(OptionError,"Invalid interlace value",
-                SvPV(sval,na));
+              MagickError(OptionError,"Invalid interlace value",SvPV(sval,na));
               return;
             }
           if (info)
@@ -1553,8 +1568,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
-              MagickError(OptionError,"Invalid monochrome type",
-                SvPV(sval,na));
+              MagickError(OptionError,"Invalid monochrome type",SvPV(sval,na));
               return;
             }
           if (info)
@@ -1678,8 +1692,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           sp=SvPOK(sval) ? LookupStr(IntentTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
-              MagickError(OptionError,"Invalid rendering intent",
-                SvPV(sval,na));
+              MagickError(OptionError,"Invalid rendering intent",SvPV(sval,na));
               return;
             }
          for ( ; image; image=image->next)
@@ -1701,7 +1714,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               return;
             }
           if (info)
-            (void) CloneString(&info->image_info->sampling_factor,SvPV(sval,na));
+            (void) CloneString(&info->image_info->sampling_factor,
+              SvPV(sval,na));
           return;
         }
       if (LocaleCompare(attribute,"scene") == 0)
@@ -1789,8 +1803,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             SvIV(sval);
           if (sp < 0)
             {
-              MagickError(OptionError,"Invalid resolution unit",
-                SvPV(sval,na));
+              MagickError(OptionError,"Invalid resolution unit",SvPV(sval,na));
               return;
             }
           if (info)
@@ -1810,8 +1823,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
-              MagickError(OptionError,"Invalid verbose type",
-                SvPV(sval,na));
+              MagickError(OptionError,"Invalid verbose type",SvPV(sval,na));
               return;
             }
           if (info)
@@ -1888,7 +1900,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
 %
 %
 */
-static Image *SetupList(SV *reference,struct PackageInfo **info,
+static Image *SetupList(pTHX_ SV *reference,struct PackageInfo **info,
   SV ***reference_vector)
 {
   Image
@@ -1904,9 +1916,9 @@ static Image *SetupList(SV *reference,struct PackageInfo **info,
     *info=NULL;
   current=0;
   last=0;
-  image=GetList(reference,reference_vector,&current,&last);
+  image=GetList(aTHX_ reference,reference_vector,&current,&last);
   if (info && (SvTYPE(reference) == SVt_PVAV))
-    *info=GetPackageInfo((void *) reference,(struct PackageInfo *) NULL);
+    *info=GetPackageInfo(aTHX_ (void *) reference,(struct PackageInfo *) NULL);
   return(image);
 }
 
@@ -1978,6 +1990,7 @@ PROTOTYPES: ENABLE
 BOOT:
   SetWarningHandler(MagickWarningHandler);
   SetErrorHandler(MagickErrorHandler);
+  { MY_CXT_INIT; }
 
 double
 constant(name,argument)
@@ -2024,8 +2037,9 @@ Animate(ref,...)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     package_info=(struct PackageInfo *) NULL;
-    error_list=newSVpv("",0);
     status=0;
     if (!sv_isobject(ST(0)))
       {
@@ -2033,11 +2047,11 @@ Animate(ref,...)
         goto MethodException;
       }
     reference=SvRV(ST(0));
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"No images to animate",NULL);
@@ -2045,22 +2059,22 @@ Animate(ref,...)
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(package_info,NULL,"server",ST(1));
+      SetAttribute(aTHX_ package_info,NULL,"server",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
+          SetAttribute(aTHX_ package_info,image,SvPV(ST(i-1),na),ST(i));
     AnimateImages(package_info->image_info,image);
     (void) CatchImageException(image);
 
   MethodException:
     if (package_info)
       DestroyPackageInfo(package_info);
-    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -2122,11 +2136,12 @@ Append(ref,...)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     attribute=NULL;
     av=NULL;
     reference_vector=NULL;
     status=0;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
@@ -2137,17 +2152,17 @@ Append(ref,...)
     av=newAV();
     av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,&reference_vector);
+    image=SetupList(aTHX_ reference,&info,&reference_vector);
     if (!image)
       {
         MagickError(OptionError,"No images to append",NULL);
         goto MethodException;
       }
-    info=GetPackageInfo((void *) av,info);
+    info=GetPackageInfo(aTHX_ (void *) av,info);
     /*
       Get options.
     */
@@ -2193,18 +2208,18 @@ Append(ref,...)
       SvREFCNT_dec(sv);
     }
     ST(0)=av_reference;
-    error_jump=NULL;
-    SvREFCNT_dec(error_list);  /* can't return warning messages */
-    error_list=NULL;
+    MY_CXT.error_jump=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);  /* can't return warning messages */
+    MY_CXT.error_list=NULL;
     XSRETURN(1);
 
   MethodException:
-    error_jump=NULL;
-    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    MY_CXT.error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -2258,8 +2273,9 @@ Average(ref)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     status=0;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
@@ -2267,11 +2283,11 @@ Average(ref)
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"No images to average",NULL);
@@ -2292,21 +2308,21 @@ Average(ref)
     rv=newRV(sv);
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
-    info=GetPackageInfo((void *) av,info);
+    info=GetPackageInfo(aTHX_ (void *) av,info);
     FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
     SetImageInfo(info->image_info,False,&image->exception);
-    SvREFCNT_dec(error_list);
-    error_jump=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
 
   MethodException:
-    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);  /* return messages in string context */
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);  /* return messages in string context */
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -2374,8 +2390,9 @@ BlobToImage(ref,...)
     volatile int
       number_images;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     number_images=0;
-    error_list=newSVpv("",0);
     ac=(items < 2) ? 1 : items-1;
     list=(char **) AcquireMemory((ac+1)*sizeof(*list));
     length=(STRLEN *) AcquireMemory((ac+1)*sizeof(length));
@@ -2392,7 +2409,7 @@ BlobToImage(ref,...)
         goto ReturnIt;
       }
     av=(AV *) reference;
-    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    info=GetPackageInfo(aTHX_ (void *) av,(struct PackageInfo *) NULL);
     n=1;
     if (items <= 1)
       {
@@ -2411,7 +2428,7 @@ BlobToImage(ref,...)
     }
     list[n]=(char *) NULL;
     keep=list;
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     if (setjmp(error_jmp))
       goto ReturnIt;
     GetExceptionInfo(&exception);
@@ -2444,11 +2461,11 @@ BlobToImage(ref,...)
 
   ReturnIt:
     LiberateMemory((void **) &list);
-    sv_setiv(error_list,(IV) number_images);
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) number_images);
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -2504,9 +2521,10 @@ Coalesce(ref)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     reference_vector=NULL;
     status=0;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
@@ -2517,11 +2535,11 @@ Coalesce(ref)
     av=newAV();
     av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"No images to coalesce",NULL);
@@ -2540,17 +2558,17 @@ Coalesce(ref)
       SvREFCNT_dec(sv);
     }
     ST(0)=av_reference;
-    error_jump=NULL;
-    SvREFCNT_dec(error_list);
-    error_list=NULL;
+    MY_CXT.error_jump=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
     XSRETURN(1);
 
   MethodException:
-    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -2606,8 +2624,9 @@ Copy(ref)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     status=0;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
@@ -2615,11 +2634,11 @@ Copy(ref)
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (image == (Image *) NULL)
       {
         MagickError(OptionError,"No images to clone",NULL);
@@ -2643,17 +2662,17 @@ Copy(ref)
       SvREFCNT_dec(sv);
     }
     DestroyExceptionInfo(&exception);
-    info=GetPackageInfo((void *) av,info);
-    SvREFCNT_dec(error_list);
-    error_jump=NULL;
+    info=GetPackageInfo(aTHX_ (void *) av,info);
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
 
   MethodException:
-    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -2696,7 +2715,8 @@ DESTROY(ref)
         /*
           Array (AV *) reference
         */
-        FormatString(message,"%s::A_%lx_Z",PackageName,(long) reference);
+        FormatString(message,"%s::Ref%lx_%s",PackageName,(long) reference,
+          XS_VERSION);
         sv=perl_get_sv(message,FALSE);
         if (sv)
           {
@@ -2770,20 +2790,21 @@ Display(ref,...)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     status=0;
     package_info=(struct PackageInfo *) NULL;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
         goto MethodException;
       }
     reference=SvRV(ST(0));
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (image == (Image *) NULL)
       {
         MagickError(OptionError,"No images to display",NULL);
@@ -2791,22 +2812,22 @@ Display(ref,...)
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(package_info,NULL,"server",ST(1));
+      SetAttribute(aTHX_ package_info,NULL,"server",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
+          SetAttribute(aTHX_ package_info,image,SvPV(ST(i-1),na),ST(i));
     DisplayImages(package_info->image_info,image);
     (void) CatchImageException(image);
 
   MethodException:
     if (package_info)
       DestroyPackageInfo(package_info);
-    sv_setiv(error_list,(IV) status);
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) status);
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -2860,8 +2881,9 @@ Flatten(ref)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     status=0;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
@@ -2869,11 +2891,11 @@ Flatten(ref)
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"No images to flatten",NULL);
@@ -2894,21 +2916,21 @@ Flatten(ref)
     rv=newRV(sv);
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
-    info=GetPackageInfo((void *) av,info);
+    info=GetPackageInfo(aTHX_ (void *) av,info);
     FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
       ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
     (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
     SetImageInfo(info->image_info,False,&image->exception);
-    SvREFCNT_dec(error_list);
-    error_jump=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
 
   MethodException:
-    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);  /* return messages in string context */
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);  /* return messages in string context */
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -2964,7 +2986,7 @@ Get(ref,...)
         XSRETURN_EMPTY;
       }
     reference=SvRV(ST(0));
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image && !info)
       {
         MagickError(OptionError,"Nothing to get attributes from",NULL);
@@ -3936,18 +3958,19 @@ ImageToBlob(ref,...)
     void
       *blob;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     package_info=(struct PackageInfo *) NULL;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
         goto MethodException;
       }
     reference=SvRV(ST(0));
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     if (setjmp(error_jmp))
       goto MethodException;
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"No images to blob",NULL);
@@ -3955,7 +3978,7 @@ ImageToBlob(ref,...)
       }
     package_info=ClonePackageInfo(info);
     for (i=2; i < items; i+=2)
-      SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
+      SetAttribute(aTHX_ package_info,image,SvPV(ST(i-1),na),ST(i));
     (void) strncpy(filename,package_info->image_info->filename,MaxTextExtent-1);
     scene=0;
     for (next=image; next; next=next->next)
@@ -3985,8 +4008,8 @@ ImageToBlob(ref,...)
   MethodException:
     if (package_info)
       DestroyPackageInfo(package_info);
-    SvREFCNT_dec(error_list);  /* throw away all errors */
-    error_list=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);  /* throw away all errors */
+    MY_CXT.error_list=NULL;
   }
 
 #
@@ -4219,11 +4242,12 @@ Mogrify(ref,...)
     volatile int
       number_images;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     reference_vector=NULL;
     region_image=NULL;
     number_images=0;
     base=2;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
@@ -4235,7 +4259,7 @@ Mogrify(ref,...)
     region_info.x=0;
     region_info.y=0;
     region_image=(Image *) NULL;
-    image=SetupList(reference,&info,&reference_vector);
+    image=SetupList(aTHX_ reference,&info,&reference_vector);
     if (ix && (ix != 666))
       {
         /*
@@ -4329,7 +4353,7 @@ Mogrify(ref,...)
             if (pp->type == ImageReference)
               {
                 if (!sv_isobject(sv) ||
-                    !(al->image_reference=SetupList(SvRV(sv),
+                    !(al->image_reference=SetupList(aTHX_ SvRV(sv),
                      (struct PackageInfo **) NULL,(SV ***) NULL)))
                   {
                     MagickError(OptionError,"Reference is not my type",
@@ -4360,7 +4384,7 @@ Mogrify(ref,...)
       attribute_flag[pp-rp->arguments]++;
       continue_outer_loop: ;
     }
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     if (setjmp(error_jmp))
       goto ReturnIt;
     (void) memset((char *) &fill_color,0,sizeof(PixelPacket));
@@ -5861,11 +5885,11 @@ Mogrify(ref,...)
   ReturnIt:
     if (reference_vector)
       LiberateMemory((void **) &reference_vector);
-    sv_setiv(error_list,(IV) number_images);
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) number_images);
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -5934,10 +5958,11 @@ Montage(ref,...)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     reference_vector=NULL;
     status=0;
     attribute=NULL;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
@@ -5948,11 +5973,11 @@ Montage(ref,...)
     av=newAV();
     av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,&reference_vector);
+    image=SetupList(aTHX_ reference,&info,&reference_vector);
     if (!image)
       {
         MagickError(OptionError,"No images to montage",NULL);
@@ -5961,7 +5986,7 @@ Montage(ref,...)
     /*
       Get options.
     */
-    info=GetPackageInfo((void *) av,info);
+    info=GetPackageInfo(aTHX_ (void *) av,info);
     montage_info=CloneMontageInfo(info->image_info,(MontageInfo *) NULL);
     GetExceptionInfo(&exception);
     (void) QueryColorDatabase("none",&transparent_color,&exception);
@@ -6242,17 +6267,17 @@ Montage(ref,...)
       SvREFCNT_dec(sv);
     }
     ST(0)=av_reference;
-    error_jump=NULL;
-    SvREFCNT_dec(error_list);
-    error_list=NULL;
+    MY_CXT.error_jump=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
     XSRETURN(1);
 
   MethodException:
-    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -6314,11 +6339,12 @@ Morph(ref,...)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     av=NULL;
     reference_vector=NULL;
     status=0;
     attribute=NULL;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
@@ -6329,17 +6355,17 @@ Morph(ref,...)
     av=newAV();
     av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,&reference_vector);
+    image=SetupList(aTHX_ reference,&info,&reference_vector);
     if (!image)
       {
         MagickError(OptionError,"No images to morph",NULL);
         goto MethodException;
       }
-    info=GetPackageInfo((void *) av,info);
+    info=GetPackageInfo(aTHX_ (void *) av,info);
     /*
       Get attribute.
     */
@@ -6380,18 +6406,18 @@ Morph(ref,...)
       SvREFCNT_dec(sv);
     }
     ST(0)=av_reference;
-    error_jump=NULL;
-    SvREFCNT_dec(error_list);  /* can't return warning messages */
-    error_list=NULL;
+    MY_CXT.error_jump=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);  /* can't return warning messages */
+    MY_CXT.error_list=NULL;
     XSRETURN(1);
 
   MethodException:
-    error_jump=NULL;
-    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    MY_CXT.error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -6442,8 +6468,9 @@ Mosaic(ref)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     status=0;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
@@ -6451,11 +6478,11 @@ Mosaic(ref)
       }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"No images to mosaic",NULL);
@@ -6475,22 +6502,22 @@ Mosaic(ref)
     rv=newRV(sv);
     av_push(av,sv_bless(rv,hv));
     SvREFCNT_dec(sv);
-    info=GetPackageInfo((void *) av,info);
+    info=GetPackageInfo(aTHX_ (void *) av,info);
     (void) strncpy(image->filename,info->image_info->filename,MaxTextExtent-1);
     SetImageInfo(info->image_info,False,&image->exception);
     if (exception.severity != UndefinedException)
       CatchException(&exception);
     DestroyExceptionInfo(&exception);
-    SvREFCNT_dec(error_list);
-    error_jump=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
 
   MethodException:
-    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);  /* return messages in string context */
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);  /* return messages in string context */
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -6560,14 +6587,15 @@ Ping(ref,...)
     unsigned long
       count;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     package_info=(struct PackageInfo *) NULL;
-    error_list=newSVpv("",0);
     ac=(items < 2) ? 1 : items-1;
     list=(char **) AcquireMemory((ac+1)*sizeof(*list));
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
     av=(AV *) reference;
-    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    info=GetPackageInfo(aTHX_ (void *) av,(struct PackageInfo *) NULL);
     package_info=ClonePackageInfo(info);
     n=1;
     if (items <= 1)
@@ -6598,7 +6626,7 @@ Ping(ref,...)
       }
     list[n]=(char *) NULL;
     keep=list;
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     if (setjmp(error_jmp))
       goto ReturnIt;
     status=ExpandFilenames(&n,&list);
@@ -6647,8 +6675,8 @@ Ping(ref,...)
     if (package_info)
       DestroyPackageInfo(package_info);
     LiberateMemory((void **) &list);
-    SvREFCNT_dec(error_list);  /* throw away all errors */
-    error_list=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);  /* throw away all errors */
+    MY_CXT.error_list=NULL;
   }
 
 #
@@ -6683,8 +6711,9 @@ QueryColor(ref,...)
     register int
       i;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     GetExceptionInfo(&exception);
-    error_list=newSVpv("",0);
     if (items == 1)
       {
         const ColorInfo
@@ -6737,8 +6766,8 @@ QueryColor(ref,...)
     DestroyExceptionInfo(&exception);
 
   MethodException:
-    SvREFCNT_dec(error_list);
-    error_list=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
   }
 
 #
@@ -6784,11 +6813,12 @@ QueryColorname(ref,...)
     SV
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
-    error_list=newSVpv("",0);
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
-    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
-    image=SetupList(reference,&info,(SV ***) NULL);
+    info=GetPackageInfo(aTHX_ (void *) av,(struct PackageInfo *) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     EXTEND(sp,items);
     GetExceptionInfo(&exception);
     for (i=1; i < items; i++)
@@ -6799,8 +6829,8 @@ QueryColorname(ref,...)
       PUSHs(sv_2mortal(newSVpv(message,0)));
     }
     DestroyExceptionInfo(&exception);
-    SvREFCNT_dec(error_list);
-    error_list=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
   }
 
 #
@@ -6835,7 +6865,8 @@ QueryFont(ref,...)
     register int
       i;
 
-    error_list=newSVpv("",0);
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     GetExceptionInfo(&exception);
     if (items == 1)
       {
@@ -6917,8 +6948,8 @@ QueryFont(ref,...)
     DestroyExceptionInfo(&exception);
 
   MethodException:
-    SvREFCNT_dec(error_list);
-    error_list=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
   }
 
 #
@@ -6976,11 +7007,12 @@ QueryFontMetrics(ref,...)
     unsigned int
       status;
 
-    error_list=newSVpv("",0);
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
-    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
-    image=SetupList(reference,&info,(SV ***) NULL);
+    info=GetPackageInfo(aTHX_ (void *) av,(struct PackageInfo *) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"No image to query",NULL);
@@ -7114,8 +7146,7 @@ QueryFontMetrics(ref,...)
                 LookupStr(BooleanTypes,SvPV(ST(i),na));
               if (sp < 0)
                 {
-                  MagickError(OptionError,"Invalid unicode type",
-                    SvPV(ST(i),na));
+                  MagickError(OptionError,"Invalid unicode type",SvPV(ST(i),na));
                   break;
                 }
              draw_info->unicode=sp != 0;
@@ -7188,8 +7219,8 @@ QueryFontMetrics(ref,...)
     DestroyDrawInfo(draw_info);
 
   MethodException:
-    SvREFCNT_dec(error_list);
-    error_list=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
   }
 
 #
@@ -7224,7 +7255,8 @@ QueryFormat(ref,...)
     register int
       i;
 
-    error_list=newSVpv("",0);
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     GetExceptionInfo(&exception);
     if (items == 1)
       {
@@ -7285,8 +7317,8 @@ QueryFormat(ref,...)
     DestroyExceptionInfo(&exception);
 
   MethodException:
-    SvREFCNT_dec(error_list);
-    error_list=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
   }
 
 #
@@ -7354,9 +7386,10 @@ Read(ref,...)
     volatile int
       number_images;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     package_info=(struct PackageInfo *) NULL;
     number_images=0;
-    error_list=newSVpv("",0);
     ac=(items < 2) ? 1 : items-1;
     list=(char **) AcquireMemory((ac+1)*sizeof(*list));
     if (!sv_isobject(ST(0)))
@@ -7372,7 +7405,7 @@ Read(ref,...)
         goto ReturnIt;
       }
     av=(AV *) reference;
-    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    info=GetPackageInfo(aTHX_ (void *) av,(struct PackageInfo *) NULL);
     package_info=ClonePackageInfo(info);
     n=1;
     if (items <= 1)
@@ -7403,7 +7436,7 @@ Read(ref,...)
       }
     list[n]=(char *) NULL;
     keep=list;
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     if (setjmp(error_jmp))
       goto ReturnIt;
     status=ExpandFilenames(&n,&list);
@@ -7446,11 +7479,11 @@ Read(ref,...)
     if (package_info)
       DestroyPackageInfo(package_info);
     LiberateMemory((void **) &list);
-    sv_setiv(error_list,(IV) number_images);
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) number_images);
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -7484,10 +7517,11 @@ Remote(ref,...)
     struct PackageInfo
       *info;
 
-    error_list=newSVpv("",0);
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
-    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    info=GetPackageInfo(aTHX_ (void *) av,(struct PackageInfo *) NULL);
 #if defined(XlibSpecificationRelease)
     {
       Display
@@ -7501,8 +7535,8 @@ Remote(ref,...)
         XRemoteCommand(display,(char *) NULL,(char *) SvPV(ST(i),na));
     }
 #endif
-    SvREFCNT_dec(error_list);    /* throw away all errors */
-    error_list=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);    /* throw away all errors */
+    MY_CXT.error_list=NULL;
   }
 
 #
@@ -7540,25 +7574,26 @@ Set(ref,...)
     SV
       *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
-    error_list=newSVpv("",0);
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
         goto MethodException;
       }
     reference=SvRV(ST(0));
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (items <= 2)
-      SetAttribute(info,image,"size",ST(1));
+      SetAttribute(aTHX_ info,image,"size",ST(1));
     else
       for (i=2; i < items; i+=2)
-        SetAttribute(info,image,SvPV(ST(i-1),na),ST(i));
+        SetAttribute(aTHX_ info,image,SvPV(ST(i-1),na),ST(i));
 
   MethodException:
-    sv_setiv(error_list,(IV) (SvCUR(error_list) != 0));
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
     XSRETURN(1);
   }
 
@@ -7620,11 +7655,12 @@ Transform(ref,...)
     volatile int
       status;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     av=NULL;
     reference_vector=NULL;
     status=0;
     attribute=NULL;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
@@ -7635,17 +7671,17 @@ Transform(ref,...)
     av=newAV();
     av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
     SvREFCNT_dec(av);
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(reference,&info,&reference_vector);
+    image=SetupList(aTHX_ reference,&info,&reference_vector);
     if (!image)
       {
         MagickError(OptionError,"No images to transform",NULL);
         goto MethodException;
       }
-    info=GetPackageInfo((void *) av,info);
+    info=GetPackageInfo(aTHX_ (void *) av,info);
     /*
       Get attribute.
     */
@@ -7705,18 +7741,18 @@ Transform(ref,...)
     }
     DestroyExceptionInfo(&exception);
     ST(0)=av_reference;
-    error_jump=NULL;
-    SvREFCNT_dec(error_list);  /* can't return warning messages */
-    error_list=NULL;
+    MY_CXT.error_jump=NULL;
+    SvREFCNT_dec(MY_CXT.error_list);  /* can't return warning messages */
+    MY_CXT.error_list=NULL;
     XSRETURN(1);
 
   MethodException:
-    error_jump=NULL;
-    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    MY_CXT.error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) (status ? status : SvCUR(MY_CXT.error_list) != 0));
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
 
@@ -7767,19 +7803,20 @@ Write(ref,...)
     volatile int
       number_images;
 
+    dMY_CXT;
+    MY_CXT.error_list=newSVpv("",0);
     number_images=0;
     package_info=(struct PackageInfo *) NULL;
-    error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
         MagickError(OptionError,"Reference is not my type",PackageName);
         goto MethodException;
       }
     reference=SvRV(ST(0));
-    error_jump=(&error_jmp);
+    MY_CXT.error_jump=(&error_jmp);
     if (setjmp(error_jmp))
       goto MethodException;
-    image=SetupList(reference,&info,(SV ***) NULL);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"No images to write",NULL);
@@ -7787,11 +7824,11 @@ Write(ref,...)
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(package_info,NULL,"filename",ST(1));
+      SetAttribute(aTHX_ package_info,NULL,"filename",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
+          SetAttribute(aTHX_ package_info,image,SvPV(ST(i-1),na),ST(i));
     (void) strncpy(filename,package_info->image_info->filename,MaxTextExtent-1);
     scene=0;
     for (next=image; next; next=next->next)
@@ -7813,10 +7850,10 @@ Write(ref,...)
   MethodException:
     if (package_info)
       DestroyPackageInfo(package_info);
-    sv_setiv(error_list,(IV) number_images);
-    SvPOK_on(error_list);
-    ST(0)=sv_2mortal(error_list);
-    error_list=NULL;
-    error_jump=NULL;
+    sv_setiv(MY_CXT.error_list,(IV) number_images);
+    SvPOK_on(MY_CXT.error_list);
+    ST(0)=sv_2mortal(MY_CXT.error_list);
+    MY_CXT.error_list=NULL;
+    MY_CXT.error_jump=NULL;
     XSRETURN(1);
   }
