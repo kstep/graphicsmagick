@@ -98,12 +98,8 @@ PERLMAKEFILE=$(PERLMAGICK)/Makefile
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:
 	if test -n "$(VPATH)" ; then \
-	  perlmagick=`(cd $(VPATH)/$(PERLMAGICK); pwd)` && \
-	  ( cd $(PERLMAGICK) && \
-	    for file in "$$perlmagick/"* ; do \
-	      if test ! -r `basename $$file` ; then @LN_S@ $$file . ; fi ; \
-	    done \
-	  ) \
+	  imagemagick=`(cd $(VPATH) ; pwd)` && \
+	  ( cd $(PERLMAGICK) && sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) > /dev/null 2>&1 ) \
 	fi
 	touch perl-sources
 
