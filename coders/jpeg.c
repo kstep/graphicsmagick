@@ -190,15 +190,11 @@ static unsigned int EmitMessage(j_common_ptr jpeg_info,int level)
   char
     message[JMSG_LENGTH_MAX];
 
-  ErrorManager
-	  *error_manager;
-
   Image
     *image;
 
   (jpeg_info->err->format_message)(jpeg_info,message);
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  image=error_manager->image;
+  image=(Image *) jpeg_info->client_data;
   if (level < 0)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
@@ -267,9 +263,6 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   char
     *comment;
 
-  ErrorManager
-	  *error_manager;
-
   Image
     *image;
 
@@ -282,8 +275,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   /*
     Determine length of comment.
   */
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  image=error_manager->image;
+  image=(Image *) jpeg_info->client_data;
   length=(long) GetCharacter(jpeg_info) << 8;
   length+=(long) GetCharacter(jpeg_info);
   length-=2;
@@ -306,9 +298,6 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
 
 static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
 {
-  ErrorManager
-	  *error_manager;
-
   Image
     *image;
 
@@ -332,8 +321,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   /*
     Allocate generic profile.
   */
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  image=error_manager->image;
+  image=(Image *) jpeg_info->client_data;
   i=(long) image->generic_profiles;
   if (image->generic_profile == (ProfileInfo *) NULL)
     image->generic_profile=(ProfileInfo *) AcquireMemory(sizeof(ProfileInfo));
@@ -367,9 +355,6 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
 {
   char
     magick[12];
-
-  ErrorManager
-	  *error_manager;
 
   Image
     *image;
@@ -405,8 +390,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   (void) GetCharacter(jpeg_info);  /* id */
   (void) GetCharacter(jpeg_info);  /* markers */
   length-=14;
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  image=error_manager->image;
+  image=(Image *) jpeg_info->client_data;
   if (image->color_profile.length == 0)
     image->color_profile.info=(unsigned char *) AcquireMemory(length);
   else
@@ -428,9 +412,6 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 {
   char
     magick[MaxTextExtent];
-
-  ErrorManager
-	  *error_manager;
 
   Image
     *image;
@@ -462,8 +443,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
 #ifdef GET_ONLY_IPTC_DATA
   *tag='\0';
 #endif
-  error_manager=(ErrorManager *) jpeg_info->client_data;
-  image=error_manager->image;
+  image=(Image *) jpeg_info->client_data;
   if (image->iptc_profile.length == 0)
     {
 #ifdef GET_ONLY_IPTC_DATA
@@ -866,37 +846,33 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterJPEGImage(void)
 {
-#define JPEGDescription  "Joint Photographic Experts Group JFIF format"
-
-  char
-    version[MaxTextExtent];
-
   MagickInfo
     *entry;
 
-  *version='\0';
-#if defined(JPEG_LIB_VERSION)
-  FormatString(version,"%d",JPEG_LIB_VERSION);
-#endif
   entry=SetMagickInfo("JPEG");
-  entry->thread_support=False;
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;
   entry->magick=IsJPEG;
   entry->adjoin=False;
-  entry->description=AcquireString(JPEGDescription);
-  if (*version != '\0')
+  entry->description=
+    AcquireString("Joint Photographic Experts Group JFIF format");
+#if defined(JPEG_LIB_VERSION)
+  {
+    char
+      version[MaxTextExtent];
+
+    FormatString(version,"%d",JPEG_LIB_VERSION);
     entry->version=AcquireString(version);
-  entry->module=AcquireString("JPEG");
+  }
+#endif
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");
   entry->thread_support=False;
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;
   entry->adjoin=False;
-  entry->description=AcquireString(JPEGDescription);
-  if (*version != '\0')
-    entry->version=AcquireString(version);
+  entry->description=
+    AcquireString("Joint Photographic Experts Group JFIF format");
   entry->module=AcquireString("JPEG");
   (void) RegisterMagickInfo(entry);
 }
@@ -1216,7 +1192,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       break;
     }
   }
-  if (IsGrayImage(image,&image->exception))
+  if ((image->storage_class != DirectClass) &&
+      IsGrayImage(image,&image->exception))
     {
       jpeg_info.input_components=1;
       jpeg_info.in_color_space=JCS_GRAYSCALE;
