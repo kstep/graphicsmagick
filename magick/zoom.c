@@ -948,10 +948,10 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
           green=y_vector[x].green+y_span*x_vector[x].green;
           blue=y_vector[x].blue+y_span*x_vector[x].blue;
           opacity=y_vector[x].opacity+y_span*x_vector[x].opacity;
-          s->red=red > MaxRGB ? MaxRGB : red;
-          s->green=green > MaxRGB ? MaxRGB : green;
-          s->blue=blue > MaxRGB ? MaxRGB : blue;
-          s->opacity=opacity > Opaque ? Opaque : opacity;
+          s->red=red > MaxRGB ? MaxRGB : red+0.5;
+          s->green=green > MaxRGB ? MaxRGB : green+0.5;
+          s->blue=blue > MaxRGB ? MaxRGB : blue+0.5;
+          s->opacity=opacity > Opaque ? Opaque : opacity+0.5;
           s++;
           y_vector[x].red=0;
           y_vector[x].green=0;
@@ -1012,10 +1012,10 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
             green+=x_span*s->green;
             blue+=x_span*s->blue;
             opacity+=x_span*s->opacity;
-            t->red=red > MaxRGB ? MaxRGB : red;
-            t->green=green > MaxRGB ? MaxRGB : green;
-            t->blue=blue > MaxRGB ? MaxRGB : blue;
-            t->opacity=opacity > Opaque ? Opaque : opacity;
+            t->red=red > MaxRGB ? MaxRGB : red+0.5;
+            t->green=green > MaxRGB ? MaxRGB : green+0.5;
+            t->blue=blue > MaxRGB ? MaxRGB : blue+0.5;
+            t->opacity=opacity > Opaque ? Opaque : opacity+0.5;
             x_scale-=x_span;
             x_span=1.0;
             next_column=True;
@@ -1049,10 +1049,10 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         }
       if (!next_column && ((t-scale_scanline) < scale_image->columns))
         {
-          t->red=red > MaxRGB ? MaxRGB : red;
-          t->green=green > MaxRGB ? MaxRGB : green;
-          t->blue=blue > MaxRGB ? MaxRGB : blue;
-          t->opacity=opacity > Opaque ? Opaque : opacity;
+          t->red=red > MaxRGB ? MaxRGB : red+0.5;
+          t->green=green > MaxRGB ? MaxRGB : green+0.5;
+          t->blue=blue > MaxRGB ? MaxRGB : blue+0.5;
+          t->opacity=opacity > Opaque ? Opaque : opacity+0.5;
         }
       /*
         Transfer scanline to scaled image.
