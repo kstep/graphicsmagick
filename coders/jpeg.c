@@ -103,6 +103,13 @@ static unsigned int IsJPEG(const unsigned char *magick,const size_t length)
 }
 
 #if defined(HasJPEG)
+#  ifdef HAVE_STDLIB_H
+    /* Remove the "1" from the macro as defined in magick_config.h because
+     *      * it conflicts with the redefinition in libjpeg.
+     *           */
+#    undef HAVE_STDLIB_H
+#    define HAVE_STDLIB_H
+#  endif
 #define JPEG_INTERNAL_OPTIONS
 #if defined(__MINGW32__)
 # define XMD_H 1  /* Avoid conflicting typedef for INT32 */
