@@ -24,7 +24,7 @@ extern MagickExport unsigned int
                        const ChannelType channel,
                        ExceptionInfo *exception);
 
-extern MagickPassFail
+extern MagickExport MagickPassFail
   ChannelImage(Image *image,const ChannelType channel),
   ImportImageChannel(const Image *src_image,
                      Image *dst_image,
