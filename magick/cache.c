@@ -1289,10 +1289,6 @@ MagickExport unsigned int OpenCache(Image *image)
         Set cache memory threshold.
       */
       threshold=PixelCacheThreshold;
-#if defined(_SC_PAGESIZE) && defined(_SC_PHYS_PAGES)
-      threshold=(size_t) (4.0*sysconf(_SC_PAGESIZE)*
-        sysconf(_SC_PHYS_PAGES)/1048576);
-#endif
       if (getenv("MAGICK_CACHE_THRESHOLD") != (char *) NULL)
         threshold=atol(getenv("MAGICK_CACHE_THRESHOLD"));
       SetCacheThreshold(threshold);
