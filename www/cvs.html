@@ -4,13 +4,13 @@
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="description" content="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
    <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <title>ImageMagick - Image Processing and Display Package</title>
 <link rev="made" href="mailto:magick@wizards.dupont.com">
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
-<center><img SRC="../images/magick_small.png" width=129 height=133></center>
+<center><img SRC="../images/magick_small.png" height=133 width=129></center>
 
 <p>The ImageMagick source is available via anonymous CVS. This is a convenient
 way for developers from around the country or world to download the ImageMagick
@@ -136,31 +136,37 @@ line:
 <pre>&nbsp;&nbsp;&nbsp; cvs -d :pserver:anonymous@cvs.imagemagick.org:/pathos/cvs</pre>
 Next, the first time the source tree is checked out, a cvs login is needed.
 <pre>&nbsp;&nbsp;&nbsp; cvs login</pre>
-This will ask you for a password. The password is <tt>anonymous</tt>. Enter
+This will ask you for a password. The password is <i>anonymous</i>. Enter
 it and press a carriage return.
 <p>To get the tree and place it in a sub-directory of your current working
 directory, issue the command:
-<pre>&nbsp;&nbsp;&nbsp; cvs get ImageMagick</pre>
+<pre>&nbsp;&nbsp;&nbsp; cvs co -P ImageMagick</pre>
 Or to save bandwidth get the compressed version, type:
-<pre>&nbsp;&nbsp;&nbsp; cvs -z3 get ImageMagick</pre>
+<pre>&nbsp;&nbsp;&nbsp; cvs -z3 co -P ImageMagick</pre>
 To update the sources within a checked out directory execute
-<pre>&nbsp;&nbsp;&nbsp; cvs update</pre>
+<pre>&nbsp;&nbsp;&nbsp; cvs update -P -d</pre>
 and only the files which have changed will be updated.
 <p>The available modules relating to ImageMagick are:
 <dl>
 <dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> ImageMagick</dd>
+<img SRC="../images/ball.png" ALT="*" height=14 width=14> ImageMagick (core
+sources)</dd>
 
 <dd>
-<img SRC="../images/ball.png" ALT="*" height=14 width=14> ImageMagick-NT</dd>
+<img SRC="../images/ball.png" ALT="*" height=14 width=14> ImageMagick-NT
+(everything needed for Windows)</dd>
+
+<dd>
+<img SRC="../images/ball.png" height=14 width=14> ImageMagick-World (everything
+related to ImageMagick)</dd>
 </dl>
-<p>
-To check out the ImageMagick source for NT, try this commmand line:
-<pre>&nbsp;&nbsp;&nbsp; cvs -z3 co ImageMagick-NT</pre>
+
+<p><br>To check out the ImageMagick source for NT, try this commmand line:
+<pre>&nbsp;&nbsp;&nbsp; cvs -z3 co -P ImageMagick-NT</pre>
 The anoncvs tree is only updated once a day or so, so constantly updating
 is useless and only puts unneeded load on the already overloaded cvs server.
 Also, please do not use compression levels over <tt>-z3</tt>, the amount
-of bandwidth it saves is minimal while putting a much larger load on he
+of bandwidth it saves is minimal while putting a much larger load on the
 cvs server.</dl>
 
 <dl>&nbsp;
