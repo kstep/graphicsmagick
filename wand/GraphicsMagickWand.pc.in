@@ -7,6 +7,6 @@ includedir=@includedir@
 Name: GraphicsMagickWand
 Version: @PACKAGE_VERSION@
 Description: GraphicsMagick Wand image processing library
-Requires:
-Libs: -L${libdir} @LDFLAGS@ -lGraphicsMagickWand -lGraphicsMagick @MAGICK_DEP_LIBS@
-Cflags: -I${includedir}/GraphicsMagick @LFS_CPPFLAGS@ @CPPFLAGS@
+Requires: GraphicsMagick
+Libs: -lGraphicsMagickWand
+Cflags:

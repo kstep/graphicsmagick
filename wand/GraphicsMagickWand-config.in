@@ -5,7 +5,7 @@
 #
 # Concept derived from gtk-config in the Gtk package except that Autoconf-style
 # configuration information is presented instead so that it may be used more
-# effictively in configure scripts.
+# effectively in configure scripts.
 #
 usage='Usage: GraphicsMagickWand-config [--cflags] [--cppflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]
 
@@ -30,17 +30,16 @@ while test $# -gt 0; do
       echo @PACKAGE_VERSION@
       ;;
     --cflags)
-      echo '@CFLAGS@'
+      echo "`GraphicsMagick-config --cflags`"
       ;;
     --cppflags)
-      echo "-I@INCLUDE_DIR@/GraphicsMagick @LFS_CPPFLAGS@ @CPPFLAGS@"
+      echo "`GraphicsMagick-config --cppflags`"
       ;;
     --ldflags)
-      echo '-L@LIB_DIR@ @LDFLAGS@'
+      echo "`GraphicsMagick-config --ldflags`"
       ;;
     --libs)
-      LIBS="-lGraphicsMagickWand -lGraphicsMagick @MAGICK_DEP_LIBS@"
-      echo "$LIBS"
+      echo "-lGraphicsMagickWand `GraphicsMagick-config --libs`"
       ;;
     *)
       echo "${usage}" 1>&2

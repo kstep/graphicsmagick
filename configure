@@ -462,7 +462,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os MAGICK_LIBRARY_CURRENT MAGICK_LIBRARY_REVISION MAGICK_LIBRARY_AGE MAGICK_PLUS_PLUS_LIBRARY_CURRENT MAGICK_PLUS_PLUS_LIBRARY_REVISION MAGICK_PLUS_PLUS_LIBRARY_AGE MAGICK_WAND_LIBRARY_CURRENT MAGICK_WAND_LIBRARY_REVISION MAGICK_WAND_LIBRARY_AGE PACKAGE_VERSION_ADDENDUM PACKAGE_RELEASE_DATE MAGICK_LIB_VERSION MAGICK_LIB_VERSION_TEXT MAGICK_LIB_VERSION_NUMBER INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE PREFIX_DIR EXEC_PREFIX_DIR BIN_DIR SBIN_DIR LIBEXEC_DIR DATA_DIR SYSCONF_DIR SHAREDSTATE_DIR LOCALSTATE_DIR LIB_DIR INCLUDE_DIR OLDINCLUDE_DIR INFO_DIR MAN_DIR WinPathScript CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP LD LN_S LIB_GDI32 HasWINGDI32_TRUE HasWINGDI32_FALSE WIN32_NATIVE_BUILD_TRUE WIN32_NATIVE_BUILD_FALSE CYGWIN_BUILD_TRUE CYGWIN_BUILD_FALSE INSTALL_LTDL_TRUE INSTALL_LTDL_FALSE CONVENIENCE_LTDL_TRUE CONVENIENCE_LTDL_FALSE LIBADD_DL INCLTDL LIBLTDL ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL LIBTOOL_DEPS WITH_MODULES_TRUE WITH_MODULES_FALSE WITH_LTDL_TRUE WITH_LTDL_FALSE DLLDFLAGS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT HasLZW_TRUE HasLZW_FALSE QuantumDepth PERL_MAKE_OPTIONS LIBSTDCLDFLAGS MODULE_EXTRA_CPPFLAGS LIBRARY_EXTRA_CPPFLAGS LFS_CPPFLAGS INT8_T UINT8_T INT16_T UINT16_T INT32_T UINT32_T INT64_T UINT64_T SysCtlDelegate WITH_MAGICK_PLUS_PLUS_TRUE WITH_MAGICK_PLUS_PLUS_FALSE CCMALLOCDelegate LIB_MATH LIB_THREAD HasZLIB_TRUE HasZLIB_FALSE LIB_ZLIB HasBZLIB_TRUE HasBZLIB_FALSE LIB_BZLIB X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HasX11_TRUE HasX11_FALSE LIB_X11 LIB_XEXT LIB_DL HasDPS_TRUE HasDPS_FALSE LIB_DPS HasFPX_TRUE HasFPX_FALSE LIB_FPX HasLCMS_TRUE HasLCMS_FALSE LIB_LCMS HasPNG_TRUE HasPNG_FALSE LIB_PNG HasJPEG_TRUE HasJPEG_FALSE LIB_JPEG HasJP2_TRUE HasJP2_FALSE LIB_JP2 HasGS_TRUE HasGS_FALSE LIB_GS freetype_config HasTTF_TRUE HasTTF_FALSE LIB_TTF HasTIFF_TRUE HasTIFF_FALSE LIB_TIFF HasJBIG_TRUE HasJBIG_FALSE LIB_JBIG xml2_config HasXML_TRUE HasXML_FALSE LIB_XML HasWMF_TRUE HasWMF_FALSE LIB_WMF LIB_WMF_DEPS PERLMAINCC MagickBinPath MagickLibPath MagickCoderModulesPath MagickFilterModulesPath MagickSharePath AutotraceDecodeDelegate BZIPDelegate BrowseDelegate CGMDecodeDelegate CatDelegate DCRAWDecodeDelegate DOTDecodeDelegate DVIDecodeDelegate EchoDelegate EditorDelegate FIGDecodeDelegate GMDelegate GnuplotDecodeDelegate HPGLDecodeDelegate HTMLDecodeDelegate ILBMDecodeDelegate ILBMEncodeDelegate LPDelegate LPRDelegate LZWDecodeDelegate LZWEncodeDelegate LaunchDelegate MANDelegate MPEGDecodeDelegate MPEGEncodeDelegate MVDelegate PGPDecodeDelegate POVDelegate PSDelegate RADDecodeDelegate RLEEncodeDelegate RMDelegate SCANDecodeDelegate TXTDelegate WMFDecodeDelegate WWWDecodeDelegate ZipDelegate PrintDelegate TXT2HTML HasTXT2HTML_TRUE HasTXT2HTML_FALSE windows_font_dir ghostscript_font_dir type_include_files ConvertDelegate MogrifyDelegate ShowImageDelegate GSMonoDevice GSPDFDevice GSPSDevice GSColorDevice GSEPSDevice GSVersion PERL WITH_PERL_TRUE WITH_PERL_FALSE WITH_PERL_STATIC_TRUE WITH_PERL_STATIC_FALSE WITH_PERL_DYNAMIC_TRUE WITH_PERL_DYNAMIC_FALSE MAGICKLIB MAGICKLIBDIR DELEGATES MAGICK_DEP_LIBS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os MAGICK_LIBRARY_CURRENT MAGICK_LIBRARY_REVISION MAGICK_LIBRARY_AGE MAGICK_PLUS_PLUS_LIBRARY_CURRENT MAGICK_PLUS_PLUS_LIBRARY_REVISION MAGICK_PLUS_PLUS_LIBRARY_AGE MAGICK_WAND_LIBRARY_CURRENT MAGICK_WAND_LIBRARY_REVISION MAGICK_WAND_LIBRARY_AGE PACKAGE_VERSION_ADDENDUM PACKAGE_RELEASE_DATE MAGICK_LIB_VERSION MAGICK_LIB_VERSION_TEXT MAGICK_LIB_VERSION_NUMBER INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE PREFIX_DIR EXEC_PREFIX_DIR BIN_DIR SBIN_DIR LIBEXEC_DIR DATA_DIR SYSCONF_DIR SHAREDSTATE_DIR LOCALSTATE_DIR LIB_DIR INCLUDE_DIR OLDINCLUDE_DIR INFO_DIR MAN_DIR WinPathScript CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP EGREP LD LN_S LIB_GDI32 HasWINGDI32_TRUE HasWINGDI32_FALSE WIN32_NATIVE_BUILD_TRUE WIN32_NATIVE_BUILD_FALSE CYGWIN_BUILD_TRUE CYGWIN_BUILD_FALSE INSTALL_LTDL_TRUE INSTALL_LTDL_FALSE CONVENIENCE_LTDL_TRUE CONVENIENCE_LTDL_FALSE LIBADD_DL INCLTDL LIBLTDL ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL LIBTOOL_DEPS WITH_MODULES_TRUE WITH_MODULES_FALSE WITH_LTDL_TRUE WITH_LTDL_FALSE DLLDFLAGS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT HasLZW_TRUE HasLZW_FALSE QuantumDepth PERL_MAKE_OPTIONS LIBSTDCLDFLAGS MODULE_EXTRA_CPPFLAGS LIBRARY_EXTRA_CPPFLAGS LFS_CPPFLAGS INT8_T UINT8_T INT16_T UINT16_T INT32_T UINT32_T INT64_T UINT64_T SysCtlDelegate WITH_MAGICK_PLUS_PLUS_TRUE WITH_MAGICK_PLUS_PLUS_FALSE CCMALLOCDelegate LIB_MATH LIB_THREAD HasZLIB_TRUE HasZLIB_FALSE LIB_ZLIB HasBZLIB_TRUE HasBZLIB_FALSE LIB_BZLIB X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HasX11_TRUE HasX11_FALSE LIB_X11 LIB_XEXT LIB_DL HasDPS_TRUE HasDPS_FALSE LIB_DPS HasFPX_TRUE HasFPX_FALSE LIB_FPX HasLCMS_TRUE HasLCMS_FALSE LIB_LCMS HasPNG_TRUE HasPNG_FALSE LIB_PNG HasJPEG_TRUE HasJPEG_FALSE LIB_JPEG HasJP2_TRUE HasJP2_FALSE LIB_JP2 HasGS_TRUE HasGS_FALSE LIB_GS freetype_config HasTTF_TRUE HasTTF_FALSE LIB_TTF HasTIFF_TRUE HasTIFF_FALSE LIB_TIFF HasJBIG_TRUE HasJBIG_FALSE LIB_JBIG xml2_config HasXML_TRUE HasXML_FALSE LIB_XML HasWMF_TRUE HasWMF_FALSE LIB_WMF LIB_WMF_DEPS PERLMAINCC MagickBinPath MagickLibPath MagickCoderModulesPath MagickFilterModulesPath MagickSharePath AutotraceDecodeDelegate BZIPDelegate BrowseDelegate CGMDecodeDelegate CatDelegate DCRAWDecodeDelegate DOTDecodeDelegate DVIDecodeDelegate EchoDelegate EditorDelegate FIGDecodeDelegate GMDelegate GnuplotDecodeDelegate HPGLDecodeDelegate HTMLDecodeDelegate ILBMDecodeDelegate ILBMEncodeDelegate LPDelegate LPRDelegate LZWDecodeDelegate LZWEncodeDelegate LaunchDelegate MANDelegate MPEGDecodeDelegate MPEGEncodeDelegate MVDelegate PGPDecodeDelegate POVDelegate PSDelegate RADDecodeDelegate RLEEncodeDelegate RMDelegate SCANDecodeDelegate TXTDelegate WMFDecodeDelegate WWWDecodeDelegate ZipDelegate PrintDelegate TXT2HTML HasTXT2HTML_TRUE HasTXT2HTML_FALSE windows_font_dir ghostscript_font_dir type_include_files ConvertDelegate MogrifyDelegate ShowImageDelegate GSMonoDevice GSPDFDevice GSPSDevice GSColorDevice GSEPSDevice GSVersion PERL WITH_PERL_TRUE WITH_PERL_FALSE WITH_PERL_STATIC_TRUE WITH_PERL_STATIC_FALSE WITH_PERL_DYNAMIC_TRUE WITH_PERL_DYNAMIC_FALSE MAGICKLIB MAGICKLIBDIR DELEGATES MAGICK_DEP_LIBS MAGICK_API_CFLAGS MAGICK_API_CPPFLAGS MAGICK_API_LDFLAGS MAGICK_API_LIBS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -2024,6 +2024,11 @@ CPPFLAGS_INITIAL=$CPPFLAGS
 LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
 PERLMAINCC=$CC
+
+MAGICK_API_CFLAGS=''
+MAGICK_API_CPPFLAGS=$CPPFLAGS_INITIAL
+MAGICK_API_LDFLAGS=''
+MAGICK_API_LIBS=''
 
 #
 # Evaluate shell variable equivalents to Makefile directory variables
@@ -6014,7 +6019,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 6017 "configure"
+#line 6022 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7722,7 +7727,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7725 "configure"' > conftest.$ac_ext
+  echo '#line 7730 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8840,7 +8845,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:8843:" \
+echo "$as_me:8848:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -9845,11 +9850,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9848: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9853: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9852: \$? = $ac_status" >&5
+   echo "$as_me:9857: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -10077,11 +10082,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10080: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10085: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:10084: \$? = $ac_status" >&5
+   echo "$as_me:10089: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -10144,11 +10149,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:10147: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:10152: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:10151: \$? = $ac_status" >&5
+   echo "$as_me:10156: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -12156,7 +12161,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12159 "configure"
+#line 12164 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12254,7 +12259,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12257 "configure"
+#line 12262 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14386,11 +14391,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14389: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14394: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14393: \$? = $ac_status" >&5
+   echo "$as_me:14398: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -14453,11 +14458,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14456: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14461: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14460: \$? = $ac_status" >&5
+   echo "$as_me:14465: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15696,7 +15701,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 15699 "configure"
+#line 15704 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15794,7 +15799,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 15797 "configure"
+#line 15802 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -16616,11 +16621,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16619: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16624: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16623: \$? = $ac_status" >&5
+   echo "$as_me:16628: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -16683,11 +16688,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16686: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16691: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16690: \$? = $ac_status" >&5
+   echo "$as_me:16695: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18623,11 +18628,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18626: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18631: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18630: \$? = $ac_status" >&5
+   echo "$as_me:18635: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -18855,11 +18860,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18858: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18863: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18862: \$? = $ac_status" >&5
+   echo "$as_me:18867: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -18922,11 +18927,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18925: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18930: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18929: \$? = $ac_status" >&5
+   echo "$as_me:18934: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -20934,7 +20939,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 20937 "configure"
+#line 20942 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -21032,7 +21037,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 21035 "configure"
+#line 21040 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -22645,6 +22650,7 @@ then
   if test "${libtool_build_shared_libs}" = 'yes'
   then
     CPPFLAGS="$CPPFLAGS -D_DLL"
+    MAGICK_API_CPPFLAGS="$MAGICK_API_CPPFLAGS -D_DLL"
     LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKLIB_"
 
     if test "$with_modules" = 'yes'
@@ -22656,11 +22662,13 @@ then
 
   else
     CPPFLAGS="$CPPFLAGS -D_LIB"
+    MAGICK_API_CPPFLAGS="$MAGICK_API_CPPFLAGS -D_LIB"
 
   fi
   if test "$with_threads" = 'yes'
   then
      CPPFLAGS="$CPPFLAGS -D_MT"
+     MAGICK_API_CPPFLAGS="$MAGICK_API_CPPFLAGS -D_MT"
   fi
 fi
 
@@ -22984,17 +22992,19 @@ rm -f conftest*
 fi
 
 LFS_CPPFLAGS=''
-if test "$ac_cv_sys_file_offset_bits" != 'no'
+if test "$enable_largefile" != no
 then
-  LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
-fi
-if test "$ac_cv_sys_large_files" != 'no'
-then
-  LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
-fi
-# If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
-# `_LARGEFILE_SOURCE' if necessary.
-echo "$as_me:$LINENO: checking for _LARGEFILE_SOURCE value needed for large files" >&5
+  if test "$ac_cv_sys_file_offset_bits" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
+  fi
+  if test "$ac_cv_sys_large_files" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
+  fi
+  # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
+  # `_LARGEFILE_SOURCE' if necessary.
+  echo "$as_me:$LINENO: checking for _LARGEFILE_SOURCE value needed for large files" >&5
 echo $ECHO_N "checking for _LARGEFILE_SOURCE value needed for large files... $ECHO_C" >&6
 if test "${ac_cv_sys_largefile_source+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -23141,9 +23151,10 @@ _ACEOF
 
 fi
 
-if test "$ac_cv_sys_largefile_source" != 'no'
-then
-  LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
+  if  test "$ac_cv_sys_largefile_source" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
+  fi
 fi
 
 
@@ -29554,6 +29565,7 @@ fi
 # directory as GraphicsMagick installation prefix.
 #LDFLAGS="$LDFLAGS -L$LIB_DIR"
 #CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
+MAGICK_API_CPPFLAGS="-I$INCLUDE_DIR/GraphicsMagick $MAGICK_API_CPPFLAGS"
 
 # Extend includedir to include magick subdirectory offset
 includedir="$includedir/magick"
@@ -39370,6 +39382,15 @@ LIBS=""
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
+MAGICK_API_CFLAGS=$CFLAGS
+MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
+MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
+MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS"
+
+
+
+
+
 
                                                                                                                                                                                                                                                                                                   ac_config_files="$ac_config_files Makefile magick/Makefile coders/delegates.mgk coders/Makefile utilities/Makefile tests/Makefile coders/type-ghostscript.mgk coders/type-solaris.mgk coders/type-windows.mgk coders/type.mgk filters/Makefile ltdl/Makefile magick/magick_types.h magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/version.h wand/Makefile wand/GraphicsMagickWand.pc wand/GraphicsMagickWand-config Magick++/Makefile Magick++/bin/GraphicsMagick++-config Magick++/bin/Makefile Magick++/demo/Makefile Magick++/lib/GraphicsMagick++.pc Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/tests/Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL"
 cat >confcache <<\_ACEOF
@@ -40524,6 +40545,10 @@ s,@MAGICKLIB@,$MAGICKLIB,;t t
 s,@MAGICKLIBDIR@,$MAGICKLIBDIR,;t t
 s,@DELEGATES@,$DELEGATES,;t t
 s,@MAGICK_DEP_LIBS@,$MAGICK_DEP_LIBS,;t t
+s,@MAGICK_API_CFLAGS@,$MAGICK_API_CFLAGS,;t t
+s,@MAGICK_API_CPPFLAGS@,$MAGICK_API_CPPFLAGS,;t t
+s,@MAGICK_API_LDFLAGS@,$MAGICK_API_LDFLAGS,;t t
+s,@MAGICK_API_LIBS@,$MAGICK_API_LIBS,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF

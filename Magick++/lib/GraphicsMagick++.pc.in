@@ -8,5 +8,5 @@ Name: GraphicsMagick++
 Version: @PACKAGE_VERSION@
 Description: C++ API for GraphicsMagick image processing library
 Requires: GraphicsMagick
-Libs: -L${libdir} -lGraphicsMagick++
-Cflags: -I${includedir}/GraphicsMagick@
+Libs: -lGraphicsMagick++
+Cflags: 

@@ -70,6 +70,11 @@ LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
 PERLMAINCC=$CC
 
+MAGICK_API_CFLAGS=''
+MAGICK_API_CPPFLAGS=$CPPFLAGS_INITIAL
+MAGICK_API_LDFLAGS=''
+MAGICK_API_LIBS=''
+
 #
 # Evaluate shell variable equivalents to Makefile directory variables
 #
@@ -548,6 +553,7 @@ then
   if test "${libtool_build_shared_libs}" = 'yes'
   then
     CPPFLAGS="$CPPFLAGS -D_DLL"
+    MAGICK_API_CPPFLAGS="$MAGICK_API_CPPFLAGS -D_DLL"
     LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKLIB_"
 
     if test "$with_modules" = 'yes'
@@ -559,11 +565,13 @@ then
 
   else
     CPPFLAGS="$CPPFLAGS -D_LIB"
+    MAGICK_API_CPPFLAGS="$MAGICK_API_CPPFLAGS -D_LIB"
 
   fi
   if test "$with_threads" = 'yes'
   then
      CPPFLAGS="$CPPFLAGS -D_MT"
+     MAGICK_API_CPPFLAGS="$MAGICK_API_CPPFLAGS -D_MT"
   fi
 fi
 AC_SUBST(MODULE_EXTRA_CPPFLAGS)
@@ -579,20 +587,23 @@ AC_SUBST(LIBRARY_EXTRA_CPPFLAGS)
 ########
 AC_SYS_LARGEFILE
 LFS_CPPFLAGS=''
-if test "$ac_cv_sys_file_offset_bits" != 'no'
+if test "$enable_largefile" != no
 then
-  LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
-fi
-if test "$ac_cv_sys_large_files" != 'no'
-then
-  LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
-fi
-# If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
-# `_LARGEFILE_SOURCE' if necessary.
-AC_FUNC_FSEEKO
-if test "$ac_cv_sys_largefile_source" != 'no'
-then
-  LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
+  if test "$ac_cv_sys_file_offset_bits" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
+  fi
+  if test "$ac_cv_sys_large_files" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
+  fi
+  # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
+  # `_LARGEFILE_SOURCE' if necessary.
+  AC_FUNC_FSEEKO
+  if  test "$ac_cv_sys_largefile_source" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
+  fi
 fi
 AC_SUBST(LFS_CPPFLAGS)
 
@@ -909,6 +920,7 @@ fi
 # directory as GraphicsMagick installation prefix.
 #LDFLAGS="$LDFLAGS -L$LIB_DIR"
 #CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
+MAGICK_API_CPPFLAGS="-I$INCLUDE_DIR/GraphicsMagick $MAGICK_API_CPPFLAGS"
 
 # Extend includedir to include magick subdirectory offset
 includedir="$includedir/magick"
@@ -2407,6 +2419,15 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
+MAGICK_API_CFLAGS=$CFLAGS
+MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
+MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
+MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS"
+
+AC_SUBST(MAGICK_API_CFLAGS)
+AC_SUBST(MAGICK_API_CPPFLAGS)
+AC_SUBST(MAGICK_API_LDFLAGS)
+AC_SUBST(MAGICK_API_LIBS)
 
 AC_OUTPUT( \
         Makefile \
