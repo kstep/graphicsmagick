@@ -896,7 +896,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
     count,
     j;
 
-  register size_t
+  register long
     i;
 
   TIFF
@@ -1017,7 +1017,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
 %
 %  The format of the LZWEncodeImage method is:
 %
-%      unsigned int LZWEncodeImage(Image *image,const size_t number_pixels,
+%      unsigned int LZWEncodeImage(Image *image,const size_t length,
 %        unsigned char *pixels)
 %
 %  A description of each parameter follows:
@@ -1027,15 +1027,15 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
 %
 %    o image: The image.
 %
-%    o number_pixels:  A value that specifies the number of pixels to compress.
+%    o length:  A value that specifies the number of pixels to compress.
 %
 %    o pixels: The address of an unsigned array of characters containing the
 %      pixels to compress.
 %
 %
 */
-MagickExport unsigned int LZWEncodeImage(Image *image,
-  const size_t number_pixels,unsigned char *pixels)
+MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
+  unsigned char *pixels)
 {
 #define LZWClr  256  /* Clear Table Marker */
 #define LZWEod  257  /* End of Data marker */
@@ -1062,7 +1062,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   int
     index;
 
-  register size_t
+  register long
     i;
 
   short
@@ -1103,7 +1103,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   next_index=LZWEod+1;
   code_width=9;
   last_code=pixels[0];
-  for (i=1; i < number_pixels; i++)
+  for (i=1; i < (long) length; i++)
   {
     /*
       Find string.
@@ -1166,8 +1166,8 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   return(True);
 }
 #else
-MagickExport unsigned int LZWEncodeImage(Image *image,
-  const size_t number_pixels,unsigned char *pixels)
+MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
+  unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1193,7 +1193,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
 %
 %  The format of the PackbitsEncodeImage method is:
 %
-%      unsigned int PackbitsEncodeImage(Image *image,const size_t number_pixels,
+%      unsigned int PackbitsEncodeImage(Image *image,const size_t length,
 %        unsigned char *pixels)
 %
 %  A description of each parameter follows:
@@ -1203,15 +1203,15 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
 %
 %    o image: The image.
 %
-%    o number_pixels:  A value that specifies the number of pixels to compress.
+%    o length:  A value that specifies the number of pixels to compress.
 %
 %    o pixels: The address of an unsigned array of characters containing the
 %      pixels to compress.
 %
 %
 */
-MagickExport unsigned int PackbitsEncodeImage(Image *image,
-  const size_t number_pixels,unsigned char *pixels)
+MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
+  unsigned char *pixels)
 {
   long
     count;
@@ -1233,7 +1233,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
   if (packbits == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
-  i=number_pixels;
+  i=length;
   while (i != 0)
   {
     switch (i)
@@ -1332,7 +1332,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
 %
 %  The format of the ZLIBEncodeImage method is:
 %
-%      unsigned int ZLIBEncodeImage(Image *image,const size_t number_pixels,
+%      unsigned int ZLIBEncodeImage(Image *image,const size_t length,
 %        const unsigned long quality,unsigned char *pixels)
 %
 %  A description of each parameter follows:
@@ -1343,7 +1343,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
 %    o file: The address of a structure of type FILE.  ZLIB encoded pixels
 %      are written to this file.
 %
-%    o number_pixels:  A value that specifies the number of pixels to compress.
+%    o length:  A value that specifies the number of pixels to compress.
 %
 %    o quality: the compression level (0-100).
 %
@@ -1352,13 +1352,13 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
 %
 %
 */
-MagickExport unsigned int ZLIBEncodeImage(Image *image,
-  const size_t number_pixels,const unsigned long quality,unsigned char *pixels)
+MagickExport unsigned int ZLIBEncodeImage(Image *image,const size_t length,
+  const unsigned long quality,unsigned char *pixels)
 {
   int
     status;
 
-  register size_t
+  register long
     i;
 
   unsigned char
@@ -1372,13 +1372,13 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  compressed_packets=(unsigned long) (1.001*number_pixels+12);
+  compressed_packets=(unsigned long) (1.001*length+12);
   compressed_pixels=(unsigned char *) AcquireMemory(compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
   stream.next_in=pixels;
-  stream.avail_in=(unsigned int) number_pixels;
+  stream.avail_in=(unsigned int) length;
   stream.next_out=compressed_pixels;
   stream.avail_out=(unsigned int) compressed_packets;
   stream.zalloc=(alloc_func) NULL;
@@ -1398,14 +1398,14 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
     ThrowBinaryException(DelegateWarning,"Unable to Zip compress image",
       (char *) NULL)
   else
-    for (i=0; i < compressed_packets; i++)
+    for (i=0; i < (long) compressed_packets; i++)
       WriteBlobByte(image,compressed_pixels[i]);
   LiberateMemory((void **) &compressed_pixels);
   return(!status);
 }
 #else
-MagickExport unsigned int ZLIBEncodeImage(Image *image,
-  const size_t number_pixels,const unsigned int quality,unsigned char *pixels)
+MagickExport unsigned int ZLIBEncodeImage(Image *image,const size_t length,
+  const unsigned int quality,unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

@@ -156,9 +156,6 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     *p,
     *q;
 
-  size_t
-    number_pixels;
-
   unsigned char
     *buffer;
 
@@ -169,6 +166,9 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     plane,
     row,
     sum;
+
+  unsigned long
+    number_pixels;
 
   /*
     Initialize Huffman tables.
@@ -284,7 +284,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     r=pcd_table[plane];
     for (i=0; ((i < (int) length) && ((sum & r->mask) != r->sequence)); i++)
       r++;
-    if (((size_t) (q-luma) > number_pixels) || (r == (PCDTable *) NULL))
+    if (((unsigned long) (q-luma) > number_pixels) || (r == (PCDTable *) NULL))
       {
         ThrowException(&image->exception,CorruptImageWarning,
           "Corrupt PCD image, skipping to sync byte",image->filename);
@@ -436,7 +436,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -445,8 +445,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *yy;
 
   size_t
-    count,
-    number_pixels;
+    count;
 
   unsigned char
     *chroma1,
@@ -464,6 +463,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned long
     offset,
     number_images,
+    number_pixels,
     subimage;
 
   /*
@@ -559,7 +559,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       MonitorHandler
         handler;
 
-      register size_t
+      register long
         j;
 
       /*

@@ -671,16 +671,16 @@ static char *EscapeParenthesis(const char *text)
   register char
     *p;
 
-  register size_t
+  register long
     i;
 
-  size_t
+  unsigned long
     escapes;
 
   escapes=0;
   buffer=AllocateString(text);
   p=buffer;
-  for (i=0; i < Min(strlen(text),(MaxTextExtent-escapes-1)); i++)
+  for (i=0; i < (long) Min(strlen(text),(MaxTextExtent-escapes-1)); i++)
   {
     if ((text[i] == '(') || (text[i] == ')'))
       {
@@ -727,7 +727,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   unsigned int
@@ -756,7 +756,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     (draw_info->affine.rx == 0.0) && (draw_info->affine.ry == 0.0);
   extent.x=0.0;
   extent.y=0.0;
-  for (i=0; i <= (strlen(draw_info->text)+2); i++)
+  for (i=0; i <= (long) (strlen(draw_info->text)+2); i++)
   {
     point.x=fabs(draw_info->affine.sx*i*draw_info->pointsize+
       draw_info->affine.ry*2.0*draw_info->pointsize);
@@ -1025,7 +1025,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -1148,7 +1148,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   QueryColorDatabase("#000000ff",&clone_info->fill);
   CloneString(&clone_info->primitive,"");
-  for (i=0; i < length; i++)
+  for (i=0; i < (long) length; i++)
   {
     glyph.id=FT_Get_Char_Index(face,unicode[i]);
     if ((glyph.id != 0) && (last_glyph.id != 0) && FT_HAS_KERNING(face))

@@ -300,7 +300,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -796,11 +796,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         register uint32
           *p;
 
-        size_t
-          number_pixels;
-
         uint32
           *pixels;
+
+        unsigned long
+          number_pixels;
 
         /*
           Convert TIFF image to DirectClass MIFF image.
@@ -1001,7 +1001,7 @@ ModuleExport void UnregisterTIFFImage(void)
 #if defined(IPTC_SUPPORT)
 static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 {
-  register size_t
+  register long
     i;
 
   unsigned char
@@ -1073,14 +1073,12 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
     status;
 
   long
-    bytes_per_pixel;
-
-  register size_t
-    i;
-
-  size_t
+    bytes_per_pixel,
     j,
     k;
+
+  register long
+    i;
 
   unsigned long
     number_tiles,

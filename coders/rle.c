@@ -154,15 +154,14 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
     *p;
 
   size_t
-    count,
-    number_pixels;
+    count;
 
   unsigned char
     background_color[256],
@@ -178,6 +177,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     number_colormaps,
+    number_pixels,
     number_planes;
 
   /*
@@ -282,7 +282,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image);
     if ((flags & 0x01) && !(flags & 0x02))
       {
-        size_t
+        long
           j;
 
         /*
@@ -347,10 +347,10 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p=rle_pixels+((image->rows-y-1)*image->columns*number_planes)+
             x*number_planes+plane;
           operand++;
-          for (i=0; i < (size_t) operand; i++)
+          for (i=0; i < (long) operand; i++)
           {
             pixel=ReadBlobByte(image);
-            if ((y < (int) image->rows) && ((x+i) < (size_t) image->columns))
+            if ((y < (int) image->rows) && ((x+i) < (long) image->columns))
               *p=pixel;
             p+=number_planes;
           }
@@ -369,9 +369,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           operand++;
           p=rle_pixels+((image->rows-y-1)*image->columns*number_planes)+
             x*number_planes+plane;
-          for (i=0; i < (size_t) operand; i++)
+          for (i=0; i < (long) operand; i++)
           {
-            if ((y < (int) image->rows) && ((x+i) < (size_t) image->columns))
+            if ((y < (int) image->rows) && ((x+i) < (long) image->columns))
               *p=pixel;
             p+=number_planes;
           }

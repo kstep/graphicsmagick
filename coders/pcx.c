@@ -146,8 +146,7 @@ static unsigned int IsDCX(const unsigned char *magick,const size_t length)
 %
 %  The format of the IsPCX method is:
 %
-%      unsigned int IsPCX(const unsigned char *magick,
-%        const size_t length)
+%      unsigned int IsPCX(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -226,7 +225,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -717,7 +716,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
 
   register unsigned char

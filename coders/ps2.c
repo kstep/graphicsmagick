@@ -355,14 +355,11 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
 
   SegmentInfo
     bounds;
-
-  size_t
-    number_pixels;
 
   time_t
     timer;
@@ -376,6 +373,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     scene,
     text_size,
     width;
+
+  unsigned long
+    number_pixels;
 
   /*
     Open output image file.

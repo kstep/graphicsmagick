@@ -560,7 +560,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
 
   register unsigned int
@@ -616,10 +616,10 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
         index--;
         if (level != MaxTreeDepth)
           continue;
-        for (i=0; i < node_info->number_unique; i++)
+        for (i=0; i < (long) node_info->number_unique; i++)
            if (ColorMatch(*p,node_info->list[i],0))
              break;
-        if (i < node_info->number_unique)
+        if (i < (long) node_info->number_unique)
           {
             node_info->list[i].count++;
             continue;
@@ -713,11 +713,11 @@ static void Histogram(Image *image,CubeInfo *cube_info,
       register ColorPacket
         *p;
 
-      register size_t
+      register long
         i;
 
       p=node_info->list;
-      for (i=0; i < node_info->number_unique; i++)
+      for (i=0; i < (long) node_info->number_unique; i++)
       {
         (void) fprintf(file,"%10lu: (%5d,%5d,%5d)  ",p->count,
           p->red,p->green,p->blue);
@@ -767,7 +767,7 @@ static void Histogram(Image *image,CubeInfo *cube_info,
 */
 MagickExport unsigned int IsGrayImage(Image *image)
 {
-  register size_t
+  register long
     i;
 
   /*
@@ -778,7 +778,7 @@ MagickExport unsigned int IsGrayImage(Image *image)
   (void) IsPseudoClass(image);
   if (image->storage_class != PseudoClass)
     return(False);
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (long) image->colors; i++)
     if (!IsGray(image->colormap[i]))
       return(False);
   return(True);
@@ -943,7 +943,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
     *p,
     *q;
 
-  register size_t
+  register long
     i;
 
   unsigned int
@@ -993,10 +993,10 @@ MagickExport unsigned int IsPseudoClass(Image *image)
         node_info=node_info->child[id];
         index--;
       }
-      for (i=0; i < node_info->number_unique; i++)
+      for (i=0; i < (long) node_info->number_unique; i++)
         if (ColorMatch(*p,node_info->list[i],0))
           break;
-      if (i == node_info->number_unique)
+      if (i == (long) node_info->number_unique)
         {
           /*
             Add this unique color to the color list.
@@ -1058,7 +1058,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
             node_info=node_info->child[id];
             index--;
           }
-          for (i=0; i < node_info->number_unique; i++)
+          for (i=0; i < (long) node_info->number_unique; i++)
             if (ColorMatch(*q,node_info->list[i],0))
               break;
           index=node_info->list[i].index;
@@ -1106,7 +1106,7 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
   register ColorInfo
     *p;
 
-  register size_t
+  register long
     i;
 
   if (file == (const FILE *) NULL)
@@ -1206,7 +1206,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,PixelPacket *color
       char
         c;
 
-      size_t
+      long
         n;
 
       green=0;

@@ -72,7 +72,7 @@
 %  The format of the DecodeImage method is:
 %
 %      unsigned int DecodeImage(Image *image,unsigned char *pixels,
-%        const size_t number_bytes)
+%        const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -87,7 +87,7 @@
 %
 */
 static unsigned int DecodeImage(Image *image,unsigned char *pixels,
-  const size_t number_bytes)
+  const size_t length)
 {
   int
     count,
@@ -100,7 +100,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
     *p;
 
   p=pixels;
-  while (p < (pixels+number_bytes))
+  while (p < (pixels+length))
   {
     pixel=ReadBlobByte(image);
     if (pixel <= 0x80)
@@ -274,8 +274,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   size_t
-    count,
-    packets;
+    count;
 
   unsigned char
     *pixels;
@@ -283,6 +282,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     bits_per_pixel,
     status;
+
+  unsigned long
+    packets;
 
   /*
     Open image file.

@@ -294,7 +294,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
   long
     length;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -352,7 +352,7 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   long
     length;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -413,7 +413,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   register unsigned char
     *p;
 
-  register size_t
+  register long
     i;
 
 #ifdef GET_ONLY_IPTC_DATA
@@ -582,11 +582,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  size_t
-    number_pixels;
-
   unsigned int
     status;
+
+  unsigned long
+    number_pixels;
 
   /*
     Open image file.
@@ -976,7 +976,7 @@ static void TerminateDestination(j_compress_ptr cinfo)
 
 static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
 {
-  register size_t
+  register long
     i,
     j;
 
@@ -1007,16 +1007,18 @@ static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
 
 static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
 {
-  register size_t
+  register long
     i;
 
   size_t
-    length,
-    roundup,
-    tag_length;
+    length;
 
   unsigned char
     *profile;
+
+  unsigned long
+    roundup,
+    tag_length;
 
   /*
     Save binary Photoshop resource data using an APP marker.
@@ -1093,7 +1095,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
 
   struct jpeg_compress_struct
@@ -1241,7 +1243,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     WriteIPTCProfile(&jpeg_info,image);
   for (i=0; i < image->generic_profiles; i++)
   {
-    register size_t
+    register long
       j;
 
     if (LocaleNCompare(image->generic_profile[i].name,"APP",3) != 0)

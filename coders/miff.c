@@ -175,7 +175,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -1197,7 +1197,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   register unsigned char
     *q;
 
-  register size_t
+  register long
     i;
 
   size_t

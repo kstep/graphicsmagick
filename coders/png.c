@@ -374,6 +374,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     zero=0;
 
   long
+    j,
     new_number_colors,
     number_colors;
 
@@ -389,11 +390,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
-
-  size_t
-    j;
 
   unsigned char
     *marker,
@@ -769,8 +767,7 @@ static unsigned int IsMNG(const unsigned char *magick,const size_t length)
 %
 %  The format of the IsPNG method is:
 %
-%      unsigned int IsPNG(const unsigned char *magick,
-%        const size_t length)
+%      unsigned int IsPNG(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -1217,7 +1214,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
    unsigned char
      *info;
 
-   register size_t
+   register long
      i;
 
    register unsigned char
@@ -1354,7 +1351,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
-  register size_t
+  register long
     i;
 
   register PixelPacket
@@ -4253,7 +4250,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p=NULL;
 
-  register size_t
+  register long
     i;
 
   RectangleInfo

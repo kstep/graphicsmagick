@@ -247,9 +247,6 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
-  size_t
-    number_pixels;
-
   SGIInfo
     iris_info;
 
@@ -260,7 +257,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   unsigned long
-    bytes_per_pixel;
+    bytes_per_pixel,
+    number_pixels;
 
   /*
     Open image file.
@@ -743,9 +741,6 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
   register unsigned char
     *q;
 
-  size_t
-    number_pixels;
-
   unsigned char
     *iris_pixels,
     *packets;
@@ -753,6 +748,9 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
   unsigned int
     scene,
     status;
+
+  unsigned long
+    number_pixels;
 
   /*
     Open output image file.

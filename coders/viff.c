@@ -90,8 +90,7 @@ static unsigned int
 %
 %
 */
-static unsigned int IsVIFF(const unsigned char *magick,
-  const size_t length)
+static unsigned int IsVIFF(const unsigned char *magick,const size_t length)
 {
   if (length < 2)
     return(False);
@@ -213,9 +212,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     bit,
     y;
 
-  size_t
-    number_pixels;
-
   register IndexPacket
     *indexes;
 
@@ -225,7 +221,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -244,7 +240,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
 
   unsigned long
     lsb_first,
-    max_packets;
+    max_packets,
+    number_pixels;
 
   ViffInfo
     viff_info;
@@ -892,14 +889,11 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
     *q;
-
-  size_t
-    number_pixels;
 
   unsigned char
     buffer[8],
@@ -910,6 +904,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     status;
 
   unsigned long
+    number_pixels,
     packets;
 
   ViffInfo

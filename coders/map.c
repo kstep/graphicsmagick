@@ -112,7 +112,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -310,7 +310,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   register unsigned char
     *q;
 
-  register size_t
+  register long
     i;
 
   unsigned char

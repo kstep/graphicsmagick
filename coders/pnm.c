@@ -154,13 +154,15 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         char
           *comment;
 
+        off_t
+          offset;
+
         register char
           *p,
           *q;
 
         size_t
-          length,
-          offset;
+          length;
 
         /*
           Read comment.
@@ -245,7 +247,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char

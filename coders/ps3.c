@@ -199,9 +199,6 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   SegmentInfo
     bounds;
 
-  size_t
-    number_pixels;
-
   time_t
     timer;
 
@@ -214,6 +211,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     scene,
     text_size,
     width;
+
+  unsigned long
+    number_pixels;
 
   /*
     Open output image file.

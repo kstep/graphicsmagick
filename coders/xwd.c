@@ -161,7 +161,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned long
@@ -264,7 +264,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (colors == (XColor *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < (size_t) header.ncolors; i++)
+      for (i=0; i < (long) header.ncolors; i++)
       {
         count=ReadBlob(image,sz_XWDColor,(char *) &color);
         if (count == 0)
@@ -281,7 +281,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       lsb_first=1;
       if (*(char *) &lsb_first)
-        for (i=0; i < (size_t) header.ncolors; i++)
+        for (i=0; i < (long) header.ncolors; i++)
         {
           MSBOrderLong((char *) &colors[i].pixel,sizeof(unsigned long));
           MSBOrderShort((char *) &colors[i].red,3*sizeof(unsigned short));
@@ -566,7 +566,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
 
   register unsigned char

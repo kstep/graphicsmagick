@@ -176,19 +176,21 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register char
     *p;
 
-  register size_t
+  register long
     i;
 
   SegmentInfo
     bounds;
 
   size_t
-    count,
-    filesize;
+    count;
 
   unsigned int
     height,
     width;
+
+  unsigned long
+    filesize;
 
   if (image_info->monochrome)
     {
@@ -822,7 +824,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
 
   SegmentInfo

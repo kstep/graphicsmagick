@@ -190,6 +190,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     y;
 
   long
+    j,
     none;
 
   register char
@@ -205,11 +206,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *r;
 
-  register size_t
+  register long
     i;
-
-  size_t
-    j;
 
   unsigned int
     colors,
@@ -402,7 +400,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->storage_class == PseudoClass)
         indexes[x]=(IndexPacket) j;
       *r=image->colormap[j];
-      r->opacity=j == (size_t) none ? TransparentOpacity : OpaqueOpacity;
+      r->opacity=j == (long) none ? TransparentOpacity : OpaqueOpacity;
       r++;
       p+=width;
     }
@@ -640,6 +638,9 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     j,
     y;
 
+  long
+    k;
+
   register IndexPacket
     *indexes;
 
@@ -649,11 +650,8 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
-
-  size_t
-    k;
 
   unsigned int
     characters_per_pixel,

@@ -422,7 +422,9 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
     *stream_info;
 
   size_t
-    length,
+    length;
+
+  unsigned long
     number_pixels;
 
   /*

@@ -146,18 +146,20 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register Image
     *p;
 
-  register size_t
+  register long
     i;
 
   size_t
-    count,
-    filesize;
+    count;
 
   unsigned char
     magick[MaxTextExtent];
 
   unsigned int
     status;
+
+  unsigned long
+    filesize;
 
   /*
     Open image file.

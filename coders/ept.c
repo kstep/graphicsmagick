@@ -174,7 +174,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register char
     *p;
 
-  register size_t
+  register long
     i;
 
   SegmentInfo

@@ -1784,7 +1784,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
     *p,
     *q;
 
-  register size_t
+  register long
     i;
 
   unsigned int
@@ -1805,7 +1805,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
       /*
         Morph single image.
       */
-      for (i=1; i < number_frames; i++)
+      for (i=1; i < (long) number_frames; i++)
       {
         morph_images->next=CloneImage(image,0,0,True,exception);
         if (morph_images->next == (Image *) NULL)
@@ -1828,7 +1828,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
   for (next=image; next->next != (Image *) NULL; next=next->next)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    for (i=0; i < number_frames; i++)
+    for (i=0; i < (long) number_frames; i++)
     {
       beta=(double) (i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
@@ -2926,7 +2926,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   assert(image != (Image *) NULL);
@@ -2963,7 +2963,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
       /*
         Solarize PseudoClass packets.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         image->colormap[i].red=image->colormap[i].red > threshold ?
           MaxRGB-image->colormap[i].red : image->colormap[i].red;

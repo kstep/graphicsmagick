@@ -109,7 +109,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *q,
     *r;
 
-  register size_t
+  register long
     i;
 
   register unsigned char

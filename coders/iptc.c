@@ -310,15 +310,15 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
   register unsigned char
     *p;
 
-  size_t
-    info_length,
-    tag_length;
-
   unsigned char
     c;
 
   unsigned int
     marker;
+
+  unsigned long
+    info_length,
+    tag_length;
 
   /*
     Find the beginning of the IPTC info.

@@ -247,7 +247,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -379,7 +379,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sun_pixels=sun_data;
     if (sun_info.type == RT_ENCODED)
       {
-        size_t
+        unsigned long
           height;
 
         /*
@@ -650,11 +650,8 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
-
-  size_t
-    number_pixels;
 
   SUNInfo
     sun_info;
@@ -662,6 +659,9 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
   unsigned int
     scene,
     status;
+
+  unsigned long
+    number_pixels;
 
   /*
     Open output image file.

@@ -166,7 +166,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   register char
     *p;
 
-  register size_t
+  register long
     i;
 
   unsigned int
@@ -878,7 +878,7 @@ static unsigned int XAnnotateEditImage(Display *display,
         /*
           Annotate Image window with primary selection.
         */
-        for (i=0; i < length; i++)
+        for (i=0; i < (long) length; i++)
         {
           if (data[i] != '\n')
             {
@@ -968,7 +968,7 @@ static unsigned int XAnnotateEditImage(Display *display,
     */
     windows->pixel_info->box_color=windows->pixel_info->pen_colors[box_id];
     if (windows->pixel_info->colors != 0)
-      for (i=0; i < windows->pixel_info->colors; i++)
+      for (i=0; i < (long) windows->pixel_info->colors; i++)
         if (windows->pixel_info->pixels[i] ==
             windows->pixel_info->pen_colors[box_id].pixel)
           {
@@ -977,7 +977,7 @@ static unsigned int XAnnotateEditImage(Display *display,
           }
     windows->pixel_info->pen_color=windows->pixel_info->pen_colors[pen_id];
     if (windows->pixel_info->colors != 0)
-      for (i=0; i < windows->pixel_info->colors; i++)
+      for (i=0; i < (long) windows->pixel_info->colors; i++)
         if (windows->pixel_info->pixels[i] ==
             windows->pixel_info->pen_colors[pen_id].pixel)
           {
@@ -1605,7 +1605,7 @@ static unsigned int XColorEditImage(Display *display,
     *p,
     *q;
 
-  register size_t
+  register long
     i;
 
   unsigned int
@@ -2037,7 +2037,7 @@ static unsigned int XColorEditImage(Display *display,
               }
             else
               {
-                for (i=0; i < (*image)->colors; i++)
+                for (i=0; i < (long) (*image)->colors; i++)
                   if (ColorMatch((*image)->colormap[i],target,(*image)->fuzz))
                     {
                       (*image)->colormap[i].red=XDownScale(color.red);
@@ -4706,7 +4706,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       Image
         *previous_image;
 
-      size_t
+      long
         bytes;
 
       bytes=((*image)->columns*(*image)->rows*sizeof(PixelPacket));
@@ -4720,7 +4720,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
           {
             bytes+=previous_image->list->columns*previous_image->list->rows*
               sizeof(PixelPacket);
-            if (bytes <= (resource_info->undo_cache << 20))
+            if (bytes <= (long) (resource_info->undo_cache << 20))
               {
                 previous_image=previous_image->previous;
                 continue;
@@ -4745,7 +4745,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
             DestroyImage(cache_image);
           }
         }
-      if (bytes > (resource_info->undo_cache << 20))
+      if (bytes > (long) (resource_info->undo_cache << 20))
         break;
       /*
         Save image before transformations are applied.

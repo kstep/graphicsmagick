@@ -400,6 +400,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *layer_info;
 
   long
+    j,
     number_layers;
 
   PSDInfo
@@ -414,12 +415,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   size_t
     count,
-    j,
     length,
     size;
 
@@ -602,7 +602,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           if (layer_info[i].channel_info[j].size < 8)
             {
-              size_t
+              long
                 k;
 
               /*
@@ -782,7 +782,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read Packbit encoded pixel data as separate planes.
       */
-      for (i=0; i < (size_t) (image->rows*psd_info.channels); i++)
+      for (i=0; i < (long) (image->rows*psd_info.channels); i++)
         (void) ReadBlobMSBShort(image);
       for (i=0; i < psd_info.channels; i++)
         (void) DecodeImage(image,i);
@@ -1001,7 +1001,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
-  register size_t
+  register long
     i;
 
   unsigned char

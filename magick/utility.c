@@ -865,7 +865,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
   register char
     *p;
 
-  register size_t
+  register long
     i;
 
   i=0;
@@ -2200,10 +2200,10 @@ MagickExport char **StringToList(const char *text)
   register const char
     *p;
 
-  register size_t
+  register long
     i;
 
-  size_t
+  unsigned long
     lines;
 
   if (text == (char *) NULL)
@@ -2225,7 +2225,7 @@ MagickExport char **StringToList(const char *text)
         MagickError(ResourceLimitError,"Unable to convert text to list",
           "Memory allocation failed");
       p=text;
-      for (i=0; i < lines; i++)
+      for (i=0; i < (long) lines; i++)
       {
         for (q=(char *) p; *q != '\0'; q++)
           if ((*q == '\r') || (*q == '\n'))
@@ -2246,7 +2246,7 @@ MagickExport char **StringToList(const char *text)
       char
         hex_string[MaxTextExtent];
 
-      register size_t
+      register long
         j;
 
       /*
@@ -2258,7 +2258,7 @@ MagickExport char **StringToList(const char *text)
         MagickError(ResourceLimitError,"Unable to convert text",
           "Memory allocation failed");
       p=text;
-      for (i=0; i < lines; i++)
+      for (i=0; i < (long) lines; i++)
       {
         textlist[i]=(char *) AcquireMemory(MaxTextExtent);
         if (textlist[i] == (char *) NULL)
@@ -2266,7 +2266,7 @@ MagickExport char **StringToList(const char *text)
             "Memory allocation failed");
         FormatString(textlist[i],"0x%08lx: ",0x14*i);
         q=textlist[i]+strlen(textlist[i]);
-        for (j=1; j <= Min(strlen(p),0x14); j++)
+        for (j=1; j <= (long) Min(strlen(p),0x14); j++)
         {
           FormatString(hex_string,"%02lx",*(p+j));
           (void) strcpy(q,hex_string);
@@ -2282,7 +2282,7 @@ MagickExport char **StringToList(const char *text)
             *q++=' ';
         }
         *q++=' ';
-        for (j=1; j <= Min(strlen(p),0x14); j++)
+        for (j=1; j <= (long) Min(strlen(p),0x14); j++)
         {
           if (isprint((int) (*p)))
             *q++=(*p);
@@ -2579,7 +2579,7 @@ static long sindex(char c,char *string)
 static void StoreToken(TokenInfo *token_info,char *string,long max_token_length,
   char c)
 {
-  register size_t
+  register long
     i;
 
   if ((token_info->offset < 0) || (token_info->offset >= (max_token_length-1)))

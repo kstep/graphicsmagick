@@ -3971,7 +3971,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   register char
     *p;
 
-  register size_t
+  register long
     i;
 
   unsigned int

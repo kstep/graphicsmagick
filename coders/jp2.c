@@ -121,8 +121,7 @@ static unsigned int IsJP2(const unsigned char *magick,const size_t length)
 %
 %  The format of the IsJPC method is:
 %
-%      unsigned int IsJPC(const unsigned char *magick,
-%        const size_t length)
+%      unsigned int IsJPC(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %

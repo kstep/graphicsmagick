@@ -518,7 +518,7 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
   register ModuleAlias
     *p;
 
-  register size_t
+  register long
     i;
 
   if (file == (const FILE *) NULL)

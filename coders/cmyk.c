@@ -105,7 +105,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   register int
     x;
 
-  register size_t
+  register long
     i;
 
   size_t

@@ -103,7 +103,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register int
     x;
 
-  register size_t
+  register long
     i;
 
   size_t

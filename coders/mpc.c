@@ -150,7 +150,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     c,
     length;
 
-  register size_t
+  register long
     i;
 
   register unsigned char

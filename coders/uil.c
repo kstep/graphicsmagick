@@ -169,6 +169,9 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     j,
     y;
 
+  long
+    k;
+
   register IndexPacket
     *indexes;
 
@@ -178,12 +181,8 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
-
-  size_t
-    k,
-    number_pixels;
 
   unsigned int
     characters_per_pixel,
@@ -191,7 +190,8 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     transparent;
 
   unsigned long
-    colors;
+    colors,
+    number_pixels;
 
   /*
     Open output image file.

@@ -455,14 +455,14 @@ static char *EscapeParenthesis(const char *text)
   register char
     *p;
 
-  register size_t
+  register long
     i;
-
-  size_t
-    escapes;
 
   static char
     buffer[MaxTextExtent];
+
+  unsigned long
+    escapes;
 
   escapes=0;
   p=buffer;
@@ -528,11 +528,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   register unsigned char
     *q;
 
-  register size_t
+  register long
     i;
-
-  size_t
-    number_pixels;
 
   struct tm
     *time_meridian;
@@ -553,6 +550,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   unsigned long
     info_id,
     length,
+    number_pixels,
     object,
     pages_id,
     root_id,

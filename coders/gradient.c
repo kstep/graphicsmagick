@@ -117,7 +117,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  size_t
+  unsigned long
     number_pixels;
 
   /*

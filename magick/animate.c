@@ -463,7 +463,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   int
     scene;
 
-  register size_t
+  register long
     i;
 
   unsigned int
@@ -605,10 +605,10 @@ MagickExport void XAnimateBackgroundImage(Display *display,
               (next_image->colors != image->colors) ||
               (next_image->colors > (unsigned long) visual_info->colormap_size))
             break;
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
             if (!ColorMatch(next_image->colormap[i],image->colormap[i],0))
               break;
-          if (i < image->colors)
+          if (i < (long) image->colors)
             break;
           next_image=next_image->next;
         }
@@ -1014,7 +1014,7 @@ MagickExport Image *XAnimateImages(Display *display,
   register char
     *p;
 
-  register size_t
+  register long
     i;
 
   static char
@@ -1125,7 +1125,7 @@ MagickExport Image *XAnimateImages(Display *display,
       magick_windows[number_windows++]=(&windows->command);
       magick_windows[number_windows++]=(&windows->widget);
       magick_windows[number_windows++]=(&windows->popup);
-      for (i=0; i < number_windows; i++)
+      for (i=0; i < (long) number_windows; i++)
         magick_windows[i]->id=(Window) NULL;
     }
   /*
@@ -1197,10 +1197,10 @@ MagickExport Image *XAnimateImages(Display *display,
               (next_image->colors != image->colors) ||
               (next_image->colors > (unsigned long) visual_info->colormap_size))
             break;
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
             if (!ColorMatch(next_image->colormap[i],image->colormap[i],0))
               break;
-          if (i < image->colors)
+          if (i < (long) image->colors)
             break;
           next_image=next_image->next;
         }
@@ -1876,7 +1876,7 @@ MagickExport Image *XAnimateImages(Display *display,
                 /*
                   Update graphic context and window colormap.
                 */
-                for (i=0; i < number_windows; i++)
+                for (i=0; i < (long) number_windows; i++)
                 {
                   if (magick_windows[i]->id == windows->icon.id)
                     continue;
@@ -2421,7 +2421,7 @@ MagickExport Image *XAnimateImages(Display *display,
       if (windows->image.mapped)
         XWithdrawWindow(display,windows->image.id,windows->image.screen);
       XDelay(display,SuspendTime);
-      for (i=0; i < number_windows; i++)
+      for (i=0; i < (long) number_windows; i++)
       {
         if (magick_windows[i]->id != (Window) NULL)
           {

@@ -194,15 +194,14 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
     *p;
 
   size_t
-    count,
-    number_pixels;
+    count;
 
   unsigned char
     *fits_pixels;
@@ -211,6 +210,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     scene,
     status,
     value_expected;
+
+  unsigned long
+    number_pixels;
 
   /*
     Open image file.

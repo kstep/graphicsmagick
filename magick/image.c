@@ -244,7 +244,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 MagickExport unsigned int AllocateImageColormap(Image *image,
   const unsigned long colors)
 {
-  register size_t
+  register long
     i;
 
   size_t
@@ -265,7 +265,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
     ReacquireMemory((void **) &image->colormap,length);
   if (image->colormap == (PixelPacket *) NULL)
     return(False);
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (long) image->colors; i++)
   {
     image->colormap[i].red=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
     image->colormap[i].green=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
@@ -443,7 +443,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
   register Image
     *next;
 
-  register size_t
+  register long
     i;
 
   unsigned int
@@ -537,7 +537,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
             global_colormap=False;
             break;
           }
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
           if (!ColorMatch(next->colormap[i],image->colormap[i],next->fuzz))
             {
               global_colormap=False;
@@ -602,21 +602,23 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
     *next;
 
   register int
-    i,
     x;
+
+  register long
+    i;
 
   register PixelPacket
     *p,
     *q;
-
-  size_t
-    number_pixels;
 
   SumPacket
     *sum;
 
   unsigned int
     number_scenes;
+
+  unsigned long
+    number_pixels;
 
   /*
     Ensure the image are the same size.
@@ -850,7 +852,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
   ImageAttribute
     *attribute;
 
-  register size_t
+  register long
     i;
 
   size_t
@@ -921,7 +923,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
           "Memory allocation failed");
       length=image->generic_profiles*sizeof(ProfileInfo);
       memcpy(clone_image->generic_profile,image->generic_profile,length);
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (long) image->generic_profiles; i++)
       {
         clone_image->generic_profile[i].name=
           AllocateString(image->generic_profile[i].name);
@@ -1704,7 +1706,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   register int
     x;
 
-  register size_t
+  register long
     i;
 
   unsigned int
@@ -1877,7 +1879,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         Display image colormap.
       */
       p=image->colormap;
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         (void) fprintf(file,"    %lu: (%5d,%5d,%5d)",i,p->red,p->green,p->blue);
         (void) fprintf(file,"\t");
@@ -1942,7 +1944,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       */
       (void) fprintf(file,"  Profile-iptc: %lu bytes\n",(unsigned long)
         image->iptc_profile.length);
-      for (i=0; i < image->iptc_profile.length; )
+      for (i=0; i < (long) image->iptc_profile.length; )
       {
         if (image->iptc_profile.info[i] != 0x1c)
           {
@@ -2037,7 +2039,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         i+=length;
       }
     }
-  for (i=0; i < image->generic_profiles; i++)
+  for (i=0; i < (long) image->generic_profiles; i++)
   {
     if (image->generic_profile[i].length == 0)
       continue;
@@ -2241,7 +2243,7 @@ MagickExport void DestroyImage(Image *image)
   int
     destroy;
 
-  register size_t
+  register long
     i;
 
   assert(image != (Image *) NULL);
@@ -2282,7 +2284,7 @@ MagickExport void DestroyImage(Image *image)
       /*
         Deallocate any generic profiles.
       */
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (long) image->generic_profiles; i++)
       {
         if (image->generic_profile[i].name != (char *) NULL)
           LiberateMemory((void **) &image->generic_profile[i].name);
@@ -5239,7 +5241,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     *p,
     *q;
 
-  register size_t
+  register long
     i;
 
   assert(image != (Image *) NULL);
@@ -5634,7 +5636,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       /*
         Convert PseudoClass image.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         red=x_map[image->colormap[i].red+X]+y_map[image->colormap[i].green+X]+
           z_map[image->colormap[i].blue+X]+tx;
@@ -5841,11 +5843,11 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   }
   if (image->storage_class == PseudoClass)
     {
-      register size_t
+      register long
         i;
 
       p=image->colormap;
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         p->red=UpScale(DownScale(p->red));
         p->green=UpScale(DownScale(p->green));
@@ -6123,7 +6125,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   unsigned short
@@ -6143,7 +6145,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   /*
     Assign index values to colormap entries.
   */
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (long) image->colors; i++)
     image->colormap[i].opacity=(unsigned short) i;
   /*
     Sort image colormap by decreasing color popularity.
@@ -6153,7 +6155,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   /*
     Update image colormap indexes to sorted colormap order.
   */
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (long) image->colors; i++)
     pixels[image->colormap[i].opacity]=(unsigned short) i;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -6490,7 +6492,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   register int
     x;
 
-  register size_t
+  register long
     i;
 
   register PixelPacket
@@ -6816,7 +6818,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       /*
         Convert PseudoClass image.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         red=red_map[image->colormap[i].red+R]+
           green_map[image->colormap[i].green+R]+

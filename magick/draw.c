@@ -568,7 +568,7 @@ static void PrintPolygonInfo(const PolygonInfo *polygon_info)
   register EdgeInfo
     *p;
 
-  register size_t
+  register long
     i,
     j;
 
@@ -1038,7 +1038,7 @@ static long DestroyEdge(PolygonInfo *polygon_info,const long edge)
 */
 static void DestroyPolygonInfo(PolygonInfo *polygon_info)
 {
-  register size_t
+  register long
     i;
 
   for (i=0; i < polygon_info->number_edges; i++)
@@ -1096,7 +1096,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   PrimitiveInfo
     primitive_info[6];
 
-  register size_t
+  register long
     i;
 
   SegmentInfo
@@ -1483,7 +1483,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   register int
     x;
 
-  register size_t
+  register long
     i;
 
   size_t
@@ -2404,7 +2404,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       primitive_info[i].coordinates=0;
       primitive_info[i].method=FloodfillMethod;
       i++;
-      if (i < (number_points-6*BezierQuantum-360))
+      if (i < (long) (number_points-6*BezierQuantum-360))
         continue;
       number_points+=6*BezierQuantum+360;
       ReacquireMemory((void **) &primitive_info,
@@ -2552,7 +2552,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         for (p=token; *p != '\0'; p++)
           if (isalpha((int) *p))
             number_attributes++;
-        if (i > (number_points-6*BezierQuantum*number_attributes-1))
+        if (i > (long) (number_points-6*BezierQuantum*number_attributes-1))
           {
             number_points+=6*BezierQuantum*number_attributes;
             ReacquireMemory((void **) &primitive_info,
@@ -2717,10 +2717,10 @@ static inline double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
   register const PointInfo
     *q;
 
-  register size_t
+  register long
     i;
 
-  size_t
+  long
     j;
 
   /*
@@ -2917,7 +2917,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   SegmentInfo
@@ -3180,7 +3180,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   TimerInfo
@@ -3919,7 +3919,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
   register PixelPacket
     *q;
 
-  register size_t
+  register long
     i;
 
   /*
@@ -3958,7 +3958,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
       /*
         Make PseudoClass image opaque.
       */
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         if (ColorMatch(image->colormap[i],target,image->fuzz))
           image->colormap[i]=fill;
@@ -4011,7 +4011,7 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   register PrimitiveInfo
     *p;
 
-  register size_t
+  register long
     i;
 
   unsigned long
@@ -4048,7 +4048,7 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
       theta-=2.0*MagickPI;
   arc_segments=(int) ceil(fabs(theta/(0.5*MagickPI+MagickEpsilon)));
   p=primitive_info;
-  for (i=0; i < arc_segments; i++)
+  for (i=0; i < (long) arc_segments; i++)
   {
     beta=0.5*((alpha+(i+1)*theta/arc_segments)-
       (alpha+i*theta/arc_segments));
@@ -4069,13 +4069,13 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
     (p+2)->point.y=sine*arc.x*points[1].x+cosine*arc.y*points[1].y;
     (p+3)->point.x=cosine*arc.x*points[2].x-sine*arc.y*points[2].y;
     (p+3)->point.y=sine*arc.x*points[2].x+cosine*arc.y*points[2].y;
-    if (i == (arc_segments-1))
+    if (i == (long) (arc_segments-1))
       (p+3)->point=end;
     TraceBezier(p,4);
     p+=p->coordinates;
   }
   primitive_info->coordinates=p-primitive_info;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < (long) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -4098,7 +4098,7 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
   register PrimitiveInfo
     *p;
 
-  register size_t
+  register long
     i,
     j;
 
@@ -4110,9 +4110,9 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     Allocate coeficients.
   */
   quantum=number_coordinates;
-  for (i=0; i < number_coordinates; i++)
+  for (i=0; i < (long) number_coordinates; i++)
   {
-    for (j=i+1; j < number_coordinates; j++)
+    for (j=i+1; j < (long) number_coordinates; j++)
     {
       alpha=fabs(primitive_info[j].point.x-primitive_info[i].point.x);
       if (alpha > quantum)
@@ -4134,15 +4134,15 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
   */
   end=primitive_info[number_coordinates-1].point;
   weight=0.0;
-  for (i=0; i < number_coordinates; i++)
+  for (i=0; i < (long) number_coordinates; i++)
     coefficients[i]=Permutate(number_coordinates-1,i);
-  for (i=0; i < control_points; i++)
+  for (i=0; i < (long) control_points; i++)
   {
     p=primitive_info;
     point.x=0;
     point.y=0;
     alpha=pow(1.0-weight,number_coordinates-1);
-    for (j=0; j < number_coordinates; j++)
+    for (j=0; j < (long) number_coordinates; j++)
     {
       point.x+=alpha*coefficients[j]*p->point.x;
       point.y+=alpha*coefficients[j]*p->point.y;
@@ -4156,14 +4156,14 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     Bezier curves are just short segmented polys.
   */
   p=primitive_info;
-  for (i=0; i < control_points; i++)
+  for (i=0; i < (long) control_points; i++)
   {
     TracePoint(p,points[i]);
     p++;
   }
   TracePoint(p,end);
   primitive_info->coordinates=p-primitive_info+1;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < (long) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -4206,7 +4206,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   register PrimitiveInfo
     *p;
 
-  register size_t
+  register long
     i;
 
   /*
@@ -4221,7 +4221,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
     p++;
   }
   primitive_info->coordinates=p-primitive_info;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < (long) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -4271,7 +4271,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
   register PrimitiveInfo
     *q;
 
-  register size_t
+  register long
     i;
 
   unsigned long
@@ -4557,7 +4557,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
   }
   primitive_info->coordinates=q-primitive_info;
   number_coordinates+=primitive_info->coordinates;
-  for (i=0; i < number_coordinates; i++)
+  for (i=0; i < (long) number_coordinates; i++)
   {
     q--;
     q->primitive=primitive_type;
@@ -4583,7 +4583,7 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   register PrimitiveInfo
     *p;
 
-  register size_t
+  register long
     i;
 
   p=primitive_info;
@@ -4602,7 +4602,7 @@ static void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
   TracePoint(p,start);
   p+=p->coordinates;
   primitive_info->coordinates=p-primitive_info;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < (long) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -4620,7 +4620,7 @@ static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
   register PrimitiveInfo
     *p;
 
-  register size_t
+  register long
     i;
 
   p=primitive_info;
@@ -4657,7 +4657,7 @@ static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
   TracePoint(p,primitive_info->point);
   p+=p->coordinates;
   primitive_info->coordinates=p-primitive_info;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < (long) primitive_info->coordinates; i++)
   {
     p->primitive=primitive_info->primitive;
     p--;
@@ -4677,12 +4677,12 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
     dx,
     dy;
 
-  register size_t
+  register long
     i;
 
   dx=0.0;
   dy=0.0;
-  for (i=1; i < number_vertices; i++)
+  for (i=1; i < (long) number_vertices; i++)
   {
     dx=primitive_info[0].point.x-primitive_info[i].point.x;
     dy=primitive_info[0].point.y-primitive_info[i].point.y;
@@ -4742,7 +4742,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     *polygon_primitive,
     *stroke_polygon;
 
-  register size_t
+  register long
     i;
 
   unsigned int
@@ -4848,7 +4848,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   q=0;
   path_q[p++]=box_q[0];
   path_p[q++]=box_p[0];
-  for (i=n+1; i < number_vertices; i++)
+  for (i=n+1; i < (long) number_vertices; i++)
   {
     /*
       Compute the slope for this line segment, q.
@@ -5086,7 +5086,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     AcquireMemory((p+q+2*closed_path+2)*sizeof(PrimitiveInfo));
   if (stroke_polygon != (PrimitiveInfo *) NULL)
     {
-      for (i=0; i < p; i++)
+      for (i=0; i < (long) p; i++)
       {
         stroke_polygon[i]=polygon_primitive[0];
         stroke_polygon[i].point=path_p[i];
@@ -5097,7 +5097,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           stroke_polygon[i].point=stroke_polygon[0].point;
           i++;
         }
-      for ( ; i < (p+q+closed_path); i++)
+      for ( ; i < (long) (p+q+closed_path); i++)
       {
         stroke_polygon[i]=polygon_primitive[0];
         stroke_polygon[i].point=path_q[p+q+closed_path-(i+1)];

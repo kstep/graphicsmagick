@@ -224,7 +224,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       }
   if (image->storage_class == PseudoClass)
     {
-      register size_t
+      register long
         i;
 
       unsigned char

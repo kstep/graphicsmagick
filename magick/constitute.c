@@ -133,7 +133,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
   register int
     x;
 
-  register size_t
+  register long
     i;
 
   /*
@@ -151,7 +151,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
       "impossible image size");
   image->columns=width;
   image->rows=height;
-  for (i=0; i < strlen(map); i++)
+  for (i=0; i < (long) strlen(map); i++)
     switch (map[i])
     {
       case 'a':
@@ -201,7 +201,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          for (i=0; i < strlen(map); i++)
+          for (i=0; i < (long) strlen(map); i++)
           {
             switch (map[i])
             {
@@ -271,7 +271,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          for (i=0; i < strlen(map); i++)
+          for (i=0; i < (long) strlen(map); i++)
           {
             switch (map[i])
             {
@@ -341,7 +341,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          for (i=0; i < strlen(map); i++)
+          for (i=0; i < (long) strlen(map); i++)
           {
             switch (map[i])
             {
@@ -411,7 +411,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          for (i=0; i < strlen(map); i++)
+          for (i=0; i < (long) strlen(map); i++)
           {
             switch (map[i])
             {
@@ -481,7 +481,7 @@ MagickExport Image *ConstituteImage(const unsigned int width,
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          for (i=0; i < strlen(map); i++)
+          for (i=0; i < (long) strlen(map); i++)
           {
             switch (map[i])
             {
@@ -635,12 +635,12 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  for (i=0; i < strlen(map); i++)
+  for (i=0; i < (long) strlen(map); i++)
     switch (map[i])
     {
       case 'c':
@@ -689,7 +689,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
         indexes=GetIndexes(image);
         for (x=0; x < (int) columns; x++)
         {
-          for (i=0; i < strlen(map); i++)
+          for (i=0; i < (long) strlen(map); i++)
           {
             switch (map[i])
             {
@@ -754,7 +754,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
         indexes=GetIndexes(image);
         for (x=0; x < (int) columns; x++)
         {
-          for (i=0; i < strlen(map); i++)
+          for (i=0; i < (long) strlen(map); i++)
           {
             switch (map[i])
             {
@@ -819,7 +819,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
         indexes=GetIndexes(image);
         for (x=0; x < (int) columns; x++)
         {
-          for (i=0; i < strlen(map); i++)
+          for (i=0; i < (long) strlen(map); i++)
           {
             switch (map[i])
             {
@@ -884,7 +884,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
         indexes=GetIndexes(image);
         for (x=0; x < (int) columns; x++)
         {
-          for (i=0; i < strlen(map); i++)
+          for (i=0; i < (long) strlen(map); i++)
           {
             switch (map[i])
             {
@@ -949,7 +949,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
         indexes=GetIndexes(image);
         for (x=0; x < (int) columns; x++)
         {
-          for (i=0; i < strlen(map); i++)
+          for (i=0; i < (long) strlen(map); i++)
           {
             switch (map[i])
             {

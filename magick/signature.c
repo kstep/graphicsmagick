@@ -367,7 +367,7 @@ static void TransformSignature(SignatureInfo *signature_info)
 static void UpdateSignature(SignatureInfo *signature_info,
   unsigned char *message,size_t length)
 {
-  register size_t
+  register long
     i;
 
   unsigned long
@@ -384,7 +384,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
   if (signature_info->offset)
     {
       i=SignatureSize-signature_info->offset;
-      if ((size_t) i > length)
+      if (i > (long) length)
         i=length;
       memcpy(signature_info->message+signature_info->offset,message,i);
       length-=i;

@@ -730,7 +730,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   RectangleInfo
     page;
 
-  register size_t
+  register long
     i;
 
   register unsigned char
@@ -1094,7 +1094,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register size_t
+  register long
     i;
 
   register unsigned char

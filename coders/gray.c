@@ -102,15 +102,17 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   int
     y;
 
+  long
+    j;
+
   register int
     x;
 
-  register size_t
+  register long
     i;
 
   size_t
-    count,
-    j;
+    count;
 
   unsigned char
     *scanline;

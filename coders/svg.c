@@ -2263,7 +2263,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImageInfo
     *clone_info;
 
-  size_t
+  long
     n;
 
   SVGInfo
@@ -2519,13 +2519,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   register int
     i;
 
-  size_t
-    number_pixels;
-
   unsigned int
     number_planes,
     point,
     thin;
+
+  unsigned long
+    number_pixels;
 
   thin=False;
   quantize_info=(QuantizeObj *) NULL;
@@ -2654,6 +2654,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   int
     n;
 
+  long
+    j;
+
   PointInfo
     point;
 
@@ -2666,11 +2669,10 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   register int
     x;
 
-  register size_t
+  register long
     i;
 
   size_t
-    j,
     length;
 
   unsigned int
@@ -3131,7 +3133,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             if (IsGeometry(q))
               {
-                size_t
+                long
                   k;
 
                 p=q;

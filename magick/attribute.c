@@ -146,7 +146,7 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
     dataset,
     record;
 
-  register size_t
+  register long
     i;
 
   size_t
@@ -157,7 +157,7 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
   count=sscanf(key,"IPTC:%d:%d",&dataset,&record);
   if (count != 2)
     return(False);
-  for (i=0; i < image->iptc_profile.length; i++)
+  for (i=0; i < (long) image->iptc_profile.length; i++)
   {
     if (image->iptc_profile.info[i] != 0x1c)
       continue;
@@ -176,7 +176,7 @@ static int GenerateIPTCAttribute(Image *image,const char *key)
     LiberateMemory((void **) &attribute);
     break;
   }
-  return(i < image->iptc_profile.length);
+  return(i < (long) image->iptc_profile.length);
 }
 
 static unsigned char ReadByte(char **p,size_t *length)
@@ -371,7 +371,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     start,
     stop;
 
-  register size_t
+  register long
     i;
 
   size_t
@@ -416,7 +416,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
         string=(char *) AcquireMemory(count+MaxTextExtent);
         if (string != (char *) NULL)
           {
-            for (i=0; i < count; i++)
+            for (i=0; i < (long) count; i++)
               string[i]=(char) ReadByte((char **) &info,&length);
             string[count]=0;
             LiberateMemory((void **) &string);
@@ -544,14 +544,14 @@ static const struct {
   {  0xA002,  "ExifImageWidth"},
   {  0xA003,  "ExifImageLength"},
   {  0xA005,  "InteroperabilityOffset"},
-  {  0xA20B,  "FlashEnergy"},              // 0x920B in TIFF/EP
-  {  0xA20C,  "SpatialFrequencyResponse"},  // 0x920C    -  -
-  {  0xA20E,  "FocalPlaneXResolution"},      // 0x920E    -  -
-  {  0xA20F,  "FocalPlaneYResolution"},      // 0x920F    -  -
-  {  0xA210,  "FocalPlaneResolutionUnit"},  // 0x9210    -  -
-  {  0xA214,  "SubjectLocation"},            // 0x9214    -  -
-  {  0xA215,  "ExposureIndex"},            // 0x9215    -  -
-  {  0xA217,  "SensingMethod"},            // 0x9217    -  -
+  {  0xA20B,  "FlashEnergy"},
+  {  0xA20C,  "SpatialFrequencyResponse"},
+  {  0xA20E,  "FocalPlaneXResolution"},
+  {  0xA20F,  "FocalPlaneYResolution"},
+  {  0xA210,  "FocalPlaneResolutionUnit"},
+  {  0xA214,  "SubjectLocation"},
+  {  0xA215,  "ExposureIndex"},
+  {  0xA217,  "SensingMethod"},
   {  0xA300,  "FileSource"},
   {  0xA301,  "SceneType"},
   {      0, NULL}
@@ -604,9 +604,14 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
     id,
     index,
     level,
-    tag,
     morder,
     all;
+
+  long
+    tag;
+
+  size_t
+    length;
 
   unsigned long
     offset;
@@ -620,9 +625,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
   unsigned int
     de,
     destack[DE_STACK_SIZE],
-    length,
-    nde,
-    status;
+    nde;
 
   value=(char *) NULL;
   final=AllocateString("");
@@ -720,7 +723,6 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
   }
   if (tag < 0)
     return(False);
-  status=False;
   length=image->generic_profile[index].length;
   info=image->generic_profile[index].info;
   while (length > 0)
@@ -775,7 +777,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
     nde=Read16u(morder,ifdp);
     for (;de<nde;de++)
     {
-      int
+      long
         n,
         t,
         f,
@@ -785,7 +787,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
         *pde,
         *pval;
 
-      pde=ifdp+2+(12*de);
+      pde=(char *) (ifdp+2+(12*de));
 
       t=Read16u(morder,pde); /* get tag value */
       f=Read16u(morder,pde+2); /* get the format */
@@ -864,7 +866,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
               value=(char *) AcquireMemory(n+1);
               if (value != (char *) NULL)
                 {
-                  int
+                  long
                     a;
 
                   value[n]='\0';
@@ -928,7 +930,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
               offset;
 
             offset=Read32u(morder,pval);
-            if ((offset < length) ||
+            if ((offset < (long) length) ||
                 (level < (DE_STACK_SIZE-2)))
               {
                 /* push our current directory state onto the stack */
@@ -945,7 +947,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
           }
     }
   } while (level>0);
-  if (strlen(final) <= 0)
+  if (strlen(final) == 0)
     ConcatenateString(&final,"unknown");
   SetImageAttribute(image,spec,(const char *) final);
   LiberateMemory((void **) &final);

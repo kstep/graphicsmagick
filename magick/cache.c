@@ -388,7 +388,9 @@ static void DestroyCacheInfo(Cache cache)
     id;
 
   size_t
-    length,
+    length;
+
+  unsigned long
     number_pixels;
 
   assert(cache != (Cache) NULL);
@@ -1269,8 +1271,10 @@ MagickExport unsigned int OpenCache(Image *image)
     *pixels;
 
   size_t
-    number_pixels,
     offset;
+
+  unsigned long
+    number_pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1689,11 +1693,11 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const int x,const int y,
   RectangleInfo
     region;
 
-  size_t
-    number_pixels;
-
   unsigned int
     status;
+
+  unsigned long
+    number_pixels;
 
   assert(image != (Image *) NULL);
   assert(image->cache != (Cache) NULL);
@@ -1854,7 +1858,9 @@ static PixelPacket *SetNexus(Image *image,const RectangleInfo *region,
     *nexus_info;
 
   size_t
-    length,
+    length;
+
+  unsigned long
     number_pixels;
 
   assert(image != (Image *) NULL);
@@ -1870,7 +1876,7 @@ static PixelPacket *SetNexus(Image *image,const RectangleInfo *region,
         (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
         ((nexus_info->columns % cache_info->columns) == 0)))
       {
-        size_t
+        off_t
           offset;
 
         /*
@@ -2412,7 +2418,7 @@ static unsigned int WriteCacheInfo(Image *image)
   FILE
     *file;
 
-  register size_t
+  register long
     i;
 
   /*
@@ -2529,7 +2535,7 @@ static unsigned int WriteCacheInfo(Image *image)
       /*
         Generic profile.
       */
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (long) image->generic_profiles; i++)
         (void) fprintf(file,"profile-%s=%lu\n",
           image->generic_profile[i].name == (char *) NULL ? "generic" :
           image->generic_profile[i].name,(unsigned long)
@@ -2543,17 +2549,17 @@ static unsigned int WriteCacheInfo(Image *image)
   {
     if (attribute->value != NULL)
       {
-        size_t
+        long
           j;
 
         (void) fprintf(file,"%.1024s=",attribute->key);
-        for (j=0; j < strlen(attribute->value); j++)
+        for (j=0; j < (long) strlen(attribute->value); j++)
           if (isspace((int) attribute->value[j]))
             break;
-        if (j < strlen(attribute->value))
+        if (j < (long) strlen(attribute->value))
           (void) fputc('{',file);
         (void) fwrite(attribute->value,strlen(attribute->value),1,file);
-        if (j < strlen(attribute->value))
+        if (j < (long) strlen(attribute->value))
           (void) fputc('}',file);
         (void) fputc('\n',file);
       }
@@ -2577,7 +2583,7 @@ static unsigned int WriteCacheInfo(Image *image)
       /*
         Generic profile.
       */
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (long) image->generic_profiles; i++)
       {
         if (image->generic_profile[i].length == 0)
           continue;
@@ -2608,14 +2614,14 @@ static unsigned int WriteCacheInfo(Image *image)
       */
       q=colormap;
       if (image->colors <= 256)
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
         {
           *q++=image->colormap[i].red;
           *q++=image->colormap[i].green;
           *q++=image->colormap[i].blue;
         }
       else
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
         {
           *q++=image->colormap[i].red >> 8;
           *q++=image->colormap[i].red & 0xff;
