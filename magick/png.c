@@ -498,25 +498,7 @@ static long mng_get_long(unsigned char *p)
 
 static void MNGCoalesce(Image *image)
 {
-  long
-    delay;
-
-  register Image
-    *p;
-
-  if (image->previous == (Image *) NULL)
-    return;
-  p=image->previous;
-  assert(p->next != (Image *) NULL);
-  if (p->delay != 0)
-    return;
-  delay=image->delay;
-  CoalesceImages(p);
-  p->file=(FILE *) NULL;
-  p->orphan=False;
-  p->blob_info.mapped=False;
-  DestroyImage(p);
-  image->delay=delay;
+  /* Cannot get this working since version 4.2.9 so it's removed for now */
 }
 
 static void PNGErrorHandler(png_struct *ping,png_const_charp message)
