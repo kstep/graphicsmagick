@@ -6438,7 +6438,7 @@ QueryFont(ref,...)
         }
         goto MethodException;
       }
-    EXTEND(sp,8*items);
+    EXTEND(sp,10*items);
     for (i=1; i < items; i++)
     {
       name=(char *) SvPV(ST(i),na);

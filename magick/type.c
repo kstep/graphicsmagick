@@ -120,12 +120,14 @@ MagickExport void DestroyTypeInfo(void)
       LiberateMemory((void **) &type_info->filename);
     if (type_info->name != (char *) NULL)
       LiberateMemory((void **) &type_info->name);
-    if (type_info->family != (char *) NULL)
-      LiberateMemory((void **) &type_info->family);
-    if (type_info->alias != (char *) NULL)
-      LiberateMemory((void **) &type_info->alias);
     if (type_info->description != (char *) NULL)
       LiberateMemory((void **) &type_info->description);
+    if (type_info->family != (char *) NULL)
+      LiberateMemory((void **) &type_info->family);
+    if (type_info->encoding != (char *) NULL)
+      LiberateMemory((void **) &type_info->encoding);
+    if (type_info->foundry != (char *) NULL)
+      LiberateMemory((void **) &type_info->foundry);
     if (type_info->format != (char *) NULL)
       LiberateMemory((void **) &type_info->format);
     if (type_info->metrics != (char *) NULL)
