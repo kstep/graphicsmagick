@@ -1,109 +1,107 @@
-#--------------------------------------------------------------------
+#!/bin/bash -norc
+dnl	This file is an input file used by the GNU "autoconf" program to
+dnl	generate the file "configure", which is run during Tcl installation
+dnl	to configure the system for the local environment.
+#
+# RCS: @(#) $Id$
+
+#-----------------------------------------------------------------------
 # Sample configure.in for Tcl Extensions.  The only places you should
 # need to modify this file are marked by the string __CHANGE__
-#--------------------------------------------------------------------
+#-----------------------------------------------------------------------
 
-AC_PREREQ(2.57)
-
-#--------------------------------------------------------------------
+#-----------------------------------------------------------------------
 # __CHANGE__
-# This very first macro is used to verify that the configure script can 
-# find the sources.  The argument to AC_INIT should be a unique filename
-# for this package, and can be a relative path, such as:
+# Set your package name and version numbers here.
 #
-# AC_INIT(../generic/tcl.h)
+# This initializes the environment with PACKAGE_NAME and PACKAGE_VERSION
+# set as provided.  These will also be added as -D defs in your Makefile
+# so you can encode the package version directly into the source files.
+#-----------------------------------------------------------------------
+
+AC_INIT([TclMagick], [0.2])
+
+#--------------------------------------------------------------------
+# Call TEA_INIT as the first TEA_ macro to set up initial vars.
+# This will define a ${TEA_PLATFORM} variable == "unix" or "windows"
+# as well as PKG_LIB_FILE and PKG_STUB_LIB_FILE.
 #--------------------------------------------------------------------
 
-AC_INIT(TclMagick.h)
-AC_CONFIG_AUX_DIR($srcdir/../..)
+TEA_INIT([3.0])
+
+#--------------------------------------------------------------------
+# Load the tclConfig.sh file
+#--------------------------------------------------------------------
+
+TEA_PATH_TCLCONFIG
+TEA_LOAD_TCLCONFIG
+
+#--------------------------------------------------------------------
+# Load the tkConfig.sh file if necessary (Tk extension)
+#--------------------------------------------------------------------
+
+#TEA_PATH_TKCONFIG
+#TEA_LOAD_TKCONFIG
+
+#-----------------------------------------------------------------------
+# Handle the --prefix=... option by defaulting to what Tcl gave.
+# Must be called after TEA_LOAD_TCLCONFIG and before TEA_SETUP_COMPILER.
+#-----------------------------------------------------------------------
+
+TEA_PREFIX
+
+#-----------------------------------------------------------------------
+# Standard compiler checks.
+# This sets up CC by using the CC env var, or looks for gcc otherwise.
+# This also calls AC_PROG_CC, AC_PROG_INSTALL and a few others to create
+# the basic setup necessary to compile executables.
+#-----------------------------------------------------------------------
+
+TEA_SETUP_COMPILER
+
+#-----------------------------------------------------------------------
+# __CHANGE__
+# Specify the C source files to compile in TEA_ADD_SOURCES,
+# public headers that need to be installed in TEA_ADD_HEADERS,
+# stub library C source files to compile in TEA_ADD_STUB_SOURCES,
+# and runtime Tcl library files in TEA_ADD_TCL_SOURCES.
+# This defines PKG(_STUB)_SOURCES, PKG(_STUB)_OBJECTS, PKG_HEADERS
+# and PKG_TCL_SOURCES.
+#-----------------------------------------------------------------------
+
+TEA_ADD_SOURCES([../generic/TclMagick.c])
+TEA_ADD_HEADERS([])
+TEA_ADD_INCLUDES([])
+TEA_ADD_LIBS([])
+TEA_ADD_CFLAGS([])
+TEA_ADD_STUB_SOURCES([])
+TEA_ADD_TCL_SOURCES([])
 
 #--------------------------------------------------------------------
 # __CHANGE__
-# Set your package name and version numbers here.  The NODOT_VERSION is
-# required for constructing the library name on systems that don't like
-# dots in library names (Windows).  The VERSION variable is used on the
-# other systems.
-#--------------------------------------------------------------------
-
-PACKAGE=TclMagick
-
-MAJOR_VERSION=0
-MINOR_VERSION=2
-PATCHLEVEL=
-
-VERSION=${MAJOR_VERSION}.${MINOR_VERSION}${PATCHLEVEL}
-NODOT_VERSION=${MAJOR_VERSION}${MINOR_VERSION}
-
-
-AC_SUBST(PACKAGE)
-AC_SUBST(VERSION)
-
-#--------------------------------------------------------------------
-# We put this here so that you can compile with -DVERSION="1.2" to
-# encode the package version directly into the source files.
-#--------------------------------------------------------------------
-
-eval AC_DEFINE_UNQUOTED(VERSION, "${VERSION}")
-
-#--------------------------------------------------------------------
-# Check whether --enable-gcc or --disable-gcc was given.  Do this 
-# before AC_CYGWIN is called so the compiler can 
-# be fully tested by built-in autoconf tools.
-# This macro also calls AC_PROG_CC to set the compiler if --enable-gcc
-# was not used.
-#--------------------------------------------------------------------
-
-SC_ENABLE_GCC
-AC_PROG_INSTALL
-
-#--------------------------------------------------------------------
-# Checks to see if the make program sets the $MAKE variable.
-#--------------------------------------------------------------------
-
-AC_PROG_MAKE_SET
-
-#--------------------------------------------------------------------
-# Find ranlib
-#--------------------------------------------------------------------
-
-AC_PROG_RANLIB
-
-#--------------------------------------------------------------------
-# This macro performs additional compiler tests.
-#--------------------------------------------------------------------
-
-AC_CYGWIN
-
-#--------------------------------------------------------------------
-# Determines the correct binary file extension (.o, .obj, .exe etc.)
-#--------------------------------------------------------------------
-
-AC_OBJEXT
-AC_EXEEXT
-
-#--------------------------------------------------------------------
-# "cygpath" is used on windows to generate native path names for include
+# A few miscellaneous platform-specific items:
+#
+# Define a special symbol for Windows (BUILD_sample in this case) so
+# that we create the export library with the dll.
+#
+# Windows creates a few extra files that need to be cleaned up.
+# You can add more files to clean if your extension creates any extra
 # files.
-# These variables should only be used with the compiler and linker since
-# they generate native path names.
 #
-# Unix tclConfig.sh points SRC_DIR at the top-level directory of
-# the Tcl sources, while the Windows tclConfig.sh points SRC_DIR at
-# the win subdirectory.  Hence the different usages of SRC_DIR below.
-#
-# This must be done before calling SC_PUBLIC_TCL_HEADERS
+# TEA_ADD_* any platform specific compiler/build info here.
 #--------------------------------------------------------------------
 
-case "`uname -s`" in
-    *win32* | *WIN32* | *CYGWIN_NT*)
-	CYGPATH="cygpath -w"
-    ;;
-    *)
-	CYGPATH=echo
-    ;;
-esac
-
-AC_SUBST(CYGPATH)
+if test "${TEA_PLATFORM}" = "windows" ; then
+    AC_DEFINE(BUILD_sample)
+    CLEANFILES="pkgIndex.tcl *.lib *.dll *.exp *.ilk *.pdb vc*.pch"
+    #TEA_ADD_SOURCES([win/winFile.c])
+    #TEA_ADD_INCLUDES([-I\"$(${CYGPATH} ${srcdir}/win)\"])
+else
+    CLEANFILES="pkgIndex.tcl"
+    #TEA_ADD_SOURCES([unix/unixFile.c])
+    #TEA_ADD_LIBS([-lsuperfly])
+fi
+AC_SUBST(CLEANFILES)
 
 #--------------------------------------------------------------------
 # __CHANGE__
@@ -111,155 +109,60 @@ AC_SUBST(CYGPATH)
 # hard to only rely on the Tcl public header files.  Internal headers
 # contain private data structures and are subject to change without
 # notice.
-# This MUST be called before SC_PATH_TCLCONFIG/SC_LOAD_TCLCONFIG
+# This MUST be called after TEA_LOAD_TCLCONFIG / TEA_LOAD_TKCONFIG
 #--------------------------------------------------------------------
 
-SC_PUBLIC_TCL_HEADERS
-#SC_PRIVATE_TCL_HEADERS
+TEA_PUBLIC_TCL_HEADERS
+#TEA_PRIVATE_TCL_HEADERS
 
-#--------------------------------------------------------------------
-# Load the tclConfig.sh file
-#--------------------------------------------------------------------
-
-SC_PATH_TCLCONFIG
-SC_LOAD_TCLCONFIG
-
-#--------------------------------------------------------------------
-# __CHANGE__
-# A few miscellaneous platform-specific items:
-#
-# Define a special symbol for Windows (BUILD_TclMagick in this case) so
-# that we create the export library with the dll.  See sha1.h on how
-# to use this.
-#
-# Windows creates a few extra files that need to be cleaned up.
-# You can add more files to clean if your extension creates any extra
-# files.
-#
-# Define any extra compiler flags in the PACKAGE_CFLAGS variable.
-# These will be appended to the current set of compiler flags for
-# your system.
-#--------------------------------------------------------------------
-
-case "`uname -s`" in
-    *win32* | *WIN32* | *CYGWIN_NT*)
-	AC_DEFINE(BUILD_TclMagick)
-	CLEANFILES="*.lib *.dll *.exp *.ilk *.pdb vc50.pch"
-	AC_SUBST(CLEANFILES)
-    ;;
-    *)
-	CLEANFILES=
-    ;;
-esac
+#TEA_PUBLIC_TK_HEADERS
+#TEA_PRIVATE_TK_HEADERS
+#TEA_PATH_X
 
 #--------------------------------------------------------------------
 # Check whether --enable-threads or --disable-threads was given.
-# So far only Tcl responds to this one.
 #--------------------------------------------------------------------
 
-SC_ENABLE_THREADS
+TEA_ENABLE_THREADS
 
 #--------------------------------------------------------------------
 # The statement below defines a collection of symbols related to
 # building as a shared library instead of a static library.
 #--------------------------------------------------------------------
 
-SC_ENABLE_SHARED
+TEA_ENABLE_SHARED
 
 #--------------------------------------------------------------------
 # This macro figures out what flags to use with the compiler/linker
 # when building shared/static debug/optimized objects.  This information
-# is all taken from the tclConfig.sh file.
+# can be taken from the tclConfig.sh file, but this figures it all out.
 #--------------------------------------------------------------------
 
-CFLAGS_DEBUG=${TCL_CFLAGS_DEBUG}
-CFLAGS_OPTIMIZE=${TCL_CFLAGS_OPTIMIZE}
-LDFLAGS_DEBUG=${TCL_LDFLAGS_DEBUG}
-LDFLAGS_OPTIMIZE=${TCL_LDFLAGS_OPTIMIZE}
-SHLIB_LD=${TCL_SHLIB_LD}
-STLIB_LD=${TCL_STLIB_LD}
-SHLIB_CFLAGS=${TCL_SHLIB_CFLAGS}
-
-AC_SUBST(CFLAGS_DEBUG)
-AC_SUBST(CFLAGS_OPTIMIZE)
-AC_SUBST(STLIB_LD)
-AC_SUBST(SHLIB_LD)
-AC_SUBST(SHLIB_CFLAGS)
-AC_SUBST(SHLIB_LDFLAGS)
+TEA_CONFIG_CFLAGS
 
 #--------------------------------------------------------------------
-# Set the default compiler switches based on the --enable-symbols 
-# option.
+# Set the default compiler switches based on the --enable-symbols option.
 #--------------------------------------------------------------------
 
-SC_ENABLE_SYMBOLS
-
-if test "${SHARED_BUILD}" = "1" ; then
-    CFLAGS='${CFLAGS_DEFAULT} ${CFLAGS_WARNING} ${SHLIB_CFLAGS}'
-else
-    CFLAGS='${CFLAGS_DEFAULT} ${CFLAGS_WARNING}'
-fi
+TEA_ENABLE_SYMBOLS
 
 #--------------------------------------------------------------------
 # Everyone should be linking against the Tcl stub library.  If you
 # can't for some reason, remove this definition.  If you aren't using
 # stubs, you also need to modify the SHLIB_LD_LIBS setting below to
-# link against the non-stubbed Tcl library.
+# link against the non-stubbed Tcl library.  Add Tk too if necessary.
 #--------------------------------------------------------------------
 
 AC_DEFINE(USE_TCL_STUBS)
+#AC_DEFINE(USE_TK_STUBS)
 
 #--------------------------------------------------------------------
 # This macro generates a line to use when building a library.  It
-# depends on values set by the SC_ENABLE_SHARED, SC_ENABLE_SYMBOLS,
-# and SC_LOAD_TCLCONFIG macros above.
+# depends on values set by the TEA_ENABLE_SHARED, TEA_ENABLE_SYMBOLS,
+# and TEA_LOAD_TCLCONFIG macros above.
 #--------------------------------------------------------------------
 
-SC_MAKE_LIB
-
-#--------------------------------------------------------------------
-# eval these two values to dereference the ${DBGX} variable.
-#--------------------------------------------------------------------
-
-eval "SHARED_LIB_SUFFIX=${TCL_SHARED_LIB_SUFFIX}"
-eval "UNSHARED_LIB_SUFFIX=${TCL_UNSHARED_LIB_SUFFIX}"
-
-#--------------------------------------------------------------------
-# Shared libraries and static libraries have different names.
-#--------------------------------------------------------------------
-
-case "`uname -s`" in
-    *win32* | *WIN32* | *CYGWIN_NT*)
-	if test "${SHARED_BUILD}" = "1" ; then
-	    SHLIB_LD_LIBS="\"`cygpath -w ${TCL_BIN_DIR}/${TCL_STUB_LIB_FILE}`\" ${TCL_SHLIB_LD_LIBS}"
-	    eval "${PACKAGE}_LIB_FILE=${PACKAGE}${SHARED_LIB_SUFFIX}"
-	    RANLIB=:
-	else
-	    eval "${PACKAGE}_LIB_FILE=${PACKAGE}${UNSHARED_LIB_SUFFIX}"
-	fi
-	;;
-    *)
-	if test "${SHARED_BUILD}" = "1" ; then
-	    SHLIB_LD_LIBS="${TCL_STUB_LIB_SPEC}"
-	    eval "${PACKAGE}_LIB_FILE=lib${PACKAGE}${SHARED_LIB_SUFFIX}"
-	    RANLIB=:
-	else
-	    eval "${PACKAGE}_LIB_FILE=lib${PACKAGE}${UNSHARED_LIB_SUFFIX}"
-	fi
-	;;
-esac
-
-CPPFLAGS=`GraphicsMagickWand-config --cppflags`" $CPPFLAGS"
-SHLIB_LDFLAGS=`GraphicsMagickWand-config --ldflags`" $SHLIB_LDFLAGS"
-SHLIB_LD_LIBS="$SHLIB_LD_LIBS "`GraphicsMagickWand-config --libs`
-
-#--------------------------------------------------------------------
-# __CHANGE__
-# Change the name from exampeA_LIB_FILE to match your package name.
-#--------------------------------------------------------------------
-
-AC_SUBST(TclMagick_LIB_FILE)
-AC_SUBST(SHLIB_LD_LIBS)
+TEA_MAKE_LIB
 
 #--------------------------------------------------------------------
 # Find tclsh so that we can run pkg_mkIndex to generate the pkgIndex.tcl
@@ -267,18 +170,29 @@ AC_SUBST(SHLIB_LD_LIBS)
 # ${CYGPATH} because it's being used directly by make.
 # Require that we use a tclsh shell version 8.2 or later since earlier
 # versions have bugs in the pkg_mkIndex routine.
+# Add WISH as well if this is a Tk extension.
 #--------------------------------------------------------------------
 
-AC_PATH_PROGS(TCLSH_PROG, tclsh8.2${EXEEXT} tclsh82${EXEEXT} tclsh${EXEEXT}, :, ${exec_prefix}:${PATH})
+TEA_PROG_TCLSH
+#TEA_PROG_WISH
 
-if test "x${TCLSH_PROG}" = "x:" ; then
-    AC_MSG_WARN(No tclsh executable found.  You will have to build the pkgIndex.tcl file manually.)
-fi
-AC_SUBST(TCLSH_PROG)
+# Get graphicsmagick compile information.  GraphicsMagickWand-config
+# must be in the PATH for this to work.
+
+AC_MSG_CHECKING(pre-processor flags)
+# If -DHAVE_CONFIG_H is not specified, then QuantumLeap doesn't work.
+CPPFLAGS="$CPPFLAGS "`GraphicsMagickWand-config --cppflags`
+AC_MSG_RESULT("$CPPFLAGS")
+
+AC_MSG_CHECKING(linker flags)
+LDFLAGS="$LDFLAGS "`GraphicsMagickWand-config --ldflags`
+AC_MSG_RESULT("$LDFLAGS")
+
 
 #--------------------------------------------------------------------
 # Finally, substitute all of the various values into the Makefile.
+# You may alternatively have a special pkgIndex.tcl.in or other files
+# which require substituting th AC variables in.  Include these here.
 #--------------------------------------------------------------------
 
-AC_OUTPUT([Makefile \
-	mkIndex.tcl])
+AC_OUTPUT([Makefile])
