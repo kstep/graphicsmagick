@@ -1054,7 +1054,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%lu\n",offset);
+    FormatString(buffer,"%lu\n",(unsigned long) offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -1356,7 +1356,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%lu\n",offset);
+    FormatString(buffer,"%lu\n",(unsigned long) offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     /*
@@ -1656,7 +1656,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%lu\n",offset);
+    FormatString(buffer,"%lu\n",(unsigned long) offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     if ((image->storage_class == DirectClass) ||
@@ -1707,7 +1707,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         xref[object++]=TellBlob(image);
         FormatString(buffer,"%u 0 obj\n",object);
         (void) WriteBlobString(image,buffer);
-        FormatString(buffer,"%lu\n",offset);
+        FormatString(buffer,"%lu\n",(unsigned long) offset);
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"endobj\n");
       }
@@ -1742,7 +1742,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"startxref\n");
-  FormatString(buffer,"%lu\n",offset);
+  FormatString(buffer,"%lu\n",(unsigned long) offset);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"%%EOF\n");
   LiberateMemory((void **) &xref);
