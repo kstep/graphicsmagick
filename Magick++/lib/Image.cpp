@@ -526,7 +526,7 @@ void Magick::Image::flip ( void )
 // Flood-fill color across pixels that match the color of the
 // target pixel and are neighbors of the target pixel.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillColor( int x_, int y_,
+void Magick::Image::floodFillColor( unsigned int x_, unsigned int y_,
 				    const Magick::Color &fillColor_ )
 {
   Geometry size(1,1);
@@ -544,7 +544,7 @@ void Magick::Image::floodFillColor( const Geometry &point_,
 // Flood-fill color across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillColor( int x_, int y_,
+void Magick::Image::floodFillColor( unsigned int x_, unsigned int y_,
 				    const Magick::Color &fillColor_,
 				    const Magick::Color &borderColor_ )
 {
@@ -564,18 +564,28 @@ void Magick::Image::floodFillColor( const Geometry &point_,
 // Flood-fill texture across pixels that match the color of the
 // target pixel and are neighbors of the target pixel.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillTexture( int x_, int y_,
+void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 				      const Magick::Image &texture_ )
 {
   modifyImage();
 
-  MagickLib::PixelPacket target;
-  // FIXME: should throw exception if x or y is out of bounds
-#define PixelOffset(image,x,y) \
-  ((image)->pixels+(((int) (y))*(image)->columns+((int) (x))))
-  target=(*PixelOffset( image(), x_ % columns(), y_ % rows() ));
+  MagickLib::PixelPacket* pixel;
 
-  MagickLib::ColorFloodfillImage ( image(), &target,
+  // Test arguments to ensure they are within the image.
+  if ( y_ > rows() || x_ > columns() )
+    {
+      lastError().error(MagickLib::OptionError);
+      lastError().message("Access outside of image boundary");
+      lastError().throwException();
+    }
+
+  // Retrieve single pixel at co-ordinate from pixel cache
+  if ( (pixel = MagickLib::GetPixelCache( image(), x_, y_, 1, 1 )) == 0 )
+  {
+    throwMagickError();
+  }
+
+  MagickLib::ColorFloodfillImage ( image(), pixel,
 				   const_cast<Image &>(texture_).image(),
 				   x_, y_, FloodfillMethod );
   throwMagickError();
@@ -589,7 +599,7 @@ void Magick::Image::floodFillTexture( const Magick::Geometry &point_,
 // Flood-fill texture across pixels starting at target-pixel and
 // stopping at pixels matching specified border color.
 // Uses current fuzz setting when determining color match.
-void Magick::Image::floodFillTexture( int x_, int y_,
+void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 				      const Magick::Image &texture_,
 				      const Magick::Color &borderColor_ )
 {

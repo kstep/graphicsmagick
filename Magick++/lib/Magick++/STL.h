@@ -474,7 +474,7 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( int x_, int y_,
+    floodFillColorImage( unsigned int x_, unsigned int y_,
 			 const Color &fillColor_ )
       : _x(x_),
 	_y(y_),
@@ -490,7 +490,7 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( int x_, int y_,
+    floodFillColorImage( unsigned int x_, unsigned int y_,
 			 const Color &fillColor_,
 			 const Color &borderColor_ )
       : _x(x_),
@@ -517,10 +517,10 @@ namespace Magick
 	  }
       }
   private:
-    const int   _x;
-    const int   _y;
-    const Color _fillColor;
-    const Color _borderColor;
+    const unsigned int   _x;
+    const unsigned int   _y;
+    const Color          _fillColor;
+    const Color          _borderColor;
   };
 
   // Flood-fill image with texture
@@ -530,7 +530,7 @@ namespace Magick
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( int x_, int y_,
+    floodFillTextureImage( unsigned int x_, unsigned int y_,
 			   const Image &texture_ )
       : _x(x_),
 	_y(y_),
@@ -546,7 +546,7 @@ namespace Magick
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( int x_, int y_,
+    floodFillTextureImage( unsigned int x_, unsigned int y_,
 			   const Image &texture_,
 			   const Color &borderColor_ )
       : _x(x_),
@@ -573,10 +573,10 @@ namespace Magick
 	  }
       }
   private:
-    const int     _x;
-    const int     _y;
-    const Image   _texture;
-    const Color   _borderColor;
+    const unsigned int  _x;
+    const unsigned int  _y;
+    const Image         _texture;
+    const Color         _borderColor;
   };
 
   // Flop image (reflect each scanline in the horizontal direction)

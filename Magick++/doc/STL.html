@@ -556,7 +556,7 @@ and allows batching draw objects together in a list for repeated use.</font></td
 <br><font size=-1>ColorImage</font></center>
 </td>
 
-<td><font size=-1>int x_, int y_, const <a href="Color.html">Color</a>
+<td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill color across pixels that
@@ -570,7 +570,7 @@ const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
 </tr>
 
 <tr NOSAVE>
-<td><font size=-1>int x_, int y_, const <a href="Color.html">Color</a>
+<td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill color across pixels starting
@@ -590,7 +590,7 @@ const <a href="Color.html">Color</a> &amp;fillColor_, const <a href="Color.html"
 <br><font size=-1>TextureImage</font></center>
 </td>
 
-<td><font size=-1>int x_, int y_,&nbsp; const Image &amp;texture_</font></td>
+<td><font size=-1>unsigned int x_, unsigned int y_,&nbsp; const Image &amp;texture_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels that
 match the color of the target pixel and are neighbors of the target pixel.
@@ -603,8 +603,8 @@ const Image &amp;texture_</font></td>
 </tr>
 
 <tr NOSAVE>
-<td><font size=-1>int x_, int y_, const Image &amp;texture_, const <a href="Color.html">Color</a>
-&amp;borderColor_</font></td>
+<td><font size=-1>unsigned int x_, unsigned int y_, const Image &amp;texture_,
+const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels starting
 at target-pixel and stopping at pixels matching specified border color.

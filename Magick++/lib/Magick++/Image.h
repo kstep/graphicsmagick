@@ -167,7 +167,7 @@ namespace Magick
     // Flood-fill color across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    void            floodFillColor( int x_, int y_,
+    void            floodFillColor( unsigned int x_, unsigned int y_,
 				    const Color &fillColor_ );
     void            floodFillColor( const Geometry &point_,
 				    const Color &fillColor_ );
@@ -175,7 +175,7 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void            floodFillColor( int x_, int y_,
+    void            floodFillColor( unsigned int x_, unsigned int y_,
 				    const Color &fillColor_,
 				    const Color &borderColor_ );
     void            floodFillColor( const Geometry &point_,
@@ -185,7 +185,7 @@ namespace Magick
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    void            floodFillTexture( int x_, int y_,
+    void            floodFillTexture( unsigned int x_, unsigned int y_,
 				      const Image &texture_ );
     void            floodFillTexture( const Geometry &point_,
 				      const Image &texture_ );
@@ -193,7 +193,7 @@ namespace Magick
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    void            floodFillTexture( int x_, int y_,
+    void            floodFillTexture( unsigned int x_, unsigned int y_,
 				      const Image &texture_,
 				      const Color &borderColor_ );
     void            floodFillTexture( const Geometry &point_,
