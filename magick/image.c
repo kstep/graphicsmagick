@@ -4477,9 +4477,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
-							if (0)
-            if ((flags & HeightValue) == 0)
-              geometry.height=geometry.width;
             (void) RaiseImage(*image,&geometry,*option == '-');
             continue;
           }

@@ -397,7 +397,8 @@ MagickExport Image *MontageImages(const Image *images,
   bevel_width=0;
   if (montage_info->frame != (char *) NULL)
     {
-      SetGeometry(image_list[0],&geometry);
+      flags=ParseGeometry(montage_info->geometry,&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
       geometry.width=geometry.height;
       flags=ParseImageGeometry(montage_info->frame,&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);

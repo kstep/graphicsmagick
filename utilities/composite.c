@@ -302,8 +302,8 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                 Digitally composite image.
               */
               SetGeometry(*image,&geometry);
-              flags=ParseGeometry(option_info->geometry,&geometry.x,&geometry.y,
-                &geometry.width,&geometry.height);
+              flags=ParseImageGeometry(option_info->geometry,&geometry.x,
+                &geometry.y,&geometry.width,&geometry.height);
               if ((flags & WidthValue) == 0)
                 geometry.width-=2*geometry.x > (long) geometry.width ?
                   geometry.width : 2*geometry.x;

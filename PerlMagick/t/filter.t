@@ -21,7 +21,7 @@ testFilter('input.miff', 'Blur',
 ++$test;
 testFilter('input.miff', 'Border',
   q/10/,
-  '90a0ef26496810bef40cef8e5d3bc28cb64676e2b8b6c43268257e7c481b7452');
+  '64d5519395a5facdba262efa93fc7243d0b384433f45c80199bb98e781b417fe');
 
 ++$test;
 testFilter('input.miff', 'Channel',
@@ -97,7 +97,7 @@ testFilter('input.miff', 'Flop',
 ++$test;
 testFilter('input.miff', 'Frame',
   q/10x10/,
-  'bd822acc21e1d7ea0b1fae3efe36e4dd02e4462bde1c7eb3a5f10fa52a08e4c1', 
+  '808ad51705e83a0bbc21720b770f198949df0f99a7f060a93eba22ada7768240', 
   '61e51802a1b11a86b1f192cf63da321bdf55292c13583370547f2ad785ec602c');
 
 ++$test;
@@ -167,7 +167,7 @@ testFilter('input.miff', 'Quantize',
 ++$test;
 testFilter('input.miff', 'Raise',
   q/10x10/,
-  '0c363702b4b6a27a629426255ce71174a3996580ac5211bf6298f63e655bc400',
+  '63ee7cf715a496513c833b48ac01922f722a7953c3715a88bbd265a65539a3dd',
   'ef9158abb43a7955f05b826ac8ce2f8e643a76df1ed829a9ea9c290e7d4ad54a');
 
 ++$test;
