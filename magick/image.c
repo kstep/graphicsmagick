@@ -855,6 +855,7 @@ MagickExport unsigned int ClipImage(Image *image)
     return(False);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) QueryColorDatabase("none",&image_info->background_color);
+  (void) QueryColorDatabase("white",&image_info->foreground_color);
   clip_mask=BlobToImage(image_info,attribute->value,strlen(attribute->value),
     &image->exception);
   DestroyImageInfo(image_info);
