@@ -91,7 +91,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  clone_images=NewImageList();
+  clone_images=(Image *) NULL;
   for ( ; images != (Image *) NULL; images=images->next)
   {
     image=CloneImage(images,0,0,True,exception);
@@ -163,7 +163,7 @@ MagickExport void DestroyImageList(Image *image)
     */
     next=image->next;
     if (next != (Image *)NULL)
-      next->previous=NewImageList();
+      next->previous=(Image *) NULL;
     DestroyImage(image);
     image=next;
   } while (image != (Image *) NULL);
@@ -423,8 +423,8 @@ MagickExport Image *PopImageList(Image **images)
   image=(*images);
   *images=(*images)->previous;
   if ((*images) != (Image *) NULL)
-    (*images)->next=NewImageList();
-  image->previous=NewImageList();
+    (*images)->next=(Image *) NULL;
+  image->previous=(Image *) NULL;
   return(image);
 }
 
@@ -518,7 +518,7 @@ MagickExport Image *ReverseImageList(const Image *images,
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  reverse_images=NewImageList();
+  reverse_images=(Image *) NULL;
   for (i=0; i < GetImageListSize(images); i++)
   {
     image=GetImageList(images,GetImageListSize(images)-i-1,exception);
@@ -640,8 +640,8 @@ MagickExport Image *ShiftImageList(Image **images)
   image=(*images);
   *images=(*images)->next;
   if ((*images) != (Image *) NULL)
-    (*images)->previous=NewImageList();
-  image->next=NewImageList();
+    (*images)->previous=(Image *) NULL;
+  image->next=(Image *) NULL;
   return(image);
 }
 
