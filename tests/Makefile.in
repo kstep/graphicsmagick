@@ -255,7 +255,7 @@ CHECK_FILES = \
 @HasX11_TRUE@XWD = XWD
 @HasX11_FALSE@XWD = 
 
-# Formats that currently don't work: DPX EPDF EPT $(HDF) $(FPX)
+# Formats that currently don't work: DPX EPDF EPT $(HDF) $(FPX) PICON
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
@@ -281,7 +281,6 @@ CHECK_BLOB_FORMATS = \
 	PCDS \
 	PCX \
 	PGM \
-	PICON \
 	PICT \
 	$(PNG) \
 	PNM \
@@ -306,7 +305,7 @@ CHECK_BLOB_FORMATS = \
 	YUV
 
 
-# Formats that currently don't work: DPX EPDF $(HDF) $(FPX)
+# Formats that currently don't work: DPX EPDF $(HDF) $(FPX) PICON
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
@@ -337,7 +336,6 @@ CHECK_FILE_FORMATS = \
 	PCX \
 	PGM \
 	PICT \
-	PICON \
 	$(PNG) \
 	PNM \
 	PPM \
