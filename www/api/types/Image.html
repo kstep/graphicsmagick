@@ -1,9 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of Image structure members.">
    <title>ImageMagick Image</title>
@@ -51,7 +50,8 @@ to obtain a new cache view, <a href="../cache_view.html#closecacheview">CloseCac
 to discard a cache view, <a href="../cache_view.html#getcacheview">GetCacheView()</a>
 to access an existing pixel region, <a href="../cache_view.html#setcacheview">SetCacheView()</a>
 to define a new pixel region, and <a href="../cache_view.html#synccacheview">SyncCacheView()
-</a>to save the updated pixel region. The function <a href="../cache_view.html#getcacheviewindexes">GetCacheViewIndexes()</a>
+</a>to
+save the updated pixel region. The function <a href="../cache_view.html#getcacheviewindexes">GetCacheViewIndexes()</a>
 provides access to the colormap indexes associated with the pixel view.
 <p>When writing encoders and decoders for new image formats, it is convenient
 to have a high-level interface available which supports converting between
@@ -118,16 +118,6 @@ Key-strings used by ImageMagick include "Comment" (image comment) , "Label"
 <td><font size=-1><a href="ChromaticityInfo.html">ChromaticityInfo</a></font></td>
 
 <td><font size=-1>Red, green, blue, and white-point chromaticity values.</font></td>
-</tr>
-
-<tr>
-<td><a NAME="color_class"></a><font size=-1>color_class</font></td>
-
-<td><font size=-1><a href="Enumerations.html#ClassType">ClassType</a></font></td>
-
-<td><font size=-1>Image storage class. If <a href="Enumerations.html#ClassType">DirectClass</a>
-then the image packets contain valid RGB or CMYK colors. If <a href="Enumerations.html#ClassType">PseudoClass</a>
-then the image has a colormap referenced by pixel's index member. 
 </tr>
 
 <tr>
@@ -523,6 +513,16 @@ or initialized via <a href="../cache.html#SetPixelCache">SetPixelCache()</a>.</f
 </tr>
 
 <tr>
+<td><a NAME="storage_type"></a><font size=-1>storage_type</font></td>
+
+<td><font size=-1><a href="Enumerations.html#ClassType">ClassType</a></font></td>
+
+<td><font size=-1>Image storage class. If <a href="Enumerations.html#ClassType">DirectClass</a>
+then the image packets contain valid RGB or CMYK colors. If <a href="Enumerations.html#ClassType">PseudoClass</a>
+then the image has a colormap referenced by pixel's index member.&nbsp;</font></td>
+</tr>
+
+<tr>
 <td><a NAME="tainted"></a><font size=-1>tainted</font></td>
 
 <td><font size=-1>int</font></td>
@@ -587,7 +587,7 @@ verbose flag was set before the call. Calculated by <a href="../colors.html#GetN
 
 <p>
 <hr>
-<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=MIDDLE></a><font size="-2">
+<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
 Image manipulation software that works like magic.</font>
 </body>
 </html>
