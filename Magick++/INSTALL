@@ -5,12 +5,11 @@
 General
 
 In order to compile Magick++ you must have access to a standard C++
-implementation. Magick++ is co-packaged as a subdirectory of ImageMagick as
-of ImageMagick version 4.2.2 and later. The author uses  gcc 2.95.2 (GNU
-C++) which is available under UNIX and under the Cygwin UNIX-emulation
-environment for Windows. Standards compliant commercial C++ compilers should
-also work fine. Most modern C++ compilers for Microsoft Windows or the Mac
-should also work (project files are provided for Microsoft Visual C++ 6.0).
+implementation. The author uses  gcc 3.0.4 (GNU C++) which is available
+under UNIX and under the Cygwin UNIX-emulation environment for Windows.
+Standards compliant commercial C++ compilers should also work fine. Most
+modern C++ compilers for Microsoft Windows or the Mac should work (project
+files are provided for Microsoft Visual C++ 6.0).
 
 It was decided that Magick++ will be around for the long-haul, so its API
 definition depends on valuable C++ features which should be common in all
@@ -31,28 +30,31 @@ following compiler/platform combinations:
 
                             Tested Configurations
 
-      Operating System        Architecture              Compiler
- SunOS 5.6                 SPARC             egcs 1.1.2
- SunOS 5.6, 5.7, 5.8       SPARC             GCC 2.95.2
- SunOS 5.7                 SPARC             Sun Workshop 5.0 C++
- SunOS 5.7                 SPARC             GCC 3.0
- SunOS 5.8                 SPARC             Sun Forte 6.0 C++
- FreeBSD 2.2.7             Intel Pentium II  egcs 1.1.2
+       Operating System         Architecture             Compiler
+ SunOS 5.6, 5.7, 5.8
+ ("Solaris 2.6, 7, & 8)      SPARC             GCC 3.0.4
+ SunOS 5.7 ("Solaris 7")     SPARC             Sun Workshop 5.0 C++
 
- Windows NT 4.0 SP6a       Intel Pentium II  Visual C++ 6.0 Standard
-                                             Edition
- Windows '98 + Cygwin 1.3.3Intel Pentium III GCC 2.95.3
+ SunOS 5.8 ("Solaris 8")     SPARC             Sun WorkShop 6 update 2 C++
+                                               5.3
+ FreeBSD 4.0                 Intel Pentium II  GCC 2.95
 
-User's of Magick++ have reported that the following configurations work with
+ Windows NT 4.0 SP6a         Intel Pentium II  Visual C++ 6.0 Standard
+                                               Edition
+
+ Windows XP                  Intel Pentium IV  Visual C++ 6.0 Standard
+                                               Edition Service Pack 5
+ Windows '98 + Cygwin 1.3.10 Intel Pentium III GCC 2.95.3-5
+ Windows NT 4.0 SP6a         Intel Pentium II  GCC 2.95.3-5
+ Windows XP + Cygwin 1.3.10  Intel Pentium IV  GCC 2.95.3-5
+
+Users of Magick++ have reported that the following configurations work with
 Magick++:
 
                       Other Known Working Configurations
 
  Operating
   System  Architecture    Compiler   Reported By
- Red Hat  i386 & alpha EGCS 1.1.2    Dr. Alexander Zimmermann
- Linux 5.2             (updated from <Alexander.Zimmermann@fmi.uni-passau.de>
-                       SRPM)
  Red Hat  i386 & alpha EGCS 1.1.2    Dr. Alexander Zimmermann
  Linux 6.0                           <Alexander.Zimmermann@fmi.uni-passau.de>
  Red Hat  i386         GCC 2.95.2    Dr. Alexander Zimmermann
@@ -62,8 +64,13 @@ Magick++:
  Red Hat                             Dr. Alexander Zimmermann
  Linux 7.Xi386 & alpha GCC 3.0       <Alexander.Zimmermann@fmi.uni-passau.de>
  SGI IRIX MIPS         IRIX C++      Albert Chin-A-Young
-                       7.3.1.1m      <china@thewrittenword.com>
- HP-UX    PA-RISC      HP ANSI C++   Albert Chin-A-Young
+ 6.2, 6.5              7.3.1.2m      <china@thewrittenword.com>
+ SunOS                 Sun WorkShop  Albert Chin-A-Young
+ 5.5.1    SPARC        CC 5.0        <china@thewrittenword.com>
+ SunOS
+ 5.6, 5.7,SPARC        Sun Forte CC  Albert Chin-A-Young
+ 5.8                   5.3           <china@thewrittenword.com>
+ HP-UX    PA-RISC      HP-UX aCC     Albert Chin-A-Young
  11.00                 A.03.30       <china@thewrittenword.com>
  Mac OS 9 PowerPC      CodeWarrior   Leonard Rosenthol <leonardr@digapp.com>
                        Professional
@@ -139,16 +146,17 @@ to support Magick++. Use of GCC 2.95 or later is strongly recommended under
 Linux.
   ------------------------------------------------------------------------
 
-              Windows '9X, Windows NT, Windows 2000, Windows ME
+                       Windows '9X, NT, 2000, ME, & XP
 
 Visual C++
 
-Windows NT is supported by an ImageMagick source package for NT available in
-the 'nt' subdirectory of the ImageMagick ftp site (and mirrors).  The
-ImageMagick source package for NT provides sources to ImageMagick, Magick++,
-add-on libraries (e.g. JPEG), and a ready-made Visual C++ build environment.
-Please read the configuration and build instructions for the NT source
-package in order to build Magick++.
+Windows '95 through Windows XP are supported by the ImageMagick source
+package for NT available in the 'win2k' subdirectory of the ImageMagick ftp
+site (and mirrors).  The ImageMagick source package for NT provides sources
+to ImageMagick, Magick++, add-on libraries (e.g. JPEG), and a ready-made
+Visual C++ 6.0 build environment. Please read the configuration and build
+instructions in README.txt (under the heading "Windows Win2K/95 VISUAL C++
+6.0 COMPILATION") in order to build Magick++.
 
 Cygwin & GCC
 
@@ -159,3 +167,4 @@ from  http://www.cygwin.com/xfree/ .To build using Cygwin and GCC, follow
 the instructions for building under Unix. ImageMagick and Magick++ do not
 yet include support for building Windows DLLs under Cygwin so do not enable
 dynamic libraries when building ImageMagick.
+
