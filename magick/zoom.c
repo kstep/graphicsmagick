@@ -786,7 +786,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   for (x=0; x < (long) destination->columns; x++)
   {
     start=(long) Max(ceil(center-support-0.5),0);
-    stop=(long) Min(floor(center+support+0.5),source->columns);
+    stop=(long) Min(floor(center+support+0.5),source->columns-1);
     offset=scale*(start-center+(scale >= 1.0 ? 0.5 : -0.5));
     density=0.0;
     for (n=0; start <= stop; n++)
@@ -899,7 +899,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   for (y=0; y < (long) destination->rows; y++)
   {
     start=(long) Max(ceil(center-support-0.5),0);
-    stop=(long) Min(floor(center+support+0.5),source->rows);
+    stop=(long) Min(floor(center+support+0.5),source->rows-1);
     offset=scale*(start-center+(scale >= 1.0 ? 0.5 : -0.5));
     density=0.0;
     for (n=0; start <= stop; n++)

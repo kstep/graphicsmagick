@@ -1102,8 +1102,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
 {
   double
     average_tau,
-    derivative[Downscale(MaxRGB+1)],
-    second_derivative[Downscale(MaxRGB+1)],
+    *derivative,
+    *second_derivative,
     tau,
     value;
 
@@ -1148,6 +1148,11 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Initialize zero crossing list.
   */
+  derivative=(double *) AcquireMemory((MaxRGB+1)*sizeof(double));
+  second_derivative=(double *) AcquireMemory((MaxRGB+1)*sizeof(double));
+  if ((derivative == (double *) NULL) || (second_derivative == (double *) NULL))
+    MagickError(ResourceLimitError,"Unable to allocate derivatives",
+      "Memory allocation failed");
   i=0;
   for (tau=max_tau; tau >= min_tau; tau-=delta_tau)
   {
@@ -1170,6 +1175,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
   ZeroCrossHistogram(second_derivative,smoothing_threshold,
     zero_crossing[i].crossings);
   number_crossings=i;
+  LiberateMemory((void **) &derivative);
+  LiberateMemory((void **) &second_derivative);
   /*
     Ensure the scale-space fingerprints form lines in scale-space, not loops.
   */
@@ -1297,13 +1304,17 @@ static void ScaleSpace(const long *histogram,const double tau,
   double
     alpha,
     beta,
-    gamma[Downscale(MaxRGB+1)],
+    *gamma,
     sum;
 
   register int
     u,
     x;
 
+  gamma=(double *) AcquireMemory((MaxRGB+1)*sizeof(double));
+  if (gamma == (double *) NULL)
+    MagickError(ResourceLimitError,"Unable to allocate gamma map",
+      "Memory allocation failed");
   alpha=1.0/(tau*sqrt((double) (2.0*MagickPI)));
   beta=(-1.0/(2.0*tau*tau));
   for (x=0; x <= (int) Downscale(MaxRGB); x++)
@@ -1321,6 +1332,7 @@ static void ScaleSpace(const long *histogram,const double tau,
       sum+=(double) histogram[u]*gamma[AbsoluteValue(x-u)];
     scaled_histogram[x]=alpha*sum;
   }
+  LiberateMemory((void **) &gamma);
 }
 
 /*
