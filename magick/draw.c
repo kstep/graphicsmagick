@@ -2662,48 +2662,16 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 %
 */
 
-static inline double DistanceToEdge(const PointInfo *p,const double x,
-  const double y)
+static inline double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
+  const unsigned int fill,const FillRule fill_rule,const int x,const int y,
+  double *stroke_opacity)
 {
   double
     alpha,
-    beta;
+    beta,
+    distance,
+    subpath_opacity;
 
-  register double
-    dx,
-    dy;
-
-  register const PointInfo
-    *q;
-
-  /*
-    Determine distance between a point and an edge.
-  */
-  q=p+1;
-  dx=q->x-p->x,
-  dy=q->y-p->y;
-  beta=dx*(x-p->x)+dy*(y-p->y);
-  if (beta < 0.0)
-    {
-      dx=x-p->x;
-      dy=y-p->y;
-      return(dx*dx+dy*dy);
-    }
-  alpha=dx*dx+dy*dy;
-  if (beta > alpha)
-    {
-      dx=x-q->x;
-      dy=y-q->y;
-      return(dx*dx+dy*dy);
-    }
-  alpha=1.0/alpha;
-  beta=dx*(y-p->y)-dy*(x-p->x);
-  return(alpha*beta*beta);
-}
-
-static inline int GetWindingNumber(const PolygonInfo *polygon_info,
-  const double x,const double y)
-{
   int
     j,
     winding_number;
@@ -2715,55 +2683,185 @@ static inline int GetWindingNumber(const PolygonInfo *polygon_info,
   register EdgeInfo
     *p;
 
+  register const PointInfo
+    *q;
+
   register int
     i;
 
-  register PointInfo
-    *q;
-
-  winding_number=0;
-  for (i=0; i < polygon_info->number_edges; i++)
+  /*
+    Compute fill & stroke opacity for this (x,y) point.
+  */
+  *stroke_opacity=0.0;
+  subpath_opacity=0.0;
+  p=polygon_info->edges;
+  for (j=0; j < polygon_info->number_edges; j++)
   {
-    p=polygon_info->edges+i;
+    if (y < (p->bounds.y1-mid-0.5))
+      break;
+    if (y >= (p->bounds.y2+mid+0.5))
+      {
+        (void) DestroyEdge(polygon_info,j);
+        p++;
+        continue;
+      }
+    if (x < (p->bounds.x1-mid-0.5))
+      {
+        p++;
+        continue;
+      }
+    if (x >= (p->bounds.x2+mid+0.5))
+      {
+        p++;
+        continue;
+      }
+    for (i=Max(p->highwater,1); i < p->number_points; i++)
+    {
+      if (y < (p->points[i-1].y-mid-0.5))
+        break;
+      if (y >= (p->points[i].y+mid+0.5))
+        continue;
+      if (p->scanline != y)
+        {
+          p->scanline=y;
+          p->highwater=i;
+        }
+      /*
+        Compute distance between a point and an edge.
+      */
+      q=p->points+i-1;
+      dx=(q+1)->x-q->x,
+      dy=(q+1)->y-q->y;
+      beta=dx*(x-q->x)+dy*(y-q->y);
+      if (beta < 0.0)
+        {
+          dx=x-q->x;
+          dy=y-q->y;
+          distance=dx*dx+dy*dy;
+        }
+      else
+        {
+          alpha=dx*dx+dy*dy;
+          if (beta > alpha)
+            {
+              dx=x-(q+1)->x;
+              dy=y-(q+1)->y;
+              distance=dx*dx+dy*dy;
+            }
+          else
+            {
+              alpha=1.0/alpha;
+              beta=dx*(y-q->y)-dy*(x-q->x);
+              distance=alpha*beta*beta;
+            }
+        }
+      /*
+        Compute stroke & subpath opacity.
+      */
+      beta=0.0;
+      if (!p->ghostline)
+        {
+          alpha=mid+0.5;
+          if ((*stroke_opacity < 1.0) && (distance <= (alpha*alpha)))
+            {
+              alpha=mid-0.5;
+              if (distance <= (alpha*alpha))
+                *stroke_opacity=1.0;
+              else
+                {
+                  beta=1.0;
+                  if (distance != 1.0)
+                    beta=sqrt(distance);
+                  alpha=beta-mid-0.5;
+                  if (*stroke_opacity < (alpha*alpha))
+                    *stroke_opacity=alpha*alpha;
+                }
+            }
+        }
+      if (!fill || (distance > 1.0) || (subpath_opacity >= 1.0))
+        continue;
+      if (distance <= 0.0)
+        {
+          subpath_opacity=1.0;
+          continue;
+        }
+      if (distance > 1.0)
+        continue;
+      if (beta == 0.0)
+        {
+          beta=1.0;
+          if (distance != 1.0)
+            beta=sqrt(distance);
+        }
+      alpha=beta-1.0;
+      if (subpath_opacity < (alpha*alpha))
+        subpath_opacity=alpha*alpha;
+    }
+    p++;
+  }
+  /*
+    Compute fill opacity.
+  */
+  if (!fill)
+    return(0.0);
+  if (subpath_opacity >= 1.0)
+    return(1.0);
+  /*
+    Determine winding number.
+  */
+  winding_number=0;
+  p=polygon_info->edges;
+  for (j=0; j < polygon_info->number_edges; j++)
+  {
     if (y < p->bounds.y1)
       break;
     if (y >= p->bounds.y2)
-      continue;
+      {
+        p++;
+        continue;
+      }
     if (x < p->bounds.x1)
-      continue;
+      {
+        p++;
+        continue;
+      }
     if (x >= p->bounds.x2)
       {
         winding_number+=p->direction ? 1 : -1;
+        p++;
         continue;
       }
-    for (j=Max(p->highwater,1); j < p->number_points; j++)
-      if (y <= p->points[j].y)
+    for (i=Max(p->highwater,1); i < p->number_points; i++)
+      if (y <= p->points[i].y)
         break;
-    q=p->points+j-1;
+    q=p->points+i-1;
     dx=(q+1)->x-q->x;
     dy=(q+1)->y-q->y;
     if ((dx*(y-q->y)) <= (dy*(x-q->x)))
       winding_number+=p->direction ? 1 : -1;
+    p++;
   }
-  return(winding_number);
+  if (fill_rule != NonZeroRule)
+    {
+      if (AbsoluteValue(winding_number) & 0x01)
+        return(1.0);
+    }
+  else
+    if (AbsoluteValue(winding_number) > 0)
+      return(1.0);
+  return(subpath_opacity);
 }
 
 static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info,PolygonInfo *polygon_info,Image *image)
 {
   double
-    alpha,
-    beta,
-    distance,
     fill_opacity,
     mid,
-    stroke_opacity,
-    subpath_opacity;
+    stroke_opacity;
 
   int
     fill,
-    j,
-    winding_number,
     y;
 
   PixelPacket
@@ -2867,95 +2965,11 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
       break;
     for ( ; x <= (int) floor(bounds.x2+0.5); x++)
     {
-      fill_opacity=0.0;
-      stroke_opacity=0.0;
-      subpath_opacity=0.0;
-      for (i=0; i < polygon_info->number_edges; i++)
-      {
-        p=polygon_info->edges+i;
-        if (y < (p->bounds.y1-mid-0.5))
-          break;
-        if (y >= (p->bounds.y2+mid+0.5))
-          {
-            (void) DestroyEdge(polygon_info,i);
-            continue;
-          }
-        if (x < (p->bounds.x1-mid-0.5))
-          continue;
-	if (x >= (p->bounds.x2+mid+0.5))
-          continue;
-        for (j=Max(p->highwater,1); j < p->number_points; j++)
-        {
-          if (y < (p->points[j-1].y-mid-0.5))
-            break;
-          if (y >= (p->points[j].y+mid+0.5))
-            continue;
-          if (p->scanline != y)
-            {
-              p->scanline=y;
-              p->highwater=j;
-            }
-          distance=DistanceToEdge(p->points+j-1,x,y);
-          beta=0.0;
-          if (!p->ghostline)
-            {
-              alpha=mid+0.5;
-              if ((stroke_opacity < 1.0) && (distance <= (alpha*alpha)))
-                {
-                  alpha=mid-0.5;
-                  if (distance <= (alpha*alpha))
-                    stroke_opacity=1.0;
-                  else
-                    {
-                      beta=1.0;
-                      if (distance != 1.0)
-                        beta=sqrt(distance);
-                      alpha=beta-mid-0.5;
-                      if (stroke_opacity < (alpha*alpha))
-                        stroke_opacity=alpha*alpha;
-                    }
-                }
-            }
-          if (!fill || (distance > 1.0) || (subpath_opacity >= 1.0))
-            continue;
-          if (distance <= 0.0)
-            {
-              subpath_opacity=1.0;
-              continue;
-            }
-          if (distance > 1.0)
-            continue;
-          if (beta == 0.0)
-            {
-              beta=1.0;
-              if (distance != 1.0)
-                beta=sqrt(distance);
-            }
-          alpha=beta-1.0;
-          if (subpath_opacity < (alpha*alpha))
-            subpath_opacity=alpha*alpha;
-        }
-      }
-      if (fill)
-        {
-          if (subpath_opacity > 0.0)
-            fill_opacity=subpath_opacity;
-          if (fill_opacity < 1.0)
-            {
-              winding_number=GetWindingNumber(polygon_info,x,y);
-              if (draw_info->fill_rule != NonZeroRule)
-                {
-                  if (AbsoluteValue(winding_number) & 0x01)
-                    fill_opacity=1.0;
-                }
-              else
-                if (AbsoluteValue(winding_number) > 0)
-                  fill_opacity=1.0;
-            }
-        }
       /*
         Fill and/or stroke.
       */
+      fill_opacity=GetPixelOpacity(polygon_info,mid,fill,draw_info->fill_rule,x,y,
+        &stroke_opacity);
       if (draw_info->tile != (Image *) NULL)
         fill_color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
           y % draw_info->tile->rows);
