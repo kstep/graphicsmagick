@@ -1139,8 +1139,8 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
     Resize image.
   */
   quantum=0;
-  if ((zoom_image->columns*(source_image->rows+zoom_image->rows)) <
-      (zoom_image->rows*(zoom_image->columns+source_image->columns)))
+  if ((zoom_image->columns*(image->rows+zoom_image->rows)) <
+      (zoom_image->rows*(zoom_image->columns+image->columns)))
     {
       span=source_image->columns+zoom_image->rows;
       status=HorizontalFilter(image,source_image,x_factor,&filters[filter],blur,
