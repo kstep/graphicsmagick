@@ -3504,9 +3504,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (mng_info->ob[object_id]->image != (Image *) NULL)
               DestroyImage(mng_info->ob[object_id]->image);
             mng_info->ob[object_id]->image=CloneImage(image,0,0,True);
-            if (mng_info->ob[object_id]->image != (Image *) NULL)
-              mng_info->ob[object_id]->image->file=(FILE *) NULL;
-            else
+            if (mng_info->ob[object_id]->image == (Image *) NULL)
               ThrowException(&image->exception,(ExceptionType)
                 ResourceLimitError,
                 "Cloning image for object buffer failed",image->filename);
@@ -3899,7 +3897,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->columns=p->columns;
                     image->rows=p->rows;
                     p->orphan=True;
-                    p->blob->file=(FILE *) NULL;
                     p->exempt=True;
                     p->fifo=
                       (int (*)(const Image *,const void *,const size_t)) NULL;
@@ -4111,12 +4108,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
              if (next->previous == (Image *) NULL)
                {
                  image=next_image;
-                 image->file=next->file;
                }
              else
                next->previous->next=next_image;
              next->orphan=True;
-             next->file=(FILE *) NULL;
              next->exempt=True;
              next->fifo=
                   (int (*)(const Image *,const void *,const size_t)) NULL;
