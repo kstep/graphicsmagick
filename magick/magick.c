@@ -362,6 +362,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterVIDImage();
       RegisterVIFFImage();
       RegisterWBMPImage();
+      RegisterWMFImage();
       RegisterWPGImage();
       RegisterXImage();
       RegisterXBMImage();

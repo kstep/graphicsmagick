@@ -290,6 +290,12 @@ AC_ARG_WITH(ttf,
 	      [with_ttf=$withval],
 	      [with_ttf='yes'])
 
+# Disable WMF.
+AC_ARG_WITH(wmf,
+	      [  --without-wmf           disable WMF support],
+	      [with_wmf=$withval],
+	      [with_wmf='yes'])
+
 # Set default TrueType font path
 AC_ARG_WITH(ttf-fontpath,
 	      [  --with-ttf-fontpath     set default TrueType font path (default none)],
@@ -1041,6 +1047,43 @@ fi
 AM_CONDITIONAL(HasXML, test "$have_xml" != 'no')
 AC_SUBST(LIB_XML)
 
+#
+# Check for WMF
+#
+have_wmf='no'
+LIB_WMF=''
+OLIBS="$LIBS"
+if test "$with_wmf" != 'no'
+then
+    AC_MSG_CHECKING(for WMF support )
+    AC_MSG_RESULT()
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(wmfapi.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_LIB(Xpm,XpmReadFileToBuffer,LIBS="-lXpm $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(dib,save_DIBasXpm,LIBS="-ldib $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(wmf,PlayMetaFile,LIBS="-lwmf $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if WMF package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+        have_wmf='no (failed tests)'
+        LIBS="$OLIBS"
+    else
+	LIB_WMF='-lwmf -ldib -lXpm'
+	AC_DEFINE(HasWMF,,Define if you have WMF library)
+	AC_MSG_RESULT(yes)
+        have_wmf='yes'
+    fi
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+AM_CONDITIONAL(HasWMF, test "$have_wmf" != 'no')
+AC_SUBST(LIB_WMF)
+
 # Check standard headers
 AC_HEADER_STDC
 AC_HEADER_STAT
@@ -1373,6 +1416,7 @@ if test "$have_ps"     = 'yes' ; then DELEGATES="$DELEGATES ps"  ; fi
 if test "$have_ra_ppm" = 'yes' ; then DELEGATES="$DELEGATES rad" ; fi
 if test "$have_tiff"   = 'yes' ; then DELEGATES="$DELEGATES tiff" ; fi
 if test "$have_ttf"    = 'yes' ; then DELEGATES="$DELEGATES ttf"  ; fi
+if test "$have_wmf"    = 'yes' ; then DELEGATES="$DELEGATES wmf"  ; fi
 if test "$have_x"      = 'yes' ; then DELEGATES="$DELEGATES x"    ; fi
 if test "$have_fig2dev" = 'yes' && test "$have_ps" = 'yes'  ; then DELEGATES="$DELEGATES xfig"    ; fi
 if test "$have_zlib"   = 'yes' ; then DELEGATES="$DELEGATES zlib" ; fi
@@ -1522,6 +1566,7 @@ echo "TIFF              --with-tiff=$with_tiff		$have_tiff"
 echo "FreeType 2.0      --with-ttf=$with_ttf		$have_ttf"
 echo "TTF Path          --with-ttf-fontpath=          \"$with_ttf_fontpath\""
 echo "XML               --with-xml=$with_xml		$have_xml"
+echo "WMF               --with-wmf=$with_wmf		$have_wmf"
 echo "ZLIB              --with-zlib=$with_zlib		$have_zlib"
 echo "X11               --with-x=$with_x			$have_x"
 echo ""

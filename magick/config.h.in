@@ -502,6 +502,9 @@
 /* Define if you have FreeType (TrueType font) library */
 #undef HasTTF
 
+/* Define if you have WMF library */
+#undef HasWMF
+
 /* Define if you have X11 library */
 #undef HasX11
 
