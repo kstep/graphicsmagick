@@ -36,7 +36,6 @@
 #endif
 
 #include <ctype.h>
-#include <signal.h>
 #include <locale.h>
 #include <errno.h>
 #include <math.h>
