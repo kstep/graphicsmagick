@@ -1453,20 +1453,22 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case OutCompositeOp:
         {
-          if (source.opacity == TransparentOpacity)
+          if ((source.opacity == TransparentOpacity) &&
+              (destination.opacity == OpaqueOpacity))
             {
               destination=source;
               break;
             }
-          if (destination.opacity == OpaqueOpacity)
-            break;
           opacity=(double) (MaxRGB-source.opacity)*destination.opacity/MaxRGB;
-          destination.red=(Quantum) ((double) (MaxRGB-source.opacity)*
-            destination.opacity*source.red/MaxRGB/opacity+0.5);
-          destination.green=(Quantum) ((double) (MaxRGB-source.opacity)*
-            destination.opacity*source.green/MaxRGB/opacity+0.5);
-          destination.blue=(Quantum) ((double) (MaxRGB-source.opacity)*
-            destination.opacity*source.blue/MaxRGB/opacity+0.5);
+          if (destination.opacity != OpaqueOpacity)
+            {
+              destination.red=(Quantum) ((double) (MaxRGB-source.opacity)*
+                destination.opacity*source.red/MaxRGB/opacity+0.5);
+              destination.green=(Quantum) ((double) (MaxRGB-source.opacity)*
+                destination.opacity*source.green/MaxRGB/opacity+0.5);
+              destination.blue=(Quantum) ((double) (MaxRGB-source.opacity)*
+                destination.opacity*source.blue/MaxRGB/opacity+0.5);
+            }
           destination.opacity=(Quantum) (MaxRGB-opacity+0.5);
           break;
         }
