@@ -163,12 +163,23 @@ MagickExport unsigned int DeleteImageList(Image **images,const long offset)
       break;
   if (image == (Image *) NULL)
     return(False);
-  if ((*images)->previous != (Image *) NULL)
-    (*images)->previous->next=(*images)->next;
-  if ((*images)->next != (Image *) NULL)
-    (*images)->next->previous=(*images)->previous;
   if ((image->previous == (Image *) NULL) && (image->next == (Image *) NULL))
     *images=(Image *) NULL;
+  else
+    {
+      if (image->previous != (Image *) NULL)
+        {
+          image->previous->next=image->next;
+          if (image == *images)
+            *images=image->previous;
+        }
+      if (image->next != (Image *) NULL)
+        {
+          image->next->previous=image->previous;
+          if (image == *images)
+            *images=image->next;
+        }
+    }
   DestroyImage(image);
   return(True);
 }
