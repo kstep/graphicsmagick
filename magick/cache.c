@@ -2512,8 +2512,10 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long id)
       NexusInfo
         *nexus_info;
 
+      register const PixelPacket
+        *p;
+
       register PixelPacket
-        *p,
         *q;
 
       ViewInfo
@@ -2527,11 +2529,11 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long id)
           image->filename);
       cache_info=(CacheInfo *) image->cache;
       nexus_info=cache_info->nexus_info;
-      p=GetCacheView(image_view,nexus_info->x,nexus_info->y,nexus_info->columns,
-        nexus_info->rows);
+      p=AcquireCacheView(image_view,nexus_info->x,nexus_info->y,
+        nexus_info->columns,nexus_info->rows,&image->exception);
       q=GetCacheView(mask_view,nexus_info->x,nexus_info->y,nexus_info->columns,
         nexus_info->rows);
-      if ((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
+      if ((p != (const PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
         {
           long
             y;
