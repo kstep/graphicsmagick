@@ -8065,7 +8065,8 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       }
       case SegmentPreview:
       {
-        FormatString(factor,"1.5x%.1f",threshold+=(double) 0.4);
+        threshold+=(double) 0.4;
+        FormatString(factor,"%.1fx%.1f",threshold,threshold);
         FormatString(label,"segment %.1024s",factor);
         commands[argc++]="-colors";
         commands[argc++]=factor;
@@ -11236,8 +11237,8 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         height=(height+1)/2;
         if ((width == 0) || (height == 0))
           break;
-      } while ((width >= image->tile_info.width) &&
-               (height >= image->tile_info.height));
+      } while (((width << 1) >= image->tile_info.width) ||
+               ((height << 1) >= image->tile_info.height));
       image=pyramid_image;
     }
   /*

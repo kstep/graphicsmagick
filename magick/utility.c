@@ -2598,22 +2598,27 @@ Export void TemporaryFilename(char *filename)
 %
 %  The format of the TranslateText routine is:
 %
-%      TranslateText(image_info,image,text)
+%      translated_text=TranslateText(image_info,image,formatted_text)
 %
 %  A description of each parameter follows:
+%
+%    o translated_text:  Method TranslateText returns the translated
+%      text string.
 %
 %    o image_info: The address of a structure of type ImageInfo.
 %
 %    o image: The address of a structure of type Image.
 %
-%    o text: The address of a character string containing the embedded
+%    o formatted_text: The address of a character string containing the embedded
 %      formatting characters.
 %
 %
 */
-Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
+Export char *TranslateText(const ImageInfo *image_info,Image *image,
+  const char *formatted_text)
 {
   char
+    *text,
     *translated_text;
 
   register char
@@ -2631,8 +2636,9 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
     length;
 
   assert((image_info != (ImageInfo *) NULL) || (image != (Image *) NULL));
-  if ((text == (char *) NULL) || (*text == '\0'))
+  if ((formatted_text == (const char *) NULL) || (*formatted_text == '\0'))
     return((char *) NULL);
+  text=(char *) formatted_text;
   indirection=(*text == '@');
   if (indirection)
     {
@@ -2681,7 +2687,6 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
   /*
     Allocate and initialize image text.
   */
-  p=text;
   length=Extent(text)+MaxTextExtent;
   translated_text=(char *) AllocateMemory(length);
   if (translated_text == (char *) NULL)
@@ -2715,6 +2720,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
   /*
     Translate any embedded format characters.
   */
+  p=text;
   for (q=translated_text; *p != '\0'; p++)
   {
     *q='\0';

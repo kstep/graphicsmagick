@@ -49,7 +49,9 @@ extern Export unsigned int
   QuantizationError(Image *),
   QuantizeImage(QuantizeInfo *,Image *),
   QuantizeImages(QuantizeInfo *,Image *),
-  QueryColorName(const ColorPacket *,char *);
+  QueryColorName(const ColorPacket *,char *),
+  SegmentImage(Image *,const ColorspaceType,const unsigned int,const double,
+    const double);
 
 extern Export void
   GetQuantizeInfo(QuantizeInfo *),

@@ -1651,7 +1651,7 @@ Export void ColorizeImage(Image *image,const char *opacity,
 %
 %
 */
-Export void CommentImage(Image *image,char *comments)
+Export void CommentImage(Image *image,const char *comments)
 {
   if (image->comments != (char *) NULL)
     FreeMemory((char *) image->comments);
@@ -2563,6 +2563,18 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         return((Image *) NULL);
       for (i=0; i < (int) image->color_profile.length; i++)
         clone_image->color_profile.info[i]=image->color_profile.info[i];
+    }
+  if (image->iptc_profile.length > 0)
+    {
+      /*
+        Allocate and copy the image IPTC profile.
+      */
+      clone_image->iptc_profile.info=(unsigned char *)
+        AllocateMemory(image->iptc_profile.length*sizeof(unsigned char));
+      if (clone_image->iptc_profile.info == (unsigned char *) NULL)
+        return((Image *) NULL);
+      for (i=0; i < (int) image->iptc_profile.length; i++)
+        clone_image->iptc_profile.info[i]=image->iptc_profile.info[i];
     }
   if (image->orphan)
     {
@@ -5414,7 +5426,7 @@ Export unsigned int IsTainted(Image *image)
 %
 %
 */
-Export void LabelImage(Image *image,char *label)
+Export void LabelImage(Image *image,const char *label)
 {
   if (image->label != (char *) NULL)
     FreeMemory((char *) image->label);
@@ -9227,7 +9239,7 @@ Export unsigned int PingImage(ImageInfo *image_info,unsigned int *columns,
 %
 %
 */
-Export void RGBTransformImage(Image *image,const unsigned int colorspace)
+Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 {
 #define RGBTransformImageText  "  Transforming image colors...  "
 #define X 0
@@ -11182,7 +11194,7 @@ Export void SyncImage(Image *image)
 %
 %
 */
-Export void TextureImage(Image *image,char *filename)
+Export void TextureImage(Image *image,const char *filename)
 {
 #define TextureImageText  "  Appling image texture...  "
 
@@ -11197,7 +11209,7 @@ Export void TextureImage(Image *image,char *filename)
     y;
 
   assert(image != (Image *) NULL);
-  if (filename == (char *) NULL)
+  if (filename == (const char *) NULL)
     return;
   /*
     Read the texture image.
@@ -11519,7 +11531,7 @@ Export void TransformImage(Image **image,const char *crop_geometry,
 %
 %
 */
-Export void TransformRGBImage(Image *image,const unsigned int colorspace)
+Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
 {
 #define B (MaxRGB+1)*2
 #define G (MaxRGB+1)

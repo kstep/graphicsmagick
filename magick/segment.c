@@ -251,14 +251,10 @@ static unsigned int Classify(Image *image,short **extrema,
   int
     count;
 
-  long
-    mean;
-
   register double
     distance_squared;
 
   register int
-    distance,
     i,
     j,
     k;
@@ -518,25 +514,15 @@ static unsigned int Classify(Image *image,short **extrema,
         for (j=0; j < (int) image->colors; j++)
         {
           sum=0.0;
-          mean=(q->red+image->colormap[j].red)/2;
-          distance=q->red-(int) image->colormap[j].red;
-          distance_squared=(2.0*(MaxRGB+1)+mean)*squares[distance]/(MaxRGB+1);
-          distance=q->green-(int) image->colormap[j].green;
-          distance_squared+=4.0*squares[distance];
-          distance=q->blue-(int) image->colormap[j].blue;
-          distance_squared+=
-            (3.0*(MaxRGB+1)-1.0-mean)*squares[distance]/(MaxRGB+1);
+          distance_squared=squares[q->red-(int) image->colormap[j].red]+
+            squares[q->green-(int) image->colormap[j].green];
+            squares[q->blue-(int) image->colormap[j].blue];
           numerator=sqrt(distance_squared);
           for (k=0; k < (int) image->colors; k++)
           {
-            mean=(q->red+image->colormap[k].red)/2;
-            distance=q->red-(int) image->colormap[k].red;
-            distance_squared=(2.0*(MaxRGB+1)+mean)*squares[distance]/(MaxRGB+1);
-            distance=q->green-(int) image->colormap[k].green;
-            distance_squared+=4.0*squares[distance];
-            distance=q->blue-(int) image->colormap[k].blue;
-            distance_squared+=
-              (3.0*(MaxRGB+1)-1.0-mean)*squares[distance]/(MaxRGB+1);
+            distance_squared=squares[q->red-(int) image->colormap[k].red]+
+              squares[q->green-(int) image->colormap[k].green];
+              squares[q->blue-(int) image->colormap[k].blue];
             ratio=numerator/sqrt(distance_squared);
             sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
           }
@@ -1395,7 +1381,7 @@ static void ZeroCrossHistogram(double *second_derivative,
 %
 %
 */
-Export unsigned int SegmentImage(Image *image,const unsigned int colorspace,
+Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
   const unsigned int verbose,const double cluster_threshold,
   const double smoothing_threshold)
 {

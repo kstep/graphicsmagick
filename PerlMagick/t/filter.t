@@ -185,7 +185,7 @@ testFilter('input.miff', 'Scale',
 ++$test;
 testFilter('input.miff', 'Segment',
   q/1/,
-  'b159206bc65c655d6760b137025b8bd8');
+  'd0180de7770ae1d4c9f24e0f35fba72c');
 
 ++$test;
 testFilter('input.miff', 'Shade',

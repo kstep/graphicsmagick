@@ -59,7 +59,7 @@
 #     DELEGATE_PATH\delegates.mgk
 #     delegates.mgk
 # 
-# Where DELEGATE_PATH is an environment variable.
+# where DELEGATE_PATH is an environment variable.
 # 
 # Like entries in the later two directory overrides the specification in
 # the system-wide delegates file.
@@ -79,10 +79,10 @@
 	|gzip -cf > %o
 
 bmp<=launch
-	mspaint %i
+	mspaint %i.
 
 bmp<=win
-	mspaint %i
+	mspaint %i.
 
 browse=>
 	cmd /C start http://www.wizards.dupont.com/magick/ImageMagick.html &

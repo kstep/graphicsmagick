@@ -60,7 +60,7 @@
 #     HOME/.magick/delegates.mgk
 #     ./delegates.mgk
 # 
-# Where DELEGATE_PATH and HOME are environment variables.
+# where DELEGATE_PATH and HOME are environment variables.
 # 
 # Like entries in the later two directory overrides the specification in
 # the system-wide delegates file.

@@ -4529,7 +4529,7 @@ Image *ReadICONImage(const ImageInfo *image_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadImages reads a list of image names from a file and then returns 
+%  Method ReadImages reads a list of image names from a file and then returns
 %  the images as a linked list.
 %
 %  The format of the ReadImage routine is:
@@ -4982,7 +4982,7 @@ static jmp_buf
 %
 */
 
-static unsigned int GetCharacter(j_decompress_ptr jpeg_info)
+static unsigned int JPEGGetCharacter(j_decompress_ptr jpeg_info)
 {
   struct jpeg_source_mgr
     *data;
@@ -4994,7 +4994,7 @@ static unsigned int GetCharacter(j_decompress_ptr jpeg_info)
   return(GETJOCTET(*data->next_input_byte++));
 }
 
-static boolean ColorProfileHandler(j_decompress_ptr jpeg_info)
+static boolean JPEGColorProfileHandler(j_decompress_ptr jpeg_info)
 {
   char
     magick[12];
@@ -5012,22 +5012,22 @@ static boolean ColorProfileHandler(j_decompress_ptr jpeg_info)
   /*
     Determine length of color profile.
   */
-  length=GetCharacter(jpeg_info) << 8;
-  length+=GetCharacter(jpeg_info);
+  length=JPEGGetCharacter(jpeg_info) << 8;
+  length+=JPEGGetCharacter(jpeg_info);
   length-=2;
   for (i=0; i < 12; i++)
-    magick[i]=GetCharacter(jpeg_info);
+    magick[i]=JPEGGetCharacter(jpeg_info);
   if (Latin1Compare(magick,"ICC_PROFILE") != 0)
     {
       /*
         Not a ICC profile, return.
       */
       for (i=0; i < length-12; i++)
-        (void) GetCharacter(jpeg_info);
+        (void) JPEGGetCharacter(jpeg_info);
       return(True);
     }
-  (void) GetCharacter(jpeg_info);  /* id */
-  (void) GetCharacter(jpeg_info);  /* markers */
+  (void) JPEGGetCharacter(jpeg_info);  /* id */
+  (void) JPEGGetCharacter(jpeg_info);  /* markers */
   length-=14;
   if (image->color_profile.length == 0)
     image->color_profile.info=(unsigned char *)
@@ -5048,11 +5048,11 @@ static boolean ColorProfileHandler(j_decompress_ptr jpeg_info)
   p=image->color_profile.info+image->color_profile.length;
   image->color_profile.length+=length;
   while (--length >= 0)
-    *p++=GetCharacter(jpeg_info);
+    *p++=JPEGGetCharacter(jpeg_info);
   return(True);
 }
 
-static boolean CommentHandler(j_decompress_ptr jpeg_info)
+static boolean JPEGCommentHandler(j_decompress_ptr jpeg_info)
 {
   long int
     length;
@@ -5063,8 +5063,8 @@ static boolean CommentHandler(j_decompress_ptr jpeg_info)
   /*
     Determine length of comment.
   */
-  length=GetCharacter(jpeg_info) << 8;
-  length+=GetCharacter(jpeg_info);
+  length=JPEGGetCharacter(jpeg_info) << 8;
+  length+=JPEGGetCharacter(jpeg_info);
   length-=2;
   if (image->comments != (char *) NULL)
     image->comments=(char *) ReallocateMemory((char *) image->comments,
@@ -5087,12 +5087,12 @@ static boolean CommentHandler(j_decompress_ptr jpeg_info)
   */
   p=image->comments+Extent(image->comments);
   while (--length >= 0)
-    *p++=GetCharacter(jpeg_info);
+    *p++=JPEGGetCharacter(jpeg_info);
   *p='\0';
   return(True);
 }
 
-static void EmitMessage(j_common_ptr jpeg_info,int level)
+static void JPEGEmitMessage(j_common_ptr jpeg_info,int level)
 {
   char
     message[JMSG_LENGTH_MAX];
@@ -5113,13 +5113,13 @@ static void EmitMessage(j_common_ptr jpeg_info,int level)
       MagickWarning(DelegateWarning,(char *) message,image->filename);
 }
 
-static void ErrorExit(j_common_ptr jpeg_info)
+static void JPEGErrorExit(j_common_ptr jpeg_info)
 {
-  EmitMessage(jpeg_info,0);
+  JPEGEmitMessage(jpeg_info,0);
   longjmp(error_recovery,1);
 }
 
-static boolean IPTCProfileHandler(j_decompress_ptr jpeg_info)
+static boolean JPEGNewsProfileHandler(j_decompress_ptr jpeg_info)
 {
   long int
     length;
@@ -5133,13 +5133,13 @@ static boolean IPTCProfileHandler(j_decompress_ptr jpeg_info)
   /*
     Determine length of IPTC profile.
   */
-  length=GetCharacter(jpeg_info) << 8;
-  length+=GetCharacter(jpeg_info);
+  length=JPEGGetCharacter(jpeg_info) << 8;
+  length+=JPEGGetCharacter(jpeg_info);
   length-=2;
   for (*tag='\0'; length > 0; )
   {
-    *tag=GetCharacter(jpeg_info);
-    *(tag+1)=GetCharacter(jpeg_info);
+    *tag=JPEGGetCharacter(jpeg_info);
+    *(tag+1)=JPEGGetCharacter(jpeg_info);
     length-=2;
     if ((*tag == 0x1c) && (*(tag+1) == 0x02))
       break;
@@ -5171,7 +5171,7 @@ static boolean IPTCProfileHandler(j_decompress_ptr jpeg_info)
   *p++=0x1c;
   *p++=0x02;
   while (--length >= 0)
-    *p++=GetCharacter(jpeg_info);
+    *p++=JPEGGetCharacter(jpeg_info);
   return(True);
 }
 
@@ -5232,8 +5232,8 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
     Initialize image structure.
   */
   jpeg_info.err=jpeg_std_error(&jpeg_error);
-  jpeg_info.err->emit_message=EmitMessage;
-  jpeg_info.err->error_exit=ErrorExit;
+  jpeg_info.err->emit_message=JPEGEmitMessage;
+  jpeg_info.err->error_exit=JPEGErrorExit;
   image->pixels=(RunlengthPacket *) NULL;
   jpeg_pixels=(JSAMPLE *) NULL;
   if (setjmp(error_recovery))
@@ -5249,9 +5249,9 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
     }
   jpeg_create_decompress(&jpeg_info);
   jpeg_stdio_src(&jpeg_info,image->file);
-  jpeg_set_marker_processor(&jpeg_info,JPEG_COM,CommentHandler);
-  jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ColorProfileHandler);
-  jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,IPTCProfileHandler);
+  jpeg_set_marker_processor(&jpeg_info,JPEG_COM,JPEGCommentHandler);
+  jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,JPEGColorProfileHandler);
+  jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,JPEGNewsProfileHandler);
   (void) jpeg_read_header(&jpeg_info,True);
   if (jpeg_info.saw_JFIF_marker)
     {
@@ -13897,6 +13897,63 @@ Image *ReadTGAImage(const ImageInfo *image_info)
 extern "C" {
 #endif
 
+static boolean TIFFColorProfileHandler(char *text,long int length,Image *image)
+{
+  register unsigned char
+    *p;
+
+  p=(unsigned char *) text;
+  if (image->color_profile.length != 0)
+    {
+      FreeMemory(image->color_profile.info);
+      image->color_profile.length=0;
+    }
+  image->color_profile.info=(unsigned char *)
+    AllocateMemory((unsigned int) length*sizeof(unsigned char));
+  if (image->color_profile.info == (unsigned char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+      return(False);
+    }
+  image->color_profile.length=length;
+  memcpy(image->color_profile.info,p,length);
+  return(True);
+}
+
+static boolean TIFFNewsProfileHandler(char *text,long int length,Image *image)
+{
+  register unsigned char
+    *p;
+
+  p=(unsigned char *) text;
+  while (length > 0)
+  {
+    if ((p[0] == 0x1c) && (p[1] == 0x02))
+      break;
+    length-=2;
+    p+=2;
+  }
+  if (length <= 0)
+    return(False);
+  if (image->iptc_profile.length != 0)
+    {
+      FreeMemory(image->iptc_profile.info);
+      image->iptc_profile.length=0;
+    }
+  image->iptc_profile.info=(unsigned char *)
+    AllocateMemory((unsigned int) length*sizeof(unsigned char));
+  if (image->iptc_profile.info == (unsigned char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+      return(False);
+    }
+  image->iptc_profile.length=length;
+  memcpy(image->iptc_profile.info,p,length);
+  return(True);
+}
+
 static void TIFFWarningMessage(const char *module,const char *format,
   va_list warning)
 {
@@ -14077,26 +14134,19 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
         image->chromaticity.blue_primary.x=chromaticity[4];
         image->chromaticity.blue_primary.y=chromaticity[5];
       }
-    length=0;
-    text=(char *) NULL;
 #if defined(ICC_SUPPORT)
-    TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text);
-#endif
-    if (length != 0)
-      {
-        image->color_profile.length=length;
-        image->color_profile.info=(unsigned char *) text;
-      }
     length=0;
     text=(char *) NULL;
-#if defined(IPTC_SUPPORT)
-    TIFFGetField(tiff,TIFFTAG_IPTCNEWSPHOTO,&length,&text);
+    TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text);
+    TIFFColorProfileHandler(text,length,image);
 #endif
-    if (length != 0)
-      {
-        image->iptc_profile.length=length;
-        image->iptc_profile.info=(unsigned char *) text;
-      }
+#if defined(IPTC_SUPPORT)
+    length=0;
+    text=(char *) NULL;
+    TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text);
+    TIFFNewsProfileHandler(text,length,image);
+#endif
+
     /*
       Allocate memory for the image and pixel buffer.
     */

@@ -80,7 +80,7 @@ extern Export char
   *SetClientName(const char *),
   **StringToArgv(const char *,int *),
   **StringToList(const char *),
-  *TranslateText(const ImageInfo *,Image *,char *);
+  *TranslateText(const ImageInfo *,Image *,const char *);
 
 extern Export int
   GlobExpression(char *,const char *),
