@@ -472,14 +472,14 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   /*
     Initialize append next attributes.
   */
-  if ((image->columns != image->next->columns) || !stack)
+  if (((image->rows*GetNumberScenes(image)) == height) || !stack)
     append_image=CloneImage(image,width,image->rows,True,exception);
   else
     append_image=CloneImage(image,image->columns,height,True,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
   scene=0;
-  if ((image->columns != image->next->columns) || !stack)
+  if (((image->rows*GetNumberScenes(image)) == height) || !stack)
     {
       register long
         x;
@@ -871,7 +871,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image == (Image *) NULL)
-	  return(AllocateImage((ImageInfo *) NULL));
+    return(AllocateImage((ImageInfo *) NULL));
   clone_image=(Image *) AcquireMemory(sizeof(Image));
   if (clone_image == (Image *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
@@ -1055,7 +1055,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     clone_info->view=AllocateString(image_info->view);
   if (image_info->attributes != (Image *) NULL)
     clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
-		  &image_info->attributes->exception);
+      &image_info->attributes->exception);
   clone_info->blob=CloneBlobInfo(image_info->blob);
   return(clone_info);
 }
