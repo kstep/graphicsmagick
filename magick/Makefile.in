@@ -390,12 +390,14 @@ include_HEADERS = api.h attribute.h blob.h cache.h \
   cache_view.h command.h compress.h magick_config.h delegate.h \
   draw.h render.h error.h gem.h image.h list.h log.h magic.h magick.h \
   module.h monitor.h quantize.h paint.h random.h resource.h registry.h \
-	semaphore.h signature.h timer.h utility.h version.h widget.h xwindow.h \
-	PreRvIcccm.h deprecate.h
+  semaphore.h signature.h timer.h utility.h version.h widget.h xwindow.h \
+  PreRvIcccm.h deprecate.h
 
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h studio.h vms.h
+noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h \
+  static.h studio.h vms.h
+
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk Magick-config.in \
