@@ -133,6 +133,49 @@ Export void DestroyImageAttributes(Image *image)
 %
 %
 */
+
+static void get_iptc_attribute(Image *image, const char *key)
+{
+  if (image->iptc_profile.length > 0)
+    {
+      char
+        *text;
+
+      unsigned short
+        length;
+
+      int
+        count,
+        dataset,
+        record;
+
+      count=sscanf(key,"IPTC:%d:%d",&dataset,&record);
+      if (count == 2)
+      {
+        int i;
+        for (i=0; i < image->iptc_profile.length; i++)
+        {
+          if (image->iptc_profile.info[i] != 0x1c)
+            continue;
+          if (image->iptc_profile.info[i+1] != dataset)
+            continue;
+          if (image->iptc_profile.info[i+2] != record)
+            continue;
+          length=image->iptc_profile.info[i+3] << 8;
+          length|=image->iptc_profile.info[i+4];
+          text=(char *) AllocateMemory(length+1);
+          if (text != (char *) NULL)
+            {
+              (void) strncpy(text,(char *) image->iptc_profile.info+i+5,length);
+              text[length]='\0';
+              SetImageAttribute(image, key, (const char *)text);
+              FreeMemory((void **) &text);
+            }
+        }
+      }
+    }
+}
+
 Export ImageAttribute *GetImageAttribute(const Image *image,const char *key)
 {
   register ImageAttribute
@@ -143,7 +186,12 @@ Export ImageAttribute *GetImageAttribute(const Image *image,const char *key)
     return(image->attributes);
   for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
     if (LocaleCompare(key,p->key) == 0)
-      break;
+      return(p);
+  if (LocaleNCompare("IPTC:",key,5) == 0)
+    {
+      get_iptc_attribute((Image *)image, key);
+      return GetImageAttribute(image,key);
+    }
   return(p);
 }
 
