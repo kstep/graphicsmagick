@@ -1945,25 +1945,19 @@ static void SVGStartElement(void *context,const xmlChar *name,
         default:
           break;
       }
-      if (font_family != (char *) NULL)
-        {
-          (void) fprintf(svg_info->file,"font '%s",font_family);
-          if ((font_weight != (char *) NULL) && (font_style != (char *) NULL))
-            (void) fprintf(svg_info->file,"-%s%s",font_weight,font_style);
-          else
-            if (font_weight != (char *) NULL)
-              (void) fprintf(svg_info->file,"-%s",font_weight);
-            else
-              if (font_style != (char *) NULL)
-                (void) fprintf(svg_info->file,"-%s",font_style);
-          (void) fprintf(svg_info->file,"'\n");
-        }
-      if (font_family != (char *) NULL)
-        LiberateMemory((void **) &font_family);
-      if (font_style != (char *) NULL)
-        LiberateMemory((void **) &font_style);
-      if (font_weight != (char *) NULL)
-        LiberateMemory((void **) &font_weight);
+    }
+  if (font_family != (char *) NULL)
+    {
+      (void) fprintf(svg_info->file,"font '%s",font_family);
+      if ((font_weight != (char *) NULL) && (font_style != (char *) NULL))
+        (void) fprintf(svg_info->file,"-%s%s",font_weight,font_style);
+      else
+        if (font_weight != (char *) NULL)
+          (void) fprintf(svg_info->file,"-%s",font_weight);
+        else
+          if (font_style != (char *) NULL)
+            (void) fprintf(svg_info->file,"-%s",font_style);
+      (void) fprintf(svg_info->file,"'\n");
     }
   if (LocaleCompare((char *) name,"svg") == 0)
     {
@@ -2018,6 +2012,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
   LiberateMemory((void **) &units);
   if (color != (char *) NULL)
     LiberateMemory((void **) &color);
+  if (font_family != (char *) NULL)
+    LiberateMemory((void **) &font_family);
+  if (font_style != (char *) NULL)
+    LiberateMemory((void **) &font_style);
+  if (font_weight != (char *) NULL)
+    LiberateMemory((void **) &font_weight);
 }
 
 static void SVGEndElement(void *context,const xmlChar *name)
