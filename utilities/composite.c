@@ -129,24 +129,29 @@ typedef struct _CompositeOptionInfo
     stereo,
     tile;
 } CompositeOptionInfo;
+/*
+  Forward declarations.
+*/
+static void
+  CompositeUsage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o m p o s i t e I m a g e s                                             %
+%   C o m p o s i t e I m a g e L i s t                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CompositeImages performs all the steps needed to take the images that
-%  have been read and send them to an output file.
+%  Method CompositeImageList performs all the steps needed to take the images
+%  that have been read and send them to an output file.
 %
-%  The format of the CompositeImages method is:
+%  The format of the CompositeImageList method is:
 %
-%      unsigned int CompositeImages(const ImageInfo *image_info,Image **image,
+%      unsigned int CompositeImageList(const ImageInfo *image_info,Image **image,
 %        CompositeOptionInfo *option_info,const int argc,char **argv,
 %        Image **composite_image,Image **mask_image,ExceptionInfo *exception)
 %
@@ -170,7 +175,7 @@ typedef struct _CompositeOptionInfo
 %
 %
 */
-static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
+static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
   CompositeOptionInfo *option_info,const int argc,char **argv,
   Image *composite_image,Image *mask_image,ExceptionInfo *exception)
 {
@@ -397,99 +402,29 @@ static unsigned int CompositeImages(ImageInfo *image_info,Image **image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U s a g e                                                                 %
+%  C o m p o s i t e I m a g e s M a i n                                      %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure Usage displays the program usage;
+%  CompositeImagesMain() reads one or more images, applies one or more image
+%  processing operations, and writes out the image in the same or
+%  differing format.
 %
-%  The format of the Usage method is:
+%  The format of the CompositeImagesMain method is:
 %
-%      void Usage()
+%      unsigned int CompositeImagesMain(const int argc,char **argv)
+%
+%  A description of each parameter follows:
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
 %
 %
 */
-static void Usage(void)
-{
-  const char
-    **p;
-
-  static const char
-    *options[]=
-    {
-      "-cache threshold    number of megabytes available to the pixel cache",
-      "-colors value       preferred number of colors in the image",
-      "-colorspace type    alternate image colorspace",
-      "-comment string     annotate image with comment",
-      "-compose operator   composite operator",
-      "-compress type      type of image compression",
-      "-debug              display copious debugging information",
-      "-density geometry   vertical and horizontal density of the image",
-      "-depth value        depth of the image",
-      "-displace geometry  shift image pixels as defined by a displacement map",
-      "-display server     obtain image or font from this X server",
-      "-dispose method     GIF disposal method",
-      "-dissolve value     dissolve the two images a given percent",
-      "-dither             apply Floyd/Steinberg error diffusion to image",
-      "-filter type        use this filter when resizing an image",
-      "-font name          font for rendering text",
-      "-geometry geometry  location of the composite image",
-      "-gravity type       which direction to gravitate towards",
-      "-help               print program options",
-      "-interlace type     None, Line, Plane, or Partition",
-      "-label name         ssign a label to an image",
-      "-matte              store matte channel if the image has one",
-      "-monochrome         transform image to black and white",
-      "-negate             replace every pixel with its complementary color ",
-      "-page geometry      size and location of an image canvas",
-      "-profile filename   add ICM or IPTC information profile to image",
-      "-quality value      JPEG/MIFF/PNG compression level",
-      "-resize geometry    resize the image",
-      "-rotate degrees     apply Paeth rotation to the image",
-      "-scene value        image scene number",
-      "-size geometry      width and height of image",
-      "-stegano offset     hide watermark within an image",
-      "-stereo             combine two image to create a stereo anaglyph",
-      "-tile               repeat composite operation across image",
-      "-treedepth value    depth of the color tree",
-      "-type type          image type",
-      "-units type         PixelsPerInch, PixelsPerCentimeter, or Undefined",
-      "-unsharp geometry   sharpen the image",
-      "-verbose            print detailed information about the image",
-      "-watermark geometry percent brightness and saturation of a watermark",
-      (char *) NULL
-    };
-
-  unsigned int
-    version;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf(
-    "Usage: %.1024s [ -option value ... ] image composite [ mask ] composite\n",
-    SetClientName((char *) NULL));
-  (void) printf("\nWhere options include:\n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  Exit(0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%  M a i n                                                                    %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%
-*/
-int main(int argc,char **argv)
+unsigned int CompositeImagesMain(int argc,char **argv)
 {
 #define NotInitialized  (unsigned int) (~0)
 
@@ -527,28 +462,6 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
-  /*
-    Initialize command line arguments.
-  */
-  if (LocaleCompare("-composite",argv[0]) == 0)
-    {
-      if (argc < 4)
-        return(False);
-    }
-  else
-    {
-      ReadCommandlLine(argc,&argv);
-      if (LocaleCompare("composite",argv[0]) == 0)
-        InitializeMagick(GetExecutionPath(argv[0]));
-      else
-        InitializeMagick(*argv);
-      status=ExpandFilenames(&argc,&argv);
-      if (status == False)
-        MagickError(ResourceLimitError,"Memory allocation failed",
-          (char *) NULL);
-      if (argc < 4)
-        Usage();
-    }
   /*
     Set default.
   */
@@ -830,7 +743,7 @@ int main(int argc,char **argv)
                   if (clone_image == (Image *) NULL)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
-                  status&=CompositeImages(clone_info,&clone_image,&option_info,
+                  status&=CompositeImageList(clone_info,&clone_image,&option_info,
                     i-j+2,argv+j-1,composite_image,mask_image,&exception);
                   if (composite_image != (Image *) NULL)
                     {
@@ -1057,7 +970,7 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("help",option+1) == 0)
             {
-              Usage();
+              CompositeUsage();
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -1193,7 +1106,7 @@ int main(int argc,char **argv)
                   if (image == (Image *) NULL)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
-                  status&=CompositeImages(image_info,&image,&option_info,i-j+2,
+                  status&=CompositeImageList(image_info,&image,&option_info,i-j+2,
                     argv+j-1,composite_image,mask_image,&exception);
                   if (composite_image != (Image *) NULL)
                     {
@@ -1385,7 +1298,7 @@ int main(int argc,char **argv)
         }
         case '?':
         {
-          Usage();
+          CompositeUsage();
           break;
         }
         default:
@@ -1397,7 +1310,7 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status&=CompositeImages(image_info,&image,&option_info,argc-j+1,argv+j-1,
+  status&=CompositeImageList(image_info,&image,&option_info,argc-j+1,argv+j-1,
     composite_image,mask_image,&exception);
   if (option_info.displace_geometry != (char *) NULL)
     LiberateMemory((void **) &option_info.displace_geometry);
@@ -1413,10 +1326,127 @@ int main(int argc,char **argv)
     DestroyImages(mask_image);
   DestroyImageList(image);
   DestroyImageInfo(image_info);
-  if (LocaleCompare("-composite",argv[0]) == 0)
-    return(True);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o m p o s i t e U s a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Procedure CompositeUsage displays the program usage;
+%
+%  The format of the CompositeUsage method is:
+%
+%      void CompositeUsage()
+%
+%
+*/
+static void CompositeUsage(void)
+{
+  const char
+    **p;
+
+  static const char
+    *options[]=
+    {
+      "-cache threshold    number of megabytes available to the pixel cache",
+      "-colors value       preferred number of colors in the image",
+      "-colorspace type    alternate image colorspace",
+      "-comment string     annotate image with comment",
+      "-compose operator   composite operator",
+      "-compress type      type of image compression",
+      "-debug              display copious debugging information",
+      "-density geometry   vertical and horizontal density of the image",
+      "-depth value        depth of the image",
+      "-displace geometry  shift image pixels as defined by a displacement map",
+      "-display server     obtain image or font from this X server",
+      "-dispose method     GIF disposal method",
+      "-dissolve value     dissolve the two images a given percent",
+      "-dither             apply Floyd/Steinberg error diffusion to image",
+      "-filter type        use this filter when resizing an image",
+      "-font name          font for rendering text",
+      "-geometry geometry  location of the composite image",
+      "-gravity type       which direction to gravitate towards",
+      "-help               print program options",
+      "-interlace type     None, Line, Plane, or Partition",
+      "-label name         ssign a label to an image",
+      "-matte              store matte channel if the image has one",
+      "-monochrome         transform image to black and white",
+      "-negate             replace every pixel with its complementary color ",
+      "-page geometry      size and location of an image canvas",
+      "-profile filename   add ICM or IPTC information profile to image",
+      "-quality value      JPEG/MIFF/PNG compression level",
+      "-resize geometry    resize the image",
+      "-rotate degrees     apply Paeth rotation to the image",
+      "-scene value        image scene number",
+      "-size geometry      width and height of image",
+      "-stegano offset     hide watermark within an image",
+      "-stereo             combine two image to create a stereo anaglyph",
+      "-tile               repeat composite operation across image",
+      "-treedepth value    depth of the color tree",
+      "-type type          image type",
+      "-units type         PixelsPerInch, PixelsPerCentimeter, or Undefined",
+      "-unsharp geometry   sharpen the image",
+      "-verbose            print detailed information about the image",
+      "-watermark geometry percent brightness and saturation of a watermark",
+      (char *) NULL
+    };
+
+  unsigned int
+    version;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
+  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf(
+    "Usage: %.1024s [ -option value ... ] image composite [ mask ] composite\n",
+    SetClientName((char *) NULL));
+  (void) printf("\nWhere options include:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  Exit(0);
+}
+
+#if !defined(MagickAPI)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M a i n                                                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+*/
+int main(int argc,char **argv)
+{
+  unsigned int
+    status;
+
+  /*
+    Initialize command line arguments.
+  */
+  ReadCommandlLine(argc,&argv);
+  InitializeMagick((const char *) NULL);
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickError(ResourceLimitError,"Memory allocation failed",
+      (char *) NULL);
+  if (argc < 4)
+    CompositeUsage();
+  status=CompositeImagesMain(argc,argv);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);
   return(False);
 }
+#endif

@@ -458,19 +458,19 @@ static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t I m a g e s                                                 %
+%   C o n v e r t I m a g e s M a i n                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertImages() reads one or more images, applies one or more image
+%  ConvertImagesMain() reads one or more images, applies one or more image
 %  processing operations, and writes out the image in the same or
 %  differing format.
 %
-%  The format of the ConvertImages method is:
+%  The format of the ConvertImagesMain method is:
 %
-%      unsigned int ConvertImages(const int argc,char **argv)
+%      unsigned int ConvertImagesMain(const int argc,char **argv)
 %
 %  A description of each parameter follows:
 %
@@ -480,7 +480,7 @@ static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
 %
 %
 */
-unsigned int ConvertImages(int argc,char **argv)
+unsigned int ConvertImagesMain(int argc,char **argv)
 {
 #define NotInitialized  (unsigned int) (~0)
 
@@ -2058,11 +2058,11 @@ unsigned int ConvertImages(int argc,char **argv)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure Usage displays the program usage;
+%  Procedure ConvertUsage displays the program usage;
 %
-%  The format of the Usage method is:
+%  The format of the ConvertUsage method is:
 %
-%      void Usage()
+%      void ConvertUsage()
 %
 */
 static void ConvertUsage(void)
@@ -2235,7 +2235,7 @@ int main(int argc,char **argv)
       (char *) NULL);
   if (argc < 3)
     ConvertUsage();
-  status=ConvertImages(argc,argv);
+  status=ConvertImagesMain(argc,argv);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);

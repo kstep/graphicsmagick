@@ -72,72 +72,40 @@
 */
 #include "magick/magick.h"
 #include "magick/define.h"
+/*
+  Forward declarations.
+*/
+static void
+  IdentifyUsage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U s a g e                                                                 %
+%   I d e n t i f y I m a g e s M a i n                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure Usage displays the program usage;
+%  IdentifyImagesMain() reads one or more images, applies one or more image
+%  processing operations, and writes out the image in the same or
+%  differing format.
 %
-%  The format of the Usage method is:
+%  The format of the IdentifyImagesMain method is:
 %
-%      void Usage()
+%      unsigned int IdentifyImagesMain(const int argc,char **argv)
+%
+%  A description of each parameter follows:
+%
+%    o argc: The number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
 %
 %
 */
-static void Usage(void)
-{
-  const char
-    **p;
-
-  static const char
-    *options[]=
-    {
-      "-cache threshold   megabytes of memory available to the pixel cache",
-      "-debug             display copious debugging information",
-      "-density geometry  vertical and horizontal density of the image",
-      "-depth value       depth of the image",
-      "-format \"string\"   output formatted image characteristics",
-      "-help              print program options",
-      "-size geometry     width and height of image",
-      "-verbose           print detailed information about the image",
-      (char *) NULL
-    };
-
-  unsigned int
-    version;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ]\n",
-    SetClientName((char *) NULL));
-  (void) printf("\nWhere options include:\n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  Exit(0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%    M a i n                                                                  %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%
-*/
-int main(int argc,char **argv)
+int IdentifyImagesMain(int argc,char **argv)
 {
   char
     *format,
@@ -171,14 +139,6 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
-  /*
-    Initialize command line arguments.
-  */
-  ReadCommandlLine(argc,&argv);
-  if (LocaleCompare("identify",argv[0]) == 0)
-    InitializeMagick(GetExecutionPath(argv[0]));
-  else
-    InitializeMagick(*argv);
   format=(char *) NULL;
   for (i=1; i < argc; i++)
   {
@@ -197,7 +157,7 @@ int main(int argc,char **argv)
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 2)
-    Usage();
+    IdentifyUsage();
   /*
     Set defaults.
   */
@@ -287,7 +247,7 @@ int main(int argc,char **argv)
           {
             if (LocaleCompare("help",option+1) == 0)
               {
-                Usage();
+                IdentifyUsage();
                 break;
               }
             MagickError(OptionError,"Unrecognized option",option);
@@ -329,7 +289,7 @@ int main(int argc,char **argv)
           }
           case '?':
           {
-            Usage();
+            IdentifyUsage();
             break;
           }
           default:
@@ -379,8 +339,94 @@ int main(int argc,char **argv)
   if ((i != argc) || (number_images == 0))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImageInfo(image_info);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I d e n t i f y U s a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Procedure IdentifyUsage displays the program usage;
+%
+%  The format of the IdentifyUsage method is:
+%
+%      void IdentifyUsage()
+%
+%
+*/
+static void IdentifyUsage(void)
+{
+  const char
+    **p;
+
+  static const char
+    *options[]=
+    {
+      "-cache threshold   megabytes of memory available to the pixel cache",
+      "-debug             display copious debugging information",
+      "-density geometry  vertical and horizontal density of the image",
+      "-depth value       depth of the image",
+      "-format \"string\"   output formatted image characteristics",
+      "-help              print program options",
+      "-size geometry     width and height of image",
+      "-verbose           print detailed information about the image",
+      (char *) NULL
+    };
+
+  unsigned int
+    version;
+
+  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
+  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ]\n",
+    SetClientName((char *) NULL));
+  (void) printf("\nWhere options include:\n");
+  for (p=options; *p != (char *) NULL; p++)
+    (void) printf("  %.1024s\n",*p);
+  Exit(0);
+}
+
+#if !defined(MagickAPI)
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  M a i n                                                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+*/
+int main(int argc,char **argv)
+{
+  unsigned int
+    status;
+
+  /*
+    Initialize command line arguments.
+  */
+  ReadCommandlLine(argc,&argv);
+  InitializeMagick((const char *) NULL);
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickError(ResourceLimitError,"Memory allocation failed",
+      (char *) NULL);
+  if (argc < 2)
+    IdentifyUsage();
+  status=IdentifyImagesMain(argc,argv);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);
   return(False);
 }
+#endif
