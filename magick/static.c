@@ -142,12 +142,12 @@ MagickExport void RegisterStaticModules(void)
   RegisterJPEGImage();
   RegisterJP2Image();
   RegisterLABELImage();
+  RegisterLOCALEImage();
   RegisterLOGOImage();
   RegisterMAPImage();
   RegisterMATImage();
   RegisterMATTEImage();
   RegisterMETAImage();
-  RegisterMGKImage();
   RegisterMIFFImage();
   RegisterMONOImage();
   RegisterMPCImage();

@@ -46,7 +46,7 @@ $call Make semaphore.c
 $call Make magic.c
 $call Make magick.c
 $call Make memory.c
-$call Make message.c
+$call Make locale.c
 $call Make module.c
 $call Make monitor.c
 $call Make montage.c
@@ -66,7 +66,7 @@ $call Make utility.c
 $call Make vms.c
 $call Make widget.c
 $call Make xwindow.c
-$library/create libMagick.olb memory,blob,cache,message,error,monitor,command, -
+$library/create libMagick.olb memory,blob,cache,locale,error,monitor,command, -
   constitute,image,composite,list,color,quantize,segment,resize,transform, -
   shear,enhance,effect,fx,decorate,annotate,type,draw,render,montage, -
   semaphore,attribute,signature,compress,gem,registry,magic,magick,delegate, -

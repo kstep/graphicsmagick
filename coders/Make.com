@@ -47,12 +47,12 @@ $call Make jbig.c
 $call Make jpeg.c
 $call Make jp2.c
 $call Make label.c
+$call Make locale.c
 $call Make logo.c
 $call Make map.c
 $call Make mat.c
 $call Make matte.c
 $call Make meta.c
-$call Make mgk.c
 $call Make miff.c
 $call Make mpc.c
 $call Make mpeg.c
@@ -114,8 +114,8 @@ $call Make xwd.c
 $call Make yuv.c
 $library/create libCoders.olb art,avi,avs,bmp,clipboard,cmyk,cut,dcm,dib, -
   dps,dpx,emf,ept,fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icon, -
-  jbig,jpeg,jp2,label,caption,palm,logo,map,mat,matte,meta,mgk,miff,mpc,mpr, -
-  msl,mpeg,mono,mtv,mvg,null,otb,pcd,pcl,pcx,pdb,pdf,pict,pix,plasma,png, -
+  jbig,jpeg,jp2,label,caption,palm,locale,logo,map,mat,matte,meta,miff,mpc, -
+	mpr,msl,mpeg,mono,mtv,mvg,null,otb,pcd,pcl,pcx,pdb,pdf,pict,pix,plasma,png, -
   pnm,preview,ps,ps2,ps3,psd,pwp,registry,rgb,rla,rle,sct,sfw,sgi,stegano, -
   sun,svg,tga,tiff,tile,tim,ttf,txt,uil,url,uyvy,vicar,vid,viff,wbmp,wmf, -
   wpg,x,xbm,xc,xcf,xpm,xwd,yuv,[-.magick]compress,[-.magick]prervicccm

@@ -3,19 +3,18 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                           M   M   GGGG  K   K                               %
-%                           MM MM  G      K  K                                %
-%                           M M M  G  GG  KKK                                 %
-%                           M   M  G   G  K  K                                %
-%                           M   M   GGG   K   K                               %
-%                                                                             %
+%                  L       OOO    CCCC   AAA   L      EEEEE                   %
+%                  L      O   O  C      A   A  L      E                       %
+%                  L      O   O  C      AAAAA  L      EEE                     %
+%                  L      O   O  C      A   A  L      E                       %
+%                  LLLLL   OOO    CCCC  A   A  LLLLL  EEEEE                   %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                 July 1992                                   %
+%                               September 2002                                %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
@@ -57,7 +56,7 @@
   Forward declarations.
 */     
 static unsigned int
-  WriteMGKImage(const ImageInfo *,Image *);
+  WriteLOCALEImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -244,25 +243,25 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M G K I m a g e                                                   %
+%   R e a d L O C A L E I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadMGKImage reads a Magick Configure File as a blob an attaches
+%  Method ReadLOCALEImage reads a Magick Configure File as a blob an attaches
 %  it as an image attribute to a proxy image.  It allocates the memory
 %  necessary for the new Image structure and returns a pointer to the new
 %  image.
 %
-%  The format of the ReadMGKImage method is:
+%  The format of the ReadLOCALEImage method is:
 %
-%      Image *ReadMGKImage(const ImageInfo *image_info,
+%      Image *ReadLOCALEImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadMGKImage returns a pointer to the image after
+%    o image:  Method ReadLOCALEImage returns a pointer to the image after
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
@@ -272,7 +271,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
 %
 %
 */
-static Image *ReadMGKImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadLOCALEImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -311,9 +310,9 @@ static Image *ReadMGKImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (LocaleNCompare((const char *) blob,"<?xml",5) != 0)
     {
       LiberateMemory((void **) &blob);
-      ThrowReaderException(CorruptImageError,"Not a MGK file",image);
+      ThrowReaderException(CorruptImageError,"Not a LOCALE file",image);
     }
-  if (SetImageAttribute(image,"[MGK]",blob) == False)
+  if (SetImageAttribute(image,"[LOCALE]",blob) == False)
     ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   return(image);
 }
@@ -323,36 +322,36 @@ static Image *ReadMGKImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r M G K I m a g e                                           %
+%   R e g i s t e r L O C A L E I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterMGKImage adds attributes for the MGK image format to
+%  Method RegisterLOCALEImage adds attributes for the LOCALE image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterMGKImage method is:
+%  The format of the RegisterLOCALEImage method is:
 %
-%      RegisterMGKImage(void)
+%      RegisterLOCALEImage(void)
 %
 */
-ModuleExport void RegisterMGKImage(void)
+ModuleExport void RegisterLOCALEImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("MGK");
-  entry->decoder=ReadMGKImage;
-  entry->encoder=WriteMGKImage;
+  entry=SetMagickInfo("LOCALE");
+  entry->decoder=ReadLOCALEImage;
+  entry->encoder=WriteLOCALEImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AcquireString("Magick Configure File");
-  entry->module=AcquireString("MGK");
+  entry->description=AcquireString("Locale Message File");
+  entry->module=AcquireString("LOCALE");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -361,23 +360,23 @@ ModuleExport void RegisterMGKImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M G K I m a g e                                       %
+%   U n r e g i s t e r L O C A L E I m a g e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterMGKImage removes format registrations made by the
-%  MGK module from the list of supported formats.
+%  Method UnregisterLOCALEImage removes format registrations made by the
+%  LOCALE module from the list of supported formats.
 %
-%  The format of the UnregisterMGKImage method is:
+%  The format of the UnregisterLOCALEImage method is:
 %
-%      UnregisterMGKImage(void)
+%      UnregisterLOCALEImage(void)
 %
 */
-ModuleExport void UnregisterMGKImage(void)
+ModuleExport void UnregisterLOCALEImage(void)
 {
-  (void) UnregisterMagickInfo("MGK");
+  (void) UnregisterMagickInfo("LOCALE");
 }
 
 /*
@@ -385,21 +384,21 @@ ModuleExport void UnregisterMGKImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e M G K I m a g e                                                 %
+%   W r i t e L O C A L E I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteMGKImage() writes a Magick Configure File as C source.
+%  WriteLOCALEImage() writes a Magick Configure File as C source.
 %
-%  The format of the WriteMGKImage method is:
+%  The format of the WriteLOCALEImage method is:
 %
-%      unsigned int WriteMGKImage(const ImageInfo *image_info,Image *image)
+%      unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WriteMGKImage return True if the image is written.
+%    o status: Method WriteLOCALEImage return True if the image is written.
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
@@ -409,7 +408,7 @@ ModuleExport void UnregisterMGKImage(void)
 %
 %
 */
-static unsigned int WriteMGKImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
 {
   unsigned int
     status;
@@ -421,7 +420,7 @@ static unsigned int WriteMGKImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
-  (void) ReadConfigureFile(image,"[MGK]",0,&image->exception);
+  (void) ReadConfigureFile(image,"[LOCALE]",0,&image->exception);
   (void) WriteBlobString(image,"Not implemented yet!\n");
   CloseBlob(image);
   return(False);

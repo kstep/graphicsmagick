@@ -251,7 +251,7 @@ MAGICK_CODER_SRCS = \
   art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c cut.c dcm.c \
   dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c gradient.c \
   gray.c hdf.c histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c \
-  logo.c map.c mat.c matte.c meta.c mgk.c miff.c mono.c mpc.c mpeg.c mpr.c \
+  logo.c map.c mat.c matte.c meta.c locale.c miff.c mono.c mpc.c mpeg.c mpr.c \
   msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c \
   pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
@@ -265,7 +265,7 @@ MAGICK_CODER_SRCS = \
 @WITH_MODULES_FALSE@EXTRA_libCoders_la_SOURCES = clipboard.c emf.c
 
 # Additional files to distribute
-EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
+EXTRA_DIST = modules.locale delegates.locale.in type.locale.in
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
@@ -277,7 +277,7 @@ LIBMAGICK = ../magick/libMagick.la
 @WITH_MODULES_TRUE@pkgdir = $(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
-@WITH_MODULES_TRUE@pkg_DATA = modules.mgk
+@WITH_MODULES_TRUE@pkg_DATA = modules.locale
 
 # Architecture independent data files installed into ImageMagick/share
 @WITH_MODULES_TRUE@pkgdata_DATA = 
@@ -287,7 +287,7 @@ LIBMAGICK = ../magick/libMagick.la
 @WITH_MODULES_TRUE@  art.la avi.la avs.la bmp.la caption.la cmyk.la cut.la dcm.la dib.la dps.la \
 @WITH_MODULES_TRUE@  dpx.la ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la hdf.la \
 @WITH_MODULES_TRUE@  histogram.la html.la icon.la jbig.la jp2.la jpeg.la label.la logo.la \
-@WITH_MODULES_TRUE@  map.la mat.la matte.la meta.la mgk.la miff.la mono.la mpc.la mpeg.la mpr.la msl.la \
+@WITH_MODULES_TRUE@  map.la mat.la matte.la meta.la locale.la miff.la mono.la mpc.la mpeg.la mpr.la msl.la \
 @WITH_MODULES_TRUE@  mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la pdf.la \
 @WITH_MODULES_TRUE@  pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
 @WITH_MODULES_TRUE@  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la \
@@ -468,9 +468,9 @@ meta_la_LDFLAGS = $(MODULECOMMONFLAGS)
 meta_la_LIBADD = $(LIBMAGICK)
 
 # MGK  module
-mgk_la_SOURCES = mgk.c
-mgk_la_LDFLAGS = $(MODULECOMMONFLAGS)
-mgk_la_LIBADD = $(LIBMAGICK)
+locale_la_SOURCES = locale.c
+locale_la_LDFLAGS = $(MODULECOMMONFLAGS)
+locale_la_LIBADD = $(LIBMAGICK)
 
 # MIFF module
 miff_la_SOURCES = miff.c
@@ -766,17 +766,17 @@ DEFS = @DEFS@ -I../
 
 # Install delegates files
 DATADELEGATES = \
-	delegates.mgk \
-	type-ghostscript.mgk \
-	type-windows.mgk \
-	type-solaris.mgk \
-	type.mgk
+	delegates.locale \
+	type-ghostscript.locale \
+	type-windows.locale \
+	type-solaris.locale \
+	type.locale
 
 subdir = coders
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
-CONFIG_CLEAN_FILES = delegates.mgk type.mgk type-ghostscript.mgk \
-	type-windows.mgk type-solaris.mgk
+CONFIG_CLEAN_FILES = delegates.locale type.locale type-ghostscript.locale \
+	type-windows.locale type-solaris.locale
 LTLIBRARIES = $(noinst_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
 art_la_DEPENDENCIES = ../magick/libMagick.la
@@ -869,7 +869,7 @@ am__objects_1 = art.lo avi.lo avs.lo bmp.lo caption.lo clipboard.lo \
 	cmyk.lo cut.lo dcm.lo dib.lo dps.lo dpx.lo emf.lo ept.lo fax.lo \
 	fits.lo fpx.lo gif.lo gradient.lo gray.lo hdf.lo histogram.lo \
 	html.lo icon.lo jbig.lo jp2.lo jpeg.lo label.lo logo.lo map.lo \
-	mat.lo matte.lo meta.lo mgk.lo miff.lo mono.lo mpc.lo mpeg.lo mpr.lo \
+	mat.lo matte.lo meta.lo locale.lo miff.lo mono.lo mpc.lo mpeg.lo mpr.lo \
 	msl.lo mtv.lo mvg.lo null.lo otb.lo palm.lo pcd.lo pcl.lo \
 	pcx.lo pdb.lo pdf.lo pict.lo pix.lo plasma.lo png.lo pnm.lo \
 	preview.lo ps.lo ps2.lo ps3.lo psd.lo pwp.lo rgb.lo rla.lo \
@@ -894,9 +894,9 @@ matte_la_OBJECTS = $(am_matte_la_OBJECTS)
 meta_la_DEPENDENCIES = ../magick/libMagick.la
 am_meta_la_OBJECTS = meta.lo
 meta_la_OBJECTS = $(am_meta_la_OBJECTS)
-mgk_la_DEPENDENCIES = ../magick/libMagick.la
-am_mgk_la_OBJECTS = mgk.lo
-mgk_la_OBJECTS = $(am_mgk_la_OBJECTS)
+locale_la_DEPENDENCIES = ../magick/libMagick.la
+am_locale_la_OBJECTS = locale.lo
+locale_la_OBJECTS = $(am_locale_la_OBJECTS)
 miff_la_DEPENDENCIES = ../magick/libMagick.la
 am_miff_la_OBJECTS = miff.lo
 miff_la_OBJECTS = $(am_miff_la_OBJECTS)
@@ -1093,7 +1093,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/jpeg.Plo ./$(DEPDIR)/label.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/logo.Plo ./$(DEPDIR)/map.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/mat.Plo ./$(DEPDIR)/matte.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/mgk.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/locale.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/meta.Plo ./$(DEPDIR)/miff.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/mono.Plo ./$(DEPDIR)/mpc.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/mpeg.Plo ./$(DEPDIR)/mpr.Plo \
@@ -1144,7 +1144,7 @@ DIST_SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) \
 	$(label_la_SOURCES) $(libCoders_la_SOURCES) \
 	$(EXTRA_libCoders_la_SOURCES) $(logo_la_SOURCES) \
 	$(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) \
-	$(meta_la_SOURCES) $(mgk_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) \
+	$(meta_la_SOURCES) $(locale_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) \
 	$(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mpr_la_SOURCES) \
 	$(msl_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) \
 	$(null_la_SOURCES) $(otb_la_SOURCES) $(palm_la_SOURCES) \
@@ -1169,9 +1169,9 @@ DATA = $(pkg_DATA) $(pkgdata_DATA)
 HEADERS = $(noinst_HEADERS)
 
 DIST_COMMON = $(noinst_HEADERS) Makefile.am Makefile.in \
-	delegates.mgk.in type-ghostscript.mgk.in type-solaris.mgk.in \
-	type-windows.mgk.in type.mgk.in
-SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(caption_la_SOURCES) $(clipboard_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dib_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(emf_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(EXTRA_libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES)  $(mgk_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mpr_la_SOURCES) $(msl_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(otb_la_SOURCES) $(palm_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xcf_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
+	delegates.locale.in type-ghostscript.locale.in type-solaris.locale.in \
+	type-windows.locale.in type.locale.in
+SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(caption_la_SOURCES) $(clipboard_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dib_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(emf_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(EXTRA_libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES)  $(locale_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mpr_la_SOURCES) $(msl_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(otb_la_SOURCES) $(palm_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xcf_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
 
 all: all-am
 
@@ -1182,15 +1182,15 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configu
 	  $(AUTOMAKE) --foreign  coders/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-delegates.mgk: $(top_builddir)/config.status delegates.mgk.in
+delegates.locale: $(top_builddir)/config.status delegates.locale.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-type.mgk: $(top_builddir)/config.status type.mgk.in
+type.locale: $(top_builddir)/config.status type.locale.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-type-ghostscript.mgk: $(top_builddir)/config.status type-ghostscript.mgk.in
+type-ghostscript.locale: $(top_builddir)/config.status type-ghostscript.locale.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-type-windows.mgk: $(top_builddir)/config.status type-windows.mgk.in
+type-windows.locale: $(top_builddir)/config.status type-windows.locale.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-type-solaris.mgk: $(top_builddir)/config.status type-solaris.mgk.in
+type-solaris.locale: $(top_builddir)/config.status type-solaris.locale.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 clean-noinstLTLIBRARIES:
@@ -1297,8 +1297,8 @@ matte.la: $(matte_la_OBJECTS) $(matte_la_DEPENDENCIES)
 	$(LINK) -rpath $(pkgdir) $(matte_la_LDFLAGS) $(matte_la_OBJECTS) $(matte_la_LIBADD) $(LIBS)
 meta.la: $(meta_la_OBJECTS) $(meta_la_DEPENDENCIES) 
 	$(LINK) -rpath $(pkgdir) $(meta_la_LDFLAGS) $(meta_la_OBJECTS) $(meta_la_LIBADD) $(LIBS)
-mgk.la: $(mgk_la_OBJECTS) $(mgk_la_DEPENDENCIES) 
-	$(LINK) -rpath $(pkgdir) $(mgk_la_LDFLAGS) $(mgk_la_OBJECTS) $(mgk_la_LIBADD) $(LIBS)
+locale.la: $(locale_la_OBJECTS) $(locale_la_DEPENDENCIES) 
+	$(LINK) -rpath $(pkgdir) $(locale_la_LDFLAGS) $(locale_la_OBJECTS) $(locale_la_LIBADD) $(LIBS)
 miff.la: $(miff_la_OBJECTS) $(miff_la_DEPENDENCIES) 
 	$(LINK) -rpath $(pkgdir) $(miff_la_LDFLAGS) $(miff_la_OBJECTS) $(miff_la_LIBADD) $(LIBS)
 mono.la: $(mono_la_OBJECTS) $(mono_la_DEPENDENCIES) 
@@ -1455,7 +1455,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/matte.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/meta.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgk.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/locale.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/miff.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpc.Plo@am__quote@

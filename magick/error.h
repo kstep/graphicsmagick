@@ -76,6 +76,9 @@ typedef void
 /*
   Exception declarations.
 */
+extern MagickExport const char
+  *GetLocaleMessage(const char *);
+
 extern MagickExport ErrorHandler
   SetErrorHandler(ErrorHandler);
 
