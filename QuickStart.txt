@@ -51,7 +51,18 @@ Unix/Linux/Cygwin Install:
 
   Alternatively, download the appropriate binary from
   ftp://ftp.simplesystems.org/pub/ImageMagick/binaries.  The Unix
-  binaries must be installed in the /usr/local heirarchy.
+  binaries must be installed in the /usr/local heirarchy.  If you require
+  a different install directory, follow the steps below.  In our example
+  we use /home/cristy/ImageMagick as our install directory:
+
+      gunzip -c ImageMagick-*.tar.gz | tar xvf -
+      /bin/mv share/ImageMagick/* /home/cristy/ImageMagick
+      /bin/mv lib/ImageMagick/modules/coders/* /home/cristy/ImageMagick
+      /bin/mv lib/libMagick* /home/cristy/ImageMagick
+      /bin/mv bin/* /home/cristy/ImageMagick
+      setenv LD_LIBRARY_PATH /home/cristy/ImageMagick 
+      setenv MAGICK_HOME /home/cristy/ImageMagick 
+      /home/cristy/ImageMagick/convert
 
 
 Win2K, NT, Win98, Win95 Install:
