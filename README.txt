@@ -68,19 +68,6 @@ MAILING LIST
   magick@wizards.dupont.com.
 
 
-MEMORY REQUIREMENTS
-
-  You should allocate sufficient swap space on your system before
-  running ImageMagick; otherwise, you may experience random server or
-  application crashes. Anything less than 80 megabytes of swap space is
-  likely to cause random crashes.
-
-  On many systems, you will find that 80 megabytes is insufficient and
-  you will have to allocate more swap space.  You should also have at
-  least 32 megabytes of real memory although 64 megabytes or more is
-  recommended.
-
-
 UNIX/Cygwin COMPILATION
 
   Type:
@@ -214,13 +201,11 @@ UNIX/Cygwin COMPILATION
       --enable-shared is not also specified, then support for modules
       is disabled.
 
-    o --enable-lzw: Unisys claims a patent on the algorithm supporting
-      LZW compression (e.g. used by GIF and TIFF).  To avoid infringing
-      on this patent, support for LZW is disabled by default.  With
-      LZW support, GIF files written by ImageMagick will be much larger
-      than expected.  Obtain a license from Unisys to use LZW compression
-      if LZW is important to your application, or, even better, use a
-      format like PNG which does not suffer from these problems.
+    o --enable-lzw: Unisys reportedly claims a patent on the algorithm
+      supporting LZW compression (e.g. used by GIF and TIFF).  To avoid
+      possibly infringing on this patent, support for LZW is disabled
+      by default.  With LZW support, GIF files written by ImageMagick
+      will be much larger than expected.
 
     o --enable-16bit-pixel: By default ImageMagick represents images
       internally using an eight-bit pixel quantum (red, green, blue, and
@@ -732,93 +717,6 @@ MACINTOSH COMPILATION
 
   Display(1), animate(1), and import(1) currently do not work on the
   Macintosh.
-
-  I am looking for a volunteer to get display(1) and animate(1) to work
-  on the Macintosh.  I also need a volunteer is needed to write a
-  simple Mac program to call the libMagick routines and display an
-  image in a window.
-
-
-ANIMATION
-
-  To prevent color flashing on visuals that have colormaps,
-  animate(1) creates a single colormap from the image sequence.
-  This can be rather time consuming.  You can speed this
-  operation up by reducing the colors in the image before you
-  `animate' them.  Use mogrify(1) to color reduce the images:
-
-      mogrify +map -colors 256 scenes/dna.[0-9]*
-
-  Alternatively, you can use a Standard Colormap; or a static, direct,
-  or true color visual.  You can define a Standard Colormap with
-  xstdcmap(1).  For example, to use the "best" Standard Colormap,
-  type:
-
-      xstdcmap -best
-      animate -map best scenes/dna.[0-9]*
-
-  or to use a true color visual:
-
-      animate -visual truecolor scenes/dna.[0-9]*
-
-  Image filenames can appear in any order on the command line if
-  the scene keyword is specified in the MIFF image.  Otherwise
-  the images display in the order they appear on the command
-  line.  A scene is specified when converting from another image
-  format to MIFF by using the "scene" option with any filter.
-  Be sure to choose a scene number other than zero.  For
-  example, to convert a TIFF image to a MIFF image as scene #2,
-  type:
-
-      convert -scene 2 image.tiff image.miff
-
-
-16-BIT IMAGING
-
-  By default, ImageMagick uses a color depth of 8 bits (e.g.
-  [0..255] for each of red, green, blue, and transparency components).
-  Any 16-bit image is scaled to 8-bits before any image viewing or
-  processing occurs.  If you want to work directly with 16-bit images
-  (e.g. [0..65535]), edit Magick.tmpl and define QuantumLeap or use
-  -enable-16bit with configure.  Next, type:
-
-      make clean
-      make
-
-  In 16-bit mode expect to use about 33% more memory on the average.
-  Also expect some processing to be slower than in 8-bit mode (e.g.
-  Oil Painting, Segment, etc).
-
-  In general, 16-bit mode is only useful if you have 16-bit images that
-  you want to manipulate and save the transformed image back to a
-  16-bit image format (e.g. PNG, VIFF).
-
-
-64-BIT MACHINES
-
-  Each pixel, within ImageMagick, is represented by the PixelPacket
-  structure found in magick/image.h. Only 8 bits are required for each
-  color component for a total of 4 bytes. If QuantumLeap is defined (see
-  16-BIT IMAGING above), the color component size increases to 16 bits
-  for a total of 8 bytes. Some 64-bit machines pad the structure which
-  can cause a significant waste of memory. For the cray, change the
-  PixelPacket structure to this
-
-      typedef struct _PixelPacket
-      {
-        unsigned char
-          red : QuantumDepth,
-          green : QuantumDepth,
-          blue : QuantumDepth,
-          opacity : QuantumDepth;
-      } PixelPacket;
-
-  before compiling.
-
-  I'm not sure if this will work on other 64-bit machines that pad. If
-  you know a better solution, please send me E-mail. Note, that the Dec
-  Alpha apparently does not pad the structure so ImageMagick should be
-  fine on this particular 64-bit machine.
 
 
 Magick++

@@ -40,9 +40,6 @@ live for the sake of another man, nor ask another man to live for mine"</i>
 <a href="#mail">Mailing List</a></li>
 
 <li>
-<a href="#memo">Memory Requirements</a></li>
-
-<li>
 <a href="#unix">UNIX Compilation</a></li>
 
 <li>
@@ -59,18 +56,6 @@ live for the sake of another man, nor ask another man to live for mine"</i>
 
 <li>
 <a href="#macc">Macintosh Compilation</a></li>
-
-<li>
-<a href="#anim">Animation</a></li>
-
-<li>
-<a href="#imag">16-BIT Imaging</a></li>
-
-<li>
-<a href="#mach">64-BIT Machines</a></li>
-
-<li>
-<a href="#miff">MIFF Image Format</a></li>
 
 <li>
 <a href="#copy">Copyright</a></li>
@@ -171,27 +156,6 @@ to the list
 <a href="mailto:magick@wizards.dupont.com">magick@wizards.dupont.com</a>.</dl>
 <i><a href="#contents">Back to Contents</a></i>
 <br>&nbsp;
-<dl><a NAME="memo"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Memory
-Requirements</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-You should allocate sufficient swap space on your system before running
-ImageMagick; otherwise, you may experience random server or application
-crashes. Anything less than 80 megabytes of swap space is likely to cause
-random crashes.</dd>
-
-<dd>
-On many systems, you will find that 80 megabytes is insufficient and you
-will have to allocate more swap space. You should also have at least 32
-megabytes of real memory although 64 megabytes or more is recommended.</dd>
-</dl>
-<i><a href="#contents">Back to Contents</a></i>
-<br>&nbsp;
 <dl><a NAME="unix"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
@@ -253,100 +217,176 @@ and <i>--without-something</i> is equivalent to <i>--with-something=no</i>.
 The configure options are as follows (execute
 <tt>configure --help</tt>
 to see all options).
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --enable-shared&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; build shared libraries (default is no)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --enable-static&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; build static libraries (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --enable-lzw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable LZW support (default is no)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --enable-16bit-pixel enable 16 bit pixels (default is no)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --enable-socks&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable use of SOCKS 5 library and 'rftp'
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-perl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable build/install of PerlMagick (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-bzlib&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable BZlib (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-dps&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable Display Postscript (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-fpx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable FlashPIX (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-hdf&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable HDF (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-jbig&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable JBIG (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-jpeg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable JPEG (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-png&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable PNG (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-tiff&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable TIFF (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-ttf&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable TrueType (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-zlib&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable Zlib (default is yes)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --with-x&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; use the X Window System</pre>
-ImageMagick options represent either features to be enabled or packages
-to be included in the build. When a feature is enabled (via <i>--enable-something</i>),
-it enables code already present in
-<b>ImageMagick</b>. When a package is
-enabled (via <i>--with-something</i>), the configure script will search
-for it, and if is is properly installed and ready to use (headers and built
-libraries are found by compiler) it will be included in the build. The
-configure script is delivered with all features disabled and all packages
-enabled. In general, the only reason to disable a package is if a package
-exists but it is unsuitable for the build (perhaps an old versionor not
+<p>
+<pre>
+    --enable-shared[=PKGS]  build shared libraries [default=no]
+    --enable-static[=PKGS]  build static libraries [default=yes]
+    --enable-lzw            enable LZW support (default is no)
+    --enable-16bit-pixel    enable 16 bit/quantum pixels (default is no)
+    --with-threads          enable threads support
+    --with-cache            set pixel cache threshhold (default 80MB)
+    --without-frozenpaths   disable frozen delegate paths
+    --without-largefiles    disable support for large (64 bit) file offsets
+    --without-perl          disable build/install of PerlMagick
+    --without-bzlib         disable BZLIB support
+    --without-dps           disable Display Postscript support
+    --without-fpx           disable FlashPIX support
+    --without-hdf           disable HDF support
+    --without-jbig          disable JBIG support
+    --without-jpeg          disable JPEG support
+    --without-png           disable PNG support
+    --without-tiff          disable TIFF support
+    --without-ttf           disable TrueType support
+    --with-ttf-fontpath     set default TrueType font path (default none)
+    --without-xml           disable XML support
+    --without-zlib          disable ZLIB support
+    --with-x                use the X Window System
+</pre>
+<p>
+ImageMagick options represent either features to be enabled, disabled,
+or packages to be included in the build.  When a feature is enabled
+(via <tt>--enable-<i>something</i></tt>), it enables code already present in
+ImageMagick.  When a package is enabled (via <tt>--with-<i>something</i></tt>),
+ the configure script will search for it, and if is is properly
+installed and ready to use (headers and built libraries are found
+by compiler) it will be included in the build.  The configure script
+is delivered with all features disabled and all packages enabled. In
+general, the only reason to disable a package is if a package exists
+but it is unsuitable for the build (perhaps an old version or not
 compiled with the right compilation flags).
-<p>Several configure options require special note:
+<p>
+Several configure options require special note:
 <ul>
-<li>
-<tt>--disable-shared</tt>: the shared libraries is not built. Shared libraries
-are valuable because they are <i>shared</i> across more than one invocation
-of an ImageMagick or PerlMagick client. In addition, the clients take much
-less disk space and shared libraries are required in order for PERL to
-dynamically load the PerlMagick extension.</li>
+<li><tt>--enable-shared</tt> the shared libraries are built. Shared
+libraries are valuable because they are <i>shared</i> across more
+than one invocation of an ImageMagick or PerlMagick client. In
+addition, the clients take much less disk space and shared
+libraries are required in order for PERL to dynamically load the
+PerlMagick extension.</li>
+<p>
+ImageMagick built with delegates (see MAGICK PLUG-INS below) can
+pose additional challenges.  You can build all the delegates
+statically and link them into the ImageMagick shared library
+(i.e. libMagick.so) or alternatively you can build the delegates
+as shared libraries (some systems already have delegates
+installed as shared libraries).  Shared libraries compilation
+flags differ from vendor to vendor (gcc's is -fPIC).  However,
+you must compile all shared library source with the same flag
+(for gcc use -fPIC rather than -fpic).</li>
+<p>
 
-<p><br>ImageMagick built with delegates (see
-<a href="#extr">Delegates</a>
-below) can pose additional challenges. You can build all the delegates
-statically and link them into the ImageMagick shared library (i.e. <tt>libMagick.so</tt>)
-or alternatively you can build the delegates as shared libraries (some
-systems already have delegates installed as shared libraries). Shared libraries
-compilation flags differ from vendor to vendor (gcc's is <tt>-fPIC</tt>).
-However, you must compile all shared library source with the same flag
-(for gcc use <tt>-fPIC</tt> rather than <tt>-fpic</tt>).
-<li>
-<tt>--disable-static</tt>: static archive libraries (with extension
-<tt>.a</tt>)
-are not built. If you are building shared libraries, there is little value
-to building static libraries. Reasons to build static libraries include:
-1) they can be easier to debug; 2) the clients do not have external dependencies
-(i.e.
-<tt>libMagick.so</tt>); 3) building PIC versions of the delegate
-libraries may take additional expertise and effort; 4) you are unable to
-build shared libraries.</li>
+<li><tt>--disable-static</tt> static archive libraries (with extension .a)
+are not built.  If you are building shared libraries, there is
+little value to building static libraries. Reasons to build
+static libraries include</tt> 1) they can be easier to debug; 2) the
+clients do not have external dependencies (i.e. libMagick.so);
+3) building PIC versions of the delegate libraries may take
+additional expertise and effort; 4) you are unable to build
+shared libraries.</li>
+<p>
 
-<li>
-<tt>--without-frozenpaths</tt>: By default, the configure script will determine
-the location of all delegates (external programs) and incorporate the full
-paths within the <tt>delegates.mgk</tt> file. This is the default because
-it is assumed that the installer's environment is appropriately configured
-and that the operation of ImageMagick should not be subject to the end-user's
-environment. However, if it is desireable to allow the end user to define
-their own environment or possible that the end user's environment does
-not match the installer's environment (e.g. for binary distributions),
-<tt>--without-frozenpaths</tt> may be specified so that only the delegate's
-name is included in the delegates.mgk file.</li>
+<li><tt>--with-modules</tt> image format coders are built as loadable modules
+which are installed in [prefix]/lib/ImageMagick/modules/coders.
+Support for modules allows the formats supported by ImageMagick
+to be extended by simply adding additional modules to the module
+search path.  Besides the installation directory, modules will
+be found in $HOME/.magick, and in directories specified by
+the environment variable MAGICK_MODULE_PATH. The modules option
+is only available in conjunction with --enable-shared.  If
+--enable-shared is not also specified, then support for modules
+is disabled.</li>
+<p>
 
-<li>
-<tt>--without-perl</tt>: By default, PerlMagick is conveniently compiled
-and installed in one step. When <tt>--without-perl</tt> is specified, you
-must first install ImageMagick, change to the PerlMagick subdirectory,
-build, and finally install PerlMagick. Note, PerlMagick is configured even
-if <tt>--without-perl</tt> is specified. If
-<tt>--enable-shared</tt> is
-not specified, a new PERL interpreter (PerlMagick) is built which is statically
-linked against the PerlMagick extension. This new interpreter is installed
-alongside your existing PERL interpreter. If <tt>--enable-shared</tt> is
-specified, the PerlMagick extension is built as a dynamically loadable
-object which is loaded into your current PERL interpreter at run-time.
-Use of dynamically-loaded extensions is preferable over statically linked
-extensions so <tt>--enable-shared</tt> should be specified if possible.
-If the argument
-<tt>--with-perl=/path/to/perl</tt> is supplied, then <tt>/path/to/perl</tt>
-will be taken as the PERL interpreter to use.</li>
+<li><tt>--enable-lzw</tt> Unisys reportedly claims a patent on the algorithm
+supporting LZW compression (e.g. used by GIF and TIFF).  To avoid possibly
+infringing on this patent, support for LZW is disabled by default.  With
+LZW support, GIF files written by ImageMagick will be much larger
+than expected.  
+<p>
 
-<li>
-<tt>--without-x</tt>: By default, ImageMagick will use X11 libraries if
-they are available. When <tt>--without-x</tt> is specified, use of X11
-is disabled. The display, animate, and import programs are not built or
-installed. The remaining programs have reduced functionality such as no
-access to X11 fonts (consider using Postscript or TrueType fonts instead).</li>
+<li><tt>--enable-16bit-pixel</tt> By default ImageMagick represents images
+internally using an eight-bit pixel quantum (red, green, blue, and
+alpha component).  Scientific applications, or other specialized
+applications, which must ensure that the full dynamic range of
+the image pixels is preserved across operations, or which must
+process an image format that can represent deep pixels, may want
+to enable support for sixteen-bit pixel quantums. When this option
+is specified, the definition QuantumLeap is applied when
+ImageMagick is built, allowing RGBA values to range from 0 to
+65535 rather than 0 to 255.  Enabling this option will cause
+ImageMagick to run about 30% slower.</li>
+<p>
+
+<li><tt>--without-frozenpaths</tt> By default, the configure script will
+determine the location of all delegates (external programs) and
+incorporate the full paths within the delegates.mgk file. This
+is the default because it is assumed that the installer's
+environment is appropriately configured and that the operation
+of ImageMagick should not be subject to the end-user's
+environment. However, if it is desireable to allow the end user
+to define their own environment or possible that the end user's
+environment does not match the installer's environment (e.g. for
+binary distributions), --without-frozenpaths may be specified so
+that only the delegate's name is included in the delegates.mgk
+file.</li>
+<p>
+
+<li><tt>--with-threads</tt> By default, the ImageMagick library is compiled
+without multi-thread support.  This is fine for the utilities,
+and for use in single-threaded applications. When multi-threaded
+applications are to be used with the ImageMagick library, thread
+safety should be selected via --with-threads.  Multi-thread
+support is disabled by default since a thread-safe ImageMagick
+may run slower (OS dependent) due to additional locking within
+the C library (e.g. in malloc()).</li>
+<p>
+
+<li><tt>--with-cache</tt> Specify a different image pixel cache threshold
+using the --with-cache option. When ImageMagick will have more
+image pixel data in memory than the cache threshold setting,
+additional images are cached on disk. Since memory is much faster
+than disk, it is usually better to use memory rather than disk
+for the pixel cache. On large memory machines, the cache threshold
+may be increased to a larger size than the default of 80MB. Small
+memory machines may want to decrease the threshold.</li>
+<p>
+
+<li><tt>--without-largefiles</tt> By default, ImageMagick is compiled with
+support for large (> 2GB on a 32-bit CPU) files if the operating
+system supports large files.  All applications which use the
+ImageMagick library must then also include support for large
+files. By disabling support for large files via
+--without-largefiles, dependent applications do not require
+special compilation options for large files in order to use
+the library.</li>
+<p>
+
+<li><tt>--without-perl</tt> By default, PerlMagick is conveniently compiled
+and installed in one step. When --without-perl is specified, you
+must first install ImageMagick, change to the PerlMagick
+subdirectory, build, and finally install PerlMagick. Note,
+PerlMagick is configured even if --without-perl is specified. If
+--enable-shared is not specified, a new PERL interpreter
+(PerlMagick) is built which is statically linked against the
+PerlMagick extension. This new interpreter is installed
+alongside your existing PERL interpreter. If --enable-shared is
+specified, the PerlMagick extension is built as a dynamically
+loadable object which is loaded into your current PERL
+interpreter at run-time. Use of dynamically-loaded extensions is
+preferable over statically linked extensions so --enable-shared
+should be specified if possible. If the argument
+--with-perl=/path/tto/perl is supplied, then /path/to/perl will
+be taken as the PERL interpreter to use.</li>
+<p>
+
+<li><tt>--without-x</tt> By default, ImageMagick will use X11 libraries if
+they are available. When --without-x is specified, use of X11 is
+disabled. The display, animate, and import programs are not
+built or installed. The remaining programs have reduced
+functionality such as no access to X11 fonts (consider using
+Postscript or TrueType fonts instead).</li>
 </ul>
+<p>
 <b>Building under Cygwin:</b>
 <p>ImageMagick may be built under the Windows NT/'9X Cygwin Unix-emulation
 environment which may be downloaded from
@@ -355,6 +395,7 @@ Pre-compiled X11R6.4 libraries for Cygwin are available from
 <a href="http://dao.gsfc.nasa.gov/software/grads/win32/X11R6.4/">NASA</a>.
 Use the same procedure as for Unix except that building DLLs is not yet
 supported so do not specify <tt>--enable-shared</tt> option to configure.
+
 <p><b>Dealing with configuration failures:</b>
 <p>While configure is designed to ease installation of ImageMagick, it
 often discovers problems that would otherwise be encountered later when
@@ -437,9 +478,11 @@ utilities
 </ul>
 
 <dd>
+<p>
 Also read the <b>ImageMagick</b> <a href="Magick.html">Frequently Asked
 Questions</a> This is a required reading. Most of the questions I get via
 electronic mail are answered in this document.</dd>
+<p>
 
 <dd>
 Place <a href="display.html">display</a><b> X application defaults</b>
@@ -807,7 +850,7 @@ The Visual C++ distribution targeted at Windows <a href="ftp://ftp.wizards.dupon
 or Windows 95
 does not provide any stock workspace (DSW) or project files (DSP)
 except for those included with third party libraries. Instead, there
-is a <i>configure</i> program that must be built and run that creates
+is a <tt>configure</tt> program that must be built and run that creates
 an environment that meets your particular needs.
 
 The issue with the Visual C++ working environement is that there
@@ -843,7 +886,9 @@ To do a build for your requirements, simply go to the configure sub-
 directory under VisualMagick and open the configure.dsw workspace.
 Set the build configuration to "Release" under the
 
+<pre>
     "Build..., Set Active Configuration..."  menu
+</pre>
 
 Build and execute the configure program and follow the instructions.
 You should probably not change any of the defaults unless you have a
@@ -858,13 +903,15 @@ the "active" project. Set the build configuration to the desired one
 (Debug, or Release) and do a "clean" followed by a "build". You should
 do the build in a specific way:
 
+<pre>
   1) Make the "All" prkect the active project (Bold)
      Right click on the All project and select "Set As Active Project"
   2) Select "Build..., Clean"
   3) Select "Build..., Build"
   4) Go get some coffee unless you have a very fast machine.
+</pre>
 
-The "Clean" step is needed in order to make sure that all of the
+The <i>Clean</i> step is needed in order to make sure that all of the
 target support libraries are updated with any patches needed to
 get them to compile properly under Visual C++.
 
@@ -885,11 +932,15 @@ workspace created by the configure program. You can have any of these
 programs added to your build configuration by simply dragging them into
 their corresponding folder from:
 
+<pre>
     ImageMagick\Magick++\demo, or ImageMagick\Magick++\tests
+</pre>
 
 to:
 
+<pre>
     ImageMagick\demos, or ImageMagick\Magick++\tests
+</pre>
 
 After running the configure program, you should see projects for all
 of the programs you have added which will now be part of the entire
@@ -909,17 +960,20 @@ to support this.
 
 To view any image in a Microsoft window, type
 
+<pre>
     convert image.ext win:
+</pre>
 
 Make sure gswin32 (Ghostscript) is in your execution path (see
 Autoexec.bat), otherwise, you will be unable to convert or view
 a Postscript document.
-
-Make sure iexplore (Internet Explorer) is in your execution path (see
-Autoexec.bat), otherwise, you will be unable to browse the ImageMagick
+<p>
+Make sure <tt>iexplore</tt> (Internet Explorer) is in your execution path (see
+<tt>Autoexec.bat</tt>), otherwise, you will be unable to browse the ImageMagick
 documentation.
-
+<p>
 The NT executables will work under Windows 95/98.
+<p>
 </dl>
 <i><a href="#contents">Back to Contents</a></i>
 <br>&nbsp;
@@ -943,195 +997,9 @@ a better solution, let me know. <i><a href="display.html">Display</a></i>,
 and
 <i><a href="import.html">import</a></i> currently do not work on the
 Macintosh.</dd>
-
-<dd>
-I'm looking for a volunteer to get
-<i><a href="display.html">Display</a></i>
-and
-<i><a href="animate.html">animate</a></i> to work on the Macintosh.
-I also need a volunteer is needed to write a simple Mac program to call
-the
-<i>libMagick</i> routines and display an image in a window.</dd>
 </dl>
+<p>
 <i><a href="#contents">Back to Contents</a></i>
-<br>&nbsp;
-<dl><a NAME="anim"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Animation</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-To prevent color flashing on visuals that have colormaps, animate(1) creates
-a single colormap from the image sequence. This can be rather time consuming.
-You can speed this operation up by reducing the colors in the image before
-you
-<b>animate</b> them. Use
-<a href="mogrify.html">mogrify</a> to color
-reduce the images:</dd>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mogrify +map -colors 256 scenes/dna.[0-9]*</pre>
-Alternatively, you can use a <i>Standard Colormap</i>; or a <i>static</i>,
-<i>direct</i>,
-or <i>true color visual</i>. You can define a <i>Standard Colormap</i>
-with <i>xstdcmap</i>(1). For example, to use the "best" <i>Standard Colormap</i>,
-type:
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xstdcmap -best
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; animate -map best scenes/dna.[0-9]*</pre>
-
-<dd>
-or to use a true color visual:</dd>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; animate -visual truecolor scenes/dna.[0-9]*</pre>
-
-<dd>
-Image filenames can appear in any order on the command line if the scene
-keyword is specified in the <b>MIFF</b> image. Otherwise the images display
-in the order they appear on the command line. A scene is specified when
-converting from another image format to <b>MIFF</b> by using the "scene"
-option with any filter. Be sure to choose a scene number other than zero.
-For example, to convert a <b>TIFF</b> image to a <b>MIFF</b> image as scene
-#2, type:</dd>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; convert -scene 2 image.tiff image.miff</pre>
-</dl>
-
-<dl><i><a href="#contents">Back to Contents</a></i>
-<br>&nbsp;
-<p><a NAME="imag"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>16-BIT
-Imaging</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-By default, ImageMagick uses a color depth of 8 bits (e.g. [0..255] for
-each of red, green, blue, and transparency components). Any 16-bit image
-is scaled immediately to 8-bits before any image viewing or processing
-occurs. If you want to work directly with 16-bit images (e.g. [0..100535]),
-edit
-<tt>Magick.tmpl</tt> and define <tt>QuantumLeap</tt> or use
-<tt>-enable-16bit</tt>
-with configure. Next, type:</dd>
-
-<pre>&nbsp;&nbsp;&nbsp; make clean
-&nbsp;&nbsp;&nbsp; make</pre>
-In 16-bit mode expect to use about 33% more memory on the average. Also
-expect some processing to be slower than in 8-bit mode (e.g. Oil Painting,
-Segment, etc).
-<p>In general, 16-bit mode is only useful if you have 16-bit images that
-you want to manipulate and save the transformed image back to a 16-bit
-image format (e.g. <b>PNG</b>, <b>VIFF</b>).</dl>
-
-<dl><i><a href="#contents">Back to Contents</a></i>
-<br>&nbsp;
-<p><a NAME="mach"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>64-BIT
-Machines</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-Each pixel, within <b>ImageMagick</b>, is represented by the
-<tt>PixelPacket</tt>
-structure found in <tt>magick/image.h</tt>. Only 8 bits are required for
-each color component and 16 bits for the colormap index for a total of
-6 bytes. If <tt>QuantumLeap</tt> is defined (see 16-BIT IMAGING above),
-the color component size increases to 16 bits for a total of 10 bytes.
-Some 64-bit machines pad the structure which can cause a significant waste
-of memory. For the cray, change the
-<tt>PixelPacket</tt> structure to this</dd>
-
-<pre>&nbsp;&nbsp;&nbsp; typedef struct _PixelPacket
-&nbsp;&nbsp;&nbsp; {
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned char
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; red : QuantumDepth,
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; green : QuantumDepth,
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; blue : QuantumDepth,
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; opacity : QuantumDepth;
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned short
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; index : 16;
-&nbsp;&nbsp;&nbsp; } PixelPacket;</pre>
-before compiling.
-<p>I'm not sure if this will work on other 64-bit machines that pad. If
-you know a better solution, please send me E-mail. Note, that the Dec Alpha
-apparently does not pad the structure so ImageMagick should be fine on
-this particular 64-bit machine.</dl>
-
-<dl><i><a href="#contents">Back to Contents</a></i>
-<br>&nbsp;
-<p><a NAME="miff"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>MIFF
-Image Format</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<a href="miff.html">MIFF</a> is an image format which I developed. I like
-it because</dd>
-
-<ol>
-<li>
-It is machine independent. It can be read on virtually any computer. No
-byte swapping is necessary.</li>
-
-<li>
-It has a text header. Most image formats are coded in binary and you cannot
-easily tell attributes about the image. Use more(1) on <b>MIFF</b> image
-files and the attributes are displayed in text form.</li>
-
-<li>
-It can handle runlength-encoded images. Although most scanned images do
-not benefit from runlength-encoding, most computer-generated images do.
-Images of mostly uniform colors have a high compression ratio and therefore
-take up less memory and disk space.</li>
-
-<li>
-It allows a scene number to be specified. This allows you to specify an
-animation sequence out-of-order on the command line. The correct order
-is determined by the scene number of each image.</li>
-
-<li>
-<b>MIFF</b> computes a digital signature for images. This is useful for
-comparing images. If two image files have the same signature, they are
-identical images.</li>
-
-<li>
-There is a <b>montage</b> keyword allowing an image to act as a visual
-image directory. See display(1) for more details.</li>
-</ol>
-
-<dd>
-One way to get an image into <b>MIFF</b> format is to use
-<a href="convert.html">convert</a>
-or read it from an X window using the <a href="import.html">import</a>
-program. Alternatively, type the necessary header information in a file
-with a text editor. Next, dump the binary bytes into another file. Finally,
-type</dd>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cat header binary_image | display -write image.miff -</pre>
-
-<dd>
-For example, suppose you have a raw red, green, blue image file on disk
-that is 640 by 480. The header file would look like this:</dd>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id=ImageMagick columns=640 rows=480 :</pre>
-
-<dd>
-The image file would have red, green, blue tuples (rgbrgbrgb...). Refer
-to the
-<a href="display.html">display</a> manual page for more details.</dd>
-</dl>
-
-<dl><i><a href="#contents">Back to Contents</a></i>
 <br>&nbsp;
 <p><a NAME="copy"></a>
 <table BORDER=0 WIDTH="100%" >
@@ -1142,7 +1010,7 @@ to the
 
 <dd>
 <b>Copyright (C) 2000 ImageMagick Studio</b></dd>
-
+<p>
 <dd>
 <b>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files ("ImageMagick"),
@@ -1150,10 +1018,12 @@ to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
 is furnished to do so, subject to the following conditions:</b></dd>
+<p>
 
 <dd>
 <b>The above copyright notice and this permission notice shall be included
 in all copies or substantial portions of ImageMagick.</b></dd>
+<p>
 
 <dd>
 <b>The software is provided "as is", without warranty of any kind, express
@@ -1163,6 +1033,7 @@ ImageMagick Studio be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
 of or in connection with ImageMagick or the use or other dealings in ImageMagick.</b></dd>
 
+<p>
 <dd>
 <b>Except as contained in this notice, the name of the E. I. du Pont de
 Nemours and Company shall not be used in advertising or otherwise to promote
