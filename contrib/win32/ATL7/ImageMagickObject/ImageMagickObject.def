@@ -1,0 +1,16 @@
+LIBRARY ImageMagickObject
+EXPORTS
+MagickCommand @6
+SetClientName @7
+GetExceptionInfo @8
+CloneImageInfo @9
+CatchException @10
+DestroyImageInfo @11
+DestroyExceptionInfo @12
+InitializeMagick @13
+DestroyMagick @14
+GetMagickCopyright @15
+GetMagickVersion @16
+Exit @17
+GetClientName @18
+DefineClientName @19

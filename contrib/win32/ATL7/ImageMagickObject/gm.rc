@@ -65,12 +65,12 @@ BEGIN
         BLOCK "040904B0"
         BEGIN
             VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "ImageMagickObject Module\0"
+            VALUE "FileDescription", "GraphicsMagick Utility\0"
             VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "ImageMagickObject\0"
-            VALUE "LegalCopyright", "Copyright 2002\0"
-            VALUE "OriginalFilename", "ImageMagickObject.DLL\0"
-            VALUE "ProductName", "ImageMagickObject Module\0"
+            VALUE "InternalName", "GM\0"
+            VALUE "LegalCopyright", "Copyright 2003\0"
+            VALUE "OriginalFilename", "GM.EXE\0"
+            VALUE "ProductName", "GraphicsMagick Utility\0"
             VALUE "ProductVersion", "1, 0, 0, 1\0"
             VALUE "OLESelfRegister", "\0"
         END

@@ -38,8 +38,14 @@ using namespace std;
 
 namespace MagickLib
 {
+#define _VISUALC_
+//#define _MAGICKDLL_
+//#define _MAGICKLIB_
 #include <magick/api.h>
 #include <magick/nt_base.h>
+#include <magick/log.h>
+//#undef _MAGICKDLL_
+//#undef _MAGICKLIB_
 #undef inline
 #undef class
 }

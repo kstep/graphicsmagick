@@ -33,20 +33,36 @@ class CModuelOverrideClass
       _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_DEBUG );
 #endif
 
+      /* The first thing to do is make sure that basic critical sections are
+         initialized properly. This should prevent ANY other race conditions
+       */
+      MagickLib::InitializeSemaphore();
+      /* Next we use a back door to init the path to US so that the logging
+         system can find its configuration file log.gk and load it
+       */
+      (void) MagickLib::DefineClientPathAndName(m_szAppPath);
+      //(void) MagickLib::SetLogEventMask("All");
+      (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+        "DLL Attach -  path: %s",m_szAppPath);
+      // MagickLib::InitializeTracingCriticalSection();
+      // MagickLib::DebugString("DLL Attach -  path: %s\n",m_szAppPath);
       MagickLib::InitializeMagick(m_szAppPath);
       MagickLib::RegisterStaticModules();
       MagickLib::GetExceptionInfo(&exception);
       (void) MagickLib::GetMagicInfo((unsigned char *) NULL,0,&exception);
       (void) MagickLib::GetDelegateInfo("*","*",&exception);
-      MagickLib::DebugString("Path to me is: %s\n",m_szAppPath);
       MagickLib::DestroyExceptionInfo(&exception);
     }
     else if (dwReason == DLL_PROCESS_DETACH)
     {
+      (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+        "DLL Detach -  path: %s",m_szAppPath);
       MagickLib::DestroyMagick();
 #ifdef _DEBUG
       if (_CrtDumpMemoryLeaks())
-        MagickLib::DebugString("MagickImage FinalRelease - leaks detected\n");
+        {
+          /* MagickLib::DebugString("ImageMagickObject - DLL Detach - leaks detected\n"); */
+        }
 #endif
     }
     return __super::DllMain(dwReason, lpReserved);
@@ -108,7 +124,8 @@ public:
     MagickLib::SetWarningHandler(warninghandler);
     MagickLib::SetErrorHandler(errorhandler);
     MagickLib::SetFatalErrorHandler(fatalerrorhandler);
-    MagickLib::DebugString("MagickImage constructor\n");
+    (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+      "MagickImage constructor");
     m_bOnStartPageCalled = FALSE;
   }
   HRESULT TestHarness(SAFEARRAY **pArrayVar, VARIANT *pVar);
@@ -152,7 +169,8 @@ public:
   DECLARE_PROTECT_FINAL_CONSTRUCT()
   HRESULT FinalConstruct()
   {
-    MagickLib::DebugString("MagickImage FinalConstruct\n");
+    (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+      "FinalConstruct");
     AllocateArgs( nDefaultArgumentSize );
     //MagickLib::InitializeMagick(NULL);
     return S_OK;
@@ -160,7 +178,8 @@ public:
   
   void FinalRelease() 
   {
-    MagickLib::DebugString("MagickImage FinalRelease\n");
+     (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+        "FinalRelease");
     DeleteArgs();
   }
 
@@ -266,14 +285,16 @@ const char *objName = "ImageMagickObject";
 
 #define ThrowPerformException(exception,code,reason,description) \
 { \
-  MagickLib::DebugString("%s - %s %s\n",objName,reason,description); \
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(), \
+    "%s - %s %s",objName,reason,description); \
   MagickLib::ThrowException(exception,code,reason,description); \
   return E_INVALIDARG; \
 }
 
 #define LogInformation(reason,description) \
 { \
-  MagickLib::DebugString("%s - %s %s\n",objName,reason,description); \
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(), \
+    "%s - %s %s",objName,reason,description); \
 }
 
 const char *methodName = "Perform";
@@ -932,11 +953,11 @@ void MagickImage::warninghandler(const MagickLib::ExceptionType warning,const ch
     LogInformation("warninghandler","called with no message");
     return;
   }
-  MagickLib::FormatString(warning_text,"ImageMagickObject - warning %d: %.1024s%s%.1024s%s%s%.64s%s\n",warning,
+  MagickLib::FormatString(warning_text,"warning %d: %.1024s%s%.1024s%s%s%.64s%s\n",warning,
     message,qualifier ? " (" : "",qualifier ? qualifier : "",
     qualifier? ")" : "",errno ? " [" : "",
     errno ? strerror(errno) : "",errno ? "]" : "");
-  MagickLib::DebugString(warning_text);
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),warning_text);
 }
 
 void MagickImage::errorhandler(const MagickLib::ExceptionType warning,const char *message,
@@ -949,11 +970,11 @@ void MagickImage::errorhandler(const MagickLib::ExceptionType warning,const char
     LogInformation("errorhandler","called with no message");
     return;
   }
-  MagickLib::FormatString(error_text,"ImageMagickObject - error %d: %.1024s%s%.1024s%s%s%.64s%s\n",warning,
+  MagickLib::FormatString(error_text,"error %d: %.1024s%s%.1024s%s%s%.64s%s\n",warning,
     message,qualifier ? " (" : "",qualifier ? qualifier : "",
     qualifier? ")" : "",errno ? " [" : "",
     errno ? strerror(errno) : "",errno ? "]" : "");
-  MagickLib::DebugString(error_text);
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),error_text);
 }
 
 void MagickImage::fatalerrorhandler(const MagickLib::ExceptionType error,const char *message,
@@ -966,12 +987,12 @@ void MagickImage::fatalerrorhandler(const MagickLib::ExceptionType error,const c
     LogInformation("fatalhandler","called with no message");
     return;
   }
-  MagickLib::FormatString(fatalerror_text,"ImageMagickObject - fatal error %d: %.1024s%s%.1024s%s%s%.64s%s",error,
+  MagickLib::FormatString(fatalerror_text,"fatal error %d: %.1024s%s%.1024s%s%s%.64s%s",error,
     (message ? message : "ERROR"),
     qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
     errno ? " [" : "",errno ? strerror(errno) : "",
     errno? "]" : "");
-  MagickLib::DebugString(fatalerror_text);
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),fatalerror_text);
   DebugBreak();
 }
 
@@ -991,7 +1012,8 @@ HRESULT MagickImage::Execute(
 HRESULT MagickImage::TestHarness(SAFEARRAY **pArrayVar, VARIANT *pVar)
 {
   HRESULT hr = S_OK;
-  MagickLib::DebugString("MagickImage TestHarness\n");
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+    "TestHarness");
 
   MagickLib::ExceptionInfo
     exception;
@@ -1037,7 +1059,8 @@ HRESULT MagickImage::TestHarness(SAFEARRAY **pArrayVar, VARIANT *pVar)
       CComVariant vt(rg[i]);
       vt.ChangeType(VT_BSTR);
       CW2T str(vt.bstrVal);
-      MagickLib::DebugString("MagickImage arg: %s\n",(LPCTSTR)str);
+      (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+        "arg: %s",(LPCTSTR)str);
       hr = AddArgs(vt.bstrVal);
     }
   }
@@ -1348,7 +1371,8 @@ HRESULT MagickImage::AddArgs(BSTR widestr)
   MAKE_ANSIPTR_FROMWIDE(ptrANSI, widestr);
   m_argv[m_argvIndex++] = ptrANSI;
 
-  MagickLib::DebugString("ImageMagickObject - arg: %s\n",ptrANSI);
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+    "arg: %s",ptrANSI);
 
   if (m_argvIndex >= m_argc)
     hr = ReAllocateArgs( nDefaultArgumentSize );
@@ -1371,7 +1395,8 @@ HRESULT MagickImage::AddArgs(LPTSTR lpstr)
 #endif
   m_argv[m_argvIndex++] = ptrANSI;
 
-  MagickLib::DebugString("ImageMagickObject - arg: %s\n",ptrANSI);
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+    "arg: %s",ptrANSI);
 
   if (m_argvIndex >= m_argc)
     hr = ReAllocateArgs( nDefaultArgumentSize );
@@ -1476,7 +1501,8 @@ void MagickImage::EmptyArgs()
 
 STDMETHODIMP MagickImage::OnStartPage(IUnknown* pUnk)  
 {
-  MagickLib::DebugString("OnStartPage\n");
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+    "OnStartPage");
   if(!pUnk)
     return E_POINTER;
 
@@ -1492,7 +1518,8 @@ STDMETHODIMP MagickImage::OnStartPage(IUnknown* pUnk)
   hr = spContext->get_Request(&m_piRequest);
   if(FAILED(hr))
   {
-    MagickLib::DebugString("OnStartPage get Request failed\n");
+    (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+      "OnStartPage get Request failed");
     //spContext.Release();
     //return hr;
   }
@@ -1501,7 +1528,8 @@ STDMETHODIMP MagickImage::OnStartPage(IUnknown* pUnk)
   hr = spContext->get_Response(&m_piResponse);
   if(FAILED(hr))
   {
-    MagickLib::DebugString("OnStartPage get Response failed\n");
+    (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+      "OnStartPage get Response failed");
     //m_piRequest.Release();
     //return hr;
   }
@@ -1510,7 +1538,8 @@ STDMETHODIMP MagickImage::OnStartPage(IUnknown* pUnk)
   hr = spContext->get_Server(&m_piServer);
   if(FAILED(hr))
   {
-    MagickLib::DebugString("OnStartPage get Server failed\n");
+    (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+      "OnStartPage get Server failed");
     //m_piRequest.Release();
     //m_piResponse.Release();
     //return hr;
@@ -1520,7 +1549,8 @@ STDMETHODIMP MagickImage::OnStartPage(IUnknown* pUnk)
   hr = spContext->get_Session(&m_piSession);
   if(FAILED(hr))
   {
-    MagickLib::DebugString("OnStartPage get Session failed\n");
+    (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+      "OnStartPage get Session failed");
     //m_piRequest.Release();
     //m_piResponse.Release();
     //m_piServer.Release();
@@ -1531,7 +1561,8 @@ STDMETHODIMP MagickImage::OnStartPage(IUnknown* pUnk)
   hr = spContext->get_Application(&m_piApplication);
   if(FAILED(hr))
   {
-    MagickLib::DebugString("OnStartPage get Application failed\n");
+    (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+      "OnStartPage get Application failed");
     //m_piRequest.Release();
     //m_piResponse.Release();
     //m_piServer.Release();
@@ -1561,24 +1592,31 @@ STDMETHODIMP MagickImage::OnStartPage(IUnknown* pUnk)
         {
           CW2T str(vtCookieValue.bstrVal);
           int level = atoi((LPCTSTR)str);
+#if defined(_ENABLE_OLD_LOGGING_SUPPORT_)
           MagickLib::DebugLevel(level);
-          MagickLib::DebugString("OnStartPage debug level: %d\n",level);
+#endif
+          (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+            "OnStartPage debug level: %d",level);
         }
         else
-          MagickLib::DebugString("OnStartPage - parse error\n");
+          (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+            "OnStartPage - parse error");
       }
       else
-        MagickLib::DebugString("OnStartPage - no MAGICK_DEBUG\n");
+        (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+          "OnStartPage - no MAGICK_DEBUG");
     }
     else
-      MagickLib::DebugString("OnStartPage - no cookies\n");
+      (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+        "OnStartPage - no cookies");
   }
   return S_OK;
 }
 
 STDMETHODIMP MagickImage::OnEndPage ()  
 {
-  MagickLib::DebugString("OnEndPage\n");
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+    "OnEndPage");
   m_bOnStartPageCalled = FALSE;
   // Release all interfaces
   if (m_piRequest)
@@ -1596,7 +1634,8 @@ STDMETHODIMP MagickImage::OnEndPage ()
 
 HRESULT MagickImage::Activate()
 {
-  MagickLib::DebugString("Activate\n");
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+    "Activate");
   HRESULT hr = GetObjectContext(&m_spObjectContext);
   if (SUCCEEDED(hr))
     return S_OK;
@@ -1605,13 +1644,15 @@ HRESULT MagickImage::Activate()
 
 BOOL MagickImage::CanBePooled()
 {
-  MagickLib::DebugString("CanBePooled\n");
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+    "CanBePooled");
   return FALSE;
 } 
 
 void MagickImage::Deactivate()
 {
-  MagickLib::DebugString("Release\n");
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+    "Deactivate");
   m_spObjectContext.Release();
 } 
 
@@ -1695,7 +1736,8 @@ HRESULT MagickImage::Construct(IDispatch * pCtorObj)
 {
   USES_CONVERSION;
 
-  MagickLib::DebugString("Construct\n");
+  (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+    "Construct");
   CComPtr<IObjectConstructString> spObjectConstructString;
   HRESULT hr = pCtorObj->QueryInterface(&spObjectConstructString);
   if (SUCCEEDED(hr))
@@ -1706,7 +1748,8 @@ HRESULT MagickImage::Construct(IDispatch * pCtorObj)
     {
       string options;
       MAKE_ANSIPTR_FROMWIDE(ptrANSI, bstrConstruct);
-      MagickLib::DebugString("Construct data: %s\n",ptrANSI);
+      (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+        "Construct data: %s",ptrANSI);
       options = W2CA(bstrConstruct);
       int nOptions = LocalGetFieldCount(options,_T(','));
       for (int nOptionIndex = 0; nOptionIndex < nOptions; nOptionIndex++)
@@ -1717,12 +1760,17 @@ HRESULT MagickImage::Construct(IDispatch * pCtorObj)
         {
           string name = LocalGetField( param, _T('='), 0 );
           string value = LocalGetField( param, _T('='), 1 );
-          MagickLib::DebugString("Construct name: %s value: %s\n",
-            name.c_str(),value.c_str());
+          (void) MagickLib::LogMagickEvent(MagickLib::ResourceEvent,GetMagickModule(),
+            "Construct name: %s value: %s",
+              name.c_str(),value.c_str());
+#if defined(_ENABLE_OLD_LOGGING_SUPPORT_)
           if (name.compare(_T("MAGICK_DEBUG_LEVEL")) == 0)
             MagickLib::DebugLevel(atoi(value.c_str()));
           if (name.compare(_T("MAGICK_DEBUG_PATH")) == 0)
             MagickLib::DebugFilePath(value.c_str());           
+          if (name.compare(_T("MAGICK_LOG_EVENTMASK")) == 0)
+            MagickLib::SetLogEventMask(value.c_str());
+#endif
         }
      }
     }
