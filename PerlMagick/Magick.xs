@@ -4300,6 +4300,10 @@ Mogrify(ref,...)
               flags=ParseGeometry(argument_list[0].string_reference,
                 &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
                 &rectangle_info.height);
+              if ((flags & XNegative) != 0)
+                rectangle_info.x+=image->columns;
+              if ((flags & YNegative) != 0)
+                rectangle_info.y+=image->rows;
               if (!(flags & HeightValue))
                 rectangle_info.height=rectangle_info.width;
             }
