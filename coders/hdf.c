@@ -344,6 +344,8 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     status=H5Dwrite(dataset,H5T_NATIVE_INT,H5S_ALL,H5S_ALL,H5P_DEFAULT,pixels);
     H5Sclose(dataspace);
     H5Dclose(dataset);
+    if (image->next == (Image *) NULL)
+      break;
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
