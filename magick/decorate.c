@@ -208,30 +208,30 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
     Initialize 3D effects color.
   */
   matte=image->matte_color;
-  accentuate.red=(Quantum) ((unsigned long)
+  accentuate.red=((unsigned long)
     (matte.red*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  accentuate.green=(Quantum) ((unsigned long)
+  accentuate.green=((unsigned long)
     (matte.green*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  accentuate.blue=(Quantum) ((unsigned long)
+  accentuate.blue=((unsigned long)
     (matte.blue*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  accentuate.opacity=(Quantum) ((unsigned long) (matte.opacity*
+  accentuate.opacity=((unsigned long) (matte.opacity*
     AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  highlight.red=(Quantum) ((unsigned long)
+  highlight.red=((unsigned long)
     (matte.red*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
-  highlight.green=(Quantum) ((unsigned long)
+  highlight.green=((unsigned long)
     (matte.green*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
-  highlight.blue=(Quantum) ((unsigned long)
+  highlight.blue=((unsigned long)
     (matte.blue*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
-  highlight.opacity=(Quantum) ((unsigned long)
+  highlight.opacity=((unsigned long)
     (matte.opacity*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
-  shadow.red=(Quantum) ((unsigned long) (matte.red*ShadowModulate)/MaxRGB);
-  shadow.green=(Quantum) ((unsigned long) (matte.green*ShadowModulate)/MaxRGB);
-  shadow.blue=(Quantum) ((unsigned long) (matte.blue*ShadowModulate)/MaxRGB);
+  shadow.red=((unsigned long) (matte.red*ShadowModulate)/MaxRGB);
+  shadow.green=((unsigned long) (matte.green*ShadowModulate)/MaxRGB);
+  shadow.blue=((unsigned long) (matte.blue*ShadowModulate)/MaxRGB);
   shadow.opacity=(Quantum)
     ((unsigned long) (matte.opacity*ShadowModulate)/MaxRGB);
-  trough.red=(Quantum) ((unsigned long) (matte.red*TroughModulate)/MaxRGB);
-  trough.green=(Quantum) ((unsigned long) (matte.green*TroughModulate)/MaxRGB);
-  trough.blue=(Quantum) ((unsigned long) (matte.blue*TroughModulate)/MaxRGB);
+  trough.red=((unsigned long) (matte.red*TroughModulate)/MaxRGB);
+  trough.green=((unsigned long) (matte.green*TroughModulate)/MaxRGB);
+  trough.blue=((unsigned long) (matte.blue*TroughModulate)/MaxRGB);
   trough.opacity=(Quantum)
     ((unsigned long) (matte.opacity*TroughModulate)/MaxRGB);
   /*
@@ -464,31 +464,31 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
       break;
     for (x=0; x < y; x++)
     {
-      q->red=(Quantum) ((unsigned long)
+      q->red=((unsigned long)
         (q->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q->green=(Quantum) ((unsigned long)
+      q->green=((unsigned long)
         (q->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q->blue=(Quantum) ((unsigned long)
+      q->blue=((unsigned long)
         (q->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < (int) (image->columns-(y << 1)); x++)
     {
-      q->red=(Quantum) ((unsigned long)
+      q->red=((unsigned long)
         (q->red*AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      q->green=(Quantum) ((unsigned long) (q->green*
+      q->green=((unsigned long) (q->green*
         AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      q->blue=(Quantum) ((unsigned long)
+      q->blue=((unsigned long)
         (q->blue*AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < y; x++)
     {
-      q->red=(Quantum) ((unsigned long)
+      q->red=((unsigned long)
         (q->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q->green=(Quantum) ((unsigned long)
+      q->green=((unsigned long)
         (q->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q->blue=(Quantum) ((unsigned long)
+      q->blue=((unsigned long)
         (q->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
       q++;
     }
@@ -505,11 +505,11 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
       break;
     for (x=0; x < (int) raise_info->width; x++)
     {
-      q->red=(Quantum) ((unsigned long)
+      q->red=((unsigned long)
 	(q->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q->green=(Quantum) ((unsigned long)
+      q->green=((unsigned long)
 	(q->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q->blue=(Quantum) ((unsigned long)
+      q->blue=((unsigned long)
 	(q->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
@@ -517,11 +517,11 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
       q++;
     for (x=0; x < (int) raise_info->width; x++)
     {
-      q->red=(Quantum) ((unsigned long)
+      q->red=((unsigned long)
         (q->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q->green=(Quantum) ((unsigned long)
+      q->green=((unsigned long)
         (q->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q->blue=(Quantum) ((unsigned long)
+      q->blue=((unsigned long)
         (q->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
       q++;
     }
@@ -537,31 +537,31 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
       break;
     for (x=0; x < (int) (raise_info->width-y); x++)
     {
-      q->red=(Quantum) ((unsigned long)
+      q->red=((unsigned long)
 	(q->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q->green=(Quantum) ((unsigned long)
+      q->green=((unsigned long)
 	(q->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      q->blue=(Quantum) ((unsigned long)
+      q->blue=((unsigned long)
 	(q->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < (int) (image->columns-((raise_info->width-y) << 1)); x++)
     {
-      q->red=(Quantum) ((unsigned long)
+      q->red=((unsigned long)
         (q->red*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
-      q->green=(Quantum) ((unsigned long)
+      q->green=((unsigned long)
         (q->green*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
-      q->blue=(Quantum) ((unsigned long)
+      q->blue=((unsigned long)
         (q->blue*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < (int) (raise_info->width-y); x++)
     {
-      q->red=(Quantum) ((unsigned long)
+      q->red=((unsigned long)
         (q->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q->green=(Quantum) ((unsigned long)
+      q->green=((unsigned long)
         (q->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      q->blue=(Quantum) ((unsigned long)
+      q->blue=((unsigned long)
         (q->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
       q++;
     }

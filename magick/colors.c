@@ -1819,6 +1819,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
             color->red=UpScale(red);
             color->green=UpScale(green);
             color->blue=UpScale(blue);
+            color->opacity=Opaque;
             return(True);
           }
       }
@@ -1832,6 +1833,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
         color->red=p->red;
         color->green=p->green;
         color->blue=p->blue;
+        color->opacity=Opaque;
         return(True);
       }
   /*
@@ -1849,6 +1851,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
     color->red=XDownScale(xcolor.red);
     color->green=XDownScale(xcolor.green);
     color->blue=XDownScale(xcolor.blue);
+    color->opacity=Opaque;
     return(status);
   }
 #else
