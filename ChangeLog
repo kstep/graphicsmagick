@@ -1,3 +1,12 @@
+2002-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/version.h: Changed to release 1.0.0.
+	* magick/nt_base.c: Changed "ImageMagick" to "GraphicsMagick" so
+	registry lookups work for GraphicsMagick.  Probably should be
+	configured via a magick_config.h define.
+	* VisualMagick/installer/ImageMagick-8.iss:
+	Changed for GraphicsMagick.
+	* utilities/conjure.c: Fix unterminated comment.
+
 2002-12-06 William Radcliffe <billr@corbis.com>
 	* coders/jpeg.c:
 	Modification of JPEG APP1 detection logic to name EXIF and XMP
