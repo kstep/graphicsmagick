@@ -86,7 +86,7 @@
 */
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
-#define MNG_INSERT_LAYERS /* This feature was broken in 5.4.3 */
+#define MNG_INSERT_LAYERS
 #define PNG_BUILD_PALETTE /* This works as of 5.4.3 */
 #define PNG_SORT_PALETTE /* This works as of 5.4.0 */
 
@@ -4069,7 +4069,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for(next=image; next->next != (Image *) NULL; next=next_image)
       {
          next_image=next->next;
-         /* Restore page, which gets zeroed out in CoalesceImage(). */
          next->page.height=mng_height;
          next->page.width=mng_height;
          if (next->delay == 0)
