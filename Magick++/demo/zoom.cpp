@@ -14,6 +14,9 @@ using namespace std;
 using namespace Magick;
 int main(int argc,char **argv) 
 {
+  // Initialize ImageMagick install location for Windows
+  InitializeMagick(*argv);
+
   if ( argc < 5 )
     {
       cout << "Usage: " << argv[0] << " filter_type geometry input_file output_file" << endl
@@ -21,9 +24,6 @@ int main(int argc,char **argv)
            << "             quadratic cubic catrom mitchell lanczos bessel sinc" << endl;
       exit( 1 );
     }
-
-  // Initialize ImageMagick install location for Windows
-  InitializeMagick(*argv);
 
   std::string filter_type(argv[1]);
   std::string input_file(argv[3]);
