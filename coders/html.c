@@ -354,7 +354,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
               (void) WriteBlob(image,strlen(buffer),buffer);
               if (*(p+1) != '\0')
                 {
-                  FormatString(buffer,"  <area href=\"%.1024s\"",url);
+                  FormatString(buffer,"  <area href=%.1024s\"",url);
                   (void) WriteBlob(image,strlen(buffer),buffer);
                 }
               x+=width;
@@ -420,7 +420,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   */
   FormatString(buffer,"<map name=\"%.1024s\">\n",mapname);
   (void) WriteBlob(image,strlen(buffer),buffer);
-  FormatString(buffer,"  <area href=\"%.1024s",url);
+  FormatString(buffer,"  <area href=%.1024s",url);
   (void) WriteBlob(image,strlen(buffer),buffer);
   if (image->directory == (char *) NULL)
     {
@@ -439,7 +439,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,strlen(buffer),buffer);
           if (*(p+1) != '\0')
             {
-              FormatString(buffer,"  <area href=\"%.1024s\"",url);
+              FormatString(buffer,"  <area href=%.1024s\"",url);
               (void) WriteBlob(image,strlen(buffer),buffer);
             }
           x+=width;
