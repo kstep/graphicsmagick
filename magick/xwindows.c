@@ -2672,7 +2672,7 @@ Export void XGetPixelPacket(Display *display,const XVisualInfo *visual_info,
     Set foreground color.
   */
   colormap=map_info->colormap;
-  (void) XParseColor(display,colormap,ForegroundColor,
+  (void) XParseColor(display,colormap,(char *) ForegroundColor,
     &pixel->foreground_color);
   status=XParseColor(display,colormap,resource_info->foreground_color,
     &pixel->foreground_color);
@@ -2685,7 +2685,7 @@ Export void XGetPixelPacket(Display *display,const XVisualInfo *visual_info,
   /*
     Set background color.
   */
-  (void) XParseColor(display,colormap,BackgroundColor,
+  (void) XParseColor(display,colormap,(char *) BackgroundColor,
     &pixel->background_color);
   status=XParseColor(display,colormap,resource_info->background_color,
     &pixel->background_color);
@@ -2698,7 +2698,8 @@ Export void XGetPixelPacket(Display *display,const XVisualInfo *visual_info,
   /*
     Set border color.
   */
-  (void) XParseColor(display,colormap,BorderColor,&pixel->border_color);
+  (void) XParseColor(display,colormap,(char *) BorderColor,
+    &pixel->border_color);
   status=XParseColor(display,colormap,resource_info->border_color,
     &pixel->border_color);
   if (status == 0)
