@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define package_name  jasper
-%define ver           1.700.2
+%define ver           1.701.0
 %define prefix        /usr
 %define datadir       %{prefix}/share
 %define release       1
@@ -13,7 +13,7 @@ Copyright: Modified BSD
 Group: Development/Libraries
 
 # FIXME: 
-Source: http://www.ece.uvic.ca/~mdadams/jasper/software/jasper-1.650.0.tar.gz
+Source: http://www.ece.uvic.ca/~mdadams/jasper/software/jasper-1.701.0.tar.gz
 
 BuildRoot: /var/tmp/%{package_name}-%{version}-root
 Requires: libjpeg

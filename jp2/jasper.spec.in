@@ -13,7 +13,7 @@ Copyright: Modified BSD
 Group: Development/Libraries
 
 # FIXME: 
-Source: http://www.ece.uvic.ca/~mdadams/jasper/software/jasper-1.650.0.tar.gz
+Source: http://www.ece.uvic.ca/~mdadams/jasper/software/jasper-@JAS_VERSION@.tar.gz
 
 BuildRoot: /var/tmp/%{package_name}-%{version}-root
 Requires: libjpeg
