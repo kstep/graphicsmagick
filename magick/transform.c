@@ -416,7 +416,7 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
       "geometry dimensions are zero");
   if ((page.width == image->columns) && (page.height == image->rows) &&
       (page.x == 0) && (page.y == 0))
-    return((Image *) NULL);
+    return(CloneImage(image,0,0,False,exception));
   /*
     Initialize crop image attributes.
   */
