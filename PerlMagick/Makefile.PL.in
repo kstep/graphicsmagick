@@ -46,7 +46,7 @@ WriteMakefile
    'ABSTRACT'	=> 'ImageMagick PERL Extension',
 
    # Set compiler flags other than INC and OPTIMIZE
-   'CCFLAGS'	=> '@CFLAGS@',
+   # 'CCFLAGS'	=> '@CFLAGS@',
 
    # Preprocessor defines
    'DEFINE'	=> '@DEFS@',     # e.g., '-DHAVE_SOMETHING' 
@@ -67,10 +67,10 @@ WriteMakefile
    'NAME'	=> 'Image::Magick',
 
    # Let CFLAGS drive optimization flags by setting OPTIMIZE to empty
-   'OPTIMIZE'	=> '',
+   # 'OPTIMIZE'	=> '',
 
    # Use same compiler as ImageMagick
-   'PERLMAINCC'	=> '@CC@',
+   # 'PERLMAINCC'	=> '@CC@',
 
    # Set Perl installation prefix to ImageMagick installation prefix
 #   'PREFIX'	=> '@prefix@',
