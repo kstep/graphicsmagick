@@ -1408,6 +1408,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   const ImageAttribute
     *attribute;
 
+  FILE
+    *file;
+
+  int
+    c;
+
   long
     y;
 
@@ -1457,10 +1463,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  if (image->blob->type != FileStream)
-    TemporaryFilename(filename);
-  else
-    CloseBlob(image);
+  TemporaryFilename(filename);
   tiff=TIFFOpen(filename,"wb");
   if (tiff == (TIFF *) NULL)
     return(False);
@@ -2021,28 +2024,19 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     image=image->previous;
   TIFFClose(tiff);
   image->blob->status=False;
-  if (image->blob->type != FileStream)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy temporary file to image blob.
-      */
-      file=fopen(filename,"rb");
-      if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) WriteBlobByte(image,c);
-      (void) fclose(file);
-      (void) remove(filename);
-      CloseBlob(image);
-    }
+  /*
+    Copy temporary file to image blob.
+  */
+  file=fopen(filename,"rb");
+  if (file == (FILE *) NULL)
+    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+  for (c=fgetc(file); c != EOF; c=fgetc(file))
+    (void) WriteBlobByte(image,c);
+  (void) fclose(file);
+  (void) remove(filename);
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
+  CloseBlob(image);
   return(True);
 }
 #else
