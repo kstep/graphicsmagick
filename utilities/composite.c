@@ -259,14 +259,15 @@ static unsigned int CompositeImages(ImageInfo *image_info,
       if (option_info->stegano != 0)
         {
           Image
-            *stego_image;
+            *stegano_image;
 
           (*image)->offset=option_info->stegano-1;
-          stego_image=SteganoImage(*image,composite_image,&(*image)->exception);
-          if (stego_image != (Image *) NULL)
+          stegano_image=
+            SteganoImage(*image,composite_image,&(*image)->exception);
+          if (stegano_image != (Image *) NULL)
             {
               DestroyImages(*image);
-              *image=stego_image;
+              *image=stegano_image;
             }
         }
       else
@@ -328,17 +329,17 @@ static unsigned int CompositeImages(ImageInfo *image_info,
                   break;
                 case NorthGravity:
                 {
-                  x+=(int) (0.5*width-composite_image->columns/2);
+                  x+=(long) (0.5*width-composite_image->columns/2);
                   break;
                 }
                 case NorthEastGravity:
                 {
-                  x+=width-composite_image->columns;
+                  x+=(long) (width-composite_image->columns);
                   break;
                 }
                 case WestGravity:
                 {
-                  y+=(int) (0.5*height-composite_image->rows/2);
+                  y+=(long) (height/2-composite_image->rows/2);
                   break;
                 }
                 case ForgetGravity:
@@ -346,31 +347,31 @@ static unsigned int CompositeImages(ImageInfo *image_info,
                 case CenterGravity:
                 default:
                 {
-                  x+=(int) (0.5*width-composite_image->columns/2);
-                  y+=(int) (0.5*height-composite_image->rows/2);
+                  x+=(long) (width/2-composite_image->columns/2);
+                  y+=(long) (height/2-composite_image->rows/2);
                   break;
                 }
                 case EastGravity:
                 {
-                  x+=width-composite_image->columns;
-                  y+=(int) (0.5*height-composite_image->rows/2);
+                  x+=(long) (width-composite_image->columns);
+                  y+=(long) (height/2-composite_image->rows/2);
                   break;
                 }
                 case SouthWestGravity:
                 {
-                  y+=height-composite_image->rows;
+                  y+=(long) (height-composite_image->rows);
                   break;
                 }
                 case SouthGravity:
                 {
-                  x+=(int) (0.5*width-composite_image->columns/2);
-                  y+=height-composite_image->rows;
+                  x+=(long) (width/2-composite_image->columns/2);
+                  y+=(long) (height-composite_image->rows);
                   break;
                 }
                 case SouthEastGravity:
                 {
-                  x+=width-composite_image->columns;
-                  y+=height-composite_image->rows;
+                  x+=(long) (width-composite_image->columns);
+                  y+=(long) (height-composite_image->rows);
                   break;
                 }
               }
@@ -380,15 +381,15 @@ static unsigned int CompositeImages(ImageInfo *image_info,
             }
       (*image)->matte=matte;
       DestroyImages(composite_image);
-      *composite_ref = (Image *) NULL; /* tell caller we freed this */
+      *composite_ref=(Image *) NULL;  /* tell caller we freed this */
       if (mask_image != (Image *) NULL)
         {
           DestroyImages(mask_image);
-          *mask_ref= (Image *) NULL; /* tell caller we freed this */
+          *mask_ref=(Image *) NULL;  /* tell caller we freed this */
         }
     }
   /*
-    Write combined images.
+    Write composite images.
   */
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   for (p=(*image); p != (Image *) NULL; p=p->next)
@@ -1385,8 +1386,6 @@ int main(int argc,char **argv)
         }
       }
   }
-  /* we do not need to check for NULL composite_image,
-     since it can not be NULL if image is not NULL */
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   status=CompositeImages(image_info,&option_info,argc-j+1,argv+j-1,
