@@ -132,7 +132,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         clone_info->magick);
       return((Image *) NULL);
     }
-  GetBlobInfo(clone_info->blob);
+  DisengageBlob(clone_info->blob);
   if (magick_info->blob_support)
     {
       /*
@@ -145,7 +145,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       image=ReadImage(clone_info,exception);
       DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
-        GetBlobInfo(image->blob);
+        DisengageBlob(image->blob);
       return(image);
     }
   /*
@@ -213,7 +213,6 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
       "Memory allocation failed");
   if (blob_info == (BlobInfo *) NULL)
     {
-      clone_info->filesize=0;
       GetBlobInfo(clone_info);
       return(clone_info);
     }
@@ -327,6 +326,37 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D i s e n g a g e B l o b                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DisengageBlob disengages the BlobInfo structure.
+%
+%  The format of the DisengageBlob method is:
+%
+%      void DisengageBlob(BlobInfo *blob)
+%
+%  A description of each parameter follows:
+%
+%    o blob: Specifies a pointer to a BlobInfo structure.
+%
+%
+*/
+MagickExport void DisengageBlob(BlobInfo *blob)
+{
+  assert(blob != (BlobInfo *) NULL);
+  blob->length=0;
+  blob->offset=0;
+  blob->data=(unsigned char *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  E O F B l o b                                                              %
 %                                                                             %
 %                                                                             %
@@ -369,7 +399,7 @@ MagickExport int EOFBlob(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method FileToBlob returns the contents of a file as a blob->  It returns
+%  Method FileToBlob returns the contents of a file as a blob.  It returns
 %  the file as a blob and its length.
 %
 %  The format of the FileToBlob method is:
@@ -379,13 +409,13 @@ MagickExport int EOFBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o blob:  Method FileToBlob returns the contents of a file as a blob->  If
+%    o blob:  Method FileToBlob returns the contents of a file as a blob.  If
 %      an error occurs NULL is returned.
 %
 %    o filename: The filename.
 %
 %    o length: This pointer to a size_t integer sets the initial length of the
-%      blob->  On return, it reflects the actual length of the blob.
+%      blob.  On return, it reflects the actual length of the blob.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -464,13 +494,8 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 */
 MagickExport void GetBlobInfo(BlobInfo *blob)
 {
-  off_t
-    filesize;
-
   assert(blob != (BlobInfo *) NULL);
-  filesize=blob->filesize;
   memset(blob,0,sizeof(BlobInfo));
-  blob->filesize=filesize;
   blob->quantum=BlobQuantum;
   blob->signature=MagickSignature;
 }
@@ -506,7 +531,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob)
 %    o image: The image.
 %
 %    o length: This pointer to a size_t integer sets the initial length of the
-%      blob->  On return, it reflects the actual length of the blob.
+%      blob.  On return, it reflects the actual length of the blob.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -591,7 +616,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       {
         *length=p->blob->length;
         blob=p->blob->data;
-        GetBlobInfo(p->blob);
+        DisengageBlob(p->blob);
       }
       return(blob);
     }
@@ -871,7 +896,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       *image->blob=(*image_info->blob);
       return(True);
     }
-  GetBlobInfo(image->blob);
+  DisengageBlob(image->blob);
   image->exempt=False;
   if (image_info->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     {
@@ -1784,7 +1809,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteBlobByte write an integer to a blob->  It returns the number of
+%  Method WriteBlobByte write an integer to a blob.  It returns the number of
 %  bytes written (either 0 or 1);
 %
 %  The format of the WriteBlobByte method is:
@@ -1992,7 +2017,7 @@ MagickExport size_t WriteBlobMSBShort(Image *image,const unsigned int value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteBlobString write a string to a blob->  It returns the number of
+%  Method WriteBlobString write a string to a blob.  It returns the number of
 %  characters written.
 %
 %  The format of the WriteBlobString method is:

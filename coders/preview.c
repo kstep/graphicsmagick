@@ -224,7 +224,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     Apply enhancement at varying strengths.
   */
   clone_info=CloneImageInfo(image_info);
-  GetBlobInfo(clone_info->blob);
+  DisengageBlob(clone_info->blob);
   clone_info->quality=0;
   degrees=0;
   gamma=(-0.2f);

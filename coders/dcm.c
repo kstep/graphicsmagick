@@ -3170,7 +3170,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) fclose(file);
       DestroyImage(image);
       clone_info=CloneImageInfo(image_info);
-      GetBlobInfo(clone_info->blob);
+      DisengageBlob(clone_info->blob);
       FormatString(clone_info->filename,"jpeg:%.1024s",filename);
       image=ReadImage(clone_info,exception);
       (void) remove(filename);

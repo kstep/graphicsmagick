@@ -357,7 +357,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image);
     }
   clone_info=CloneImageInfo(image_info);
-  GetBlobInfo(clone_info->blob);
+  DisengageBlob(clone_info->blob);
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   (void) remove(image_info->filename);

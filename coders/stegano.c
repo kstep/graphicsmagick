@@ -142,7 +142,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionWarning,"Must specify image size",image);
   clone_info=CloneImageInfo(image_info);
-  GetBlobInfo(clone_info->blob);
+  DisengageBlob(clone_info->blob);
   *clone_info->magick='\0';
   stegano_image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
