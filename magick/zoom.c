@@ -777,7 +777,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  mid=(scale >= 1.0 ? 1.0 : -1.0)*0.5;
+  mid=(scale >= 1.0 ? 1.0 : -1.0)*(0.5-MagickEpsilon);
   for (x=0; x < (long) destination->columns; x++)
   {
     center=(double) x/x_factor;
@@ -891,7 +891,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  mid=(scale >= 1.0 ? 1.0 : -1.0)*0.5;
+  mid=(scale >= 1.0 ? 1.0 : -1.0)*(0.5-MagickEpsilon);
   for (y=0; y < (long) destination->rows; y++)
   {
     center=(double) y/y_factor;
