@@ -632,7 +632,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                 ThrowException(exception,ConfigureError,
                   "<include /> nested too deeply",path);
               else
-                if (IsAccessible(path))
+                if (IsAccessible(token))
                   (void) ReadConfigureFile(token,depth+1,exception);
                 else
                   {
