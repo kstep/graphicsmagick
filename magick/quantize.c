@@ -218,7 +218,7 @@ typedef struct _NodeInfo
     total_blue,
     quantize_error;
 
-  unsigned int
+  unsigned long
     color_number;
 
   unsigned char
@@ -260,7 +260,7 @@ typedef struct _CubeInfo
     pruning_threshold,
     next_threshold;
 
-  unsigned int
+  unsigned long
     nodes,
     free_nodes,
     color_number;
@@ -273,7 +273,9 @@ typedef struct _CubeInfo
 
   int
     x,
-    y,
+    y;
+
+  long
     *cache;
 
   ErrorInfo
@@ -302,7 +304,7 @@ static void
   DefineColormap(CubeInfo *,NodeInfo *),
   HilbertCurve(CubeInfo *,Image *,const int,const unsigned int),
   PruneLevel(CubeInfo *,const NodeInfo *),
-  Reduction(CubeInfo *,const unsigned int);
+  Reduction(CubeInfo *,const unsigned long);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -573,7 +575,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    if ((int) cube_info->nodes > MaxNodes)
+    if (cube_info->nodes > MaxNodes)
       {
         /*
           Prune one level if the color tree is too large.
@@ -1215,8 +1217,8 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,int depth)
   /*
     Initialize dither resources.
   */
-  cube_info->cache=(int *) AcquireMemory((1 << 18)*sizeof(int));
-  if (cube_info->cache == (int *) NULL)
+  cube_info->cache=(long *) AcquireMemory((1 << 18)*sizeof(long));
+  if (cube_info->cache == (long *) NULL)
     return((CubeInfo *) NULL);
   /*
     Initialize color cache.
@@ -1979,8 +1981,10 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
     depth;
 
   unsigned int
-    number_colors,
     status;
+
+  unsigned long
+    number_colors;
 
   assert(quantize_info != (const QuantizeInfo *) NULL);
   assert(quantize_info->signature == MagickSignature);
@@ -1994,7 +1998,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   depth=quantize_info->tree_depth;
   if (depth == 0)
     {
-      unsigned int
+      unsigned long
         colors;
 
       /*
@@ -2080,9 +2084,11 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
     i;
 
   unsigned int
-    number_colors,
     number_images,
     status;
+
+  unsigned long
+    number_colors;
 
   assert(quantize_info != (const QuantizeInfo *) NULL);
   assert(quantize_info->signature == MagickSignature);
@@ -2109,7 +2115,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
       int
         pseudo_class;
 
-      unsigned int
+      unsigned long
         colors;
 
       /*
@@ -2286,14 +2292,14 @@ static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
 %
 %
 */
-static void Reduction(CubeInfo *cube_info,const unsigned int number_colors)
+static void Reduction(CubeInfo *cube_info,const unsigned long number_colors)
 {
 #define ReduceImageText  "  Reducing image colors...  "
 
-  unsigned int
+  unsigned long
     span;
 
-  span=(unsigned int) cube_info->colors;
+  span=cube_info->colors;
   cube_info->next_threshold=0.0;
   while (cube_info->colors > number_colors)
   {

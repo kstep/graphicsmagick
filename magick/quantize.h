@@ -19,8 +19,10 @@ extern "C" {
 */
 typedef struct _QuantizeInfo
 {
+  unsigned long
+    number_colors;
+
   unsigned int
-    number_colors,
     tree_depth,
     dither;
 
