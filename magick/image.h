@@ -827,7 +827,7 @@ extern MagickExport void
   RegisterLABELImage(void),
   RegisterLOGOImage(void),
   RegisterMAPImage(void),
-  RegisterMETAmage(void),
+  RegisterMETAImage(void),
   RegisterMATImage(void),
   RegisterMATTEImage(void),
   RegisterMIFFImage(void),
