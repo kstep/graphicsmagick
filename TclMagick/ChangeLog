@@ -1,3 +1,8 @@
+2004-03-19  David N. Welton  <davidw@dedasys.com>
+
+	* doc/index.html: Added CVS login command to CVS instructions.
+	Added information about GM/IM version dependencies.
+
 2004-03-16  David N. Welton  <davidw@dedasys.com>
 
 	* doc/index.html: Add license link.
