@@ -5928,7 +5928,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       p=q;
       (void) CloneString(&image_info->tile,tile);
       LiberateMemory((void **) &tile);
-      if (!IsSubimage(image_info->tile,True))
+      if (IsSubimage(image_info->tile,True))
         break;
       /*
         Determine sub-image range.
@@ -5939,11 +5939,6 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
         &image_info->subrange);
       if (image_info->subrange < image_info->subimage)
         Swap(image_info->subimage,image_info->subrange);
-      else
-        {
-          LiberateMemory((void **) &image_info->tile);
-          image_info->tile=(char *) NULL;
-        }
       image_info->subrange-=image_info->subimage-1;
       break;
     }

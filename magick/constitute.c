@@ -2008,9 +2008,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
-  register char
-    *p;
-
   /*
     Determine image type from filename prefix or suffix (e.g. image.jpg).
   */
@@ -2109,111 +2106,62 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     (void) remove(clone_info->filename);
   if (IsSubimage(clone_info->tile,False))
     {
-      int
-        count,
-        offset,
-        quantum;
+      char
+        *q;
 
       Image
+        *clone_image,
         *subimages;
 
+      long
+        quantum;
+
+      register char
+        *p;
+
       unsigned long
-        last,
-        target;
+        first,
+        last;
 
       /*
         User specified subimages (e.g. image.miff[1,3-5,7-6,2]).
       */
-      subimages=(Image *) NULL;
-      target=atol(clone_info->tile);
-      for (p=clone_info->tile; *p != '\0'; p+=Max(offset,1))
+      subimages=NewImageList();
+      for (p=clone_info->tile; *p != '\0'; p++)
       {
-        offset=0;
-        count=sscanf(p,"%lu%n-%lu%n",&target,&offset,&last,&offset);
-        if (count == 0)
-          continue;
-        if (count == 1)
-          last=target;
-        quantum=target > last ? -1 : 1;
-        for ( ; target != (last+quantum); target+=quantum)
+        while (isspace(*p) || (*p == ','))
+          p++;
+        first=strtol(p,&q,10);
+        last=first;
+        while (isspace(*q))
+          q++;
+        if (*q == '-')
+          last=strtol(q+1,&q,10);
+        quantum=first > last ? -1 : 1;
+        for (p=q; first != (last+quantum); first+=quantum)
         {
           for (next=image; next; next=next->next)
           {
-            Image
-              *clone_image;
-
-            if (next->scene != (unsigned long) target)
+            if (next->scene != first)
               continue;
-            /*
-              Clone this subimage.
-            */
             clone_image=CloneImage(next,0,0,True,exception);
             if (clone_image == (Image *) NULL)
               break;
-            if (subimages == (Image *) NULL)
-              {
-                subimages=clone_image;
-                continue;
-              }
-            subimages->next=clone_image;
-            subimages->next->previous=subimages;
-            subimages=subimages->next;
+            PushImageList(&subimages,clone_image,exception);
           }
         }
       }
-      DestroyImageList(image);
-      image=(Image *) NULL;
       if (subimages == (Image *) NULL)
         ThrowException(exception,OptionWarning,
           "Subimage specification returns no images",clone_info->filename);
-      while (subimages->previous != (Image *) NULL)
-        subimages=subimages->previous;
-      image=subimages;
-    }
-  else
-    if ((clone_info->subrange != 0) && (image->next != (Image *) NULL))
-      {
-        int
-          retain;
-
-        /*
-          User specified subimages (e.g. image.miff[1]).
-        */
-        for ( ; ; )
+      else
         {
-          retain=(image->scene >= clone_info->subimage) &&
-            (image->scene <= (clone_info->subimage+clone_info->subrange-1));
-          if (image->next != (Image *) NULL)
-            {
-              image=image->next;
-              if (!retain)
-                DestroyImage(image->previous);
-              continue;
-            }
-          if (image->previous != (Image *) NULL)
-            {
-              image=image->previous;
-              if (!retain)
-                DestroyImage(image->next);
-              break;
-            }
-          if (!retain)
-            {
-              DestroyImage(image);
-              image=(Image *) NULL;
-            }
-          break;
+          while (subimages->previous != (Image *) NULL)
+            subimages=subimages->previous;
+          DestroyImageList(image);
+          image=subimages;
         }
-        if (image == (Image *) NULL)
-          {
-            ThrowException(exception,OptionWarning,
-              "Subimage specification returns no images",clone_info->filename);
-            DestroyImageInfo(clone_info);
-            return((Image *) NULL);
-          }
-        while (image->previous != (Image *) NULL)
-          image=image->previous;
-      }
+    }
   if (image->status)
     {
       ThrowException(exception,CorruptImageWarning,
@@ -2330,8 +2278,8 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
       }
   }
   DestroyImageInfo(clone_info);
-	for (i=1; i < number_images; i++)
-	  LiberateMemory((void **) &images[i]);
+  for (i=1; i < number_images; i++)
+    LiberateMemory((void **) &images[i]);
   LiberateMemory((void **) &images);
   return(image);
 }

@@ -654,7 +654,12 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           Full color TGA raster.
         */
         targa_info.image_type=TargaRGB;
-        targa_info.bits_per_pixel=image->matte ? 32 : 24;
+        targa_info.bits_per_pixel=24;
+        if (image->matte)
+          {
+            targa_info.bits_per_pixel=32;
+            targa_info.attributes=8;  /* # of alpha bits */
+          }
       }
     else
       {
