@@ -446,7 +446,7 @@ Export int ImageFormatConflict(const char *magick)
 %
 %  The format of the MACErrorHandler method is:
 %
-%      void MACErrorHandler(const unsigned int error,const char *message,
+%      void MACErrorHandler(const ErrorType error,const char *message,
 %        const char *qualifier)
 %
 %  A description of each parameter follows:
@@ -460,7 +460,7 @@ Export int ImageFormatConflict(const char *magick)
 %
 %
 */
-Export void MACErrorHandler(const unsigned int error,const char *message,
+Export void MACErrorHandler(const ErrorType error,const char *message,
   const char *qualifier)
 {
   char
@@ -898,7 +898,7 @@ Export DIR *opendir(char *path)
 */
 Export void ProcessPendingEvents(const char *text)
 {
-  static char
+  static const char
     *mark = (char *) NULL;
 
   EventRecord

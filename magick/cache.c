@@ -110,7 +110,7 @@
 %
 */
 
-inline unsigned int MatchesLastRegionRequest(Image *image,const int x,
+static inline unsigned int MatchesLastRegionRequest(Image *image,const int x,
   const int y,const unsigned int columns,const unsigned int rows)
 {
   if ((x == image->cache_info.x) && (y == image->cache_info.y) &&
@@ -550,7 +550,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
 %
 */
 
-inline unsigned int MatchesLastRegionRequestSize(Image *image,
+static inline unsigned int MatchesLastRegionRequestSize(Image *image,
   const size_t number_pixels)
 {
   if ((image->cache_info.width*image->cache_info.height) < number_pixels)
