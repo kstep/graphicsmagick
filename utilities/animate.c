@@ -955,6 +955,8 @@ int main(int argc,char **argv)
       }
     }
   }
+  if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
+    MagickError(OptionError,"Missing an image file name",(char *) NULL);
   if (image == (Image *) NULL)
     {
       status&=MogrifyImages(image_info,i-j,argv+j,&image_list);
