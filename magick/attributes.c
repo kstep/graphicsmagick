@@ -144,9 +144,6 @@ Export ImageAttribute *GetImageAttribute(const Image *image,const char *key)
   for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
     if (Latin1Compare(key,p->key) == 0)
       break;
-  if ((p == (ImageAttribute *) NULL) || (p->value == (char *) NULL) ||
-      (*p->value == '\0'))
-    return((ImageAttribute *) NULL);
   return(p);
 }
 
@@ -227,6 +224,8 @@ Export unsigned int SetImageAttribute(Image *image,const char *key,
       FreeMemory((void *) &attribute);
       return(True);
     }
+  if (*value == '\0')
+    return(False);
   if (Latin1Compare(key,"Label") == 0)
     while (SetImageAttribute(image,"Label",(char *) NULL) != False);
   if (Latin1Compare(key,"Signature") == 0)
