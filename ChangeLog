@@ -1,5 +1,9 @@
 2004-07-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS: Updated with changes since the 1.1.2 release.
+
+2004-07-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* tiff/libtiff/tif_lzw.c: Incorporated TIFF LZW compression
 	support.
 	* lcms: Merged in lcms 1.13 from CVS HEAD.
@@ -13,7 +17,7 @@
 	installs for PERL 5.8.1 and later, which support DESTDIR
 	internally.
 
-2004-07-09  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+2004-07-09  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
 
 	* coders/bmp.c (ReadBMPImage): Removed if-test on reading
 	red_mask, green_mask, and blue_mask.  These are only *valid*

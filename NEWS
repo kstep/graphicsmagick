@@ -1,4 +1,24 @@
-This file was last updated on June 6, 2004.
+This file was last updated on July 25, 2004.
+
+Significant changes associated with GraphicsMagick 1.1.3 (release pending)
+
+  Bugs fixed:
+    * Take resolution units into consideration when resampling an image.
+    * If image units are changed, rescale existing image resolution values
+    to match.
+    * Fixed problems with reading and writing large PCX files.
+    * Fixed crash in Wand library MagickSetPassphrase().
+    * When a Wand library function is used for which a backing
+    implementation does not yet exist, report a "not implemented" error
+    rather than just returning an error status.
+    * Fixed a problem when reading some BMP v4 files.
+    * DESTDIR install now works properly with PERL 5.8.1 and later.
+
+  Improvements:
+    * LZW support for GIF and TIFF is enabled by default.
+    * Incorporated lcms 1.13 for more speed, and bug-fixes.
+    * The configure script now looks for mozilla (or firebird) when looking
+    for a web browser.  Netscape is used if mozilla or firebird are not present.
 
 Significant changes associated with GraphicsMagick 1.1.2 (released June 6, 2004)
 
