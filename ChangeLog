@@ -1,3 +1,6 @@
+2002-08-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Fix formatting in the *.mgk files so that they are XML conformant
+
 2002-08-30  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
   * QuantizeImage() did not always produce proper bilevel images.
 
