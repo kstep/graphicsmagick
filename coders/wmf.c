@@ -611,6 +611,8 @@ static void ipa_device_close(wmfAPI * API)
       util_registry_remove( API, (ddata->temp_images)[index] );
     LiberateMemory((void **) &ddata->temp_images);
   }
+
+  LiberateMemory((void **)&ddata->mvg);
 }
 
 /*
@@ -1770,9 +1772,9 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
   pixel_width = (((double) 1 / (ddata->scale_x)) +
      ((double) 1 / (ddata->scale_y))) / 2;
 
-  /* Don't allow pen_width to be less than pixel_width in order to
-     avoid dissapearing or spider-web lines */
-  pen_width = Max(pen_width, pixel_width);
+  /* Don't allow pen_width to be much less than pixel_width in order
+     to avoid dissapearing or spider-web lines */
+   pen_width = Max(pen_width, pixel_width*0.7);
 
   pen_style = (unsigned int) WMF_PEN_STYLE(pen);
   pen_endcap = (unsigned int) WMF_PEN_ENDCAP(pen);
@@ -2258,7 +2260,7 @@ static void lite_font_init( wmfAPI* API, wmfAPI_Options* options)
 static int util_append_mvg(wmfAPI * API, char *format, ...)
 {
   const size_t
-    alloc_size = MaxTextExtent*2;
+    alloc_size = MaxTextExtent*20; /* 40K */
 
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -2273,8 +2275,8 @@ static int util_append_mvg(wmfAPI * API, char *format, ...)
         return -1;
     }
 
-  /* Re-allocate additional memory if necessary */
-  if(ddata->mvg_alloc < (ddata->mvg_length+MaxTextExtent))
+  /* Re-allocate additional memory if necessary (ensure 20K unused) */
+  if(ddata->mvg_alloc < (ddata->mvg_length+MaxTextExtent*10))
     {
       size_t
         realloc_size = ddata->mvg_alloc + alloc_size;
@@ -2301,7 +2303,7 @@ static int util_append_mvg(wmfAPI * API, char *format, ...)
 #if !defined(HAVE_VSNPRINTF)
     str_length = vsprintf(buffer, format, argp);
 #else
-    str_length = vsnprintf(buffer, MaxTextExtent - 1, format, argp);
+    str_length = vsnprintf(buffer, ddata->mvg_alloc-ddata->mvg_length-1, format, argp);
 #endif
     va_end(argp);
     if(str_length > 0 && str_length < (MaxTextExtent - 1))
@@ -2324,6 +2326,8 @@ static int util_append_mvg(wmfAPI * API, char *format, ...)
 
         strcpy(ddata->mvg+ddata->mvg_length, buffer);
         ddata->mvg_length += str_length;
+
+        assert(ddata->mvg_length+1<ddata->mvg_alloc);
 
         return str_length;
       }
@@ -2658,7 +2662,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    * Play file to generate MVG drawing commands
    *
    */
-  ddata->mvg = (char*)AcquireMemory(MaxTextExtent);
+  ddata->mvg = NULL;
   wmf_error = wmf_play(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
