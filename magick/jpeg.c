@@ -60,6 +60,7 @@
 #include "defines.h"
 #if defined(HasJPEG)
 #define JPEG_INTERNAL_OPTIONS
+#include <setjmp.h>
 #include "jpeglib.h"
 #include "jerror.h"
 

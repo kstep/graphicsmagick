@@ -42,7 +42,6 @@
 #include <math.h>
 #include <limits.h>
 #include <time.h>
-#include <setjmp.h>
 #include <assert.h>
 
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
