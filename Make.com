@@ -200,6 +200,7 @@ $SkipComposite:
 $set def [-]
 $copy [.magick]magic.mgk sys$login:magic.mgk
 $copy [.magick]colors.mgk sys$login:colors.mgk
+$copy [.magick]log.mgk sys$login:log.mgk
 $copy [.coders]delegates.mgk sys$login:delegates.mgk
 $copy [.coders]modules.mgk sys$login:modules.mgk
 $copy [.coders]type.mgk sys$login:type.mgk
