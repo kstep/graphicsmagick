@@ -53,9 +53,19 @@
 </tr>
 </table>
 <p>
+2004-02-26  Vladimir  &lt;lvm@integrum.ru&gt;
+
+<UL>
+  <LI> magick/memory.c (CloneMemory): Fixes to compile under Microsoft
+        Visual C++ 6.0.
+
+</UL>
+<p>
 2004-02-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/animate.c (XAnimateImages): Memory leak reduction and
+        better integration with gm command.
   <LI> magick/display.c (XDisplayImage): Display was leaking memory
         like a sieve.  Now it doesn't.<BR>
   <LI> magick/memory.c (CloneMemory): Computation for when it is safe

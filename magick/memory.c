@@ -104,8 +104,9 @@ MagickExport void *CloneMemory(void *destination,const void *source,
   assert(destination != (void *) NULL);
   assert(source != (const void *) NULL);
 
-  if (((destination+size) < source) ||
-      (destination > (source+size)))
+  if ((((unsigned char*) destination+size) < (const unsigned char*) source) ||
+      ((unsigned char*) destination > ((const unsigned char*) source+size)))
+
     return(memcpy(destination,source,size));
   return(memmove(destination,source,size));
 }

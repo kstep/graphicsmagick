@@ -1,3 +1,8 @@
+2004-02-26  Vladimir  <lvm@integrum.ru>
+
+	* magick/memory.c (CloneMemory): Fixes to compile under Microsoft
+	Visual C++ 6.0.
+
 2004-02-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/animate.c (XAnimateImages): Memory leak reduction and
