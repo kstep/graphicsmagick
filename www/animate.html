@@ -4,176 +4,199 @@
 <HEAD>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <title>ImageMagick - Image Processing and Display Package</title>
-   <meta name="description" content="ImageMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-   <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+   <meta name="description" content="ImageMagick is a robust collection of
+   tools and libraries to read, write, and manipulate an image in any of the
+   more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.
+   With ImageMagick you can create GIFs dynamically making it suitable for
+   Web applications.  You can also resize, rotate, sharpen, color reduce, or
+   add special effects to an image and save your completed work in the same
+   or  differing image format.">
+   <meta name="keywords" content="conjure, ImageMagick, Image Magick, Image Magic,
+   PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
+   WebMagick, Web Magic, visualization, image processing, software development,
+   simulation, image, software, AniMagick, Animagic, Magick++">
    <link rel="StyleSheet" href="magick.css" type="text/css">
+<style type="text/css">
+  PRE {font-size: x-small}
+</style>
 </head>
 <body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
-<a NAME="top"></a>
-<center><img SRC="../images/magick_small.png" alt="" width=129 height=133></center>
-
-<pre>&nbsp;</pre>
-
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Contents</font></font></font></b></td>
-</tr>
-</table>
-
-<ul>
-<li>
-<a href="#syno">Synopsis</a></li>
-
-<li>
-<a href="#desc">Description</a></li>
-
-<li>
-<a href="#exam">Examples</a></li>
-
-<li>
-<a href="#opti">Options</a></li>
-
-<li>
-<a href="#mous">Mouse Buttons</a></li>
-
-<li>
-<a href="#comm">Command Widget</a></li>
-
-<li>
-<a href="#keyb">Keyboard Accelerators</a></li>
-
-<li>
-<a href="#xres">X Resources</a></li>
-
-<li>
-<a href="#envi">Environment</a></li>
-
-<li>
-<a href="#copy">Copyright</a></li>
-
-<li>
-<a href="#ackn">Acknowledgement</a></li>
-
-<li>
-<a href="#auth">Authors</a></li>
-</ul>
-
-<dl><dd><a NAME="syno"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Synopsis</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<b>animate</b> <b>[</b> <i>options</i> <b>...]</b> <i>file</i> [ [
-<i>options</i>
-...] <i>file</i> ...]</dd>
+<center>
+<img SRC="../images/magick_small.png" alt="" width=129 height=133>
+</center>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="top">NAME</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+animate - animate a sequence of images
+     </td></tr></table>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="contents">Contents</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<dl>
+<dt>
+<a href="#syno">Synopsis</a>
+</dt>
+<dt>
+<a href="#desc">Description</a>
+</dt>
+<dt>
+<a href="#exam">Examples</a>
+</dt>
+<dt>
+<a href="#opti">Options</a>
+</dt>
+<dt>
+<a href="#files">Files and Formats</a>
+</dt>
+<dt>
+<a href="#mous">Mouse Buttons</a>
+</dt>
+<dt>
+<a href="#comm">Command Widget</a>
+</dt>
+<dt>
+<a href="#keyb">Keyboard Accelerators</a>
+</dt>
+<dt>
+<a href="#xres">X Resources</a>
+</dt>
+<dt>
+<a href="#envi">Environment</a>
+</dt>
+<dt>
+<a href="#copy">Copyright</a>
+</dt>
+<dt>
+<a href="#ackn">Acknowledgement</a>
+</dt>
+<dt>
+<a href="#auth">Authors</a>
+</dt>
 </dl>
-<i><a href="#top">Back to Contents</a></i>
-<br>&nbsp;
-<br>&nbsp;
-<dl><dd><a NAME="desc"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Description</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<b>Animate</b> displays a sequence of images on any workstation display
-running an X server. <b>animate</b> first determines the hardware capabilities
+     </td></tr></table>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="syno">Synopsis</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p>
+<strong>animate</strong> <strong>[</strong> <em>options</em> <strong>...]</strong> <em>file</em> [ [
+<em>options</em> ...] <em>file</em> ...]
+</p>
+     </td></tr></table>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="desc">Description</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p>
+<strong>Animate</strong> displays a sequence of images on any workstation display
+running an X server. <strong>animate</strong> first determines the hardware capabilities
 of the workstation. If the number of unique colors in an image is less
 than or equal to the number the workstation can support, the image is displayed
 in an X window. Otherwise the number of colors in the image is first reduced
-to match the color resolution of the workstation before it is displayed.</dd>
-
-<dd>
+to match the color resolution of the workstation before it is displayed.</p>
+<p>
 This means that a continuous-tone 24 bits-per-pixel image can display on
 a 8 bit pseudo-color device or monochrome device. In most instances the
 reduced color image closely resembles the original. Alternatively, a monochrome
 or pseudo-color image sequence can display on a continuous-tone 24 bits-per-pixel
-device.</dd>
-
-<dd>
+device.</p>
+<p>
 To help prevent color flashing on X server visuals that have colormaps,
-<b>animate</b>
+<strong>animate</strong>
 creates a single colormap from the image sequence. This can be rather time
 consuming. You can speed this operation up by reducing the colors in the
-image before you `animate' them. Use <b>mogrify</b> to color reduce the
-images to a single colormap. See <b>mogrify(1)</b> for details. Alternatively,
+image before you `animate' them. Use <strong>mogrify</strong> to color reduce the
+images to a single colormap. See <strong>mogrify(1)</strong> for details. Alternatively,
 you can use a Standard Colormap; or a static, direct, or true color visual.
-You can define a Standard Colormap with <i>xstdcmap</i>. See <b>xstdcmap(1)</b>
+You can define a Standard Colormap with <em>xstdcmap</em>. See <strong>xstdcmap(1)</strong>
 for details. This method is recommended for colormapped X server because
-it eliminates the need to compute a global colormap.</dd>
-</dl>
-<i><a href="#top">Back to Contents</a></i>
-<br>&nbsp;
-<br>&nbsp;
-<dl><dd><a NAME="exam"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Examples</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-To animate a set of images of a cockatoo, use:</dd>
-
-<dd>
+it eliminates the need to compute a global colormap.</p>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="exam">Examples</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
 <dl>
 <dd>
-<tt>animate cockatoo.*</tt></dd>
-</dl>
-
+To animate a set of images of a cockatoo, use:
+</dd>
+<pre>
+    animate cockatoo.*
+</pre>
 <dd>
 To animate a cockatoo image sequence while using the Standard Colormap
-<i>best</i>,
-use:</dd>
-
-<dd>
-<dl>
-<dd>
-<tt>xstdcmap -best</tt></dd>
-
-<dd>
-<tt>animate -map best cockatoo.*</tt></dd>
-</dl>
-
+<em>best</em>, use:
+</dd>
+<pre>
+    xstdcmap -best
+    animate -map best cockatoo.*
+</pre>
 <dd>
 To animate an image of a cockatoo without a border centered on a backdrop,
-use:</dd>
-
-<dd>
-<dl>
-<dd>
-<tt>animate +borderwidth -backdrop cockatoo.*</tt></dd>
+use:
+</dd>
+<pre>
+    animate +borderwidth -backdrop cockatoo.*
+</pre>
 </dl>
-</dl>
-<i><a href="#top">Back to Contents</a></i>
-<br>&nbsp;
-<br>&nbsp;
-<dl><dd><a NAME="opti"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Options</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="opti">Options</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p>
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect.</dd>
-
-<dd>
-<b>Animate</b> options can appear on the command line or in your X resources
-file. See <i>X(1)</i>. Options on the command line supersede values specified
+<p>
+<strong>Animate</strong> options can appear on the command line or in your X resources
+file. See <em>X(1)</em>. Options on the command line supersede values specified
 in your X resources file.</dd>
-
 </dl>
-<p>&nbsp;
-
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -182,18 +205,15 @@ in your X resources file.</dd>
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-backdrop">-backdrop</a> <i>color</i>
+<opt><a name="-backdrop">-backdrop</a> <i>color</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display the image centered on a backdrop.</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This backdrop covers the entire workstation screen and is useful for hiding
 other X window activity while viewing the image. The color of the backdrop
 is specified as the background color. Refer to <a href="#xres">X Resources</a>
 for details.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -202,11 +222,9 @@ for details.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-background">-background</a> <i>color</i>
+<opt><a name="-background">-background</a> <i>color</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the background color</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -215,16 +233,13 @@ for details.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-border">-border</a> <i>&lt;width&gt;x&lt;height&gt;</i>
+<opt><a name="-border">-border</a> <i>&lt;width&gt;x&lt;height&gt;</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>surround the image with a border of color</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 See <em>X(1)</em> for details
 about the geometry specification.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -233,11 +248,9 @@ about the geometry specification.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-bordercolor">-bordercolor</a> <i>color</i>
+<opt><a name="-bordercolor">-bordercolor</a> <i>color</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the border color</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -246,11 +259,9 @@ about the geometry specification.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-borderwidth">-borderwidth</a> <i>color</i>
+<opt><a name="-borderwidth">-borderwidth</a> <i>color</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the border width</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -259,18 +270,15 @@ about the geometry specification.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-cache">-cache</a> <i>threshold</i>
+<opt><a name="-cache">-cache</a> <i>threshold</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>megabytes of memory available to the pixel cache</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Image pixels are stored in memory until 80 megabytes of memory have been
 consumed. Subsequent pixel operations are cached on disk. Operations to
 memory are significantly faster but if your computer does not have a sufficient
 amount of free memory you may want to adjust this threshold value.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -279,23 +287,18 @@ amount of free memory you may want to adjust this threshold value.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-chop">-chop</a>
-&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}
+<opt><a name="-chop">-chop</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>remove pixels from the interior of an image</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The width and height give the number of columns and rows to remove,
 and the offsets give the location of the leftmost column and topmost
 row to remove.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The <strong>-chop</strong> option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -304,15 +307,12 @@ and moves the remaining corner blocks leftward and upward to close the gaps.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-colormap">-colormap</a> <i>type</i>
+<opt><a name="-colormap">-colormap</a> <i>type</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>define the colormap type</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choose between <strong>shared</strong> or <strong>private</strong>.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option only applies when the default X server visual is <em>PseudoColor</em>
 or <em>GRAYScale</em>. Refer to <strong>-visual</strong> for more details. By default,
@@ -321,7 +321,6 @@ Some image colors could be approximated, therefore your image may look
 very different than intended. Choose <strong>Private</strong> and the image colors
 appear exactly as they are defined. However, other clients may
 go <em>technicolor</em> when the image colormap is installed.</font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -330,11 +329,9 @@ go <em>technicolor</em> when the image colormap is installed.</font></td></tr></
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-colors">-colors</a> <i>value</i>
+<opt><a name="-colors">-colors</a> <i>value</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred number of colors in the image</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The actual number of colors in the image may be less than your request,
 but never more. Note, this is a color reduction option. Images with less
@@ -342,12 +339,10 @@ unique colors than specified with this option will have any duplicate or
 unused colors removed. Refer to <a href="quantize.html">quantize</a> for
 more details.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Note, options <strong>-dither</strong>, <strong>-colorspace</strong>, and <strong>-treedepth</strong>
 affect the color reduction algorithm.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -356,9 +351,8 @@ affect the color reduction algorithm.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-colorspace">-colorspace</a> <i>value</i>
+<opt><a name="-colorspace">-colorspace</a> <i>value</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of colorspace</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choices are: <strong>GRAY</strong>, <strong>OHTA</strong>, <strong>RGB</strong>,
@@ -367,7 +361,6 @@ Choices are: <strong>GRAY</strong>, <strong>OHTA</strong>, <strong>RGB</strong>,
 <strong>YCbCr</strong>, <strong>YIQ</strong>, <strong>YPbPr</strong>,
 <strong>YUV</strong>, or <strong>CMYK</strong>.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Color reduction, by default, takes place in the RGB color space. Empirical
 evidence suggests that distances in color spaces such as YUV or YIQ correspond
@@ -375,7 +368,6 @@ to perceptual color differences more closely than do distances in RGB space.
 These color spaces may give better results when color reducing an image.
 Refer to <a href="quantize.html">quantize</a> for more details.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The <strong>Transparent</strong> color space behaves uniquely in that it preserves
 the matte channel of the image if it exists.
@@ -384,7 +376,6 @@ the matte channel of the image if it exists.
 The <strong>-colors</strong> or <strong>-monochrome</strong> option is required for this
 option to take effect.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -393,46 +384,38 @@ option to take effect.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-crop">-crop</a>
-&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}
+<opt><a name="-crop">-crop</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the cropped image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 See <em>X(1)</em> for details
 about the geometry specification.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The width and height give the size of the image that remains after cropping,
 and the offsets give the location of the top left corner of the cropped
 image with respect to the original image.  To specify the amount to be
 removed, use <strong>-shave</strong> instead.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height to be removed instead, append
 <strong>%</strong>. For example
 to crop the image by ten percent (five percent on each side of the image),
 use <strong>-crop 10%</strong>.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use cropping to apply image processing options to, or display, a particular
 area of an image.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Omit the x and y offset to generate one or more subimages of a uniform
 size.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use cropping to crop a particular area of an image. Use <strong>-crop 0x0</strong>
 to trim edges that are the background color. Add an x and y offset to leave
 a portion of the trimmed edges with the image.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -441,11 +424,9 @@ a portion of the trimmed edges with the image.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-delay">-delay</a> <i>&lt;1/100ths of a second&gt;</i>
+<opt><a name="-delay">-delay</a> <i>&lt;1/100ths of a second&gt;</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display the next image after pausing</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option is useful for regulating the animation of GIF images
 within Netscape. <em>Delay/100</em> seconds must expire
@@ -453,12 +434,10 @@ before the display
 of the next image. The default is no delay between each showing of the
 image sequence. The maximum delay is 65535.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 You can specify a delay range (e.g. <em>-delay 10-500</em>) which sets the
 minimum and maximum delay.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -467,17 +446,14 @@ minimum and maximum delay.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-density">-density</a> <i>&lt;width&gt;x&lt;height&gt;</i>
+<opt><a name="-density">-density</a> <i>&lt;width&gt;x&lt;height&gt;</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>vertical and horizontal resolution in pixels of the image</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option specifies an image density when decoding a <em>PostScript</em>
 or Portable Document page. The default is 72 dots per inch in the horizontal
 and vertical direction. This option is used in concert with <strong>-page</strong>.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -486,18 +462,15 @@ and vertical direction. This option is used in concert with <strong>-page</stron
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-depth">-depth</a> <i>value</i>
+<opt><a name="-depth">-depth</a> <i>value</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This is the number of bits in a pixel. The only acceptable
 values are 8 or 16.  Use this option to specify the depth of raw images whose
 depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
 image after it has been read.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -506,11 +479,9 @@ image after it has been read.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-display">-display</a> <i>host:display[.screen]</i>
+<opt><a name="-display">-display</a> <i>host:display[.screen]</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specifies the X server to contact</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -519,22 +490,18 @@ image after it has been read.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-dispose">-dispose</a> <i>method</i>
+<opt><a name="-dispose">-dispose</a> <i>method</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>GIF disposal method</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Here are the valid methods:
 </font></td></tr></table>
-
 <pre>
      0     No disposal specified.
      1     Do not dispose between frames.      
      2     Overwrite frame with background color from header.
      3     Overwrite with previous frame.
 </pre>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -543,11 +510,9 @@ Here are the valid methods:
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-dissolve">-dissolve</a> <i>value</i>
+<opt><a name="-dissolve">-dissolve</a> <i>value</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>dissolve an image</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -556,27 +521,22 @@ Here are the valid methods:
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-dither">-dither</a>
+<opt><a name="-dither">-dither</a>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply Floyd/Steinberg error diffusion to the image</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The basic strategy of dithering is to trade intensity resolution for spatial
 resolution by averaging the intensities of several neighboring pixels.
 Images which suffer from severe contouring when reducing colors can be
 improved with this option.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The <strong>-colors</strong> or <strong>-monochrome</strong> option is required for this option
 to take effect.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>+dither</strong> to render Postscript without text or graphic aliasing.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -585,17 +545,14 @@ Use <strong>+dither</strong> to render Postscript without text or graphic aliasi
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-font">-font</a> <i>name</i>
+<opt><a name="-font">-font</a> <i>name</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use this font when annotating the image with text</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
 font.  For example, <tt>Arial.ttf</tt> is a Truetype font, <tt>ps:helvetica</tt>
 is Postscript, and <tt>x:fixed</tt> is OPTION1. 
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -604,11 +561,9 @@ is Postscript, and <tt>x:fixed</tt> is OPTION1.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-foreground">-foreground</a> <i>color</i>
+<opt><a name="-foreground">-foreground</a> <i>color</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>define the foreground color</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -617,31 +572,26 @@ is Postscript, and <tt>x:fixed</tt> is OPTION1.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-gamma">-gamma</a> <i>value</i>
+<opt><a name="-gamma">-gamma</a> <i>value</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>level of gamma correction</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The same color image displayed on two different workstations may look different
 due to differences in the display monitor. Use gamma correction to adjust
 for this color difference. Reasonable values extend from <strong>0.8</strong> to
 <strong>2.3</strong>.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 You can apply separate gamma values to the red, green, and blue channels
 of the image with a gamma value list delineated with slashes
 (i.e. <strong>1.7</strong>/<strong>2.3</strong>/<strong>1.2</strong>).
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>+gamma</strong> <em>value</em>
 to set the image gamma level without actually adjusting
 the image pixels. This option is useful if the image is of a known gamma
 but not set as an image attribute (e.g. PNG images).
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -650,16 +600,14 @@ but not set as an image attribute (e.g. PNG images).
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}{@}{!}{&lt;}{&gt;}</i>
+<opt><a name="-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;{+-}&lt;x offset&gt;{+-}&lt;y offset&gt;{%}{@}{!}{&lt;}{&gt;}</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 See <em>X(1)</em> for details
 about the geometry specification. By default, the window size is the image
 size and the location is chosen by you when it is mapped.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, the width and height are maximum values. That is, the image
 is expanded or contracted to fit the width and height value while maintaining
@@ -669,7 +617,6 @@ if you specify <strong>640x480!</strong> the image width is set to 640 pixels an
 height to 480. If only one factor is specified, both the width and height
 assume the value.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -677,11 +624,9 @@ dimensions. To increase the size of an image, use a value greater than
 100 (e.g. 125%). To decrease an image's size, use a percentage less than
 100.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>@</strong> to specify the maximum area in pixels of an image.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>&gt;</strong> to change the dimensions of the image <em>only</em> if
 its size exceeds the geometry specification. <strong>&lt;</strong> resizes the image
@@ -703,7 +648,6 @@ to 640x480.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 There are 72 pixels per inch in PostScript coordinates.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -712,11 +656,9 @@ There are 72 pixels per inch in PostScript coordinates.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-help">-help</a>
+<opt><a name="-help">-help</a>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print usage instructions</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -725,11 +667,9 @@ There are 72 pixels per inch in PostScript coordinates.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-iconGeometry">-iconGeometry</a> <i>geometry</i>
+<opt><a name="-iconGeometry">-iconGeometry</a> <i>geometry</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the icon geometry</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -738,11 +678,9 @@ There are 72 pixels per inch in PostScript coordinates.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-iconic">-iconic</a>
+<opt><a name="-iconic">-iconic</a>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>iconic animation</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -751,15 +689,13 @@ There are 72 pixels per inch in PostScript coordinates.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-interlace">-interlace</a> <i>type</i>
+<opt><a name="-interlace">-interlace</a> <i>type</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of interlacing scheme</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choices are: <strong>None, Line, Plane,</strong>
 or <strong>Partition</strong>. The default is <strong>None</strong>.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option is used to specify the type of interlacing scheme for raw image
 formats such as <strong>RGB</strong> or <strong>YUV</strong>. <strong>None</strong> means do not interlace
@@ -769,13 +705,11 @@ and <strong>Plane</strong> uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).
 is like plane except the different planes are saved to individual files
 (e.g. image.R, image.G, and image.B).
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>Line</strong>, or <strong>Plane</strong> to create an
 <strong>interlaced PNG</strong> or <strong> GIF</strong> or
 <strong>progressive JPEG</strong> image.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -784,15 +718,12 @@ Use <strong>Line</strong>, or <strong>Plane</strong> to create an
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-matte">-matte</a>
+<opt><a name="-matte">-matte</a>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>store matte channel if the image has one</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 If the image does not have a matte channel, create an opaque one.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -801,11 +732,9 @@ If the image does not have a matte channel, create an opaque one.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-mattecolor">-mattecolor</a> <i>color</i>
+<opt><a name="-mattecolor">-mattecolor</a> <i>color</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the matte color</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -814,11 +743,9 @@ If the image does not have a matte channel, create an opaque one.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-monochrome">-monochrome</a>
+<opt><a name="-monochrome">-monochrome</a>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>transform the image to black and white</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -827,11 +754,9 @@ If the image does not have a matte channel, create an opaque one.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-name">-name</a>
+<opt><a name="-name">-name</a>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>name an image</td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -840,15 +765,12 @@ If the image does not have a matte channel, create an opaque one.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-pause">-pause</a> <i>seconds</i>
+<opt><a name="-pause">-pause</a> <i>seconds</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pause between animation loops</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Pause for the specified number of seconds before repeating the
 animation.</font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -857,16 +779,13 @@ animation.</font></td></tr></table>
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-remote">-remote</a>
+<opt><a name="-remote">-remote</a>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>perform a remote operation</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The only command recognized at this time is the name of
 an image file to load.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -875,11 +794,9 @@ an image file to load.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-rotate">-rotate</a> <i>degrees{&lt;}{&gt;}</i>
+<opt><a name="-rotate">-rotate</a> <i>degrees{&lt;}{&gt;}</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply Paeth image rotation to the image</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <tt>&gt;</tt> to rotate the image only if its width exceeds the height.
 <tt>&lt;</tt> rotates the image <em>only</em> if its width is less than the
@@ -887,13 +804,11 @@ height. For example, if you specify <tt>-90&gt;</tt> and the image size is
 480x640, the image is not rotated by the specified angle. However, if the
 image is 640x480, it is rotated by -90 degrees.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Empty triangles left over from rotating the image are filled with the color
 defined as <strong>background</strong> (class <strong>backgroundColor</strong>). See <em>X(1)</em>
 for details.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -902,15 +817,12 @@ for details.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-scene">-scene</a> <i>value{-value}</i>
+<opt><a name="-scene">-scene</a> <i>value{-value}</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>image scene number or range</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to specify an image sequence with a single filename. See
 the discussion of <em>file</em> below for details.</font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -919,18 +831,15 @@ the discussion of <em>file</em> below for details.</font></td></tr></table>
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-shared_memory">-shared_memory</a>
+<opt><a name="-shared_memory">-shared_memory</a>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use shared memory</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This resource specifies whether the utility should attempt use shared memory
 for pixmaps.  ImageMagick must be compiled with shared memory support,
 and the display must support the <em>MIT-SHM</em> extension.  Otherwise, this
 resource is ignored.  The default is <strong>True</strong>.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -939,11 +848,9 @@ resource is ignored.  The default is <strong>True</strong>.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-size">-size</a> <i>&lt;width&gt;x&lt;height&gt;{+offset}</i>
+<opt><a name="-size">-size</a> <i>&lt;width&gt;x&lt;height&gt;{+offset}</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>width and height of the image</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to specify the width and height of raw images whose dimensions
 are unknown such as <strong>GRAY</strong>,
@@ -953,10 +860,8 @@ to width and height, use
 the image or tell the number of colors in a <strong>MAP</strong> image
 file, (e.g. -size 640x512+256).
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For Photo CD images, choose from these sizes:</font></td></tr></table>
-
 <pre>
      192x128
      384x256
@@ -964,12 +869,10 @@ For Photo CD images, choose from these sizes:</font></td></tr></table>
      1536x1024
      3072x2048
 </pre>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Finally, use this option to choose a particular resolution layer of a JBIG
 or JPEG image (e.g. -size 1024x768).
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -978,22 +881,18 @@ or JPEG image (e.g. -size 1024x768).
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-text-font">-text-font</a> <i>name</i>
+<opt><a name="-text-font">-text-font</a> <i>name</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>font for writing fixed-width text</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Specifies the name of the preferred font to use in fixed (typewriter style)
 formatted text.  The default is 14 point <em>Courier</em>.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 You can tag a font to specify whether it is a Postscript, Truetype, or
 OPTION1 font.  For example, <tt>Courier.ttf</tt> is a Truetype font
 and <tt>x:fixed</tt> is OPTION1. 
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -1002,17 +901,14 @@ and <tt>x:fixed</tt> is OPTION1.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-title">-title</a> <i>"string"</i>
+<opt><a name="-title">-title</a> <i>"string"</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>assign a title to the displayed image</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to assign a specific title to the image. This is assigned
 to the image window and is typically displayed in the window title bar.
 Optionally you can include the image filename, type, width, height, or
 other image attribute by embedding special format characters:</font></td></tr></table>
-
 <pre>
      %b file size
      %c comment
@@ -1037,20 +933,16 @@ other image attribute by embedding special format characters:</font></td></tr></
      \n newline
      \r carriage return
 </pre>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example,
 </font></td></tr></table>
-
 <pre>
      -title "%m:%f %wx%h"
 </pre>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 produces an image title of <tt>MIFF:bird.miff 512x480</tt> for an image
 titled <tt>bird.miff</tt> and whose width is 512 and height is 480.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -1059,15 +951,12 @@ titled <tt>bird.miff</tt> and whose width is 512 and height is 480.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-treedepth">-treedepth</a> <i>value</i>
+<opt><a name="-treedepth">-treedepth</a> <i>value</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>tree depth for the color reduction algorithm</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Normally, this integer value is zero or one. A zero or one tells display
 to choose an optimal tree depth for the color reduction algorithm</font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 An optimal depth generally allows the best representation of the source
 image with the fastest computational speed and the least amount of memory.
@@ -1080,7 +969,6 @@ Refer to
 The <strong>-colors</strong> or <strong>-monochrome</strong> option is required for this option
 to take effect.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -1089,24 +977,20 @@ to take effect.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-verbose">-verbose</a>
+<opt><a name="-verbose">-verbose</a>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print detailed information about the image</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This information is printed: image scene number; image name; image size;
 the image class (<em>DirectClass</em> or <em>PseudoClass</em>); the total number
 of unique colors; and the number of seconds to read and transform the image.
 Refer to <a href="miff.html">miff</a> for a description of the image class.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 If <strong>-colors</strong> is also specified, the total unique colors in the image
 and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
 for a description of these values.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -1115,15 +999,12 @@ for a description of these values.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-visual">-visual</a> <i>type</i>
+<opt><a name="-visual">-visual</a> <i>type</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>animate images using this X visual type</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choose from these visual classes:
 </font></td></tr></table>
-
 <pre>
      StaticGray
      GrayScale
@@ -1134,13 +1015,11 @@ Choose from these visual classes:
      default
      visual id
 </pre>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The X server must support the visual you choose, otherwise an error occurs.
 If a visual is not specified, the visual class that can display the most
 simultaneous colors on the default screen is chosen.
 </font></td></tr></table>
-
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -1149,363 +1028,315 @@ simultaneous colors on the default screen is chosen.
      ALT=">" BORDER=0 height=14
      width=15><b><font face="Helvetica, Arial"
      ><font color="#FFFFFF"><font size="+1">
-<a name="-window">-window</a> <i>id</i>
+<opt><a name="-window">-window</a> <i>id</i>
      </font></font></font></b></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>make image the background of a window</td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 <em>id</em> can be a window id or name.  Specify <strong>root</strong> to
 select X's root window as the target window.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default the image is tiled onto the background of the target
 window.   If <strong>backdrop</strong> or <strong>-geometry</strong> are
 specified, the image is surrounded by the background color.  Refer to
 <strong>X RESOURCES</strong> for details.
 </font></td></tr></table>
-
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The image will not display on the root window if the image has more
 unique colors than the target window colormap allows.  Use
 <strong>-colors</strong> to reduce the number of colors.
 </font></td></tr></table>
-
-<dl>
-<dt>&nbsp;
-<dd>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="files">Files and Formats</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p>
 Any option you specify on the command line remains in effect until it is
 explicitly changed by specifying the option again with a different effect.
 For example, to animate two images, the first with 32 colors and the second
-with only 16 colors, use:</dd>
-
-<dd>
+with only 16 colors, use:
+</p>
 <pre>
      animate -colors 32 cockatoo.1 -colors 16 cockatoo.2
 </pre>
-</dd>
-
-<dd>
+<p>
 By default, the image format is determined by its magic number. To specify
 a particular image format, precede the filename with an image format name
 and a colon (i.e. ps:image) or specify the image type as the filename suffix
-(i.e. image.ps). See <b>convert(1)</b> for a list of valid image formats.</dd>
-
-<dd>
-When you specify <b>X</b> as your image type, the filename has special
+(i.e. image.ps). See <strong>convert(1)</strong> for a list of valid image formats.</p>
+<p>
+When you specify <strong>X</strong> as your image type, the filename has special
 meaning. It specifies an X window by id, name, or
-<b>root</b>. If no filename
+<strong>root</strong>. If no filename
 is specified, the window is selected by clicking the mouse in the desired
-window.</dd>
-
-<dd>
-Specify <i>file</i> as - for standard input, If <i>file</i> has the extension
-<b>.Z</b>
-or <b>.gz</b>, the file is uncompressed with
-<b>uncompress</b> or <b>gunzip</b>
+window.</p>
+<p>
+Specify <em>file</em> as - for standard input, If <em>file</em> has the extension
+<strong>.Z</strong>
+or <strong>.gz</strong>, the file is uncompressed with
+<strong>uncompress</strong> or <strong>gunzip</strong>
 respectively. Precede the image file name with | to pipe from a system
-command.</dd>
-
-<dd>
+command.</p>
+<p>
 Use an optional index enclosed in brackets after a file name to specify
 a desired subimage of a multi-resolution image format like Photo CD (e.g.
 img0001.pcd[4]) or a range for MPEG images (e.g. video.mpg[50-75]). A subimage
 specification can be disjoint (e.g. image.tiff[2,7,4]). For raw images,
-specify a subimage with a geometry (e.g. -size 640x512 image.rgb[320x256+50+50]).</dd>
-
-<dd>
+specify a subimage with a geometry
+(e.g. -size 640x512 image.rgb[320x256+50+50]).</p>
+<p>
 Single images are read with the filename you specify. Alternatively, you
 can animate an image sequence with a single filename. Define the range
-of the image sequence with -<i>scene</i>. Each image in the range is read
-with the filename followed by a period (<b>.</b>) and the scene number.
-You can change this behavior by embedding a <b>printf</b> format specification
-in the file name. For example,</dd>
-
-<dd>
+of the image sequence with -<em>scene</em>. Each image in the range is read
+with the filename followed by a period (<strong>.</strong>) and the scene number.
+You can change this behavior by embedding a <strong>printf</strong> format specification
+in the file name. For example,
+</p>
 <pre>
     -scene 0-9 image%02d.miff
 </pre>
+<p>
 animates files image00.miff, image01.miff, through image09.miff.
 <p>Image filenames may appear in any order on the command line if the image
-format is <i>MIFF</i> (refer to <b>miff(5)</b> and the
-<b>scene</b> keyword
+format is <em>MIFF</em> (refer to <strong>miff(5)</strong> and the
+<strong>scene</strong> keyword
 is specified in the image. Otherwise the images will display in the order
-they appear on the command line.</dl>
-<i><a href="#top">Back to Contents</a></i>
-<br>&nbsp;
-<br>&nbsp;
-<dl><dd><a NAME="mous"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Mouse
-Buttons</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
+they appear on the command line.</p>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="mous">Mouse Buttons</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p>
 Press any button to map or unmap the Command widget. See the next section
-for more information about the Command widget.</dd>
+for more information about the Command widget.</p>
 </dl>
-<a href="#top">Back to Contents</a>
-<br>&nbsp;
-<br>&nbsp;
-<dl><dd><a NAME="comm"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Command
-Widget</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-The Command widget lists a number of sub-menus and commands. They are</dd>
-
-<dd>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="comm">Command Widget</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p>
+The Command widget lists a number of sub-menus and commands. They are</p>
 <ul>
-<li>
-<b>Animate</b>
-
+<li><strong>Animate</strong>
 <ul>
-<li>
-Open</li>
-
-<li>
-Play</li>
-
-<li>
-Step</li>
-
-<li>
-Repeat</li>
-
-<li>
-Auto Reverse</li>
+<li>    Open
+<li>    Play
+<li>    Step
+<li>    Repeat
+<li>    Auto Reverse
 </ul>
-
-<li>
-<b>Speed</b>
-
+<li><strong>Speed</strong>
 <ul>
-<li>
-Faster</li>
-
-<li>
-Slower</li>
+<li>    Faster
+<li>    Slower
 </ul>
-
-<li>
-<b>Direction</b>
-
+<li><strong>Direction</strong>
 <ul>
-<li>
-Forward</li>
-
-<li>
-Reverse</li>
+<li>    Forward
+<li>    Reverse
 </ul>
-
-<li>
-<b>Image Info</b>
-
-<li>
-<b>Help</b></li>
-
-<li>
-<b>Quit</b></li>
+<li><strong>Image Info</strong>
+<li><strong>Help</strong>
+<li><strong>Quit</strong>
 </ul>
-</dd>
-
-<dd>
+</ul>
+<p>
 Menu items with a indented triangle have a sub-menu. They are represented
 above as the indented items. To access a sub-menu item, move the pointer
 to the appropriate menu and press a button and drag. When you find the
 desired sub-menu item, release the button and the command is executed.
 Move the pointer away from the sub-menu if you decide not to execute a
-particular command.</dd>
+particular command.</p>
 </dl>
-<i><a href="#top">Back to Contents</a></i>
-<br>&nbsp;
-<br>&nbsp;
-<dl><dd><a NAME="keyb"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Keyboard
-Accelerators</font></font></font></b></td>
-</tr>
-</table>
-
-<pre>&nbsp;&nbsp; Ctl+O&nbsp;&nbsp;&nbsp;&nbsp; Press to <a href="#imlo">load</a> an image from a file.
-&nbsp;&nbsp; <b>space</b>&nbsp;&nbsp;&nbsp; Press to display the next image in the sequence.
-
-&nbsp;&nbsp; <b>&lt;</b>&nbsp;&nbsp;&nbsp; Press to speed-up the display of the images.&nbsp; Refer to
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>-delay</b> for more information.
-
-&nbsp;&nbsp; <b>></b>&nbsp;&nbsp;&nbsp; Press to slow the display of the images.&nbsp; Refer to
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>-delay</b> for more information.
-
-&nbsp;&nbsp; <b>?</b>&nbsp;&nbsp;&nbsp; Press to display information about the image.&nbsp; Press
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; any key or button to erase the information.
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This information is printed: image name;&nbsp; image size;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and the total number of unique colors in the image.
-
-&nbsp;&nbsp; <b>F1</b>&nbsp;&nbsp;&nbsp; Press to display helpful information about <b>animate(1)</b>.
-
-&nbsp;&nbsp; <b>Ctl-q</b>&nbsp;&nbsp;&nbsp; Press to discard all images and exit program.</pre>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="keyb">Keyboard Accelerators</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<dl>
+<dt><strong>Ctl+O</strong></dt>
+<dd>Press to load an image from a file.</dd>
+<dt><strong>space</strong></dt>
+<dd>Press to display the next image in the sequence.</dd>
+<dt><strong>&lt;</strong></dt>
+<dd>Press to speed-up the display of the images.  Refer to
+<strong>-delay</strong> for more information.</dd>
+<dt><strong>&gt;</strong></dt>
+<dd>Press to slow the display of the images.  Refer to
+<strong>-delay</strong> for more information.</dd>
+<dt><strong>?</strong></dt>
+<dd>Press to display information about the image.  Press
+any key or button to erase the information.</dd>
+<dd>This information is printed: image name;  image size;
+and the total number of unique colors in the image.</dd>
+<dt><strong>F1</strong></dt>
+<dd>Press to display helpful information about <strong>animate(1)</strong>.</dd>
+<dt><strong>Ctl-q</strong></dt>
+<dd>Press to discard all images and exit program.</dd>
 </dl>
-<a href="#top">Back to Contents</a>
-<br>&nbsp;
-<br>&nbsp;
-<dl><dd><a NAME="xres"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">X
-Resources</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<b>Animate</b> options can appear on the command line or in your X resource
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="xres">X Resources</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p>
+<strong>Animate</strong> options can appear on the command line or in your X resource
 file. Options on the command line supersede values specified in your X
-resource file. See <b>X(1)</b> for more information on X resources.</dd>
-
-<dd>
-All <b>animate</b> options have a corresponding X resource. In addition,
-the <b>animate</b> program uses the following X resources:</dd>
-
-<dd>
-<dl><dd><b>background</b> <b>(</b><i>class</i> <b>Background)</b>
+resource file. See <strong>X(1)</strong> for more information on X resources.</p>
+<p>
+All <strong>animate</strong> options have a corresponding X resource. In addition,
+the <strong>animate</strong> program uses the following X resources:</dd>
+<dt><strong>background</strong> <strong>(</strong><em>class</em> <strong>Background)</strong></dt>
 <dd>
 Specifies the preferred color to use for the Image window background. The
 default is #ccc.</dd>
-</dl>
-
-<dl><dd><b>borderColor</b> <b>(</b><i>class</i> <b>BorderColor)</b>
+<dt><strong>borderColor</strong> <strong>(</strong><em>class</em> <strong>BorderColor)</strong></dt>
 <dd>
 Specifies the preferred color to use for the Image window border. The default
 is #ccc.</dd>
-</dl>
-
-<dl><dd><b>borderWidth</b> <b>(</b><i>class</i> <b>BorderWidth)</b>
+<dt><strong>borderWidth</strong> <strong>(</strong><em>class</em> <strong>BorderWidth)</strong></dt>
 <dd>
 Specifies the width in pixels of the Image window border. The default is
 2.</dd>
-</dl>
-
-<dl><dd><b>font</b> <b>(</b><i>class</i> <b>Font</b> <b>or</b> <b>FontList)</b>
+<dt><strong>font</strong> <strong>(</strong><em>class</em> <strong>Font</strong> <strong>or</strong> <strong>FontList)</strong></dt>
 <dd>
 Specifies the name of the preferred font to use in normal formatted text.
-The default is 14 point <i>Helvetica</i>.</dd>
-</dl>
-
-<dl><dd><b>foreground</b> <b>(</b><i>class</i> <b>Foreground)</b>
+The default is 14 point <em>Helvetica</em>.</dd>
+<dt><strong>foreground</strong> <strong>(</strong><em>class</em> <strong>Foreground)</strong></dt>
 <dd>
 Specifies the preferred color to use for text within the Image window.
 The default is black.</dd>
-</dl>
-
-<dl><dd><b>geometry</b> <b>(</b><i>class</i> <b>geometry)</b>
+<dt><strong>geometry</strong> <strong>(</strong><em>class</em> <strong>geometry)</strong></dt>
 <dd>
 Specifies the preferred size and position of the image window. It is not
 necessarily obeyed by all window managers.</dd>
-</dl>
-
-<dl><dd><b>iconGeometry</b> <b>(</b><i>class</i> <b>IconGeometry)</b>
+<dt><strong>iconGeometry</strong> <strong>(</strong><em>class</em> <strong>IconGeometry)</strong></dt>
 <dd>
 Specifies the preferred size and position of the application when iconified.
 It is not necessarily obeyed by all window managers.</dd>
-</dl>
-
-<dl><dd><b>iconic</b> <b>(</b><i>class</i> <b>Iconic)</b>
+<dt><strong>iconic</strong> <strong>(</strong><em>class</em> <strong>Iconic)</strong></dt>
 <dd>
 This resource indicates that you would prefer that the application's windows
 initially not be visible as if the windows had be immediately iconified
 by you. Window managers may choose not to honor the application's request.</dd>
-</dl>
-
-<dl><dd><b>matteColor</b> <b>(</b><i>class</i> <b>MatteColor)</b>
+<dt><strong>matteColor</strong> <strong>(</strong><em>class</em> <strong>MatteColor)</strong></dt>
 <dd>
 Specify the color of windows. It is used for the backgrounds of windows,
 menus, and notices. A 3D effect is achieved by using highlight and shadow
 colors derived from this color. Default value: #ddd.</dd>
-</dl>
-
-<dl><dd><b>name</b> <b>(</b><i>class</i> <b>Name)</b>
+<dt><strong>name</strong> <strong>(</strong><em>class</em> <strong>Name)</strong></dt>
 <dd>
 This resource specifies the name under which resources for the application
 should be found. This resource is useful in shell aliases to distinguish
 between invocations of an application, without resorting to creating links
 to alter the executable file name. The default is the application name.</dd>
-</dl>
-
-<dl><dd><b>sharedMemory</b> <b>(</b><i>class</i> <b>SharedMemory)</b>
+<dt><strong>sharedMemory</strong> <strong>(</strong><em>class</em> <strong>SharedMemory)</strong></dt>
 <dd>
 This resource specifies whether animate should attempt use shared memory
 for pixmaps. ImageMagick must be compiled with shared memory support, and
 the display must support the MIT-SHM extension. Otherwise, this resource
 is ignored. The default is True.</dd>
-</dl>
-
-<dl><dd><b>text_font</b> <b>(</b><i>class</i> <b>textFont)</b>
+<dt><strong>text_font</strong> <strong>(</strong><em>class</em> <strong>textFont)</strong></dt>
 <dd>
 Specifies the name of the preferred font to use in fixed (typewriter style)
-formatted text. The default is 14 point <i>Courier</i>.</dd>
-</dl>
-
-<dl><dd><b>title</b> <b>(</b><i>class</i> <b>Title)</b>
+formatted text. The default is 14 point <em>Courier</em>.</dd>
+<dt><strong>title</strong> <strong>(</strong><em>class</em> <strong>Title)</strong></dt>
 <dd>
 This resource specifies the title to be used for the Image window. This
 information is sometimes used by a window manager to provide some sort
 of header identifying the window. The default is the image file name.</dd>
 </dl>
-</dl>
-<i><a href="#top">Back to Contents</a></i>
-<br>&nbsp;
-<br>&nbsp;
-<dl><dd><a NAME="envi"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Environment</font></font></font></b></td>
-</tr>
-</table>
-
-<dl><dd>&nbsp;
-<table BORDER=0 WIDTH="65%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">DISPLAY</font></font></font></b></td>
-</tr>
-</table>
-
+     </td></tr></table>
+&lt;/back&gt;
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="envi">Environment</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<dl>
+<dt>DISPLAY</dt>
 <dd>
 To get the default host, display number, and screen.</dd>
-</dl>
-</dl>
-<i><a href="#top">Back to Contents</a></i>
-<br>&nbsp;
-<br>&nbsp;
-<dl><dd><a NAME="ackn"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Acknowledgements</font></font></font></b></td>
-</tr>
-</table>
-
+     </td></tr></table>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="ackn">Acknowledgements</a>
+     </font></font></font></b></td></tr></table>
+     <table width="94%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<dl>
 <dd>
-The <b>MIT X Consortium</b> for making network transparent graphics a reality.</dd>
-
+The <strong>MIT X Consortium</strong> for making network transparent graphics a
+reality.</dd>
 <dd>
-<i>Michael Halle</i>, <b>Spatial Imaging Group at MIT</b>, for the initial
+<em>Michael Halle</em>, <strong>Spatial Imaging Group at MIT</strong>, for the initial
 implementation of Alan Paeth's image rotation algorithm.</dd>
-
 <dd>
-<i>David Pensak</i>, <b>duPont</b>, for providing a computing
+<em>David Pensak</em>, <strong>duPont</strong>, for providing a computing
 environment that made this program possible.</dd>
-
-<dd><i>Paul Raveling</i>, <b>USC Information Sciences Institute</b>.
+<dd><em>Paul Raveling</em>, <strong>USC Information Sciences Institute</strong>.
 The spatial subdivision color reduction algorithm is based on his Img software.</dl>
-<a href="#top">Back to Contents</a>
-<br>&nbsp;
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
 <br>&nbsp;
 <br>
 <a NAME="auth"></a>
