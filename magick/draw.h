@@ -120,6 +120,7 @@ typedef struct _TypeInfo
     *alias,
     *description,
     *format,
+		*style,
     *weight,
     *glyphs,
     *metrics,
