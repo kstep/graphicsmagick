@@ -1,3 +1,8 @@
+2004-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: The -operator command now supports
+	floating-point and percent of range arguments.
+
 2004-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c: Added support for -operator command with

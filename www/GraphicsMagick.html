@@ -3088,7 +3088,7 @@ See <strong>-fill</strong> for more details.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="details-operator"></a>-operator <i>channel operator rvalue</i>
+    <a name="details-operator"></a>-operator <i>channel operator rvalue[%]</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a mathematical or bitwise operator to an image channel</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -3107,9 +3107,10 @@ Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Divi
 <strong>Multiply</strong>, <strong>Or</strong>, <strong>RShift</strong>, <strong>Subtract</strong>, <strong>Xor</strong>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The range of rvalue is integers from 0 to MaxRGB, where MaxRGB is
-the largest quantum value supported by the GraphicsMagick build (255,
-65535, or 4294967295).
+Rvalue may be any floating point value in the range of 0 to MaxRGB, where
+MaxRGB is the largest quantum value supported by the GraphicsMagick build
+(255, 65535, or 4294967295). If a percent (<strong>%</strong>) symbol is appended
+to the argument, then the argument has a range of 0 to 100 percent.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>

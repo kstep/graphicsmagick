@@ -2863,7 +2863,7 @@ See <s>-fill</s> for more details.
 <!-- ------------ -operator ----------------------------------------- -->
 
 <utils apps=convert,mogrify>
-<dopt>-operator channel operator rvalue</opt>
+<dopt>-operator channel operator rvalue[%]</opt>
 
 <abs>apply a mathematical or bitwise operator to an image channel</abs>
 
@@ -2883,9 +2883,10 @@ Select an operator from <s>Add</s>, <s>And</s>, <s>Divide</s>, <s>LShift</s>,
 <s>Multiply</s>, <s>Or</s>, <s>RShift</s>, <s>Subtract</s>, <s>Xor</s>.
 </pp>
 <pp>
-The range of rvalue is integers from 0 to MaxRGB, where MaxRGB is
-the largest quantum value supported by the GraphicsMagick build (255,
-65535, or 4294967295).
+Rvalue may be any floating point value in the range of 0 to MaxRGB, where
+MaxRGB is the largest quantum value supported by the GraphicsMagick build
+(255, 65535, or 4294967295). If a percent (<s>%</s>) symbol is appended
+to the argument, then the argument has a range of 0 to 100 percent.
 </pp>
 
 </utils>

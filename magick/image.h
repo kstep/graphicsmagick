@@ -1040,12 +1040,12 @@ extern MagickExport unsigned int
 
 extern MagickExport MagickPassFail
   QuantumOperatorImage(Image *image,const ChannelType channel,
-    const QuantumOperator quantum_operator,const Quantum rvalue,
+    const QuantumOperator quantum_operator,const double rvalue,
     ExceptionInfo *exception),
   QuantumOperatorRegionImage(Image *image,const long x,const long y,
     const unsigned long columns,const unsigned long rows,
     const ChannelType channel,const QuantumOperator quantum_operator,
-    const Quantum rvalue,ExceptionInfo *exception);
+    const double rvalue,ExceptionInfo *exception);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *);

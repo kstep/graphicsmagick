@@ -3939,7 +3939,7 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %      MagickPassFail QuantumOperatorImage(Image *image,
 %        ChannelType channel, QuantumOperator operator,
-%        Quantum rvalue)
+%        double rvalue)
 %
 %  A description of each parameter follows:
 %
@@ -3959,7 +3959,7 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 */
 MagickExport MagickPassFail QuantumOperatorImage(Image *image,
   const ChannelType channel,const QuantumOperator quantum_operator,
-  const Quantum rvalue,ExceptionInfo *exception)
+  const double rvalue,ExceptionInfo *exception)
 {
   return QuantumOperatorRegionImage(image,0,0,image->columns,image->rows,
                                     channel,quantum_operator,rvalue,exception);
@@ -3984,7 +3984,7 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 %      MagickPassFail QuantumOperatorRegionImage(Image *image,
 %        long x, long y, unsigned long columns, unsigned long rows,
 %        ChannelType channel, QuantumOperator quantum_operator,
-%        Quantum rvalue)
+%        double rvalue)
 %
 %  A description of each parameter follows:
 %
@@ -4023,7 +4023,8 @@ MagickExport MagickPassFail QuantumOperatorImage(Image *image,
 typedef struct _QuantumContext
 {
   ChannelType channel;
-  Quantum rvalue;
+  Quantum quantum_value;
+  double double_value;
 } QuantumContext;
 
 static MagickPassFail
@@ -4037,28 +4038,28 @@ QuantumAdd(void *user_data,const long x,const long y,
     {
     case RedChannel:
     case CyanChannel:
-      ApplyArithmeticOperator(pixel->red,+,context->rvalue);
+      ApplyArithmeticOperator(pixel->red,+,context->double_value);
       break;
     case GreenChannel:
     case MagentaChannel:
-      ApplyArithmeticOperator(pixel->green,+,context->rvalue);
+      ApplyArithmeticOperator(pixel->green,+,context->double_value);
       break;
     case BlueChannel:
     case YellowChannel:
-      ApplyArithmeticOperator(pixel->blue,+,context->rvalue);
+      ApplyArithmeticOperator(pixel->blue,+,context->double_value);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      ApplyArithmeticOperator(pixel->opacity,+,context->rvalue);
+      ApplyArithmeticOperator(pixel->opacity,+,context->double_value);
       break;
     case UndefinedChannel:
     case AllChannels:
-      ApplyArithmeticOperator(pixel->red,+,context->rvalue);
-      ApplyArithmeticOperator(pixel->green,+,context->rvalue);
-      ApplyArithmeticOperator(pixel->blue,+,context->rvalue);
+      ApplyArithmeticOperator(pixel->red,+,context->double_value);
+      ApplyArithmeticOperator(pixel->green,+,context->double_value);
+      ApplyArithmeticOperator(pixel->blue,+,context->double_value);
       if (const_image->matte)
-        ApplyArithmeticOperator(pixel->opacity,+,context->rvalue);
+        ApplyArithmeticOperator(pixel->opacity,+,context->double_value);
       break;
     }
 
@@ -4075,28 +4076,28 @@ QuantumAnd(void *user_data,const long x,const long y,
     {
     case RedChannel:
     case CyanChannel:
-      pixel->red &= context->rvalue;
+      pixel->red &= context->quantum_value;
       break;
     case GreenChannel:
     case MagentaChannel:
-      pixel->green &= context->rvalue;
+      pixel->green &= context->quantum_value;
       break;
     case BlueChannel:
     case YellowChannel:
-      pixel->blue &= context->rvalue;
+      pixel->blue &= context->quantum_value;
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      pixel->opacity &= context->rvalue;
+      pixel->opacity &= context->quantum_value;
       break;
     case UndefinedChannel:
     case AllChannels:
-      pixel->red &= context->rvalue;
-      pixel->green &= context->rvalue;
-      pixel->blue &= context->rvalue;
+      pixel->red &= context->quantum_value;
+      pixel->green &= context->quantum_value;
+      pixel->blue &= context->quantum_value;
       if (const_image->matte)
-        pixel->opacity &= context->rvalue;
+        pixel->opacity &= context->quantum_value;
       break;
     }
 
@@ -4113,28 +4114,28 @@ QuantumDivide(void *user_data,const long x,const long y,
     {
     case RedChannel:
     case CyanChannel:
-      ApplyArithmeticOperator(pixel->red,/,context->rvalue);
+      ApplyArithmeticOperator(pixel->red,/,context->double_value);
       break;
     case GreenChannel:
     case MagentaChannel:
-      ApplyArithmeticOperator(pixel->green,/,context->rvalue);
+      ApplyArithmeticOperator(pixel->green,/,context->double_value);
       break;
     case BlueChannel:
     case YellowChannel:
-      ApplyArithmeticOperator(pixel->blue,/,context->rvalue);
+      ApplyArithmeticOperator(pixel->blue,/,context->double_value);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      ApplyArithmeticOperator(pixel->opacity,/,context->rvalue);
+      ApplyArithmeticOperator(pixel->opacity,/,context->double_value);
       break;
     case UndefinedChannel:
     case AllChannels:
-      ApplyArithmeticOperator(pixel->red,/,context->rvalue);
-      ApplyArithmeticOperator(pixel->green,/,context->rvalue);
-      ApplyArithmeticOperator(pixel->blue,/,context->rvalue);
+      ApplyArithmeticOperator(pixel->red,/,context->double_value);
+      ApplyArithmeticOperator(pixel->green,/,context->double_value);
+      ApplyArithmeticOperator(pixel->blue,/,context->double_value);
       if (const_image->matte)
-        ApplyArithmeticOperator(pixel->opacity,/,context->rvalue);
+        ApplyArithmeticOperator(pixel->opacity,/,context->double_value);
       break;
     }
 
@@ -4151,28 +4152,28 @@ QuantumLShift(void *user_data,const long x,const long y,
     {
     case RedChannel:
     case CyanChannel:
-      pixel->red <<= context->rvalue;
+      pixel->red <<= context->quantum_value;
       break;
     case GreenChannel:
     case MagentaChannel:
-      pixel->green <<= context->rvalue;
+      pixel->green <<= context->quantum_value;
       break;
     case BlueChannel:
     case YellowChannel:
-      pixel->blue <<= context->rvalue;
+      pixel->blue <<= context->quantum_value;
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      pixel->opacity <<= context->rvalue;
+      pixel->opacity <<= context->quantum_value;
       break;
     case UndefinedChannel:
     case AllChannels:
-      pixel->red <<= context->rvalue;
-      pixel->green <<= context->rvalue;
-      pixel->blue <<= context->rvalue;
+      pixel->red <<= context->quantum_value;
+      pixel->green <<= context->quantum_value;
+      pixel->blue <<= context->quantum_value;
       if (const_image->matte)
-        pixel->opacity <<= context->rvalue;
+        pixel->opacity <<= context->quantum_value;
       break;
     }
 
@@ -4189,28 +4190,28 @@ QuantumMultiply(void *user_data,const long x,const long y,
     {
     case RedChannel:
     case CyanChannel:
-      ApplyArithmeticOperator(pixel->red,*,context->rvalue);
+      ApplyArithmeticOperator(pixel->red,*,context->double_value);
       break;
     case GreenChannel:
     case MagentaChannel:
-      ApplyArithmeticOperator(pixel->green,*,context->rvalue);
+      ApplyArithmeticOperator(pixel->green,*,context->double_value);
       break;
     case BlueChannel:
     case YellowChannel:
-      ApplyArithmeticOperator(pixel->blue,*,context->rvalue);
+      ApplyArithmeticOperator(pixel->blue,*,context->double_value);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      ApplyArithmeticOperator(pixel->opacity,*,context->rvalue);
+      ApplyArithmeticOperator(pixel->opacity,*,context->double_value);
       break;
     case UndefinedChannel:
     case AllChannels:
-      ApplyArithmeticOperator(pixel->red,*,context->rvalue);
-      ApplyArithmeticOperator(pixel->green,*,context->rvalue);
-      ApplyArithmeticOperator(pixel->blue,*,context->rvalue);
+      ApplyArithmeticOperator(pixel->red,*,context->double_value);
+      ApplyArithmeticOperator(pixel->green,*,context->double_value);
+      ApplyArithmeticOperator(pixel->blue,*,context->double_value);
       if (const_image->matte)
-        ApplyArithmeticOperator(pixel->opacity,*,context->rvalue);
+        ApplyArithmeticOperator(pixel->opacity,*,context->double_value);
       break;
     }
 
@@ -4227,28 +4228,28 @@ QuantumOr(void *user_data,const long x,const long y,
     {
     case RedChannel:
     case CyanChannel:
-      pixel->red |= context->rvalue;
+      pixel->red |= context->quantum_value;
       break;
     case GreenChannel:
     case MagentaChannel:
-      pixel->green |= context->rvalue;
+      pixel->green |= context->quantum_value;
       break;
     case BlueChannel:
     case YellowChannel:
-      pixel->blue |= context->rvalue;
+      pixel->blue |= context->quantum_value;
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      pixel->opacity |= context->rvalue;
+      pixel->opacity |= context->quantum_value;
       break;
     case UndefinedChannel:
     case AllChannels:
-      pixel->red |= context->rvalue;
-      pixel->green |= context->rvalue;
-      pixel->blue |= context->rvalue;
+      pixel->red |= context->quantum_value;
+      pixel->green |= context->quantum_value;
+      pixel->blue |= context->quantum_value;
       if (const_image->matte)
-        pixel->opacity |= context->rvalue;
+        pixel->opacity |= context->quantum_value;
       break;
     }
 
@@ -4265,28 +4266,28 @@ QuantumRShift(void *user_data,const long x,const long y,
     {
     case RedChannel:
     case CyanChannel:
-      pixel->red >>= context->rvalue;
+      pixel->red >>= context->quantum_value;
       break;
     case GreenChannel:
     case MagentaChannel:
-      pixel->green >>= context->rvalue;
+      pixel->green >>= context->quantum_value;
       break;
     case BlueChannel:
     case YellowChannel:
-      pixel->blue >>= context->rvalue;
+      pixel->blue >>= context->quantum_value;
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      pixel->opacity >>= context->rvalue;
+      pixel->opacity >>= context->quantum_value;
       break;
     case UndefinedChannel:
     case AllChannels:
-      pixel->red >>= context->rvalue;
-      pixel->green >>= context->rvalue;
-      pixel->blue >>= context->rvalue;
+      pixel->red >>= context->quantum_value;
+      pixel->green >>= context->quantum_value;
+      pixel->blue >>= context->quantum_value;
       if (const_image->matte)
-        pixel->opacity >>= context->rvalue;
+        pixel->opacity >>= context->quantum_value;
       break;
     }
 
@@ -4303,28 +4304,28 @@ QuantumSubtract(void *user_data,const long x,const long y,
     {
     case RedChannel:
     case CyanChannel:
-      ApplyArithmeticOperator(pixel->red,-,context->rvalue);
+      ApplyArithmeticOperator(pixel->red,-,context->double_value);
       break;
     case GreenChannel:
     case MagentaChannel:
-      ApplyArithmeticOperator(pixel->green,-,context->rvalue);
+      ApplyArithmeticOperator(pixel->green,-,context->double_value);
       break;
     case BlueChannel:
     case YellowChannel:
-      ApplyArithmeticOperator(pixel->blue,-,context->rvalue);
+      ApplyArithmeticOperator(pixel->blue,-,context->double_value);
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      ApplyArithmeticOperator(pixel->opacity,-,context->rvalue);
+      ApplyArithmeticOperator(pixel->opacity,-,context->double_value);
       break;
     case UndefinedChannel:
     case AllChannels:
-      ApplyArithmeticOperator(pixel->red,-,context->rvalue);
-      ApplyArithmeticOperator(pixel->green,-,context->rvalue);
-      ApplyArithmeticOperator(pixel->blue,-,context->rvalue);
+      ApplyArithmeticOperator(pixel->red,-,context->double_value);
+      ApplyArithmeticOperator(pixel->green,-,context->double_value);
+      ApplyArithmeticOperator(pixel->blue,-,context->double_value);
       if (const_image->matte)
-        ApplyArithmeticOperator(pixel->opacity,-,context->rvalue);
+        ApplyArithmeticOperator(pixel->opacity,-,context->double_value);
       break;
     }
 
@@ -4341,28 +4342,28 @@ QuantumXor(void *user_data,const long x,const long y,
     {
     case RedChannel:
     case CyanChannel:
-      pixel->red ^= context->rvalue;
+      pixel->red ^= context->quantum_value;
       break;
     case GreenChannel:
     case MagentaChannel:
-      pixel->green ^= context->rvalue;
+      pixel->green ^= context->quantum_value;
       break;
     case BlueChannel:
     case YellowChannel:
-      pixel->blue ^= context->rvalue;
+      pixel->blue ^= context->quantum_value;
       break;
     case BlackChannel:
     case MatteChannel:
     case OpacityChannel:
-      pixel->opacity ^= context->rvalue;
+      pixel->opacity ^= context->quantum_value;
       break;
     case UndefinedChannel:
     case AllChannels:
-      pixel->red ^= context->rvalue;
-      pixel->green ^= context->rvalue;
-      pixel->blue ^= context->rvalue;
+      pixel->red ^= context->quantum_value;
+      pixel->green ^= context->quantum_value;
+      pixel->blue ^= context->quantum_value;
       if (const_image->matte)
-        pixel->opacity ^= context->rvalue;
+        pixel->opacity ^= context->quantum_value;
       break;
     }
   return (MagickPass);
@@ -4374,7 +4375,7 @@ QuantumOperatorRegionImage(Image *image,
                            const unsigned long rows,
                            const ChannelType channel,
                            const QuantumOperator quantum_operator,
-                           const Quantum rvalue,
+                           const double rvalue,
                            ExceptionInfo *exception)
 {
   QuantumContext
@@ -4389,7 +4390,8 @@ QuantumOperatorRegionImage(Image *image,
   image->storage_class=DirectClass;
 
   context.channel=channel;
-  context.rvalue=rvalue;
+  context.double_value=rvalue;
+  context.quantum_value=RoundSignedToQuantum(rvalue);
 
   switch (quantum_operator)
     {

@@ -2181,7 +2181,7 @@ option.
 See \fB-fill\fP for more details.
 
 .TP
-.B "-operator \fIchannel operator rvalue"\fP
+.B "-operator \fIchannel operator rvalue[%]"\fP
 \fRapply a mathematical or bitwise operator to an image channel
 
 Apply a low-level mathematical or bitwise operator to a selected image
@@ -2199,9 +2199,10 @@ Select an operator from \fBAdd\fP, \fBAnd\fP, \fBDivide\fP, \fBLShift\fP,
 \fBMultiply\fP, \fBOr\fP, \fBRShift\fP, \fBSubtract\fP, \fBXor\fP.
 
 
-The range of rvalue is integers from 0 to MaxRGB, where MaxRGB is
-the largest quantum value supported by the GraphicsMagick build (255,
-65535, or 4294967295).
+Rvalue may be any floating point value in the range of 0 to MaxRGB, where
+MaxRGB is the largest quantum value supported by the GraphicsMagick build
+(255, 65535, or 4294967295). If a percent (\fB%\fP) symbol is appended
+to the argument, then the argument has a range of 0 to 100 percent.
 
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>
@@ -4634,7 +4635,7 @@ Options, above.
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
 .TP
-.B "-operator \fIchannel operator rvalue"\fP
+.B "-operator \fIchannel operator rvalue[%]"\fP
 \fRapply a mathematical or bitwise operator to an image channel
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>
@@ -7507,7 +7508,7 @@ Options, above.
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
 .TP
-.B "-operator \fIchannel operator rvalue"\fP
+.B "-operator \fIchannel operator rvalue[%]"\fP
 \fRapply a mathematical or bitwise operator to an image channel
 .TP
 .B "-ordered-dither \fI<channeltype> <NxN>

@@ -3913,7 +3913,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 QuantumOperator
                   quantum_operator;
 
-                unsigned int
+                double
                   rvalue;
                   
                 /* channel */
@@ -3978,7 +3978,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 
                 /* rvalue */
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%u",&rvalue))
+                if ((i == argc) || !sscanf(argv[i],"%lf",&rvalue))
                   ThrowConvertException(OptionError,MissingArgument,
                     option);
               }
@@ -8471,7 +8471,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             QuantumOperator
               quantum_operator;
 
-            unsigned int
+            double
               rvalue;
 
             /* channel */
@@ -8522,7 +8522,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             /* rvalue */
             option=argv[++i];
-            sscanf(option,"%u",&rvalue);
+            rvalue=StringToDouble(option,MaxRGB);
             (void) QuantumOperatorImage(*image,channel,quantum_operator,
                rvalue,&(*image)->exception);
 
@@ -10895,7 +10895,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 QuantumOperator
                   quantum_operator;
 
-                unsigned int
+                double
                   rvalue;
 
                 /* channel */
@@ -10960,7 +10960,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 
                 /* rvalue */
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%u",&rvalue))
+                if ((i == argc) || !sscanf(argv[i],"%lf",&rvalue))
                   ThrowMogrifyException(OptionError,MissingArgument,
                     option);
               }
