@@ -973,24 +973,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        double
-          quantum_scale;
-        
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Using DirectClassScanLine read method with %u bits per sample",
                bits_per_sample);
-
-        /*
-          Compute factor to use to scale TIFF sample to Quantum.
-        */
-        if (QuantumDepth > bits_per_sample)
-          quantum_scale=(double) (MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample)));
-        else if (bits_per_sample > QuantumDepth)
-          quantum_scale=(double) MaxRGB / ((0x01U << (bits_per_sample-1)) +
-                                           ((0x01U << (bits_per_sample-1))-1));
-        else
-          quantum_scale=1.0;
 
         /*
           Allocate memory for one 16-bit CMYK scanline (largest size).
@@ -1009,9 +995,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         {
           register IndexPacket
             *indexes;
-
-          BitStreamReadHandle
-            stream;
 
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -1035,43 +1018,82 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
 
           width=TIFFScanlineSize(tiff);
-          BitStreamInitializeRead(&stream,scanline);
-          
-#define GET_QUANTUM(stream,bits_per_sample,quantum_scale) \
-  ((Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale))
-          
-          for (x = (long) width; x > 0; --x)
+
+          if ((bits_per_sample == 8) || (bits_per_sample == 16))
             {
-              /* red or cyan */
-              q->red=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
-              /* green or magenta */
-              q->green=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
-              /* blue or yellow */
-              q->blue=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
-              
+              /*
+                Special treatment of common depths for better performance.
+              */
               if (image->colorspace == CMYKColorspace)
                 {
-                  /* black */
-                  q->opacity=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
-                  /* cmyk opacity */
-                  if (image->matte)
-                    {
-                      register unsigned int
-                        quantum;
-                      
-                      quantum=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
-                      *indexes=(IndexPacket) (MaxRGB-quantum);
-                    }
+                  if (!image->matte)
+                    (void) PushImagePixels(image,CMYKQuantum,scanline);
+                  else
+                    (void) PushImagePixels(image,CMYKAQuantum,scanline);
                 }
               else
-                {
-                  /* rgb opacity */
-                  if (image->matte)
-                    q->opacity=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
-                }
+                if (!image->matte)
+                  (void) PushImagePixels(image,RGBQuantum,scanline);
+                else
+                  (void) PushImagePixels(image,RGBAQuantum,scanline);
+            }
+          else
+            {
+#define GET_QUANTUM(stream,bits_per_sample,quantum_scale) \
+  ((Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale))
+
+              BitStreamReadHandle
+                stream;
+
+              double
+                quantum_scale;
+
+              /*
+                Compute factor to use to scale TIFF sample to Quantum.
+              */
+              if (QuantumDepth > bits_per_sample)
+                quantum_scale=(double) (MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample)));
+              else if (bits_per_sample > QuantumDepth)
+                quantum_scale=(double) MaxRGB / ((0x01U << (bits_per_sample-1)) +
+                                                 ((0x01U << (bits_per_sample-1))-1));
+              else
+                quantum_scale=1.0;
+
+              BitStreamInitializeRead(&stream,scanline);
               
-              indexes++;
-              q++;
+              for (x = (long) width; x > 0; --x)
+                {
+                  /* red or cyan */
+                  q->red=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                  /* green or magenta */
+                  q->green=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                  /* blue or yellow */
+                  q->blue=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                  
+                  if (image->colorspace == CMYKColorspace)
+                    {
+                      /* black */
+                      q->opacity=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                      /* cmyk opacity */
+                      if (image->matte)
+                        {
+                          register unsigned int
+                            quantum;
+                          
+                          quantum=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                          *indexes=(IndexPacket) (MaxRGB-quantum);
+                        }
+                    }
+                  else
+                    {
+                      /* rgb opacity */
+                      if (image->matte)
+                        q->opacity=GET_QUANTUM(stream,bits_per_sample,quantum_scale);
+                    }
+                  
+                  indexes++;
+                  q++;
+                }
             }
           
           if (!SyncImagePixels(image))
