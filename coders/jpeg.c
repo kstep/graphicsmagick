@@ -1109,7 +1109,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.image_width=image->columns;
   jpeg_info.image_height=image->rows;
   jpeg_info.input_components=3;
-  jpeg_info.data_precision=Max(image->depth,BITS_IN_JSAMPLE);
+  jpeg_info.data_precision=Min(image->depth,BITS_IN_JSAMPLE);
   jpeg_info.in_color_space=JCS_RGB;
   switch (image_info->colorspace)
   {

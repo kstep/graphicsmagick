@@ -793,7 +793,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
-    if (image->storage_class == DirectClass)
+    if ((image->storage_class == DirectClass) ||
+        (compression == JPEGCompression))
       (void) strcpy(buffer,"[ /PDF /Text /ImageC");
     else
       if (IsFaxImage(image))
@@ -869,7 +870,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
     length=TellBlob(image);
-    if (image->storage_class == DirectClass)
+    if ((image->storage_class == DirectClass) ||
+        (compression == JPEGCompression))
       switch (compression)
       {
         case JPEGCompression:
@@ -1165,7 +1167,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image->colorspace == CMYKColorspace)
       (void) strcpy(buffer,"/DeviceCMYK\n");
     else
-      if (image->storage_class == DirectClass)
+      if ((image->storage_class == DirectClass) ||
+          (compression == JPEGCompression))
         (void) strcpy(buffer,"/DeviceRGB\n");
       else
         if (IsFaxImage(image))
@@ -1229,7 +1232,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"stream\n");
     length=TellBlob(image);
-    if (image->storage_class == DirectClass)
+    if ((image->storage_class == DirectClass) ||
+        (compression == JPEGCompression))
       switch (compression)
       {
         case RunlengthEncodedCompression:
@@ -1524,7 +1528,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"%lu\n",length);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
-    if ((image->storage_class == DirectClass) || IsFaxImage(image))
+    if ((image->storage_class == DirectClass) ||
+        (compression == JPEGCompression) || IsFaxImage(image))
       {
         xref[object++]=0;
         xref[object++]=0;
