@@ -1085,146 +1085,148 @@ MagickExport struct dirent *readdir(DIR *entry)
 %
 %
 */
-// Aldus Placeable Header
+
+/*
+  Aldus Placeable Header.
+*/
 #pragma pack( push )
 #pragma pack( 2 )
 typedef struct
 {
-	DWORD		dwKey;
-	WORD		hmf;
-	SMALL_RECT	bbox;
-	WORD		wInch;
-	DWORD		dwReserved;
-	WORD		wCheckSum;
+  DWORD dwKey;
+  WORD hmf;
+  SMALL_RECT bbox;
+  WORD wInch;
+  DWORD dwReserved;
+  WORD wCheckSum;
 } APMHEADER, *PAPMHEADER;
 #pragma pack( pop )
+
 /*
-  This function will read either an enhanced metafile, or a
-  regular 16bit windows metafile, or an Aldus Placeable metafile
-  and convert it into an enhanced metafile. This function first
-  tries to load the metafile as an enhanced metafile. If that
-  fails, it tries to load it as a 16bit windows metafile. If that
-  fails, it tries to load it as a 16bit Aldus Placeable metafile.
-  If all fail, NULL is returned.
+  This method reads either an enhanced metafile, or a regular 16bit
+  windows metafile, or an Aldus Placeable metafile and converts it into
+  an enhanced metafile.
 */
-static HENHMETAFILE ReadEnhMetaFile( const char *szFileName,
-  int *width, int *height )
+static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,int *width,
+  int *height)
 {
-	HENHMETAFILE hTemp;
-	HMETAFILE hOld;
-	DWORD dwSize;
-	LPBYTE pBits;
-	METAFILEPICT mp;
-	HDC hDC;
-	HANDLE hFile;
+  DWORD
+    dwSize;
 
-	// First try to read it as an enhanced metafile
-	// If it works, simply return the handle
-	if( (hTemp = GetEnhMetaFile( szFileName )) != NULL )
+  ENHMETAHEADER
+    emfh;
+
+  HANDLE
+    hFile;
+
+  HDC
+    hDC;
+
+  HENHMETAFILE
+    hTemp;
+
+  LPBYTE
+    pBits;
+
+  METAFILEPICT
+    mp;
+
+  HMETAFILE
+    hOld;
+
+  width=512;
+  height=512;
+  hTemp=GetEnhMetaFile(szFileName);
+  if (hTemp != NULL)
     {
-      ENHMETAHEADER emfh;
-
-      GetEnhMetaFileHeader(hTemp, sizeof(ENHMETAHEADER), &emfh);
-      // picture size in 0.01 mm
-      *width  = emfh.rclFrame.right  - emfh.rclFrame.left;
-      *height = emfh.rclFrame.bottom - emfh.rclFrame.top;
-		  return hTemp;
+      /*
+        Enhanced metafile.
+      */
+      GetEnhMetaFileHeader(hTemp,sizeof(ENHMETAHEADER),&emfh);
+      *width=emfh.rclFrame.right-emfh.rclFrame.left;
+      *height=emfh.rclFrame.bottom-emfh.rclFrame.top;
+      return(hTemp);
     }
-	// It was apparently not an enhanced metafile, so try 16bit windows metafile
-	if( (hOld = GetMetaFile( szFileName )) != NULL )
-	  {
-		  // Ok, it is a 16bit windows metafile
-		  // How big are the bits?
-		  if( (dwSize = GetMetaFileBitsEx( hOld, 0, NULL )) == 0 )
-		    {
-			    DeleteMetaFile( hOld );
-			    return NULL;
-		    }
-		  // Allocate that much memory
-		  if( (pBits = malloc( dwSize )) == NULL )
-		    {
-			    DeleteMetaFile( hOld );
-			    return NULL;
-		    }
-		  // Get the metafile bits
-		  if( GetMetaFileBitsEx( hOld, dwSize, pBits ) == 0 )
-		    {
-			    free( pBits );
-			    DeleteMetaFile( hOld );
-			    return NULL;
-		    }
-		  // Fill out a METAFILEPICT structure
-		  mp.mm = MM_ANISOTROPIC;
-		  mp.xExt = 1000;
-		  mp.yExt = 1000;
-		  mp.hMF = NULL;
-		  // Get a reference DC
-		  hDC = GetDC( NULL );
-		  // Make an enhanced metafile from the windows metafile
-		  hTemp = SetWinMetaFileBits( dwSize, pBits, hDC, &mp );
-		  // Clean up
-		  ReleaseDC( NULL, hDC );
-		  DeleteMetaFile( hOld );
-		  free( pBits );
-      {
-        ENHMETAHEADER emfh;
-
-        GetEnhMetaFileHeader(hTemp, sizeof(ENHMETAHEADER), &emfh);
-        // picture size in 0.01 mm
-        *width  = emfh.rclFrame.right  - emfh.rclFrame.left;
-        *height = emfh.rclFrame.bottom - emfh.rclFrame.top;
-      }
-		  return hTemp;
-	  }
-	// If we got here, the file of interest is neither an enhanced metafile nor a
-	// 16bit windows metafile. Let's assume it's a placeable metafile and move on.
-	// First, open the file for reading
-	hFile = CreateFile( szFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
-	if( hFile == INVALID_HANDLE_VALUE )
-		return NULL;
-	// How big is the file?
-	dwSize = GetFileSize( hFile, NULL );
-	// Allocate enough memory to hold it
-	pBits = malloc( dwSize );
-	// Read it in
-	ReadFile( hFile, pBits, dwSize, &dwSize, NULL );
-	// Close the file
-	CloseHandle( hFile );
-	// Is it a placeable metafile? (check the key)
-	if( ((PAPMHEADER)pBits)->dwKey != 0x9ac6cdd7l )
-	  {
-		  // Not a metafile that we know how to recognise - bail out
-		  free( pBits );
-		  return NULL;
-	  }
-	// Ok, its a placeable metafile
-	// Fill out a METAFILEPICT structure
-	mp.mm = MM_ANISOTROPIC;
-	mp.xExt = ((PAPMHEADER)pBits)->bbox.Right - ((PAPMHEADER)pBits)->bbox.Left;
-  *width = mp.xExt;
-	mp.xExt = ( mp.xExt * 2540l ) / (DWORD)(((PAPMHEADER)pBits)->wInch);
-	mp.yExt = ((PAPMHEADER)pBits)->bbox.Bottom - ((PAPMHEADER)pBits)->bbox.Top;
-  *height = mp.yExt;
-	mp.yExt = ( mp.yExt * 2540l ) / (DWORD)(((PAPMHEADER)pBits)->wInch);
-	mp.hMF = NULL;
-	// Get a reference DC
-	hDC = GetDC( NULL );
-	// Create an enhanced metafile from the bits
-	hTemp = SetWinMetaFileBits( dwSize, &(pBits[sizeof(APMHEADER)]), hDC, &mp );
-	// Clean up
-	ReleaseDC( NULL, hDC );
-	free( pBits );
-	return hTemp;
+  hOld=GetMetaFile(szFileName);
+  if (hOld != NULL)
+    {
+      /*
+        16bit windows metafile.
+      */
+      dwSize=GetMetaFileBitsEx(hOld,0,NULL);
+      if(dwSize == 0)
+        {
+          DeleteMetaFile(hOld);
+          return(NULL);
+        }
+      pBits=(LPBYTE) AcquireMemory(dwSize);
+      if(pBits == (LPBYTE) NULL)
+        {
+          DeleteMetaFile(hOld);
+          return(NULL);
+        }
+      if(GetMetaFileBitsEx(hOld,dwSize,pBits) == 0)
+        {
+          LiberateMemory((void **) &pBits);
+          DeleteMetaFile(hOld);
+          return(NULL);
+        }
+      /*
+        Make an enhanced metafile from the windows metafile.
+      */
+      mp.mm=MM_ANISOTROPIC;
+      mp.xExt=1000;
+      mp.yExt=1000;
+      mp.hMF=NULL;
+      hDC=GetDC(NULL);
+      hTemp=SetWinMetaFileBits(dwSize,pBits,hDC,&mp);
+      ReleaseDC(NULL,hDC);
+      DeleteMetaFile(hOld);
+      LiberateMemory((void **) &pBits);
+      GetEnhMetaFileHeader(hTemp,sizeof(ENHMETAHEADER),&emfh);
+      *width=emfh.rclFrame.right-emfh.rclFrame.left;
+      *height=emfh.rclFrame.bottom-emfh.rclFrame.top;
+      return(hTemp);
+    }
+  /*
+    Aldus Placeable metafile.
+  */
+  hFile=CreateFile(szFileName,GENERIC_READ,0,NULL,OPEN_EXISTING,
+    FILE_ATTRIBUTE_NORMAL,NULL);
+  if (hFile == INVALID_HANDLE_VALUE)
+    return(NULL);
+  dwSize=GetFileSize(hFile,NULL);
+  pBits=(LPBYTE) AcquireMemory(dwSize);
+  ReadFile(hFile,pBits,dwSize,&dwSize,NULL);
+  CloseHandle(hFile);
+  if (((PAPMHEADER)pBits)->dwKey != 0x9ac6cdd7l)
+    {
+      LiberateMemory((void **) *pBits);
+      return(NULL);
+    }
+  /*
+    Make an enhanced metafile from the placable metafile.
+  */
+  mp.mm=MM_ANISOTROPIC;
+  mp.xExt=((PAPMHEADER) pBits)->bbox.Right-((PAPMHEADER) pBits)->bbox.Left;
+  *width=mp.xExt;
+  mp.xExt=(mp.xExt*2540l)/(DWORD) (((PAPMHEADER) pBits)->wInch);
+  mp.yExt=((PAPMHEADER)pBits)->bbox.Bottom-((PAPMHEADER) pBits)->bbox.Top;
+  *height=mp.yExt;
+  mp.yExt=(mp.yExt*2540l)/(DWORD) (((PAPMHEADER) pBits)->wInch);
+  mp.hMF=NULL;
+  hDC=GetDC(NULL);
+  hTemp=SetWinMetaFileBits(dwSize,&(pBits[sizeof(APMHEADER)]),hDC,&mp);
+  ReleaseDC(NULL,hDC);
+  LiberateMemory((void **) &pBits);
+  return(hTemp);
 }
 
 MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  Image
-    *image;
-
-  PixelPacket
-    *q;
+  BITMAPINFO
+    DIBinfo;
 
   HDC
     hDC;
@@ -1236,8 +1238,8 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
   HENHMETAFILE
     hemf;
 
-  BITMAPINFO
-    DIBinfo;
+  Image
+    *image;
 
   RGBQUAD
     *ppBits;
@@ -1246,52 +1248,50 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
     height,
     width;
 
+  long
+    y;
+
   RECT
     rect;
 
-  image=AllocateImage(image_info);
+  register long
+    x;
 
-  width=height=512;
-  hemf = ReadEnhMetaFile(image_info->filename, &width, &height);
+  register PixelPacket
+    *q;
+
+  RGBQUAD
+    *pBits;
+
+  hemf=ReadEnhMetaFile(image_info->filename,&width,&height);
   if (!hemf)
-  {
     ThrowReaderException(FatalException,"file is not a metafile",image);
-  }
-  image->rows=height;
-  image->columns=width;
-  if (image_info->size != (char *) NULL)
+  image=AllocateImage(image_info);
+  if ((image->columns == 0) || (image->rows == 0))
     {
-      int
-        x,
-        y;
-
-      unsigned int
-        flags;
-
-      x=y=0;
-      flags=ParseImageGeometry(image_info->size,&x,&y,
-        &image->columns,&image->rows);
+      image->rows=height;
+      image->columns=width;
     }
   if (image_info->page != (char *) NULL)
     {
       char
-        *geometry,
-        *p;
+        *geometry;
 
-      int
-        x,
-        y;
+      long
+        sans;
+
+      register char
+        *p;
 
       unsigned int
         flags;
 
-      x=y=0;
       geometry=PostscriptGeometry(image_info->page);
       p=strchr(geometry,'>');
       if (!p)
         {
-          flags=ParseImageGeometry(geometry,&x,&y,
-            &image->columns,&image->rows);
+          flags=ParseImageGeometry(geometry,&sans,&sans,&image->columns,
+            &image->rows);
           if (image->x_resolution != 0.0)
             image->columns=(unsigned int)
               ((image->columns*image->x_resolution)+0.5);
@@ -1301,9 +1301,9 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
         }
       else
         {
-          *p='\0'; /* must zap the format control */
-          flags=ParseImageGeometry(geometry,&x,&y,
-            &image->columns,&image->rows);
+          *p='\0';
+          flags=ParseImageGeometry(geometry,&sans,&sans,&image->columns,
+            &image->rows);
           if (image->x_resolution != 0.0)
             image->columns=(unsigned int)
               (((image->columns*image->x_resolution)/72.0)+0.5);
@@ -1313,110 +1313,67 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
         }
       LiberateMemory((void **) &geometry);
     }
-  // Create a DC which will be used to get DIB
-  hDC = GetDC(NULL);
+  hDC=GetDC(NULL);
   if (!hDC) 
-  {
     ThrowReaderException(FatalException,"failed to create a DC",image);
-  }
-	// Initialize the bitmap header info.
-	memset(&DIBinfo, 0, sizeof(BITMAPINFO));
-	DIBinfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	DIBinfo.bmiHeader.biWidth = image->columns;
-	DIBinfo.bmiHeader.biHeight = (-1)*(image->rows);
-	DIBinfo.bmiHeader.biPlanes = 1;
-	DIBinfo.bmiHeader.biBitCount = 32;
-	DIBinfo.bmiHeader.biCompression	= BI_RGB;
-	//DIBinfo.bmiHeader.biSizeImage = image->columns * image->rows * 3;
-  hBitmap = CreateDIBSection(hDC, &DIBinfo, DIB_RGB_COLORS, (void**)&ppBits, NULL, 0);
-  ReleaseDC(NULL, hDC);
+  /*
+    Initialize the bitmap header info.
+  */
+  memset(&DIBinfo,0,sizeof(BITMAPINFO));
+  DIBinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
+  DIBinfo.bmiHeader.biWidth=image->columns;
+  DIBinfo.bmiHeader.biHeight=(-1)*image->rows;
+  DIBinfo.bmiHeader.biPlanes=1;
+  DIBinfo.bmiHeader.biBitCount=32;
+  DIBinfo.bmiHeader.biCompression=BI_RGB;
+  hBitmap=
+    CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,NULL,0);
+  ReleaseDC(NULL,hDC);
   if (!hBitmap)
-  {
     ThrowReaderException(FatalException,"failed to create bitmap",image);
-  }
-  // Create a DC which will be used to get DIB, then create DIBsection
-  hDC = CreateCompatibleDC(NULL);
+  hDC=CreateCompatibleDC(NULL);
   if (!hDC) 
-  {
-    DeleteObject(hBitmap);
-    ThrowReaderException(FatalException,"failed to create a memory DC",image);
-  }
-  hOldBitmap = (HBITMAP)SelectObject(hDC, hBitmap);
-  if (!hOldBitmap)
-  {
-		DeleteDC(hDC);
-    DeleteObject(hBitmap);
-    ThrowReaderException(FatalException,"failed to create bitmap",image);
-  }
-  (void) QueryColorDatabase((char *) "white",&image->background_color);
-  SetImage(image,OpaqueOpacity);
-  q = GetImagePixels(image,0,0,image->columns,image->rows);
-  if (q != (PixelPacket *) NULL)
     {
-      RGBQUAD
-        *pBits;
-
-      unsigned long
-        nPixels;
-
-      nPixels = image->columns * image->rows;
-      pBits = ppBits;
-#if QuantumDepth == 8
-      // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
-      memcpy((void *)pBits,(const void *)q,sizeof(PixelPacket)*nPixels);
-#elif QuantumDepth == 16
-      // Transfer pixels, scaling to Quantum
-      for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
-        {
-          pBits->rgbRed = DownScale(q->red);
-          pBits->rgbGreen = DownScale(q->green);
-          pBits->rgbBlue = DownScale(q->blue);
-          pBits->rgbReserved = DownScale(q->opacity);
-          ++pBits;
-          ++q;
-        }
-#endif
+      DeleteObject(hBitmap);
+      ThrowReaderException(FatalException,"failed to create a memory DC",image);
     }
+  hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
+  if (!hOldBitmap)
+    {
+      DeleteDC(hDC);
+      DeleteObject(hBitmap);
+      ThrowReaderException(FatalException,"failed to create bitmap",image);
+    }
+  memset(ppBits,0xFF,image->columns*image->rows*sizeof(RGBQUAD));
   rect.top=0;
   rect.left=0;
   rect.right=image->columns;
   rect.bottom=image->rows;
-  PlayEnhMetaFile(hDC, hemf, &rect);
-  if (q != (PixelPacket *) NULL)
+  PlayEnhMetaFile(hDC,hemf,&rect);
+  pBits=ppBits;
+  for (y=0; y < (long) image->rows; y++)
+  {
+    q=SetImagePixels(image,0,y,image->columns,1,exception);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) image->columns; x++)
     {
-      RGBQUAD
-        *pBits;
-
-      unsigned long
-        nPixels;
-
-      nPixels = image->columns * image->rows;
-      pBits = ppBits;
-#if QuantumDepth == 8
-      // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
-      memcpy((void *)q,(const void *)pBits,sizeof(PixelPacket)*nPixels);
-#elif QuantumDepth == 16
-      // Transfer pixels, scaling to Quantum
-      for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
-        {
-          UpScale(q->red) = pBits->rgbRed;
-          UpScale(q->green) = pBits->rgbGreen;
-          UpScale(q->blue)= pBits->rgbBlue;
-          q->opacity = 0;
-          ++pBits;
-          ++q;
-        }
-#endif
+      q->red=UpScale(pBits->rgbRed);
+      q->green=UpScale(pBits->rgbGreen);
+      q->blue=Upscale(pBits->rgbBlue);
+      q->opacity=OpaqueOpacity;
+      pBits++;
+      q++;
     }
-  if (!SyncImagePixels(image))
-    ThrowReaderException(FatalException,"sync on pixel buffer failed",image);
-
+    if (!SyncImagePixels(image))
+      break;
+  }
   if (hemf)
     DeleteEnhMetaFile(hemf);
-	SelectObject(hDC, hOldBitmap);
-	DeleteDC(hDC);
+  SelectObject(hDC,hOldBitmap);
+  DeleteDC(hDC);
   DeleteObject(hBitmap);
-  return image;
+  return(image);
 }
 
 /*
