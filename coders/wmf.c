@@ -46,11 +46,6 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-
-/*
-% libwmf's `magick' device layer made possible by Bob Friesenhahn who wrote
-% ImageMagick's WMF coder... any bugs are, however, my fault        --- fjf
-*/
 
 /*
   Include declarations.
