@@ -2976,6 +2976,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
     i;
 
   unsigned int
+    ping,
     status;
 
   /*
@@ -2986,9 +2987,22 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   image=(Image *) NULL;
   number_images=0;
   status=True;
+  ping=True;
   /*
     Identify an image.
   */
+  for (i=1; i < argc; i++)
+  {
+    option=argv[i];
+    if (LocaleCompare("-format",argv[i]) == 0)
+      {
+        i++;
+        if (i == argc)
+          ThrowIdentifyException(OptionError,"Missing format string",option);
+        (void) CloneString(&format,argv[i]);
+        break;
+      }
+  }
   for (i=1; i < argc; i++)
   {
     option=argv[i];
@@ -3002,10 +3016,10 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
           for (q=strchr(format,'%'); q != (char *) NULL; q=strchr(q+1,'%'))
             if ((*(q+1) == 'k') || (*(q+1) == '#'))
               {
-                image_info->verbose=True;
+                ping=False;
                 break;
               }
-        if (image_info->verbose)
+        if (image_info->verbose || (ping==False))
           image=ReadImage(image_info,exception);
         else
           image=PingImage(image_info,exception);
