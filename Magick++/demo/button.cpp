@@ -1,7 +1,7 @@
 //
 // Magick++ demo to generate a simple text button
 //
-// Bob Friesenhahn, 1999, 2000
+// Bob Friesenhahn, 1999, 2000, 2001
 // 
 
 #include <string>
@@ -69,7 +69,7 @@ int main( int /*argc*/, char ** argv)
     button.texture( backgroundTexture );
 
     // Add some text
-    button.penColor( textColor );
+    button.fillColor( textColor );
     button.fontPointsize( textFontPointSize );
     button.font( textFont );
     button.annotate( text, CenterGravity );

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 2000
+// Copyright Bob Friesenhahn, 2000, 2001
 //
 // Demo of text annotation with gravity.  Produces an animation showing
 // the effect of rotated text along with various gravity specifications.
@@ -43,7 +43,7 @@ int main( int /*argc*/, char ** argv)
     list<Image> animation;
 
     Image base( Geometry(600,600), Color("white") );
-    base.strokeColor("#600");
+    base.fillColor("#600");
     base.draw( DrawableLine( 300,100, 300,500 ) );
     base.draw( DrawableLine( 100,300, 500,300 ) );
     base.draw( DrawableRectangle( 100,100, 500,500 ) );
