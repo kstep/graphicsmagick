@@ -1846,7 +1846,7 @@ void CConfigureApp::write_lib_dsp(
 			dsp << " /D \"" << (*it).c_str() << "\"";
 		}
 	}
-	dsp << " /YX /FD /c" << endl;
+	dsp << " /FD /c" << endl;
 
   dsp << "# ADD MTL /nologo /D \"NDEBUG\" /mktyplib203 /win32" << endl;
 	dsp << "# ADD RSC /l 0x409 /d \"NDEBUG\"" << endl;
@@ -1985,7 +1985,7 @@ void CConfigureApp::write_lib_dsp(
 			dsp << " /D \"" << (*it).c_str() << "\"";
 		}
 	}
-	dsp << " /YX /FD /c" << endl;
+	dsp << " /FD /c" << endl;
 	
 	dsp << "# ADD MTL /nologo /D \"_DEBUG\" /mktyplib203 /win32" << endl;
 	dsp << "# ADD RSC /l 0x409 /d \"_DEBUG\"" << endl;
@@ -2287,7 +2287,7 @@ void CConfigureApp::write_exe_dsp(
 	}
   if ((project_type == PROJECT) && (runtime == MULTITHREADEDDLL))
     dsp << "/D \"_AFXDLL\"";
-	dsp << " /YX /FD /c" << endl;
+	dsp << " /FD /c" << endl;
 
   dsp << "# ADD MTL /nologo /D \"NDEBUG\" /mktyplib203 /win32" << endl;
 	dsp << "# ADD RSC /l 0x409 /d \"NDEBUG\"" << endl;
@@ -2460,7 +2460,7 @@ void CConfigureApp::write_exe_dsp(
 	}
   if ((project_type == PROJECT) && (runtime == MULTITHREADEDDLL))
     dsp << "/D \"_AFXDLL\"";
-	dsp << " /YX /FD /c" << endl;
+	dsp << " /FD /c" << endl;
 	
 	dsp << "# ADD MTL /nologo /D \"_DEBUG\" /mktyplib203 /win32" << endl;
 	dsp << "# ADD RSC /l 0x409 /d \"_DEBUG\"" << endl;
