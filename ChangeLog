@@ -1,5 +1,6 @@
 2003-08-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS: Updated news.
 	* magick/blob.c (OpenBlob): Rewind file descriptor so that first
 	read is at zero offset. This fixes reading GIFs via a
 	user-provided file handle.

@@ -72,9 +72,12 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     uncompressed Windows 2.X and OS/2 BMPs.
   <LI> XPM fix to module registration.
   <LI> PSD fix for index calculation when QuantumDepth&gt;8.
-  <LI> Validate that geometry specifications only include allowed characters.
+  <LI> Validate that geometry specifications only include allowed
+    characters.<BR>
   <LI> SGI fix to save compression type while writing.
   <LI> EXIF attributes were not being retrieved when requested.
+  <LI> Fix for bug when reading an image via a user-provided file
+    descriptor.
 
 </UL>
 <p>
@@ -120,7 +123,10 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     accidentally casting away const, and allow memory debuggers to
     report memory allocations and frees against the correct functions.
     The previously-used functions remain in the library for the purpose
-    of compatibility.
+    of compatibility.<BR>
+  <LI> &lt;magick/xwindow.h&gt; no longer depends on magick_config.h defines.
+  <LI> The text string localization code has been replaced with a simpler
+    version written by Bill Radcliffe.
 
 </UL>
 <p>
@@ -147,6 +153,14 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     DrawInfo structure in the drawing context stack. Use of this
     function is not recommended since it voilates proper programming
     practices. It is added to support the Wand API's.
+  <LI> GetImageDepth() now returns an integral value between 1 and
+    QuantumDepth and is no longer limited to the values 8, 16, and 32.
+  <LI> SetImageDepth() supports setting the image modulus depth to any
+    integral value between 1 and QuantumDepth. This effects the effective
+    numeric precision, not the storage depth, since the quantum storage
+    type is still a Quantum.<BR>
+  <LI> GetImageChannelDepth() supports retrieving the modulus depth for a
+    specified channel.
 
 </UL>
 <p>
@@ -155,10 +169,21 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
   <LI> Adjusted a number of function option names so that they match the
     documentation.<BR>
   <LI> Memory leak fixed.
+  <LI> Reading files (e.g. GIF) via a file descriptor is fixed.
 
 </UL>
 <p>
-  Windows-specific improvements<BR>
+  Build improvements:
+
+<UL>
+  <LI> The TRIO library may be used to provide a replacement for vsnprintf
+    if the C library doesn't provide it.  This improves security on old
+    systems.<BR>
+  <LI> Configure only configures for C &amp; C++ languages.
+
+</UL>
+<p>
+  Windows-specific improvements:<BR>
 <UL>
   <LI> The static install package now uses the "uninstalled"
     configuration so that it does not depend on the Windows registry in
@@ -173,6 +198,9 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
   <LI> The XTRN coder now supports wide characters.
   <LI> LCMS library updated to version 1.10.
   <LI> GMDisplay displays a checkerboard pattern behind transparent images.
+  <LI> Support is provided for issuing log messages to the Windows standard
+    logging system.<BR>
+  <LI> Project files are now provided for use with Borland C++ Builder 6.0.
 
 </UL>
 <p>
