@@ -2043,7 +2043,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const char *threshold)
   pixel.green=100.0;
   pixel.blue=100.0;
   pixel.opacity=100.0;
-  count=sscanf(threshold,"%lf%*[/,\%]%lf%*[/,\%]%lf%*[/,\%]%lf[\%]",
+  count=sscanf(threshold,"%lf%*[/,%%]%lf%*[/,%%]%lf%*[/,%%]%lf%*[%%]",
     &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
   if (count == 1)
     if (!AllocateImageColormap(image,2))
