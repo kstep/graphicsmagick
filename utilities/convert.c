@@ -424,11 +424,11 @@ int main(int argc,char **argv)
     average,
     coalesce,
     deconstruct,
-    mode,
     morph,
     mosaic,
     global_colormap,
     scene,
+    sendmode,
     status;
 
   void
@@ -440,14 +440,14 @@ int main(int argc,char **argv)
   */
   if (LocaleCompare("-convert",argv[0]) == 0)
     {
-      mode=1; /* set mode to - called as a subroutine */
+      sendmode=1; /* set mode to - called as a subroutine */
       client_name=SetClientName((char *) NULL);
       if (argc < 3)
         return(False);
     }
   else
     {
-      mode=0; /* set mode to - called as normal executable */
+      sendmode=0; /* set mode to - called as normal executable */
       ReadCommandlLine(argc,&argv);
       MagickIncarnate(*argv);
       client_name=SetClientName((char *) NULL);
@@ -1761,41 +1761,41 @@ int main(int argc,char **argv)
           if (LocaleCompare("xbdat",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (mode>0))
+              if ((i == argc) && (sendmode>0))
                 MagickError(OptionError,"Missing blob buffer",option);
               param1=(void *)argv[i];
               argv[i]=AllocateString("");
-              mode=2;
+              sendmode=2;
               break;
             }
           if (LocaleCompare("xblen",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (mode>0))
+              if ((i == argc) && (sendmode>0))
                 MagickError(OptionError,"Missing blob length",option);
               param2=(void *)argv[i];
               argv[i]=AllocateString("");
-              mode=2;
+              sendmode=2;
               break;
             }
           if (LocaleCompare("xfunc",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (mode>0))
+              if ((i == argc) && (sendmode>0))
                 MagickError(OptionError,"Missing stream func",option);
               param1=(void *)argv[i];
               argv[i]=AllocateString("");
-              mode=3;
+              sendmode=3;
               break;
             }
           if (LocaleCompare("xctxt",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (mode>0))
+              if ((i == argc) && (sendmode>0))
                 MagickError(OptionError,"Missing stream context",option);
               param2=(void *)argv[i];
               argv[i]=AllocateString("");
-              mode=3;
+              sendmode=3;
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -1930,46 +1930,48 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    if (mode < 2)
+    status=True;
+    switch (sendmode)
+    {
+      case 2:
+      {
+        char
+          **blob_data;
+
+        ExceptionInfo
+          exception;
+
+        size_t
+          *blob_length;
+
+        blob_data=(char **) param1;
+        blob_length=(size_t *) param2;
+        (void) strcpy(p->magick,image_info->magick);
+        if (*blob_length == 0)
+          *blob_length=8192;
+        *blob_data=ImageToBlob(image_info,p,blob_length,&exception);
+        if (*blob_data == NULL)
+          status=False;
+        break;
+      }
+      case 3:
+      {
+        int
+          (*fifo)(const Image *,const void *,const size_t);
+
+        fifo=(int (*)(const Image *,const void *,const size_t)) param1;
+        p->client_data=param2;
+        status=WriteStream(image_info,p,fifo);
+        break;
+      }
+      default:
       {
         status=WriteImage(image_info,p);
-        if (status == False)
-          CatchImageException(p);
+        break;
       }
-    else
-      {
-        if (mode == 2)
-          {
-            char
-              **blob_data;
-
-            ExceptionInfo
-              exception;
-
-            size_t
-              *blob_length;
-
-            blob_data=(char **) param1;
-            blob_length=(size_t *) param2;
-            (void) strcpy(p->magick,image_info->magick);
-            if (*blob_length == 0)
-              *blob_length=8192;
-            *blob_data=ImageToBlob(image_info,p,blob_length,&exception);
-            if (*blob_data == NULL)
-              CatchImageException(p);
-          }
-        if (mode == 3)
-          {
-            int
-              (*fifo)(const Image *,const void *,const size_t);
-
-            fifo=(int (*)(const Image *,const void *,const size_t)) param1;
-            p->client_data=param2;
-            status=WriteStream(image_info,p,fifo);
-            if (status == False)
-              CatchImageException(p);
-          }
-      }
+    }
+    if (status == False)
+      CatchImageException(p);
     if (image_info->adjoin)
       break;
   }
@@ -1977,7 +1979,7 @@ int main(int argc,char **argv)
     DescribeImage(image,stderr,False);
   DestroyImages(image);
   DestroyImageInfo(image_info);
-  if (mode)
+  if (sendmode)
     return(True);
   LiberateMemory((void **) &argv);
   Exit(0);
