@@ -823,7 +823,7 @@ AC_SUBST(UINT64_T)
 # Check for functions
 #
 ########
-AC_FUNC_MMAP
+GM_FUNC_MMAP_FILEIO
 AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll \
   pread pwrite putc_unlocked raise select tempnam times sigemptyset sigaction \
   strerror strlcpy sysconf vsprintf vsnprintf])

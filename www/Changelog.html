@@ -53,9 +53,21 @@
 </tr>
 </table>
 <p>
+2003-09-10  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> magick/render.c: Fixed handling of arc primitive (see IM-5.5.8).
+
+</UL>
+<p>
 2003-09-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> configure.ac: Use GM_FUNC_MMAP_FILEIO macro to test mmap.
+  <LI> acinclude.m4 (GM_FUNC_MMAP_FILEIO): New macro to test mmap's
+        capability to do coherent file I/O.  The AC_FUNC_MMAP macro
+        was not testing the mmap features that GraphicsMagick uses, and
+        was failing on a number of systems.
   <LI> magick/blob.c (BlobMapModeToString): Only include this static
         function if HAVE_MMAP is defined.
   <LI> coders/locale.c (WriteLOCALEImage): Fix FormatString argument
