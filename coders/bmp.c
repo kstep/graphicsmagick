@@ -656,14 +656,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               "  Number of colors: %lu",bmp_info.number_colors);
           }
 
-        if ((bmp_info.compression == BI_BITFIELDS) &&
-            ((bmp_info.bits_per_pixel == 16) ||
-             (bmp_info.bits_per_pixel == 32)))
-          {
-            bmp_info.red_mask=ReadBlobLSBLong(image);
-            bmp_info.green_mask=ReadBlobLSBLong(image);
-            bmp_info.blue_mask=ReadBlobLSBLong(image);
-          }
+        bmp_info.red_mask=ReadBlobLSBLong(image);
+        bmp_info.green_mask=ReadBlobLSBLong(image);
+        bmp_info.blue_mask=ReadBlobLSBLong(image);
+
         if (bmp_info.size > 40)
           {
             double

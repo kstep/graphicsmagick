@@ -21,6 +21,16 @@
 </tr>
 </table>
 <p>
+2004-07-09  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/bmp.c (ReadBMPImage): Removed if-test on reading
+        red_mask, green_mask, and blue_mask.  These are only *valid*
+        under certain conditions, but they are always present in the
+        file.
+
+</UL>
+<p>
 2004-07-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
