@@ -24,6 +24,7 @@
 		<LI><A HREF="#coalesceimages">CoalesceImages</A></LI>
 		<LI><A HREF="#cropimage">CropImage</A></LI>
 		<LI><A HREF="#deconstructimages">DeconstructImages</A></LI>
+		<LI><A HREF="#flattenimage">FlattenImage</A></LI>
 		<LI><A HREF="#flipimage">FlipImage</A></LI>
 		<LI><A HREF="#flopimage">FlopImage</A></LI>
 		<LI><A HREF="#profileimage">ProfileImage</A></LI>
@@ -47,6 +48,7 @@
 <P>Image * <STRONG>CoalesceImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>CropImage</STRONG>( Image *image, const RectangleInfo *crop_info, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>DeconstructImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>FlattenImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlipImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlopImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *profile_name, const char *filename );</P>
@@ -135,7 +137,22 @@ return any errors or warnings in this structure.
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image; returned from ReadImage.  It points to the first next in the group to be deconstructed.
+The address of a structure of type Image; returned from ReadImage.  It points to the first image in the group to be deconstructed.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="flattenimage">FlattenImage</A></H2>
+<P>Method FlattenImage merges a sequence of images.  This is useful for combining Photoshop layers into a single image.</P>
+<P>The format of the FlattenImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *FlattenImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image; returned from ReadImage.  It points to the first image in the group to be coalesced.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>

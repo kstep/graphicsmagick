@@ -1263,6 +1263,37 @@ MagickExport unsigned int PopImagePixels(Image *image,
       }
       break;
     }
+    case CMYKAQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=DownScale(p->red);
+            *q++=DownScale(p->green);
+            *q++=DownScale(p->blue);
+            *q++=DownScale(p->opacity);
+            *q++=DownScale(indexes[x]);
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=p->red >> 8;
+        *q++=p->red;
+        *q++=p->green >> 8;
+        *q++=p->green;
+        *q++=p->blue >> 8;
+        *q++=p->blue;
+        *q++=p->opacity >> 8;
+        *q++=p->opacity;
+        *q++=indexes[x] >> 8;
+        *q++=indexes[x];
+        p++;
+      }
+      break;
+    }
   }
   return(True);
 }
@@ -1604,6 +1635,37 @@ MagickExport unsigned int PushImagePixels(Image *image,
         q->green=XDownScale((*p << 8) | *(p+1));
         p+=2;
         q->blue=XDownScale((*p << 8) | *(p+1));
+        p+=2;
+        indexes[x]=XDownScale((*p << 8) | *(p+1));
+        p+=2;
+        q++;
+      }
+      break;
+    }
+    case CMYKAQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            q->red=UpScale(*p++);
+            q->green=UpScale(*p++);
+            q->blue=UpScale(*p++);
+            q->opacity=UpScale(*p++);
+            indexes[x]=UpScale(*p++);
+            q++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        q->red=XDownScale((*p << 8) | *(p+1));
+        p+=2;
+        q->green=XDownScale((*p << 8) | *(p+1));
+        p+=2;
+        q->blue=XDownScale((*p << 8) | *(p+1));
+        p+=2;
+        q->opacity=XDownScale((*p << 8) | *(p+1));
         p+=2;
         indexes[x]=XDownScale((*p << 8) | *(p+1));
         p+=2;
