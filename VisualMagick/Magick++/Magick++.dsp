@@ -189,6 +189,10 @@ SOURCE="..\..\Magick++\lib\Montage.cpp"
 
 SOURCE="..\..\Magick++\lib\Options.cpp"
 # End Source File
+# Begin Source File
+
+SOURCE="..\..\Magick++\lib\Thread.cpp"
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -236,6 +240,10 @@ SOURCE="..\..\Magick++\lib\Magick++\Montage.h"
 # Begin Source File
 
 SOURCE="..\..\Magick++\lib\Magick++\Options.h"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\Magick++\lib\Magick++\Thread.h"
 # End Source File
 # Begin Source File
 
