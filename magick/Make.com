@@ -76,6 +76,7 @@ $call Make pnm.c
 $call Make preview.c
 $call Make ps.c
 $call Make ps2.c
+$call Make ps3.c
 $call Make psd.c
 $call Make pwp.c
 $call Make quantize.c
@@ -122,7 +123,7 @@ $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
   map.obj,matte.obj,memory.obj,miff.obj,monitor.obj,mono.obj, -
   montage.obj,mtv.obj,null.obj,pcd.obj,pcl.obj,pcx.obj, -
   pdf.obj,pict.obj,pix.obj,plasma.obj,png.obj,pnm.obj, -
-  preview.obj,ps.obj,ps2.obj,psd.obj,pwp.obj,quantize.obj, -
+  preview.obj,ps.obj,ps2.obj,ps3.obj,psd.obj,pwp.obj,quantize.obj, -
   rgb.obj,rla.obj,rle.obj,segment.obj,sfw.obj,sgi.obj,shear.obj, -
   signature.obj,stegano.obj,sun.obj,tga.obj,tiff.obj,tile.obj, -
   tim.obj,transform.obj,ttf.obj,txt.obj,uil.obj,utility.obj, -

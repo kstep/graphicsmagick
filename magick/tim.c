@@ -181,9 +181,9 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
         image->class=PseudoClass;
         image->colors=(unsigned int) pixel_mode == 1 ? 256 : 16;
         image->colormap=(ColorPacket *)
-          malloc(image->colors*sizeof(ColorPacket));
+          AllocateMemory(image->colors*sizeof(ColorPacket));
         tim_colormap=(unsigned char *)
-          malloc(image->colors*2*sizeof(unsigned char));
+          AllocateMemory(image->colors*2*sizeof(unsigned char));
         if ((image->colormap == (ColorPacket *) NULL) ||
             (tim_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
@@ -210,7 +210,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     image_size=2*width*height;
     bytes_per_line=width*2;
     width=(width*16)/bits_per_pixel;
-    tim_data=(unsigned char *) malloc(image_size*sizeof(unsigned char));
+    tim_data=(unsigned char *) AllocateMemory(image_size*sizeof(unsigned char));
     if (tim_data == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Unable to allocate memory",image);
     (void) ReadData((char *) tim_data,1,(unsigned int) image_size,image->file);
@@ -222,7 +222,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     image->rows=height;
     image->packets=image->columns*image->rows;
     image->pixels=(RunlengthPacket *)
-      malloc(image->packets*sizeof(RunlengthPacket));
+      AllocateMemory(image->packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       ReaderExit(ResourceLimitWarning,"Unable to allocate memory",image);
     /*

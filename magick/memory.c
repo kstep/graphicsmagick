@@ -84,6 +84,7 @@
 */
 Export void *AllocateMemory(const size_t size)
 {
+  assert(size);
   return(malloc(size));
 }
 
@@ -115,6 +116,7 @@ Export void FreeMemory(void *memory)
   if (memory == (void *) NULL)
     return;
   free(memory);
+  memory=(void *)NULL;
 }
 
 /*
@@ -150,7 +152,9 @@ Export void *ReallocateMemory(void *memory,const size_t size)
   void
     *new_memory;
 
-  new_memory=realloc(memory,size);
+  new_memory=(void *) NULL;
+  if (size)
+    new_memory=realloc(memory,size);
   if (new_memory == (void *) NULL)
     FreeMemory(memory);
   return(new_memory);

@@ -759,23 +759,25 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               image->filename);
           }
 
-        chunk=(unsigned char *) AllocateMemory(length*sizeof(unsigned char));
-        if (chunk == (unsigned char *) NULL)
+        if(length != 0)
           {
-            if(m->verbose)
-               printf("chunk length = %lu\n",length);
-            ReaderExit(ResourceLimitWarning,
-              "Unable to allocate memory for chunk data", image);
-          }
+            chunk=(unsigned char *) AllocateMemory(length*sizeof(unsigned char));
+            if (chunk == (unsigned char *) NULL)
+              {
+                if(m->verbose)
+                   printf("chunk length = %lu\n",length);
+                ReaderExit(ResourceLimitWarning,
+                  "Unable to allocate memory for chunk data", image);
+              }
 
-        for (i=0; i < (int) length; i++)
-          chunk[i]=fgetc(image->file);
-        p=chunk;
+            for (i=0; i < (int) length; i++)
+              chunk[i]=fgetc(image->file);
+            p=chunk;
+          }
         (void) MSBFirstReadLong(image->file);  /* read crc word */
 
         if (!png_memcmp(type, mng_MEND, 4))
           {
-            FreeMemory((char *) chunk);
             break;
           }
 
@@ -783,7 +785,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           {
             if (!png_memcmp(type, mng_IEND, 4))
                skip_to_iend = False;
-            FreeMemory((char *) chunk);
             continue;
           }
 
@@ -1237,7 +1238,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 #endif
                 }
 
-            FreeMemory((char *) chunk);
+            if(length > 0)
+              FreeMemory((char *) chunk);
             continue;
           }
 
@@ -1264,7 +1266,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   }
               }
 
-            FreeMemory((char *) chunk);
+            if(length > 0)
+              FreeMemory((char *) chunk);
             continue;
           }
 
@@ -1398,8 +1401,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
         if (png_memcmp(type, mng_IHDR, 4))
           {
-            FreeMemory((char *) chunk);
-          continue;
+            if(length > 0)
+              FreeMemory((char *) chunk);
+            continue;
           }
 
         m->exists[object_id]=True;

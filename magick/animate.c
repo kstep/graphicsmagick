@@ -180,8 +180,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         (void) strcpy(local_info->filename,filelist[i]);
         *local_info->magick='\0';
         next_image=ReadImage(local_info);
+#if 0
+        /* Something's wrong here.  No matching AllocMemory except for
+           filelist[0] .. glennrp Jun 1999 */
         if (filelist[i] != filenames)
           FreeMemory((char *) filelist[i]);
+#endif
         if (next_image != (Image *) NULL)
           {
             if (image == (Image *) NULL)
@@ -198,6 +202,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         (void) SetMonitorHandler(handler);
         ProgressMonitor(LoadImageText,i,number_files);
       }
+#if 1
+      FreeMemory(filelist[0]);
+#endif
       DestroyImageInfo(local_info);
       if (image == (Image *) NULL)
         {
@@ -528,7 +535,8 @@ Export void XAnimateBackgroundImage(Display *display,
   */
   if (window_info.id == root_window)
     XDestroyWindowColors(display,root_window);
-  CoalesceImages(image);
+  if (image->next != (Image *)NULL)
+    CoalesceImages(image);
   if (resources.map_type == (char *) NULL)
     if ((visual_info->class != TrueColor) &&
         (visual_info->class != DirectColor))
@@ -1097,7 +1105,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
-  CoalesceImages(image);
+  if (image->next != (Image *)NULL)
+    CoalesceImages(image);
   if (resource_info->map_type == (char *) NULL)
     if ((visual_info->class != TrueColor) &&
         (visual_info->class != DirectColor))

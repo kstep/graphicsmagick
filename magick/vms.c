@@ -122,7 +122,7 @@ DIR *opendir(char *name)
   /*
     Allocate memory for handle and the pattern.
   */
-  directory=(DIR *) malloc(sizeof(*directory));
+  directory=(DIR *) AllocateMemory(sizeof(*directory));
   if (directory == (DIR *) NULL)
     {
       errno=ENOMEM;
@@ -130,10 +130,11 @@ DIR *opendir(char *name)
     }
   if (strcmp(".",name) == 0)
     name="";
-  directory->pattern=malloc((unsigned int) (strlen(name)+sizeof("*.*")+1));
+  directory->pattern=AllocateMemory((unsigned int) (strlen(name)
+    +sizeof("*.*")+1));
   if (directory->pattern == (char *) NULL)
     {
-      free((char *) directory);
+      FreeMemory((char *) directory);
       errno=ENOMEM;
       return(NULL);
     }

@@ -106,7 +106,7 @@ Export unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   matte_image->class=PseudoClass;
   matte_image->colors=(Opaque-Transparent)+1;
   matte_image->colormap=(ColorPacket *)
-    malloc(matte_image->colors*sizeof(ColorPacket));
+    AllocateMemory(matte_image->colors*sizeof(ColorPacket));
   if (matte_image->colormap == (ColorPacket *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=Transparent; i <= Opaque; i++)

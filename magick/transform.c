@@ -268,9 +268,6 @@ Export void CoalesceImages(Image *images)
         "image sequence required");
       return;
     }
-  if (images->page != (char *) NULL)
-    FreeMemory(images->page);
-  images->page=(char *) NULL;
   for (image=images->next; image != (Image *) NULL; image=image->next)
   {
     assert(image->previous != (Image *) NULL);
@@ -280,23 +277,23 @@ Export void CoalesceImages(Image *images)
       (void) ParseGeometry(image->previous->page,&x,&y,&sans,&sans);
     previous_box.x1=x;
     previous_box.y1=y;
-    previous_box.x2=0;
-    previous_box.y2=0;
+    previous_box.x2=x+image->previous->columns;
+    previous_box.y2=y+image->previous->rows;
     x=0;
     y=0;
     if (image->page != (char *) NULL)
       (void) ParseGeometry(image->page,&x,&y,&sans,&sans);
     if ((x <= previous_box.x1) && (y <= previous_box.y1) && !image->matte &&
-        (x+image->columns >= (image->previous->columns+previous_box.x1)) &&
-        (y+image->rows >= (image->previous->rows+previous_box.y1)))
+        (x+image->columns >= (previous_box.x2)) &&
+        (y+image->rows >= (previous_box.y2)))
       continue; /* because image completely obscures previous */
     bounding_box.x1=x < previous_box.x1 ? x : previous_box.x1;
     bounding_box.y1=y < previous_box.y1 ? y : previous_box.y1;
-    bounding_box.x2=
-      (x+image->columns) > (previous_box.x1+image->previous->columns) ?
-      x+image->columns : previous_box.x1+image->previous->columns;
-    bounding_box.y2=(y+image->rows) > (previous_box.y1+image->previous->rows) ?
-      y+image->rows : previous_box.y1+image->previous->rows;
+    bounding_box.x2= (x+image->columns) > (previous_box.x2) ?
+      x+image->columns : previous_box.x2;
+    bounding_box.y2=(y+image->rows) > (previous_box.y2) ?
+      y+image->rows : previous_box.y2;
+    assert(!image->orphan);
     image->orphan=True;
     cloned_image=CloneImage(image,image->columns,image->rows,True);
     image->orphan=False;
@@ -318,8 +315,6 @@ Export void CoalesceImages(Image *images)
           "Memory reallocation failed");
         return;
       }
-    if (image->page != (char *) NULL)
-       FreeMemory((char *) image->page);
     if ((((bounding_box.x1 != x) && (bounding_box.y1 != y)) &&
         ((bounding_box.x1 != previous_box.x1) &&
          (bounding_box.y1 != previous_box.y1))) ||

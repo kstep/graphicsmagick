@@ -2236,7 +2236,7 @@ Export int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
 
 Export void DestroyPostscriptGeometry(char *geometry)
 {
-  free(geometry);
+    FreeMemory(geometry);
 }
 
 Export char *PostscriptGeometry(const char *page)
@@ -2918,7 +2918,7 @@ Export void TemporaryFilename(char *filename)
     if (p != (char *) NULL)
       {
         (void) strcpy(filename,p);
-        FreeMemory((char *) p);
+        free((char *) p);
       }
 #else
 #if defined(WIN32)
