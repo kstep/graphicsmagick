@@ -146,7 +146,7 @@ extern "C" {
 #define False  0
 #define DegreesToRadians(x) ((x)*M_PI/180.0)
 #define Intensity(color)  \
-  ((unsigned long) ((color).red*77+(color).green*150+(color).blue*29) >> 8)
+  ((77*(color).red+150*(color).green+29*(color).blue)/256)
 #define IsFaxImage(color)  \
   (IsMonochromeImage(image) && ((image)->columns <= 2560))
 #define IsGray(color)  \
