@@ -41,7 +41,6 @@ extern "C" {
 #    define MagickExport
 #    pragma message( "Compiling as simple library" ) 
 #  endif
-
 #if defined(_DLL) && !defined(_LIB)
 #  define ModuleExport  __declspec(dllexport)
 #  pragma message( "Module compiled as DLL" ) 
@@ -70,6 +69,7 @@ extern "C" {
 #endif
 
 #define MaxTextExtent  1664
+#define MagickSignature  0xabacadab
 
 #if !defined(vms) && !defined(WIN32)
 #if defined(HAVE_CONFIG_H)
