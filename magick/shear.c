@@ -310,6 +310,8 @@ static void XShearImage(Image *image,const double degrees,
     pixel;
 
   assert(image != (Image *) NULL);
+  if (degrees  == 0.0)
+    return;
   y_offset--;
   for (y=0; y < (int) height; y++)
   {
@@ -570,6 +572,8 @@ static void YShearImage(Image *image,const double degrees,
     pixel;
 
   assert(image != (Image *) NULL);
+  if (degrees == 0.0)
+    return;
   x_offset--;
   for (y=0; y < (int) width; y++)
   {
@@ -850,7 +854,7 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
       "Memory allocation failed");
   shear.x=(-tan(0.5*DegreesToRadians(angle)));
   shear.y=sin(DegreesToRadians(angle));
-  if ((shear.x == 0.0) || (shear.y == 0.0))
+  if ((shear.x == 0.0) && (shear.y == 0.0))
     return(integral_image);
   /*
     Compute image size.
@@ -974,7 +978,7 @@ MagickExport Image *ShearImage(Image *image,const double x_shear,
       "Memory allocation failed");
   shear.x=(-tan(0.5*DegreesToRadians(x_shear)));
   shear.y=sin(DegreesToRadians(y_shear));
-  if ((shear.x == 0.0) || (shear.y == 0.0))
+  if ((shear.x == 0.0) && (shear.y == 0.0))
     return(integral_image);
   /*
     Compute image size.
