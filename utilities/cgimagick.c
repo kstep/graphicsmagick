@@ -441,6 +441,153 @@ unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  G e t F i l e M i m e T y p e                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetFileMimeType given the file name, obtain MIME type for
+%  "Content-type:" header field. We try to find MIME type string under
+%  HCR\.xyz key, "Content Type" value. If that fails, we return default
+%  "application/ocetet-stream".
+%
+%  The format of the GetFileMimeType method is:
+%
+%      void GetFileMimeType(LPCSTR pszPath, LPSTR pszType, DWORD cbMax)
+%
+%  A description of each parameter follows:
+%
+%    o pszPath:  file path
+%
+%    o pszType:  points to the buffer that will receive MIME type string
+%
+%    o cbMax:    specifies the maximum number of characters to copy to the
+%                buffer, including the NUL character. If the text exceeds
+%                this limit, it will be truncated.
+%
+*/
+typedef struct _mime_spec
+{
+  char
+    *extn,
+    *type;
+} mime_spec;
+
+static mime_spec specs[] = {
+  ".", "text/plain",
+  ".htm", "text/html",
+  ".html", "text/html",
+  ".txt", "text/plain",
+  ".gif", "image/gif",
+  ".jpe", "image/jpeg",
+  ".jpeg", "image/jpeg",
+  ".jpg", "image/jpeg",
+  ".pbm", "image/x-portable-bitmap",
+  ".pgm", "image/x-portable-graymap",
+  ".png", "image/png",
+  ".pnm", "image/x-portable-anymap",
+  ".ppm", "image/x-portable-pixmap",
+  ".ras", "image/x-cmu-raster",
+  ".rgb", "image/x-rgb",
+  ".tif", "image/tiff",
+  ".tiff", "image/tiff",
+  ".xbm", "image/x-xbitmap",
+  ".xpm", "image/x-xpixmap",
+  ".xwd", "image/x-xwindowdump",
+  ".avi", "video/msvideo",
+  ".mov", "video/quicktime",
+  ".mpe", "video/mpeg",
+  ".mpeg", "video/mpeg",
+  ".mpg", "video/mpeg",
+  ".mp3", "audio/mpeg",
+  ".wav", "audio/wav",
+  ".bin", "application/octet-stream",
+  ".eps", "application/postscript",
+  ".exe", "application/octet-stream",
+  ".gtar", "application/x-gtar",
+  ".gz", "application/x-gzip",
+  ".hdf", "application/x-hdf",
+  ".jar", "application/java-archive",
+  ".lzh", "application/x-lzh",
+  ".pdf", "application/pdf",
+  ".ps", "application/postscript",
+  ".tar", "application/tar",
+  ".tgz", "application/x-gzip",
+  ".zip", "application/zip"
+};
+
+void GetFileMimeType(const char *pszPath, char *pszType, unsigned long cbMax)
+{
+  char
+    *pszExt;
+
+  /*
+    set MIME type to empty string
+  */
+  *pszType = '\0';
+  /*
+    try to locate file extension
+  */
+  pszExt = strrchr( pszPath, '.');    
+  if (pszExt != NULL)
+    {
+#ifdef USE_REGISTRY   
+      HKEY
+        hKey;
+
+      unsigned long
+        value_type;
+
+      long
+        result;
+
+      /* 
+        for file extension .xyz, MIME Type can be found
+        HKEY_CLASSES_ROOT\.xyz key in the registry
+      */
+      result = RegOpenKeyEx(HKEY_CLASSES_ROOT,pszExt,0L,KEY_READ,&hKey);                     
+      if (result == ERROR_SUCCESS)
+        {
+          /*
+            we sucessfully opened the key.
+            try getting the "Content Type" value
+          */            
+          result = RegQueryValueEx(hKey,"Content Type",NULL,&value_type, 
+	                   (BYTE *)pszType,&cbMax);
+          /*
+            if we failed to get the value or it is not string,
+            clear content-type field
+          */            
+          if (result != ERROR_SUCCESS || value_type != REG_SZ)
+              *pszType = '\0';
+          RegCloseKey( hKey );
+        }
+#else
+      int
+        i,
+        tagcount = sizeof(specs) / sizeof(mime_spec);
+
+      /* try to match this record to one of the ones in our named table */
+      for (i=0; i< tagcount; i++)
+      {
+        if (LocaleCompare(specs[i].extn,pszExt) == 0)
+          strncpy(pszType, specs[i].type, cbMax);
+      }
+#endif
+    }    
+  /*
+    if at this point we don't have MIME type, use default
+  */    
+  if (*pszType == '\0')
+    strncpy(pszType, "application/octet_stream", cbMax);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  M a i n                                                                    %
 %                                                                             %
 %                                                                             %
@@ -471,7 +618,6 @@ int main(int argc,char **argv)
 #endif
 	if (getenv("GATEWAY_INTERFACE") || (argc>1))
     {
-      FormatString(prefix,"HTTP/1.0 200 Ok\nContent-Type: %s\n\n","image/jpeg");
       if (!getenv("GATEWAY_INTERFACE"))
         status=CGIToArgv(argv[1],&argc,&argv);
       else
@@ -485,6 +631,19 @@ int main(int argc,char **argv)
         }
       if (status == True)
         {
+          char
+            szMimeType[MaxTextExtent],
+            szPathTranslated[MaxTextExtent];
+
+          szPathTranslated[0] = '\0';          
+		      if (getenv("PATH_TRANSLATED") != (char *) NULL)
+            {
+              strcpy(szPathTranslated,getenv("PATH_TRANSLATED"));
+              GetFileMimeType(szPathTranslated,
+                szMimeType,MaxTextExtent);
+            }
+          else
+            strcpy(szMimeType,"application/ocetet-stream");
           for (argc_hw=1; argc_hw < argc; argc_hw++)
           {
             char
@@ -532,11 +691,16 @@ int main(int argc,char **argv)
                   {
                     blob_length=8192;
                     convert_main(i-argc_hw,argv_hw);
+                    FormatString(prefix,
+                      "HTTP/1.0 200 Ok\nContent-Length: %u\r\nContent-Type: %s\n\n",
+                        blob_length,szMimeType);
                     fwrite(prefix,1,Extent(prefix),stdout);
                     fwrite(blob_data,1,blob_length,stdout);
                   }
                 else if (mode==2)
                   {
+                    FormatString(prefix,
+                      "HTTP/1.0 200 Ok\nContent-Type: %s\n\n",szMimeType);
                     fwrite(prefix,1,Extent(prefix),stdout);
                     convert_main(i-argc_hw,argv_hw);
                   }
@@ -578,11 +742,16 @@ int main(int argc,char **argv)
                   {
                     blob_length=8192;
                     combine_main(i-argc_hw,argv_hw);
+                    FormatString(prefix,
+                      "HTTP/1.0 200 Ok\nContent-Length: %u\r\nContent-Type: %s\n\n",
+                        blob_length,szMimeType);
                     fwrite(prefix,1,Extent(prefix),stdout);
                     fwrite(blob_data,1,blob_length,stdout);
                   }
                 else if (mode==2)
                   {
+                    FormatString(prefix,
+                      "HTTP/1.0 200 Ok\nContent-Type: %s\n\n",szMimeType);
                     fwrite(prefix,1,Extent(prefix),stdout);
                     combine_main(i-argc_hw,argv_hw);
                   }
