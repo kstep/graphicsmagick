@@ -2,91 +2,77 @@
 DEFINE = _TTFLIB_
 DEFINE = HAVE_FREETYPE_FREETYPE_H
 SOURCE = ttf.rc
-#
+# autohint
 EXCLUDE = ahangles.c
 EXCLUDE = ahglobal.c
 EXCLUDE = ahglyph.c
 EXCLUDE = ahhint.c
 EXCLUDE = ahmodule.c
 EXCLUDE = ahoptim.c
-#
+# base
+EXCLUDE = ftcalc.c
+EXCLUDE = fttrigon.c
+EXCLUDE = ftobjs.c
+EXCLUDE = ftstream.c
+EXCLUDE = ftlist.c
+EXCLUDE = ftoutln.c
+EXCLUDE = ftnames.c
+EXCLUDE = ftextend.c
+EXCLUDE = ftmac.c
+EXCLUDE = ftmac.h
+# cache
+EXCLUDE = ftlru.c
+EXCLUDE = ftcmanag.c
+EXCLUDE = ftcglyph.c
+EXCLUDE = ftcchunk.c
+EXCLUDE = ftcimage.c
+EXCLUDE = ftcsbits.c
+# cff
 EXCLUDE = cffdrivr.c
 EXCLUDE = cffgload.c
 EXCLUDE = cffload.c
 EXCLUDE = cffobjs.c
 EXCLUDE = cffparse.c
-#
-EXCLUDE = ftcalc.c
-EXCLUDE = ftobjs.c
-EXCLUDE = ftstream.c
-EXCLUDE = ftlist.c
-EXCLUDE = ftoutln.c
-EXCLUDE = ftextend.c
-EXCLUDE = ftnames.c
-#
-EXCLUDE = t2driver.c
-EXCLUDE = t2gload.c
-EXCLUDE = t2load.c
-EXCLUDE = t2objs.c
-EXCLUDE = t2parse.c
-#
-EXCLUDE = cidafm.c
-EXCLUDE = cidgload.c
+# cid
+EXCLUDE = cidparse.c
 EXCLUDE = cidload.c
 EXCLUDE = cidobjs.c
-EXCLUDE = cidparse.c
 EXCLUDE = cidriver.c
-#
+EXCLUDE = cidgload.c
+# pcf
+EXCLUDE = pcfdriver.c
+EXCLUDE = pcfread.c
+EXCLUDE = pcfutil.c
+# psaux
+EXCLUDE = psauxmod.c
+EXCLUDE = psobjs.c
+EXCLUDE = t1decode.c
+# psnames
 EXCLUDE = psmodule.c
-#
+# raster
 EXCLUDE = ftraster.c
 EXCLUDE = ftrend1.c
-#
+# sfnt
 EXCLUDE = sfdriver.c
 EXCLUDE = sfobjs.c
 EXCLUDE = ttcmap.c
 EXCLUDE = ttload.c
 EXCLUDE = ttpost.c
 EXCLUDE = ttsbit.c
-#
+# smooth
 EXCLUDE = ftgrays.c
 EXCLUDE = ftsmooth.c
-#
+# truetype
 EXCLUDE = ttdriver.c
 EXCLUDE = ttgload.c
 EXCLUDE = ttinterp.c
 EXCLUDE = ttobjs.c
 EXCLUDE = ttpload.c
-#
-EXCLUDE = t1afm.c
-EXCLUDE = t1driver.c
-EXCLUDE = t1gload.c
-EXCLUDE = t1hinter.c
+# type1
+EXCLUDE = t1parse.c
 EXCLUDE = t1load.c
 EXCLUDE = t1objs.c
-EXCLUDE = t1parse.c
-EXCLUDE = t1tokens.c
-#
-EXCLUDE = pcfdriver.c
-EXCLUDE = pcfread.c
-EXCLUDE = pcfutil.c
-#
-EXCLUDE = z1afm.c
-EXCLUDE = z1driver.c
-EXCLUDE = z1gload.c
-EXCLUDE = z1load.c
-EXCLUDE = z1objs.c
-EXCLUDE = z1parse.c
-#
-EXCLUDE = type1z.c
-#
-EXCLUDE = psauxmod.c
-EXCLUDE = psobjs.c
-EXCLUDE = t1decode.c
-#
-EXCLUDE = ftraster.c
-EXCLUDE = ftrend1.c
-#
-EXCLUDE = ftmac.c
-EXCLUDE = ftmac.h
+EXCLUDE = t1driver.c
+EXCLUDE = t1gload.c
+EXCLUDE = t1afm.c
 
