@@ -567,7 +567,7 @@ AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
 AC_FUNC_MMAP
-AC_CHECK_FUNCS(closedir getcwd getexecname gettimeofday mkdir mkstemp \
+AC_CHECK_FUNCS(closedir getcwd gettimeofday mkdir mkstemp \
   opendir poll readdir select snprintf strchr strerror strtol sysconf \
   tempnam vsnprintf)
 
@@ -1715,21 +1715,8 @@ else
         windows_font_dir="$font_dir/"
       fi
       ;;
-    mingw* )
-      # FIXME: need a real test here.
-      for drive in c d e f g h i j k l m n o p q r s t u v w x y z
-      do
-        for sysdir in windows winnt
-        do
-	  windows_font_dir="/${drive}/${sysdir}/fonts/"
-          if test -f "${windows_font_dir}times.ttf"
-          then
-            windows_font_dir=`$WinPathScript "$windows_font_dir" 0`
-            break 2
-          fi
-        done
-      done
-      ;;
+    #mingw* )
+    # Use the automatic font detection facility for MinGW
     #pw32*)
   esac
 fi

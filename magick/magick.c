@@ -249,12 +249,12 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   path=AllocateString(filename);
   if (IsAccessible(path))
     return(path);
-  search_path=AllocateString(path);
-  FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-    DirectorySeparator,filename);
   /*
     Search executable directory.
   */
+  search_path=AllocateString(path);
+  FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
+    DirectorySeparator,filename);
   if (IsAccessible(path))
     {
       LiberateMemory((void **) &search_path);

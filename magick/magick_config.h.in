@@ -82,9 +82,6 @@
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
 
-/* Define to 1 if you have the `getexecname' function. */
-#undef HAVE_GETEXECNAME
-
 /* Define to 1 if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
 

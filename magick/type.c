@@ -177,7 +177,36 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 
   AcquireSemaphoreInfo(&type_semaphore);
   if (type_list == (TypeInfo *) NULL)
-    (void) ReadConfigurationFile(TypeFilename,exception);
+    {
+      (void) ReadConfigurationFile(TypeFilename,exception);
+#if defined(WIN32)
+      {
+        TypeInfo
+          *type_info;
+        
+        type_info=NTGetTypeList();
+        
+        if (type_info != (TypeInfo *) NULL)
+          {
+            if (type_list == (TypeInfo *) NULL)
+              {
+                type_list=type_info;
+              }
+            else
+              {
+                while (type_list->next != (TypeInfo *) NULL)
+                  type_list=type_list->next;
+
+                type_list->next=type_info;
+                type_info->previous=type_list;
+
+                while (type_list->previous != (TypeInfo *) NULL)
+                  type_list=type_list->previous;
+              }
+          }
+      }
+#endif /* WIN32 */
+    }
   LiberateSemaphoreInfo(&type_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(type_list);
@@ -706,6 +735,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
   }
   LiberateMemory((void **) &token);
   LiberateMemory((void **) &xml);
+
   if (type_list == (TypeInfo *) NULL)
     return(False);
   while (type_list->previous != (TypeInfo *) NULL)

@@ -31,8 +31,8 @@ lcms:
 png:
 
   cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
-    import -m 'Import libpng 1.2.3' delegates/png \
-    INITIAL LIBPNG_1_2_3
+    import -m 'Import libpng 1.2.4' delegates/png \
+    INITIAL LIBPNG_1_2_4
 
 wmf:
 

@@ -224,7 +224,7 @@ CHECK_FILE_FORMATS = \
 	YUV
 
 check-rwblob:
-	@status=0 ; \
+	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_BLOB_FORMATS) ; \
 	do \
@@ -251,7 +251,7 @@ check-rwblob:
 	exit $$status
 
 check-rwfile:
-	@status=0 ; \
+	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_FILE_FORMATS) ; \
 	do \

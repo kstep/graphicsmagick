@@ -753,6 +753,336 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   N T G e t T y pe L i s t                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method NTGetTypeList returns a TypeInfo list corresponding to installed
+%  Windows TrueType fonts. The user is responsible for destroying the
+%  returned list once it is no longer needed. NULL is returned if a fatal
+%  error is encountered.
+%
+%  The format of the NTGetTypeList method is:
+%
+%      TypeInfo* NTGetTypeList( void )
+%
+%  A description of each parameter follows:
+%
+%    o returns: A linked list of TypeInfo structures is returned.
+%
+*/
+static int TypeInfoCompare(const void *x,const void *y)
+{
+  TypeInfo
+    **info_1,
+    **info_2;
+
+  info_1=(TypeInfo **) x;
+  info_2=(TypeInfo **) y;
+  return( strcmp((*info_1)->name, (*info_2)->name) );
+}
+MagickExport TypeInfo* NTGetTypeList( void )
+{
+  TypeInfo
+    *type_list;
+
+  HKEY
+    reg_key = (HKEY) INVALID_HANDLE_VALUE;
+
+  LONG
+    res;
+
+
+  int
+    list_entries = 0;
+
+  char
+    buffer[MaxTextExtent],
+    font_root[MaxTextExtent];
+
+  type_list = (TypeInfo*) NULL;
+
+  res = RegOpenKeyExA (HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts",
+                       0, KEY_READ | KEY_ENUMERATE_SUB_KEYS, &reg_key);
+
+  if (res != ERROR_SUCCESS)
+    res = RegOpenKeyExA (HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Fonts",
+                         0, KEY_READ | KEY_ENUMERATE_SUB_KEYS, &reg_key);
+
+  if (res != ERROR_SUCCESS)
+    return type_list;
+
+  *font_root='\0';
+  if ( getenv("SystemRoot") != (char *) NULL)
+    {
+      strncpy(buffer,getenv("SystemRoot"),sizeof(buffer)-1);
+      strcat(buffer,"\\fonts\\arial.ttf");
+      if (IsAccessible(buffer))
+        {
+          strncpy(font_root,getenv("SystemRoot"),sizeof(buffer)-1);
+          strcat(font_root,"\\fonts\\");
+        }
+      else
+        {
+          strncpy(font_root,getenv("SystemRoot"),sizeof(buffer)-1);
+          strcat(font_root,"\\");
+        }
+    }
+
+  {
+    TypeInfo
+      *type_info;
+
+    DWORD
+      registry_index = 0,
+      type,
+      value_data_size,
+      value_name_length;
+
+    char
+      value_data[MaxTextExtent],
+      value_name[MaxTextExtent];
+
+    res = ERROR_SUCCESS;
+
+    while ( (res != ERROR_NO_MORE_ITEMS) && (res == ERROR_SUCCESS) )
+      {
+        char
+          *family_extent,
+          token[MaxTextExtent],
+          *pos,
+          *q;
+
+        value_name_length = sizeof(value_name) - 1;
+        value_data_size = sizeof(value_data) - 1;
+        res = RegEnumValueA ( reg_key, registry_index, value_name, &value_name_length,
+                              0, &type, (BYTE*)value_data, &value_data_size);
+        registry_index++;
+        if ( (pos = strstr(value_name, " (TrueType)")) == (char*) NULL )
+          continue;
+        *pos='\0'; /* Remove (TrueType) from string */
+
+        type_info=(TypeInfo *) AcquireMemory(sizeof(TypeInfo));
+        if (type_info == (TypeInfo *) NULL)
+          MagickFatalError(ResourceLimitFatalError,"Unable to allocate font list",
+                           "Memory allocation failed");
+        (void) memset(type_info,0,sizeof(TypeInfo));
+
+        type_info->filename=AcquireString("Windows Fonts");
+        type_info->signature=MagickSignature;
+
+        /* Name */
+        strcpy(buffer,value_name);
+        for(pos = buffer; *pos != 0 ; pos++)
+          if (*pos == ' ')
+            *pos = '-';
+        type_info->name=AcquireString(buffer);
+
+        /* Fullname */
+        type_info->description=AcquireString(value_name);
+
+        /* Format */
+        type_info->format=AcquireString("truetype");
+
+        /* Glyphs */
+        if (strchr(value_data,'\\') == (char *) NULL)
+          {
+            strcpy(buffer,font_root);
+            strcat(buffer,value_data);
+          }
+        else
+          strcpy(buffer,value_data);
+
+        LocaleLower(buffer);
+        type_info->glyphs=AcquireString(buffer);
+
+        type_info->stretch=NormalStretch;
+        type_info->style=NormalStyle;
+        type_info->weight=400;
+
+        /* Some fonts are known to require special encodings */
+        if ( (LocaleCompare(type_info->name, "Symbol") == 0 ) ||
+             (LocaleCompare(type_info->name, "Wingdings") == 0 ) ||
+             (LocaleCompare(type_info->name, "Wingdings-2") == 0 ) ||
+             (LocaleCompare(type_info->name, "Wingdings-3") == 0 ) )
+          type_info->encoding=AcquireString("AppleRoman");
+
+        family_extent=value_name;
+
+        for (q=value_name; *q != '\0'; )
+          {
+            GetToken(q,&q,token);
+            if (*token == '\0')
+              break;
+
+            if (LocaleCompare(token,"Italic") == 0)
+              {
+                type_info->style=ItalicStyle;
+              }
+
+            else if (LocaleCompare(token,"Oblique") == 0)
+              {
+                type_info->style=ObliqueStyle;
+              }
+
+            else if (LocaleCompare(token,"Bold") == 0)
+              {
+                type_info->weight=700;
+              }
+
+            else if (LocaleCompare(token,"Thin") == 0)
+              {
+                type_info->weight=100;
+              }
+          
+            else if ( (LocaleCompare(token,"ExtraLight") == 0) ||
+                      (LocaleCompare(token,"UltraLight") == 0) )
+              {
+                type_info->weight=200;
+              }
+
+            else if (LocaleCompare(token,"Light") == 0)
+              {
+                type_info->weight=300;
+              }
+
+            else if ( (LocaleCompare(token,"Normal") == 0) ||
+                      (LocaleCompare(token,"Regular") == 0) )
+              {
+                type_info->weight=400;
+              }
+
+            else if (LocaleCompare(token,"Medium") == 0)
+              {
+                type_info->weight=500;
+              }
+
+            else if ( (LocaleCompare(token,"SemiBold") == 0) ||
+                      (LocaleCompare(token,"DemiBold") == 0) )
+              {
+                type_info->weight=600;
+              }
+
+            else if ( (LocaleCompare(token,"ExtraBold") == 0) ||
+                      (LocaleCompare(token,"UltraBold") == 0) )
+              {
+                type_info->weight=800;
+              }
+
+            else if ( (LocaleCompare(token,"Heavy") == 0) ||
+                      (LocaleCompare(token,"Black") == 0) )
+              {
+                type_info->weight=900;
+              }
+
+            else if (LocaleCompare(token,"Condensed") == 0)
+              {
+                type_info->stretch = CondensedStretch;
+              }
+
+            else if (LocaleCompare(token,"Expanded") == 0)
+              {
+                type_info->stretch = ExpandedStretch;
+              }
+
+            else if (LocaleCompare(token,"ExtraCondensed") == 0)
+              {
+                type_info->stretch = ExtraCondensedStretch;
+              }
+
+            else if (LocaleCompare(token,"ExtraExpanded") == 0)
+              {
+                type_info->stretch = ExtraExpandedStretch;
+              }
+
+            else if (LocaleCompare(token,"SemiCondensed") == 0)
+              {
+                type_info->stretch = SemiCondensedStretch;
+              }
+
+            else if (LocaleCompare(token,"SemiExpanded") == 0)
+              {
+                type_info->stretch = SemiExpandedStretch;
+              }
+
+            else if (LocaleCompare(token,"UltraCondensed") == 0)
+              {
+                type_info->stretch = UltraCondensedStretch;
+              }
+
+            else if (LocaleCompare(token,"UltraExpanded") == 0)
+              {
+                type_info->stretch = UltraExpandedStretch;
+              }
+
+            else
+              {
+                family_extent=q;
+              }
+          }
+
+        strncpy(buffer,value_name,family_extent-value_name);
+        buffer[family_extent-value_name]='\0';
+        type_info->family=AcquireString(buffer);
+
+        list_entries++;
+        if (type_list == (TypeInfo *) NULL)
+          {
+            type_list=type_info;
+            continue;
+          }
+        type_list->next=type_info;
+        type_info->previous=type_list;
+        type_list=type_list->next;
+        continue;
+      }
+  }
+
+  RegCloseKey ( reg_key );
+
+  /* Sort entries */
+  {
+    TypeInfo
+      **type_array;
+
+    int
+      array_index = 0;
+
+    type_array = (TypeInfo**) AcquireMemory(sizeof(TypeInfo*)*list_entries);
+
+    while (type_list->previous != (TypeInfo *) NULL)
+      type_list=type_list->previous;
+
+    for (array_index=0; array_index< list_entries; array_index++)
+      {
+        type_array[array_index] = type_list;
+        type_list=type_list->next;
+      }
+
+    qsort((void *) type_array, list_entries, sizeof(TypeInfo *),TypeInfoCompare);
+
+    type_list=type_array[0];
+    type_list->previous=(TypeInfo *) NULL;
+    for(array_index=1; array_index < list_entries; array_index++)
+      {
+        type_array[array_index-1]->next = type_array[array_index];
+        type_array[array_index]->previous = type_array[array_index-1];
+        type_array[array_index]->next=(TypeInfo *) NULL;
+      }
+
+    LiberateMemory((void**) &type_array);
+  }
+
+  return type_list;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   N T G e t E x e c u t i o n P a t h                                       %
 %                                                                             %
 %                                                                             %

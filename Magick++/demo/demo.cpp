@@ -404,6 +404,7 @@ int main( int /*argc*/, char ** argv)
       montageOpts.pointSize( 18 );
       montageOpts.fillColor( "#600" );
       montageOpts.strokeColor( Color() );
+      montageOpts.compose(OverCompositeOp);
       montageOpts.fileName( "Magick++ Demo" );
       montageImages( &montage, images.begin(), images.end(), montageOpts );
     }

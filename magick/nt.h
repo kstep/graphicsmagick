@@ -96,7 +96,7 @@ extern MagickExport int
 #if !defined(HasLTDL)
   lt_dlexit(void),
   lt_dlinit(void),
-#endif
+#endif /* !HasLTDL */
   munmap(void *,size_t);
 
 extern MagickExport long
@@ -126,13 +126,16 @@ extern MagickExport void
   *lt_dlopen(char *),
   lt_dlclose(void *),
   *lt_dlsym(void *, char *)
-#endif
+#endif /* !HasLTDL */
   ;
 
-#endif
+extern MagickExport TypeInfo
+  * NTGetTypeList( void );
+
+#endif /* !XS_VERSION */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
-#endif
+#endif /* !C++ */
 
-#endif
+#endif /* !_MAGICK_NT_H */

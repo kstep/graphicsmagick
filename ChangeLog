@@ -1,3 +1,7 @@
+2002-07-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Load font information from Windows rather than depending on hand
+    edited type-windows.mgk file. Still not incorporated in Cygwin build.
+
 2002-07-04  Cristy  <cristy@mystic.es.dupont.com>
   * Typos corrected in perl.html (thanks to Ron Savage);
   * A color profile is now correctly referred to as ICM instead of IPTC.

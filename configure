@@ -6862,7 +6862,6 @@ bsdi4*)
 cygwin* | mingw* | pw32*)
   lt_cv_deplibs_check_method='file_magic file format pei*-i386(.*architecture: i386)?'
   lt_cv_file_magic_cmd='$OBJDUMP -f'
-  lt_cv_deplibs_check_method=pass_all
   ;;
 
 darwin* | rhapsody*)
@@ -6876,7 +6875,6 @@ darwin* | rhapsody*)
     lt_cv_file_magic_test_file='/usr/lib/libSystem.dylib'
     ;;
   esac
-  lt_cv_deplibs_check_method=pass_all
   ;;
 
 freebsd*)
@@ -21679,8 +21677,7 @@ rm -f conftest.mmap
 
 
 
-
-for ac_func in closedir getcwd getexecname gettimeofday mkdir mkstemp \
+for ac_func in closedir getcwd gettimeofday mkdir mkstemp \
   opendir poll readdir select snprintf strchr strerror strtol sysconf \
   tempnam vsnprintf
 do
@@ -31842,21 +31839,8 @@ else
         windows_font_dir="$font_dir/"
       fi
       ;;
-    mingw* )
-      # FIXME: need a real test here.
-      for drive in c d e f g h i j k l m n o p q r s t u v w x y z
-      do
-        for sysdir in windows winnt
-        do
-	  windows_font_dir="/${drive}/${sysdir}/fonts/"
-          if test -f "${windows_font_dir}times.ttf"
-          then
-            windows_font_dir=`$WinPathScript "$windows_font_dir" 0`
-            break 2
-          fi
-        done
-      done
-      ;;
+    #mingw* )
+    # Use the automatic font detection facility for MinGW
     #pw32*)
   esac
 fi
