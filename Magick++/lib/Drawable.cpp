@@ -39,6 +39,23 @@ Magick::Drawable::~Drawable( void )
   // Nothing to do
 }
 
+// Copy constructor
+Magick::Drawable::Drawable ( const Drawable & drawable_ )
+  : _primitive(drawable_._primitive)
+{
+}
+
+// Assignment operator
+const Magick::Drawable& Magick::Drawable::operator = ( const Drawable& drawable_ )
+{
+  // If not being set to ourself
+  if ( this != &drawable_ )
+    {
+      _primitive = drawable_._primitive;
+    }
+  return *this;
+}
+
 // Common implementation of methods which take one Coordinate argument
 void Magick::Drawable::one_arg_impl ( const char* command_,
 				      const Magick::Coordinate &coordinate_ )

@@ -64,6 +64,7 @@ int Magick::operator <= ( const Magick::Geometry& left_,
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
 }
 
+// Construct using parameterized arguments
 Magick::Geometry::Geometry ( unsigned int width_,
 			     unsigned int height_,
 			     unsigned int xOff_,
@@ -84,6 +85,7 @@ Magick::Geometry::Geometry ( unsigned int width_,
 {
 }
 
+// Assignment from C++ string
 Magick::Geometry::Geometry ( const std::string geometry_ )
   : _width( 0 ),
     _height( 0 ),
@@ -101,6 +103,8 @@ Magick::Geometry::Geometry ( const std::string geometry_ )
 
 }
 
+
+// Assignment from C character string
 Magick::Geometry::Geometry ( const char * geometry_ )
   : _width( 0 ),
     _height( 0 ),
@@ -115,9 +119,25 @@ Magick::Geometry::Geometry ( const char * geometry_ )
     _less( false )
 {
   *this = geometry_; // Use assignment operator
-
 }
 
+// Copy constructor
+Magick::Geometry::Geometry ( const Geometry & geometry_ )
+  :  _width( geometry_._width ),
+     _height( geometry_._height ),
+     _xOff( geometry_._xOff ),
+     _yOff( geometry_._yOff ),
+     _xNegative( geometry_._xNegative ),
+     _yNegative( geometry_._yNegative ),
+     _isValid ( geometry_._isValid ),
+     _percent( geometry_._percent ),
+     _aspect( geometry_._aspect ),
+     _greater( geometry_._greater ),
+     _less( geometry_._less )
+{
+}
+
+// Default constructor
 Magick::Geometry::Geometry ( void )
   : _width( 0 ),
     _height( 0 ),
@@ -136,6 +156,26 @@ Magick::Geometry::Geometry ( void )
 /* virtual */ Magick::Geometry::~Geometry ( void )
 {
   // Nothing to do
+}
+
+Magick::Geometry Magick::Geometry::operator = ( const Geometry& geometry_ )
+{
+  // If not being set to ourself
+  if ( this != &geometry_ )
+    {
+      _width = geometry_._width;
+      _height = geometry_._height;
+      _xOff = geometry_._xOff;
+      _yOff = geometry_._yOff;
+      _xNegative = geometry_._xNegative;
+      _yNegative = geometry_._yNegative;
+      _isValid = geometry_._isValid;
+      _percent = geometry_._percent;
+      _aspect = geometry_._aspect;
+      _greater = geometry_._greater;
+      _less = geometry_._less;
+    }
+  return *this;
 }
 
 // Set value via geometry string

@@ -10,7 +10,7 @@
 #define MAGICK_IMPLEMENTATION
 
 #include <string>
-#include <cstdlib>
+#include <stdlib.h>
 #include <iostream>
 #include "Magick++/Options.h"
 #include "Magick++/Functions.h"

@@ -25,6 +25,7 @@ namespace Magick
   public:
     Exception( const std::string& what_ );
     virtual const char* what () const throw();
+    virtual ~Exception ( ) throw () { };
   private:
     std::string _what;
   };

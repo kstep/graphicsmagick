@@ -79,21 +79,15 @@ int Magick::operator <= ( const Magick::Color& left_,
 
 // Copy constructor
 Magick::Color::Color ( const Color & color_ )
+  : _pixel( new PixelPacket ),
+    _pixelOwn( true ),
+    _pixelType( color_._pixelType )
 {
-  // If not being set to ourself
-  if ( this != &color_ )
-    {
-      // Allocate a new pixel, with our ownership, and set value
-      _pixel = new PixelPacket;
-      _pixelOwn  = true;
-      *_pixel    = *color_._pixel;
-      
-      // Copy pixel type
-      _pixelType = color_._pixelType;
-    }
+  *_pixel    = *color_._pixel;
 }
 
-Magick::Color Magick::Color::operator = ( const Color& color_ )
+// Assignment operator
+Magick::Color& Magick::Color::operator = ( const Color& color_ )
 {
   // If not being set to ourself
   if ( this != &color_ )
@@ -190,10 +184,14 @@ Magick::Color::Color ( PixelPacket &color_ )
 }
 
 // Set color via ImageMagick PixelPacket
-const Magick::Color Magick::Color::operator= ( MagickLib::PixelPacket &color_ )
+const Magick::Color& Magick::Color::operator= ( MagickLib::PixelPacket &color_ )
 {
-  Magick::Color color( color_ );
-  return color;
+  *_pixel = color_;
+  if ( color_.opacity != Opaque )
+    _pixelType = RGBAPixel;
+  else
+    _pixelType = RGBPixel;
+  return *this;
 }
 
 // Return ImageMagick PixelPacket struct based on color.

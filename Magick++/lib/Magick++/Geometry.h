@@ -39,6 +39,7 @@ namespace Magick
 	       bool yNegative_ = false );
     Geometry ( const std::string geometry_ );
     Geometry ( const char * geometry_ );
+    Geometry ( const Geometry & geometry_ );
     Geometry ( );
     ~Geometry ( void );
     
@@ -89,6 +90,9 @@ namespace Magick
     // Set via geometry string
     const Geometry& operator = ( const std::string &geometry_ );
     const Geometry& operator = ( const char * geometry_ );
+
+    // Assignment operator
+    Geometry operator= ( const Geometry& Geometry_ );
     
     // Return geometry string
     operator std::string() const;
@@ -121,6 +125,17 @@ namespace Magick
 //
 // Inlines
 //
+
+// Does object contain valid geometry?
+inline void Magick::Geometry::isValid ( bool isValid_ )
+{
+  _isValid = isValid_;
+}
+
+inline bool Magick::Geometry::isValid ( void ) const
+{
+  return _isValid;
+}
 
 // Width
 inline void Magick::Geometry::width ( unsigned int width_ )
@@ -221,17 +236,6 @@ inline void Magick::Geometry::less ( bool less_ )
 inline bool Magick::Geometry::less ( void ) const
 {
   return _less;
-}
-
-// Does object contain valid geometry?
-inline void Magick::Geometry::isValid ( bool isValid_ )
-{
-  _isValid = isValid_;
-}
-
-inline bool Magick::Geometry::isValid ( void ) const
-{
-  return _isValid;
 }
 
 

@@ -12,10 +12,11 @@
 
 // Default constructor
 Magick::MutexLock::MutexLock(void)
+  : _mutex()
 {
 #if defined(HasPTHREADS)
   ::pthread_mutexattr_t attr;
-  int sysError = 0;
+  int sysError;
   if ( (sysError = ::pthread_mutexattr_init( &attr )) == 0 )
     if ( (sysError = ::pthread_mutex_init( &_mutex, &attr )) == 0 )
       return;

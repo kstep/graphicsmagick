@@ -383,9 +383,11 @@ namespace Magick
   public:
     // Draw on image using a single drawable
     // Store in list to make implementation easier
-    drawImage( const Drawable &drawable_ ) {
-      _drawableList.push_back( drawable_ );
-    }
+    drawImage( const Drawable &drawable_ )
+      : _drawableList()
+      {
+        _drawableList.push_back( drawable_ );
+      }
     // Draw on image using a drawable list
     drawImage( const std::list<Drawable> &drawable_ )
       : _drawableList( drawable_ ) {}

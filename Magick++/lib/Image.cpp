@@ -2636,7 +2636,8 @@ void Magick::Image::throwImageException( void )
 Magick::ImageRef::ImageRef ( MagickLib::Image * image_ )
   : _image(image_),
     _options(new Options),
-    _refCount(1)
+    _refCount(1),
+    _mutexLock()
 {
 }
 
@@ -2646,7 +2647,8 @@ Magick::ImageRef::ImageRef ( MagickLib::Image * image_,
 			     const Options * options_ )
   : _image(image_),
     _options(0),
-    _refCount(1)
+    _refCount(1),
+    _mutexLock()
 {
   _options = new Options( *options_ );
 }
@@ -2655,7 +2657,8 @@ Magick::ImageRef::ImageRef ( MagickLib::Image * image_,
 Magick::ImageRef::ImageRef ( void )
   : _image(0),
     _options(new Options),
-    _refCount(1)
+    _refCount(1),
+    _mutexLock()
 {
   // Allocate default image
   _image = AllocateImage( _options->imageInfo() );

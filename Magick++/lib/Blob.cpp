@@ -19,14 +19,14 @@
 
 // Default constructor
 Magick::Blob::Blob ( void )
+  : _blobRef(new Magick::BlobRef( 0, 0 ))
 {
-  _blobRef = new Magick::BlobRef( 0, 0 );
 }
 
 // Construct with data
 Magick::Blob::Blob ( const void* data_, size_t length_ )
+  : _blobRef(new Magick::BlobRef( data_, length_ ))
 {
-  _blobRef = new Magick::BlobRef( data_, length_ );
 }
 
 // Copy constructor (reference counted)
@@ -127,7 +127,8 @@ Magick::BlobRef::BlobRef ( const void* data_,
 			   size_t length_ )
   : _data(0),
     _length(length_),
-    _refCount(1)
+    _refCount(1),
+    _mutexLock()
 {
   if( data_ )
     {

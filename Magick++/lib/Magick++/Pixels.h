@@ -74,6 +74,10 @@ namespace Magick
 #endif
   private:
 
+    // Copying and assigning Pixels is not supported.
+    Pixels( const Pixels& pixels_ );
+    const Pixels& operator=( const Pixels& pixels_ );
+
     Magick::Image          _image;   // Image reference
     MagickLib::ViewInfo*   _view;    // Image view handle
     Magick::PixelPacket*   _pixels;  // View pixels

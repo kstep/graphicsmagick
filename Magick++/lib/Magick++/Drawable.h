@@ -43,6 +43,12 @@ namespace Magick
     void        primitive ( const std::string &primitive_ );
     std::string primitive ( void ) const;
 
+    // Copy construtor
+    Drawable( const Drawable& drawable_ );
+
+    // Assignment operator
+    const Drawable& operator=( const Drawable& drawable_ );
+
   protected:
 
     // Common implementation of methods which take one Coordinate argument
@@ -61,18 +67,6 @@ namespace Magick
     // This is the string normally passed by -draw, e.g. "circle
     // +100+100 +200+200"
     std::string _primitive;
-
-    // PrimitiveType _primitive
-    // std::list<Magick::Coordinate> _points
-    // PaintMethod __method
-    // Color _stroke
-    // Color _fill
-    // Image _tile
-    // double _linewidth
-    // Color _bordercolor
-    // double _x
-    // double _y
-    // double _rotate
   };
 
     

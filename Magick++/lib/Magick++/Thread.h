@@ -85,8 +85,8 @@ namespace Magick
 
 // Construct with mutex lock (locks mutex)
 inline Magick::Lock::Lock( MutexLock &mutexLock_ )
+  : _mutexLock(&mutexLock_)
 {
-  _mutexLock = &mutexLock_;
   _mutexLock->lock();
 }
 
