@@ -415,12 +415,13 @@ static unsigned int InitializeMagic(void)
     }
   if (ReadMagicConfigurationFile(MagicFilename) == True)
     return(True);
-
   client_path=SetClientPath((char *) NULL);
-  if (client_path)
-    (void) strcpy(path,client_path);
-  else
-    (void) strcpy(path,DelegatePath);
+  (void) strcpy(path,client_path);
+  (void) strcat(path,DirectorySeparator);
+  (void) strcat(path,MagicFilename);
+  if (ReadMagicConfigurationFile(path) == True)
+    return(True);
+  (void) strcpy(path,DelegatePath);
   (void) strcat(path,DirectorySeparator);
   (void) strcat(path,MagicFilename);
   return(ReadMagicConfigurationFile(path));
