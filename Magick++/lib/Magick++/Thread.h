@@ -10,8 +10,6 @@
 #if !defined (Thread_header)
 #define Thread_header
 
-#include "Magick++/Include.h"
-
 #if defined(_VISUALC_)
 #include <windows.h>
 #if defined(_MT)
@@ -22,6 +20,8 @@ struct win32_mutex {
 #define MAXSEMLEN	1
 #endif
 #endif
+
+#include "Magick++/Include.h"
 
 #if defined(HasPTHREADS)
 # include <pthread.h>
