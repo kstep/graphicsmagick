@@ -1,6 +1,8 @@
 2003-02-14  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* www/archives.html: commented out sites not mirroring GM yet.
+	Changed "ftp.simplesystems.org" to "ftp.graphicsmagick.org".
+	Added link to graphicsmagick.sf.net.
 
 2003-02-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
