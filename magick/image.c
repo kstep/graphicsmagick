@@ -3069,9 +3069,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   DrawInfo
     *draw_info;
 
-  ExceptionInfo
-    exception;
-
   Image
     *map_image,
     *region_image;
@@ -3746,7 +3743,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           Transform image colors to match this set of colors.
         */
         (void) strcpy(clone_info->filename,argv[++i]);
-        map_image=ReadImage(clone_info,&exception);
+        map_image=ReadImage(clone_info,&(*image)->exception);
         continue;
       }
     if (LocaleCompare("matte",option+1) == 0)
@@ -3953,7 +3950,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           Add a ICC or IPTC profile to the image.
         */
         (void) strcpy(clone_info->filename,argv[++i]);
-        profile=ReadImage(clone_info,&exception);
+        profile=ReadImage(clone_info,&(*image)->exception);
         if (profile == (Image *) NULL)
           continue;
         if (LocaleCompare("icm",profile->magick) == 0)
