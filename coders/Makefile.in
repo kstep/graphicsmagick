@@ -215,7 +215,7 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 MAGICK_CODER_SRCS = art.c avi.c avs.c bmp.c cmyk.c cut.c dcm.c \
   dps.c dpx.c ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c \
   histogram.c html.c icon.c jbig.c jpeg.c jp2.c label.c logo.c map.c mat.c \
-  matte.c meta.c miff.c mono.c mpc.c mpeg.c mtv.c mvg.c null.c pcd.c \
+  matte.c meta.c miff.c mono.c mpc.c mpeg.c mtv.c mvg.c null.c otb.c pcd.c \
   pcl.c pcx.c pdb.c pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c \
   ps.c ps2.c ps3.c psd.c pwp.c registry.c rgb.c rla.c rle.c sct.c sfw.c \
   sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c \
@@ -246,7 +246,7 @@ noinst_HEADERS =
 @WITH_MODULES_TRUE@  dcm.la dps.la dpx.la ept.la fax.la fpx.la fits.la gif.la gray.la \
 @WITH_MODULES_TRUE@  gradient.la hdf.la histogram.la html.la icon.la jbig.la jpeg.la jp2.la \
 @WITH_MODULES_TRUE@  label.la logo.la map.la mat.la matte.la meta.la miff.la mono.la mpc.la \
-@WITH_MODULES_TRUE@  mpeg.la mtv.la mvg.la null.la pcd.la pcl.la pcx.la pdb.la pdf.la \
+@WITH_MODULES_TRUE@  mpeg.la mtv.la mvg.la null.la otb.la pcd.la pcl.la pcx.la pdb.la pdf.la \
 @WITH_MODULES_TRUE@  pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la \
 @WITH_MODULES_TRUE@  psd.la pwp.la registry.la rgb.la rla.la  rle.la sct.la sfw.la sgi.la \
 @WITH_MODULES_TRUE@  stegano.la sun.la svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la \
@@ -434,6 +434,11 @@ mvg_la_LIBADD = ../magick/libMagick.la
 null_la_SOURCES = null.c
 null_la_LDFLAGS = -no-undefined -module -avoid-version
 null_la_LIBADD = ../magick/libMagick.la
+
+# OTB module
+otb_la_SOURCES = otb.c
+otb_la_LDFLAGS = -no-undefined -module -avoid-version
+otb_la_LIBADD = ../magick/libMagick.la
 
 # PCD module
 pcd_la_SOURCES = pcd.c
@@ -759,7 +764,7 @@ libCoders_la_LIBADD =
 @WITH_MODULES_FALSE@	html.lo icon.lo jbig.lo jpeg.lo jp2.lo \
 @WITH_MODULES_FALSE@	label.lo logo.lo map.lo mat.lo matte.lo \
 @WITH_MODULES_FALSE@	meta.lo miff.lo mono.lo mpc.lo mpeg.lo \
-@WITH_MODULES_FALSE@	mtv.lo mvg.lo null.lo pcd.lo pcl.lo pcx.lo \
+@WITH_MODULES_FALSE@	mtv.lo mvg.lo null.lo otb.lo pcd.lo pcl.lo pcx.lo \
 @WITH_MODULES_FALSE@	pdb.lo pdf.lo pict.lo pix.lo plasma.lo \
 @WITH_MODULES_FALSE@	png.lo pnm.lo preview.lo ps.lo ps2.lo \
 @WITH_MODULES_FALSE@	ps3.lo psd.lo pwp.lo registry.lo rgb.lo \
@@ -806,6 +811,9 @@ mvg_la_OBJECTS = $(am_mvg_la_OBJECTS)
 null_la_DEPENDENCIES = ../magick/libMagick.la
 am_null_la_OBJECTS = null.lo
 null_la_OBJECTS = $(am_null_la_OBJECTS)
+otb_la_DEPENDENCIES = ../magick/libMagick.la
+am_otb_la_OBJECTS = otb.lo
+otb_la_OBJECTS = $(am_otb_la_OBJECTS)
 pcd_la_DEPENDENCIES = ../magick/libMagick.la
 am_pcd_la_OBJECTS = pcd.lo
 pcd_la_OBJECTS = $(am_pcd_la_OBJECTS)
@@ -970,7 +978,7 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/mono.Plo $(DEPDIR)/mpc.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/mpeg.Plo $(DEPDIR)/mtv.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/mvg.Plo $(DEPDIR)/null.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/pcd.Plo $(DEPDIR)/pcl.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/otb.Plo $(DEPDIR)/pcd.Plo $(DEPDIR)/pcl.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/pcx.Plo $(DEPDIR)/pdb.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/pdf.Plo $(DEPDIR)/pict.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/pix.Plo $(DEPDIR)/plasma.Plo \
@@ -1013,7 +1021,7 @@ DIST_SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) \
 	$(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES) \
 	$(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) \
 	$(mpeg_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) \
-	$(null_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) \
+	$(null_la_SOURCES) $(otb_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) \
 	$(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) \
 	$(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) \
 	$(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) \
@@ -1035,7 +1043,7 @@ HEADERS = $(noinst_HEADERS)
 
 DIST_COMMON = $(noinst_HEADERS) Makefile.am Makefile.in \
 	delegates.mgk.in type.mgk.in
-SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(registry_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
+SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(otb_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(registry_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
 
 all: all-am
 
@@ -1157,6 +1165,8 @@ mvg.la: $(mvg_la_OBJECTS) $(mvg_la_DEPENDENCIES)
 	$(LINK) -rpath $(pkgdir) $(mvg_la_LDFLAGS) $(mvg_la_OBJECTS) $(mvg_la_LIBADD) $(LIBS)
 null.la: $(null_la_OBJECTS) $(null_la_DEPENDENCIES) 
 	$(LINK) -rpath $(pkgdir) $(null_la_LDFLAGS) $(null_la_OBJECTS) $(null_la_LIBADD) $(LIBS)
+otb.la: $(otb_la_OBJECTS) $(otb_la_DEPENDENCIES) 
+	$(LINK) -rpath $(pkgdir) $(otb_la_LDFLAGS) $(otb_la_OBJECTS) $(otb_la_LIBADD) $(LIBS)
 pcd.la: $(pcd_la_OBJECTS) $(pcd_la_DEPENDENCIES) 
 	$(LINK) -rpath $(pkgdir) $(pcd_la_LDFLAGS) $(pcd_la_OBJECTS) $(pcd_la_LIBADD) $(LIBS)
 pcl.la: $(pcl_la_OBJECTS) $(pcl_la_DEPENDENCIES) 
@@ -1294,6 +1304,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/mtv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/mvg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/null.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/otb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/pcd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/pcl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/pcx.Plo@am__quote@
