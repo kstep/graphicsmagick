@@ -59,10 +59,13 @@
 /*
   Static declarations.
 */
-#if !defined(HasLTDL)
 static char
   *lt_slsearchpath = (char *) NULL;
-#endif
+static void
+  *gs_dll_handle = (void *)NULL;
+static GhostscriptVectors
+    gs_vectors;
+
 
 /*
   External declarations.
@@ -292,7 +295,6 @@ MagickExport int IsWindows95()
   return(0);
 }
 
-#if !defined(HasLTDL)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -317,9 +319,7 @@ MagickExport int IsWindows95()
 */
 void lt_dlclose(void *handle)
 {
-#if defined(HasMODULES)
   FreeLibrary(handle);
-#endif
 }
 
 /*
@@ -394,7 +394,6 @@ int lt_dlinit(void)
 */
 void *lt_dlopen(char *filename)
 {
-#if defined(HasMODULES)
 #define MaxPathElements  31
 
   char
@@ -414,11 +413,14 @@ void *lt_dlopen(char *filename)
     *handle;
 
   handle=(void *) NULL;
+  handle=(void *) LoadLibrary(filename);
+
+  if (handle != (void *) NULL)
+    return(handle);
+
   if (lt_slsearchpath == (char *) NULL)
-    {
-      handle=(void *) LoadLibrary(filename);
-      return(handle);
-    }
+    return handle;
+
   p=lt_slsearchpath;
   index=0;
   while (index < MaxPathElements)
@@ -443,9 +445,6 @@ void *lt_dlopen(char *filename)
     p=q+1;
   }
   return(handle);
-#else
-  return((void *) NULL);
-#endif
 }
 
 /*
@@ -510,7 +509,6 @@ void lt_dlsetsearchpath(char *path)
 */
 void *lt_dlsym(void *h,char *s)
 {
-#if defined(HasMODULES)
   LPFNDLLFUNC1
     lpfnDllFunc1;
 
@@ -518,11 +516,7 @@ void *lt_dlsym(void *h,char *s)
   if (!lpfnDllFunc1)
     return((void *) NULL);
   return((void *) lpfnDllFunc1);
-#else
-  return((void*) NULL);
-#endif
 }
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1078,6 +1072,32 @@ static int NTGetLatestGhostscript( void )
   return gsver;
 }
 
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T G h o s t s c r i p t D L L                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method NTGhostscriptDLL obtains the path to the latest Ghostscript DLL.
+%   The method returns False if a value is not obtained.
+%
+%  The format of the NTGhostscriptDLL method is:
+%
+%      int NTGhostscriptDLL( char *path, int path_length)
+%
+%  A description of each parameter follows:
+%
+%    o path: Pointer to path buffer to update
+%
+%    o path_length: Allocation size of path buffer.
+%%
+*/
 MagickExport int NTGhostscriptDLL(char *path, int path_length)
 {
   int
@@ -1096,6 +1116,36 @@ MagickExport int NTGhostscriptDLL(char *path, int path_length)
 
   strncpy(path, buf, path_length-1);
   return TRUE;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T G h o s t s c r i p t D L L V e c t o r s                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method NTGhostscriptDLLVectors returns a GhostscriptVectors structure
+%   containing function vectors to invoke Ghostscript DLL functions. A null
+%   pointer is returned if there is an error with loading the DLL or
+%   retrieving the function vectors.
+%
+%  The format of the NTGhostscriptDLLVectors method is:
+%
+%      const GhostscriptVectors *NTGhostscriptDLLVectors( void )
+%
+%%
+*/
+MagickExport const GhostscriptVectors *NTGhostscriptDLLVectors( void )
+{
+  if (NTGhostscriptLoadDLL())
+    return &gs_vectors;
+
+  return (GhostscriptVectors*) NULL;
 }
 
 /*
@@ -1202,6 +1252,91 @@ MagickExport int NTGhostscriptFonts(char *path, int path_length)
   }
 
   return FALSE;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T G h o s t s c r i p t L o a d D L L                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method NTGhostscriptLoadDLL attempts to load the Ghostscript DLL
+%   and returns True if it succeeds.
+%
+%  The format of the NTGhostscriptLoadDLL method is:
+%
+%      int NTGhostscriptLoadDLL(void)
+%
+%%
+*/
+MagickExport int NTGhostscriptLoadDLL(void)
+{
+  char
+    dll_path[MaxTextExtent];
+
+  if (gs_dll_handle != (void *) NULL)
+    return True;
+
+  if(!NTGhostscriptDLL(dll_path,sizeof(dll_path)))
+    return False;
+
+  gs_dll_handle = lt_dlopen(dll_path);
+  if (gs_dll_handle == (void *) NULL)
+    return False;
+
+  memset((void*)&gs_vectors, 0, sizeof(GhostscriptVectors));
+
+  gs_vectors.exit=lt_dlsym(gs_dll_handle,"gsapi_exit");
+  gs_vectors.init_with_args=lt_dlsym(gs_dll_handle,"gsapi_init_with_args");
+  gs_vectors.new_instance=lt_dlsym(gs_dll_handle,"gsapi_new_instance");
+  gs_vectors.run_string=lt_dlsym(gs_dll_handle,"gsapi_run_string");
+  gs_vectors.delete_instance=lt_dlsym(gs_dll_handle,"gsapi_delete_instance");
+
+  if ((gs_vectors.exit==NULL) ||
+      (gs_vectors.init_with_args==NULL) ||
+      (gs_vectors.new_instance==NULL) ||
+      (gs_vectors.run_string==NULL) ||
+      (gs_vectors.delete_instance==NULL))
+    return False;
+
+  return True;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T G h o s t s c r i p t U n L o a d D L L                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method NTGhostscriptUnLoadDLL unloads the Ghostscript DLL if it is loaded.
+%
+%  The format of the NTGhostscriptUnLoadDLL method is:
+%
+%      int NTGhostscriptUnLoadDLL(void)
+%
+%%
+*/
+MagickExport int NTGhostscriptUnLoadDLL(void)
+{
+  if (gs_dll_handle != (void *) NULL)
+    {
+      lt_dlclose(gs_dll_handle);
+      gs_dll_handle=(void *) NULL;
+      memset((void*)&gs_vectors, 0, sizeof(GhostscriptVectors));
+      return True;
+    }
+
+  return False;
 }
 
 /*

@@ -111,13 +111,12 @@ extern MagickExport int
   NTGhostscriptDLL(char *path, int path_length),
   NTGhostscriptEXE(char *path, int path_length),
   NTGhostscriptFonts(char *path, int path_length),
-  NTGhostscriptLoadDLL(char *path),
+  NTGhostscriptLoadDLL(void),
   NTGhostscriptUnLoadDLL(void),
   NTSystemCommand(const char *);
 
-extern MagickExport GhostscriptVectors
+extern MagickExport const GhostscriptVectors
   *NTGhostscriptDLLVectors( void );
-
 
 #if !defined(XS_VERSION)
 extern MagickExport DIR
