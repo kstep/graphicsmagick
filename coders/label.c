@@ -126,8 +126,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
-  image->columns=metrics.width;
-  image->rows=metrics.height;
+  image->columns=(unsigned long) floor(metrics.width+0.5);
+  image->rows=(unsigned long) floor(metrics.height+0.5);
   (void) QueryColorDatabase("white",&image->background_color);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);

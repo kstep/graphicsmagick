@@ -857,12 +857,11 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   metrics->pixels_per_em.x=(resolution.y/72.0)*
     ExpandAffine(&draw_info->affine)*draw_info->pointsize;
   metrics->pixels_per_em.y=metrics->pixels_per_em.x;
-  metrics->ascent=(int) metrics->pixels_per_em.x;
-  metrics->descent=(int) metrics->pixels_per_em.y/-5;
-  metrics->width=(unsigned int)
-    (annotate_image->columns/ExpandAffine(&draw_info->affine));
-  metrics->height=(unsigned int) (1.152*metrics->pixels_per_em.x);
-  metrics->max_advance=(unsigned int) metrics->pixels_per_em.x;
+  metrics->ascent=metrics->pixels_per_em.x;
+  metrics->descent=metrics->pixels_per_em.y/-5;
+  metrics->width=annotate_image->columns/ExpandAffine(&draw_info->affine);
+  metrics->height=1.152*metrics->pixels_per_em.x;
+  metrics->max_advance=metrics->pixels_per_em.x;
   if (!render)
     {
       DestroyImage(annotate_image);
@@ -1169,11 +1168,11 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     (unsigned int) resolution.y);
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
-  metrics->ascent=(face->size->metrics.ascender+32)/64;
-  metrics->descent=(face->size->metrics.descender+32)/64;
+  metrics->ascent=(double) face->size->metrics.ascender/64.0;
+  metrics->descent=(double) face->size->metrics.descender/64.0;
   metrics->width=0;
-  metrics->height=(face->size->metrics.height+32)/64;
-  metrics->max_advance=(face->size->metrics.max_advance+32)/64;
+  metrics->height=(double) face->size->metrics.height/64.0;
+  metrics->max_advance=(double) face->size->metrics.max_advance/64.0;
   /*
     Convert to Unicode.
   */
@@ -1304,13 +1303,12 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       }
     FT_Glyph_Get_CBox(glyph.image,ft_glyph_bbox_pixels,&bounding_box);
     origin.x+=face->glyph->advance.x;
-    if (origin.x > metrics->width)
-      metrics->width=origin.x;
+    if ((origin.x/64.0) > metrics->width)
+      metrics->width=origin.x/64.0;
     if (last_glyph.id != 0)
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
   }
-  metrics->width=(metrics->width+32)/64;
   if (render)
     if ((draw_info->stroke.opacity != TransparentOpacity) ||
         (draw_info->stroke_pattern != (Image *) NULL))
@@ -1506,9 +1504,8 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   metrics->pixels_per_em.y=font_info->max_bounds.width;
   metrics->ascent=font_info->ascent;
   metrics->descent=(-font_info->descent);
-  metrics->width=(unsigned int)
-    (annotate_info.width/ExpandAffine(&draw_info->affine));
-  metrics->height=(unsigned int) (metrics->pixels_per_em.x+4);
+  metrics->width=annotate_info.width/ExpandAffine(&draw_info->affine);
+  metrics->height=metrics->pixels_per_em.x+4;
   metrics->max_advance=font_info->max_bounds.width;
   if (!render)
     return(True);
