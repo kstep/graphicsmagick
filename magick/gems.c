@@ -472,7 +472,6 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
     beta;
 
   PixelPacket
-  abc,
     p,
     q,
     r,
