@@ -3213,7 +3213,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
-    MagickMonitor(RenderImageText,(double) (q-primitive),primitive_extent);
+    MagickMonitor(RenderImageText,q-primitive,primitive_extent);
   }
   if (graphic_context[n]->debug)
     (void) fprintf(stdout,"end draw-image (%.2fu)\n",GetUserTime(&timer));
