@@ -124,8 +124,8 @@ BEGIN
                     IDC_STANDALONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
                     167,236,10
     PUSHBUTTON      "Edit ""magick_config.h""",IDC_EditConfig,109,204,92,14
-    CONTROL         "Generate a font map file",IDC_GENERATE_FONTMAP,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,15,182,88,10
+    CONTROL         "Generate Visual Studio 7 format",IDC_GENERATE_VS7,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,182,140,10
 END
 
 IDD_SYSTEM_PAGE DIALOG DISCARDABLE  0, 0, 318, 233

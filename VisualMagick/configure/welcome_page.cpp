@@ -49,15 +49,20 @@ BOOL CWelcomePage::OnInitDialog()
 
 	m_welcomeText  = "Welcome!\n\n";
 	
-	m_welcomeText += "This is the VisualMagick configuration wizard. It will help you set up";
-	m_welcomeText += " your build environment and customize the build process for your needs.";
-	m_welcomeText += " It's purpose is to create Visual C++ 6.0 compatible project (DSP) and";
- 	m_welcomeText += " workspace files.\n\n";
+	m_welcomeText += "This is the VisualMagick configuration wizard. It will help you set up ";
+	m_welcomeText += "your build environment and customize the build process for your needs. ";
+	m_welcomeText += "It's purpose is to create Visual Studio 6.0 project (DSP) and ";
+ 	m_welcomeText += "workspace (DSW) files, or Visual Studio 7.0 solution (SLN) and ";
+ 	m_welcomeText += "project files (VCPROJ).\n\n";
 
 	m_welcomeText += "When the build environment has been created you can build the system in ";
 	m_welcomeText += "the Visual Studio IDE.\n\n";
 
-	m_welcomeText += "Good Luck from - The ImageMagick Studio Development Team";
+	m_welcomeText += "NOTE: Please be advised that support for Visual Studio 6.0 will not be ";
+	m_welcomeText += "actively supported very soon. VS7 has been out for a year now and all ";
+	m_welcomeText += "current work takes place in this environment.\n\n";
+
+	m_welcomeText += "Good Luck - and thanks for all the fish!";
 
 	UpdateData(FALSE);
 	

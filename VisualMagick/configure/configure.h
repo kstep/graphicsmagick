@@ -28,12 +28,276 @@ using namespace std;
 /////////////////////////////////////////////////////////////////////////////
 // CConfigureApp:
 // See Configure.cpp for the implementation of this class
-//
+/////////////////////////////////////////////////////////////////////////////
+
+class ConfigureProject
+{
+public:
+  ConfigureProject();
+  GUID m_guid;
+	TCHAR m_GuidText[250];
+  ofstream m_stream;
+  string name;
+  list<string> depends;
+
+  // Assignment operator
+  ConfigureProject& operator=(const ConfigureProject& obj); 
+  // Copy constructor
+  ConfigureProject(const ConfigureProject& obj);
+  // Destructor
+  virtual ~ConfigureProject( void );
+
+  void generate_dir(const char *dir,
+    const char *specS, int nestinglevel, int project_type,
+      std::list<std::string> &exclude_list);
+
+  virtual void write_begin_group(const char *name) = 0;
+  virtual void write_end_group(void) = 0;
+  virtual void write_begin_target(const char* name) = 0;
+  virtual void write_end_target(void) = 0;
+  virtual void write_begin_project(const char *name,int type) = 0;
+  virtual void write_end_project(void) = 0;
+  virtual void write_file(const char *filename) = 0;
+  virtual void write_configuration(const char *name, const char *subname, int state) = 0;
+  virtual void write_properties(const char *name,
+    const char *outputpath, const char *intermediatepath, const char *targetpath, int type, int mode) = 0;
+
+  virtual void write_cpp_compiler_tool(
+    string &root, string &extra_path,
+      list<string> &includes_list, list<string> &standard_includes_list,
+        list<string> &defines_list,
+          int runtime, int project_type, int type, int mode) = 0;
+  virtual void write_cpp_compiler_tool_begin(
+    int type, int mode) = 0;
+  virtual void write_cpp_compiler_tool_runtime(
+    int runtime, int type, int mode) = 0;
+  virtual void write_cpp_compiler_tool_options(
+    int type, int mode) = 0;
+  virtual void write_cpp_compiler_tool_includes(
+    string &root, string &extra_path,
+      list<string> &includes_list, list<string> &standard_includes_list,
+        BOOL bAbsolutePaths) = 0;
+  virtual void write_cpp_compiler_tool_defines(
+      list<string> &defines_list, int type, int mode,
+        bool bConsoleMode, bool bDynamicMFC) = 0;
+  virtual void write_cpp_compiler_tool_end(
+    int type, int mode) = 0;
+
+  virtual void write_link_tool(
+    string &root, string &extra_path, string &outname,
+      bool bNeedsMagickpp, bool bNeedsRelo,
+        list<string> &shared_lib_list, list<string> &lib_list,
+          const char *input_path, const char *output_path,
+            int runtime, int project_type, int type, int mode) = 0;
+  virtual void write_link_tool_begin(
+    const char *input_path, const char *output_path,
+      int type, int mode) = 0;
+  virtual void write_link_tool_dependencies(
+    string &root, bool bNeedsMagickpp,
+      list<string> &shared_lib_list, list<string> &lib_list,
+        int runtime, int type, int mode) = 0;
+  virtual void write_link_tool_options(bool bNeedsRelo, int type, int mode) = 0;
+  virtual void write_link_tool_output(
+    const char *input_path, const char *output_path, string &outname,
+      int type, int mode) = 0;
+  virtual void write_link_tool_end(int type, int mode) = 0;
+
+  virtual void write_midl_compiler_tool(
+    string &root, string &extra_path, string &outname, const char *output_path,
+      int runtime, int project_type, int type, int mode, bool isCOMproject) = 0;
+  virtual void write_custom_tool(
+    const char *target, const char *trigger,
+      int runtime, int project_type, int type, int mode, bool isCOMproject) = 0;
+  virtual void write_res_compiler_tool(
+    string &root, string &extra_path, int runtime, int project_type, int type, int mode) = 0;
+};
+
+class ConfigureWorkspace
+{
+public:
+  ConfigureWorkspace();
+  GUID m_guid;
+	TCHAR m_GuidText[250];
+  ofstream m_stream;
+  string name;
+
+  // Assignment operator
+  ConfigureWorkspace& operator=(const ConfigureWorkspace& obj) { return *this; }; 
+  // Copy constructor
+  ConfigureWorkspace(const ConfigureWorkspace& obj)  { *this = obj; }
+
+  virtual void write_start(void) = 0;
+  virtual void write_end(void) = 0;
+  virtual void write_begin_project(ConfigureProject *project, const char *name, const char *filename) = 0;
+  virtual void write_end_project(ConfigureProject *project) = 0;
+  virtual void write_project_dependency(ConfigureProject *project, string &dep_name) = 0;
+  virtual void write_project_dependency(ConfigureProject *project, const char *dep_name) = 0;
+};
+
+class ConfigureVS6Project : public ConfigureProject
+{
+public:
+  ConfigureVS6Project() {};
+  ~ConfigureVS6Project( void );
+
+  void write_begin_group(const char *name);
+  void write_end_group(void);
+  void write_begin_target(const char* name);
+  void write_end_target(void);
+  void write_begin_project(const char *name,int type);
+  void write_end_project(void);
+  void write_file(const char *filename);
+  void write_configuration(const char *name, const char *subname, int state);
+  void write_properties(const char *name,
+    const char *outputpath, const char *intermediatepath, const char *targetpath, int type, int mode);
+  void write_cpp_compiler_tool(
+    string &root, string &extra_path,
+      list<string> &includes_list, list<string> &standard_includes_list,
+        list<string> &defines_list,
+          int runtime, int project_type, int type, int mode);
+
+  void write_link_tool(
+    string &root, string &extra_path, string &outname,
+      bool bNeedsMagickpp, bool bNeedsRelo,
+        list<string> &shared_lib_list, list<string> &lib_list,
+          const char *input_path, const char *output_path,
+            int runtime, int project_type, int type, int mode);
+  void write_link_tool_begin(
+    const char *input_path, const char *output_path,
+      int type, int mode);
+  void write_link_tool_dependencies(
+    string &root, bool bNeedsMagickpp,
+      list<string> &shared_lib_list, list<string> &lib_list,
+        int runtime, int type, int mode);
+  void write_link_tool_options(bool bNeedsRelo, int type, int mode);
+  void write_link_tool_output(
+    const char *input_path, const char *output_path, string &outname,
+      int type, int mode);
+  void write_link_tool_end(int type, int mode);
+
+  void write_midl_compiler_tool(
+    string &root, string &extra_path, string &outname, const char *output_path,
+      int runtime, int project_type, int type, int mode, bool isCOMproject);
+  void write_cpp_compiler_tool_begin(
+    int type, int mode);
+  void write_cpp_compiler_tool_runtime(
+    int runtime, int type, int mode);
+  void write_cpp_compiler_tool_options(
+    int type, int mode);
+  void write_cpp_compiler_tool_includes(
+    string &root, string &extra_path,
+      list<string> &includes_list, list<string> &standard_includes_list,
+        BOOL bAbsolutePaths);
+  void write_cpp_compiler_tool_defines(
+      list<string> &defines_list, int type, int mode,
+        bool bConsoleMode, bool bDynamicMFC);
+  void write_cpp_compiler_tool_end(
+    int type, int mode);
+
+  void write_custom_tool(
+    const char *target, const char *trigger,
+      int runtime, int project_type, int type, int mode, bool isCOMproject);
+  void write_res_compiler_tool(
+    string &root, string &extra_path, int runtime, int project_type, int type, int mode);
+};
+
+class ConfigureVS6Workspace : public ConfigureWorkspace
+{
+public:
+  ConfigureVS6Workspace() {};
+  void write_start(void);
+  void write_end(void);
+  void write_begin_project(ConfigureProject *project, const char *name, const char *filename);
+  void write_end_project(ConfigureProject *project);
+  void write_project_dependency(ConfigureProject *project, string &dep_name);
+  void write_project_dependency(ConfigureProject *project, const char *dep_name);
+};
+
+class ConfigureVS7Project : public ConfigureProject
+{
+public:
+  ConfigureVS7Project() {};
+  ~ConfigureVS7Project( void );
+
+  void write_begin_group(const char *name);
+  void write_end_group(void);
+  void write_begin_target(const char* name);
+  void write_end_target(void);
+  void write_begin_project(const char *name,int type);
+  void write_end_project(void);
+  void write_file(const char *filename);
+  void write_configuration(const char *name, const char *subname, int state);
+  void write_properties(const char *name,
+    const char *outputpath, const char *intermediatepath, const char *targetpath, int type, int mode);
+
+  void write_cpp_compiler_tool(
+    string &root, string &extra_path,
+      list<string> &includes_list, list<string> &standard_includes_list,
+        list<string> &defines_list,
+          int runtime, int project_type, int type, int mode);
+  void write_cpp_compiler_tool_begin(
+    int type, int mode);
+  void write_cpp_compiler_tool_runtime(
+    int runtime, int type, int mode);
+  void write_cpp_compiler_tool_options(
+    int type, int mode);
+  void write_cpp_compiler_tool_includes(
+    string &root, string &extra_path,
+      list<string> &includes_list, list<string> &standard_includes_list,
+        BOOL bAbsolutePaths);
+  void write_cpp_compiler_tool_defines(
+      list<string> &defines_list, int type, int mode,
+        bool bConsoleMode, bool bDynamicMFC);
+  void write_cpp_compiler_tool_end(
+    int type, int mode);
+
+  void write_link_tool(
+    string &root, string &extra_path, string &outname,
+      bool bNeedsMagickpp, bool bNeedsRelo,
+        list<string> &shared_lib_list, list<string> &lib_list,
+          const char *input_path, const char *output_path,
+            int runtime, int project_type, int type, int mode);
+  void write_link_tool_begin(
+    const char *input_path, const char *output_path,
+      int type, int mode);
+  void write_link_tool_dependencies(
+    string &root, bool bNeedsMagickpp,
+      list<string> &shared_lib_list, list<string> &lib_list,
+        int runtime, int type, int mode);
+  void write_link_tool_options(bool bNeedsRelo, int type, int mode);
+  void write_link_tool_output(
+    const char *input_path, const char *output_path, string &outname,
+      int type, int mode);
+  void write_link_tool_end(int type, int mode);
+
+  void write_midl_compiler_tool(
+    string &root, string &extra_path, string &outname, const char *output_path,
+      int runtime, int project_type, int type, int mode, bool isCOMproject);
+  void write_custom_tool(
+    const char *target, const char *trigger,
+      int runtime, int project_type, int type, int mode, bool isCOMproject);
+  void write_res_compiler_tool(
+    string &root, string &extra_path, int runtime, int project_type, int type, int mode);
+};
+
+class ConfigureVS7Workspace : public ConfigureWorkspace
+{
+public:
+  ConfigureVS7Workspace() {};
+  void write_start(void);
+  void write_end(void);
+  void write_begin_project(ConfigureProject *project, const char *name, const char *filename);
+  void write_end_project(ConfigureProject *project);
+  void write_project_dependency(ConfigureProject *project, string &dep_name);
+  void write_project_dependency(ConfigureProject *project, const char *dep_name);
+};
 
 class CConfigureApp : public CWinApp
 {
 public:
   CConfigureApp();
+  ConfigureWorkspace *workspace;
+  ConfigureProject *project;
 
 // Overrides
   // ClassWizard generated virtual function overrides
@@ -49,19 +313,22 @@ public:
   DECLARE_MESSAGE_MAP()
 
 private:
-  void write_dsw_start(std::ofstream &dsw);
-  void write_dsw_end(std::ofstream &dsw);
-  void begin_project(std::ofstream &dsw,
-          const char *name, const char *filename);
-  void end_project(std::ofstream &dsw);
-  void add_project_dependency(std::ofstream &dsw,
-          const char *dep_name);
-  void process_project_type(std::ofstream &dsw,
+  list<string> defines_list;
+  list<string> includes_list;
+  list<string> source_list;
+  list<string> resource_list;
+  list<string> exclude_list;
+  list<string> lib_release_list;
+  list<string> lib_debug_list;
+  list<string> lib_shared_list;
+  list<string> standard_includes_list;
+
+  void process_project_type(
           const char *root, const int runtime,
           const char *stype, const int btype);
-  void process_project_replacements(std::ofstream &dsw,
+  void process_project_replacements(
           const char *root, const char *stype);
-  void write_lib_dsp(
+  ConfigureProject *write_project_lib(
     bool dll,
     int runtime,
     int project_type,
@@ -69,54 +336,40 @@ private:
     std::string search,
     std::string name,
     std::string prefix,
-    std::string extn,
-    std::list<std::string> &libs_list_shared,
-    std::list<std::string> &libs_list_release,
-    std::list<std::string> &libs_list_debug,
-    std::list<std::string> &defines_list,
-    std::list<std::string> &includes_list,
-    std::list<std::string> &source_list,
-    std::list<std::string> &exclude_list);
-  void write_exe_dsp(
+    std::string extn);
+  ConfigureProject *write_project_exe(
     int runtime,
     int project_type,
     std::string root,
     std::string search,
     std::string name,
     std::string prefix,
-    std::string extn,
-    std::list<std::string> &libs_list_shared,
-    std::list<std::string> &libs_list_release,
-    std::list<std::string> &libs_list_debug,
-    std::list<std::string> &defines_list,
-    std::list<std::string> &includes_list,
-    std::list<std::string> &source_list,
-    std::list<std::string> &exclude_list);
-  void begin_group(std::ofstream &dsp, const char *group_name);
-  void end_group(std::ofstream &dsp);
-  void add_file(std::ofstream &dsp, const char *filename);
-  void generate_dir(std::ofstream &dsp, const char *dir,
-          const char *specS, int nestinglevel, int project_type,
-          std::list<std::string> &exclude_list);
-  void process_utility(std::ofstream &dsw,
+    std::string extn);
+  void process_utility(
           const char *root, const char *filename,
           int runtime, int project_type);
-  void process_library(std::ofstream &dsw,
+  void process_library(
           const char *root, const char *filename,
           int runtime, int project_type);
-  void process_3rd_party_library(std::ofstream &dsw,
+  void process_3rd_party_library(
           const char *root, const char *filename,
           int runtime, int project_type);
-  void process_module(std::ofstream &dsw,
+  void process_module(
           const char *root, const char *filename,
           int runtime, int project_type);
-  void process_one_folder(std::ofstream &dsw,
+  void process_one_folder(
           const char *root, WIN32_FIND_DATA &data,
           int project_type, int projectType);
-  void generate_dependencies(std::ofstream &dsw, bool gen_cpp, bool gen_util);
-  bool is_project_type(const char *root, const int project_type);
+  void generate_dependencies(ConfigureProject *project, bool gen_cpp, bool gen_util);
+  void generate_a_dependency(ConfigureWorkspace *w,ConfigureProject *p,
+    char *s, bool flag1, bool flag2);
+  void generate_a_dependency_cs(ConfigureWorkspace *w,ConfigureProject *p,
+    char *s);
+  bool CConfigureApp::process_one_entry(const char *entry, int nLinesRead, int runtime);
+  int CConfigureApp::load_environment_file( const char *inputfile, int runtime);
 };
 
+bool is_project_type(const char *root, const int project_type);
 BOOL BrowseForFolder(HWND hOwner, char* szTitle, char* szRetval);
 
 /////////////////////////////////////////////////////////////////////////////

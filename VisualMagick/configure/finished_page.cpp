@@ -52,17 +52,16 @@ BOOL CFinishedPage::OnInitDialog()
 	m_text  = "Congratulations!\n\n";
 
 	m_text += "You have finished the VisualMagick configuration. Now press finish to finally";
-	m_text += " produce the Visual C++ compatible workspace (dsw) and its project (dsp) files.\n\n";
-  m_text += "You will find different dsw files in the VisualMagick folder based on the build";
-  m_text += " configuration you selected. The dynamic (DLL) build is named VisualDynamicMT.dsw";
-  m_text += " while the static build configurations are named VisualStaticXX.dsw, were the XX";
+	m_text += " produce the Visual Studio compatible files.\n\n";
+  m_text += "You will find different files in the VisualMagick folder based on the build";
+  m_text += " options you selected. The dynamic (DLL) build is named VisualDynamicMT";
+  m_text += " while the static build configurations are named VisualStaticXX, were the XX";
   m_text += " indicates the type of threading allowed: (ST: single-threaded, MT; multi-threaded,";
-  m_text += " and MTD: multi-threaded DLL)\n\n";
-  m_text += " You will find a project in the workspace called \"All\". Select this and make it";
-  m_text += " the active project.\n\nMake sure to do a:\n\n";
-  m_text += "    \"Build: Clean\", followed by a \"Build: Build\"\n\n";
-  m_text += "Failure to do the Clean may result in a failed build.\n\nGood luck!";
-
+  m_text += " and MTD: multi-threaded DLL).\n\n";
+  m_text += "NOTE: MT is the most common and the recommended static build option\n\n";
+  m_text += "Locate the item in the workspace or solution called \"All\". Set this as the active";
+  m_text += " project, set the configuration to either Debug or Release and then just build this.";
+  m_text += "\n\nGood luck!";
 
 	UpdateData(FALSE);
 	
