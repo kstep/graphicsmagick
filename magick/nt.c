@@ -234,16 +234,24 @@ Export void NTErrorHandler(const unsigned int error,const char *message,
   const char *qualifier)
 {
   char
-    buffer[2048];
+    buffer[3*MaxTextLength];
 
   if (message == (char *) NULL)
     Exit(0);
-  FormatString(buffer,"%.1024s: %.1024s",SetClientName((char *) NULL),message);
-  if (qualifier != (char *) NULL)
-    FormatString(buffer,"%.1024s (%.1024s)",buffer,qualifier);
-  if (errno)
-    FormatString(buffer,"%.1024s [%.1024s]",buffer,strerror(errno));
-  FormatString(buffer,"%.1024s.\n",buffer);
+  if ((qualifier != (char *) NULL) && errno)
+    FormatString(buffer,"%.1024s: %.1024s (%.1024s) [%.1024s].\n",
+      SetClientName((char *) NULL),message,qualifier,strerror(errno));
+  else
+    if (qualifier != (char *) NULL)
+      FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
+        SetClientName((char *) NULL),message,qualifier);
+    else
+      if (errno)
+        FormatString(buffer,"%.1024s: %.1024s [%.1024s].\n",
+          SetClientName((char *) NULL),message,strerror(errno));
+      else
+        FormatString(buffer,"%.1024s: %.1024s.\n",SetClientName((char *) NULL),
+          message);
   (void) MessageBox(NULL,buffer,"ImageMagick Error",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONEXCLAMATION);
   Exit(0);
@@ -404,10 +412,12 @@ Export void NTWarningHandler(const unsigned int warning,const char *message,
 
   if (message == (char *) NULL)
     return;
-  FormatString(buffer,"%.1024s: %.1024s",SetClientName((char *) NULL),message);
-  if (qualifier != (char *) NULL)
-    FormatString(buffer,"%.1024s (%.1024s)",buffer,qualifier);
-  FormatString(buffer,"%.1024s.\n",buffer);
+  if (qualifier == (char *) NULL)
+    FormatString(buffer,"%.1024s: %.1024s.\n",
+      SetClientName((char *) NULL),message);
+  else
+    FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
+      SetClientName((char *) NULL),message,qualifier);
   (void) MessageBox(NULL,buffer,"ImageMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);
 }

@@ -2460,47 +2460,54 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               }
             else
               {
-                red=(long) (p->red*p->index+q->red*(Opaque-p->index))/Opaque;
-                green=(long)
+                red=(unsigned int)
+                  (p->red*p->index+q->red*(Opaque-p->index))/Opaque;
+                green=(unsigned int)
                   (p->green*p->index+q->green*(Opaque-p->index))/Opaque;
-                blue=(long) (p->blue*p->index+q->blue*(Opaque-p->index))/Opaque;
-                index=(long)
+                blue=(unsigned int)
+                  (p->blue*p->index+q->blue*(Opaque-p->index))/Opaque;
+                index=(unsigned int)
                   (p->index*p->index+q->index*(Opaque-p->index))/Opaque;
               }
           break;
         }
         case InCompositeOp:
         {
-          red=(long) (p->red*q->index)/Opaque;
-          green=(long) (p->green*q->index)/Opaque;
-          blue=(long) (p->blue*q->index)/Opaque;
-          index=(long) (p->index*q->index)/Opaque;
+          red=(unsigned int) (p->red*q->index)/Opaque;
+          green=(unsigned int) (p->green*q->index)/Opaque;
+          blue=(unsigned int) (p->blue*q->index)/Opaque;
+          index=(unsigned int) (p->index*q->index)/Opaque;
           break;
         }
         case OutCompositeOp:
         {
-          red=(long) (p->red*(Opaque-q->index))/Opaque;
-          green=(long) (p->green*(Opaque-q->index))/Opaque;
-          blue=(long) (p->blue*(Opaque-q->index))/Opaque;
-          index=(long) (p->index*(Opaque-q->index))/Opaque;
+          red=(unsigned int) (p->red*(Opaque-q->index))/Opaque;
+          green=(unsigned int) (p->green*(Opaque-q->index))/Opaque;
+          blue=(unsigned int) (p->blue*(Opaque-q->index))/Opaque;
+          index=(unsigned int) (p->index*(Opaque-q->index))/Opaque;
           break;
         }
         case AtopCompositeOp:
         {
-          red=(long) (p->red*q->index+q->red*(Opaque-p->index))/Opaque;
-          green=(long) (p->green*q->index+q->green*(Opaque-p->index))/Opaque;
-          blue=(long) (p->blue*q->index+q->blue*(Opaque-p->index))/Opaque;
-          index=(long) (p->index*q->index+q->index*(Opaque-p->index))/Opaque;
+          red=(unsigned int)
+            (p->red*q->index+q->red*(Opaque-p->index))/Opaque;
+          green=(unsigned int)
+            (p->green*q->index+q->green*(Opaque-p->index))/Opaque;
+          blue=(unsigned int)
+            (p->blue*q->index+q->blue*(Opaque-p->index))/Opaque;
+          index=(unsigned int)
+            (p->index*q->index+q->index*(Opaque-p->index))/Opaque;
           break;
         }
         case XorCompositeOp:
         {
-          red=(long) (p->red*(Opaque-q->index)+q->red*(Opaque-p->index))/Opaque;
-          green=(long)
+          red=(unsigned int)
+            (p->red*(Opaque-q->index)+q->red*(Opaque-p->index))/Opaque;
+          green=(unsigned int)
             (p->green*(Opaque-q->index)+q->green*(Opaque-p->index))/Opaque;
-          blue=(long)
+          blue=(unsigned int)
             (p->blue*(Opaque-q->index)+q->blue*(Opaque-p->index))/Opaque;
-          index=(long)
+          index=(unsigned int)
             (p->index*(Opaque-q->index)+q->index*(Opaque-p->index))/Opaque;
           break;
         }
@@ -2563,10 +2570,10 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
         case BumpmapCompositeOp:
         {
           shade=Intensity(*p);
-          red=(long) (q->red*shade)/Opaque;
-          green=(long) (q->green*shade)/Opaque;
-          blue=(long) (q->blue*shade)/Opaque;
-          index=(long) (q->index*shade)/Opaque;
+          red=(unsigned int) (q->red*shade)/Opaque;
+          green=(unsigned int) (q->green*shade)/Opaque;
+          blue=(unsigned int) (q->blue*shade)/Opaque;
+          index=(unsigned int) (q->index*shade)/Opaque;
           break;
         }
         case ReplaceCompositeOp:
@@ -2611,9 +2618,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
         }
         case BlendCompositeOp:
         {
-          red=(long) (p->red*p->index+q->red*q->index)/Opaque;
-          green=(long) (p->green*p->index+q->green*q->index)/Opaque;
-          blue=(long) (p->blue*p->index+q->blue*q->index)/Opaque;
+          red=(unsigned int) (p->red*p->index+q->red*q->index)/Opaque;
+          green=(unsigned int) (p->green*p->index+q->green*q->index)/Opaque;
+          blue=(unsigned int) (p->blue*p->index+q->blue*q->index)/Opaque;
           index=Opaque;
           break;
         }
@@ -9568,7 +9575,8 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
                 {
                   if ((Latin1Compare(filename,image->filename) == 0) ||
                       (strchr(filename,'%') != (char *) NULL))
-                    FormatString(filename,"%.1024s.%u",filename,image->scene);
+                    FormatString(filename,"%.1024s.%u",image->filename,
+                      image->scene);
                   if (image->next != (Image *) NULL)
                     (void) strcpy(image->next->magick,image->magick);
                 }
