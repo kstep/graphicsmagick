@@ -91,6 +91,9 @@ extern "C" {
 #include <sys/mman.h>
 #endif
 #if defined(HasPTHREADS)
+#if defined(vms)
+#include <vms_x_fix.h>
+#endif
 #include <pthread.h>
 #endif
 #if defined(HAVE_POLL)

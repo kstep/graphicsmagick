@@ -1,7 +1,7 @@
 $!
 $! Make ImageMagick image utilities for VMS.
 $!
-$ copy config_vms.h magick_config.h
+$ copy config.h_vms magick_config.h
 $
 $if (f$trnlnm("X11") .eqs. "") then define/nolog X11 decw$include:
 $compile_options="/nodebug/optimize"
@@ -15,7 +15,7 @@ $endif
 $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then     ! Alpha with DEC C
 $  define/nolog sys decc$library_include
-$  compile_options="/nodebug/optimize/prefix=all/warning=(disable=rightshiftovr)
+$  compile_options="/nodebug/optimize/prefix=all/warning=(disable=rightshiftovr)/name=(as_is,short)
 $endif
 $
 $write sys$output "Making Magick..."

@@ -1,6 +1,9 @@
 $!
 $! Make ImageMagick X image utilities for VMS.
 $!
+$ on error continue
+$ deass magick
+$ set noon
 $
 $ option := 'p1'
 $ if option .eqs. "CLEAN"
@@ -68,8 +71,15 @@ $ if share
 $ then
 $    write sys$output "Making shareable image"
 $    link/share/exe=magickshr.exe   [.magick]libMagick.olb/lib, -
-  [-.coders]libCoders.olb/lib, -
-  $disk2:[joukj.public.freetype.freetype.freetype2.lib]freetype.olb/lib, -
+  [.coders]libCoders.olb/lib, -
+  sys$library:freetype.olb/lib, -
+  sys$library:libjpeg.olb/lib, -
+  sys$library:libpng.olb/lib, -
+  sys$library:tiff.olb/lib, -
+  sys$library:libz.olb/lib, -
+  sys$library:libbz2.olb/lib, -
+  sys$library:df.olb/lib, -
+  sys$library:libjbig.olb/lib, -
   []magickshr.opt/opt
 $ libr/crea/share/log magickshr.olb magickshr.exe
 $    set file/trunc magickshr.olb
@@ -79,8 +89,16 @@ $    define/nolog magickshr 'f$environment("default")'magickshr.exe
 $    write sys$output "Shareable image logical MAGICKSHR defined:"
 $    show logi magickshr
 $ else
-$    link_libraries := [-.magick]libMagick.olb/lib, -
-  [-.coders]libCoders.olb/lib
+$    link_libraries := [.magick]libMagick.olb/lib, -
+  [.coders]libCoders.olb/lib, -
+  sys$library:libjpeg.olb/lib, -
+  sys$library:libpng.olb/lib, -
+  sys$library:tiff.olb/lib, -
+  sys$library:freetype.olb/l, -
+  sys$library:libz.olb/lib,-
+  sys$library:df.olb/lib, -
+  sys$library:libjbig.olb/lib, -
+  sys$library:libbz2.olb/lib
 $ endif
 $ define magick [-.magick]
 $ set def [.utilities]

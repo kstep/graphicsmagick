@@ -54,9 +54,6 @@
 */
 #include "magick.h"
 #include "define.h"
-#if defined(HasHDF)
-#include "hdf5.h"
-#endif
 
 /*
   Forward declarations.
@@ -80,7 +77,8 @@ static unsigned int
 %
 %  The format of the IsHDF method is:
 %
-%      unsigned int IsHDF(const unsigned char *magick,const size_t length)
+%      unsigned int IsHDF(const unsigned char *magick,
+%        const unsigned int length)
 %
 %  A description of each parameter follows:
 %
@@ -93,16 +91,23 @@ static unsigned int
 %
 %
 */
-static unsigned int IsHDF(const unsigned char *magick,const size_t length)
+static unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (memcmp(magick+1,"HDF",3) == 0)
+  if (memcmp(magick,"\016\003\023\001",4) == 0)
     return(True);
   return(False);
 }
 
 #if defined(HasHDF)
+#if defined(HAVE_HDF_HDF_H)
+#include "hdf/hdf.h"
+#else
+#include "hdf.h"
+#endif
+#undef BSD
+#undef LOCAL
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -136,39 +141,233 @@ static unsigned int IsHDF(const unsigned char *magick,const size_t length)
 */
 static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  hid_t
-    dataset,
-    dataspace,
-    file;
+  ClassType
+    class;
 
   Image
     *image;
 
   int
-    rank;
+    interlace,
+    is_palette,
+    status,
+    y;
+
+  int32
+    height,
+    length,
+    width;
+
+  register IndexPacket
+    *indexes;
+
+  register int
+    i,
+    x;
+
+  register unsigned char
+    *p;
+
+  register PixelPacket
+    *q;
+
+  uint16
+    reference;
+
+  unsigned char
+    *hdf_pixels;
 
   unsigned int
-    status;
+    packet_size;
 
   /*
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryType , exception );
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Read HDF image.
   */
-  file=H5Fopen(image->filename,H5F_ACC_RDONLY,H5P_DEFAULT);
-  if (file < 0)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  dataset=H5Dopen(file,"IntArray");
-  if (dataset < 0)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  dataspace=H5Dget_space(dataset);
-  rank=H5Sget_simple_extent_ndims(dataspace);
-  H5Fclose(file);
+  class=DirectClass;
+  status=DF24getdims(image->filename,&width,&height,&interlace);
+  if (status == -1)
+    {
+      class=PseudoClass;
+      status=DFR8getdims(image->filename,&width,&height,&is_palette);
+    }
+  if (status == -1)
+    ThrowReaderException(CorruptImageWarning,
+      "Image file or does not contain any image data",image);
+  do
+  {
+    /*
+      Initialize image structure.
+    */
+    image->storage_class=class;
+    image->columns=width;
+    image->rows=height;
+    image->depth=8;
+    if (image->storage_class == PseudoClass)
+      image->colors=256;
+    packet_size=image->storage_class == DirectClass ? 3 : 1;
+    hdf_pixels=(unsigned char *)
+      AcquireMemory(packet_size*image->columns*image->rows);
+    if (hdf_pixels == (unsigned char *) NULL)
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
+    if (image->storage_class == PseudoClass)
+      {
+        unsigned char
+          *hdf_palette;
+
+        /*
+          Create colormap.
+        */
+        if (!AllocateImageColormap(image,image->colors))
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
+        hdf_palette=(unsigned char *) AcquireMemory(768);
+        if (hdf_palette == (unsigned char *) NULL)
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
+        (void) DFR8getimage(image->filename,hdf_pixels,(int) image->columns,
+          (int) image->rows,hdf_palette);
+        reference=DFR8lastref();
+        /*
+          Convert HDF raster image to PseudoClass pixel packets.
+        */
+        p=hdf_palette;
+        if (is_palette)
+          for (i=0; i < 256; i++)
+          {
+            image->colormap[i].red=UpScale(*p++);
+            image->colormap[i].green=UpScale(*p++);
+            image->colormap[i].blue=UpScale(*p++);
+          }
+        else
+          for (i=0; i < (int) image->colors; i++)
+          {
+            image->colormap[i].red=(Quantum) UpScale(i);
+            image->colormap[i].green=(Quantum) UpScale(i);
+            image->colormap[i].blue=(Quantum) UpScale(i);
+          }
+        LiberateMemory((void **) &hdf_palette);
+        p=hdf_pixels;
+        for (y=0; y < (int) image->rows; y++)
+        {
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          indexes=GetIndexes(image);
+          for (x=0; x < (int) image->columns; x++)
+            indexes[x]=(*p++);
+          if (!SyncImagePixels(image))
+            break;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              MagickMonitor(LoadImageText,y,image->rows);
+        }
+      }
+    else
+      {
+        /*
+          Convert HDF raster image to DirectClass pixel packets.
+        */
+        (void) DF24getimage(image->filename,(void *) hdf_pixels,image->columns,
+          image->rows);
+        reference=DF24lastref();
+        p=hdf_pixels;
+        image->interlace=interlace ? PlaneInterlace : NoInterlace;
+        for (y=0; y < (int) image->rows; y++)
+        {
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
+          {
+            q->red=UpScale(*p++);
+            q->green=UpScale(*p++);
+            q->blue=UpScale(*p++);
+            q++;
+          }
+          if (!SyncImagePixels(image))
+            break;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              MagickMonitor(LoadImageText,y,image->rows);
+        }
+      }
+    length=DFANgetlablen(image->filename,DFTAG_RIG,reference);
+    if (length > 0)
+      {
+        char
+          *label;
+
+        /*
+          Read the image label.
+        */
+        length+=MaxTextExtent;
+        label=(char *) AcquireMemory(length);
+        if (label != (char *) NULL)
+          {
+            DFANgetlabel(image->filename,DFTAG_RIG,reference,label,length);
+            (void) SetImageAttribute(image,"Label",label);
+            LiberateMemory((void **) &label);
+          }
+      }
+    length=DFANgetdesclen(image->filename,DFTAG_RIG,reference);
+    if (length > 0)
+      {
+        char
+          *comments;
+
+        /*
+          Read the image comments.
+        */
+        length+=MaxTextExtent;
+        comments=(char *) AcquireMemory(length);
+        if (comments != (char *) NULL)
+          {
+            DFANgetdesc(image->filename,DFTAG_RIG,reference,comments,length);
+            (void) SetImageAttribute(image,"Comment",comments);
+            LiberateMemory((void **) &comments);
+          }
+      }
+    LiberateMemory((void **) &hdf_pixels);
+    if (image->storage_class == PseudoClass)
+      SyncImage(image);
+    /*
+      Proceed to next image.
+    */
+    if (image_info->subrange != 0)
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
+    class=DirectClass;
+    status=DF24getdims(image->filename,&width,&height,&interlace);
+    if (status == -1)
+      {
+        class=PseudoClass;
+        status=DFR8getdims(image->filename,&width,&height,&is_palette);
+      }
+    if (status != -1)
+      {
+        /*
+          Allocate next image structure.
+        */
+        AllocateNextImage(image_info,image);
+        if (image->next == (Image *) NULL)
+          {
+            DestroyImages(image);
+            return((Image *) NULL);
+          }
+        image=image->next;
+        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
+      }
+  } while (status != -1);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
   CloseBlob(image);
   return(image);
 }
@@ -209,14 +408,6 @@ ModuleExport void RegisterHDFImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("H5");
-  entry->decoder=ReadHDFImage;
-  entry->encoder=WriteHDFImage;
-  entry->magick=IsHDF;
-  entry->blob_support=False;
-  entry->description=AllocateString("Hierarchical Data Format");
-  entry->module=AllocateString("HDF");
-  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("HDF");
   entry->decoder=ReadHDFImage;
   entry->encoder=WriteHDFImage;
@@ -224,7 +415,7 @@ ModuleExport void RegisterHDFImage(void)
   entry->blob_support=False;
   entry->description=AllocateString("Hierarchical Data Format");
   entry->module=AllocateString("HDF");
-  (void) RegisterMagickInfo(entry);
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -248,7 +439,7 @@ ModuleExport void RegisterHDFImage(void)
 */
 ModuleExport void UnregisterHDFImage(void)
 {
-  (void) UnregisterMagickInfo("HDF");
+  UnregisterMagickInfo("HDF");
 }
 
 #if defined(HasHDF)
@@ -284,82 +475,270 @@ ModuleExport void UnregisterHDFImage(void)
 */
 static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
-  hid_t
-    dataset,
-    dataspace,
-    file;
-
-  hsize_t
-    dimensions[2];
+  ImageAttribute
+    *attribute;
 
   int
-    **pixels,
-    status;
-
-  long
+    status,
     y;
 
-  register long
+  register IndexPacket
+    *indexes;
+
+  register int
+    i,
     x;
 
   register PixelPacket
+    *p;
+
+  register unsigned char
     *q;
 
+  uint16
+    reference;
+
+  unsigned char
+    *hdf_pixels;
+
+  unsigned short
+    compression;
+
   unsigned int
+    packet_size,
     scene;
 
   /*
     Open output image file.
   */
-  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+  status=OpenBlob(image_info,image,WriteBinaryType, &image->exception );
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   CloseBlob(image);
-  file=H5Fcreate(image->filename,H5F_ACC_TRUNC,H5P_DEFAULT,H5P_DEFAULT);
-  if (file < 0)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   scene=0;
   do
   {
     /*
       Initialize raster file header.
     */
-    (void) TransformRGBImage(image,RGBColorspace);
-    dimensions[0]=image->rows;
-    dimensions[1]=image->columns;
-    dataspace=H5Screate_simple(2,dimensions,NULL);
-    dataset=H5Dcreate(file,"IntArray",H5T_STD_U8BE,dataspace,H5P_DEFAULT);
-    pixels=(int **) AcquireMemory(image->rows*sizeof(int *));
-    for (y=0; y < (long) image->rows; y++)
-    {
-      pixels[y]=(int *) AcquireMemory(image->columns*sizeof(int));
-      q=SetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) image->columns; x++)
+    TransformRGBImage(image,RGBColorspace);
+    packet_size=image->storage_class == DirectClass ? 3 : 11;
+    hdf_pixels=(unsigned char *)
+      AcquireMemory(packet_size*image->columns*image->rows);
+    if (hdf_pixels == (unsigned char *) NULL)
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
+    if (image->storage_class == DirectClass)
       {
-        pixels[y][x]=Intensity(*q);
-        q++;
+        /*
+          Convert DirectClass packet to HDF pixels.
+        */
+        q=hdf_pixels;
+        switch (image_info->interlace)
+        {
+          case NoInterlace:
+          default:
+          {
+            /*
+              No interlacing:  RGBRGBRGBRGBRGBRGB...
+            */
+            DF24setil(DFIL_PIXEL);
+            for (y=0; y < (int) image->rows; y++)
+            {
+              p=GetImagePixels(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *q++=DownScale(p->red);
+                *q++=DownScale(p->green);
+                *q++=DownScale(p->blue);
+                p++;
+              }
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  MagickMonitor(SaveImageText,y,image->rows);
+            }
+            break;
+          }
+          case LineInterlace:
+          {
+            /*
+              Line interlacing:  RRR...GGG...BBB...RRR...GGG...BBB...
+            */
+            DF24setil(DFIL_LINE);
+            for (y=0; y < (int) image->rows; y++)
+            {
+              p=GetImagePixels(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *q++=DownScale(p->red);
+                p++;
+              }
+              p=GetImagePixels(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *q++=DownScale(p->green);
+                p++;
+              }
+              p=GetImagePixels(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *q++=DownScale(p->blue);
+                p++;
+              }
+              if (QuantumTick(y,image->rows))
+                MagickMonitor(SaveImageText,y,image->rows);
+            }
+            break;
+          }
+          case PlaneInterlace:
+          case PartitionInterlace:
+          {
+            /*
+              Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
+            */
+            DF24setil(DFIL_PLANE);
+            for (y=0; y < (int) image->rows; y++)
+            {
+              p=GetImagePixels(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *q++=DownScale(p->red);
+                p++;
+              }
+            }
+            MagickMonitor(SaveImageText,100,400);
+            for (y=0; y < (int) image->rows; y++)
+            {
+              p=GetImagePixels(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *q++=DownScale(p->green);
+                p++;
+              }
+            }
+            MagickMonitor(SaveImageText,250,400);
+            for (y=0; y < (int) image->rows; y++)
+            {
+              p=GetImagePixels(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *q++=DownScale(p->blue);
+                p++;
+              }
+            }
+            MagickMonitor(SaveImageText,400,400);
+            break;
+          }
+        }
+        if (scene == 0)
+          status=DF24putimage(image->filename,(void *) hdf_pixels,
+            image->columns,image->rows);
+        else
+          status=DF24addimage(image->filename,(void *) hdf_pixels,
+            image->columns,image->rows);
+        reference=DF24lastref();
       }
-    }
-    status=H5Dwrite(dataset,H5T_NATIVE_INT,H5S_ALL,H5S_ALL,H5P_DEFAULT,pixels);
-    H5Sclose(dataspace);
-    H5Dclose(dataset);
+    else
+      {
+        /*
+          Convert PseudoClass packet to HDF pixels.
+        */
+        q=hdf_pixels;
+        if (IsGrayImage(image ,  &image->exception ))
+          for (y=0; y < (int) image->rows; y++)
+          {
+            p=GetImagePixels(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              *q++=DownScale(Intensity(*p));
+              p++;
+            }
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                MagickMonitor(SaveImageText,y,image->rows);
+          }
+        else
+          {
+            unsigned char
+              *hdf_palette;
+
+            hdf_palette=(unsigned char *) AcquireMemory(768);
+            if (hdf_palette == (unsigned char *) NULL)
+              ThrowWriterException(ResourceLimitWarning,
+                "Memory allocation failed",image);
+            q=hdf_palette;
+            for (i=0; i < (int) image->colors; i++)
+            {
+              *q++=DownScale(image->colormap[i].red);
+              *q++=DownScale(image->colormap[i].green);
+              *q++=DownScale(image->colormap[i].blue);
+            }
+            (void) DFR8setpalette(hdf_palette);
+            LiberateMemory((void **) &hdf_palette);
+            q=hdf_pixels;
+            for (y=0; y < (int) image->rows; y++)
+            {
+              p=GetImagePixels(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *q++=indexes[x];
+                p++;
+              }
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  MagickMonitor(SaveImageText,y,image->rows);
+            }
+          }
+        compression=image_info->compression == NoCompression ? 0 : DFTAG_RLE;
+        if (scene == 0)
+          status=DFR8putimage(image->filename,(void *) hdf_pixels,
+            image->columns,image->rows,compression);
+        else
+          status=DFR8addimage(image->filename,(void *) hdf_pixels,
+            image->columns,image->rows,compression);
+        reference=DFR8lastref();
+      }
+    attribute=GetImageAttribute(image,"Label");
+    if (attribute != (ImageAttribute *) NULL)
+      (void) DFANputlabel(image->filename,DFTAG_RIG,reference,attribute->value);
+    attribute=GetImageAttribute(image,"Comment");
+    if (attribute != (ImageAttribute *) NULL)
+      (void) DFANputdesc(image->filename,DFTAG_RIG,reference,attribute->value,
+        strlen(attribute->value)+1);
+    LiberateMemory((void **) &hdf_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
-    while (image->previous != (Image *) NULL) 
+    while (image->previous != (Image *) NULL)
       image=image->previous;
-  H5Fclose(file);
   return(status != -1);
 }
 #else
 static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
   ThrowBinaryException(MissingDelegateWarning,"HDF library is not available",
-    image->filename)
+    image->filename);
 }
 #endif
