@@ -59,7 +59,7 @@ static int CompareImage( int fuzz, Image *original, Image *final )
       if (!GetPixelCache(final,0,y,final->columns,1))
 	return 1;
 
-      // Compare pixels in row
+      /* Compare pixels in row */
       orig_p  = original->pixels;
       final_p = final->pixels;
       for ( x = 0; x < (int) original->columns; x++ )
