@@ -470,11 +470,11 @@ void CNtMagickView::DoDisplayImage()
 
         {
 
-          pDestPixel->rgbRed = Downscale(pPixels->red);
+          pDestPixel->rgbRed = ScaleQuantumToByte(pPixels->red);
 
-          pDestPixel->rgbGreen = Downscale(pPixels->green);
+          pDestPixel->rgbGreen = ScaleQuantumToByte(pPixels->green);
 
-          pDestPixel->rgbBlue = Downscale(pPixels->blue);
+          pDestPixel->rgbBlue = ScaleQuantumToByte(pPixels->blue);
 
           pDestPixel->rgbReserved = 0;
 

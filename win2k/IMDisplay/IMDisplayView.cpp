@@ -569,9 +569,9 @@ void CIMDisplayView::OnEditCopy()
 
 	for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
 	{
-		pDestPixel->rgbRed	    = Downscale(pPixels->red);
-	    pDestPixel->rgbGreen    = Downscale(pPixels->green);
-	    pDestPixel->rgbBlue	    = Downscale(pPixels->blue);
+		pDestPixel->rgbRed	    = ScaleQuantumToByte(pPixels->red);
+	    pDestPixel->rgbGreen    = ScaleQuantumToByte(pPixels->green);
+	    pDestPixel->rgbBlue	    = ScaleQuantumToByte(pPixels->blue);
 	    pDestPixel->rgbReserved = 0;
 	    ++pDestPixel;
 	    ++pPixels;
@@ -775,9 +775,9 @@ void CIMDisplayView::DoDisplayImage( Image* inImage, CDC* pDC )
       // Transfer pixels, scaling to Quantum
       for( unsigned long nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
         {
-          pDestPixel->rgbRed = Downscale(pPixels->red);
-          pDestPixel->rgbGreen = Downscale(pPixels->green);
-          pDestPixel->rgbBlue = Downscale(pPixels->blue);
+          pDestPixel->rgbRed = ScaleQuantumToByte(pPixels->red);
+          pDestPixel->rgbGreen = ScaleQuantumToByte(pPixels->green);
+          pDestPixel->rgbBlue = ScaleQuantumToByte(pPixels->blue);
           pDestPixel->rgbReserved = 0;
           ++pDestPixel;
           ++pPixels;
