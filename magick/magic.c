@@ -370,32 +370,21 @@ static int ReadMagicConfigurationFile(const char* path)
 static unsigned int InitializeMagic(void)
 {
   char
-    orig_path[MaxTextExtent],
     path[MaxTextExtent];
 
   if(getenv("DELEGATE_PATH") != NULL)
     {
-      (void) getcwd(orig_path,MaxTextExtent-1);
       strcpy(path,getenv("DELEGATE_PATH"));
-      if(chdir(path) == 0)
-        {
-          (void) getcwd(path,MaxTextExtent-1);
-          strcat(path,DirectorySeparator);
-          strcat(path,"magic.mgk");
-          chdir(orig_path);
-          if(ReadMagicConfigurationFile(path) == True)
-            return(True);
-        }
+      strcat(path,DirectorySeparator);
+      strcat(path,"magic.mgk");
+      if(ReadMagicConfigurationFile(path) == True)
+        return(True);
     }
 
   strcpy(path,DelegatePath);
   strcat(path,DirectorySeparator);
   strcat(path,"magic.mgk");
-
-          if(ReadMagicConfigurationFile(path) == True)
-            return(True);
-  strcpy(path,"magic.mgk");
-          return(ReadMagicConfigurationFile(path));
+  return(ReadMagicConfigurationFile(path));
 }
 Export unsigned int SetImageMagic(char* magic,
                                   const unsigned char *magick,
