@@ -11,6 +11,7 @@ extern "C" {
 /*
   Define declarations.
 */
+#define CoderModuleDirectory  "."
 #if !defined(_VISUALC_)
 #define ModuleGlobExpression "*.so"
 #else
