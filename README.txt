@@ -348,18 +348,17 @@ UNIX/Cygwin COMPILATION
 
   Building under Cygwin
 
-    ImageMagick may be built under the Windows '95-XP Cygwin (version
-    1.3.9 or later) Unix-emulation environment available from
-    "http://www.cygwin.com/". X11R6 for Cygwin is available from
-    "http://xfree86.cygwin.com/". It is strongly recommended that the
-    X11R6 package be installed since this enables ImageMagick's X11
-    support (animate, display, and import will work) and it includes the
-    Freetype v2 DLL required to support TrueType and Postscript Type 1
-    fonts. Make sure that /usr/X11R6/bin is in your PATH prior to
-    running configure. If the configure options '--enable-shared' or
-    '--enable-shared --with-modules' are specified , then the
-    'auto-import' capability of binutils and libtool is used to build
-    DLLs. ImageMagick DLL support under Cygwin should be considered
+    ImageMagick may be built under the Windows '95-XP Cygwin
+    Unix-emulation environment available from "http://www.cygwin.com/".
+    X11R6 for Cygwin is available from "http://xfree86.cygwin.com/". It
+    is strongly recommended that the X11R6 package be installed since
+    this enables ImageMagick's X11 support (animate, display, and import
+    will work) and it includes the Freetype v2 DLL required to support
+    TrueType and Postscript Type 1 fonts. Make sure that /usr/X11R6/bin
+    is in your PATH prior to running configure. If you are using Cygwin
+    version 1.3.9 or later, you may specify the configure options
+    '--enable-shared' or '--enable-shared --with-modules' to build
+    Cygwin DLLs. ImageMagick DLL support under Cygwin is considered
     experimental at this time.
 
   Dealing with configuration failures:
