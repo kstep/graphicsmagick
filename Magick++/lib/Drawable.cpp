@@ -155,21 +155,27 @@ void Magick::VPath::operator()( MagickLib::DrawContext context_ ) const
 //
 
 // Affine (scaling, rotation, and translation)
+Magick::DrawableAffine::DrawableAffine( double sx_, double sy_,
+                                        double rx_, double ry_,
+                                        double tx_, double ty_ )
+{
+  _affine.sx = sx_;
+  _affine.rx = rx_;
+  _affine.ry = ry_;
+  _affine.sy = sy_;
+  _affine.tx = tx_;
+  _affine.ty = ty_;
+}
+Magick::DrawableAffine::DrawableAffine( void )
+{
+  IdentityAffine(&_affine);
+}
 Magick::DrawableAffine::~DrawableAffine( void )
 {
 }
 void Magick::DrawableAffine::operator()( MagickLib::DrawContext context_ ) const
 {
-  AffineMatrix
-    affine;
-
-  affine.sx = _sx;
-  affine.rx = _rx;
-  affine.ry = _ry;
-  affine.sy = _sy;
-  affine.rx = _tx;
-  affine.ty = _ty;
-  DrawSetAffine( context_, &affine );
+  DrawSetAffine( context_, &_affine );
 }
 Magick::DrawableBase* Magick::DrawableAffine::copy() const
 {

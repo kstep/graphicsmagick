@@ -439,6 +439,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       }
     context->mvg[context->mvg_length] = 0;
 
+    /* Re-evaluate mvg_width */
     if( (context->mvg_length > 1) &&
         (context->mvg[context->mvg_length-1] == '\n') )
       context->mvg_width = 0;
@@ -581,7 +582,7 @@ MagickExport void DrawSetAffine(DrawContext context, const AffineMatrix *affine)
 
   AdjustAffine( context, affine );
 
-  MvgPrintf(context, "affine %.4g,%.4g,%.4g,%.4g,%.4g,%.4g\n",
+  MvgPrintf(context, "affine %.6g,%.6g,%.6g,%.6g,%.6g,%.6g\n",
             affine->sx, affine->rx, affine->ry, affine->sy,
             affine->tx, affine->ty);
 }

@@ -184,15 +184,9 @@ namespace Magick
   public:
     DrawableAffine ( double sx_, double sy_,
                      double rx_, double ry_,
-                     double tx_, double ty_ )
-      : _sx(sx_),
-        _sy(sy_),
-        _rx(rx_),
-        _ry(ry_),
-        _tx(tx_),
-        _ty(ty_)
-      {
-      }
+                     double tx_, double ty_ );
+
+    DrawableAffine ( void );
 
     /*virtual*/ ~DrawableAffine( void );
 
@@ -203,67 +197,62 @@ namespace Magick
     /*virtual*/
     DrawableBase* copy() const;
     
-    void sx( double sx_ )
+    void sx( const double sx_ )
       {
-        _sx = sx_;
+        _affine.sx = sx_;
       }
     double sx( void ) const
       {
-        return _sx;
+        return _affine.sx;
       }
 
-    void sy( double sy_ )
+    void sy( const double sy_ )
       {
-        _sy = sy_;
+        _affine.sy = sy_;
       }
     double sy( void ) const
       {
-        return _sy;
+        return _affine.sy;
       }
 
-    void rx( double rx_ )
+    void rx( const double rx_ )
       {
-        _rx = rx_;
+        _affine.rx = rx_;
       }
     double rx( void ) const
       {
-        return _rx;
+        return _affine.rx;
       }
   
-    void ry( double ry_ )
+    void ry( const double ry_ )
       {
-        _ry = ry_;
+        _affine.ry = ry_;
       }
     double ry( void ) const
       {
-        return _ry;
+        return _affine.ry;
       }
   
-    void tx( double tx_ )
+    void tx( const double tx_ )
       {
-        _tx = tx_;
+        _affine.tx = tx_;
       }
     double tx( void ) const
       {
-        return _tx;
+        return _affine.tx;
       }
   
-    void ty( double ty_ )
+    void ty( const double ty_ )
       {
-        _ty = ty_;
+        _affine.ty = ty_;
       }
     double ty( void ) const
       {
-        return _ty;
+        return _affine.ty;
       }
   
   private:
-    double _sx;
-    double _sy;
-    double _rx;
-    double _ry;
-    double _tx;
-    double _ty;
+    MagickLib::AffineMatrix  _affine;
   };
 
   // Arc

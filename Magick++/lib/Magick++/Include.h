@@ -464,7 +464,7 @@ namespace Magick
   using MagickLib::DrawSetScale;
   using MagickLib::DrawSetSkewX;
   using MagickLib::DrawSetSkewY;
-  using MagickLib::DrawSetStopColor;
+//   using MagickLib::DrawSetStopColor;
   using MagickLib::DrawSetStrokeAntialias;
   using MagickLib::DrawSetStrokeColor;
   using MagickLib::DrawSetStrokeColorString;
@@ -523,6 +523,7 @@ namespace Magick
   using MagickLib::GreaterValue;
   using MagickLib::HSLTransform;
   using MagickLib::HeightValue;
+  using MagickLib::IdentityAffine;
   using MagickLib::ImageAttribute;
   using MagickLib::ImageInfo;
   using MagickLib::ImageInfoRegistryType;
