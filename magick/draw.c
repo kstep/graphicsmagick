@@ -1823,16 +1823,29 @@ static void GeneratePoint(PrimitiveInfo *primitive_info,PointInfo start)
 static void GenerateRectangle(PrimitiveInfo *primitive_info,PointInfo start,
   PointInfo end)
 {
+  PointInfo
+    point;
+
   register PrimitiveInfo
-    *p,
     *q;
 
-  p=primitive_info;
-  p->coordinates=2;
-  p->pixel=start;
-  q=p+1;
-  q->primitive=p->primitive;
-  q->pixel=end;
+  q=primitive_info;
+  GeneratePoint(q,start);
+  q+=q->coordinates;
+  point.x=start.x;
+  point.y=end.y;
+  GeneratePoint(q,point);
+  q+=q->coordinates;
+  GeneratePoint(q,end);
+  q+=q->coordinates;
+  point.x=end.x;
+  point.y=start.y;
+  GeneratePoint(q,point);
+  q+=q->coordinates;
+  GeneratePoint(q,start);
+  q+=q->coordinates;
+  primitive_info->primitive=PolygonPrimitive;
+  primitive_info->coordinates=q-primitive_info;
 }
 
 static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
@@ -2116,28 +2129,6 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
         opacity=PixelOnLine(pixel,&p->pixel,&q->pixel,mid,opacity);
         break;
       }
-      case RectanglePrimitive:
-      {
-        if (fill)
-          {
-            if ((pixel->x >= (int) (Min(p->pixel.x,q->pixel.x)+0.5)) &&
-                (pixel->x <= (int) (Max(p->pixel.x,q->pixel.x)+0.5)) &&
-                (pixel->y >= (int) (Min(p->pixel.y,q->pixel.y)+0.5)) &&
-                (pixel->y <= (int) (Max(p->pixel.y,q->pixel.y)+0.5)))
-              opacity=OpaqueOpacity;
-            break;
-          }
-        if (((pixel->x >= (int) (Min(p->pixel.x-mid,q->pixel.x+mid)+0.5)) &&
-             (pixel->x < (int) (Max(p->pixel.x-mid,q->pixel.x+mid)+0.5)) &&
-             (pixel->y >= (int) (Min(p->pixel.y-mid,q->pixel.y+mid)+0.5)) &&
-             (pixel->y < (int) (Max(p->pixel.y-mid,q->pixel.y+mid)+0.5))) &&
-           !((pixel->x >= (int) (Min(p->pixel.x+mid,q->pixel.x-mid)+0.5)) &&
-             (pixel->x < (int) (Max(p->pixel.x+mid,q->pixel.x-mid)+0.5)) &&
-             (pixel->y >= (int) (Min(p->pixel.y+mid,q->pixel.y-mid)+0.5)) &&
-             (pixel->y < (int) (Max(p->pixel.y+mid,q->pixel.y-mid)+0.5))))
-          opacity=OpaqueOpacity;
-        break;
-      }
       case CirclePrimitive:
       {
         alpha=p->pixel.x-pixel->x;
@@ -2176,6 +2167,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
       case PathPrimitive:
       case PolylinePrimitive:
       case PolygonPrimitive:
+      case RectanglePrimitive:
       case RoundRectanglePrimitive:
       {
         double

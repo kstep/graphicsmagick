@@ -601,8 +601,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"angle") == 0)
         {
-          continue;
           svg_info->element.angle=atof(value);
+          continue;
         }
       if (LocaleCompare(keyword,"cx") == 0)
         {
@@ -909,8 +909,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
   if (p->gravity == NorthEastGravity)
     (void) fprintf(svg_info->file,"gravity NorthEast\n");
   else
-    if (p->gravity == CenterGravity)
-      (void) fprintf(svg_info->file,"gravity Center\n");
+    if (p->gravity == NorthGravity)
+      (void) fprintf(svg_info->file,"gravity North\n");
     else
       (void) fprintf(svg_info->file,"gravity NorthWest\n");
   (void) fprintf(svg_info->file,"linewidth %g\n",p->linewidth);

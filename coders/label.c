@@ -1017,7 +1017,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   image->bounding_box.x1=0.0;
   image->bounding_box.y1=0.0;
   image->bounding_box.x2=image->columns;
-  image->bounding_box.y2=image->rows;
+  image->bounding_box.y2=image->rows-floor(extent.y/8.0);
   return(image);
 }
 
@@ -1167,8 +1167,8 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
   SetImage(image,TransparentOpacity);
   image->bounding_box.x1=0.0;
   image->bounding_box.y1=0.0;
-  image->bounding_box.x2=annotate_info.width;
-  image->bounding_box.y2=annotate_info.height;
+  image->bounding_box.x2=annotate_info.width-1;
+  image->bounding_box.y2=annotate_info.height-1;
   image->background_color=image->border_color;
   status=XAnnotateImage(display,&pixel,&annotate_info,image);
   if (status == 0)

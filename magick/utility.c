@@ -1771,54 +1771,11 @@ MagickExport int MultilineCensus(const char *label)
 %
 %
 */
-
-static double ReadReal(const char *p,char **q)
-{
-  int
-    sign;
-
-  register double
-    value;
-
-  value=0;
-  sign=1;
-  if (*p == '+')
-    p++;
-  else
-    if (*p == '-')
-      {
-        p++;
-        sign=(-1);
-      }
-  for ( ; (*p >= '0') && (*p <= '9'); p++)
-    value=(value*10)+(*p-'0');
-  if (*p == '.')
-    {
-      double
-        fraction;
-
-      register int
-        i;
-
-      p++;
-      fraction=0;
-      for (i=10; (*p >= '0') && (*p <= '9'); p++)
-      {
-        fraction=fraction+(*p-'0')/i;
-        i*=10;
-      }
-    }
-  *q=(char *) p;
-  if (sign >= 0)
-    return(value);
-  return(-value);
-}
-
 MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
   unsigned int *width,unsigned int *height)
 {
   char
-    *q;
+    *p;
 
   int
     mask;
@@ -1829,80 +1786,65 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
   mask=NoValue;
   if ((geometry == (const char *) NULL) || (*geometry == '\0'))
     return(mask);
-  if (*geometry == '=')
-    geometry++;
-  if ((*geometry != '+') && (*geometry != '-') && (*geometry != 'x'))
+  p=(char *) geometry;
+  while (isspace((int) *p))
+    p++;
+  if (*p == '=')
+    p++;
+  if ((*p != '+') && (*p != '-') && (*p != 'x'))
     {
       /*
         Parse width.
       */
-      bounds.width=ReadReal(geometry,&q);
-      if (geometry == q)
-        return(0);
-      geometry=q;
+      bounds.width=strtod(p,&p);
       mask|=WidthValue;
     }
-  if ((*geometry == 'x') || (*geometry == 'X'))
+  if ((*p == 'x') || (*p == 'X'))
     {
       /*
         Parse height.
       */
-      geometry++;
-      bounds.height=ReadReal(geometry,&q);
-      if (geometry == q)
-        return(0);
-      geometry=q;
+      p++;
+      bounds.height=strtod(p,&p);
       mask|=HeightValue;
     }
-  if ((*geometry == '+') || (*geometry == '-'))
+  if ((*p == '+') || (*p == '-'))
     {
       /*
         Parse x value.
       */
-      if (*geometry == '-')
+      if (*p == '-')
         {
-          geometry++;
-          bounds.x=(-ReadReal(geometry,&q));
-          if (geometry == q)
-            return(0);
-          geometry=q;
+          p++;
+          bounds.x=(-strtod(p,&p));
           mask|=XNegative;
         }
       else
         {
-          geometry++;
-          bounds.x=ReadReal(geometry,&q);
-          if (geometry == q)
-            return(0);
-          geometry=q;
+          p++;
+          bounds.x=strtod(p,&p);
         }
       mask|=XValue;
-      if ((*geometry == '+') || (*geometry == '-'))
+      if ((*p == '+') || (*p == '-'))
         {
           /*
             Parse y value.
           */
-          if (*geometry == '-')
+          if (*p == '-')
             {
-              geometry++;
-              bounds.y=(-ReadReal(geometry,&q));
-              if (geometry == q)
-                return(0);
-              geometry=q;
+              p++;
+              bounds.y=(-strtod(p,&p));
               mask|=YNegative;
             }
           else
             {
-              geometry++;
-              bounds.y=ReadReal(geometry,&q);
-              if (geometry == q)
-                return(0);
-              geometry=q;
+              p++;
+              bounds.y=strtod(p,&p);
             }
           mask|=YValue;
         }
     }
-  if (*geometry != '\0')
+  if (*p != '\0')
     return(0);
   if (mask & XValue)
     *x=bounds.x;
