@@ -3035,9 +3035,9 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   ExceptionInfo *exception)
 {
-#define GetBit(a,i) (((a) >> (i)) & 1L)
+#define GetBit(a,i) (((a) >> (i)) & 1UL)
 #define SetBit(a,i,set) \
-  a=(Quantum) ((set) ? (a) | (1L << (i)) : (a) & ~(1L << (i)))
+  a=(Quantum) ((set) ? (a) | (1UL << (i)) : (a) & ~(1UL << (i)))
 #define SteganoImageText  "  Hide image...  "
 
   Image

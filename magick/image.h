@@ -157,6 +157,15 @@ typedef struct _ColorInfo
     *next;
 } ColorInfo;
 
+typedef struct _DoublePixelPacket
+{
+  double
+    red,
+    green,
+    blue,
+    opacity;
+} DoublePixelPacket;
+
 typedef struct _FrameInfo
 {
   unsigned long
