@@ -5738,7 +5738,6 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     /*
       Scale image to size of Portable Document page.
     */
-    TransformRGBImage(image,RGBColorspace);
     text_size=0;
     if (image->label != (char *) NULL)
       text_size=MultilineCensus(image->label)*image_info->pointsize+12;
@@ -5920,7 +5919,8 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           /*
             Allocate pixel array.
           */
-          number_packets=3*image->columns*image->rows;
+          number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
+            image->columns*image->rows;
           pixels=(unsigned char *)
             AllocateMemory(number_packets*sizeof(unsigned char));
           if (pixels == (unsigned char *) NULL)
@@ -5941,11 +5941,19 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   *q++=DownScale(MaxRGB);
                 }
               else
-                {
-                  *q++=DownScale(p->red);
-                  *q++=DownScale(p->green);
-                  *q++=DownScale(p->blue);
-                }
+                if (image->colorspace != CMYKColorspace)
+                  {
+                    *q++=DownScale(p->red);
+                    *q++=DownScale(p->green);
+                    *q++=DownScale(p->blue);
+                  }
+                else
+                  {
+                    *q++=DownScale(MaxRGB-p->red);
+                    *q++=DownScale(MaxRGB-p->green);
+                    *q++=DownScale(MaxRGB-p->blue);
+                    *q++=DownScale(MaxRGB-p->index);
+                  }
             }
             p++;
             if (image->previous == (Image *) NULL)
@@ -5985,11 +5993,19 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(DownScale(MaxRGB),image->file);
                 }
               else
-                {
-                  Ascii85Encode(DownScale(p->red),image->file);
-                  Ascii85Encode(DownScale(p->green),image->file);
-                  Ascii85Encode(DownScale(p->blue),image->file);
-                }
+                if (image->colorspace != CMYKColorspace)
+                  {
+                    Ascii85Encode(DownScale(p->red),image->file);
+                    Ascii85Encode(DownScale(p->green),image->file);
+                    Ascii85Encode(DownScale(p->blue),image->file);
+                  }
+                else
+                  {
+                    Ascii85Encode(DownScale(MaxRGB-p->red),image->file);
+                    Ascii85Encode(DownScale(MaxRGB-p->green),image->file);
+                    Ascii85Encode(DownScale(MaxRGB-p->blue),image->file);
+                    Ascii85Encode(DownScale(MaxRGB-p->index),image->file);
+                  }
             }
             p++;
             if (image->previous == (Image *) NULL)
@@ -6153,14 +6169,17 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     */
     xref[object++]=ftell(image->file);
     (void) fprintf(image->file,"%u 0 obj\n",object);
-    if (!IsPseudoClass(image) && !IsGrayImage(image))
-      (void) fprintf(image->file,"/DeviceRGB\n");
+    if (image->colorspace == CMYKColorspace)
+      (void) fprintf(image->file,"/DeviceCMYK\n");
     else
-      if (IsFaxImage(image))
-        (void) fprintf(image->file,"/DeviceGray\n");
+      if (!IsPseudoClass(image) && !IsGrayImage(image))
+        (void) fprintf(image->file,"/DeviceRGB\n");
       else
-        (void) fprintf(image->file,"[ /Indexed /DeviceRGB %u %u 0 R ]\n",
-          image->colors-1,object+3);
+        if (IsFaxImage(image))
+          (void) fprintf(image->file,"/DeviceGray\n");
+        else
+          (void) fprintf(image->file,"[ /Indexed /DeviceRGB %u %u 0 R ]\n",
+            image->colors-1,object+3);
     (void) fprintf(image->file,"endobj\n");
     /*
       Write Thumb object.
@@ -6215,7 +6234,8 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           /*
             Allocate pixel array.
           */
-          number_packets=3*tile_image->columns*tile_image->rows;
+          number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
+            image->columns*image->rows;
           pixels=(unsigned char *)
             AllocateMemory(number_packets*sizeof(unsigned char));
           if (pixels == (unsigned char *) NULL)
@@ -6243,6 +6263,8 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   *q++=DownScale(p->red);
                   *q++=DownScale(p->green);
                   *q++=DownScale(p->blue);
+                  if (image->colorspace == CMYKColorspace)
+                    *q++=DownScale(p->index);
                 }
             }
             p++;
@@ -6284,6 +6306,8 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(DownScale(p->red),image->file);
                   Ascii85Encode(DownScale(p->green),image->file);
                   Ascii85Encode(DownScale(p->blue),image->file);
+                  if (image->colorspace == CMYKColorspace)
+                    Ascii85Encode(DownScale(p->index),image->file);
                 }
             }
             p++;
@@ -7168,7 +7192,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         }
        if(need_fram)
           ticks_per_second = 100;
- 
+
       /* If pseudocolor, we should also check to see if all the
          palettes are identical and write a global PLTE if they are.
          ../glennrp Feb 99
@@ -9743,18 +9767,35 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       "  %%",
       "  %% Display a DirectClass image.",
       "  %%",
-      "  /DeviceRGB setcolorspace",
-      "  <<",
-      "    /ImageType 1",
-      "    /Width columns",
-      "    /Height rows",
-      "    /BitsPerComponent 8",
-      "    /Decode [0 1 0 1 0 1]",
-      "    /ImageMatrix [columns 0 0 rows neg 0 rows]",
-      "    compression 0 gt",
-      "    { /DataSource pixel_stream }",
-      "    { /DataSource pixel_stream /%.1024s filter } ifelse",
-      "  >> image",
+      "  colorspace 0 eq",
+      "  {",
+      "    /DeviceRGB setcolorspace",
+      "    <<",
+      "      /ImageType 1",
+      "      /Width columns",
+      "      /Height rows",
+      "      /BitsPerComponent 8",
+      "      /Decode [0 1 0 1 0 1]",
+      "      /ImageMatrix [columns 0 0 rows neg 0 rows]",
+      "      compression 0 gt",
+      "      { /DataSource pixel_stream }",
+      "      { /DataSource pixel_stream /%.1024s filter } ifelse",
+      "    >> image",
+      "  }",
+      "  {",
+      "    /DeviceCMYK setcolorspace",
+      "    <<",
+      "      /ImageType 1",
+      "      /Width columns",
+      "      /Height rows",
+      "      /BitsPerComponent 8",
+      "      /Decode [0 1 0 1 0 1 0 1]",
+      "      /ImageMatrix [columns 0 0 rows neg 0 rows]",
+      "      compression 0 gt",
+      "      { /DataSource pixel_stream }",
+      "      { /DataSource pixel_stream /%.1024s filter } ifelse",
+      "    >> image",
+      "  } ifelse",
       "} bind def",
       "",
       "/PseudoClassImage",
@@ -9826,6 +9867,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       "  %%   image label.",
       "  %%   image columns & rows.",
       "  %%   class: 0-DirectClass or 1-PseudoClass.",
+      "  %%   colorspace: 0-RGB or 1-CMYK.",
       "  %%   compression: 0-RunlengthEncodedCompression or 1-NoCompression.",
       "  %%   hex color packets.",
       "  %%",
@@ -9851,9 +9893,11 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       "  currentfile buffer readline pop",
       "  token pop /class exch def pop",
       "  currentfile buffer readline pop",
+      "  token pop /colorspace exch def pop",
+      "  currentfile buffer readline pop",
       "  token pop /compression exch def pop",
       "  class 0 gt { PseudoClassImage } { DirectClassImage } ifelse",
-      "  pixel_stream flushfile",
+      "  currentfile flushfile",
       "  grestore",
       (char *) NULL
     };
@@ -9929,7 +9973,6 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     /*
       Scale image to size of Postscript page.
     */
-    TransformRGBImage(image,RGBColorspace);
     text_size=0;
     if (image->label != (char *) NULL)
       text_size=MultilineCensus(image->label)*image_info->pointsize+12;
@@ -9955,11 +9998,6 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
-    if ((image->x_resolution != 0) && (image->y_resolution != 0))
-      {
-        x_resolution=image->x_resolution;
-        y_resolution=image->y_resolution;
-      }
     if (image_info->density != (char *) NULL)
       {
         count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
@@ -10083,8 +10121,9 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         }
         FreeMemory(labels);
       }
-    (void) fprintf(image->file,"%u %u\n%u\n%d\n",image->columns,image->rows,
-      IsPseudoClass(image),(int) (compression == NoCompression));
+    (void) fprintf(image->file,"%u %u\n%u\n%d\n%d\n",image->columns,image->rows,
+      IsPseudoClass(image),(int) (image->colorspace == CMYKColorspace),
+      (int) (compression == NoCompression));
     p=image->pixels;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       switch (compression)
@@ -10098,7 +10137,8 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           /*
             Allocate pixel array.
           */
-          number_packets=3*image->columns*image->rows;
+          number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
+            image->columns*image->rows;
           pixels=(unsigned char *)
             AllocateMemory(number_packets*sizeof(unsigned char));
           if (pixels == (unsigned char *) NULL)
@@ -10119,11 +10159,19 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   *q++=DownScale(MaxRGB);
                 }
               else
-                {
-                  *q++=DownScale(p->red);
-                  *q++=DownScale(p->green);
-                  *q++=DownScale(p->blue);
-                }
+                if (image->colorspace != CMYKColorspace)
+                  {
+                    *q++=DownScale(p->red);
+                    *q++=DownScale(p->green);
+                    *q++=DownScale(p->blue);
+                  }
+                else
+                  {
+                    *q++=DownScale(MaxRGB-p->red);
+                    *q++=DownScale(MaxRGB-p->green);
+                    *q++=DownScale(MaxRGB-p->blue);
+                    *q++=DownScale(MaxRGB-p->index);
+                  }
             }
             p++;
             if (image->previous == (Image *) NULL)
@@ -10163,11 +10211,19 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(DownScale(MaxRGB),image->file);
                 }
               else
-                {
-                  Ascii85Encode(DownScale(p->red),image->file);
-                  Ascii85Encode(DownScale(p->green),image->file);
-                  Ascii85Encode(DownScale(p->blue),image->file);
-                }
+                if (image->colorspace != CMYKColorspace)
+                  {
+                    Ascii85Encode(DownScale(p->red),image->file);
+                    Ascii85Encode(DownScale(p->green),image->file);
+                    Ascii85Encode(DownScale(p->blue),image->file);
+                  }
+                else
+                  {
+                    Ascii85Encode(DownScale(MaxRGB-p->red),image->file);
+                    Ascii85Encode(DownScale(MaxRGB-p->green),image->file);
+                    Ascii85Encode(DownScale(MaxRGB-p->blue),image->file);
+                    Ascii85Encode(DownScale(MaxRGB-p->index),image->file);
+                  }
             }
             p++;
             if (image->previous == (Image *) NULL)
@@ -11914,6 +11970,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       }
     else
       if ((Latin1Compare(image_info->magick,"TIFF24") == 0) ||
+          (compress_tag == JPEGCompression) ||
           (!IsPseudoClass(image) && !IsGrayImage(image)))
         {
           /*
@@ -11979,10 +12036,11 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
         TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
-    if (compress_tag == COMPRESSION_CCITTFAX4)
-      TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
-    else
+    if (compress_tag != COMPRESSION_JPEG)
       TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff,-1));
+    else
+      TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff,-1)+
+        (8-(TIFFDefaultStripSize(tiff,-1) % 8)));
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short

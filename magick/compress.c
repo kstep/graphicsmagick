@@ -1721,7 +1721,6 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   const Image *image)
 {
   char
-    *buffer,
     filename[MaxTextExtent];
 
   Image
@@ -1739,6 +1738,13 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
 
   TIFF
     *tiff;
+
+
+  uint16
+    fillorder;
+
+  unsigned char
+    *buffer;
 
   unsigned int
     *byte_count,
@@ -1790,13 +1796,11 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   /*
     Allocate raw strip buffer.
   */
+  TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fillorder);
   TIFFGetField(tiff,TIFFTAG_STRIPBYTECOUNTS,&byte_count);
   strip_size=byte_count[0];
-  for (i=1; i < (int) TIFFNumberOfStrips(tiff); i++)
-    if (byte_count[i] > strip_size)
-      strip_size=byte_count[i];
-  buffer=(char *) AllocateMemory(strip_size*sizeof(char));
-  if (buffer == (char *) NULL)
+  buffer=(unsigned char *) AllocateMemory(strip_size*sizeof(unsigned char));
+  if (buffer == (unsigned char *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL);
@@ -1809,7 +1813,21 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   Ascii85Initialize();
   for (i=0; i < (int) TIFFNumberOfStrips(tiff); i++)
   {
-    count=TIFFReadRawStrip(tiff,i,buffer,strip_size);
+    if (byte_count[i] > strip_size)
+      {
+        buffer=(unsigned char *) ReallocateMemory((char *) buffer,
+          byte_count[i]*sizeof(unsigned char));
+        if (buffer == (unsigned char *) NULL)
+          {
+            MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+              image->filename);
+            break;
+          }
+        strip_size=byte_count[i];
+      }
+    count=TIFFReadRawStrip(tiff,i,buffer,byte_count[i]);
+    if (fillorder == FILLORDER_LSB2MSB)
+      TIFFReverseBits(buffer,count);
     for (j=0; j < count; j++)
       Ascii85Encode((unsigned int) buffer[j],image->file);
   }

@@ -5885,6 +5885,10 @@ Export unsigned int IsGrayImage(Image *image)
     Determine if image is grayscale.
   */
   assert(image != (Image *) NULL);
+  if (image->matte)
+    return(False);
+  if (image->colorspace == CMYKColorspace)
+    return(False);
   gray_scale=True;
   switch (image->class)
   {

@@ -234,7 +234,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 info-am:
 info: info-am
 dvi-am:
@@ -299,8 +298,8 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Ensure that processed delegates file is not distributed
-dist-hook:
-	$(RM) $(distdir)/delegates.mgk
+#dist-hook:
+#	$(RM) $(distdir)/delegates.mgk
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

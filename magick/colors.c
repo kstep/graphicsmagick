@@ -496,6 +496,8 @@ Export unsigned int IsPseudoClass(Image *image)
     return(True);
   if (image->matte)
     return(False);
+  if (image->colorspace == CMYKColorspace)
+    return(False);
   /*
     Initialize color description tree.
   */

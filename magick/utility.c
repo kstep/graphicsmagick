@@ -371,7 +371,7 @@ Export unsigned short *ConvertTextToUnicode(const char *text,int *count)
   q=unicode;
   while (*p != '\0')
   {
-    *q=(*p);
+    *q=(unsigned char) (*p);
     if (strncmp(p,"\\0x",3) == 0)
       {
         p+=3;
