@@ -7451,8 +7451,6 @@ Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   else
     if (!GetDelegateInfo((char *) NULL,clone_info->magick,&delegate_info))
       {
-        ThrowBinaryException(MissingDelegateWarning,
-          "no encode delegate for this image format",clone_info->magick);
         magick_info=(MagickInfo *) GetMagickInfo(image->magick);
         if ((magick_info != (MagickInfo *) NULL) &&
             (magick_info->encoder !=
