@@ -301,6 +301,20 @@ void CConfigureApp::process_utility(ofstream &dsw,
   std::list<std::string> source_list;
   std::list<std::string> exclude_list;
 
+  std::string envpath;
+  envpath = staging;
+  envpath += "\\UTILITY.txt";
+  load_environment_file(envpath.c_str(),
+    defines_list, includes_list, source_list, exclude_list);
+
+	for (std::list<std::string>::iterator it = exclude_list.begin();
+			it != exclude_list.end();
+			  it++)
+	{
+		if (stricmp(filename, (*it).c_str()) == 0)
+      return;
+	}
+
   if (runtime == MULTITHREADEDDLL)
 	{
 		defines_list.push_back("_DLL");
@@ -340,12 +354,6 @@ void CConfigureApp::process_utility(ofstream &dsw,
     int levels = strDepends.GetFieldCount('\\');
     add_includes(includes_list, libpath, levels-2);
   }
-
-  std::string envpath;
-  envpath = staging;
-  envpath += "\\UTILITY.txt";
-  load_environment_file(envpath.c_str(),
-    defines_list, includes_list, source_list, exclude_list);
 
 	write_exe_dsp(
     runtime,
@@ -594,6 +602,10 @@ void CConfigureApp::process_library(ofstream &dsw,
 	        add_project_dependency(dsw, "LIBR_TIFF");
         }
         if (name.compare("Magick++") == 0)
+        {
+	        add_project_dependency(dsw, "CORE_magick");
+        }
+        if (name.compare("SDL") == 0)
         {
 	        add_project_dependency(dsw, "CORE_magick");
         }
