@@ -125,7 +125,7 @@ typedef struct
 
 
 
-MagickExport void Rd_WP_DWORD(Image *image, DWORD *d)
+static void Rd_WP_DWORD(Image *image, DWORD *d)
 {
    unsigned char b;
 
@@ -148,7 +148,7 @@ MagickExport void Rd_WP_DWORD(Image *image, DWORD *d)
 }
 
 
-MagickExport void InsertRow(BYTE *p,int y,Image *image)
+static void InsertRow(BYTE *p,int y,Image *image)
 {
 int bit,x;
 register PixelPacket *q;

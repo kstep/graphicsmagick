@@ -153,7 +153,7 @@ static unsigned char *SFWScan(const unsigned char *p,const unsigned char *q,
   return((unsigned char *) NULL);
 }
 
-MagickExport void TranslateSFWMarker(unsigned char *marker)
+static void TranslateSFWMarker(unsigned char *marker)
 {
   switch (marker[1])
   {

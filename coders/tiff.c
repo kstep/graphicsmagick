@@ -1055,7 +1055,7 @@ MagickExport void UnregisterTIFFImage(void)
 */
 
 #if defined(IPTC_SUPPORT)
-MagickExport void WriteNewsProfile(TIFF *tiff,int type,Image *image)
+static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 {
   register int
     i;

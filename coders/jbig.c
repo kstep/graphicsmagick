@@ -360,7 +360,7 @@ MagickExport void UnregisterJBIGImage(void)
 %
 */
 
-MagickExport void JBIGEncode(unsigned char *pixels,size_t length,void *data)
+static void JBIGEncode(unsigned char *pixels,size_t length,void *data)
 {
   Image
     *image;

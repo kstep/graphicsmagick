@@ -142,7 +142,7 @@ static char *EscapeParenthesis(const char *text)
   return(buffer);
 }
 
-MagickExport void EscapeText(char *text,const char escape)
+static void EscapeText(char *text,const char escape)
 {
   register char
     *p;
@@ -163,7 +163,7 @@ MagickExport void EscapeText(char *text,const char escape)
 
 #if defined(HasTTF)
 #if !defined(FREETYPE_MAJOR)
-MagickExport void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
+static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   Image *image)
 {
   char
@@ -214,7 +214,7 @@ MagickExport void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   FreeMemory((void **) &label);
 }
 
-MagickExport void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
+static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
   TT_Glyph glyph,int x_offset,int y_offset,TT_Glyph_Metrics *glyph_metrics)
 {
   int

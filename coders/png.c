@@ -730,7 +730,7 @@ extern "C" {
   the same as the one supplied in libpng, except that it receives the
   datastream from the ReadBlob() function instead of standard input.
 */
-MagickExport void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
+static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
 {
   Image
     *image;
@@ -756,7 +756,7 @@ MagickExport void png_get_data(png_structp png_ptr,png_bytep data,png_size_t len
  * chunks and remove them from the datastream that is passed to libpng,
  * and store their contents for later use.
  */
-MagickExport void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
+static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
 {
   MngInfo
     *mng_info;
@@ -829,7 +829,7 @@ MagickExport void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t len
 }
 #endif
 
-MagickExport void png_put_data(png_structp png_ptr,png_bytep data,png_size_t length)
+static void png_put_data(png_structp png_ptr,png_bytep data,png_size_t length)
 {
   Image
     *image;
@@ -846,7 +846,7 @@ MagickExport void png_put_data(png_structp png_ptr,png_bytep data,png_size_t len
     }
 }
 
-MagickExport void png_flush_data(png_structp png_ptr)
+static void png_flush_data(png_structp png_ptr)
 {
   Image
     *image;
@@ -877,7 +877,7 @@ static int PalettesAreEqual(const ImageInfo *image_info,Image *a,Image *b)
   return((int) True);
 }
 
-MagickExport void MngInfoDiscardObject(MngInfo *mng_info,int i)
+static void MngInfoDiscardObject(MngInfo *mng_info,int i)
 {
   if (i && (i < MNG_MAX_OBJECTS) && (mng_info != (MngInfo *) NULL) &&
       mng_info->exists[i] && !mng_info->frozen[i])
@@ -909,7 +909,7 @@ MagickExport void MngInfoDiscardObject(MngInfo *mng_info,int i)
     }
 }
 
-MagickExport void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
+static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
 {
   if (*have_mng_structure && (mng_info != (MngInfo *) NULL))
     {
@@ -990,7 +990,7 @@ static long mng_get_long(unsigned char *p)
   return((long) ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]));
 }
 
-MagickExport void MNGCoalesce(Image *image)
+static void MNGCoalesce(Image *image)
 {
 /* I have been unable to get this working after version 4.2.9 */
 #if 0
@@ -1016,7 +1016,7 @@ MagickExport void MNGCoalesce(Image *image)
 #endif
 }
 
-MagickExport void PNGErrorHandler(png_struct *ping,png_const_charp message)
+static void PNGErrorHandler(png_struct *ping,png_const_charp message)
 {
   Image
     *image;
@@ -1026,7 +1026,7 @@ MagickExport void PNGErrorHandler(png_struct *ping,png_const_charp message)
   longjmp(ping->jmpbuf,1);
 }
 
-MagickExport void PNGWarningHandler(png_struct *ping,png_const_charp message)
+static void PNGWarningHandler(png_struct *ping,png_const_charp message)
 {
   Image
     *image;
@@ -3161,7 +3161,7 @@ MagickExport void UnregisterPNGImage(void)
 extern "C" {
 #endif
 
-MagickExport void PNGLong(png_bytep p,png_uint_32 value)
+static void PNGLong(png_bytep p,png_uint_32 value)
 {
   *p++=(png_byte) ((value >> 24) & 0xff);
   *p++=(png_byte) ((value >> 16) & 0xff);
@@ -3169,13 +3169,13 @@ MagickExport void PNGLong(png_bytep p,png_uint_32 value)
   *p++=(png_byte) (value & 0xff);
 }
 
-MagickExport void PNGShort(png_bytep p,png_uint_16 value)
+static void PNGShort(png_bytep p,png_uint_16 value)
 {
   *p++=(png_byte) ((value >> 8) & 0xff);
   *p++=(png_byte) (value & 0xff);
 }
 
-MagickExport void PNGType(png_bytep p,png_bytep type)
+static void PNGType(png_bytep p,png_bytep type)
 {
   memcpy(p,type,4*sizeof(png_byte));
 }

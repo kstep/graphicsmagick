@@ -298,7 +298,7 @@ MagickExport void UnregisterWBMPImage(void)
 %
 */
 
-MagickExport void WBMPWriteInteger(Image *image,const unsigned int value)
+static void WBMPWriteInteger(Image *image,const unsigned int value)
 {
   int
     bits,
