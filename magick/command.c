@@ -2441,6 +2441,17 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                     ThrowConvertException(OptionError,"UnrecognizedListType",
                       option)
                   }
+                  case 'R':
+                  case 'r':
+                  {
+                    if (LocaleCompare("Resource",option) == 0)
+                      {
+                        (void) ListMagickResourceInfo((FILE *) NULL,exception);
+                        break;
+                      }
+                    ThrowConvertException(OptionError,"UnrecognizedListType",
+                      option)
+                  }
                   case 'T':
                   case 't':
                   {
@@ -2866,22 +2877,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowConvertException(OptionError,"MissingImageScene",option);
               }
-            break;
-          }
-        if (LocaleCompare("seed",option+1) == 0)
-          {
-            unsigned int
-              seed;
-
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowConvertException(OptionError,"MissingSeedValue",option);
-              }
-            seed=atoi(argv[i]);
-            srand(seed);
-            DistillRandomEvent((unsigned char *) &seed,sizeof(unsigned int));
             break;
           }
         if (LocaleCompare("segment",option+1) == 0)
@@ -6949,6 +6944,17 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                     ThrowMogrifyException(OptionError,"UnrecognizedListType",
                       option)
                   }
+                  case 'R':
+                  case 'r':
+                  {
+                    if (LocaleCompare("Resource",option) == 0)
+                      {
+                        (void) ListMagickResourceInfo((FILE *) NULL,exception);
+                        break;
+                      }
+                    ThrowMogrifyException(OptionError,"UnrecognizedListType",
+                      option)
+                  }
                   case 'T':
                   case 't':
                   {
@@ -7282,22 +7288,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   ThrowMogrifyException(OptionError,"MissingImageScene",
                     option);
               }
-            break;
-          }
-        if (LocaleCompare("seed",option+1) == 0)
-          {
-            unsigned int
-              seed;
-
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  ThrowMogrifyException(OptionError,"MissingImageGamma",option);
-              }
-            seed=atoi(argv[i]);
-            srand(seed);
-            DistillRandomEvent((unsigned char *) &seed,sizeof(unsigned int));
             break;
           }
         if (LocaleCompare("segment",option+1) == 0)

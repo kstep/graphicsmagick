@@ -58,7 +58,7 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 	constitute.c image.c composite.c list.c color.c quantize.c segment.c \
 	resize.c transform.c shear.c enhance.c effect.c fx.c decorate.c \
 	annotate.c type.c draw.c render.c paint.c montage.c semaphore.c attribute.c \
-	signature.c random.c compress.c command.c gem.c registry.c magic.c magick.c \
+	signature.c compress.c command.c gem.c registry.c magic.c magick.c \
 	delegate.c module.c static.c resource.c log.c timer.c utility.c cache_view.c \
 	stream.c version.c animate.c display.c widget.c xwindow.c PreRvIcccm.c \
 	deprecate.c
@@ -133,7 +133,6 @@ pkginclude_HEADERS = \
 	montage.h \
 	paint.h \
 	quantize.h \
-	random.h \
 	registry.h \
 	render.h \
 	resize.h \

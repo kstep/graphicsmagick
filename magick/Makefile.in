@@ -371,7 +371,7 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 	constitute.c image.c composite.c list.c color.c quantize.c segment.c \
 	resize.c transform.c shear.c enhance.c effect.c fx.c decorate.c \
 	annotate.c type.c draw.c render.c paint.c montage.c semaphore.c attribute.c \
-	signature.c random.c compress.c command.c gem.c registry.c magic.c magick.c \
+	signature.c compress.c command.c gem.c registry.c magic.c magick.c \
 	delegate.c module.c static.c resource.c log.c timer.c utility.c cache_view.c \
 	stream.c version.c animate.c display.c widget.c xwindow.c PreRvIcccm.c \
 	deprecate.c
@@ -435,7 +435,6 @@ pkginclude_HEADERS = \
 	montage.h \
 	paint.h \
 	quantize.h \
-	random.h \
 	registry.h \
 	render.h \
 	resize.h \
@@ -498,7 +497,7 @@ am__libGraphicsMagick_la_SOURCES_DIST = memory.c blob.c cache.c locale.c \
 	color.c quantize.c segment.c resize.c transform.c shear.c \
 	enhance.c effect.c fx.c decorate.c annotate.c type.c draw.c \
 	render.c paint.c montage.c semaphore.c attribute.c signature.c \
-	random.c compress.c command.c gem.c registry.c magic.c magick.c \
+	compress.c command.c gem.c registry.c magic.c magick.c \
 	delegate.c module.c static.c resource.c log.c timer.c utility.c \
 	cache_view.c stream.c version.c animate.c display.c widget.c \
 	xwindow.c PreRvIcccm.c deprecate.c nt_base.c nt_feature.c
@@ -507,11 +506,11 @@ am__objects_1 = memory.lo blob.lo cache.lo locale.lo error.lo monitor.lo \
 	quantize.lo segment.lo resize.lo transform.lo shear.lo \
 	enhance.lo effect.lo fx.lo decorate.lo annotate.lo type.lo \
 	draw.lo render.lo paint.lo montage.lo semaphore.lo attribute.lo \
-	signature.lo random.lo compress.lo command.lo gem.lo \
-	registry.lo magic.lo magick.lo delegate.lo module.lo static.lo \
-	resource.lo log.lo timer.lo utility.lo cache_view.lo stream.lo \
-	version.lo animate.lo display.lo widget.lo xwindow.lo \
-	PreRvIcccm.lo deprecate.lo
+	signature.lo compress.lo command.lo gem.lo registry.lo magic.lo \
+	magick.lo delegate.lo module.lo static.lo resource.lo log.lo \
+	timer.lo utility.lo cache_view.lo stream.lo version.lo \
+	animate.lo display.lo widget.lo xwindow.lo PreRvIcccm.lo \
+	deprecate.lo
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 =
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 = \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@	nt_feature.lo
@@ -545,16 +544,15 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/module.Plo ./$(DEPDIR)/monitor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/montage.Plo ./$(DEPDIR)/nt_base.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/nt_feature.Plo ./$(DEPDIR)/paint.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/quantize.Plo ./$(DEPDIR)/random.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/registry.Plo ./$(DEPDIR)/render.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/resize.Plo ./$(DEPDIR)/resource.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/segment.Plo ./$(DEPDIR)/semaphore.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/shear.Plo ./$(DEPDIR)/signature.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/static.Plo ./$(DEPDIR)/stream.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/timer.Plo ./$(DEPDIR)/transform.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/type.Plo ./$(DEPDIR)/utility.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/version.Plo ./$(DEPDIR)/widget.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/xwindow.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/quantize.Plo ./$(DEPDIR)/registry.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/render.Plo ./$(DEPDIR)/resize.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/resource.Plo ./$(DEPDIR)/segment.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/semaphore.Plo ./$(DEPDIR)/shear.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/signature.Plo ./$(DEPDIR)/static.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/stream.Plo ./$(DEPDIR)/timer.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/transform.Plo ./$(DEPDIR)/type.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/utility.Plo ./$(DEPDIR)/version.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/widget.Plo ./$(DEPDIR)/xwindow.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -700,7 +698,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nt_feature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quantize.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/registry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/render.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resize.Plo@am__quote@

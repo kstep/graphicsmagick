@@ -584,6 +584,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     case BlobEvent: domain=(char *) "Blob"; break;
     case DeprecateEvent: domain=(char *) "Deprecate"; break;
     case UserEvent: domain=(char *) "User"; break;
+    case ResourceEvent: domain=(char *) "Resource"; break;
     default: domain=(char *) "UnknownEvent"; break;
   }
   va_start(operands,format);
@@ -1046,6 +1047,8 @@ MagickExport unsigned long SetLogEventMask(const char *events)
     log_info->events=NoEvents;
   if (GlobExpression(events,"*[Rr]ender*"))
     log_info->events|=RenderEvent;
+  if (GlobExpression(events,"*[Rr]esource*"))
+    log_info->events|=ResourceEvent;
   if (GlobExpression(events,"*[Tt]ransform*"))
     log_info->events|=TransformEvent;
   if (GlobExpression(events,"*[U]ser*"))

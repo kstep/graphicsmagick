@@ -140,6 +140,7 @@ int main(int argc,char **argv)
         (void) fprintf(stdout,"Version: %.1024s\n",
           GetMagickVersion((unsigned long *) NULL));
         (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
+        DestroyMagick();
         Exit(0);
       }
     if (LocaleCompare("debug",option+1) == 0)
@@ -159,13 +160,16 @@ int main(int argc,char **argv)
       {
         help_wanted=True;
         GMUsage();
+        DestroyMagick();
+        Exit(0);
       }
   }
 
   if (argc < 2)
     {
       GMUsage();
-      Exit(0);
+      DestroyMagick();
+      Exit(1);
     }
 
   argc--;

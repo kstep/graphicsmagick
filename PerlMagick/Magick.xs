@@ -256,8 +256,9 @@ static char
   },
   *LogEventTypes[] =
   {
-    "No", "Configure", "Annotate", "Render", "Locale", "Coder",
-    "X11", "Cache", "Blob", "All", (char *) NULL
+    "No", "Configure", "Annotate", "Render", "Transform", "Locale",
+    "Coder", "X11", "Cache", "Blob", "Resource", "Deprecate", "User",
+    "All", (char *) NULL
   },
   *MethodTypes[] =
   {

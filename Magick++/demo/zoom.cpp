@@ -62,7 +62,7 @@ int main(int argc,char **argv)
           try {
             density=Geometry(argv[argv_index]);
           }
-          catch( exception &error_ )
+          catch( exception &/* error_ */)
             {
               ParseError(argv_index,argv);
             }
@@ -118,7 +118,7 @@ int main(int argc,char **argv)
           try {
             geometry=Geometry(argv[argv_index]);
           }
-          catch( exception &error_ )
+          catch( exception &/* error_ */)
             {
               ParseError(argv_index,argv);
             }
@@ -131,7 +131,7 @@ int main(int argc,char **argv)
           try {
             resample=Geometry(argv[argv_index]);
           }
-          catch( exception &error_ )
+          catch( exception &/* error_ */)
             {
               ParseError(argv_index,argv);
             }

@@ -315,7 +315,8 @@ MagickExport void InitializeSemaphore(void)
     (const pthread_mutexattr_t *) NULL);
 #endif
 #if defined(WIN32)
-  InitializeCriticalSection(&semaphore_mutex);
+  if (!active_semaphore)
+    InitializeCriticalSection(&semaphore_mutex);
   active_semaphore=True;
 #endif
 }

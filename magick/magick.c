@@ -67,7 +67,6 @@
 #include "magic.h"
 #include "magick.h"
 #include "module.h"
-#include "random.h"
 #include "registry.h"
 #include "resource.h"
 #include "render.h"
@@ -114,7 +113,6 @@ MagickExport void DestroyMagick(void)
   DestroyConstitute();
   DestroyMagickRegistry();
   DestroyMagickResources();
-  DestroyRandomReservoir();
   DestroySemaphore();
 #if defined(WIN32)
   DestroyTracingCriticalSection();
@@ -342,39 +340,18 @@ MagickExport void InitializeMagick(const char *path)
   (void) setlocale(LC_NUMERIC,"C");
   InitializeSemaphore();
 
-  {
-    /*
-      Compute memory allocation and memory map resource limits based
-      on available memory
-    */
-    long
-      limit,
-      pagesize,
-      pages;
-
-    limit=0;
-    pagesize=-1;
-    pages=-1;
-#if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
-    pagesize=sysconf(_SC_PAGE_SIZE);
-#endif
-#if defined(HAVE_GETPAGESIZE)
-    if (pagesize <= 0)
-      pagesize=getpagesize();
-#endif
-#if defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
-    pages=sysconf(_SC_PHYS_PAGES);
-#endif
-    if (pages > 0 && pagesize > 0)
-      limit=((pages+512)/1024)*((pagesize+512)/1024);
-#if defined(PixelCacheThreshold)
-    limit=PixelCacheThreshold;
-#endif
-    SetMagickResourceLimit(MemoryResource,limit > 0 ? limit : 512);
-    SetMagickResourceLimit(MapResource,limit > 0 ? 2*limit : 1024);
-  }
-
+  /*
+    Set logging flags using value of MAGICK_DEBUG if it is set in
+    the environment.
+  */
   (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
+
+  /*
+    Compute memory allocation and memory map resource limits based
+    on available memory
+  */
+  InitializeMagickResources();
+
   *execution_path='\0';
 #if !defined(UseInstalledImageMagick)
 #if defined(POSIX) || defined(WIN32)

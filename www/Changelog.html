@@ -13,11 +13,27 @@
 </tr>
 </table>
 <p>
+2003-03-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c: Added -list resource support.
+
+</UL>
+<p>
 2003-03-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/Makefile.am (random.c): Removed building, packaging,
+        and intialization of random.c functions since it is not actually
+        used.<BR>
+  <LI> magick/semaphore.c (InitializeSemaphore): Only initialize
+        critical section if active_semaphore is not already true.
+  <LI> magick/resource.c: Snarf resource.c updates from ImageMagick.
+  <LI> PerlMagick/Magick.xs: Added missing log event types.
+  <LI> magick/log.h (enum): Added ResourceEvent enumeration.
   <LI> magick/log.c (LogMagickEvent): fflush(stdout) at the end of
         each log.  Otherwise output may not be seen for a long time.
+        (SetLogEventMask): Add support for "-debug resource".
   <LI> coders/tiff.c (RegisterTIFFImage): Don't register encode and
         decode handlers for TIFF if TIFF library is not available.
   <LI> magick/constitute.c (WriteImage): Fix cut-n-paste error

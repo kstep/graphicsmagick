@@ -29,6 +29,7 @@ typedef enum
   BlobEvent = 0x0100,
   DeprecateEvent = 0x0200,
   UserEvent = 0x0400,
+  ResourceEvent = 0x0800,
   AllEvents = 0xFFFF
 } LogEventType;
 
