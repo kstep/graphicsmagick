@@ -1,0 +1,141 @@
+Tue Nov 30 14:41:43 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>    ***3.5.3. release***
+
+	* Added tif_luv to contrib/djgpp/Makefile.lib.
+
+Tue Nov 30 14:15:32 EST 1999   Mike Welles <mike@onshore.com> 
+
+        * Added zip creation to relase makefile target 
+
+	* Added html for TIFFWriteTile.3t man page. 
+	
+Tue Nov 30 09:20:16 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>
+
+	* Added some changes to tif_write.c to support rewriting existing
+	fixed sized tiles and strips.  Code mods disabled by default, only
+	enabled if REWRITE_HACK is defined for now.
+
+Mon Nov 29 11:43:42 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>
+
+	* Added TIFFWriteTile.3t man page.
+
+Sun Nov 28 20:36:18 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>
+
+	* Added notes on use of makefile.vc in build.html, and fixed 
+	email subscription address.
+
+199-11-28  Mike Welles <mike@onshore.com> 
+
+	*  Fixed apocalypse-inducing y2k bug in contrib/ras/ras2tiff.c 
+
+	*  Did some casts cleaning up to reduce compiler warnings in tif_fax3.c,
+	   from Bruce Carmeron <cameron@petris.com> -- modifications of 
+	   changes made by Frank (sun cc still complained on cast). 
+
+	*  Added tiffconf.h to install target per request from Bill
+	   Radcliffe <billr@corbis.com>: "We need a way for ImageMagick to
+ 	   know features have been compiled into the TIFF library in order to
+	   handle things properly".  
+	
+Sat Nov 27 16:49:21 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>
+
+	* fixed various VC++ warnings as suggested by Gilles Vollant
+	<info@winimage.com>.  
+
+Wed Nov 24 12:08:16 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>
+
+	* Modified TIFFquery.3t man pages info on TIFFIsByteSwapped() to
+	not imply applications are responsible for image data swapping.
+
+1999-11-22  Mike Welles <mike@onshore.com>
+	*  HTML-ized the man pages, added to html/man
+	
+	*  Removed LZW Compression to comply with Unisys patent extortion. 
+	
+1999-09-29  Mike Welles		<mike@onshore.com> 
+	*  Corrected one remaining 16 -> 32 bit value in tif_fax3.c, 
+	   From Ivo Penzar <ivo.penzar@infolink-software.com. 
+
+	*  Added patch from Ivo Penzar to have TiffAdvanceDirectory handle
+	   memory mapped files. <ivo.penzar@infolink-software.com>
+	
+1999-09-26  Mike Welles 	<mike@onshore.com>  ****3.5.2 release***
+	* Corrected alpha versioning.  
+
+	* Removed distinction between  alpha and release targets in Makefile.in. 
+
+	* added release.stamp target, which tags cvs tree, and updates 
+	  "RELEASE-DATE"
+
+	* added releasediff target, which diffs tree with source as of 
+	  date in "RELEASE-DATE"
+	  
+	* Ticked up version to 3.5.2 (alpha 01 -- but I think we'll moving 
+	  away from alpha/non-alpha distinctions). 
+
+	* updated html to reflect release 
+	
+1999-09-23    <warmerda@CS46980-B>
+
+	* Set O_BINARY for tif_unix.c open() ... used on cygwin for instance.
+
+	* Added CYGWIN case in configure.
+
+Fri Sep 17 00:13:51 CEST 1999  Mike Welles <mike@onshore.com> 
+
+	* Applied Francois Dagand's patch to handle fax decompression bug. 
+	  (sizes >= 65536 were failing) 
+	
+Tue Sep 14 21:31:43 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>
+
+	* Applied "a" mode fix to tif_win32.c/TIFFOpen() as suggested 
+	  by Christopher Lawton <clawton@mathworks.com>
+
+Wed Sep  8 08:19:18 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>
+
+	* Added IRIX/gcc, and OSF/1 4.x support on behalf of 
+	  Albert Chin-A-Young <china@thewrittenword.com>
+
+	* Added TIFFReassignTagToIgnore() API on behalf of 
+	  Bruce Cameron <cameron@petris.com>.  Man page still pending.
+
+Wed Aug 25 11:39:07 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>
+
+	* Added test target in Makefile, test_pics.sh script and pics/*.rpt 
+	files to provide for a rudimentary testsuite.
+
+	* Added contrib/tags back from old distribution ... fixed up a bit.
+
+1999-08-16    <warmerda@CS46980-B>
+
+	* Added simple makefile.vc makefiles for building with MS VC++
+	on Windows NT/98/95 in console mode.  Stuff in contrib/win* make give 
+	better solutions for some users.
+
+Mon Aug 16 21:52:11 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>
+
+	* Added addtiffo (add overviews to a TIFF file) in contrib.  Didn't
+	put it in tools since part of it is in C++.
+
+1999-08-16  Michael L. Welles  <mike@kurtz.fake>
+
+	* Updated html/index.html with anon CVS instructions. 
+
+Mon Aug 16 13:18:41 1999  Frank Warmerdam  <warmerda@gdal.velocet.ca>
+
+	* pre-remove so link before softlink in LINUXdso action in 
+	libtiff/Makefile.in to avoid failure on LINUXdso builds other than
+	the first.
+
+	* Fixed problem with cvtcmap() in tif_getimage.c modifying the
+	colormaps owned by the TIFF handle itself when trying to fixup wrong
+	(eight bit) colormaps.  Corrected by maintaining a private copy of
+	the colormap. 
+
+	* Added TIFFReadRGBATile()/TIFFReadRGBAStrip() support in 
+	tif_getimage.c.
+
+	* CVS Repository placed at remotesensing.org.  ChangeLog added.
+
+
+
+	
