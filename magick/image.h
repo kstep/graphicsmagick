@@ -874,10 +874,8 @@ typedef struct _ImageInfo
   Image const declarations.
 */
 extern MagickExport const char
-  *Alphabet,
   *BackgroundColor,
   *BorderColor,
-  *DefaultPointSize,
   *DefaultTileFrame,
   *DefaultTileGeometry,
   *DefaultTileLabel,
