@@ -3126,7 +3126,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     q->opacity=((*p++) << 8);
                     q->opacity|=(*p++);
-                    q->opacity=(Quantum) MaxRGB-q->opacity);
+                    q->opacity=(Quantum) (MaxRGB-q->opacity);
                     q++;
                   }
 #else
