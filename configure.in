@@ -701,7 +701,7 @@ then
     AC_MSG_RESULT()
     failed=0;
     passed=0;
-    AC_CHECK_HEADER(lcms.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_HEADER(lcms/lcms.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(lcms,cmsOpenProfileFromMem,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if LCMS package is complete)
     if test $passed -gt 0

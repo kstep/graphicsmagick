@@ -56,7 +56,11 @@
 #include "magick.h"
 #include "defines.h"
 #if defined(HasLCMS)
-#include "lcms.h"
+# if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#  include <lcms/lcms.h>
+# else
+#  include "lcms.h"
+# endif
 #endif
 
 /*
