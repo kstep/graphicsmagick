@@ -359,6 +359,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
     *image;
 
   int
+    j,
     y;
 
   LayerInfo
@@ -373,7 +374,6 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
 
   register int
     i,
-    j,
     x;
 
   register PixelPacket
@@ -433,7 +433,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         Create colormap.
       */
       image->class=PseudoClass;
-      image->colors=1 << image->depth;
+      image->colors=256;
       image->colormap=(PixelPacket *)
         AllocateMemory(image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
@@ -450,11 +450,11 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
             Read PSD raster colormap.
           */
           for (i=0; i < (int) image->colors; i++)
-            image->colormap[i].red=ReadByte(image);
+            image->colormap[i].red=UpScale(ReadByte(image));
           for (i=0; i < (int) image->colors; i++)
-            image->colormap[i].green=ReadByte(image);
+            image->colormap[i].green=UpScale(ReadByte(image));
           for (i=0; i < (int) image->colors; i++)
-            image->colormap[i].blue=ReadByte(image);
+            image->colormap[i].blue=UpScale(ReadByte(image));
         }
     }
   length=MSBFirstReadLong(image);
@@ -464,7 +464,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         *data;
 
       data=(unsigned char *)
-        AllocateMemory((length)*sizeof(unsigned char));
+        AllocateMemory(length*sizeof(unsigned char));
       if (data == (unsigned char *) NULL)
         ReaderExit(ResourceLimitWarning,
           "8BIM resource memory allocation failed",image);
@@ -674,7 +674,8 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
       {
         for (y=0; y < (int) image->rows; y++)
         {
-          if (!GetPixelCache(image,0,y,image->columns,1))
+          q=GetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
             break;
           switch (i)
           {
@@ -799,9 +800,9 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   image->depth=QuantumDepth;
-  packet_size=3*(image->depth >> 3);
+  packet_size=image->depth > 8 ? 6 : 3;
   if (image->matte)
-    packet_size=4*(image->depth >> 3);
+    packet_size+=image->depth > 8 ? 2 : 1;
   pixels=(unsigned char *)
     AllocateMemory(packet_size*image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
@@ -815,7 +816,7 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     MSBFirstWriteShort(image,image->matte ? 4 : 3);
   MSBFirstWriteLong(image,image->rows);
   MSBFirstWriteLong(image,image->columns);
-  MSBFirstWriteShort(image,image->depth);
+  MSBFirstWriteShort(image,image->class == PseudoClass ? 8 : image->depth);
   if (((image_info->colorspace != UndefinedColorspace) ||
        (image->colorspace != CMYKColorspace)) &&
        (image_info->colorspace != CMYKColorspace))
@@ -866,6 +867,7 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     }
   else
     {
+      packet_size=image->depth > 8 ? 2 : 1;
       for (y=0; y < (int) image->rows; y++)
       {
         if (!GetPixelCache(image,0,y,image->columns,1))
@@ -874,7 +876,7 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           WritePixelCache(image,CyanQuantum,pixels);
         else
           WritePixelCache(image,RedQuantum,pixels);
-        (void) WriteBlob(image,image->columns,pixels);
+        (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       for (y=0; y < (int) image->rows; y++)
       {
@@ -884,7 +886,7 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           WritePixelCache(image,YellowQuantum,pixels);
         else
           WritePixelCache(image,GreenQuantum,pixels);
-        (void) WriteBlob(image,image->columns,pixels);
+        (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       for (y=0; y < (int) image->rows; y++)
       {
@@ -894,7 +896,7 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           WritePixelCache(image,MagentaQuantum,pixels);
         else
           WritePixelCache(image,BlueQuantum,pixels);
-        (void) WriteBlob(image,image->columns,pixels);
+        (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       if (image->matte || (image->colorspace == CMYKColorspace))
         for (y=0; y < (int) image->rows; y++)
@@ -905,7 +907,7 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
             WritePixelCache(image,BlackQuantum,pixels);
           else
             WritePixelCache(image,OpacityQuantum,pixels);
-          (void) WriteBlob(image,image->columns,pixels);
+          (void) WriteBlob(image,packet_size*image->columns,pixels);
         }
     }
   FreeMemory(pixels);
