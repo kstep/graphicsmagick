@@ -1316,7 +1316,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         /*
           Draw text stroke.
         */
-        IdentityAffine(&clone_info->affine);
         (void) ConcatenateString(&clone_info->primitive,"'");
         (void) DrawImage(image,clone_info);
       }
