@@ -283,8 +283,10 @@ const PICTCode
     /* 0x97 */  { "reserved",      -1, "reserved for Apple use" },
     /* 0x98 */  { "PackBitsRect",   0, "packed copybits, rect clipped" },
     /* 0x99 */  { "PackBitsRgn",    0, "packed copybits, rgn clipped" },
-    /* 0x9a */  { "Opcode_9A",      0, "the mysterious opcode 9A" },
-    /* 0x9b */  { "reserved",      -1, "reserved for Apple use" },
+    /* 0x9a */  { "DirectBitsRect", 0,
+                  "PixMap, srcRect, dstRect, mode, PixData" },
+    /* 0x9b */  { "DirectBitsRgn",  0,
+                  "PixMap, srcRect, dstRect, mode, maskRgn, PixData" },
     /* 0x9c */  { "reserved",      -1, "reserved for Apple use" },
     /* 0x9d */  { "reserved",      -1, "reserved for Apple use" },
     /* 0x9e */  { "reserved",      -1, "reserved for Apple use" },
@@ -911,6 +913,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         case 0x98:
         case 0x99:
         case 0x9a:
+        case 0x9b:
         {
           int
             bytes_per_line,
@@ -932,7 +935,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             Pixmap clipped by a rectangle.
           */
           bytes_per_line=0;
-          if (code != 0x9a)
+          if ((code != 0x9a) && (code != 0x9b))
             bytes_per_line=MSBFirstReadShort(image);
           else
             {
@@ -951,12 +954,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               frame.bottom-frame.top,True,exception);
           if (tile_image == (Image *) NULL)
             return((Image *) NULL);
-          if ((code == 0x9a) || (bytes_per_line & 0x8000))
+          if ((code == 0x9a) || (code == 0x9b) || (bytes_per_line & 0x8000))
             {
               ReadPixmap(pixmap);
               tile_image->matte=pixmap.component_count == 4;
             }
-          if (code != 0x9a)
+          if ((code != 0x9a) && (code != 0x9b))
             {
               /*
                 Initialize colormap.
@@ -1005,7 +1008,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           ReadRectangle(destination);
           ReadRectangle(destination);
           (void) MSBFirstReadShort(image);
-          if ((code == 0x91) || (code == 0x99))
+          if ((code == 0x91) || (code == 0x99) || (code == 0x9b))
             {
               /*
                 Skip region.
@@ -1014,7 +1017,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               for (i=0; i < (length-2); i++)
                 (void) ReadByte(image);
             }
-          if ((code != 0x9a) && (bytes_per_line & 0x8000) == 0)
+          if ((code != 0x9a) && (code != 0x9b) &&
+              (bytes_per_line & 0x8000) == 0)
             pixels=DecodeImage(image_info,image,bytes_per_line,1);
           else
             pixels=DecodeImage(image_info,image,bytes_per_line,
