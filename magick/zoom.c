@@ -630,7 +630,6 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     y;
 
   register int
-    i,
     x;
 
   register PixelPacket
