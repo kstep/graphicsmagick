@@ -579,14 +579,14 @@ public:
                            const Image &image_,
                            CompositeOperator composition_ );
 
-    // Destructor
+  // Destructor
   ~DrawableCompositeImage( void );
 
-    // Copy constructor
-    DrawableCompositeImage ( const DrawableCompositeImage& original_ );
+  // Copy constructor
+  DrawableCompositeImage ( const DrawableCompositeImage& original_ );
 
-    // Assignment operator
-    DrawableCompositeImage& operator= (const DrawableCompositeImage& original_ );
+  // Assignment operator
+  DrawableCompositeImage& operator= (const DrawableCompositeImage& original_ );
 
   // Support a polymorphic print-to-stream operator
   /*virtual*/ void print (std::ostream& stream_) const;
@@ -606,6 +606,9 @@ public:
     {
       return _composition;
     }
+
+  void filename( const std::string &image_ );
+  std::string filename( void ) const;
 
   void x( double x_ )
     {
@@ -642,9 +645,6 @@ public:
     {
       return _height;
     }
-
-  void image( const std::string &image_ );
-  std::string image( void );
 
   void image( const Image &image_ );
   Magick::Image image( void ) const;
@@ -794,7 +794,7 @@ public:
       return new DrawableFillColor(*this);
     }
 
-  void color( Color color_ )
+  void color( const Color &color_ )
     {
       _color = color_;
     }
@@ -811,7 +811,7 @@ private:
 class DrawableFillRule : public DrawableBase
 {
 public:
-  DrawableFillRule ( FillRule fillRule_ )
+  DrawableFillRule ( const FillRule fillRule_ )
     : _fillRule(fillRule_)
     {
     }
@@ -826,7 +826,7 @@ public:
       return new DrawableFillRule(*this);
     }
 
-  void fillRule( FillRule fillRule_ )
+  void fillRule( const FillRule fillRule_ )
     {
       _fillRule = fillRule_;
     }
@@ -876,7 +876,11 @@ class DrawableFont : public DrawableBase
 {
 public:
   DrawableFont ( const std::string &font_ )
-    : _font(font_)
+    : _font(font_),
+      _family(),
+      _style(AnyStyle),
+      _weight(400),
+      _stretch(NormalStretch)
     {
     }
   DrawableFont ( const std::string &family_,
@@ -1268,7 +1272,7 @@ private:
 class DrawablePushPattern : public DrawableBase
 {
 public:
-  DrawablePushPattern ( std::string &id_, long x_, long y_,
+  DrawablePushPattern ( const std::string &id_, long x_, long y_,
                         long width_, long height_ )
     : _id(id_),
       _x(x_),
@@ -2010,7 +2014,7 @@ public:
     {
       _x1 = x1_;
     }
-  unsigned long x1( void )
+  unsigned long x1( void ) const
     {
       return _x1;
     }
@@ -2019,7 +2023,7 @@ public:
     {
       _y1 = y1_;
     }
-  unsigned long y1( void )
+  unsigned long y1( void ) const
     {
       return _y1;
     }
@@ -2028,7 +2032,7 @@ public:
     {
       _x2 = x2_;
     }
-  unsigned long x2( void )
+  unsigned long x2( void ) const
     {
       return _x2;
     }
@@ -2037,7 +2041,7 @@ public:
     {
       _y2 = y2_;
     }
-  unsigned long y2( void )
+  unsigned long y2( void ) const
     {
       return _y2;
     }

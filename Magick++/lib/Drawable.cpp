@@ -17,13 +17,6 @@
 
 using namespace std;
 
-#if !defined(DegreesToRadians)
-# define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
-#endif
-#if !defined(RadiansToDegrees)
-# define RadiansToDegrees(x) (180.0*(x)/3.14159265358979323846)
-#endif
-
 //Write Coordinate to stream
 std::ostream& Magick::operator<<( std::ostream& stream_,
                                   const Magick::Coordinate& coordinate_)
@@ -280,11 +273,16 @@ void Magick::DrawableFont::print (std::ostream& stream_) const
         {
         case NormalStyle:
           stream_ << "normal";
+          break;
         case ItalicStyle:
           stream_ <<  "italic";
+          break;
         case ObliqueStyle:
           stream_ <<  "oblique";
+          break;
         case AnyStyle:
+          stream_ << "all";
+          break;
         default:
           {
             stream_ << "all";
@@ -306,23 +304,34 @@ void Magick::DrawableFont::print (std::ostream& stream_) const
         {
         case NormalStretch:
           stream_ << "normal";
+          break;
         case UltraCondensedStretch:
           stream_ << "ultra-condensed";
+          break;
         case ExtraCondensedStretch:
           stream_ << "extra-condensed";
+          break;
         case CondensedStretch:
           stream_ << "condensed";
+          break;
         case SemiCondensedStretch:
           stream_ << "semi-condensed";
+          break;
         case SemiExpandedStretch:
           stream_ << "semi-expanded";
+          break;
         case ExpandedStretch:
           stream_ << "expanded";
+          break;
         case ExtraExpandedStretch:
           stream_ << "extra-expanded";
+          break;
         case UltraExpandedStretch:
           stream_ << "ultra-expanded";
+          break;
         case AnyStretch:
+          stream_ << "all";
+          break;
         default:
           {
             stream_ << "all";
@@ -394,7 +403,6 @@ void Magick::DrawableGravity::print (std::ostream& stream_) const
         stream_ << "Static";
         break;
       }
-
     default :
       {
         stream_ << "Forget";
@@ -477,7 +485,7 @@ Magick::DrawableCompositeImage::~DrawableCompositeImage( void )
 {
   delete _image;
 }
-    // Copy constructor
+// Copy constructor
 Magick::DrawableCompositeImage::DrawableCompositeImage ( const Magick::DrawableCompositeImage& original_ )
   :  Magick::DrawableBase(original_),
      _composition(original_._composition),
@@ -493,21 +501,21 @@ Magick::DrawableCompositeImage& Magick::DrawableCompositeImage::operator= (const
 {
   // If not being set to ourself
   if ( this != &original_ )
-  {
-    _composition = original_._composition;
-    _x = original_._x;
-    _y = original_._y;
-    _width = original_._width;
-    _height = original_._height;
-    _image = new Image(*original_._image);
-  }
+    {
+      _composition = original_._composition;
+      _x = original_._x;
+      _y = original_._y;
+      _width = original_._width;
+      _height = original_._height;
+      _image = new Image(*original_._image);
+    }
   return *this;
 }
-void Magick::DrawableCompositeImage::image( const std::string &image_ )
+void Magick::DrawableCompositeImage::filename( const std::string &filename_ )
 {
-  _image = new Image(image_);
+  _image = new Image(filename_);
 }
-std::string Magick::DrawableCompositeImage::image( void )
+std::string Magick::DrawableCompositeImage::filename( void ) const
 {
   return _image->fileName();
 }
@@ -755,7 +763,7 @@ void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
   if(dasharray_)
     {
       // Count elements in dash array
-      int x;
+      unsigned int x;
       for (x=0; dasharray_[x]; x++);
       // Allocate elements
       _dasharray=static_cast<unsigned int*>(AcquireMemory((x+1)*sizeof(unsigned int)));
@@ -806,6 +814,8 @@ void Magick::DrawableStrokeLineCap::print (std::ostream& stream_) const
       stream_ << "square";
       break;
     case UndefinedCap :
+      stream_ << "none";
+      break;
     default :
       {
         stream_ << "none";
@@ -830,6 +840,8 @@ void Magick::DrawableStrokeLineJoin::print (std::ostream& stream_) const
       stream_ << "bevel";
       break;
     case UndefinedJoin :
+      stream_ << "none";
+      break;
     default :
       {
         stream_ << "none";

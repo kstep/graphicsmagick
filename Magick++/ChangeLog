@@ -1,3 +1,9 @@
+2002-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp: Fixed a bunch of bugs related to
+ 	DrawableCompositeImage, DrawableFont, and inconsistencies
+ 	discovered by Gimpel lint.
+
 2002-04-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (draw): Properly delimit individual drawing

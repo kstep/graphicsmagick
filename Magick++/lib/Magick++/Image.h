@@ -87,7 +87,7 @@ namespace Magick
     Image ( const Image & image_ );
     
     // Assignment operator
-    Image operator= ( const Image &image_ );
+    Image& operator= ( const Image &image_ );
 
     //////////////////////////////////////////////////////////////////////
     //
@@ -1041,7 +1041,7 @@ namespace Magick
     
     // Copy constructor and assignment are not supported
     ImageRef(const ImageRef&);
-    ImageRef operator=(const ImageRef&);
+    ImageRef& operator=(const ImageRef&);
     
     void                 image ( MagickLib::Image * image_ );
     MagickLib::Image *&  image ( void );

@@ -117,12 +117,12 @@ namespace Magick
     //   Red      = red;
     //   Green    = green;
     //   Blue     = blue;
-    //   Alpha    = index;
+    //   Alpha    = opacity;
     // CYMKPixel:
     //   Cyan     = red
     //   Yellow   = green
     //   Magenta  = blue
-    //   Black(K) = index
+    //   Black(K) = opacity
     enum PixelType
     {
       RGBPixel,
@@ -466,8 +466,8 @@ inline void Magick::Color::isValid ( bool valid_ )
 }
 
 
-    // Set pixel
-    // Used to point Color at a pixel in an image
+// Set pixel
+// Used to point Color at a pixel in an image
 inline void Magick::Color::pixel ( PixelPacket* rep_, PixelType pixelType_ )
 {
   if ( _pixelOwn )

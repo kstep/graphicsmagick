@@ -3053,7 +3053,7 @@ Magick::Image::Image( const Image & image_ )
 }
 
 // Assignment operator
-Magick::Image Magick::Image::operator=( const Magick::Image &image_ )
+Magick::Image& Magick::Image::operator=( const Magick::Image &image_ )
 {
   {
     Lock( &image_._imgRef->_mutexLock );
