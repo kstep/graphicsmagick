@@ -38,7 +38,9 @@ AppVerName=ImageMagick version 5.4.7
 AppCopyright=Copyright (C) 2002 ImageMagick Studio
 DefaultDirName={pf}\ImageMagick
 DefaultGroupName=ImageMagick
-UninstallDisplayIcon={app}\IMDisplay.exe
+UninstallDisplayIcon={app}\ImageMagick.ico
+OutputDir=bin
+OutputBaseFilename=ImageMagick-win2k
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
