@@ -1901,6 +1901,16 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         point=start;
         GeneratePoint(q,point);
         q+=q->coordinates;
+        primitive_info->coordinates=q-primitive_info;
+        for (i=0; i < primitive_info->coordinates; i++)
+        {
+          q->primitive=primitive_info->primitive;
+          q--;
+        }
+        number_coordinates+=primitive_info->coordinates;
+        primitive_info+=primitive_info->coordinates;
+        primitive_info->primitive=primitive_type;
+        q=primitive_info;
         break;
       }
       default:
@@ -1911,7 +1921,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       }
     }
   }
-  if ((attribute != 'z') && (attribute != 'Z'))
+  if (q != primitive_info)
     {
       GeneratePoint(q,point);
       q+=q->coordinates;
@@ -2198,8 +2208,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
   assert(draw_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  opacity=0.0;
   mid=draw_info->linewidth/2.0;
+  opacity=0.0;
   p=primitive_info;
   while (p->primitive != UndefinedPrimitive)
   {
@@ -2523,8 +2533,6 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
       case ImagePrimitive:
         break;
     }
-    if (opacity == 1.0)
-      return(opacity);
     p=q+1;
   }
   return(opacity);
