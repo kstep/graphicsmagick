@@ -1276,17 +1276,10 @@ MagickExport unsigned int OpenCache(Image *image)
       if (cache_info->nexus_info == (NexusInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
           "unable to allocate cache nexus_info");
-      for (i=0; i <= (int) cache_info->rows; i++)
+      for (i=0; i < (int) (cache_info->rows+3); i++)
       {
+        memset(cache_info->nexus_info+i,0,sizeof(NexusInfo));
         cache_info->nexus_info[i].available=True;
-        cache_info->nexus_info[i].columns=0;
-        cache_info->nexus_info[i].rows=0;
-        cache_info->nexus_info[i].x=0;
-        cache_info->nexus_info[i].y=0;
-        cache_info->nexus_info[i].length=0;
-        cache_info->nexus_info[i].staging=(PixelPacket *) NULL;
-        cache_info->nexus_info[i].pixels=(PixelPacket *) NULL;
-        cache_info->nexus_info[i].indexes=(IndexPacket *) NULL;
       }
       cache_info->nexus_info[0].available=False;
     }
@@ -1713,7 +1706,10 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const unsigned int id,
     Pixels are stored in a staging area until they are synced to the cache.
   */
   number_pixels=nexus_info->columns*nexus_info->rows;
-  length=number_pixels*sizeof(PixelPacket)+number_pixels*sizeof(IndexPacket);
+  length=number_pixels*sizeof(PixelPacket);
+  if ((cache_info->storage_class == PseudoClass) ||
+      (cache_info->colorspace == CMYKColorspace))
+    length+=number_pixels*sizeof(IndexPacket);
   if (nexus_info->staging == (PixelPacket *) NULL)
     nexus_info->staging=(PixelPacket *) AcquireMemory(length);
   else
