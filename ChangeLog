@@ -1,4 +1,4 @@
-2002-02-26  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
+2002-03-01  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
   * image->matte was not being set when reading GRAY-ALPHA PNG files.
 
 2002-02-26  Cristy  <cristy@mystic.es.dupont.com>
