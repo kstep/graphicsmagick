@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2004 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -46,21 +46,27 @@ typedef enum
 } StorageType;
 
 extern MagickExport Image
-  *ConstituteImage(const unsigned long,const unsigned long,const char *,
-   const StorageType,const void *,ExceptionInfo *),
-  *PingImage(const ImageInfo *,ExceptionInfo *),
-  *ReadImage(const ImageInfo *,ExceptionInfo *),
-  *ReadInlineImage(const ImageInfo *,const char *,ExceptionInfo *);
+  *ConstituteImage(const unsigned long width,const unsigned long height,
+     const char *map,const StorageType type,const void *pixels,
+     ExceptionInfo *exception),
+  *PingImage(const ImageInfo *image_info,ExceptionInfo *exception),
+  *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception),
+  *ReadInlineImage(const ImageInfo *image_info,const char *content,
+     ExceptionInfo *exception);
 
-MagickExport unsigned int
-  DispatchImage(const Image *,const long,const long,const unsigned long,
-    const unsigned long,const char *,const StorageType,void *,ExceptionInfo *),
-  PopImagePixels(const Image *,const QuantumType,unsigned char *);
+MagickExport MagickPassFail
+  DispatchImage(const Image *image,const long x_offset,const long y_offset,
+    const unsigned long columns,const unsigned long rows,const char *map,
+    const StorageType type,void *pixels,ExceptionInfo *exception),
+  ExportImagePixelArea(const Image *image,const QuantumType quantum_type,
+    const unsigned int quantum_size,unsigned char *destination);
 
-extern MagickExport unsigned int
-  PushImagePixels(Image *,const QuantumType,const unsigned char *),
-  WriteImage(const ImageInfo *,Image *),
-  WriteImages(ImageInfo *,Image *,const char *,ExceptionInfo *);
+extern MagickExport MagickPassFail
+  ImportImagePixelArea(Image *image,const QuantumType quantum_type,
+    const unsigned int quantum_size,const unsigned char *source),
+  WriteImage(const ImageInfo *image_info,Image *image),
+  WriteImages(ImageInfo *image_info,Image *image,const char *filename,
+    ExceptionInfo *exception);
 
 extern MagickExport void
   DestroyConstitute(void);

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -106,8 +106,9 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   unsigned int
     status;
 
-  unsigned long
-    packet_size;
+  unsigned int
+    packet_size,
+    quantum_size;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -130,11 +131,19 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   /*
     Allocate memory for a scanline.
   */
-  packet_size=image->depth > 8 ? 8 : 4;
+
+  if (image->depth <= 8)
+    quantum_size=8;
+  else if (image->depth <= 16)
+    quantum_size=16;
+  else
+    quantum_size=32;
+
+  packet_size=(quantum_size*4)/8;
   if (LocaleCompare(image_info->magick,"CMYKA") == 0)
     {
       image->matte=True;
-      packet_size=image->depth > 8 ? 10 : 8;
+      packet_size=(quantum_size*5)/8;
     }
   scanline=MagickAllocateMemory(unsigned char *,
     packet_size*image->tile_info.width);
@@ -178,9 +187,9 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           if (!image->matte)
-            (void) PushImagePixels(image,CMYKQuantum,scanline+x);
+            (void) ImportImagePixelArea(image,CMYKQuantum,quantum_size,scanline+x);
           else
-            (void) PushImagePixels(image,CMYKAQuantum,scanline+x);
+            (void) ImportImagePixelArea(image,CMYKAQuantum,quantum_size,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -198,7 +207,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         /*
           Line interlacing:  CCC...MMM...YYY...KKK...CCC...MMM...YYY...KKK...
         */
-        packet_size=image->depth > 8 ? 2 : 1;
+        packet_size=(quantum_size)/8;
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         for (y=0; y < (long) image->rows; y++)
@@ -208,18 +217,18 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          (void) PushImagePixels(image,CyanQuantum,scanline+x);
+          (void) ImportImagePixelArea(image,CyanQuantum,quantum_size,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PushImagePixels(image,MagentaQuantum,scanline+x);
+          (void) ImportImagePixelArea(image,MagentaQuantum,quantum_size,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PushImagePixels(image,YellowQuantum,scanline+x);
+          (void) ImportImagePixelArea(image,YellowQuantum,quantum_size,scanline+x);
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-          (void) PushImagePixels(image,BlackQuantum,scanline+x);
+          (void) ImportImagePixelArea(image,BlackQuantum,quantum_size,scanline+x);
           if (image->matte)
             {
               (void) ReadBlob(image,packet_size*image->tile_info.width,
                 scanline);
-              (void) PushImagePixels(image,AlphaQuantum,scanline+x);
+              (void) ImportImagePixelArea(image,AlphaQuantum,quantum_size,scanline+x);
             }
           if (!SyncImagePixels(image))
             break;
@@ -249,7 +258,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             if (status == False)
               ThrowReaderException(FileOpenError,UnableToOpenFile,image);
           }
-        packet_size=image->depth > 8 ? 2 : 1;
+        packet_size=(quantum_size)/8;
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         i=0;
@@ -261,7 +270,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          (void) PushImagePixels(image,CyanQuantum,scanline+x);
+          (void) ImportImagePixelArea(image,CyanQuantum,quantum_size,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -289,7 +298,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           q=GetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          (void) PushImagePixels(image,MagentaQuantum,scanline+x);
+          (void) ImportImagePixelArea(image,MagentaQuantum,quantum_size,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -317,7 +326,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           q=GetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          (void) PushImagePixels(image,YellowQuantum,scanline+x);
+          (void) ImportImagePixelArea(image,YellowQuantum,quantum_size,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -345,7 +354,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           q=GetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          (void) PushImagePixels(image,BlackQuantum,scanline+x);
+          (void) ImportImagePixelArea(image,BlackQuantum,quantum_size,scanline+x);
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -380,7 +389,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
               q=GetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              (void) PushImagePixels(image,AlphaQuantum,scanline+x);
+              (void) ImportImagePixelArea(image,AlphaQuantum,quantum_size,scanline+x);
               if (!SyncImagePixels(image))
                 break;
               if (image->previous == (Image *) NULL)
@@ -553,8 +562,16 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     packet_size,
+    quantum_size,
     scene,
     status;
+
+  if (image->depth <= 8)
+    quantum_size=8;
+  else if (image->depth <= 16)
+    quantum_size=16;
+  else
+    quantum_size=32;
 
   /*
     Allocate memory for pixels.
@@ -563,9 +580,9 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  packet_size=image->depth > 8 ? 8 : 4;
+  packet_size=(quantum_size*4)/8;
   if (LocaleCompare(image_info->magick,"CMYKA") == 0)
-    packet_size=image->depth > 8 ? 10 : 8;
+    packet_size=(quantum_size*5)/8;
   pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -603,12 +620,12 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             break;
           if (LocaleCompare(image_info->magick,"CMYKA") != 0)
             {
-              (void) PopImagePixels(image,CMYKQuantum,pixels);
+              (void) ExportImagePixelArea(image,CMYKQuantum,quantum_size,pixels);
               (void) WriteBlob(image,packet_size*image->columns,pixels);
             }
           else
             {
-              (void) PopImagePixels(image,CMYKAQuantum,pixels);
+              (void) ExportImagePixelArea(image,CMYKAQuantum,quantum_size,pixels);
               (void) WriteBlob(image,packet_size*image->columns,pixels);
             }
           if (image->previous == (Image *) NULL)
@@ -628,17 +645,17 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          (void) PopImagePixels(image,CyanQuantum,pixels);
+          (void) ExportImagePixelArea(image,CyanQuantum,quantum_size,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          (void) PopImagePixels(image,MagentaQuantum,pixels);
+          (void) ExportImagePixelArea(image,MagentaQuantum,quantum_size,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          (void) PopImagePixels(image,YellowQuantum,pixels);
+          (void) ExportImagePixelArea(image,YellowQuantum,quantum_size,pixels);
           (void) WriteBlob(image,image->columns,pixels);
-          (void) PopImagePixels(image,BlackQuantum,pixels);
+          (void) ExportImagePixelArea(image,BlackQuantum,quantum_size,pixels);
           (void) WriteBlob(image,image->columns,pixels);
           if (LocaleCompare(image_info->magick,"CMYKA") == 0)
             {
-              (void) PopImagePixels(image,AlphaQuantum,pixels);
+              (void) ExportImagePixelArea(image,AlphaQuantum,quantum_size,pixels);
               (void) WriteBlob(image,image->columns,pixels);
             }
           if (QuantumTick(y,image->rows))
@@ -666,7 +683,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          (void) PopImagePixels(image,CyanQuantum,pixels);
+          (void) ExportImagePixelArea(image,CyanQuantum,quantum_size,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
@@ -685,7 +702,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          (void) PopImagePixels(image,MagentaQuantum,pixels);
+          (void) ExportImagePixelArea(image,MagentaQuantum,quantum_size,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
@@ -704,7 +721,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          (void) PopImagePixels(image,YellowQuantum,pixels);
+          (void) ExportImagePixelArea(image,YellowQuantum,quantum_size,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
@@ -723,7 +740,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          (void) PopImagePixels(image,BlackQuantum,pixels);
+          (void) ExportImagePixelArea(image,BlackQuantum,quantum_size,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
         if (LocaleCompare(image_info->magick,"CMYKA") == 0)
@@ -745,7 +762,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              (void) PopImagePixels(image,AlphaQuantum,pixels);
+              (void) ExportImagePixelArea(image,AlphaQuantum,quantum_size,pixels);
               (void) WriteBlob(image,image->columns,pixels);
             }
           }

@@ -1479,17 +1479,25 @@ static void WriteOneChannel( Image* image, Image* tmp_image,
     *p;
 
   unsigned int
-    packet_size =tmp_image->depth > 8 ? 2 : 1;
+    packet_size,
+    quantum_size;
 
+  if (tmp_image->depth <= 8)
+    quantum_size=8;
+  else
+    quantum_size=16;
 
   if (tmp_image->depth > 16)
     tmp_image->depth=16;
+
+  packet_size=quantum_size/8;
+
   for (y=0; y < (long) tmp_image->rows; y++)
   {
     p=AcquireImagePixels(tmp_image,0,y,tmp_image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
     break;
-    (void) PopImagePixels(tmp_image,whichQuantum,pixels);
+    (void) ExportImagePixelArea(tmp_image,whichQuantum,quantum_size,pixels);
     (void) WriteBlob(image,packet_size*tmp_image->columns,pixels);
   }
 }

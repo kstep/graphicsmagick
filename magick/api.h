@@ -127,7 +127,6 @@ extern "C" {
 # include "magick/command.h"
 # include "magick/utility.h"
 # include "magick/signature.h"
-# include "magick/deprecate.h"
 # include "magick/blob.h"
 # include "magick/cache.h"
 # include "magick/cache_view.h"
@@ -153,6 +152,7 @@ extern "C" {
 # include "magick/profile.h"
 # include "magick/resource.h"
 # include "magick/version.h"
+# include "magick/deprecate.h"
 #else
 # if defined(PREFIX_MAGICK_SYMBOLS)
 #  include "symbols.h"
@@ -174,7 +174,6 @@ extern "C" {
 # include "command.h"
 # include "utility.h"
 # include "signature.h"
-# include "deprecate.h"
 # include "blob.h"
 # include "cache.h"
 # include "cache_view.h"
@@ -200,6 +199,7 @@ extern "C" {
 # include "profile.h"
 # include "resource.h"
 # include "version.h"
+# include "deprecate.h"
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

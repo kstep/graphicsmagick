@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2004 GraphicsMagick Group
  
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -144,9 +144,6 @@
 #define DestroySemaphoreInfo GmDestroySemaphoreInfo
 #define DestroyTemporaryFiles GmDestroyTemporaryFiles
 #define DestroyTypeInfo GmDestroyTypeInfo
-#define ExportImageChannel GmExportImageChannel
-#define XDestroyX11Resources GmXDestroyX11Resources
-#define XDestroyXWindows GmXDestroyXWindows
 #define DetachBlob GmDetachBlob
 #define DispatchImage GmDispatchImage
 #define DisplayImageCommand GmDisplayImageCommand
@@ -280,6 +277,8 @@
 #define ExpandAffine GmExpandAffine
 #define ExpandFilename GmExpandFilename
 #define ExpandFilenames GmExpandFilenames
+#define ExportImageChannel GmExportImageChannel
+#define ExportImagePixelArea GmExportImagePixelArea
 #define FileToBlob GmFileToBlob
 #define FinalizeSignature GmFinalizeSignature
 #define FlattenImages GmFlattenImages
@@ -410,8 +409,9 @@
 #define ImageToBlob GmImageToBlob
 #define ImageToFile GmImageToFile
 #define ImplodeImage GmImplodeImage
-#define ImportImageCommand GmImportImageCommand
 #define ImportImageChannel GmImportImageChannel
+#define ImportImageCommand GmImportImageCommand
+#define ImportImagePixelArea GmImportImagePixelArea
 #define ImportUsage GmImportUsage
 #define InitializeLogInfo GmInitializeLogInfo
 #define InitializeMagick GmInitializeMagick
@@ -445,10 +445,6 @@
 #define LevelImageChannel GmLevelImageChannel
 #define LiberateMagickResource GmLiberateMagickResource
 #define LiberateMemory GmLiberateMemory
-#define PixelIterateDualModify GmPixelIterateDualModify
-#define PixelIterateDualRead GmPixelIterateDualRead
-#define PixelIterateMonoModify GmPixelIterateMonoModify
-#define PixelIterateMonoRead GmPixelIterateMonoRead
 #define LiberateSemaphoreInfo GmLiberateSemaphoreInfo
 #define LiberateTemporaryFile GmLiberateTemporaryFile
 #define ListColorInfo GmListColorInfo
@@ -532,14 +528,16 @@
 #define PersistCache GmPersistCache
 #define PingBlob GmPingBlob
 #define PingImage GmPingImage
+#define PixelIterateDualModify GmPixelIterateDualModify
+#define PixelIterateDualRead GmPixelIterateDualRead
+#define PixelIterateMonoModify GmPixelIterateMonoModify
+#define PixelIterateMonoRead GmPixelIterateMonoRead
 #define PlasmaImage GmPlasmaImage
 #define PopImageList GmPopImageList
-#define PopImagePixels GmPopImagePixels
 #define PostscriptGeometry GmPostscriptGeometry
 #define PrependImageToList GmPrependImageToList
 #define ProfileImage GmProfileImage
 #define PushImageList GmPushImageList
-#define PushImagePixels GmPushImagePixels
 #define QuantizeImage GmQuantizeImage
 #define QuantizeImages GmQuantizeImages
 #define QueryColorDatabase GmQueryColorDatabase
@@ -877,6 +875,8 @@
 #define XConstrainWindowPosition GmXConstrainWindowPosition
 #define XDelay GmXDelay
 #define XDestroyWindowColors GmXDestroyWindowColors
+#define XDestroyX11Resources GmXDestroyX11Resources
+#define XDestroyXWindows GmXDestroyXWindows
 #define XDialogWidget GmXDialogWidget
 #define XDisplayBackgroundImage GmXDisplayBackgroundImage
 #define XDisplayImage GmXDisplayImage

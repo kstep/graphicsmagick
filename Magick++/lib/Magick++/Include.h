@@ -677,8 +677,10 @@ namespace Magick
   using MagickLib::PingBlob;
   using MagickLib::PingImage;
   using MagickLib::PointInfo;
+  using MagickLib::PopImagePixels;
   using MagickLib::ProfileImage;
   using MagickLib::ProfileInfo;
+  using MagickLib::PushImagePixels;
   using MagickLib::QuantizeImage;
   using MagickLib::QuantizeInfo;
   using MagickLib::QuantumOperatorImage;

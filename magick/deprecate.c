@@ -37,11 +37,143 @@
 #include "magick/studio.h"
 #include "magick/blob.h"
 #include "magick/color.h"
-#include "magick/deprecate.h"
+#include "magick/constitute.h"
 #include "magick/list.h"
 #include "magick/log.h"
 #include "magick/resource.h"
 #include "magick/utility.h"
+#include "magick/deprecate.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P o p I m a g e P i x e l s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PopImagePixels() transfers one or more pixel components from the image pixel
+%  cache to a user supplied buffer.   True is returned if the pixels are
+%  successfully transferred, otherwise False.
+%
+%  The format of the PopImagePixels method is:
+%
+%      unsigned int PopImagePixels(const Image *,const QuantumType quantum,
+%        unsigned char *destination)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method PopImagePixels returns True if the pixels are
+%      successfully transferred, otherwise False.
+%
+%    o image: The image.
+%
+%    o quantum: Declare which pixel components to transfer (RGB, RGBA, etc).
+%
+%    o destination:  The components are transferred to this buffer.
+%
+%
+*/
+MagickExport unsigned int PopImagePixels(const Image *image,
+  const QuantumType quantum_type,unsigned char *destination)
+{
+  unsigned int
+    quantum_size;
+  
+  quantum_size=image->depth;
+
+  if (quantum_size <= 8)
+    quantum_size=8;
+  else if (quantum_size <= 16)
+    quantum_size=16;
+  else
+    quantum_size=32;
+
+  if ( (quantum_type == IndexQuantum) || (quantum_type == IndexAlphaQuantum) )
+  {
+    if (image->colors <= 256)
+      quantum_size=8;
+    else if (image->colors <= 65536L)
+      quantum_size=16;
+    else
+      quantum_size=32;
+  }
+
+  if (image->logging)
+    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+                          "Method has been deprecated");
+  
+  return ExportImagePixelArea(image,quantum_type,quantum_size,destination);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P u s h I m a g e P i x e l s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PushImagePixels() transfers one or more pixel components from a user
+%  supplied buffer into the image pixel cache of an image.  It returns True if
+%  the pixels are successfully transferred, otherwise False.
+%
+%  The format of the PushImagePixels method is:
+%
+%      unsigned int PushImagePixels(Image *image,
+%        const QuantumType quantum_type,
+%        const unsigned char *source)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method PushImagePixels returns True if the pixels are
+%      successfully transferred, otherwise False.
+%
+%    o image: The image.
+%
+%    o quantum_type: Declare which pixel components to transfer (red, green,
+%      blue, opacity, RGB, or RGBA).
+%
+%    o source:  The pixel components are transferred from this buffer.
+%
+*/
+MagickExport unsigned int PushImagePixels(Image *image,
+  const QuantumType quantum_type,const unsigned char *source)
+{
+  unsigned int
+    quantum_size;
+
+  quantum_size=image->depth;
+
+  if (quantum_size <= 8)
+    quantum_size=8;
+  else if (quantum_size <= 16)
+    quantum_size=16;
+  else
+    quantum_size=32;
+
+  if ( (quantum_type == IndexQuantum) || (quantum_type == IndexAlphaQuantum) )
+  {
+    if (image->colors <= 256)
+      quantum_size=8;
+    else if (image->colors <= 65536L)
+      quantum_size=16;
+    else
+      quantum_size=32;
+  }
+
+  if (image->logging)
+    (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
+                          "Method has been deprecated");
+  return ImportImagePixelArea(image,quantum_type,quantum_size,source);
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -683,6 +683,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
+    quantum_size,
     status;
 
   unsigned long
@@ -702,7 +703,12 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate image memory.
   */
-  packet_size=image->depth > 8 ? 2 : 1;
+  if (image->depth <= 8)
+    quantum_size=8;
+  else
+    quantum_size=16;
+
+  packet_size=quantum_size/8;
   fits_info=MagickAllocateMemory(char *,2880);
   pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   if ((fits_info == (char *) NULL) || (pixels == (unsigned char *) NULL))
@@ -740,7 +746,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    (void) PopImagePixels(image,GrayQuantum,pixels);
+    (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,pixels);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       {

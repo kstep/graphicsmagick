@@ -786,7 +786,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   {
     if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
       break;
-    (void) PopImagePixels(image,GrayQuantum,scanline);
+    (void) ExportImagePixelArea(image,GrayQuantum,image->depth,scanline);
     for (x=0; x < pdb_image.width; x++)
     {
       if (x < (long) image->columns)

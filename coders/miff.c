@@ -707,9 +707,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   unsigned int
     status;
 
-  unsigned long
+  unsigned int
     colors,
-    packet_size;
+    packet_size,
+    sample_size;
 
 #if defined(HasZLIB)
   z_stream
@@ -1363,13 +1364,24 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       Read image pixels.
     */
     quantum_type=RGBQuantum;
+    sample_size=image->depth;
     if (image->storage_class == PseudoClass)
-      quantum_type=image->matte ? IndexAlphaQuantum : IndexQuantum;
+      {
+        quantum_type=image->matte ? IndexAlphaQuantum : IndexQuantum;
+        if (image->colors <= 256)
+          sample_size=8;
+        else if (image->colors <= 65535)
+          sample_size=16;
+        else
+          sample_size=32;
+      }
     else
-      if (image->colorspace == CMYKColorspace)
-        quantum_type=image->matte ? CMYKAQuantum : CMYKQuantum;
-      else
-        quantum_type=image->matte ? RGBAQuantum : RGBQuantum;
+      {
+        if (image->colorspace == CMYKColorspace)
+          quantum_type=image->matte ? CMYKAQuantum : CMYKQuantum;
+        else
+          quantum_type=image->matte ? RGBAQuantum : RGBQuantum;
+      }
     length=0;
     switch (image->compression)
       {
@@ -1413,7 +1425,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   code=inflateEnd(&zip_info);
                   status|=code >= 0;
                 }
-              (void) PushImagePixels(image,quantum_type,pixels);
+              (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels);
               if (!SyncImagePixels(image))
                 break;
             }
@@ -1460,7 +1472,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   code=BZ2_bzDecompressEnd(&bzip_info);
                   status|=code >= 0;
                 }
-              (void) PushImagePixels(image,quantum_type,pixels);
+              (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels);
               if (!SyncImagePixels(image))
                 break;
             }
@@ -1499,7 +1511,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 break;
               pixels_p=pixels;
               (void) ReadBlobZC(image,packet_size*image->columns,&pixels_p);
-              (void) PushImagePixels(image,quantum_type,pixels_p);
+              (void) ImportImagePixelArea(image,quantum_type,sample_size,pixels_p);
               if (!SyncImagePixels(image))
                 break;
             }
@@ -2197,7 +2209,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             }
           zip_info.next_in=pixels;
           zip_info.avail_in=(uInt) (packet_size*image->columns);
-          (void) PopImagePixels(image,quantum_type,pixels);
+          (void) ExportImagePixelArea(image,quantum_type,image->depth,pixels);
           do
           {
             zip_info.next_out=compress_pixels;
@@ -2244,7 +2256,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             }
           bzip_info.next_in=(char *) pixels;
           bzip_info.avail_in=(unsigned int) (packet_size*image->columns);
-          (void) PopImagePixels(image,quantum_type,pixels);
+          (void) ExportImagePixelArea(image,quantum_type,image->depth,pixels);
           do
           {
             bzip_info.next_out=(char *) compress_pixels;
@@ -2309,7 +2321,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         }
         default:
         {
-          (void) PopImagePixels(image,quantum_type,pixels);
+          (void) ExportImagePixelArea(image,quantum_type,image->depth,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
           break;
         }

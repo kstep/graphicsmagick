@@ -21,6 +21,27 @@
 </tr>
 </table>
 <p>
+2004-08-22  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): Use ImportImagePixelArea to read
+        PseudoClass tiff.<BR>
+  <LI> coders/rgb.c: Support reading &amp; writing 32-bit depths for raw
+        RGB images.<BR>
+  <LI> coders/cmyk.c: Support reading &amp; writing 32-bit depths for raw CMYK
+        images.<BR>
+  <LI> coders/gray.c: Support reading &amp; writing 32-bit depths for raw gray
+        images.<BR>
+  <LI> magick/deprecate.c (PopImagePixels): Deprecated function.
+        (PushImagePixels): Deprecated function.
+  <LI> magick/constitute.c (ExportImagePixelArea): New function to
+        export pixel region using specified QuantumType and
+        bits-per-sample.<BR>
+        (ImportImagePixelArea): New function to import pixel region using
+        specified QuantumType and bits-per-sample.
+
+</UL>
+<p>
 2004-08-14  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

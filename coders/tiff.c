@@ -886,84 +886,46 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert image to PseudoClass pixel packets.
         */
-        for (y=0; y < image->rows; y++)
         {
-          register IndexPacket
-            *indexes;
-          
-          BitStreamReadHandle
-            stream;
+          QuantumType
+            push_method;
 
-          unsigned int
-            quantum;
+          if (image->matte)
+            push_method=GrayAlphaQuantum;
+          else
+            if (photometric != PHOTOMETRIC_PALETTE)
+              push_method=GrayQuantum;
+            else
+              push_method=IndexQuantum;
 
-          unsigned int
-            matte_scale=1;
-          
-#if QuantumDepth < 16
-          unsigned int
-            index_scale;
-          
-          index_scale = (1U << bits_per_sample) / image->colors + 1;
-#endif
-
-          if (QuantumDepth > bits_per_sample)
-            matte_scale=MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample));
-
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-
-          indexes=GetIndexes(image);
-          if (indexes == (IndexPacket *) NULL)
-            break;
-
-          (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
-          if (bits_per_sample >= 16)
+          for (y=0; y < (long) image->rows; y++)
             {
-              unsigned long
-                lsb_first;
-
-              /*
-                Ensure the header byte-order is most-significant byte first.
-              */
-              lsb_first=1;
-              if (*(char *) &lsb_first)
-                MSBOrderShort(scanline, Max((unsigned int) TIFFScanlineSize(tiff),
-                  packet_size*width));
-            }
-
-          BitStreamInitializeRead(&stream,scanline);
-
-          for (x = (long) width; x > 0 ; x--)
-            {
-              /* index */
-              quantum=BitStreamMSBRead(&stream,bits_per_sample);
-#if QuantumDepth < 16
-              if (bits_per_sample > QuantumDepth)
-                quantum /= index_scale;
-#endif
-              *indexes++ = quantum;
-              *q = image->colormap[quantum];
-              if (image->matte)
-                {
-                  /* matte */
-                  quantum = BitStreamMSBRead(&stream,bits_per_sample);
-                  if (QuantumDepth > bits_per_sample)
-                    quantum = quantum * matte_scale;
-                  else
-                    quantum >>= (bits_per_sample - QuantumDepth);
-                  q->opacity = (Quantum) (MaxRGB - quantum);
-                }
-              q++;
-            }
-
-          if (!SyncImagePixels(image))
-            break;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+              q=SetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
                 break;
+              (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
+              if (bits_per_sample >= 16)
+                {
+                  unsigned long
+                    lsb_first;
+                  
+                  /*
+                    Ensure the header byte-order is most-significant byte first.
+                  */
+                  lsb_first=1;
+                  if (*(char *) &lsb_first)
+                    MSBOrderShort(scanline, Max(TIFFScanlineSize(tiff),
+                                                packet_size*width));
+                }
+
+              (void) ImportImagePixelArea(image,push_method,bits_per_sample,scanline);
+              if (!SyncImagePixels(image))
+                break;
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                    break;
+            }
         }
         MagickFreeMemory(scanline);
         break;
@@ -1016,81 +978,22 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 MSBOrderShort(scanline,8*TIFFScanlineSize(tiff));
             }
 
-
-          width=TIFFScanlineSize(tiff);
-
-          if ((bits_per_sample == 8) || (bits_per_sample == 16))
+          /*
+            Import scanline into image.
+          */
+          if (image->colorspace == CMYKColorspace)
             {
-              /*
-                Special treatment of common bits-per-sample values for
-                better performance.
-              */
-              if (image->colorspace == CMYKColorspace)
-                {
-                  if (!image->matte)
-                    (void) PushImagePixels(image,CMYKQuantum,scanline);
-                  else
-                    (void) PushImagePixels(image,CMYKAQuantum,scanline);
-                }
+              if (!image->matte)
+                (void) ImportImagePixelArea(image,CMYKQuantum,bits_per_sample,scanline);
               else
-                if (!image->matte)
-                  (void) PushImagePixels(image,RGBQuantum,scanline);
-                else
-                  (void) PushImagePixels(image,RGBAQuantum,scanline);
+                (void) ImportImagePixelArea(image,CMYKAQuantum,bits_per_sample,scanline);
             }
           else
             {
-              /*
-                Handle arbitrary bits-per-sample values.
-              */
-
-              BitStreamReadHandle
-                stream;
-
-              double
-                quantum_scale;
-
-              /*
-                Compute factor to use to scale TIFF sample to Quantum.
-              */
-              if (QuantumDepth > bits_per_sample)
-                quantum_scale=(double) (MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample)));
-              else if (bits_per_sample > QuantumDepth)
-                quantum_scale=(double) MaxRGB / ((0x01U << (bits_per_sample-1)) +
-                                                 ((0x01U << (bits_per_sample-1))-1));
+              if (!image->matte)
+                (void) ImportImagePixelArea(image,RGBQuantum,bits_per_sample,scanline);
               else
-                quantum_scale=1.0;
-
-              BitStreamInitializeRead(&stream,scanline);
-              
-              for (x = (long) width; x > 0; --x)
-                {
-                  /* red or cyan */
-                  q->red=(Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale);
-                  /* green or magenta */
-                  q->green=(Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale);
-                  /* blue or yellow */
-                  q->blue=(Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale);
-                  
-                  if (image->colorspace == CMYKColorspace)
-                    {
-                      /* black */
-                      q->opacity=(Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale);
-                      /* cmyk opacity */
-                      if (image->matte)
-                        *indexes=(IndexPacket) (MaxRGB-
-                          ((Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale)));
-                    }
-                  else
-                    {
-                      /* rgb opacity */
-                      if (image->matte)
-                        q->opacity=(Quantum) ((BitStreamMSBRead(&stream,bits_per_sample))*quantum_scale);
-                    }
-                  
-                  indexes++;
-                  q++;
-                }
+                (void) ImportImagePixelArea(image,RGBAQuantum,bits_per_sample,scanline);
             }
           
           if (!SyncImagePixels(image))
@@ -2300,9 +2203,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (p == (const PixelPacket *) NULL)
                 break;
               if (!image->matte)
-                (void) PopImagePixels(image,RGBQuantum,scanline);
+                (void) ExportImagePixelArea(image,RGBQuantum,bits_per_sample,scanline);
               else
-                (void) PopImagePixels(image,RGBAQuantum,scanline);
+                (void) ExportImagePixelArea(image,RGBAQuantum,bits_per_sample,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)
@@ -2328,7 +2231,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              (void) PopImagePixels(image,RedQuantum,scanline);
+              (void) ExportImagePixelArea(image,RedQuantum,bits_per_sample,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
             }
@@ -2340,7 +2243,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              (void) PopImagePixels(image,GreenQuantum,scanline);
+              (void) ExportImagePixelArea(image,GreenQuantum,bits_per_sample,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
                 break;
             }
@@ -2352,7 +2255,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 &image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
-              (void) PopImagePixels(image,BlueQuantum,scanline);
+              (void) ExportImagePixelArea(image,BlueQuantum,bits_per_sample,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
                 break;
             }
@@ -2365,7 +2268,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   &image->exception);
                 if (p == (const PixelPacket *) NULL)
                   break;
-                (void) PopImagePixels(image,AlphaQuantum,scanline);
+                (void) ExportImagePixelArea(image,AlphaQuantum,bits_per_sample,scanline);
                 if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
                   break;
               }
@@ -2388,9 +2291,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           if (p == (const PixelPacket *) NULL)
             break;
           if (!image->matte)
-            (void) PopImagePixels(image,CMYKQuantum,scanline);
+            (void) ExportImagePixelArea(image,CMYKQuantum,bits_per_sample,scanline);
           else
-            (void) PopImagePixels(image,CMYKAQuantum,scanline);
+            (void) ExportImagePixelArea(image,CMYKAQuantum,bits_per_sample,scanline);
           if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
             break;
           if (image->previous == (Image *) NULL)

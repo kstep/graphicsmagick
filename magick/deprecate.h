@@ -74,6 +74,8 @@ extern MagickExport int
 extern MagickExport unsigned int
   DeleteImageList(Image *,const long offset),
   GetNumberScenes(const Image *),
+  PopImagePixels(const Image *,const QuantumType,unsigned char *),
+  PushImagePixels(Image *,const QuantumType,const unsigned char *),
   PushImageList(Image **,const Image *,ExceptionInfo *),
   SetImageList(Image **,const Image *,const long,ExceptionInfo *),
   UnshiftImageList(Image **,const Image *,ExceptionInfo *);

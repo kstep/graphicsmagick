@@ -107,7 +107,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   unsigned int
     status;
 
-  unsigned long
+  unsigned int
+    quantum_size,
     packet_size;
 
   /*
@@ -128,7 +129,14 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   /*
     Allocate memory for a scanline.
   */
-  packet_size=image->depth > 8 ? 2 : 1;
+  if (image->depth <= 8)
+    quantum_size=8;
+  else if (image->depth <= 16)
+    quantum_size=16;
+  else
+    quantum_size=32;
+
+  packet_size=quantum_size/8;
   scanline=MagickAllocateMemory(unsigned char *,packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -162,7 +170,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      (void) PushImagePixels(image,GrayQuantum,scanline+x);
+      (void) ImportImagePixelArea(image,GrayQuantum,quantum_size,scanline+x);
       if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)
@@ -384,6 +392,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
+    quantum_size,
     packet_size,
     scene,
     status;
@@ -407,8 +416,14 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for scanline.
     */
+    if (image->depth <= 8)
+      quantum_size=8;
+    else if (image->depth <= 16)
+      quantum_size=16;
+    else
+      quantum_size=32;
     (void) TransformColorspace(image,RGBColorspace);
-    packet_size=image->depth > 8 ? 2: 1;
+    packet_size=quantum_size/8;
     scanline=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
     if (scanline == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -420,7 +435,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
       if (p == (const PixelPacket *) NULL)
         break;
-      (void) PopImagePixels(image,GrayQuantum,scanline);
+      (void) ExportImagePixelArea(image,GrayQuantum,quantum_size,scanline);
       (void) WriteBlob(image,packet_size*image->columns,scanline);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
