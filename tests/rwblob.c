@@ -296,9 +296,11 @@ int main ( int argc, char **argv )
     }
 
  program_exit:
-  DestroyImage( original );
+  if (original)
+    DestroyImage( original );
   original = (Image*)NULL;
-  DestroyImage( final );
+  if (final)
+    DestroyImage( final );
   final = (Image*)NULL;
 
   DestroyMagick();
