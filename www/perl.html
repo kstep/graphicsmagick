@@ -1479,10 +1479,16 @@ is similiar to Mogrify() but begins with the region geometry. For example,
 suppose you want to brighten a 100x100 region of your image at location (40,
 50): <pre>&nbsp;&nbsp;&nbsp; $image-&gt;MogrifyRegion('100x100+40+50', 'modulate', brightness=&gt;50);</pre>
   </p>
-Ping() accepts one or more
-image file names and returns their respective width, height, size in bytes,
-and format (e.g. GIF, JPEG, etc.). For example,
-                                              <pre>&nbsp;&nbsp;&nbsp; ($width, $height, $size, $format) = $image-&gt;Ping('logo.png');</pre>
+Ping() is a convenience method that returns information about an
+image without having to read the image into memory.  It returns the
+width, height, file size in bytes, and the file format of the image.
+You can specify more than one filename but only one filehandle:
+
+<pre>&nbsp;&nbsp;&nbsp;
+  ($width, $height, $size, $format) = $image-&gt;Ping('logo.png');
+  ($width, $height, $size, $format) = $image-&gt;Ping(file=&gt;*IMAGE);
+  ($width, $height, $size, $format) = $image-&gt;Ping(blob=&gt;$blob);
+</pre>
 This is a more efficient and less memory intensive way to query if an image 
 exists and what its characteristics are.
                                               <p>To have full control over

@@ -6244,6 +6244,7 @@ Ping(ref,...)
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     count=0;
+    blob=(char *) NULL;
     for (i=1; i < items; i++)
     {
       (void) strncpy(info->image_info->filename,(char *) SvPV(ST(i),na),
@@ -6251,9 +6252,17 @@ Ping(ref,...)
       if ((items >= 3) && strEQcase(info->image_info->filename,"filename"))
         continue;
       if ((items >= 3) && strEQcase(info->image_info->filename,"file"))
+        info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i)));
+      if ((items >= 3) && strEQcase(info->image_info->filename,"blob"))
         {
-          info->image_info->file=(FILE *) IoIFP(sv_2io(ST(i)));
-          continue;
+          char
+            *blob;
+
+          STRLEN
+            length;
+
+          blob=(char *) (SvPV(ST(i),length));
+          AttachBlob(info->image_info,blob,length);
         }
       image=PingImage(info->image_info,&exception);
       if (image == (Image *) NULL)

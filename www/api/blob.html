@@ -28,6 +28,7 @@
 		<LI><A HREF="#filetoblob">FileToBlob</A></LI>
 		<LI><A HREF="#getblobinfo">GetBlobInfo</A></LI>
 		<LI><A HREF="#imagetoblob">ImageToBlob</A></LI>
+		<LI><A HREF="#pingblob">PingBlob</A></LI>
 	</UL>
 
 </UL>
@@ -50,6 +51,7 @@
 <P>void * <STRONG>FileToBlob</STRONG>( const char *filename, size_t *length, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetBlobInfo</STRONG>( BlobInfo *blob_info );</P>
 <P>void * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, size_t *length, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>PingBlob</STRONG>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -76,9 +78,7 @@ This size_t integer reflects the length in bytes of the blob.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="blobtoimage">BlobToImage</A></H2>
-<PRE>
- BlobToImage( 0 implements direct to memory image formats. It returnsthe blob as an image.;</PRE>
-<P>The format of the BlobToImage method is:</P>
+<blockquote>BlobToImage ( ) implements direct to memory image formats. It returnsthe blob as an image.; </blockquote><P>The format of the BlobToImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *BlobToImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -187,6 +187,28 @@ The image.
 <p><dt><STRONG>length:</STRONG><BR>
 <DD>
 This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="pingblob">PingBlob</A></H2>
+<blockquote>PingBlob ( ) returns all the attributes of an image or image sequenceexcept for the pixels. It is much faster and consumes far less memorythan BlobToImage ( ) . On failure, a NULL image is returned and exceptiondescribes the reason for the failure.; </blockquote><P>The format of the PingBlob method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *PingBlob ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image_info:</STRONG><BR>
+<DD>
+The image info.
+<P></P>
+<p><dt><STRONG>blob:</STRONG><BR>
+<DD>
+The address of a character stream in one of the image formats understood by ImageMagick.
+<P></P>
+<p><dt><STRONG>length:</STRONG><BR>
+<DD>
+This size_t integer reflects the length in bytes of the blob.
 <P></P>
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>

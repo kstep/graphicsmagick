@@ -1130,14 +1130,20 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %
 %  The format of the PingBlob method is:
 %
-%      Image *PingBlob(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *PingBlob(const ImageInfo *image_info,const void *blob,
+%        const size_t length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Ping the image defined by the file or filename members of
-%      this structure.
+%    o image_info: The image info.
+%
+%    o blob: The address of a character stream in one of the image formats
+%      understood by ImageMagick.
+%
+%    o length: This size_t integer reflects the length in bytes of the blob.
 %
 %    o exception: Return any errors or warnings in this structure.
+%
 %
 %
 */

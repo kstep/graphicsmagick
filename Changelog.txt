@@ -1,3 +1,6 @@
+2001-11-21  Cristy  <cristy@mystic.es.dupont.com>
+	* Added API method, PingBlob().
+
 2001-11-14  Cristy  <cristy@mystic.es.dupont.com>
 	* Moved a few pixel related defines (e.g. Downscale()) to
 	  a corresponding method to enforce strong type checking at
