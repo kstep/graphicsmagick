@@ -968,7 +968,8 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         clone_indexes=GetIndexes(clone_image);
-        if (image->storage_class == PseudoClass)
+        if ((image->storage_class == PseudoClass) ||
+            (image->colorspace == CMYKColorspace))
           memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(clone_image))
           break;

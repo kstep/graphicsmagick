@@ -1350,21 +1350,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           photometric=PHOTOMETRIC_RGB;
           if (image->depth > 8)
             TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
-          TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,(image->matte ? 4 : 3));
-          if (image->matte)
-            {
-              uint16
-                extra_samples,
-                sample_info[1];
-
-              /*
-                TIFF has a matte channel.
-              */
-              extra_samples=1;
-              sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
-              TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,
-                &sample_info);
-            }
+          TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
         }
       else
         {
@@ -1391,6 +1377,19 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 photometric=PHOTOMETRIC_MINISBLACK;
               }
         }
+    if (image->matte)
+      {
+        uint16
+          extra_samples,
+          sample_info[1];
+
+        /*
+          TIFF has a matte channel.
+        */
+        extra_samples=1;
+        sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
+        TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,&sample_info);
+      }
     switch (image_info->compression)
     {
       case NoCompression: compress_tag=COMPRESSION_NONE; break;
@@ -1604,7 +1603,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,CMYKQuantum,scanline);
+          if (!image->matte)
+            (void) PopImagePixels(image,CMYKQuantum,scanline);
+          else
+            (void) PopImagePixels(image,CMYKAQuantum,scanline);
           if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
             break;
           if (image->previous == (Image *) NULL)
@@ -1670,10 +1672,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             {
               if (!GetImagePixels(image,0,y,image->columns,1))
                 break;
-              if (photometric == PHOTOMETRIC_PALETTE)
-                (void) PopImagePixels(image,IndexQuantum,scanline);
-              else
+              if (photometric != PHOTOMETRIC_PALETTE)
                 (void) PopImagePixels(image,GrayQuantum,scanline);
+              else
+                if (!image->matte)
+                  (void) PopImagePixels(image,IndexQuantum,scanline);
+                else
+                  (void) PopImagePixels(image,IndexOpacityQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)

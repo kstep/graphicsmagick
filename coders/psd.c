@@ -132,11 +132,6 @@ static unsigned int DecodeImage(Image *image,const int channel)
           indexes=GetIndexes(image);
           switch (channel)
           {
-            case -1:
-            {
-              q->opacity=MaxRGB-UpScale(pixel);
-              break;
-            }
             case 0:
             {
               q->red=UpScale(pixel);
@@ -160,7 +155,15 @@ static unsigned int DecodeImage(Image *image,const int channel)
             case 3:
             {
               if (image->colorspace == CMYKColorspace)
-                *indexes=UpScale(pixel);
+                {
+                  *indexes=UpScale(pixel);
+                  break;
+                }
+            }
+            case 4:
+            case -1:
+            {
+              q->opacity=MaxRGB-UpScale(pixel);
               break;
             }
             default:
@@ -183,11 +186,6 @@ static unsigned int DecodeImage(Image *image,const int channel)
       indexes=GetIndexes(image);
       switch (channel)
       {
-        case -1:
-        {
-          q->opacity=MaxRGB-UpScale(pixel);
-          break;
-        }
         case 0:
         {
           q->red=UpScale(pixel);
@@ -211,7 +209,15 @@ static unsigned int DecodeImage(Image *image,const int channel)
         case 3:
         {
           if (image->colorspace == CMYKColorspace)
-            *indexes=UpScale(pixel);
+            {
+              *indexes=UpScale(pixel);
+              break;
+            }
+        }
+        case 4:
+        case -1:
+        {
+          q->opacity=MaxRGB-UpScale(pixel);
           break;
         }
         default:
@@ -585,57 +591,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 A layer without data.
               */
-              for (y=0; y < (int) layer_info[i].image->rows; y++)
-              {
-                q=SetImagePixels(layer_info[i].image,0,y,
-                  layer_info[i].image->columns,1);
-                if (q == (PixelPacket *) NULL)
-                  break;
-                switch (layer_info[i].channel_info[j].type)
-                {
-                  case 0:
-                  {
-                    for (x=0; x < (int) layer_info[i].image->columns; x++)
-                    {
-                      q->red=0;
-                      q++;
-                    }
-                    break;
-                  }
-                  case 1:
-                  {
-                    for (x=0; x < (int) layer_info[i].image->columns; x++)
-                    {
-                      q->green=0;
-                      q++;
-                    }
-                    break;
-                  }
-                  case 2:
-                  {
-                    for (x=0; x < (int) layer_info[i].image->columns; x++)
-                    {
-                      q->blue=0;
-                      q++;
-                    }
-                    break;
-                  }
-                  case 3:
-                  default:
-                  {
-                    for (x=0; x < (int) layer_info[i].image->columns; x++)
-                    {
-                      q->opacity=0;
-                      if (layer_info[i].image->matte)
-                        q->opacity=TransparentOpacity;
-                      q++;
-                    }
-                    break;
-                  }
-                }
-                if (!SyncImagePixels(layer_info[i].image))
-                  break;
-              }
+              SetImage(layer_info[i].image,OpaqueOpacity);
               for (k=0; k < layer_info[i].channel_info[j].size; k++)
                 (void) ReadBlobByte(layer_info[i].image);
               continue;
@@ -679,12 +635,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               layer_info[i].image->columns,(char *) scanline);
             switch (layer_info[i].channel_info[j].type)
             {
-              case -1:
-              {
-                (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
-                  scanline);
-                break;
-              }
               case 0:
               {
                 if (layer_info[i].image->storage_class == PseudoClass)
@@ -712,6 +662,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (layer_info[i].image->colorspace == CMYKColorspace)
                   (void) PushImagePixels(layer_info[i].image,BlackQuantum,
                     scanline);
+                break;
+              }
+              case 4:
+              case -1:
+              {
+                (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
+                  scanline);
                 break;
               }
               default:
@@ -784,7 +741,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (int) (image->rows*psd_info.channels); i++)
         (void) ReadBlobMSBShort(image);
       for (i=0; i < (int) psd_info.channels; i++)
-        (void) DecodeImage(image,image->matte ? i-1 : i);
+        (void) DecodeImage(image,i);
     }
   else
     {
@@ -834,13 +791,15 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 3:
             {
-              (void) PushImagePixels(image,OpacityQuantum,scanline);
-              break;
+              if (image->colorspace == CMYKColorspace)
+                {
+                  (void) PushImagePixels(image,BlackQuantum,scanline);
+                  break;
+                }
             }
             case 4:
             {
-              if (image->colorspace == CMYKColorspace)
-                (void) PushImagePixels(image,BlackQuantum,scanline);
+              (void) PushImagePixels(image,OpacityQuantum,scanline);
               break;
             }
             default:
@@ -1016,9 +975,12 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBShort(image,1);  /* version */
   (void) WriteBlob(image,6,"      ");  /* reserved */
   if (image->storage_class == PseudoClass)
-    WriteBlobMSBShort(image,1);
+    WriteBlobMSBShort(image,image->matte ? 2 : 1);
   else
-    WriteBlobMSBShort(image,image->matte ? 4 : 3);
+    if (image->colorspace != CMYKColorspace)
+      WriteBlobMSBShort(image,image->matte ? 4 : 3);
+    else
+      WriteBlobMSBShort(image,image->matte ? 5 : 4);
   WriteBlobMSBLong(image,image->rows);
   WriteBlobMSBLong(image,image->columns);
   WriteBlobMSBShort(image,
@@ -1068,7 +1030,10 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     {
       if (!GetImagePixels(image,0,y,image->columns,1))
         break;
-      (void) PopImagePixels(image,IndexQuantum,pixels);
+      if (!image->matte)
+        (void) PopImagePixels(image,IndexQuantum,pixels);
+      else
+        (void) PopImagePixels(image,IndexOpacityQuantum,pixels);
       (void) WriteBlob(image,image->columns,pixels);
     }
   else
@@ -1078,46 +1043,37 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       {
         if (!GetImagePixels(image,0,y,image->columns,1))
           break;
-        if (image->colorspace == CMYKColorspace)
-          (void) PopImagePixels(image,CyanQuantum,pixels);
-        else
-          (void) PopImagePixels(image,RedQuantum,pixels);
+        (void) PopImagePixels(image,RedQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       for (y=0; y < (int) image->rows; y++)
       {
         if (!GetImagePixels(image,0,y,image->columns,1))
           break;
-        if (image->colorspace == CMYKColorspace)
-          (void) PopImagePixels(image,YellowQuantum,pixels);
-        else
-          (void) PopImagePixels(image,GreenQuantum,pixels);
+        (void) PopImagePixels(image,GreenQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       for (y=0; y < (int) image->rows; y++)
       {
         if (!GetImagePixels(image,0,y,image->columns,1))
           break;
-        if (image->colorspace == CMYKColorspace)
-          (void) PopImagePixels(image,MagentaQuantum,pixels);
-        else
-          (void) PopImagePixels(image,BlueQuantum,pixels);
+        (void) PopImagePixels(image,BlueQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
-      if (image->matte)
-        for (y=0; y < (int) image->rows; y++)
-        {
-          if (!GetImagePixels(image,0,y,image->columns,1))
-            break;
-          (void) PopImagePixels(image,OpacityQuantum,pixels);
-          (void) WriteBlob(image,packet_size*image->columns,pixels);
-        }
       if (image->colorspace == CMYKColorspace)
         for (y=0; y < (int) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
           (void) PopImagePixels(image,BlackQuantum,pixels);
+          (void) WriteBlob(image,packet_size*image->columns,pixels);
+        }
+      if (image->matte)
+        for (y=0; y < (int) image->rows; y++)
+        {
+          if (!GetImagePixels(image,0,y,image->columns,1))
+            break;
+          (void) PopImagePixels(image,OpacityQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
         }
     }
