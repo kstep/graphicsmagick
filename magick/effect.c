@@ -1397,7 +1397,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   implode_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(implode_image,TrueColorType);
+  SetImageType(implode_image,implode_image->background_color.opacity !=
+    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   /*
     Compute scaling factor.
   */
@@ -3245,7 +3246,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   swirl_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(swirl_image,TrueColorType);
+  SetImageType(swirl_image,swirl_image->background_color.opacity !=
+    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   /*
     Compute scaling factor.
   */
