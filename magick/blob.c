@@ -238,7 +238,8 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   /*
     Write blob to a temporary file on disk.
   */
-  DetachBlob(clone_info->blob);
+  clone_info->blob=(void *) NULL;
+  clone_info->length=0;
   TemporaryFilename(clone_info->filename);
   status=BlobToFile(clone_info->filename,blob,length,exception);
   if (status == False)
@@ -1285,7 +1286,8 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
       return((Image *) NULL);
     }
   clone_info=CloneImageInfo(image_info);
-  AttachBlob(clone_info->blob,blob,length);
+  clone_info->blob=(void *) blob;
+	clone_info->length=0;
   clone_info->ping=True;
   if (clone_info->size == (char *) NULL)
     clone_info->size=AllocateString(DefaultTileGeometry);
