@@ -1,6 +1,10 @@
 2002-08-04  Cristy  <cristy@mystic.es.dupont.com>
   * Added experimental 32-bit QuantumDepth pixel support.
   * Stream support was not thread-safe (bug report by William Radcliffe).
+  * Push/PopImagePixels() now recognizes the proper buffer length
+	  (previously it operated on one scanline at a time).
+  * Deprecated Down/Upscale defines.  Replaced them with Scale*ToQuantum()
+    and ScaleQuantumTo*() methods.
     
 2002-08-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Changed configure argument --disable-16bit-pixel to

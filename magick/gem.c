@@ -1015,7 +1015,7 @@ MagickExport unsigned long ScaleQuantumToInt(const unsigned long quantum)
 #elif (QuantumDepth == 16)
   return(65537UL*quantum);
 #elif (QuantumDepth == 32)
-  return(value/65537UL);
+  return(quantum/65537UL);
 #else
 # error "Specified value of QuantumDepth is not supported"
 #endif
@@ -1090,7 +1090,7 @@ MagickExport unsigned long ScaleShortToQuantum(const unsigned long value)
 #if (QuantumDepth == 8)
   return(value/257UL);
 #elif (QuantumDepth == 16)
-  return(quantum);
+  return(value);
 #elif (QuantumDepth == 32)
   return(65537UL*value);
 #else
