@@ -427,7 +427,7 @@ Export IndexPacket *GetCacheIndexes(Cache cache,const unsigned int x,
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->indexes == (IndexPacket *) NULL)
+  if (cache_info->type == DiskCache)
     return((IndexPacket *) NULL);
   return(cache_info->indexes+(y*cache_info->columns+x));
 }
@@ -555,7 +555,7 @@ Export PixelPacket *GetCachePixels(Cache cache,const unsigned int x,
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->pixels == (PixelPacket *) NULL)
+  if (cache_info->type == DiskCache)
     return((PixelPacket *) NULL);
   return(cache_info->pixels+(y*cache_info->columns+x));
 }
@@ -724,13 +724,13 @@ Export unsigned int ReadCacheIndexes(Cache cache,
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
-  if (indexes == (cache_info->indexes+offset))
-    return(True);
   if (cache_info->type != DiskCache)
     {
       /*
         Read pixels from memory.
       */
+      if (indexes == (cache_info->indexes+offset))
+        return(True);
       for (y=0; y < (int) region_info->height; y++)
       {
         (void) memcpy(indexes,cache_info->indexes+offset,
@@ -815,13 +815,13 @@ Export unsigned int ReadCachePixels(Cache cache,
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
-  if (pixels == (cache_info->pixels+offset))
-    return(True);
   if (cache_info->type != DiskCache)
     {
       /*
         Read pixels from memory.
       */
+      if (pixels == (cache_info->pixels+offset))
+        return(True);
       for (y=0; y < (int) region_info->height; y++)
       {
         (void) memcpy(pixels,cache_info->pixels+offset,
@@ -977,13 +977,13 @@ Export unsigned int WriteCacheIndexes(Cache cache,
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
-  if (indexes == (cache_info->indexes+offset))
-    return(True);
   if (cache_info->type != DiskCache)
     {
       /*
         Write indexes to memory.
       */
+      if (indexes == (cache_info->indexes+offset))
+        return(True);
       for (y=0; y < (int) region_info->height; y++)
       {
         (void) memcpy(cache_info->indexes+offset,indexes,
@@ -1068,13 +1068,13 @@ Export unsigned int WriteCachePixels(Cache cache,
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   offset=region_info->y*cache_info->columns+region_info->x;
-  if (pixels == (cache_info->pixels+offset))
-    return(True);
   if (cache_info->type != DiskCache)
     {
       /*
         Write pixels to memory.
       */
+      if (pixels == (cache_info->pixels+offset))
+        return(True);
       for (y=0; y < (int) region_info->height; y++)
       {
         (void) memcpy(cache_info->pixels+offset,pixels,

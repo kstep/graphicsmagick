@@ -565,8 +565,8 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
               else
                 if (layer_info[i].image->depth > 8)
                   packet_size++;
-              scanline=(unsigned char *) AllocateMemory(
-                packet_size*layer_info[i].image->columns*sizeof(unsigned char));
+              scanline=(unsigned char *) AllocateMemory((packet_size*
+                layer_info[i].image->columns+1)*sizeof(unsigned char));
               if (scanline == (unsigned char *) NULL)
                 ReaderExit(ResourceLimitWarning,"Memory allocation failed",
                   image);
