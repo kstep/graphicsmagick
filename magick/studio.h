@@ -290,8 +290,7 @@ extern "C" {
 #define MagickSQ2PI 2.50662827463100024161235523934010416269302368164062
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
-#define QuantumTick(i,span) \
-  (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
+#define QuantumTick(i,span) ((((i) & 0xff) == 0) || (i == ((span)-1)))
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
 #define ScaleColor5to8(x)  ((x) << 3)
 #define ScaleColor6to8(x)  ((x) << 2)
