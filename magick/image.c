@@ -4320,7 +4320,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'r':
       {
-        if (LocaleNCompare("-raise",option,2) == 0)
+        if (LocaleNCompare("-raise",option,3) == 0)
           {
             RectangleInfo
               raise_info;
