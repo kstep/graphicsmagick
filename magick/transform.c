@@ -238,7 +238,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 %
 %  The format of the CoalesceImages method is:
 %
-%      Image *CoalesceImages(Image *image,ExceptionInfo *exception)
+%      Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -247,12 +247,12 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 %    o exception: Return any errors or warnings in this structure.
 %
 */
-MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
+MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 {
   Image
     *coalesce_image;
 
-  register Image
+  register const Image
     *next;
 
   /*
@@ -284,7 +284,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
         return((Image *) NULL);
       }
     coalesce_image->next->previous=coalesce_image;
-    coalesce_image=coalesce_image->next;
+    coalesce_image=GetNextImage(coalesce_image);
     coalesce_image->delay=next->delay;
     coalesce_image->start_loop=next->start_loop;
     (void) CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
@@ -612,7 +612,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     Deconstruct the image sequence.
   */
   i=0;
-  for (next=image->next; next != (Image *) NULL; next=next->next)
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
   {
     next->orphan=True;
     crop_next=CropImage(next,&bounds[i++],exception);
@@ -643,7 +643,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
 %
 %  The format of the FlattenImage method is:
 %
-%      Image *FlattenImage(Image *image,ExceptionInfo *exception)
+%      Image *FlattenImage(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -654,12 +654,12 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
 %    o exception: Return any errors or warnings in this structure.
 %
 */
-MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
+MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
 {
   Image
     *flatten_image;
 
-  register Image
+  register const Image
     *next;
 
   /*
@@ -681,7 +681,7 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
   /*
     Flatten image.
   */
-  for (next=image->next; next != (Image *) NULL; next=next->next)
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
     (void) CompositeImage(flatten_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
   (void) IsOpaqueImage(flatten_image);
@@ -891,7 +891,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 %
 %
 */
-MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
+MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 {
 #define MosaicImageText  "  Create an image mosaic...  "
 
@@ -904,7 +904,7 @@ MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
   RectangleInfo
     page;
 
-  register Image
+  register const Image
     *next;
 
   register long

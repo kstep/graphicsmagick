@@ -589,7 +589,8 @@ extern MagickExport char
 
 extern MagickExport const PixelPacket
   *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
-    const unsigned long,ExceptionInfo *);
+    const unsigned long,ExceptionInfo *),
+  AcquireOnePixel(const Image *,const long,const long,ExceptionInfo *);
 
 extern MagickExport ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);
@@ -605,7 +606,7 @@ extern MagickExport Image
   *ChopImage(const Image *,const RectangleInfo *,ExceptionInfo *),
   *CloneImage(const Image *,const unsigned long,const unsigned long,
     const unsigned int,ExceptionInfo *),
-  *CoalesceImages(Image *,ExceptionInfo *),
+  *CoalesceImages(const Image *,ExceptionInfo *),
   *ColorizeImage(const Image *,const char *,const PixelPacket,ExceptionInfo *),
   *ConstituteImage(const unsigned int,const unsigned int,const char *,
     const StorageType,const void *,ExceptionInfo *),
@@ -617,7 +618,7 @@ extern MagickExport Image
   *EdgeImage(const Image *,const double,ExceptionInfo *),
   *EmbossImage(const Image *,const double,const double,ExceptionInfo *),
   *EnhanceImage(const Image *,ExceptionInfo *),
-  *FlattenImages(Image *,ExceptionInfo *),
+  *FlattenImages(const Image *,ExceptionInfo *),
   *FlipImage(const Image *,ExceptionInfo *),
   *FlopImage(const Image *,ExceptionInfo *),
   *FrameImage(const Image *,const FrameInfo *,ExceptionInfo *),
@@ -630,7 +631,7 @@ extern MagickExport Image
   *MinifyImage(const Image *,ExceptionInfo *),
   *MontageImages(Image *,const MontageInfo *,ExceptionInfo *),
   *MorphImages(Image *,const unsigned long,ExceptionInfo *),
-  *MosaicImages(Image *,ExceptionInfo *),
+  *MosaicImages(const Image *,ExceptionInfo *),
   *MotionBlurImage(const Image *,const double,const double,const double,
     ExceptionInfo *),
   *OilPaintImage(const Image *,const double,ExceptionInfo *),
@@ -685,7 +686,6 @@ extern MagickExport MontageInfo
   *CloneMontageInfo(const ImageInfo *,const MontageInfo *);
 
 extern MagickExport PixelPacket
-  AcquireOnePixel(const Image *,const long,const long,ExceptionInfo *),
   *GetImagePixels(Image *,const long,const long,const unsigned long,
     const unsigned long),
   GetOnePixel(Image *,const long,const long),
@@ -700,7 +700,8 @@ extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ChannelImage(Image *,const ChannelType),
-  CompositeImage(Image *,const CompositeOperator,Image *,const long,const long),
+  CompositeImage(Image *,const CompositeOperator,const Image *,const long,
+    const long),
   ContrastImage(Image *,const unsigned int),
   DispatchImage(const Image *,const long,const long,const unsigned long,
     const unsigned long,const char *,const StorageType,void *,ExceptionInfo *),
