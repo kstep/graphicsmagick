@@ -607,7 +607,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowCompositeException(OptionError,"UnrecognizedImageCompressionion",
+                  ThrowCompositeException(OptionError,"UnrecognizedImageCompression",
                     option);
               }
             break;
@@ -1828,7 +1828,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowConvertException(OptionError,"UnrecognizedImageCompressionion",
+                  ThrowConvertException(OptionError,"UnrecognizedImageCompression",
                     option);
               }
             break;
@@ -3998,7 +3998,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowMogrifyException(OptionError,"UnrecognizedImageCompressionion",
+                  ThrowMogrifyException(OptionError,"UnrecognizedImageCompression",
                     option);
               }
             break;
@@ -5603,7 +5603,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowMontageException(OptionError,"UnrecognizedImageCompressionion",
+                  ThrowMontageException(OptionError,"UnrecognizedImageCompression",
                     option);
               }
             break;

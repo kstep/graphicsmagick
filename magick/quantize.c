@@ -560,7 +560,82 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
     level,
     id;
 
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; (y < (long) image->rows) && (cube_info->colors < 256); y++)
+  {
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    if (cube_info->nodes > MaxNodes)
+      {
+        /*
+          Prune one level if the color tree is too large.
+        */
+        PruneLevel(cube_info,cube_info->root);
+        cube_info->depth--;
+      }
+    for (x=0; x < (long) image->columns; x+=count)
+    {
+      /*
+        Start at the root and descend the color cube tree.
+      */
+      for (count=1; (x+count) < (long) image->columns; count++)
+        if (!ColorMatch(p,p+count))
+          break;
+      index=MaxTreeDepth-1;
+      bisect=((double) MaxRGB+1.0)/2.0;
+      mid.red=MaxRGB/2.0;
+      mid.green=MaxRGB/2.0;
+      mid.blue=MaxRGB/2.0;
+      node_info=cube_info->root;
+      for (level=1; level <= 8; level++)
+      {
+        bisect*=0.5;
+        id=(unsigned long)
+          (((ScaleQuantumToChar(p->red) >> index) & 0x01) << 2 |
+           ((ScaleQuantumToChar(p->green) >> index) & 0x01) << 1 |
+           ((ScaleQuantumToChar(p->blue) >> index) & 0x01));
+        mid.red+=id & 4 ? bisect : -bisect;
+        mid.green+=id & 2 ? bisect : -bisect;
+        mid.blue+=id & 1 ? bisect : -bisect;
+        if (node_info->child[id] == (NodeInfo *) NULL)
+          {
+            /*
+              Set colors of new node to contain pixel.
+            */
+            node_info->census|=(1 << id);
+            node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
+            if (node_info->child[id] == (NodeInfo *) NULL)
+              ThrowException(exception,ResourceLimitError,
+                "MemoryAllocationFailed","UnableToQuantizeImage");
+            if (level == 8)
+              cube_info->colors++;
+          }
+        /*
+          Approximate the quantization error represented by this node.
+        */
+        node_info=node_info->child[id];
+        pixel.red=p->red-mid.red;
+        pixel.green=p->green-mid.green;
+        pixel.blue=p->blue-mid.blue;
+        node_info->quantize_error+=count*pixel.red*pixel.red+
+          count*pixel.green*pixel.green+count*pixel.blue*pixel.blue;
+        cube_info->root->quantize_error+=node_info->quantize_error;
+        index--;
+      }
+      /*
+        Sum RGB for this leaf for later derivation of the mean cube color.
+      */
+      node_info->number_unique+=count;
+      node_info->total_red+=(double) count*p->red;
+      node_info->total_green+=(double) count*p->green;
+      node_info->total_blue+=(double) count*p->blue;
+      p+=count;
+    }
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(ClassifyImageText,y,image->rows,exception))
+        break;
+  }
+  for ( ; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
