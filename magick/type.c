@@ -209,7 +209,8 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %  The format of the GetTypeInfoByFamily method is:
 %
 %      const TypeInfo *GetTypeInfoByFamily(const char *family,
-%        const char *style,const char *weight,ExceptionInfo *exception)
+%        const char *style,const char *stretch,const char *weight,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -220,6 +221,8 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %
 %    o style: The type style.
 %
+%    o stretch: The type stretch.
+%
 %    o weight: The type weight.
 %
 %    o exception: Return any errors or warnings in this structure.
@@ -227,12 +230,14 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %
 */
 MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
-  const char *style,const char *weight,ExceptionInfo *exception)
+  const char *style,const char *stretch,const char *weight,
+  ExceptionInfo *exception)
 {
   const char
-	  *type_family,
-		*type_style,
-		*type_weight;
+    *type_family,
+    *type_stretch,
+    *type_style,
+    *type_weight;
 
   register const TypeInfo
     *p;
@@ -244,10 +249,13 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   type_family="Helvetica";
   if (family != (const char *) NULL)
     type_family=family;
-	type_style="normal";
+  type_style="normal";
   if (style != (const char *) NULL)
     type_style=style;
-	type_weight="400";
+  type_stretch="normal";
+  if (stretch != (const char *) NULL)
+    type_stretch=stretch;
+  type_weight="400";
   if (weight != (const char *) NULL)
     {
       type_weight=weight;
@@ -259,10 +267,11 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
   {
     if ((p->family == (char *) NULL) || (p->style == (char *) NULL) ||
-        (p->weight == (char *) NULL))
+        (p->stretch == (char *) NULL) || (p->weight == (char *) NULL))
       continue;
     if ((LocaleCompare(p->family,type_family) == 0) &&
         (LocaleCompare(p->style,type_style) == 0) &&
+        (LocaleCompare(p->stretch,type_stretch) == 0) &&
         (LocaleCompare(p->weight,type_weight) == 0))
       break;
   }

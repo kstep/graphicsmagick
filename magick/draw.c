@@ -221,6 +221,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->family=AllocateString(draw_info->family);
   if (draw_info->style != (char *) NULL)
     clone_info->style=AllocateString(draw_info->style);
+  if (draw_info->stretch != (char *) NULL)
+    clone_info->stretch=AllocateString(draw_info->stretch);
   if (draw_info->weight != (char *) NULL)
     clone_info->weight=AllocateString(draw_info->weight);
   if (draw_info->encoding != (char *) NULL)
@@ -981,6 +983,8 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->family);
   if (draw_info->style != (char *) NULL)
     LiberateMemory((void **) &draw_info->style);
+  if (draw_info->stretch != (char *) NULL)
+    LiberateMemory((void **) &draw_info->stretch);
   if (draw_info->weight != (char *) NULL)
     LiberateMemory((void **) &draw_info->weight);
   if (draw_info->encoding != (char *) NULL)
@@ -1831,6 +1835,12 @@ draw_info->clip_units=ObjectBoundingBox;
           {
             GetToken(q,&q,token);
             graphic_context[n]->pointsize=atof(token);
+            break;
+          }
+        if (LocaleCompare("font-stretch",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            (void) CloneString(&graphic_context[n]->stretch,token);
             break;
           }
         if (LocaleCompare("font-style",keyword) == 0)

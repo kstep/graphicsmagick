@@ -1116,6 +1116,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
               (void) fprintf(svg_info->file,"font-family %s\n",value);
               break;
             }
+          if (LocaleCompare(keyword,"font-stretch") == 0)
+            {
+              (void) fprintf(svg_info->file,"font-stretch %s\n",value);
+              break;
+            }
           if (LocaleCompare(keyword,"font-style") == 0)
             {
               (void) fprintf(svg_info->file,"font-style %s\n",value);
@@ -1519,6 +1524,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"font-family") == 0)
                       {
                         (void) fprintf(svg_info->file,"font-family %s\n",
+                          value);
+                        break;
+                      }
+                    if (LocaleCompare(keyword,"font-stretch") == 0)
+                      {
+                        (void) fprintf(svg_info->file,"font-stretch %s\n",
                           value);
                         break;
                       }
@@ -3203,13 +3214,25 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,message);
             break;
           }
-        if (LocaleCompare("font",keyword) == 0)
+        if (LocaleCompare("font-family",keyword) == 0)
           {
             GetToken(q,&q,token);
             FormatString(message,"font-family:%.1024s;",token);
             (void) WriteBlobString(image,message);
             break;
           }
+        if (LocaleCompare("font-stretch",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            FormatString(message,"font-stretch:%.1024s;",token);
+            (void) WriteBlobString(image,message);
+            break;
+        if (LocaleCompare("font-style",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            FormatString(message,"font-style:%.1024s;",token);
+            (void) WriteBlobString(image,message);
+            break;
         if (LocaleCompare("font-size",keyword) == 0)
           {
             GetToken(q,&q,token);
@@ -3217,6 +3240,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobString(image,message);
             break;
           }
+        if (LocaleCompare("font-weight",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            FormatString(message,"font-weight:%.1024s;",token);
+            (void) WriteBlobString(image,message);
+            break;
         status=False;
         break;
       }

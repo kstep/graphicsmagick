@@ -593,7 +593,7 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
 
   image_info=CloneImageInfo((ImageInfo *) NULL);
   type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
-    draw_info->weight,&image->exception);
+    draw_info->stretch,draw_info->weight,&image->exception);
   if (draw_info->font != (char *) NULL)
     {
       (void) strncpy(image_info->filename,draw_info->font,MaxTextExtent-1);

@@ -78,6 +78,7 @@ typedef struct _DrawInfo
     *font,
     *family,
     *style,
+    *stretch,
     *weight,
     *encoding,
     *density;
@@ -186,7 +187,8 @@ typedef struct _TypeMetric
 */
 extern MagickExport const TypeInfo
   *GetTypeInfo(const char *,ExceptionInfo *),
-  *GetTypeInfoByFamily(const char *,const char *,const char *,ExceptionInfo *);
+  *GetTypeInfoByFamily(const char *,const char *,const char *,const char *,
+	  ExceptionInfo *);
 
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
