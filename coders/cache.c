@@ -211,7 +211,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
             Read comment-- any text between { }.
           */
           length=MaxTextExtent;
-          comment=AllocateMemory("");
+          comment=AllocateString("");
           p=comment;
           for ( ; comment != (char *) NULL; p++)
           {
