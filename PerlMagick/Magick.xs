@@ -75,6 +75,7 @@ extern "C" {
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
+#include <math.h>
 #include <magick/api.h>
 #define DegreesToRadians(x) ((x)*M_PI/180.0)
 #define False 0
@@ -3060,20 +3061,18 @@ Get(ref,...)
                 y;
 
               PixelPacket
-                *pixel;
+                pixel;
 
               if (!image)
                 break;
               x=0;
               y=0;
               (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
-              pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
-              if (pixel == (PixelPacket *) NULL)
-                break;
-              FormatString(name,"%u,%u,%u,%u",pixel->red,pixel->green,
-                pixel->blue,pixel->opacity);
+              pixel=GetOnePixel(image,x % image->columns,y % image->rows);
+              FormatString(name,"%u,%u,%u,%u",pixel.red,pixel.green,pixel.blue,
+                pixel.opacity);
               if (!image->matte)
-                (void) QueryColorName(pixel,name);
+                (void) QueryColorName(&pixel,name);
               s=newSVpv(name,0);
               break;
             }
@@ -4323,7 +4322,6 @@ Mogrify(ref,...)
             *draw_info;
 
           PixelPacket
-            *pixel,
             target;
 
           if (attribute_flag[0])
@@ -4339,10 +4337,8 @@ Mogrify(ref,...)
               &info->image_info->fill);
           if (attribute_flag[4])
             QueryColorDatabase(argument_list[4].string_reference,&border_color);
-          pixel=GetImagePixels(image,rectangle_info.x % image->columns,
-            rectangle_info.y % image->rows,1,1);
-          if (pixel != (PixelPacket *) NULL)
-            target=(*pixel);
+          target=GetOnePixel(image,rectangle_info.x % image->columns,
+            rectangle_info.y % image->rows);
           if (attribute_flag[4])
             target=border_color;
           draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
@@ -4582,9 +4578,10 @@ Mogrify(ref,...)
               current[1]*affine[4]+current[3]*affine[5]+current[5];
           }
           if (attribute_flag[15])
-            draw_info->tile=argument_list[15].image_reference;
+            draw_info->tile=CloneImage(argument_list[15].image_reference,
+              argument_list[15].image_reference->columns,
+              argument_list[15].image_reference->rows,True,&exception);
           DrawImage(image,draw_info);
-          draw_info->tile=(Image *) NULL;
           DestroyDrawInfo(draw_info);
           break;
         }
@@ -4631,7 +4628,6 @@ Mogrify(ref,...)
         case 42:  /* MatteFloodfill */
         {
           PixelPacket
-            *pixel,
             target;
 
           unsigned int
@@ -4658,10 +4654,8 @@ Mogrify(ref,...)
             matte=argument_list[3].int_reference;
           if (!image->matte)
             MatteImage(image,OpaqueOpacity);
-          pixel=GetImagePixels(image,rectangle_info.x % image->columns,
-            rectangle_info.y % image->rows,1,1);
-          if (pixel != (PixelPacket *) NULL)
-            target=(*pixel);
+          target=GetOnePixel(image,rectangle_info.x % image->columns,
+            rectangle_info.y % image->rows);
           if (attribute_flag[4])
             target=border_color;
           MatteFloodfillImage(image,target,matte,rectangle_info.x,

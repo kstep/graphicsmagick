@@ -68,9 +68,6 @@ static off_t
 static IndexPacket
   *GetIndexesFromCache(const Image *);
 
-static off_t
-  GetCacheMemory(const off_t);
-
 static PixelPacket
   GetOnePixelFromCache(Image *,const int,const int),
   *GetPixelsFromCache(const Image *),
@@ -415,7 +412,7 @@ MagickExport void GetCacheInfo(Cache *cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t C a c h e M e m o r y                                               %
+%   G e t C a c h e M e m o r y                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -435,7 +432,7 @@ MagickExport void GetCacheInfo(Cache *cache)
 %
 %
 */
-static off_t GetCacheMemory(const off_t memory)
+MagickExport off_t GetCacheMemory(const off_t memory)
 {
   static off_t
     free_memory = PixelCacheThreshold*1024*1024;
@@ -1360,12 +1357,6 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
         Allocate pixel cache.
       */
       status=OpenCache(image->cache,image->class,image->columns,image->rows);
-      if (status == False)
-        {
-          SetCacheThreshold((image->columns*image->rows-1)/1024/1024);
-          status=
-            OpenCache(image->cache,image->class,image->columns,image->rows);
-        }
       if (status == False)
         {
           ThrowException(&image->exception,CacheWarning,

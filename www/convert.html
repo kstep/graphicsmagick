@@ -520,7 +520,6 @@ Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect.</dd>
 
-<br>&nbsp;
 <p>&nbsp;
 <dl>&nbsp;
 <table BORDER=0 WIDTH="65%" >
@@ -532,7 +531,7 @@ the option again with a different effect.</dd>
 <dd>
 join images into a single multi-image file.</dd>
 
-<p><br>By default, all images of an image sequence are stored in the same
+<p>By default, all images of an image sequence are stored in the same
 file. However, some formats (e.g. JPEG) do not support more than one image
 and are saved to separate files. Use <b>+adjoin</b> to force this behavior.</dl>
 
@@ -558,6 +557,7 @@ remove pixel aliasing.</dd>
 append a set of images.</dd>
 
 <dd>
+<p>
 All the input images must have the same width or height. Images of the
 same width are stacked top-to-bottom. Images of the same height are stacked
 left-to-right. Use <b>+append</b> to stack rectangular images left-to-right.</dd>
@@ -638,6 +638,7 @@ details.</dd>
 megabytes of memory available to the pixel cache.</dd>
 
 <dd>
+<p>
 Image pixels are stored in memory until 80 megabytes of memory have been
 consumed. Subsequent pixel operations are cached on disk. Operations to
 memory are significantly faster but if your computer does not have a sufficient
@@ -682,6 +683,7 @@ See <b>X(1)</b> for details about the color specification.</dd>
 colorize the image with the pen color.</dd>
 
 <dd>
+<p>
 Specify the amount of colorization as a percentage. You can apply separate
 colorization values to the red, green, and blue channels of the image with
 a colorization value list delineated with slashes (e.g. 0/0/50).</dd>
@@ -699,6 +701,7 @@ a colorization value list delineated with slashes (e.g. 0/0/50).</dd>
 preferred number of colors in the image.</dd>
 
 <dd>
+<p>
 The actual number of colors in the image may be less than your request,
 but never more. Note, this is a color reduction option. Images with less
 unique colors than specified with this option will have any duplicate or
@@ -724,13 +727,14 @@ the type of colorspace: <b>GRAY</b>, <b>OHTA</b>, <b>RGB</b>,
 <b>YUV</b>, or <b>CMYK</b>.</dd>
 
 <dd>
+<p>
 Color reduction, by default, takes place in the RGB color space. Empirical
 evidence suggests that distances in color spaces such as YUV or YIQ correspond
 to perceptual color differences more closely than do distances in RGB space.
 These color spaces may give better results when color reducing an image.
 Refer to <a href="quantize.html">quantize</a> for more details.</dd>
 
-<p><br>The <b>Transparent</b> color space behaves uniquely in that it preserves
+<p>The <b>Transparent</b> color space behaves uniquely in that it preserves
 the matte channel of the image if it exists.
 <p>The <b>-colors</b> or <b>-monochrome</b> option is required for this
 option to take effect.</dl>
@@ -747,6 +751,7 @@ option to take effect.</dl>
 annotate an image with a comment.</dd>
 
 <dd>
+<p>
 Use this option to assign a specific comment to the image. You can include the
 image filename, type, width, height, or other image attribute by embedding
 special format characters:</dd>
@@ -798,6 +803,7 @@ the type of image compression: <i>None</i>, <i>BZip</i>, <i>Fax</i>,
 <i>LZW</i>, <i>RunlengthEncoded</i> or <i>Zip</i>.</dd>
 
 <dd>
+<p>
 Specify <b>+compress</b> to store the binary image in an uncompressed format.
 The default is the compression type of the specified image file.</dd>
 </dl>
@@ -813,6 +819,7 @@ The default is the compression type of the specified image file.</dd>
 enhance or reduce the image contrast.</dd>
 
 <dd>
+<p>
 This option enhances the intensity differences between the lighter and
 darker elements of the image. Use <b>-contrast</b> to enhance the image
 or <b>+contrast</b> to reduce the image contrast.</dd>
@@ -838,14 +845,17 @@ to crop the image by ten percent on all sides of the image, use <b>-crop
 10%</b>.</dd>
 
 <dd>
+<p>
 Use cropping to apply image processing options to, or display, a particular
 area of an image.</dd>
 
 <dd>
+<p>
 Omit the x and y offset to generate one or more subimages of a uniform
 size.</dd>
 
 <dd>
+<p>
 Use cropping to crop a particular area of an image. Use <b>-crop 0x0</b>
 to trim edges that are the background color. Add an x and y offset to leave
 a portion of the trimmed edges with the image.</dd>
@@ -863,6 +873,7 @@ a portion of the trimmed edges with the image.</dd>
 displace image colormap by amount.</dd>
 
 <dd>
+<p>
 <i>Amount</i> defines the number of positions each colormap entry is shifted.</dd>
 </dl>
 
@@ -889,7 +900,7 @@ of a second></i></font></font></font></b></td>
 <dd>
 display the next image after pausing.</dd>
 
-<p><br>This option is useful for regulating the animation of GIF images
+<p>This option is useful for regulating the animation of GIF images
 within Netscape.. <i>1/100ths of a second</i> must expire before the display
 of the next image. The default is no delay between each showing of the
 image sequence. The maximum delay is 65535.</dl>
@@ -906,6 +917,7 @@ image sequence. The maximum delay is 65535.</dl>
 vertical and horizontal resolution in pixels of the image.</dd>
 
 <dd>
+<p>
 This option specifies an image density when decoding a <i>PostScript</i>
 or Portable Document page. The default is 72 dots per inch in the horizontal
 and vertical direction. This option is used in concert with <b>-page</b>.</dd>
@@ -960,6 +972,7 @@ obtaining image or font from this X server. see <i>X(1)</i>.</dd>
 GIF disposal method.</dd>
 
 <dd>
+<p>
 Here are the valid methods:</dd>
 
 <pre>&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; No disposal specified.
@@ -979,16 +992,19 @@ Here are the valid methods:</dd>
 apply Floyd/Steinberg error diffusion to the image.</dd>
 
 <dd>
+<p>
 The basic strategy of dithering is to trade intensity resolution for spatial
 resolution by averaging the intensities of several neighboring pixels.
 Images which suffer from severe contouring when reducing colors can be
 improved with this option.</dd>
 
 <dd>
+<p>
 The <b>-colors</b> or <b>-monochrome</b> option is required for this option
 to take effect.</dd>
 
 <dd>
+<p>
 Use <b>+dither</b> to render Postscript without text or graphic aliasing.</dd>
 </dl>
 
@@ -1004,6 +1020,7 @@ Use <b>+dither</b> to render Postscript without text or graphic aliasing.</dd>
 annotate an image with one or more graphic primitives.</dd>
 
 <dd>
+<p>
 Use this option to annotate an image with one or more graphic primitives.
 The primitives include</dd>
 
@@ -1053,6 +1070,7 @@ holes" in objects.
 </dd>
 
 <dd>
+<p>
 Use <b>color</b> to change the color of a pixel. Follow the pixel coordinate
 with a method:</dd>
 
@@ -1073,6 +1091,7 @@ whereas <b>filltoborder</b> recolors any neighbor pixel that is not the
 border color. Finally, <b>reset</b> recolors all pixels.</dd>
 
 <dd>
+<p>
 Use <b>matte</b> to the change the pixel matte value to transparent. Follow
 the pixel coordinate with a method (see the <b>color</b> primitive for
 a description of methods). The <b>point</b> method changes the matte value
@@ -1085,6 +1104,7 @@ value of any neighbor pixel that is not the border color (<b>-bordercolor</b>).
 Finally <b>reset</b> changes the matte value of all pixels.</dd>
 
 <dd>
+<p>
 Use <b>text</b> to annotate an image with text. Follow the text coordinates
 with a string. If the string has embedded spaces, enclose it in double
 quotes. Optionally you can include the image filename, type, width, height,
@@ -1092,6 +1112,7 @@ or other image attribute by embedding special format character. See <b>-comment<
 for details.</dd>
 
 <dd>
+<p>
 For example,</dd>
 
 <pre>&nbsp;&nbsp;&nbsp;&nbsp; -draw 'text 100,100 "%m:%f %wx%h"'</pre>
@@ -1103,10 +1124,11 @@ and whose width is 512 and height is 480. To generate a Unicode character
 <p>Use <b>image</b> to composite an image with another image. Follow the
 image coordinates with the filename of an image.
 <dd>
+<p>
 If the first character of <i>string</i> is <i>@</i>, the text is read from
 a file titled by the remaining characters in the string.</dd>
 
-<p><br>You can set the primitive color, font color, and font bounding box
+<p>You can set the primitive color, font color, and font bounding box
 color with
 <b>-fill</b>, <b>-font</b>, and <b>-box</b> respectively. Options
 are processed in command line order so be sure to use <b>-fill</b><i>before</i>
@@ -1176,6 +1198,7 @@ details.</dd>
 use this type of filter when resizing an image.</dd>
 
 <dd>
+<p>
 Use this option to affect the resizing operation of an image (see
 <b>-geometry</b>).
 Choose from these filters:</dd>
@@ -1235,6 +1258,7 @@ direction.</dd>
 use this font when annotating the image with text.</dd>
 
 <dd>
+<p>
 If the font is a fully qualified X server font name, the font is obtained
 from an X server (e.g.
 <tt>-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*</tt>).
@@ -1259,6 +1283,7 @@ surround the image with an ornamental border. See
 about the geometry specification.</dd>
 
 <dd>
+<p>
 The color of the border is specified with the
 <b>-mattecolor</b> command
 line option.</dd>
@@ -1276,6 +1301,7 @@ line option.</dd>
 colors within this distance are considered equal.</dd>
 
 <dd>
+<p>
 A number of algorithms search for a target color. By default the color
 must be exact. Use this option to match colors that are close to the target
 color in RGB space. For example, if you want to automatically trim the
@@ -1296,6 +1322,7 @@ for these differences.</dd>
 level of gamma correction.</dd>
 
 <dd>
+<p>
 The same color image displayed on two different workstations may look different
 due to differences in the display monitor. Use gamma correction to adjust
 for this color difference. Reasonable values extend from <b>0.8</b> to
@@ -1306,6 +1333,7 @@ You can apply separate gamma values to the red, green, and blue channels
 of the image with a gamma value list delineated with slashes (i.e. <b>1.7</b>,<b>2.3</b>,<b>1.2</b>).</dd>
 
 <dd>
+<p>
 Use <b>+gamma</b> to set the image gamma level without actually adjusting
 the image pixels. This option is useful if the image is of a known gamma
 but not set as an image attribute (e.g. PNG images).</dd>
@@ -1340,6 +1368,7 @@ about the geometry specification. By default, the window size is the image
 size and the location is chosen by you when it is mapped.</dd>
 
 <dd>
+<p>
 By default, the width and height are maximum values. That is, the image
 is expanded or contracted to fit the width and height value while maintaining
 the aspect ratio of the image. <i>Append an exclamation point to the geometry
@@ -1349,13 +1378,14 @@ height to 480. If only one factor is specified, both the width and height
 assume the value.</dd>
 
 <dd>
+<p>
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
 dimensions. To increase the size of an image, use a value greater than
 100 (e.g. 125%). To decrease an image's size, use a percentage less than
 100.</dd>
 
-<p><br>Use <b>></b> to change the dimensions of the image <i>only</i> if
+<p>Use <b>></b> to change the dimensions of the image <i>only</i> if
 its size exceeds the geometry specification. <b>&lt;</b> resizes the image
 <i>only</i>
 if its dimensions is less than the geometry specification. For example,
@@ -1385,6 +1415,7 @@ NorthEast, West, Center, East, SouthWest, South, SouthEast. See X(1) for
 details about the gravity specification.</dd>
 
 <dd>
+<p>
 The direction you choose specifies where to position the text when annotating
 the image. For example <i>Center</i> gravity forces the text to be centered
 within the image. By default, the image gravity is <i>NorthWest</i>.</dd>
@@ -1416,6 +1447,7 @@ the type of interlacing scheme: <b>None</b>, <b>Line</b>, <b>Plane</b>,
 or <b>Partition</b>. The default is <b>None</b>.</dd>
 
 <dd>
+<p>
 This option is used to specify the type of interlacing scheme for raw image
 formats such as <b>RGB</b> or <b>YUV</b>. <b>None</b> means do not interlace
 (RGBRGBRGBRGBRGBRGB...), <b>Line</b> uses scanline interlacing (RRR...GGG...BBB...RRR...GGG...BBB...),
@@ -1425,6 +1457,7 @@ is like plane except the different planes are saved to individual files
 (e.g. image.R, image.G, and image.B).</dd>
 
 <dd>
+<p>
 Use <b>Line</b>, or <b>Plane</b> to create an <b>interlaced GIF</b> or
 <b>progressive
 JPEG</b> image.</dd>
@@ -1442,6 +1475,7 @@ JPEG</b> image.</dd>
 assign a label to an image.</dd>
 
 <dd>
+<p>
 Use this option to assign a specific label to the image. Optionally you
 can include the image filename, type, width, height, or other image attribute
 by embedding special format character. See <b>-comment</b> for details.</dd>
@@ -1524,6 +1558,7 @@ times.</dd>
 choose a particular set of colors from this image.</dd>
 
 <dd>
+<p>
 By default, color reduction chooses an optimal set of colors that best
 represent the original image. Alternatively, you can choose a particular
 set of colors from an image file with this option. Use
@@ -1555,6 +1590,7 @@ store matte channel if the image has one otherwise create an opaque one.</dd>
 vary the brightness, saturation, and hue of an image.</dd>
 
 <dd>
+<p>
 Specify the percent change in brightness, the color saturation, and the
 hue separated by commas. For example, to increase the color brightness
 by 20% and decrease the color saturation by 10% and leave the hue unchanged,
@@ -1598,6 +1634,7 @@ transform the image to black and white.</dd>
 morphs an image sequence.</dd>
 
 <dd>
+<p>
 Both the image pixels and size are linearly interpolated to give the appearance
 of a meta-morphosis from one image to the next.</dd>
 </dl>
@@ -1625,6 +1662,7 @@ replace every pixel with its complementary color (white becomes black,
 yellow becomes blue, etc.).</dd>
 
 <dd>
+<p>
 The red, green, and blue intensities of an image are negated. Use <b>+negate</b>
 to only negate the grayscale pixels of the image.</dd>
 </dl>
@@ -1640,15 +1678,18 @@ to only negate the grayscale pixels of the image.</dd>
 add or reduce noise in an image.</dd>
 
 <dd>
+<p>
 The principal function of noise peak elimination filter is to smooth the
 objects within an image without losing edge information and without creating
 undesired structures. The central idea of the algorithm is to replace a
 pixel with its next neighbor in value within a pixel window, if this pixel
 has been found to be noise. A pixel is defined as noise if and only if
 this pixel is a maximum or minimum within the pixel window.
+<p>
 Use \fIorder\fP to specify the width of the neighborhood.</dd>
 
 <dd>
+<p>
 Use <b>+noise</b> followed by a noise type to add noise to an image. Choose
 from these noise types:</dd>
 
@@ -1671,7 +1712,8 @@ from these noise types:</dd>
 transform image to span the full range of color values.</dd>
 
 <dd>
-<i>This is a contrast enhancement technique</i>.</dd>
+<p>
+This is a contrast enhancement technique.</dd>
 </dl>
 
 <dl>&nbsp;
@@ -1702,6 +1744,7 @@ offset>{+-}&lt;y offset>{%}{!}{&lt;}{>}</i></font></font></font></b></td>
 size and location of an image canvas.</dd>
 
 <dd>
+<p>
 Use this option to specify the dimensions of the
 <i>PostScript</i> page
 in dots per inch or a TEXT page in pixels. The choices for a Postscript
@@ -1754,10 +1797,12 @@ etc.). Otherwise, <b>-page</b> behaves much like
 letter+43+43></tt>).</dd>
 
 <dd>
+<p>
 To position a GIF image, use <b>-page</b><i>{+-}&lt;x offset>{+-}&lt;y
 offset></i> (e.g. -page "+1"00+200).</dd>
 
 <dd>
+<p>
 For a Postscript page, the image is sized as in <b>-geometry</b> and positioned
 relative to the lower left hand corner of the page by {+-}&lt;<b>x</b><i>offset</i>>{+-}&lt;<b>y</b>
 <i>offset</i>>. Use
@@ -1766,9 +1811,11 @@ image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.</dd>
 
 <dd>
+<p>
 The default page dimensions for a TEXT image is 612x792.</dd>
 
 <dd>
+<p>
 This option is used in concert with <b>-density</b>.</dd>
 </dl>
 
@@ -1784,6 +1831,7 @@ This option is used in concert with <b>-density</b>.</dd>
 simulate an oil painting.</dd>
 
 <dd>
+<p>
 Each pixel is replaced by the most frequent color in a circular neighborhood
 whose width is specified with <i>radius</i>.</dd>
 </dl>
@@ -1812,6 +1860,7 @@ pointsize of the Postscript font.</dd>
 image preview type.</dd>
 
 <dd>
+<p>
 Use this option to affect the preview operation of an image (e.g.
 <tt>convert
 -preview Gamma Preview:gamma.png</tt>). Choose from these previews:</dd>
@@ -1862,6 +1911,7 @@ The default preview is <b>JPEG</b>.</dd>
 add ICC color or IPTC newswire information profile to image.</dd>
 
 <dd>
+<p>
 By default, each image is commented with its file</dd>
 </dl>
 
@@ -1877,6 +1927,7 @@ By default, each image is commented with its file</dd>
 JPEG/MIFF/PNG compression level.</dd>
 
 <dd>
+<p>
 For the JPEG image format, quality is 0 (worst) to 100 (best). The default
 quality is 75.</dd>
 
@@ -1893,15 +1944,18 @@ filter-type is used for all scanlines:</dd>
 &nbsp;&nbsp;&nbsp; 4: Paeth</pre>
 
 <dd>
+<p>
 If filter-type is 5, adaptive filtering is used when quality is greater
 than 50 and the image does not have a color map, otherwise no filtering
 is used.</dd>
 
 <dd>
+<p>
 If filter-type is 6 or more, adaptive filtering with <i>minimum-sum-of-absolute-values</i>
 is used.</dd>
 
 <dd>
+<p>
 The default is quality is 75. Which means nearly the best compression with
 adaptive filtering.</dd>
 
@@ -1923,6 +1977,7 @@ lighten or darken image edges to create a 3-D effect. See <i>X(1)</i> for
 details about the geometry specification.</dd>
 
 <dd>
+<p>
 Use <b>-raise</b> to create a raised effect, otherwise use <b>+raise</b>.</dd>
 </dl>
 
@@ -1939,6 +1994,7 @@ offset>{+-}&lt;y offset></i></font></font></font></b></td>
 apply options to a portion of the image.</dd>
 
 <dd>
+<p>
 By default, any command line options are applied to the entire image. Use
 <b>-region</b>
 to restrict operations to a particular area of the image.</dd>
@@ -1957,6 +2013,7 @@ roll an image vertically or horizontally. See <i>X(1)</i> for details about
 the geometry specification.</dd>
 
 <dd>
+<p>
 A negative <i>x offset</i> rolls the image left-to-right. A negative <i>y
 offset</i> rolls the image top-to-bottom.</dd>
 </dl>
@@ -1973,6 +2030,7 @@ offset</i> rolls the image top-to-bottom.</dd>
 apply Paeth image rotation to the image.</dd>
 
 <dd>
+<p>
 Use <tt>></tt> to rotate the image only if its width exceeds the height.
 <tt>&lt;</tt> rotates the image <i>only</i> if its width is less than the
 height. For example, if you specify <tt>-90></tt> and the image size is
@@ -1980,6 +2038,7 @@ height. For example, if you specify <tt>-90></tt> and the image size is
 image is 640x480, it is rotated by -90 degrees.</dd>
 
 <dd>
+<p>
 Empty triangles left over from rotating the image are filled with the color
 defined as <b>bordercolor</b> (class
 <b>borderColor</b>). See <i>X(1)</i>
@@ -2037,6 +2096,7 @@ segment an image by analyzing the histograms of the color components and
 identifying units that are homogeneous with the fuzzy c-means technique.</dd>
 
 <dd>
+<p>
 Specify <i>cluster threshold</i> as the number of pixels in each cluster
 must exceed the the cluster threshold to be considered valid. <i>Smoothing
 threshold</i> eliminates noise in the second derivative of the histogram.
@@ -2087,6 +2147,7 @@ Good order values are odd numbers from 3 to 31</dd>
 shear the image along the X or Y axis by a positive or negative shear angle.</dd>
 
 <dd>
+<p>
 Shearing slides one edge of an image along the X or Y axis, creating a
 parallelogram. An X direction shear slides an edge along the X axis, while
 a Y direction shear slides an edge along the Y axis. The amount of the
@@ -2096,6 +2157,7 @@ is measured relative to the Y axis, and similarly, for Y direction shears
 degrees</i> is measured relative to the X axis.</dd>
 
 <dd>
+<p>
 Empty triangles left over from shearing the image are filled with the color
 defined as <b>bordercolor</b> (class
 <b>borderColor</b>). See <i>X(1)</i>
@@ -2114,6 +2176,7 @@ for details.</dd>
 width and height of the image.</dd>
 
 <dd>
+<p>
 Use this option to specify the width and height of raw images whose dimensions
 are unknown such as <b>GRAY</b>,
 <b>RGB</b>, or <b>CMYK</b>. In addition
@@ -2123,6 +2186,7 @@ the image or tell the number of colors in a <b>MAP</b> image file, (e.g.
 -size 640x512+256).</dd>
 
 <dd>
+<p>
 For Photo CD images, choose from these sizes:</dd>
 
 <pre>&nbsp;&nbsp; 192x128
@@ -2252,6 +2316,7 @@ Normally, this integer value is zero or one. A zero or one tells display
 to choose an optimal tree depth for the color reduction algorithm.</dd>
 
 <dd>
+<p>
 An optimal depth generally allows the best representation of the source
 image with the fastest computational speed and the least amount of memory.
 However, the default depth is inappropriate for some images. To assure
@@ -2324,6 +2389,7 @@ FlashPix viewing paramters.</dd>
 alter an image along a sine wave.</dd>
 
 <dd>
+<p>
 Specify <i>amplitude</i> and <i>wavelength</i> to effect the characteristics
 of the wave.</dd>
 <p>

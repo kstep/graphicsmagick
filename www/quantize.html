@@ -30,7 +30,7 @@ where each pixel is a point in <b>RGB</b> space. <b>RGB</b> space is a
 3-dimensional vector space, and each pixel, <i>p(i)</i>, is defined by
 an ordered triple of red, green, and blue coordinates, (<i>r(i)</i>,<i>g(i)</i>,<i>b(i)</i>).</dd>
 
-<p><br>Each primary color component (<i>red</i>, <i>green</i>, or <i>blue</i>)
+<p>Each primary color component (<i>red</i>, <i>green</i>, or <i>blue</i>)
 represents an intensity which varies linearly from 0 to a maximum value,
 <i>Cmax</i>,
 which corresponds to full saturation of that color. Color allocation is
@@ -58,6 +58,7 @@ through the midpoints of each edge.
 <li>
 <b>Assignment</b>.</li>
 </ul>
+<p>
 <b>Classification</b> builds a color description tree for the image. <b>Reduction</b>
 collapses the tree until the number it represents, at most, is the number
 of colors desired in the output image.
@@ -145,9 +146,7 @@ of pixels represented by this node.</dd>
 The distance squared in <b>RGB</b> space between each pixel contained within
 a node and the nodes' center. This represents the quantization error for
 a node.</dd>
-
-<br>&nbsp;
-<p>&nbsp;</dl>
+<p></dl>
 </dl>
 <b>Reduction</b> repeatedly prunes the tree until the number of nodes with
 <i>n2</i>
@@ -190,6 +189,7 @@ for each color present in the output image.</li>
 A pixel array, which represents each pixel as an index into the color map
 array.</li>
 </ol>
+<p>
 First, the assignment phase makes one pass over the pruned color description
 tree to establish the image's color map. For each node with <i>n2</i> >
 <i>0</i>,
@@ -224,7 +224,7 @@ error much less than pictures with large smoothly shaded areas (such as
 faces). This is because the high-frequency contour edges introduced by
 the color reduction process are masked by the high frequencies in the image.</dd>
 
-<p><br>To measure the difference between the original and color reduced
+<p>To measure the difference between the original and color reduced
 images (the total color reduction error),
 <b>ImageMagick</b> sums over
 all pixels in an image the distance squared in <b>RGB</b> space between
@@ -306,7 +306,7 @@ he wrote.</dd>
 
 <dd>
 <b>Copyright (C) 2000 ImageMagick Studio</b></dd>
-
+<p>
 <dd>
 <b>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files ("ImageMagick"),
@@ -314,10 +314,12 @@ to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
 and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
 is furnished to do so, subject to the following conditions:</b></dd>
+<p>
 
 <dd>
 <b>The above copyright notice and this permission notice shall be included
 in all copies or substantial portions of ImageMagick.</b></dd>
+<p>
 
 <dd>
 <b>The software is provided "as is", without warranty of any kind, express
@@ -327,6 +329,7 @@ ImageMagick Studio be liable for any claim, damages or other liability,
 whether in an action of contract, tort or otherwise, arising from, out
 of or in connection with ImageMagick or the use or other dealings in ImageMagick.</b></dd>
 
+<p>
 <dd>
 <b>Except as contained in this notice, the name of the E. I. du Pont de
 Nemours and Company shall not be used in advertising or otherwise to promote

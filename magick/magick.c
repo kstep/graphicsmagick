@@ -202,17 +202,6 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       /*
         Register image formats.
       */
-#if defined(_SC_PAGESIZE) && defined(_SC_PHYS_PAGES)
-      {
-        off_t
-          threshold;
-
-        threshold=sysconf(_SC_PAGESIZE)*sysconf(_SC_PHYS_PAGES);
-        SetCacheThreshold(threshold/1024/1024);
-      }
-#endif
-      if (getenv("MAGIGK_CACHE_THRESHOLD") != (char *) NULL)
-        SetCacheThreshold(atoi(getenv("MAGIGK_CACHE_THRESHOLD")));
       atexit(DestroyMagickInfo);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
       InitializeModules();

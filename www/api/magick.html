@@ -21,6 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#destroymagickinfo">DestroyMagickInfo</A></LI>
+		<LI><A HREF="#getimagemagick">GetImageMagick</A></LI>
 		<LI><A HREF="#getmagickinfo">GetMagickInfo</A></LI>
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A></LI>
 		<LI><A HREF="#registermagickinfo">RegisterMagickInfo</A></LI>
@@ -41,6 +42,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
+<P>char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick );</P>
 <P>MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *tag );</P>
 <P>void  <STRONG>ListMagickInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> *file );</P>
@@ -57,6 +59,22 @@
 <P>Method DestroyMagickInfo deallocates memory associated MagickInfo list.</P>
 <P>The format of the DestroyMagickInfo method is:</P>
 <blockquote>void DestroyMagickInfo ( void ); </blockquote><P>
+<H2><A NAME="getimagemagick">GetImageMagick</A></H2>
+<P>Method GetImageMagick searches for an image format that matches the specified magick string.  If one is found the tag is returned otherwise 
+<FONT SIZE=-1>NULL.</FONT></P>
+<P>The format of the GetImageMagick method is:</P>
+<blockquote>char *GetImageMagick ( const unsigned char *magick ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_tag%3A">tag:</A></STRONG><BR>
+<DD>
+Method GetImageMagick returns a tag that matches the specified magick string.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_magick%3A">magick:</A></STRONG><BR>
+<DD>
+a character string that represents the image format we are looking for.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="getmagickinfo">GetMagickInfo</A></H2>
 <P>Method GetMagickInfo returns a pointer MagickInfo structure that matches the specified tag.  If tag is 
 <FONT SIZE=-1>NULL,</FONT> the head of the image format list is returned.</P>
@@ -68,7 +86,7 @@
 <DD>
 Method GetMagickInfo returns a pointer MagickInfo structure that matches the specified tag.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_tag%3A">tag:</A></STRONG><BR>
+<p><dt><STRONG>tag:</STRONG><BR>
 <DD>
 a character string that represents the image format we are looking for.
 <P></P></DL></DL>
