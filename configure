@@ -35183,6 +35183,14 @@ if test "$with_windows_font_dir" != "yes" && test -n "$with_windows_font_dir"
 then
    windows_font_dir="${with_windows_font_dir}/"
 fi
+# Sometimes Windows fonts are found under /usr/X11R6/lib/X11/fonts/truetype
+if test -n "$windows_font_dir"
+then
+  if test -f '/usr/X11R6/lib/X11/fonts/truetype/arial.ttf'
+  then
+     windows_font_dir='/usr/X11R6/lib/X11/fonts/truetype/'
+  fi
+fi
 if test -n "$windows_font_dir"
 then
   type_include_files="$type_include_files "'<include file="type-windows.mgk" />'

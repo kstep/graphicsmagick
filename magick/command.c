@@ -1195,7 +1195,7 @@ Display
     }
   DestroyImageList(image_list);
   LiberateArgumentList(argc,argv);
-  return(!status);
+  return(status);
 #else
   MagickFatalError(MissingDelegateError,XWindowLibraryIsNotAvailable,
     (char *) NULL);
@@ -6419,7 +6419,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
       XSync(display,False);
     }
   LiberateArgumentList(argc,argv);
-  return(!status);
+  return(status);
 #else
   MagickFatalError(MissingDelegateError,XWindowLibraryIsNotAvailable,
     (char *) NULL);

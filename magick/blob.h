@@ -89,7 +89,7 @@ extern MagickExport size_t
 extern MagickExport FILE
   *GetBlobFileHandle(const Image *image);
 
-extern MagickExport const StreamHandler
+extern MagickExport StreamHandler
   GetBlobStreamHandler(const Image *image);
 
 #if 0

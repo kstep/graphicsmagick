@@ -1279,7 +1279,7 @@ MagickExport unsigned char *GetBlobStreamData(const Image *image)
 %
 %
 */
-MagickExport const StreamHandler GetBlobStreamHandler(const Image *image)
+MagickExport StreamHandler GetBlobStreamHandler(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);

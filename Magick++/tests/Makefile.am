@@ -69,7 +69,7 @@ TESTS = \
 	test_readWriteImages.sh
 
 # Tests which are expected to fail
-XFAIL_TESTS =
+XFAIL_TESTS = 
 
 # Extra files to distribute
 EXTRA_DIST = \

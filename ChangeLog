@@ -1,3 +1,22 @@
+2004-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (GetBlobStreamHandler): Apparently return type can
+	not be const.
+
+2004-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Check for Windows fonts under
+	/usr/X11R6/lib/X11/fonts/truetype (XFree86 standard location?).
+	* coders/jp2.c (WriteJP2Image): Support providing a compression
+	rate value (range 0.0 to 1.0) using command line syntax similar to
+	'-define jp2:rate=0.5'.  In Magick++ this option may be accessed
+	similar to image.defineValue("jp2","rate","0.5");
+	* magick/command.c (DisplayImageCommand): Exit status was inverted
+	so 'gm display' was returning 1 for successful commands, and 0 for
+	failures.
+	(AnimateImageCommand): Exit status was inverted so 'gm animate'
+	was returning 1 for successful commands, and 0 for failures.
+
 2004-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.h (MagickReallocMemory): Solaris compiler

@@ -880,33 +880,54 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   (void) strncpy(magick,image_info->magick,MaxTextExtent-1);
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
-  /*
-    A rough approximation to JPEG v1 quality using JPEG-2000.
-    Default "quality" 75 results in a request for 16:1 compression, which
-    results in image sizes approximating that of JPEG v1.
-  */
+
+
   {
     double
       rate=1.0;
 
-    if ((image_info->quality < 99.5) && (image->rows*image->columns > 2500))
-      {
-        double
-          header_size,
-          current_size,
-          target_size,
-          d;
-        
-        d=115-image_info->quality;  /* Best number is 110-115 */
-        rate=100.0/(d*d);
-        header_size=550.0; /* Base file size. */
-        header_size+=(number_components-1)*142; /* Additional components */
-        /* FIXME: Need to account for any ICC profiles here */
+    int
+      count=0;
 
-        current_size=(double)image->rows*image->columns*(image->depth/8)*
-          number_components;
-        target_size=(current_size*rate)+header_size;
-        rate=target_size/current_size;
+    const char
+      *rate_string;
+
+    /*
+      Support providing a compression rate value (0.0-1.0)
+      using command line syntax similar to '-define jp2:rate=0.5'.
+    */
+    rate_string=AccessDefinition(image_info,"jp2","rate");
+    if (rate_string)
+      {
+        count=sscanf(rate_string,"%lf",&rate);
+      }
+
+    if (count == 0)
+      {
+        /*
+          A rough approximation to JPEG v1 quality using JPEG-2000.
+          Default "quality" 75 results in a request for 16:1 compression, which
+          results in image sizes approximating that of JPEG v1.
+        */
+        if ((image_info->quality < 99.5) && (image->rows*image->columns > 2500))
+          {
+            double
+              header_size,
+              current_size,
+              target_size,
+              d;
+            
+            d=115-image_info->quality;  /* Best number is 110-115 */
+            rate=100.0/(d*d);
+            header_size=550.0; /* Base file size. */
+            header_size+=(number_components-1)*142; /* Additional components */
+            /* FIXME: Need to account for any ICC profiles here */
+            
+            current_size=(double)image->rows*image->columns*(image->depth/8)*
+              number_components;
+            target_size=(current_size*rate)+header_size;
+            rate=target_size/current_size;
+          }
       }
     FormatString(options,"rate=%g",rate);
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
