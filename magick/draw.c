@@ -472,7 +472,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                 (long) (y % draw_info->tile->rows));
               if (!draw_info->tile->matte)
                 color.opacity=OpaqueOpacity;
-              *q=AlphaComposite(&color,color.opacity,q,q->opacity);
+              if (color.opacity != TransparentOpacity)
+                *q=AlphaComposite(&color,color.opacity,q,q->opacity);
             }
           q++;
         }
@@ -3445,7 +3446,8 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                   if (!draw_info->tile->matte)
                     color.opacity=OpaqueOpacity;
                 }
-              *q=AlphaComposite(&color,color.opacity,q,q->opacity);
+              if (color.opacity != TransparentOpacity)
+                *q=AlphaComposite(&color,color.opacity,q,q->opacity);
               q++;
             }
             if (!SyncImagePixels(image))
