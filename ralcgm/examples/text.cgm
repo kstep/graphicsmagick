@@ -1,0 +1,106 @@
+ BEGMF 'Fill Test';                                                             
+ MFVERSION 1;                                                                   
+ MFELEMLIST 'drawingplus';                                                      
+    vdctype real;                                                               
+ BEGMFDEFAULTS;                                                                 
+  vdcrealprec 0, 100, 2;                                                        
+  vdcext (0.0, 0.0) (100.0, 100.0) ;                                            
+  intstyle solid; edgevis on;                                                   
+  textprec stroke;
+ ENDMFDEFAULTS;                                                                 
+ fontlist "Simplex", 
+          "Times new roman";
+                                                                                
+ BEGPIC 'Text 1';                                                               
+  scalemode abstract 0.000;                                                     
+  BEGPICBODY;                                                                   
+   CHARHEIGHT 8.0 ;                                                             
+   CHAREXPAN 0.5;                                                               
+     marker (50,90);                                                            
+   TEXTCOLR 2;
+   TEXT (50,90) notfinal 'Tall';                                                
+   CHARHEIGHT 3.0 ;                                                             
+   CHAREXPAN 2.5;                                                               
+   TEXTCOLR 3;
+   APNDTEXT notfinal 'FAT';                                                     
+   CHARHEIGHT 1.0 ;                                                             
+   CHAREXPAN 1.0;                                                               
+   TEXTCOLR 4;
+   APNDTEXT final 'small (default: left,base)';                                 
+                                                                                
+   TEXTALIGN right,base,0.0,0.0;                                                
+   CHARHEIGHT 8.0 ;                                                             
+   CHAREXPAN 0.5;                                                               
+     marker (50,80);                                                            
+   TEXTCOLR 1;
+   TEXT (50,80) notfinal 'Tall';                                                
+   CHARHEIGHT 3.0 ;                                                             
+   CHAREXPAN 2.5;                                                               
+   APNDTEXT notfinal 'FAT';                                                     
+   CHARHEIGHT 1.0 ;                                                             
+   CHAREXPAN 1.0;                                                               
+   APNDTEXT final 'small (right,base)';                                         
+                                                                                
+   TEXTALIGN ctr,base,0.0,0.0;                                                  
+   CHARHEIGHT 8.0 ;                                                             
+   CHAREXPAN 0.5;                                                               
+     marker (50,70);                                                            
+   TEXT (50,70) notfinal 'Tall';                                                
+   CHARHEIGHT 3.0 ;                                                             
+   CHAREXPAN 2.5;                                                               
+   APNDTEXT notfinal 'FAT';                                                     
+   CHARHEIGHT 1.0 ;                                                             
+   CHAREXPAN 1.0;                                                               
+   APNDTEXT final 'small (ctr,base)';                                           
+                                                                                
+   TEXTALIGN left,bottom,0.0,0.0;                                               
+   CHARHEIGHT 8.0 ;                                                             
+   CHAREXPAN 0.25;                                                              
+     marker (5,60);                                                             
+   TEXT (5,60) notfinal 'Tall Guy';                                             
+   CHARHEIGHT 3.0 ;                                                             
+   CHAREXPAN 2.5;                                                               
+   APNDTEXT notfinal 'FAT';                                                     
+   CHARHEIGHT 1.0 ;                                                             
+   CHAREXPAN 1.0;                                                               
+   APNDTEXT final 'small (left,bottom)';                                        
+                                                                                
+   TEXTALIGN left,half,0.0,0.0;                                                 
+   CHARHEIGHT 8.0 ;                                                             
+   CHAREXPAN 0.25;                                                              
+     marker (50,60);                                                            
+   TEXT (50,60) notfinal 'Tall Guy';                                            
+   CHARHEIGHT 3.0 ;                                                             
+   CHAREXPAN 2.5;                                                               
+   APNDTEXT notfinal 'FAT';                                                     
+   CHARHEIGHT 1.0 ;                                                             
+   CHAREXPAN 1.0;                                                               
+   APNDTEXT final 'small (left,half)';                                          
+                                                                                
+   TEXTALIGN left,cap,0.0,0.0;                                                  
+   CHARHEIGHT 8.0 ;                                                             
+   CHAREXPAN 0.25;                                                              
+     marker (5,50);                                                             
+   TEXT (5,50) notfinal 'Tall Guy';                                             
+   CHARHEIGHT 3.0 ;                                                             
+   CHAREXPAN 2.5;                                                               
+   APNDTEXT notfinal 'FAT';                                                     
+   CHARHEIGHT 1.0 ;                                                             
+   CHAREXPAN 1.0;                                                               
+   APNDTEXT final 'small (left,cap)';                                           
+                                                                                
+   TEXTALIGN left,top,0.0,0.0;                                                  
+   charori 0.05000 0.2000, 0.2000 0.05000;                                      
+   CHARHEIGHT 8.0 ;                                                             
+   CHAREXPAN 0.25;                                                              
+     marker (50,50);                                                            
+   TEXT (50,50) notfinal 'Tall Guy';                                            
+   CHARHEIGHT 3.0 ;                                                             
+   CHAREXPAN 2.5;                                                               
+   APNDTEXT notfinal 'FAT';                                                     
+   CHARHEIGHT 1.0 ;                                                             
+   CHAREXPAN 1.0;                                                               
+   APNDTEXT final 'small (left,top)';                                           
+                                                                                
+  ENDPIC;                                                                       
+ ENDMF;                                                                         

@@ -1,0 +1,50 @@
+#
+#  RAL-CGM Interpreter Data Files - alias.psd
+#
+#  This file contains a list of recognized PostScript fonts together
+#  with their aliases. These are needed in order to satisfy some systems'
+#  restrictions on filename length - original Adobe Font Metrics files have
+#  very long names, e.g. Helvetica-BoldOblique.afm.
+#
+#  Edit this file if you have to change the .afm filenames. Put the full
+#  PS fontname on a line followed by white space followed by the aliased
+#  fontname. Line order is not important. Do not put the .afm extension.
+#
+#  NB: Make sure to create the aliased filename.
+
+
+Times-Roman                  TimesR
+Times-Bold                   TimesB
+Times-Italic                 TimesI
+Times-BoldItalic             TimesBI
+Helvetica                    Helv
+Helvetica-Bold               HelvB
+Helvetica-Oblique            HelvO
+Helvetica-BoldOblique        HelvBO
+Courier                      Cour
+Courier-Bold                 CourB
+Courier-Oblique              CourO
+Courier-BoldOblique          CourBO
+Symbol                       Symbol
+AvantGarde-Book              AvantGB
+AvantGarde-BookOblique       AvantGBO
+AvantGarde-Demi              AvantGD
+AvantGarde-DemiOblique       AvantGDO
+Bookman-Demi                 BookmnD
+Bookman-DemiItalic           BookmnDI
+Bookman-Light                BookmnL
+Bookman-LightItalic          BookmnLI
+Helvetica-Narrow             HelvN
+Helvetica-Narrow-Bold        HelvNB
+Helvetica-Narrow-BoldOblique HelvNBO
+Helvetica-Narrow-Oblique     HelvNO
+NewCenturySchlbk-Roman       NuCtScR
+NewCenturySchlbk-Italic      NuCtScI
+NewCenturySchlbk-Bold        NuCtScB
+NewCenturySchlbk-BoldItalic  NuCtScBI
+Palatino-Roman               PalatR
+Palatino-Italic              PalatI
+Palatino-Bold                PalatB
+Palatino-BoldItalic          PalatBI
+ZapfDingbats                 ZapfDing
+ZapfChancery-MediumItalic    ZapfChMI

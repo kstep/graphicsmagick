@@ -1,0 +1,294 @@
+           RAL-CGM Interpreter Version 3.00 - Installation Guide
+           =====================================================
+
+Introduction
+============
+
+RAL-CGM is an Interpreter/Translator for CGM files. This new release fixes all
+known bugs in the previous release 2.00 and also adds a Tektronix 4200 and a
+HPGL driver. It also adds configuration files for HPUX, ULTRIX and RS6000.
+
+General Description
+===================
+
+The Interpreter (ralcgm)
+------------------------
+
+The RAL-CGM Interpreter consists of a number of separate modules which
+read and translate or interpret a CGM. The modules provided with this
+release are as follows:
+
+    cgmmain    - Main Interpreter Routine
+
+    cgmibin    - Read a Binary encoded CGM
+    cgmichar   - Read a Character encoded CGM
+    cgmitext   - Read a Clear Text encoded CGM
+
+    cgmobin    - Output a Binary encoded CGM
+    cgmochar   - Output a Character encoded CGM
+    cgmotext   - Output a Clear Text encoded CGM
+
+    cgmops     - Output a Postscript file
+    cgmoxw     - X-windows driver
+    cgmoigl    - Iris Graphics Library driver
+    cgmotek    - Tektronix 4200
+    cgmohpgl   - HPGL
+    cgmovga    - PC VGA driver (using Microsoft C 6.0)
+
+
+Plus the following Utility routines:
+
+    cgmatt     - attributes resolving utilities
+    cgmcell    - Cell Array utilities
+    cgmcolr    - Colour handling utilities
+    cgmerr     - error handler
+    cgmfile    - file handling utilities
+    cgmfill    - fill area utility
+    cgmfont    - font handling utility
+    cgmgdp     - utilities for handling circular and elliptical elements
+                 (see GKS or CGM standards)
+    cgmgraph   - graphical output utilities
+    cgmpts     - Point handling utilities
+    cgmrand    - random access frame utilities
+    cgmtext    - text handling utilities
+
+    cgmbez     - Bezier text output utility (optional)
+    cgmher     - Hershey text output utility (optional)
+
+An installation may not include all of the above files.
+
+
+INSTALLATION under UNIX
+=======================
+
+You will find a shell script files: CGMinstall and the following directories:
+
+     src/        - C source files
+     include/    - Header files
+     data/       - Text system data files
+     docs/       - Man pages
+     examples/   - Various CGM's
+     bin/        - Module and Library (this starts empty)
+
+To install RAL-CGM 'CGMinstall' should be executed. It only requires one
+argument which is the system to 'make'.
+Currently in release 2 possible values are as follows:
+
+      sun3    - Sun 3
+      sun4    - Sun 4
+      iris    - Silicon Graphics Iris 3130
+      indigo  - Silicon Graphics Iris Indigo
+      iris4d  - Silicon Graphics Iris 4D
+      rs6000  - IBM RS6000
+      hpux    - Hewlett Packard Workstation
+      ultrix  - DECstation
+      cray    - Cray Unicos (using cc)
+      crayscc - Cray Unicos (using scc)
+      craypcc - Cray Unicos (using pcc)
+      topaz   - Primagraphics Topaz (incomplete source provided, but
+                  available on request)
+
+The script will ask several questions which require 'y' or 'n' answers to
+tailor the system to your own requirements. These options allow you to choose
+whether to create 'cgmlib', include X-Windows, PostScript, HPGL, Tektronix,
+Bezier Text and/or Hershey Text. If you choose X-Windows, you will be asked
+where the include files are to be found. If you choose PostScript, you will be
+asked whether to use the 13 or 35 set of fonts.
+
+The Bezier Text system is a set of 10 fonts to provide filled characters,
+whilst the Hershey system provides 15 line drawn fonts. Both these text sytems
+are optional.
+
+The CGMinstall script will also create a 'Makefile' in the 'src' directory
+so that if any changes are made you can simply type 'make' or make 'cgmlib'
+in the top level directory.
+
+
+
+INSTALLATION under VAX/VMS
+==========================
+
+There is a DCL command procedure `GEN_RALCGM.COM' in the top level of
+the file structure along with the following directories:
+
+   [.SRC]
+   [.INCLUDE]
+   [.DATA]
+   [.DOCS]
+   [.EXAMPLES]
+   [.BIN]     (starts empty)
+
+Invoking 'GEN_RALCGM.COM' will compile the entire system and link it to an
+executable program `RALCGM.EXE' in the [.BIN] directory. It will ask several
+questions allowing for some local tailoring of the system. These options allow
+you to choose whether to include X-Windows, PostScript, Bezier Text and/or
+Hershey Text. The Bezier Text system is a set of 10 fonts to provide filled
+characters, whilst the Hershey system provides 15 line drawn fonts. Both
+these text sytems are optional. If the PostScript option is included then the
+installation procedure will ask whether the 35 or 13 PostScript font set is
+required. This determines which fonts are known about by the PostScript
+output module. The 35 font set is the fonts found on an Apple LaserWriter II,
+the 13 font set is the font set of the original Apple LaserWriter.
+
+The object library `RALCGM.OLB' is also created in the [.BIN] directory.  At
+present this does not contain the `CGMLIB' callable interface to the system,
+although it is present in source form in the [.SOURCE] directory.
+
+A further DCL command procedure `RALCGM_STARTUP.COM' is created by
+'GEN_RALCGM.COM' which, when invoked, defines the logical names required by the
+RAL-CGM system.  This should be run before running `RALCGM'.
+
+The font used for the menu text in the X-windows previewer can be set by
+defining the logical name CGMMENUFONT. A default value (set in mc_vms.h) is
+taken if this is not defined. The logical name CGMDATA which points to the
+location of the data file directory MUST be defined. These two logicals are
+assigned values in'RALCGM_STARTUP.COM'
+
+After running 'GEN_RALCGM.COM' there is a help file `RALCGM.HLP' in the DOCS
+directory. This contains more detailed information on running RALCGM and the
+use of other logical names.
+
+VAX/VMS users who do not have a C compiler but who wish to use RALCGM should
+contact Nick Hill at RAL ( NMH1@UK.AC.RL.VE )
+
+
+
+INSTALLATION under VM/CMS
+=========================
+
+All the files should be copied to either a single minidisk with at least 8
+cylinders or a set of minidisks. To install first copy 'MC_CMS H' to 'MACH H'
+and edit to specify which compiler you are using (either WATC for Waterloo C
+or C370 for IBM C/370 in the second #define statement).
+If you do not require PostScript, X-Windows or the Bezier or Hershey text
+systems should delete the relevant '#define' lines in 'MACH H'.
+Note that in order to use X-Windows you must have TCP/IP and you can not use
+X-Windows with the Waterloo C Compiler. because the wrong linkage conventions
+are used.
+
+A REXX exec 'GENCGM EXEC' is provided which will compile each of the modules
+to create a file called 'CGM200 MODULE' and a Library 'CGMLIB TXTLIB' on your
+A-Disk. This EXEC will also compile and run the modules to create the Bezier
+and Hershey Text systems (if required).
+
+A REXX exec 'RALCGM EXEC' is also provided which should be used to run the
+interpreter. This accepts standard CMS file names and converts them to Unix
+style names which RALCGM uses.
+
+The Library 'RALCGM TXTLIB' can be used to create CGMs directly from a C
+program.
+
+VM/CMS users who do not have a C compiler, but who wish to use RALCGM, please
+contact Roy Platon at RAL (RTP@UK.AC.RL.IB ).
+
+
+INSTALLATION under MS-DOS
+=========================
+
+The RAL-CGM Interpreter is now available under MS-DOS and a screen driver has
+been written using the Microsoft C version 6.0a graphics library. The translator
+and PostScript drivers should work with other C compilers but have not been
+tested. The driver 'cgmovga.c' is provided in source form, but no installation
+file is given as there are still some problems with the microsoft C compiler
+which are being investigated.
+
+MS-DOS users who do not have a Microsoft C compiler, but who wish to use
+RALCGM, please contact Roy Platon at RAL (RTP@UK.AC.RL.IB ).
+
+LIBRARY (cgmlib)
+----------------
+
+The RAL-CGM library consists of a 'C' callable interface and one or more of the
+output modules. A header file 'cgmlib.h' defines the interface to the routines
+together with some typedefs defined in 'cgmtypes.h'. There is one routine for
+each CGM element plus a routine 'cgminit' to choose an Output driver and
+initialise the system. All CGM element routines have 'm_' prefixed to the
+corresponding clear text encoded name. The prototype function for each element
+are listed in 'cgmlib.h'.
+
+All Points should be stored in the struct 'Point', which is a set of two floats
+regardless of whether REAL or INTEGER VDCs or being used (this is to simplify
+the user interface). Some parameters are dependent on the encoding used.
+In most cases the character encoding form is used as this is the most flexible.
+'Enum' are parameters defined as 'Enumerated' in the standard. These are
+defined in 'cgmpar.h' and follow the Clear text encoding except for
+TEXT PATH, where 'P_' is added to avoid confusion with TEXT ALIGNMENT.
+NOTE that 'm_cellarray' has pointers to both Indexed and Direct Colours.
+Only the array determined by the current COLOUR MODE should be used.
+
+A program 'testcgm.c' is supplied in 'examples' which uses most of the graphics
+primitives.
+
+LIMITATIONS
+===========
+
+This section describes known limitations & bugs in RAL-CGM. These are divided
+into General Limitations and driver specific limitations.
+
+General
+-------
+Auxillary colour is not supported on most drivers.
+Character Sets other than UK are not recognised.
+
+X-Windows
+---------
+Small Text using an X Font will be drawn at its minimum size, which may be
+unreadable.
+On a Sun some fill areas will 'bleed'. This is due to a bug in the Sun X server.
+
+PostScript
+----------
+Polygon Set is not yet implemented.
+Large and complex fill areas may not be displayed, due to the 1500 point limit
+in PostScript level 1.
+
+Iris Graphics Library
+---------------------
+Fill areas use hardware fill area which can not handle complex areas or
+Polygon set.
+Direct colour is only supported on systems with 24-bit planes or which have
+a virtual 24-bit system (eg Indigo).
+Setting of Colour indices 1-8 may upset your console window.
+Pattern size and reference point are not used. Only user bit patterns using
+powers of 2 are supported.
+
+Tektronix 4000
+--------------
+Clipped Polygon and Polygon Set may not be correct.
+No Hatched fill style.
+Direct colour is limited to the first 16 colours defined, unless more
+bit-planes are available.
+Linewidth not yet supported.
+No random frame access.
+Error messages must be diverted to a file or the Graphics state is lost.
+
+HPGL
+----
+Only Hollow Polygons are supported.
+Cell Arrays are only plotted as an outline.
+
+VGA
+---
+Polygon set is not supported.
+Error messages may corrupt the Graphics screen.
+If many Bezier Fonts are used an 'out of memory' message appears which can
+only be cleared by rebooting the PC.
+Clipped Fill areas are not always filled, due to bugs in Microsoft library.
+
++--------------------------------------------------------------------------+
+|                                                                          |
+|  Copyright (C) Rutherford Appleton Laboratory 1990, All Rights Reserved. |
+|                                                                          |
+|  This source may be copied, distributed, altered or used, but not sold   |
+|  for profit or incorporated into a product except under licence from     |
+|  the authors.                                                            |
+|                                                                          |
+|  It is not in the public domain.                                         |
+|                                                                          |
+|  This notice should remain in the source unaltered, and any changes to   |
+|  the source made by persons other than the authors should be marked as   |
+|  such.                                                                   |
+|                                                                          |
++--------------------------------------------------------------------------+
+
+RALCGM INSTALL version 2.3

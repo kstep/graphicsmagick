@@ -1,0 +1,33 @@
+ 101 0004 1947 1 5 5 1 5.1.2   0   0    0   1 Simplex
+ 101 0004 1947 1 5 5 1 5.1.2   0   0    0   1 Simplex_Roman
+ 102 0004 1947 1 6 5 1 5.1.2   0   0    0   1 Duplex_Roman
+ 102 0004 1947 1 6 5 1 5.1.2   0   0    0   1 Duplex
+ 103 0004 1947 1 5 5 1 5.1.2   0   0    0   2 Simplex Greek
+ 103 0004 1947 1 5 5 1 5.1.2   0   0    0   2 Simplex_Greek
+ 104 0004 1947 1 5 5 1 4.1.2   0   0    0   1 Complex
+ 104 0004 1947 1 5 5 1 4.1.2   0   0    0   1 Complex_Roman
+ 105 0004 1947 2 5 5 1 4.1.2   0   0    0   1 Complex Italic
+ 105 0004 1947 2 5 5 1 4.1.2   0   0    0   1 Complex_Italic
+ 106 0004 1947 1 7 5 1 4.1.2   0   0    0   1 Triplex
+ 106 0004 1947 1 7 5 1 4.1.2   0   0    0   1 Triplex_Roman
+ 107 0004 1947 2 7 5 1 4.1.2   0   0    0   1 Triplex Italic
+ 107 0004 1947 2 7 5 1 4.1.2   0   0    0   1 Triplex_Italic
+ 108 0004 1947 1 5 5 1 6.1.1   0   0    0   1 Simplex Script
+ 108 0004 1947 1 5 5 1 6.1.1   0   0    0   1 Simplex_Script
+ 109 0004 1947 1 5 5 1 6.1.1   0   0    0   1 Complex Script
+ 109 0004 1947 1 5 5 1 6.1.1   0   0    0   1 Complex_Script
+ 110 0004 1947 1 5 5 1 4.1.2   0   0    0   2 Complex Greek
+ 110 0004 1947 1 5 5 1 4.1.2   0   0    0   2 Complex_Greek
+ 111 0004 1947 1 5 5 1 4.1.2   0   0    0   3 Complex Cyrillic
+ 111 0004 1947 1 5 5 1 4.1.2   0   0    0   3 Complex_Cyrillic
+ 112 0004 1947 1 5 5 1 3.1.2   0   0    0   1 English Gothic
+ 112 0004 1947 1 5 5 1 3.1.2   0   0    0   1 Gothic_English
+ 113 0004 1947 1 5 5 1 3.1.4   0   0    0   1 German Gothic
+ 113 0004 1947 1 5 5 1 3.1.4   0   0    0   1 Gothic_German
+ 114 0004 1947 1 5 5 1 3.2.4   0   0    0   1 Italian Gothic
+ 114 0004 1947 1 5 5 1 3.2.4   0   0    0   1 Gothic_Italia
+ 115 0004 1947 1 5 5 1 4.1.2   0   0    0  93 Complex Maths
+ 116 0004 1947 1 4 5 1 5.1.2   0   0    0   1 Cartographic
+ 116 0004 1947 1 4 5 1 5.1.2   0   0    0   1 Cartographic_Roman
+ 117 0004 1947 1 4 5 1 5.1.2   0   0    0   2 Greek Cartographic
+ 117 0004 1947 1 4 5 1 5.1.2   0   0    0   2 Cartographic_Greek

@@ -1,0 +1,305 @@
+
+                 RALCGM interpreter ( PC version )
+
+                      Installation guide
+
+-----------------------------------------------------------------
+
+
+Hardware Requirements
+---------------------
+
+  - IBM PC or Compatible with hardisk
+  - VGA or EGA monitor
+
+
+Software Requirements
+---------------------
+
+  - MS-DOS version 3.3 or higher
+
+
+
+INSTALLATION
+------------
+
+  The RALCGM interpreter software comes on five  3.5"  diskettes.
+
+
+  The INSTALL program is on RALCGM diskette 1.
+  this   program   will   create  a  directory  RALCGM   in  your
+  hardisk,  and  then  another 2 or  4  sub-directories  will  be
+  created within directory RALCGM;
+
+  they are : 1) BIN : contained RALCGM.EXE - RALCGM interpreter;
+                                GENHER.EXE - Hershey fonts
+                                             generater;
+                                GENBEZ.EXE - Bezier  fonts
+                                             generater
+             2) DATA: contained Fonts information;
+             3) SOURCE: RALCGM interpreter source codes;
+             4) INCLUDE: RALCGM interpreter header file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Using the INSTALL program
+-------------------------
+
+  1) Put RALCGM disk 1 into a selected drive [A:].
+
+  2) Make sure the select drive is active by typing A: [Enter].
+
+  3) To start INSTALL, type:
+       A>INSTALL
+     and press [Enter].
+
+  4) INSTALL  prompts you to enter the destination drive  -   the
+     drive where  you want INSTALL to copy the RALCGM programs.
+     [ Default destination is  C:\RALCGM ]
+     INSTALL asks if you require the RALCGM source code.
+
+  5) If  you require  the  source code ,  press  [Y],  otherwise
+     press [N].
+     ( Source codes will occupy approx. 1.5 Mbytes of disk
+       space. )
+
+
+  You  can stop INSTALL at any time  you  want  by  holding  down
+  [Ctrl]  and pressing [Break]
+
+
+
+  To complete the installation of RALCGM, you are required to add
+  a line to your AUTOEXEC.bat file:
+
+     SET CGMDATA=C:\RALCGM\DATA\
+
+  Finally, in order to create the Hershey & Bezier fonts:
+
+    - Type C:>C:\RALCGM\BIN\genher and press [Enter]
+
+      or C:>CHDIR C:\RALCGM\BIN [Enter]
+         C:>genher [Enter]
+
+    - then
+      type C:>C:\RALCGM\BIN\genbez and press [Enter]
+
+      or C:>CHDIR C:\RALCGM\BIN [Enter]
+         C:>genbez
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+USING RALCGM interpreter
+------------------------
+
+  Before execute RALCGM.EXE make sure you are in C:\RALCGM\BIN by
+  typing CHDIR C:\RALCGM\BIN [Enter]
+
+  then type RALCGM -{option}...  filename [Enter]
+
+  Example  :   RALCGM  -dvga  test.cgm
+               [ -dvga ] display picture on VGA monitor
+
+           :   RALCGM  -b     test.cgm test.bin
+               [ -b ] convert test.cgm to Binary  format  with
+               name test.bin
+
+           :   RALCGM  -t     test.cgm test.txt
+               [ -t ] convert test.cgm to Clear text format with
+               name  test.txt
+
+           :   RALCGM  -p     test.cgm test.ps
+               [ -p ] convert test.cgm to PostScript with name
+               test.ps
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        RALCGM ( PC version )
+
+                           Documentation
+---------------------------------------------------------------
+
+
+
+RALCGM.EXE ( PC version )
+------------------------
+
+  Occupies  about 350K bytes on disk.  Some of the   modules  are
+  overlayed so  it  takes  about 200K bytes of run time memory  (
+  depend  on  which option. eg. if option -p is selected it  will
+  take  approx. 280K bytes of run  time  memory).  By   deducting
+  the system overhead and font information, the effective  memory
+  is  approx. 200K bytes.
+
+  The  interpreter works quite well on IBM PS/2 model  70  (intel
+  80386   micro-processor)  under  MS DOS  version  3.3 operating
+  system. But not on the machine with Intel 8088 micro-processor,
+  problem still under investigation. Hopefully RALCGM interpreter
+  can run on any type of IBM PC  or compatible in the future.
+
+  A make file is available but it only works with  MicroSoft Make
+  Version 5.1.
+
+
+
+CGMOVGA.C
+---------
+
+  option [ -dvga ]
+
+  entry point CGMOvga( Long *, Float *, char *);
+
+  CGMOVGA.C is one of the screen drivers for RALCGM interpreter,
+  which can display cgmfile on IBM PC with VGA screen.
+
+  CGMOVGA.C   is    written  in   'C'   and   co-operated    with
+  MicroSoft  C  version   6.1  compiler,  MicroSoft  version  5.1
+  linker and  MicroSoft  C  graphics library.
+
+  Display mode
+  ------------
+
+   HI resolution mode: 760x480 pixels with 16 colors
+   LO resolution mode: 480x360 pixels with 256 colors
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  Limitation
+  ----------
+
+   -   Clipping  facilities not  available, the VGA  driver  will
+       ignore all the clipping element.
+
+   -   Color fill pattern not supported, the VGA driver will only
+       recognize mono  chrome fill pattern. If color fill pattern
+       is detected  it  will treat it as solid fill.
+
+   -   user defined   pattern not  supported,  the  driver   will
+       ignore  user defined pattern element.
+
+   -   POLYGON SET not supported, the driver  will  not  display
+       POLYGON  SET element.
+
+   -   No random access facility.
+
+Future implementation
+---------------------
+
+   -  Multiple  window, can display  several  frame  on   screen
+      with adjustable window size.
+
+   -  Produces   log  file   so that error messages   will   not
+      appear on screen during interpreting.
+
+   -  Pop-Up menu & Mouse: providing interface with user so that
+      user can select appropriate option during run time.
+
+   -  Make  use of extented memory so that the  interpreter  can
+      handle large cgmfile ( hopefully MicroSoft C version 6  or
+      newer version of MS DOS can  cope with this ).
+
+   -  Compatible with MicroSoft WINDOW operating system.
+
+   -  provide  interface  to  line-printer so that  picture   can
+      have  a hard copy from line-printer.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

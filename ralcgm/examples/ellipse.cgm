@@ -1,0 +1,248 @@
+BEGMF 'ELLIPSE TEST';
+MFVERSION 1;
+MFELEMLIST 'drawingplus';
+   vdctype REAL;
+   realprec -1000.0, 1000.0, 4;
+BEGMFDEFAULTS;
+ vdcext (0.0, 0.0) (100.0, 100.0) ;
+ edgevis OFF;
+ edgetype 1;
+ENDMFDEFAULTS;
+BEGPIC 'ELLIPSE  1 ';
+ BEG_PIC_BODY ;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 50.0 99.0 50.0
+            20.0  1.0 20.0 99.0
+            40.0  1.0 40.0 99.0
+            60.0  1.0 60.0 99.0
+            80.0  1.0 80.0 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 1 ;
+  ELLIPSE       20.0 50.0   35.0 35.0   25.0 55.0;
+  ELLIPARC      40.0 50.0   55.0 35.0   45.0 55.0
+                 2.0 -1.0    1.0 -2.0;
+  ELLIPARCCLOSE 60.0 50.0   75.0 35.0   65.0 55.0
+                 2.0 -1.0    1.0 -2.0   PIE;
+  ELLIPARCCLOSE 80.0 50.0   95.0 35.0   85.0 55.0
+                 2.0 -1.0    1.0 -2.0   CHORD;
+ ENDPIC;
+BEGPIC 'ELLIPSE  2 ';
+ BEG_PIC_BODY ;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 50.0 99.0 50.0
+            20.0  1.0 20.0 99.0
+            40.0  1.0 40.0 99.0
+            60.0  1.0 60.0 99.0
+            80.0  1.0 80.0 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 2 ;
+  transparency OFF;
+  ELLIPSE       20.0 50.0   35.0 35.0   25.0 55.0;
+  ELLIPARC      40.0 50.0   55.0 35.0   45.0 55.0
+                 2.0 -1.0    1.0 -2.0;
+  ELLIPARCCLOSE 60.0 50.0   75.0 35.0   65.0 55.0
+                 2.0 -1.0    1.0 -2.0   PIE;
+  ELLIPARCCLOSE 80.0 50.0   95.0 35.0   85.0 55.0
+                 2.0 -1.0    1.0 -2.0   CHORD;
+ ENDPIC;
+BEGPIC 'ELLIPSE  3 ';
+ BEG_PIC_BODY ;
+  linetype 5 ;
+  transparency OFF;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 50.0 99.0 50.0
+            20.0  1.0 20.0 99.0
+            40.0  1.0 40.0 99.0
+            60.0  1.0 60.0 99.0
+            80.0  1.0 80.0 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 3 ;
+  ELLIPSE       20.0 50.0   35.0 35.0   25.0 55.0;
+  ELLIPARC      40.0 50.0   55.0 35.0   45.0 55.0
+                 2.0 -1.0    1.0 -2.0;
+  ELLIPARCCLOSE 60.0 50.0   75.0 35.0   65.0 55.0
+                 2.0 -1.0    1.0 -2.0   PIE;
+  ELLIPARCCLOSE 80.0 50.0   95.0 35.0   85.0 55.0
+                 2.0 -1.0    1.0 -2.0   CHORD;
+ ENDPIC;
+BEGPIC 'ELLIPSE  4 ';
+ BEG_PIC_BODY ;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 50.0 99.0 50.0
+            20.0  1.0 20.0 99.0
+            40.0  1.0 40.0 99.0
+            60.0  1.0 60.0 99.0
+            80.0  1.0 80.0 99.0 ;
+  linetype 1 ;
+  intstyle HOLLOW;
+  transparency ON;
+  hatchindex 1 ;
+  ELLIPSE       20.0 50.0   35.0 35.0   25.0 55.0;
+  ELLIPARC      40.0 50.0   55.0 35.0   45.0 55.0
+                 2.0 -1.0    1.0 -2.0;
+  ELLIPARCCLOSE 60.0 50.0   75.0 35.0   65.0 55.0
+                 2.0 -1.0    1.0 -2.0   PIE;
+  ELLIPARCCLOSE 80.0 50.0   95.0 35.0   85.0 55.0
+                 2.0 -1.0    1.0 -2.0   CHORD;
+ ENDPIC;
+BEGPIC 'ELLIPSE  5 ';
+ BEG_PIC_BODY ;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 50.0 99.0 50.0
+            20.0  1.0 20.0 99.0
+            40.0  1.0 40.0 99.0
+            60.0  1.0 60.0 99.0
+            80.0  1.0 80.0 99.0 ;
+  linetype 1 ;
+  intstyle HOLLOW;
+  transparency OFF;
+  hatchindex 1 ;
+  ELLIPSE       20.0 50.0   35.0 35.0   25.0 55.0;
+  ELLIPARC      40.0 50.0   55.0 35.0   45.0 55.0
+                 2.0 -1.0    1.0 -2.0;
+  ELLIPARCCLOSE 60.0 50.0   75.0 35.0   65.0 55.0
+                 2.0 -1.0    1.0 -2.0   PIE;
+  ELLIPARCCLOSE 80.0 50.0   95.0 35.0   85.0 55.0
+                 2.0 -1.0    1.0 -2.0   CHORD;
+ ENDPIC;
+BEGPIC 'ELLIPSE  6 ';
+ BEG_PIC_BODY ;
+  edgevis ON;
+  linetype 5 ;
+  edgetype 2 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 50.0 99.0 50.0
+            20.0  1.0 20.0 99.0
+            40.0  1.0 40.0 99.0
+            60.0  1.0 60.0 99.0
+            80.0  1.0 80.0 99.0 ;
+  linetype 1 ;
+  intstyle EMPTY;
+  transparency OFF;
+  hatchindex 1 ;
+  ELLIPSE       20.0 50.0   35.0 35.0   25.0 55.0;
+  ELLIPARC      40.0 50.0   55.0 35.0   45.0 55.0
+                 2.0 -1.0    1.0 -2.0;
+  ELLIPARCCLOSE 60.0 50.0   75.0 35.0   65.0 55.0
+                 2.0 -1.0    1.0 -2.0   PIE;
+  ELLIPARCCLOSE 80.0 50.0   95.0 35.0   85.0 55.0
+                 2.0 -1.0    1.0 -2.0   CHORD;
+ ENDPIC;
+BEGPIC 'ELLIPSE  7 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 2 ;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 50.0 99.0 50.0
+            20.0  1.0 20.0 99.0
+            40.0  1.0 40.0 99.0
+            60.0  1.0 60.0 99.0
+            80.0  1.0 80.0 99.0 ;
+  linetype 1 ;
+  intstyle EMPTY;
+  transparency ON;
+  hatchindex 1 ;
+  ELLIPSE       20.0 50.0   35.0 35.0   25.0 55.0;
+  ELLIPARC      40.0 50.0   55.0 35.0   45.0 55.0
+                 2.0 -1.0    1.0 -2.0;
+  ELLIPARCCLOSE 60.0 50.0   75.0 35.0   65.0 55.0
+                 2.0 -1.0    1.0 -2.0   PIE;
+  ELLIPARCCLOSE 80.0 50.0   95.0 35.0   85.0 55.0
+ 
+                 2.0 -1.0    1.0 -2.0   CHORD;
+ ENDPIC;
+BEGPIC 'ELLIPSE  8 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 2;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 50.0 99.0 50.0
+            20.0  1.0 20.0 99.0
+            40.0  1.0 40.0 99.0
+            60.0  1.0 60.0 99.0
+            80.0  1.0 80.0 99.0 ;
+  linetype 1 ;
+  intstyle PAT;
+  patindex 1 ;
+  ELLIPSE       20.0 50.0   35.0 35.0   25.0 55.0;
+  ELLIPARC      40.0 50.0   55.0 35.0   45.0 55.0
+                 2.0 -1.0    1.0 -2.0;
+  ELLIPARCCLOSE 60.0 50.0   75.0 35.0   65.0 55.0
+                 2.0 -1.0    1.0 -2.0   PIE;
+  ELLIPARCCLOSE 80.0 50.0   95.0 35.0   85.0 55.0
+                 2.0 -1.0    1.0 -2.0   CHORD;
+ ENDPIC;
+BEGPIC 'ELLIPSE  9 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 2;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 50.0 99.0 50.0
+            20.0  1.0 20.0 99.0
+            40.0  1.0 40.0 99.0
+            60.0  1.0 60.0 99.0
+            80.0  1.0 80.0 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 4 ;
+  ELLIPSE       20.0 50.0   35.0 35.0   25.0 55.0;
+  ELLIPARC      40.0 50.0   55.0 35.0   45.0 55.0
+                 2.0 -1.0    1.0 -2.0;
+  ELLIPARCCLOSE 60.0 50.0   75.0 35.0   65.0 55.0
+                 2.0 -1.0    1.0 -2.0   PIE;
+  ELLIPARCCLOSE 80.0 50.0   95.0 35.0   85.0 55.0
+                 2.0 -1.0    1.0 -2.0   CHORD;
+ ENDPIC;
+BEGPIC 'ELLIPSE 10 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 4;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 50.0 99.0 50.0
+            20.0  1.0 20.0 99.0
+            40.0  1.0 40.0 99.0
+            60.0  1.0 60.0 99.0
+            80.0  1.0 80.0 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 5 ;
+  ELLIPSE       20.0 50.0   35.0 35.0   25.0 55.0;
+  ELLIPARC      40.0 50.0   55.0 35.0   45.0 55.0
+                 2.0 -1.0    1.0 -2.0;
+  ELLIPARCCLOSE 60.0 50.0   75.0 35.0   65.0 55.0
+                 2.0 -1.0    1.0 -2.0   PIE;
+  ELLIPARCCLOSE 80.0 50.0   95.0 35.0   85.0 55.0
+                 2.0 -1.0    1.0 -2.0   CHORD;
+ ENDPIC;
+ENDMF;

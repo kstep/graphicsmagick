@@ -1,0 +1,498 @@
+.nnm
+.npa
+.NO FLAGS ALL
+.rm 72
+.lm 0
+1 RALCGM
+.lm 1
+RALCGM is a program for:
+.blank
+.ls 0 "-"
+.le 
+translation between CGM encodings
+.le 
+viewing CGM files on X Windows  
+.le 
+hardcopy output of CGM files on PostScript printers
+.le
+viewing CGM files on a Tektronix 4200 series Terminal
+.le
+translating a CGM file to a Tektronix 4200 file.
+.le
+converting a CGM file to a HPGL file.
+.els
+.lt
+Format :
+
+     ralcgm [ -btcnpixfev ] [ -d driver name ] [ -g gdp types ]
+       [ -l profile name ][ -o driver options ] [ -a terminal string ]
+       [ infilename ]   [ outfilename ]   [ errfilename ]
+.el
+.blank
+On the translation side, three encoding methods exist in  RALCGM:
+.blank
+.ls 0 "-"
+.le 
+binary
+.le 
+character
+.le 
+clear text
+.els
+Any input CGM file can be translated to one of the above encodings by 
+specifying options -b, -c, or -t respectively. Binary, character, and 
+clear text encodings are as described in the ISO 8632(1987) document. 
+.blank
+The encoding method of the input CGM is automatically detected on entry.  
+If an output encoding is specified, the input file is translated accordingly. 
+If no output encoding option is specified, a system dependent default 
+(determined by the installer at the compilation time or by setting a logical 
+name) is chosen. For instance, where X-windows has been selected as the system 
+default, the CGM file will be viewed in an X window. If X is not the default, 
+a Clear Text CGM will be sent to the standard output.
+.blank
+All diagnostics and error messages are sent to the standard error stream.
+.lm 0
+2 ARGUMENTS
+.lm 1
+.lt
+
+   infilename - optional input file name.
+   outfilename - optional output file name.
+   errfilename - optional error file name.
+.el
+.blank
+The outfilename and errfilename arguments are optional. If a number of
+filename arguments are given, the first argument will be taken to
+represent the input file name, the second the output file name, and the  
+third the error file name.
+.blank
+An extension of .cgm is assumed if no file extension is specified.
+.lm 0
+2 AUTHORS
+.lm 1
+R T Platon (RAL CCD) is the original author. 
+.break
+.lt
+
+Contributors from:
+
+  C D Osland, A R Mayhook, C D Seelig,  N M Hill,  
+  W M Lam, A M Reay, K E V Palmen  (RAL CCD)
+
+  P L Popovic, W K Lui  (RAL ID)
+
+  A H Francis  (Page Description)
+.el
+.lm 0
+2 DIAGNOSTICS
+.lm 1
+As soon as input encoding is recognized, a message to that effect is
+sent to standard error if verbose mode (-v option) is chosen.
+.blank
+Three levels of error severity exist.
+Fatal errors abort the program; errors and warnings
+do not. Messages are sent to the standard error stream. 
+.lm 0
+2 LOGICALS
+.lm 1
+RALCGM recognises various logical names to override default options. The 
+following are recognised:
+.blank
+     CGMDATA pathname
+.break
+          A directory name to override the default data directory pathname 
+         (specified at installation time).  
+.blank
+     CGMMENUFONT font (X-Windows only)
+.break
+          Override default font used by X-Window menus.
+.blank
+     CGMOUTPUT driver name
+.break
+          A text string specifying the Output driver as listed in
+          the  '-D' option plus the 'CHaracter', 'Native',
+          'CLeartext', 'Text' or 'Binary' for translators.
+.blank
+     CGMERRCOUNT num
+.break
+          A number to indicate the number of errors before RALCGM aborts 
+          processing. Setting CGMERRCOUNT to 0 will prevent aborting.
+.blank
+     CGMPSOPT option list
+.break
+          PostScript dependent options.  See options '-O' help.
+.blank
+     CGMHPGLOPT option list
+.break
+          HPGL dependent driver options. See options '-O' help.
+.blank
+     CGMHPGLn+4 floating point numbers
+.break
+          Where n is a pen number. HPGL Pen Description (red, green
+          blue values in the range 0.0 to 1.0 plus pen width in mm).
+.blank
+     CGMTEKOPT option list
+.break
+          Textronix 4200 driver dependent driver options. 
+          See options '-O' help.
+.blank
+     CGMGDP gdptype
+.break
+          A text string to set a default GDP type. See options
+          '-G' help.
+.blank
+     CGMVERBOSE on   | off
+.break
+          See options '-V' help.
+.blank
+     CGMPROFILE profile type
+.break
+          Specify a Profile type. See options '-L' help
+.lm 0
+2 ORIGIN_AND_AVAILABILITY
+.lm 1
+RALCGM was written at the Rutherford Appleton Laboratory, U.K.
+.blank
+The source code of this program together with information on how
+to install it on various machines is freely available to the academic community
+from the University of Kent.
+.lm 0               
+2 OPTIONS
+.lm 1
+Options may appear anywhere on the command line and single
+character  options  may be grouped together, as long as each
+set of options starts   with a '-'.  If   an option has an extra
+data   string   this must follow the option, with or without a
+separating space, and   must terminate the group.  All   single
+character options may   be either upper   or lower case.
+.break
+.lm0
+3 -a 
+.indent 1
+ -a "terminal string"
+.blank
+This option will pass the terminal string specifying the host and  the  default 
+display  device  for the  X   Window environment.   Note  that  the  terminal  
+string can be case dependent. (Applicable to the X Windows environment only). 
+.break
+3 -b
+.break
+Translate input CGM into   binary encoding.
+.break
+3 -c
+.break
+Translate input CGM into   character encoding.
+.break                                
+3 -d
+.indent 1
+ -d "driver name"
+.blank
+To allow for a larger range of drivers than are allowed by  single character
+codes, drivers may be specified by name.  The following names are recognised
+where capital letters indicate   the minimum abbreviation:
+.break
+.lt
+
+          CHaracter : Character encoding
+
+          CLear Text or TEXt : Clear Text encoding
+
+          Binary : Binary encoding
+
+          Postscript or PS : PostScript
+
+          Xwindows or X11 : X-Windows 
+
+          Hpgl : Hpgl level 1 
+
+          TEKtronix : Tektronix 4200 series (including EMU-TEK)
+.el
+.break
+3 -e
+.break
+Ignore error count limit   (16 by default).
+.break
+3 -f
+.break
+Sends diagnostic and error messages to a file. If no error filename is given 
+the default is to send to a file with the root of the input file and a suffix 
+of '.err'.
+.break
+3 -g
+.indent 1
+ -g "gdp types"
+.blank
+Generalized Drawing Primitive Identifiers may be non-negative or negative.  
+Non-negative values are reserved for ISO registration and future use, and 
+negative values are available for private use. No GDP identifiers have been 
+registered yet, hence non-negative GDP identifiers are illegal. A number of 
+packages generate negative GDPs. At present RALCGM can only interpret those  
+that have been generated by RAL-GKS. Specifying -g RAL or -g ral will turn 
+this feature on. By default, negative GDPs are treated as errors.
+.break
+3 -l
+.indent 1
+ -l "profile name"
+.blank
+This flag is used to define a profile. At present the only profile supported 
+is "oldbin". This allows RALCGM to read Binary CGMs produced by RALCGM 
+version 2.00 and earlier. These CGMS have wrongly coded negative integers. 
+Only use this flag if there are problems reading a CGM as not many contain 
+negative integers.
+.break
+3 -o
+.indent 1
+ -o "driver options"
+.blank
+This option allows driver dependent options to be specified as as single
+string which is interpreted by the output driver. Options may be case
+dependent for some drivers. Currently the following options are recognised:
+.blank
+Applicable to PostScript driver only:
+.blank
+          -o[BFCMENIVPLQ]
+.blank
+where any combination of single characters can  be specified, from each   of
+the following pairs of mutually  exclusive options:
+.blank
+.lt
+          B    Ignore Background Colour setting. This is needed when a 
+               black background is put in the CGM for screen output and 
+               the foreground colour is not set, which would normally 
+               result in the output consisting of a black square with all 
+               drawing done in black.
+
+          F    Respect Background Colour setting (default)
+
+          C    Colour PostScript.
+
+          M    Monochrome PostScript (default).
+
+          E    EPSF (Encapsulated PostScript).
+
+          N    Normal PostScript (default).
+
+          V    Add Picture border.
+
+          I    Do not print Border (default).
+
+          P    Portrait mode (default).
+
+          L    Landscape mode.
+
+          Q    Output for extended A4 on a QMS plotter. This gives a 
+               larger plotting area than the default.
+.el
+.blank
+Applicable to HPGL only:
+.blank
+          -o[34PLCN]
+.blank
+where any combination of single characters (case independent)can be specified:
+.blank
+.lt
+          3    Use A3 paper
+
+          4    Use A4 paper (default)
+
+          P    Portrait mode (default)
+
+          L    Landscape mode 
+
+          C    Output printer initialisation controls (default)
+
+          N    Do not output printer initialisation controls 
+.el
+.blank
+Applicable to Tektronix 4200 terminal only:
+.blank
+          -o[NC]
+.blank
+where any combination of single characters (case independent)can be specified:
+.blank
+.lt
+          N    Use 16 colours ie 4 bit-planes (default)
+
+          C    Use 256 colours rather than the default 16. This only 
+               applies to terminals with more than 4 bit-planes
+.el
+.break
+3 -p
+.break
+Convert input CGM to PostScript. The PostScript output can be directed to
+standard output or a named file, and subsequently printed out on a PostScript  
+printer. (This option has been replaced by the -d ps option, but is retained 
+for compatability.)
+.break
+3 -t   
+.break
+Translate input CGM into clear text encoding.
+.break
+3 -v   
+.break
+Use verbose mode. This causes diagnostic messages to appear on the standard
+error stream.
+.break
+3 -x   
+.break
+Display input CGM using X-windows  (applicable to the X-windows environment
+only). (This option has been replaced by the -d xw option, but is retained 
+for compatability.)
+.break
+.lm 0
+2 TEKTRONIX
+.lm 1
+The Tektronix has only a very basic control, which issues a prompt at the end 
+of each picture. The allowable replies are 'Q' to quit, or anything else to 
+continue.
+.break
+.lm 0
+2 X_WINDOWS
+.lm 1
+To display a CGM file in an X window, invoke the ralcgm program (with X
+running) selecting the appropriate option and passing the CGM file name as
+the first argument, e.g.
+.break
+.lt
+  
+  $ralcgm -d xw map.cgm
+
+.el
+This displays the picture in a window with the current frame number and title 
+printed in the title window (the invoking terminal acts as a console for
+ralcgm interpreter messages). There are four title window buttons for
+controlling the display sequence, a pop-up button box to manipulate scaling
+and translation of any part of the picture within the window, and a pop-up 
+keypad to display a randomly chosen frame.
+.blank
+The title window buttons are:
+.break
+.lt
+
+     nx for display next frame 
+     pr for display previous frame 
+     cu for re-display current frame 
+     ab for abort drawing of current frame
+
+.el
+NOTE: Clicking on abort will abort drawing straight away. However, the time
+taken to return control to the user will vary, depending on the complexity of
+the frame that was being drawn at the time and the position of that frame in 
+the sequence of frames previously displayed.
+.blank
+The buttons set and the keypad are invoked by clicking different mouse   
+buttons. Here, the mouse button will be referred to as button 1, button 2 and 
+button 3 for left, middle and right buttons respectively. 
+To move through the CGM file frame by frame, pick the appropriate title window 
+button and click mouse button 1.
+.blank
+To select a random frame, click button 1 on the picture window to raise the
+keypad. Select frame number by clicking on the appropriate digits, and then
+pick D. Picking D with no number selected drops the window. Picking C 
+clears the number selected.
+.blank
+If a frame beyond the end of the file is selected, the last frame will
+be displayed. If a frame before the first frame in the file is selected,
+the first frame will be displayed.
+.blank
+The set of pop-up buttons is invoked by clicking button 2 in the picture
+window. To select any of the items in the set, click button 1.
+.blank
+The set of items includes:
+.blank
+copy	
+.break
+.lm 5
+Creates a new display window showing the same frame as the
+present window. New windows can be used independently in the same way
+as the original ones. 
+.blank
+.lm 1
+bigger
+.break
+.lm5	
+Makes the picture bigger. Use the mouse to define two points at opposite 
+corners of a rectangle which is then expanded as much as possible 
+(see note on dragging the mouse below).
+.blank
+.lm 1
+smaller
+.break	
+.lm 5
+Makes the picture smaller. Use the mouse to define two points at opposite 
+corners of a rectangle. The picture will then  be compressed into the 
+defined rectangle. 
+.blank
+.lm 1
+move	
+.break
+.lm 5
+Moves the frame in the window. Define two points - the 
+first is moved to the second. 
+.blank
+.lm 1
+normal
+.break
+.lm 5	
+Restore picture to normal size and position. 
+.blank
+.lm 1
+close	
+.break
+.lm 5
+Remove this window but leave others. 
+.blank
+.lm 1
+finish
+.break
+.lm 5	
+Close  all windows and terminate the program. 
+.blank
+.lm 1
+For bigger, smaller and move you must define two points on the screen. 
+To do this, depress button 3 at one point, drag the mouse to the other 
+point AND THEN release the button. Move is operated in a similar manner, 
+with first point as the anchor point and the second point as the 
+destination of the specified anchor point.
+.blank
+NOTE: 
+There is no rubber banding when dragging the mouse button, so 
+the user has to estimate the result of the scaling and moving while 
+dragging the mouse with button 3 depressed.
+.lm 0
+2 BUGS
+.lm 1
+Some CGM Metafile Descriptor elements are ignored. Polygon Sets and 
+Auxiliary Colour are not handled on most drivers. Correct Pattern Filling 
+for user defined patterns is not yet supported. Complicated Polygon Sets may
+hit the ceiling of available memory when processed by the PostScript
+interpreter. 
+The Tektronix does not support Hatch fill and the HPGL will currently only 
+Hollow Fill.
+Direct Colours are not supported if less than 24 bit-planes are available.
+
+.lm 0
+2 EXAMPLES
+.lm 1
+.indent 5
+$RALCGM  SHIP.BIN -t  CLEAR
+.blank
+will create a CGM file
+CLEAR
+which will contain the clear text encoding version of the input CGM
+SHIP.BIN. 
+.blank
+.indent 5
+$RALCGM -d xw SHIP.CLEAR
+.blank
+will view 
+ SHIP.CLEAR
+in an X window.
+.blank
+.indent 5
+$RALCGM -d ps SHIP LASER.PS
+.blank
+will produce a PostScript version of 
+ SHIP.CGM in LASER.PS,
+regardless of its encoding.

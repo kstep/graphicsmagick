@@ -1,0 +1,139 @@
+BRUSH    Brush
+CENTB    Century Bold
+CENTBU   Century Bold Uniform
+CENTBE   Century Bold Empty
+CENTBI   Century Bold Italic
+CENTBIU  Century Bold Italic Uniform
+CENTBIE  Century Bold Italic Empty
+CENTX    Century Expanded
+CENTXU   Century Expanded Uniform
+CENTXE   Century Expanded Empty
+CENTXI   Century Expanded Italic
+CENTXIU  Century Expanded Italic Uniform
+CENTXIE  Century Expanded Italic Empty
+GERMAN   German
+GERMANU  German Uniform
+GITALIC  German Italic
+GITALICU German Italic Uniform
+SIMPLEX  Hershey Sans Serif
+SIMPLEXU Hershey Sans Serif Uniform
+DUPLEX   Hershey Sans Serif Bold
+DUPLEXU  Hershey Sans Serif Bold Uniform
+COMPLEX  Hershey Serif
+COMPLEXU Hershey Serif Uniform
+TRIPLEX  Hershey Serif Bold
+TRIPLEXU Hershey Serif Bold Uniform
+TITALIC  Hershey Serif Bold Italic
+TITALICU Hershey Serif Bold Italic Uniform
+ITALIC   Hershey Serif Italic
+ITALICU  Hershey Serif Italic Uniform
+OLDENG   Old English
+OLDENGU  Old English Uniform
+SCRIPT   Script
+CSCRIPT  Csript
+SIMULATE Simulate
+SWISS    Swiss
+SWISSU   Swiss Uniform
+SWISSE   Swiss Empty
+SWISSB   Swiss Bold
+SWISSBU  Swiss Bold Uniform
+SWISSBE  Swiss Bold Empty
+SWISSBI  Swiss Bold Italic
+SWISSBIU Swiss Bold Italic Uniform
+SWISSBIE Swiss Bold Italic Empty
+SWISSX   Swiss Expanded
+SWISSXU  Swiss Expanded Uniform
+SWISSXE  Swiss Expanded Empty
+SWISSXB  Swiss Expanded Bold
+SWISSXBU Swiss Expanded Bold Uniform
+SWISSXBE Swiss Expanded Bold Empty
+SWISSI   Swiss Italic
+SWISSIU  Swiss Italic Uniform
+SWISSIE  Swiss Italic Empty
+SWISSL   Swiss Light
+SWISSLU  Swiss Light Uniform
+SWISSLI  Swiss Light Empty
+ZAPF     Zapf
+ZAPFU    Zapf Uniform
+ZAPFE    Zapf Empty
+ZAPFB    Zapf Bold
+ZAPFBU   Zapf Bold Uniform
+ZAPFBE   Zapf Bold Empty
+ZAPFBI   Zapf Bold Italic
+ZAPFBIU  Zapf Bold Italic Uniform
+ZAPFBIE  Zapf Bold Italic Empty
+ZAPFI    Zapf Italic
+ZAPFIU   Zapf Italic Uniform
+ZAPFIE   Zapf Italic Empty
+XSWISS   Xswiss
+XSWISSU  Xswiss Uniform
+XSWISSE  Xswiss Empty
+XSWISSB  Xswiss Bold
+XSWISSBU Xswiss Bold Uniform
+XSWISSBE Xswiss Bold Empty
+XSWIS0   Xswiss (US)
+XSWIS0E  Xswiss (US) Empty
+XSWIS0B  Xswiss (US) Bold
+XSWIS0BE Xswiss (US) Bold Empty
+XSWIS1   Xswiss (UK)
+XSWIS1E  Xswiss (UK) Empty
+XSWIS1B  Xswiss (UK) Bold
+XSWIS1BE Xswiss (UK) Bold Empty
+XSWIS2   Xswiss (Danish)
+XSWIS2E  Xswiss (Danish) Empty
+XSWIS2B  Xswiss (Danish) Bold
+XSWIS2BE Xswiss (Danish) Bold Empty
+XSWIS3   Xswiss (Swedish)
+XSWIS3E  Xswiss (Swedish) Empty
+XSWIS3B  Xswiss (Swedish) Bold
+XSWIS3BE Xswiss (Swedish) Bold Empty
+XSWIS4   Xswiss (German)
+XSWIS4E  Xswiss (German) Empty
+XSWIS4B  Xswiss (German) Bold
+XSWIS4BE Xswiss (German) Bold Empty
+XSWIS5   Xswiss (French)
+XSWIS5E  Xswiss (French) Empty
+XSWIS5B  Xswiss (French) Bold
+XSWIS5BE Xswiss (French) Bold Empty
+OARABIC  Old Arabic
+ARABIC   Arabic
+OARABICE Old Arabic Empty
+ARABICE  Arabic Empty
+CYRILLIC Cyrillic
+CYRILLIU Cyrillic Uniform
+GREEK    Greek
+GREEKU   Greek Uniform
+CGREEK   Cgreek
+CGREEKU  Cgreek Uniform
+OHEBREW  Old Hebrew
+OHEBREWE Old Hebrew Empty
+HEBREW   Hebrew
+HEBREWU  Hebrew Uniform
+HEBREWE  Hebrew Empty
+HIRA     Hiragana
+NHIRA    Hiragana (special keyboard)
+KANJI    Kanji
+KAN1     Kanji subset 1
+KAN2     Kanji subset 2
+KAN3     Kanji subset 3
+KAN4     Kanji subset 4
+KAN5     Kanji subset 5
+KAN6     Kanji subset 6
+KAN7     Kanji subset 7
+KAN8     Kanji subset 8
+KATA     Katakana
+NKATA    Katakana (special keyboard)
+CARTOG   Cartographic
+CARTOGU  Cartographic Uniform
+ELECTRON Electronic
+ELECTROU Electronic Uniform
+MARKER   Marker
+MARKERE  Marker Empty
+MATH     Math
+MATHU    Math Uniform
+MUSIC    Music
+MUSICU   Music Uniform
+SPECIAL  Special
+SPECIALU Special Uniform
+WEATHER  Weather
+WEATHERU Weather Uniform

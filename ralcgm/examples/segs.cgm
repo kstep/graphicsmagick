@@ -1,0 +1,106 @@
+BEGMF 'DISJTLINE TEST';
+MFVERSION 1;
+MFELEMLIST 'DRAWINGPLUS';
+vdctype REAL;
+BEGMFDEFAULTS;
+   vdcrealprec 0, 100, 4;
+   vdcext (0.0, 0.0) (100.0, 100.0) ;
+   clip OFF;
+ENDMFDEFAULTS;
+BEGPIC 'DISJTLINES  1 ';
+ BEG_PIC_BODY ;
+  DISJTLINE (10.0 60.0) (40.0 80.0) (70.0 60.0)
+       (10.0 40.0) (40.0 20.0) (70.0 40.0) ;
+  linetype 1 ;
+  DISJTLINE (12.5 60.0) (42.5 80.0) (72.5 60.0)
+       (12.5 40.0) (42.5 20.0) (72.5 40.0) ;
+  linetype 2 ;
+  DISJTLINE (15.0 60.0) (45.0 80.0) (75.0 60.0)
+       (15.0 40.0) (45.0 20.0) (75.0 40.0) ;
+  linetype 3 ;
+  DISJTLINE (17.5 60.0) (47.5 80.0) (77.5 60.0)
+       (17.5 40.0) (47.5 20.0) (77.5 40.0) ;
+  linetype 4 ;
+  DISJTLINE (20.0 60.0) (50.0 80.0) (80.0 60.0)
+       (20.0 40.0) (50.0 20.0) (80.0 40.0) ;
+  linetype 5 ;
+  DISJTLINE (22.5 60.0) (52.5 80.0) (82.5 60.0)
+       (22.5 40.0) (52.5 20.0) (82.5 40.0) ;
+ ENDPIC;
+BEGPIC 'DISJTLINES  2 ';
+ linewidthmode SCALED;
+ BEG_PIC_BODY ;
+  linewidth 0.2 ;
+  DISJTLINE (10.0 60.0) (40.0 80.0) (70.0 60.0)
+       (10.0 40.0) (40.0 20.0) (70.0 40.0) ;
+  linewidth 0.4 ;
+  linetype 3 ;
+  DISJTLINE (17.5 60.0) (47.5 80.0) (77.5 60.0)
+       (17.5 40.0) (47.5 20.0) (77.5 40.0) ;
+  linewidth 1.0 ;
+  linetype 5 ;
+  DISJTLINE (25.0 60.0) (55.0 80.0) (85.0 60.0)
+       (25.0 40.0) (55.0 20.0) (85.0 40.0) ;
+  LINEWIDTH 4.0 ;
+  linetype 2 ;
+  DISJTLINE (27.5 60.0) (57.5 80.0) (87.5 60.0)
+       (27.5 40.0) (57.5 20.0) (87.5 40.0) ;
+ ENDPIC;
+BEGPIC 'DISJTLINES  3 ';
+ colrmode INDEXED;
+ linewidthmode ABS;
+ BEG_PIC_BODY ;
+  linewidth 0.2 ;
+  linecolr 1;
+  DISJTLINE (10.0 60.0) (40.0 80.0) (70.0 60.0)
+       (10.0 40.0) (40.0 20.0) (70.0 40.0) ;
+  linewidth 0.4 ;
+  linetype 3 ;
+  linecolr 2;
+  DISJTLINE (17.5 60.0) (47.5 80.0) (77.5 60.0)
+       (17.5 40.0) (47.5 20.0) (77.5 40.0) ;
+ ENDPIC;
+BEGPIC 'DISJTLINES  4 ';
+ linewidthmode ABS;
+ BEG_PIC_BODY ;
+  linewidth 0.4 ;
+  linetype 1;
+  asf ALLLINE BUNDLED;
+  lineindex 3;
+  DISJTLINE (10.0 60.0) (40.0 80.0) (70.0 60.0)
+       (10.0 40.0) (40.0 20.0) (70.0 40.0) ;
+ ENDPIC;
+BEGPIC 'DISJTLINES  5 ';
+ vdcext (0.0, 100.0) (100.0, 0.0) ;
+ linewidthmode ABS;
+ BEG_PIC_BODY ;
+  linewidth 0.4 ;
+  linetype 1;
+  asf ALLLINE BUNDLED;
+  lineindex 3;
+  DISJTLINE (10.0 60.0) (40.0 80.0) (70.0 60.0)
+       (10.0 40.0) (40.0 20.0) (70.0 40.0) ;
+ ENDPIC;
+BEGPIC 'DISJTLINES  6 ';
+ vdcext (100.0 0.0) (0.0, 100.0) ;
+ linewidthmode ABS;
+ BEG_PIC_BODY ;
+  linewidth 0.4 ;
+  linetype 1;
+  asf allline BUNDLED;
+  lineindex 3;
+  DISJTLINE (10.0 60.0) (40.0 80.0) (70.0 60.0)
+       (10.0 40.0) (40.0 20.0) (70.0 40.0) ;
+ ENDPIC;
+BEGPIC 'DISJTLINES  7 ';
+ vdcext (100.0 100.0) (0.0, 0.0) ;
+ linewidthmode ABS;
+ BEG_PIC_BODY ;
+  linewidth 0.4 ;
+  linetype 1;
+  asf allline BUNDLED;
+  lineindex 3;
+  DISJTLINE (10.0 60.0) (40.0 80.0) (70.0 60.0)
+       (10.0 40.0) (40.0 20.0) (70.0 40.0) ;
+ ENDPIC;
+ENDMF;

@@ -1,0 +1,16 @@
+0116 0004 1947 1 5 5 1 5.1.2    1 Cartographic_Roman
+0117 0004 1947 1 5 5 1 5.1.2    2 Cartographic_Greek
+0101 0004 1947 1 5 5 1 5.1.2    1 Simplex_Roman
+0103 0004 1947 1 5 5 1 5.1.2    2 Simplex_Greek
+0110 0004 1947 1 5 5 1 6.1.1    1 Simplex_Script
+0104 0004 1947 1 5 5 1 4.1.2    1 Complex_Roman
+0108 0004 1947 1 5 5 1 4.1.2    2 Complex_Greek
+0111 0004 1947 1 5 5 1 6.1.1    1 Complex_Script
+0105 0004 1947 2 5 5 1 4.1.2    1 Complex_Italic
+0112 0004 1947 1 5 5 1 4.1.2    3 Complex_Cyrillic
+0102 0004 1947 1 6 5 1 5.1.2    1 Duplex_Roman
+0106 0004 1947 1 7 5 1 4.1.2    1 Triplex_Roman
+0107 0004 1947 2 7 5 1 4.1.2    1 Triplex_Italic
+0114 0004 1947 1 5 5 1 3.1.4    1 Gothic_German
+0113 0004 1947 1 5 5 1 3.1.2    1 Gothic_English
+0115 0004 1947 1 5 5 1 3.2.4    1 Gothic_Italia

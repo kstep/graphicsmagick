@@ -1,0 +1,269 @@
+BEGMF 'FILL TEST';
+MFVERSION 1;
+MFELEMLIST 'drawingplus';
+   vdctype REAL;
+   realprec -1000.0, 1000.0, 4;
+BEGMFDEFAULTS;
+ vdcext (0.0, 0.0) (100.0, 100.0) ;
+ clip OFF
+ edgevis OFF;
+ edgetype 1;
+ENDMFDEFAULTS;
+BEGPIC 'FILL  1 ';
+ BEG_PIC_BODY ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 1 ;
+  cliprect 10.0 10.0 60.0 60.0;
+  clip ON;
+  polygon        20.0    20.0
+                 20.0    80.0
+                 80.0    20.0
+                 80.0    80.0 ;
+ ENDPIC;
+BEGPIC 'FILL  2 ';
+ BEG_PIC_BODY ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 1 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL  3 ';
+ BEG_PIC_BODY ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 2 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL  4 ';
+ BEG_PIC_BODY ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 3 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL  5 ';
+ vdcext (0.0, 100.0) (100.0, 0.0) ;
+ BEG_PIC_BODY ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 4 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL  6 ';
+ vdcext (100.0, 0.0) (0.0, 100.0) ;
+ BEG_PIC_BODY ;
+  edgevis ON;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 5 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL  7 ';
+ vdcext (100.0, 100.0) (0.0, 0.0) ;
+ BEG_PIC_BODY ;
+ edgevis ON;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 6 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL  8 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 2;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 3 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL  9 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 3;
+  linetype 1 ;
+  intstyle PAT;
+  patindex 1 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL 10 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 4;
+  linetype 1 ;
+  intstyle SOLID;
+  patindex 1 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL 11 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 5;
+  edgewidth 3.0;
+  linetype 1 ;
+  intstyle HOLLOW;
+  patindex 1 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL 12 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  linetype 1 ;
+  intstyle EMPTY;
+  patindex 1 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL 13 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  transparency ON;
+  linetype 1 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  linewidth 4.0;
+  DISJTLINE  5.0 30.0 95.0 30.0
+             5.0 50.0 95.0 50.0
+             5.0 70.0 95.0 70.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 1 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+BEGPIC 'FILL 14 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  transparency OFF;
+  linetype 1 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linewidth 4.0;
+  linetype 4 ;
+  cliprect   25.0 25.0 75.0 75.0;
+  clip ON;
+  DISJTLINE  5.0 30.0 95.0 30.0
+             5.0 50.0 95.0 50.0
+             5.0 70.0 95.0 70.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 1 ;
+  polygonset    20.0    40.0   INVIS
+                80.0    40.0   VIS
+                50.0    80.0   CLOSEVIS
+                20.0    60.0   VIS
+                80.0    60.0   INVIS
+                50.0    20.0   CLOSEINVIS
+                30.0    30.0   VIS
+                30.0    70.0   INVIS
+                70.0    70.0   VIS
+                70.0    30.0   CLOSEVIS ;
+ ENDPIC;
+ENDMF;

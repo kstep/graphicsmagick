@@ -1,0 +1,745 @@
+.TH RALCGM 1 "Local" "User Command"
+.SH NAME
+ralcgm \- translate, view or print Computer Graphics Metafiles.
+.SH ORIGIN
+Rutherford Appleton Laboratory
+.SH SYNOPSIS
+.B ralcgm
+[
+.B \-btcnpixfev
+] [
+.B \-d
+.I driver name
+] [
+.B \-g
+.I gdp types
+]
+.if n .ti +0.7i
+.if t .ti +0.48i
+[
+.B \-l
+.I profile name
+] [
+.B \-o
+.I driver options
+]
+.if n .ti +0.7i
+.if t .ti +0.48i
+[
+.B \-a
+.I terminal string
+]
+.if n .ti +0.7i
+.if t .ti +0.48i
+[
+.I infilename
+] [
+.I outfilename
+] [
+.I errfilename
+]
+.SH AVAILABILITY
+.P
+This is RALCGM release 3.0 (man version 2.7).
+The source code of this program together with information on how
+to install it is available from the University of Kent.
+.SH DESCRIPTION
+.P
+.B ralcgm
+is a program for:
+.sp
+.RS
+\- translation between CGM encodings;
+.br
+\- viewing CGM files on X Windows.
+.br
+\- hardcopy output of CGM files on PostScript printers.
+.br
+\- viewing CGM files on Silicon Graphics Iris 3130 or 4D
+.if n .ti +0.2i
+workstation.
+.br
+\- viewing a CGM file on a Tektronix 4200 series
+.if n .ti +0.2i
+Terminal.
+.br
+\- translating a CGM file to a Tektronix 4200 file.
+.br
+\- converting a CGM file to a HPGL file.
+.br
+\- viewing on an IBM PC or compatible with a VGA screen.
+.RE
+.P
+On the translation side, four encoding methods exist in
+.B ralcgm:
+.sp
+.RS
+\- binary
+.br
+\- character
+.br
+\- clear text
+.br
+\- native character output (non-ASCII machines only)
+.RE
+.P
+Any input CGM file can be translated to one of the above encodings by
+specifying options
+.B \-b, \-c, \-t, \-n
+respectively.
+Binary, character, and clear text encodings are as described
+in ISO 8632(1987) document.
+The native character encoding is a variant of the character encoding
+with input and output being treated according to the host machine's
+native character set,
+i.e. EBCDIC for the IBM machines.
+.P
+The encoding method of the input CGM is automatically detected on entry.
+If an output encoding is specified, the input file is translated accordingly.
+If no output encoding option is specified, a system dependent
+default (determined by the installer at the compilation time or
+by setting an environment variable) is chosen.
+For instance, where X-windows has been selected as the system default,
+the CGM file will be viewed in an X window.
+The normal default is clear text encoding to standard output.
+.P
+All of the filename arguments are optional, and they have to appear on
+the command line in the order described in the synopsis.
+If none of the filename arguments is present,
+.B ralcgm
+reads from standard input and writes to standard output, or sends the
+picture to the screen, depending on whether translation or viewing is
+required.
+On some non-unix systems (VMS and CMS) piping from stdin is not allowed.
+All diagnostics and error messages are sent to the standard error stream.
+.P
+If a number of filename arguments are given, the first argument will
+be taken to represent the input file name, second the output file name,
+and the third the error file name.
+An extension of
+.B cgm
+is assumed if no file extension is specified.
+.P
+To view a CGM file in a X Windows environment, GL Window or on a terminal,
+invoke
+.B ralcgm
+by selecting the option
+.B \-d driver
+, where
+.B driver
+is the name of the output device as specified below.
+.if t .bp
+.SH ARGUMENTS
+.P
+.I infilename
+\- optional input file name.
+.br
+.I outfilename
+\- optional output file name.
+.br
+.I errorfilename
+\- optional error file name.
+.SH OPTIONS
+.P
+Options may appear anywhere on the command line and single character options
+may be grouped together, as long as each set of options starts with a '-'.
+If an option has an extra data string this must follow the option,
+with or without a seperating space, and must terminate the group.
+All single character options may be either upper or lower case.
+.TP
+.B \-b
+translate input CGM into binary encoding.
+.TP
+.B \-c
+translate input CGM into character encoding.
+.TP
+.B \-n
+produce native character set version of input CGM's character encoding.
+.TP
+.B \-t
+translate input CGM into clear text encoding.
+.TP
+.B \-p
+convert input CGM to PostScript.
+The PostScript output can be directed to standard output or a named file,
+and subsequently printed out on a PostScript printer.
+(This option has been replaced by the
+.B -d ps
+option, but is retained for compatability.)
+.TP
+.B \-i
+display input CGM using the Iris Graphics Library
+(applicable to the Silicon Graphics Iris Workstations only).
+(This option has been replaced by the
+.B -d igl
+option, but is retained for compatability.)
+.TP
+.B \-x
+display input CGM using X-windows
+(applicable to the X-windows environment only).
+(This option has been replaced by the
+.B -d xw
+option, but is retained for compatability.)
+.TP
+.BI \-a " terminal string"
+(Applicable to the X Windows environment only).
+This option will pass the terminal string specifing the host and the
+default display device for the X Window environment.
+.B Note
+that the terminal string is case dependent.
+.TP
+.B \-e
+ignore error count limit (16 by default).
+.TP
+.B \-f
+sends diagnostic and error messages to a file.
+If no error filename is given the default is to send to a file with
+the root of the input file and a suffix of
+.B .err.
+.TP
+.B \-v
+use verbose mode.
+This causes diagnostic messages to appear on the standard
+error stream.
+.TP
+.BI \-g " gdp types"
+Generalized Drawing Primitive Identifiers may be non-negative or negative.
+Non-negative values are reserved for ISO registration and future use, and
+negative values are available for private use.
+No GDP identifiers have been registered yet,
+hence non-negative GDP identifiers are illegal.
+A number of packages generate negative GDPs.
+At present
+.B ralcgm
+can only interpret those that have been generated by RAL-GKS.
+Specifying
+.I \-g RAL
+or
+.I \-g ral
+will turn this feature on.
+By default, negative GDPs are treated as errors.
+.TP
+.BI \-l " profile name"
+This flag is used to define a profile.
+.IP
+At present the only profile supported is
+.B oldbin
+, which allows
+.B ralcgm
+to read Binary CGMs produced by RAL-CGM version 2.00 and earlier.
+These CGMs have wrongly coded negative integers.
+Only use this flag if there are problems reading a CGM as not many CGMs
+contain negative integers.
+.TP
+.BI \-d " driver name"
+To allow for a larger range of drivers than are allowed by single character
+codes, drivers may be specified by name.
+The following names are recognised where capital letters indicate the
+minimum abbreviation:
+.RS
+.TP
+CHaracter
+Character encoding
+.TP
+Native
+Character encoding (native)
+.TP
+CLear Text or TEXt
+Clear Text encoding
+.TP
+Binary
+Binary encoding
+.TP
+Postscript or PS
+PostScript
+.TP
+Xwindows or X11
+X-Windows (release 11.4)
+.TP
+Igl or IRIS
+Iris Graphics Library (GL2)
+.TP
+Hpgl
+HPGL
+.TP
+TEKtronix
+Tektronix 4200 series (including EMU-TEK)
+.TP
+Vga
+PC VGA screen
+.RE
+.TP
+.BI \-o " driver options"
+This option allows driver dependent options to be specified as as single
+string which is interpreted by the output driver.
+Options may be case dependent for some drivers.
+Currently the following options are recognised:
+.RS
+.TP
+.B Applicable to PostScript driver only.
+.P
+.TP
+.B \-o[BFCMENIVPLQ]
+where any combination of single characters (case independent) can be specified,
+from each of the following pairs of mutually exclusive options:
+.RS
+.TP
+.B B
+Ignore Background Colour setting.
+This is needed when a black background is put in the CGM for screen output and
+the foreground colour is not set,
+which would normally result in the output consisting of a Black square
+with all drawing done in black.
+.TP
+.B F
+Respect Background Colour setting (default).
+.TP
+.B C
+Colour PostScript.
+.TP
+.B M
+Monochrome PostScript (default).
+.TP
+.B E
+EPSF (Encapsulated PostScript).
+.TP
+.B N
+Normal PostScript (default).
+.TP
+.B V
+Add Picture border.
+.TP
+.B I
+Do not print Border (default).
+.TP
+.B P
+Portrait mode (default).
+.TP
+.B L
+Landscape mode.
+.TP
+.B Q
+Output for extended A4 on a QMS plotter.
+This gives a larger plotting area than the default.
+.RE
+.TP
+.B Applicable to Iris Graphics Library only
+.P
+.TP
+.B \-o[DSBMCFTVP]
+where any combination of single characters (case independent) can be specified.
+.RS
+.TP
+.B D
+Use double buffer mode for graphics display.
+This means that the process of updating the graphic
+screen is done off-screen and will only become visible when a picture is
+complete.
+.TP
+.B S
+Use single buffer mode for graphics display (default).
+Also stop after each frame.
+.TP
+.B M
+Movie mode.
+Do not pause between frames and use double buffered mode.
+.TP
+.B C
+Continuous mode.
+Do not pause between frames, but do not use current buffered mode,
+unless D is also set.
+.TP
+.B B
+Single Buffer mode.
+Same as S option, but does not disable movie mode.
+.TP
+.B F
+Full screen mode.
+In full screen mode no textport is displayed.
+This prevents diagnostic messages appearing on the screen.
+.TP
+.B T
+Textport on.
+In full screen mode the textport is displayed to the right of the screen.
+.TP
+.B V
+Virtual 24-bit Colour mode for Iris Indigo (Default for direct colour)
+.TP
+.B P
+Pseudocolour mode for direct colours, rather than Virtual 24-bit mode.
+.RE
+.TP
+.B Applicable to HPGL only
+.P
+.TP
+.B \-o[34PLCN]
+where any combination of single characters (case independent) can be specified.
+.RS
+.TP
+.B 3
+Use A3 paper
+.TP
+.B 4
+Use A4 paper (default)
+.TP
+.B P
+Portrait mode (default)
+.TP
+.B L
+Landscape mode
+.TP
+.B C
+Output printer initialisation controls (default)
+.TP
+.B N
+Do not output printer initialisation controls
+.RE
+.TP
+.B Applicable to Tektronix 4200 Terminal only
+.P
+.TP
+.B \-o[NC]
+where any combination of single characters (case independent) can be specified.
+.RS
+.TP
+.B N
+Use 16 colours ie 4 bit-planes (default)
+.TP
+.B C
+Use 256 colours rather than default of 16.
+This only applies to terminals with more than 4 bit-planes.
+.RE
+.TP
+.B Applicable to PC (VGA) only
+.P
+.TP
+.B \-o[HL]
+where a single characters (case independent) can be specified.
+.RS
+.TP
+.B H
+Use High Resolution mode (default) - 760x480 pixels with 16 colors
+.TP
+.B L
+Use Low Resolution mode - 480x360 pixels with 256 colors
+.RE
+.SH ENVIRONMENT
+.P
+.B Ralcgm
+recognises various environment variables to override default options.
+The following Environment variables are recognised:
+.br
+.P
+.B CGMDATA
+pathname
+.RS
+A directory name to overridew the default data directory pathname
+(specified at installation time).
+Note that the name must include the trailing delimiter ('/' on Unix systems).
+.RE
+.P
+.B CGMMENUFONT
+font (X-Windows only)
+.RS
+Override default font used by X-Window menus.
+.RE
+.P
+.B CGMOUTPUT
+driver name
+.RS
+A text string specifying the Output driver as listed in the '-D' option above,
+plus the 'CHaracter', 'Native', 'CLeartext', 'Text' or 'Binary' for
+translators.
+.RE
+.P
+.B CGMERRCOUNT
+num
+.RS
+A number to indicate the number of errors before RALCGM aborts processing.
+Setting CGMERRCOUNT to 0 will prevent aborting.
+.RE
+.P
+.B CGMPSOPT
+option list
+.RS
+PostScript options.
+See '-O' option above.
+.RE
+.P
+.B CGMIGLOPT
+option list
+.RS
+Iris Graphics Library options.
+See '-O' option above.
+.RE
+.P
+.B CGMHPGLOPT
+option list
+.RS
+HPGL driver options.
+See '-O' option above.
+.RE
+.P
+.B CGMTEKOPT
+option list
+.RS
+Tektronix 4200 driver options.
+See '-O' option above.
+.RE
+.P
+.B CGMVGAOPT
+option list
+.RS
+VGA Screen driver options.
+See '-O' option above.
+.RE
+.P
+.B CGMGDP
+gdptype
+.RS
+A text string to set a default GDP type.
+See option '-G' above.
+.RE
+.P
+.B CGMVERBOSE
+on | off
+.RS
+'on' will turn verbose messages on.
+See option '-V' above.
+.RE
+.P
+.B CGMHPGLn
++ 4 floating point numbers
+.RS
+where
+.I n
+is a pen number.
+HPGL Pen description
+(red, green, blue values in range 0.0 to 1.0
+plus pen width in mm).
+.RE
+.P
+.B CGMPROFILE
+profile type
+.RS
+specify a Profile type.
+see option '-L' above.
+.RE 2
+.SH X WINDOWS VIEWER COMMANDS
+.P
+To display a CGM file in an X window, invoke the
+.B ralcgm
+program (with X running) selecting the appropriate option
+and passing the CGM file name as the first argument, e.g.
+.RS
+.B ralcgm -d xw  map.cgm
+.RE
+.P
+This displays the picture in a window with the current frame number and title
+printed in the title window (the invoking X terminal acts as a console
+for
+.B ralcgm
+interpreter messages).
+There are four title window buttons for
+controlling the display sequence, a pop-up button box to
+manipulate scaling and translation of any part of the picture within the
+window, and a pop-up keypad to display a randomly chosen frame.
+.P
+The title window buttons are:
+.P
+.RS 2
+.TP
+.B nx
+display next frame
+.TP
+.B pr
+display previous frame
+.TP
+.B cu
+re-display current frame
+.TP
+.B ab
+abort current frame
+.RE 2
+.P
+The buttons set and the keypad are invoked by clicking
+different mouse buttons.
+Here, the mouse button will be referred to as
+button 1, button 2 and button 3 for left, middle and right button
+respectively.
+To move through the CGM file frame by frame, pick appropriate title
+window button and click mouse button 1.
+.P
+To select a random frame, click button 1 on the picture window to raise
+the keypad.
+Select frame number by clicking on the appropriate
+digits, and then pick D.
+Picking D with no number selected drops the
+window.
+Picking C clears the number selected.
+.P
+If a frame beyond the end of the file is selected, the last frame will
+be displayed.
+If a frame before the first frame in the file is selected,
+the first frame will be displayed.
+.P
+The set of pop-up buttons is invoked by clicking button 2 in the picture
+window.
+To select any of the items in the set, click button 1.
+.P
+The set of items includes:
+.RS
+.TP 8
+.B copy
+Creates new display windows showing the same frame as the
+present window.
+New windows can be used independently in the same way as the original ones.
+.TP
+.B bigger
+Makes the picture bigger.
+Use the mouse to define two
+points at opposite corners of a rectangle which is then
+expanded as much as possible (see note on
+dragging the mouse below).
+.TP
+.B smaller
+Makes the picture smaller.
+Use the mouse to define two
+points at opposite corners of a rectangle.
+The picture
+will then  be compressed into the defined rectangle.
+.TP
+.B move
+Moves the frame in the window.
+Define two points - the
+first is moved to the second.
+.TP
+.B normal
+Restore picture to normal size and position.
+.TP
+.B close
+Remove this window but leave others.
+.TP
+.B finish
+Close  all windows and terminate program.
+.TP
+.B drop
+Remove the menu with no action.
+.RE
+.P
+For
+.B bigger, smaller and move
+you must define two points on the screen.
+To do this, depress button 3 at one point, drag the mouse to the other
+point and then release the button.
+Move is operated in a similar manner,
+with first point as the anchor point and the second point as the
+destination of the specified anchor point.
+.P
+.B Note:
+There is no rubber banding when dragging the mouse button, so
+the user has to estimate the result of the scaling and moving while
+dragging the mouse with button 3 depressed.
+.SH IGL VIEWER COMMANDS
+.P
+On the Silicon Graphis Iris 3130, there are two modes of working,
+Full screen mode or Window mode (mex).
+The RAL-CGM interpreter will work in either mode, but the control is
+slightly different.
+On the Iris 4D only the Window mode is used.
+.P
+In both modes the left mouse button is used to pause the current
+frame and if the middle mouse button is pressed while the left button
+is held down then the frame is aborted,
+otherwise a second left button will continue processing.
+.P
+In full screen mode, unless in movie mode,
+at the end of each frame a 'beep' will sound and pressing the left
+button will advance to the next frame.
+Pressing the middle button will prompt for a frame number,
+unless the left button is held down at the same time,
+in which case the program will be aborted.
+In movie mode, a left button will interupt the program, which can then
+be controlled as above.
+.P
+In window mode at the end of each frame a pop-up menu will appear,
+which is controlled by the right mouse button.
+This menu give you the options:
+.TP 8
+.B Next
+next frame
+.TP
+.B Redraw
+redraw current frame
+.TP
+.B Last
+return to last frame
+.TP
+.B Find
+displays a second menu to choose a frame number
+.TP
+.B Quit
+exit program
+.P
+To use the second menu click the right mouse on each digit until the
+required number is displayed in the 'Frame' box,
+then select the 'Frame' box.
+Use the 'undo' box to delete the last digit.
+.SH TEKTRONIX VIEWER
+.P
+The Tektronix has only a very basic control, which issues a prompt at the end
+of each picture.
+The allowable replies are 'Q' to quit, or anything else to continue.
+.RE
+.SH EXAMPLES
+.TP
+.B ralcgm ship.bin -t clear
+will create a CGM file
+.B clear
+which will contain the clear text encoding version of the input CGM
+.B ship.bin.
+.TP
+.B ralcgm -d xw ship.clear
+will view
+.B ship.clear
+in an X window.
+.TP
+.B ralcgm -d ps ship laser.ps
+will produce a PostScript version of
+.B ship.cgm,
+in file
+.B laser.ps.
+.SH DIAGNOSTICS
+As soon as the input encoding is recognized, a message to that effect is
+sent to standard error if verbose mode is chosen.
+Three levels of error severity exist.
+Fatal errors abort the program; errors and warnings do not.
+Messages are sent to the standard error stream.
+.SH BUGS
+Some CGM Metafile Descriptor elements are ignored.
+Particularly Polygon Set and Auxillary colour are not handled on most drivers.
+Correct Pattern Filling for User defined patterns is not yet supported.
+.br
+Complicated Polygon Sets may hit the ceiling of available memory
+when processed by the PostScript interpreter.
+.br
+The Tektronix does not support Hatch fill and HPGL will currently
+only Hollow fill.
+.br
+Convex Polygons are not displayed correctly using the Iris Graphics Library.
+Also Direct colours are not support if less than 24-bit planes are
+available, except on an Iris Indigo which uses the Virtual 24-bit system.
+.SH AUTHORS
+R T Platon (
+.I RAL CCD
+) is the original author.
+Contributors: C D Osland,
+A R Mayhook, C D Seelig, K E V Palmen, N M Hill, W M Lam
+(all from
+.I RAL CCD
+);
+P L Popovic and W K Lui (
+.I RAL ID
+); A H Francis (
+.I Page Description
+).

@@ -1,0 +1,168 @@
+%Prolog
+/vmstate save def
+/RAL-CGM 70 dict def
+RAL-CGM begin
+
+/bdef {bind def} bind def
+/align{2 copy exch 5 -1 roll sub exch div ceiling mul sub}def
+/ca{currentfile line readhexstring pop}bdef
+/clnstat{
+         setlinewidth plsty exch get
+         dup /min 9999 def
+         {
+           dup /curelem exch def min lt { /min curelem def} if
+         } forall
+         /elem 0 def
+         [
+          exch
+              {
+                /elem elem 1 add def
+                currentlinewidth 2 mul mul
+                min div
+                elem 2 mod 0 eq {2 mul} if
+              }
+          forall
+         ]
+         0 setdash
+         setrgbcolor
+        }def
+/dot{   %  draws fixed size dot ( 4 pts ) at x,y ( on stack ) and strokes it.
+      hitdot 2 copy moveto 4 [ 0 0 0 0 0 0 ] currentmatrix 3 get div dup
+      currentlinewidth 5 1 roll setlinewidth add lineto stroke setlinewidth
+    }def
+/EndPage{svpg restore showpage}bdef
+/fapdo{
+       closepath pathbbox
+          /ury exch def/urx exch def
+          /lly exch refy psizey align def
+          /llx exch refx psizex align def
+          /nxpix urx llx sub psizex div nx mul round cvi 1 add def
+          /nypix ury lly sub psizey div ny mul round cvi 1 add def
+          /nxcpix nxpix colorflag {3 mul} if def
+          /tmpstr 20 string def
+       /scan
+          ny
+             {nxcpix string}
+          repeat
+          ny array astore
+       def
+       0 1 ny 1 sub
+          {
+           dup patdef exch get/ww nxcpix nxc add 2 mul string def/indn nxc def
+           ww 0 3 -1 roll putinterval ww
+              {
+               0 indn getinterval ww exch indn dup nxcpix nxc add
+               lt
+                   {exch putinterval /indn indn dup add def ww}
+                   {
+                    pop 0 nxcpix nxc add getinterval exch pop 0 nxcpix
+                    getinterval exit
+                   }
+               ifelse
+              }
+              loop
+           scan 3 1 roll put
+          }
+       for
+       gsave
+          eoclip
+             newpath
+                llx lly translate
+                nxpix psizex mul nx div nypix psizey mul ny div scale
+                faput
+       grestore
+      }def
+/fapi{
+      /psizey exch def /psizex exch def
+      /refy exch def/refx exch def/ny exch def/nx exch def
+      /nxc nx colorflag {3 mul} if def
+      /line nxc string def
+      /patdef ny array def
+         0 1 ny 1 sub
+            {patdef exch ca nxc string copy put}
+         for
+     }def
+/faput{
+       /temp ny nypix ny mod sub 1 sub def
+       nxpix nypix 8 [nxpix 0 0 nypix neg 0 nypix]
+          {
+           /temp
+              temp 1 add dup ny 1 sub gt {pop 0} if def
+           scan temp get
+          }
+          colorflag
+          {false 3 colorimage}
+          {image} ifelse
+      }def
+/hitdot{transform round exch round exch itransform}bdef
+/l /lineto load def
+/m /moveto load def
+/plsty[ [] [] [10 2] [1 2] [10 2 2 2] [ 4 1 1 1 1 1] ]bdef
+/pm {
+        /mwid msz .5 mul def
+        /mnwid mwid neg def
+        /mdiag msz .45 mul def
+        /mndiag mdiag neg def
+        gsave
+           translate [] 0 setdash mr mg mb setrgbcolor
+           newpath
+              pmx mt get exec
+        grestore
+     }bdef
+/pmstat{/msz exch def/mt exch def /mb exch def /mg exch def /mr exch def}bdef
+/pmx[{}
+     {0 0 dot}
+     {mnwid 0 moveto mwid 0 lineto 0 mnwid moveto 0 mwid lineto stroke}
+     {pmx 2 get exec pmx 5 get exec stroke}
+     {mwid 0 moveto 0 0 mwid 0 360 arc stroke}
+     {mndiag mndiag moveto mdiag mdiag lineto
+      mndiag mdiag moveto mdiag mndiag lineto stroke}
+    ]bdef
+/r /rlineto load def
+/S /stroke load def
+/StartPage{/svpg save def } bdef
+/txstat{
+        /texp exch def
+        gsave
+           /ft 3 -1 roll findfont def ft 1 scalefont setfont
+           0 0 moveto ( ) stringwidth pop
+        grestore
+        div ft exch scalefont setfont
+        /ft 0 def
+       }bdef
+/txstr{
+       gsave
+          translate
+          texp 1 scale
+          0 0 moveto
+          show
+       grestore
+      }bdef
+/txchar{
+        /f exch def
+        /e exch def
+        /d exch def
+        /c exch def
+        /b exch def
+        /a exch def
+        dup length 1 sub
+        0 1 3 -1 roll
+           {txdoch}
+        for
+        pop pop pop
+       }bdef
+/txdoch{
+        dup 4 1 roll 3 copy get 3 1 roll exch get exch
+        gsave
+           [ a b c d e f ] concat
+           /ytmp exch def /xtmp exch def xtmp ytmp translate
+           texp 1 scale
+           xtmp neg ytmp neg translate
+           3 -1 roll 3 index exch 1 getinterval xtmp ytmp moveto
+           show
+        grestore
+       }bdef
+%%EndProlog
+% end
+% vmstate restore
+

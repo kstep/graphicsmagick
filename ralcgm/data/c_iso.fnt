@@ -1,0 +1,94 @@
+002 00 00 94  4/0    1 International Reference Version of ISO 646
+004 00 00 94  4/1    1 UK Graphics
+006 00 00 94  4/2    1 US Graphics
+008 01 01 94  4/3    1 NATS main Graphics (Finland, Sweden)
+008 02 02 94  4/4    1 NATS additional Graphics (Finland, Sweden)
+009 01 01 94  4/5    1 NATS main Graphics (Denmark, Norway)
+009 02 02 94  4/6    1 NATS additional Graphics (Denmark, Norway)
+010 00 00 94  4/7    1 Swedish basic Graphics
+011 00 00 94  4/8    1 Swedish Graphics for official writing of names
+013 00 00 94  4/9    7 Japanese Katakana Graphics
+014 00 00 94  4/10   1 Japanese Roman Graphics
+015 00 00 94  5/9    1 Italian Graphics
+016 00 00 94  4/12   1 Portuguese Graphics
+017 00 00 94  5/10   1 Spanish Graphics
+018 00 00 94  5/11   2 Greek Graphics
+019 00 00 94  5/12   2 Latin-Greek combined Graphics (capital letters only)
+021 00 00 94  4/11   1 German Graphics
+024 00 00 94  5/2    1 Canadian Graphics
+027 00 00 94  5/5    2 Latin-Greek mixed Graphics (Greek capital letters only)
+031 00 00 94  5/8    2 Greek graphics for bibliographic use
+037 00 00 94  4/14   3 Basic Cyrillic Graphics
+038 00 00 94  4/15   1 German standard for bibliographic use
+039 00 00 94  4/13   1 Character set for African languages
+041 00 00 94  4/0    3 Basic Cyrillic alphabet for bibliographic use
+042 01 01 00  4/0    7 Japanese - General Graphics, part 1
+042 02 02 00  4/0    7 Japanese - General Graphics, part 2
+042 03 03 00  4/0    1 Japanese - Roman alphabet and digits
+042 04 04 00  4/0    8 Japanese - Hiragana characters
+042 05 05 00  4/0    7 Japanese - Katakana characters
+042 06 06 00  4/0    2 Japanese - Greek characters
+042 07 07 00  4/0    3 Japanese - Cyrillic characters
+042 16 83 00  4/0    6 Japanese - Kanji characters
+047 00 00 94  5/6   96 Alphanumerics for viewdata and broadcast teletext
+049 00 00 94  5/7    1 ISO 646 subset for INIS
+050 00 00 94  5/13  93 INIS superscript, subscript and Greek selection
+051 00 00 94  5/14   3 INIS Cyrillic extension
+053 00 00 94  5/0    1 Extension of Latin alphabet for bibliographic use
+054 00 00 94  5/4    3 Extension of Cyrillic alphabet for bibliographic use
+055 00 00 94  5/3    2 Greek character set for bibliographic use
+057 00 00 94  5/4    1 Chinese variant of ISO 646
+058 01 01 00  4/1    9 Chinese - Graphics, part 1
+058 02 02 00  4/1    9 Chinese - Numbers
+058 03 03 00  4/1    9 Chinese - variant of ISO 646
+058 04 04 00  4/1    9 Chinese - Hiragana characters
+058 05 05 00  4/1    9 Chinese - Katakana characters
+058 06 06 00  4/1    2 Chinese - Greek characters
+058 07 07 00  4/1    3 Chinese - Cyrillic characters
+058 08 08 00  4/1   94 Chinese - Phonetic characters
+058 09 09 00  4/1    9 Chinese - Graphics, part 2
+058 16 87 00  4/1    9 Chinese - Chinese characters
+059 00 00 94  5/15   4 Arabic character set CODAR-U
+060 00 00 94  6/0    1 Norwegian Graphics, version 1
+068 00 00 94  6/5    1 APL character set for Workspace interchange
+069 00 00 94  6/6    1 Revised French Graphics
+070 00 00 94  6/2   96 Supplementary Set for Videotex, CCITT
+071 00 00 94  6/3   96 Second Supplementary Set for Videotex (Mosaic), CCITT
+072 00 00 94  6/4   96 Third Supplementary Set for Videotex (Mosaic), CCITT
+081 01 01 00  4/2    7 Japanese - General Graphics, part 1
+081 02 02 00  4/2    7 Japanese - General Graphics, part 2
+081 03 03 00  4/2    1 Japanese - Roman alphabet and digits
+081 04 04 00  4/2    8 Japanese - Hiragana characters
+081 05 05 00  4/2    7 Japanese - Katakana characters
+081 06 06 00  4/2    2 Japanese - Greek characters
+081 07 07 00  4/2    3 Japanese - Cyrillic characters
+081 16 83 00  4/2    6 Japanese - Kanji characters
+084 00 00 94  6/7    1 ISO 646, Version for Portuguese, ECMA (IBM)
+085 00 00 94  6/8    1 ISO 646, Version for Spanish Languages, ECMA (IBM)
+086 00 00 94  6/9    1 ISO 646, Hungarian Version Hungarian Standard 7795/3
+089 00 00 94  6/11   4 7-bit Arabic Code for Information Interchange, AS ASMO-449, ISO
+090 00 00 94  6/12   1 Supplementary Set for Use with Registration No. 2
+091 00 00 94  6/13  95 Japanese OCR-A Graphic Set JIS C6229-1984
+092 00 00 94  6/14  95 Japanese OCR-B Graphic Set JIS C6229-1984
+093 00 00 94  6/15  95 Japanese OCR-B, Additional Graphic Set JIS C6229-1984
+094 00 00 94  7/0   95 Japanese Basic Hand-printed Graphic Set for OCR JIS C6229-1984
+095 00 00 94  7/1   95 Japanese Additional Hand-printed Graphic Character Set for OCR
+096 00 00 94  7/2   95 Katakana Hand-printed Graphic Character Set for OCR
+098 00 00 94  7/3    1 E13B Graphic Character Set
+100 00 00 96  4/1    1 Right-hand Part of Latin Alphabet No. 1, ISO 8859/1, ECMA-94
+101 00 00 96  4/2    1 Right-hand Part of Latin Alphabet No. 2, ISO 8859/2, ECMA-94
+102 00 00 94  7/5   96 Teletex Primary Set of Graphic Characters CCITT Rec T.61
+103 00 00 94  7/6   96 Teletex Supplementary Set of Graphic Characters CCITT Rec T.61
+109 00 00 96  4/3    1 Right-hand Part of Latin Alphabet No. 3, ISO 8859/3, ECMA-94
+110 00 00 96  4/4    1 Right-hand Part of Latin Alphabet No. 4, ISO 8859/4, ECMA-94
+111 00 00 96  4/0    3 Right-hand Part of Latin/Cyrillic Alphabet ECMA-113 (June 1986)
+121 00 00 94  7/7    1 Alternate Primary Graphic Set No. 1 CSA Z 243.4-1985
+122 00 00 94  7/8    1 Alternate Primary Graphic Set No. 2 CSA Z 243.4-1985
+123 00 00 96  4/5    1 General Purpose Supplementary Graphic Set CSA Z 243.4-1985
+125 00 00 96  4/6    2 Right-hand Part of Latin/Greek Alphabet ELOT 928, ECMA-118, ISO DIS 8859/7
+127 00 00 96  4/7    4 Right-hand Part of Latin/Arabic Alphabet ECMA-114, ISO 8859/6
+128 00 00 94  7/12  96 Supplementary Set of Graphic Characters Data Syntax III
+129 00 00 96  7/13  96 Supplementary Set of Mosaic Characters for CCITT Rec. 101, Data Syntax III
+137 00 00 94  7/9   96 Mosaic-1 Set of Data Syntax I
+138 00 00 96  4/8    5 Latin/Hebrew Alphabet ECMA-121
+139 00 00 96  4/9    1 Right-hand Part for Czechoslovak Standard CSN 369103

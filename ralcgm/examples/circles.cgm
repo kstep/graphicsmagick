@@ -1,0 +1,287 @@
+BEGMF 'CIRCLE AND GDP TEST';
+MFVERSION 1;
+MFELEMLIST 'DRAWINGPLUS';
+vdctype REAL;
+BEGMFDEFAULTS;
+ vdcrealprec -1000.0, 1000.0, 4;
+ vdcext (0.0, 0.0) (100.0, 100.0) ;
+ clip OFF;
+ edgevis OFF;
+ edgetype 1;
+ENDMFDEFAULTS;
+BEGPIC 'CIRLES  1 ';
+ BEG_PIC_BODY ;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 1 ;
+  GDP -1 1,0 1,0 1,1  20.0 83.66   25.0 75.0   20.0 66.34 '';
+  GDP -2 1,0 1,0 1,1      55.0 83.66   60.0 75.0   55.0 66.34 '';
+  GDP -3 1,0 1,0 1,1        90.0 83.66   95.0 75.0   90.0 66.34 '';
+  ARC3PT        20.0 33.66   25.0 25.0   20.0 16.34;
+  ARC3PTCLOSE   55.0 33.66   60.0 25.0   55.0 16.34   PIE;
+  ARC3PTCLOSE   90.0 33.66   95.0 25.0   90.0 16.34   CHORD;
+ ENDPIC;
+BEGPIC 'CIRLES  2 ';
+ BEG_PIC_BODY ;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 1 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES  3 ';
+ BEG_PIC_BODY ;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 2 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES  4 ';
+ BEG_PIC_BODY ;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 3 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES  5 ';
+vdcext (0.0, 100.0) (100.0, 0.0) ;
+ BEG_PIC_BODY ;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 4 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES  6 ';
+vdcext (100.0, 0.0) (0.0, 100.0) ;
+ BEG_PIC_BODY ;
+ edgevis ON;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 5 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES  7 ';
+vdcext (100.0, 100.0) (0.0, 0.0) ;
+ BEG_PIC_BODY ;
+ edgevis ON;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 6 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES  8 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 2;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 3 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES  9 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 3;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle PAT;
+  patindex 1 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES 10 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 4;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle SOLID;
+  patindex 1 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES 11 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  edgetype 5;
+  edgewidth 3.0;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HOLLOW;
+  patindex 1 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES 12 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  linetype 5 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle EMPTY;
+  patindex 1 ;
+  ARCCTR        15.0 75.0     5.0 8.66    5.0 -8.66  10.0;
+  ARCCTRCLOSE   50.0 75.0     5.0 8.66    5.0 -8.66  10.0 PIE;
+  ARCCTRCLOSE   85.0 75.0     5.0 8.66    5.0 -8.66  10.0  CHORD;
+  GDP -4 1,0 1,0 1,1     25.0 25.0    15.0 25.0   '';
+  CIRCLE        50.0 25.0    10.0  ;
+  RECT          75.0 15.0    95.0 25.0 ;
+ ENDPIC;
+BEGPIC 'CIRLES 13 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  transparency ON;
+  linetype 1 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 1 ;
+  ARCCTRCLOSE   50.0 50.0    20.0 20.0   -20.0 -20.0   10.0 PIE;
+ ENDPIC;
+BEGPIC 'CIRLES 14 ';
+ BEG_PIC_BODY ;
+ edgevis ON;
+  transparency OFF;
+  linetype 1 ;
+  LINE (1.0  1.0)  (1.0 99.0) (99.0 99.0)
+       (99.0 1.0)  (1.0  1.0)  ;
+  linetype 4 ;
+  DISJTLINE  1.0 49.0 99.0 49.0
+            33.6  1.0 33.6 99.0
+            66.4  1.0 66.4 99.0 ;
+  linetype 1 ;
+  intstyle HATCH;
+  hatchindex 1 ;
+  ARCCTRCLOSE   50.0 50.0    20.0 20.0   -20.0 -20.0   10.0 PIE;
+ ENDPIC;
+ENDMF;

@@ -1,0 +1,16 @@
+0000 0000 0000 1 5 5 1 0.0.0    1 Hardware
+0101 0004 1947 1 5 5 1 5.1.2    1 Hershey Simplex
+0102 0004 1947 1 6 5 1 5.1.2    1 Hershey Duplex
+0103 0004 1947 1 5 5 2 5.1.2    2 Hershey Simplex Greek
+0104 0004 1947 1 5 5 1 4.1.2    1 Hershey Complex
+0105 0004 1947 2 5 5 1 4.1.2    1 Hershey Complex Italic
+0106 0004 1947 1 7 5 1 4.1.2    1 Hershey Triplex
+0107 0004 1947 2 7 5 1 4.1.2    1 Hershey Triplex Italic
+0108 0004 1947 1 5 5 1 4.1.2    2 Hershey Complex Greek
+0109 0004 1947 1 5 5 1 4.1.2   93 Hershey Complex Maths
+0110 0004 1947 1 5 5 1 6.1.3    1 Hershey Simplex Script
+0111 0004 1947 1 5 5 1 6.1.1    1 Hershey Complex Script
+0112 0004 1947 1 5 5 1 4.1.2    3 Hershey Complex Cyrillic
+0113 0004 1947 1 5 5 1 3.1.2    1 Hershey English Gothic
+0114 0004 1947 1 5 5 1 3.1.2    1 Hershey German Gothic
+0115 0004 1947 1 5 5 1 3.2.2    1 Hershey Italian Gothic

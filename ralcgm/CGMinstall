@@ -1,0 +1,794 @@
+#! /bin/sh
+#
+#  CGMinstall/CGMconfig
+#
+#  (C) COPYRIGHT SERC  1990
+#
+#---------------------------------------------------------------------
+#
+#  RAL-CGM SYSTEM %(#) CGMinstall  version 2.10
+#
+#  Type of routine:    utility shell script
+#  Author:             PLP
+#
+#  PURPOSE OF THE ROUTINE:
+#  -----------------------
+#  Installs RAL-CGM after enquiring about the desired configuration.
+#
+#  MAINTENANCE LOG:
+#  ----------------
+#  09/10/90  PLP  Created.
+#  16/10/90  PLP  Stabilised.
+#  24/10/90  PLP  Corrected handling of X Windows parameters.
+#  08/11/90  CDO  Corrected settings for Topaz.
+#  09/11/90  PLP  Sorted out 4.2 and System V echo differences. Fixed
+#                 the X11 libraries problem.
+#  09/11/90  PLP  Added editing of the TXTSYS macro, to allow for the
+#                 Bezier and Hershey build.
+#  09/11/90  PLP  Simplified the check/change section, commented out the
+#                 original one.
+#  28/11/90  RTP  Add chmod commands for data files
+#                 change localcc to compile and add datadir to Makebase
+#                 Remove COPT CDEBUG and CPROF combine in CFLAGS
+#  21/03/91  RTP  remove trailing '/' from $datadir but include in make
+#  22/03/91  RTP  Add cgmprof.o to $randutil
+#  31/05/91  RTP  Combine with CGMconfig
+#                 Add variable $command for command name
+#  26/07/91  CDS  Add proccess number onto temporary file names, for
+#                 uniqness.
+#  22/08/91  CDS  Changed to move more dependancies to makefiles, and
+#                 to improve makefile dependancies.
+#  11/09/91  CDS  Added query for number of fonts supported by PS
+#                 systems.
+#  17/09/91  CDS  Added bits to allow scipt to install binary and data into
+#                 user specified directories.
+#  19/09/91  CDS  Changed cray entries (requested by RTP)
+#  25/09/91  CDS  Added checks to see if pathnames entered exist, and create
+#                 them if they don't.
+#  27/09/91  CDS  Add section to check if it is possible to run the Makefile
+#                 If it isn't tell the user, and give them the command to run
+#                 when they have taken the neccassary action.
+#
+#  12/12/91  RTP  Add Iris4D options
+#  15/01/92  WTH  Add support for HP-UX Version 8
+#  20/07/92  CDS  Add DECstation into list of suppored systems.
+#  20/07/92  CDS  Add check for existence of mc_$(system) file
+#  20/07/92  CDS  Moved checks which can checked before user input to
+#                 top of script.
+#   4/08/92  RTP  Add RS600, Indigo and reorganise list
+#  29/10/92  RTP  Add HPGL and Tektronix drivers
+#  20/09/93  CDS  Add ALPHA OSF1
+#  21/09/93  CDS  Added note about including hershey/bexier for hpgl driver
+#  19/04/94  RTP  Remove Crayscc and -lnet references
+#
+#
+#  ARGUMENTS:
+#  ----------
+#  CGMinstall has one argument - system on which RAL-CGM is to be installed.
+#  This should be one of {sun3|sun4
+#                         |cray|craypcc
+#                         |iris|iris4d|indigo
+#                         |rs6000
+#                         |hpux
+#                         |ultrix
+#                         |decosf
+#                         |topaz}.
+#
+#  ALGORITHM:
+#  ----------
+#  Depending on the first argument and results of the interactive session,
+#  values for the following RAL-CGM src/Makebase macros are set on the
+#  make command line:
+#  MODULE
+#  LIB
+#  DATADIR
+#  MAIN
+#  CGMLIB
+#  DRIVERS
+#  TXTSYS
+#  CFLAGS
+#  COMPILE
+#  XLIB
+#  LFLAGS
+#  LINK
+#  AR
+#
+#  COMMENTS:
+#  ---------
+#  CGMinstall performs the build of the desired configuration. Theoretically,
+#  it should only be used when performing the first installation on your
+#  system. Developers should use CGMconfig.
+#
+#---------------------------------------------------------------------
+
+#
+# Check whether called correctly:
+#
+
+command=`basename $0`
+if test $# -lt 1 ; then
+   echo; echo usage: ${command} system
+   echo; exit
+fi
+
+systems='sun3|sun4|cray|craypcc|iris|iris4d|indigo|rs6000|hpux|ultrix|decosf|topaz'
+
+#
+# Set the echo options - check the system.
+#
+case $1 in
+sun3|sun4|iris|ultrix|dec|rs6000)
+#  Berkely echo format
+                el="-n"
+                er=""
+                ;;
+cray|craypcc|topaz|hpux|iris4d|indigo|decosf)
+#  System V echo format
+                el=""
+                er='\c'
+                ;;
+*)
+      echo; echo Error: unrecognized system type $1. System should be one of -
+      echo "{${systems}}"
+      echo ${command} exits.
+      echo; exit
+      ;;
+esac
+
+#
+# Initialise global variables.
+#
+compile="cc"
+link="cc"
+ar="ar rv"
+outflag=no
+attflag=no
+gdpflag=no
+filflag=no
+toplevel=`pwd`
+separate_lib="no"
+postscript="no"
+xw="no"
+hpgl="no"
+tek="no"
+bezier="no"
+hershey="no"
+toplevel=`pwd`
+data=$toplevel'/data'
+src=$toplevel'/src'
+include=$toplevel'/include'
+makeit="yes"
+
+#
+#  Define the default configuration (just the translator).
+#
+makefile=Makefile
+xlib=""
+drivers=""
+targets=ralcgm
+
+#
+# Define system dependent options
+#
+case $1 in
+sun3)
+      system=sun
+      cflags="-c -O -fswitch"
+      xw="yes"
+      xlib="-lX11 -lc"
+      lflags="-lm"
+      ;;
+sun4)
+      system=sun
+      cflags="-c -O"
+      xw="yes"
+      xlib="-lX11 -lc"
+      lflags="-lm"
+      ;;
+ultrix|dec)
+      system=ultrix
+      cflags="-c -O"
+      xw="yes"
+      xlib="-lX11 -lc"
+      lflags="-lm"
+      ;;
+decosf)
+      system=decosf
+      cflags="-c -O -Olimit 1000"
+      xw="yes"
+      xlib="-lX11 -lc"
+      lflags="-lm"
+      ;;
+hpux)
+      system=hpux
+      cflags="-c -O"
+      xw="yes"
+      xlib="-lX11 -lc"
+      lflags="-lm"
+      ;;
+iris)
+      system=iris
+      drivers=${drivers}" $(IGL)"
+      cflags="-c -Zf"
+      lflags="-Zg -lm"
+      outflag=yes
+      gdpflag=yes
+      filflag=yes
+      ;;
+indigo)
+      system=indigo
+      drivers=${drivers}" $(IGL)"
+      xw="yes"
+      xlib="-lX11_s"
+      cflags="-c -g"
+      lflags="-lgl_s -lm"
+      outflag=yes
+      gdpflag=yes
+      filflag=yes
+      ;;
+iris4d)
+      system=iris
+      drivers=${drivers}" $(IGL)"
+      xw="yes"
+      xlib="-lX11_s"
+      cflags="-c -g"
+      lflags="-lgl_s -lm"
+      outflag=yes
+      gdpflag=yes
+      filflag=yes
+      ;;
+rs6000)
+       system=rs6000
+       cflags="-c -O"
+       xw="yes"
+       xlib="-lX11 -lc"
+       lflags="-lm"
+      ;;
+cray)
+      system=cray
+      cflags="-c -O"
+      xw="yes"
+      xlib="-lX11"
+      compile="cc"
+      lflags="-lm"
+      link="segldr"
+      ar="bld rv"
+      ;;
+craypcc)
+      system=cray
+      cflags="-c -O"
+      xw="yes"
+      xlib="-lX11 -lnet"
+      compile="pcc"
+      lflags="-lm -lc"
+      link="segldr"
+      ar="bld rv"
+      ;;
+topaz)
+      system=topaz
+      cflags="-c -O -m68881"
+      lflags="-lE -lmalloc -lm"
+      ;;
+esac
+
+#
+#Perform initial checks to see that system can be built
+#
+
+# Delete temporaries that may have been laying around.
+rm -f tmp0.$$ tmp1.$$
+
+# Report if no mc_system for this system type
+if [ -r include/mc_$system.h ]
+then
+#  Do not change the original mc_system.h, use temporaries.
+   cp include/mc_$system.h tmp0.$$
+else
+   echo; echo "System include file for this type of system ($system)"
+   echo can not be read or is missing.
+   echo; echo ${command} quits - please correct and restart.
+   echo
+   exit
+fi
+
+#
+# Prompt the user to enter the RAL-CGM binary directory
+#
+echo; echo Please enter the binary directory pathname
+echo $el '(defaults to bin in current directory): '$er
+read binary
+if test "$binary" = ""; then binary=$toplevel'/bin'; fi
+
+if [ `dirname $binary` = "." ]; then binary=$toplevel'/'$binary; fi
+
+if [ ! -d $binary ]
+then
+#
+# Try to create the directory, if fail then report, and mark so as not to make
+#
+  echo Directory $binary does not exist attempting to  create it
+  mkdir $binary
+  if [ ! -d $binary ]
+  then
+    echo Could not create $binary will not run Makefile
+    echo Create directory manualy the proceed as reported
+    echo
+    makeit="no"
+  fi
+fi
+
+module=$binary'/ralcgm'
+
+#
+# Prompt for each option and make arrangements - library first.
+#
+echo; echo Do you wish to have a separate callable library?
+echo $el '(answer "y" or "n" - defaults to no): '$er
+read a
+if test "$a" = "y" -o "$a" = "Y"
+then
+   targets=${targets}" cgmlib"
+   separate_lib=yes
+
+#
+# Prompt the user to enter the RAL-CGM library directory
+#
+   echo; echo Please enter the library directory pathname
+   echo $el '(defaults to bin in current directory): '$er
+   read library
+   if test "$library" = ""; then library=$toplevel'/bin'; fi
+
+   if [ `dirname $library` = "." ]; then library=$toplevel'/'$library; fi
+
+   if [ ! -d $library ]
+   then
+#
+# Try to create the directory, if fail then report, and mark so as not to make
+#
+     echo Directory $library does not exist attempting to  create it
+     mkdir $library
+     if [ ! -d $library ]
+     then
+       echo Could not create $library will not run Makefile
+    echo Create directory manualy the proceed as reported
+    echo
+       makeit="no"
+     fi
+   fi
+
+   lib=$library'/libcgm.a'
+
+else
+   lib=$binary'/libcgm.a'
+fi
+
+#
+# Prompt the user to enter the RAL-CGM data directory
+#
+echo; echo Please enter pathname for directory in which to install data
+echo $el '(defaults to data in current directory): '$er
+read datadir
+if test "$datadir" = ""; then datadir=$toplevel'/data'; fi
+
+if [ `dirname $datadir` = "." ]; then datadir=$toplevel'/'$datadir; fi
+
+if [ ! -d $datadir ]
+then
+#
+# Try to create the directory, if fail then report, and mark so as not to make
+#
+  echo Directory $datadir does not exist attempting to  create it
+  mkdir $datadir
+  if [ ! -d $datadir ]
+  then
+    echo Could not create $datadir
+    echo Create directory manualy the proceed as reported
+    echo
+    makeit="no"
+  fi
+fi
+
+#
+# Source data directory.
+#
+echo; echo Please enter pathname for directory holding source data
+echo $el '(defaults to data in current directory): '$er
+read datasrcdir
+if test "$datasrcdir" = ""; then datasrcdir=$toplevel'/data'; fi
+
+if [ `dirname $datasrcdir` = "." ]; then datasrcdir=$toplevel'/'$datasrcdir; fi
+
+if [ ! -d $datasrcdir ]
+then
+   echo Warning: $datasrcdir does not exist. ${command} continues.
+   makeit="no"
+fi
+
+#
+# PostScript.
+#
+echo; echo Do you wish to include PostScript?
+echo $el  '(answer "y" or "n" - defaults to no): '$er
+read a
+if test "$a" = "y" -o "$a" = "Y"
+then
+   postscript=yes
+   cflags=${cflags}' -DPOSTSCRIPT=""'
+   sed "/^#undef POSTSCRIPT/d" <tmp0.$$ >tmp1.$$
+   drivers=${drivers}' $(PS)'
+
+   outflag=yes
+   gdpflag=yes
+   ptsflag=yes
+   filflag=yes
+
+   echo; echo Do you wish to include the extended 35 font set?
+   echo $el '(answer "y" or "n" - defaults to no ie 13 font set): '$er
+   read a
+
+   rm -f $datadir/m_ps.fnt
+
+   if test "$a" = "y" -o "$a" = "Y"
+   then
+     cp $datasrcdir'/m_ps35.fnt' $datadir'/m_ps.fnt'
+   else
+     cp $datasrcdir'/m_ps13.fnt' $datadir'/m_ps.fnt'
+   fi
+else
+   sed "/^#define POSTSCRIPT/d
+/^#undef POSTSCRIPT/d" <tmp0.$$ >tmp1.$$
+fi
+
+if [ -f tmp1.$$ ]
+then
+   mv -f tmp1.$$ tmp0.$$
+fi
+
+if test "$xw" = "yes"
+then
+#
+# if X is available - find out where is it installed.
+#
+   echo; echo Do you wish to include X?
+   echo $el  '(answer "y" or "n" - defaults to no): '$er
+
+   read a
+   if test "$a" = "y" -o "$a" = "Y"
+   then
+      cflags=${cflags}' -DXW=""'
+      sed "/^#undef XW/d" <tmp0.$$ >tmp1.$$
+      mv -f tmp1.$$ tmp0.$$
+      drivers=${drivers}' $(XW)'
+      outflag=yes
+      gdpflag=yes
+      echo; echo Are the X11 include files kept under /usr/include/X11?
+      echo $el  '(answer "y" or "n" - defaults to yes): '$er
+      read a
+      if test "$a" = "n" -o "$a" = "N"
+      then
+         echo $el 'Enter the correct destination: '$er
+         read a; aa=`echo $a |sed 's!/X11$!!'`
+         if [ ! -d $aa ]
+         then
+            echo; echo Error: $aa does not exist. ${command} exits.
+            echo
+         fi
+         sed "/<X11/{
+s!<!\"!
+s!>!\"!
+}" <tmp0.$$ >tmp1.$$
+         cflags=${cflags}" -I$aa"
+      fi
+      echo; echo Is the X11 library kept under /usr/lib?
+      echo  $el  '(answer "y" or "n" - defaults to yes): '$er
+      read a
+      if test "$a" = "n" -o "$a" = "N"
+      then
+         echo $el 'Enter the correct destination: '$er
+         read a; aa=`echo $a |sed 's!/$!!'`
+         if [ ! -d $aa ]
+         then
+            echo; echo Error: $aa does not exist. ${command} exits.
+            echo
+         fi
+         lflags=${lflags}" -L$aa"
+      fi
+      lflags=${lflags}" $xlib"
+   else
+      xw="no"
+      sed "/^#define XW/d
+/^#undef XW/d" <tmp0.$$ >tmp1.$$
+   fi
+fi
+
+if [ -f tmp1.$$ ]
+then
+   mv -f tmp1.$$ tmp0.$$
+fi
+
+
+#
+# HPGL.
+#
+echo; echo Do you wish to include HPGL?
+echo $el '(answer "y" or "n" - defaults to no): '$er
+read a
+if test "$a" = "y" -o "$a" = "Y"
+then
+   hpgl=yes
+   cflags=${cflags}' -DHPGL=""'
+   sed "/^#undef HPGL/d" <tmp0.$$ >tmp1.$$
+   drivers=${drivers}' $(HPGL)'
+
+   outflag=yes
+   gdpflag=yes
+   colrflag=yes
+   echo; echo You must now include either the hershey or the bezier font systems.
+
+else
+   sed "/^#define HPGL/d
+/^#undef HPGL/d" <tmp0.$$ >tmp1.$$
+fi
+
+if [ -f tmp1.$$ ]
+then
+   mv -f tmp1.$$ tmp0.$$
+fi
+
+#
+# Tektronix 4200.
+#
+echo; echo Do you wish to include Tektronix 4200?
+echo $el '(answer "y" or "n" - defaults to no): '$er
+read a
+if test "$a" = "y" -o "$a" = "Y"
+then
+   tek=yes
+   cflags=${cflags}' -DTEK4200=""'
+   sed "/^#undef TEK4200/d" <tmp0.$$ >tmp1.$$
+   drivers=${drivers}' $(TEK)'
+
+   outflag=yes
+   gdpflag=yes
+   colrflag=yes
+   cellflag=yes
+   ptsflag=yes
+
+else
+   sed "/^#define TEK4200/d
+/^#undef TEK4200/d" <tmp0.$$ >tmp1.$$
+fi
+
+#
+# Bezier and Hershey - only if an output driver has been specified.
+#
+if test "$outflag" = yes
+then
+   echo; echo Do you wish to include Bezier fonts?
+   echo $el '(answer "y" or "n" - defaults to no): '$er
+   read a
+   if test "$a" = "y" -o "$a" = "Y"
+   then
+      bezier=yes
+      txtsys='$(BEZIER)'
+      txtutils=${txtutils}' $(BEZUTILS)'
+      cflags=${cflags}' -DBEZIER=""'
+      sed "/^#undef BEZIER/d" <tmp0.$$ >tmp1.$$
+   else
+      sed "/^#define BEZIER/d
+/^#undef BEZIER/d" <tmp0.$$ >tmp1.$$
+   fi
+   mv -f tmp1.$$ tmp0.$$
+   echo; echo Do you wish to include Hershey fonts?
+   echo $el  '(answer "y" or "n" - defaults to no): '$er
+   read a
+   if test "$a" = "y" -o "$a" = "Y"
+   then
+      hershey=yes
+      txtsys=${txtsys}' $(HERSHEY)'
+      txtutils=${txtutils}' $(HERUTILS)'
+      cflags=${cflags}' -DHERSHEY=""'
+      sed "/^#undef HERSHEY/d" <tmp0.$$ >tmp1.$$
+   else
+      sed "/^#define HERSHEY/d
+/^#undef HERSHEY/d" <tmp0.$$ >tmp1.$$
+   fi
+fi
+
+if [ -f tmp1.$$ ]
+then
+   mv -f tmp1.$$ tmp0.$$
+fi
+
+sed "/^#define DATADIR/s!\".*\"!\"$datadir/\"!"<tmp0.$$ >tmp1.$$
+
+#
+# Give user a chance to check & change.
+#
+
+# List the entered selections.
+echo; echo Your selections are as follows:
+echo
+for i in binary library datadir separate_lib postscript xw hpgl tek\
+         bezier hershey datasrcdir module lib
+do
+    echo `echo $i`=`eval echo '$'$i`
+done
+
+# Is the user happy?
+echo; echo Do you wish to install with these settings?
+echo $el  '(answer "y" or "n" - defaults to yes): '$er
+read a
+if test "$a" = "n" -o "$a" = "N"
+then
+   echo; echo ${command} quits - please restart.
+   echo
+   rm -f tmp0.$$ tmp1.$$
+   exit
+fi
+
+#
+# The following section does the same as the above but at a deeper level.
+# Use when debugging.
+#
+#echo; echo Do you wish to check/change the settings?
+#echo $el  '(answer "y" or "n" - defaults to no): '$er
+#read a
+#if test "$a" = "y" -o "$a" = "Y"
+#then
+#   echo; echo '(answer "y" or "n" - defaults to yes): '
+#
+#   for i in toplevel module lib src include datadir main makefile input \
+#                     output cgmlib drivers ranutils inputils genutils \
+#                     oututils txtutils txtsys cflags \
+#                     compile lflags link ar
+#   do
+#      echo $el `echo $i`=`eval echo '$'$i`'? '$er
+#      read a
+#      if test "$a" = "n" -o "$a" = "N"
+#      then
+#         echo $el 'Enter new value: '$er
+#         read a; eval $i=\
+#'$a'; echo
+#      else
+#         continue
+#      fi
+#   done
+
+#fi
+
+#
+# Put includes in proper places.
+#
+rm tmp0.$$
+mv tmp1.$$ $include/mach.h
+
+#
+# Start configuring.
+#
+cd src
+
+echo
+echo Your desired system will now be configured.
+echo
+
+oututils="$(ATTUTILS)"
+
+if test "$gdpflag" = "yes"
+then
+   oututils=$oututils" $(GDPUTILS)"
+fi
+
+if test "$filflag" = "yes"
+then
+   oututils=$oututils" $(FILUTILS)"
+fi
+
+if test "$colrflag" = "yes"
+then
+   oututils=$oututils" $(COLRUTILS)"
+fi
+
+if test "$cellflag" = "yes"
+then
+   oututils=$oututils" $(CELLUTILS)"
+fi
+
+if test "$ptsflag" = "yes"
+then
+   oututils=$oututils" $(PTSUTILS)"
+fi
+
+sed "/^MODULE =/s!=.*\$!= $module!
+/^LIB =/s!=.*\$!= $lib!
+/^INCLUDE =/s!=.*\$!= $include!
+/^DATADIR =/s!=.*\$!= $datadir!
+/^MAKEFILE =/s!=.*\$!= $makefile!
+/^DRIVERS =/s!=.*\$!= $drivers!
+/^OUTUTILS =/s!=.*\$!= $oututils!
+/^TXTUTILS =/s!=.*\$!= $txtutils!
+/^TXTSYS =/s!=.*\$!= $txtsys!
+/^CFLAGS =/s!=.*\$!= $cflags!
+/^COMPILE =/s!=.*\$!= $compile!
+/^LFLAGS =/s!=.*\$!= $lflags!
+/^LINK =/s!=.*\$!= $link!
+/^AR =/s!=.*\$!= $ar!" <Makebase >Makefile
+
+#
+# Inform of outcome.
+#
+if [ $? != 0 ]
+then
+   echo; echo Configuration not completed.
+   echo; cd ..
+   exit
+else
+   echo; echo The new makefile is src/$makefile.
+fi
+
+if [ "${command}" = "CGMinstall" -a "$makeit" = "yes" ]
+then
+#
+# Start building.
+#
+   cd $src
+
+   echo
+   echo your desired system will now be built.
+   echo
+
+#  First copy all of the data files to the final data directory.
+   if [ "$datadir" !=  "$datasrcdir" ]
+   then
+     echo Copying data files, this may take a while
+     echo
+     eval cp $datasrcdir'/*' $datadir
+   fi
+
+#  Now start the make from our edited makefile (Makefile)
+   make -f $makefile $targets
+
+#
+# Inform of outcome.
+#
+   if [ $? != 0 ]
+   then
+      echo; echo Build not completed.
+      echo; cd $toplevel
+      exit
+   fi
+
+   echo; echo The binary module is $module.
+   if [ "$cgmlib" != "" ]; then echo The library is $lib. ;fi
+
+#
+#  Remove data files that are not needed at runtime
+#
+   if [ "$datadir" !=  "$datasrcdir" ]
+   then
+     echo Removing unwanted source data files from data install directory.
+     echo
+     eval rm -f $datadir/*.hfs $datadir/*.bfs
+   fi
+
+#
+#  Make sure permissions on data files are OK
+#
+   chmod 644 ${datadir}/*.fnt ${datadir}/*.afm ${datadir}/*.ps*
+
+fi
+
+if [ "${command}" = "CGMinstall" -a "$makeit" != "yes" ]
+then
+   echo; echo Makefile can not be run for reasons reported
+   echo When corrections have been made the makefile may be run by issuing
+   echo; echo make -f $makefile $targets
+   echo; echo while in the src  directory for RALCGM.
+fi
+
+
+#
+# Return.
+#
+echo; cd $toplevel
+exit

@@ -1,0 +1,334 @@
+BEGMF 'test';
+ mfversion 1;
+ mfelemlist 'drawingplus';
+ mfdesc 'All PostScript Alphabets';
+ vdctype real;
+ fontlist 'Times-Roman', 'Times-Bold',
+          'Times-Italic', 'Times-BoldItalic',
+          'Helvetica', 'Helvetica-Bold',
+          'Helvetica-Oblique', 'Helvetica-BoldOblique',
+          'Courier', 'Courier-Bold',
+          'Courier-Oblique', 'Courier-BoldOblique',
+          'Symbol',
+          'AvantGarde-Book', 'AvantGarde-BookOblique',
+          'AvantGarde-Demi', 'AvantGarde-DemiOblique',
+          'Bookman-Demi', 'Bookman-DemiItalic',
+          'Bookman-light', 'Bookman-lightItalic',
+          'Helvetica-Narrow', 'Helvetica-Narrow-Bold',
+          'Helvetica-Narrow-BoldOblique', 'Helvetica-Narrow-Oblique',
+          'NewCenturySchlbk-Roman', 'NewCenturySchlbk-Italic',
+          'NewCenturySchlbk-Bold', 'NewCenturySchlbk-BoldItalic',
+          'Palatino-Roman', 'Palatino-Italic',
+          'Palatino-Bold', 'Palatino-BoldItalic',
+          'ZapfDingbats', 'ZapfChancery-MediumItalic';
+ BEGMFDEFAULTS;
+   asf all indiv;
+   vdcext (0,0) (210,297);
+   charheight 5;
+   textprec stroke;
+ ENDMFDEFAULTS;
+ 
+ BEGPIC 'PostScript 1-8';
+ BEGPICBODY;
+  textfontindex 1;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,290) final 'Linotype Times Roman';
+  textalign left base 0.0 0.0;
+  TEXT (10,282) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,274) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,266) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 2;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,256) final 'Linotype Times Roman Bold';
+  textalign left base 0.0 0.0;
+  TEXT (10,248) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,240) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,232) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 3;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,222) final 'Linotype Times Roman Italic';
+  textalign left base 0.0 0.0;
+  TEXT (10,214) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,206) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,198) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 4;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,188) final 'Linotype Times Roman Bold Italic';
+  textalign left base 0.0 0.0;
+  TEXT (10,180) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,172) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,164) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 5;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,148) final 'Linotype Helvetica';
+  textalign left base 0.0 0.0;
+  TEXT (10,140) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,132) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,124) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 6;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,114) final 'Linotype Helvetica Bold';
+  textalign left base 0.0 0.0;
+  TEXT (10,106) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,98)  final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,90)  final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 7;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,80)  final 'Linotype Helvetica Oblique';
+  textalign left base 0.0 0.0;
+  TEXT (10,72)  final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,64)  final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,56)  final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 8;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,46)  final 'Linotype Helvetica Bold Oblique';
+  textalign left base 0.0 0.0;
+  TEXT (10,38)  final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,30)  final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,22)  final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+ ENDPIC;
+ 
+ BEGPIC 'PostScript 9-13';
+ BEGPICBODY;
+  textfontindex 9;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,290) final 'Linotype Courier';
+  textalign left base 0.0 0.0;
+  TEXT (10,282) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,274) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,266) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 10;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,256) final 'Linotype Courier Bold';
+  textalign left base 0.0 0.0;
+  TEXT (10,248) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,240) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,232) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 11;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,222) final 'Linotype Courier Oblique';
+  textalign left base 0.0 0.0;
+  TEXT (10,214) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,206) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,198) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 12;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,188) final 'Linotype Courier Bold Oblique';
+  textalign left base 0.0 0.0;
+  TEXT (10,180) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,172) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,164) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 1;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,148) final 'Symbol';
+  textfontindex 13;
+  textalign left base 0.0 0.0;
+  TEXT (10,140) final ' !"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,132) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,124) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+ ENDPIC;
+ 
+ BEGPIC 'PostScript 14-21';
+ BEGPICBODY;
+  textfontindex 14;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,290) final 'ATC Avant Garde Gothic Book';
+  textalign left base 0.0 0.0;
+  TEXT (10,282) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,274) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,266) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 15;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,256) final 'ATC Avant Garde Gothic Book Oblique';
+  textalign left base 0.0 0.0;
+  TEXT (10,248) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,240) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,232) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 16;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,222) final 'ATC Avant Garde Gothic Demi';
+  textalign left base 0.0 0.0;
+  TEXT (10,214) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,206) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,198) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 17;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,188) final 'ATC Avant Garde Gothic Demi Oblique';
+  textalign left base 0.0 0.0;
+  TEXT (10,180) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,172) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,164) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 18;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,148) final 'ATC Bookman Demi';
+  textalign left base 0.0 0.0;
+  TEXT (10,140) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,132) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,124) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 19;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,114) final 'ATC Bookman Demi Italic';
+  textalign left base 0.0 0.0;
+  TEXT (10,106) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,98)  final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,90)  final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 20;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,80)  final 'ATC Bookman Light';
+  textalign left base 0.0 0.0;
+  TEXT (10,72)  final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,64)  final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,56)  final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 21;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,46)  final 'ATC Bookman Light Italic';
+  textalign left base 0.0 0.0;
+  TEXT (10,38)  final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,30)  final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,22)  final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+ ENDPIC;
+ 
+ BEGPIC 'PostScript 22-29';
+ BEGPICBODY;
+  textfontindex 22;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,290) final 'Linotype Helvetica Narrow';
+  textalign left base 0.0 0.0;
+  TEXT (10,282) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,274) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,266) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 23;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,256) final 'Linotype Helvetica Narrow Bold';
+  textalign left base 0.0 0.0;
+  TEXT (10,248) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,240) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,232) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 24;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,222) final 'Linotype Helvetica Narrow Bold Oblique';
+  textalign left base 0.0 0.0;
+  TEXT (10,214) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,206) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,198) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 25;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,188) final 'Linotype Helvetica Narrow Oblique';
+  textalign left base 0.0 0.0;
+  TEXT (10,180) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,172) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,164) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 26;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,148) final 'New Century Schoolbook Roman';
+  textalign left base 0.0 0.0;
+  TEXT (10,140) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,132) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,124) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 27;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,114) final 'New Century Schoolbook Roman Italic';
+  textalign left base 0.0 0.0;
+  TEXT (10,106) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,98)  final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,90)  final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 28;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,80)  final 'New Century Schoolbook Bold';
+  textalign left base 0.0 0.0;
+  TEXT (10,72)  final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,64)  final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,56)  final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 29;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,46)  final 'New Century Schoolbook Bold Italic';
+  textalign left base 0.0 0.0;
+  TEXT (10,38)  final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,30)  final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,22)  final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+ ENDPIC;
+ 
+ BEGPIC 'PostScript 30-35';
+ BEGPICBODY;
+  textfontindex 30;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,290) final 'Linotype Palatino Roman';
+  textalign left base 0.0 0.0;
+  TEXT (10,282) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,274) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,266) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 31;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,256) final 'Linotype Palatino Italic';
+  textalign left base 0.0 0.0;
+  TEXT (10,248) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,240) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,232) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 32;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,222) final 'Linotype Palatino Bold';
+  textalign left base 0.0 0.0;
+  TEXT (10,214) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,206) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,198) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 33;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,188) final 'Linotype Palatino Bold Italic';
+  textalign left base 0.0 0.0;
+  TEXT (10,180) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,172) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,164) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 1;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,148) final 'ITC Zapf Dingbats';
+  textfontindex 34;
+  textalign left base 0.0 0.0;
+  TEXT (10,140) final '!"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,132) final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,124) final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+  textfontindex 1;
+  textalign ctr base 0.0 0.0;
+  TEXT (105,114) final 'ITC Zapf Chancery Medium Italic';
+  textalign left base 0.0 0.0;
+  textfontindex 35;
+  TEXT (10,106) final ' !"#$%&''()*+,-./0123456789:;<=>?@';
+  TEXT (10,98)  final 'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`';
+  TEXT (10,90)  final 'abcdefghijklmnopqrstuvwxyz{|}~';
+ 
+ ENDPIC;
+ 
+ENDMF;

@@ -1,0 +1,63 @@
+BEGMF 'MARKER TEST';
+MFVERSION 1;
+MFELEMLIST 'DRAWINGPLUS';
+vdctype REAL;
+BEGMFDEFAULTS;
+  vdcrealprec 0, 100, 4;
+  vdcext (0.0, 0.0) (100.0, 100.0) ;
+  clip OFF;
+ENDMFDEFAULTS;
+BEGPIC 'MARKS  1 ';
+ BEG_PIC_BODY ;
+  MARKER (10.0 60.0) (40.0 80.0) (70.0 60.0)
+       (10.0 40.0) (40.0 20.0) (70.0 40.0) ;
+  markertype 1 ;
+  MARKER (12.5 60.0) (42.5 80.0) (72.5 60.0)
+       (12.5 40.0) (42.5 20.0) (72.5 40.0) ;
+  markertype 2 ;
+  MARKER (15.0 60.0) (45.0 80.0) (75.0 60.0)
+       (15.0 40.0) (45.0 20.0) (75.0 40.0) ;
+  markertype 3 ;
+  MARKER (17.5 60.0) (47.5 80.0) (77.5 60.0)
+       (17.5 40.0) (47.5 20.0) (77.5 40.0) ;
+  markertype 4 ;
+  MARKER (20.0 60.0) (50.0 80.0) (80.0 60.0)
+       (20.0 40.0) (50.0 20.0) (80.0 40.0) ;
+  markertype 5 ;
+  MARKER (22.5 60.0) (52.5 80.0) (82.5 60.0)
+       (22.5 40.0) (52.5 20.0) (82.5 40.0) ;
+ ENDPIC;
+BEGPIC 'MARKS  2 ';
+ markersizemode SCALED;
+ BEG_PIC_BODY ;
+  markersize 2.0 ;
+  MARKER (10.0 60.0) (40.0 80.0) (70.0 60.0)
+       (10.0 40.0) (40.0 20.0) (70.0 40.0) ;
+  markersize 4.0 ;
+  markertype 2 ;
+  MARKER (17.5 60.0) (47.5 80.0) (77.5 60.0)
+       (17.5 40.0) (47.5 20.0) (77.5 40.0) ;
+  markersize 1.0 ;
+  markertype 3 ;
+  MARKER (25.0 60.0) (55.0 80.0) (85.0 60.0)
+       (25.0 40.0) (55.0 20.0) (85.0 40.0) ;
+  MARKERSIZE 4.0 ;
+  markertype 4 ;
+  MARKER (27.5 60.0) (57.5 80.0) (87.5 60.0)
+       (27.5 40.0) (57.5 20.0) (87.5 40.0) ;
+ ENDPIC;
+BEGPIC 'MARKS  3 ';
+ colrmode INDEXED;
+ markersizemode ABS;
+ BEG_PIC_BODY ;
+  markersize 2.0 ;
+  markercolr 1;
+  MARKER (10.0 60.0) (40.0 80.0) (70.0 60.0)
+       (10.0 40.0) (40.0 20.0) (70.0 40.0) ;
+  markersize 4.0 ;
+  markertype 2 ;
+  markercolr 2;
+  MARKER (17.5 60.0) (47.5 80.0) (77.5 60.0)
+       (17.5 40.0) (47.5 20.0) (77.5 40.0) ;
+ ENDPIC;
+ENDMF;

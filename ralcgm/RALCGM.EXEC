@@ -1,0 +1,192 @@
+/*  RALCGM EXEC to run the RAL-CGM Interpreter with CMS filenames */
+/*    Last Modified on  10 Feb 1993  at  11:53:23     */
+
+trace off
+Address CMS
+
+Parse Arg a.files '(' a.options
+
+/*  Current Version module */
+c.module = 'CGM300'
+
+/*  Change mode for testing  RAL is production mode */
+p.mode = 'RAL'
+
+n.files = words(a.files)
+n.opts = words(a.options)
+
+If n.files = 0 | n.files = '?' Then Do
+   Say 'Command Format:'
+   Say '                RALCGM ifilename {ifiletype} {ifilemode}'
+   Say '                      {ofilename} {ofiletype} {ofilemode} {( options}'
+   Say ''
+   Say '                where options is one of:'
+   Say '                        C - Character (default)'
+   Say '                        N - Character (EBCDIC)'
+   Say '                        T - Clear Text'
+   Say '                        B - Binary'
+   Say '                        D x - Output driver'
+   say '                    where x = P for Postscript or X for X-Windows'
+   Say '                        O x - Driver options'
+   Say '                plus any of the following:'
+   Say '                        E, G, V'
+   Say '                and     A xxx (X11 only'
+   Say ''
+   Say 'Type HELP RALCGM for more details of options'
+   Say ''
+   Exit
+End
+
+/* Set variables for special characters */
+p.null = ''
+p.blank = ' '
+p.dot = '.'
+p.minus = '-'
+p.more = '+'
+
+
+'STATE' c.module 'MODULE *'
+If RC ~= 0 Then Exit RC
+
+numeric digits 12
+c.st = X2D( STORAGE() )
+if c.st < 6*1024*1024 Then do
+   say "RALCGM needs a virtual machine of at least 6Mb to execute."
+   exit
+end
+
+/*  Save TXTLIB - May not be portable */
+rc = cpush('TXTLIB')
+rc = cpush('LOADLIB')
+
+'GLOBAL TXTLIB IBMLIB'
+'GLOBAL LOADLIB EDCLINK'
+
+/*  Convert CMS to Unix arguments */
+
+/* Set command defaults */
+   c.code = p.null
+   c.default = 'c'
+   c.para = p.null
+   t.prefix = p.blank||p.minus
+   d.opt = 'D'
+
+/*  Convert options */
+
+   Do i = 1 to n.opts
+      c.option = word(a.options,i)
+      If t.prefix = p.more Then Do
+         if c.code = d.opt Then Do
+            c.code = d.opt||c.option
+         End
+         Else Do
+            c.para = c.para||c.option
+         End
+         t.prefix = p.blank||p.minus
+      End
+      Else Do
+         t.opt = translate(substr(c.option,1,1))
+         t.len = length(substr(c.option,2))
+         Select
+            When (c.code = p.null) & ( t.opt = 'C' )Then Do
+               c.code = 'DCH'
+            End
+
+            When (c.code = p.null) & ,
+              ( t.opt = 'N' | t.opt = 'T' | t.opt = 'B' |,
+                t.opt = 'P' | t.opt = 'X' ) Then Do
+               c.code = 'D'||t.opt
+            End
+
+            When t.opt = 'E' | t.opt = 'L' |,
+                 t.opt = 'M' | t.opt = 'V' Then Do
+               c.para = c.para||t.prefix||t.opt
+
+               t.prefix = p.null
+            End
+
+            When t.opt = 'D' Then Do
+               If t.len > 0 Then
+                  c.code = d.opt||translate(substr(c.option,2,t.len))
+               Else Do
+                  t.prefix = p.more
+                  c.code = d.opt
+               End
+            End
+
+            When t.opt = 'O' Then Do
+               If t.len > 0 Then Do
+                  c.para = c.para||t.prefix||t.opt||,
+                           translate(substr(c.option,2,t.len))
+                  t.prefix = p.blank||p.minus
+               End
+               Else Do
+                  c.para = c.para||t.prefix||t.opt
+                  t.prefix = p.more
+               End
+            End
+
+            When t.opt = 'G' Then Do
+               c.para = c.para||t.prefix||'GRAL'
+               t.prefix = p.blank||p.minus
+            End
+
+            When t.opt = 'A' Then Do
+               If t.len > 0 Then Do
+                  c.para = c.para||t.prefix||t.opt||substr(c.option,2,t.len)
+                  t.prefix = p.blank||p.minus
+               End
+               Else Do
+                  c.para = c.para||t.prefix||t.opt
+                  t.prefix = p.more
+               End
+            End
+
+            Otherwise
+               say 'Invalid option (' t.opt ') - ignored'
+         End
+      End
+   End
+
+/* Check if Environment variable set for CGMOUTPUT */
+
+   if c.code = p.null Then Do
+      'GLOBALV SELECT CENV STACK CGMOUTPUT'
+      pull c.code
+      c.code = d.opt||c.code
+   End
+
+
+/*  Convert file names to Unix format */
+   c.files = p.null
+   Do i = 1 to n.files
+      j = i // 3
+      file = word(a.files,i)
+      If i > 3 & file = '=' Then file = word(a.files,i-3)
+      If j = 1 Then c.files = c.files||p.blank||file
+               Else c.files = c.files||p.dot||file
+   End
+
+   If c.code = p.null Then c.code = c.default
+
+/*  Get driver option */
+   If c.code = d.opt Then c.para = c.para c.files
+   Else                   c.para = p.minus||c.code||c.para c.files
+
+/* RAL Specific Command to log usage */
+
+   If p.mode = 'RAL' Then
+      'EXECIO 0 CP (STRING SYSREQ COUNT RALCGM' c.module c.para
+
+/* Run Program with Unix style arguments */
+
+   If p.mode = 'TEST' Then Say c.module c.para
+
+   c.module c.para
+
+/* Restore LOADLIB and TXTLIB */
+
+   temp = cpop('LOADLIB')
+   temp = cpop('TXTLIB')
+
+Exit

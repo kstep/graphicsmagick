@@ -1,0 +1,287 @@
+/*   GENCGM EXEC to make RAL-CGM system */
+/*    Last Modified on  10 Feb 1993  at  11:51:29     */
+
+trace o
+arg t.name '(' d.opt
+TRUE = 1; FALSE = 0
+
+main.name = 'CGMMAIN'
+
+lib.input  = 'CGMITEXT CGMICHAR CGMIBIN'
+lib.output = 'CGMOTEXT CGMOCHAR CGMOBIN'
+lib.util   = 'CGMRAND CGMFILE CGMERR CGMINPUT CGMPROF CGMATT'
+lib.graph  = 'CGMGDP CGMGRAPH CGMPTS CGMCOLR CGMCELL'
+lib.text   = 'CGMFONT CGMTEXT'
+
+lib.entry = lib.input lib.output lib.util lib.graph lib.text
+lib.name = 'CGMLIB'
+
+t.ps = FALSE
+t.xw = FALSE
+txt.sys = ''
+xw.text = ''
+xw.libs = ''
+
+f.comp = ''
+f.suf = 'C'
+
+'EXECIO 8 CP ( LIFO STRING QUERY SET' /* VM mode is in line 8       */
+Parse Pull . vmmode .
+'DROPBUF' buffer                      /* clear rest of lines        */
+Select
+   When vmmode = 'XA' Then
+      f.mode = 'RMODE ANY'
+   Otherwise
+      f.mode = ''
+End
+'DROPBUF' buffer                      /* clear rest of lines        */
+
+/*  Analyse 'mach.h' to find graphics system */
+
+'STATEW MACH H *'
+If rc ~= 0 Then 'COPY MC_CMS H A MACH = ='
+
+'EXECIO 30 DISKR MACH H'
+active = TRUE
+Do While Queued() > 0
+   Parse Pull function object obj .
+   Select
+      When function = '#define' & object = 'DATADIR' Then Leave
+
+      When active & function = '#define' Then
+         Select
+           When object = 'C370'        Then f.comp = object
+           When object = 'WATC'        Then f.comp = object
+           When object = 'POSTSCRIPT'  Then t.ps = TRUE
+           When object = 'XW'          Then t.xw = TRUE
+           When object = 'HPGL'        Then t.hpgl = TRUE
+           When object = 'TEK4200'     Then t.tek = TRUE
+           When object = 'BEZIER'      Then Do
+              txt.sys = txt.sys 'GENBEZ'
+              lib.entry = lib.entry 'CGMBEZ'
+           End
+           When object = 'HERSHEY'     Then Do
+              txt.sys = txt.sys 'GENHER'
+              lib.entry = lib.entry 'CGMHER'
+           End
+           Otherwise nop
+         End
+      When active & function = '#undef' Then
+         Select
+           When object = 'POSTSCRIPT'  Then t.ps = FALSE
+           When object = 'XW'          Then t.xw = FALSE
+           When object = 'HPGL'        Then t.hpgl = FALSE
+           When object = 'TEK4200'     Then t.tek = FALSE
+           Otherwise nop
+         End
+/* Activate or deactivate depending on which compiler */
+      When active & function = '#ifdef' Then
+         Select
+           When object = 'C370' & f.comp = 'C370' Then active = TRUE
+           When object = 'WATC' & f.comp = 'WATC' Then active = TRUE
+           Otherwise active = FALSE
+         End
+      When active & function = '#ifndef' Then
+         Select
+           When object = 'C370' & f.comp ~= 'C370' Then active = TRUE
+           When object = 'WATC' & f.comp ~= 'WATC' Then active = TRUE
+           Otherwise active = FALSE
+         End
+      When function = '#endif' Then
+         Select
+           When obj = 'C370'        Then active = TRUE
+           When obj = 'WATC'        Then active = TRUE
+           Otherwise nop
+         End
+      Otherwise nop
+   End
+End
+'DROPBUF'
+
+If f.comp = '' Then Do
+   Say 'No compiler specIfied'
+   Exit
+End
+
+/*  Work out version number from CGMINIT.H  */
+'MAKEBUF'
+'EXECIO * DISKR CGMINIT H'
+version = 0
+Do While Queued() > 0
+   Parse Pull line
+   If word(line,3) = '*cgmversion' Then Do
+      Parse var line . 'Version' version'";'
+      mod.name = 'CGM'||strip(delstr(version,index(version,'.'),1))
+      If ~ t.xw Then mod.name = mod.name||'S'
+      leave
+   End
+End
+'DROPBUF'
+If Version = 0 Then Do
+   Say 'Version not found'
+   Exit
+End
+
+Say 'RALCGM Version:' version
+If t.ps  Then Say 'Include PostScript'
+If t.xw  Then Say 'Include X-Windows'
+If t.hpgl Then Say 'Include HPGL'
+If t.tek Then Say 'Include Tektronix 4200'
+
+If f.comp = 'WATC' Then Do
+   Say 'Using the Waterloo C Compiler'
+   f.cc = 'CW'
+   t.xw = FALSE
+End
+
+If f.comp = 'C370' Then Do
+   Say 'Using the IBM C/370 Compiler'
+   f.cc = 'CC'
+   If t.opt = '' Then d.opt = '( OPTIMIZE'
+   If t.xw Then Do
+      lib.entry = lib.entry 'CGMOXW'
+/*
+      xw.text = 'CMSOCKET MY_STUBS'
+*/
+      xw.libs = ' X11LIB COMMTXT VSPASCAL AMPLANG'
+   End
+   'GLOBAL TXTLIB EDCBASE ' xw.libs 'IBMLIB CMSLIB'
+   'GLOBAL LOADLIB EDCLINK'
+End
+If t.ps Then Do
+   lib.entry = lib.entry 'CGMOPS'
+End
+If t.xw Then Do
+   lib.entry = lib.entry 'CGMOPS'
+End
+If t.hpgl Then Do
+   lib.entry = lib.entry 'CGMOHPGL'
+End
+If t.tek Then Do
+   lib.entry = lib.entry 'CGMOTEK'
+End
+
+/*  Clean out TEXT files */
+If t.name = 'CLEAN' Then Do
+   Do i = 1 To words(lib.entry)
+      f.name = word(lib.entry, i)
+      'STATE' f.name 'TEXT'
+      If RC = 0 Then Do
+         'ERASE' f.name 'TEXT'
+      End
+   End
+   Exit RC
+End
+
+load.only = (t.name = 'LOAD')
+
+LIB = FALSE
+
+t.name = main.name lib.name lib.entry
+link.cgm = TRUE
+
+if load.only Then signal loadcgm
+
+/*  Remove old module and load map to make space  */
+
+'SET CMSTYPE HT'
+'STATEW' mod.name 'MODULE A'
+If rc = 0 Then 'ERASE' mod.name 'MODULE A'
+'STATEW LOAD MAP'
+If rc = 0 Then 'ERASE LOAD MAP'
+
+'STATEW' lib.name 'TXTLIB'
+If rc = 0 Then 'ERASE' lib.name 'TXTLIB'
+lib.exists = FALSE
+'SET CMSTYPE RT'
+
+/*  Compile all routines and replace in TXTLIB */
+
+'SET LDRTBLS 20'
+
+if load.only Then signal loadcgm
+
+Do i = 1 To words(t.name)
+   f.name = word(t.name, i)
+
+/* PostScript will not compile with optimise under C370 (version 1) */
+/*
+   If f.comp = 'C370' & f.name = 'CGMOPS' Then t.opt = ''
+   Else
+*/
+   t.opt = d.opt
+
+   Say ''
+   Say 'Compiling' f.name t.opt
+
+   f.cc f.name t.opt
+
+/* If any errors Do not link */
+   If rc ~= 0 & rc ~= 4 Then link.cgm = FALSE
+
+   If f.name ~= main.name Then Do
+      If lib.exists Then Do
+         Say 'Add routine' f.name 'to Library' lib.name
+         If f.comp = 'WATC' Then Do
+            'TXTLIB ADD' lib.name f.name
+         End
+         Else Do
+            'TXTLIB ADD' lib.name f.name '(FILE'
+         End
+      End
+      Else Do
+         Say 'Add routine' f.name 'to new Library' lib.name
+         'TXTLIB GEN' lib.name f.name '(FILE'
+         lib.exists = TRUE
+      End
+      'ERASE' f.name 'TEXT'
+   End
+End
+
+loadcgm:
+If link.cgm Then Do
+
+/* Now link and load main module */
+
+   Say ''
+   Say 'Linking' main.name 'as' mod.name
+   Select
+      When f.comp = 'C370' Then Do
+        'GLOBAL TXTLIB' lib.name 'EDCBASE' xw.libs 'IBMLIB CMSLIB'
+        'LOAD' main.name xw.text '(CLEAR NOAUTO' f.mode 'RESET CEESTART'
+        'GENMOD' mod.name '(FROM CEESTART'
+      End
+      When f.comp = 'WATC' Then Do
+        'GLOBAL TXTLIB' lib.name 'CLIB'
+        'LOAD' main.name '(CLEAR NOAUTO'
+        'GENMOD' mod.name
+      End
+   End
+
+/* Compile and run Bezier and Hershey generators */
+
+   Do i = 1 To words(txt.sys)
+      txt.system = word(txt.sys,i)
+      Say 'Compiling' txt.system
+      f.cc txt.system d.opt
+      if RC = 0 Then Do
+         Say 'Load and Run' txt.system
+         Select
+            When f.comp = 'C370' Then Do
+              'LOAD' txt.system '(CLEAR NOAUTO' f.mode 'NOMAP START'
+            End
+            When f.comp = 'WATC' Then Do
+              'LOAD' txt.system '(CLEAR NOAUTO NOMAP'
+              'GEN' txt.system
+/* Now run font generator and remove module */
+              txt.system
+              'ERASE' txt.system 'MODULE'
+            End
+         End
+         'ERASE' txt.system 'TEXT'
+      End
+   End
+
+End
+
+Exit
