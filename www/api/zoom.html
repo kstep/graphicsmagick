@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
 <HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <TITLE>zoom - Methods to Resize an Image</TITLE>
-<link rel="StyleSheet" href="../www/magick.css" type="text/css">
+<link rel="StyleSheet" href="../magick.css" type="text/css">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
@@ -84,9 +84,11 @@ Return any errors or warnings in this structure.
   Catrom   Cubic      Gaussian
   Hanning  Hermite    Lanczos
   Mitchell Point      Quandratic
-  Sinc     Triangle
-=for html &lt;blockquote&gt;ResizeImage() was inspired by Paul Heckbert's zoom program. &lt;/blockquote&gt;</PRE>
-<P>The format of the ResizeImage method is:</P>
+  Sinc     Triangle</PRE>
+<P>Most of the filters are 
+<FONT SIZE=-1>FIR</FONT> (finite impulse response), however, Bessel, Gaussian, and Sinc are 
+<FONT SIZE=-1>IIR</FONT> (infinite impulse response). Bessel and Sinc are windowed (brought down to zero) with the Blackman filter.</P>
+<blockquote>ResizeImage() was inspired by Paul Heckbert's zoom program. </blockquote><P>The format of the ResizeImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ResizeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, const <A HREF="types/Enumerations.html#FilterType">FilterType</A> filter, const double blur, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
