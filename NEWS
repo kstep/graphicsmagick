@@ -1,9 +1,25 @@
+This file was last updated on April 10, 2004.
+
+Significant changes associated with GraphicsMagick 1.2 (not yet released)
+
+  Bug fixes:
+    * GraphicsMagick now successfully builds and passes all tests under
+    Digital Unix 5.1, using the vendor compiler.
+    * Ghostscript sometimes displays an error message and fails, yet it
+    returns a success error code to GraphicsMagick. Verify that
+    Ghostscript has updated the output file before attempting to use it.
+    * Fixed a configure script syntax error when testing for trio.
+
+  Utilities enhancements:
+    * If gm is executed under a traditional alternate name (e.g.
+    convert), it will invoke the appropriate sub-command. This allows use
+    of hard links, symbolic links, or just copying 'gm' to the desired
+    sub-command name in order to achieve 100% ImageMagick 5.5.2 utility
+    compatibility.
+    * Provide the --enable-magick-compat option when configuring to install
+    ImageMagick utilities compatibility links.
+
 Significant changes associated with GraphicsMagick 1.1 (Released April 4, 2004)
-
-This file was last updated on April 4, 2004.
-
-  We sincerly apologize for such an absurdly long list of fixes and
-  enhancements.
 
   Bug fixes:
     * Semaphore fix which is necessary for proper multi-threaded operation.

@@ -111,6 +111,8 @@ UNIX/Cygwin/MinGW COMPILATION
                            (default enabled)
    --disable-largefile     disable support for large (64 bit) file offsets
    --enable-lzw            enable LZW support (default disabled)
+   --enable-symbol-prefix  enable prefixing library symbols with "Gm"
+   --enable-magick-compat  install ImageMagick utility shortcuts (default disabled)
 
   Optional Packages/Options:
    --with-quantum-depth    number of bits in a pixel quantum (default 8)
@@ -255,6 +257,21 @@ UNIX/Cygwin/MinGW COMPILATION
       UNISYS patent applies. The GraphicsMagick Group does not support
       the illegal import of LZW-enabled software into a country where
       the UNISYS LZW patent applies.
+
+    o --enable-symbol-prefix: The GraphicsMagick libraries may contain
+      symbols which conflict with other libraries.  Specifify this option
+      to prefix "Gm" to all library symbols, and use the C pre-processor
+      to allow dependent code to still compile as before.
+
+    o --enable-magick-compat: Normally GraphicsMagick installs only the
+      'gm' utility from which all commands may be accessed. Existing
+      packages may be designed to invoke ImageMagick utilities (e.g.
+      "convert"). Specify this option to install ImageMagick utility
+      compatibility links to allow GraphicsMagick to substitute directly
+      for ImageMagick. Take care when selecting this option since if
+      there is an existing ImageMagick installation installed in the same
+      directory, its utilities will be replaced when GraphicsMagick is
+      installed.
 
     o --with-quantum-depth: This option allows the user to specify the
       number of bits to use per pixel quantum (the size of the red,

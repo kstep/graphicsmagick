@@ -436,6 +436,13 @@ then
   AC_DEFINE(PREFIX_MAGICK_SYMBOLS,1,[Prefix Magick library symbols with a common string.])
 fi
 
+# Enable ImageMagick utilities compatibility shortcuts (default no)
+AC_ARG_ENABLE(magick-compat,
+              [  --enable-magick-compat  install ImageMagick utility shortcuts (default disabled)],
+              [with_magick_compat=$enableval],
+              [with_magick_compat='no'])
+AM_CONDITIONAL(MAGICK_COMPAT, test "$with_magick_compat" != 'no')
+
 # Number of bits in a Quantum
 AC_ARG_WITH(quantum-depth,
 	      [  --with-quantum-depth    number of bits in a pixel quantum (default 8)],
