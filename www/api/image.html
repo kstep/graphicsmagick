@@ -502,7 +502,9 @@ structure and returns a pointer to the new image.
 The format of the CreateImage method is:
 
 <P>
-<PRE>    void CycleColormapImage(Image *image,const int amount)
+<PRE>    Image *CreateImage(const unsigned int width,const unsigned int height,
+      const float *red,const float *green,const float *blue,
+      const float *opacity)
 </PRE>
 <P>
 

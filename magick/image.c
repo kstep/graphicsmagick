@@ -1643,7 +1643,9 @@ Export void CondenseImage(Image *image)
 %
 %  The format of the CreateImage method is:
 %
-%      void CycleColormapImage(Image *image,const int amount)
+%      Image *CreateImage(const unsigned int width,const unsigned int height,
+%        const float *red,const float *green,const float *blue,
+%        const float *opacity)
 %
 %  A description of each parameter follows:
 %
