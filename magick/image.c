@@ -191,7 +191,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
         *geometry;
 
       geometry=PostscriptGeometry(image_info->page);
-      (void) ParseImageGeometry(geometry,&allocate_image->page.x,
+      flags=ParseImageGeometry(geometry,&allocate_image->page.x,
         &allocate_image->page.y,&allocate_image->page.width,
         &allocate_image->page.height);
       LiberateMemory((void **) &geometry);
@@ -3442,7 +3442,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a border of solid color.
             */
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
+            flags=ParseGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             border_image=BorderImage(*image,&geometry,&(*image)->exception);
             if (border_image == (Image *) NULL)
@@ -3528,7 +3528,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Chop the image.
             */
-            (void) ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
+            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             chop_image=ChopImage(*image,&geometry,&(*image)->exception);
             if (chop_image == (Image *) NULL)
@@ -3979,8 +3979,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Surround image with an ornamental border.
             */
             (void) memset(&frame_info,0,sizeof(FrameInfo));
-            flags=ParseGeometry(argv[++i],&frame_info.outer_bevel,
-              &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
+            flags=ParseGeometry(argv[++i],&geometry.x,&geometry.y,
+              &geometry.width,&geometry.height);
+            frame_info.width=geometry.width;
+            frame_info.height=geometry.height;
+            frame_info.x=geometry.x;
+            frame_info.y=geometry.y;
             if ((flags & HeightValue) == 0)
               frame_info.height=frame_info.width;
             if ((flags & XValue) == 0)
@@ -4052,7 +4056,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Resize image.
             */
-            (void) ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
+            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             if ((geometry.width == (*image)->columns) &&
                 (geometry.height == (*image)->rows))

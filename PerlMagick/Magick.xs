@@ -4253,7 +4253,7 @@ Mogrify(ref,...)
         case 7:  /* Chop */
         {
           if (attribute_flag[0])
-            (void) ParseImageGeometry(argument_list[0].string_reference,
+            flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
@@ -4276,7 +4276,7 @@ Mogrify(ref,...)
         case 8:  /* Crop */
         {
           if (attribute_flag[0])
-            (void) ParseImageGeometry(argument_list[0].string_reference,
+            flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
@@ -4345,9 +4345,12 @@ Mogrify(ref,...)
           frame_info.inner_bevel=frame_info.outer_bevel=6;
           if (attribute_flag[0])
             {
-              flags=ParseGeometry(argument_list[0].string_reference,
-                &frame_info.outer_bevel,&frame_info.inner_bevel,
-                &frame_info.width,&frame_info.height);
+              flags=ParseImageGeometry(argument_list[0].string_reference,
+                &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+              frame_info.width=geometry.width;
+              frame_info.height=geometry.height;
+              frame_info.x=geometry.x;
+              frame_info.y=geometry.y;
               if (!(flags & HeightValue))
                 frame_info.height=frame_info.width;
               if (!(flags & XValue))
@@ -4421,7 +4424,7 @@ Mogrify(ref,...)
         case 22:  /* Roll */
         {
           if (attribute_flag[0])
-            (void) ParseImageGeometry(argument_list[0].string_reference,
+            flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.x=argument_list[1].int_reference;
@@ -4443,7 +4446,7 @@ Mogrify(ref,...)
         case 24:  /* Sample */
         {
           if (attribute_flag[0])
-            (void) ParseImageGeometry(argument_list[0].string_reference,
+            flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
@@ -4455,7 +4458,7 @@ Mogrify(ref,...)
         case 25:  /* Scale */
         {
           if (attribute_flag[0])
-            (void) ParseImageGeometry(argument_list[0].string_reference,
+            flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
@@ -4540,7 +4543,7 @@ Mogrify(ref,...)
         case 32:  /* Zoom */
         {
           if (attribute_flag[0])
-            (void) ParseImageGeometry(argument_list[0].string_reference,
+            flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
@@ -4685,7 +4688,7 @@ Mogrify(ref,...)
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
             (DrawInfo *) NULL);
           if (attribute_flag[0])
-            (void) ParseGeometry(argument_list[0].string_reference,
+            flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.x=argument_list[1].int_reference;
@@ -4790,7 +4793,7 @@ Mogrify(ref,...)
             Respect gravity.
           */
           if (attribute_flag[2])
-            flags=ParseGeometry(argument_list[2].string_reference,
+            flags=ParseImageGeometry(argument_list[2].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[3])
             geometry.x=argument_list[3].int_reference;
@@ -5065,7 +5068,7 @@ Mogrify(ref,...)
             opacity;
 
           if (attribute_flag[0])
-            flags=ParseGeometry(argument_list[0].string_reference,
+            flags=ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.x=argument_list[1].int_reference;
