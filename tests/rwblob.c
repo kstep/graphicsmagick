@@ -163,7 +163,7 @@ int main ( int argc, char **argv )
       !strcmp( "YUV", format )
       )
     {
-      size = AcquireMemory( 40 );
+      size = AllocateMemory( 40 );
       sprintf( size, "%dx%d", columns, rows );
     }
 
@@ -200,7 +200,7 @@ int main ( int argc, char **argv )
       fflush(stdout);
       return 1;
     }
-  LiberateMemory( (void**)&blob );
+  FreeMemory( (void**)&blob );
 
   /*
    * Save image to BLOB
@@ -233,7 +233,7 @@ int main ( int argc, char **argv )
       fflush(stdout);
       return 1;
     }
-  LiberateMemory( (void**)&blob );
+  FreeMemory( (void**)&blob );
 
   /*
    * Check final output

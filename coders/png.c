@@ -3918,7 +3918,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                  break;
             }
             if (x < (int) image->columns)
-                ping_info->valid&=(~PNG_INFO_tRNS);
+              ping_info->valid&=(~PNG_INFO_tRNS);
           }
         if (ping_info->valid & PNG_INFO_tRNS)
           {
@@ -4008,8 +4008,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     IndexPacket
                       index;
 
-                   index=indexes[x];
-                   ping_info->trans[index]=MaxRGB-DownScale(p->opacity);
+                    index=indexes[x];
+                    ping_info->trans[index]=MaxRGB-DownScale(p->opacity);
                   }
                 p++;
               }
@@ -4035,7 +4035,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       {
         if (image->depth < 8)
           image->depth=8;
-        if (save_image_depth == 16 && image->depth == 8)
+        if ((save_image_depth == 16) && (image->depth == 8))
           {
             ping_info->trans_values.red*=0x0101;
             ping_info->trans_values.green*=0x0101;
@@ -4059,10 +4059,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         png_set_sRGB(ping,ping_info,(int) image->rendering_intent+1);
         png_set_gAMA(ping,ping_info,0.45455);
       }
-    if (!image_info->adjoin || (!ping_info->valid&PNG_INFO_sRGB))
+    if (!image_info->adjoin || (!ping_info->valid & PNG_INFO_sRGB))
 #endif
       {
-        if (!have_write_global_gama && image->gamma != 0.0)
+        if (!have_write_global_gama && (image->gamma != 0.0))
           {
             /*
               Note image gamma.
@@ -4070,19 +4070,21 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             */
             png_set_gAMA(ping,ping_info,image->gamma);
           }
-        if (!have_write_global_chrm && image->chromaticity.white_point.x != 0.0)
+        if (!have_write_global_chrm &&
+            (image->chromaticity.white_point.x != 0.0))
           {
             /*
               Note image chromaticity.
               To do: check for cHRM+gAMA == sRGB, and write sRGB instead.
             */
-         png_set_cHRM(ping,ping_info,image->chromaticity.white_point.x,
-            image->chromaticity.white_point.y,image->chromaticity.red_primary.x,
-            image->chromaticity.red_primary.y,
-            image->chromaticity.green_primary.x,
-            image->chromaticity.green_primary.y,
-            image->chromaticity.blue_primary.x,
-            image->chromaticity.blue_primary.y);
+            png_set_cHRM(ping,ping_info,image->chromaticity.white_point.x,
+              image->chromaticity.white_point.y,
+              image->chromaticity.red_primary.x,
+              image->chromaticity.red_primary.y,
+              image->chromaticity.green_primary.x,
+              image->chromaticity.green_primary.y,
+              image->chromaticity.blue_primary.x,
+              image->chromaticity.blue_primary.y);
          }
       }
     ping_info->interlace_type=image_info->interlace != NoInterlace;
@@ -4154,13 +4156,14 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           if (!IsPseudoClass(image))
             rowbytes*=(image->matte ? 4 : 3);
       }
-    else if (image->depth == 16)
-      {
-        if (IsGrayImage(image))
-          rowbytes*=(image->matte ? 4 : 2);
-        else
-          rowbytes*=(image->matte ? 8 : 6);
-      }
+    else
+      if (image->depth == 16)
+        {
+          if (IsGrayImage(image))
+            rowbytes*=(image->matte ? 4 : 2);
+          else
+            rowbytes*=(image->matte ? 8 : 6);
+        }
     png_pixels=(unsigned char *)
       AcquireMemory(rowbytes*image->rows*sizeof(Quantum));
     scanlines=(unsigned char **)
@@ -4191,7 +4194,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     else
       {
-      if ((!image->matte || ping_info->bit_depth >= 8) && IsGrayImage(image))
+      if ((!image->matte || (ping_info->bit_depth >= 8)) && IsGrayImage(image))
         {
           for (y=0; y < (int) image->rows; y++)
           {
@@ -4208,7 +4211,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         }
       else
         {
-          if (image->depth > 8 || !IsPseudoClass(image))
+          if ((image->depth > 8) || !IsPseudoClass(image))
             for (y=0; y < (int) image->rows; y++)
             {
               if (!GetImagePixels(image,0,y,image->columns,1))
