@@ -586,15 +586,24 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   entry->next=(MagickInfo *) NULL;
   if (magick_list == (MagickInfo *) NULL)
     {
+      /*
+        Start magick list.
+      */
       magick_list=entry;
       LiberateSemaphore(&magick_semaphore);
       return(entry);
     }
+  /*
+    Tag is added in lexographic order.
+  */
   for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,entry->tag) >= 0)
       break;
   if (LocaleCompare(p->tag,entry->tag) < 0)
     {
+      /*
+        Add entry after target.
+      */
       entry->next=p->next;
       p->next=entry;
       entry->previous=p;
@@ -603,6 +612,9 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
       LiberateSemaphore(&magick_semaphore);
       return(entry);
     }
+  /*
+    Add entry before target.
+  */
   entry->next=p;
   entry->previous=p->previous;
   p->previous=entry;
