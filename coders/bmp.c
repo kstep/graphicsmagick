@@ -128,8 +128,10 @@ static unsigned int
 %
 %    o image: The address of a structure of type Image.
 %
-%    o compression:  A value of 1 means the compressed pixels are runlength
-%      encoded for a 256-color bitmap.  A value of 2 means a 16-color bitmap.
+%    o compression:  Zero means uncompressed.  A value of 1 means the
+%      compressed pixels are runlength encoded for a 256-color bitmap.
+%      A value of 2 means a 16-color bitmap.  A value of 3 means bitfields
+%      encoding.
 %
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the decoding process.
@@ -431,6 +433,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   long
     bit,
+    blue,
+    green,
+    opacity,
+    red,
     y;
 
   off_t
@@ -485,6 +491,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,2,(char *) magick);
   do
   {
+    PixelPacket
+      quantum_bits,
+      shift;
+
     /*
       Verify BMP identifier.
     */
@@ -520,6 +530,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.number_colors=0;
         bmp_info.compression=0;
         bmp_info.image_size=0;
+        bmp_info.alpha_mask=0;
       }
     else
       {
@@ -536,41 +547,34 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.y_pixels=ReadBlobLSBLong(image);
         bmp_info.number_colors=ReadBlobLSBLong(image);
         bmp_info.colors_important=ReadBlobLSBLong(image);
-        for (i=0; i < (long) (bmp_info.size-40); i++)
-          (void) ReadBlobByte(image);
-        image->matte=False;
-        if ((bmp_info.compression == 3) && ((bmp_info.bits_per_pixel == 16) ||
-            (bmp_info.bits_per_pixel == 32)))
+        bmp_info.red_mask=ReadBlobLSBLong(image);
+        bmp_info.green_mask=ReadBlobLSBLong(image);
+        bmp_info.blue_mask=ReadBlobLSBLong(image);
+        if (bmp_info.size > 40)
           {
-            bmp_info.red_mask=ReadBlobLSBLong(image);
-            bmp_info.green_mask=ReadBlobLSBLong(image);
-            bmp_info.blue_mask=ReadBlobLSBLong(image);
-            if (bmp_info.size > 40)
-              {
-                /*
-                  Read color management information.
-                */
-                bmp_info.alpha_mask=(unsigned short) ReadBlobLSBShort(image);
-                image->matte=bmp_info.alpha_mask != 0;
-                bmp_info.colorspace=(long) ReadBlobLSBLong(image);
-                bmp_info.red_primary.x=ReadBlobLSBLong(image);
-                bmp_info.red_primary.y=ReadBlobLSBLong(image);
-                bmp_info.red_primary.z=ReadBlobLSBLong(image);
-                bmp_info.green_primary.x=ReadBlobLSBLong(image);
-                bmp_info.green_primary.y=ReadBlobLSBLong(image);
-                bmp_info.green_primary.z=ReadBlobLSBLong(image);
-                bmp_info.blue_primary.x=ReadBlobLSBLong(image);
-                bmp_info.blue_primary.y=ReadBlobLSBLong(image);
-                bmp_info.blue_primary.z=ReadBlobLSBLong(image);
-                bmp_info.gamma_scale.x=ReadBlobLSBShort(image);
-                bmp_info.gamma_scale.y=ReadBlobLSBShort(image);
-                bmp_info.gamma_scale.z=ReadBlobLSBShort(image);
-              }
+            /*
+              Read color management information.
+            */
+            bmp_info.alpha_mask=ReadBlobLSBLong(image);
+            bmp_info.colorspace=(long) ReadBlobLSBLong(image);
+            bmp_info.red_primary.x=ReadBlobLSBLong(image);
+            bmp_info.red_primary.y=ReadBlobLSBLong(image);
+            bmp_info.red_primary.z=ReadBlobLSBLong(image);
+            bmp_info.green_primary.x=ReadBlobLSBLong(image);
+            bmp_info.green_primary.y=ReadBlobLSBLong(image);
+            bmp_info.green_primary.z=ReadBlobLSBLong(image);
+            bmp_info.blue_primary.x=ReadBlobLSBLong(image);
+            bmp_info.blue_primary.y=ReadBlobLSBLong(image);
+            bmp_info.blue_primary.z=ReadBlobLSBLong(image);
+            bmp_info.gamma_scale.x=ReadBlobLSBShort(image);
+            bmp_info.gamma_scale.y=ReadBlobLSBShort(image);
+            bmp_info.gamma_scale.z=ReadBlobLSBShort(image);
           }
       }
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
     image->depth=8;
+    image->matte=bmp_info.alpha_mask != 0;
     if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
       {
         image->storage_class=PseudoClass;
@@ -647,6 +651,42 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert BMP raster image to pixel packets.
     */
+    if (bmp_info.compression == 3)
+      {
+        /*
+          Get shift and quantum_bits info from bitfield masks.
+        */
+        memset(&shift,0,sizeof(PixelPacket));
+        memset(&quantum_bits,0,sizeof(PixelPacket));
+        if (bmp_info.red_mask != 0)
+          while (((bmp_info.red_mask << shift.red) & 0x80000000L) == 0)
+            shift.red++;
+        if (bmp_info.green_mask != 0)
+          while (((bmp_info.green_mask << shift.green) & 0x80000000L) == 0)
+            shift.green++;
+        if (bmp_info.blue_mask != 0)
+          while (((bmp_info.blue_mask << shift.blue) & 0x80000000L) == 0)
+            shift.blue++;
+        if (bmp_info.alpha_mask != 0)
+          while (((bmp_info.alpha_mask << shift.opacity) & 0x80000000L) == 0)
+            shift.opacity++;
+        i=0;
+        while (((bmp_info.red_mask << (shift.red+i)) & 0x80000000L) != 0)
+          i++;
+        quantum_bits.red=i;
+        i=0;
+        while (((bmp_info.green_mask << (shift.green+i)) & 0x80000000L) != 0)
+          i++;
+        quantum_bits.green=i;
+        i=0;
+        while (((bmp_info.blue_mask << (shift.blue+i)) & 0x80000000L) != 0)
+          i++;
+        quantum_bits.blue=i;
+        i=0;
+        while (((bmp_info.alpha_mask << (shift.opacity+i)) & 0x80000000L) != 0)
+          i++;
+        quantum_bits.opacity=i;
+      }
     switch (bmp_info.bits_per_pixel)
     {
       case 1:
@@ -665,7 +705,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             for (bit=0; bit < 8; bit++)
             {
-              index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+              index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
               indexes[x+bit]=index;
               *q++=image->colormap[index];
             }
@@ -675,7 +715,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               for (bit=0; bit < (long) (image->columns % 8); bit++)
               {
-                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
                 indexes[x+bit]=index;
                 *q++=image->colormap[index];
               }
@@ -758,15 +798,18 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       case 16:
       {
-        unsigned short
-          word;
+        unsigned long
+          pixel;
 
         /*
-          Convert PseudoColor scanline.
+          Convert bitfield encoded 16-bit PseudoColor scanline.
         */
+        if (bmp_info.compression != 3)
+          ThrowReaderException(CorruptImageWarning,
+            "Compression mode != 3 in 16-bit BMP image file",image)
+
+        bytes_per_line=2*(image->columns+image->columns%2);
         image->storage_class=DirectClass;
-        if (bmp_info.compression == 1)
-          bytes_per_line=2*image->columns;
         for (y=(long) image->rows-1; y >= 0; y--)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
@@ -775,20 +818,35 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            word=(*p++);
-            word|=(*p++ << 8);
-            if (bmp_info.red_mask == 0)
-              {
-                q->red=Upscale(ScaleColor5to8((word >> 10) & 0x1f));
-                q->green=Upscale(ScaleColor5to8((word >> 5) & 0x1f));
-                q->blue=Upscale(ScaleColor5to8(word & 0x1f));
-              }
-            else
-              {
-                q->red=Upscale(ScaleColor5to8((word >> 11) & 0x1f));
-                q->green=Upscale(ScaleColor6to8((word >> 5) & 0x3f));
-                q->blue=Upscale(ScaleColor5to8(word & 0x1f));
-              }
+            pixel=(*p++);
+            pixel|=(*p++) << 8;
+            red=((pixel & bmp_info.red_mask) << shift.red) >> 16;
+            green=((pixel & bmp_info.green_mask) << shift.green) >> 16;
+            blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
+            opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
+            q->red=XDownscale(red);
+            if (quantum_bits.red == 5)
+              q->red|=(q->red >> 5);
+            q->green=XDownscale(green);
+            if (quantum_bits.green == 5)
+              q->green|=(q->green >> 5);
+            if (quantum_bits.green == 6)
+              q->green|=(q->green >> 6);
+            q->blue=XDownscale(blue);
+            if (quantum_bits.blue == 5)
+              q->blue|=(q->blue >> 5);
+            if (image->matte)
+              q->opacity=XDownscale(opacity);
+#if QuantumDepth == 16
+            if (quantum_bits.blue <= 8)
+              q->blue|=((q->blue & 0xff00) >> 8);
+            if (quantum_bits.green <= 8)
+              q->green|=((q->green & 0xff00) >> 8);
+            if (quantum_bits.red <= 8)
+              q->red|=((q->red & 0xff00) >> 8);
+            if (quantum_bits.opacity <= 8)
+              q->opacity|=((q->opacity & 0xff00) >> 8);
+#endif
             q++;
           }
           if (!SyncImagePixels(image))
@@ -800,11 +858,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       case 24:
-      case 32:
       {
         /*
           Convert DirectColor scanline.
         */
+        bytes_per_line=3*((image->columns*bmp_info.bits_per_pixel+31)/32);
         for (y=(long) image->rows-1; y >= 0; y--)
         {
           p=pixels+(image->rows-y-1)*bytes_per_line;
@@ -816,10 +874,61 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=Upscale(*p++);
             q->green=Upscale(*p++);
             q->red=Upscale(*p++);
+            q++;
+          }
+          if (!SyncImagePixels(image))
+            break;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
+        }
+        break;
+      }
+      case 32:
+      {
+        /*
+          Convert bitfield encoded DirectColor scanline.
+        */
+        if (bmp_info.compression != 3)
+          ThrowReaderException(CorruptImageWarning,
+            "Compression mode != 3 in 32-bit BMP image file",image)
+
+        bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
+
+        for (y=(long) image->rows-1; y >= 0; y--)
+        {
+          unsigned long
+            pixel;
+
+          p=pixels+(image->rows-y-1)*bytes_per_line;
+          q=SetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (long) image->columns; x++)
+          {
+            pixel=(*p++);
+            pixel|=(*p++ << 8);
+            pixel|=(*p++ << 16);
+            pixel|=(*p++ << 24);
+            red=((pixel & bmp_info.red_mask) << shift.red) >> 16;
+            green=((pixel & bmp_info.green_mask) << shift.green) >> 16;
+            blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
+            opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
+            q->red=XDownscale(red);
+            q->green=XDownscale(green);
+            q->blue=XDownscale(blue);
             if (image->matte)
-              q->opacity=Upscale(*p);
-            if (bmp_info.bits_per_pixel == 32)
-              p++;
+              q->opacity=XDownscale(opacity);
+#if QuantumDepth == 16
+            if (quantum_bits.red == 8)
+              q->red|=(q->red >> 8);
+            if (quantum_bits.green == 8)
+              q->green|=(q->green >> 8);
+            if (quantum_bits.blue == 8)
+              q->blue|=(q->blue >> 8);
+            if (quantum_bits.opacity == 8)
+              q->opacity|=(q->opacity >> 8);
+#endif
             q++;
           }
           if (!SyncImagePixels(image))
@@ -1024,10 +1133,12 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   {
     /*
       Initialize BMP raster file header.
+      To Do: Write BMP version 4.0 if transparency is present.
     */
     (void) TransformRGBImage(image,RGBColorspace);
     bmp_info.file_size=14+40;
     bmp_info.offset_bits=14+40;
+    bmp_info.compression=0;
     if (image->storage_class != DirectClass)
       {
         /*
@@ -1038,15 +1149,14 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.bits_per_pixel=1;
         bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
         if (image->matte)
-          SetImageType(image,TrueColorMatteType);
+            SetImageType(image, TrueColorMatteType);
+        else if (bmp_info.number_colors < image->colors)
+            SetImageType(image, TrueColorType);
         else
-          if (bmp_info.number_colors < image->colors)
-            SetImageType(image,TrueColorType);
-          else
-            {
-              bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
-              bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
-            }
+          {
+            bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
+            bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
+          }
       }
     if (image->storage_class == DirectClass)
       {
@@ -1055,6 +1165,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         bmp_info.number_colors=0;
         bmp_info.bits_per_pixel=image->matte ? 32 : 24;
+        bmp_info.compression=image->matte ? 3 : 0;
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
@@ -1062,7 +1173,6 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     bmp_info.width=(long) image->columns;
     bmp_info.height=(long) image->rows;
     bmp_info.planes=1;
-    bmp_info.compression=0;
     bmp_info.image_size=bytes_per_line*image->rows;
     bmp_info.file_size+=bmp_info.image_size;
     bmp_info.x_pixels=75*39;
@@ -1100,7 +1210,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         polarity=Intensity(&image->colormap[0]) < (MaxRGB >> 1);
         if (image->colors == 2)
           polarity=
-            Intensity(&image->colormap[0]) < Intensity(&image->colormap[1]);
+            Intensity(&image->colormap[1]) < Intensity(&image->colormap[0]);
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -1159,7 +1269,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       case 32:
       {
         /*
-          Convert DirectClass packet to BMP RGB888 or RGBA8888 pixel.
+          Convert DirectClass packet to BMP BGR888 or BGRA8888 pixel.
         */
         for (y=0; y < (long) image->rows; y++)
         {
