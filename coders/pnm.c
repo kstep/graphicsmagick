@@ -1062,6 +1062,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       }
       case 6:
       {
+        register unsigned char
+          *q; 
+
         size_t
           length;
 
@@ -1086,8 +1089,15 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
             break;
-          (void) PushImagePixels(image,RGBQuantum,pixels);
-          (void) WriteBlob(image,3*image->columns,(char *) pixels);
+          q=pixels;
+          for (x=0; x < (long) image->columns; x++)
+          {
+            *q++=ScaleQuantumToChar(p->red);
+            *q++=ScaleQuantumToChar(p->green);
+            *q++=ScaleQuantumToChar(p->blue);
+            p++;
+          }
+          (void) WriteBlob(image,q-pixels,(char *) pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
