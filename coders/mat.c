@@ -59,6 +59,7 @@
 #include "magick.h"
 #include "shear.h"
 #include "transform.h"
+#include "static.h"
 #include "utility.h"
 
 /* Auto coloring method, sorry this creates some artefact inside data
@@ -411,7 +412,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
            
   /* ----- Load raster data ----- */
-  BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
+  BImgBuff=(unsigned char *) AcquireMemory(ldblk);  /*Ldblk was set in the check phase*/
   if(BImgBuff==NULL) goto NoMemory;
 
 
@@ -480,8 +481,9 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   
   
-  if(BImgBuff!=NULL) {free(BImgBuff);BImgBuff=NULL;}
-    
+  if(BImgBuff!=NULL) {LiberateMemory((void **) &BImgBuff);BImgBuff=NULL;}
+  CloseBlob(image);
+  
   /*  Rotate image. */             
   rotated_image=RotateImage(image,90.0,exception);
   if (rotated_image != (Image *) NULL)
@@ -492,7 +494,6 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else DestroyImage(rotated_image);
     }
 
-  CloseBlob(image);
   return(image);
 }
 

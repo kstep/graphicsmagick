@@ -19,22 +19,31 @@ Introduction
 
 Installation 
 
-    Get the PerlMagick distribution and type the following: 
+    PerlMagick is installed by default as part of GraphicsMagick.
+    GraphicsMagick does not provide a seperate distribution of
+    PerlMagick. These installation notes may be of use if you choose not
+    to use GraphicsMagick's configure to configure PerlMagick, or you
+    want to do something unusual.
 
-        gunzip PerlMagick-5.52.tar.gz
-        tar xvf PerlMagick-5.52.tar
-        cd Magick
+    Get the GraphicsMagick distribution and type the following: 
 
-    Next, edit Makefile.PL and change LIBS and INC to include the
-    appropriate path information to the required libMagick library. You
-    will also need library search paths (-L) to JPEG, PNG, TIFF,
-    etc. libraries if they were included with your installed
-    version of GraphicsMagick. If an extension library is built as a
-    shared library but not installed in the system's default
-    library search path, you may need to add run-path information
-    (often -R or -rpath) corresponding to the equivalent library
-    search path option so that the library can be located at
-    run-time.
+        gunzip -c GraphicsMagick-1.0.0.tar.gz | tar -xvf -
+        cd GraphicsMagick
+        ./configure --enable-shared
+        make
+        cd PerlMagick
+
+    If you used GraphicsMagick configure then Makefile.PL should already
+    be prepared for use. If not, or you want to change a setting, then
+    edit Makefile.PL and change LIBS and INC to include the appropriate
+    path information to the required libGraphicsMagick library. You will
+    also need library search paths (-L) to JPEG, PNG, TIFF, etc.
+    libraries if they were included with your installed version of
+    GraphicsMagick. If an extension library is built as a shared library
+    but not installed in the system's default library search path, you
+    may need to add run-path information (often -R or -rpath)
+    corresponding to the equivalent library search path option so that
+    the library can be located at run-time.
 
     To create and install the dymamically-loaded version of
     PerlMagick (the preferred way), execute
