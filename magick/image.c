@@ -3406,11 +3406,11 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      red=(double) (p->red-q->red);
-      green=(double) (p->green-q->green);
-      blue=(double) (p->blue-q->blue);
+      red=p->red-(double) q->red;
+      green=p->green-(double) q->green;
+      blue=p->blue-(double) q->blue;
       if (image->matte)
-        opacity=(double) (p->opacity-q->opacity);
+        opacity=p->opacity-(double) q->opacity;
       distance=red*red+green*green+blue*blue+opacity*opacity;
       total_error+=distance;
       if (distance > maximum_error_per_pixel)
@@ -3422,9 +3422,9 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   /*
     Compute final error statistics.
   */
-  normalize=3.0*(MaxRGB+1)*(MaxRGB+1);
+  normalize=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
   if (image->matte)
-    normalize=4.0*(MaxRGB+1)*(MaxRGB+1);
+    normalize=4.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
   image->mean_error_per_pixel=total_error/image->columns/image->rows;
   image->normalized_mean_error=image->mean_error_per_pixel/normalize;
   image->normalized_maximum_error=maximum_error_per_pixel/normalize;
