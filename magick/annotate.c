@@ -1217,7 +1217,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     status=FT_Get_Glyph(face->glyph,&glyph.image);
     if (status != False)
       continue;
-    FT_Vector_Transform(&glyph.origin,&affine);
     if (render)
       if ((draw_info->stroke.opacity != TransparentOpacity) ||
           (draw_info->stroke_pattern != (Image *) NULL))
@@ -1225,11 +1224,12 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           /*
             Trace the glyph.
           */
-          clone_info->affine.tx=offset->x+glyph.origin.x/64.0;
-          clone_info->affine.ty=offset->y-glyph.origin.y/64.0;
+          clone_info->affine.tx=glyph.origin.x/64.0;
+          clone_info->affine.ty=glyph.origin.y/64.0;
           (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
             &OutlineMethods,clone_info);
         }
+    FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     if (render)
       {
@@ -1315,8 +1315,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         /*
           Draw text stroke.
         */
-        clone_info->affine.tx=0.0;
-        clone_info->affine.ty=0.0;
+        clone_info->affine.tx=offset->x;
+        clone_info->affine.ty=offset->y;
         (void) ConcatenateString(&clone_info->primitive,"'");
         (void) DrawImage(image,clone_info);
       }
