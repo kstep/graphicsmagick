@@ -2321,19 +2321,14 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
             Let our encoding delegate process the image.
           */
           TemporaryFilename(image->filename);
-          status=InvokeDelegate(clone_info,image,(char *) NULL,clone_info->magick,
-            &image->exception);
+          status=InvokeDelegate(clone_info,image,(char *) NULL,
+            clone_info->magick,&image->exception);
           (void) remove(image->filename);
           DestroyImageInfo(clone_info);
           return(!status);
         }
       magick_info=(MagickInfo *)
         GetMagickInfo(clone_info->magick,&image->exception);
-      if ((magick_info == (MagickInfo *) NULL) ||
-          (magick_info->encoder ==
-            (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-        magick_info=(MagickInfo *)
-          GetMagickInfo(image->magick,&image->exception);
       if ((magick_info == (MagickInfo *) NULL) ||
           (magick_info->encoder ==
            (unsigned int (*)(const ImageInfo *,Image *)) NULL))
