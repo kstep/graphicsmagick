@@ -51,7 +51,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="magnifyimage">MagnifyImage</A></H2>
-<blockquote>MagnifyImage ( ) is a convenience method that scales an image proportionallyto twice its size. If a NULL image is returned, check the exception memberof image to determine why the image failed to magnify.; </blockquote><P>The format of the MagnifyImage method is:</P>
+<blockquote>MagnifyImage ( ) is a convenience method that scales an image proportionallyto twice its size.; </blockquote><P>The format of the MagnifyImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MagnifyImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -65,7 +65,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="minifyimage">MinifyImage</A></H2>
-<blockquote>MinifyImage ( ) is a convenience method that scales an image proportionallyto half its size. If a NULL image is returned, check the exception memberof image to determine why the image failed to minify.; </blockquote><P>The format of the MinifyImage method is:</P>
+<blockquote>MinifyImage ( ) is a convenience method that scales an image proportionallyto half its size.; </blockquote><P>The format of the MinifyImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MinifyImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -85,8 +85,6 @@ Return any errors or warnings in this structure.
   Hanning  Hermite    Lanczos
   Mitchell Point      Quandratic
   Sinc     Triangle</PRE>
-<P>If a 
-<FONT SIZE=-1>NULL</FONT> image is returned, check exception to determine why the image failed to scale.</P>
 <P>The format of the ResizeImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ResizeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, const <A HREF="types/Enumerations.html#FilterType">FilterType</A> filter, const double blur, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -117,7 +115,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="sampleimage">SampleImage</A></H2>
-<blockquote>SampleImage ( ) scales an image to the desired dimensions with pixelsampling. Unlike other scaling methods, this method does not introduceany additional color into the scaled image. If a NULL image isreturned, check exception to determine why the image failed to scale.; </blockquote><P>The format of the SampleImage method is:</P>
+<blockquote>SampleImage ( ) scales an image to the desired dimensions with pixelsampling. Unlike other scaling methods, this method does not introduceany additional color into the scaled image.; </blockquote><P>The format of the SampleImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -139,7 +137,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="scaleimage">ScaleImage</A></H2>
-<blockquote>ScaleImage ( ) changes the size of an image to the given dimensions. Ifa NULL image is returned, check exception to determine why the image failedto scale.; </blockquote><P>The format of the ScaleImage method is:</P>
+<blockquote>ScaleImage ( ) changes the size of an image to the given dimensions.; </blockquote><P>The format of the ScaleImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

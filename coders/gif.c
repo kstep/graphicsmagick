@@ -1298,7 +1298,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,0x00);
         if (GetImageAttribute(image,"comment") != (ImageAttribute *) NULL)
           {
-            ImageAttribute
+            const ImageAttribute
               *attribute;
 
             register char

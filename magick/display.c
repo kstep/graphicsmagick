@@ -6708,19 +6708,19 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case CommentCommand:
     {
+      const ImageAttribute
+        *attribute;
+
       FILE
         *file;
-
-      ImageAttribute
-        *comment;
 
       /*
         Edit image comment.
       */
       TemporaryFilename(image_info->filename);
-      comment=GetImageAttribute(*image,"comment");
-      if ((comment != (ImageAttribute *) NULL) &&
-          (comment->value != (char *) NULL))
+      attribute=GetImageAttribute(*image,"comment");
+      if ((attribute != (const ImageAttribute *) NULL) &&
+          (attribute->value != (char *) NULL))
         {
           register char
             *p;
@@ -6732,7 +6732,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
                 image_info->filename);
               break;
             }
-          for (p=comment->value; *p != '\0'; p++)
+          for (p=attribute->value; *p != '\0'; p++)
             (void) fputc((int) *p,file);
           (void) fputc('\n',file);
           (void) fclose(file);

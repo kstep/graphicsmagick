@@ -1191,11 +1191,11 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
   char
     clip_path[MaxTextExtent];
 
+  const ImageAttribute
+    *attribute;
+
   DrawInfo
     *clone_info;
-
-  ImageAttribute
-    *attribute;
 
   unsigned int
     status;

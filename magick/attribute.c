@@ -121,7 +121,8 @@ MagickExport void DestroyImageAttributes(Image *image)
 %
 %  The format of the GetImageAttribute method is:
 %
-%      ImageAttribute *GetImageAttribute(const Image *image,const char *key)
+%      const ImageAttribute *GetImageAttribute(const Image *image,
+%        const char *key)
 %
 %  A description of each parameter follows:
 %
@@ -956,7 +957,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
   return(True);
 }
 
-MagickExport ImageAttribute *GetImageAttribute(const Image *image,
+MagickExport const ImageAttribute *GetImageAttribute(const Image *image,
   const char *key)
 {
   register ImageAttribute
@@ -1003,7 +1004,7 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,
 %
 %  The format of the GetImageClippingPathAttribute method is:
 %
-%      ImageAttribute *GetImageClippingPathAttribute(const Image *image)
+%      const ImageAttribute *GetImageClippingPathAttribute(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1014,7 +1015,8 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,
 %
 %
 */
-MagickExport ImageAttribute *GetImageClippingPathAttribute(const Image *image)
+MagickExport const ImageAttribute *GetImageClippingPathAttribute(
+  const Image *image)
 {
   return(GetImageAttribute(image,"8BIM:1999,2998"));
 }
@@ -1035,7 +1037,7 @@ MagickExport ImageAttribute *GetImageClippingPathAttribute(const Image *image)
 %
 %  The format of the GetImageInfoAttribute method is:
 %
-%      ImageAttribute *GetImageAttribute(const ImageInfo *image_info,
+%      const ImageAttribute *GetImageAttribute(const ImageInfo *image_info,
 %        const Image *image,const char *key)
 %
 %  A description of each parameter follows:
@@ -1051,8 +1053,8 @@ MagickExport ImageAttribute *GetImageClippingPathAttribute(const Image *image)
 %      return.
 %
 */
-ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
-  const Image *image,const char *key)
+MagickExport const ImageAttribute *GetImageInfoAttribute(
+  const ImageInfo *image_info,const Image *image,const char *key)
 {
   char
     attribute[MaxTextExtent],

@@ -199,7 +199,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent],
     geometry[MaxTextExtent];
 
-  ImageAttribute
+  const ImageAttribute
     *attribute;
 
   long
@@ -244,7 +244,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   */
   text_size=0;
   attribute=GetImageAttribute(image,"label");
-  if (attribute != (ImageAttribute *) NULL)
+  if (attribute != (const ImageAttribute *) NULL)
     text_size=(unsigned int)
       (MultilineCensus(attribute->value)*image_info->pointsize+12);
   width=image->columns;
@@ -292,7 +292,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer,"\033*p%ldx%ldY",x,y);
   (void) WriteBlobString(image,buffer);
   attribute=GetImageAttribute(image,"label");
-  if (attribute != (ImageAttribute *) NULL)
+  if (attribute != (const ImageAttribute *) NULL)
     {
       /*
         Print label.

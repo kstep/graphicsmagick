@@ -2792,14 +2792,14 @@ Get(ref,...)
       *attribute,
       color[MaxTextExtent];
 
+    const ImageAttribute
+      *image_attribute;
+
     ExceptionInfo
       exception;
 
     Image
       *image;
-
-    ImageAttribute
-      *image_attribute;
 
     int
       j;
@@ -2930,7 +2930,7 @@ Get(ref,...)
         {
           if (LocaleCompare(attribute,"comment") == 0)
             {
-              ImageAttribute
+              const ImageAttribute
                 *attribute;
 
               attribute=GetImageAttribute(image,"comment");
@@ -3249,7 +3249,7 @@ Get(ref,...)
         {
           if (LocaleCompare(attribute,"label") == 0)
             {
-              ImageAttribute
+              const ImageAttribute
                 *attribute;
 
               if (!image)
@@ -3484,7 +3484,7 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"signature") == 0)
             {
-              ImageAttribute
+              const ImageAttribute
                 *attribute;
 
               if (!image)

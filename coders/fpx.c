@@ -743,6 +743,10 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         { ALPHA, DATA_TYPE_UNSIGNED_BYTE } }
     };
 
+  const ImageAttribute
+    *comment,
+    *label;
+
   FPXCompressionOption
     compression;
 
@@ -774,10 +778,6 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     memory_limit,
     tile_height,
     tile_width;
-
-  ImageAttribute
-    *comment,
-    *label;
 
   /*
     Open input file.

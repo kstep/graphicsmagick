@@ -874,7 +874,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
       color_space_model;
   } ViffInfo;
 
-  ImageAttribute
+  const ImageAttribute
     *attribute;
 
   long
@@ -930,7 +930,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     viff_info.machine_dependency=VFF_DEP_IEEEORDER;  /* IEEE byte ordering */
     *viff_info.comment='\0';
     attribute=GetImageAttribute(image,"comment");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       {
         (void) strncpy(viff_info.comment,attribute->value,
           Min(strlen(attribute->value),511));

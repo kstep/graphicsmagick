@@ -2813,6 +2813,9 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
     *text,
     *translated_text;
 
+  const ImageAttribute
+    *attribute;
+
   ExceptionInfo
     exception;
 
@@ -2895,9 +2898,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
       }
       case 'c':
       {
-        ImageAttribute
-          *attribute;
-
         attribute=GetImageAttribute(image,"comment");
         if (attribute == (ImageAttribute *) NULL)
           break;
@@ -2974,9 +2974,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
       }
       case 'l':
       {
-        ImageAttribute
-          *attribute;
-
         attribute=GetImageAttribute(image,"label");
         if (attribute == (ImageAttribute *) NULL)
           break;
@@ -3073,9 +3070,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
         char
           key[MaxTextExtent];
 
-        ImageAttribute
-          *attribute;
-
         off_t
           offset;
 
@@ -3086,7 +3080,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,const Image *image,
           key[i]=(*p++);
         key[i]='\0';
         attribute=GetImageAttribute(image,key);
-        if (attribute != (ImageAttribute *) NULL)
+        if (attribute != (const ImageAttribute *) NULL)
           {
             offset=strlen(attribute->value);
             if ((size_t) (q-translated_text+offset) >= length)

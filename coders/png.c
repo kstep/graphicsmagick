@@ -4292,11 +4292,11 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 
 static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
+  const ImageAttribute
+    *attribute;
+
   Image
     *next_image;
-
-  ImageAttribute
-    *attribute;
 
   int
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
@@ -5591,7 +5591,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->num_text=0;
 #endif
     attribute=GetImageAttribute(image,(char *) NULL);
-    for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+    for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
     {
 #if (PNG_LIBPNG_VER > 10005)
       png_textp

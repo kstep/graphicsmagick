@@ -1176,7 +1176,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   CompressionType
     compression;
 
-  ImageAttribute
+  const ImageAttribute
     *attribute;
 
   IndexPacket
@@ -1411,7 +1411,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     (void) SignatureImage(image);
     attribute=GetImageAttribute(image,(char *) NULL);
-    for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+    for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
     {
       if (*attribute->key == '[')
         continue;

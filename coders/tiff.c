@@ -1179,7 +1179,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   char
     filename[MaxTextExtent];
 
-  ImageAttribute
+  const ImageAttribute
     *attribute;
 
   long
@@ -1503,33 +1503,33 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           image->scene,GetNumberScenes(image));
       }
     attribute=GetImageAttribute(image,"artist");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_ARTIST,attribute->value);
     attribute=GetImageAttribute(image,"timeStamp");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_DATETIME,attribute->value);
     attribute=GetImageAttribute(image,"make");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_MAKE,attribute->value);
     attribute=GetImageAttribute(image,"model");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_MODEL,attribute->value);
     (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
     (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
     attribute=GetImageAttribute(image,"copyright");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) TIFFSetField(tiff,33432,attribute->value);
     attribute=GetImageAttribute(image,"kodak-33423");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) TIFFSetField(tiff,33423,attribute->value);
     attribute=GetImageAttribute(image,"kodak-36867");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) TIFFSetField(tiff,36867,attribute->value);
     attribute=GetImageAttribute(image,"label");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_PAGENAME,attribute->value);
     attribute=GetImageAttribute(image,"comment");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,attribute->value);
     /*
       Write image scanlines.

@@ -276,7 +276,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   status=True;
   if (LocaleCompare(image_info->magick,"SHTML") != 0)
     {
-      ImageAttribute
+      const ImageAttribute
         *attribute;
 
       /*
@@ -291,7 +291,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,"<html version=\"2.0\">\n");
       (void) WriteBlobString(image,"<head>\n");
       attribute=GetImageAttribute(image,"label");
-      if (attribute != (ImageAttribute *) NULL)
+      if (attribute != (const ImageAttribute *) NULL)
         FormatString(buffer,"<title>%.1024s</title>\n",attribute->value);
       else
         {

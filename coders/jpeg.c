@@ -1070,12 +1070,12 @@ static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
 
 static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
+  const ImageAttribute
+    *attribute;
+
   double
     x_resolution,
     y_resolution;
-
-  ImageAttribute
-    *attribute;
 
   long
     y;
@@ -1231,7 +1231,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     Write JPEG profiles.
   */
   attribute=GetImageAttribute(image,"comment");
-  if ((attribute != (ImageAttribute *) NULL) && (attribute->value != NULL))
+  if ((attribute != (const ImageAttribute *) NULL) && (attribute->value != NULL))
     for (i=0; i < strlen(attribute->value); i+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+
         i,(int) Min(strlen(attribute->value+i),65533));

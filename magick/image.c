@@ -858,11 +858,11 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   const unsigned long rows,const unsigned int orphan,ExceptionInfo *exception)
 {
+  const ImageAttribute
+    *attribute;
+
   Image
     *clone_image;
-
-  ImageAttribute
-    *attribute;
 
   register long
     i;
@@ -956,7 +956,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     }
   clone_image->attributes=(ImageAttribute *) NULL;
   attribute=GetImageAttribute(image,(char *) NULL);
-  for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+  for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
     (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
   GetExceptionInfo(&clone_image->exception);
   if ((columns != 0) || (rows != 0))
@@ -1671,6 +1671,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   char
     color[MaxTextExtent];
 
+  const ImageAttribute
+    *attribute;
+
   const MagickInfo
     *magick_info;
 
@@ -1683,9 +1686,6 @@ MagickExport void DescribeImage(Image *image,FILE *file,
 
   Image
     *p;
-
-  ImageAttribute
-    *attribute;
 
   long
     y;
@@ -2167,7 +2167,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           tile->magick_rows,tile->magick);
         (void) SignatureImage(tile);
         attribute=GetImageAttribute(tile,(char *) NULL);
-        for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+        for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
         {
           if (*attribute->key == '[')
             continue;
@@ -2182,7 +2182,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     Display image attributes.
   */
   attribute=GetImageAttribute(image,(char *) NULL);
-  for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+  for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
   {
     if (*attribute->key == '[')
       continue;

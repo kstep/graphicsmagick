@@ -319,6 +319,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   CompressionType
     compression;
 
+  const ImageAttribute
+    *attribute;
+
   double
     dx_resolution,
     dy_resolution,
@@ -326,9 +329,6 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     x_scale,
     y_resolution,
     y_scale;
-
-  ImageAttribute
-    *attribute;
 
   int
     count,
@@ -416,7 +416,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     */
     text_size=0;
     attribute=GetImageAttribute(image,"label");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       text_size=(unsigned int)
         (MultilineCensus(attribute->value)*image_info->pointsize+12);
     width=image->columns;
@@ -484,7 +484,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             ceil(bounds.y2-0.5));
         (void) WriteBlobString(image,buffer);
         attribute=GetImageAttribute(image,"label");
-        if (attribute != (ImageAttribute *) NULL)
+        if (attribute != (const ImageAttribute *) NULL)
           {
             (void) WriteBlobString(image,
               "%%%%DocumentNeededResources: font Helvetica\n");
@@ -518,7 +518,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     if ((y+(long) (height+text_size)-1) > bounds.y2)
       bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"label");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
     /*
       Output image data.

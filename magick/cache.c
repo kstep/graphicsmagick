@@ -2570,7 +2570,7 @@ static unsigned int WriteCacheInfo(Image *image)
   CacheInfo
     *cache_info;
 
-  ImageAttribute
+  const ImageAttribute
     *attribute;
 
   FILE
@@ -2703,7 +2703,7 @@ static unsigned int WriteCacheInfo(Image *image)
     (void) fprintf(file,"montage=%.1024s\n",image->montage);
   (void) SignatureImage(image);
   attribute=GetImageAttribute(image,(char *) NULL);
-  for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
+  for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
   {
     if (attribute->value != NULL)
       {

@@ -747,7 +747,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent],
     *magick;
 
-  ImageAttribute
+  const ImageAttribute
     *attribute;
 
   long
@@ -845,7 +845,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       FormatString(buffer,"P%c\n",format);
     (void) WriteBlobString(image,buffer);
     attribute=GetImageAttribute(image,"comment");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       {
         register char
           *p;

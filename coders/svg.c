@@ -2648,7 +2648,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     *q,
     *token;
 
-  ImageAttribute
+  const ImageAttribute
     *attribute;
 
   int

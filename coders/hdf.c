@@ -478,7 +478,7 @@ ModuleExport void UnregisterHDFImage(void)
 */
 static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
-  ImageAttribute
+  const ImageAttribute
     *attribute;
 
   long
@@ -731,10 +731,10 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
         reference=DFR8lastref();
       }
     attribute=GetImageAttribute(image,"Label");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) DFANputlabel(image->filename,DFTAG_RIG,reference,attribute->value);
     attribute=GetImageAttribute(image,"Comment");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) DFANputdesc(image->filename,DFTAG_RIG,reference,attribute->value,
         strlen(attribute->value)+1);
     LiberateMemory((void **) &hdf_pixels);

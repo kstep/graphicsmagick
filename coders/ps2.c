@@ -471,6 +471,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   CompressionType
     compression;
 
+  const ImageAttribute
+    *attribute;
+
   double
     dx_resolution,
     dy_resolution,
@@ -478,9 +481,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     x_scale,
     y_resolution,
     y_scale;
-
-  ImageAttribute
-    *attribute;
 
   int
     count,
@@ -579,7 +579,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     */
     text_size=0;
     attribute=GetImageAttribute(image,"label");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       text_size=(unsigned int)
         (MultilineCensus(attribute->value)*image_info->pointsize+12);
     width=image->columns;
@@ -648,7 +648,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             ceil(bounds.y2-0.5));
         (void) WriteBlobString(image,buffer);
         attribute=GetImageAttribute(image,"label");
-        if (attribute != (ImageAttribute *) NULL)
+        if (attribute != (const ImageAttribute *) NULL)
           (void) WriteBlobString(image,
             "%%%%DocumentNeededResources: font Helvetica\n");
         (void) WriteBlobString(image,"%%LanguageLevel: 2\n");
@@ -685,7 +685,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           (void) WriteBlobByte(image,'\n');
         }
         attribute=GetImageAttribute(image,"label");
-        if (attribute != (ImageAttribute *) NULL)
+        if (attribute != (const ImageAttribute *) NULL)
           for (j=MultilineCensus(attribute->value)-1; j >= 0; j--)
           {
             (void) WriteBlobString(image,"  /label 512 string def\n");
@@ -718,7 +718,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     if ((y+(long) (height+text_size)-1) > bounds.y2)
       bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"label");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"userdict begin\n");
@@ -732,7 +732,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     labels=(char **) NULL;
     attribute=GetImageAttribute(image,"label");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       labels=StringToList(attribute->value);
     if (labels != (char **) NULL)
       {

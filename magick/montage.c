@@ -265,6 +265,9 @@ MagickExport Image *MontageImages(const Image *image,
     geometry[MaxTextExtent],
     *title;
 
+  const ImageAttribute
+    *attribute;
+
   DrawInfo
     *draw_info;
 
@@ -278,9 +281,6 @@ MagickExport Image *MontageImages(const Image *image,
     *montage_next,
     *texture,
     *tile_next;
-
-  ImageAttribute
-    *attribute;
 
   ImageInfo
     *image_info;
@@ -706,7 +706,7 @@ MagickExport Image *MontageImages(const Image *image,
           tile_info.width=width+2*frame_info.width;
           tile_info.height=height+2*frame_info.height;
           attribute=GetImageAttribute(next,"label");
-          if (attribute != (ImageAttribute *) NULL)
+          if (attribute != (const ImageAttribute *) NULL)
             tile_info.height+=(font_height+4)*MultilineCensus(attribute->value);
           clone_image=CloneImage(next,0,0,True,exception);
           if (clone_image != (Image *) NULL)
@@ -768,7 +768,7 @@ MagickExport Image *MontageImages(const Image *image,
               }
             }
           attribute=GetImageAttribute(next,"label");
-          if (attribute != (ImageAttribute *) NULL)
+          if (attribute != (const ImageAttribute *) NULL)
             {
               /*
                 Annotate composite next tile with label.

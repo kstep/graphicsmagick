@@ -719,6 +719,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   CompressionType
     compression;
 
+  const ImageAttribute
+    *attribute;
+
   double
     dx_resolution,
     dy_resolution,
@@ -726,9 +729,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     x_scale,
     y_resolution,
     y_scale;
-
-  ImageAttribute
-    *attribute;
 
   long
     count,
@@ -929,7 +929,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     */
     text_size=0;
     attribute=GetImageAttribute(image,"label");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       text_size=(unsigned int)
         (MultilineCensus(attribute->value)*image_info->pointsize+12);
     width=image->columns;
@@ -1012,7 +1012,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"q\n");
     labels=(char **) NULL;
     attribute=GetImageAttribute(image,"label");
-    if (attribute != (ImageAttribute *) NULL)
+    if (attribute != (const ImageAttribute *) NULL)
       labels=StringToList(attribute->value);
     if (labels != (char **) NULL)
       {

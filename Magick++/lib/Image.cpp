@@ -2096,7 +2096,7 @@ void Magick::Image::comment ( const std::string &comment_ )
 }
 std::string Magick::Image::comment ( void ) const
 {
-  ImageAttribute * attribute =
+  const ImageAttribute * attribute =
     GetImageAttribute( constImage(), "Comment" );
 
   if ( attribute )
@@ -2396,7 +2396,7 @@ void Magick::Image::label ( const std::string &label_ )
 }
 std::string Magick::Image::label ( void ) const
 {
-  ImageAttribute * attribute =
+  const ImageAttribute * attribute =
     GetImageAttribute( constImage(), "Label" );
 
   if ( attribute )
@@ -2710,7 +2710,7 @@ std::string Magick::Image::signature ( bool force_ ) const
       SignatureImage( const_cast<MagickLib::Image *>(constImage()) );
     }
 
-  ImageAttribute * attribute =
+  const ImageAttribute * attribute =
     GetImageAttribute(constImage(), "Signature");
 
   return std::string( attribute->value );

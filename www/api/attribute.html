@@ -41,8 +41,8 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P><STRONG>DestroyImageAttributes</STRONG>( Image *image );</P>
-<P>ImageAttribute * <STRONG>GetImageAttribute</STRONG>( const Image *image, const char *key );</P>
-<P>ImageAttribute * <STRONG>GetImageClippingPathAttribute</STRONG>( const Image *image );</P>
+<P>const ImageAttribute * <STRONG>GetImageAttribute</STRONG>( const Image *image, const char *key );</P>
+<P>const ImageAttribute * <STRONG>GetImageClippingPathAttribute</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>SetImageAttribute</STRONG>( Image *image, const char *key, const char *value );</P>
 <P><STRONG>StoreImageAttribute</STRONG>( Image *image, char *text );</P>
 <P>
@@ -66,7 +66,7 @@ The image.
 <P>Method GetImageAttribute searches the list of image attributes and returns a pointer to the attribute if it exists otherwise 
 <FONT SIZE=-1>NULL.</FONT></P>
 <P>The format of the GetImageAttribute method is:</P>
-<blockquote>ImageAttribute *GetImageAttribute ( const <A HREF="types/Image.html">Image</A> *image, const char *key ); </blockquote><P>
+<blockquote>const ImageAttribute *GetImageAttribute ( const <A HREF="types/Image.html">Image</A> *image, const char *key ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_attribute%3A">attribute:</A></STRONG><BR>
@@ -87,7 +87,7 @@ These character strings are the name of an image attribute to return.
 <P>Method GetImageClippingPathAttribute searches the list of image attributes and returns a pointer to a clipping path if it exists otherwise 
 <FONT SIZE=-1>NULL.</FONT></P>
 <P>The format of the GetImageClippingPathAttribute method is:</P>
-<blockquote>ImageAttribute *GetImageClippingPathAttribute ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>const ImageAttribute *GetImageClippingPathAttribute ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>attribute:</STRONG><BR>
@@ -104,7 +104,7 @@ The image.
 <P>Method GetImageInfoAttribute returns a ``fake'' attribute based on data in the image info or image structures.</P>
 <P>The format of the GetImageInfoAttribute method is:</P>
 <PRE>
-    ImageAttribute *GetImageAttribute(const ImageInfo *image_info,
+    const ImageAttribute *GetImageAttribute(const ImageInfo *image_info,
       const Image *image,const char *key)</PRE>
 <P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>

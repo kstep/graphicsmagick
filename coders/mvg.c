@@ -281,7 +281,7 @@ ModuleExport void UnregisterMVGImage(void)
 */
 static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
 {
-  ImageAttribute
+  const ImageAttribute
     *attribute;
 
   unsigned int
