@@ -394,7 +394,7 @@ static struct
     { "Trim", { {"fuzz", DoubleReference} } },
     { "Wave", { {"geom", StringReference}, {"ampli", DoubleReference},
       {"wave", DoubleReference} } },
-    { "Channel", { {"radius", ChannelTypes} } },
+    { "Channel", { {"channel", ChannelTypes} } },
     { "Condense", },
     { "Stereo", { {"image", ImageReference} } },
     { "Stegano", { {"image", ImageReference}, {"offset", IntegerReference} } },
