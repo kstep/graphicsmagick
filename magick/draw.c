@@ -456,18 +456,29 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
               color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
                 y % draw_info->tile->rows);
               if (!draw_info->tile->matte)
-                *q=color;
-              else
+                color.opacity=OpaqueOpacity;
+              switch (color.opacity)
+              {
+                case TransparentOpacity:
+                  break;
+                case OpaqueOpacity:
                 {
-                  q->red=((unsigned long) (color.red*(MaxRGB-color.opacity)+
-                    q->red*color.opacity)/MaxRGB);
-                  q->green=((unsigned long) (color.green*(MaxRGB-color.opacity)+
-                    q->green*color.opacity)/MaxRGB);
-                  q->blue=((unsigned long) (color.blue*(MaxRGB-color.opacity)+
-                    q->blue*color.opacity)/MaxRGB);
-                  q->opacity=((unsigned long) (color.opacity*
-                    (MaxRGB-color.opacity)+ q->opacity*color.opacity)/MaxRGB);
+                  *q=color;
+                  break;
                 }
+                default:
+                {
+                  q->red=CompositeOver(q->red,MaxRGB-q->opacity,
+                    color.red,MaxRGB-color.opacity);
+                  q->green=CompositeOver(q->green,MaxRGB-q->opacity,
+                    color.green,MaxRGB-color.opacity);
+                  q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
+                    color.blue,MaxRGB-color.opacity);
+                  q->opacity=CompositeCoverage(MaxRGB-q->opacity,
+                    MaxRGB-color.opacity);
+                  break;
+                }
+              }
             }
           q++;
         }
@@ -2693,22 +2704,20 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
           for (i=0; i < polygon_info->number_edges; i++)
           {
             p=polygon_info->edges+i;
-            if ((p->bounds.y1-mid-0.5) > y)
+            if (y < (p->bounds.y1-mid-0.5))
               break;
-            if ((p->bounds.y2+mid+0.5) < y)
+            if (y >= (p->bounds.y2+mid+0.5))
               {
                 (void) DestroyEdge(polygon_info,i);
                 continue;
               }
-            if (x > (p->bounds.x2+mid+0.5))
-              continue;
-            if (x < (p->bounds.x1-mid-0.5))
+            if ((x < (p->bounds.x1-mid-0.5)) || (x >= (p->bounds.x2+mid+0.5)))
               continue;
             for (j=Max(p->highwater,1) ; j < p->number_points; j++)
             {
-              if ((p->points[j-1].y-mid-0.5) > y)
+              if (y < (p->points[j-1].y-mid-0.5))
                 break;
-              if ((p->points[j].y+mid+0.5) <= y)
+              if (y >= (p->points[j].y+mid+0.5))
                 continue;
               if (p->scanline != y)
                 {
@@ -2771,14 +2780,28 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                     Fill.
                   */
                   fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
-                  q->red=((unsigned long) (fill_color.red*
-                    (MaxRGB-fill_opacity)+q->red*fill_opacity)/MaxRGB);
-                  q->green=((unsigned long) (fill_color.green*
-                    (MaxRGB-fill_opacity)+q->green*fill_opacity)/MaxRGB);
-                  q->blue=((unsigned long) (fill_color.blue*
-                    (MaxRGB-fill_opacity)+q->blue*fill_opacity)/MaxRGB);
-                  q->opacity=((unsigned long) (fill_color.opacity*
-                    (MaxRGB-fill_opacity)+q->opacity*fill_opacity)/MaxRGB);
+                  switch ((int) fill_opacity)
+                  {
+                    case TransparentOpacity:
+                      break;
+                    case OpaqueOpacity:
+                    {
+                      *q=fill_color;
+                      break;
+                    }
+                    default:
+                    {
+                      q->red=CompositeOver(q->red,MaxRGB-q->opacity,
+                        fill_color.red,MaxRGB-fill_opacity);
+                      q->green=CompositeOver(q->green,MaxRGB-q->opacity,
+                        fill_color.green,MaxRGB-fill_opacity);
+                      q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
+                        fill_color.blue,MaxRGB-fill_opacity);
+                      q->opacity=CompositeCoverage(MaxRGB-q->opacity,
+                        MaxRGB-fill_opacity);
+                      break;
+                    }
+                  }
                 }
             }
           if ((stroke_opacity == 0.0) ||
@@ -2791,14 +2814,28 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             Stroke.
           */
           stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
-          q->red=((unsigned long) (stroke_color.red*
-            (MaxRGB-stroke_opacity)+q->red*stroke_opacity)/MaxRGB);
-          q->green=((unsigned long) (stroke_color.green*
-            (MaxRGB-stroke_opacity)+q->green*stroke_opacity)/MaxRGB);
-          q->blue=((unsigned long) (stroke_color.blue*
-            (MaxRGB-stroke_opacity)+q->blue*stroke_opacity)/MaxRGB);
-          q->opacity=((unsigned long) (stroke_color.opacity*
-            (MaxRGB-stroke_opacity)+q->opacity*stroke_opacity)/MaxRGB);
+          switch ((int) stroke_opacity)
+          {
+            case TransparentOpacity:
+              break;
+            case OpaqueOpacity:
+            {
+              *q=stroke_color;
+              break;
+            }
+            default:
+            {
+              q->red=CompositeOver(q->red,MaxRGB-q->opacity,
+                stroke_color.red,MaxRGB-stroke_opacity);
+              q->green=CompositeOver(q->green,MaxRGB-q->opacity,
+                stroke_color.green,MaxRGB-stroke_opacity);
+              q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
+                stroke_color.blue,MaxRGB-stroke_opacity);
+              q->opacity=CompositeCoverage(MaxRGB-q->opacity,
+                MaxRGB-stroke_opacity);
+              break;
+            }
+          }
           q++;
         }
         break;

@@ -1302,13 +1302,37 @@ MagickExport unsigned int CompositeImage(Image *image,
         case OverCompositeOp:
         default:
         {
-          red=((double) (p->red*(MaxRGB-p->opacity)+q->red*p->opacity)/MaxRGB);
-          green=((double) (p->green*(MaxRGB-p->opacity)+
-            q->green*p->opacity)/MaxRGB);
-          blue=((double) (p->blue*(MaxRGB-p->opacity)+
-            q->blue*p->opacity)/MaxRGB);
-          opacity=((double) (p->opacity*(MaxRGB-p->opacity)+
-            q->opacity*p->opacity)/MaxRGB);
+          switch (p->opacity)
+          {
+            case TransparentOpacity:
+            {
+              red=q->red;
+              green=q->green;
+              blue=q->blue;
+              opacity=q->opacity;
+              break;
+            }
+            case OpaqueOpacity:
+            {
+              red=p->red;
+              green=p->green;
+              blue=p->blue;
+              opacity=p->opacity;
+              break;
+            }
+            default:
+            {
+              red=CompositeOver(q->red,MaxRGB-q->opacity,
+                p->red,MaxRGB-p->opacity);
+              green=CompositeOver(q->green,MaxRGB-q->opacity,
+                p->green,MaxRGB-p->opacity);
+              blue=CompositeOver(q->blue,MaxRGB-q->opacity,
+                p->blue,MaxRGB-p->opacity);
+              opacity=CompositeCoverage(MaxRGB-q->opacity,
+                MaxRGB-p->opacity);
+              break;
+            }
+          }
           break;
         }
         case InCompositeOp:

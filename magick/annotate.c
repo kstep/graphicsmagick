@@ -1086,14 +1086,27 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
               }
             opacity=draw_info->fill.opacity+((unsigned long)
               (MaxRGB-UpScale(*p))*(MaxRGB-draw_info->fill.opacity))/MaxRGB;
-            q->red=((unsigned long) (draw_info->fill.red*(MaxRGB-opacity)+
-              q->red*opacity)/MaxRGB);
-            q->green=((unsigned long) (draw_info->fill.green*(MaxRGB-opacity)+
-              q->green*opacity)/MaxRGB);
-            q->blue=((unsigned long) (draw_info->fill.blue*(MaxRGB-opacity)+
-              q->blue*opacity)/MaxRGB);
-            q->opacity=((unsigned long) (draw_info->fill.opacity*
-              (MaxRGB-opacity)+q->opacity*opacity)/MaxRGB);
+            switch (opacity)
+            {
+              case TransparentOpacity:
+                break;
+              case OpaqueOpacity:
+              {
+                *q=draw_info->fill;
+                break;
+              }
+              default:
+              {
+                q->red=CompositeOver(q->red,MaxRGB-q->opacity,
+                  draw_info->fill.red,MaxRGB-opacity);
+                q->green=CompositeOver(q->green,MaxRGB-q->opacity,
+                  draw_info->fill.green,MaxRGB-opacity);
+                q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
+                  draw_info->fill.blue,MaxRGB-opacity);
+                q->opacity=CompositeCoverage(MaxRGB-q->opacity,MaxRGB-opacity);
+                break;
+              }
+            }
             p++;
             if (!SyncImagePixels(image))
               continue;
