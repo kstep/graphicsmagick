@@ -11,7 +11,7 @@ angle angle
 arc startX,startY endX,endY startDegrees,endDegrees
 bezier x1,y1, x2,y2, x3,y3, ..., xN,yN
 circle originX,originY perimX,perimY
-clip-path %s  (%s is the name of the clip path)
+clip-path url(#%s)  (%s is the name of the clip path)
 clip-rule (evenodd|nonzero)
 clip-units (userSpace|userSpaceOnUse|objectBoundingBox)
 color x,y (point|replace|floodfill|filltoborder|reset)
@@ -37,7 +37,7 @@ pop defs
 pop graphic-context
 pop linear-gradient
 pop pattern
-push clip-path-%s  (%s is the name of the clip path)
+push clip-path %s  (%s is the name of the clip path)
 push defs
 push gradient id linear x1,y1 x2,y2
 push gradient id radial cx,cy fx,fy r
@@ -65,6 +65,7 @@ translate x,y
 viewbox (e.g. "viewbox 0 0 640 480")
 
 Pattern syntax (saving and restoring context)
+---------------------------------------------
 
   push pattern id x,y width,height
   push graphic-context
@@ -72,9 +73,10 @@ Pattern syntax (saving and restoring context)
   pop graphic-context
   pop pattern
 
-an example is
+an example is (%s is a identifier string)
 
-  push pattern pat1 10,10 20,20
+  push defs
+  push pattern %s 10,10 20,20
   push graphic-context
   fill red
   rectangle 5,5 15,15
@@ -84,6 +86,7 @@ an example is
   rectangle 10,10 20,20
   pop graphic-context
   pop pattern
+  pop defs
 
 For image tiling use
 
@@ -91,6 +94,27 @@ For image tiling use
     image Copy ...
   pop pattern
 
-Note you can use the pattern for either the fill or stroke.
+Note you can use the pattern for either the fill or stroke like
 
+  stroke url(#%s)
+
+    or
+
+  fill url(#%s)
+
+Clip-path syntax
+----------------
+
+ The clip path defines a clipping area, where only the contained
+ area will be drawn upon.  Areas outside of the clipping area are
+ masked.
+
+  push defs
+  push clip-path %s
+  push graphic-context
+  rectangle 10,10 20,20
+  pop graphic-context
+  pop clip-path
+  pop defs
+  clip-path url(#%s)
 
