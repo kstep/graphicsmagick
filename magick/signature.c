@@ -435,7 +435,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
 MagickExport unsigned int SignatureImage(Image *image)
 {
   char
-    *signature;
+    signature[MaxTextExtent];
 
   IndexPacket
     *indexes;
@@ -512,17 +512,15 @@ MagickExport unsigned int SignatureImage(Image *image)
     UpdateSignature(&signature_info,message,q-message);
   }
   FinalizeSignature(&signature_info);
+  LiberateMemory((void **) &message);
   /*
     Convert digital signature to a 64 character hex string.
   */
-  signature=AllocateString((char *) NULL);
   FormatString(signature,"%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx",
     signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
     signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
     signature_info.digest[6],signature_info.digest[7]);
   while (SetImageAttribute(image,"Signature",(char *) NULL) != False);
   (void) SetImageAttribute(image,"Signature",signature);
-  LiberateMemory((void **) &signature);
-  LiberateMemory((void **) &message);
   return(True);
 }
