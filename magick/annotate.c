@@ -83,15 +83,15 @@
   Typedef declarations.
 */
 typedef struct _FontInfo
-{
+{  
   char
     *format,
     *metrics,
     *glyphs,
     *name,
-    *description,
     *family,
     *weight,
+    *description,
     *version,
     *alias;
 
@@ -412,7 +412,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyFontInfo deallocates memory associated with fontmap list.
+%  Method DestroyFontInfo deallocates memory associated with the font_info
+%  list.
 %
 %  The format of the DestroyFontInfo method is:
 %
@@ -427,9 +428,6 @@ extern "C" {
 
 MagickExport void DestroyFontInfo(void)
 {
-  FontInfo
-    *fontmap;
-
   register FontInfo
     *p;
 
@@ -448,6 +446,8 @@ MagickExport void DestroyFontInfo(void)
       LiberateMemory((void **) &p->family);
     if (p->weight != (char *) NULL)
       LiberateMemory((void **) &p->weight);
+    if (p->description != (char *) NULL)
+      LiberateMemory((void **) &p->description);
     if (p->version != (char *) NULL)
       LiberateMemory((void **) &p->version);
     if (p->alias != (char *) NULL)
@@ -475,8 +475,8 @@ MagickExport void DestroyFontInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetFontInfo returns the font info associated with the specified
-%  name.
+%  Method GetFontInfo searches the font map for the specified name and if
+%  found returns attributes for that font.
 %
 %  The format of the GetFontInfo method is:
 %
@@ -484,14 +484,15 @@ MagickExport void DestroyFontInfo(void)
 %
 %  A description of each parameter follows:
 %
-%    o font_info: Method GetFontInfo returns the font info associated with the
-%      specified name.
+%    o font_info: Method GetFontInfo searches the font map for the specified
+%      name and if found returns attributes for that font.
 %
 %    o name: The font name.
 %
 %
 */
 
+#if defined(HasXML)
 static void ParseFontmap(void *context,const xmlChar *name,
   const xmlChar **attributes)
 {
@@ -510,214 +511,204 @@ static void ParseFontmap(void *context,const xmlChar *name,
 
   if (LocaleCompare(name,"font") != 0)
     return;
+  if (attributes == (const xmlChar **) NULL)
+    return;
   font_info=(FontInfo *) AcquireMemory(sizeof(FontInfo));
   if (font_info == (FontInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate fontmap",
       "Memory allocation failed");
   memset(font_info,0,sizeof(FontInfo));
-  if (attributes != (const xmlChar **) NULL)
-    for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
+  for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
+  {
+    keyword=(const char *) attributes[i];
+    value=(const char *) attributes[i+1];
+    switch (*keyword) 
     {
-      keyword=(const char *) attributes[i];
-      value=(const char *) attributes[i+1];
-      switch (*keyword)
+      case 'A':
+      case 'a':
       {
-        case 'a':
-        case 'A':
-        {
-          if (LocaleCompare(keyword,"alias") == 0)
-            {
-              font_info->alias=AllocateString(value);
-              break;
-            }
-          break;
-        }
-        case 'f':
-        case 'F':
-        {
-          if (LocaleCompare(keyword,"familyname") == 0)
-            {
-              font_info->family=AllocateString(value);
-              break;
-            }
-          if (LocaleCompare(keyword,"format") == 0)
-            {
-              font_info->format=AllocateString(value);
-              break;
-            }
-          if (LocaleCompare(keyword,"fullname") == 0)
-            {
-              font_info->description=AllocateString(value);
-              break;
-            }
-          break;
-        }
-        case 'g':
-        case 'G':
-        {
-          if (LocaleCompare(keyword,"glyphs") == 0)
-            {
-              font_info->glyphs=AllocateString(value);
-              break;
-            }
-          break;
-        }
-        case 'm':
-        case 'M':
-        {
-          if (LocaleCompare(keyword,"metrics") == 0)
-            {
-              font_info->metrics=AllocateString(value);
-              break;
-            }
-          break;
-        }
-        case 'n':
-        case 'N':
-        {
-          if (LocaleCompare(keyword,"name") == 0)
-            {
-              font_info->name=AllocateString(value);
-              break;
-            }
-          break;
-        }
-        case 'v':
-        case 'V':
-        {
-          if (LocaleCompare(keyword,"version") == 0)
-            {
-              font_info->version=AllocateString(value);
-              break;
-            }
-          break;
-        }
-        case 'w':
-        case 'W':
-        {
-          if (LocaleCompare(keyword,"weight") == 0)
-            {
-              font_info->weight=AllocateString(value);
-              break;
-            }
-          break;
-        }
-        default:
-          break;
+        if (LocaleCompare((char *) keyword,"alias") == 0)
+          {
+            font_info->alias=AllocateString(value);
+            break;
+          }
+        break;
       }
+      case 'F':
+      case 'f':
+      {
+        if (LocaleCompare((char *) keyword,"format") == 0)
+          {
+            font_info->format=AllocateString(value);
+            break;
+          }
+        if (LocaleCompare((char *) keyword,"fullname") == 0)
+          {
+            font_info->description=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      case 'G':
+      case 'g':
+      {
+        if (LocaleCompare((char *) keyword,"glyphs") == 0)
+          {
+            font_info->glyphs=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      case 'M':
+      case 'm':
+      {
+        if (LocaleCompare((char *) keyword,"metrics") == 0)
+          {
+            font_info->metrics=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      case 'N':
+      case 'n':
+      {
+        if (LocaleCompare((char *) keyword,"name") == 0)
+          {
+            font_info->name=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      case 'V':
+      case 'v':
+      {
+        if (LocaleCompare((char *) keyword,"version") == 0)
+          {
+            font_info->version=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      case 'W':
+      case 'w':
+      {
+        if (LocaleCompare((char *) keyword,"weight") == 0)
+          {
+            font_info->weight=AllocateString(value);
+            break;
+          }
+        break;
+      }
+      default:
+        break;
     }
-  if (font_info->name == (char *) NULL)
-    return;
-  for (p=(FontInfo *) context; p->next != (FontInfo *) NULL; p=p->next);
-  font_info->previous=p;
+  }
+  if (fontmap == (FontInfo *) NULL)
+    {
+      fontmap=font_info;
+      return;
+    }
+  for (p=fontmap; p->next != (FontInfo *) NULL; p=p->next);
   p->next=font_info;
+  font_info->previous=p;
 }
+#endif
 
 MagickExport FontInfo *GetFontInfo(char *name)
 {
-#if defined(HasXML)
-
 #define FontmapPath  "/usr/share/fonts/fontmap"
-
-  xmlSAXHandler
-    SAXHandlerStruct =
-    {
-      NULL, /* internalSubset */
-      NULL, /* isStandalone */
-      NULL, /* hasInternalSubset */
-      NULL, /* hasExternalSubset */
-      NULL, /* resolveEntity */
-      NULL, /* getEntity */
-      NULL, /* entityDecl */
-      NULL, /* notationDecl */
-      NULL, /* attributeDecl */
-      NULL, /* elementDecl */
-      NULL, /* unparsedEntityDecl */
-      NULL, /* setDocumentLocator */
-      NULL, /* startDocument */
-      NULL, /* endDocument */
-      ParseFontmap, /* startElement */
-      NULL, /* endElement */
-      NULL, /* reference */
-      NULL, /* characters */
-      NULL, /* ignorableWhitespace */
-      NULL, /* processingInstruction */
-      NULL, /* comment */
-      NULL, /* xmlParserWarning */
-      NULL, /* xmlParserError */
-      NULL, /* xmlParserError */
-      NULL, /* xmlParserError */
-      NULL, /* getParameterEntity */
-      NULL, /* cdataBlock; */
-    };
-
-  char
-    buffer[MaxTextExtent];
-
-  FILE
-    *file;
-
-  int
-    n;
 
   register FontInfo
     *p;
 
-  unsigned int
-    status;
-
-  xmlParserCtxtPtr
-    parser;
-
-  xmlSAXHandlerPtr
-    SAXHandler;
-
+#if defined(HasXML)
   AcquireSemaphore(&font_semaphore);
-  if (fontmap != (FontInfo *) NULL)
-    {
-      /*
-        Search font map.
-      */
-      LiberateSemaphore(&font_semaphore);
-      for (p=fontmap; p != (FontInfo *) NULL; p=p->next)
-        if (LocaleCompare(p->name,name) == 0)
-          break;
-      return(p);
-    }
-  /*
-    Create font map.
-  */
-  fontmap=(FontInfo *) AcquireMemory(sizeof(FontInfo));
   if (fontmap == (FontInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate fontmap",
-      "Memory allocation failed");
-  memset(fontmap,0,sizeof(FontInfo));
-  fontmap->name=AllocateString("*");
-  file=fopen(FontmapPath,"r");
-  if (file == (FILE *) NULL)
-    return((FontInfo *) NULL);
-  xmlSubstituteEntitiesDefault(1);
-  SAXHandler=(&SAXHandlerStruct);
-  parser=xmlCreatePushParserCtxt(SAXHandler,fontmap,(char *) NULL,0,
-    FontmapPath);
-  while (fgets(buffer,MaxTextExtent,file) != (char *) NULL)
-  {
-    n=Extent(buffer);
-    if (n == 0)
-      continue;
-    status=xmlParseChunk(parser,buffer,n,False);
-    if (status != 0)
-      break;
-    (void) xmlParseChunk(parser," ",1,False);
-  }
-  (void) xmlParseChunk(parser," ",1,True);
-  xmlFreeParserCtxt(parser);
-  xmlCleanupParser();
-  (void) fclose(file);
-  atexit(DestroyFontInfo);
+    {
+      xmlSAXHandler
+        SAXHandlerStruct =
+        {
+          NULL, /* internalSubset */
+          NULL, /* isStandalone */
+          NULL, /* hasInternalSubset */
+          NULL, /* hasExternalSubset */
+          NULL, /* resolveEntity */
+          NULL, /* getEntity */
+          NULL, /* entityDecl */
+          NULL, /* notationDecl */
+          NULL, /* attributeDecl */
+          NULL, /* elementDecl */
+          NULL, /* unparsedEntityDecl */
+          NULL, /* setDocumentLocator */
+          NULL, /* startDocument */
+          NULL, /* endDocument */
+          ParseFontmap, /* startElement */
+          NULL, /* endElement */
+          NULL, /* reference */
+          NULL, /* characters */
+          NULL, /* ignorableWhitespace */
+          NULL, /* processingInstruction */
+          NULL, /* comment */
+          NULL, /* xmlParserWarning */
+          NULL, /* xmlParserError */
+          NULL, /* xmlParserError */
+          NULL, /* getParameterEntity */
+          NULL, /* cdataBlock; */
+        };
+
+      char
+        buffer[MaxTextExtent];
+
+      FILE
+        *file;
+
+      int
+        n;
+
+      unsigned int
+        status;
+
+      xmlParserCtxtPtr
+        parser;
+
+      xmlSAXHandlerPtr
+        SAXHandler;
+
+      /*
+        Initialize fontmap.
+      */
+      file=fopen(FontmapPath,"r");
+      if (file == (FILE *) NULL)
+        return(fontmap);
+      xmlSubstituteEntitiesDefault(1);
+      SAXHandler=(&SAXHandlerStruct);
+      parser=xmlCreatePushParserCtxt(SAXHandler,NULL,(char *) NULL,0,
+        FontmapPath);
+      while (fgets(buffer,MaxTextExtent,file) != (char *) NULL)
+      {
+        n=Extent(buffer);
+        if (n == 0)
+          continue;
+        status=xmlParseChunk(parser,buffer,n,False);
+        if (status != 0)
+          break;
+        (void) xmlParseChunk(parser," ",1,False);
+      }
+      (void) xmlParseChunk(parser," ",1,True);
+      xmlFreeParserCtxt(parser);
+      xmlCleanupParser();
+      (void) fclose(file);
+      atexit(DestroyFontInfo);
+    }
   LiberateSemaphore(&font_semaphore);
 #endif
-  return((FontInfo *) NULL);
+  /*
+    Search fontmap.
+  */
+  for (p=fontmap; p != (FontInfo *) NULL; p=p->next)
+    if ((p->name != (char *) NULL) && (LocaleCompare(p->name,name) == 0))
+      break;
+  return(p);
 }
 
 /*
