@@ -81,8 +81,9 @@ UNIX/Cygwin/MinGW COMPILATION
     gzip -dc ImageMagick-5.4.7.tar.gz | tar xvf -
     cd ImageMagick-5.4.7
 
-  If you do not have gunzip(1), it is available as
-  ftp.gnu.org:pub/gnu/gzip-1.2.4.shar.
+  If you do not have gunzip(1), the source for the bgzip package is
+  available as "ftp://ftp.gnu.org/gnu/gzip/gzip-1.2.4a.shar" (a shell
+  archive) or "ftp://ftp.gnu.org/gnu/gzip/gzip-1.2.4a.tar" (a tar archive).
 
   Use 'configure' to automatically configure, build, and install
   ImageMagick.
@@ -118,9 +119,8 @@ UNIX/Cygwin/MinGW COMPILATION
   # Configuration defaults for all packages installed under this prefix
   CC=gcc
   CXX=c++
-  CFLAGS=-O2
-  CXXFLAGS=-O
-  LDFLAGS=-R/usr/local/lib
+  CPPFLAGS='-I/usr/local/include'
+  LDFLAGS='-L/usr/local/lib -R/usr/local/lib'
 
   When the 'config.site' file is being used to supply defaults, configure
   will issue a message similar to:
@@ -226,16 +226,29 @@ UNIX/Cygwin/MinGW COMPILATION
       libraries if ImageMagick itself is to be dynamically loaded (such
       as for PerlMagick).
 
-      ImageMagick built with delegates (see MAGICK PLUG-INS below)
-      can pose additional challenges.  You can build all the delegates
-      statically and link them into the ImageMagick shared library
-      (i.e. libMagick.so) or alternatively you can build the delegates
-      as shared libraries (some systems already have delegates installed
-      as shared libraries).  Shared libraries compilation flags differ
-      from vendor to vendor (gcc's is -fPIC).  However, you must compile
-      all shared library source with the same flag (for gcc use -fPIC
-      rather than -fpic).  Accomplishing this often requires hand-editing
-      Makefiles.
+      ImageMagick built with delegates (see MAGICK PLUG-INS below) can
+      pose additional challenges. If ImageMagick is built using static
+      libraries (the default without --enable-shared) then delegate
+      libraries may be built as either static libraries or shared
+      libraries. However, if ImageMagick is built using shared libraries,
+      then all delegate libraries must also be built as shared libraries.
+      Static libraries usually have the extension .a, while shared
+      libraries typically have extensions like .so, .sa, or .dll. Code in
+      shared libraries normally must compiled using a special compiler
+      option to produce Position Independent Code (PIC). The only time
+      this is not necessary is if the platform compiles code as PIC by
+      default.
+
+      PIC compilation flags differ from vendor to vendor (gcc's is
+      -fPIC). However, you must compile all shared library source with
+      the same flag (for gcc use -fPIC rather than -fpic). While static
+      libraries are normally created using an archive tool like 'ar',
+      shared libraries are built using special linker or compiler
+      options (e.g. -shared for gcc).
+
+      Building shared libraries often requires subtantial hand-editing of
+      Makefiles and is only recommended for those who know what they are
+      doing.
 
       If --enable-shared is not specified, a new PERL interpreter
       (PerlMagick) is built which is statically linked against the
@@ -264,13 +277,13 @@ UNIX/Cygwin/MinGW COMPILATION
       with --enable-shared.  If --enable-shared is not also specified,
       then support for modules is disabled.
 
-    o --enable-lzw: Unisys reportedly claims a patent on the algorithm
-      supporting LZW compression (e.g. used by GIF and TIFF). To avoid
-      possibly infringing on this patent, support for LZW is disabled by
-      default. With LZW support, GIF files written by ImageMagick will
-      be much larger than expected. Note that the TIFF library must be
-      patched in order to support LZW compression, and that this support
-      must be explicitly enabled in the libtiff Makefiles.
+    o --enable-lzw: Unisys claims a patent on the algorithm supporting
+      LZW compression (e.g. used by GIF and TIFF). To avoid possibly
+      infringing on this patent, support for LZW is disabled by default.
+      With LZW support, GIF files written by ImageMagick will be much
+      larger than expected. Note that the TIFF library must be patched in
+      order to support LZW compression, and that this support must be
+      explicitly enabled in the libtiff Makefiles.
 
     o --disable-16bit-pixel: By default ImageMagick represents images
       internally using a sixteen-bit pixel quantum (the size of the
@@ -367,18 +380,18 @@ UNIX/Cygwin/MinGW COMPILATION
   Building under Cygwin
 
     ImageMagick may be built under the Windows '95-XP Cygwin
-    Unix-emulation environment available from "http://www.cygwin.com/".
-    X11R6 for Cygwin is available from "http://xfree86.cygwin.com/". It
-    is strongly recommended that the X11R6 package be installed since
-    this enables ImageMagick's X11 support (animate, display, and import
-    will work) and it includes the Freetype v2 DLL required to support
-    TrueType and Postscript Type 1 fonts. Make sure that /usr/X11R6/bin
-    is in your PATH prior to running configure. If you are using Cygwin
-    version 1.3.9 or later, you may specify the configure option
-    '--enable-shared' to build Cygwin DLLs. Specifying '--enable-shared'
-    is required if you want to build PerlMagick under Cygwin because
-    Cygwin does not provide the libperl.a static library required to
-    create a static PerlMagick.
+    Unix-emulation environment available for free from
+    "http://www.cygwin.com/". X11R6 for Cygwin is available from
+    "http://xfree86.cygwin.com/". It is strongly recommended that the
+    X11R6 package be installed since this enables ImageMagick's X11
+    support (animate, display, and import will work) and it includes the
+    Freetype v2 DLL required to support TrueType and Postscript Type 1
+    fonts. Make sure that /usr/X11R6/bin is in your PATH prior to running
+    configure. If you are using Cygwin version 1.3.9 or later, you may
+    specify the configure option '--enable-shared' to build Cygwin DLLs.
+    Specifying '--enable-shared' is required if you want to build
+    PerlMagick under Cygwin because Cygwin does not provide the libperl.a
+    static library required to create a static PerlMagick.
 
   Building under MinGW & MSYS
 

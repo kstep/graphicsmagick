@@ -59,7 +59,7 @@ FreeBSD 3.X and 4.X
   Problem
   
     ImageMagick does not run after it is installed. The system does not
-    see an installed shared library until the 'ltconfig' command has
+    see an installed shared library until the 'ldconfig' command has
     been executed (as root) using the correct options.
 
   Indications
@@ -103,7 +103,7 @@ Solaris 2.X
     
   Indications
   
-    o Failure to link
+    o Failure to link due to unresolved symbols
     o Failure to run properly
     o The command 'ldd `which convert`' lists the wrong library.
   
@@ -146,7 +146,7 @@ Solaris 2.X
 
   Problem
   
-    When using gcc 3.0.1, configure decides that the compiler is insufficient
+    When using gcc 3.0.X, configure decides that the compiler is insufficient
     to compile Magick++.
     
   Indications
@@ -155,12 +155,37 @@ Solaris 2.X
   
   Solution
 
-    The problem is due to gcc provided headers undefining Solaris-provided
-    defines for 64-bit versions of stdio functions.  The solution is to
-    either configure with --disable-largefile or edit the installed
-    g++-v3/bits/std_cstdio.h to bracket the offending undefs (for fgetpos,
-    fopen, freopen, fsetpos, & tmpfile) like:
+    The problem is due to gcc provided headers undefining
+    Solaris-provided defines for 64-bit versions of stdio functions. The
+    solution is to either configure with --disable-largefile or edit the
+    installed g++-v3/bits/std_cstdio.h to bracket the offending undefs
+    (for fgetpos, fopen, freopen, fsetpos, & tmpfile) like:
 
     #if _FILE_OFFSET_BITS != 64
     #undef fopen
     #endif
+
+       or
+
+    Install gcc 3.1 (or later) instead.
+
+  Problem
+
+    A static library was used in a shared library build.
+
+  Indications
+
+    Linker prints a warning similar to:
+
+    "ld: fatal: relocations remain against allocatable but non-writable
+     sections"
+
+  Solution
+
+    All libraries used in a shared library build *must* also be shared
+    libraries. Check all libraries referenced in the libtool link
+    command line and verify that all of the referenced libraries are
+    indeed shared libraries. All system libraries are available as
+    shared libraries so it is likely that any static library is locally
+    installed.
+    
