@@ -788,22 +788,14 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     */
     (void) TransformRGBImage(image,RGBColorspace);
     magick=(char *) image_info->magick;
-    if (((LocaleCompare(magick,"PGM") == 0) &&
-         !IsGrayImage(image,&image->exception)) ||
-        ((LocaleCompare(magick,"PBM") == 0) &&
-         !IsMonochromeImage(image,&image->exception)))
-      {
-        QuantizeInfo
-          quantize_info;
-
-        GetQuantizeInfo(&quantize_info);
-        quantize_info.number_colors=MaxRGB+1;
-        if (LocaleCompare(image_info->magick,"PBM") == 0)
-          quantize_info.number_colors=2;
-        quantize_info.dither=image_info->dither;
-        quantize_info.colorspace=GRAYColorspace;
-        (void) QuantizeImage(&quantize_info,image);
-      }
+    if (LocaleCompare(magick,"PBM") == 0)
+      if ((image->storage_class == DirectClass) ||
+          !IsMonochromeImage(image,&image->exception))
+        SetImageType(image,BilevelType);
+    if (LocaleCompare(magick,"PGM") == 0)
+      if ((image->storage_class == DirectClass) ||
+          !IsGrayImage(image,&image->exception))
+      SetImageType(image,GrayscaleType);
     /*
       Write PNM file header.
     */

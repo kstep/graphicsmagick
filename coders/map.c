@@ -330,18 +330,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     Allocate colormap.
   */
   if (!IsPaletteImage(image,&image->exception))
-    {
-      QuantizeInfo
-        quantize_info;
-
-      /*
-        Demote DirectClass to PseudoClass.
-      */
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=MaxRGB+1;
-      quantize_info.dither=image_info->dither;
-      (void) QuantizeImage(&quantize_info,image);
-    }
+    SetImageType(image,PaletteType);
   packet_size=image->depth > 8 ? 2 : 1;
   pixels=(unsigned char *) AcquireMemory(image->columns*packet_size);
   packet_size=image->colors > 256 ? 6 : 3;

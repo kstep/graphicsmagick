@@ -383,16 +383,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
               image);
         }
       if (!IsMonochromeImage(monochrome_image,&monochrome_image->exception))
-        {
-          QuantizeInfo
-            quantize_info;
-
-          GetQuantizeInfo(&quantize_info);
-          quantize_info.number_colors=2;
-          quantize_info.dither=image_info->dither;
-          quantize_info.colorspace=GRAYColorspace;
-          (void) QuantizeImage(&quantize_info,monochrome_image);
-        }
+        SetImageType(monochrome_image,BilevelType);
       polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
       if (monochrome_image->colors == 2)
         polarity=Intensity(monochrome_image->colormap[0]) >

@@ -682,9 +682,6 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     }
   else
     {
-      QuantizeInfo
-        quantize_info;
-
       /*
         Convert DirectClass to PseudoClass image.
       */
@@ -710,9 +707,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
               break;
           }
         }
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.dither=image_info->dither;
-      (void) QuantizeImage(&quantize_info,image);
+      SetImageType(image,PaletteType);
     }
   colors=image->colors;
   if (transparent)

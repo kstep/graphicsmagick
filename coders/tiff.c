@@ -1296,17 +1296,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
     if ((image_info->compression == FaxCompression) ||
         (image_info->compression == Group4Compression))
-      if (!IsMonochromeImage(image,&image->exception))
-        {
-          QuantizeInfo
-            quantize_info;
-
-          GetQuantizeInfo(&quantize_info);
-          quantize_info.number_colors=2;
-          quantize_info.dither=image_info->dither;
-          quantize_info.colorspace=GRAYColorspace;
-          (void) QuantizeImage(&quantize_info,image);
-        }
+      if ((image->storage_class == DirectClass) ||
+          !IsMonochromeImage(image,&image->exception))
+        SetImageType(image,BilevelType);
     if (((image_info->colorspace == UndefinedColorspace) &&
          (image->colorspace == CMYKColorspace)) ||
          (image_info->colorspace == CMYKColorspace))

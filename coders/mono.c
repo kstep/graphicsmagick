@@ -293,16 +293,7 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
     Convert image to a bi-level image.
   */
   if (!IsMonochromeImage(image,&image->exception))
-    {
-      QuantizeInfo
-        quantize_info;
-
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=2;
-      quantize_info.dither=image_info->dither;
-      quantize_info.colorspace=GRAYColorspace;
-      (void) QuantizeImage(&quantize_info,image);
-    }
+    SetImageType(image,BilevelType);
   polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
   if (image->colors == 2)
     polarity=Intensity(image->colormap[0]) > Intensity(image->colormap[1]);

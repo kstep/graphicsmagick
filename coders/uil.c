@@ -205,9 +205,6 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     colors=image->colors;
   else
     {
-      QuantizeInfo
-        quantize_info;
-
       unsigned char
         *matte_image;
 
@@ -240,9 +237,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
             }
           }
         }
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.dither=image_info->dither;
-      (void) QuantizeImage(&quantize_info,image);
+      SetImageType(image,PaletteType);
       colors=image->colors;
       if (transparent)
         {

@@ -694,24 +694,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    if ((compression == FaxCompression) &&
-        !IsMonochromeImage(image,&image->exception))
-      {
-        QuantizeInfo
-          quantize_info;
-
-        /*
-          Convert image to monochrome.
-        */
-        image=CloneImage(image,0,0,True,&image->exception);
-        if (image == (Image *) NULL)
-          return(False);
-        GetQuantizeInfo(&quantize_info);
-        quantize_info.number_colors=2;
-        quantize_info.dither=image_info->dither;
-        quantize_info.colorspace=GRAYColorspace;
-        (void) QuantizeImage(&quantize_info,image);
-      }
+    if (compression == FaxCompression)
+      if ((image->storage_class == DirectClass) ||
+          !IsMonochromeImage(image,&image->exception))
+      SetImageType(image,BilevelType);
     if (compression == JPEGCompression)
       image->storage_class=DirectClass;
     /*
