@@ -46,7 +46,8 @@ ALLMANPAGES = Magick-config.1
 libMagick_la_LDFLAGS = -no-undefined \
 	-version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
-AM_CFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
+#AM_CFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
+AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \

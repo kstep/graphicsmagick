@@ -475,8 +475,13 @@ then
 
     if test "$with_modules" = 'yes'
     then
-      LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKMOD_"  
+      LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKMOD_"
+    else
+      MODULE_EXTRA_CPPFLAGS="$MODULE_EXTRA_CPPFLAGS -D_MAGICKLIB_"
     fi
+
+  else
+    CPPFLAGS="$CPPFLAGS -D_LIB"
 
   fi
   if test "$with_threads" = 'yes'

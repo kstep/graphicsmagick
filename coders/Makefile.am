@@ -100,7 +100,8 @@ pkg_LTLIBRARIES =
 MODULECOMMONFLAGS     =
 endif # WITH_MODULES
 
-AM_CFLAGS = @MODULE_EXTRA_CPPFLAGS@
+#AM_CFLAGS = @MODULE_EXTRA_CPPFLAGS@
+AM_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 
 # ART module
 art_la_SOURCES      = art.c
@@ -130,7 +131,7 @@ caption_la_LIBADD   = $(LIBMAGICK)
 # CLIPBOARD module
 clipboard_la_SOURCES= clipboard.c
 clipboard_la_LDFLAGS= $(MODULECOMMONFLAGS)
-clipboard_la_LIBADD = $(LIBMAGICK)
+clipboard_la_LIBADD = $(LIBMAGICK) @LIB_GDI32@
 
 # CMYK module
 cmyk_la_SOURCES     = cmyk.c
