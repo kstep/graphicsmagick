@@ -480,6 +480,7 @@ namespace Magick
   using MagickLib::OptionError;
   using MagickLib::OptionWarning;
   using MagickLib::PercentValue;
+  using MagickLib::PingBlob;
   using MagickLib::PingImage;
   using MagickLib::PopImagePixels;
   using MagickLib::ProfileInfo;

@@ -200,7 +200,7 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
       if ( pageptr != 0 )
 	{
 	  strcpy(geom,pageptr);
-	  LiberateMemory( (void **) &pageptr );
+	  LiberateMemory( reinterpret_cast<void **>(&pageptr) );
 	}
     }
 
