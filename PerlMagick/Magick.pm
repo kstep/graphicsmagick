@@ -29,7 +29,7 @@ require AutoLoader;
       FatalErrorException
     );
 
-$VERSION = '5.49';
+$VERSION = '5.51';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
