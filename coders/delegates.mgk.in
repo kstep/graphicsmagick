@@ -39,7 +39,6 @@
   <delegate decode="shtml" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
   <delegate decode="txt" encode="ps" mode="bi" command='@TXTDelegate@ -o "%o" "%i"' />
   <delegate decode="wmf" command='@WMFDecodeDelegate@ -o "%o" "%i"' />
-  <delegate decode="xcf" command='@XCFDecodeDelegate@ "%i" > "%o"' />
   <delegate decode="bzip" stealth="True" command='@BZIPDelegate@ -cdfq "%i"' />
   <delegate decode="zip" stealth="True" command='@ZipDelegate@ -cdfq "%i"' />
   <delegate encode="bzip" stealth="True" command='@BZIPDelegate@ -cf > "%o"' />
