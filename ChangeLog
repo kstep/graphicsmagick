@@ -1,6 +1,9 @@
 2002-04-08  Cristy  <cristy@mystic.es.dupont.com>
   * Added reference counted blobs.
   * Added MagickFatalError() and SetFatalErrorHandler() to the C API.
+  * One color images caused memory overwrite in QuantizeImage() (thanks
+    to Vincent Broz).
+  * Memory leak in NormalizeImage() (thanks to Vincent Broz).
 
 2002-04-06  Glenn Randers-Pehrson <randeg@alum.pri.edu>
   *  Added CCIS-601 4:2:2 YUV format read-write support.

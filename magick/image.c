@@ -241,7 +241,6 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(colors != 0);
   image->storage_class=PseudoClass;
   image->colors=colors;
   length=Max(image->colors,MaxRGB+1)*sizeof(PixelPacket);

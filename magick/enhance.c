@@ -881,7 +881,14 @@ MagickExport unsigned int NormalizeImage(Image *image)
           break;
       }
       if (low == high)
-        return(False);  /* zero span bound */
+        {
+          /*
+            Zero span bound.
+          */
+          LiberateMemory((void **) &normalize_map);
+          LiberateMemory((void **) &histogram);
+          return(False);
+        }
     }
   /*
     Stretch the histogram to create the normalized image mapping.

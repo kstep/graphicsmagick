@@ -454,19 +454,26 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   if ((cube_info->quantize_info->number_colors == 2) &&
       (cube_info->quantize_info->colorspace == GRAYColorspace))
     {
-      unsigned int
-        polarity;
-
       /*
         Monochrome image.
       */
-      polarity=Intensity(&image->colormap[0]) > Intensity(&image->colormap[1]);
-      image->colormap[polarity].red=0;
-      image->colormap[polarity].green=0;
-      image->colormap[polarity].blue=0;
-      image->colormap[!polarity].red=MaxRGB;
-      image->colormap[!polarity].green=MaxRGB;
-      image->colormap[!polarity].blue=MaxRGB;
+      image->colormap[0].red=0;
+      image->colormap[0].green=0;
+      image->colormap[0].blue=0;
+      if (cube_info->colors == 2)
+        {
+          unsigned int
+            polarity;
+
+          polarity=
+            Intensity(&image->colormap[0]) > Intensity(&image->colormap[1]);
+          image->colormap[polarity].red=0;
+          image->colormap[polarity].green=0;
+          image->colormap[polarity].blue=0;
+          image->colormap[!polarity].red=MaxRGB;
+          image->colormap[!polarity].green=MaxRGB;
+          image->colormap[!polarity].blue=MaxRGB;
+        }
     }
   if (cube_info->quantize_info->measure_error)
     {
