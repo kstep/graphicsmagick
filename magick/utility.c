@@ -1775,7 +1775,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
     return(True);
   if (LocaleCompare(pattern,"*") == 0)
     return(True);
-  if (strchr(pattern,'['))
+  if ((strchr(pattern,'[') != (char *) NULL) && IsSubimage(pattern+1,False))
     {
       ExceptionInfo
         exception;
