@@ -649,7 +649,7 @@ static int wandObjCmd(
         "preview",          "PreviewImages",
         "previous",         "PreviousImage",
         "quantize",         "QuantizeImage",        "QuantizeImages",
-        "fontmetrics",      "FontMetrics",
+        "queryfontmetrics", "QueryFontMetrics",
         "raise",            "RaiseImage",
         "read",             "ReadImage",
         "readblob",         "ReadImageBlob",
@@ -800,7 +800,7 @@ static int wandObjCmd(
         TM_PREVIEW,         TM_PREVIEW_IMAGES,
         TM_PREVIOUS,        TM_PREVIOUS_IMAGE,
         TM_QUANTIZE,        TM_QUANTIZE_IMAGE,      TM_QUANTIZE_IMAGES,
-        TM_FONTMETRICS,     TM_FONT_METRICS,
+        TM_QUERYFONTMETRICS,TM_QUERY_FONT_METRICS,
         TM_RAISE,           TM_RAISE_IMAGE,
         TM_READ,            TM_READ_IMAGE,
         TM_READ_BLOB,       TM_READ_IMAGE_BLOB,
@@ -4289,8 +4289,8 @@ static int wandObjCmd(
 	break;
     }
 
-    case TM_FONTMETRICS:    /* fontmetrics draw text */
-    case TM_FONT_METRICS:   /* FontMetrics draw text */
+    case TM_QUERYFONTMETRICS:     /* queryfontmetrics draw text */
+    case TM_QUERY_FONT_METRICS:   /* QueryFontMetrics draw text */
     {
         double  *metrics;
         int     i;
@@ -4379,7 +4379,7 @@ static int wandObjCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, "data");
 	    return TCL_ERROR;
 	}
-	data = Tcl_GetByteArrayFromObj(objv[3], &length);
+	data = Tcl_GetByteArrayFromObj(objv[2], &length);
 	result = MagickReadImageBlob(wandPtr, data, length);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
@@ -4892,7 +4892,7 @@ static int wandObjCmd(
         int    chanIdx;
 	double threshold=0.0;
 
-	if( objc != 3 ) {
+	if( objc != 4 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "channelType threshold");
 	    return TCL_ERROR;
 	}

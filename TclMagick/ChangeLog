@@ -1,3 +1,8 @@
+2004-01-06  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* Added missing tests for new API's
+	* A few problems reported to ImageMagick
+
 2004-01-05  Rolf Schroedter <rolf.schroedter@dlr.de>
 
 	* Review of ImageMagick-API completeness
