@@ -715,6 +715,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     *font_family,
     *font_style,
     *font_weight,
+    id[MaxTextExtent],
     *p,
     token[MaxTextExtent],
     **tokens,
@@ -740,14 +741,80 @@ static void SVGStartElement(void *context,const xmlChar *name,
   svg_info=(SVGInfo *) context;
   if (svg_info->debug)
     (void) fprintf(stdout,"  SAX.startElement(%.1024s",(char *) name);
+  svg_info->n++;
+  ReacquireMemory((void **) &svg_info->scale,(svg_info->n+1)*sizeof(double));
+  if (svg_info->scale == (double *) NULL)
+    MagickError(ResourceLimitError,"Unable to convert SVG image",
+      "Memory allocation failed");
+  svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
+  color=AllocateString("none");
+  font_family=(char *) NULL;
+  font_style=(char *) NULL;
+  font_weight=(char *) NULL;
+  units=AllocateString("userSpaceOnUse");
   value=(const char *) NULL;
   if (attributes != (const xmlChar **) NULL)
     for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
     {
       keyword=(const char *) attributes[i];
       value=(const char *) attributes[i+1];
-      if (LocaleCompare(keyword,"id") == 0)
-        break;
+      switch (*keyword)
+      {
+        case 'H':
+        case 'h':
+        {
+          if (LocaleCompare(keyword,"height") == 0)
+            {
+              svg_info->bounds.height=
+                GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          break;
+        }
+        case 'I':
+        case 'i':
+        {
+          if (LocaleCompare(keyword,"id") == 0)
+            {
+              (void) strncpy(id,value,MaxTextExtent-1);
+              break;
+            }
+          break;
+        }
+        case 'W':
+        case 'w':
+        {
+          if (LocaleCompare(keyword,"width") == 0)
+            {
+              svg_info->bounds.width=
+                GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          break;
+        }
+        case 'X':
+        case 'x':
+        {
+          if (LocaleCompare(keyword,"x") == 0)
+            {
+              svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          break;
+        }
+        case 'Y':
+        case 'y':
+        {
+          if (LocaleCompare(keyword,"y") == 0)
+            {
+              svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          break;
+        }
+        default:
+          break;
+      }
     }
   switch (*name)
   {
@@ -761,7 +828,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((char *) name,"clipPath") == 0)
         {
-          (void) fprintf(svg_info->file,"push clip-path %s\n",value);
+          (void) fprintf(svg_info->file,"push clip-path %s\n",id);
           break;
         }
       break;
@@ -816,7 +883,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((char *) name,"linearGradient") == 0)
         {
-          (void) fprintf(svg_info->file,"push linear-gradient %s\n",value);
+          (void) fprintf(svg_info->file,"push linear-gradient %s\n",id);
           break;
         }
       break;
@@ -831,7 +898,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((char *) name,"pattern") == 0)
         {
-          (void) fprintf(svg_info->file,"push pattern %s\n",value);
+          (void) fprintf(svg_info->file,"push pattern %s\n",id);
           break;
         }
       if (LocaleCompare((char *) name,"polygon") == 0)
@@ -879,17 +946,6 @@ static void SVGStartElement(void *context,const xmlChar *name,
     default:
       break;
   }
-  svg_info->n++;
-  ReacquireMemory((void **) &svg_info->scale,(svg_info->n+1)*sizeof(double));
-  if (svg_info->scale == (double *) NULL)
-    MagickError(ResourceLimitError,"Unable to convert SVG image",
-      "Memory allocation failed");
-  svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
-  color=AllocateString("none");
-  font_family=(char *) NULL;
-  font_style=(char *) NULL;
-  font_weight=(char *) NULL;
-  units=AllocateString("userSpaceOnUse");
   if (attributes != (const xmlChar **) NULL)
     for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
     {

@@ -2049,6 +2049,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               }
             if (LocaleCompare("linear-gradient",token) == 0)
               break;
+            if (LocaleCompare("pattern",token) == 0)
+              break;
             status=False;
             break;
           }
