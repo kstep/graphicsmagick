@@ -61,7 +61,6 @@
 */
 #include "magick.h"
 #include "defines.h"
-#include "cache_io.h"
 
 /*
   Typedef declarations.

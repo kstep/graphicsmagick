@@ -32,7 +32,6 @@
 #endif
 #include "magick/classify.h"
 #include "magick/image.h"
-#include "magick/cache.h"
 #include "magick/gems.h"
 #include "magick/quantize.h"
 #include "magick/error.h"
@@ -40,6 +39,8 @@
 #include "magick/compress.h"
 #include "magick/utility.h"
 #include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/cache_io.h"
 #include "magick/memory.h"
 #include "magick/delegates.h"
 #include "magick/timer.h"
@@ -47,7 +48,6 @@
 #else
 #include "classify.h"
 #include "image.h"
-#include "cache.h"
 #include "gems.h"
 #include "quantize.h"
 #include "error.h"
@@ -55,6 +55,8 @@
 #include "compress.h"
 #include "utility.h"
 #include "blob.h"
+#include "cache.h"
+#include "cache_io.h"
 #include "memory.h"
 #include "delegates.h"
 #include "timer.h"
