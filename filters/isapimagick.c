@@ -603,7 +603,8 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
 {
   char
     **argv,
-    **argv_hw;
+    **argv_hw,
+    *errmsg;
 
   int
     argc,
@@ -611,6 +612,7 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
     i;
 
   unsigned int
+    impersonating,
     status;
 
   CHAR
@@ -625,6 +627,7 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
     dwTotalBytes=0,
     dwLen=0;
 
+  impersonating=False;
   pECB->dwHttpStatusCode=0; // 0 Failure
   if (!stricmp(pECB->lpszMethod, "get"))
     {
@@ -688,10 +691,54 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
             size_t
               blob_length;
 
+            Image
+              *image;
+
+            ImageInfo
+              *image_info;
+
             int
               mode=0;
 
             argv_hw = &argv[argc_hw];
+            if (LocaleNCompare("-login",argv[argc_hw],8) == 0)
+              {
+                for (i=argc_hw; i < argc; i++)
+                {
+                  if (LocaleNCompare("login-",argv[i],8) == 0)
+                    break;
+                }
+#if defined(WIN32)
+                if ((i-argc_hw)>3)
+                  {
+                    char
+                      *domain=argv_hw[1],
+                      *userid=argv_hw[2],
+                      *passwd=argv_hw[3];
+
+                    HANDLE
+                      hToken;
+
+                    BOOL
+                      status;
+
+                    status = LogonUser(userid,domain,passwd,
+                       LOGON32_LOGON_INTERACTIVE,LOGON32_PROVIDER_DEFAULT,&hToken);
+                    if (status)
+                      {
+                        status = ImpersonateLoggedOnUser(hToken);
+                        if (status)
+                          impersonating=True;
+                        else
+                          errmsg = ntgetlasterror(); 
+                      }
+                    else
+                      errmsg = ntgetlasterror();
+                  }
+#endif
+                argc_hw = i+1;
+                argv_hw = &argv[argc_hw];
+              }
             if (LocaleNCompare("-convert",argv[argc_hw],8) == 0)
               {
                 for (i=argc_hw; i < argc; i++)
@@ -701,22 +748,32 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
                       argv[i+1]=(char *)(&blob_data);
                       mode=1;
                     }
-                  if (LocaleNCompare("-xblen",argv[i],6) == 0)
+                  else if (LocaleNCompare("-xblen",argv[i],6) == 0)
                     {
                       argv[i+1]=(char *)(&blob_length);
                       mode=1;
                     }
-                  if (LocaleNCompare("-xfunc",argv[i],6) == 0)
+                  else if (LocaleNCompare("-xfunc",argv[i],6) == 0)
                     {
                       argv[i+1]=(char *)CGIFifo;
                       mode=2;
                     }
-                  if (LocaleNCompare("-xctxt",argv[i],6) == 0)
+                  else if (LocaleNCompare("-xctxt",argv[i],6) == 0)
                     {
                       argv[i+1]=(char *)pECB;
                       mode=2;
                     }
-                  if (LocaleNCompare("convert-",argv[i],8) == 0)
+                  else if (LocaleNCompare("-xinfo",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&image_info);
+                      mode=3;
+                    }
+                  else if (LocaleNCompare("-ximag",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&image);
+                      mode=3;
+                    }
+                  else if (LocaleNCompare("convert-",argv[i],8) == 0)
                     break;
                 }
                 if (mode==0)
@@ -756,10 +813,14 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
 		                    return HSE_STATUS_ERROR;
                     convert_main(i-argc_hw,argv_hw);
                   }
+                if (mode==3)
+                  {
+                    convert_main(i-argc_hw,argv_hw);
+                  }
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
               }
-            else if (LocaleNCompare("-combine",argv[argc_hw],8) == 0)
+            if (LocaleNCompare("-combine",argv[argc_hw],8) == 0)
               {
                 for (i=argc_hw; i < argc; i++)
                 {
@@ -768,22 +829,32 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
                       argv[i+1]=(char *)(&blob_data);
                       mode=1;
                     }
-                  if (LocaleNCompare("-xblen",argv[i],6) == 0)
+                  else if (LocaleNCompare("-xblen",argv[i],6) == 0)
                     {
                       argv[i+1]=(char *)(&blob_length);
                       mode=1;
                     }
-                  if (LocaleNCompare("-xfunc",argv[i],6) == 0)
+                  else if (LocaleNCompare("-xfunc",argv[i],6) == 0)
                     {
                       argv[i+1]=(char *)CGIFifo;
                       mode=2;
                     }
-                  if (LocaleNCompare("-xctxt",argv[i],6) == 0)
+                  else if (LocaleNCompare("-xctxt",argv[i],6) == 0)
                     {
                       argv[i+1]=(char *)pECB;
                       mode=2;
                     }
-                  if (LocaleNCompare("combine-",argv[i],8) == 0)
+                  else if (LocaleNCompare("-xinfo",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&image_info);
+                      mode=3;
+                    }
+                  else if (LocaleNCompare("-ximag",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&image);
+                      mode=3;
+                    }
+                  else if (LocaleNCompare("combine-",argv[i],8) == 0)
                     break;
                 }
                 if (mode==0)
@@ -823,7 +894,10 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
 		                    return HSE_STATUS_ERROR;
                     combine_main(i-argc_hw,argv_hw);
                   }
-                argc_hw = i+1;
+                if (mode==3)
+                  {
+                    combine_main(i-argc_hw,argv_hw);
+                  }
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
               }
@@ -833,6 +907,16 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
       LiberateMemory((void **) &argv);
     }
 
+  if (impersonating==True)
+    {
+#if defined(WIN32)
+      status = RevertToSelf();
+      if (status)
+        impersonating=False;
+      else
+        errmsg = ntgetlasterror();
+#endif
+    }
   pECB->dwHttpStatusCode=200; // 200 OK
   if (lpszTemp)
     LocalFree(lpszTemp);

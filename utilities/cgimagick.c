@@ -599,6 +599,7 @@ int main(int argc,char **argv)
 {
   char
     **argv_hw,
+    *errmsg,
     prefix[MaxTextExtent];
 
   int
@@ -606,11 +607,13 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
+    impersonating,
     status;
 
   /*
     Initialize command line arguments.
   */
+  impersonating=False;
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
 #if defined(_VISUALC_)
@@ -652,62 +655,55 @@ int main(int argc,char **argv)
             size_t
               blob_length;
 
+            Image
+              *image;
+
+            ImageInfo
+              *image_info;
+
             int
               mode=0;
 
             argv_hw = &argv[argc_hw];
-            if (LocaleNCompare("-convert",argv[argc_hw],8) == 0)
+            if (LocaleNCompare("-login",argv[argc_hw],8) == 0)
               {
                 for (i=argc_hw; i < argc; i++)
                 {
-                  if (LocaleNCompare("-xbdat",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)(&blob_data);
-                      mode=1;
-                    }
-                  if (LocaleNCompare("-xblen",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)(&blob_length);
-                      mode=1;
-                    }
-                  if (LocaleNCompare("-xfunc",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)CGIFifo;
-                      mode=2;
-                    }
-                  if (LocaleNCompare("-xctxt",argv[i],6) == 0)
-                    {
-                      argv[i+1]=(char *)NULL;
-                      mode=2;
-                    }
-                  if (LocaleNCompare("convert-",argv[i],8) == 0)
+                  if (LocaleNCompare("login-",argv[i],8) == 0)
                     break;
                 }
-                if (mode==0)
+#if defined(WIN32)
+                if ((i-argc_hw)>3)
                   {
-                    convert_main(i-argc_hw,argv_hw);
+                    char
+                      *domain=argv_hw[1],
+                      *userid=argv_hw[2],
+                      *passwd=argv_hw[3];
+
+                    HANDLE
+                      hToken;
+
+                    BOOL
+                      status;
+
+                    status = LogonUser(userid,domain,passwd,
+                       LOGON32_LOGON_INTERACTIVE,LOGON32_PROVIDER_DEFAULT,&hToken);
+                    if (status)
+                      {
+                        status = ImpersonateLoggedOnUser(hToken);
+                        if (status)
+                          impersonating=True;
+                        else
+                          errmsg = ntgetlasterror(); 
+                      }
+                    else
+                      errmsg = ntgetlasterror();
                   }
-                else if (mode==1)
-                  {
-                    blob_length=8192;
-                    convert_main(i-argc_hw,argv_hw);
-                    FormatString(prefix,
-                      "HTTP/1.0 200 Ok\nContent-Length: %u\r\nContent-Type: %s\n\n",
-                        blob_length,szMimeType);
-                    fwrite(prefix,1,Extent(prefix),stdout);
-                    fwrite(blob_data,1,blob_length,stdout);
-                  }
-                else if (mode==2)
-                  {
-                    FormatString(prefix,
-                      "HTTP/1.0 200 Ok\nContent-Type: %s\n\n",szMimeType);
-                    fwrite(prefix,1,Extent(prefix),stdout);
-                    convert_main(i-argc_hw,argv_hw);
-                  }
+#endif
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
               }
-            else if (LocaleNCompare("-combine",argv[argc_hw],8) == 0)
+            if (LocaleNCompare("-convert",argv[argc_hw],8) == 0)
               {
                 for (i=argc_hw; i < argc; i++)
                 {
@@ -731,17 +727,98 @@ int main(int argc,char **argv)
                       argv[i+1]=(char *)NULL;
                       mode=2;
                     }
+                  else if (LocaleNCompare("-xinfo",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&image_info);
+                      mode=3;
+                    }
+                  else if (LocaleNCompare("-ximag",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&image);
+                      mode=3;
+                    }
                   else if (LocaleNCompare("convert-",argv[i],8) == 0)
                     break;
                 }
                 if (mode==0)
                   {
+                    convert_main(i-argc_hw,argv_hw);
+                    /* normal case were image was written to a disk file */
+                  }
+                else if (mode==1)
+                  {
+                    blob_length=8192;
+                    convert_main(i-argc_hw,argv_hw);
+                    /* returns an a blob and its length */
+                    FormatString(prefix,
+                      "HTTP/1.0 200 Ok\nContent-Length: %u\r\nContent-Type: %s\n\n",
+                        blob_length,szMimeType);
+                    fwrite(prefix,1,Extent(prefix),stdout);
+                    fwrite(blob_data,1,blob_length,stdout);
+                  }
+                else if (mode==2)
+                  {
+                    FormatString(prefix,
+                      "HTTP/1.0 200 Ok\nContent-Type: %s\n\n",szMimeType);
+                    fwrite(prefix,1,Extent(prefix),stdout);
+                    convert_main(i-argc_hw,argv_hw);
+                    /* returns nothing - image has been stream already */
+                  }
+                else if (mode==3)
+                  {
+                    convert_main(i-argc_hw,argv_hw);
+                    /* returns an image_info and image structure */
+                  }
+                argc_hw = i+1;
+                argv_hw = &argv[argc_hw];
+              }
+            if (LocaleNCompare("-combine",argv[argc_hw],8) == 0)
+              {
+                for (i=argc_hw; i < argc; i++)
+                {
+                  if (LocaleNCompare("-xbdat",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&blob_data);
+                      mode=1;
+                    }
+                  else if (LocaleNCompare("-xblen",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&blob_length);
+                      mode=1;
+                    }
+                  else if (LocaleNCompare("-xfunc",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)CGIFifo;
+                      mode=2;
+                    }
+                  else if (LocaleNCompare("-xctxt",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)NULL;
+                      mode=2;
+                    }
+                  else if (LocaleNCompare("-xinfo",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&image_info);
+                      mode=3;
+                    }
+                  else if (LocaleNCompare("-ximag",argv[i],6) == 0)
+                    {
+                      argv[i+1]=(char *)(&image);
+                      mode=3;
+                    }
+                  else if (LocaleNCompare("combine-",argv[i],8) == 0)
+                    break;
+                }
+                if (mode==0)
+                  {
                     combine_main(i-argc_hw,argv_hw);
+                    /* normal case were image was written to a disk file */
                   }
                 else if (mode==1)
                   {
                     blob_length=8192;
                     combine_main(i-argc_hw,argv_hw);
+                    /* returns an a blob and its length */
                     FormatString(prefix,
                       "HTTP/1.0 200 Ok\nContent-Length: %u\r\nContent-Type: %s\n\n",
                         blob_length,szMimeType);
@@ -754,12 +831,28 @@ int main(int argc,char **argv)
                       "HTTP/1.0 200 Ok\nContent-Type: %s\n\n",szMimeType);
                     fwrite(prefix,1,Extent(prefix),stdout);
                     combine_main(i-argc_hw,argv_hw);
+                    /* returns nothing - image has been stream already */
+                  }
+                else if (mode==3)
+                  {
+                    combine_main(i-argc_hw,argv_hw);
+                    /* returns an image_info and image structure */
                   }
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
               }
           }
         }
+    }
+  if (impersonating==True)
+    {
+#if defined(WIN32)
+      status = RevertToSelf();
+      if (status)
+        impersonating=False;
+      else
+        errmsg = ntgetlasterror();
+#endif
     }
   LiberateMemory((void **) &argv);
   Exit(0);
