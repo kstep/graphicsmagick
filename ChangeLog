@@ -1,5 +1,7 @@
 2003-08-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/log.c (LogMagickEvent): Incorporated fix from Bill
+	Radcliffe to enable logging control flags to work properly again.
 	* NEWS: Updated news.
 	* magick/blob.c (OpenBlob): Rewind file descriptor so that first
 	read is at zero offset. This fixes reading GIFs via a

@@ -699,38 +699,48 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
     {
       int
         i;
-
+      
+      unsigned int
+        enabled;
+      
       /* first translate the base type of the event to a mask */
+      enabled=False;
       for (i=0; eventmask_map[i].name != 0; i++)
         {
           /* if the range in the table is above 100 it represents raw
              event id's. These entry types are to look for specific
              severity codes.
-           */
+          */
           if (eventmask_map[i].start_type > 99)
             {
               if ((type >= eventmask_map[i].start_type) &&
-                (type <= eventmask_map[i].end_type))
+                  (type <= eventmask_map[i].end_type))
                 {
-                  if (!(log_info->events & eventmask_map[i].mask))
-                    return(True);
-                  break;
+                  if (log_info->events & eventmask_map[i].mask)
+                    {
+                      enabled=True;
+                      break;
+                    }
                 }
             }
           else
             {
               /* these ranges are for id's with the severity stripped
                  off and represent a category instead.
-               */
+              */
               if (((type % 100) >= eventmask_map[i].start_type) &&
-                ((type % 100) <= eventmask_map[i].end_type))
+                  ((type % 100) <= eventmask_map[i].end_type))
                 {
-                  if (!(log_info->events & eventmask_map[i].mask))
-                    return(True);
-                  break;
+                  if (log_info->events & eventmask_map[i].mask)
+                    {
+                      enabled=True;
+                      break;
+                    }
                 }
             }
         }
+      if (!enabled)
+        return(True);
     }
 
   /* fixup module info to just include the filename - and not the
