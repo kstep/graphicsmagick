@@ -1,5 +1,6 @@
 2003-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/txt.c (ReadTXTImage): Fix strlen() pointer type warning.
 	* magick/image.c (TextureImage): Fixed return with no value warning.
 	* magick/color.c (GetColorInfoArray): Decided that the const
 	return value was a bad idea.  Therefore, the return type has been
