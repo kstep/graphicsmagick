@@ -612,7 +612,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (jpeg_pixels != (JSAMPLE *) NULL)
         LiberateMemory((void **) &jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
-      *exception=image->exception;
+      ThrowException(exception,image->exception.severity,
+        image->exception.reason,image->exception.description);
       number_pixels=image->columns*image->rows;
       if (number_pixels != 0)
         return(image);
