@@ -880,28 +880,24 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  clone_image=AllocateImage((ImageInfo *) NULL);
   if (image == (Image *) NULL)
-    return(AllocateImage((ImageInfo *) NULL));
-  clone_image=(Image *) AcquireMemory(sizeof(Image));
-  if (clone_image == (Image *) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate image",
-      "Memory allocation failed");
-  *clone_image=(*image);
-  if (orphan)
-    {
-      clone_image->exempt=True;
-      clone_image->previous=(Image *) NULL;
-      clone_image->next=(Image *) NULL;
-    }
-  if (clone_image->previous != (Image *) NULL)
-    clone_image->previous->next=clone_image;
-  if (clone_image->next != (Image *) NULL)
-    clone_image->next->previous=clone_image;
+    return(clone_image);
+  clone_image->storage_class=image->storage_class;
+  clone_image->colorspace=image->colorspace;
+  clone_image->compression=image->compression;
+  clone_image->orphan=image->orphan;
+  clone_image->taint=image->taint;
+  clone_image->matte=image->matte;
+  clone_image->columns=image->columns;
+  clone_image->rows=image->rows;
+  clone_image->depth=image->depth;
   if (image->colormap != (PixelPacket *) NULL)
     {
       /*
         Allocate and copy the image colormap.
       */
+      clone_image->colors=image->colors;
       length=Max(image->colors,MaxRGB+1)*sizeof(PixelPacket);
       clone_image->colormap=(PixelPacket *) AcquireMemory(length);
       if (clone_image->colormap == (PixelPacket *) NULL)
@@ -910,34 +906,42 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       length=image->colors*sizeof(PixelPacket);
       (void) CloneMemory(clone_image->colormap,image->colormap,length);
     }
-  clone_image->color_profile.name=GetString(image->color_profile.name);
+  clone_image->background_color=image->background_color;
+  clone_image->border_color=image->border_color;
+  clone_image->matte_color=image->matte_color;
+  clone_image->gamma=image->gamma;
+  clone_image->chromaticity=image->chromaticity;
   if (image->color_profile.length != 0)
     {
       /*
         Allocate and clone any ICM profile.
       */
-      length=image->color_profile.length;
-      clone_image->color_profile.info=(unsigned char *) AcquireMemory(length);
+      clone_image->color_profile.name=GetString(image->color_profile.name);
+      clone_image->color_profile.length=image->color_profile.length;
+      clone_image->color_profile.info=(unsigned char *)
+        AcquireMemory(clone_image->color_profile.length);
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
       (void) CloneMemory(clone_image->color_profile.info,
-        image->color_profile.info,length);
+        image->color_profile.info,clone_image->color_profile.length);
     }
-  clone_image->iptc_profile.name=GetString(image->iptc_profile.name);
   if (image->iptc_profile.length != 0)
     {
       /*
         Allocate and clone any IPTC profile.
       */
-      length=image->iptc_profile.length;
-      clone_image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
+      clone_image->iptc_profile.name=GetString(image->iptc_profile.name);
+      clone_image->iptc_profile.length=image->iptc_profile.length;
+      clone_image->iptc_profile.info=(unsigned char *)
+        AcquireMemory(clone_image->iptc_profile.length);
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
       (void) CloneMemory(clone_image->iptc_profile.info,
-        image->iptc_profile.info,length);
+        image->iptc_profile.info,clone_image->iptc_profile.length);
     }
+  clone_image->generic_profiles=image->generic_profiles;
   if (image->generic_profiles != 0)
     {
       /*
@@ -967,20 +971,69 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
           image->generic_profile[i].info,length);
       }
     }
-  clone_image->attributes=(ImageAttribute *) NULL;
+  clone_image->rendering_intent=image->rendering_intent;
+  clone_image->units=image->units;
+  clone_image->montage=(char *) NULL;
+  clone_image->directory=(char *) NULL;
+  clone_image->geometry=(char *) NULL;
+  clone_image->offset=image->offset;
+  clone_image->x_resolution=image->x_resolution;
+  clone_image->y_resolution=image->y_resolution;
+  clone_image->page=image->page;
+  clone_image->tile_info=image->tile_info;
+  clone_image->blur=image->blur;
+  clone_image->fuzz=image->fuzz;
+  clone_image->filter=image->filter;
+  clone_image->interlace=image->interlace;
+  clone_image->endian=image->endian;
+  clone_image->gravity=image->gravity;
+  clone_image->compose=image->compose;
   attribute=GetImageAttribute(image,(char *) NULL);
   for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
     (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
-  clone_image->montage=(char *) NULL;
-  clone_image->directory=(char *) NULL;
+  clone_image->scene=image->scene;
+  clone_image->dispose=image->dispose;
+  clone_image->delay=image->delay;
+  clone_image->iterations=image->iterations;
+  clone_image->total_colors=image->total_colors;
+  clone_image->mean_error_per_pixel=image->mean_error_per_pixel;
+  clone_image->normalized_mean_error=image->normalized_mean_error;
+  clone_image->normalized_maximum_error=image->normalized_maximum_error;
   clone_image->semaphore=(SemaphoreInfo *) NULL;
-  clone_image->clip_mask=(Image *) NULL;
+  clone_image->timer=image->timer;
   GetExceptionInfo(&clone_image->exception);
   ThrowException(&clone_image->exception,image->exception.severity,
     image->exception.reason,image->exception.description);
-  clone_image->reference_count=1;
+  clone_image->client_data=image->client_data;
+  clone_image->start_loop=image->start_loop;
   GetCacheInfo(&clone_image->cache);
+  clone_image->fifo=image->fifo;
+  clone_image->reference_count=1;
+  clone_image->ascii85=image->ascii85;
+  clone_image->exempt=image->exempt;
+  clone_image->status=image->status;
+  clone_image->temporary=image->temporary;
+  clone_image->pipet=image->pipet;
+  clone_image->file=image->file;
   clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+  clone_image->magick_columns=image->magick_columns;
+  clone_image->magick_rows=image->magick_rows;
+  (void) strncpy(clone_image->magick_filename,image->magick_filename,
+    MaxTextExtent-1);
+  (void) strncpy(clone_image->magick,image->magick,MaxTextExtent-1);
+  (void) strncpy(clone_image->filename,image->filename,MaxTextExtent-1);
+  clone_image->previous=(Image *) NULL;
+  clone_image->list=(Image *) NULL;
+  clone_image->next=(Image *) NULL;
+  if (orphan)
+    clone_image->exempt=True;
+  else
+    {
+      if (image->previous != (Image *) NULL)
+        clone_image->previous->next=clone_image;
+      if (image->next != (Image *) NULL)
+        clone_image->next->previous=clone_image;
+    }
   if ((columns == 0) || (rows == 0))
     {
       if (image->montage != (char *) NULL)
@@ -994,8 +1047,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     }
   clone_image->page.width=columns;
   clone_image->page.height=rows;
-  clone_image->page.x*=(double) columns/clone_image->columns;
-  clone_image->page.y*=(double) rows/clone_image->rows;
+  clone_image->page.x=columns*image->page.x/clone_image->columns;
+  clone_image->page.y=rows*image->page.y/clone_image->rows;
   clone_image->columns=columns;
   clone_image->rows=rows;
   return(clone_image);
@@ -1035,18 +1088,25 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   if (clone_info == (ImageInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone image info",
       "Memory allocation failed");
+  GetImageInfo(clone_info);
   if (image_info == (ImageInfo *) NULL)
-    {
-      GetImageInfo(clone_info);
-      return(clone_info);
-    }
-  *clone_info=(*image_info);
+    return(clone_info);
+  clone_info->compression=image_info->compression;
+  clone_info->temporary=image_info->temporary;
+  clone_info->adjoin=image_info->adjoin;
+  clone_info->subimage=image_info->subimage;
+  clone_info->subrange=image_info->subrange;
+  clone_info->depth=image_info->depth;
   if (image_info->size != (char *) NULL)
     clone_info->size=GetString(image_info->size);
   if (image_info->tile != (char *) NULL)
     clone_info->tile=GetString(image_info->tile);
   if (image_info->page != (char *) NULL)
     clone_info->page=GetString(image_info->page);
+  clone_info->interlace=image_info->interlace;
+  clone_info->endian=image_info->endian;
+  clone_info->units=image_info->units;
+  clone_info->quality=image_info->quality;
   if (image_info->server_name != (char *) NULL)
     clone_info->server_name=GetString(image_info->server_name);
   if (image_info->font != (char *) NULL)
@@ -1055,12 +1115,34 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     clone_info->texture=GetString(image_info->texture);
   if (image_info->density != (char *) NULL)
     clone_info->density=GetString(image_info->density);
+  clone_info->pointsize=image_info->pointsize;
+  clone_info->fuzz=image_info->fuzz;
+  clone_info->pen=image_info->pen;
+  clone_info->background_color=image_info->background_color;
+  clone_info->border_color=image_info->border_color;
+  clone_info->matte_color=image_info->matte_color;
+  clone_info->dither=image_info->dither;
+  clone_info->monochrome=image_info->monochrome;
+  clone_info->colorspace=image_info->colorspace;
+  clone_info->type=image_info->type;
+  clone_info->preview_type=image_info->preview_type;
+  clone_info->group=image_info->group;
+  clone_info->ping=image_info->ping;
+  clone_info->verbose=image_info->verbose;
+  clone_info->debug=image_info->debug;
   if (image_info->view != (char *) NULL)
     clone_info->view=GetString(image_info->view);
   if (image_info->attributes != (Image *) NULL)
     clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
       &image_info->attributes->exception);
+  clone_info->client_data=image_info->client_data;
+  clone_info->fifo=image_info->fifo;
+  clone_info->file=image_info->file;
   clone_info->blob=CloneBlobInfo(image_info->blob);
+  (void) strncpy(clone_info->magick,image_info->magick,MaxTextExtent-1);
+  (void) strncpy(clone_info->unique,image_info->unique,MaxTextExtent-1);
+  (void) strncpy(clone_info->zero,image_info->zero,MaxTextExtent-1);
+  (void) strncpy(clone_info->filename,image_info->filename,MaxTextExtent-1);
   return(clone_info);
 }
 

@@ -193,39 +193,56 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (clone_info == (DrawInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone draw info",
       "Memory allocation failed");
+  GetDrawInfo(image_info,clone_info);
   if (draw_info == (DrawInfo *) NULL)
-    {
-      GetDrawInfo(image_info,clone_info);
-      return(clone_info);
-    }
-  *clone_info=(*draw_info);
+    return(clone_info);
   if (draw_info->primitive != (char *) NULL)
     clone_info->primitive=GetString(draw_info->primitive);
   if (draw_info->geometry != (char *) NULL)
     clone_info->geometry=GetString(draw_info->geometry);
+  clone_info->affine=draw_info->affine;
+  clone_info->gravity=draw_info->gravity;
+  clone_info->fill=draw_info->fill;
+  clone_info->stroke=draw_info->stroke;
+  clone_info->stroke_width=draw_info->stroke_width;
   if (draw_info->fill_pattern != (Image *) NULL)
     clone_info->fill_pattern=CloneImage(draw_info->fill_pattern,0,0,True,
       &draw_info->fill_pattern->exception);
   else
     if (draw_info->tile != (Image *) NULL)
-      {
-        clone_info->fill_pattern=CloneImage(draw_info->tile,0,0,True,
-          &draw_info->tile->exception);
-        clone_info->tile=(Image *) NULL;  /* tile is deprecated */
-      }
+      clone_info->fill_pattern=CloneImage(draw_info->tile,0,0,True,
+        &draw_info->tile->exception);
+  clone_info->tile=(Image *) NULL;  /* tile is deprecated */
   if (draw_info->stroke_pattern != (Image *) NULL)
     clone_info->stroke_pattern=CloneImage(draw_info->stroke_pattern,0,0,True,
       &draw_info->stroke_pattern->exception);
+  clone_info->stroke_antialias=draw_info->stroke_antialias;
+  clone_info->text_antialias=draw_info->text_antialias;
+  clone_info->fill_rule=draw_info->fill_rule;
+  clone_info->linecap=draw_info->linecap;
+  clone_info->linejoin=draw_info->linejoin;
+  clone_info->miterlimit=draw_info->miterlimit;
+  clone_info->dash_offset=draw_info->dash_offset;
+  clone_info->decorate=draw_info->decorate;
+  clone_info->compose=draw_info->compose;
+  clone_info->unicode=draw_info->unicode;
   if (draw_info->text != (char *) NULL)
     clone_info->text=GetString(draw_info->text);
   if (draw_info->font != (char *) NULL)
     clone_info->font=GetString(draw_info->font);
   if (draw_info->family != (char *) NULL)
     clone_info->family=GetString(draw_info->family);
+  clone_info->style=draw_info->style;
+  clone_info->stretch=draw_info->stretch;
+  clone_info->weight=draw_info->weight;
   if (draw_info->encoding != (char *) NULL)
     clone_info->encoding=GetString(draw_info->encoding);
+  clone_info->pointsize=draw_info->pointsize;
   if (draw_info->density != (char *) NULL)
     clone_info->density=GetString(draw_info->density);
+  clone_info->align=draw_info->align;
+  clone_info->box=draw_info->box;
+  clone_info->border_color=draw_info->border_color;
   if (draw_info->server_name != (char *) NULL)
     clone_info->server_name=GetString(draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
@@ -243,6 +260,10 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     }
   if (draw_info->clip_path != (char *) NULL)
     clone_info->clip_path=GetString(draw_info->clip_path);
+  clone_info->bounds=draw_info->bounds;
+  clone_info->clip_units=draw_info->clip_units;
+  clone_info->debug=draw_info->debug;
+  clone_info->opacity=draw_info->opacity;
   return(clone_info);
 }
 

@@ -28,9 +28,6 @@ typedef struct _DrawInfo
     *primitive,
     *geometry;
 
-  Image
-    *tile;
-
   AffineMatrix
     affine;
 
@@ -46,6 +43,7 @@ typedef struct _DrawInfo
 
   Image
     *fill_pattern,
+    *tile,
     *stroke_pattern;
 
   unsigned int
