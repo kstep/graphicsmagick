@@ -66,13 +66,14 @@ sub MY::test
     " t/tiff/write.t" .
     " t/zlib/read.t" .
     " t/zlib/write.t" .
-    " t/x/write.t" .
-    " t/x/read.t" .
     " t/ps/read.t" .
     " t/ps/write.t" .
     " t/write.t" .
     " t/setattribute.t" .
     " t/getattribute.t";
+   if ( defined $ENV{'DISPLAY'} ) {
+    $delegate_tests .= " t/x/write.t t/x/read.t";
+   }
    $inherited =~ s:^TEST_FILES =.*:TEST_FILES = ${delegate_tests}:m;
    $inherited;
 }
