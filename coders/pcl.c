@@ -107,44 +107,6 @@ static unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d P C L I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadPCLImage reads a Page Control Language image file and returns
-%  it.  It allocates the memory necessary for the new Image structure and
-%  returns a pointer to the new image.
-%
-%  The format of the ReadPCLImage method is:
-%
-%      Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadPCLImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-%
-*/
-static Image *ReadPCLImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateWarning,"Cannot read PCL images",
-    image_info->filename);
-  return((Image *) NULL);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   R e g i s t e r P C L I m a g e                                           %
 %                                                                             %
 %                                                                             %
@@ -169,7 +131,6 @@ ModuleExport void RegisterPCLImage(void)
     *entry;
 
   entry=SetMagickInfo("PCL");
-  entry->decoder=ReadPCLImage;
   entry->encoder=WritePCLImage;
   entry->magick=IsPCL;
   entry->adjoin=False;

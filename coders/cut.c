@@ -276,6 +276,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int i,j;
   long ldblk;
   unsigned char *BImgBuff=NULL,*ptrB;
+  PixelPacket *q;
 
   /*
     Open image file.
@@ -331,7 +332,6 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
 /* ----- Do something with palette ----- */
  if ((clone_info=CloneImageInfo(image_info)) == NULL) goto NoPalette;
  
- printf("Image filename:%s\n",clone_info->filename);
  
  i=strlen(clone_info->filename);
  j=i;
@@ -375,7 +375,6 @@ ErasePalette:
      goto NoPalette;
      }
  
- printf("Found palette filename:%s\n",palette->magick_filename);
      
  if(palette!=NULL)
    {
@@ -383,8 +382,8 @@ ErasePalette:
    if(strncmp(PalHeader.FileId,"AH",2)) goto ErasePalette;
    PalHeader.Version=LSBFirstReadShort(palette);
    PalHeader.Size=LSBFirstReadShort(palette);
-   PalHeader.FileType=ReadByte(palette);
-   PalHeader.SubType=ReadByte(palette);
+   PalHeader.FileType=ReadByte(palette);
+   PalHeader.SubType=ReadByte(palette);
    PalHeader.BoardID=LSBFirstReadShort(palette);
    PalHeader.GraphicsMode=LSBFirstReadShort(palette);
    PalHeader.MaxIndex=LSBFirstReadShort(palette);
@@ -397,6 +396,10 @@ ErasePalette:
    image->colors=PalHeader.MaxIndex+1;
    if (!AllocateImageColormap(image,image->colors)) goto NoMemory;
    
+   if(PalHeader.MaxRed==0) PalHeader.MaxRed=MaxRGB;  /*avoid division by 0*/
+   if(PalHeader.MaxGreen==0) PalHeader.MaxGreen=MaxRGB;
+   if(PalHeader.MaxBlue==0) PalHeader.MaxBlue=MaxRGB;
+   
    for(i=0;i<=PalHeader.MaxIndex;i++)
            {      /*this may be wrong- I don't know why is palette such strange*/
 	   j=TellBlob(palette);
@@ -405,19 +408,33 @@ ErasePalette:
 	       j=((j / 512)+1)*512;
 	       SeekBlob(palette,j,SEEK_SET);
 	       }
-	   image->colormap[i].red=UpScale(LSBFirstReadShort(palette));
-	   image->colormap[i].green=UpScale(LSBFirstReadShort(palette));
-	   image->colormap[i].blue=UpScale(LSBFirstReadShort(palette));       
+	   image->colormap[i].red=LSBFirstReadShort(palette);
+	   if(MaxRGB!=PalHeader.MaxRed) 
+	       {
+	       image->colormap[i].red=(Quantum)
+	         (((unsigned long)image->colormap[i].red*MaxRGB+(PalHeader.MaxRed>>1))/PalHeader.MaxRed);
+	       }
+	   image->colormap[i].green=LSBFirstReadShort(palette);
+	   if(MaxRGB!=PalHeader.MaxGreen) 
+	       {
+	       image->colormap[i].green=(Quantum)
+	         (((unsigned long)image->colormap[i].green*MaxRGB+(PalHeader.MaxGreen>>1))/PalHeader.MaxGreen);
+	       }
+	   image->colormap[i].blue=LSBFirstReadShort(palette);       
+	   if(MaxRGB!=PalHeader.MaxBlue)  
+	       {
+	       image->colormap[i].blue=(Quantum)
+	         (((unsigned long)image->colormap[i].blue*MaxRGB+(PalHeader.MaxBlue>>1))/PalHeader.MaxBlue);
+	       }
+	       
 	   }
    }
 
-printf("Palette header loaded\n");
    
 
 NoPalette:
  if(palette==NULL)
    { 
-   printf("Fixup palette created\n");
    
    image->colors=256;
    if (!AllocateImageColormap(image,image->colors))
@@ -428,13 +445,12 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    
    for (i=0; i < (int)image->colors; i++)
 	   {
-	   image->colormap[i].red=i;
-	   image->colormap[i].green=i;
-	   image->colormap[i].blue=i;
+	   image->colormap[i].red=UpScale(i);
+	   image->colormap[i].green=UpScale(i);
+	   image->colormap[i].blue=UpScale(i);
 	   }
    }
 
-printf("CUT colormap OK\n");
            
 /* ----- Load RLE compressed raster ----- */
  BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
@@ -482,6 +498,56 @@ printf("CUT colormap OK\n");
 	InsertRow(BImgBuff,i,image);
    	}
 
+
+/*detect monochrome image*/
+if(palette==NULL)
+    {
+    if(IsGrayImage(image))
+      {
+      i=GetNumberColors(image,NULL);
+      if(i==2)
+         {
+         CompressColormap(image);
+	 for (i=0; i < (int)image->colors; i++)
+	   {
+	   j=UpScale(i);
+	   if(image->colormap[i].red!=j) goto Finish;
+	   if(image->colormap[i].green!=j) goto Finish;
+	   if(image->colormap[i].blue!=j) goto Finish;
+	   }
+	   
+	 image->colormap[1].red=image->colormap[1].green=image->colormap[1].blue=MaxRGB;
+	 for (i=0; i < (int)image->rows; i++)  
+	   {
+	   q=SetImagePixels(image,0,i,image->columns,1);  
+	   for (j=0; j < (int)image->columns; j++)  
+             {  	   
+	     if(q->red==UpScale(1))
+	        {
+	        q->red=q->green=q->blue=MaxRGB;
+	        }
+	     q++;	
+	     }	
+	   if (!SyncImagePixels(image)) goto Finish;
+	   }
+	 }
+       }     	 
+/*	 
+    if (IsMonochromeImage(image))
+	printf("monochrome");
+    printf("IsPseudoClass %d;",IsPseudoClass(image));
+    printf("%d\n",image->colors);
+    printf("Is Gray Image:%d;",IsGrayImage(image));
+    printf("%d\n",image->colors);
+    printf("Get Number of Colors:%d;",GetNumberColors(image,NULL));
+    printf("%d\n",image->colors);
+    
+    for (i=0; i < (int)image->colors; i++)
+	   {
+	   printf("[%d R%d;G%d;B%d]",i,
+	          image->colormap[i].red,image->colormap[i].green,image->colormap[i].blue);
+	   }*/
+    } 
 
 Finish:
  CloseBlob(image);
