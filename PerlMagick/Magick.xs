@@ -180,9 +180,9 @@ static char
   *CompositeTypes[] =
   {
     "Undefined", "Over", "In", "Out", "Atop", "Xor", "Plus", "Minus",
-    "Add", "Subtract", "Difference", "Multiply", "Bumpmap", "Replace",
-    "ReplaceRed", "ReplaceGreen", "ReplaceBlue", "ReplaceMatte",
-    "Blend", "Displace", "Modulate", "Threshold", (char *) NULL
+    "Add", "Subtract", "Difference", "Multiply", "Bumpmap", "Copy",
+    "CopyRed", "CopyGreen", "CopyBlue", "CopyOpacity", "Clear", "Dissolve",
+    "Displace", "Modulate", "Threshold", (char *) NULL
   },
   *CompressionTypes[] =
   {
@@ -4615,7 +4615,7 @@ Mogrify(ref,...)
             }
           if (!attribute_flag[6])
             argument_list[6].string_reference="0.0";
-          if (compose == BlendCompositeOp)
+          if (compose == DissolveCompositeOp)
             {
               register PixelPacket 
                 *q;
@@ -5209,7 +5209,7 @@ Mogrify(ref,...)
           /*
             Composite region.
           */
-          status=CompositeImage(region_image,ReplaceCompositeOp,image,
+          status=CompositeImage(region_image,CopyCompositeOp,image,
             region_info.x,region_info.y);
           if (status == False)
             CatchImageException(region_image);

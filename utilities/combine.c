@@ -919,7 +919,7 @@ int main(int argc,char **argv)
         CatchImageException(composite_image);
       DestroyImage(mask_image);
     }
-  if (compose == BlendCompositeOp)
+  if (compose == DissolveCompositeOp)
     {
       register PixelPacket
         *q;
