@@ -730,22 +730,12 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  x=x_offset+0.5;
-  y=y_offset+0.5;
-  if ((x < -1.0) || (x >= image->columns) || (y < -1.0) || (y >= image->rows))
-    return(image->background_color);
-  p=image->background_color;
-  if ((x >= 0.0) && (y >= 0.0))
-    p=AcquireOnePixel(image,(long) x,(long) y,exception);
-  q=image->background_color;
-  if (((x+1.0) < image->columns) && (y >= 0.0))
-    q=AcquireOnePixel(image,(long) (x+1.0),(long) y,exception);
-  r=image->background_color;
-  if ((x >= 0.0) && ((y+1.0) < image->rows))
-    r=AcquireOnePixel(image,(long) x,(long) (y+1.0),exception);
-  s=image->background_color;
-  if (((x+1.0) < image->columns) && ((y+1.0) < image->rows))
-    s=AcquireOnePixel(image,(long) (x+1.0),(long) (y+1.0),exception);
+  x=x_offset;
+  y=y_offset;
+  p=AcquireOnePixel(image,(long) x,(long) y,exception);
+  q=AcquireOnePixel(image,(long) (x+1.0),(long) y,exception);
+  r=AcquireOnePixel(image,(long) x,(long) (y+1.0),exception);
+  s=AcquireOnePixel(image,(long) (x+1.0),(long) (y+1.0),exception);
   x-=floor(x);
   y-=floor(y);
   alpha=1.0-x;

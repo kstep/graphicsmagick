@@ -53,7 +53,7 @@ testFilterSignature('input.miff', 'Contrast',
 testFilterSignature('input.miff', 'Convolve',
   [1, 2, 1, 2, 4, 2, 1, 2, 1],
   '6afcd7320fa3e02d0927dbde488f2bceca021d7ab06fcae6a578974433b5ba0e',
-  '890d51302e1e6aabd680b5a5c61eca58020e50e2c85a68bb25eedc913a6c6ba1');
+  'b7cf64547b875a5a2abe35734822d088d02390707dc79438cc8e24f877d94199');
 
 ++$test;
 testFilterSignature('input.miff', 'Crop',
@@ -70,7 +70,7 @@ testFilterSignature('input.miff', 'Despeckle',
 testFilterSignature('input.miff', 'Edge',
   q/3/,
   '8245bada67e7be6509c02ec6f8372a8c2eb0c04bdc6221ff839ac06e770b9bf2',
-  '1aab086f11b69c1fd45b7c9892072ca56020f714c3cd5a717cd71e93a18fda1d');
+  'a062b84151d5b78a42d641f20f41e3b6cb148b79de3b2349d2ac722b87d3700c');
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Emboss.miff', 'Emboss',
@@ -106,7 +106,7 @@ testFilterSignature('input.miff', 'Gamma',
 testFilterSignature('input.miff', 'Implode',
   q/0.5/,
   'dd31bb88ac09b610724833bf0226391f62e57b1768ca171659c0af9a7b6e6a6b',
-  '2dddb18733e67f366072b9b2cf35a21c69860e33e3ae1d7d19edd5f8d5a45b40');
+  'a70c95a3ea1e65073928ab1f9713a8fff7da8b93ea7d013ea1208707c635429f');
 
 ++$test;
 testFilterSignature('input.miff', 'Magnify',
@@ -124,7 +124,7 @@ testFilterSignature('input.miff', 'MatteFloodfill',
 testFilterSignature('input.miff', 'Minify',
   q/ /,
   'f8b5694b96ad47e606927399c7613f5625376ecb79a676d9554907dcb20b61aa',
-  'd3792cac9b525db981cd035bb418adf84790882f12e92b05f99211a6269386ac');
+  '961a24c814039bb8ba1f7eadbd44e81c368145de7d5c3633a1095c26bcee369e');
 
 ++$test;
 testFilterSignature('input.miff', 'Modulate',
@@ -147,7 +147,7 @@ testFilterSignature('input.miff', 'Normalize',
 testFilterSignature('input.miff', 'OilPaint',
   q/3/,
   'b9cc4ce7b365d8ddb2a4bc3803b810e2a8b6fdcd267670cf7a9b089fc53fb4a5',
-  'cd912828f23fbb79bec8a7f2c07cddc487e94a39ff197b68a1c59891eae23f1f');
+  'a0df026736c29469614cb08e4fe9cfdec62a1dc7999db80a310fbcf554d60d03');
 
 ++$test;
 testFilterSignature('input.miff', 'Opaque',
@@ -207,7 +207,7 @@ testFilterSignature('input.miff', 'Segment',
 testFilterSignature('input.miff', 'Sharpen',
   q/0.0x1.0/,
   '80d503a182ba0b6a88e840c5cf5912303cf7765db91cb9ed886d9dbc5f3102f8',
-  'f93eefa1d389e3e62c332c55b47a4a7e434259363d9d7d769024246edd641c27');
+  'f272b45836f45fb18bde63b4c3936dc1c5e84b24e84ce1daa302263b4ae5370e');
 
 ++$test;
 testFilterSignature('input.miff', 'Shave',
@@ -230,7 +230,7 @@ testFilterSignature('input.miff', 'Solarize',
 testFilterSignature('input.miff', 'Swirl',
   q/60/,
   'e9e50b5e2c8abb68ecda0550fb512c237df3c864be979198fbcdf72cbc491595',
-  '03e08e53dccd96b1bea8aaeb61e6cd81172bc135c2e5f22f481dc6bb5fb37158');
+  '596d330a03d4270fcd20e58dc7e1ccee967907c897ceda18cdd8a527f805469c');
 
 ++$test;
 testFilterSignature('input.miff', 'Threshold',
@@ -247,7 +247,7 @@ testFilterSignature('input.miff', 'Trim',
 testFilterSignature('input.miff', 'Wave',
   q/25x157/,
   '7e193ce861b72cb9e5e405cc1aa882098060fbe35927c8cb5fab294ab0b8a0cf',
-  '95c3deca4a6155e199a09919164d3b7ef10aaaf50296c9a25aad63b08f15fc7e');
+  'a45df92ef008a3e5053f8716efdebdc9870d541391e9ae20ff7f4ca186c1483a');
 
 ++$test;
 

@@ -210,12 +210,12 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   if (((x >= 0) && (x < (long) cache_info->columns)) &&
       ((y >= 0) && (y < (long) cache_info->rows)))
     {
-      if (IsNexusInCore(image->cache,nexus))
+      if (IsNexusInCore(cache_info,nexus))
         return(pixels);
       offset=y*cache_info->columns+x;
       span=(rows-1)*cache_info->columns+columns-1;
       number_pixels=cache_info->columns*cache_info->rows;
-      if ((offset >= 0) && (offset+span) <= (off_t) number_pixels)
+      if ((offset >= 0) && (offset+span) < (off_t) number_pixels)
         {
           unsigned int
             status;
@@ -223,10 +223,10 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
           /*
             Pixel request is inside cache extents.
           */
-          status=ReadCachePixels(image->cache,nexus);
+          status=ReadCachePixels(cache_info,nexus);
           if ((image->storage_class == PseudoClass) ||
               (image->colorspace == CMYKColorspace))
-            status|=ReadCacheIndexes(image->cache,nexus);
+            status|=ReadCacheIndexes(cache_info,nexus);
           if (status != False)
             return(pixels);
         }
@@ -234,18 +234,19 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   /*
     Pixel request is outside cache extents.
   */
-  q=pixels;
-  indexes=GetNexusIndexes(image->cache,nexus);
-  image_nexus=GetNexus(image->cache);
+  indexes=GetNexusIndexes(cache_info,nexus);
+  image_nexus=GetNexus(cache_info);
   if (image_nexus == 0)
     return(False);
+  cache_info->virtual_pixel=image->background_color;
+  q=pixels;
   for (v=0; v < (long) rows; v++)
   {
     for (u=0; u < (long) columns; u+=span)
     {
       span=Min(cache_info->columns-(x+u),columns-u);
-      if ((((y+v) < 0) || ((y+v) >= (long) cache_info->rows)) ||
-          (((x+u) < 0) || ((x+u) >= (long) cache_info->columns)) || (span == 1))
+      if ((((x+u) < 0) || ((x+u) >= (long) cache_info->columns)) ||
+          (((y+v) < 0) || ((y+v) >= (long) cache_info->rows)) || (span == 1))
         {
           /*
             Transfer a single pixel.
@@ -253,8 +254,13 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
           span=1;
           switch (cache_info->virtual_type)
           {
-            case EdgeVPType:
+            case ConstantVPType:
             default:
+            {
+              p=(&cache_info->virtual_pixel);
+              break;
+            }
+            case EdgeVPType:
             {
               p=AcquireCacheNexus(image,EdgeX(x+u),EdgeY(y+v),1,1,image_nexus,
                 exception);
@@ -272,18 +278,13 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
                 image_nexus,exception);
               break;
             }
-            case ConstantVPType:
-            {
-              p=(&cache_info->virtual_pixel);
-              break;
-            }
           }
           if (p == (const PixelPacket *) NULL)
             break;
           *q++=(*p);
           if (indexes == (IndexPacket *) NULL)
             continue;
-          nexus_indexes=GetNexusIndexes(image->cache,image_nexus);
+          nexus_indexes=GetNexusIndexes(cache_info,image_nexus);
           if (nexus_indexes == (IndexPacket *) NULL)
             continue;
           *indexes++=(*nexus_indexes);
@@ -299,14 +300,14 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
       q+=span;
       if (indexes == (IndexPacket *) NULL)
         continue;
-      nexus_indexes=GetNexusIndexes(image->cache,image_nexus);
+      nexus_indexes=GetNexusIndexes(cache_info,image_nexus);
       if (nexus_indexes == (IndexPacket *) NULL)
         continue;
       (void) memcpy(indexes,nexus_indexes,span*sizeof(IndexPacket));
       indexes+=span;
     }
   }
-  DestroyCacheNexus(image->cache,image_nexus);
+  DestroyCacheNexus(cache_info,image_nexus);
   return(pixels);
 }
 
@@ -2500,6 +2501,7 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
     return((PixelPacket *) NULL);
   return(cache_info->methods.set_pixel_handler(image,x,y,columns,rows));
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2517,8 +2519,7 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %
 %  The format of the SetImageVirtualPixelType() method is:
 %
-%      SetImageVirtualPixelType(Image *image,const VirtualPixelType type,
-%        const PixelPacket *pixel)
+%      SetImageVirtualPixelType(Image *image,const VirtualPixelType type)
 %
 %  A description of each parameter follows:
 %
@@ -2538,13 +2539,10 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %
 %        MirrorVPType:  mirror the image at the boundaries.
 %
-%    o pixel: the constant pixel value for the ConstantVPType method.
-%      This value is ignored for other access methods.
-%
 %
 */
 MagickExport void SetImageVirtualPixelType(Image *image,
-  const VirtualPixelType type,const PixelPacket *pixel)
+  const VirtualPixelType type)
 {
   CacheInfo
     *cache_info;
@@ -2555,8 +2553,6 @@ MagickExport void SetImageVirtualPixelType(Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   cache_info->virtual_type=type;
-  if (pixel != (const PixelPacket *) NULL)
-    cache_info->virtual_pixel=(*pixel);
 }
 
 /*
@@ -2625,7 +2621,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
       offset=nexus_info->y*cache_info->columns+nexus_info->x;
       span=(nexus_info->rows-1)*cache_info->columns+nexus_info->columns-1;
       number_pixels=cache_info->columns*cache_info->rows;
-      if ((offset >= 0) && ((offset+span) <= (off_t) number_pixels))
+      if ((offset >= 0) && ((offset+span) < (off_t) number_pixels))
         if ((((nexus_info->x+nexus_info->columns) <= cache_info->columns) &&
             (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
             ((nexus_info->columns % cache_info->columns) == 0)))
