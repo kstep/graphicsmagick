@@ -6,12 +6,12 @@
 
 AUTHOR
 
-  The author is magick@wizards.dupont.com.  This software is NOT
+  The author is magick@mystic.es.dupont.com.  This software is NOT
   shareware.  However, I am interested in who might be using it.
   Please consider sending me a picture postcard of the area where you
   live.  Send postcards to
 
-    John Cristy
+    ImageMagick Studio
     P.O. Box 40
     Landenberg, PA  19350
     USA
