@@ -398,6 +398,18 @@ MagickExport void InitializeMagick(const char *path)
     directory[MaxTextExtent];
 
   InitializeSemaphore();
+  (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
+#if defined(WIN32) && defined(_DEBUG)
+  {
+    int
+      debug;
+
+    debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+    debug|=_CRTDBG_CHECK_ALWAYS_DF;
+    debug|=_CRTDBG_DELAY_FREE_MEM_DF;
+    debug|=_CRTDBG_LEAK_CHECK_DF;
+  }
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
   if (path != (const char *) NULL)
@@ -414,18 +426,6 @@ MagickExport void InitializeMagick(const char *path)
 #endif
       (void) SetClientName(filename);
     }
-  (void) setlocale(LC_ALL,"");
-  (void) setlocale(LC_NUMERIC,"C");
-#if defined(WIN32) && defined(_DEBUG)
-  {
-    int
-      debug;
-
-    debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-    debug|=_CRTDBG_CHECK_ALWAYS_DF;
-    debug|=_CRTDBG_DELAY_FREE_MEM_DF;
-    debug|=_CRTDBG_LEAK_CHECK_DF;
-  }
 #endif
 }
 
