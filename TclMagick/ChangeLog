@@ -1,3 +1,7 @@
+2004-01-09  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* generic/TclMagick.c: Fixed types casts of (int *).
+
 2004-01-09  David N. Welton  <davidw@dedasys.com>
 
 	* unix/configure.ac: Added code to fetch GraphicsMagickWand-config

@@ -3089,7 +3089,7 @@ static int wandObjCmd(
     {
 	char *name;
 	unsigned char *profile = NULL;
-        unsigned long length = 0;
+        int length = 0;
 
         if( (objc != 3) && (objc != 4) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "name ?profile?");
@@ -3098,9 +3098,9 @@ static int wandObjCmd(
 	name = Tcl_GetString(objv[2]);
 
         if( objc > 3 ) {
-	    profile = Tcl_GetByteArrayFromObj(objv[3], (int*)&length);
+	    profile = Tcl_GetByteArrayFromObj(objv[3], &length);
         }
-        result = MagickProfileImage(wandPtr, name, profile, length);
+        result = MagickProfileImage(wandPtr, name, profile, (unsigned long)length);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -3149,12 +3149,12 @@ static int wandObjCmd(
 	name = Tcl_GetString(objv[2]);
 
         if( objc == 4 ) {
-            unsigned long length;
+            int length;
             /*
              * Set/Add image profile
              */
-	    profile = Tcl_GetByteArrayFromObj(objv[3], (int *)&length);
-	    result = MagickSetImageProfile(wandPtr, (const char*)name, profile, length);
+	    profile = Tcl_GetByteArrayFromObj(objv[3], &length);
+	    result = MagickSetImageProfile(wandPtr, (const char*)name, profile, (unsigned long)length);
 	    if (!result) {
 	        return myMagickError(interp, wandPtr);
 	    }
@@ -3613,8 +3613,6 @@ static int wandObjCmd(
     case TM_SET_SAMPLING_FACTORS:  /* GetSamplingFactors factorList */
     {
         double  *factors;
-        int     i;
-	unsigned long listLen = 0;
 
 	if( ((enum subIndex)index == TM_SAMPLING_FACTORS) && (objc != 2) && (objc != 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?factorList?");
@@ -3633,8 +3631,9 @@ static int wandObjCmd(
 	     * Set sampling factors
 	     */
             Tcl_Obj **listPtr;
+            int     i, listLen = 0;
 
-	    if( (stat = Tcl_ListObjGetElements(interp, objv[2], (int *)&listLen, &listPtr)) != TCL_OK) {
+	    if( (stat = Tcl_ListObjGetElements(interp, objv[2], &listLen, &listPtr)) != TCL_OK) {
 	        return stat;
 	    }
 	    factors = (double *)ckalloc(listLen * sizeof(double));
@@ -3648,7 +3647,7 @@ static int wandObjCmd(
 		    return stat;
 	        }
 	    }
-	    result = MagickSetSamplingFactors(wandPtr, listLen, factors);
+	    result = MagickSetSamplingFactors(wandPtr, (unsigned long)listLen, factors);
 	    if (!result) {
 	        return myMagickError(interp, wandPtr);
 	    }
@@ -3657,11 +3656,12 @@ static int wandObjCmd(
 	     * Get size={xSize ySize}
 	     */
             Tcl_Obj *listPtr = NULL;
+            unsigned long i, uLen;
 
-	    factors = MagickGetSamplingFactors(wandPtr, &listLen);
-	    if( (factors != NULL) && (listLen > 0) ) {
+	    factors = MagickGetSamplingFactors(wandPtr, &uLen);
+	    if( (factors != NULL) && (uLen > 0) ) {
                 listPtr = Tcl_NewListObj(0, NULL);
-	        for( i=0; i < listLen; i++ ) {
+	        for( i=0; i < uLen; i++ ) {
                     Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewDoubleObj(factors[i]));
                 }
     	        Tcl_SetObjResult(interp, listPtr);
@@ -3902,7 +3902,7 @@ static int wandObjCmd(
 	if( (objc > 6) && ((stat = Tcl_GetLongFromObj(interp, objv[6], &y)) != TCL_OK) ) {
 	    return stat;
 	}
-	result = MagickMatteFloodfillImage(wandPtr, (Quantum)opacity, fuzz, borderPtr, x, y);
+	result = MagickMatteFloodfillImage(wandPtr, (Quantum)(opacity), fuzz, borderPtr, x, y);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
@@ -4286,7 +4286,7 @@ static int wandObjCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, "numColors ?colorspaceType=RGB? ?treedepth=0? ?dither=no? ?measureError=no?");
 	    return TCL_ERROR;
 	}
-	if( (stat = Tcl_GetIntFromObj(interp, objv[2], (int *)&numColors)) != TCL_OK ) {
+	if( (stat = Tcl_GetLongFromObj(interp, objv[2], &numColors)) != TCL_OK ) {
 	    return stat;
 	}
 	if( (objc > 3) && (Tcl_GetIndexFromObj(interp, objv[3], csNames, "colorspaceType", 0, &csIdx) != TCL_OK) ) {
@@ -4398,14 +4398,14 @@ static int wandObjCmd(
     case TM_READ_IMAGE_BLOB:    /* ReadImageBlob data */
     {
 	unsigned char *data;
-        size_t length;
+        int length;
 
 	if (objc != 3) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "data");
 	    return TCL_ERROR;
 	}
-	data = Tcl_GetByteArrayFromObj(objv[2], (int *)&length);
-	result = MagickReadImageBlob(wandPtr, data, length);
+	data = Tcl_GetByteArrayFromObj(objv[2], &length);
+	result = MagickReadImageBlob(wandPtr, data, (size_t)length);
 	if (!result) {
 	    return myMagickError(interp, wandPtr);
 	}
