@@ -217,7 +217,8 @@ typedef struct _XPixelInfo
     trough_color,
     box_color,
     pen_color,
-    pen_colors[MaxNumberPens];
+    pen_colors[MaxNumberPens],
+    *gamma_map;
 
   GC
     annotate_context,
