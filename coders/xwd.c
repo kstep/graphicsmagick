@@ -53,7 +53,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 /*
   Forward declarations.
@@ -106,7 +106,7 @@ static unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
 }
 
 #if defined(HasX11)
-#include "xwindows.h"
+#include "xwindow.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %

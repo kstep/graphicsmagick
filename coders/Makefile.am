@@ -52,7 +52,7 @@ libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
 endif # WITH_MODULES
 
 # Additional files to distribute
-EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
+EXTRA_DIST = modules.mgk delegate.mgk.in type.mgk.in
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
@@ -493,17 +493,17 @@ yuv_la_LIBADD       = ../magick/libMagick.la
 
 DEFS = @DEFS@ -I../
 
-# Install delegates files
-install-data-delegates: 
+# Install delegate files
+install-data-delegate: 
 	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	$(INSTALL_DATA) delegates.mgk $(DESTDIR)$(pkglibdir)
+	$(INSTALL_DATA) delegate.mgk $(DESTDIR)$(pkglibdir)
 	$(INSTALL_DATA) type.mgk $(DESTDIR)$(pkglibdir)
 
-# Uninstall delegates files
-uninstall-data-delegates:
-	rm -f $(DESTDIR)$(pkglibdir)/delegates.mgk
+# Uninstall delegate files
+uninstall-data-delegate:
+	rm -f $(DESTDIR)$(pkglibdir)/delegate.mgk
 	rm -f $(DESTDIR)$(pkglibdir)/type.mgk
 
-install-exec-local: install-data-delegates
+install-exec-local: install-data-delegate
 
-uninstall-local: uninstall-data-delegates
+uninstall-local: uninstall-data-delegate

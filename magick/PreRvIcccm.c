@@ -50,9 +50,9 @@
 */
 
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 #if defined(HasX11)
-#include "xwindows.h"
+#include "xwindow.h"
 
 #if defined(PRE_R6_ICCCM)
 /*

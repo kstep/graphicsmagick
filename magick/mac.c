@@ -76,7 +76,7 @@
 #include <TextUtils.h>
 #define ColorInfo  KolorInfo
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 #include "mac.h"
 
 /*

@@ -179,10 +179,10 @@ $write sys$output "..symbol COMPOSITE defined."
 $SkipComposite:
 $set def [-]
 $copy [.magick]magic.mgk sys$login:magic.mgk
-$copy [.magick]colors.mgk sys$login:colors.mgk
-$copy [.coders]delegates.mgk sys$login:delegates.mgk
-$copy [.coders]fonts.mgk sys$login:fonts.mgk
-$copy [.coders]modules.mgk sys$login:modules.mgk
+$copy [.magick]color.mgk sys$login:color.mgk
+$copy [.coders]delegate.mgk sys$login:delegate.mgk
+$copy [.coders]module.mgk sys$login:module.mgk
+$copy [.coders]type.mgk sys$login:type.mgk
 $type sys$input
 
 Use this command to specify which X server to contact:

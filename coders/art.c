@@ -49,7 +49,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 
 static void InsertRow(unsigned char *p,int y,Image *image)

@@ -1,8 +1,8 @@
 /*
   Graphic Gems - Graphic Support Methods.
 */
-#ifndef _MAGICK_GEMS_H
-#define _MAGICK_GEMS_H
+#ifndef _MAGICK_GEM_H
+#define _MAGICK_GEM_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

@@ -53,7 +53,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 #if defined(HasGS)
 #include "ps/iapi.h"
 #include "ps/errors.h"

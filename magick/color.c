@@ -2,11 +2,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                  CCCC   OOO   L       OOO   RRRR   SSSSS                    %
-%                 C      O   O  L      O   O  R   R  SS                       %
-%                 C      O   O  L      O   O  RRRR    SSS                     %
-%                 C      O   O  L      O   O  R R       SS                    %
-%                  CCCC   OOO   LLLLL   OOO   R  R   SSSSS                    %
+%                       CCCC   OOO   L       OOO   RRRR                       %
+%                      C      O   O  L      O   O  R   R                      %
+%                      C      O   O  L      O   O  RRRR                       %
+%                      C      O   O  L      O   O  R R                        %
+%                       CCCC   OOO   LLLLL   OOO   R  R                       %
 %                                                                             %
 %                                                                             %
 %                  Methods to Count the Colors in an Image                    %
@@ -52,12 +52,12 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 /*  
   Define declarations.
 */
-#define ColorFilename  "colors.mgk"
+#define ColorFilename  "color.mgk"
 
 /*
   Declare color map.

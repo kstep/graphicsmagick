@@ -1,8 +1,8 @@
 /*
   ImageMagick Modules Methods.
 */
-#ifndef _MAGICK_MODULES_H
-#define _MAGICK_MODULES_H
+#ifndef _MAGICK_MODULE_H
+#define _MAGICK_MODULE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

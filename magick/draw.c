@@ -58,7 +58,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 /*
   Define declarations.
@@ -244,7 +244,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %  By default target must match a particular pixel color exactly.
 %  However, in many cases two colors may differ by a small amount.  The
-%  fuzz member of image defines how much tolerance is acceptable to
+%  fuzz member of image define.how much tolerance is acceptable to
 %  consider two colors as the same.  For example, set fuzz to 10 and the
 %  color red at intensities of 100 and 102 respectively are now
 %  interpreted as the same color for the purposes of the floodfill.
@@ -4169,7 +4169,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 %  By default target must match a particular pixel transparency exactly.
 %  However, in many cases two transparency values may differ by a small
-%  amount.  The fuzz member of image defines how much tolerance is
+%  amount.  The fuzz member of image define.how much tolerance is
 %  acceptable to consider two transparency values as the same.  For
 %  example, set fuzz to 10 and the opacity values of 100 and 102
 %  respectively are now interpreted as the same value for the purposes of

@@ -611,7 +611,7 @@
 1999-09-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h (MagickLib): Eliminated requirement for
- 	including <magick/defines.h>.
+ 	including <magick/define.h>.
 
 1999-08-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

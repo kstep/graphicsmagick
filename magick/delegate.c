@@ -2,11 +2,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%        DDDD   EEEEE  L      EEEEE   GGGG   AAA   TTTTT  EEEEE  SSSSS        %
-%        D   D  E      L      E      G      A   A    T    E      SS           %
-%        D   D  EEE    L      EEE    G  GG  AAAAA    T    EEE     SSS         %
-%        D   D  E      L      E      G   G  A   A    T    E         SS        %
-%        DDDD   EEEEE  LLLLL  EEEEE   GGG   A   A    T    EEEEE  SSSSS        %
+%           DDDD   EEEEE  L      EEEEE   GGGG   AAA   TTTTT  EEEEE            %
+%           D   D  E      L      E      G      A   A    T    E                %
+%           D   D  EEE    L      EEE    G  GG  AAAAA    T    EEE              %
+%           D   D  E      L      E      G   G  A   A    T    E                %
+%           DDDD   EEEEE  LLLLL  EEEEE   GGG   A   A    T    EEEEE            %
 %                                                                             %
 %                                                                             %
 %                   Methods to Read/Write/Invoke Delegates                    %
@@ -59,12 +59,12 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 /*
   Define declarations.
 */
-#define DelegateFilename  "delegates.mgk"
+#define DelegateFilename  "delegate.mgk"
 
 /*
   Declare delegate map.

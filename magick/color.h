@@ -1,8 +1,8 @@
 /*
   Color methods.
 */
-#ifndef _MAGICK_COLORS_H
-#define _MAGICK_COLORS_H
+#ifndef _MAGICK_COLOR_H
+#define _MAGICK_COLOR_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

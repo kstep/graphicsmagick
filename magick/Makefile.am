@@ -46,12 +46,12 @@ ALLMANPAGES = Magick-config.1
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library base sources
-MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
-  cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
-  display.c draw.c effects.c enhance.c error.c gems.c image.c  \
-  semaphore.c magic.c magick.c memory.c modules.c monitor.c montage.c \
+MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attribute.c blob.c \
+  cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegate.c \
+  display.c draw.c effect.c enhance.c error.c gem.c image.c  \
+  semaphore.c magic.c magick.c memory.c module.c monitor.c montage.c \
   quantize.c segment.c shear.c signature.c stream.c timer.c transform.c \
-  type.c utility.c widget.c xwindows.c zoom.c
+  type.c utility.c widget.c xwindow.c zoom.c
 
 # Library sources
 if WITH_MODULES
@@ -71,22 +71,22 @@ endif # WITH_MODULES
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache.h cache_view.h \
-  classify.h colors.h compress.h config.h delegates.h draw.h error.h \
-  gems.h image.h magic.h magick.h modules.h monitor.h quantize.h semaphore.h \
-  timer.h utility.h version.h widget.h xwindows.h
+include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h cache_view.h \
+  classify.h colors.h compress.h config.h delegate.h draw.h error.h \
+  gem.h image.h magic.h magick.h module.h monitor.h quantize.h semaphore.h \
+  timer.h utility.h version.h widget.h xwindow.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h defines.h display.h mac.h magic.h nt.h vms.h
+noinst_HEADERS = animate.h define.h display.h mac.h magic.h nt.h vms.h
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c nt.c vms.c $(MAGICK_BASE_SRCS)
 
-# Where modules are installed
-pkgdir = $(libdir)/ImageMagick/modules/coders
+# Where module are installed
+pkgdir = $(libdir)/ImageMagick/module/coders
 
-# Architecture-dependent data files installed with modules
+# Architecture-dependent data files installed with module
 pkg_DATA = 
 
 # Architecture independent data files installed in the package's data directory

@@ -54,7 +54,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 #if defined(HasLCMS)
 # if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #  include <lcms/lcms.h>

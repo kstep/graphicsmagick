@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                EEEEE  FFFFF  FFFFF  EEEEE  CCCC  TTTTT  SSSSS               %
-%                E      F      F      E     C        T    SS                  %
-%                EEE    FFF    FFF    EEE   C        T     SSS                %
-%                E      F      F      E     C        T       SS               %
-%                EEEEE  F      F      EEEEE  CCCC    T    SSSSS               %
+%                   EEEEE  FFFFF  FFFFF  EEEEE  CCCC  TTTTT                   %
+%                   E      F      F      E     C        T                     %
+%                   EEE    FFF    FFF    EEE   C        T                     %
+%                   E      F      F      E     C        T                     %
+%                   EEEEE  F      F      EEEEE  CCCC    T                     %
 %                                                                             %
 %                                                                             %
 %                      ImageMagick Image Effects Methods                      %
@@ -54,7 +54,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

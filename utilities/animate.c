@@ -113,8 +113,8 @@
   Include declarations.
 */
 #include "magick/magick.h"
-#include "magick/defines.h"
-#include "magick/xwindows.h"
+#include "magick/define.h"
+#include "magick/xwindow.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

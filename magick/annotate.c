@@ -56,9 +56,9 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 #if defined(HasX11)
-#include "xwindows.h"
+#include "xwindow.h"
 #endif
 #if defined(HasTTF)
 #include "freetype/freetype.h"

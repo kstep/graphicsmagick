@@ -53,7 +53,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 #if defined(HasFPX)
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #include <fpxlib.h>

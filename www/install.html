@@ -307,14 +307,14 @@ ImageMagick to run about 30% slower.</li>
 
 <li> <tt>--without-frozenpaths</tt> By default,
 the configure script will determine the location of all delegates (external
-programs) and incorporate the full paths within the delegates.mgk file. This
+programs) and incorporate the full paths within the delegate.mgk file. This
 is the default because it is assumed that the installer's environment is
 appropriately configured and that the operation of ImageMagick should not
 be subject to the end-user's environment. However, if it is desireable to
 allow the end user to define their own environment or possible that the end
 user's environment does not match the installer's environment (e.g. for binary
 distributions), --without-frozenpaths may be specified so that only the delegate's
-name is included in the delegates.mgk file.</li>
+name is included in the delegate.mgk file.</li>
 
 <li> <tt>--with-threads</tt> By default,
 the ImageMagick library is compiled without multi-thread support. This is
@@ -887,7 +887,7 @@ VMS Compilation</font></font></font></b></td>
 </p>
 <dd>
 You might want to check the values of certain program definitions before 
-compiling. Verify the definitions in <tt>delegates.mgk</tt> to suit your local
+compiling. Verify the definitions in <tt>delegate.mgk</tt> to suit your local
 requirements. Next, type:</dd>
 </dl>
 </dl>

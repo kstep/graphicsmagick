@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     AAA   TTTTT  TTTTT  RRRR   IIIII  BBBB   U   U  TTTTT  EEEEE  SSSSS     %
-%    A   A    T      T    R   R    I    B   B  U   U    T    E      SS        %
-%    AAAAA    T      T    RRRR     I    BBBB   U   U    T    EEE     SSS      %
-%    A   A    T      T    R R      I    B   B  U   U    T    E         SS     %
-%    A   A    T      T    R  R   IIIII  BBBB    UUU     T    EEEEE  SSSSS     %
+%        AAA   TTTTT  TTTTT  RRRR   IIIII  BBBB   U   U  TTTTT  EEEEE         %
+%       A   A    T      T    R   R    I    B   B  U   U    T    E             %
+%       AAAAA    T      T    RRRR     I    BBBB   U   U    T    EEE           %
+%       A   A    T      T    R R      I    B   B  U   U    T    E             %
+%       A   A    T      T    R  R   IIIII  BBBB    UUU     T    EEEEE         %
 %                                                                             %
 %                                                                             %
 %              Methods to Get/Set/Destroy Image Text Attributes               %
@@ -56,7 +56,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

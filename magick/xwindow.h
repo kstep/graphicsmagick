@@ -1,8 +1,8 @@
 /*
   X11 Utility Methods for ImageMagick.
 */
-#ifndef _MAGICK_XWINDOWS_H
-#define _MAGICK_XWINDOWS_H
+#ifndef _MAGICK_XWINDOW_H
+#define _MAGICK_XWINDOW_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {

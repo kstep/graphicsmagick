@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                           GGGG  EEEEE  M   M SSSSS                          %
-%                          G      E      MM MM SS                             %
-%                          G GG   EEE    M M M  SSS                           %
-%                          G   G  E      M   M    SS                          %
-%                           GGGG  EEEEE  M   M SSSSS                          %
+%                              GGGG  EEEEE  M   M                             %
+%                             G      E      MM MM                             %
+%                             G GG   EEE    M M M                             %
+%                             G   G  E      M   M                             %
+%                              GGGG  EEEEE  M   M                             %
 %                                                                             %
 %                                                                             %
 %                    Graphic Gems - Graphic Support Methods                   %
@@ -54,7 +54,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -64,7 +64,7 @@ Work remaining to be completed on libwmf portion of this module:
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 #if defined(HasWMF2)
  /* HasWMF2 */

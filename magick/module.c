@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%               M   M   OOO   DDDD   U   U  L      EEEEE  SSSSS               %
-%               MM MM  O   O  D   D  U   U  L      E      SS                  %
-%               M M M  O      D   D  U   U  L      EEE     SSS                %
-%               M   M  O   O  D   D  U   U  L      E         SS               %
-%               M   M   OOO   DDDD    UUU   LLLLL  EEEEE  SSSSS               %
+%                  M   M   OOO   DDDD   U   U  L      EEEEE                   %
+%                  MM MM  O   O  D   D  U   U  L      E                       %
+%                  M M M  O      D   D  U   U  L      EEE                     %
+%                  M   M  O   O  D   D  U   U  L      E                       %
+%                  M   M   OOO   DDDD    UUU   LLLLL  EEEEE                   %
 %                                                                             %
 %                                                                             %
 %                        ImageMagick Module Methods                           %
@@ -54,7 +54,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 #if defined(HasLTDL)
 #include "ltdl/ltdl.h"
 typedef lt_dlhandle ModuleHandle;
@@ -65,7 +65,7 @@ typedef void *ModuleHandle;
 /*
   Define declarations.
 */
-#define ModuleFilename  "modules.mgk"
+#define ModuleFilename  "module.mgk"
 #if !defined(WIN32)
 # if !defined(CoderModuleDirectory)
 #  define CoderModuleDirectory  ""

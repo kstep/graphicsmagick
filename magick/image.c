@@ -54,7 +54,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "defines.h"
+#include "define.h"
 
 /*
   Constant declaration.
@@ -322,7 +322,7 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 }
 
 #if defined(HasX11)
-#include "xwindows.h"
+#include "xwindow.h"
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
