@@ -102,10 +102,15 @@ Export void DestroyModuleInfo()
  */
 Export void ExitModules(void)
 {
-  /* Unload all modules */
+  register ModuleInfo
+    *p;
 
-  /* Shut down libltdl. */
-/*   lt_dlexit (void); */
+  /* Unload and de-register all loaded modules */
+  while((p=GetModuleInfo((char *)NULL))!=(ModuleInfo*)NULL)
+    UnloadModule(p->tag);
+
+  /* Shut down libltdl */
+ /*  lt_dlexit(void); */
 }
 
 /*
@@ -247,7 +252,7 @@ Export int LoadModule(const char* module)
     Build module file name from module name
   */
   dest=module_file;
-  source=module;
+  source=(char*)module;
   while(*source)
     {
       *dest = tolower(*source);
@@ -291,6 +296,7 @@ Export int LoadModule(const char* module)
     strcat(func_name,"8");
 
   strcat(func_name,module);
+  strcat(func_name, "Image");
 
   /*
     Locate and invoke module registration function
@@ -311,7 +317,7 @@ Export int LoadModule(const char* module)
  * Register a module with the ModuleInfo list
  *
  */
-Export int RegisterModuleInfo(ModuleInfo *entry)
+Export ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
 {
   register ModuleInfo
     *p;
@@ -410,12 +416,8 @@ Export int UnloadModule(const char* module)
 	Locate and execute UnRegisterFORMATImage function
       */
       strcpy(func_name, "UnRegister");
-
-      /* Hack due to 8BIM vs bim.c naming difference */
-      if(!strcmp("BIM", module))
-	strcat(func_name,"8");
-
       strcat(func_name,module);
+      strcat(func_name, "Image");
 
       /*
 	Locate and invoke module de-registration function
@@ -468,7 +470,7 @@ Export int UnloadModule(const char* module)
 %      looking for.
 %
 */
-Export unsigned int UnregisterModuleInfo(const char *tag)
+Export int UnregisterModuleInfo(const char *tag)
 {
   ModuleInfo
     *module_info;

@@ -36,7 +36,7 @@ extern Export void
 
 extern Export int
   LoadModule(const char* module),
-  RegisterModuleInfo(ModuleInfo *entry),
+  UnregisterModuleInfo(const char *tag),
   UnloadModule(const char* module);
 
 extern Export char
@@ -44,6 +44,7 @@ extern Export char
 
 extern Export ModuleInfo
   *GetModuleInfo(const char *tag),
+  *RegisterModuleInfo(ModuleInfo *entry),
   *SetModuleInfo(const char *tag);
 
 #if defined(__cplusplus) || defined(c_plusplus)
