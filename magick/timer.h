@@ -11,14 +11,14 @@ extern "C" {
 /*
   Utilities methods.
 */
-extern Export double
+extern MagickExport double
   GetElapsedTime(TimerInfo *),
   GetUserTime(TimerInfo *);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   ContinueTimer(TimerInfo *);
 
-extern Export void
+extern MagickExport void
   GetTimerInfo(TimerInfo *),
   ResetTimer(TimerInfo *),
   StartTimer(TimerInfo *,const unsigned int),

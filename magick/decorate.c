@@ -90,7 +90,7 @@
 %
 %
 */
-Export Image *BorderImage(Image *image,const RectangleInfo *border_info,
+MagickExport Image *BorderImage(Image *image,const RectangleInfo *border_info,
   ExceptionInfo *exception)
 {
   PixelPacket
@@ -152,7 +152,7 @@ Export Image *BorderImage(Image *image,const RectangleInfo *border_info,
 %
 %
 */
-Export Image *FrameImage(Image *image,const FrameInfo *frame_info,
+MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   ExceptionInfo *exception)
 {
 #define FrameImageText  "  Adding frame to image...  "
@@ -412,8 +412,8 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info,
 %
 %
 */
-Export unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
-  const int raised)
+MagickExport unsigned int RaiseImage(Image *image,
+  const RectangleInfo *raise_info,const int raised)
 {
 #define AccentuateFactor  UpScale(135)
 #define HighlightFactor  UpScale(190)

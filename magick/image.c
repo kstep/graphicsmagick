@@ -111,7 +111,7 @@ const char
 %
 %
 */
-Export Image *AllocateImage(const ImageInfo *image_info)
+MagickExport Image *AllocateImage(const ImageInfo *image_info)
 {
   Image
     *allocate_image;
@@ -296,7 +296,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
 %
 %
 */
-Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
+MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 {
   /*
     Allocate image structure.
@@ -345,7 +345,8 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
+MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
+  Image *image)
 {
 #if defined(HasX11)
   char
@@ -414,7 +415,7 @@ Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 %
 %
 */
-Export Image *AppendImages(Image *image,const unsigned int stack,
+MagickExport Image *AppendImages(Image *image,const unsigned int stack,
   ExceptionInfo *exception)
 {
 #define AppendImageText  "  Appending image sequence...  "
@@ -557,7 +558,7 @@ Export Image *AppendImages(Image *image,const unsigned int stack,
 %
 %
 */
-Export Image *AverageImages(Image *image,ExceptionInfo *exception)
+MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
 {
 #define AverageImageText  "  Average image sequence...  "
 
@@ -724,7 +725,7 @@ Export Image *AverageImages(Image *image,ExceptionInfo *exception)
 %
 %
 */
-Export Image *CloneImage(Image *image,const unsigned int columns,
+MagickExport Image *CloneImage(Image *image,const unsigned int columns,
   const unsigned int rows,const unsigned int orphan,ExceptionInfo *exception)
 {
   Image
@@ -885,7 +886,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
 %
 %
 */
-Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
+MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 {
   ImageInfo
     *clone_info;
@@ -960,8 +961,9 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %
 */
-Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
-  Image *composite_image,const int x_offset,const int y_offset)
+MagickExport unsigned int CompositeImage(Image *image,
+  const CompositeOperator compose,Image *composite_image,const int x_offset,
+  const int y_offset)
 {
   int
     y;
@@ -1506,7 +1508,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
 %
 %
 */
-Export void CycleColormapImage(Image *image,const int amount)
+MagickExport void CycleColormapImage(Image *image,const int amount)
 {
 #define CycleColormapImageText  "  Cycling image...  "
 
@@ -1584,7 +1586,8 @@ Export void CycleColormapImage(Image *image,const int amount)
 %
 %
 */
-Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
+MagickExport void DescribeImage(Image *image,FILE *file,
+  const unsigned int verbose)
 {
   char
     color[MaxTextExtent];
@@ -2110,7 +2113,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 %
 %
 */
-Export void DestroyImage(Image *image)
+MagickExport void DestroyImage(Image *image)
 {
   /*
     Close image.
@@ -2204,7 +2207,7 @@ Export void DestroyImage(Image *image)
 %
 %
 */
-Export void DestroyImageInfo(ImageInfo *image_info)
+MagickExport void DestroyImageInfo(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
   if (image_info->server_name != (char *) NULL)
@@ -2256,7 +2259,7 @@ Export void DestroyImageInfo(ImageInfo *image_info)
 %
 %
 */
-Export void DestroyImages(Image *image)
+MagickExport void DestroyImages(Image *image)
 {
   Image
     *next;
@@ -2309,7 +2312,8 @@ Export void DestroyImages(Image *image)
 %
 %
 */
-Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
+MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
+  Image *image)
 {
 #if defined(HasX11)
   char
@@ -2380,7 +2384,7 @@ Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
 %
 %
 */
-Export void GetImageInfo(ImageInfo *image_info)
+MagickExport void GetImageInfo(ImageInfo *image_info)
 {
   /*
     File and image dimension members.
@@ -2475,7 +2479,7 @@ Export void GetImageInfo(ImageInfo *image_info)
 %
 %
 */
-Export ImageType GetImageType(Image *image)
+MagickExport ImageType GetImageType(Image *image)
 {
   assert(image != (Image *) NULL);
   if (image->colorspace == CMYKColorspace)
@@ -2518,7 +2522,7 @@ Export ImageType GetImageType(Image *image)
 %
 %
 */
-Export Image *GetNextImage(Image *image)
+MagickExport Image *GetNextImage(Image *image)
 {
   assert(image != (Image *) NULL);
   image->next->blob=image->blob;
@@ -2552,7 +2556,7 @@ Export Image *GetNextImage(Image *image)
 %
 %
 */
-Export unsigned int GetNumberScenes(const Image *image)
+MagickExport unsigned int GetNumberScenes(const Image *image)
 {
   const Image
     *next;
@@ -2595,7 +2599,7 @@ Export unsigned int GetNumberScenes(const Image *image)
 %
 %
 */
-Export void GetPageInfo(RectangleInfo *page)
+MagickExport void GetPageInfo(RectangleInfo *page)
 {
   assert(page != (RectangleInfo *) NULL);
   page->width=0;
@@ -2627,7 +2631,7 @@ Export void GetPageInfo(RectangleInfo *page)
 %
 %
 */
-Export void GetPixelPacket(PixelPacket *pixel)
+MagickExport void GetPixelPacket(PixelPacket *pixel)
 {
   assert(pixel != (PixelPacket *) NULL);
   pixel->red=0;
@@ -2662,7 +2666,7 @@ Export void GetPixelPacket(PixelPacket *pixel)
 %
 %
 */
-Export unsigned int IsGeometry(const char *geometry)
+MagickExport unsigned int IsGeometry(const char *geometry)
 {
   double
     value;
@@ -2711,7 +2715,8 @@ Export unsigned int IsGeometry(const char *geometry)
 %
 %
 */
-Export unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
+MagickExport unsigned int IsSubimage(const char *geometry,
+  const unsigned int pedantic)
 {
   int
     x,
@@ -2757,7 +2762,7 @@ Export unsigned int IsSubimage(const char *geometry,const unsigned int pedantic)
 %
 %
 */
-Export unsigned int IsTainted(const Image *image)
+MagickExport unsigned int IsTainted(const Image *image)
 {
   char
     magick[MaxTextExtent],
@@ -2806,7 +2811,7 @@ Export unsigned int IsTainted(const Image *image)
 %
 %
 */
-Export unsigned int LayerImage(Image *image,const LayerType layer)
+MagickExport unsigned int LayerImage(Image *image,const LayerType layer)
 {
 #define LayerImageText  "  Extracting the layer from the image...  "
 
@@ -2905,7 +2910,7 @@ Export unsigned int LayerImage(Image *image,const LayerType layer)
 %
 %
 */
-Export Image **ListToGroupImage(Image *image,unsigned int *number_images)
+MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
 {
   Image
     **images,
@@ -2965,7 +2970,7 @@ Export Image **ListToGroupImage(Image *image,unsigned int *number_images)
 %
 %
 */
-Export void MatteImage(Image *image,Quantum opacity)
+MagickExport void MatteImage(Image *image,Quantum opacity)
 {
   int
     y;
@@ -3027,8 +3032,8 @@ Export void MatteImage(Image *image,Quantum opacity)
 %
 %
 */
-Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
-  char **argv,Image **image)
+MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
+  const int argc,char **argv,Image **image)
 {
   char
     *geometry,
@@ -4326,8 +4331,8 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
 %
 %
 */
-Export unsigned int MogrifyImages(const ImageInfo *next_info,const int argc,
-  char **argv,Image **image)
+MagickExport unsigned int MogrifyImages(const ImageInfo *next_info,
+  const int argc,char **argv,Image **image)
 {
 #define MogrifyImageText  "  Transforming image...  "
 
@@ -4406,7 +4411,7 @@ Export unsigned int MogrifyImages(const ImageInfo *next_info,const int argc,
 %
 %
 */
-Export Image *MosaicImages(Image *image,ExceptionInfo *exception)
+MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
 {
 #define MosaicImageText  "  Creating an image mosaic...  "
 
@@ -4523,7 +4528,7 @@ Export Image *MosaicImages(Image *image,ExceptionInfo *exception)
 %
 %
 */
-Export int ParseImageGeometry(const char *geometry,int *x,int *y,
+MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
   unsigned int *width,unsigned int *height)
 {
   int
@@ -4700,7 +4705,7 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
 %
 %
 */
-Export unsigned int RGBTransformImage(Image *image,
+MagickExport unsigned int RGBTransformImage(Image *image,
   const ColorspaceType colorspace)
 {
 #define RGBTransformImageText  "  Transforming image colors...  "
@@ -5164,7 +5169,7 @@ Export unsigned int RGBTransformImage(Image *image,
 %
 %
 */
-Export void SetImage(Image *image,Quantum opacity)
+MagickExport void SetImage(Image *image,Quantum opacity)
 {
   int
     y;
@@ -5237,7 +5242,7 @@ Export void SetImage(Image *image,Quantum opacity)
 %
 %
 */
-Export unsigned int SetImageInfo(ImageInfo *image_info,
+MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   const unsigned int rectify)
 {
   char
@@ -5482,7 +5487,7 @@ static int IntensityCompare(const void *x,const void *y)
   return((int) Intensity(*color_2)-(int) Intensity(*color_1));
 }
 
-Export unsigned int SortColormapByIntensity(Image *image)
+MagickExport unsigned int SortColormapByIntensity(Image *image)
 {
   IndexPacket
     index;
@@ -5570,7 +5575,7 @@ Export unsigned int SortColormapByIntensity(Image *image)
 %
 %
 */
-Export void SyncImage(Image *image)
+MagickExport void SyncImage(Image *image)
 {
   IndexPacket
     index;
@@ -5634,7 +5639,7 @@ Export void SyncImage(Image *image)
 %
 %
 */
-Export void TextureImage(Image *image,Image *texture)
+MagickExport void TextureImage(Image *image,Image *texture)
 {
 #define TextureImageText  "  Appling image texture...  "
 
@@ -5687,7 +5692,7 @@ Export void TextureImage(Image *image,Image *texture)
 %
 %
 */
-Export unsigned int TransformRGBImage(Image *image,
+MagickExport unsigned int TransformRGBImage(Image *image,
   const ColorspaceType colorspace)
 {
 #define B (MaxRGB+1)*2

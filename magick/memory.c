@@ -83,7 +83,7 @@
 %
 %
 */
-Export void *AllocateMemory(const size_t size)
+MagickExport void *AllocateMemory(const size_t size)
 {
   void
     *allocation;
@@ -116,7 +116,7 @@ Export void *AllocateMemory(const size_t size)
 %
 %
 */
-Export void FreeMemory(void **memory)
+MagickExport void FreeMemory(void **memory)
 {
   if (*memory == (void *) NULL)
     return;
@@ -152,7 +152,7 @@ Export void FreeMemory(void **memory)
 %
 %
 */
-Export void *ReallocateMemory(void *memory,const size_t size)
+MagickExport void *ReallocateMemory(void *memory,const size_t size)
 {
   void
     *new_memory;

@@ -480,7 +480,7 @@ static unsigned int SyncPixelStream(Image *image)
 %
 %
 */
-Export unsigned int StreamImage(const ImageInfo *image_info,
+MagickExport unsigned int StreamImage(const ImageInfo *image_info,
   void (*fifo)(const Image *),ExceptionInfo *exception)
 {
   Image

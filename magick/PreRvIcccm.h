@@ -24,7 +24,7 @@ extern "C" {
 #define XK_KP_End               0xFF9C
 #define XK_KP_Delete            0xFF9F
 
-extern Export Status
+extern MagickExport Status
   XInitImage(XImage *ximage);
 #endif
 
@@ -32,7 +32,7 @@ extern Export Status
 /*
   Compatability defines for pre X11R5 ICCCM.
 */
-extern Export XrmDatabase
+extern MagickExport XrmDatabase
   XrmGetDatabase();
 #endif
 
@@ -69,35 +69,35 @@ typedef struct _XTextProperty
 char
   *XResourceManagerString();
 
-extern Export int
+extern MagickExport int
   XWMGeometry();
 
-extern Export Status
+extern MagickExport Status
   XGetRGBColormaps(),
   XGetWMName(),
   XReconfigureWMWindow(),
   XSetWMProtocols(),
   XWithdrawWindow();
 
-extern Export XClassHint
+extern MagickExport XClassHint
   *XAllocClassHint();
 
-extern Export XIconSize
+extern MagickExport XIconSize
   *XAllocIconSize();
 
-extern Export XSizeHints
+extern MagickExport XSizeHints
   *XAllocSizeHints();
 
-extern Export XStandardColormap
+extern MagickExport XStandardColormap
   *XAllocStandardColormap();
 
-extern Export XWMHints
+extern MagickExport XWMHints
   *XAllocWMHints();
 
-extern Export VisualID
+extern MagickExport VisualID
   XVisualIDFromVisual();
 
-extern Export void
+extern MagickExport void
   XrmDestroyDatabase(),
   XSetWMIconName(),
   XSetWMName(),

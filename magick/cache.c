@@ -90,10 +90,10 @@ static void
 /*
   Initialize the image pixel methods.
 */
-Export IndexPacket
+MagickExport IndexPacket
   *(*GetIndexes)(const Image *) = GetIndexesFromCache;
 
-Export PixelPacket
+MagickExport PixelPacket
   *(*GetImagePixels)(Image *,const int,const int,const unsigned int,
     const unsigned int) = GetPixelCache,
   (*GetOnePixel)(Image *,const int,const int) = GetOnePixelFromCache,
@@ -101,10 +101,10 @@ Export PixelPacket
   *(*SetImagePixels)(Image *,const int,const int,const unsigned int,
     const unsigned int) = SetPixelCache;
 
-Export unsigned int
+MagickExport unsigned int
   (*SyncImagePixels)(Image *) = SyncPixelCache;
 
-Export void
+MagickExport void
   (*CloseImagePixels)(Image *) = ClosePixelCache,
   (*DestroyImagePixels)(Image *) = DestroyPixelCache;
 
@@ -281,7 +281,7 @@ static void DestroyCacheInfo(Cache cache)
 %
 %
 */
-Export void DestroyCacheNexus(Cache cache,const unsigned int id)
+MagickExport void DestroyCacheNexus(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -355,7 +355,7 @@ static void DestroyPixelCache(Image *image)
 %
 %
 */
-Export ClassType GetCacheClassType(const Cache cache)
+MagickExport ClassType GetCacheClassType(const Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -388,7 +388,7 @@ Export ClassType GetCacheClassType(const Cache cache)
 %
 %
 */
-Export void GetCacheInfo(Cache *cache)
+MagickExport void GetCacheInfo(Cache *cache)
 {
   CacheInfo
     *cache_info;
@@ -481,7 +481,7 @@ static off_t GetCacheMemory(const off_t memory)
 %
 %
 */
-Export unsigned int GetCacheNexus(Cache cache)
+MagickExport unsigned int GetCacheNexus(Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -563,7 +563,8 @@ static IndexPacket *GetIndexesFromCache(const Image *image)
 %
 %
 */
-Export IndexPacket *GetNexusIndexes(const Cache cache,const unsigned int id)
+MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
+  const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -608,7 +609,8 @@ Export IndexPacket *GetNexusIndexes(const Cache cache,const unsigned int id)
 %
 %
 */
-Export PixelPacket *GetNexusPixels(const Cache cache,const unsigned int id)
+MagickExport PixelPacket *GetNexusPixels(const Cache cache,
+  const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -789,7 +791,7 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
 %
 %
 */
-Export unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
+MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -851,7 +853,7 @@ Export unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
 %
 %
 */
-Export unsigned int OpenCache(Cache cache,const ClassType class_type,
+MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
   const unsigned int columns,const unsigned int rows)
 {
   CacheInfo
@@ -1013,7 +1015,7 @@ Export unsigned int OpenCache(Cache cache,const ClassType class_type,
 %
 %
 */
-Export unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
+MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -1110,7 +1112,7 @@ Export unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 %
 %
 */
-Export unsigned int ReadCachePixels(Cache cache,const unsigned int id)
+MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -1199,7 +1201,7 @@ Export unsigned int ReadCachePixels(Cache cache,const unsigned int id)
 %
 %
 */
-Export void SetCacheThreshold(const off_t threshold)
+MagickExport void SetCacheThreshold(const off_t threshold)
 {
   off_t
     offset;
@@ -1242,7 +1244,7 @@ Export void SetCacheThreshold(const off_t threshold)
 %
 %
 */
-Export PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
+MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
   const RectangleInfo *region)
 {
   CacheInfo
@@ -1390,7 +1392,7 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
 %
 %
 */
-Export void SetPixelCacheMethods(void)
+MagickExport void SetPixelCacheMethods(void)
 {
   /*
     Reset image pixel methods.
@@ -1485,7 +1487,7 @@ static unsigned int SyncPixelCache(Image *image)
 %
 %
 */
-Export unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
+MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -1582,7 +1584,7 @@ Export unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 %
 %
 */
-Export unsigned int WriteCachePixels(Cache cache,const unsigned int id)
+MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;

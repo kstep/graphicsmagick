@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-extern Export unsigned int
+extern MagickExport unsigned int
   HuffmanDecodeImage(Image *),
   HuffmanEncodeImage(const ImageInfo *,Image *),
   Huffman2DEncodeImage(ImageInfo *,Image *),
@@ -17,7 +17,7 @@ extern Export unsigned int
   ZLIBEncodeImage(Image *,const unsigned long,const unsigned int,
     unsigned char *);
 
-extern Export void
+extern MagickExport void
   Ascii85Encode(Image *,const unsigned int),
   Ascii85Flush(Image *),
   Ascii85Initialize(void);

@@ -83,7 +83,7 @@
 %
 %
 */
-Export unsigned int ContrastImage(Image *image,const unsigned int sharpen)
+MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
 {
 #define DullContrastImageText  "  Dulling image contrast...  "
 #define SharpenContrastImageText  "  Sharpening image contrast...  "
@@ -182,7 +182,7 @@ Export unsigned int ContrastImage(Image *image,const unsigned int sharpen)
 %
 %
 */
-Export unsigned int EqualizeImage(Image *image)
+MagickExport unsigned int EqualizeImage(Image *image)
 {
 #define EqualizeImageText  "  Equalizing image...  "
 
@@ -333,7 +333,7 @@ Export unsigned int EqualizeImage(Image *image)
 %
 %
 */
-Export unsigned int GammaImage(Image *image,const char *gamma)
+MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 {
 #define GammaImageText  "  Gamma correcting the image...  "
 
@@ -484,7 +484,7 @@ Export unsigned int GammaImage(Image *image,const char *gamma)
 %
 %
 */
-Export unsigned int ModulateImage(Image *image,const char *modulate)
+MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
 {
 #define ModulateImageText  "  Modulating image...  "
 
@@ -595,7 +595,7 @@ Export unsigned int ModulateImage(Image *image,const char *modulate)
 %
 %
 */
-Export unsigned int NegateImage(Image *image,const unsigned int grayscale)
+MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
 {
 #define NegateImageText  "  Negating the image colors...  "
 
@@ -690,7 +690,7 @@ Export unsigned int NegateImage(Image *image,const unsigned int grayscale)
 %
 %
 */
-Export unsigned int NormalizeImage(Image *image)
+MagickExport unsigned int NormalizeImage(Image *image)
 {
 #define NormalizeImageText  "  Normalizing image...  "
 

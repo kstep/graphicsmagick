@@ -65,7 +65,7 @@
   Include declarations.
 */
 #if !defined(WIN32)
-#define Export
+#define MagickExport
 #endif
 
 #ifdef __cplusplus

@@ -47,24 +47,24 @@ struct dirent
 /*
   Macintosh utilities routines.
 */
-extern Export DIR
+extern MagickExport DIR
   *opendir(char *);
 
-Export Image
+MagickExport Image
   *ReadPICTImage(const ImageInfo *,ExceptionInfo *);
  
-extern Export int
+extern MagickExport int
   Exit(int),
   ImageFormatConflict(const char *),
   MACSystemCommand(const char *);
 
-extern Export long
+extern MagickExport long
   telldir(DIR *);
 
-extern Export struct dirent
+extern MagickExport struct dirent
   *readdir(DIR *);
 
-extern Export void
+extern MagickExport void
   closedir(DIR *),
   MACErrorHandler(const ExceptionType,const char *,const char *),
   MACWarningHandler(const ExceptionType,const char *,const char *),

@@ -1167,7 +1167,7 @@ static void
 %
 %
 */
-Export void CompressColormap(Image *image)
+MagickExport void CompressColormap(Image *image)
 {
   QuantizeInfo
     quantize_info;
@@ -1254,7 +1254,7 @@ static void DestroyList(const NodeInfo *node_info)
 %
 %
 */
-Export unsigned long GetNumberColors(Image *image,FILE *file)
+MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
 {
 #define NumberColorsImageText  "  Computing image colors...  "
 
@@ -1546,7 +1546,7 @@ static NodeInfo *InitializeNode(CubeInfo *color_cube,const unsigned int level)
 %
 %
 */
-Export unsigned int IsGrayImage(Image *image)
+MagickExport unsigned int IsGrayImage(Image *image)
 {
   register int
     i;
@@ -1591,7 +1591,7 @@ Export unsigned int IsGrayImage(Image *image)
 %
 %
 */
-Export unsigned int IsMatteImage(Image *image)
+MagickExport unsigned int IsMatteImage(Image *image)
 {
   int
     y;
@@ -1652,7 +1652,7 @@ Export unsigned int IsMatteImage(Image *image)
 %
 %
 */
-Export unsigned int IsMonochromeImage(Image *image)
+MagickExport unsigned int IsMonochromeImage(Image *image)
 {
   /*
     Determine if image is monochrome.
@@ -1703,7 +1703,7 @@ Export unsigned int IsMonochromeImage(Image *image)
 %
 %
 */
-Export unsigned int IsPseudoClass(Image *image)
+MagickExport unsigned int IsPseudoClass(Image *image)
 {
   CubeInfo
     color_cube;
@@ -1899,7 +1899,8 @@ Export unsigned int IsPseudoClass(Image *image)
 %
 %
 */
-Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
+MagickExport unsigned int QueryColorDatabase(const char *target,
+  PixelPacket *color)
 {
   int
     blue,
@@ -2166,7 +2167,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
 %
 %
 */
-Export unsigned int QueryColorName(const PixelPacket *color,char *name)
+MagickExport unsigned int QueryColorName(const PixelPacket *color,char *name)
 {
   double
     distance,

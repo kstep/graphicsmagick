@@ -70,10 +70,10 @@ typedef void
 /*
   Exception declarations.
 */
-extern Export ErrorHandler
+extern MagickExport ErrorHandler
   SetErrorHandler(ErrorHandler);
 
-extern Export void
+extern MagickExport void
   CatchImageException(Image *),
   DestroyExceptionInfo(ExceptionInfo *),
   GetImageException(Image *,ExceptionInfo *),
@@ -81,7 +81,7 @@ extern Export void
   MagickError(const ExceptionType,const char *,const char *),
   MagickWarning(const ExceptionType,const char *,const char *);
 
-extern Export WarningHandler
+extern MagickExport WarningHandler
   SetWarningHandler(WarningHandler);
 
 #if defined(__cplusplus) || defined(c_plusplus)

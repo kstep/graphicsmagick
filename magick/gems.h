@@ -11,16 +11,16 @@ extern "C" {
 /*
   Graphic gems define declarations.
 */
-extern Export double
+extern MagickExport double
   Permutate(int,int);
 
-extern Export PixelPacket
+extern MagickExport PixelPacket
   InterpolateColor(Image *,const double,const double);
 
-extern Export Quantum
+extern MagickExport Quantum
   GenerateNoise(const Quantum,const NoiseType);
 
-extern Export void
+extern MagickExport void
   Contrast(const int,Quantum *,Quantum *,Quantum *),
   HSLTransform(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),

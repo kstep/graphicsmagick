@@ -17,10 +17,10 @@ typedef void
 /*
   Monitor declarations.
 */
-extern Export MonitorHandler
+extern MagickExport MonitorHandler
   SetMonitorHandler(MonitorHandler);
 
-extern Export void
+extern MagickExport void
   ProgressMonitor(const char *,const off_t,const off_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)

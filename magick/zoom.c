@@ -298,7 +298,7 @@ static double BesselOrderOne(double x)
 %
 %
 */
-Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
+MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
 {
 #define MagnifyImageText  "  Magnifying the image...  "
 
@@ -486,7 +486,7 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
 %
 %
 */
-Export Image *MinifyImage(Image *image,ExceptionInfo *exception)
+MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
 {
 #define Minify(weight) \
   total_red+=(weight)*(s->red); \
@@ -606,7 +606,7 @@ Export Image *MinifyImage(Image *image,ExceptionInfo *exception)
 %
 %
 */
-Export Image *SampleImage(Image *image,const unsigned int columns,
+MagickExport Image *SampleImage(Image *image,const unsigned int columns,
   const unsigned int rows,ExceptionInfo *exception)
 {
 #define SampleImageText  "  Sampling image...  "
@@ -773,7 +773,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
 %
 %
 */
-Export Image *ScaleImage(Image *image,const unsigned int columns,
+MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
   const unsigned int rows,ExceptionInfo *exception)
 {
 #define ScaleImageText  "  Scaling image...  "
@@ -1511,7 +1511,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
   return(y == (int) destination->rows);
 }
 
-Export Image *ZoomImage(Image *image,const unsigned int columns,
+MagickExport Image *ZoomImage(Image *image,const unsigned int columns,
   const unsigned int rows,ExceptionInfo *exception)
 {
   ContributionInfo

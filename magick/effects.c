@@ -91,7 +91,7 @@
 %
 %
 */
-Export Image *AddNoiseImage(Image *image,const NoiseType noise_type,
+MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
   ExceptionInfo *exception)
 {
 #define AddNoiseImageText  "  Adding noise to the image...  "
@@ -176,7 +176,7 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %
 %
 */
-Export Image *BlurImage(Image *image,const unsigned int order,
+MagickExport Image *BlurImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {
   double
@@ -245,7 +245,7 @@ Export Image *BlurImage(Image *image,const unsigned int order,
 %
 %
 */
-Export Image *ColorizeImage(Image *image,const char *opacity,
+MagickExport Image *ColorizeImage(Image *image,const char *opacity,
   const PixelPacket target,ExceptionInfo *exception)
 {
 #define ColorizeImageText  "  Colorizing the image...  "
@@ -352,7 +352,7 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
 %
 %
 */
-Export Image *ConvolveImage(Image *image,const unsigned int order,
+MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   const double *kernel,ExceptionInfo *exception)
 {
 #define ConvolveImageText  "  Convolving image...  "
@@ -514,7 +514,7 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
 %
 %
 */
-Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
+MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 {
 #define DespeckleImageText  "  Despeckling image...  "
 
@@ -709,7 +709,7 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 %
 %
 */
-Export Image *EdgeImage(Image *image,const unsigned int order,
+MagickExport Image *EdgeImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {
   double
@@ -768,7 +768,7 @@ Export Image *EdgeImage(Image *image,const unsigned int order,
 %
 %
 */
-Export Image *EmbossImage(Image *image,const unsigned int order,
+MagickExport Image *EmbossImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {
   double
@@ -852,7 +852,7 @@ Export Image *EmbossImage(Image *image,const unsigned int order,
 %
 %
 */
-Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
+MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 {
 #define Enhance(weight) \
   mean=(int) (s->red+red)/2; \
@@ -1056,7 +1056,7 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %    o sigma: The standard deviation of the gaussian, in pixels.
 %
 */
-Export Image *GaussianBlurImage(Image *image,const double width,
+MagickExport Image *GaussianBlurImage(Image *image,const double width,
   const double sigma,ExceptionInfo *exception)
 {
 #define GaussianBlurImageText  "  Gaussian blur image...  "
@@ -1269,7 +1269,7 @@ Export Image *GaussianBlurImage(Image *image,const double width,
 %
 %
 */
-Export Image *ImplodeImage(Image *image,const double factor,
+MagickExport Image *ImplodeImage(Image *image,const double factor,
   ExceptionInfo *exception)
 {
 #define ImplodeImageText  "  Imploding image...  "
@@ -1449,7 +1449,7 @@ static int RedCompare(const void *x,const void *y)
   return((int) color_1->red-color_2->red);
 }
 
-Export Image *MedianFilterImage(Image *image,const unsigned int order,
+MagickExport Image *MedianFilterImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {
 #define MedianFilterImageText \
@@ -1575,7 +1575,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int order,
 %
 %
 */
-Export Image *MorphImages(Image *image,const unsigned int number_frames,
+MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
   ExceptionInfo *exception)
 {
 #define MorphImageText  "  Morphing next sequence...  "
@@ -1730,7 +1730,7 @@ Export Image *MorphImages(Image *image,const unsigned int number_frames,
 %
 %
 */
-Export Image *OilPaintImage(Image *image,const unsigned int radius,
+MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
   ExceptionInfo *exception)
 {
 #define OilPaintImageText  "  Oil painting image...  "
@@ -1898,7 +1898,7 @@ static Quantum PlasmaPixel(const double pixel,const double noise)
   return((Quantum) (value+0.5));
 }
 
-Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
+MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
   int attenuate,int depth)
 {
   double
@@ -2095,7 +2095,7 @@ static int ReduceNoiseCompare(const void *x,const void *y)
   return((int) Intensity(*color_1)-(int) Intensity(*color_2));
 }
 
-Export Image *ReduceNoiseImage(Image *image,const unsigned int order,
+MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {
 #define ReduceNoiseImageText  "  Reducing the image noise...  "
@@ -2290,7 +2290,7 @@ Export Image *ReduceNoiseImage(Image *image,const unsigned int order,
 %
 %
 */
-Export Image *ShadeImage(Image *image,const unsigned int color_shading,
+MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
   double azimuth,double elevation,ExceptionInfo *exception)
 {
 #define ShadeImageText  "  Shading image...  "
@@ -2441,7 +2441,7 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 %
 %
 */
-Export Image *SharpenImage(Image *image,const unsigned int order,
+MagickExport Image *SharpenImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {
   double
@@ -2503,7 +2503,7 @@ Export Image *SharpenImage(Image *image,const unsigned int order,
 %
 %
 */
-Export void SolarizeImage(Image *image,const double factor)
+MagickExport void SolarizeImage(Image *image,const double factor)
 {
 #define SolarizeImageText  "  Solarizing the image colors...  "
 
@@ -2605,7 +2605,7 @@ Export void SolarizeImage(Image *image,const double factor)
 %
 %
 */
-Export Image *SpreadImage(Image *image,const unsigned int amount,
+MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
   ExceptionInfo *exception)
 {
 #define SpreadImageText  "  Spreading image...  "
@@ -2693,7 +2693,7 @@ Export Image *SpreadImage(Image *image,const unsigned int amount,
 %
 %
 */
-Export Image *SteganoImage(Image *image,Image *watermark,
+MagickExport Image *SteganoImage(Image *image,Image *watermark,
   ExceptionInfo *exception)
 {
 #define EmbedBit(byte) \
@@ -2850,7 +2850,7 @@ Export Image *SteganoImage(Image *image,Image *watermark,
 %
 %
 */
-Export Image *StereoImage(Image *image,Image *offset_image,
+MagickExport Image *StereoImage(Image *image,Image *offset_image,
   ExceptionInfo *exception)
 {
 #define StereoImageText  "  Stereo image...  "
@@ -2946,7 +2946,8 @@ Export Image *StereoImage(Image *image,Image *offset_image,
 %
 %
 */
-Export Image *SwirlImage(Image *image,double degrees,ExceptionInfo *exception)
+MagickExport Image *SwirlImage(Image *image,double degrees,
+  ExceptionInfo *exception)
 {
 #define SwirlImageText  "  Swirling image...  "
 
@@ -3065,7 +3066,7 @@ Export Image *SwirlImage(Image *image,double degrees,ExceptionInfo *exception)
 %
 %
 */
-Export unsigned int ThresholdImage(Image *image,const double threshold)
+MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 {
 #define ThresholdImageText  "  Threshold the image...  "
 
@@ -3161,7 +3162,7 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %
 */
-Export Image *WaveImage(Image *image,const double amplitude,
+MagickExport Image *WaveImage(Image *image,const double amplitude,
   const double wavelength,ExceptionInfo *exception)
 {
 #define WaveImageText  "  Waving image...  "

@@ -15,23 +15,23 @@ extern "C" {
 /*
   Blob methods.
 */
-extern Export char
+extern MagickExport char
   *GetStringBlob(Image *,char *);
 
-extern Export Image
+extern MagickExport Image
   *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *);
 
-extern Export int
+extern MagickExport int
   EOFBlob(const Image *),
   ReadByte(Image *),
   SyncBlob(const Image *);
 
-extern Export off_t
+extern MagickExport off_t
   SeekBlob(Image *,const off_t,const int),
   SizeBlob(Image *image),
   TellBlob(Image *image);
 
-extern Export size_t
+extern MagickExport size_t
   LSBFirstWriteLong(Image *,const unsigned long),
   LSBFirstWriteShort(Image *,const unsigned int),
   MSBFirstWriteLong(Image *,const unsigned long),
@@ -41,19 +41,19 @@ extern Export size_t
   WriteBlob(Image *,const size_t,const void *),
   WriteByte(Image *,const int value);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   OpenBlob(const ImageInfo *,Image *,const char *),
   UnmapBlob(void *,const size_t);
 
-extern Export unsigned short
+extern MagickExport unsigned short
   LSBFirstReadShort(Image *),
   MSBFirstReadShort(Image *);
 
-extern Export unsigned long
+extern MagickExport unsigned long
   LSBFirstReadLong(Image *),
   MSBFirstReadLong(Image *);
 
-extern Export void
+extern MagickExport void
   CloseBlob(Image *),
   DestroyBlobInfo(BlobInfo *),
   *ImageToBlob(const ImageInfo *,Image *,size_t *,ExceptionInfo *),

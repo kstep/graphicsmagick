@@ -21,25 +21,25 @@ typedef struct _ViewInfo
 } ViewInfo;
 
 /*
-  Export cache view interfaces.
+  MagickExport cache view interfaces.
 */
-extern Export IndexPacket
+extern MagickExport IndexPacket
   *GetCacheViewIndexes(const ViewInfo *);
 
-extern Export PixelPacket
+extern MagickExport PixelPacket
   *GetCacheViewPixels(const ViewInfo *),
   *GetCacheView(ViewInfo *,const int,const int,const unsigned int,
     const unsigned int),
   *SetCacheView(ViewInfo *,const int,const int,const unsigned int,
     const unsigned int);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   SyncCacheView(ViewInfo *);
 
-extern Export ViewInfo
+extern MagickExport ViewInfo
   *OpenCacheView(Image *);
 
-extern Export void
+extern MagickExport void
   CloseCacheView(ViewInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

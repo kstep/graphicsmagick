@@ -91,7 +91,7 @@
 %
 %
 */
-Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
+MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   ExceptionInfo *exception)
 {
 #define ChopImageText  "  Chopping image...  "
@@ -237,7 +237,7 @@ Export Image *ChopImage(Image *image,const RectangleInfo *chop_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-Export Image *CoalesceImages(Image *image,ExceptionInfo *exception)
+MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 {
   Image
     *coalesce_image;
@@ -322,7 +322,7 @@ Export Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 %
 %
 */
-Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
+MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
   ExceptionInfo *exception)
 {
 #define CropImageText  "  Cropping image...  "
@@ -525,7 +525,7 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
 %
 %
 */
-Export Image *DeconstructImages(Image *image,ExceptionInfo *exception)
+MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
 {
   Image
     *crop_next,
@@ -710,7 +710,7 @@ Export Image *DeconstructImages(Image *image,ExceptionInfo *exception)
 %
 %
 */
-Export Image *FlipImage(Image *image,ExceptionInfo *exception)
+MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
 {
 #define FlipImageText  "  Flipping image...  "
 
@@ -800,7 +800,7 @@ Export Image *FlipImage(Image *image,ExceptionInfo *exception)
 %
 %
 */
-Export Image *FlopImage(Image *image,ExceptionInfo *exception)
+MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
 {
 #define FlopImageText  "  Flopping image...  "
 
@@ -897,8 +897,8 @@ Export Image *FlopImage(Image *image,ExceptionInfo *exception)
 %
 %
 */
-Export Image *RollImage(Image *image,const int x_offset,const int y_offset,
-  ExceptionInfo *exception)
+MagickExport Image *RollImage(Image *image,const int x_offset,
+  const int y_offset,ExceptionInfo *exception)
 {
 #define RollImageText  "  Rolling image...  "
 
@@ -1011,7 +1011,7 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset,
 %
 %
 */
-Export void TransformImage(Image **image,const char *crop_geometry,
+MagickExport void TransformImage(Image **image,const char *crop_geometry,
   const char *image_geometry)
 {
   Image

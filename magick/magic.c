@@ -81,7 +81,7 @@ static MagicInfo
 %      void DestroyMagicInfo(void)
 %
 */
-Export void DestroyMagicInfo(void)
+MagickExport void DestroyMagicInfo(void)
 {
   MagicInfoMember
     *entry,
@@ -412,7 +412,7 @@ static unsigned int InitializeMagic(void)
   return(ReadMagicConfigurationFile(path));
 }
 
-Export unsigned int SetImageMagic(const unsigned char *magick,
+MagickExport unsigned int SetImageMagic(const unsigned char *magick,
   const unsigned int length,char *magic)
 {
   MagicInfoMember

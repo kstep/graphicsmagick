@@ -43,16 +43,16 @@ typedef struct _XWidgetInfo
 /*
   X utilities routines.
 */
-extern Export int
+extern MagickExport int
   XCommandWidget(Display *,XWindows *,char const **,XEvent *),
   XConfirmWidget(Display *,XWindows *,const char *,const char *),
   XDialogWidget(Display *,XWindows *,const char *,const char *,char *),
   XMenuWidget(Display *,XWindows *,const char *,const char **,char *);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   XPreferencesWidget(Display *,XResourceInfo *,XWindows *);
 
-extern Export void
+extern MagickExport void
   XColorBrowserWidget(Display *,XWindows *,const char *,char *),
   XFileBrowserWidget(Display *,XWindows *,const char *,char *),
   XFontBrowserWidget(Display *,XWindows *,const char *,char *),

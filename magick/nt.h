@@ -64,37 +64,37 @@ struct dirent
 /*
   NT utilities routines.
 */
-extern Export char
+extern MagickExport char
   *SetClientName(const char *),
   *lt_dlerror(void),
   *ntgetlasterror(void);
 
-extern Export int
+extern MagickExport int
   Exit(int),
   ImageFormatConflict(const char *),
   IsWindows95(),
   NTSystemCommand(const char *);
 
 #if !defined(XS_VERSION)
-extern Export DIR
+extern MagickExport DIR
   *opendir(char *);
  
-extern Export double
+extern MagickExport double
   NTElapsedTime(void),
   NTUserTime(void);
 
-extern Export int
+extern MagickExport int
   munmap(void *,size_t),
   NTTemporaryFilename(char *),
   lt_dlinit(void);
 
-extern Export long
+extern MagickExport long
   telldir(DIR *);
 
-extern Export struct dirent
+extern MagickExport struct dirent
   *readdir(DIR *);
  
-extern Export void
+extern MagickExport void
   closedir(DIR *),
   *mmap(char *,size_t,int,int,int,off_t),
   NTErrorHandler(const ExceptionType,const char *,const char *),

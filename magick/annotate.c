@@ -91,7 +91,7 @@ const char
 %
 %
 */
-Export unsigned int AnnotateImage(Image *image,
+MagickExport unsigned int AnnotateImage(Image *image,
   const AnnotateInfo *annotate_info)
 {
   AnnotateInfo
@@ -340,7 +340,7 @@ Export unsigned int AnnotateImage(Image *image,
 %
 %
 */
-Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
+MagickExport AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
   const AnnotateInfo *annotate_info)
 {
   AnnotateInfo
@@ -391,7 +391,7 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
 %
 %
 */
-Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
+MagickExport void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 {
   assert(annotate_info != (AnnotateInfo *) NULL);
   if (annotate_info->geometry != (char *) NULL)
@@ -431,7 +431,7 @@ Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 %
 %
 */
-Export void GetAnnotateInfo(const ImageInfo *image_info,
+MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   AnnotateInfo *annotate_info)
 {
   ExceptionInfo

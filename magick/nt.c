@@ -98,7 +98,7 @@ extern char
 %
 %
 */
-Export void closedir(DIR *entry)
+MagickExport void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   FindClose(entry->hSearch);
@@ -129,7 +129,7 @@ Export void closedir(DIR *entry)
 %
 %
 */
-Export int Exit(int status)
+MagickExport int Exit(int status)
 {
   if (IsWindows95())
     TerminateProcess(GetCurrentProcess(),(unsigned int) status);
@@ -164,7 +164,7 @@ Export int Exit(int status)
 %
 %
 */
-Export int ImageFormatConflict(const char *magick)
+MagickExport int ImageFormatConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
   if (strlen(magick) > 1)
@@ -196,7 +196,7 @@ Export int ImageFormatConflict(const char *magick)
 %
 %
 */
-Export int IsWindows95()
+MagickExport int IsWindows95()
 {
   OSVERSIONINFO
     version_info;
@@ -446,12 +446,12 @@ void *lt_dlsym(void *h,char *s)
 %
 %  The format of the mmap method is:
 %
-%    Export void *mmap(char *address,size_t length,int protection,int access,
+%    MagickExport void *mmap(char *address,size_t length,int protection,int access,
 %      int file,off_t offset)
 %
 %
 */
-Export void *mmap(char *address,size_t length,int protection,int access,
+MagickExport void *mmap(char *address,size_t length,int protection,int access,
   int file,off_t offset)
 {
   void
@@ -529,7 +529,7 @@ Export void *mmap(char *address,size_t length,int protection,int access,
 %
 %
 */
-Export int munmap(void *map,size_t length)
+MagickExport int munmap(void *map,size_t length)
 {
   if (!UnmapViewOfFile(map))
     return(-1);
@@ -556,7 +556,7 @@ Export int munmap(void *map,size_t length)
 %
 %
 */
-Export double NTElapsedTime(void)
+MagickExport double NTElapsedTime(void)
 {
   union
   {
@@ -605,7 +605,7 @@ Export double NTElapsedTime(void)
 %
 %
 */
-Export void NTErrorHandler(const ExceptionType error,const char *message,
+MagickExport void NTErrorHandler(const ExceptionType error,const char *message,
   const char *qualifier)
 {
   char
@@ -652,7 +652,7 @@ Export void NTErrorHandler(const ExceptionType error,const char *message,
 %
 %
 */
-Export char *ntgetlasterror(void)
+MagickExport char *ntgetlasterror(void)
 {
   char
     *message;
@@ -700,7 +700,7 @@ Export char *ntgetlasterror(void)
 %
 %
 */
-Export int NTSystemCommand(const char *command)
+MagickExport int NTSystemCommand(const char *command)
 {
   char
     local_command[2048];
@@ -776,7 +776,7 @@ Export int NTSystemCommand(const char *command)
 %
 %
 */
-Export int NTTemporaryFilename(char *filename)
+MagickExport int NTTemporaryFilename(char *filename)
 {
   char
     path[1024];
@@ -815,7 +815,7 @@ Export int NTTemporaryFilename(char *filename)
 %
 %
 */
-Export double NTUserTime(void)
+MagickExport double NTUserTime(void)
 {
   DWORD
     status;
@@ -885,8 +885,8 @@ Export double NTUserTime(void)
 %
 %
 */
-Export void NTWarningHandler(const ExceptionType warning,const char *message,
-  const char *qualifier)
+MagickExport void NTWarningHandler(const ExceptionType warning,
+  const char *message,const char *qualifier)
 {
   char
     buffer[2048];
@@ -927,7 +927,7 @@ Export void NTWarningHandler(const ExceptionType warning,const char *message,
 %
 %
 */
-Export DIR *opendir(char *path)
+MagickExport DIR *opendir(char *path)
 {
   char
     file_specification[2048];
@@ -981,7 +981,7 @@ Export DIR *opendir(char *path)
 %
 %
 */
-Export struct dirent *readdir(DIR *entry)
+MagickExport struct dirent *readdir(DIR *entry)
 {
   int
     status;
@@ -1031,7 +1031,7 @@ Export struct dirent *readdir(DIR *entry)
 %
 %
 */
-Export void seekdir(DIR *entry,long position)
+MagickExport void seekdir(DIR *entry,long position)
 {
   assert(entry != (DIR *) NULL);
 }
@@ -1060,7 +1060,7 @@ Export void seekdir(DIR *entry,long position)
 %
 %
 */
-Export long telldir(DIR *entry)
+MagickExport long telldir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   return(0);

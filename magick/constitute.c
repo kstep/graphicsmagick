@@ -110,7 +110,7 @@
 %
 %
 */
-Export Image *ConstituteImage(const unsigned int width,
+MagickExport Image *ConstituteImage(const unsigned int width,
   const unsigned int height,const char *map,const StorageType type,
   const void *pixels,ExceptionInfo *exception)
 {
@@ -542,7 +542,7 @@ Export Image *ConstituteImage(const unsigned int width,
 %
 %
 */
-Export unsigned int DispatchImage(Image *image,const int x,const int y,
+MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows,const char *map,
   const StorageType type,void *pixels)
 {
@@ -887,7 +887,8 @@ Export unsigned int DispatchImage(Image *image,const int x,const int y,
 %
 %
 */
-Export Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
+MagickExport Image *PingImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -943,7 +944,7 @@ Export Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %
 */
-Export unsigned int PopImagePixels(const Image *image,
+MagickExport unsigned int PopImagePixels(const Image *image,
   const QuantumTypes quantum,unsigned char *destination)
 {
   register IndexPacket
@@ -1215,7 +1216,7 @@ Export unsigned int PopImagePixels(const Image *image,
 %    o source:  The pixel components are transferred from this buffer.
 %
 */
-Export unsigned int PushImagePixels(const Image *image,
+MagickExport unsigned int PushImagePixels(const Image *image,
   const QuantumTypes quantum,const unsigned char *source)
 {
   IndexPacket
@@ -1507,7 +1508,8 @@ Export unsigned int PushImagePixels(const Image *image,
 %
 %
 */
-Export Image *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception)
+MagickExport Image *ReadImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent];
@@ -1762,7 +1764,8 @@ Export Image *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %
 */
-Export Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
+MagickExport Image *ReadImages(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
     *command,
@@ -1894,7 +1897,7 @@ Export Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %
 */
-Export unsigned int WriteImage(const ImageInfo *image_info,Image *image)
+MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 {
   DelegateInfo
     delegate_info;

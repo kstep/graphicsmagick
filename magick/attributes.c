@@ -81,7 +81,7 @@
 %
 %
 */
-Export void DestroyImageAttributes(Image *image)
+MagickExport void DestroyImageAttributes(Image *image)
 {
   ImageAttribute
     *attribute;
@@ -174,7 +174,8 @@ static void GetIPTCAttribute(Image *image,const char *key)
   }
 }
 
-Export ImageAttribute *GetImageAttribute(const Image *image,const char *key)
+MagickExport ImageAttribute *GetImageAttribute(const Image *image,
+  const char *key)
 {
   register ImageAttribute
     *p;
@@ -227,7 +228,7 @@ Export ImageAttribute *GetImageAttribute(const Image *image,const char *key)
 %
 %
 */
-Export unsigned int SetImageAttribute(Image *image,const char *key,
+MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
   const char *value)
 {
   ImageAttribute
@@ -309,7 +310,7 @@ Export unsigned int SetImageAttribute(Image *image,const char *key,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t o r e I m a g e A t t r i b u t e,                                    %
+%   S t o r e I m a g e A t t r i b u t e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %

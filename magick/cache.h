@@ -77,19 +77,19 @@ typedef struct _CacheInfo
 } CacheInfo;
 
 /*
-  Exported interfaces.
+  MagickExported interfaces.
 */
-extern Export ClassType
+extern MagickExport ClassType
   GetCacheClassType(const Cache);
 
-extern Export IndexPacket
+extern MagickExport IndexPacket
   *GetNexusIndexes(const Cache,const unsigned int);
 
-extern Export PixelPacket
+extern MagickExport PixelPacket
   *GetNexusPixels(const Cache,const unsigned int),
   *SetCacheNexus(Cache,const unsigned int,const RectangleInfo *);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   GetCacheNexus(Cache),
   IsNexusInCore(const Cache,const unsigned int),
   OpenCache(Cache,const ClassType,const unsigned int,const unsigned int),
@@ -98,7 +98,7 @@ extern Export unsigned int
   WriteCachePixels(Cache,const unsigned int),
   WriteCacheIndexes(Cache,const unsigned int);
 
-extern Export void
+extern MagickExport void
   DestroyCacheNexus(Cache,const unsigned int),
   GetCacheInfo(Cache *),
   SetCacheThreshold(const off_t),

@@ -82,7 +82,7 @@
 %
 %
 */
-Export char *AllocateString(const char *source)
+MagickExport char *AllocateString(const char *source)
 {
   char
     *destination;
@@ -125,7 +125,7 @@ Export char *AllocateString(const char *source)
 %
 %
 */
-Export void AppendImageFormat(const char *format,char *filename)
+MagickExport void AppendImageFormat(const char *format,char *filename)
 {
   char
     staging[MaxTextExtent];
@@ -181,7 +181,7 @@ Export void AppendImageFormat(const char *format,char *filename)
 %
 %
 */
-Export char *BaseFilename(const char *name)
+MagickExport char *BaseFilename(const char *name)
 {
   char
     *basename;
@@ -253,7 +253,7 @@ Export char *BaseFilename(const char *name)
 %
 %
 */
-Export unsigned int CloneString(char **destination,const char *source)
+MagickExport unsigned int CloneString(char **destination,const char *source)
 {
   assert(destination != (char **) NULL);
   FreeMemory((void **) &*destination);
@@ -295,7 +295,8 @@ Export unsigned int CloneString(char **destination,const char *source)
 %
 %
 */
-Export unsigned int ConcatenateString(char **destination,const char *source)
+MagickExport unsigned int ConcatenateString(char **destination,
+  const char *source)
 {
   assert(destination != (char **) NULL);
   if (source == (const char *) NULL)
@@ -383,7 +384,7 @@ static int InterpretUnicode(const char *code,const int n)
   return(total);
 }
 
-Export unsigned short *ConvertTextToUnicode(const char *text,int *count)
+MagickExport unsigned short *ConvertTextToUnicode(const char *text,int *count)
 {
   int
     value;
@@ -453,7 +454,7 @@ Export unsigned short *ConvertTextToUnicode(const char *text,int *count)
 %
 %
 */
-Export void ExpandFilename(char *filename)
+MagickExport void ExpandFilename(char *filename)
 {
   char
     expanded_filename[MaxTextExtent];
@@ -536,7 +537,7 @@ Export void ExpandFilename(char *filename)
 %
 %
 */
-Export unsigned int ExpandFilenames(int *argc,char ***argv)
+MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 {
   char
     **filelist,
@@ -691,7 +692,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
 %
 %
 */
-Export void FormatString(char *string,const char *format,...)
+MagickExport void FormatString(char *string,const char *format,...)
 {
   va_list
     operands;
@@ -743,7 +744,7 @@ Export void FormatString(char *string,const char *format,...)
 %
 %
 */
-Export int GetGeometry(const char *image_geometry,int *x,int *y,
+MagickExport int GetGeometry(const char *image_geometry,int *x,int *y,
   unsigned int *width,unsigned int *height)
 {
   char
@@ -837,7 +838,7 @@ Export int GetGeometry(const char *image_geometry,int *x,int *y,
 %
 %
 */
-Export int GlobExpression(const char *expression,const char *pattern)
+MagickExport int GlobExpression(const char *expression,const char *pattern)
 {
   unsigned int
     done,
@@ -1087,7 +1088,7 @@ Export int GlobExpression(const char *expression,const char *pattern)
 %
 %
 */
-Export unsigned int IsAccessible(const char *filename)
+MagickExport unsigned int IsAccessible(const char *filename)
 {
   FILE
     *file;
@@ -1137,7 +1138,7 @@ Export unsigned int IsAccessible(const char *filename)
 %
 %
 */
-Export unsigned int IsDirectory(const char *filename)
+MagickExport unsigned int IsDirectory(const char *filename)
 {
   int
     status;
@@ -1185,7 +1186,7 @@ Export unsigned int IsDirectory(const char *filename)
 %
 %
 */
-Export int LocaleCompare(const char *p,const char *q)
+MagickExport int LocaleCompare(const char *p,const char *q)
 {
   register int
     i,
@@ -1238,7 +1239,7 @@ Export int LocaleCompare(const char *p,const char *q)
 %
 %
 */
-Export void LocaleLower(char *string)
+MagickExport void LocaleLower(char *string)
 {
   register int
     c;
@@ -1289,7 +1290,7 @@ Export void LocaleLower(char *string)
 %
 %
 */
-Export int LocaleNCompare(const char *p,const char *q,size_t n)
+MagickExport int LocaleNCompare(const char *p,const char *q,size_t n)
 {
   register int
     i,
@@ -1347,7 +1348,7 @@ Export int LocaleNCompare(const char *p,const char *q,size_t n)
 %
 %
 */
-Export void LocaleUpper(char *string)
+MagickExport void LocaleUpper(char *string)
 {
   register int
     c;
@@ -1405,7 +1406,7 @@ static int ColorCompare(const void *x,const void *y)
   return(LocaleCompare(*p,*q));
 }
 
-Export char **ListColors(const char *pattern,int *number_colors)
+MagickExport char **ListColors(const char *pattern,int *number_colors)
 {
   char
     color[MaxTextExtent],
@@ -1540,7 +1541,7 @@ static int FileCompare(const void *x,const void *y)
   return(LocaleCompare(*p,*q));
 }
 
-Export char **ListFiles(const char *directory,const char *pattern,
+MagickExport char **ListFiles(const char *directory,const char *pattern,
   int *number_entries)
 {
   char
@@ -1672,7 +1673,7 @@ Export char **ListFiles(const char *directory,const char *pattern,
 %
 %
 */
-Export void LocaleFilename(char *filename)
+MagickExport void LocaleFilename(char *filename)
 {
   register char
     *p,
@@ -1715,7 +1716,7 @@ Export void LocaleFilename(char *filename)
 %
 %
 */
-Export int MultilineCensus(const char *label)
+MagickExport int MultilineCensus(const char *label)
 {
   int
     number_lines;
@@ -1812,8 +1813,8 @@ static double ReadReal(const char *p,char **q)
   return(-value);
 }
 
-Export int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
-  unsigned int *height)
+MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
+  unsigned int *width,unsigned int *height)
 {
   char
     *q;
@@ -1940,12 +1941,12 @@ Export int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
 %
 */
 
-Export void DestroyPostscriptGeometry(char *geometry)
+MagickExport void DestroyPostscriptGeometry(char *geometry)
 {
     FreeMemory((void **) &geometry);
 }
 
-Export char *PostscriptGeometry(const char *page)
+MagickExport char *PostscriptGeometry(const char *page)
 {
   static const char
     *PageSizes[][2]=
@@ -2091,7 +2092,7 @@ Export char *PostscriptGeometry(const char *page)
 %
 %
 */
-Export char *SetClientName(const char *name)
+MagickExport char *SetClientName(const char *name)
 {
   static char
     client_name[MaxTextExtent] = "Magick";
@@ -2139,7 +2140,7 @@ Export char *SetClientName(const char *name)
 %
 %
 */
-Export char **StringToArgv(const char *text,int *argc)
+MagickExport char **StringToArgv(const char *text,int *argc)
 {
   char
     **argv;
@@ -2241,7 +2242,7 @@ Export char **StringToArgv(const char *text,int *argc)
 %
 %
 */
-Export char **StringToList(const char *text)
+MagickExport char **StringToList(const char *text)
 {
   char
     **textlist;
@@ -2373,7 +2374,7 @@ Export char **StringToList(const char *text)
 %
 %
 */
-Export void Strip(char *data)
+MagickExport void Strip(char *data)
 {
   long
     count;
@@ -2427,7 +2428,7 @@ Export void Strip(char *data)
 %
 %
 */
-Export int SystemCommand(const unsigned int verbose,const char *command)
+MagickExport int SystemCommand(const unsigned int verbose,const char *command)
 {
   int
     status;
@@ -2475,7 +2476,7 @@ Export int SystemCommand(const unsigned int verbose,const char *command)
 %      file name is returned in this array.
 %
 */
-Export void TemporaryFilename(char *filename)
+MagickExport void TemporaryFilename(char *filename)
 {
   assert(filename != (char *) NULL);
   *filename='\0';
@@ -2714,7 +2715,7 @@ static void StoreToken(TokenInfo *token_info,char *string,int max_token_length,
   return;
 }
 
-Export int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
+MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
   int max_token_length,char *line,char *white,char *break_set,char *quote,
   char escape,char *breaker,int *next,char *quoted)
 {
@@ -2898,7 +2899,7 @@ Export int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %
 %
 */
-Export char *TranslateText(const ImageInfo *image_info,Image *image,
+MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   const char *formatted_text)
 {
   char

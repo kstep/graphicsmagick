@@ -90,7 +90,7 @@ static MonitorHandler
 %
 %
 */
-Export void ProgressMonitor(const char *text,const off_t quantum,
+MagickExport void ProgressMonitor(const char *text,const off_t quantum,
   const off_t span)
 {
   ProcessPendingEvents(text);
@@ -122,7 +122,7 @@ Export void ProgressMonitor(const char *text,const off_t quantum,
 %
 %
 */
-Export MonitorHandler SetMonitorHandler(MonitorHandler handler)
+MagickExport MonitorHandler SetMonitorHandler(MonitorHandler handler)
 {
   MonitorHandler
     previous_handler;

@@ -105,7 +105,7 @@ static WarningHandler
 %
 %
 */
-Export void CatchImageException(Image *image)
+MagickExport void CatchImageException(Image *image)
 {
   ExceptionInfo
     exception;
@@ -234,7 +234,7 @@ static void DefaultWarningHandler(const ExceptionType warning,
 %
 %
 */
-Export void DestroyExceptionInfo(ExceptionInfo *exception)
+MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
   if (exception->message != (char *) NULL)
@@ -266,7 +266,7 @@ Export void DestroyExceptionInfo(ExceptionInfo *exception)
 %
 %
 */
-Export void GetExceptionInfo(ExceptionInfo *exception)
+MagickExport void GetExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
   exception->severity=UndefinedException;
@@ -300,7 +300,7 @@ Export void GetExceptionInfo(ExceptionInfo *exception)
 %
 %
 */
-Export void GetImageException(Image *image,ExceptionInfo *exception)
+MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
 {
   register Image
     *next;
@@ -345,7 +345,7 @@ Export void GetImageException(Image *image,ExceptionInfo *exception)
 %
 %
 */
-Export void MagickError(const ExceptionType error,const char *message,
+MagickExport void MagickError(const ExceptionType error,const char *message,
   const char *qualifier)
 {
   if (error_handler != (ErrorHandler) NULL)
@@ -383,7 +383,7 @@ Export void MagickError(const ExceptionType error,const char *message,
 %
 %
 */
-Export void MagickWarning(const ExceptionType warning,const char *message,
+MagickExport void MagickWarning(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
   if (warning_handler != (WarningHandler) NULL)
@@ -414,7 +414,7 @@ Export void MagickWarning(const ExceptionType warning,const char *message,
 %
 %
 */
-Export ErrorHandler SetErrorHandler(ErrorHandler handler)
+MagickExport ErrorHandler SetErrorHandler(ErrorHandler handler)
 {
   ErrorHandler
     previous_handler;
@@ -448,7 +448,7 @@ Export ErrorHandler SetErrorHandler(ErrorHandler handler)
 %
 %
 */
-Export WarningHandler SetWarningHandler(WarningHandler handler)
+MagickExport WarningHandler SetWarningHandler(WarningHandler handler)
 {
   WarningHandler
     previous_handler;

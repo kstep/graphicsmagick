@@ -774,7 +774,7 @@ static void YShearImage(Image *image,const double degrees,
 %
 %
 */
-Export Image *RotateImage(Image *image,const double degrees,
+MagickExport Image *RotateImage(Image *image,const double degrees,
   ExceptionInfo *exception)
 {
   double
@@ -907,8 +907,8 @@ Export Image *RotateImage(Image *image,const double degrees,
 %
 %
 */
-Export Image *ShearImage(Image *image,const double x_shear,const double y_shear,
-  ExceptionInfo *exception)
+MagickExport Image *ShearImage(Image *image,const double x_shear,
+  const double y_shear,ExceptionInfo *exception)
 {
   Image
     *integral_image,

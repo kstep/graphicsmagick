@@ -82,7 +82,8 @@
 %
 %
 */
-Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
+MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
+  Quantum *blue)
 {
   double
     alpha,
@@ -133,7 +134,8 @@ Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
 %
 %
 */
-Export Quantum GenerateNoise(const Quantum pixel,const NoiseType noise_type)
+MagickExport Quantum GenerateNoise(const Quantum pixel,
+  const NoiseType noise_type)
 {
 #define NoiseEpsilon  1.0e-5
 #define NoiseMask  0x7fff
@@ -262,7 +264,7 @@ Export Quantum GenerateNoise(const Quantum pixel,const NoiseType noise_type)
 %
 %
 */
-Export void HSLTransform(const double hue,const double saturation,
+MagickExport void HSLTransform(const double hue,const double saturation,
   const double luminosity,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
@@ -343,7 +345,7 @@ Export void HSLTransform(const double hue,const double saturation,
 %
 %
 */
-Export void Hull(const int x_offset,const int y_offset,const int polarity,
+MagickExport void Hull(const int x_offset,const int y_offset,const int polarity,
   const unsigned int columns,const unsigned int rows,Quantum *f,Quantum *g)
 {
   int
@@ -466,7 +468,7 @@ Export void Hull(const int x_offset,const int y_offset,const int polarity,
 %
 %
 */
-Export PixelPacket InterpolateColor(Image *image,const double x_offset,
+MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
   const double y_offset)
 {
   double
@@ -556,7 +558,7 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
 %
 %
 */
-Export void Modulate(double percent_hue,double percent_saturation,
+MagickExport void Modulate(double percent_hue,double percent_saturation,
   double percent_brightness,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
@@ -620,7 +622,7 @@ Export void Modulate(double percent_hue,double percent_saturation,
 %
 %
 */
-Export double Permutate(int n,int k)
+MagickExport double Permutate(int n,int k)
 {
   double
     r;
@@ -665,7 +667,7 @@ Export double Permutate(int n,int k)
 %
 %
 */
-Export void TransformHSL(const Quantum red,const Quantum green,
+MagickExport void TransformHSL(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *saturation,double *luminosity)
 {
   double
@@ -734,7 +736,7 @@ Export void TransformHSL(const Quantum red,const Quantum green,
 %
 %
 */
-Export void Upsample(const unsigned int width,const unsigned int height,
+MagickExport void Upsample(const unsigned int width,const unsigned int height,
   const unsigned int scaled_width,unsigned char *pixels)
 {
   register int

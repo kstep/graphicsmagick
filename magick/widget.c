@@ -1530,7 +1530,7 @@ static void XSetTextColor(Display *display,const XWindowInfo *window_info,
 %
 %
 */
-Export void XColorBrowserWidget(Display *display,XWindows *windows,
+MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
   const char *action,char *reply)
 {
 #define CancelButtonText  "Cancel"
@@ -2692,7 +2692,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,
 %
 %
 */
-Export int XCommandWidget(Display *display,XWindows *windows,
+MagickExport int XCommandWidget(Display *display,XWindows *windows,
   const char **selections,XEvent *event)
 {
 #define tile_width 112
@@ -3122,7 +3122,7 @@ Export int XCommandWidget(Display *display,XWindows *windows,
 %
 %
 */
-Export int XConfirmWidget(Display *display,XWindows *windows,
+MagickExport int XConfirmWidget(Display *display,XWindows *windows,
   const char *message,const char *qualifier)
 {
 #define CancelButtonText  "Cancel"
@@ -3524,8 +3524,8 @@ Export int XConfirmWidget(Display *display,XWindows *windows,
 %
 %
 */
-Export int XDialogWidget(Display *display,XWindows *windows,const char *action,
-  const char *query,char *reply)
+MagickExport int XDialogWidget(Display *display,XWindows *windows,
+  const char *action,const char *query,char *reply)
 {
 #define CancelButtonText  "Cancel"
 
@@ -4094,7 +4094,7 @@ Export int XDialogWidget(Display *display,XWindows *windows,const char *action,
 %
 %
 */
-Export void XFileBrowserWidget(Display *display,XWindows *windows,
+MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
   const char *action,char *reply)
 {
 #define CancelButtonText  "Cancel"
@@ -5337,7 +5337,7 @@ static int FontCompare(const void *x,const void *y)
   return(*p-(*q));
 }
 
-Export void XFontBrowserWidget(Display *display,XWindows *windows,
+MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
   const char *action,char *reply)
 {
 #define BackButtonText  "Back"
@@ -6495,7 +6495,8 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,
 %
 %
 */
-Export void XInfoWidget(Display *display,XWindows *windows,const char *activity)
+MagickExport void XInfoWidget(Display *display,XWindows *windows,
+  const char *activity)
 {
   int
     height,
@@ -6599,7 +6600,7 @@ Export void XInfoWidget(Display *display,XWindows *windows,const char *activity)
 %
 %
 */
-Export void XListBrowserWidget(Display *display,XWindows *windows,
+MagickExport void XListBrowserWidget(Display *display,XWindows *windows,
   XWindowInfo *window_info,char const **list,const char *action,
   const char *query,char *reply)
 {
@@ -7497,8 +7498,8 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
 %
 %
 */
-Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
-  const char **selections,char *item)
+MagickExport int XMenuWidget(Display *display,XWindows *windows,
+  const char *title,const char **selections,char *item)
 {
   Cursor
     cursor;
@@ -7923,8 +7924,8 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
 %
 %
 */
-Export void XMonitorWidget(Display *display,XWindows *windows,const char *task,
-  const off_t quantum,const off_t span)
+MagickExport void XMonitorWidget(Display *display,XWindows *windows,
+  const char *task,const off_t quantum,const off_t span)
 {
   unsigned int
     width;
@@ -7999,7 +8000,7 @@ Export void XMonitorWidget(Display *display,XWindows *windows,const char *task,
 %
 %
 */
-Export void XNoticeWidget(Display *display,XWindows *windows,
+MagickExport void XNoticeWidget(Display *display,XWindows *windows,
   const char *message,const char *qualifier)
 {
 #define DismissButtonText  "Dismiss"
@@ -8316,7 +8317,7 @@ Export void XNoticeWidget(Display *display,XWindows *windows,
 %
 %
 */
-Export unsigned int XPreferencesWidget(Display *display,
+MagickExport unsigned int XPreferencesWidget(Display *display,
   XResourceInfo *resource_info,XWindows *windows)
 {
 #define ApplyButtonText  "Apply"
@@ -8744,9 +8745,9 @@ Export unsigned int XPreferencesWidget(Display *display,
 %
 %
 */
-Export void XTextViewWidget(Display *display,const XResourceInfo *resource_info,
-  XWindows *windows,const unsigned int mono,const char *title,
-  char const **textlist)
+MagickExport void XTextViewWidget(Display *display,
+  const XResourceInfo *resource_info,XWindows *windows,const unsigned int mono,
+  const char *title,char const **textlist)
 {
 #define DismissButtonText  "Dismiss"
 

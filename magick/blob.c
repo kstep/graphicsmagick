@@ -92,7 +92,7 @@
 %
 %
 */
-Export Image *BlobToImage(const ImageInfo *image_info,const void *blob,
+MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   const size_t length,ExceptionInfo *exception)
 {
   ExceptionInfo
@@ -197,7 +197,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const void *blob,
 %
 %
 */
-Export void CloseBlob(Image *image)
+MagickExport void CloseBlob(Image *image)
 {
   /*
     Close image file.
@@ -257,7 +257,7 @@ Export void CloseBlob(Image *image)
 %
 %
 */
-Export void DestroyBlobInfo(BlobInfo *blob)
+MagickExport void DestroyBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   if (blob->mapped)
@@ -292,7 +292,7 @@ Export void DestroyBlobInfo(BlobInfo *blob)
 %
 %
 */
-Export int EOFBlob(const Image *image)
+MagickExport int EOFBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
   if (image->blob.data == (char *) NULL)
@@ -323,7 +323,7 @@ Export int EOFBlob(const Image *image)
 %
 %
 */
-Export void GetBlobInfo(BlobInfo *blob)
+MagickExport void GetBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   blob->mapped=False;
@@ -364,7 +364,7 @@ Export void GetBlobInfo(BlobInfo *blob)
 %
 %
 */
-Export char *GetStringBlob(Image *image,char *string)
+MagickExport char *GetStringBlob(Image *image,char *string)
 {
   int
     c;
@@ -423,7 +423,7 @@ Export char *GetStringBlob(Image *image,char *string)
 %
 %
 */
-Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
+MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   size_t *length,ExceptionInfo *exception)
 {
   char
@@ -564,7 +564,7 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
 %
 %
 */
-Export unsigned long LSBFirstReadLong(Image *image)
+MagickExport unsigned long LSBFirstReadLong(Image *image)
 {
   unsigned char
     buffer[4];
@@ -610,7 +610,7 @@ Export unsigned long LSBFirstReadLong(Image *image)
 %
 %
 */
-Export unsigned short LSBFirstReadShort(Image *image)
+MagickExport unsigned short LSBFirstReadShort(Image *image)
 {
   unsigned char
     buffer[2];
@@ -656,7 +656,7 @@ Export unsigned short LSBFirstReadShort(Image *image)
 %
 %
 */
-Export size_t LSBFirstWriteLong(Image *image,const unsigned long value)
+MagickExport size_t LSBFirstWriteLong(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[4];
@@ -698,7 +698,7 @@ Export size_t LSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %
 */
-Export size_t LSBFirstWriteShort(Image *image,const unsigned int value)
+MagickExport size_t LSBFirstWriteShort(Image *image,const unsigned int value)
 {
   unsigned char
     buffer[2];
@@ -739,7 +739,7 @@ Export size_t LSBFirstWriteShort(Image *image,const unsigned int value)
 %
 %
 */
-Export void *MapBlob(int file,const MapMode mode,size_t *length)
+MagickExport void *MapBlob(int file,const MapMode mode,size_t *length)
 {
 #if defined(HAVE_MMAP)
   struct stat
@@ -813,7 +813,7 @@ Export void *MapBlob(int file,const MapMode mode,size_t *length)
 %
 %
 */
-Export void MSBFirstOrderLong(register char *p,const size_t length)
+MagickExport void MSBFirstOrderLong(register char *p,const size_t length)
 {
   register char
     c,
@@ -862,7 +862,7 @@ Export void MSBFirstOrderLong(register char *p,const size_t length)
 %
 %
 */
-Export void MSBFirstOrderShort(register char *p,const size_t length)
+MagickExport void MSBFirstOrderShort(register char *p,const size_t length)
 {
   register char
     c,
@@ -906,7 +906,7 @@ Export void MSBFirstOrderShort(register char *p,const size_t length)
 %
 %
 */
-Export unsigned short MSBFirstReadShort(Image *image)
+MagickExport unsigned short MSBFirstReadShort(Image *image)
 {
   unsigned char
     buffer[2];
@@ -951,7 +951,7 @@ Export unsigned short MSBFirstReadShort(Image *image)
 %
 %
 */
-Export unsigned long MSBFirstReadLong(Image *image)
+MagickExport unsigned long MSBFirstReadLong(Image *image)
 {
   unsigned char
     buffer[4];
@@ -999,7 +999,7 @@ Export unsigned long MSBFirstReadLong(Image *image)
 %
 %
 */
-Export size_t MSBFirstWriteLong(Image *image,const unsigned long value)
+MagickExport size_t MSBFirstWriteLong(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[4];
@@ -1038,7 +1038,7 @@ Export size_t MSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %
 */
-Export size_t MSBFirstWriteShort(Image *image,const unsigned int value)
+MagickExport size_t MSBFirstWriteShort(Image *image,const unsigned int value)
 {
   unsigned char
     buffer[2];
@@ -1083,7 +1083,7 @@ Export size_t MSBFirstWriteShort(Image *image,const unsigned int value)
 %    o type: 'r' for reading; 'w' for writing.
 %
 */
-Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
+MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   const char *type)
 {
   char
@@ -1299,7 +1299,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %
 %
 */
-Export size_t ReadBlob(Image *image,const size_t length,void *data)
+MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
 {
   off_t
     count;
@@ -1349,7 +1349,7 @@ Export size_t ReadBlob(Image *image,const size_t length,void *data)
 %
 %
 */
-Export int ReadByte(Image *image)
+MagickExport int ReadByte(Image *image)
 {
   int
     count;
@@ -1394,7 +1394,7 @@ Export int ReadByte(Image *image)
 %
 %
 */
-Export size_t ReadBlobBlock(Image *image,char *data)
+MagickExport size_t ReadBlobBlock(Image *image,char *data)
 {
   size_t
     count;
@@ -1447,7 +1447,7 @@ Export size_t ReadBlobBlock(Image *image,char *data)
 %
 %
 */
-Export off_t SeekBlob(Image *image,const off_t offset,const int whence)
+MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
 {
   int
     status;
@@ -1527,7 +1527,7 @@ Export off_t SeekBlob(Image *image,const off_t offset,const int whence)
 %
 %
 */
-Export void SetBlobQuantum(BlobInfo *blob,const size_t quantum)
+MagickExport void SetBlobQuantum(BlobInfo *blob,const size_t quantum)
 {
   assert(blob != (BlobInfo *) NULL);
   blob->quantum=quantum;
@@ -1559,7 +1559,7 @@ Export void SetBlobQuantum(BlobInfo *blob,const size_t quantum)
 %
 %
 */
-Export off_t SizeBlob(Image *image)
+MagickExport off_t SizeBlob(Image *image)
 {
   struct stat
     attributes;
@@ -1597,7 +1597,7 @@ Export off_t SizeBlob(Image *image)
 %
 %
 */
-Export int SyncBlob(const Image *image)
+MagickExport int SyncBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
   if (image->file != (FILE *) NULL)
@@ -1632,7 +1632,7 @@ Export int SyncBlob(const Image *image)
 %
 %
 */
-Export off_t TellBlob(Image *image)
+MagickExport off_t TellBlob(Image *image)
 {
   assert(image != (Image *) NULL);
   if (image->file != (FILE *) NULL)
@@ -1669,7 +1669,7 @@ Export off_t TellBlob(Image *image)
 %
 %
 */
-Export unsigned int UnmapBlob(void *map,const size_t length)
+MagickExport unsigned int UnmapBlob(void *map,const size_t length)
 {
 #if defined(HAVE_MMAP)
   int
@@ -1714,7 +1714,7 @@ Export unsigned int UnmapBlob(void *map,const size_t length)
 %
 %
 */
-Export size_t WriteBlob(Image *image,const size_t length,const void *data)
+MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 {
   off_t
     count;
@@ -1772,7 +1772,7 @@ Export size_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %
 */
-Export size_t WriteByte(Image *image,const int value)
+MagickExport size_t WriteByte(Image *image,const int value)
 {
   char
     c;

@@ -1423,9 +1423,9 @@ static void ZeroCrossHistogram(double *second_derivative,
 %
 %
 */
-Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
-  const unsigned int verbose,const double cluster_threshold,
-  const double smoothing_threshold)
+MagickExport unsigned int SegmentImage(Image *image,
+  const ColorspaceType colorspace,const unsigned int verbose,
+  const double cluster_threshold,const double smoothing_threshold)
 {
 #define DeltaTau  0.5
 #define Tau  5.2

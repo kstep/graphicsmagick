@@ -86,7 +86,7 @@
 %
 %
 */
-Export MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
+MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   const MontageInfo *montage_info)
 {
   MontageInfo
@@ -139,7 +139,7 @@ Export MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
 %
 %
 */
-Export void DestroyMontageInfo(MontageInfo *montage_info)
+MagickExport void DestroyMontageInfo(MontageInfo *montage_info)
 {
   assert(montage_info != (MontageInfo *) NULL);
   if (montage_info->geometry != (char *) NULL)
@@ -183,7 +183,7 @@ Export void DestroyMontageInfo(MontageInfo *montage_info)
 %
 %
 */
-Export void GetMontageInfo(const ImageInfo *image_info,
+MagickExport void GetMontageInfo(const ImageInfo *image_info,
   MontageInfo *montage_info)
 {
   assert(montage_info != (MontageInfo *) NULL);
@@ -297,7 +297,7 @@ static int SceneCompare(const void *x,const void *y)
   return((int) (*image_1)->scene-(int) (*image_2)->scene);
 }
 
-Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
+MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   ExceptionInfo *exception)
 {
 #define MontageImageText  "  Creating visual next directory...  "

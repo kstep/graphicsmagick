@@ -112,7 +112,7 @@ static void
 %
 %
 */
-Export unsigned int IsTrue(const char *message)
+MagickExport unsigned int IsTrue(const char *message)
 {
   if (message == (char *) NULL)
     return(False);
@@ -163,7 +163,7 @@ Export unsigned int IsTrue(const char *message)
 %
 %
 */
-Export unsigned int XAnnotateImage(Display *display,
+MagickExport unsigned int XAnnotateImage(Display *display,
   const XPixelInfo *pixel,XAnnotateInfo *annotate_info,Image *image)
 {
   GC
@@ -488,7 +488,7 @@ static char **FontToList(char *font)
   return(fontlist);
 }
 
-Export XFontStruct *XBestFont(Display *display,
+MagickExport XFontStruct *XBestFont(Display *display,
   const XResourceInfo *resource_info,const unsigned int text_font)
 {
   static const char
@@ -596,7 +596,7 @@ Export XFontStruct *XBestFont(Display *display,
 %
 %
 */
-Export void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
+MagickExport void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
 {
   double
     scale_factor;
@@ -723,8 +723,8 @@ Export void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
 %
 %
 */
-Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
-  unsigned int number_colors,XColor *color)
+MagickExport void XBestPixel(Display *display,const Colormap colormap,
+  XColor *colors,unsigned int number_colors,XColor *color)
 {
   double
     min_distance;
@@ -840,7 +840,7 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
 %
 %
 */
-Export XVisualInfo *XBestVisualInfo(Display *display,
+MagickExport XVisualInfo *XBestVisualInfo(Display *display,
   XStandardColormap *map_info,XResourceInfo *resource_info)
 {
 #define MaxStandardColormaps  7
@@ -1137,7 +1137,7 @@ Export XVisualInfo *XBestVisualInfo(Display *display,
 %
 %
 */
-Export void XCheckRefreshWindows(Display *display,XWindows *windows)
+MagickExport void XCheckRefreshWindows(Display *display,XWindows *windows)
 {
   XEvent
     event;
@@ -1189,7 +1189,7 @@ Export void XCheckRefreshWindows(Display *display,XWindows *windows)
 %
 %
 */
-Export void XClientMessage(Display *display,const Window window,
+MagickExport void XClientMessage(Display *display,const Window window,
   const Atom protocol,const Atom message,const Time timestamp)
 {
   XClientMessageEvent
@@ -1237,7 +1237,7 @@ Export void XClientMessage(Display *display,const Window window,
 %
 %
 */
-Export Window XClientWindow(Display *display,Window target_window)
+MagickExport Window XClientWindow(Display *display,Window target_window)
 {
   Atom
     state,
@@ -1304,7 +1304,7 @@ Export Window XClientWindow(Display *display,Window target_window)
 %
 %
 */
-Export void XConfigureImageColormap(Display *display,
+MagickExport void XConfigureImageColormap(Display *display,
   XResourceInfo *resource_info,XWindows *windows,Image *image)
 {
   Colormap
@@ -1357,7 +1357,8 @@ Export void XConfigureImageColormap(Display *display,
 %
 %
 */
-Export void XConstrainWindowPosition(Display *display,XWindowInfo *window_info)
+MagickExport void XConstrainWindowPosition(Display *display,
+  XWindowInfo *window_info)
 {
   unsigned int
     limit;
@@ -1406,7 +1407,7 @@ Export void XConstrainWindowPosition(Display *display,XWindowInfo *window_info)
 %
 %
 */
-Export void XDelay(Display *display,const unsigned long milliseconds)
+MagickExport void XDelay(Display *display,const unsigned long milliseconds)
 {
   assert(display != (Display *) NULL);
   (void) XFlush(display);
@@ -1467,7 +1468,7 @@ Export void XDelay(Display *display,const unsigned long milliseconds)
 %
 %
 */
-Export void XDestroyWindowColors(Display *display,Window window)
+MagickExport void XDestroyWindowColors(Display *display,Window window)
 {
   Atom
     property,
@@ -1544,7 +1545,7 @@ Export void XDestroyWindowColors(Display *display,Window window)
 %
 %
 */
-Export void XDisplayImageInfo(Display *display,
+MagickExport void XDisplayImageInfo(Display *display,
   const XResourceInfo *resource_info,XWindows *windows,Image *undo_image,
   Image *image)
 {
@@ -1891,7 +1892,7 @@ static void XDitherImage(Image *image,XImage *ximage)
 %
 %
 */
-Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
+MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   XDrawInfo *draw_info,Image *image)
 {
   GC
@@ -2229,7 +2230,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
 %
 %
 */
-Export int XError(Display *display,XErrorEvent *error)
+MagickExport int XError(Display *display,XErrorEvent *error)
 {
   assert(display != (Display *) NULL);
   assert(error != (XErrorEvent *) NULL);
@@ -2300,7 +2301,7 @@ Export int XError(Display *display,XErrorEvent *error)
 %
 %
 */
-Export void XFreeResources(Display *display,XVisualInfo *visual_info,
+MagickExport void XFreeResources(Display *display,XVisualInfo *visual_info,
   XStandardColormap *map_info,XPixelInfo *pixel,XFontStruct *font_info,
   XResourceInfo *resource_info,XWindowInfo *window_info)
 {
@@ -2387,7 +2388,7 @@ Export void XFreeResources(Display *display,XVisualInfo *visual_info,
 %
 %
 */
-Export void XFreeStandardColormap(Display *display,
+MagickExport void XFreeStandardColormap(Display *display,
   const XVisualInfo *visual_info,XStandardColormap *map_info,
   XPixelInfo *pixel)
 {
@@ -2444,7 +2445,7 @@ Export void XFreeStandardColormap(Display *display,
 %
 %
 */
-Export void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
+MagickExport void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
 {
   /*
     Initialize annotate structure.
@@ -2496,8 +2497,8 @@ Export void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
 %
 %
 */
-Export void XGetMapInfo(const XVisualInfo *visual_info,const Colormap colormap,
-  XStandardColormap *map_info)
+MagickExport void XGetMapInfo(const XVisualInfo *visual_info,
+  const Colormap colormap,XStandardColormap *map_info)
 {
   /*
     Initialize map info.
@@ -2555,7 +2556,7 @@ Export void XGetMapInfo(const XVisualInfo *visual_info,const Colormap colormap,
 %
 %
 */
-Export void XGetImportInfo(XImportInfo *ximage_info)
+MagickExport void XGetImportInfo(XImportInfo *ximage_info)
 {
   assert(ximage_info != (XImportInfo *) NULL);
   ximage_info->frame=False;
@@ -2605,9 +2606,9 @@ Export void XGetImportInfo(XImportInfo *ximage_info)
 %
 %
 */
-Export void XGetPixelPacket(Display *display,const XVisualInfo *visual_info,
-  const XStandardColormap *map_info,const XResourceInfo *resource_info,
-  Image *image,XPixelInfo *pixel)
+MagickExport void XGetPixelPacket(Display *display,
+  const XVisualInfo *visual_info,const XStandardColormap *map_info,
+  const XResourceInfo *resource_info,Image *image,XPixelInfo *pixel)
 {
   static const char
     *PenColors[MaxNumberPens]=
@@ -2899,8 +2900,8 @@ Export void XGetPixelPacket(Display *display,const XVisualInfo *visual_info,
 %
 %
 */
-Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
-  const char *keyword,char *resource_default)
+MagickExport char *XGetResourceClass(XrmDatabase database,
+  const char *client_name,const char *keyword,char *resource_default)
 {
   char
     resource_class[MaxTextExtent],
@@ -2989,7 +2990,7 @@ Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
 %
 %
 */
-Export XrmDatabase XGetResourceDatabase(Display *display,
+MagickExport XrmDatabase XGetResourceDatabase(Display *display,
   const char *client_name)
 {
   char
@@ -3086,7 +3087,7 @@ Export XrmDatabase XGetResourceDatabase(Display *display,
 %
 %
 */
-Export void XGetResourceInfo(XrmDatabase database,char *client_name,
+MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
   XResourceInfo *resource_info)
 {
   char
@@ -3299,8 +3300,8 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
 %
 %
 */
-Export char *XGetResourceInstance(XrmDatabase database,const char *client_name,
-  const char *keyword,const char *resource_default)
+MagickExport char *XGetResourceInstance(XrmDatabase database,
+  const char *client_name,const char *keyword,const char *resource_default)
 {
   char
     *resource_type,
@@ -3352,7 +3353,7 @@ Export char *XGetResourceInstance(XrmDatabase database,const char *client_name,
 %
 %
 */
-Export char *XGetScreenDensity(Display *display)
+MagickExport char *XGetScreenDensity(Display *display)
 {
   char
     density[MaxTextExtent],
@@ -3422,7 +3423,7 @@ Export char *XGetScreenDensity(Display *display)
 %
 %
 */
-Export Window XGetSubwindow(Display *display,Window window,int x,int y)
+MagickExport Window XGetSubwindow(Display *display,Window window,int x,int y)
 {
   Window
     source_window,
@@ -3487,7 +3488,7 @@ Export Window XGetSubwindow(Display *display,Window window,int x,int y)
 %
 %
 */
-Export unsigned int XGetWindowColor(Display *display,char *name)
+MagickExport unsigned int XGetWindowColor(Display *display,char *name)
 {
   FILE
     *database;
@@ -3639,7 +3640,7 @@ Export unsigned int XGetWindowColor(Display *display,char *name)
 %
 %
 */
-Export Image *XGetWindowImage(Display *display,const Window window,
+MagickExport Image *XGetWindowImage(Display *display,const Window window,
   const unsigned int borders,const unsigned int level)
 {
   typedef struct _ColormapInfo
@@ -4219,7 +4220,7 @@ Export Image *XGetWindowImage(Display *display,const Window window,
 %
 %
 */
-Export void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
+MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   XStandardColormap *map_info,XPixelInfo *pixel,XFontStruct *font_info,
   XResourceInfo *resource_info,XWindowInfo *window)
 {
@@ -4348,7 +4349,7 @@ Export void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
 %
 %
 */
-Export void XHighlightEllipse(Display *display,Window window,
+MagickExport void XHighlightEllipse(Display *display,Window window,
   GC annotate_context,const RectangleInfo *highlight_info)
 {
   assert(display != (Display *) NULL);
@@ -4398,8 +4399,8 @@ Export void XHighlightEllipse(Display *display,Window window,
 %
 %
 */
-Export void XHighlightLine(Display *display,Window window,GC annotate_context,
-  const XSegment *highlight_info)
+MagickExport void XHighlightLine(Display *display,Window window,
+  GC annotate_context,const XSegment *highlight_info)
 {
   assert(display != (Display *) NULL);
   assert(window != (Window) NULL);
@@ -4442,7 +4443,7 @@ Export void XHighlightLine(Display *display,Window window,GC annotate_context,
 %
 %
 */
-Export void XHighlightRectangle(Display *display,Window window,
+MagickExport void XHighlightRectangle(Display *display,Window window,
   GC annotate_context,const RectangleInfo *highlight_info)
 {
   assert(display != (Display *) NULL);
@@ -4482,7 +4483,8 @@ Export void XHighlightRectangle(Display *display,Window window,
 %
 %
 */
-Export Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
+MagickExport Image *XImportImage(const ImageInfo *image_info,
+  XImportInfo *ximage_info)
 {
   Colormap
     *colormaps;
@@ -4748,7 +4750,7 @@ Export Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
 */
-Export XWindows *XInitializeWindows(Display *display,
+MagickExport XWindows *XInitializeWindows(Display *display,
   XResourceInfo *resource_info)
 {
   Window
@@ -4942,8 +4944,8 @@ Export XWindows *XInitializeWindows(Display *display,
 %
 %
 */
-Export Cursor XMakeCursor(Display *display,Window window,Colormap colormap,
-  char *background_color,char *foreground_color)
+MagickExport Cursor XMakeCursor(Display *display,Window window,
+  Colormap colormap,char *background_color,char *foreground_color)
 {
 #define scope_height 17
 #define scope_x_hot 8
@@ -5045,7 +5047,7 @@ Export Cursor XMakeCursor(Display *display,Window window,Colormap colormap,
 %
 %
 */
-Export unsigned int XMakeImage(Display *display,
+MagickExport unsigned int XMakeImage(Display *display,
   const XResourceInfo *resource_info,XWindowInfo *window,Image *image,
   unsigned int width,unsigned int height)
 {
@@ -6453,7 +6455,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
 %
 %
 */
-Export void XMakeMagnifyImage(Display *display,XWindows *windows)
+MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
 {
   register int
     x,
@@ -7018,9 +7020,9 @@ static int PopularityCompare(const void *x,const void *y)
   return((int) color_2->count-(int) color_1->count);
 }
 
-Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
-  XResourceInfo *resource_info,Image *image,XStandardColormap *map_info,
-  XPixelInfo *pixel)
+MagickExport void XMakeStandardColormap(Display *display,
+  XVisualInfo *visual_info,XResourceInfo *resource_info,Image *image,
+  XStandardColormap *map_info,XPixelInfo *pixel)
 {
   Colormap
     colormap;
@@ -7626,8 +7628,9 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
 %
 %
 */
-Export void XMakeWindow(Display *display,Window parent,char **argv,int argc,
-  XClassHint *class_hint,XWMHints *manager_hints,XWindowInfo *window_info)
+MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
+  int argc,XClassHint *class_hint,XWMHints *manager_hints,
+  XWindowInfo *window_info)
 {
 #define MinWindowSize  64
 
@@ -7858,7 +7861,7 @@ Export void XMakeWindow(Display *display,Window parent,char **argv,int argc,
 %
 %
 */
-Export void XProgressMonitor(const char *task,const off_t quantum,
+MagickExport void XProgressMonitor(const char *task,const off_t quantum,
   const off_t span)
 {
   XWindows
@@ -7900,7 +7903,7 @@ Export void XProgressMonitor(const char *task,const off_t quantum,
 %
 %
 */
-Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
+MagickExport unsigned int XQueryColorDatabase(const char *target,XColor *color)
 {
   Colormap
     colormap;
@@ -7980,7 +7983,7 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
 %
 %
 */
-Export void XQueryPosition(Display *display,const Window window,int *x,int *y)
+MagickExport void XQueryPosition(Display *display,const Window window,int *x,int *y)
 {
   int
     x_root,
@@ -8030,7 +8033,7 @@ Export void XQueryPosition(Display *display,const Window window,int *x,int *y)
 %
 %
 */
-Export void XRefreshWindow(Display *display,const XWindowInfo *window,
+MagickExport void XRefreshWindow(Display *display,const XWindowInfo *window,
   const XEvent *event)
 {
   int
@@ -8134,7 +8137,7 @@ Export void XRefreshWindow(Display *display,const XWindowInfo *window,
 %
 %
 */
-Export void XRemoteCommand(Display *display,const char *window,
+MagickExport void XRemoteCommand(Display *display,const char *window,
   const char *filename)
 {
   Atom
@@ -8211,7 +8214,7 @@ Export void XRemoteCommand(Display *display,const char *window,
 %
 %
 */
-Export void XRetainWindowColors(Display *display,const Window window)
+MagickExport void XRetainWindowColors(Display *display,const Window window)
 {
   Atom
     property;
@@ -8273,7 +8276,7 @@ Export void XRetainWindowColors(Display *display,const Window window)
 %
 %
 */
-Export Window XSelectWindow(Display *display,RectangleInfo *crop_info)
+MagickExport Window XSelectWindow(Display *display,RectangleInfo *crop_info)
 {
 #define MinimumCropArea  (unsigned int) 9
 
@@ -8490,7 +8493,7 @@ void XSignalHandler(int status)
 %
 %
 */
-Export void XSetCursorState(Display *display,XWindows *windows,
+MagickExport void XSetCursorState(Display *display,XWindows *windows,
   const unsigned int state)
 {
   assert(display != (Display *) NULL);
@@ -8540,7 +8543,7 @@ Export void XSetCursorState(Display *display,XWindows *windows,
 %    o windows_info: Initialize the Windows structure with this information.
 %
 */
-Export XWindows *XSetWindows(XWindows *windows_info)
+MagickExport XWindows *XSetWindows(XWindows *windows_info)
 {
   static XWindows
     *windows = (XWindows *) NULL;
@@ -8573,7 +8576,7 @@ Export XWindows *XSetWindows(XWindows *windows_info)
 %
 %
 */
-Export void XUserPreferences(XResourceInfo *resource_info)
+MagickExport void XUserPreferences(XResourceInfo *resource_info)
 {
   char
     cache[MaxTextExtent],
@@ -8647,7 +8650,7 @@ Export void XUserPreferences(XResourceInfo *resource_info)
 %
 %
 */
-Export char *XVisualClassName(const int class)
+MagickExport char *XVisualClassName(const int class)
 {
   switch (class)
   {
@@ -8690,7 +8693,7 @@ Export char *XVisualClassName(const int class)
 %
 %
 */
-Export void XWarning(const ExceptionType warning,const char *message,
+MagickExport void XWarning(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
   char
@@ -8738,7 +8741,7 @@ Export void XWarning(const ExceptionType warning,const char *message,
 %
 %
 */
-Export Window XWindowByID(Display *display,const Window root_window,
+MagickExport Window XWindowByID(Display *display,const Window root_window,
   const unsigned long id)
 {
   RectangleInfo
@@ -8811,7 +8814,7 @@ Export Window XWindowByID(Display *display,const Window root_window,
 %
 %
 */
-Export Window XWindowByName(Display *display,const Window root_window,
+MagickExport Window XWindowByName(Display *display,const Window root_window,
   const char *name)
 {
   register int
@@ -8883,7 +8886,7 @@ Export Window XWindowByName(Display *display,const Window root_window,
 %
 %
 */
-Export Window XWindowByProperty(Display *display,const Window window,
+MagickExport Window XWindowByProperty(Display *display,const Window window,
   const Atom property)
 {
   Atom

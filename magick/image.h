@@ -602,7 +602,7 @@ typedef struct _MagickInfo
 /*
   Image const declarations.
 */
-extern Export const char
+extern MagickExport const char
   *Alphabet,
   *AppendBinaryType,
   *BackgroundColor,
@@ -623,20 +623,20 @@ extern Export const char
   *SaveImagesText,
   *WriteBinaryType;
 
-extern Export const ColorlistInfo
+extern MagickExport const ColorlistInfo
   XPMColorlist[235],
   XColorlist[761];
 
 /*
   Image utilities methods.
 */
-extern Export AnnotateInfo
+extern MagickExport AnnotateInfo
   *CloneAnnotateInfo(const ImageInfo *,const AnnotateInfo *);
 
-extern Export DrawInfo
+extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
 
-extern Export Image
+extern MagickExport Image
   *AddNoiseImage(Image *,const NoiseType,ExceptionInfo *),
   *AllocateImage(const ImageInfo *),
   *AppendImages(Image *,const unsigned int,ExceptionInfo *),
@@ -689,28 +689,28 @@ extern Export Image
   *WaveImage(Image *,const double,const double,ExceptionInfo *),
   *ZoomImage(Image *,const unsigned int,const unsigned int,ExceptionInfo *);
 
-extern Export ImageInfo
+extern MagickExport ImageInfo
   *CloneImageInfo(const ImageInfo *);
 
-extern Export ImageType
+extern MagickExport ImageType
   GetImageType(Image *);
 
-extern Export IndexPacket
+extern MagickExport IndexPacket
   *(*GetIndexes)(const Image *);
 
-extern Export int
+extern MagickExport int
   ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
 
-extern Export MagickInfo
+extern MagickExport MagickInfo
   *GetMagickInfo(const char *),
   *RegisterMagickInfo(MagickInfo *),
   *SetMagickInfo(const char *);
 
-extern Export MontageInfo
+extern MagickExport MontageInfo
   *CloneMontageInfo(const ImageInfo *,const MontageInfo *);
 
-extern Export PixelPacket
+extern MagickExport PixelPacket
   *(*GetImagePixels)
     (Image *,const int,const int,const unsigned int,const unsigned int),
   (*GetOnePixel)(Image *,const int,const int),
@@ -718,7 +718,7 @@ extern Export PixelPacket
   *(*SetImagePixels)
     (Image *,const int,const int,const unsigned int,const unsigned int);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),
   AnnotateImage(Image *,const AnnotateInfo *),
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,
@@ -765,7 +765,7 @@ extern Export unsigned int
   UnregisterMagickInfo(const char *),
   WriteImage(const ImageInfo *,Image *);
 
-extern Export void
+extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),
   (*CloseImagePixels)(Image *),
   CompressColormap(Image *),

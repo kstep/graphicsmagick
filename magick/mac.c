@@ -297,7 +297,7 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
 %
 %
 */
-Export void closedir(DIR *entry)
+MagickExport void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   FreeMemory((void **) &entry);
@@ -327,7 +327,7 @@ Export void closedir(DIR *entry)
 %
 %
 */
-Export int Exit(int status)
+MagickExport int Exit(int status)
 {
   (void) fprintf(stderr,"Select File->Quit to exit.\n");
   exit(status);
@@ -359,7 +359,7 @@ Export int Exit(int status)
 %
 %
 */
-Export void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
+MagickExport void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 {
   Str255
     name;
@@ -399,7 +399,7 @@ Export void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 %
 %
 */
-Export int ImageFormatConflict(const char *magick)
+MagickExport int ImageFormatConflict(const char *magick)
 {
   long
     number_bytes;
@@ -460,7 +460,7 @@ Export int ImageFormatConflict(const char *magick)
 %
 %
 */
-Export void MACErrorHandler(const ExceptionType error,const char *message,
+MagickExport void MACErrorHandler(const ExceptionType error,const char *message,
   const char *qualifier)
 {
   char
@@ -755,7 +755,7 @@ static OSErr MacGSSetWorkingFolder(char *directory)
 %
 %
 */
-Export int MACSystemCommand(const char * command)
+MagickExport int MACSystemCommand(const char * command)
 {
   /*
     We only know how to launch Ghostscript.
@@ -794,8 +794,8 @@ Export int MACSystemCommand(const char * command)
 %
 %
 */
-Export void MACWarningHandler(const ExceptionType warning,const char *message,
-  const char *qualifier)
+MagickExport void MACWarningHandler(const ExceptionType warning,
+  const char *message,const char *qualifier)
 {
   char
     buffer[1664];
@@ -827,7 +827,7 @@ Export void MACWarningHandler(const ExceptionType warning,const char *message,
 %
 %  The format of the opendir method is:
 %
-%      Export DIR *opendir(char *path)
+%      MagickExport DIR *opendir(char *path)
 %
 %  A description of each parameter follows:
 %
@@ -835,7 +835,7 @@ Export void MACWarningHandler(const ExceptionType warning,const char *message,
 %
 %
 */
-Export DIR *opendir(char *path)
+MagickExport DIR *opendir(char *path)
 {
   char
     pathname[1664];
@@ -896,7 +896,7 @@ Export DIR *opendir(char *path)
 %
 %
 */
-Export void ProcessPendingEvents(const char *text)
+MagickExport void ProcessPendingEvents(const char *text)
 {
   static const char
     *mark = (char *) NULL;
@@ -938,7 +938,7 @@ Export void ProcessPendingEvents(const char *text)
 %
 %
 */
-Export struct dirent *readdir(DIR *entry)
+MagickExport struct dirent *readdir(DIR *entry)
 {
   CInfoPBRec
     search_info;
@@ -1007,7 +1007,7 @@ Export struct dirent *readdir(DIR *entry)
 %
 %
 */
-Export Image *ReadPICTImage(const ImageInfo *image_info,
+MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
 #define LoadImageText  "  Loading image...  "
@@ -1318,7 +1318,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
 %
 %
 */
-Export void seekdir(DIR *entry,long position)
+MagickExport void seekdir(DIR *entry,long position)
 {
   assert(entry != (DIR *) NULL);
   entry->d_index=position;
@@ -1352,7 +1352,7 @@ Export void seekdir(DIR *entry,long position)
 %
 %
 */
-Export void SetApplicationType(const char *filename,const char *magick,
+MagickExport void SetApplicationType(const char *filename,const char *magick,
   OSType application)
 {
   OSType
@@ -1393,7 +1393,7 @@ Export void SetApplicationType(const char *filename,const char *magick,
 %
 %
 */
-Export long telldir(DIR *entry)
+MagickExport long telldir(DIR *entry)
 {
   return(entry->d_index);
 }

@@ -92,7 +92,7 @@ static double
 %    o  time_info: Time statistics structure.
 %
 */
-Export unsigned int ContinueTimer(TimerInfo *time_info)
+MagickExport unsigned int ContinueTimer(TimerInfo *time_info)
 {
   if (time_info->state == UndefinedTimerState)
     return(False);
@@ -165,7 +165,7 @@ static double ElapsedTime(void)
 %    o  time_info: Timer statistics structure.
 %
 */
-Export double GetElapsedTime(TimerInfo *time_info)
+MagickExport double GetElapsedTime(TimerInfo *time_info)
 {
   if (time_info->state == UndefinedTimerState)
     return(0.0);
@@ -196,7 +196,7 @@ Export double GetElapsedTime(TimerInfo *time_info)
 %    o  time_info: Timer statistics structure.
 %
 */
-Export void GetTimerInfo(TimerInfo *time_info)
+MagickExport void GetTimerInfo(TimerInfo *time_info)
 {
   /*
     Create a stopwatch and start it.
@@ -231,7 +231,7 @@ Export void GetTimerInfo(TimerInfo *time_info)
 %    o  time_info: Timer statistics structure.
 %
 */
-Export double GetUserTime(TimerInfo *time_info)
+MagickExport double GetUserTime(TimerInfo *time_info)
 {
   if (time_info->state == UndefinedTimerState)
     return(0.0);
@@ -262,7 +262,7 @@ Export double GetUserTime(TimerInfo *time_info)
 %    o  time_info: Timer statistics structure.
 %
 */
-Export void ResetTimer(TimerInfo *time_info)
+MagickExport void ResetTimer(TimerInfo *time_info)
 {
   StopTimer(time_info);
   time_info->elapsed.stop=0.0;
@@ -295,7 +295,7 @@ Export void ResetTimer(TimerInfo *time_info)
 %       stopwatch.
 %
 */
-Export void StartTimer(TimerInfo *time_info, const unsigned int reset)
+MagickExport void StartTimer(TimerInfo *time_info, const unsigned int reset)
 {
   if (reset)
     {
@@ -335,7 +335,7 @@ Export void StartTimer(TimerInfo *time_info, const unsigned int reset)
 %    o  time_info: Timer statistics structure.
 %
 */
-Export void StopTimer(TimerInfo *time_info)
+MagickExport void StopTimer(TimerInfo *time_info)
 {
   time_info->elapsed.stop=ElapsedTime();
   time_info->user.stop=UserTime();

@@ -426,7 +426,7 @@ static int SceneCompare(const void *x,const void *y)
   return((int) (*image_1)->scene-(int) (*image_2)->scene);
 }
 
-Export void XAnimateBackgroundImage(Display *display,
+MagickExport void XAnimateBackgroundImage(Display *display,
   XResourceInfo *resource_info, Image *image)
 {
   char
@@ -866,8 +866,8 @@ Export void XAnimateBackgroundImage(Display *display,
 %
 %
 */
-Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
-  char **argv,const int argc,Image *image)
+MagickExport Image *XAnimateImages(Display *display,
+  XResourceInfo *resource_info,char **argv,const int argc,Image *image)
 {
 #define MagickMenus  4
 #define MaxWindows  8

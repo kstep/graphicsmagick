@@ -59,25 +59,25 @@ typedef struct _ModuleInfo
 /*
   Modules declarations.
 */
-extern Export char
+extern MagickExport char
   **ListModules(void),
   *TagToModule(const char *);
 
-extern Export int
+extern MagickExport int
   LoadAllModules(void),
   LoadDynamicModule(const char *),
   UnloadDynamicModule(const char *),
   UnregisterModuleInfo(const char *);
 
-extern Export ModuleInfo
+extern MagickExport ModuleInfo
   *GetModuleInfo(const char *),
   *RegisterModuleInfo(ModuleInfo *),
   *SetModuleInfo(const char *);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   CallImageFilter(const char *,Image *,const char *);
 
-extern Export void
+extern MagickExport void
   DestroyModuleInfo(void),
   ExitModules(void),
   InitializeModules(void),

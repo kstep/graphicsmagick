@@ -63,7 +63,7 @@ typedef struct _TokenInfo
 /*
   Utilities methods.
 */
-extern Export char
+extern MagickExport char
   *AllocateString(const char *),
   *BaseFilename(const char *),
   **ListColors(const char *,int *),
@@ -74,7 +74,7 @@ extern Export char
   **StringToList(const char *),
   *TranslateText(const ImageInfo *,Image *,const char *);
 
-extern Export int
+extern MagickExport int
   GetGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   GlobExpression(const char *,const char *),
   LocaleNCompare(const char *,const char *,size_t),
@@ -84,17 +84,17 @@ extern Export int
   Tokenizer(TokenInfo *,unsigned,char *,int,char *,char *,char *,char *,
                char,char *,int *,char *);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   CloneString(char **,const char *),
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),
   IsAccessible(const char *),
   IsDirectory(const char *);
 
-extern Export unsigned short
+extern MagickExport unsigned short
   *ConvertTextToUnicode(const char *,int *);
 
-extern Export void
+extern MagickExport void
   AppendImageFormat(const char *,char *),
   DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),

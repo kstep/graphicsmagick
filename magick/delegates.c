@@ -92,7 +92,7 @@ static unsigned int
 %      DestroyDelegateInfo(void)
 %
 */
-Export void DestroyDelegateInfo(void)
+MagickExport void DestroyDelegateInfo(void)
 {
   DelegateInfo
     *delegate,
@@ -150,7 +150,7 @@ Export void DestroyDelegateInfo(void)
 %
 %
 */
-Export unsigned int GetDelegateInfo(const char *decode_tag,
+MagickExport unsigned int GetDelegateInfo(const char *decode_tag,
   const char *encode_tag,DelegateInfo *delegate_info)
 {
   DelegateInfo
@@ -236,7 +236,7 @@ Export unsigned int GetDelegateInfo(const char *decode_tag,
 %
 %
 */
-Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
+MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   const char *decode_tag,const char *encode_tag)
 {
   char
@@ -303,7 +303,7 @@ Export char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %
 %
 */
-Export unsigned int InvokeDelegate(const ImageInfo *image_info,
+MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   Image *image,const char *decode_tag,const char *encode_tag)
 {
   char
@@ -507,7 +507,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
 %
 %
 */
-Export unsigned int ListDelegateInfo(FILE *file)
+MagickExport unsigned int ListDelegateInfo(FILE *file)
 {
   char
     delegate[MaxTextExtent],
@@ -735,7 +735,7 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
 %
 %
 */
-Export DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
+MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
 {
   DelegateInfo
     *delegate;

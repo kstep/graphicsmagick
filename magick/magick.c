@@ -83,7 +83,7 @@ static MagickInfo
 %      void DestroyMagickInfo()
 %
 */
-Export void DestroyMagickInfo()
+MagickExport void DestroyMagickInfo()
 {
   MagickInfo
     *entry;
@@ -132,7 +132,7 @@ Export void DestroyMagickInfo()
 %
 %
 */
-Export MagickInfo *GetMagickInfo(const char *tag)
+MagickExport MagickInfo *GetMagickInfo(const char *tag)
 {
   MagickInfo
     *magick_info;
@@ -281,7 +281,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 %
 %
 */
-Export void ListMagickInfo(FILE *file)
+MagickExport void ListMagickInfo(FILE *file)
 {
   register MagickInfo
     *p;
@@ -338,7 +338,7 @@ Export void ListMagickInfo(FILE *file)
 %    o entry: A pointer to a structure of type MagickInfo.
 %
 */
-Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
+MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
 {
   register MagickInfo
     *p;
@@ -401,7 +401,7 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
 %
 %
 */
-Export MagickInfo *SetMagickInfo(const char *tag)
+MagickExport MagickInfo *SetMagickInfo(const char *tag)
 {
   MagickInfo
     *entry;
@@ -453,7 +453,7 @@ Export MagickInfo *SetMagickInfo(const char *tag)
 %      looking for.
 %
 */
-Export unsigned int UnregisterMagickInfo(const char *tag)
+MagickExport unsigned int UnregisterMagickInfo(const char *tag)
 {
   MagickInfo
     *p;

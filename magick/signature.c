@@ -462,7 +462,7 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
 %
 %
 */
-Export unsigned int SignatureImage(Image *image)
+MagickExport unsigned int SignatureImage(Image *image)
 {
   const char
     hex[] = "0123456789abcdef";

@@ -675,7 +675,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 %
 %
 */
-Export QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
+MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 {
   QuantizeInfo
     *clone_info;
@@ -889,7 +889,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
 %
 %
 */
-Export void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
+MagickExport void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 {
   assert(quantize_info != (QuantizeInfo *) NULL);
   FreeMemory((void **) &quantize_info);
@@ -1308,7 +1308,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 %
 %
 */
-Export void GetQuantizeInfo(QuantizeInfo *quantize_info)
+MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 {
   assert(quantize_info != (QuantizeInfo *) NULL);
   quantize_info->number_colors=0;
@@ -1473,7 +1473,7 @@ static void HilbertCurve(CubeInfo *cube_info,Image *image,const int level,
 %
 %
 */
-Export unsigned int MapImage(Image *image,Image *map_image,
+MagickExport unsigned int MapImage(Image *image,Image *map_image,
   const unsigned int dither)
 {
   CubeInfo
@@ -1542,7 +1542,7 @@ Export unsigned int MapImage(Image *image,Image *map_image,
 %
 %
 */
-Export unsigned int MapImages(Image *images,Image *map_image,
+MagickExport unsigned int MapImages(Image *images,Image *map_image,
   const unsigned int dither)
 {
   CubeInfo
@@ -1860,7 +1860,7 @@ static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
 %
 %
 */
-Export unsigned int QuantizationError(Image *image)
+MagickExport unsigned int QuantizationError(Image *image)
 {
   CubeInfo
     cube_info;
@@ -1971,7 +1971,7 @@ Export unsigned int QuantizationError(Image *image)
 %    o image: Specifies a pointer to a Image structure.
 %
 */
-Export unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
+MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   Image *image)
 {
   CubeInfo
@@ -2067,7 +2067,7 @@ Export unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
 %
 %
 */
-Export unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
+MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   Image *images)
 {
   CubeInfo

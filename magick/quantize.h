@@ -34,16 +34,16 @@ typedef struct _QuantizeInfo
 /*
   Constant declarations.
 */
-extern Export const long
+extern MagickExport const long
   MaxColormapSize;
 
 /*
   Quantization utilities methods.
 */
-extern Export QuantizeInfo
+extern MagickExport QuantizeInfo
   *CloneQuantizeInfo(const QuantizeInfo *);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   MapImage(Image *,Image *,const unsigned int),
   MapImages(Image *,Image *,const unsigned int),
   QuantizationError(Image *),
@@ -53,10 +53,10 @@ extern Export unsigned int
   SegmentImage(Image *,const ColorspaceType,const unsigned int,const double,
     const double);
 
-extern Export unsigned long
+extern MagickExport unsigned long
   GetNumberColors(Image *,FILE *);
 
-extern Export void
+extern MagickExport void
   DestroyQuantizeInfo(QuantizeInfo *),
   GetQuantizeInfo(QuantizeInfo *);
 

@@ -495,16 +495,16 @@ typedef struct _XWindows
 /*
   X utilities routines.
 */
-extern Export char
+extern MagickExport char
   *XGetResourceClass(XrmDatabase,const char *,const char *,char *),
   *XGetResourceInstance(XrmDatabase,const char *,const char *,const char *),
   *XGetScreenDensity(Display *),
   *XVisualClassName(const int);
 
-extern Export Cursor
+extern MagickExport Cursor
   XMakeCursor(Display *,Window,Colormap,char *,char *);
 
-extern Export Image
+extern MagickExport Image
   *XAnimateImages(Display *,XResourceInfo *,char **,const int,Image *),
   *XDisplayImage(Display *,XResourceInfo *,char **,int,Image **,
     unsigned long *),
@@ -512,10 +512,10 @@ extern Export Image
   *XGetWindowImage(Display *,const Window,const unsigned int,
     const unsigned int);
 
-extern Export int
+extern MagickExport int
   XError(Display *,XErrorEvent *);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   IsTrue(const char *),
   XAnnotateImage(Display *,const XPixelInfo *,XAnnotateInfo *,Image *),
   XDisplayBackgroundImage(Display *,XResourceInfo *,Image *),
@@ -526,7 +526,7 @@ extern Export unsigned int
   XMakePixmap(Display *,const XResourceInfo *,XWindowInfo *),
   XQueryColorDatabase(const char *,XColor *);
 
-extern Export void
+extern MagickExport void
   XAnimateBackgroundImage(Display *,XResourceInfo *,Image *),
   XBestIconSize(Display *,XWindowInfo *,Image *),
   XBestPixel(Display *,const Colormap,XColor *,unsigned int,XColor *),
@@ -567,7 +567,7 @@ extern Export void
   XSignalHandler(int),
   XWarning(const ExceptionType,const char *,const char *);
 
-extern Export Window
+extern MagickExport Window
   XClientWindow(Display *,Window),
   XGetSubwindow(Display *,Window,int,int),
   XSelectWindow(Display *,RectangleInfo *),
@@ -575,16 +575,16 @@ extern Export Window
   XWindowByName(Display *,const Window,const char *),
   XWindowByProperty(Display *,const Window,const Atom);
 
-extern Export XFontStruct
+extern MagickExport XFontStruct
   *XBestFont(Display *,const XResourceInfo *,const unsigned int);
 
-extern Export XrmDatabase
+extern MagickExport XrmDatabase
   XGetResourceDatabase(Display *,const char *);
 
-extern Export XVisualInfo
+extern MagickExport XVisualInfo
   *XBestVisualInfo(Display *,XStandardColormap *,XResourceInfo *);
 
-extern Export XWindows
+extern MagickExport XWindows
   *XInitializeWindows(Display *,XResourceInfo *),
   *XSetWindows(XWindows *);
 

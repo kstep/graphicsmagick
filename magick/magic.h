@@ -60,10 +60,10 @@ typedef struct _MagicInfo
 /*
   Magic method declarations.
 */
-extern Export void
+extern MagickExport void
   DestroyMagicInfo(void);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   SetImageMagic(const unsigned char *,const unsigned int,char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

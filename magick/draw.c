@@ -143,7 +143,7 @@ static void
 %
 %
 */
-Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
+MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   const DrawInfo *draw_info)
 {
   DrawInfo
@@ -203,9 +203,9 @@ Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 %
 */
-Export unsigned int ColorFloodfillImage(Image *image,const DrawInfo *draw_info,
-  const PixelPacket target,const int x_offset,const int y_offset,
-  const PaintMethod method)
+MagickExport unsigned int ColorFloodfillImage(Image *image,
+  const DrawInfo *draw_info,const PixelPacket target,const int x_offset,
+  const int y_offset,const PaintMethod method)
 {
   double
     alpha;
@@ -465,7 +465,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const DrawInfo *draw_info,
 %
 %
 */
-Export void DestroyDrawInfo(DrawInfo *draw_info)
+MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
 {
   assert(draw_info != (DrawInfo *) NULL);
   if (draw_info->primitive != (char *) NULL)
@@ -503,7 +503,7 @@ Export void DestroyDrawInfo(DrawInfo *draw_info)
 %
 %
 */
-Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
+MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
 #define DrawImageText  "  Drawing on image...  "
 
@@ -1910,7 +1910,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
 %
 %
 */
-Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
+MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 {
   /*
     Initialize draw attributes.
@@ -2449,9 +2449,9 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
 %
 %
 */
-Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket target,
-  const unsigned int matte,const int x_offset,const int y_offset,
-  const PaintMethod method)
+MagickExport unsigned int MatteFloodfillImage(Image *image,
+  const PixelPacket target,const unsigned int matte,const int x_offset,
+  const int y_offset,const PaintMethod method)
 {
   int
     offset,
@@ -2627,7 +2627,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket target,
 %
 %
 */
-Export unsigned int OpaqueImage(Image *image,const PixelPacket target,
+MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
   const PixelPacket pen_color)
 {
 #define OpaqueImageText  "  Setting opaque color in the image...  "
@@ -2718,7 +2718,8 @@ Export unsigned int OpaqueImage(Image *image,const PixelPacket target,
 %
 %
 */
-Export unsigned int TransparentImage(Image *image,const PixelPacket target)
+MagickExport unsigned int TransparentImage(Image *image,
+  const PixelPacket target)
 {
 #define TransparentImageText  "  Setting transparent color in the image...  "
 

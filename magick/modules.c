@@ -93,7 +93,7 @@ static ModuleInfo
 %        const char *options)
 %
 */
-Export unsigned int CallImageFilter(const char *tag,Image *image,
+MagickExport unsigned int CallImageFilter(const char *tag,Image *image,
   const char *options)
 {
   char
@@ -150,7 +150,7 @@ Export unsigned int CallImageFilter(const char *tag,Image *image,
 %      void DestroyModuleInfo(void)
 %
 */
-Export void DestroyModuleInfo(void)
+MagickExport void DestroyModuleInfo(void)
 {
   ModuleInfo
     *entry;
@@ -188,7 +188,7 @@ Export void DestroyModuleInfo(void)
 %      void ExitModules(void)
 %
 */
-Export void ExitModules(void)
+MagickExport void ExitModules(void)
 {
   int
     i;
@@ -259,7 +259,7 @@ Export void ExitModules(void)
 %
 %
 */
-Export ModuleInfo *GetModuleInfo(const char *tag)
+MagickExport ModuleInfo *GetModuleInfo(const char *tag)
 {
   register ModuleInfo
     *p;
@@ -447,7 +447,7 @@ static void InitializeModuleSearchPath(void)
     }
 }
 
-Export void InitializeModules(void)
+MagickExport void InitializeModules(void)
 {
   if (module_list != (ModuleInfo *) NULL)
     return;
@@ -483,7 +483,7 @@ Export void InitializeModules(void)
 %      void LoadAllModules(void)
 %
 */
-Export int LoadAllModules(void)
+MagickExport int LoadAllModules(void)
 {
   char
     **module_list;
@@ -536,7 +536,7 @@ Export int LoadAllModules(void)
 %      an error occurs a NULL list is returned.
 %
 */
-Export char **ListModules(void)
+MagickExport char **ListModules(void)
 {
   char
     message[MaxTextExtent],
@@ -667,7 +667,7 @@ Export char **ListModules(void)
 %    o module: a character string that indicates the module to load.
 %
 */
-Export int LoadDynamicModule(const char* module)
+MagickExport int LoadDynamicModule(const char* module)
 {
   char
     *module_file,
@@ -870,7 +870,7 @@ void ModuleToTag(const char *filename,const char *format,char *module)
 %    o entry: a pointer to the ModuleInfo structure to register.
 %
 */
-Export ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
+MagickExport ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
 {
   register ModuleInfo
     *p;
@@ -928,7 +928,7 @@ Export ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
 %
 %
 */
-Export ModuleInfo *SetModuleInfo(const char *tag)
+MagickExport ModuleInfo *SetModuleInfo(const char *tag)
 {
   ModuleInfo
     *entry;
@@ -1020,7 +1020,7 @@ char *TagToModule(const char *tag)
 %    o module: a character string that indicates the module to unload.
 %
 */
-Export int UnloadDynamicModule(const char* module)
+MagickExport int UnloadDynamicModule(const char* module)
 {
   char
     name[MaxTextExtent];
@@ -1080,7 +1080,7 @@ Export int UnloadDynamicModule(const char* module)
 %      looking for.
 %
 */
-Export int UnregisterModuleInfo(const char *tag)
+MagickExport int UnregisterModuleInfo(const char *tag)
 {
   ModuleInfo
     *module_info;

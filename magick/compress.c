@@ -269,13 +269,13 @@ static char *Ascii85Tuple(unsigned char *data)
   return(tuple);
 }
 
-Export void Ascii85Initialize(void)
+MagickExport void Ascii85Initialize(void)
 {
   line_break=MaxLineExtent << 1;
   offset=0;
 }
 
-Export void Ascii85Flush(Image *image)
+MagickExport void Ascii85Flush(Image *image)
 {
   register char
     *tuple;
@@ -294,7 +294,7 @@ Export void Ascii85Flush(Image *image)
   (void) WriteByte(image,'\n');
 }
 
-Export void Ascii85Encode(Image *image,const unsigned int code)
+MagickExport void Ascii85Encode(Image *image,const unsigned int code)
 {
   int
     n;
@@ -357,7 +357,7 @@ Export void Ascii85Encode(Image *image,const unsigned int code)
 %
 %
 */
-Export unsigned int HuffmanDecodeImage(Image *image)
+MagickExport unsigned int HuffmanDecodeImage(Image *image)
 {
 #define HashSize  1021
 #define MBHashA  293
@@ -635,7 +635,8 @@ Export unsigned int HuffmanDecodeImage(Image *image)
 %    o image: The address of a structure of type Image.
 %
 */
-Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
+MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
+  Image *image)
 {
 #define HuffmanOutputCode(entry)  \
 {  \
@@ -882,7 +883,8 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
 %    o image: The address of a structure of type Image.
 %
 */
-Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
+MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
+  Image *image)
 {
   char
     filename[MaxTextExtent];
@@ -990,7 +992,8 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   return(True);
 }
 #else
-Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
+MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
+  Image *image)
 {
   assert(image != (Image *) NULL);
   ThrowBinaryException(MissingDelegateWarning,"TIFF library is not available",
@@ -1034,7 +1037,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 %
 %
 */
-Export unsigned int LZWEncodeImage(Image *image,
+MagickExport unsigned int LZWEncodeImage(Image *image,
   const unsigned int number_pixels,unsigned char *pixels)
 {
 #define LZWClr  256  /* Clear Table Marker */
@@ -1167,7 +1170,7 @@ Export unsigned int LZWEncodeImage(Image *image,
   return(True);
 }
 #else
-Export unsigned int LZWEncodeImage(Image *image,
+MagickExport unsigned int LZWEncodeImage(Image *image,
   const unsigned int number_pixels,unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
@@ -1211,7 +1214,7 @@ Export unsigned int LZWEncodeImage(Image *image,
 %
 %
 */
-Export unsigned int PackbitsEncodeImage(Image *image,
+MagickExport unsigned int PackbitsEncodeImage(Image *image,
   const unsigned int number_pixels,unsigned char *pixels)
 {
   register int
@@ -1354,7 +1357,7 @@ Export unsigned int PackbitsEncodeImage(Image *image,
 %
 %
 */
-Export unsigned int ZLIBEncodeImage(Image *image,
+MagickExport unsigned int ZLIBEncodeImage(Image *image,
   const unsigned long number_pixels,const unsigned int quality,
   unsigned char *pixels)
 {
@@ -1410,7 +1413,7 @@ Export unsigned int ZLIBEncodeImage(Image *image,
   return(!status);
 }
 #else
-Export unsigned int ZLIBEncodeImage(Image *image,
+MagickExport unsigned int ZLIBEncodeImage(Image *image,
   const unsigned long number_pixels,const unsigned int quality,
   unsigned char *pixels)
 {

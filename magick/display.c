@@ -11345,7 +11345,7 @@ static Image *XVisualDirectoryImage(Display *display,
 %
 %
 */
-Export unsigned int XDisplayBackgroundImage(Display *display,
+MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   XResourceInfo *resource_info,Image *image)
 {
   char
@@ -11600,7 +11600,7 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
 %
 %
 */
-Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
+MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   char **argv,int argc,Image **image,unsigned long *state)
 {
 #define MagnifySize  256  /* must be a power of 2 */

@@ -12,15 +12,15 @@ extern "C" {
   Delegate structure definitions.
 */
 /*
-  Exported text attribute methods.
+  MagickExported text attribute methods.
 */
-extern Export ImageAttribute
+extern MagickExport ImageAttribute
   *GetImageAttribute(const Image *,const char *);
 
-extern Export unsigned int
+extern MagickExport unsigned int
   SetImageAttribute(Image *,const char *,const char *);
 
-extern Export void
+extern MagickExport void
   DestroyImageAttributes(Image *),
   StoreImageAttribute(Image *,char *);
 

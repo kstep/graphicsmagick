@@ -83,7 +83,7 @@
 %    o view: The address of a structure of type ViewInfo.
 %
 */
-Export void CloseCacheView(ViewInfo *view)
+MagickExport void CloseCacheView(ViewInfo *view)
 {
   Image
     *image;
@@ -126,7 +126,7 @@ Export void CloseCacheView(ViewInfo *view)
 %
 %
 */
-Export PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
+MagickExport PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
   Image
@@ -187,7 +187,7 @@ Export PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
 %
 %
 */
-Export IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
+MagickExport IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 {
   Image
     *image;
@@ -224,7 +224,7 @@ Export IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 %
 %
 */
-Export PixelPacket *GetCacheViewPixels(const ViewInfo *view)
+MagickExport PixelPacket *GetCacheViewPixels(const ViewInfo *view)
 {
   Image
     *image;
@@ -257,7 +257,7 @@ Export PixelPacket *GetCacheViewPixels(const ViewInfo *view)
 %
 %
 */
-Export ViewInfo *OpenCacheView(Image *image)
+MagickExport ViewInfo *OpenCacheView(Image *image)
 {
   unsigned int
     status;
@@ -327,7 +327,7 @@ Export ViewInfo *OpenCacheView(Image *image)
 %
 %
 */
-Export PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
+MagickExport PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
   Image
@@ -385,7 +385,7 @@ Export PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
 %
 %
 */
-Export unsigned int SyncCacheView(ViewInfo *view)
+MagickExport unsigned int SyncCacheView(ViewInfo *view)
 {
   Image
     *image;
