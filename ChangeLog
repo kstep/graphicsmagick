@@ -66,7 +66,7 @@
 	* magick/cache.c (SetImagePixels): Improved documentation.
 	(GetImagePixels): Improved documentation.
 
-2005-13-10 Glenn Randers-Pehrson <glennrp@glennrp.com>
+2005-03-10 Glenn Randers-Pehrson <glennrp@glennrp.com>
 
 	* coders/png.c: Avoid attempting to write indexed PNG when
 	a color entry has more than one opacity level.  The PNG format
@@ -87,8 +87,10 @@
 
 2005-03-07  Mike Chiarappa  <mikechiarappa@libero.it>
 
-	* BCBMagick\magick\GM_magick.bpr: Updated to reflect changes since last update.
-	* BCBMagick\magick\libMagick.bpr: Updated to reflect changes since last update.
+	* BCBMagick\magick\GM_magick.bpr: Updated to reflect changes since
+	last update.
+	* BCBMagick\magick\libMagick.bpr: Updated to reflect changes since
+	last update.
 
 2005-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
