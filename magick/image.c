@@ -1264,7 +1264,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Composite image.
   */
-  midpoint=(MaxRGB+1)/2;
+  midpoint=MaxRGB/2;
   for (y=0; y < (long) image->rows; y++)
   {
     if (y < y_offset)
