@@ -53,7 +53,6 @@ extern MagickExport unsigned int
   QuantizationError(Image *),
   QuantizeImage(const QuantizeInfo *,Image *),
   QuantizeImages(const QuantizeInfo *,Image *),
-  QueryColorName(const PixelPacket *,char *),
   SegmentImage(Image *,const ColorspaceType,const unsigned int,const double,
     const double);
 

@@ -6325,6 +6325,9 @@ QueryColorname(ref,...)
     char
       message[MaxTextExtent];
 
+    Image
+      *image;
+
     PixelPacket
       target_color;
 

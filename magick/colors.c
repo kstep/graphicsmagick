@@ -401,7 +401,7 @@ static NodeInfo
 
 static void
   DestroyList(const NodeInfo *),
-  Histogram(CubeInfo *,const NodeInfo *,FILE *);
+  Histogram(Image *,CubeInfo *,const NodeInfo *,FILE *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -763,7 +763,7 @@ MagickExport size_t GetNumberColors(Image *image,FILE *file)
   if (file != (FILE *) NULL)
     {
       (void) fputs("\n",file);
-      Histogram(cube_info,cube_info->root,file);
+      Histogram(image,cube_info,cube_info->root,file);
       (void) fflush(file);
     }
   number_colors=cube_info->colors;
@@ -787,8 +787,8 @@ MagickExport size_t GetNumberColors(Image *image,FILE *file)
 %
 %  The format of the Histogram method is:
 %
-%      void Histogram(CubeInfo *cube_info,const NodeInfo *node_info,
-%        FILE *file)
+%      void Histogram(Image *image,CubeInfo *cube_info,
+%        const NodeInfo *node_info,FILE *file)
 %
 %  A description of each parameter follows.
 %
@@ -799,7 +799,8 @@ MagickExport size_t GetNumberColors(Image *image,FILE *file)
 %
 %
 */
-static void Histogram(CubeInfo *cube_info,const NodeInfo *node_info,FILE *file)
+static void Histogram(Image *image,CubeInfo *cube_info,
+  const NodeInfo *node_info,FILE *file)
 {
 #define HistogramImageText  "  Compute image histogram...  "
 
@@ -811,7 +812,7 @@ static void Histogram(CubeInfo *cube_info,const NodeInfo *node_info,FILE *file)
   */
   for (id=0; id < 8; id++)
     if (node_info->child[id] != (NodeInfo *) NULL)
-      Histogram(cube_info,node_info->child[id],file);
+      Histogram(image,cube_info,node_info->child[id],file);
   if (node_info->level == MaxTreeDepth)
     {
       char
@@ -835,7 +836,7 @@ static void Histogram(CubeInfo *cube_info,const NodeInfo *node_info,FILE *file)
         color.red=p->red;
         color.green=p->green;
         color.blue=p->blue;
-        (void) QueryColorName(&color,name);
+        (void) QueryColorname(image,&color,name);
         (void) fprintf(file,"%.1024s",name);
         (void) fprintf(file,"\n");
         p++;
@@ -1582,12 +1583,15 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
 %
 %  The format of the QueryColorName method is:
 %
-%      unsigned int QueryColorName(const PixelPacket *color,char *name)
+%      unsigned int QueryColorname(Image *image,const PixelPacket *color,
+%        char *name)
 %
 %  A description of each parameter follows.
 %
 %    o distance: Method QueryColorName returns the distance-squared in RGB
 %      space as well as the color name that is at a minimum distance.
+%
+%    o image: The address of a structure of type Image.
 %
 %    o color: This is a pointer to a PixelPacket structure that contains the
 %      color we are searching for.
@@ -1597,7 +1601,8 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
 %
 %
 */
-MagickExport unsigned int QueryColorName(const PixelPacket *color,char *name)
+MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
+  char *name)
 {
   double
     distance,
@@ -1631,31 +1636,22 @@ MagickExport unsigned int QueryColorName(const PixelPacket *color,char *name)
     return(0.0);
   if (color->opacity == OpaqueOpacity)
     {
-      if ((color->red == UpScale(DownScale(color->red))) &&
-          (color->green == UpScale(DownScale(color->green))) &&
-          (color->blue == UpScale(DownScale(color->blue))))
-        {
-          FormatString(name,"#%02x%02x%02x",DownScale(color->red),
-            DownScale(color->green),DownScale(color->blue));
-          return((unsigned int) min_distance);
-        }
-      FormatString(name,"#%04x%04x%04x",DownScale(color->red),
-        DownScale(color->green),DownScale(color->blue));
+      if (image->depth <= 8)
+        FormatString(name,"#%02x%02x%02x",DownScale(color->red),
+          DownScale(color->green),DownScale(color->blue));
+      else
+        FormatString(name,"#%04x%04x%04x",(unsigned int) color->red,
+          (unsigned int) color->green,(unsigned int) color->blue);
       return((unsigned int) min_distance);
     }
-  if ((color->red == UpScale(DownScale(color->red))) &&
-      (color->green == UpScale(DownScale(color->green))) &&
-      (color->blue == UpScale(DownScale(color->blue))) &&
-      (color->opacity == UpScale(DownScale(color->opacity))))
-    {
-      FormatString(name,"#%02x%02x%02x%02x",(unsigned int) color->red,
-        (unsigned int) color->green,(unsigned int) color->blue,
-        (unsigned int) color->opacity);
-      return((unsigned int) min_distance);
-    }
-  FormatString(name,"#%04x%04x%04x%04x",(unsigned int) color->red,
-    (unsigned int) color->green,(unsigned int) color->blue,
-    (unsigned int) color->opacity);
+  if (image->depth <= 8)
+    FormatString(name,"#%02x%02x%02x%02x",DownScale(color->red),
+      DownScale(color->green),DownScale(color->blue),
+      DownScale(color->opacity));
+  else
+    FormatString(name,"#%04x%04x%04x%04x",(unsigned int) color->red,
+      (unsigned int) color->green,(unsigned int) color->blue,
+      (unsigned int) color->opacity);
   return((unsigned int) min_distance);
 }
 

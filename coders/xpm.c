@@ -639,9 +639,6 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     k,
     y;
 
-  PixelPacket
-    color;
-
   register IndexPacket
     *indexes;
 
@@ -722,6 +719,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
           }
         }
     }
+  SetImageDepth(image,8);
   /*
     Compute the character per pixel.
   */
@@ -742,11 +740,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     /*
       Define XPM color.
     */
-    color.red=UpScale(DownScale(image->colormap[i].red));
-    color.green=UpScale(DownScale(image->colormap[i].green));
-    color.blue=UpScale(DownScale(image->colormap[i].blue));
-    color.opacity=UpScale(DownScale(image->colormap[i].opacity));
-    (void) QueryColorName(&color,name);
+    (void) QueryColorname(image,image->colormap+i,name);
     if (transparent)
       {
         if (i == (int) (colors-1))

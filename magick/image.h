@@ -740,6 +740,7 @@ extern MagickExport unsigned int
   ProfileImage(Image *,const char *,const char *),
   PushImagePixels(Image *,const QuantumType,const unsigned char *),
   QueryColorDatabase(const char *,PixelPacket *),
+  QueryColorname(Image *,const PixelPacket *,char *),
   RaiseImage(Image *,const RectangleInfo *,const int),
   ReadStream(const ImageInfo *,int (*)(const Image *,const void *,const size_t),
     ExceptionInfo *),

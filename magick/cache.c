@@ -1935,11 +1935,11 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
   if ((image->page.width != 0) && (image->page.height != 0))
     (void) fprintf(file,"page=%ux%u%+d%+d\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
-  (void) QueryColorName(&image->background_color,color);
+  (void) QueryColorname(image,&image->background_color,color);
   (void) fprintf(file,"background-color=%.1024s  ",color);
-  (void) QueryColorName(&image->border_color,color);
+  (void) QueryColorname(image,&image->border_color,color);
   (void) fprintf(file,"border-color=%.1024s  ",color);
-  (void) QueryColorName(&image->matte_color,color);
+  (void) QueryColorname(image,&image->matte_color,color);
   (void) fprintf(file,"matte-color=%.1024s\n",color);
   if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
     (void) fprintf(file,"scene=%u  iterations=%u  delay=%u  Dispose=%u\n",

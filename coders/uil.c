@@ -277,7 +277,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     /*
       Define UIL color.
     */
-    (void) QueryColorName(image->colormap+i,name);
+    (void) QueryColorname(image,image->colormap+i,name);
     if (transparent)
       if (i == (int) (colors-1))
         (void) strcpy(name,"None");

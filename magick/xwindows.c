@@ -6830,7 +6830,7 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
   XDrawImageString(display,windows->magnify.pixmap,
     windows->magnify.annotate_context,x,y,text,Extent(text));
   y+=height;
-  (void) QueryColorName(&color,text);
+  (void) QueryColorname(windows->image.image,&color,text);
   XDrawImageString(display,windows->magnify.pixmap,
     windows->magnify.annotate_context,x,y,text,Extent(text));
   /*
