@@ -7820,7 +7820,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     *loaded_image;
 
   ImageInfo
-    image_info;
+    *image_info;
 
   MonitorHandler
     handler;
@@ -7877,10 +7877,10 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     }
   if (*filename == '\0')
     return((Image *) NULL);
-  GetImageInfo(&image_info);
-  (void) strcpy(image_info.filename,filename);
-  SetImageInfo(&image_info,False);
-  if (Latin1Compare(image_info.magick,"X") == 0)
+  image_info=CloneImageInfo(resource_info->image_info);
+  (void) strcpy(image_info->filename,filename);
+  SetImageInfo(image_info,False);
+  if (Latin1Compare(image_info->magick,"X") == 0)
     {
       char
         seconds[MaxTextExtent];
@@ -7895,40 +7895,42 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         return((Image *) NULL);
       XDelay(display,1000*atoi(seconds));
     }
-  if ((Latin1Compare(image_info.magick,"CMYK") == 0) ||
-      (Latin1Compare(image_info.magick,"GRAY") == 0) ||
-      (Latin1Compare(image_info.magick,"MAP") == 0) ||
-      (Latin1Compare(image_info.magick,"MATTE") == 0) ||
-      (Latin1Compare(image_info.magick,"RGB") == 0) ||
-      (Latin1Compare(image_info.magick,"TEXT") == 0) ||
-      (Latin1Compare(image_info.magick,"TILE") == 0) ||
-      (Latin1Compare(image_info.magick,"UYVY") == 0) ||
-      (Latin1Compare(image_info.magick,"XC") == 0) ||
-      (Latin1Compare(image_info.magick,"YUV") == 0))
+  if ((Latin1Compare(image_info->magick,"CMYK") == 0) ||
+      (Latin1Compare(image_info->magick,"GRAY") == 0) ||
+      (Latin1Compare(image_info->magick,"MAP") == 0) ||
+      (Latin1Compare(image_info->magick,"MATTE") == 0) ||
+      (Latin1Compare(image_info->magick,"RGB") == 0) ||
+      (Latin1Compare(image_info->magick,"RGBA") == 0) ||
+      (Latin1Compare(image_info->magick,"TEXT") == 0) ||
+      (Latin1Compare(image_info->magick,"TILE") == 0) ||
+      (Latin1Compare(image_info->magick,"UYVY") == 0) ||
+      (Latin1Compare(image_info->magick,"XC") == 0) ||
+      (Latin1Compare(image_info->magick,"YUV") == 0))
     {
-      static char
-        geometry[MaxTextExtent] = "512x512";
+      char
+        geometry[MaxTextExtent];
 
       /*
         Request image size from the user.
       */
-      if (resource_info->image_info->size != (char *) NULL)
-        (void) strcpy(geometry,resource_info->image_info->size);
-      (void) CloneString(&resource_info->image_info->size,geometry);
-      (void) XDialogWidget(display,windows,"Load",
-        "Enter the image geometry:",geometry);
+      (void) strcpy(geometry,"512x512");
+      if (image_info->size != (char *) NULL)
+        (void) strcpy(geometry,image_info->size);
+      (void) XDialogWidget(display,windows,"Load","Enter the image geometry:",
+        geometry);
+      (void) CloneString(&image_info->size,geometry);
     }
   /*
     Load the image.
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  (void) strcpy(resource_info->image_info->filename,filename);
+  (void) strcpy(image_info->filename,filename);
   handler=(MonitorHandler) NULL;
-  if (Latin1Compare(image_info.magick,"X") == 0)
+  if (Latin1Compare(image_info->magick,"X") == 0)
     handler=SetMonitorHandler((MonitorHandler) NULL);
-  loaded_image=ReadImage(resource_info->image_info);
-  if (Latin1Compare(image_info.magick,"X") == 0)
+  loaded_image=ReadImage(image_info);
+  if (Latin1Compare(image_info->magick,"X") == 0)
     (void) SetMonitorHandler(handler);
   XSetCursorState(display,windows,False);
   if (loaded_image != (Image *) NULL)
@@ -7998,6 +8000,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         }
       FreeMemory(text);
     }
+  DestroyImageInfo(image_info);
   return(loaded_image);
 }
 
