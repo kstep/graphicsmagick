@@ -677,12 +677,9 @@ MagickExport void Hull(const long x_offset,const long y_offset,
 MagickExport void IdentityAffine(AffineMatrix *affine)
 {
   assert(affine != (AffineMatrix *) NULL);
+  (void) memset(affine,0,sizeof(AffineMatrix));
   affine->sx=1.0;
-  affine->rx=0.0;
-  affine->ry=0.0;
   affine->sy=1.0;
-  affine->tx=0.0;
-  affine->ty=0.0;
 }
 
 /*
