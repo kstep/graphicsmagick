@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -119,28 +119,37 @@
 #ifndef JAS_TYPES_H
 #define JAS_TYPES_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#if !defined(JAS_CONFIGURE)
+
+/*
+   We are not using a configure-based build.  Try to compensate for
+   this here, by defining the types normally defined by configure.
+   Note: These types should match those specified in the configure.in file.
+ */
+#define	uchar		unsigned char
+#define	ushort		unsigned short
+#define	uint		unsigned int
+#define	ulong		unsigned long
+#define	longlong	long long
+#define	ulonglong	unsigned long long
+#define	ssize_t		int
 
 #if defined(WIN32) || defined(HAVE_WINDOWS_H)
 /*
- * We are dealing with Microsoft Windows and probably Microsoft Visual C.
- * (Heaven help us.)  We need the types INT64 and UINT64 that are defined
- * in the header file "windows.h".
+   We are dealing with Microsoft Windows and most likely Microsoft
+   Visual C (MSVC).  (Heaven help us.)  Sadly, MSVC does not correctly
+   define some of the standard types specified in ISO/IEC 9899:1999.
+   In particular, it does not define the "long long" and "unsigned long
+   long" types.  So, we work around this problem by using the "INT64"
+   and "UINT64" types that are defined in the header file "windows.h".
  */
 #include <windows.h>
-#endif
-
-#if defined(WIN32) || defined(HAVE_WINDOWS_H)
-#define uchar	unsigned char
-#define	ushort	unsigned short
-#define	uint	unsigned int
-#define	ulong	unsigned long
 #undef longlong
 #define	longlong	INT64
 #undef ulonglong
 #define	ulonglong	UINT64
+#endif
+
 #endif
 
 #if defined(HAVE_STDLIB_H)
@@ -154,14 +163,16 @@ extern "C" {
 #endif
 
 #if defined(HAVE_STDBOOL_H)
-
 /*
  * The C language implementation does correctly provide the standard header
  * file "stdbool.h".
  */
 #include <stdbool.h>
-
 #else
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  * The C language implementation does not provide the standard header file
@@ -171,27 +182,26 @@ extern "C" {
 #if !defined(bool)
 #define	bool	int
 #endif
-
 #if !defined(true)
 #define true	1
 #endif
-
 #if !defined(false)
 #define	false	0
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif
 
 #if defined(HAVE_STDINT_H)
-
 /*
  * The C language implementation does correctly provide the standard header
  * file "stdint.h".
  */
 #include <stdint.h>
-
 #else
-
 /*
  * The C language implementation does not provide the standard header file
  * "stdint.h" as required by ISO/IEC 9899:1999.  Try to compensate for this
@@ -206,7 +216,7 @@ typedef signed char int_fast8_t;
 #endif
 /**********/
 #if !defined(UINT_FAST8_MIN)
-typedef uchar uint_fast8_t;
+typedef unsigned char uint_fast8_t;
 #define UINT_FAST8_MIN	0
 #define UINT_FAST8_MAX	255
 #endif
@@ -218,7 +228,7 @@ typedef short int_fast16_t;
 #endif
 /**********/
 #if !defined(UINT_FAST16_MIN)
-typedef ushort uint_fast16_t;
+typedef unsigned short uint_fast16_t;
 #define UINT_FAST16_MIN	USHRT_MIN
 #define UINT_FAST16_MAX	USHRT_MAX
 #endif
@@ -230,7 +240,7 @@ typedef int int_fast32_t;
 #endif
 /**********/
 #if !defined(UINT_FAST32_MIN)
-typedef uint uint_fast32_t;
+typedef unsigned int uint_fast32_t;
 #define UINT_FAST32_MIN	UINT_MIN
 #define UINT_FAST32_MAX	UINT_MAX
 #endif
@@ -247,7 +257,6 @@ typedef ulonglong uint_fast64_t;
 #define UINT_FAST64_MAX	ULLONG_MAX
 #endif
 /**********/
-
 #endif
 
 /* The below macro is intended to be used for type casts.  By using this
@@ -255,6 +264,10 @@ typedef ulonglong uint_fast64_t;
   tools like "grep". */
 #define	JAS_CAST(t, e) \
 	((t) (e))
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #ifdef __cplusplus
 }
