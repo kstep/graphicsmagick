@@ -172,6 +172,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
+  AppendImageFormat("cache",cache_filename);
   c=ReadBlobByte(image);
   if (c == EOF)
     {
@@ -789,8 +791,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Attach persistent pixel cache.
         */
-        (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
-        AppendImageFormat("cache",cache_filename);
         status=PersistCache(image,cache_filename,True,&offset,exception);
         if (status == False)
           ThrowReaderException(CacheWarning,"Unable to perist pixel cache",
