@@ -587,6 +587,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Convert DirectColor scanline.
             */
+            image->storage_class=DirectClass;
             for (y=image->rows-1; y >= 0; y--)
             {
               p=pixels+(image->rows-y-1)*bytes_per_line;
@@ -732,9 +733,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     "Memory allocation failed",image);
                 for (i=0; i < number_colors; i++)
                 {
-                  colormap[i].blue=ReadBlobByte(image);
-                  colormap[i].green=ReadBlobByte(image);
-                  colormap[i].red=ReadBlobByte(image);
+                  colormap[i].blue=UpScale(ReadBlobByte(image));
+                  colormap[i].green=UpScale(ReadBlobByte(image));
+                  colormap[i].red=UpScale(ReadBlobByte(image));
                   (void) ReadBlobByte(image);
                   chunk_size-=4;
                 }
