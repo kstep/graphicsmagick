@@ -414,6 +414,91 @@ static PixelPacket AcquireOnePixelFromCache(const Image *image,const long x,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C l i o C a c h e N e x u s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ClipCacheNexus() clips the image pixels of the in-memory or disk
+%  cache as defined by the image clip mask.  The method returns True if the
+%  pixel region is clipped, otherwise False.
+%
+%  The format of the ClipCacheNexus() method is:
+%
+%      unsigned int ClipCacheNexus(Image *image,const unsigned long id)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ClipCacheNexus() returns True if the image pixels are
+%      clipped, otherwise False.
+%
+%    o image: The image.
+%
+%    o id: specifies which cache nexus to clip.
+%
+%
+*/
+static unsigned int ClipCacheNexus(Image *image,const unsigned long id)
+{
+  CacheInfo
+    *cache_info;
+
+  long
+    y;
+
+  NexusInfo
+    *nexus_info;
+
+  register long
+    x;
+
+  register PixelPacket
+    *p,
+    *q,
+    *r;
+
+  unsigned long
+    image_nexus,
+    mask_nexus;
+
+  /*
+    Apply clip mask.
+  */
+  image_nexus=GetNexus(image->cache);
+  mask_nexus=GetNexus(image->clip_mask->cache);
+  if ((image_nexus == 0) || (mask_nexus == 0))
+    ThrowBinaryException(CacheWarning,"Unable to get nexus",image->filename);
+  cache_info=(CacheInfo *) image->cache;
+  nexus_info=cache_info->nexus_info+id;
+  p=GetCacheNexus(image,nexus_info->x,nexus_info->y,nexus_info->columns,
+    nexus_info->rows,image_nexus);
+  q=GetCacheNexus(image->clip_mask,nexus_info->x,nexus_info->y,
+    nexus_info->columns,nexus_info->rows,mask_nexus);
+  if ((p == (PixelPacket *) NULL) && (q == (PixelPacket *) NULL))
+    return(False);
+  r=nexus_info->pixels;
+  for (y=0; y < (long) nexus_info->rows; y++)
+  {
+    for (x=0; x < (long) nexus_info->columns; x++)
+    {
+      if (q->opacity == TransparentOpacity)
+        *r=(*p);
+      p++;
+      q++;
+      r++;
+    }
+  }
+  DestroyCacheNexus(image->cache,image_nexus);
+  DestroyCacheNexus(image->clip_mask->cache,mask_nexus);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e s t r o y C a c h e                                                   %
 %                                                                             %
 %                                                                             %
@@ -2279,7 +2364,7 @@ static unsigned int SyncCache(Image *image)
 %
 %    o image: The image.
 %
-%    o id: specifies which cache nexus to destroy.
+%    o id: specifies which cache nexus to sync.
 %
 %
 */
@@ -2300,62 +2385,8 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long id)
   if (IsNexusInCore(image->cache,id))
     return(True);
   if (image->clip_mask != (Image *) NULL)
-    {
-      CacheInfo
-        *cache_info;
-
-      NexusInfo
-        *nexus_info;
-
-      register PixelPacket
-        *p,
-        *q;
-
-      ViewInfo
-        *image_view,
-        *mask_view;
-
-      image_view=OpenCacheView(image);
-      mask_view=OpenCacheView(image->clip_mask);
-      if ((image_view == (ViewInfo *) NULL) || (mask_view == (ViewInfo *) NULL))
-        ThrowBinaryException(CacheWarning,"Unable to open cache view",
-          image->filename);
-      cache_info=(CacheInfo *) image->cache;
-      nexus_info=cache_info->nexus_info;
-      p=GetCacheView(image_view,nexus_info->x,nexus_info->y,nexus_info->columns,
-        nexus_info->rows);
-      q=GetCacheView(mask_view,nexus_info->x,nexus_info->y,nexus_info->columns,
-        nexus_info->rows);
-      if ((p != (PixelPacket *) NULL) && (q != (PixelPacket *) NULL))
-        {
-          long
-            y;
-
-          register long
-            x;
-
-          register PixelPacket
-            *r;
-
-          /*
-            Apply clip mask.
-          */
-          r=nexus_info->pixels;
-          for (y=0; y < (long) nexus_info->rows; y++)
-          {
-            for (x=0; x < (long) nexus_info->columns; x++)
-            {
-              if (q->opacity == TransparentOpacity)
-                *r=(*p);
-              p++;
-              q++;
-              r++;
-            }
-          }
-        }
-      CloseCacheView(mask_view);
-      CloseCacheView(image_view);
-    }
+    if (!ClipCacheNexus(image,id))
+      return(False);
   status=WriteCachePixels(image->cache,id);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
@@ -2363,7 +2394,7 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long id)
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
       image->filename);
-  return(True);
+  return(status);
 }
 
 /*
