@@ -1,3 +1,8 @@
+2003-10-09  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* NEWS: added info about color scaling, sampling-factor, and
+	changed a reference to "-coder-options" to "-define".
+
 2003-10-09  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* VisualMagick/bin/modules.mgk: added EPS3 mapping to PS3 module.
@@ -82,8 +87,8 @@
 
 2003-10-06  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
-	* magick/image.c (SetImageInfo): cleaned up parsing of sub-image
-	spcification (image.psd[0]). It would fail sometimes due to
+	* magick/image.c (SetImageInfo): cleaned up parsing of subimage
+	specification (image.psd[0]). It would fail sometimes due to
 	incorrect reuse of variables. It's a bit strange the code accepts
 	more range syntax-variations than can be stored in ImageInfo.
 
@@ -126,7 +131,7 @@
 	* magick/image.c, magick/image.h: Added function
 	RemoveCoderOptions. Added cast of signed char to unsigned char and
 	int in calls to isspace and isprint.
-	* magcik/utility.c: Added cast of signed char to unsigned char and
+	* magick/utility.c: Added cast of signed char to unsigned char and
 	int in calls to isspace and isprint. Added special handling of
 	+coder-options option in ExpandFilenames function.
 
@@ -377,7 +382,7 @@
 	old names, but at least they are shorter.
 	* magick/command.c: Linux's sscanf has the terrible bug that it
 	improperly handles pulling out the first floating value from the
-	string "0x1".  Instead of retreiving the value 0 and returning 1,
+	string "0x1".  Instead of retrieving the value 0 and returning 1,
 	it returns 0, probably because it rejects the string as a hex
 	constant. As a result, all options which used sscanf to validate
 	this input are now converted to use IsGeometry().

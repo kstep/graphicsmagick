@@ -29,6 +29,8 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     * Arc drawing is fixed.
     * Command-line parsing bug under Linux due to Linux's sscanfs
     inability to parse strings like "0x1" as "%fx%f" is fixed.
+    * Scaling of colors was slightly incorrect in BMP, AVI, DIB, and
+    TIM datastreams.
 
   Performance improvements:
     * Texture tiling is now 7X faster.
@@ -40,11 +42,13 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     * Logging of thrown exceptions is now supported. Use '-debug
     exception'. This is useful to learn when and where errors are
     reported.
-    * The -coder-options option is added in order to support supplying
+    * The -define option is added in order to support supplying
     additional options to coders without needing to add additional
     command line options or structure members.
     * The output of 'gm identify -verbose' now provides a nice dump
     of EXIF data.
+    * The -sampling-factor option now accepts as many HxV pairs as
+    there are JPEG components.  Omitted ones default to 1x1.
 
   Coder additions/improvments
     * The META coder supports wide characters for the IPTC and 8BIM
