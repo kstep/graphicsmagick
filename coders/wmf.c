@@ -213,7 +213,9 @@ static void         ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line);
 static void         ipa_draw_pie(wmfAPI * API, wmfDrawArc_t * draw_arc);
 static void         ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel);
 static void         ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line);
+#if defined(HasWMFlite)
 static void         ipa_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon);
+#endif
 static void         ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect);
 static void         ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text);
 static void         ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood);
@@ -868,6 +870,7 @@ static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * polyline)
 }
 
 /* Draw a polypolygon.  A polypolygon is a list of polygons */
+#if defined(HasWMFlite)
 static void ipa_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon)
 {
   if (TO_FILL(polypolygon) || TO_DRAW(polypolygon))
@@ -911,6 +914,7 @@ static void ipa_draw_polypolygon(wmfAPI * API, wmfPolyPoly_t* polypolygon)
       DrawPopGraphicContext(WmfDrawContext);
     }
 }
+#endif
 
 static void ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
 {
@@ -1058,7 +1062,9 @@ static void ipa_functions(wmfAPI *API)
   FR->draw_line = ipa_draw_line;
   FR->poly_line = ipa_poly_line;
   FR->draw_polygon = ipa_draw_polygon;
+#if defined(HasWMFlite)
   FR->draw_polypolygon = ipa_draw_polypolygon;
+#endif
   FR->draw_rectangle = ipa_draw_rectangle;
   FR->rop_draw = ipa_rop_draw;
   FR->bmp_draw = ipa_bmp_draw;
