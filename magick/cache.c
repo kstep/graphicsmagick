@@ -1976,8 +1976,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if ((cache_info->length > MinBlobExtent) &&
       (cache_info->length == (size_t) cache_info->length))
     {
-      pixels=(PixelPacket *)
-        MapBlob(file,mode,cache_info->offset,(size_t) cache_info->length);
+      pixels=(PixelPacket *) MapBlob(file,mode,(off_t) cache_info->offset,
+        (size_t) cache_info->length);
       if (pixels != (PixelPacket *) NULL)
         {
           /*
