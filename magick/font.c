@@ -340,7 +340,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
         memset(font_info,0,sizeof(FontInfo));
         if (font_list == (FontInfo *) NULL)
           {
-            font_list->filename=AllocateString(filename);
+            font_info->filename=AllocateString(filename);
             font_list=font_info;
           }
         else

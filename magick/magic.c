@@ -336,7 +336,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
         memset(magic_info,0,sizeof(MagicInfo));
         if (magic_list == (MagicInfo *) NULL)
           {
-            magic_list->filename=AllocateString(filename);
+            magic_info->filename=AllocateString(filename);
             magic_list=magic_info;
           }
         else
