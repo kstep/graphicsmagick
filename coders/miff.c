@@ -563,14 +563,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 (void) SetImageAttribute(image,keyword,values);
                 break;
               }
-              case '{':
-              {
-                (void) SetImageAttribute(image,keyword,values+1);
-                break;
-              }
               default:
               {
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
             }
@@ -1254,7 +1250,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       FormatString(buffer,"%.1024s=",attribute->key);
       (void) WriteBlob(image,strlen(buffer),buffer);
       for (i=0; i < strlen(attribute->value); i++)
-        if (isspace(attribute->value[i]))
+        if (isspace((int) attribute->value[i]))
           break;
       if (i < strlen(attribute->value))
         (void) WriteByte(image,'{');

@@ -537,14 +537,10 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                 (void) SetImageAttribute(image,keyword,values);
                 break;
               }
-              case '{':
-              {
-                (void) SetImageAttribute(image,keyword,values+1);
-                break;
-              }
               default:
               {
-                (void) SetImageAttribute(image,keyword,values);
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
                 break;
               }
             }
