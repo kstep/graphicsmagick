@@ -213,7 +213,7 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
       "Memory allocation failed");
   if (blob_info == (BlobInfo *) NULL)
     {
-      clone_info->filesize=0;  /* FIXME Cristy! */
+      clone_info->filesize=0;
       GetBlobInfo(clone_info);
       return(clone_info);
     }
