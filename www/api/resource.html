@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<TITLE>resource - ImageMagick Resource Consumption Methods</TITLE>
+<link rel="StyleSheet" href="../magick.css" type="text/css">
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+
+<A NAME="__index__"></A>
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+	<UL>
+
+		<LI><A HREF="#acquiremagickresource">AcquireMagickResource</A>
+		<LI><A HREF="#getmagickresource">GetMagickResource</A>
+		<LI><A HREF="#liberatemagickresource">LiberateMagickResource</A>
+		<LI><A HREF="#setmagickresourcelimit">SetMagickResourceLimit</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>resource - ImageMagick Resource Consumption Methods</P>
+<P>
+<HR>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>void int  <STRONG>AcquireMagickResource</STRONG>( const ResourceType type, const off_t size );</P>
+<P>unsigned long  <STRONG>GetMagickResource</STRONG>( const ResourceType type );</P>
+<P>void  <STRONG>LiberateMagickResource</STRONG>( const ResourceType type, const off_t size );</P>
+<P>void  <STRONG>SetMagickResourceLimit</STRONG>( const ResourceType type, const unsigned long limit );</P>
+<P>
+<HR>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
+<P>
+<H2><A NAME="acquiremagickresource">AcquireMagickResource</A></H2>
+<blockquote>AcquireMagickResource() acquires resources of the specified type. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>void int AcquireMagickResource ( const ResourceType type, const off_t size ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
+<DD>
+The type of resource.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_size%3A">size:</A></STRONG><BR>
+<DD>
+The number of bytes needed from for this resource.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getmagickresource">GetMagickResource</A></H2>
+<blockquote>GetMagickResource() returns the usage for the specified resource in megabytes. </blockquote><blockquote>The format of the GetMagickResource() method is: </blockquote><blockquote>unsigned long GetMagickResource ( const ResourceType type ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>type:</STRONG><BR>
+<DD>
+The type of resource.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="liberatemagickresource">LiberateMagickResource</A></H2>
+<blockquote>LiberateMagickResource() liberates resources of the specified type. </blockquote><blockquote>The format of the LiberateMagickResource() method is: </blockquote><blockquote>void LiberateMagickResource ( const ResourceType type, const off_t size ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>type:</STRONG><BR>
+<DD>
+The type of resource.
+<P></P>
+<dd><p></p><dt><STRONG>size:</STRONG><BR>
+<DD>
+The size of the resource.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="setmagickresourcelimit">SetMagickResourceLimit</A></H2>
+<blockquote>SetMagickResourceLimit() sets the limit for a particular resource. </blockquote><blockquote>The format of the SetMagickResourceLimit() method is: </blockquote><blockquote>void SetMagickResourceLimit ( const ResourceType type, const unsigned long limit ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>type:</STRONG><BR>
+<DD>
+The type of resource.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_limit%3A">limit:</A></STRONG><BR>
+<DD>
+The maximum limit for the resource (in megabytes).
+</DL></DL>
+
+</BODY>
+
+</HTML>

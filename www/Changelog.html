@@ -23,6 +23,19 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-09-28  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Added resource consumption methods, see magick/resource.c.
+
+2002-09-27  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Replaced underscores in commandline options with hyphens.  For backward
+    compatibility, underscores will continue to be recognized.
+  * Added -blue-primary, -green-primary, -red-primary, -white-point options.
+
+2002-09-27  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+  * Added BMP2 and BMP3 output formats.
+  * Changed chromaticity primary.z from 1.0 to 1.0-(primary.x+primary.y) in
+    the PNG and PCD codecs.
+
 2002-09-21  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added 'exception' parameter to the ImageMagick progress monitor API.
   * Added enumerated types for the dispose member of the Image structure.

@@ -74,8 +74,8 @@ static MonitorHandler
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickMonitor() calls the monitor handler method with a text string that
-%  describes the task and a measure of completion.  The method returns False
-%  on success otherwise True if an error is encountered, e.g. if there was a
+%  describes the task and a measure of completion.  The method returns True
+%  on success otherwise False if an error is encountered, e.g. if there was a
 %  user interrupt.
 %
 %  The format of the MagickMonitor method is:
@@ -96,11 +96,15 @@ static MonitorHandler
 MagickExport unsigned int MagickMonitor(const char *text,const off_t quantum,
   const size_t span,ExceptionInfo *exception)
 {
+  unsigned int
+    status;
+
   assert(text != (const char *) NULL);
   ProcessPendingEvents(text);
+  status=True;
   if (monitor_handler != (MonitorHandler) NULL)
-    (*monitor_handler)(text,quantum,span,exception);
-  return(True);
+    status=(*monitor_handler)(text,quantum,span,exception);
+  return(status);
 }
 
 /*
