@@ -1,5 +1,8 @@
 2003-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/Makefile.am (noinst_HEADERS): Need to distribute
+	magick_compat.h.
+	(EXTRA_DIST): Need to distribute GraphicsMagickWand-config.1.
 	* coders/wmf.c (ipa_bmp_draw): Use CopyException.
 	(ipa_device_begin): Use CopyException.
 	(lite_font_map): Use CopyException.

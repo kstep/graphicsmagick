@@ -375,14 +375,17 @@ bin_SCRIPTS = GraphicsMagickWand-config
 # Headers which are installed
 pkginclude_HEADERS = drawing_wand.h magick_wand.h pixel_wand.h wand_api.h
 
+# Headers which are not installed but which are distributed
+noinst_HEADERS = magick_compat.h
+
 # Pkgconfig directory
 pkgconfigdir = $(libdir)/pkgconfig
 
 # Files to install in Pkgconfig directory
 pkgconfig_DATA = GraphicsMagickWand.pc
 
-EXTRA_DIST = input_256c.miff input_bilevel.miff input_gray.miff \
-	input_truecolor.miff sequence.miff
+EXTRA_DIST = GraphicsMagickWand-config.1 input_256c.miff input_bilevel.miff \
+	input_gray.miff input_truecolor.miff sequence.miff
 
 
 # Manual pages to install
@@ -434,10 +437,11 @@ NROFF = nroff
 MANS = $(man_MANS)
 DATA = $(pkgconfig_DATA)
 
-HEADERS = $(pkginclude_HEADERS)
+HEADERS = $(noinst_HEADERS) $(pkginclude_HEADERS)
 
-DIST_COMMON = $(pkginclude_HEADERS) GraphicsMagickWand-config.in \
-	GraphicsMagickWand.pc.in Makefile.am Makefile.in
+DIST_COMMON = $(noinst_HEADERS) $(pkginclude_HEADERS) \
+	GraphicsMagickWand-config.in GraphicsMagickWand.pc.in \
+	Makefile.am Makefile.in
 SOURCES = $(libGraphicsMagickWand_la_SOURCES) $(drawtest_SOURCES) $(wandtest_SOURCES)
 
 all: all-am
