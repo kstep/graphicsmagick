@@ -428,7 +428,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *scanline;
 
   unsigned int
-    bail,
     packet_size,
     status;
 
@@ -769,7 +768,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].image->page=layer_info[i].page;
       }
     }
-  bail=False;
+  if (number_layers > 0)
+    {
+      DestroyImage(image);
+      image=layer_info[0].image;
+      LiberateMemory((void **) &layer_info);
+      return(image);
+    }
   compression=ReadBlobMSBShort(image);
   if (compression == 1)
     {
@@ -861,7 +866,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
       }
-      bail=count == 0;
       LiberateMemory((void **) &scanline);
     }
   if (image->colorspace == CMYKColorspace)
@@ -886,15 +890,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
     }
-  CloseBlob(image);
   if (number_layers > 0)
     {
       image->next=layer_info[0].image;
-      if (bail)
-        DestroyImage(image);
-      image=layer_info[0].image;
       LiberateMemory((void **) &layer_info);
     }
+  CloseBlob(image);
   return(image);
 }
 
