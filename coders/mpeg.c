@@ -587,7 +587,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
         default:
         {
           FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
-	  file=open(filename,O_WRONLY | O_BINARY,0777);
+	  file=open(filename,O_WRONLY | | O_CREAT | O_BINARY,0777);
           if (file == -1)
             break;
           (void) write(file,blob,length);
