@@ -325,7 +325,7 @@ static unsigned int CompressCache(Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y C a c h e                                                   %
++   D e s t r o y C a c h e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1022,7 +1022,7 @@ MagickExport PixelPacket GetOnePixel(Image *image,const int x,const int y)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t O n e P i x e l F r o m C a c h e                                   %
++   G e t O n e P i x e l F r o m C a c h e                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %

@@ -21,25 +21,13 @@
 	<UL>
 
 		<LI><A HREF="#closeimagepixels">CloseImagePixels</A></LI>
-		<LI><A HREF="#closepixelcache">ClosePixelCache</A></LI>
-		<LI><A HREF="#compresscache">CompressCache</A></LI>
-		<LI><A HREF="#destroycache">DestroyCache</A></LI>
 		<LI><A HREF="#destroyimagepixels">DestroyImagePixels</A></LI>
-		<LI><A HREF="#destroypixelcache">DestroyPixelCache</A></LI>
 		<LI><A HREF="#getimagepixels">GetImagePixels</A></LI>
 		<LI><A HREF="#getindexes">GetIndexes</A></LI>
-		<LI><A HREF="#getindexesfromcache">GetIndexesFromCache</A></LI>
 		<LI><A HREF="#getonepixel">GetOnePixel</A></LI>
-		<LI><A HREF="#getonepixelfromcache">GetOnePixelFromCache</A></LI>
 		<LI><A HREF="#getpixels">GetPixels</A></LI>
-		<LI><A HREF="#getpixelcache">GetPixelCache</A></LI>
-		<LI><A HREF="#getpixelsfromcache">GetPixelsFromCache</A></LI>
 		<LI><A HREF="#setimagepixels">SetImagePixels</A></LI>
-		<LI><A HREF="#setpixelcache">SetPixelCache</A></LI>
 		<LI><A HREF="#syncimagepixels">SyncImagePixels</A></LI>
-		<LI><A HREF="#syncpixelcache">SyncPixelCache</A></LI>
-		<LI><A HREF="#uncompresscache">UncompressCache</A></LI>
-		<LI><A HREF="#writecacheinfo">WriteCacheInfo</A></LI>
 	</UL>
 
 </UL>
@@ -55,26 +43,14 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void  <STRONG>CloseImagePixels</STRONG>( Image *image );</P>
-<P>void  <STRONG>ClosePixelCache</STRONG>( Image *image );</P>
-<P>unsigned int  <STRONG>CompressCache</STRONG>( Cache cache );</P>
-<P><STRONG>DestroyCache</STRONG>( void );</P>
 <P>void  <STRONG>DestroyImagePixels</STRONG>( Image *image );</P>
-<P>void  <STRONG>DestroyPixelCache</STRONG>( Image *image );</P>
-<P>status: Method  <STRONG>GetImagePixels</STRONG>( )returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
+<P>status: Method  <STRONG>GetImagePixels</STRONG>( )returns a pointer to the pixels if they are transferred, otherwise a 
 <FONT SIZE=-1>NULL</FONT> is returned.;</P>
-<P>indexes: Method  <STRONG>GetIndexes</STRONG>( )returns the colormap indexes associated with the last call to the SetImagePixels( )or GetImagePixels( )methods.;</P>
-<P>indexes: Method  <STRONG>GetIndexesFromCache</STRONG>( )returns the colormap indexes associated with the last call to the SetPixelCache( )or GetPixelCache( )methods.;</P>
+<P>indexes: Method  <STRONG>GetIndexes</STRONG>( )returns the indexes associated with the last call to SetImagePixels( )or GetImagePixels( ).;</P>
 <P>pixels: Method  <STRONG>GetOnePixel</STRONG>( )returns a pixel at the specified( x, y );</P>
-<P>PixelPacket * <STRONG>GetOnePixelFromCache</STRONG>( const Image image, const int x, const int y );</P>
-<P>PixelPacket * <STRONG>GetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
-<P>pixels: Method  <STRONG>GetPixels</STRONG>( )returns the pixels associated with the last call to the SetImagePixels( )or GetImagePixels( )methods.;</P>
-<P>PixelPacket * <STRONG>GetPixelsFromCache</STRONG>( const Image image );</P>
+<P>pixels: Method  <STRONG>GetPixels</STRONG>( )returns the pixels associated with the last call to SetImagePixels( )or GetImagePixels( ).;</P>
 <P>PixelPacket * <STRONG>SetImagePixels</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
-<P>PixelPacket * <STRONG>SetPixelCache</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
-<P>unsigned int  <STRONG>SyncImagePixels</STRONG>( Image *image );</P>
-<P>unsigned int  <STRONG>SyncPixelCache</STRONG>( Image *image );</P>
-<P>unsigned int  <STRONG>UncompressCache</STRONG>( Cache cache );</P>
-<P>unsigned int  <STRONG>WriteCacheInfo</STRONG>( Image *image );</P>
+<P>status: Method  <STRONG>SyncImagePixels</STRONG>( )returns True if the image pixels are transferred to the in-memory or disk cache otherwise False.;</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -82,9 +58,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="closeimagepixels">CloseImagePixels</A></H2>
-<P>Method CloseImagePixels closes the pixel cache.  Use this method to prevent too many file descriptors from being allocated when reading an image sequence.  File descriptors are only used for a disk-based cache.  This is essentially a no-op for a memory-based cache.</P>
-<P>The format of the CloseImagePixels method is:</P>
-<blockquote>void CloseImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>Method CloseImagePixels ( ) closes the pixel cache. Use this method to preventtoo many file descriptors from being allocated when reading an imagesequence. File descriptors are only used for a disk-based cache. This isessentially a no-op for a memory-based cache.; </blockquote><blockquote>The format of the CloseImagePixels ( ) method is:; </blockquote><blockquote>void CloseImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -92,47 +66,8 @@
 The image.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="closepixelcache">ClosePixelCache</A></H2>
-<P>Method ClosePixelCache closes the pixel cache.  Use this method to prevent too many file descriptors from being allocated when reading an image sequence.  File descriptors are only used for a disk-based cache.  This is essentially a no-op for a memory-based cache.</P>
-<P>The format of the ClosePixelCache method is:</P>
-<blockquote>void ClosePixelCache ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="compresscache">CompressCache</A></H2>
-<P>Method CompressCache compresses the disk-based pixel cache.</P>
-<P>The format of the CompressCache method is:</P>
-<blockquote>unsigned int CompressCache ( Cache cache ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_cache%3A">cache:</A></STRONG><BR>
-<DD>
-Specifies a pointer to a Cache structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="destroycache">DestroyCache</A></H2>
-<P>Method DestroyCache destroys the cache environment.</P>
-<P>The format of the DestroyCache method is:</P>
-<blockquote>DestroyCache ( void ); </blockquote><P>
 <H2><A NAME="destroyimagepixels">DestroyImagePixels</A></H2>
-<P>Method DestroyImagePixels deallocates memory associated with the pixel cache.</P>
-<P>The format of the DestroyImagePixels method is:</P>
-<blockquote>void DestroyImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="destroypixelcache">DestroyPixelCache</A></H2>
-<P>Method DestroyPixelCache deallocates memory associated with the pixel cache.</P>
-<P>The format of the DestroyPixelCache method is:</P>
-<blockquote>void DestroyPixelCache ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>Method DestroyImagePixels ( ) deallocates memory associated with the pixelcache.; </blockquote><blockquote>The format of the DestroyImagePixels ( ) method is:; </blockquote><blockquote>void DestroyImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -141,10 +76,9 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagepixels">GetImagePixels</A></H2>
-<blockquote>Method GetImagePixels ( ) gets pixels from the in-memory or disk pixel cacheas defined by the geometry parameters. A pointer to the pixels is returnedif the pixels are transferred, otherwise a NULL is returned.; </blockquote><P>The format of the GetImagePixels method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
+<blockquote>Method GetImagePixels ( ) gets pixels from the in-memory or disk pixel cacheas defined by the geometry parameters. A pointer to the pixels is returnedif the pixels are transferred, otherwise a NULL is returned.; </blockquote><blockquote>The format of the GetImagePixels ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<blockquote>status: Method GetImagePixels ( ) returns a pointer to the pixels is returned if the pixels are transferred, otherwise a NULL is returned.; </blockquote><DL><DL>
+<blockquote>status: Method GetImagePixels ( ) returns a pointer to the pixels if they are transferred, otherwise a NULL is returned.; </blockquote><DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
@@ -155,29 +89,16 @@ These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getindexes">GetIndexes</A></H2>
-<blockquote>Method GetIndexes ( ) returns the colormap indexes associated with the lastcall to the SetImagePixels ( ) or GetImagePixels ( ) methods.; </blockquote><P>The format of the GetIndexes method is:</P>
-<blockquote>IndexPacket *GetIndexes ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>Method GetIndexes ( ) returns the indexes associated with the last call toSetImagePixels ( ) or GetImagePixels ( ) .; </blockquote><blockquote>The format of the GetIndexes ( ) method is:; </blockquote><blockquote>IndexPacket *GetIndexes ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<blockquote>indexes: Method GetIndexes ( ) returns the colormap indexes associated with the last call to the SetImagePixels ( ) or GetImagePixels ( ) methods.; </blockquote><DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getindexesfromcache">GetIndexesFromCache</A></H2>
-<P>Method GetIndexesFromCache returns the colormap indexes associated with the last call to the <CODE>SetPixelCache()</CODE> or <CODE>GetPixelCache()</CODE> methods.</P>
-<P>The format of the GetIndexesFromCache method is:</P>
-<blockquote>IndexPacket *GetIndexesFromCache ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<blockquote>indexes: Method GetIndexesFromCache ( ) returns the colormap indexes associated with the last call to the SetPixelCache ( ) or GetPixelCache ( ) methods.; </blockquote><DL><DL>
+<blockquote>indexes: Method GetIndexes ( ) returns the indexes associated with the last call to SetImagePixels ( ) or GetImagePixels ( ) .; </blockquote><DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getonepixel">GetOnePixel</A></H2>
-<blockquote>Method GetOnePixel ( ) returns a single pixel at the specified ( x, y ) location.The image background color is returned if an error occurs.; </blockquote><P>The format of the GetOnePixel method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetOnePixel ( const <A HREF="types/Image.html">Image</A> image, const int x, const int y ); </blockquote><P>
+<blockquote>Method GetOnePixel ( ) returns a single pixel at the specified ( x, y ) location.The image background color is returned if an error occurs.; </blockquote><blockquote>The format of the GetOnePixel ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetOnePixel ( const <A HREF="types/Image.html">Image</A> image, const int x, const int y ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <blockquote>pixels: Method GetOnePixel ( ) returns a pixel at the specified ( x, y ); </blockquote><PRE>
     location.
@@ -192,105 +113,22 @@ The image.
 These values define the location of the pixel to return.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="getonepixelfromcache">GetOnePixelFromCache</A></H2>
-<P>Method GetOnePixelFromCache returns a single pixel at the specified (x,y) location.  The image background color is returned if an error occurs.</P>
-<P>The format of the GetOnePixelFromCache method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetOnePixelFromCache ( const <A HREF="types/Image.html">Image</A> image, const int x, const int y ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
-<DD>
-Method GetOnePixelFromCache returns a pixel at the specified (x,y) location.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<p><dt><STRONG>x,y:</STRONG><BR>
-<DD>
-These values define the location of the pixel to return.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="getpixels">GetPixels</A></H2>
-<blockquote>Method GetPixels ( ) returns the pixels associated with the last call to theSetImagePixels ( ) or GetImagePixels ( ) methods.; </blockquote><P>The format of the GetPixels method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetPixels ( const <A HREF="types/Image.html">Image</A> image ); </blockquote><P>
+<blockquote>Method GetPixels ( ) returns the pixels associated with the last call toSetImagePixels ( ) or GetImagePixels ( ) .; </blockquote><blockquote>The format of the GetPixels ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetPixels ( const <A HREF="types/Image.html">Image</A> image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<blockquote>pixels: Method GetPixels ( ) returns the pixels associated with the last call to the SetImagePixels ( ) or GetImagePixels ( ) methods.; </blockquote><DL><DL>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getpixelcache">GetPixelCache</A></H2>
-<P>Method GetPixelCache gets pixels from the in-memory or disk pixel cache as defined by the geometry parameters.  
-<FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
-<FONT SIZE=-1>NULL</FONT> is returned.</P>
-<P>The format of the GetPixelCache method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetPixelCache ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method GetPixelCache returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
-<FONT SIZE=-1>NULL</FONT> is returned.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<p><dt><STRONG>x,y,columns,rows:</STRONG><BR>
-<DD>
-These values define the perimeter of a region of pixels.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getpixelsfromcache">GetPixelsFromCache</A></H2>
-<P>Method GetPixelsFromCache returns the pixels associated with the last call to the <CODE>SetPixelCache()</CODE> or <CODE>GetPixelCache()</CODE> methods.</P>
-<P>The format of the GetPixelsFromCache method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetPixelsFromCache ( const <A HREF="types/Image.html">Image</A> image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>pixels:</STRONG><BR>
-<DD>
-Method GetPixelsFromCache returns the pixels associated with the last call to the <CODE>SetPixelCache()</CODE> or <CODE>GetPixelCache()</CODE> methods.
-<P></P>
+<blockquote>pixels: Method GetPixels ( ) returns the pixels associated with the last call to SetImagePixels ( ) or GetImagePixels ( ) .; </blockquote><DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimagepixels">SetImagePixels</A></H2>
-<P>Method SetImagePixels allocates an area to store image pixels as defined by the region rectangle and returns a pointer to the area.  This area is subsequently transferred from the pixel cache with method SyncImagePixels.  
-<FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
-<FONT SIZE=-1>NULL</FONT> is returned.</P>
-<P>The format of the SetImagePixels method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
+<blockquote>Method SetImagePixels ( ) allocates an area to store image pixels as definedby the region rectangle and returns a pointer to the area. This area issubsequently transferred from the pixel cache with SyncImagePixels ( ) . Apointer to the pixels is returned if the pixels are transferred, otherwisea NULL is returned.; </blockquote><blockquote>The format of the SetImagePixels ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>pixels:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
 <DD>
-Method SetImagePixels returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
-<FONT SIZE=-1>NULL</FONT> is returned.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<p><dt><STRONG>x,y,columns,rows:</STRONG><BR>
-<DD>
-These values define the perimeter of a region of pixels.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="setpixelcache">SetPixelCache</A></H2>
-<P>Method SetPixelCache allocates an area to store image pixels as defined by the region rectangle and returns a pointer to the area.  This area is subsequently transferred from the pixel cache with method SyncPixelCache.  
-<FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
-<FONT SIZE=-1>NULL</FONT> is returned.</P>
-<P>The format of the SetPixelCache method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetPixelCache ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>pixels:</STRONG><BR>
-<DD>
-Method SetPixelCache returns a pointer to the pixels is returned if the pixels are transferred, otherwise a 
+Method SetImagePixels returns a pointer to the pixels if they are transferred, otherwise a 
 <FONT SIZE=-1>NULL</FONT> is returned.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -303,55 +141,9 @@ These values define the perimeter of a region of pixels.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="syncimagepixels">SyncImagePixels</A></H2>
-<blockquote>Method SyncImagePixels ( ) saves the image pixels to the in-memory or diskcache. The method returns True if the pixel region is synced, otherwiseFalse.; </blockquote><P>The format of the SyncImagePixels method is:</P>
-<blockquote>unsigned int SyncImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>Method SyncImagePixels ( ) saves the image pixels to the in-memory or diskcache. The method returns True if the pixel region is synced, otherwiseFalse.; </blockquote><blockquote>The format of the SyncImagePixels ( ) method is:; </blockquote><blockquote>unsigned int SyncImagePixels ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method SyncImagePixels returns True if the image pixels are transferred to the in-memory or disk cache otherwise False.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="syncpixelcache">SyncPixelCache</A></H2>
-<P>Method SyncPixelCache saves the image pixels to the in-memory or disk cache.  The method returns True if the pixel region is synced, otherwise False.</P>
-<P>The format of the SyncPixelCache method is:</P>
-<blockquote>unsigned int SyncPixelCache ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method SyncPixelCache returns True if the image pixels are transferred to the in-memory or disk cache otherwise False.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="uncompresscache">UncompressCache</A></H2>
-<P>Method UncompressCache uncompresses the disk-based pixel cache.</P>
-<P>The format of the UncompressCache method is:</P>
-<blockquote>unsigned int UncompressCache ( Cache cache ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>cache:</STRONG><BR>
-<DD>
-Specifies a pointer to a Cache structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="writecacheinfo">WriteCacheInfo</A></H2>
-<P>Method WriteCacheInfo writes the persistent cache meta information to a file on disk.</P>
-<P>The format of the WriteCacheInfo method is:</P>
-<blockquote>unsigned int WriteCacheInfo ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method WriteCacheInfo returns True if the cache meta information is written to the specified file, otherwise False.
-<P></P>
+<blockquote>status: Method SyncImagePixels ( ) returns True if the image pixels are transferred to the in-memory or disk cache otherwise False.; </blockquote><DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.

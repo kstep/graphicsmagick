@@ -46,9 +46,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="readstream">ReadStream</A></H2>
-<P>Method ReadStream makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the <CODE>ReadImage()</CODE> method.</P>
-<P>The format of the ReadStream method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReadStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, void ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ), <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>Method ReadStream ( ) makes the image pixels available to a user suppliedcallback method immediately upon reading a scanline with the ReadImage ( ) method.; </blockquote><blockquote>The format of the ReadStream ( ) method is:; </blockquote><blockquote><A HREF="types/Image.html">Image</A> *ReadStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, void ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ), <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
@@ -65,9 +63,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="writestream">WriteStream</A></H2>
-<P>Method WriteStream makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the <CODE>WriteImage()</CODE> method.</P>
-<P>The format of the WriteStream method is:</P>
-<blockquote>unsigned int WriteStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *, int ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ) ); </blockquote><P>
+<blockquote>Method WriteStream ( ) makes the image pixels available to a user suppliedcallback method immediately upon writing pixel data with the WriteImage ( ) method.; </blockquote><blockquote>The format of the WriteStream ( ) method is:; </blockquote><blockquote>unsigned int WriteStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *, int ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ) ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>

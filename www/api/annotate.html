@@ -21,6 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#annotateimage">AnnotateImage</A></LI>
+		<LI><A HREF="#converttexttounicode">ConvertTextToUnicode</A></LI>
 		<LI><A HREF="#gettypemetrics">GetTypeMetrics</A></LI>
 	</UL>
 
@@ -37,6 +38,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>unsigned int  <STRONG>AnnotateImage</STRONG>( Image *image, DrawInfo *draw_info );</P>
+<P>unicode= <STRONG>ConvertTextToUnicode</STRONG>( text, count );</P>
 <P>unsigned int  <STRONG>GetTypeMetrics</STRONG>( Image *image, const DrawInfo *draw_info, TypeMetric *metrics );</P>
 <P>
 <HR>
@@ -61,6 +63,28 @@ The image.
 <p><dt><STRONG><A NAME="item_o_draw_info%3A">draw_info:</A></STRONG><BR>
 <DD>
 The draw info.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="converttexttounicode">ConvertTextToUnicode</A></H2>
+<P>Method ConvertTextToUnicode converts an 
+<FONT SIZE=-1>ASCII</FONT> text string to Unicode and returns the Unicode translation and the character count.  Normal characters are just copied.</P>
+<P>The format of the ConvertTextToUnicode function is:</P>
+<blockquote>unicode=ConvertTextToUnicode ( text, count ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_unicode%3A">unicode:</A></STRONG><BR>
+<DD>
+Method ConvertTextToUnicode returns a pointer to an unsigned short array representing the Unicode translation of the 
+<FONT SIZE=-1>ASCII</FONT> string.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_text%3A">text:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a character array that contains the text to convert.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_count%3A">count:</A></STRONG><BR>
+<DD>
+The number of characters that were translated from 
+<FONT SIZE=-1>ASCII</FONT> to Unicode is returned in this unsigned integer pointer.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="gettypemetrics">GetTypeMetrics</A></H2>
