@@ -472,7 +472,12 @@ MagickMapCloneMap(MagickMap map,ExceptionInfo *exception)
   const char *key;
 
   assert(map != 0);
-  LockSemaphoreInfo(map->semaphore);
+
+  /*
+    Don't lock. Iterator locks the map. PTHREADS doesn't
+    allow one thread multiple locks on one semaphore.
+  */
+  /* LockSemaphoreInfo(map->semaphore); */
 
   map_clone=MagickMapAllocateMap(map->clone_function,map->deallocate_function);
   iterator=MagickMapAllocateIterator(map);
@@ -484,13 +489,10 @@ MagickMapCloneMap(MagickMap map,ExceptionInfo *exception)
       {
         MagickMapDeallocateIterator(iterator);
         MagickMapDeallocateMap(map_clone);
-        UnlockSemaphoreInfo(map->semaphore);
         return 0;
       }
   }
   MagickMapDeallocateIterator(iterator);
-
-  UnlockSemaphoreInfo(map->semaphore);
   return map_clone;
 }
 
