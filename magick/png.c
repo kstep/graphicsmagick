@@ -2813,6 +2813,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           equal_physs=False;
           use_global_plte=False;
           need_local_plte=True;
+          need_iterations=False;
         }
      if (!need_fram)
        {
