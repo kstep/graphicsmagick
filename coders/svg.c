@@ -1644,7 +1644,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 *p='\0';
               (void) ParseImageGeometry(geometry,&page.x,&page.y,
                 &page.width,&page.height);
-              DestroyPostscriptGeometry(geometry);
+              LiberateMemory((void **) &geometry);
             }
           if (svg_info->affine.sx != 1.0)
             page.width=(unsigned int)

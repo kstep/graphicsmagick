@@ -1389,18 +1389,15 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"page") == 0)
         {
           char
-            *p;
+            *geometry;
 
-          p=PostscriptGeometry(SvPV(sval,na));
-          if (!p)
-            return;
+          geometry=PostscriptGeometry(SvPV(sval,na));
           if (info)
-            (void) CloneString(&info->image_info->page,p);
+            (void) CloneString(&info->image_info->page,geometry);
           for ( ; image; image=image->next)
-            ParseImageGeometry(PostscriptGeometry(p),
-              &image->page.x,&image->page.y,
+            ParseImageGeometry(geometry,&image->page.x,&image->page.y,
               &image->page.width,&image->page.height);
-          DestroyPostscriptGeometry(p);
+          LiberateMemory((void **) &geometry);
           return;
         }
       if (LocaleCompare(attribute,"pen") == 0)

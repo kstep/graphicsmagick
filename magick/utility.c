@@ -1859,12 +1859,6 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
 %
 %
 */
-
-MagickExport void DestroyPostscriptGeometry(char *geometry)
-{
-    LiberateMemory((void **) &geometry);
-}
-
 MagickExport char *PostscriptGeometry(const char *page)
 {
   static const char

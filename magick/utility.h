@@ -64,7 +64,6 @@ extern MagickExport unsigned short
 extern MagickExport void
   *AcquireMemory(const size_t),
   AppendImageFormat(const char *,char *),
-  DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),
   GetPathComponent(const char *,PathType,char *),
   FormatString(char *,const char *,...),

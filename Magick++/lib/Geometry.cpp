@@ -199,7 +199,7 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
       if ( pageptr )
 	{
 	  strcpy(geom,pageptr);
-	  DestroyPostscriptGeometry( pageptr );
+	  LiberateMemory( (void **) &pageptr );
 	}
     }
 
