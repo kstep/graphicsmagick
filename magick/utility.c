@@ -3031,7 +3031,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
         if (image->filesize >= (1 << 24))
           FormatString(q,"%dmb",(int) (image->filesize/1024/1024));
         else
-          if (image->filesize >= (1 << 14))
+          if (image->filesize >= (1 << 16))
             FormatString(q,"%dkb",(int) (image->filesize/1024));
           else
             FormatString(q,"%db",(int) image->filesize);

@@ -1749,7 +1749,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
                 (void) fprintf(file,"%dmc ",(int)
                   (image->total_colors/1024/1024));
               else
-                if (image->total_colors >= (1 << 14))
+                if (image->total_colors >= (1 << 16))
                   (void) fprintf(file,"%dkc ",(int) (image->total_colors/1024));
                 else
                   (void) fprintf(file,"%dc ",(int) image->total_colors);
@@ -1772,7 +1772,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           if (image->filesize >= (1 << 24))
             (void) fprintf(file,"%dmb ",(int) (image->filesize/1024/1024));
           else
-            if (image->filesize >= (1 << 14))
+            if (image->filesize >= (1 << 16))
               (void) fprintf(file,"%dkb ",(int) (image->filesize/1024));
             else
               (void) fprintf(file,"%db ",(int) image->filesize);
@@ -2070,7 +2070,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         (void) fprintf(file,"  Filesize: %dmb\n",(int)
           (image->filesize/1024/1024));
       else
-        if (image->filesize >= (1 << 14))
+        if (image->filesize >= (1 << 16))
           (void) fprintf(file,"  Filesize: %dkb\n",(int)
             (image->filesize/1024));
         else
