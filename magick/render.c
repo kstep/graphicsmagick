@@ -3876,7 +3876,8 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
 
           theta=(180.0/MagickPI)*
             atan2(draw_info->affine.rx,draw_info->affine.sx);
-          rotate_image=RotateImage(composite_image,theta,&image->exception);              if (rotate_image != (Image *) NULL)
+          rotate_image=RotateImage(composite_image,theta,&image->exception);
+          if (rotate_image != (Image *) NULL)
             {
               DestroyImage(composite_image);
               composite_image=rotate_image;
