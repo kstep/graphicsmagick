@@ -1084,6 +1084,30 @@ void Magick::Image::read ( const std::string &imageSpec_ )
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* image =
     ReadImage( imageInfo(), &exceptionInfo );
+  // Ensure that multiple image frames were not read.
+  if ( image && image->next )
+    {
+      // Flatten multi-layer PSD images to a single frame
+      if ( !LocaleCompare( image->magick, "PSD" ) )
+        {
+          MagickLib::Image* flattened_image =
+            FlattenImages( image, &exceptionInfo );
+          if ( flattened_image )
+            {
+              DestroyImages( image );
+              image = flattened_image;
+            }
+        }
+      else
+        {
+          // Destroy any extra image frames
+          MagickLib::Image* next = image->next;
+          image->next = 0;
+          image->orphan = true;
+          next->previous = 0;
+          DestroyImages( next );
+        }
+    }
   replaceImage( image );
   throwException( exceptionInfo );
   if ( image )

@@ -328,10 +328,10 @@ namespace Magick
   //
   // ImageMagick symbols used in implementation code
   //
+  using MagickLib::AcquireMemory;
   using MagickLib::AddNoiseImage;
   using MagickLib::AffineMatrix;
   using MagickLib::AllocateImage;
-  using MagickLib::AcquireMemory;
   using MagickLib::AnnotateImage;
   using MagickLib::AspectValue;
   using MagickLib::BlobError;
@@ -341,6 +341,7 @@ namespace Magick
   using MagickLib::BorderImage;
   using MagickLib::CacheError;
   using MagickLib::CacheWarning;
+  using MagickLib::ChannelImage;
   using MagickLib::ChopImage;
   using MagickLib::CloneDrawInfo;
   using MagickLib::CloneImage;
@@ -378,12 +379,12 @@ namespace Magick
   using MagickLib::ExceptionType;
   using MagickLib::FileOpenError;
   using MagickLib::FileOpenWarning;
+  using MagickLib::FlattenImages;
   using MagickLib::FlipImage;
   using MagickLib::FlopImage;
   using MagickLib::FormatString;
   using MagickLib::FrameImage;
   using MagickLib::FrameInfo;
-  using MagickLib::LiberateMemory;
   using MagickLib::GammaImage;
   using MagickLib::GammaImage;
   using MagickLib::GaussianBlurImage;
@@ -408,8 +409,9 @@ namespace Magick
   using MagickLib::ImageToBlob;
   using MagickLib::ImplodeImage;
   using MagickLib::IsGeometry;
-  using MagickLib::ChannelImage;
   using MagickLib::LessValue;
+  using MagickLib::LiberateMemory;
+  using MagickLib::LocaleCompare;
   using MagickLib::MagickInfo;
   using MagickLib::MagnifyImage;
   using MagickLib::MapImage;

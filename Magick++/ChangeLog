@@ -1,3 +1,7 @@
+2001-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (read): Ensure that only a single image frame is read.
+
 2001-07-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (flattenImages): New function to flatten a
