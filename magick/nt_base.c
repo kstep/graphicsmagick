@@ -1407,7 +1407,7 @@ MagickExport int NTGhostscriptFonts(char *path, int path_length)
       {
         char
           font_dir[MaxTextExtent],
-          font_list[MaxTextExtent];
+          font_dir_file[MaxTextExtent];
             
         const char
           *seperator;
@@ -1424,11 +1424,14 @@ MagickExport int NTGhostscriptFonts(char *path, int path_length)
           length = MaxTextExtent-1;
         strncpy(font_dir,start,length);
         font_dir[length]='\0';
-        FormatString(font_list,"%1024s%sfonts.dir",font_dir,DirectorySeparator);
-        if (IsAccessible(font_list))
+        FormatString(font_dir_file,"%.1024s%sfonts.dir",font_dir,DirectorySeparator);
+        if (IsAccessible(font_dir_file))
           {
             strncpy(path,font_dir,path_length-1);
             path[path_length-1]='\0';
+            (void) LogMagickEvent(AnnotateEvent,GetMagickModule(),
+                                  "Ghostscript fonts in directory \"%s\"",
+                                  path);
             return TRUE;
           }
         start += length+1;
