@@ -112,7 +112,7 @@ static Image *ReadREGISTRYImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  id=strtol(image->filename,&p,0);
+  id=strtol(image_info->filename,&p,0);
   image=(Image *) GetMagickRegistry(id,&type,&length);
   if ((image == (Image *) NULL) || (type != ImageRegistryType))
     ThrowReaderException(RegistryWarning,"Image not found in registry",image);
