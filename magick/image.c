@@ -4331,10 +4331,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (LocaleCompare("label",option+1) == 0)
           {
+            (void) SetImageAttribute(*image,"label",(char *) NULL);
             if (*option == '-')
               (void) SetImageAttribute(*image,"label",argv[++i]);
-            else
-              (void) SetImageAttribute(*image,"label",(char *) NULL);
             continue;
           }
         if (LocaleCompare("level",option+1) == 0)
