@@ -2171,9 +2171,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 (void) SetImageAttribute(image,key,token);
                 FormatString(key,"[%.1024s-geometry]",name);
                 FormatString(geometry,"%gx%g%+g%+g",
-                  AbsoluteValue(segment.x2-segment.x1+1.0),
-                  AbsoluteValue(segment.y2-segment.y1+1.0),
-                  segment.x1,segment.y1);
+                  AbsoluteValue(segment.x2-segment.x1),
+                  AbsoluteValue(segment.y2-segment.y1),segment.x1,segment.y1);
                 (void) SetImageAttribute(image,key,geometry);
                 GetToken(q,&q,token);
                 break;
