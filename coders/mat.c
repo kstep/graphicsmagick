@@ -81,7 +81,6 @@ register PixelPacket *q;
 IndexPacket index;
 register IndexPacket *indexes;
 
-
  switch (image->depth)
       {
       case 8: /* Convert PseudoColor scanline. */
@@ -103,9 +102,58 @@ register IndexPacket *indexes;
                  if (QuantumTick(y,image->rows))
                    ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
            }
-           break;
-
+           return;
+	   
+      case 16:
+           {
+	   q=SetImagePixels(image,0,y,image->columns,1);
+           if (q == (PixelPacket *) NULL)
+	     break;
+           for (x=0; x < (long) image->columns; x++)
+              {
+              q->red=XDownScale(*(WORD *)p);
+              q->green=XDownScale(*(WORD *)p);
+              q->blue=XDownScale(*(WORD *)p);
+	      p+=2;
+              q++;
+              }
+           if (!SyncImagePixels(image))
+              break;
+/*          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+          return;	   
+	  } 
        }
+}
+
+
+static void InsertFloatRow(double *p,int y,Image *image,double Min,double Max)
+{
+double f;
+int x;
+register PixelPacket *q;
+
+   if(Min>=Max) Max=Min+1;
+
+   q=SetImagePixels(image,0,y,image->columns,1);
+   if (q == (PixelPacket *) NULL)
+        return;
+   for (x=0; x < (long) image->columns; x++)
+          {
+	  f=(double)MaxRGB* (*p-Min)/(Max-Min);
+          q->red=XDownScale(f);
+          q->green=XDownScale(f);
+          q->blue=XDownScale(f);
+          p++;
+          q++;
+          }
+   if (!SyncImagePixels(image))
+              return;
+/*          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+   return;	   
 }
 
 
@@ -201,14 +249,15 @@ for(iz=0;iz<z;iz++)
 */
 static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  Image *image;
+  Image *image,*rotated_image;
   unsigned int status;
   MATHeader MATLAB_HDR;
-  DWORD size;
-  int i;
-  int rotate;
+  DWORD size,filepos;
+  DWORD CellType;
+  int i,x;
   long ldblk;
   unsigned char *BImgBuff=NULL;
+  double Min,Max,*dblrow;
 
   /*
     Open image file.
@@ -224,10 +273,11 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlob(image,sizeof(MATLAB_HDR),&MATLAB_HDR);
 
   if (strncmp(MATLAB_HDR.identific,"MATLAB",6))
-MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file",image);
+MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",image);
   if (strncmp(MATLAB_HDR.idx,"\1IM",3)) goto MATLAB_KO;
   if(MATLAB_HDR.unknown0!=0x0E) goto MATLAB_KO;
-  if(MATLAB_HDR.DimFlag!=8) goto MATLAB_KO;
+  if(MATLAB_HDR.DimFlag!=8) 
+            ThrowReaderException(CorruptImageWarning,"Multi-dimensional matrices are not supported!",image);
  
   if(MATLAB_HDR.StructureFlag!=6) goto MATLAB_KO;
 
@@ -243,62 +293,95 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file",i
         }
    else goto MATLAB_KO;
 
-   (void) ReadBlob(image,4,&size);        /*Additional object type*/
-   if(size!=2) goto MATLAB_KO;
-   (void) ReadBlob(image,4,&size);        /*data size*/
+   CellType=ReadBlobLSBLong(image);    /*Additional object type*/
+/*fprintf(stdout,"Cell type:%ld\n",CellType);*/
+   (void) ReadBlob(image,4,&size);      /*data size*/
+
+   switch(CellType)
+      {
+      case 2:image->depth=8;		/*Byte type cell*/
+             ldblk=MATLAB_HDR.SizeX;
+             break;
+      case 4:image->depth=16;    	/*Word type cell*/
+             ldblk=2*MATLAB_HDR.SizeX;break; 
+             break; 
+      case 9:image->depth=24;    	/*double type cell*/
+             if(sizeof(double)!=8) ThrowReaderException(CorruptImageWarning,"Incompatible size of double!",image);
+             ldblk=8*MATLAB_HDR.SizeX;
+             break; 
+      default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image);   
+      }	  
 
    image->columns= MATLAB_HDR.SizeX;
    image->rows= MATLAB_HDR.SizeY;
-   image->depth=8;
    image->colors=1l >> 8;
    if(image->columns==0 || image->rows==0) goto MATLAB_KO;
 
-   ldblk=MATLAB_HDR.SizeX;
- 
+   
 /* ----- Create gray palette ----- */
- 
-   image->colors=256;
-   if (!AllocateImageColormap(image,image->colors))
+
+   if(CellType==2)
+     {
+     image->colors=256;
+     if (!AllocateImageColormap(image,image->colors))
            {
 NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
                                 image)
            }           
    
-   for (i=0; i < (long)image->colors; i++)
+     for (i=0; i < (long)image->colors; i++)
            {
            image->colormap[i].red=UpScale(i);
            image->colormap[i].green=UpScale(i);
            image->colormap[i].blue=UpScale(i);
            }
+     }	    
 
            
 /* ----- Load raster data ----- */
    BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
    if(BImgBuff==NULL) goto NoMemory;
 
+
+   Min=0;
+   Max=0;
+   if(CellType==9) /*Find Min and Max Values for floats*/
+     {
+     filepos=TellBlob(image);
+     for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
+        {
+        (void) ReadBlob(image,ldblk,(char *)BImgBuff);
+	dblrow=(double *)BImgBuff;
+	if(i==0) {Min=Max=*dblrow;}
+	for(x=0;x<(long)MATLAB_HDR.SizeX;x++)
+            {
+	    if(Min>*dblrow) Min=*dblrow;
+	    if(Max<*dblrow) Max=*dblrow;
+	    dblrow++;            
+	    }
+	}       
+     SeekBlob(image,filepos,SEEK_SET);
+     }
+   
+
    for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
         {
         (void) ReadBlob(image,ldblk,(char *)BImgBuff);
-        InsertRow(BImgBuff,i,image);
+	if(CellType==9) InsertFloatRow((double *)BImgBuff,i,image,Min,Max);
+	           else InsertRow(BImgBuff,i,image);
         }
-  rotate=3;
-  if ((rotate == 1) || (rotate == 3))
-    {
-      double
-        degrees;
+	
+  if(BImgBuff!=NULL) {free(BImgBuff);BImgBuff=NULL;}
+		
+	      /*  Rotate image. */	           
+  rotated_image=RotateImage(image,90.0,exception);
+  if (rotated_image != (Image *) NULL)
+        {
+        image=FlopImage(rotated_image,exception);
+	if(image==NULL) image=rotated_image;  /*Obtain something if flop operation fails*/
+	    /*else rotated image must be freed up here to avoid leaks*/	
+	}
 
-      Image
-        *rotated_image;
-
-      /*
-        Rotate image.
-      */
-      degrees=rotate == 1 ? -90.0 : 90.0;
-      rotated_image=RotateImage(image,degrees,exception);
-      if (rotated_image != (Image *) NULL)
-        image=rotated_image;
-    }
-  if(BImgBuff!=NULL) free(BImgBuff);
   CloseBlob(image);
   return(image);
 }
