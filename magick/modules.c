@@ -78,7 +78,8 @@ static int
     modules_initialized = False;
 
 #if defined(_VISUALC_)
-#define CoderModuleDirectory ".\\"
+#define CoderModuleDirectory "."
+#define ModuleSearchSpec ".\\IM_MOD_*.dll"
 #define R_OK 4
 #define W_OK 2
 #define RW_OK 6
@@ -169,13 +170,13 @@ Export void DestroyModuleInfo()
     *p;
 
   for (p=module_info_list; p != (ModuleInfo *) NULL; )
-    {
-      entry=p;
-      p=p->next;
-      if (entry->tag != (char *) NULL)
-        FreeMemory((void **) &entry->tag);
-      FreeMemory((void **) &entry);
-    }
+  {
+    entry=p;
+    p=p->next;
+    if (entry->tag != (char *) NULL)
+      FreeMemory((void **) &entry->tag);
+    FreeMemory((void **) &entry);
+  }
   module_info_list=(ModuleInfo *) NULL;
 }
 
@@ -545,6 +546,7 @@ Export int LoadAllModules(void)
 */
 Export char **ListModules(void)
 {
+#if !defined(_VISUALC_)
   char
     **module_list,
     **module_list_tmp,
@@ -553,6 +555,11 @@ Export char **ListModules(void)
 
   int
     i;
+#else
+  char
+    **module_list,
+    **module_list_tmp;
+#endif
 
   DIR
     *directory;
@@ -562,13 +569,19 @@ Export char **ListModules(void)
 
   unsigned int
     entry_index,
+#if !defined(_VISUALC_)
     name_length,
+#endif
     max_entries;
 
   max_entries=256;
   entry_index=0;
 
+#if defined(_VISUALC_)
+  directory=opendir(ModuleSearchSpec);
+#else
   directory=opendir(CoderModuleDirectory);
+#endif
   if(directory == (DIR *) NULL)
     return((char **) NULL);
 
@@ -581,6 +594,7 @@ Export char **ListModules(void)
   entry=readdir(directory);
   while (entry != (struct dirent *) NULL)
     {
+#if !defined(_VISUALC_)
       name_length=Extent(entry->d_name);
       p = (entry->d_name + name_length - 3);
       if ( name_length < 4 ||
@@ -591,6 +605,7 @@ Export char **ListModules(void)
           entry=readdir(directory);
           continue;
         }
+#endif
       if(entry_index >= max_entries)
         {
           max_entries<<=1;
@@ -600,6 +615,7 @@ Export char **ListModules(void)
             break;
           module_list=module_list_tmp;
         }
+#if !defined(_VISUALC_)
       module_list[entry_index]=(char *)AllocateMemory(name_length);
       if(module_list[entry_index] == (char *) NULL)
         break;
@@ -608,6 +624,9 @@ Export char **ListModules(void)
       for( i=name_length-3; i != 0; --i)
         *p++=toupper((int)*q++);
       *p=0;
+#else
+      module_list[entry_index]=AllocateString(entry->d_name);
+#endif
       ++entry_index;
       module_list[entry_index]=(char*)NULL;
       entry=readdir(directory);
@@ -617,12 +636,52 @@ Export char **ListModules(void)
   return module_list;
 }
 
+#define IsTagSeparator(c)  ((c) == '_')
+static void AddModuleTag(const char *filename, char *module)
+{
+  char
+    *basename;
+
+  register char
+    *p;
+
+  int
+    count;
+
+  assert(filename != (char *) NULL);
+  basename=(char *) AllocateMemory(strlen(filename)+1);
+  if (basename == (char *) NULL)
+    MagickError(ResourceLimitError,"Unable to get module tag",
+      "Memory allocation failed");
+  (void) strcpy(basename,filename);
+  p=basename+(Extent(basename)-1);
+  count=0;
+  while (p > basename)
+  {
+    if (IsTagSeparator(*p))
+      {
+        if (!count)
+          {
+            *p='\0';
+            count++;
+          }
+        else
+          {
+            strcat(module,&p[1]);
+            break;
+          }
+      }
+    p--;
+  }
+  FreeMemory((void **) &basename);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o a d D y n a m i c M o d u l e                                         %
+%   L o a d D y n a m i c M o d u l e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -643,11 +702,13 @@ Export char **ListModules(void)
 Export int LoadDynamicModule(const char* module)
 {
   char
+#if !defined(_VISUALC_)
     *dest,
+    *source,
+#endif
     func_name[MaxTextExtent],
     module_file[MaxTextExtent],
-    module_name[MaxTextExtent],
-    *source;
+    module_name[MaxTextExtent];
 
   ModuleHandle
     handle;
@@ -675,6 +736,7 @@ Export int LoadDynamicModule(const char* module)
   /*
     Build module file name from module name
   */
+#if !defined(_VISUALC_)
   dest=module_file;
   source=module_name;
   while(*source)
@@ -685,6 +747,9 @@ Export int LoadDynamicModule(const char* module)
     }
   *dest=0;
   strcat(module_file,".la");
+#else
+  strcpy(module_file,module_name);
+#endif
 
   /*
     Load module file
@@ -713,14 +778,19 @@ Export int LoadDynamicModule(const char* module)
   /*
     Locate and execute RegisterFORMATImage function
   */
+#if !defined(_VISUALC_)
   strcpy(func_name, "Register");
-
   /* Hack due to 8BIM vs bim.c naming difference */
   if(!strcmp("BIM", module_name))
     strcat(func_name,"8");
 
   strcat(func_name,module_name);
   strcat(func_name, "Image");
+#else
+  strcpy(func_name, "Register");
+  AddModuleTag(module_name, func_name);
+  strcat(func_name, "Image");
+#endif
 
   /*
     Locate and invoke module registration function
@@ -830,7 +900,7 @@ Export ModuleInfo *SetModuleInfo(const char *tag)
   entry=(ModuleInfo *) AllocateMemory(sizeof(ModuleInfo));
   if (entry == (ModuleInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module info",
-                "Memory allocation failed");
+      "Memory allocation failed");
   entry->tag=AllocateString(tag);
   entry->handle=
     (ModuleHandle) NULL;
@@ -845,7 +915,7 @@ Export ModuleInfo *SetModuleInfo(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n l o a d D y n a m i c M o d u l e                                     %
+%   U n l o a d D y n a m i c M o d u l e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -879,9 +949,15 @@ Export int UnloadDynamicModule(const char* module)
       /*
         Locate and execute UnregisterFORMATImage function
       */
+#if !defined(_VISUALC_)
       strcpy(func_name, "Unregister");
       strcat(func_name, module);
       strcat(func_name, "Image");
+#else
+      strcpy(func_name, "Unregister");
+      AddModuleTag(module, func_name);
+      strcat(func_name, "Image");
+#endif
 
       /*
         Locate and invoke module de-registration function
@@ -943,27 +1019,27 @@ Export int UnregisterModuleInfo(const char *tag)
     *p;
 
   for (p=module_info_list; p != (ModuleInfo *) NULL; p=p->next)
-    {
-      if (Latin1Compare(p->tag,tag) == 0)
-        {
-          FreeMemory((void **) &p->tag);
-          if (p->previous != (ModuleInfo *) NULL)
-            /* Not first in list */
-            p->previous->next=p->next;
-          else
-            {
-              /* First in list */
-              module_info_list=p->next;
-              if (p->next != (ModuleInfo *) NULL)
-                p->next->previous=(ModuleInfo *) NULL;
-            }
-          if (p->next != (ModuleInfo *) NULL)
-            p->next->previous=p->previous;
-          module_info=p;
-          FreeMemory((void **) &module_info);
-          return(True);
-        }
-    }
+  {
+    if (Latin1Compare(p->tag,tag) == 0)
+      {
+        FreeMemory((void **) &p->tag);
+        if (p->previous != (ModuleInfo *) NULL)
+          /* Not first in list */
+          p->previous->next=p->next;
+        else
+          {
+            /* First in list */
+            module_info_list=p->next;
+            if (p->next != (ModuleInfo *) NULL)
+              p->next->previous=(ModuleInfo *) NULL;
+          }
+        if (p->next != (ModuleInfo *) NULL)
+          p->next->previous=p->previous;
+        module_info=p;
+        FreeMemory((void **) &module_info);
+        return(True);
+      }
+  }
   return(False);
 }
 
