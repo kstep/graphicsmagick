@@ -1037,7 +1037,7 @@ red-blue glasses (Red image on left, blue on right)</font></td>
 
 <td><font size=-1>const Image &amp;texture_</font></td>
 
-<td><font size=-1>Layer a texture on image background</font></td>
+<td><font size=-1>Layer a texture on pixels matching image background color.</font></td>
 </tr>
 
 <tr>
@@ -1297,7 +1297,8 @@ loop extension) for.</font></td>
 
 <td><font size=-1>const string &amp;texture_</font></td>
 
-<td><font size=-1>Image file name to use as background texture.</font></td>
+<td><font size=-1>Image file name to use as the background texture. Does
+not modify image pixels.</font></td>
 </tr>
 
 <tr NOSAVE>
@@ -2213,24 +2214,6 @@ be improved with this option. The quantizeColors or monochrome option must
 be set for this option to take effect.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td>
-<center><a NAME="quantizeError"></a><font size=-1>quantize-</font>
-<br><font size=-1>Error</font></center>
-</td>
-
-<td><font size=-1>Image</font></td>
-
-<td><font size=-1>unsigned int</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td BGCOLOR="#666666" NOSAVE>&nbsp;</td>
-
-<td><font size=-1>Quantization error.&nbsp; Only valid if verbose is set
-to true prior to executing quantize and the value is read back immediately.</font></td>
-</tr>
-
 <tr>
 <td>
 <center><a NAME="quantizeTreeDepth"></a><font size=-1>quantize-</font>
@@ -2239,7 +2222,7 @@ to true prior to executing quantize and the value is read back immediately.</fon
 
 <td><font size=-1>Options</font></td>
 
-<td><font size=-1>unsigned int (0 to 8)</font></td>
+<td><font size=-1>unsigned int&nbsp;</font></td>
 
 <td><font size=-1>void</font></td>
 

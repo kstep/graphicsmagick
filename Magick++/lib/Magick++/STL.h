@@ -2200,11 +2200,6 @@ namespace Magick
     MagickLib::Image *images = MagickLib::BlobToImage( options.imageInfo(),
 						       static_cast<const char *>(blob_.data()),
 						       blob_.length() );
-
-    // Reset-blob struct in Image.
-    // FIXME: requirement for this is eliminated in final 4.2.8
-    MagickLib::GetBlobInfo( &(images->blob) );
-
     insertImages( sequence_, images, options );
 
     LastError* errPtr = LastError::instance();
@@ -2263,9 +2258,6 @@ namespace Magick
 					 first_->image(),
 					 &length );
     blob_->updateNoCopy( data, length );
-    // Reset-blob struct in Image.
-    // FIXME: requirement for this should be temporary
-    MagickLib::GetBlobInfo( &(first_->image()->blob) );
 
     unlinkImages( first_, last_ );
 

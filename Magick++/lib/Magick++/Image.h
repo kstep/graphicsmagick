@@ -598,11 +598,6 @@ namespace Magick
     void            quantizeDither ( bool ditherFlag_ );
     bool            quantizeDither ( void ) const;
 
-    // Quantization error.  Only valid if verbose is set to true
-    // prior to executing quantize and the value is read back
-    // immediately.
-    unsigned int    quantizeError ( void );
-    
     // Quantization tree-depth
     void            quantizeTreeDepth ( unsigned int treeDepth_ );
     unsigned int    quantizeTreeDepth ( void ) const;

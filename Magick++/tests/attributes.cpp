@@ -1048,15 +1048,6 @@ int main( int /*argc*/, char ** /*argv*/)
     image.quantizeDither(true);
 
     //
-    // quantizeError
-    //
-    if ( image.quantizeError() != 0 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ << ", quantizeError default is not zero as expected" << endl;
-      }
-
-    //
     // quantizeTreeDepth
     //
     if ( image.quantizeTreeDepth() != 8 )

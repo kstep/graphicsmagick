@@ -296,7 +296,6 @@ void Magick::Image::composite ( const Image &compositeImage_,
 
   MagickLib::CompositeImage( image(),
 			     compose_,
-			     // FIXME: Investigate why this const_cast is required.
 			     const_cast<Image &>(compositeImage_).image(),
 			     x, y );
   throwMagickError();
@@ -315,7 +314,6 @@ void Magick::Image::composite ( const Image &compositeImage_,
 
   MagickLib::CompositeImage( image(),
 			     compose_,
-			     // FIXME: Investigate why this const_cast is required.
 			     const_cast<Image &>(compositeImage_).image(),
 			     x, y );
   throwMagickError();
@@ -392,7 +390,6 @@ void Magick::Image::composite ( const Image &compositeImage_,
 
   MagickLib::CompositeImage( image(),
 			     compose_,
-			     // FIXME: Investigate why this const_cast is required.
 			     const_cast<Image &>(compositeImage_).image(),
 			     x, y );
   throwMagickError();
@@ -2048,15 +2045,6 @@ void Magick::Image::quantizeDither ( bool ditherFlag_ )
 bool Magick::Image::quantizeDither ( void ) const
 {
   return constOptions()->quantizeDither( );
-}
-
-// Quantization error.  Only valid if verbose is set to true
-// prior to executing quantize and the value is read back
-// immediately.
-unsigned int Magick::Image::quantizeError ( void )
-{
-  // FIXME: wrong member!
-  return image()->total_colors;
 }
 
 void Magick::Image::quantizeTreeDepth ( unsigned int treeDepth_ )
