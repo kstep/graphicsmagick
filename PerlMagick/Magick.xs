@@ -243,10 +243,9 @@ static char
   },
   *PrimitiveTypes[] =
   {
-    "Undefined", "Point", "Line", "Rectangle", "FillRectangle",
-    "Circle", "FillCircle", "Ellipse", "FillEllipse", "Polygon",
-    "FillPolygon", "Bezier", "Color", "Matte", "Text",
-    "Image", (char *) NULL
+    "Undefined", "Point", "Line", "Rectangle", "FillRectangle", "Circle",
+    "FillCircle", "Ellipse", "FillEllipse", "Polyline", "Polygon",
+    "FillPolygon", "Bezier", "Color", "Matte", "Text", "Image", (char *) NULL
   },
   *ResolutionTypes[] =
   {

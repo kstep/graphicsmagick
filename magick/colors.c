@@ -125,7 +125,7 @@ typedef struct _CubeInfo
 /*
   Color list.
 */
-#define NumberXColors  757
+#define NumberXColors  758
 
 const ColorlistInfo
   XColorlist[NumberXColors] =
@@ -849,6 +849,7 @@ const ColorlistInfo
     { "tan2", UpScale(238), UpScale(154), UpScale(73) },
     { "tan3", UpScale(205), UpScale(133), UpScale(63) },
     { "tan4", UpScale(139), UpScale(90), UpScale(43) },
+    { "teal", UpScale(0), UpScale(128), UpScale(128) },
     { "thistle", UpScale(216), UpScale(191), UpScale(216) },
     { "thistle1", UpScale(255), UpScale(225), UpScale(255) },
     { "thistle2", UpScale(238), UpScale(210), UpScale(238) },
@@ -1997,6 +1998,15 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
       color->opacity=Opaque;
       if (opacity >= 0)
         color->opacity=((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
+      return(True);
+    }
+  if (strncmp(target,"rgb",3) == 0)
+    {
+      (void) sscanf(target,"%*[^(](%d,%d,%d",&red,&green,&blue);
+      color->red=UpScale(red);
+      color->green=UpScale(green);
+      color->blue=UpScale(blue);
+      color->opacity=Opaque;
       return(True);
     }
   /*

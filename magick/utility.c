@@ -2063,7 +2063,7 @@ Export char **StringToArgv(const char *text,int *argc)
   /*
     Convert string to an ASCII list.
   */
-  argv[0]="magick";
+  argv[0]=AllocateString("magick");
   p=(char *) text;
   for (i=1; i < *argc; i++)
   {

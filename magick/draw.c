@@ -683,6 +683,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_type=EllipsePrimitive;
     if (Latin1Compare("FillEllipse",keyword) == 0)
       primitive_type=FillEllipsePrimitive;
+    if (Latin1Compare("Polyline",keyword) == 0)
+      primitive_type=PolylinePrimitive;
     if (Latin1Compare("Polygon",keyword) == 0)
       primitive_type=PolygonPrimitive;
     if (Latin1Compare("FillPolygon",keyword) == 0)
@@ -865,11 +867,19 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         }
         break;
       }
+      case PolylinePrimitive:
+      {
+        if (primitive_info[j].coordinates < 3)
+          primitive_type=LinePrimitive;
+        break;
+      }
       case PolygonPrimitive:
       case FillPolygonPrimitive:
       {
         if (primitive_info[j].coordinates < 3)
           primitive_type=LinePrimitive;
+        primitive_info[i]=primitive_info[j];
+        primitive_info[j].coordinates++;
         break;
       }
       case BezierPrimitive:
@@ -1430,6 +1440,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             }
         break;
       }
+      case PolylinePrimitive:
       case PolygonPrimitive:
       {
         unsigned int

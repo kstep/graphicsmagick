@@ -267,6 +267,7 @@ typedef enum
   FillCirclePrimitive,
   EllipsePrimitive,
   FillEllipsePrimitive,
+  PolylinePrimitive,
   PolygonPrimitive,
   FillPolygonPrimitive,
   BezierPrimitive,
