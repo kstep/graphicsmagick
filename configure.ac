@@ -151,14 +151,17 @@ AC_EXEEXT
 AC_OBJEXT
 
 LIB_GDI32=''
+StaticCplusPlusLibraries='no'
 native_win32_build='no'
 cygwin_build='no'
 case "${host_os}" in
   cygwin* )
+    StaticCplusPlusLibraries='yes'
     cygwin_build='yes'
     LIB_GDI32='-lgdi32'
     ;;
   mingw* )
+    StaticCplusPlusLibraries='yes'
     native_win32_build='yes'
     LIB_GDI32='-lgdi32'
     ;;
@@ -301,6 +304,13 @@ libtool_build_static_libs='no'
 if test "$enable_static" = 'yes'
 then
   libtool_build_static_libs='yes'
+fi
+
+# MinGW and Cygwin can't build C++ DLLs which support exceptions.
+if test "${StaticCplusPlusLibraries}" = 'yes'
+then
+  LTCXXLIBOPTS='--static'
+  AC_SUBST(LTCXXLIBOPTS)
 fi
 
 #
@@ -770,10 +780,7 @@ ac_cv_have_C__func__='yes',
 ac_cv_have_C__func__='no')])
 
 if test "$ac_cv_have_C__func__" = 'yes' ; then
- AC_MSG_RESULT(yes)
  AC_DEFINE(HAS_C__func__,1,Define if C compiler supports __func__)
-else
- AC_MSG_RESULT(no)
 fi
 fi
 
@@ -926,10 +933,7 @@ then
   ac_cv_have_CPP__func__='no')])
 
   if test "$ac_cv_have_CPP__func__" = 'yes' ; then
-   AC_MSG_RESULT(yes)
    AC_DEFINE(HAS_CPP__func__,1,Define if C++ compiler supports __func__)
-  else
-   AC_MSG_RESULT(no)
   fi
  fi
 
@@ -1532,10 +1536,8 @@ changequote([, ])dnl
 ac_cv_jpeg_version_ok='yes',
 ac_cv_jpeg_version_ok='no')])
 if test "$ac_cv_jpeg_version_ok" = 'yes' ; then
- AC_MSG_RESULT(yes)
  passed=`expr $passed + 1`
 else
- AC_MSG_RESULT(no)
  failed=`expr $failed + 1`
 fi
 fi

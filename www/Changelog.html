@@ -53,6 +53,17 @@
 </tr>
 </table>
 <p>
+2004-05-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Magick++ needs to be built as a static library
+        under Cygwin and MinGW since C++ exceptions don't work otherwise.
+        Be more assertive about that.<BR>
+  <LI> magick/nt_base.h: Avoid conflict with ssize_t definition under
+        MinGW.
+
+</UL>
+<p>
 2004-05-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
