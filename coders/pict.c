@@ -1550,7 +1550,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   WriteBlobMSBShort(image,crop_rectangle.left);
   WriteBlobMSBShort(image,crop_rectangle.right);
   WriteBlobMSBShort(image,crop_rectangle.bottom);
-#if defined(HasJPEG)
+#if defined(HasJPEGG)
   if (image->compression == JPEGCompression)
     {
       size_t
