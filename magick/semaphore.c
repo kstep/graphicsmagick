@@ -262,6 +262,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     return;
   assert((*semaphore_info)->signature == MagickSignature);
+  (void) UnlockSemaphoreInfo(*semaphore_info);
 #if defined(HasPTHREADS)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
@@ -271,7 +272,6 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   active_critical_section=True;
   EnterCriticalSection(&critical_section);
 #endif
-  (void) UnlockSemaphoreInfo(*semaphore_info);
 #if defined(HasPTHREADS)
   (void) pthread_mutex_destroy(&(*semaphore_info)->id);
 #endif
