@@ -808,7 +808,7 @@ extern MagickExport unsigned int
   PushImagePixels(const Image *,const QuantumType,const unsigned char *),
   QueryColorDatabase(const char *,PixelPacket *),
   RaiseImage(Image *,const RectangleInfo *,const int),
-  ReadStream(const ImageInfo *,int (*)(const void *,const size_t),
+  ReadStream(ImageInfo *,int (*)(const void *,const size_t),
     ExceptionInfo *),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageInfo(ImageInfo *,const unsigned int),
@@ -820,7 +820,7 @@ extern MagickExport unsigned int
   TransparentImage(Image *,const PixelPacket),
   UnregisterMagickInfo(const char *),
   WriteImage(const ImageInfo *,Image *),
-  WriteStrean(const ImageInfo *,Image *,int (*)(const void *,const size_t));
+  WriteStream(ImageInfo *,Image *,int (*)(const void *,const size_t));
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),
