@@ -762,8 +762,8 @@ geometry=&gt;'106x80'</tt> is equivalent to <tt>width=&gt;106, height=&gt;80</tt
 ). </p>
                         <p>You can specify <tt>@filename</tt> in both Annotate()
 and Draw(). This reads the text or graphic primitive instructions from a
-file on disk. For example, <pre>&nbsp;&nbsp; $image-&gt;Draw(pen=&gt;'red', primitive=&gt;'rectangle',&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp; points=&gt;'20,20 100,100&nbsp; 40,40 200,200&nbsp; 60,60 300,300');</pre>
- Is eqivalent to <pre>&nbsp;&nbsp; $image-&gt;Draw(pen=&gt;'red', primitive=&gt;'@draw.txt');</pre>
+file on disk. For example, <pre>&nbsp;&nbsp; $image-&gt;Draw(fill=&gt;'red', primitive=&gt;'rectangle',&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp; points=&gt;'20,20 100,100&nbsp; 40,40 200,200&nbsp; 60,60 300,300');</pre>
+ Is eqivalent to <pre>&nbsp;&nbsp; $image-&gt;Draw(fill=&gt;'red', primitive=&gt;'@draw.txt');</pre>
  Where <tt>draw.txt</tt> is a file on disk that contains this: <pre>&nbsp; rectangle 20, 20 100, 100<br>&nbsp; rectangle 40, 40 200, 200<br>&nbsp; rectangle 60, 60 300, 300</pre>
  The <i>text</i> parameter for methods, Annotate(), Comment(), Draw(), and
 Label() can include the image filename, type, width, height, or other image
