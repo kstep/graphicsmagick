@@ -225,7 +225,9 @@ extern "C" {
     SetWarningHandler(NTWarningHandler)
 #  undef sleep
 #  define sleep(seconds)  Sleep(seconds*1000)
-#  define HAVE_TIFFCONF_H
+#  if !defined(HAVE_TIFFCONF_H)
+#    define HAVE_TIFFCONF_H
+#  endif
 # endif
 
 #endif
