@@ -25,28 +25,42 @@ as well as the image pixels.
 <p>The image pixels are represented by the structure <a href="PixelPacket.html">PixelPacket</a>
 and are cached in-memory, or on disk, depending on the cache threshold
 setting. This cache is known as the "pixel cache". Pixels in the cache
-may not be edited directly. They must first be made visible from the cache.
-After an image has been read (and is therefore in the cache), the pixels
-are made visible and accessable by using the <a href="../cache.html#GetPixelCache">GetPixelCache()</a>
-method which allows importing a specified region of the image. The pixels
-may then be accessed via the pointer returned from <a href="../cache.html#GetPixelCache">GetPixelCache()</a>
-or the <a href="#pixels">pixels</a> member (identical values). After the
-pixels have been updated, they may be saved back to the cache in their
-original positions via <a href="../cache.html#SyncPixelCache">SyncPixelCache()</a>.
-<p>In order to create an image with new contents, or to blindly overwrite
-existing contents, the method&nbsp; <a href="../cache.html#SetPixelCache">SetPixelCache()</a>
-is used to reserve a pixel memory region corresponding to the pixel cache.
-Once the memory region has been updated, it may be written to the cache
-via <a href="../cache.html#SyncPixelCache">SyncPixelCache()</a>.
+may not be edited directly. They must first be made visible from the cache
+via a pixel <i>view</i>. A pixel <i>view</i> is a rectangular view of the
+pixels as defined by a starting coordinate, and a number of rows and columns.
+When considering the varying abilities of multiple platforms, the most
+reliably efficient pixel view is comprized of part, or all, of one image
+row.
+<p>There are two means of accessing pixel views.&nbsp; When using the <i>default
+view</i>, the pixels are made visible and accessable by using the <i>GetImagePixels()</i>
+method which provides access to a specified region of the image. After
+the view has been updated, thhe pixels may be saved back to the cache in
+their original positions via <i>SyncImagePixels()</i>. In order to create
+an image with new contents, or to blindly overwrite existing contents,
+the method&nbsp; <i>SetImagePixels() </i>is used to reserve a pixel view
+corresponding to a region in the pixel cache. Once the pixel view has been
+updated, it may be written to the cache via <i>SyncImagePixels()</i>. The
+function <a href="../pixel_cache.html#getindexes">GetIndexes()</a> provides
+access to the image colormap, represented as an array of type <i>IndexPacket</i>.
+<p>A more flexible interface to the image pixels is via the <a href="../cache_view.html">CacheView</a>
+interface. This interface supports multiple pixel cache views (limited
+by the number of image rows), each of which are identified by a handle
+(of type <i>ViewInfo*</i>). Use <a href="../cache_view.html#opencacheview">OpenCacheView()</a>
+to obtain a new cache view, <a href="../cache_view.html#closecacheview">CloseCacheView()</a>
+to discard a cache view, <a href="../cache_view.html#getcacheview">GetCacheView()</a>
+to access an existing pixel region, <a href="../cache_view.html#setcacheview">SetCacheView()</a>
+to define a new pixel region, and <a href="../cache_view.html#synccacheview">SyncCacheView()
+</a>to save the updated pixel region. The function <a href="../cache_view.html#getcacheviewindexes">GetCacheViewIndexes()</a>
+provides access to the colormap indexes associated with the pixel view.
 <p>When writing encoders and decoders for new image formats, it is convenient
 to have a high-level interface available which supports converting between
 external pixel representations and ImageMagick's own representation. Pixel
 components (red, green, blue, opacity, RGB, or RGBA) may be transferred
-from a user-supplied buffer into the image pixel buffer by using <a href="../cache.html#ReadPixelCache">ReadPixelCache()</a>.
-Pixel components may be transferred from the image pixel buffer into a
-user-supplied buffer by using <a href="../cache.html#WritePixelCache">WritePixelCache()</a>.
-Use of this high-level interface helps protect image coders from changes
-to ImageMagick's pixel representation and simplifies the implementation.
+from a user-supplied buffer into the <i>default view</i> by using <i>PushImagePixels()</i>.
+Pixel components may be transferred from the <i>default view</i> into a
+user-supplied buffer by using <i>PopImagePixels()</i>. Use of this high-level
+interface helps protect image coders from changes to ImageMagick's pixel
+representation and simplifies the implementation.
 <p>The members of the Image structure are shown in the following table:
 <br>&nbsp;
 <table BORDER CELLSPACING=0 CELLPADDING=5 WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
@@ -63,7 +77,7 @@ to ImageMagick's pixel representation and simplifies the implementation.
 <tr>
 <td><a NAME="attributes"></a><font size=-1>attributes</font></td>
 
-<td><font size=-1>ImageAttribute*</font></td>
+<td><font size=-1><a href="ImageAttribute.html">ImageAttribute</a>*</font></td>
 
 <td><font size=-1>Image attribute list. Consists of a doubly-linked-list
 of ImageAttribute structures, each of which has an associated key and value.
