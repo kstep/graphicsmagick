@@ -537,6 +537,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     height,
     quote,
+    status,
     width;
 
   /*
