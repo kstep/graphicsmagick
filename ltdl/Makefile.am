@@ -27,7 +27,7 @@
 # ImageMagick Studio.
 #
 
-AUTOMAKE_OPTIONS = 1.6.2 no-dependencies foreign
+AUTOMAKE_OPTIONS = 1.6.2 foreign
 
 if WITH_MODULES
 

@@ -541,9 +541,11 @@ AC_HEADER_STDC
 AC_HEADER_STAT
 AC_HEADER_TIME
 AC_HEADER_DIRENT
-AC_CHECK_HEADERS(sys/select.h sys/time.h sys/stat.h sys/types.h)
-AC_CHECK_HEADERS(math.h string.h stdarg.h varargs.h pwd.h malloc.h)
-AC_CHECK_HEADERS(memory.h errno.h fcntl.h stdint.h)
+
+# Check additional headers
+AC_CHECK_HEADERS(sys/select.h sys/time.h sys/stat.h sys/types.h math.h \
+  string.h stdarg.h varargs.h pwd.h malloc.h memory.h errno.h fcntl.h \
+  stdint.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -565,14 +567,9 @@ AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
 AC_FUNC_MMAP
-AC_CHECK_FUNCS(getcwd gettimeofday mkdir mkstemp select poll snprintf strchr strerror strtol sysconf tempnam vsnprintf)
-
-# Check for getexecname() under Solaris
-case "${host_os}" in
-  solaris* )
-    AC_CHECK_FUNCS(getexecname)
-  ;;
-esac
+AC_CHECK_FUNCS(closedir getcwd getexecname gettimeofday mkdir mkstemp \
+  opendir poll readdir select snprintf strchr strerror strtol sysconf \
+  tempnam vsnprintf)
 
 # Test for sys_errlist array if strerror() not supported.
 if test "$ac_cv_func_strerror" != 'yes' ; then
