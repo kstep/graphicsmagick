@@ -676,6 +676,8 @@ sub testFilterCompare {
   $errorinfo='';
   $status='';
 
+  print( $filter, " ...\n" );
+
   # Create images
   $srcimage=Image::Magick->new;
   $refimage=Image::Magick->new;

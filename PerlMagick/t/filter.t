@@ -73,16 +73,12 @@ testFilterSignature('input.miff', 'Edge',
   '1aab086f11b69c1fd45b7c9892072ca56020f714c3cd5a717cd71e93a18fda1d');
 
 ++$test;
-testFilterSignature('input.miff', 'Emboss',
-  q/3/,
-  '5214d01ac3766debeaf2d917db887e9c62ba7cf11232b635c18ada70d219ad2d',
-  'a21aec7cafcae46e4f23647301f940cf64010a23ce6870c2871d8a7bd61a9373');
+testFilterCompare('input.miff', q//, 'reference/filter/Emboss.miff', 'Emboss',
+  q//, 0, 0, 0);
 
 ++$test;
-testFilterSignature('input.miff', 'Equalize',
-  q/ /,
-  'ef9ac1ab2f8aae9ca568ba4628cfcec5ef6e7f6e3db3d300372ade342dd244cc',
-  '539592a1802a5f5d3befdb2cc0ab4cc956383ad8ccd005cdf24ccac47e66d586');
+testFilterCompare('input.miff', q//, 'reference/filter/Equalize.miff', 'Equalize',
+  q//, 0, 0, 0);
 
 ++$test;
 testFilterSignature('input.miff', 'Flip',
