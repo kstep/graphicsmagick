@@ -5993,6 +5993,8 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
   {
     case BilevelType:
     {
+      if (image->colorspace != RGBColorspace)
+        (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
       quantize_info.number_colors=2;
       quantize_info.tree_depth=8;
@@ -6002,6 +6004,8 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     }
     case GrayscaleType:
     {
+      if (image->colorspace != RGBColorspace)
+        (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
       quantize_info.number_colors=256;
       quantize_info.tree_depth=8;
@@ -6011,6 +6015,8 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     }
     case GrayscaleMatteType:
     {
+      if (image->colorspace != RGBColorspace)
+        (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
       quantize_info.number_colors=256;
       quantize_info.tree_depth=8;
@@ -6023,6 +6029,8 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     }
     case PaletteType:
     {
+      if (image->colorspace != RGBColorspace)
+        (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
       quantize_info.number_colors=256;
       quantize_info.tree_depth=8;
@@ -6031,6 +6039,8 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     }
     case PaletteMatteType:
     {
+      if (image->colorspace != RGBColorspace)
+        (void) RGBTransformImage(image,RGBColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       image->matte=True;
@@ -6043,11 +6053,15 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     case TrueColorType:
     {
       image->storage_class=DirectClass;
+      if (image->colorspace != RGBColorspace)
+        (void) RGBTransformImage(image,RGBColorspace);
       break;
     }
     case TrueColorMatteType:
     {
       image->storage_class=DirectClass;
+      if (image->colorspace != RGBColorspace)
+        (void) RGBTransformImage(image,RGBColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       image->matte=True;
