@@ -323,8 +323,6 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
-  if (blob->mapped)
-    (void) UnmapBlob(blob->data,blob->length);
   LiberateMemory((void **) &blob);
 }
 
