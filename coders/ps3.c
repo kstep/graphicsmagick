@@ -494,13 +494,13 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             "%%%%DocumentNeededResources: font Helvetica\n");
         (void) WriteBlobString(image,"%%LanguageLevel: 3\n");
         if (LocaleCompare(image_info->magick,"PS3") != 0)
-          (void) WriteBlobString(image,"%%%%Pages: 0\n");
+          (void) WriteBlobString(image,"%%%%Pages: 1\n");
         else
           {
             (void) WriteBlobString(image,"%%Orientation: Portrait\n");
             (void) WriteBlobString(image,"%%PageOrder: Ascend\n");
             if (!image_info->adjoin)
-              (void) strcpy(buffer,"%%Pages: 0\n");
+              (void) strcpy(buffer,"%%Pages: 1\n");
             else
               FormatString(buffer,"%%%%Pages: %lu\n",GetImageListSize(image));
             (void) WriteBlobString(image,buffer);
