@@ -113,18 +113,6 @@ struct _Image;
 
 typedef struct _BlobInfo
 {
-  int
-    (*fifo)(const struct _Image *,const void *,const size_t);
-
-  FILE
-    *file;
-
-  unsigned int
-    exempt,
-    status,
-    temporary,
-    pipet;
-
   size_t
     length,
     extent,
@@ -140,6 +128,18 @@ typedef struct _BlobInfo
   off_t
     offset,
     size;
+
+  unsigned int
+    exempt,
+    status,
+    pipet,
+    temporary;
+
+  FILE
+    *file;
+
+  int
+    (*fifo)(const struct _Image *,const void *,const size_t);
 
   SemaphoreInfo
     *semaphore;
@@ -446,14 +446,14 @@ typedef struct _Image
   BlobInfo
     *blob;
 
+  char
+    filename[MaxTextExtent],
+    magick_filename[MaxTextExtent],
+    magick[MaxTextExtent];
+
   unsigned long
     magick_columns,
     magick_rows;
-
-  char
-    magick_filename[MaxTextExtent],
-    magick[MaxTextExtent],
-    filename[MaxTextExtent];
 
   long
     reference_count;

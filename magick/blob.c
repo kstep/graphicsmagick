@@ -294,12 +294,6 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   GetBlobInfo(clone_info);
   if (blob_info == (BlobInfo *) NULL)
     return(clone_info);
-  clone_info->fifo=blob_info->fifo;
-  clone_info->file=blob_info->file;
-  clone_info->exempt=blob_info->exempt;
-  clone_info->status=blob_info->status;
-  clone_info->temporary=blob_info->temporary;
-  clone_info->pipet=blob_info->pipet;
   clone_info->length=blob_info->length;
   clone_info->extent=blob_info->extent;
   clone_info->quantum=blob_info->quantum;
@@ -308,6 +302,12 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   clone_info->data=blob_info->data;
   clone_info->offset=blob_info->offset;
   clone_info->size=blob_info->size;
+  clone_info->exempt=blob_info->exempt;
+  clone_info->status=blob_info->status;
+  clone_info->pipet=blob_info->pipet;
+  clone_info->temporary=blob_info->temporary;
+  clone_info->file=blob_info->file;
+  clone_info->fifo=blob_info->fifo;
   clone_info->reference_count=1;
   clone_info->semaphore=(SemaphoreInfo *) NULL;
   return(clone_info);
