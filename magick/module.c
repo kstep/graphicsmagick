@@ -477,7 +477,7 @@ static char **GetModuleList(void)
     LocaleUpper(modules[i]);
     if (LocaleNCompare("IM_MOD_",modules[i],7) == 0)
       {
-        (void) strncpy(modules[i],modules[i]+10,MaxTextExtent-1);
+        (void) strcpy(modules[i],modules[i]+10);
         modules[i][strlen(modules[i])-1]='\0';
       }
     i++;

@@ -334,7 +334,7 @@ MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
   {
     if (*q != ' ')
       continue;
-    (void) strncpy(q,q+1,MaxTextExtent-1);
+    (void) strcpy(q,q+1);
     q--;
   }
   for (p=color_list; p != (ColorInfo *) NULL; p=p->next)

@@ -527,7 +527,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
       tag[i]=' ';
     tag[i]='\0';
     if (p->encode != (char *) NULL)
-      (void) strncpy(tag,p->encode,strlen(p->encode));
+      (void) strncpy(tag,p->encode,MaxTextExtent-1);
     (void) fprintf(file,"%10s%.1024s=%.1024s%.1024s  %s\n",
       p->decode ? p->decode : "",p->mode <= 0 ? "<" : " ",
       p->mode >= 0 ? ">" : " ",tag,delegate);

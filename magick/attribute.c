@@ -1152,8 +1152,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
               FormatString(attribute,"%lukb",
                 (unsigned long) (SizeBlob(image)/1024));
             else
-              FormatString(attribute,"%lu",
-                (unsigned long) SizeBlob(image));
+              FormatString(attribute,"%lu",(unsigned long) SizeBlob(image));
           break;
         }
       if (LocaleNCompare("scene",key,2) == 0)
