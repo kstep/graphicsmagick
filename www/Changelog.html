@@ -23,14 +23,28 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-01-13  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+  * More bug fixes and improvements in PSD writer
+
+2002-01-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+	* magick/magic.mgk: Added entries for detecting PFA and PFB
+ 	formats.  Is this file used for anything anymore?
+
+	* coders/modules.mgk: Add support for PFA fonts.
+
+	* coders/ttf.c (RegisterTTFImage): Add support for PFA fonts.
+
+	* magick/annotate.c (RenderType): Add support for PFA fonts.
+
 2002-01-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Modified type.mgk so that it may include the additional files
     type-windows.mgk, type-solaris.mgk, and type-ghostscript.mgk depending
     on the operating system used, and the font files available.
 
 2002-01-11  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
-  * PSD now supports writing layered images and IPTC data.
-  * Fixed some bugs in XCF.
+  * PSD now supports writing layered images and IPTC data
+  * Fixed some bugs in XCF
 
 2002-01-11  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added image list methods to the API.

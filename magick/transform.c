@@ -966,34 +966,32 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ProfileImage() adds or removes a ICM, IPTC, or generic profile from an
-%  image.  If the profile name is defined it is deleted from the image.
-%  If a filename is given, one or more profiles are read and added to the
-%  image.  ProfileImage() returns a value other than 0 if the profile is
-%  successfully added or removed from the image.
+%  image.  If the profile is NULL, it is removed from the image otherwise
+%  added.  Use a name of '*' and a profile of NULL to remove all profiles
+%  from the image.
 %
 %  The format of the ProfileImage method is:
 %
-%      unsigned int ProfileImage(Image *image,const char *profile_name,
-%        const char *filename)
+%      unsigned int ProfileImage(Image *image,const char *name,
+%        const void *profile,const size_t length)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o profile_name: Type of profile to add or remove.
+%    o name: Name of profile to add or remove: ICM, IPTC, or generic profile.
 %
-%    o filename: Filename of the ICM, IPTC, or generic profile.
+%    o profile: The profile.
+%
+%    o length: The length of the profile.
 %
 %
 */
-MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
-  const char *filename)
+MagickExport unsigned int ProfileImage(Image *image,const char *name,
+  const void *profile,const size_t length)
 {
   ExceptionInfo
     exception;
-
-  Image
-    *profile_image;
 
   ImageInfo
     *image_info;
@@ -1004,32 +1002,33 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (filename == (const char *) NULL)
+  if (name == (const char *) NULL)
+    ThrowBinaryException(ResourceLimitWarning,"Unable to add/remove profile",
+      "no profile name was given");
+  if ((profile == (const void *) NULL) || (length == 0))
     {
       /*
         Remove an ICM, IPTC, or generic profile from the image.
       */
-      if ((LocaleCompare("icm",profile_name) == 0) ||
-          (LocaleCompare("*",profile_name) == 0))
-        {
-          if (image->color_profile.length != 0)
-            LiberateMemory((void **) &image->color_profile.info);
-          image->color_profile.length=0;
-          image->color_profile.info=(unsigned char *) NULL;
-        }
-      if ((LocaleCompare("8bim",profile_name) == 0) ||
-          (LocaleCompare("iptc",profile_name) == 0) ||
-          (LocaleCompare("*",profile_name) == 0))
+      if ((LocaleCompare("8bim",name) == 0) ||
+          (LocaleCompare("iptc",name) == 0) || (LocaleCompare("*",name) == 0))
         {
           if (image->iptc_profile.length != 0)
             LiberateMemory((void **) &image->iptc_profile.info);
           image->iptc_profile.length=0;
           image->iptc_profile.info=(unsigned char *) NULL;
         }
+      if ((LocaleCompare("icm",name) == 0) || (LocaleCompare("*",name) == 0))
+        {
+          if (image->color_profile.length != 0)
+            LiberateMemory((void **) &image->color_profile.info);
+          image->color_profile.length=0;
+          image->color_profile.info=(unsigned char *) NULL;
+        }
       for (i=0; i < (long) image->generic_profiles; i++)
       {
-        if ((LocaleCompare(image->generic_profile[i].name,profile_name) != 0) &&
-            (LocaleCompare("*",profile_name) != 0))
+        if ((LocaleCompare(image->generic_profile[i].name,name) != 0) &&
+            (LocaleCompare("*",name) != 0))
           continue;
         if (image->generic_profile[i].name != (char *) NULL)
           LiberateMemory((void **) &image->generic_profile[i].name);
@@ -1045,24 +1044,19 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
   /*
     Add a ICM, IPTC, or generic profile to the image.
   */
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
-  profile_image=ReadImage(image_info,&exception);
-  if (exception.severity != UndefinedException)
-    MagickWarning(exception.severity,exception.reason,exception.description);
-  DestroyImageInfo(image_info);
-  if (profile_image == (Image *) NULL)
-    return(False);
-  if (profile_image->iptc_profile.length != 0)
+  if ((LocaleCompare("8bim",name) == 0) || (LocaleCompare("iptc",name) == 0))
     {
       if (image->iptc_profile.length != 0)
         LiberateMemory((void **) &image->iptc_profile.info);
-      image->iptc_profile.length=profile_image->iptc_profile.length;
-      image->iptc_profile.info=profile_image->iptc_profile.info;
-      profile_image->iptc_profile.length=0;
-      profile_image->iptc_profile.info=(unsigned char *) NULL;
+      image->iptc_profile.info=AcquireMemory(length);
+      if (image->iptc_profile.info == (unsigned char *) NULL)
+        ThrowBinaryException(ResourceLimitWarning,"Unable to add IPTC profile",
+          "Memory allocation failed");
+      image->iptc_profile.length=length;
+      (void) memcpy(image->iptc_profile.info,profile,length);
+      return(True);
     }
-  if (profile_image->color_profile.length != 0)
+  if (LocaleCompare("icm",name) == 0)
     {
       if (image->color_profile.length != 0)
         {
@@ -1075,6 +1069,9 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
               blue,
               opacity;
           } ProfilePacket;
+
+          Colorspace
+            colorspace;
 
           cmsHPROFILE
             image_profile,
@@ -1104,22 +1101,19 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           */
           image_profile=cmsOpenProfileFromMem(image->color_profile.info,
             image->color_profile.length);
-          transform_profile=cmsOpenProfileFromMem(
-            profile_image->color_profile.info,
-            profile_image->color_profile.length);
+          transform_profile=cmsOpenProfileFromMem(profile,length);
           if ((image_profile == (cmsHPROFILE) NULL) ||
               (transform_profile == (cmsHPROFILE) NULL))
             ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
               "failed to open color profiles");
           switch (cmsGetColorSpace(transform_profile))
           {
-            case icSigCmykData: profile_image->colorspace=CMYKColorspace; break;
-            case icSigYCbCrData:
-              profile_image->colorspace=YCbCrColorspace; break;
-            case icSigLuvData: profile_image->colorspace=YUVColorspace; break;
-            case icSigGrayData: profile_image->colorspace=GRAYColorspace; break;
-            case icSigRgbData: profile_image->colorspace=RGBColorspace; break;
-            default: profile_image->colorspace=RGBColorspace; break;
+            case icSigCmykData: colorspace=CMYKColorspace; break;
+            case icSigYCbCrData: colorspace=YCbCrColorspace; break;
+            case icSigLuvData: colorspace=YUVColorspace; break;
+            case icSigGrayData: colorspace=GRAYColorspace; break;
+            case icSigRgbData: colorspace=RGBColorspace; break;
+            default: colorspace=RGBColorspace; break;
           }
           switch (image->rendering_intent)
           {
@@ -1131,7 +1125,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           }
           if (image->colorspace == CMYKColorspace)
             {
-              if (profile_image->colorspace == CMYKColorspace)
+              if (colorspace == CMYKColorspace)
                 transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
                   transform_profile,TYPE_CMYK_16,intent,0);
               else
@@ -1140,7 +1134,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
             }
           else
             {
-              if (profile_image->colorspace == CMYKColorspace)
+              if (colorspace == CMYKColorspace)
                 transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
                   transform_profile,TYPE_CMYK_16,intent,0);
               else
@@ -1175,52 +1169,42 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           }
           if (image->colorspace == CMYKColorspace)
             image->matte=False;
-          image->colorspace=profile_image->colorspace;
           cmsDeleteTransform(transform);
           cmsCloseProfile(image_profile);
           cmsCloseProfile(transform_profile);
 #endif
           LiberateMemory((void **) &image->color_profile.info);
         }
-      image->color_profile.length=profile_image->color_profile.length;
-      image->color_profile.info=profile_image->color_profile.info;
-      profile_image->color_profile.length=0;
-      profile_image->color_profile.info=(unsigned char *) NULL;
+      if (image->color_profile.length != 0)
+        LiberateMemory((void **) &image->color_profile.info);
+      image->color_profile.info=AcquireMemory(length);
+      if (image->color_profile.info == (unsigned char *) NULL)
+        ThrowBinaryException(ResourceLimitWarning,"Unable to add ICM profile",
+          "Memory allocation failed");
+      image->color_profile.length=length;
+      (void) memcpy(image->color_profile.info,profile,length);
+      return(True);
     }
-  if (profile_image->generic_profiles != 0)
-    {
-      unsigned long
-        number_profiles;
-
-      number_profiles=image->generic_profiles+profile_image->generic_profiles;
+  for (i=0; i < (long) image->generic_profiles; i++)
+    if (LocaleCompare(image->generic_profile[i].name,name) == 0)
+      break;
+  if (i == (long) image->generic_profiles)
+		{
+      image->generic_profile=(ProfileInfo *)
+        AcquireMemory((i+1)*sizeof(ProfileInfo));
       if (image->generic_profile == (ProfileInfo *) NULL)
-        image->generic_profile=(ProfileInfo *)
-          AcquireMemory(number_profiles*sizeof(ProfileInfo));
-      else
-        ReacquireMemory((void **) &image->generic_profile,
-          number_profiles*sizeof(ProfileInfo));
-      if (image->generic_profile == (ProfileInfo *) NULL)
-        {
-          image->generic_profiles=0;
-          DestroyImage(profile_image);
-          ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-            (char *) NULL)
-        }
-      j=(long) image->generic_profiles;
-      for (i=0; i < (long) profile_image->generic_profiles; i++)
-      {
-        image->generic_profile[j].name=profile_image->generic_profile[i].name;
-        image->generic_profile[j].length=
-          profile_image->generic_profile[i].length;
-        image->generic_profile[j].info=profile_image->generic_profile[i].info;
-        profile_image->generic_profile[i].name=(char *) NULL;
-        profile_image->generic_profile[i].length=0;
-        profile_image->generic_profile[i].info=(unsigned char *) NULL;
-        j++;
-      }
-      image->generic_profiles=number_profiles;
-    }
-  DestroyImage(profile_image);
+        ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+          (char *) NULL)
+      image->generic_profiles++;
+		}
+  if (image->generic_profile[i].length != 0)
+    LiberateMemory((void **) &image->generic_profile[i].info);
+  image->generic_profile[i].info=AcquireMemory(length);
+  if (image->generic_profile[i].info == (unsigned char *) NULL)
+    ThrowBinaryException(ResourceLimitWarning,"Unable to add profile",
+      "Memory allocation failed");
+  image->generic_profile[i].length=length;
+  (void) memcpy(image->generic_profile[i].info,profile,length);
   return(True);
 }
 

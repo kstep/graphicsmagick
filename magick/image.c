@@ -852,8 +852,7 @@ MagickExport unsigned int ClipImage(Image *image)
   assert(image->signature == MagickSignature);
   attribute=GetImageAttribute(image,"8BIM:1999,2998");
   if (attribute == (const ImageAttribute *) NULL)
-    ThrowBinaryException(CorruptImageWarning,
-		  "no clipping path information available",image->filename);
+    return(False);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) QueryColorDatabase("none",&image_info->background_color);
   clip_mask=BlobToImage(image_info,attribute->value,strlen(attribute->value),
@@ -4425,18 +4424,40 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("profile",option+1) == 0)
           {
+            Image
+              *profile;
+
             if (*option == '+')
               {
                 /*
                   Remove a ICM, IPTC, or generic profile from the image.
                 */
-                (void) ProfileImage(*image,argv[++i],(char *) NULL);
+                (void) ProfileImage(*image,argv[++i],(void *) NULL,0);
                 continue;
               }
             /*
               Add a ICM, IPTC, or generic profile to the image.
             */
-            (void) ProfileImage(*image,(char *) NULL,argv[++i]);
+            (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
+            profile=ReadImage(clone_info,&exception);
+            if (exception.severity != UndefinedException)
+              MagickWarning(exception.severity,exception.reason,
+                exception.description);
+            if (profile->iptc_profile.length != 0)
+              (void) ProfileImage(*image,"IPTC",profile->iptc_profile.info,
+                profile->iptc_profile.length);
+            if (profile->color_profile.length != 0)
+              (void) ProfileImage(*image,"IPTC",profile->color_profile.info,
+                profile->color_profile.length);
+            for (i=0; i < (long) profile->generic_profiles; i++)
+            {
+              ProfileInfo
+                *generic;
+
+              generic=profile->generic_profile+i;
+              (void) ProfileImage(*image,generic->name,generic->info,
+                generic->length);
+            }
             continue;
           }
         break;

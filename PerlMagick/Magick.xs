@@ -135,6 +135,9 @@ union ArgumentList
   char
     *string_reference;
 
+  STRLEN
+    length;
+
   Image
     *image_reference;
 
@@ -382,8 +385,7 @@ static struct
     { "GaussianBlur", { {"geometry", StringReference},
       {"radius", DoubleReference}, {"sigma", DoubleReference} } },
     { "Convolve", { {"coefficients", ArrayReference} } },
-    { "Profile", { {"profile", StringReference},
-      {"filename", StringReference} } },
+    { "Profile", { {"name", StringReference}, {"profile", StringReference} } },
     { "UnsharpMask", { {"geometry", StringReference},
       {"radius", DoubleReference}, {"sigma", DoubleReference},
       {"amount", DoubleReference}, {"threshold", DoubleReference} } },
@@ -4097,7 +4099,7 @@ Mogrify(ref,...)
         al->int_reference=SvIV(sv);
       else
         if (pp->type == StringReference)
-          al->string_reference=(char *) SvPV(sv,na);
+          al->string_reference=(char *) SvPV(sv,al->length);
         else
           if (pp->type == DoubleReference)
             al->double_reference=SvNV(sv);
@@ -5455,7 +5457,7 @@ Mogrify(ref,...)
           if (!attribute_flag[1])
             argument_list[1].string_reference=(char *) NULL;
           (void) ProfileImage(image,argument_list[0].string_reference,
-            argument_list[1].string_reference);
+            argument_list[1].string_reference,argument_list[1].length);
           break;
         }
         case 69:  /* UnsharpMask */

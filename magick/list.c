@@ -119,6 +119,58 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e l e t e I m a g e L i s t                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DeleteImageList() deletes an image at the specified position in the list.
+%
+%  The format of the DeleteImageList method is:
+%
+%      unsigned int DeleteImageList(Image *images,const unsigned long n)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o n: The position within the list.
+%
+%
+*/
+MagickExport unsigned int DeleteImageList(Image *images,const unsigned long n)
+{
+  Image
+    *image;
+
+  register long
+    i;
+
+  if (images == (Image *) NULL)
+    return(False);
+  assert(images->signature == MagickSignature);
+  while (images->previous != (Image *) NULL)
+    images=images->previous;
+  for (i=0; images != (Image *) NULL; images=images->next)
+    if (i++ == n)
+      break;
+  if (images == (Image *) NULL)
+    return(False);
+  image=images;
+  if (images->previous != (Image *) NULL)
+    images->previous->next=images->next;
+  if (images->next != (Image *) NULL)
+    images->next->previous=images->previous;
+  DestroyImage(image);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y I m a g e L i s t                                           %
 %                                                                             %
 %                                                                             %
@@ -176,7 +228,7 @@ MagickExport void DestroyImageList(Image *images)
 %  The format of the GetImageList method is:
 %
 %      Image *GetImageList(const Image *images,const unsigned long n,
-%        ExceptionInfo *esception)
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -291,22 +343,22 @@ MagickExport Image *GetNextImage(Image *images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     I m a g e L i s t T o G r o u p                                         %
+%     I m a g e L i s t T o A r r a y                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ImageListToGroup() is a convenience method that converts an image list to
+%  ImageListToArray() is a convenience method that converts an image list to
 %  a sequential array.  For example,
 %
-%    group = ImageListToGroup(images, exception);
+%    group = ImageListToArray(images, exception);
 %    for (i = 0; i < n; i++)
 %      puts(group[i]->filename);
 %
-%  The format of the ImageListToGroup method is:
+%  The format of the ImageListToArray method is:
 %
-%      Image **ImageListToGroup(const Image *images,ExceptionInfo *exception)
+%      Image **ImageListToArray(const Image *images,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -316,14 +368,14 @@ MagickExport Image *GetNextImage(Image *images)
 %
 %
 */
-MagickExport Image **ImageListToGroup(const Image *images,
+MagickExport Image **ImageListToArray(const Image *images,
   ExceptionInfo *exception)
 {
   Image
     **group;
 
   register long
-	  i;
+    i;
 
   if (images == (Image *) NULL)
     return((Image **) NULL);
@@ -655,7 +707,7 @@ MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
   ExceptionInfo *exception)
 {
   Image
-	  *next;
+    *next;
 
   assert(images != (Image **) NULL);
   assert(image != (Image *) NULL);
@@ -670,7 +722,7 @@ MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
     (*images)=(*images)->previous;
   next=CloneImageList(image,exception);
   if (next == (Image *) NULL)
-	  return(False);
+    return(False);
   while (next->next != (Image *) NULL)
     next=next->next;
   (*images)->previous=next;
