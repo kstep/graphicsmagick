@@ -499,12 +499,6 @@ AC_SUBST(LIB_MATH)
 LIB_THREAD=''
 if test "$with_threads" != 'no'
 then
-#  ACX_PTHREAD([AC_DEFINE(HasPTHREADS,,Define if you have Posix thread methods.)
-#     LIB_THREAD="$PTHREAD_LIBS"
-#     DEF_THREAD="-D_REENTRANT"
-#     LIBS="$LIB_THREAD $LIBS"
-#     CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
-#     CC="$PTHREAD_CC"])
   AC_CHECK_LIB(pthread,pthread_attr_init,
     [AC_DEFINE(HasPTHREADS,,Define if you have Posix thread methods.)
      LIB_THREAD="-lpthread"
