@@ -31,8 +31,8 @@
   <magic name="JP2" offset="4" target="\152\120\040\040\015" />
   <magic name="MIFF" offset="0" target="Id=ImageMagick" />
   <magic name="MIFF" offset="0" target="id=ImageMagick" />
-  <magic name="M2V" offset="0" target="\000\000\001\263" />
   <magic name="MNG" offset="0" target="\212MNG\r\n\032\n" />
+  <magic name="MPEG" offset="0" target="\000\000\001\263" />
   <magic name="PCD" offset="2048" target="PCD_" />
   <magic name="PCL" offset="0" target="\033E\033" />
   <magic name="PCX" offset="0" target="\012\002" />

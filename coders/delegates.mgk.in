@@ -21,13 +21,7 @@
   <delegate decode="htm" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
   <delegate decode="html" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
   <delegate decode="ilbm" command='@ILBMDecodeDelegate@ "%i" > "%o"' />
-  <delegate decode="m2v" command='@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o%%05d"
-    @ConvertDelegate@ -concatenate "%o*.ppm" "%o"' />
   <delegate decode="man" command='@MANDelegate@ -man -Tps "%i" > "%o"' />
-  <delegate decode="mpeg" command='@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o%%05d"
-    @ConvertDelegate@ -concatenate "%o*.ppm" "%o"' />
-  <delegate decode="mpg" command='@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o%%05d"
-    @ConvertDelegate@ -concatenate "%o*.ppm" "%o"' />
   <delegate decode="pdf" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pdf" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pgp" command='@PGPDecodeDelegate@ -fq "%i"' />
@@ -47,12 +41,6 @@
   <delegate decode="txt" encode="ps" mode="bi" command='@TXTDelegate@ -o "%o" "%i"' />
   <delegate decode="wmf" command='@WMFDecodeDelegate@ "%i" "%o"' />
   <delegate decode="xcf" command='@XCFDecodeDelegate@ "%i" > "%o"' />
-  <delegate decode="yuv" encode="m2v" mode="encode" command='@MPEGEncodeDelegate@ %u "%o"
-    @ConvertDelegate@ -concatenate "%i*.yuv" %u' />
-  <delegate decode="yuv" encode="mpeg" mode="encode" command='@MPEGEncodeDelegate@ %u "%o"
-    @ConvertDelegate@ -concatenate "%i*.yuv" %u' />
-  <delegate decode="yuv" encode="mpg" mode="encode" command='@MPEGEncodeDelegate@ %u "%o"
-    @ConvertDelegate@ -concatenate "%i*.yuv" %u' />
   <delegate decode="zip" stealth="True" command='|@ZipDelegate@ -cdfq "%i"' />
   <delegate encode="bzip" stealth="True" command='|@BZIPDelegate@ -f > "%o"' />
   <delegate encode="compress" stealth="True" command='|@LZWEncodeDelegate@ -c > "%o"' />

@@ -32,6 +32,7 @@
   <module name="MIFF" alias="IMPLICIT"/>
   <module name="JBIG" alias="JBG"/>
   <module name="JPEG" alias="JPG"/>
+  <module name="MPEG" alias="M2V"/>
   <module name="PNG" alias="MNG"/>
   <module name="MPEG" alias="MPG"/>
   <module name="LOGO" alias="NETSCAPE"/>

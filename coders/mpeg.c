@@ -54,6 +54,44 @@
 #include "magick.h"
 #include "define.h"
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s M P E G                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsMPEG returns True if the image format type, identified by the
+%  magick string, is MPEG.
+%
+%  The format of the IsMPEG method is:
+%
+%      unsigned int IsMPEG(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsMPEG returns True if the image format type is MPEG.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+static unsigned int IsMPEG(const unsigned char *magick,const size_t length)
+{
+  if (length < 4)
+    return(False);
+  if (memcmp(magick,"\000\000\001\263",4) == 0)
+    return(True);
+  return(False);
+}
+
 #if defined(HasMPEG2)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,6 +176,7 @@ ModuleExport void RegisterMPEGImage(void)
 
   entry=SetMagickInfo("MPEG");
   entry->decoder=ReadMPEGImage;
+  entry->magick=IsMPEG;
   entry->description=AllocateString("MPEG Video Stream");
   entry->module=AllocateString("MPEG");
   (void) RegisterMagickInfo(entry);
