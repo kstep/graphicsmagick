@@ -739,7 +739,7 @@ Export Image *AverageImages(Image *images)
 %
 %
 */
-Export Image *CloneImage(const Image *image,const unsigned int columns,
+Export Image *CloneImage(Image *image,const unsigned int columns,
   const unsigned int rows,const unsigned int orphan)
 {
   Image
@@ -6788,6 +6788,8 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   if (strncmp(magick,"#!/usr/local/bin/gnuplot",24) == 0)
     (void) strcpy(image_info->magick,"GPLT");
   if (strncmp(magick,"IN;",3) == 0)
+    (void) strcpy(image_info->magick,"HPGL");
+  if (strncmp((char *) magick,"\033E\033&",4) == 0)
     (void) strcpy(image_info->magick,"HPGL");
   if (strncmp(magick+8,"ILBM",2) == 0)
     (void) strcpy(image_info->magick,"ILBM");
