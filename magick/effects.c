@@ -353,7 +353,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
 }
 
-static int GetKernelWidth(int width,const double sigma,double **kernel)
+static int GetBlurKernel(int width,const double sigma,double **kernel)
 {
 #define KernelRank 3
 
@@ -422,7 +422,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   kernel=(double *) NULL;
   if (radius > 0)
-    width=GetKernelWidth((int) (2.0*ceil(radius)+1.0),sigma,&kernel);
+    width=GetBlurKernel((int) (2.0*ceil(radius)+1.0),sigma,&kernel);
   else
     {
       double
@@ -430,7 +430,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
 
       last_kernel=(double *) NULL;
       width=3;
-      width=GetKernelWidth(width,sigma,&kernel);
+      width=GetBlurKernel(width,sigma,&kernel);
       while ((int) (MaxRGB*kernel[0]) > 0)
       {
         if (last_kernel != (double *)NULL)
@@ -438,7 +438,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
         last_kernel=kernel;
         kernel=(double *) NULL;
         width+=2;
-        width=GetKernelWidth(width,sigma,&kernel);
+        width=GetBlurKernel(width,sigma,&kernel);
       }
       if (last_kernel != (double *) NULL)
         {
@@ -449,13 +449,16 @@ MagickExport Image *BlurImage(Image *image,const double radius,
     }
   if (width < 3)
     ThrowImageException(OptionWarning,"Unable to blur image",
-      "blur radius is too small");
+      "kernel radius is too small");
   /*
     Allocate blur image.
   */
   blur_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (blur_image == (Image *) NULL)
-    return((Image *) NULL);
+    {
+      LiberateMemory((void **) &kernel);
+      return((Image *) NULL);
+    }
   blur_image->storage_class=DirectClass;
   scanline=(PixelPacket *) AcquireMemory(image->rows*sizeof(PixelPacket));
   if (scanline == (PixelPacket *) NULL)
@@ -465,7 +468,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
         "Memory allocation failed");
     }
   /*
-    Blur each image row;
+    Blur the image rows.
   */
   for (y=0; y < image->rows; y++)
   {
@@ -994,11 +997,11 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
-    ThrowImageException(OptionWarning,"Unable to edgeen image",
+    ThrowImageException(OptionWarning,"Unable to edge image",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
-    ThrowImageException(ResourceLimitWarning,"Unable to edgeen image",
+    ThrowImageException(ResourceLimitWarning,"Unable to edge image",
       "Memory allocation failed");
   for (i=0; i < (width*width); i++)
     kernel[i]=(-1.0);
@@ -1808,6 +1811,207 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
       return((Image *) NULL);
     }
   return(morph_images);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     M o t i o n B l u r I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MotionBlurImage creates a new image that has a "motion blur"
+%  effect applied to it.
+%
+%  Andrew Protano contributed this effect.
+%
+%  The format of the MotionBlurImage method is:
+%
+%    Image *MotionBlurImage(Image *image,const double radius,
+%      const double sigma,const double amount,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o blur_image: Method MotionBlurImage returns a pointer to the image
+%      after it is blur.  A null image is returned if there is a memory
+%      shortage.
+%
+%    o radius: The radius of the Gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: The standard deviation of the Gaussian, in pixels.
+%
+%    o angle: Apply the effect along this angle.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+
+static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
+{
+#define KernelRank 3
+
+  double
+    normalize;
+
+  int
+    bias;
+
+  register int
+    i;
+
+  /*
+    Generate a 1-D convolution matrix.  Calculate the kernel at higher
+    resolution than needed and average the results as a form of numerical
+    integration to get the best accuracy.
+  */
+  if (width <= 0)
+    width=3;
+  *kernel=(double *) AcquireMemory(width*sizeof(double));
+  if (*kernel == (double *) NULL)
+    return(0);
+  for (i=0; i < width; i++)
+    (*kernel)[i]=0.0;
+  bias=KernelRank*width;
+  for (i=0; i < bias; i++)
+    (*kernel)[i/KernelRank]+=
+      exp((double) (-i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
+  normalize=0;
+  for (i=0; i < width; i++)
+    normalize+=(*kernel)[i];
+  for (i=0; i < width; i++)
+    (*kernel)[i]/=normalize;
+  return(width);
+}
+
+MagickExport Image *MotionBlurImage(Image *image,const double radius,
+  const double sigma,const double angle,ExceptionInfo *exception)
+{
+  double
+    blue,
+    green,
+    *kernel,
+    opacity,
+    red;
+
+  Image
+    *blur_image;
+
+  int
+    width,
+    u,
+    v,
+    y;
+
+  PixelPacket
+    pixel;
+
+  PointInfo
+    *offsets;
+
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *q;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  kernel=(double *) NULL;
+  if (radius > 0)
+    width=GetMotionBlurKernel((int) (2.0*ceil(radius)+1.0),sigma,&kernel);
+  else
+    {
+      double
+        *last_kernel;
+
+      last_kernel=(double *) NULL;
+      width=3;
+      width=GetMotionBlurKernel(width,sigma,&kernel);
+      while ((int) (MaxRGB*kernel[width-1]) > 0)
+      {
+        if (last_kernel != (double *)NULL)
+          LiberateMemory((void **) &last_kernel);
+        last_kernel=kernel;
+        kernel=(double *) NULL;
+        width+=2;
+        width=GetMotionBlurKernel(width,sigma,&kernel);
+      }
+      if (last_kernel != (double *) NULL)
+        {
+          LiberateMemory((void **) &kernel);
+          width-=2;
+          kernel=last_kernel;
+        }
+    }
+  if (width < 3)
+    ThrowImageException(OptionWarning,"Unable to motion blur image",
+      "kernel radius is too small");
+  offsets=(PointInfo *) AcquireMemory(width*sizeof(PointInfo));
+  if (offsets == (PointInfo *) NULL)
+    ThrowImageException(ResourceLimitWarning,"Unable to motion blur image",
+      "Memory allocation failed");
+  /*
+    Allocate blur image.
+  */
+  blur_image=CloneImage(image,image->columns,image->rows,True,exception);
+  if (blur_image == (Image *) NULL)
+    {
+      LiberateMemory((void **) &kernel);
+      LiberateMemory((void **) &offsets);
+      return((Image *) NULL);
+    }
+  blur_image->storage_class=DirectClass;
+  x=width*sin(DegreesToRadians(angle));
+  y=width*cos(DegreesToRadians(angle));
+  for (i=0; i < width; i++)
+  {
+    offsets[i].x=i*x/sqrt(x*x+y*y);
+    offsets[i].y=i*y/sqrt(x*x+y*y);
+  }
+  for (y=0; y < (int) image->rows; y++)
+  {
+    q=GetImagePixels(blur_image,0,y,blur_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      red=0.0;
+      green=0.0;
+      blue=0.0;
+      opacity=0.0;
+      for (i=0; i < width; i++)
+      {
+        u=x+offsets[i].x;
+        v=y+offsets[i].y;
+        if ((u < 0) || (u >= image->columns) || (v < 0) || (v >= image->rows))
+          continue;
+        pixel=GetOnePixel(image,u,v);
+        red+=kernel[i]*pixel.red;
+        green+=kernel[i]*pixel.green;
+        blue+=kernel[i]*pixel.blue;
+        opacity+=kernel[i]*pixel.opacity;
+      }
+      q->red=(Quantum) red;
+      q->green=(Quantum) green;
+      q->blue=(Quantum) blue;
+      q->opacity=(Quantum) opacity;
+      q++;
+    }
+    if (!SyncImagePixels(blur_image))
+      break;
+    if (QuantumTick(y,image->rows))
+      MagickMonitor(BlurImageText,y,image->rows);
+  }
+  LiberateMemory((void **) &kernel);
+  LiberateMemory((void **) &offsets);
+  return(blur_image);
 }
 
 /*
@@ -3271,7 +3475,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %  A description of each parameter follows:
 %
 %    o unsharp_image: Method UnsharpMaskImage returns a pointer to the image
-%      after it is blur.  A null image is returned if there is a memory
+%      after it is sharpened.  A null image is returned if there is a memory
 %      shortage.
 %
 %    o radius: The radius of the Gaussian, in pixels, not counting the center
@@ -3313,6 +3517,9 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
     *p,
     *q;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
   sharp_image=GaussianBlurImage(image,radius,sigma,&(image->exception));
   if (sharp_image == (Image *) NULL)
     return((Image *) NULL);

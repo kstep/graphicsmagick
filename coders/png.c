@@ -86,11 +86,26 @@
 #undef MNG_LOOSE
 
 /*
-  Don't try to define PNG_READ|WRITE_EMPTY_PLTE_SUPPORTED here.  Make sure
-  it's defined in libpng/pngconf.h, version 1.0.3a or later.  It won't work
-  with earlier versions of libpng.  As of July 20, 1999, libpng-1.0.3a has
-  not yet been released by the PNG group.
+  Don't try to define PNG_MNG_FEATURES_SUPPORTED here.  Make sure
+  it's defined in libpng/pngconf.h, version 1.0.9 or later.  It won't work
+  with earlier versions of libpng.  From libpng-1.0.3a to libpng-1.0.8,
+  PNG_READ|WRITE_EMPTY_PLTE were used but those have been deprecated in
+  libpng in favor of PNG_MNG_FEATURES_SUPPORTED, so we set them here.
+  PNG_MNG_FEATURES_SUPPORTED is disabled by default in libpng-1.0.9 and
+  will be enabled by default in libpng-1.2.0.
 */
+#if (PNG_LIBPNG_VER == 10009)  /* work around libpng-1.0.9 bug */
+#  undef PNG_READ_EMPTY_PLTE_SUPPORTED
+#  undef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+#endif
+#ifdef PNG_MNG_FEATURES_SUPPORTED
+#  ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
+#    define PNG_READ_EMPTY_PLTE_SUPPORTED
+#  endif
+#  ifndef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+#    define PNG_WRITE_EMPTY_PLTE_SUPPORTED
+#  endif
+#endif
 
 /*
   Maximum valid unsigned long in PNG/MNG chunks is (2^31)-1
@@ -883,7 +898,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
 /* We use mng_get_data() instead of png_get_data() if we have a libpng
  * older than libpng-1.0.3a, which was the first to allow the empty
- * PLTE, or a newer libpng in which PNG_READ_EMPTY_PLTE_SUPPORTED was
+ * PLTE, or a newer libpng in which PNG_MNG_FEATURES_SUPPORTED was
  * ifdef'ed out.  Earlier versions would crash if the bKGD chunk was
  * encountered after an empty PLTE, so we have to look ahead for bKGD
  * chunks and remove them from the datastream that is passed to libpng,
@@ -989,6 +1004,7 @@ static void png_flush_data(png_structp png_ptr)
 }
 #endif
 
+#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
 static int PalettesAreEqual(Image *a,Image *b)
 {
   int
@@ -1009,6 +1025,7 @@ static int PalettesAreEqual(Image *a,Image *b)
   }
   return((int) True);
 }
+#endif
 
 static void MngInfoDiscardObject(MngInfo *mng_info,int i)
 {
@@ -1234,14 +1251,14 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
        image->iptc_profile.length=length;
        image->iptc_profile.info=info;
        if (image_info->verbose)
-         printf(" Got an IPTC profile.\n");
+         printf(" Found an IPTC profile.\n");
      }
    else if (!memcmp(&text[ii].key[17], "icm\0",4))
      {
        image->color_profile.length=length;
        image->color_profile.info=info;
        if (image_info->verbose)
-         printf(" Got an ICM (ICCP) profile.\n");
+         printf(" Found an ICM (ICCP) profile.\n");
      }
    else
      {
@@ -1257,7 +1274,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
        image->generic_profile[i].info=info;
        image->generic_profiles++;
        if (image_info->verbose)
-         printf(" Got a generic profile, type %s\n", &text[ii].key[17]);
+         printf(" Found a generic profile, type %s\n", &text[ii].key[17]);
      }
    return True;
 }
@@ -2505,7 +2522,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
         png_set_read_fn(ping,image,png_get_data);
 #else
-#  ifdef PNG_READ_EMPTY_PLTE_SUPPORTED
+#if defined(PNG_READ_EMPTY_PLTE_SUPPORTED)
         png_permit_empty_plte(ping,True);
         png_set_read_fn(ping,image,png_get_data);
 #  else
@@ -3109,7 +3126,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     q->opacity=((*p++) << 8);
                     q->opacity|=(*p++);
-                    q->opacity=(Quantum) (MaxRGB-q->opacity);
+                    q->opacity=(Quantum) MaxRGB-q->opacity);
                     q++;
                   }
 #else
@@ -4092,11 +4109,14 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     *attribute;
 
   int
+#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
     all_images_are_gray,
+    equal_palettes,
+    need_local_plte,
+#endif
     equal_backgrounds,
     equal_chrms,
     equal_gammas,
-    equal_palettes,
     equal_physs,
     equal_srgbs,
     framing_mode,
@@ -4108,7 +4128,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     need_defi,
     need_fram,
     need_iterations,
-    need_local_plte,
     need_matte,
     old_framing_mode,
     rowbytes,
@@ -4162,7 +4181,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   page.x=0;
   page.y=0;
   have_write_global_plte=False;
+#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
   need_local_plte=True;
+#endif
   have_write_global_srgb=False;
   have_write_global_gama= False;
   have_write_global_chrm=False;
@@ -4197,15 +4218,17 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       */
       initial_delay=image->delay;
       need_iterations=False;
-      need_local_plte=False;
       equal_backgrounds=True;
-      all_images_are_gray=True;
       equal_chrms=image->chromaticity.white_point.x != 0.0;
       equal_gammas=True;
       equal_srgbs=True;
-      equal_palettes=False;
       equal_physs=True;
       image_count=0;
+#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
+      all_images_are_gray=True;
+      equal_palettes=False;
+      need_local_plte=False;
+#endif
       for (next_image=image; next_image != (Image *) NULL; )
       {
         page=next_image->page;
@@ -4245,8 +4268,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               use_global_plte=equal_palettes;
             need_local_plte=!equal_palettes;
           }
-#else
-        need_local_plte=True;
 #endif
         if (next_image->next != (Image *) NULL)
           {
@@ -4298,7 +4319,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           equal_srgbs=False;
           equal_physs=False;
           use_global_plte=False;
+#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
           need_local_plte=True;
+#endif
           need_iterations=False;
         }
      if (!need_fram)
@@ -4508,6 +4531,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            }
        }
 
+#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
      if (!need_local_plte && image->storage_class==PseudoClass
          && !all_images_are_gray)
        {
@@ -4530,10 +4554,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          WriteBlobMSBLong(image,crc32(0,chunk,data_length+4));
          have_write_global_plte=True;
        }
+#endif
     }
   scene=0;
   delay=0;
+#ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
   equal_palettes=False;
+#endif
   do
   {
     png_colorp
@@ -4542,6 +4569,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     int
        not_valid;
 
+#if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
+    defined(PNG_MNG_FEATURES_SUPPORTED)
     /*
       If we aren't using a global palette for the entire MNG, check to
       see if we can use one for two or more consecutive images.
@@ -4581,6 +4610,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         else
           have_write_global_plte=False;
       }
+#endif
     if (need_defi)
       {
         int

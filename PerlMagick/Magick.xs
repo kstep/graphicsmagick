@@ -404,6 +404,8 @@ static struct
     { "UnsharpMask", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference}, {"amount", DoubleReference},
       {"threshold", DoubleReference} } },
+    { "MotionBlur", { {"geom", StringReference}, {"radius", DoubleReference},
+      {"sigma", DoubleReference}, {"angle", DoubleReference} } },
   };
 
 /*
@@ -3730,6 +3732,8 @@ Mogrify(ref,...)
     ProfileImage       = 136
     UnsharpMask        = 137
     UnsharpMaskImage   = 138
+    MotionBlur         = 139
+    MotionBlurImage    = 140
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -5230,6 +5234,28 @@ Mogrify(ref,...)
               &radius,&sigma);
           image=
             UnsharpMaskImage(image,radius,sigma,amount,threshold,&exception);
+          break;
+        }
+        case 70:  /* MotionBlur */
+        {
+          double
+            angle,
+            radius,
+            sigma;
+
+          radius=0.0;
+          sigma=1.0;
+          angle=1.0;
+          if (attribute_flag[1])
+            radius=argument_list[1].double_reference;
+          if (attribute_flag[2])
+            sigma=argument_list[2].double_reference;
+          if (attribute_flag[3])
+            angle=argument_list[3].double_reference;
+          if (attribute_flag[0])
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
+              &radius,&sigma);
+          image=MotionBlurImage(image,radius,sigma,angle,&exception);
           break;
         }
       }
