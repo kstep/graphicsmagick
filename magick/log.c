@@ -506,6 +506,7 @@ static void *LogToBlob(const char *filename,size_t *length,
       (void) close(file);
       return((void *) NULL);
     }
+  (void) MagickSeek(file,0,SEEK_SET);
   *length=(size_t) offset;
   blob=(unsigned char *) AcquireMemory(*length+1);
   if (blob == (unsigned char *) NULL)
