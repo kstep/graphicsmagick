@@ -2672,9 +2672,9 @@ static unsigned int IsDCM(const unsigned char *magick,const size_t length)
 static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    explicit_vr[3],
-    implicit_vr[3],
-    magick[128],
+    explicit_vr[MaxTextExtent],
+    implicit_vr[MaxTextExtent],
+    magick[MaxTextExtent],
     photometric[MaxTextExtent],
     transfer_syntax[MaxTextExtent];
 
