@@ -139,7 +139,7 @@ int main( int /*argc*/, char ** argv)
     //
     drawList.push_back(DrawableFont(font));
     drawList.push_back(DrawableFillColor("green"));
-    drawList.push_back(DrawableStrokeColor("green"));
+    drawList.push_back(DrawableStrokeColor(Color())); // unset color
     drawList.push_back(DrawablePointSize(24));
     drawList.push_back(DrawableTranslation(30,140));
     drawList.push_back(DrawableRotation(45.0));
