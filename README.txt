@@ -159,6 +159,7 @@ UNIX COMPILATION
       --enable-lzw         enable LZW support (default is no)
       --enable-16bit-pixel enable 16 bit pixels (default is no)
       --enable-socks       enable use of SOCKS 5 library and 'rftp'
+      --with-frozenpaths   enable frozen delegate paths (default is yes)
       --with-perl          enable build/install of PerlMagick (default is yes)
       --with-bzlib         enable BZlib (default is yes)
       --with-dps           enable Display Postscript (default is yes)
@@ -211,6 +212,19 @@ UNIX COMPILATION
         3) building PIC versions of the delegate libraries may take
         additional expertise and effort; 4) you are unable to build
         shared libraries.
+
+      o --with-frozenpaths: By default, the configure script will
+        determine the location of all delegates (external programs)
+        and incorporate the full paths within the delegates.mgk file.
+        This is the default because it is assumed that the installer's
+        environment is appropriately configured and that the operation
+        of ImageMagick should not be subject to the end-user's
+        environment.  However, if it is desireable to allow the end
+        user to define their own environment or possible that the
+        end user's environment does not match the installer's
+        environment (e.g. for binary distributions), this option may
+        be set to 'no' so that only the delegate's name is included
+        in the delegates.mgk file.
 
       o --with-perl: conveniently compile and install PerlMagick in
         one step.  Without this option you first install ImageMagick,

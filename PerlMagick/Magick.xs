@@ -2475,10 +2475,11 @@ Display(ref,...)
         XGetResourceInfo(resource_database,client_name,&resource);
         resource.image_info=package_info->image_info;
         resource.quantize_info=package_info->quantize_info;
+        resource.immutable=True;
+        if (package_info->image_info.delay)
+          resource.delay=atoi(package_info->image_info.delay);
         for (next=image; next; next=next->next)
         {
-          if (package_info->image_info.delay)
-            resource.delay=atoi(package_info->image_info.delay);
           state=DefaultState;
           (void) XDisplayImage(display,&resource,&client_name,1,&next,&state);
           if (state & ExitState)

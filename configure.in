@@ -91,6 +91,7 @@ then
   fi
 fi
 
+
 # Enable LZW compression.
 AC_ARG_ENABLE(lzw,
 	      [  --enable-lzw            enable LZW support (default is no)],
@@ -117,12 +118,17 @@ AC_ARG_ENABLE(socks,
 	      [with_socks=$enableval],
 	      [with_socks='no'])
 
+# Enable support for full delegate paths
+AC_ARG_WITH(frozenpaths,
+	      [  --with-frozenpaths      enable frozen delegate paths (default is yes)],
+	      [with_frozenpaths=$withval],
+	      [with_frozenpaths='yes'])
+
 # Enable build/install of PerlMagick.
 AC_ARG_WITH(perl,
 	      [  --with-perl             enable build/install of PerlMagick (default is yes)],
 	      [with_perl=$withval],
 	      [with_perl='yes'])
-
 
 AM_CONDITIONAL(WITH_PERL, test "$with_perl" != 'no')
 with_perl_static='no'
@@ -806,69 +812,121 @@ fi
 eval DelegatePath="${DATA_DIR}/ImageMagick/"
 AC_DEFINE_UNQUOTED(DelegatePath,"$DelegatePath")
 
-# Look for 'cat' program
+# Locate delegates
 AC_PATH_PROG(CatDelegate, cat, cat)
-AC_SUBST(CatDelegate)
-
-# Look for 'echo' program
 AC_PATH_PROG(EchoDelegate, echo, echo)
-AC_SUBST(EchoDelegate)
-
-# Look for LP program.
 AC_PATH_PROG(LPDelegate, lp, lp)
-AC_SUBST(LPDelegate)
-
-# Look for 'mv' program
 AC_PATH_PROG(MVDelegate, mv, mv)
-AC_SUBST(MVDelegate)
-
-# Look for 'rm' program
 AC_PATH_PROG(RMDelegate, rm, rm)
-AC_SUBST(RMDelegate)
-
-# Look for Netscape program.
 AC_PATH_PROG(BrowseDelegate, netscape, netscape)
-AC_SUBST(BrowseDelegate)
-
-# Look for 'bzip2' program
 AC_PATH_PROG(BZIPDelegate, bzip2, bzip2)
-AC_SUBST(BZIPDelegate)
-
-# Look for 'compress' program
 AC_PATH_PROG(LZWEncodeDelegate, compress, compress)
-AC_SUBST(LZWEncodeDelegate)
-
-# Look for xterm program.
 AC_PATH_PROG(EditorDelegate, xterm, xterm)
-AC_SUBST(EditorDelegate)
-
-# Look for DOT format support program 'dot'
 AC_PATH_PROG(DOTDecodeDelegate, dot, dot)
-AC_SUBST(DOTDecodeDelegate)
-
-# Look for TeX DVI format support program 'dvips'
 AC_PATH_PROG(DVIDecodeDelegate, dvips, dvips)
-AC_SUBST(DVIDecodeDelegate)
-
-# Look for Fig format support program 'fig2dev'
-have_fig2dev='no'
 AC_PATH_PROG(FIGDecodeDelegate, fig2dev, fig2dev)
-if test "$FIGDecodeDelegate" != 'fig2dev' ; then have_fig2dev='yes' ; fi
-AC_SUBST(FIGDecodeDelegate)
-
-# Look for 'gnuplot' program
 AC_PATH_PROG(GnuplotDecodeDelegate, gnuplot, gnuplot)
-AC_SUBST(GnuplotDecodeDelegate)
-
-# Look for 'gzip' program
 AC_PATH_PROG(ZipDelegate, gzip, gzip)
-AC_SUBST(ZipDelegate)
-
-# Look for Ghostscript 'gs'
-have_gs='no'
 AC_PATH_PROG(PSDelegate, gs, gs)
-if test "$PSDelegate" != 'gs' ; then have_gs='yes' ; fi
+AC_PATH_PROG(MANDelegate, groff, groff)
+AC_PATH_PROG(LaunchDelegate, gimp, gimp)
+AC_PATH_PROG(MPEGDecodeDelegate, mpeg2decode, mpeg2decode)
+AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode, mpeg2encode)
+AC_PATH_PROG(PGPDecodeDelegate, pgpv, pgpv)
+AC_PATH_PROG(RADDecodeDelegate, ra_ppm, ra_ppm)
+AC_PATH_PROG(CGMDecodeDelegate, ralcgm, ralcgm)
+AC_PATH_PROG(LZWDecodeDelegate, uncompress, uncompress)
+AC_PATH_PROG(HPGLDecodeDelegate, hp2xx, hp2xx)
+AC_PATH_PROG(HTMLDecodeDelegate, html2ps, html2ps)
+AC_PATH_PROG(POVDelegate, povray, povray)
+AC_PATH_PROG(RLEEncodeDelegate, rawtorle, rawtorle)
+AC_PATH_PROG(SCANDecodeDelegate, scanimage, scanimage)
+AC_PATH_PROG(WWWDecodeDelegate, GET, GET)
+
+# Installed ImageMagick utiltity paths
+ConvertDelegate=$BIN_DIR/convert
+ShowImageDelegate=$BIN_DIR/display
+MogrifyDelegate=$BIN_DIR/mogrify
+
+# Set delegate booleans
+have_fig2dev='no' ; if test "$FIGDecodeDelegate" != 'fig2dev' ; then have_fig2dev='yes' ; fi
+have_gs='no'      ; if test "$PSDelegate" != 'gs' ; then have_gs='yes' ; fi
+have_hp2xx='no'   ; if test "$HPGLDecodeDelegate" != 'hp2xx' ; then have_hp2xx='yes' ; fi
+have_mpeg2decode='no' ; if test "$MPEGDecodeDelegate" != 'mpeg2decode' ; then have_mpeg2decode='yes' ; fi
+have_mpeg2encode='no' ; if test "$MPEGEncodeDelegate" != 'mpeg2encode' ; then have_mpeg2encode='yes' ; fi
+have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != 'ra_ppm' ; then have_ra_ppm='yes' ; fi
+have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != 'ralcgm' ; then have_ralcgm='yes' ; fi
+
+if test "$with_frozenpaths" != 'yes'
+then
+  # Re-set delegate definitions to default (no paths)
+  BZIPDelegate='bzip2'
+  BrowseDelegate='netscape'
+  CGMDecodeDelegate='ralcgm'
+  CatDelegate='cat'
+  ConvertDelegate='convert'
+  DOTDecodeDelegate='dot'
+  DVIDecodeDelegate='dvips'
+  EchoDelegate='echo'
+  EditorDelegate='xterm'
+  FIGDecodeDelegate='fig2dev'
+  GnuplotDecodeDelegate='gnuplot'
+  HPGLDecodeDelegate='hp2xx'
+  HTMLDecodeDelegate='html2ps'
+  LPDelegate='lp'
+  LZWDecodeDelegate='uncompress'
+  LZWEncodeDelegate='compress'
+  LaunchDelegate='gimp'
+  MANDelegate='groff'
+  MPEGDecodeDelegate='mpeg2decode'
+  MPEGEncodeDelegate='mpeg2encode'
+  MVDelegate='mv'
+  MogrifyDelegate='mogrify'
+  PGPDecodeDelegate='pgpv'
+  POVDelegate='povray'
+  PSDelegate='gs'
+  RADDecodeDelegate='ra_ppm'
+  RLEEncodeDelegate='rawtorle'
+  RMDelegate='rm'
+  SCANDecodeDelegate='scanimage'
+  ShowImageDelegate='display'
+  WWWDecodeDelegate='GET'
+  ZipDelegate='gzip'
+fi
+
+# Delegate substitutions
+AC_SUBST(BZIPDelegate)
+AC_SUBST(BrowseDelegate)
+AC_SUBST(CGMDecodeDelegate)
+AC_SUBST(CatDelegate)
+AC_SUBST(ConvertDelegate)
+AC_SUBST(DOTDecodeDelegate)
+AC_SUBST(DVIDecodeDelegate)
+AC_SUBST(EchoDelegate)
+AC_SUBST(EditorDelegate)
+AC_SUBST(FIGDecodeDelegate)
+AC_SUBST(GnuplotDecodeDelegate)
+AC_SUBST(HPGLDecodeDelegate)
+AC_SUBST(HTMLDecodeDelegate)
+AC_SUBST(LPDelegate)
+AC_SUBST(LZWDecodeDelegate)
+AC_SUBST(LZWEncodeDelegate)
+AC_SUBST(LaunchDelegate)
+AC_SUBST(MANDelegate)
+AC_SUBST(MPEGDecodeDelegate)
+AC_SUBST(MPEGEncodeDelegate)
+AC_SUBST(MVDelegate)
+AC_SUBST(MogrifyDelegate)
+AC_SUBST(PGPDecodeDelegate)
+AC_SUBST(POVDelegate)
 AC_SUBST(PSDelegate)
+AC_SUBST(RADDecodeDelegate)
+AC_SUBST(RLEEncodeDelegate)
+AC_SUBST(RMDelegate)
+AC_SUBST(SCANDecodeDelegate)
+AC_SUBST(ShowImageDelegate)
+AC_SUBST(WWWDecodeDelegate)
+AC_SUBST(ZipDelegate)
 
 # Figure out what drivers Ghostscript supports (if available)
 if test $have_gs = 'yes'
@@ -935,88 +993,6 @@ then
   AC_MSG_RESULT($GSEPSDevice)
 
 fi
-
-# Look for groff program.
-AC_PATH_PROG(MANDelegate, groff, groff)
-AC_SUBST(MANDelegate)
-
-# Look for Gimp program.
-AC_PATH_PROG(LaunchDelegate, gimp, gimp)
-AC_SUBST(LaunchDelegate)
-
-# Look for MPEG support program 'mpeg2decode'
-have_mpeg2decode='no'
-AC_PATH_PROG(MPEGDecodeDelegate, mpeg2decode, mpeg2decode)
-if test "$MPEGDecodeDelegate" != 'mpeg2decode' ; then have_mpeg2decode='yes' ; fi
-AC_SUBST(MPEGDecodeDelegate)
-
-# Look for MPEG support program 'mpeg2encode'
-have_mpeg2encode='no'
-AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode, mpeg2encode)
-if test "$MPEGEncodeDelegate" != 'mpeg2encode' ; then have_mpeg2encode='yes' ; fi
-AC_SUBST(MPEGEncodeDelegate)
-
-# Look for PGP support program 'pgpv'
-AC_PATH_PROG(PGPDecodeDelegate, pgpv, pgpv)
-AC_SUBST(PGPDecodeDelegate)
-
-# Look for Radiance format support program 'ra_ppm'
-have_ra_ppm='no'
-AC_PATH_PROG(RADDecodeDelegate, ra_ppm, ra_ppm)
-if test "$RADDecodeDelegate" != 'ra_ppm' ; then have_ra_ppm='yes' ; fi
-AC_SUBST(RADDecodeDelegate)
-
-# Look for CGM support program 'ralcgm'
-have_ralcgm='no'
-AC_PATH_PROG(CGMDecodeDelegate, ralcgm, ralcgm)
-if test "$CGMDecodeDelegate" != 'ralcgm' ; then have_ralcgm='yes' ; fi
-AC_SUBST(CGMDecodeDelegate)
-
-# Look for 'uncompress' program
-AC_PATH_PROG(LZWDecodeDelegate, uncompress, uncompress)
-AC_SUBST(LZWDecodeDelegate)
-
-# Look for 'hp2xx' program (for HPGL)
-have_hp2xx='no'
-AC_PATH_PROG(HPGLDecodeDelegate, hp2xx, hp2xx)
-if test "$HPGLDecodeDelegate" != 'hp2xx' ; then have_hp2xx='yes' ; fi
-AC_SUBST(HPGLDecodeDelegate)
-
-# Look for 'html2ps' program
-AC_PATH_PROG(HTMLDecodeDelegate, html2ps, html2ps)
-AC_SUBST(HTMLDecodeDelegate)
-
-# Look for 'povray' program
-AC_PATH_PROG(POVDelegate, povray, povray)
-AC_SUBST(POVDelegate)
-
-# Look for 'rawtorle' program
-AC_PATH_PROG(RLEEncodeDelegate, rawtorle, rawtorle)
-AC_SUBST(RLEEncodeDelegate)
-
-# Look for 'scanimage' program
-AC_PATH_PROG(SCANDecodeDelegate, scanimage, scanimage)
-AC_SUBST(SCANDecodeDelegate)
-
-# Look for 'GET' program
-AC_PATH_PROG(WWWDecodeDelegate, GET, GET)
-AC_SUBST(WWWDecodeDelegate)
-
-#
-# Define paths to installed ImageMagick utilities
-#
-
-# Configure convert program
-ConvertDelegate=$BIN_DIR/convert
-AC_SUBST(ConvertDelegate)
-
-# Configure display program.
-ShowImageDelegate=$BIN_DIR/display
-AC_SUBST(ShowImageDelegate)
-
-# Configure mogrify program.
-MogrifyDelegate=$BIN_DIR/mogrify
-AC_SUBST(MogrifyDelegate)
 
 #
 # PerlMagick-related configuration

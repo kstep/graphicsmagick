@@ -7771,8 +7771,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-unsigned int WritePREVIEWImage(const ImageInfo *image_info,
-  Image *image)
+unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
 {
 #define NumberTiles  9
 #define PreviewImageText  "  Creating image preview...  "
@@ -12772,13 +12771,8 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 */
 unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 {
-  Atom
-    wm_delete_window,
-    wm_protocols;
-
   char
-    *client_name,
-    name[MaxTextExtent];
+    *client_name;
 
   Display
     *display;
@@ -12789,32 +12783,17 @@ unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
+  unsigned long
+    state;
+
   Window
     root_window;
-
-  XGCValues
-    context_values;
 
   XResourceInfo
     resource_info;
 
   XrmDatabase
     resource_database;
-
-  XEvent
-    event;
-
-  XPixelInfo
-    pixel_info;
-
-  XStandardColormap
-    *map_info;
-
-  XVisualInfo
-    *visual_info;
-
-  XWindowInfo
-    window_info;
 
   /*
     Open X server connection.
@@ -12832,118 +12811,16 @@ unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetResourceInfo(resource_database,client_name,&resource_info);
+  resource_info.image_info=(*image_info);
+  resource_info.immutable=True;
+  if (image_info->delay)
+    resource_info.delay=atoi(image_info->delay);
   /*
-    Allocate standard colormap.
+    Display image.
   */
-  map_info=XAllocStandardColormap();
-  if (map_info == (XStandardColormap *) NULL)
-    MagickWarning(XServerWarning,"Unable to allocate standard colormap",
-      (char *) NULL);
-  /*
-    Initialize visual info.
-  */
-  visual_info=XBestVisualInfo(display,map_info,&resource_info);
-  if (visual_info == (XVisualInfo *) NULL)
-    MagickWarning(XServerWarning,"Unable to get visual",
-      resource_info.visual_type);
-  map_info->colormap=(Colormap) NULL;
-  pixel_info.pixels=(unsigned long *) NULL;
-  pixel_info.gamma_map=(XColor *) NULL;
-  if ((map_info == (XStandardColormap *) NULL) ||
-      (visual_info == (XVisualInfo *) NULL))
-    {
-      XFreeResources(display,visual_info,map_info,&pixel_info,
-        (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
-      PrematureExit(ResourceLimitWarning,"Unable to write X image",image);
-    }
-  /*
-    Initialize Standard Colormap.
-  */
-  ProgressMonitor(SaveImageText,100,400);
-  XMakeStandardColormap(display,visual_info,&resource_info,image,map_info,
-    &pixel_info);
-  /*
-    Initialize window info structure.
-  */
-  window_info.id=(Window) NULL;
-  XGetWindowInfo(display,visual_info,map_info,&pixel_info,(XFontStruct *) NULL,
-    &resource_info,&window_info);
-  window_info.name=name;
-  p=image->filename+Extent(image->filename)-1;
-  while ((p > image->filename) && !IsBasenameSeparator(*(p-1)))
-    p--;
-  FormatString(window_info.name,"%.1024s[%u]",p,image->scene);
-  if (image->scene == 0)
-    FormatString(window_info.name,"%.1024s",p);
-  window_info.width=image->columns;
-  window_info.height=image->rows;
-  window_info.attributes.event_mask=ButtonPressMask | ExposureMask;
-  XMakeWindow(display,XRootWindow(display,visual_info->screen),(char **) NULL,0,
-    (XClassHint *) NULL,(XWMHints *) NULL,&window_info);
-  root_window=XRootWindow(display,XDefaultScreen(display));
-  XSetTransientForHint(display,window_info.id,root_window);
-  window_info.x=0;
-  window_info.y=0;
-  window_info.shared_memory=False;
-  /*
-    Graphic context.
-  */
-  context_values.background=pixel_info.background_color.pixel;
-  context_values.foreground=pixel_info.foreground_color.pixel;
-  pixel_info.annotate_context=XCreateGC(display,window_info.id,GCBackground |
-    GCForeground,&context_values);
-  if (pixel_info.annotate_context == (GC) NULL)
-    PrematureExit(XServerError,"Unable to create graphic context",image);
-  window_info.annotate_context=pixel_info.annotate_context;
-  context_values.background=pixel_info.foreground_color.pixel;
-  context_values.foreground=pixel_info.background_color.pixel;
-  pixel_info.highlight_context=XCreateGC(display,window_info.id,GCBackground |
-    GCForeground,&context_values);
-  if (pixel_info.annotate_context == (GC) NULL)
-    PrematureExit(XServerError,"Unable to create graphic context",image);
-  window_info.highlight_context=pixel_info.highlight_context;
-  pixel_info.widget_context=(GC) NULL;
-  window_info.widget_context=(GC) NULL;
-  /*
-    Initialize X image.
-  */
-  ProgressMonitor(SaveImageText,250,400);
-  status=XMakeImage(display,&resource_info,&window_info,image,image->columns,
-    image->rows);
-  if (status == False)
-    {
-      XFreeResources(display,visual_info,map_info,&pixel_info,
-        (XFontStruct *) NULL,&resource_info,&window_info);
-      PrematureExit(ResourceLimitWarning,"Unable to write X image",image);
-    }
-  FreeMemory(window_info.ximage->data);
-  window_info.ximage->data=(char *) NULL;
-  /*
-    Display image and wait for button press to exit.
-  */
-  ProgressMonitor(SaveImageText,400,400);
-  wm_protocols=XInternAtom(display,"WM_PROTOCOLS",False);
-  wm_delete_window=XInternAtom(display,"WM_DELETE_WINDOW",False);
-  XMapWindow(display,window_info.id);
-  for ( ; ; )
-  {
-    XNextEvent(display,&event);
-    if (event.type == ButtonPress)
-      break;
-    if (event.type == ClientMessage)
-      if (event.xclient.message_type == wm_protocols)
-        if (*event.xclient.data.l == wm_delete_window)
-          if (event.xclient.window == window_info.id)
-            break;
-    if (event.type == Expose)
-      XRefreshWindow(display,&window_info,&event);
-  }
-  XWithdrawWindow(display,window_info.id,window_info.screen);
-  /*
-    Free X resources.
-  */
-  XFreeResources(display,visual_info,map_info,&pixel_info,(XFontStruct *) NULL,
-    &resource_info,&window_info);
+  state=DefaultState;
+  (void) XDisplayImage(display,&resource_info,&client_name,1,&image,&state);
+  XCloseDisplay(display);
   return(True);
 }
 

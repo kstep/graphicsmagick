@@ -871,37 +871,33 @@ Export Image *AverageImages(Image *images)
 %
 %    o image: The address of a structure of type Image.
 %
-%    o border_info: Specifies a pointer to a XRectangle which defines the
-%      border region.
+%    o border_info: Specifies a pointer to a structure of type Rectangle which
+%      defines the border region.
 %
 */
 Export Image *BorderImage(Image *image,RectangleInfo *border_info)
 {
-#define BorderImageText  "  Adding border to image...  "
+  ColorPacket
+    color;
 
   Image
     *bordered_image;
 
+  FrameInfo
+    frame_info;
+
   assert(image != (Image *) NULL);
   assert(border_info != (RectangleInfo *) NULL);
-  /*
-    Initialize bordered image tro border color.
-  */
-  bordered_image=CloneImage(image,image->columns+(border_info->width << 1),
-    image->rows+(border_info->height << 1),False);
-  if (bordered_image == (Image *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to border image",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
-  bordered_image->class=DirectClass;
-  SetImage(bordered_image,&bordered_image->border_color);
-  /*
-    Composite image onto bordered image.
-  */
-  CompositeImage(bordered_image,ReplaceCompositeOp,image,
-    border_info->width,border_info->height);
+  frame_info.width=image->columns+(border_info->width << 1);
+  frame_info.height=image->rows+(border_info->height << 1);
+  frame_info.x=border_info->width;
+  frame_info.y=border_info->height;
+  frame_info.inner_bevel=0;
+  frame_info.outer_bevel=0;
+  color=image->border_color;
+  image->matte_color=image->border_color;
+  bordered_image=FrameImage(image,&frame_info);
+  image->border_color=color;
   return(bordered_image);
 }
 
@@ -2383,7 +2379,9 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
     }
   if (clone_image->pixels == (RunlengthPacket *) NULL)
     return((Image *) NULL);
-  if (clone_pixels)
+  if (!clone_pixels)
+    SetImage(clone_image);
+  else
     {
       register RunlengthPacket
         *p,
@@ -7639,7 +7637,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
     /*
       Initialize montage image to background color.
     */
-    SetImage(montage_image,&montage_image->background_color);
+    SetImage(montage_image);
     handler=SetMonitorHandler((MonitorHandler) NULL);
     if (montage_info->texture != (char *) NULL)
       TextureImage(montage_image,montage_info->texture);
@@ -10038,24 +10036,24 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetImage initializes the reference image to the specified color.
+%  Method SetImage initializes the reference image to the background color.
 %
 %  The format of the SetImage routine is:
 %
-%      SetImage(image,color)
+%      SetImage(image)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o color: A ColorPacket structure.  This is the RGB value of the image
-%      color.
-%
 %
 */
-Export void SetImage(Image *image,ColorPacket *color)
+Export void SetImage(Image *image)
 {
+  ColorPacket
+    color;
+
   register int
     i;
 
@@ -10063,14 +10061,14 @@ Export void SetImage(Image *image,ColorPacket *color)
     *p;
 
   assert(image != (Image *) NULL);
+  color=image->background_color;
   p=image->pixels;
   for (i=0; i < image->packets; i++)
   {
-    p->red=color->red;
-    p->green=color->green;
-    p->blue=color->blue;
-    if (image->packets == (image->columns*image->rows))
-      p->length=0;
+    p->red=color.red;
+    p->green=color.green;
+    p->blue=color.blue;
+    p->length=0;
     p->index=0;
     p++;
   }

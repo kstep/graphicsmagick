@@ -4,10 +4,6 @@
 #ifndef _MAGICK_H
 #define _MAGICK_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
 #if defined(sun)
 #define __EXTENSIONS__  1
 #endif
@@ -56,6 +52,10 @@ extern "C" {
 /*
   ImageMagick include declarations.
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 #if defined(__cplusplus) || defined(c_plusplus)
 #define class  c_class
 #endif

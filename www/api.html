@@ -114,7 +114,7 @@ image, creates a thumbnail, and writes it to disk in the GIF image format.
       /*
         Turn the image into a thumbnail.
       */
-      scaled_image=ZoomImage(image,106,80,MitchellFilter);
+      scaled_image=ZoomImage(image,106,80);
       if (scaled_image != (Image *) NULL)
         {
           DestroyImage(image);

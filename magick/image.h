@@ -931,7 +931,7 @@ extern Export void
   OpenImage(const ImageInfo *,Image *,const char *),
   RaiseImage(Image *,RectangleInfo *,const int),
   RGBTransformImage(Image *,const unsigned int),
-  SetImage(Image *,ColorPacket *),
+  SetImage(Image *),
   SetImageInfo(ImageInfo *,unsigned int),
   SetNumberScenes(Image *),
   SignatureImage(Image *),
