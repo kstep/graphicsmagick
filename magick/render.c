@@ -4617,6 +4617,47 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   P e r m u t a t e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Permutate()
+%
+%  The format of the Permutate method is:
+%
+%      void Permutate(long n,long k)
+%
+%  A description of each parameter follows:
+%
+%    o n:
+%
+%    o k:
+%
+%
+*/
+static inline double Permutate(const long n,const long k)
+{
+  double
+    r;
+
+  register long
+    i;
+
+  r=1.0;
+  for (i=k+1; i <= n; i++)
+    r*=i;
+  for (i=1; i <= (n-k); i++)
+    r/=i;
+  return(r);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   T r a c e P r i m i t i v e                                               %
 %                                                                             %
 %                                                                             %

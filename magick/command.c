@@ -1015,7 +1015,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowCompositeException(OptionError,"Missing page geometry",
                     option);
-                image_info->page=PostscriptGeometry(argv[i]);
+                image_info->page=GetPageGeometry(argv[i]);
               }
             break;
           }

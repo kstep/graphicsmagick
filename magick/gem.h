@@ -12,8 +12,7 @@ extern "C" {
   Graphic gems define declarations.
 */
 extern MagickExport double
-  ExpandAffine(const AffineMatrix *),
-  Permutate(const long,const long);
+  ExpandAffine(const AffineMatrix *);
 
 extern MagickExport int
   GetOptimalKernelWidth(const double,const double),

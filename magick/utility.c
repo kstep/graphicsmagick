@@ -1276,13 +1276,6 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %
 %
 */
-
-MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
-  unsigned long *width,unsigned long *height)
-{
-  return(GetMagickGeometry(geometry,x,y,width,height));
-}
-
 MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
   unsigned long *width,unsigned long *height)
 {
@@ -1463,7 +1456,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
 %  GetPageGeometry() replaces any page mneumonic with the equivalent size in
 %  picas.
 %
-%  The format of the GetPageGeometry() method is:
+%  The format of the GetPageGeometry method is:
 %
 %      char *GetPageGeometry(const char *page_geometry)
 %
@@ -1475,12 +1468,6 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
 %
 %
 */
-
-MagickExport char *PostscriptGeometry(const char *geometry)
-{
-  return(GetPageGeometry(geometry));
-}
-
 MagickExport char *GetPageGeometry(const char *page_geometry)
 {
   static const char

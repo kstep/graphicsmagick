@@ -815,47 +815,6 @@ MagickExport void Modulate(const double percent_hue,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P e r m u t a t e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Permutate()
-%
-%  The format of the Permutate method is:
-%
-%      void Permutate(long n,long k)
-%
-%  A description of each parameter follows:
-%
-%    o n:
-%
-%    o k:
-%
-%
-*/
-MagickExport double Permutate(const long n,const long k)
-{
-  double
-    r;
-
-  register long
-    i;
-
-  r=1.0;
-  for (i=k+1; i <= n; i++)
-    r*=i;
-  for (i=1; i <= (n-k); i++)
-    r/=i;
-  return(r);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   T r a n s f o r m H S L                                                   %
 %                                                                             %
 %                                                                             %

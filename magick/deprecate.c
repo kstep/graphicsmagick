@@ -54,3 +54,110 @@
   Include declarations.
 */
 #include "studio.h"
+#include "deprecate.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   P a r s e I m a g e G e o m e t r y                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ParseImageGeometry() is similar to GetGeometry() except the returned
+%  geometry is modified as determined by the meta characters:  %, !, <,
+%  and >.
+%
+%  The format of the ParseImageGeometry method is:
+%
+%      int ParseImageGeometry(const char *geometry,long *x,long *y,
+%        unsigned long *width,unsigned long *height)
+%
+%  A description of each parameter follows:
+%
+%    o flags:  Method ParseImageGeometry returns a bitmask that indicates
+%      which of the four values were located in the geometry string.
+%
+%    o image_geometry:  Specifies a character string representing the geometry
+%      specification.
+%
+%    o x,y:  A pointer to an integer.  The x and y offset as determined by
+%      the geometry specification is returned here.
+%
+%    o width,height:  A pointer to an unsigned integer.  The width and height
+%      as determined by the geometry specification is returned here.
+%
+%
+*/
+MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
+  unsigned long *width,unsigned long *height)
+{
+  return(GetMagickGeometry(geometry,x,y,width,height));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  P o s t s c r i p t G e o m e t r y                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PostscriptGeometry() replaces any page mneumonic with the equivalent size in
+%  picas.
+%
+%  The format of the PostscriptGeometry method is:
+%
+%      char *PostscriptGeometry(const char *page)
+%
+%  A description of each parameter follows.
+%
+%   o  page:  Specifies a pointer to an array of characters.
+%      The string is either a Postscript page name (e.g. A4) or a postscript
+%      page geometry (e.g. 612x792+36+36).
+%
+%
+*/
+MagickExport char *PostscriptGeometry(const char *page)
+{
+  return(GetPageGeometry(page));
+}
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   S e t C a c h e T h e s h o l d                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetCacheThreshold() sets the amount of free memory allocated for the
+%  pixel cache.  Once this threshold is exceeded, all subsequent pixels cache
+%  operations are to/from disk.
+%
+%  The format of the SetCacheThreshold() method is:
+%
+%      void SetCacheThreshold(const size_t threshold)
+%
+%  A description of each parameter follows:
+%
+%    o threshold: The number of megabytes of memory available to the pixel
+%      cache.
+%
+%
+*/
+MagickExport void SetCacheThreshold(const unsigned long size)
+{
+  SetMagickResourceLimit(MemoryResource,size);
+  SetMagickResourceLimit(MapResource,2*size);
+}
