@@ -2821,9 +2821,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
   const ImageAttribute
     *attribute;
 
-  ExceptionInfo
-    exception;
-
   ImageInfo
     *clone_info;
 
@@ -2838,13 +2835,12 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
     length;
 
   assert(image != (Image *) NULL);
-  GetExceptionInfo(&exception);
   if ((formatted_text == (const char *) NULL) || (*formatted_text == '\0'))
     return((char *) NULL);
   text=(char *) formatted_text;
   if ((*text == '@') && IsAccessible(text+1))
     {
-      text=(char *) FileToBlob(text+1,&length,&exception);
+      text=(char *) FileToBlob(text+1,&length,&image->exception);
       if (text == (char *) NULL)
         return((char *) NULL);
     }
@@ -2973,7 +2969,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,
       }
       case 'k':
       {
-        FormatString(q,"%lu",GetNumberColors(image,(FILE *) NULL,&exception));
+        FormatString(q,"%lu",GetNumberColors(image,(FILE *) NULL,
+          &image->exception));
         q=translated_text+strlen(translated_text);
         break;
       }

@@ -4830,6 +4830,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 */
                 GetExceptionInfo(&exception);
                 magick_info=GetMagickInfo("*",&exception);
+                DestroyExceptionInfo(&exception);
                 i=0;
                 for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
                   i++;

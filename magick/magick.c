@@ -580,18 +580,14 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
     *module_file,
     *path;
 
-  ExceptionInfo
-    path_exception;
-
   register const MagickInfo
     *p;
 
   if (file == (FILE *) NULL)
     file=stdout;
   (void) GetMagickInfo("*",exception);
-  GetExceptionInfo(&path_exception);
   module_file=TagToModule("MIFF");
-  path=GetMagickConfigurePath(module_file,&path_exception);
+  path=GetMagickConfigurePath(module_file,exception);
   if (path != (char *) NULL)
     {
       GetPathComponent(path,HeadPath,filename);

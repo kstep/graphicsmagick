@@ -613,7 +613,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         LiberateMemory((void **) &jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
       *exception=image->exception;
-      GetExceptionInfo(&image->exception);
       number_pixels=image->columns*image->rows;
       if (number_pixels != 0)
         return(image);
@@ -797,7 +796,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   LiberateMemory((void **) &jpeg_pixels);
   CloseBlob(image);
   *exception=image->exception;
-  GetExceptionInfo(&image->exception);
   return(image);
 }
 #else

@@ -4407,9 +4407,8 @@ static unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  GetExceptionInfo(&exception);
   (void) ReferenceImage(image);
-  (void) ProcessMSLScript(image_info,&image,&exception);
+  (void) ProcessMSLScript(image_info,&image,&image->exception);
   return(True);
 }
 #else

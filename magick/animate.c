@@ -235,8 +235,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       GetPathComponent((*image)->filename,BasePath,basename);
       FormatString(windows->image.name,"ImageMagick: %.1024s",basename);
       if (resource_info->title != (char *) NULL)
-        windows->image.name=
-          TranslateText(resource_info->image_info,*image,resource_info->title);
+        windows->image.name=TranslateText(resource_info->image_info,*image,
+          resource_info->title);
       status=XStringListToTextProperty(&windows->image.name,1,&window_name);
       if (status == 0)
         break;

@@ -630,7 +630,6 @@ static void SVGStartDocument(void *context)
   svg_info=(SVGInfo *) context;
   if (svg_info->debug)
     (void) fprintf(stdout,"  SAX.startDocument()\n");
-  GetExceptionInfo(svg_info->exception);
   parser=svg_info->parser;
   svg_info->document=xmlNewDoc(parser->version);
   if (svg_info->document == (xmlDocPtr) NULL)

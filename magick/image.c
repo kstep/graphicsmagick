@@ -1819,9 +1819,6 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     elapsed_time,
     user_time;
 
-  ExceptionInfo
-    exception;
-
   Image
     *p;
 
@@ -1913,8 +1910,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   (void) SignatureImage(image);
   image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
-  GetExceptionInfo(&exception);
-  magick_info=GetMagickInfo(image->magick,&exception);
+  magick_info=GetMagickInfo(image->magick,&image->exception);
   if ((magick_info == (const MagickInfo *) NULL) ||
       (*magick_info->description == '\0'))
     (void) fprintf(file,"  Format: %.1024s\n",image->magick);

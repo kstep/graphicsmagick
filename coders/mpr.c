@@ -221,9 +221,6 @@ ModuleExport void UnregisterMPRImage(void)
 */
 static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
 {
-  ExceptionInfo
-    exception;
-
   Image
     *registry_image;
 
@@ -234,8 +231,8 @@ static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  GetExceptionInfo(&exception);
-  registry_image=GetImageFromMagickRegistry(image->filename,&id,&exception);
+  registry_image=GetImageFromMagickRegistry(image->filename,&id,
+    &image->exception);
   if (registry_image != (Image *) NULL)
     {
       DeleteMagickRegistry(id);
