@@ -85,13 +85,28 @@ uninstall-data-html:
 	  rm -rf $(DESTDIR)$(pkgdocdir)$$dir ; \
 	done
 
+# Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
+magick-version: magick/version.h
+	@if test -f "$(srcdir)/VisualMagick/installer/inc/version.isx.in" ; then \
+	  ./config.status --file="$(srcdir)/VisualMagick/installer/inc/version.isx" 2> /dev/null ; \
+	fi
+	@if test -n "$(VPATH)" ; then \
+	  cmp magick/version.h $(srcdir)/magick/version.h > /dev/null ; \
+          if test $$? -eq 1 ; then \
+	    echo "Updating $(srcdir)/magick/version.h ..."; \
+	    cp magick/version.h $(srcdir)/magick/version.h ; \
+	  fi ; \
+	fi ; \
+	touch magick-version
+
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:
-	if test -n "$(VPATH)" ; then \
+	@if test -n "$(VPATH)" ; then \
+	  echo "Linking PerlMagick Sources ..." ; \
 	  imagemagick=`(cd $(VPATH) ; pwd)` && \
 	  ( cd $(PERLMAGICK) && \
 	    sh $$imagemagick/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
-	fi
+	fi ; \
 	touch perl-sources
 
 if WITH_PERL
@@ -173,7 +188,7 @@ TXT2HTMLTARGETS= \
 	$(top_srcdir)/www/README.html
 endif # WITH_PERL
 
-all-local: all-perl @MAINTAINER_MODE_TRUE@ $(TXT2HTMLTARGETS)
+all-local: all-perl @MAINTAINER_MODE_TRUE@ magick-version $(TXT2HTMLTARGETS)
 
 # Install PerlMagick
 install-exec-local: install-exec-perl
@@ -228,3 +243,6 @@ $(top_srcdir)/www/INSTALL-vms.html: $(top_srcdir)/INSTALL-vms.txt
 # Build HTML version of INSTALL-windows.txt
 $(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
 	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' Windows Installation' < $(top_srcdir)/INSTALL-windows.txt > $(top_srcdir)/www/INSTALL-windows.html
+
+format_c_api_docs:
+	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api

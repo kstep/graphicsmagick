@@ -134,7 +134,7 @@ VMS Install:
 
   Type
 
-      unzip GraphicsMagick-1.0.0.zip
+      unzip GraphicsMagick-1.0.zip
       set default [.graphicsmagick]
       @make
       gm identify -verbose logo:

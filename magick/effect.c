@@ -255,7 +255,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
         for (x=(long) image->columns; x > 0; x--)
           {
             q->red=q->green=q->blue=
-              GenerateNoise(PixelIntensityToQuantum(q),noise_type);
+              GenerateNoise(PixelIntensityToQuantum(p),noise_type);
             p++;
             q++;
           }
@@ -2002,8 +2002,10 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
                       threshold=(double) MaxRGB*o3[(x%3)+3*(y%3)];
                     else if (order == 4)
                       threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)]/1.7;
-                    q->red=q->green=q->blue=(Quantum) (intensity <=
-                       threshold ? 0 : MaxRGB);
+
+                    index=intensity <= threshold ? 0 : 1;
+                    *indexes++=index;
+                    q->red=q->green=q->blue=image->colormap[index].red;
                     q++;
                   }
               }

@@ -75,12 +75,12 @@
   PTile*      PTile::first    = NULL;     // Head of linked-list of tiles that have memory
   PTile*      PTile::last     = NULL;     // Tail of linked-list of tiles that have memory
   PTile**     PTile::locked   = NULL;     // An array of ptrs to tiles that have been locked
-  long      PTile::indexLocked  = 0;      // Current index into the 'locked' array
-  long      PTile::allocSize  = 0;      // Accumulate used during Purge() of memory
-  long      PTile::allocTiles = 0;      // Debug use
+  long        PTile::indexLocked  = 0;    // Current index into the 'locked' array
+  long        PTile::allocSize  = 0;      // Accumulate used during Purge() of memory
+  long        PTile::allocTiles = 0;      // Debug use
 
-  char*     PTile::decompressBuffer = NULL;
-  long      PTile::decompressSize = 0;
+  Ptr         PTile::decompressBuffer = NULL;
+  long        PTile::decompressSize = 0;
   Boolean     PTile::decompressLock = false;
 
 
@@ -1450,7 +1450,7 @@ void PTile::AllocDecompress (long size)
     // Free the old buffer
     FastDeleteArray(decompressBuffer, char);
     
-    FastAllocArray(decompressBuffer, char, size);
+    FastAllocArray(decompressBuffer, int8, size);
     if (decompressBuffer)
       decompressSize = size;
     else

@@ -36,8 +36,8 @@
 /* 
   Include declarations. 
 */ 
-#include "magick/studio.h" 
-#include "magick/utility.h" 
+#include "studio.h" 
+#include "utility.h" 
  
 /* 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -459,1269 +459,1325 @@ const char *GetLocaleMessage(const char *tag)
           }
       else
       if (p - tp == 7 && !LocaleNCompare(tp, "Corrupt", 7))
-        switch (*NEXT_FIELD)
-        {
-        default:
+        if (LocaleNCompare(NEXT_FIELD, "Image", 5) || p - tp != 5)
           return tag;
+        else
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
 
-        case 'd':  case 'D':
-          if (p - tp == 8 && !LocaleNCompare(tp, "Delegate", 8))
-            if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-              return tag;
-            else
-              switch (*NEXT_FIELD)
-              {
-              default:
-                return tag;
-
-              case 'd':  case 'D':
-                if (p - tp == 14 && !LocaleNCompare(tp, "DelegateFailed", 14))
-                  return *np ? tag : "Delegate failed";
-                else
-                  return tag;
-
-              case 'f':  case 'F':
-                if (p - tp == 25 && !LocaleNCompare(tp, "FailedToComputeOutputSize", 25))
-                  return *np ? tag : "Failed to compute output size";
-                else
-                if (p - tp == 18 && !LocaleNCompare(tp, "FailedToRenderFile", 18))
-                  return *np ? tag : "Failed to render file";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "FailedToScanFile", 16))
-                  return *np ? tag : "Failed to scan file";
-                else
-                  return tag;
-
-              case 'n':  case 'N':
-                if (p - tp == 10 && !LocaleNCompare(tp, "NoTagFound", 10))
-                  return *np ? tag : "No tag found";
-                else
-                  return tag;
-
-              case 'p':  case 'P':
-                if (p - tp == 24 && !LocaleNCompare(tp, "PostscriptDelegateFailed", 24))
-                  return *np ? tag : "Postscript delegate failed";
-                else
-                  return tag;
-
-              case 'u':  case 'U':
-                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToCreateImage", 19))
-                  return *np ? tag : "Unable to create image";
-                else
-                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToCreateImageComponent", 28))
-                  return *np ? tag : "Unable to create image component";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToDecodeImageFile", 23))
-                  return *np ? tag : "Unable to decode image file";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToEncodeImageFile", 23))
-                  return *np ? tag : "Unable to encode image file";
-                else
-                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToInitializeFPXLibrary", 28))
-                  return *np ? tag : "Unable to initialize FPX library";
-                else
-                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToInitializeWMFLibrary", 28))
-                  return *np ? tag : "Unable to initialize WMF library";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToManageJP2Stream", 23))
-                  return *np ? tag : "Unable to manage JP2 stream";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadAspectRatio", 23))
-                  return *np ? tag : "Unable to read aspect ratio";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadSummaryInfo", 23))
-                  return *np ? tag : "Unable to read summary info";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToSetAffineMatrix", 23))
-                  return *np ? tag : "Unable to set affine matrix";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetAspectRatio", 22))
-                  return *np ? tag : "Unable to set aspect ratio";
-                else
-                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToSetColorTwist", 21))
-                  return *np ? tag : "Unable to set color twist";
-                else
-                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToSetContrast", 19))
-                  return *np ? tag : "Unable to set contrast";
-                else
-                if (p - tp == 25 && !LocaleNCompare(tp, "UnableToSetFilteringValue", 25))
-                  return *np ? tag : "Unable to set filtering value";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToSetImageComment", 23))
-                  return *np ? tag : "Unable to set image comment";
-                else
-                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToSetImageTitle", 21))
-                  return *np ? tag : "Unable to set image title";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSetJPEGLevel", 20))
-                  return *np ? tag : "Unable to set JPEG level";
-                else
-                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToSetRegionOfInterest", 27))
-                  return *np ? tag : "Unable to set region of interest";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetSummaryInfo", 22))
-                  return *np ? tag : "Unable to set summary info";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToWriteSVGFormat", 22))
-                  return *np ? tag : "Unable to write SVG format";
-                else
-                  return tag;
-              }
-          else
-          if (p - tp == 4 && !LocaleNCompare(tp, "Draw", 4))
-            if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-              return tag;
-            else
+          case 'e':  case 'E':
+            if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
               switch (*NEXT_FIELD)
               {
               default:
                 return tag;
 
               case 'a':  case 'A':
-                if (p - tp == 31 && !LocaleNCompare(tp, "AlreadyPushingPatternDefinition", 31))
-                  return *np ? tag : "Already pushing pattern definition";
+                if (p - tp == 33 && !LocaleNCompare(tp, "AnErrorHasOccurredReadingFromFile", 33))
+                  return *np ? tag : "An error has occurred reading from file";
                 else
-                  return tag;
-
-              case 'n':  case 'N':
-                if (p - tp == 39 && !LocaleNCompare(tp, "NonconformingDrawingPrimitiveDefinition", 39))
-                  return *np ? tag : "Non-conforming drawing primitive definition";
-                else
-                if (p - tp == 15 && !LocaleNCompare(tp, "NotARelativeURL", 15))
-                  return *np ? tag : "Not a relative URL";
-                else
-                if (p - tp == 36 && !LocaleNCompare(tp, "NotCurrentlyPushingPatternDefinition", 36))
-                  return *np ? tag : "Not currently pushing pattern definition";
-                else
-                  return tag;
-
-              case 'u':  case 'U':
-                if (p - tp == 13 && !LocaleNCompare(tp, "UnableToPrint", 13))
-                  return *np ? tag : "Unable to print";
-                else
-                if (p - tp == 31 && !LocaleNCompare(tp, "UnbalancedGraphicContextPushPop", 31))
-                  return *np ? tag : "unbalanced graphic context push-pop";
-                else
-                if (p - tp == 11 && !LocaleNCompare(tp, "URLNotFound", 11))
-                  return *np ? tag : "URL not found";
-                else
-                  return tag;
-              }
-          else
-            return tag;
-
-        case 'f':  case 'F':
-          if (p - tp == 4 && !LocaleNCompare(tp, "File", 4))
-            if (LocaleNCompare(NEXT_FIELD, "Open", 4) || p - tp != 4)
-              return tag;
-            else
-            if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-              return tag;
-            else
-              switch (*NEXT_FIELD)
-              {
-              default:
-                return tag;
-
-              case 'u':  case 'U':
-                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToCreateTemporaryFile", 27))
-                  return *np ? tag : "Unable to create temporary file";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
-                  return *np ? tag : "Unable to open file";
-                else
-                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWriteFile", 17))
-                  return *np ? tag : "Unable to write file";
-                else
-                  return tag;
-              }
-          else
-            return tag;
-
-        case 'i':  case 'I':
-          if (p - tp == 5 && !LocaleNCompare(tp, "Image", 5))
-            switch (*NEXT_FIELD)
-            {
-            default:
-              return tag;
-
-            case 'e':  case 'E':
-              if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
-                switch (*NEXT_FIELD)
-                {
-                default:
-                  return tag;
-
-                case 'a':  case 'A':
-                  if (p - tp == 33 && !LocaleNCompare(tp, "AnErrorHasOccurredReadingFromFile", 33))
-                    return *np ? tag : "An error has occurred reading from file";
-                  else
-                  if (p - tp == 31 && !LocaleNCompare(tp, "AnErrorHasOccurredWritingToFile", 31))
-                    return *np ? tag : "An error has occurred writing to file";
-                  else
-                  if (p - tp == 20 && !LocaleNCompare(tp, "AngleIsDiscontinuous", 20))
-                    return *np ? tag : "angle is discontinuous";
-                  else
-                    return tag;
-
-                case 'c':  case 'C':
-                  if (p - tp == 24 && !LocaleNCompare(tp, "ColormapExceeds256Colors", 24))
-                    return *np ? tag : "Colormap exceeded 256 colors";
-                  else
-                  if (p - tp == 27 && !LocaleNCompare(tp, "ColorSeparatedImageRequired", 27))
-                    return *np ? tag : "Color separated image required";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "CompressNotValid", 16))
-                    return *np ? tag : "Compress not valid";
-                  else
-                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptGIFImage", 15))
-                    return *np ? tag : "Corrupt GIF image";
-                  else
-                  if (p - tp == 18 && !LocaleNCompare(tp, "CorruptInlineImage", 18))
-                    return *np ? tag : "Corrupt inline image";
-                  else
-                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptMNGImage", 15))
-                    return *np ? tag : "Corrupt MNG image";
-                  else
-                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptOTBImage", 15))
-                    return *np ? tag : "Corrupt OTB image";
-                  else
-                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptPCDImage", 15))
-                    return *np ? tag : "Corrupt PCD image";
-                  else
-                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptPDBImage", 15))
-                    return *np ? tag : "Corrupt PDB image";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "CorruptWBMPImage", 16))
-                    return *np ? tag : "Corrupt WBMP image";
-                  else
-                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptXCFImage", 15))
-                    return *np ? tag : "Corrupt XCF image";
-                  else
-                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptXPMImage", 15))
-                    return *np ? tag : "Corrupt XPM image";
-                  else
-                  if (p - tp == 15 && !LocaleNCompare(tp, "CorruptXWDImage", 15))
-                    return *np ? tag : "Corrupt XWD image";
-                  else
-                    return tag;
-
-                case 'f':  case 'F':
-                  if (p - tp == 25 && !LocaleNCompare(tp, "FileFormatVersionMismatch", 25))
-                    return *np ? tag : "file format version mismatch";
-                  else
-                    return tag;
-
-                case 'i':  case 'I':
-                  if (p - tp == 22 && !LocaleNCompare(tp, "ImageColorspaceDiffers", 22))
-                    return *np ? tag : "image colorspace differs";
-                  else
-                  if (p - tp == 35 && !LocaleNCompare(tp, "ImageFileDoesNotContainAnyImageData", 35))
-                    return *np ? tag : "Image file or does not contain any image data";
-                  else
-                  if (p - tp == 19 && !LocaleNCompare(tp, "ImageOpacityDiffers", 19))
-                    return *np ? tag : "image opacity differs";
-                  else
-                  if (p - tp == 23 && !LocaleNCompare(tp, "ImageSequenceIsRequired", 23))
-                    return *np ? tag : "Image sequence is required";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "ImageSizeDiffers", 16))
-                    return *np ? tag : "image size differs";
-                  else
-                  if (p - tp == 19 && !LocaleNCompare(tp, "ImproperImageHeader", 19))
-                    return *np ? tag : "Improper image header";
-                  else
-                  if (p - tp == 27 && !LocaleNCompare(tp, "InputImagesAlreadySpecified", 27))
-                    return *np ? tag : "Input images already specified";
-                  else
-                  if (p - tp == 27 && !LocaleNCompare(tp, "InsufficientImageDataInFile", 27))
-                    return *np ? tag : "Insufficient image data in file";
-                  else
-                  if (p - tp == 20 && !LocaleNCompare(tp, "InvalidColormapIndex", 20))
-                    return *np ? tag : "Invalid colormap index";
-                  else
-                    return tag;
-
-                case 'l':  case 'L':
-                  if (p - tp == 28 && !LocaleNCompare(tp, "LeftAndRightImageSizesDiffer", 28))
-                    return *np ? tag : "left and right image sizes differ";
-                  else
-                  if (p - tp == 27 && !LocaleNCompare(tp, "LengthAndFilesizeDoNotMatch", 27))
-                    return *np ? tag : "Length and filesize do not match";
-                  else
-                    return tag;
-
-                case 'm':  case 'M':
-                  if (p - tp == 19 && !LocaleNCompare(tp, "MissingImageChannel", 19))
-                    return *np ? tag : "Missing a required image channel";
-                  else
-                    return tag;
-
-                case 'n':  case 'N':
-                  if (p - tp == 23 && !LocaleNCompare(tp, "NegativeOrZeroImageSize", 23))
-                    return *np ? tag : "Negative or zero image size";
-                  else
-                  if (p - tp == 17 && !LocaleNCompare(tp, "NoImagesWereFound", 17))
-                    return *np ? tag : "No images were found";
-                  else
-                  if (p - tp == 18 && !LocaleNCompare(tp, "NoImagesWereLoaded", 18))
-                    return *np ? tag : "No images were loaded";
-                  else
-                  if (p - tp == 22 && !LocaleNCompare(tp, "NoLocaleImageAttribute", 22))
-                    return *np ? tag : "No [LOCALE] image attribute";
-                  else
-                  if (p - tp == 21 && !LocaleNCompare(tp, "NonOS2HeaderSizeError", 21))
-                    return *np ? tag : "Non OS2 BMP header size less than 40";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotABMPImageFile", 16))
-                    return *np ? tag : "Not a BMP image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotACUTImageFile", 16))
-                    return *np ? tag : "Not a CUT image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotADCMImageFile", 16))
-                    return *np ? tag : "Not a DCM image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotADCXImageFile", 16))
-                    return *np ? tag : "Not a DCX image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotADIBImageFile", 16))
-                    return *np ? tag : "Not a DIB image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotADPXImageFile", 16))
-                    return *np ? tag : "Not a DPX image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAGIFImageFile", 16))
-                    return *np ? tag : "Not a GIF image file";
-                  else
-                  if (p - tp == 19 && !LocaleNCompare(tp, "NotAMATLABImageFile", 19))
-                    return *np ? tag : "Not a MATLAB image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAMNGImageFile", 16))
-                    return *np ? tag : "Not a MNG image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAMTVImageFile", 16))
-                    return *np ? tag : "Not a MTV image file";
-                  else
-                  if (p - tp == 17 && !LocaleNCompare(tp, "NotAnARTImageFile", 17))
-                    return *np ? tag : "Not an ART image file";
-                  else
-                  if (p - tp == 17 && !LocaleNCompare(tp, "NotAnAVIImageFile", 17))
-                    return *np ? tag : "Not an AVI image file";
-                  else
-                  if (p - tp == 17 && !LocaleNCompare(tp, "NotAnAVSImageFile", 17))
-                    return *np ? tag : "Not an AVS image file";
-                  else
-                  if (p - tp == 17 && !LocaleNCompare(tp, "NotAnEMFImageFile", 17))
-                    return *np ? tag : "Not an EMF image file";
-                  else
-                  if (p - tp == 17 && !LocaleNCompare(tp, "NotAnICOImageFile", 17))
-                    return *np ? tag : "Not a ICO image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAOTBImageFile", 16))
-                    return *np ? tag : "Not a OTB image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAPCDImageFile", 16))
-                    return *np ? tag : "Not a PCD image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAPCXImageFile", 16))
-                    return *np ? tag : "Not a PCX image file";
-                  else
-                  if (p - tp == 17 && !LocaleNCompare(tp, "NotAPICTImageFile", 17))
-                    return *np ? tag : "Not a PICT image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAPIXImageFile", 16))
-                    return *np ? tag : "Not a PIX image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAPNMImageFile", 16))
-                    return *np ? tag : "Not a PNM image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAPSDImageFile", 16))
-                    return *np ? tag : "Not a PSD image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAPWPImageFile", 16))
-                    return *np ? tag : "Not a PSP image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotARLEImageFile", 16))
-                    return *np ? tag : "Not a RLE image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotASCTImageFile", 16))
-                    return *np ? tag : "Not a SCT image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotASFWImageFile", 16))
-                    return *np ? tag : "Not a SFW image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotASGIImageFile", 16))
-                    return *np ? tag : "Not a SGI image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotASUNImageFile", 16))
-                    return *np ? tag : "Not a SUN image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotATGAImageFile", 16))
-                    return *np ? tag : "Not a TGA image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotATIMImageFile", 16))
-                    return *np ? tag : "Not a TIM image file";
-                  else
-                  if (p - tp == 17 && !LocaleNCompare(tp, "NotAVIFFImageFile", 17))
-                    return *np ? tag : "Not a VIFF image file";
-                  else
-                  if (p - tp == 17 && !LocaleNCompare(tp, "NotAWBMPImageFile", 17))
-                    return *np ? tag : "Not a WBMP image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAWPGImageFile", 16))
-                    return *np ? tag : "Not a WPG image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAXBMImageFile", 16))
-                    return *np ? tag : "Not a XBM image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAXCFImageFile", 16))
-                    return *np ? tag : "Not a XCF image file";
-                  else
-                  if (p - tp == 16 && !LocaleNCompare(tp, "NotAXPMImageFile", 16))
-                    return *np ? tag : "Not a XPM image file";
-                  else
-                  if (p - tp == 18 && !LocaleNCompare(tp, "NotEnoughPixelData", 18))
-                    return *np ? tag : "Not enough pixel data";
-                  else
-                  if (p - tp == 14 && !LocaleNCompare(tp, "NotEnoughTiles", 14))
-                    return *np ? tag : "Not enough tiles found in level";
-                  else
-                    return tag;
-
-                case 's':  case 'S':
-                  if (p - tp == 30 && !LocaleNCompare(tp, "StaticPlanesValueNotEqualToOne", 30))
-                    return *np ? tag : "Static planes value not equal to 1";
-                  else
-                    return tag;
-
-                case 't':  case 'T':
-                  if (p - tp == 15 && !LocaleNCompare(tp, "TooManyClusters", 15))
-                    return *np ? tag : "too many cluster";
-                  else
-                  if (p - tp == 22 && !LocaleNCompare(tp, "TooMuchImageDataInFile", 22))
-                    return *np ? tag : "Too much image data in file";
-                  else
-                    return tag;
-
-                case 'u':  case 'U':
-                  if (p - tp == 19 && !LocaleNCompare(tp, "UnableToAppendImage", 19))
-                    return *np ? tag : "unable to append image";
-                  else
-                  if (p - tp == 20 && !LocaleNCompare(tp, "UnableToAverageImage", 20))
-                    return *np ? tag : "unable to average image";
-                  else
-                  if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCompareImages", 21))
-                    return *np ? tag : "Unable to compare images";
-                  else
-                  if (p - tp == 25 && !LocaleNCompare(tp, "UnableToCreateImageMosaic", 25))
-                    return *np ? tag : "unable to create image mosaic";
-                  else
-                  if (p - tp == 25 && !LocaleNCompare(tp, "UnableToCreateStereoImage", 25))
-                    return *np ? tag : "Unable to create stereo image";
-                  else
-                  if (p - tp == 32 && !LocaleNCompare(tp, "UnableToDeconstructImageSequence", 32))
-                    return *np ? tag : "Unable to deconstruct image sequence";
-                  else
-                  if (p - tp == 20 && !LocaleNCompare(tp, "UnableToFlattenImage", 20))
-                    return *np ? tag : "Unable to flatten image";
-                  else
-                  if (p - tp == 32 && !LocaleNCompare(tp, "UnableToReadColormapFromDumpFile", 32))
-                    return *np ? tag : "Unable to read colormap from dump file";
-                  else
-                  if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadColorProfile", 24))
-                    return *np ? tag : "Unable to read color profile";
-                  else
-                  if (p - tp == 26 && !LocaleNCompare(tp, "UnableToReadExtensionBlock", 26))
-                    return *np ? tag : "Unable to read extension block";
-                  else
-                  if (p - tp == 26 && !LocaleNCompare(tp, "UnableToReadGenericProfile", 26))
-                    return *np ? tag : "Unable to read generic profile";
-                  else
-                  if (p - tp == 21 && !LocaleNCompare(tp, "UnableToReadImageData", 21))
-                    return *np ? tag : "Unable to read image data";
-                  else
-                  if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadImageHeader", 23))
-                    return *np ? tag : "Unable to read image header";
-                  else
-                  if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadIPTCProfile", 23))
-                    return *np ? tag : "Unable to read IPTC profile";
-                  else
-                  if (p - tp == 30 && !LocaleNCompare(tp, "UnableToReadPixmapFromDumpFile", 30))
-                    return *np ? tag : "Unable to read pixmap from dump file";
-                  else
-                  if (p - tp == 19 && !LocaleNCompare(tp, "UnableToReadSubmage", 19))
-                    return *np ? tag : "Unable to read subimage";
-                  else
-                  if (p - tp == 20 && !LocaleNCompare(tp, "UnableToReadVIDImage", 20))
-                    return *np ? tag : "Unable to read VID image";
-                  else
-                  if (p - tp == 34 && !LocaleNCompare(tp, "UnableToReadWindowNameFromDumpFile", 34))
-                    return *np ? tag : "Unable to read window name from dump file";
-                  else
-                  if (p - tp == 19 && !LocaleNCompare(tp, "UnableToResizeImage", 19))
-                    return *np ? tag : "Unable to resize image";
-                  else
-                  if (p - tp == 28 && !LocaleNCompare(tp, "UnableToRunlengthDecodeImage", 28))
-                    return *np ? tag : "Unable to runlength decode image";
-                  else
-                  if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSegmentImage", 20))
-                    return *np ? tag : "Unable to segment image";
-                  else
-                  if (p - tp == 24 && !LocaleNCompare(tp, "UnableToSetImageClipMask", 24))
-                    return *np ? tag : "Unable to set image clip mask";
-                  else
-                  if (p - tp == 23 && !LocaleNCompare(tp, "UnableToUncompressImage", 23))
-                    return *np ? tag : "Unable to uncompress image";
-                  else
-                  if (p - tp == 19 && !LocaleNCompare(tp, "UnexpectedEndOfFile", 19))
-                    return *np ? tag : "Unexpected end-of-file";
-                  else
-                  if (p - tp == 24 && !LocaleNCompare(tp, "UnexpectedSamplingFactor", 24))
-                    return *np ? tag : "Unexpected sampling factor";
-                  else
-                  if (p - tp == 18 && !LocaleNCompare(tp, "UnknownPatternType", 18))
-                    return *np ? tag : "Unknown pattern type";
-                  else
-                  if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedBitsPerPixel", 24))
-                    return *np ? tag : "Unrecognized bits per pixel";
-                  else
-                  if (p - tp == 28 && !LocaleNCompare(tp, "UnrecognizedImageCompression", 28))
-                    return *np ? tag : "Unrecognized compression";
-                  else
-                  if (p - tp == 34 && !LocaleNCompare(tp, "UnrecognizedImageCompressionMethod", 34))
-                    return *np ? tag : "Unrecognized compression method";
-                  else
-                  if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedNumerOfColors", 25))
-                    return *np ? tag : "Unrecognized number of colors";
-                  else
-                  if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedXWDHeader", 21))
-                    return *np ? tag : "Unrecognized XWD header";
-                  else
-                    return tag;
-
-                case 'w':  case 'W':
-                  if (p - tp == 25 && !LocaleNCompare(tp, "WidthOrHeightExceedsLimit", 25))
-                    return *np ? tag : "Width or height exceeds limit";
-                  else
-                    return tag;
-                }
-              else
-                return tag;
-
-            case 'f':  case 'F':
-              if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
-                if (LocaleNCompare(NEXT_FIELD, "UnableToPersistKey", 18) || p - tp != 18)
-                  return tag;
-                else
-                  return *np ? tag : "Unable to persist key";
-              else
-                return tag;
-
-            case 'w':  case 'W':
-              if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
-                switch (*NEXT_FIELD)
-                {
-                default:
-                  return tag;
-
-                case 'i':  case 'I':
-                  if (p - tp == 19 && !LocaleNCompare(tp, "ImproperImageHeader", 19))
-                    return *np ? tag : "Improper image header";
-                  else
-                    return tag;
-
-                case 's':  case 'S':
-                  if (p - tp == 14 && !LocaleNCompare(tp, "SkipToSyncByte", 14))
-                    return *np ? tag : "Corrupt PCD image, skipping to sync byte";
-                  else
-                    return tag;
-                }
-              else
-                return tag;
-            }
-          else
-            return tag;
-
-        case 'm':  case 'M':
-          if (p - tp == 7 && !LocaleNCompare(tp, "Missing", 7))
-            if (LocaleNCompare(NEXT_FIELD, "Delegate", 8) || p - tp != 8)
-              return tag;
-            else
-            if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-              return tag;
-            else
-              switch (*NEXT_FIELD)
-              {
-              default:
-                return tag;
-
-              case 'd':  case 'D':
-                if (p - tp == 24 && !LocaleNCompare(tp, "DPSLibraryIsNotAvailable", 24))
-                  return *np ? tag : "DPS library is not available";
-                else
-                  return tag;
-
-              case 'f':  case 'F':
-                if (p - tp == 24 && !LocaleNCompare(tp, "FPXLibraryIsNotAvailable", 24))
-                  return *np ? tag : "FPX library is not available";
-                else
-                if (p - tp == 29 && !LocaleNCompare(tp, "FreeTypeLibraryIsNotAvailable", 29))
-                  return *np ? tag : "FreeType library is not available";
-                else
-                  return tag;
-
-              case 'j':  case 'J':
-                if (p - tp == 25 && !LocaleNCompare(tp, "JPEGLibraryIsNotAvailable", 25))
-                  return *np ? tag : "JPEG compression library is not available";
-                else
-                  return tag;
-
-              case 'l':  case 'L':
-                if (p - tp == 21 && !LocaleNCompare(tp, "LZWEncodingNotEnabled", 21))
-                  return *np ? tag : "LZW encoding not enabled";
-                else
-                  return tag;
-
-              case 'n':  case 'N':
-                if (p - tp == 34 && !LocaleNCompare(tp, "NoDecodeDelegateForThisImageFormat", 34))
-                  return *np ? tag : "No decode delegate for this image format";
-                else
-                if (p - tp == 34 && !LocaleNCompare(tp, "NoEncodeDelegateForThisImageFormat", 34))
-                  return *np ? tag : "No encode delegate for this image format";
-                else
-                  return tag;
-
-              case 't':  case 'T':
-                if (p - tp == 25 && !LocaleNCompare(tp, "TIFFLibraryIsNotAvailable", 25))
-                  return *np ? tag : "TIFF library is not available";
-                else
-                  return tag;
-
-              case 'x':  case 'X':
-                if (p - tp == 24 && !LocaleNCompare(tp, "XMLLibraryIsNotAvailable", 24))
-                  return *np ? tag : "XML library is not available";
-                else
-                if (p - tp == 28 && !LocaleNCompare(tp, "XWindowLibraryIsNotAvailable", 28))
-                  return *np ? tag : "X Window library is not available";
-                else
-                  return tag;
-
-              case 'z':  case 'Z':
-                if (p - tp == 24 && !LocaleNCompare(tp, "ZipLibraryIsNotAvailable", 24))
-                  return *np ? tag : "ZLIB compression library is not available";
-                else
-                  return tag;
-              }
-          else
-          if (p - tp == 22 && !LocaleNCompare(tp, "MissingAnImageFilename", 22))
-            return *np ? tag : "Missing an image filename";
-          else
-          if (p - tp == 17 && !LocaleNCompare(tp, "MissingBevelWidth", 17))
-            return *np ? tag : "Missing bevel width";
-          else
-          if (p - tp == 18 && !LocaleNCompare(tp, "MissingBorderColor", 18))
-            return *np ? tag : "Missing border color";
-          else
-          if (p - tp == 12 && !LocaleNCompare(tp, "MissingColor", 12))
-            return *np ? tag : "Missing color";
-          else
-          if (p - tp == 14 && !LocaleNCompare(tp, "MissingCommand", 14))
-            return *np ? tag : "Missing command";
-          else
-          if (p - tp == 22 && !LocaleNCompare(tp, "MissingCompressQuality", 22))
-            return *np ? tag : "Missing compression quality";
-          else
-          if (p - tp == 14 && !LocaleNCompare(tp, "MissingDegrees", 14))
-            return *np ? tag : "Missing degrees";
-          else
-          if (p - tp == 12 && !LocaleNCompare(tp, "MissingDepth", 12))
-            return *np ? tag : "Missing depth";
-          else
-          if (p - tp == 20 && !LocaleNCompare(tp, "MissingDisposeMethod", 20))
-            return *np ? tag : "Missing dispose method";
-          else
-          if (p - tp == 19 && !LocaleNCompare(tp, "MissingEncodingType", 19))
-            return *np ? tag : "Missing encoding type";
-          else
-          if (p - tp == 16 && !LocaleNCompare(tp, "MissingEventMask", 16))
-            return *np ? tag : "Missing event mask";
-          else
-          if (p - tp == 15 && !LocaleNCompare(tp, "MissingFilename", 15))
-            return *np ? tag : "Missing filename";
-          else
-          if (p - tp == 15 && !LocaleNCompare(tp, "MissingFontName", 15))
-            return *np ? tag : "Missing font name";
-          else
-          if (p - tp == 17 && !LocaleNCompare(tp, "MissingForeground", 17))
-            return *np ? tag : "Missing foreground";
-          else
-          if (p - tp == 15 && !LocaleNCompare(tp, "MissingGeometry", 15))
-            return *np ? tag : "Missing geometry";
-          else
-          if (p - tp == 19 && !LocaleNCompare(tp, "MissingIDNameOrRoot", 19))
-            return *np ? tag : "Missing id name or 'root";
-          else
-          if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageDepth", 17))
-            return *np ? tag : "Missing image depth";
-          else
-          if (p - tp == 16 && !LocaleNCompare(tp, "MissingLabelName", 16))
-            return *np ? tag : "Missing label name";
-          else
-          if (p - tp == 12 && !LocaleNCompare(tp, "MissingLevel", 12))
-            return *np ? tag : "Missing level";
-          else
-          if (p - tp == 16 && !LocaleNCompare(tp, "MissingLogFormat", 16))
-            return *np ? tag : "Missing log format";
-          else
-          if (p - tp == 14 && !LocaleNCompare(tp, "MissingMapType", 14))
-            return *np ? tag : "Missing map type";
-          else
-          if (p - tp == 11 && !LocaleNCompare(tp, "MissingName", 11))
-            return *np ? tag : "Missing name";
-          else
-          if (p - tp == 19 && !LocaleNCompare(tp, "MissingPageGeometry", 19))
-            return *np ? tag : "Missing page geometry";
-          else
-          if (p - tp == 15 && !LocaleNCompare(tp, "MissingPassword", 15))
-            return *np ? tag : "Missing password";
-          else
-          if (p - tp == 14 && !LocaleNCompare(tp, "MissingQuality", 14))
-            return *np ? tag : "Missing quality";
-          else
-          if (p - tp == 20 && !LocaleNCompare(tp, "MissingResourceLimit", 20))
-            return *np ? tag : "Missing resource limit";
-          else
-          if (p - tp == 19 && !LocaleNCompare(tp, "MissingResourceType", 19))
-            return *np ? tag : "Missing resource limit";
-          else
-          if (p - tp == 18 && !LocaleNCompare(tp, "MissingSceneNumber", 18))
-            return *np ? tag : "Missing scene number";
-          else
-          if (p - tp == 14 && !LocaleNCompare(tp, "MissingSeconds", 14))
-            return *np ? tag : "Missing seconds";
-          else
-          if (p - tp == 17 && !LocaleNCompare(tp, "MissingServerName", 17))
-            return *np ? tag : "Missing server name";
-          else
-          if (p - tp == 11 && !LocaleNCompare(tp, "MissingSize", 11))
-            return *np ? tag : "Missing size";
-          else
-          if (p - tp == 12 && !LocaleNCompare(tp, "MissingSnaps", 12))
-            return *np ? tag : "Missing snaps";
-          else
-          if (p - tp == 16 && !LocaleNCompare(tp, "MissingThreshold", 16))
-            return *np ? tag : "Missing threshold";
-          else
-          if (p - tp == 12 && !LocaleNCompare(tp, "MissingTitle", 12))
-            return *np ? tag : "Missing title";
-          else
-          if (p - tp == 11 && !LocaleNCompare(tp, "MissingType", 11))
-            return *np ? tag : "Missing type";
-          else
-          if (p - tp == 25 && !LocaleNCompare(tp, "MissingVirtualPixelMethod", 25))
-            return *np ? tag : "Missing virtual pixel method";
-          else
-          if (p - tp == 18 && !LocaleNCompare(tp, "MissingVisualClass", 18))
-            return *np ? tag : "Missing visual class";
-          else
-          if (p - tp == 12 && !LocaleNCompare(tp, "MissingWidth", 12))
-            return *np ? tag : "Missing width";
-          else
-          if (p - tp == 6 && !LocaleNCompare(tp, "Module", 6))
-            switch (*NEXT_FIELD)
-            {
-            default:
-              return tag;
-
-            case 'e':  case 'E':
-              if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
-                switch (*NEXT_FIELD)
-                {
-                default:
-                  return tag;
-
-                case 'f':  case 'F':
-                  if (p - tp == 18 && !LocaleNCompare(tp, "FailedToFindSymbol", 18))
-                    return *np ? tag : "Failed to find symbol";
-                  else
-                    return tag;
-
-                case 'u':  case 'U':
-                  if (p - tp == 18 && !LocaleNCompare(tp, "UnableToLoadModule", 18))
-                    return *np ? tag : "Unable to load module";
-                  else
-                  if (p - tp == 27 && !LocaleNCompare(tp, "UnableToRegisterImageFormat", 27))
-                    return *np ? tag : "Unable to register image format";
-                  else
-                  if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedModule", 18))
-                    return *np ? tag : "Unrecognized module";
-                  else
-                    return tag;
-                }
-              else
-                return tag;
-
-            case 'f':  case 'F':
-              if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
-                if (LocaleNCompare(NEXT_FIELD, "UnableToInitializeModuleLoader", 30) || p - tp != 30)
-                  return tag;
-                else
-                  return *np ? tag : "Unable to initialize module loader";
-              else
-                return tag;
-            }
-          else
-            return tag;
-
-        case 'o':  case 'O':
-          if (p - tp == 6 && !LocaleNCompare(tp, "Option", 6))
-            if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-              return tag;
-            else
-              switch (*NEXT_FIELD)
-              {
-              default:
-                return tag;
-
-              case 'b':  case 'B':
-                if (p - tp == 20 && !LocaleNCompare(tp, "BevelWidthIsNegative", 20))
-                  return *np ? tag : "bevel width is negative";
+                if (p - tp == 31 && !LocaleNCompare(tp, "AnErrorHasOccurredWritingToFile", 31))
+                  return *np ? tag : "An error has occurred writing to file";
                 else
                   return tag;
 
               case 'c':  case 'C':
-                if (p - tp == 22 && !LocaleNCompare(tp, "CompositeImageRequired", 22))
-                  return *np ? tag : "Composite image required";
+                if (p - tp == 24 && !LocaleNCompare(tp, "ColormapExceeds256Colors", 24))
+                  return *np ? tag : "Colormap exceeded 256 colors";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "CompressNotValid", 16))
+                  return *np ? tag : "Compress not valid";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "CorruptGIFImage", 15))
+                  return *np ? tag : "Corrupt GIF image";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "CorruptInlineImage", 18))
+                  return *np ? tag : "Corrupt inline image";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "CorruptMNGImage", 15))
+                  return *np ? tag : "Corrupt MNG image";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "CorruptOTBImage", 15))
+                  return *np ? tag : "Corrupt OTB image";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "CorruptPCDImage", 15))
+                  return *np ? tag : "Corrupt PCD image";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "CorruptPDBImage", 15))
+                  return *np ? tag : "Corrupt PDB image";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "CorruptWBMPImage", 16))
+                  return *np ? tag : "Corrupt WBMP image";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "CorruptXCFImage", 15))
+                  return *np ? tag : "Corrupt XCF image";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "CorruptXPMImage", 15))
+                  return *np ? tag : "Corrupt XPM image";
+                else
+                if (p - tp == 15 && !LocaleNCompare(tp, "CorruptXWDImage", 15))
+                  return *np ? tag : "Corrupt XWD image";
                 else
                   return tag;
 
               case 'f':  case 'F':
-                if (p - tp == 24 && !LocaleNCompare(tp, "FrameIsLessThanImageSize", 24))
-                  return *np ? tag : "frame is less than image size";
-                else
-                  return tag;
-
-              case 'g':  case 'G':
-                if (p - tp == 25 && !LocaleNCompare(tp, "GeometryDimensionsAreZero", 25))
-                  return *np ? tag : "Geometry dimensions are zero";
-                else
-                if (p - tp == 27 && !LocaleNCompare(tp, "GeometryDoesNotContainImage", 27))
-                  return *np ? tag : "Geometry does not contain image";
+                if (p - tp == 25 && !LocaleNCompare(tp, "FileFormatVersionMismatch", 25))
+                  return *np ? tag : "file format version mismatch";
                 else
                   return tag;
 
               case 'i':  case 'I':
-                if (p - tp == 23 && !LocaleNCompare(tp, "ImagesAreNotTheSameSize", 23))
-                  return *np ? tag : "Images are not the same size";
+                if (p - tp == 35 && !LocaleNCompare(tp, "ImageFileDoesNotContainAnyImageData", 35))
+                  return *np ? tag : "Image file or does not contain any image data";
                 else
-                if (p - tp == 29 && !LocaleNCompare(tp, "ImageSizeMustExceedBevelWidth", 29))
-                  return *np ? tag : "size must exceed bevel width";
+                if (p - tp == 19 && !LocaleNCompare(tp, "ImproperImageHeader", 19))
+                  return *np ? tag : "Improper image header";
                 else
-                if (p - tp == 27 && !LocaleNCompare(tp, "ImageSmallerThanKernelWidth", 27))
-                  return *np ? tag : "image smaller than kernel width";
+                if (p - tp == 27 && !LocaleNCompare(tp, "InsufficientImageDataInFile", 27))
+                  return *np ? tag : "Insufficient image data in file";
                 else
-                if (p - tp == 22 && !LocaleNCompare(tp, "ImageSmallerThanRadius", 22))
-                  return *np ? tag : "image smaller than radius";
-                else
-                if (p - tp == 26 && !LocaleNCompare(tp, "ImageWidthsOrHeightsDiffer", 26))
-                  return *np ? tag : "image widths or heights differ";
+                if (p - tp == 20 && !LocaleNCompare(tp, "InvalidColormapIndex", 20))
+                  return *np ? tag : "Invalid colormap index";
                 else
                   return tag;
 
-              case 'k':  case 'K':
-                if (p - tp == 22 && !LocaleNCompare(tp, "KernelRadiusIsTooSmall", 22))
-                  return *np ? tag : "kernel radius is too small";
-                else
-                if (p - tp == 28 && !LocaleNCompare(tp, "KernelWidthMustBeAnOddNumber", 28))
-                  return *np ? tag : "kernel width must be an odd number";
+              case 'l':  case 'L':
+                if (p - tp == 27 && !LocaleNCompare(tp, "LengthAndFilesizeDoNotMatch", 27))
+                  return *np ? tag : "Length and filesize do not match";
                 else
                   return tag;
 
               case 'm':  case 'M':
-                if (p - tp == 16 && !LocaleNCompare(tp, "MapImageRequired", 16))
-                  return *np ? tag : "Map image required";
-                else
-                if (p - tp == 19 && !LocaleNCompare(tp, "MissingAffineMatrix", 19))
-                  return *np ? tag : "Missing affine matrix";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "MissingAmplitude", 16))
-                  return *np ? tag : "Missing amplitude";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "MissingAnImageFilename", 22))
-                  return *np ? tag : "Missing an image filename";
-                else
-                if (p - tp == 15 && !LocaleNCompare(tp, "MissingArgument", 15))
-                  return *np ? tag : "Missing argument";
-                else
-                if (p - tp == 14 && !LocaleNCompare(tp, "MissingAzimuth", 14))
-                  return *np ? tag : "Missing azimuth";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "MissingBackgroundColor", 22))
-                  return *np ? tag : "Missing background color";
-                else
-                if (p - tp == 17 && !LocaleNCompare(tp, "MissingBevelWidth", 17))
-                  return *np ? tag : "Missing bevel width";
-                else
-                if (p - tp == 18 && !LocaleNCompare(tp, "MissingBorderColor", 18))
-                  return *np ? tag : "Missing border color";
-                else
-                if (p - tp == 19 && !LocaleNCompare(tp, "MissingCoefficients", 19))
-                  return *np ? tag : "Missing coefficients";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "MissingColorizeValue", 20))
-                  return *np ? tag : "Missing colorize value";
-                else
-                if (p - tp == 13 && !LocaleNCompare(tp, "MissingColors", 13))
-                  return *np ? tag : "Missing colors";
-                else
-                if (p - tp == 14 && !LocaleNCompare(tp, "MissingComment", 14))
-                  return *np ? tag : "Missing comment";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "MissingCompressQuality", 22))
-                  return *np ? tag : "Missing compression quality";
-                else
-                if (p - tp == 18 && !LocaleNCompare(tp, "MissingCycleAmount", 18))
-                  return *np ? tag : "Missing an cycle amount";
-                else
-                if (p - tp == 12 && !LocaleNCompare(tp, "MissingDelay", 12))
-                  return *np ? tag : "Missing delay";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "MissingDisposeMethod", 20))
-                  return *np ? tag : "Missing dispose method";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "MissingDissolveValue", 20))
-                  return *np ? tag : "Missing dissolve value";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "MissingDrawingPrimitive", 23))
-                  return *np ? tag : "Missing drawing primitive";
-                else
-                if (p - tp == 18 && !LocaleNCompare(tp, "MissingEnodingType", 18))
-                  return *np ? tag : "Missing encoding type";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "MissingEventMask", 16))
-                  return *np ? tag : "Missing event mask";
-                else
-                if (p - tp == 15 && !LocaleNCompare(tp, "MissingFilename", 15))
-                  return *np ? tag : "Missing filename";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "MissingFillColor", 16))
-                  return *np ? tag : "Missing fill color";
-                else
-                if (p - tp == 15 && !LocaleNCompare(tp, "MissingFontName", 15))
-                  return *np ? tag : "Missing font name";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "MissingFormatSpecifier", 22))
-                  return *np ? tag : "Missing format specifier";
-                else
-                if (p - tp == 15 && !LocaleNCompare(tp, "MissingGeometry", 15))
-                  return *np ? tag : "Missing geometry";
-                else
-                if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageDepth", 17))
-                  return *np ? tag : "Missing image depth";
-                else
-                if (p - tp == 18 && !LocaleNCompare(tp, "MissingImageFrames", 18))
-                  return *np ? tag : "Missing image frames";
-                else
-                if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageGamma", 17))
-                  return *np ? tag : "Missing image gamma";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "MissingImageIterations", 22))
-                  return *np ? tag : "Missing image iterations";
-                else
-                if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageLabel", 17))
-                  return *np ? tag : "Missing image label";
-                else
-                if (p - tp == 19 && !LocaleNCompare(tp, "MissingImageProfile", 19))
-                  return *np ? tag : "Missing image profile";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "MissingImageRotation", 20))
-                  return *np ? tag : "Missing image rotation";
-                else
-                if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageScene", 17))
-                  return *np ? tag : "Missing image scene";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "MissingImplodeAmount", 20))
-                  return *np ? tag : "Missing an implode amount";
-                else
-                if (p - tp == 15 && !LocaleNCompare(tp, "MissingListName", 15))
-                  return *np ? tag : "Missing list name";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "MissingLogFormat", 16))
-                  return *np ? tag : "Missing log format";
-                else
-                if (p - tp == 17 && !LocaleNCompare(tp, "MissingMatteColor", 17))
-                  return *np ? tag : "Missing matte color";
-                else
-                if (p - tp == 18 && !LocaleNCompare(tp, "MissingOpaqueColor", 18))
-                  return *np ? tag : "Missing opaque color";
-                else
-                if (p - tp == 19 && !LocaleNCompare(tp, "MissingPageGeometry", 19))
-                  return *np ? tag : "Missing page geometry";
-                else
-                if (p - tp == 18 && !LocaleNCompare(tp, "MissingPaintRadius", 18))
-                  return *np ? tag : "Missing paint radius";
-                else
-                if (p - tp == 15 && !LocaleNCompare(tp, "MissingPassword", 15))
-                  return *np ? tag : "Missing password";
-                else
-                if (p - tp == 12 && !LocaleNCompare(tp, "MissingPoint", 12))
-                  return *np ? tag : "Missing point";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "MissingPointsize", 16))
-                  return *np ? tag : "Missing pointsize";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "MissingResourceLimit", 20))
-                  return *np ? tag : "Missing resource limit";
-                else
-                if (p - tp == 19 && !LocaleNCompare(tp, "MissingResourceType", 19))
-                  return *np ? tag : "Missing resource type";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "MissingSeedValue", 16))
-                  return *np ? tag : "Missing seed value";
-                else
-                if (p - tp == 17 && !LocaleNCompare(tp, "MissingServerName", 17))
-                  return *np ? tag : "Missing server name";
-                else
-                if (p - tp == 19 && !LocaleNCompare(tp, "MissingSpreadAmount", 19))
-                  return *np ? tag : "Missing an spread amount";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "MissingThreshold", 16))
-                  return *np ? tag : "Missing threshold";
-                else
-                if (p - tp == 11 && !LocaleNCompare(tp, "MissingTile", 11))
-                  return *np ? tag : "Missing tile";
-                else
-                if (p - tp == 12 && !LocaleNCompare(tp, "MissingTitle", 12))
-                  return *np ? tag : "Missing title";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "MissingTransparentColor", 23))
-                  return *np ? tag : "Missing transparent color";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "MissingTreeDepth", 16))
-                  return *np ? tag : "Missing tree depth";
-                else
-                if (p - tp == 11 && !LocaleNCompare(tp, "MissingType", 11))
-                  return *np ? tag : "Missing type";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "MissingViewTransform", 20))
-                  return *np ? tag : "Missing view transform";
-                else
-                if (p - tp == 25 && !LocaleNCompare(tp, "MissingVirtualPixelMethod", 25))
-                  return *np ? tag : "Missing virtual pixel method";
-                else
-                if (p - tp == 12 && !LocaleNCompare(tp, "MissingWidth", 12))
-                  return *np ? tag : "Missing width";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "MustSpecifyAnImageName", 22))
-                  return *np ? tag : "Must specify a image name";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "MustSpecifyImageSize", 20))
-                  return *np ? tag : "Must specify image size";
+                if (p - tp == 19 && !LocaleNCompare(tp, "MissingImageChannel", 19))
+                  return *np ? tag : "Missing a required image channel";
                 else
                   return tag;
 
               case 'n':  case 'N':
-                if (p - tp == 13 && !LocaleNCompare(tp, "NoBlobDefined", 13))
-                  return *np ? tag : "No Binary Large OBjects defined";
+                if (p - tp == 23 && !LocaleNCompare(tp, "NegativeOrZeroImageSize", 23))
+                  return *np ? tag : "Negative or zero image size";
                 else
-                if (p - tp == 15 && !LocaleNCompare(tp, "NoImagesDefined", 15))
-                  return *np ? tag : "No images defined";
+                if (p - tp == 21 && !LocaleNCompare(tp, "NonOS2HeaderSizeError", 21))
+                  return *np ? tag : "Non OS2 BMP header size less than 40";
                 else
-                if (p - tp == 21 && !LocaleNCompare(tp, "NoImageVectorGraphics", 21))
-                  return *np ? tag : "No image vector graphics";
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotABMPImageFile", 16))
+                  return *np ? tag : "Not a BMP image file";
                 else
-                if (p - tp == 29 && !LocaleNCompare(tp, "NonzeroWidthAndHeightRequired", 29))
-                  return *np ? tag : "Non-zero width and height required";
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotACUTImageFile", 16))
+                  return *np ? tag : "Not a CUT image file";
                 else
-                if (p - tp == 21 && !LocaleNCompare(tp, "NoProfileNameWasGiven", 21))
-                  return *np ? tag : "No profile name was given";
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotADCMImageFile", 16))
+                  return *np ? tag : "Not a DCM image file";
                 else
-                  return tag;
-
-              case 'r':  case 'R':
-                if (p - tp == 22 && !LocaleNCompare(tp, "ReferenceImageRequired", 22))
-                  return *np ? tag : "Reference image required";
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotADCXImageFile", 16))
+                  return *np ? tag : "Not a DCX image file";
                 else
-                if (p - tp == 20 && !LocaleNCompare(tp, "ReferenceIsNotMyType", 20))
-                  return *np ? tag : "Reference is not my type";
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotADIBImageFile", 16))
+                  return *np ? tag : "Not a DIB image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotADPXImageFile", 16))
+                  return *np ? tag : "Not a DPX image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAGIFImageFile", 16))
+                  return *np ? tag : "Not a GIF image file";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "NotAMATLABImageFile", 19))
+                  return *np ? tag : "Not a MATLAB image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAMNGImageFile", 16))
+                  return *np ? tag : "Not a MNG image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAMTVImageFile", 16))
+                  return *np ? tag : "Not a MTV image file";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "NotAnARTImageFile", 17))
+                  return *np ? tag : "Not an ART image file";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "NotAnAVIImageFile", 17))
+                  return *np ? tag : "Not an AVI image file";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "NotAnAVSImageFile", 17))
+                  return *np ? tag : "Not an AVS image file";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "NotAnEMFImageFile", 17))
+                  return *np ? tag : "Not an EMF image file";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "NotAnICOImageFile", 17))
+                  return *np ? tag : "Not a ICO image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAOTBImageFile", 16))
+                  return *np ? tag : "Not a OTB image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAPCDImageFile", 16))
+                  return *np ? tag : "Not a PCD image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAPCXImageFile", 16))
+                  return *np ? tag : "Not a PCX image file";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "NotAPICTImageFile", 17))
+                  return *np ? tag : "Not a PICT image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAPIXImageFile", 16))
+                  return *np ? tag : "Not a PIX image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAPNMImageFile", 16))
+                  return *np ? tag : "Not a PNM image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAPSDImageFile", 16))
+                  return *np ? tag : "Not a PSD image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAPWPImageFile", 16))
+                  return *np ? tag : "Not a PSP image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotARLEImageFile", 16))
+                  return *np ? tag : "Not a RLE image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotASCTImageFile", 16))
+                  return *np ? tag : "Not a SCT image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotASFWImageFile", 16))
+                  return *np ? tag : "Not a SFW image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotASGIImageFile", 16))
+                  return *np ? tag : "Not a SGI image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotASUNImageFile", 16))
+                  return *np ? tag : "Not a SUN image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotATGAImageFile", 16))
+                  return *np ? tag : "Not a TGA image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotATIMImageFile", 16))
+                  return *np ? tag : "Not a TIM image file";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "NotAVIFFImageFile", 17))
+                  return *np ? tag : "Not a VIFF image file";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "NotAWBMPImageFile", 17))
+                  return *np ? tag : "Not a WBMP image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAWPGImageFile", 16))
+                  return *np ? tag : "Not a WPG image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAXBMImageFile", 16))
+                  return *np ? tag : "Not a XBM image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAXCFImageFile", 16))
+                  return *np ? tag : "Not a XCF image file";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "NotAXPMImageFile", 16))
+                  return *np ? tag : "Not a XPM image file";
+                else
+                if (p - tp == 18 && !LocaleNCompare(tp, "NotEnoughPixelData", 18))
+                  return *np ? tag : "Not enough pixel data";
+                else
+                if (p - tp == 14 && !LocaleNCompare(tp, "NotEnoughTiles", 14))
+                  return *np ? tag : "Not enough tiles found in level";
                 else
                   return tag;
 
               case 's':  case 'S':
-                if (p - tp == 20 && !LocaleNCompare(tp, "SteganoImageRequired", 20))
-                  return *np ? tag : "Stegano image required";
+                if (p - tp == 30 && !LocaleNCompare(tp, "StaticPlanesValueNotEqualToOne", 30))
+                  return *np ? tag : "Static planes value not equal to 1";
                 else
-                if (p - tp == 19 && !LocaleNCompare(tp, "StereoImageRequired", 19))
-                  return *np ? tag : "Stereo image required";
-                else
-                if (p - tp == 36 && !LocaleNCompare(tp, "SubimageSpecificationReturnsNoImages", 36))
-                  return *np ? tag : "Subimage specification returns no images profile name was given";
+                  return tag;
+
+              case 't':  case 'T':
+                if (p - tp == 22 && !LocaleNCompare(tp, "TooMuchImageDataInFile", 22))
+                  return *np ? tag : "Too much image data in file";
                 else
                   return tag;
 
               case 'u':  case 'U':
-                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAddOrRemoveProfile", 26))
-                  return *np ? tag : "Unable to add or remove profile";
+                if (p - tp == 32 && !LocaleNCompare(tp, "UnableToReadColormapFromDumpFile", 32))
+                  return *np ? tag : "Unable to read colormap from dump file";
                 else
-                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAllocateICCProfile", 26))
-                  return *np ? tag : "unable to allocate ICC profile";
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToReadColorProfile", 24))
+                  return *np ? tag : "Unable to read color profile";
                 else
-                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToBlurImage", 17))
-                  return *np ? tag : "Unable to blur image";
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToReadExtensionBlock", 26))
+                  return *np ? tag : "Unable to read extension block";
                 else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToConstituteImage", 23))
-                  return *np ? tag : "Unable to constitute image";
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToReadGenericProfile", 26))
+                  return *np ? tag : "Unable to read generic profile";
                 else
-                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToConvolveImage", 21))
-                  return *np ? tag : "Unable to convolve image";
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToReadImageData", 21))
+                  return *np ? tag : "Unable to read image data";
                 else
-                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToEdgeImage", 17))
-                  return *np ? tag : "Unable to edge image";
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadImageHeader", 23))
+                  return *np ? tag : "Unable to read image header";
                 else
-                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToFilterImage", 19))
-                  return *np ? tag : "Unable to filter image";
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadIPTCProfile", 23))
+                  return *np ? tag : "Unable to read IPTC profile";
                 else
-                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToFormatImageMetadata", 27))
-                  return *np ? tag : "unable to format image meta data";
+                if (p - tp == 30 && !LocaleNCompare(tp, "UnableToReadPixmapFromDumpFile", 30))
+                  return *np ? tag : "Unable to read pixmap from dump file";
                 else
-                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToFrameImage", 18))
-                  return *np ? tag : "Unable to frame image";
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToReadSubmage", 19))
+                  return *np ? tag : "Unable to read subimage";
                 else
-                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToOilPaintImage", 21))
-                  return *np ? tag : "unable to oil paint image";
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToReadVIDImage", 20))
+                  return *np ? tag : "Unable to read VID image";
                 else
-                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToPaintImage", 18))
-                  return *np ? tag : "Unable to paint image";
+                if (p - tp == 34 && !LocaleNCompare(tp, "UnableToReadWindowNameFromDumpFile", 34))
+                  return *np ? tag : "Unable to read window name from dump file";
                 else
-                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToRaiseImage", 18))
-                  return *np ? tag : "Unable to raise image";
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToRunlengthDecodeImage", 28))
+                  return *np ? tag : "Unable to runlength decode image";
                 else
-                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSharpenImage", 20))
-                  return *np ? tag : "Unable to sharpen image";
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToUncompressImage", 23))
+                  return *np ? tag : "Unable to uncompress image";
                 else
-                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToThresholdImage", 22))
-                  return *np ? tag : "Unable to threshold image";
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnexpectedEndOfFile", 19))
+                  return *np ? tag : "Unexpected end-of-file";
                 else
-                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWaveImage", 17))
-                  return *np ? tag : "Unable to wave image";
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnexpectedSamplingFactor", 24))
+                  return *np ? tag : "Unexpected sampling factor";
                 else
-                if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedAttribute", 21))
-                  return *np ? tag : "Unrecognized attribute";
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnknownPatternType", 18))
+                  return *np ? tag : "Unknown pattern type";
                 else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedChannelType", 23))
-                  return *np ? tag : "Unrecognized channel type";
-                else
-                if (p - tp == 17 && !LocaleNCompare(tp, "UnrecognizedColor", 17))
-                  return *np ? tag : "Unrecognized color";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedColorspace", 22))
-                  return *np ? tag : "Unrecognized image colorspace";
-                else
-                if (p - tp == 27 && !LocaleNCompare(tp, "UnrecognizedComposeOperator", 27))
-                  return *np ? tag : "Unrecognized compose operator";
-                else
-                if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
-                  return *np ? tag : "Unrecognized dispose method";
-                else
-                if (p - tp == 19 && !LocaleNCompare(tp, "UnrecognizedElement", 19))
-                  return *np ? tag : "Unrecognized element";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedEndianType", 22))
-                  return *np ? tag : "Unrecognized endian type";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
-                  return *np ? tag : "Unrecognized gravity type";
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedBitsPerPixel", 24))
+                  return *np ? tag : "Unrecognized bits per pixel";
                 else
                 if (p - tp == 28 && !LocaleNCompare(tp, "UnrecognizedImageCompression", 28))
-                  return *np ? tag : "Unrecognized image compression";
+                  return *np ? tag : "Unrecognized compression";
                 else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFilter", 23))
-                  return *np ? tag : "Unrecognized image filter";
+                if (p - tp == 34 && !LocaleNCompare(tp, "UnrecognizedImageCompressionMethod", 34))
+                  return *np ? tag : "Unrecognized compression method";
                 else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFormat", 23))
-                  return *np ? tag : "Unrecognized image format";
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedNumerOfColors", 25))
+                  return *np ? tag : "Unrecognized number of colors";
                 else
-                if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageMode", 21))
-                  return *np ? tag : "Unrecognized image mode";
-                else
-                if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageType", 21))
-                  return *np ? tag : "Unrecognized image type";
-                else
-                if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedIntentType", 22))
-                  return *np ? tag : "Unrecognized intent type";
-                else
-                if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedInterlaceType", 25))
-                  return *np ? tag : "Unrecognized interlace type";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedListType", 20))
-                  return *np ? tag : "Unrecognized list type";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedModeType", 20))
-                  return *np ? tag : "Unrecognized mode type";
-                else
-                if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
-                  return *np ? tag : "Unrecognized option";
-                else
-                if (p - tp == 28 && !LocaleNCompare(tp, "UnrecognizedPerlMagickMethod", 28))
-                  return *np ? tag : "Unrecognized PerlMagick method";
-                else
-                if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedPixelMap", 20))
-                  return *np ? tag : "Unrecognized pixel map";
-                else
-                if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedPreviewType", 23))
-                  return *np ? tag : "Unrecognized preview type";
-                else
-                if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedResourceType", 24))
-                  return *np ? tag : "Unrecognized resource type";
-                else
-                if (p - tp == 16 && !LocaleNCompare(tp, "UnrecognizedType", 16))
-                  return *np ? tag : "Unrecognized type";
-                else
-                if (p - tp == 30 && !LocaleNCompare(tp, "UnrecognizedVirtualPixelMethod", 30))
-                  return *np ? tag : "Unrecognized virtual pixel method";
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedXWDHeader", 21))
+                  return *np ? tag : "Unrecognized XWD header";
                 else
                   return tag;
               }
-          else
-          if (p - tp == 24 && !LocaleNCompare(tp, "OptionLengthExceedsLimit", 24))
-            return *np ? tag : "Option length exceeds limit";
+            else
+              return tag;
+
+          case 'f':  case 'F':
+            if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+              if (LocaleNCompare(NEXT_FIELD, "UnableToPersistKey", 18) || p - tp != 18)
+                return tag;
+              else
+                return *np ? tag : "Unable to persist key";
+            else
+              return tag;
+
+          case 'w':  case 'W':
+            if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
+              switch (*NEXT_FIELD)
+              {
+              default:
+                return tag;
+
+              case 'i':  case 'I':
+                if (p - tp == 19 && !LocaleNCompare(tp, "ImproperImageHeader", 19))
+                  return *np ? tag : "Improper image header";
+                else
+                  return tag;
+
+              case 's':  case 'S':
+                if (p - tp == 14 && !LocaleNCompare(tp, "SkipToSyncByte", 14))
+                  return *np ? tag : "Corrupt PCD image, skipping to sync byte";
+                else
+                  return tag;
+              }
+            else
+              return tag;
+          }
+      else
+        return tag;
+
+    case 'd':  case 'D':
+      if (p - tp == 8 && !LocaleNCompare(tp, "Delegate", 8))
+        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+          return tag;
+        else
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
+
+          case 'd':  case 'D':
+            if (p - tp == 14 && !LocaleNCompare(tp, "DelegateFailed", 14))
+              return *np ? tag : "Delegate failed";
+            else
+              return tag;
+
+          case 'f':  case 'F':
+            if (p - tp == 25 && !LocaleNCompare(tp, "FailedToComputeOutputSize", 25))
+              return *np ? tag : "Failed to compute output size";
+            else
+            if (p - tp == 18 && !LocaleNCompare(tp, "FailedToRenderFile", 18))
+              return *np ? tag : "Failed to render file";
+            else
+            if (p - tp == 16 && !LocaleNCompare(tp, "FailedToScanFile", 16))
+              return *np ? tag : "Failed to scan file";
+            else
+              return tag;
+
+          case 'n':  case 'N':
+            if (p - tp == 10 && !LocaleNCompare(tp, "NoTagFound", 10))
+              return *np ? tag : "No tag found";
+            else
+              return tag;
+
+          case 'p':  case 'P':
+            if (p - tp == 24 && !LocaleNCompare(tp, "PostscriptDelegateFailed", 24))
+              return *np ? tag : "Postscript delegate failed";
+            else
+              return tag;
+
+          case 'u':  case 'U':
+            if (p - tp == 19 && !LocaleNCompare(tp, "UnableToCreateImage", 19))
+              return *np ? tag : "Unable to create image";
+            else
+            if (p - tp == 28 && !LocaleNCompare(tp, "UnableToCreateImageComponent", 28))
+              return *np ? tag : "Unable to create image component";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnableToDecodeImageFile", 23))
+              return *np ? tag : "Unable to decode image file";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnableToEncodeImageFile", 23))
+              return *np ? tag : "Unable to encode image file";
+            else
+            if (p - tp == 28 && !LocaleNCompare(tp, "UnableToInitializeFPXLibrary", 28))
+              return *np ? tag : "Unable to initialize FPX library";
+            else
+            if (p - tp == 28 && !LocaleNCompare(tp, "UnableToInitializeWMFLibrary", 28))
+              return *np ? tag : "Unable to initialize WMF library";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnableToManageJP2Stream", 23))
+              return *np ? tag : "Unable to manage JP2 stream";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadAspectRatio", 23))
+              return *np ? tag : "Unable to read aspect ratio";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnableToReadSummaryInfo", 23))
+              return *np ? tag : "Unable to read summary info";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnableToSetAffineMatrix", 23))
+              return *np ? tag : "Unable to set affine matrix";
+            else
+            if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetAspectRatio", 22))
+              return *np ? tag : "Unable to set aspect ratio";
+            else
+            if (p - tp == 21 && !LocaleNCompare(tp, "UnableToSetColorTwist", 21))
+              return *np ? tag : "Unable to set color twist";
+            else
+            if (p - tp == 19 && !LocaleNCompare(tp, "UnableToSetContrast", 19))
+              return *np ? tag : "Unable to set contrast";
+            else
+            if (p - tp == 25 && !LocaleNCompare(tp, "UnableToSetFilteringValue", 25))
+              return *np ? tag : "Unable to set filtering value";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnableToSetImageComment", 23))
+              return *np ? tag : "Unable to set image comment";
+            else
+            if (p - tp == 21 && !LocaleNCompare(tp, "UnableToSetImageTitle", 21))
+              return *np ? tag : "Unable to set image title";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSetJPEGLevel", 20))
+              return *np ? tag : "Unable to set JPEG level";
+            else
+            if (p - tp == 27 && !LocaleNCompare(tp, "UnableToSetRegionOfInterest", 27))
+              return *np ? tag : "Unable to set region of interest";
+            else
+            if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetSummaryInfo", 22))
+              return *np ? tag : "Unable to set summary info";
+            else
+            if (p - tp == 22 && !LocaleNCompare(tp, "UnableToWriteSVGFormat", 22))
+              return *np ? tag : "Unable to write SVG format";
+            else
+              return tag;
+          }
+      else
+      if (p - tp == 4 && !LocaleNCompare(tp, "Draw", 4))
+        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+          return tag;
+        else
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
+
+          case 'a':  case 'A':
+            if (p - tp == 31 && !LocaleNCompare(tp, "AlreadyPushingPatternDefinition", 31))
+              return *np ? tag : "Already pushing pattern definition";
+            else
+              return tag;
+
+          case 'n':  case 'N':
+            if (p - tp == 39 && !LocaleNCompare(tp, "NonconformingDrawingPrimitiveDefinition", 39))
+              return *np ? tag : "Non-conforming drawing primitive definition";
+            else
+            if (p - tp == 15 && !LocaleNCompare(tp, "NotARelativeURL", 15))
+              return *np ? tag : "Not a relative URL";
+            else
+            if (p - tp == 36 && !LocaleNCompare(tp, "NotCurrentlyPushingPatternDefinition", 36))
+              return *np ? tag : "Not currently pushing pattern definition";
+            else
+              return tag;
+
+          case 'u':  case 'U':
+            if (p - tp == 13 && !LocaleNCompare(tp, "UnableToPrint", 13))
+              return *np ? tag : "Unable to print";
+            else
+            if (p - tp == 31 && !LocaleNCompare(tp, "UnbalancedGraphicContextPushPop", 31))
+              return *np ? tag : "unbalanced graphic context push-pop";
+            else
+            if (p - tp == 11 && !LocaleNCompare(tp, "URLNotFound", 11))
+              return *np ? tag : "URL not found";
+            else
+              return tag;
+          }
+      else
+        return tag;
+
+    case 'f':  case 'F':
+      if (p - tp == 4 && !LocaleNCompare(tp, "File", 4))
+        if (LocaleNCompare(NEXT_FIELD, "Open", 4) || p - tp != 4)
+          return tag;
+        else
+        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+          return tag;
+        else
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
+
+          case 'u':  case 'U':
+            if (p - tp == 27 && !LocaleNCompare(tp, "UnableToCreateTemporaryFile", 27))
+              return *np ? tag : "Unable to create temporary file";
+            else
+            if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
+              return *np ? tag : "Unable to open file";
+            else
+            if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWriteFile", 17))
+              return *np ? tag : "Unable to write file";
+            else
+              return tag;
+          }
+      else
+        return tag;
+
+    case 'i':  case 'I':
+      if (p - tp == 5 && !LocaleNCompare(tp, "Image", 5))
+        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+          return tag;
+        else
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
+
+          case 'a':  case 'A':
+            if (p - tp == 20 && !LocaleNCompare(tp, "AngleIsDiscontinuous", 20))
+              return *np ? tag : "angle is discontinuous";
+            else
+              return tag;
+
+          case 'c':  case 'C':
+            if (p - tp == 27 && !LocaleNCompare(tp, "ColorSeparatedImageRequired", 27))
+              return *np ? tag : "Color separated image required";
+            else
+              return tag;
+
+          case 'i':  case 'I':
+            if (p - tp == 22 && !LocaleNCompare(tp, "ImageColorspaceDiffers", 22))
+              return *np ? tag : "image colorspace differs";
+            else
+            if (p - tp == 19 && !LocaleNCompare(tp, "ImageOpacityDiffers", 19))
+              return *np ? tag : "image opacity differs";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "ImageSequenceIsRequired", 23))
+              return *np ? tag : "Image sequence is required";
+            else
+            if (p - tp == 16 && !LocaleNCompare(tp, "ImageSizeDiffers", 16))
+              return *np ? tag : "image size differs";
+            else
+            if (p - tp == 27 && !LocaleNCompare(tp, "InputImagesAlreadySpecified", 27))
+              return *np ? tag : "Input images already specified";
+            else
+              return tag;
+
+          case 'l':  case 'L':
+            if (p - tp == 28 && !LocaleNCompare(tp, "LeftAndRightImageSizesDiffer", 28))
+              return *np ? tag : "left and right image sizes differ";
+            else
+              return tag;
+
+          case 'n':  case 'N':
+            if (p - tp == 17 && !LocaleNCompare(tp, "NoImagesWereFound", 17))
+              return *np ? tag : "No images were found";
+            else
+            if (p - tp == 18 && !LocaleNCompare(tp, "NoImagesWereLoaded", 18))
+              return *np ? tag : "No images were loaded";
+            else
+            if (p - tp == 22 && !LocaleNCompare(tp, "NoLocaleImageAttribute", 22))
+              return *np ? tag : "No [LOCALE] image attribute";
+            else
+              return tag;
+
+          case 't':  case 'T':
+            if (p - tp == 15 && !LocaleNCompare(tp, "TooManyClusters", 15))
+              return *np ? tag : "too many cluster";
+            else
+              return tag;
+
+          case 'u':  case 'U':
+            if (p - tp == 19 && !LocaleNCompare(tp, "UnableToAppendImage", 19))
+              return *np ? tag : "unable to append image";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnableToAverageImage", 20))
+              return *np ? tag : "unable to average image";
+            else
+            if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCompareImages", 21))
+              return *np ? tag : "Unable to compare images";
+            else
+            if (p - tp == 25 && !LocaleNCompare(tp, "UnableToCreateImageMosaic", 25))
+              return *np ? tag : "unable to create image mosaic";
+            else
+            if (p - tp == 25 && !LocaleNCompare(tp, "UnableToCreateStereoImage", 25))
+              return *np ? tag : "Unable to create stereo image";
+            else
+            if (p - tp == 32 && !LocaleNCompare(tp, "UnableToDeconstructImageSequence", 32))
+              return *np ? tag : "Unable to deconstruct image sequence";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnableToFlattenImage", 20))
+              return *np ? tag : "Unable to flatten image";
+            else
+            if (p - tp == 19 && !LocaleNCompare(tp, "UnableToResizeImage", 19))
+              return *np ? tag : "Unable to resize image";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSegmentImage", 20))
+              return *np ? tag : "Unable to segment image";
+            else
+            if (p - tp == 24 && !LocaleNCompare(tp, "UnableToSetImageClipMask", 24))
+              return *np ? tag : "Unable to set image clip mask";
+            else
+              return tag;
+
+          case 'w':  case 'W':
+            if (p - tp == 25 && !LocaleNCompare(tp, "WidthOrHeightExceedsLimit", 25))
+              return *np ? tag : "Width or height exceeds limit";
+            else
+              return tag;
+          }
+      else
+        return tag;
+
+    case 'm':  case 'M':
+      if (p - tp == 7 && !LocaleNCompare(tp, "Missing", 7))
+        if (LocaleNCompare(NEXT_FIELD, "Delegate", 8) || p - tp != 8)
+          return tag;
+        else
+        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+          return tag;
+        else
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
+
+          case 'd':  case 'D':
+            if (p - tp == 24 && !LocaleNCompare(tp, "DPSLibraryIsNotAvailable", 24))
+              return *np ? tag : "DPS library is not available";
+            else
+              return tag;
+
+          case 'f':  case 'F':
+            if (p - tp == 24 && !LocaleNCompare(tp, "FPXLibraryIsNotAvailable", 24))
+              return *np ? tag : "FPX library is not available";
+            else
+            if (p - tp == 29 && !LocaleNCompare(tp, "FreeTypeLibraryIsNotAvailable", 29))
+              return *np ? tag : "FreeType library is not available";
+            else
+              return tag;
+
+          case 'j':  case 'J':
+            if (p - tp == 25 && !LocaleNCompare(tp, "JPEGLibraryIsNotAvailable", 25))
+              return *np ? tag : "JPEG compression library is not available";
+            else
+              return tag;
+
+          case 'l':  case 'L':
+            if (p - tp == 21 && !LocaleNCompare(tp, "LZWEncodingNotEnabled", 21))
+              return *np ? tag : "LZW encoding not enabled";
+            else
+              return tag;
+
+          case 'n':  case 'N':
+            if (p - tp == 34 && !LocaleNCompare(tp, "NoDecodeDelegateForThisImageFormat", 34))
+              return *np ? tag : "No decode delegate for this image format";
+            else
+            if (p - tp == 34 && !LocaleNCompare(tp, "NoEncodeDelegateForThisImageFormat", 34))
+              return *np ? tag : "No encode delegate for this image format";
+            else
+              return tag;
+
+          case 't':  case 'T':
+            if (p - tp == 25 && !LocaleNCompare(tp, "TIFFLibraryIsNotAvailable", 25))
+              return *np ? tag : "TIFF library is not available";
+            else
+              return tag;
+
+          case 'x':  case 'X':
+            if (p - tp == 24 && !LocaleNCompare(tp, "XMLLibraryIsNotAvailable", 24))
+              return *np ? tag : "XML library is not available";
+            else
+            if (p - tp == 28 && !LocaleNCompare(tp, "XWindowLibraryIsNotAvailable", 28))
+              return *np ? tag : "X Window library is not available";
+            else
+              return tag;
+
+          case 'z':  case 'Z':
+            if (p - tp == 24 && !LocaleNCompare(tp, "ZipLibraryIsNotAvailable", 24))
+              return *np ? tag : "ZLIB compression library is not available";
+            else
+              return tag;
+          }
+      else
+      if (p - tp == 6 && !LocaleNCompare(tp, "Module", 6))
+        switch (*NEXT_FIELD)
+        {
+        default:
+          return tag;
+
+        case 'e':  case 'E':
+          if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'f':  case 'F':
+              if (p - tp == 19 && !LocaleNCompare(tp, "FailedToCloseModule", 19))
+                return *np ? tag : "Failed to close module";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "FailedToFindSymbol", 18))
+                return *np ? tag : "Failed to find symbol";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToLoadModule", 18))
+                return *np ? tag : "Unable to load module";
+              else
+              if (p - tp == 27 && !LocaleNCompare(tp, "UnableToRegisterImageFormat", 27))
+                return *np ? tag : "Unable to register image format";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedModule", 18))
+                return *np ? tag : "Unrecognized module";
+              else
+                return tag;
+            }
           else
             return tag;
 
-        case 'u':  case 'U':
-          if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedColormapType", 24))
-            return *np ? tag : "Unrecognized colormap type";
+        case 'f':  case 'F':
+          if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+            if (LocaleNCompare(NEXT_FIELD, "UnableToInitializeModuleLoader", 30) || p - tp != 30)
+              return tag;
+            else
+              return *np ? tag : "Unable to initialize module loader";
           else
-          if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedColorspaceType", 26))
-            return *np ? tag : "Unrecognized colorspace type";
+            return tag;
+        }
+      else
+        return tag;
+
+    case 'o':  case 'O':
+      if (p - tp == 6 && !LocaleNCompare(tp, "Option", 6))
+        switch (*NEXT_FIELD)
+        {
+        default:
+          return tag;
+
+        case 'e':  case 'E':
+          if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'b':  case 'B':
+              if (p - tp == 20 && !LocaleNCompare(tp, "BevelWidthIsNegative", 20))
+                return *np ? tag : "bevel width is negative";
+              else
+                return tag;
+
+            case 'c':  case 'C':
+              if (p - tp == 22 && !LocaleNCompare(tp, "CompositeImageRequired", 22))
+                return *np ? tag : "Composite image required";
+              else
+                return tag;
+
+            case 'f':  case 'F':
+              if (p - tp == 24 && !LocaleNCompare(tp, "FrameIsLessThanImageSize", 24))
+                return *np ? tag : "frame is less than image size";
+              else
+                return tag;
+
+            case 'g':  case 'G':
+              if (p - tp == 25 && !LocaleNCompare(tp, "GeometryDimensionsAreZero", 25))
+                return *np ? tag : "Geometry dimensions are zero";
+              else
+              if (p - tp == 27 && !LocaleNCompare(tp, "GeometryDoesNotContainImage", 27))
+                return *np ? tag : "Geometry does not contain image";
+              else
+                return tag;
+
+            case 'i':  case 'I':
+              if (p - tp == 23 && !LocaleNCompare(tp, "ImagesAreNotTheSameSize", 23))
+                return *np ? tag : "Images are not the same size";
+              else
+              if (p - tp == 29 && !LocaleNCompare(tp, "ImageSizeMustExceedBevelWidth", 29))
+                return *np ? tag : "size must exceed bevel width";
+              else
+              if (p - tp == 27 && !LocaleNCompare(tp, "ImageSmallerThanKernelWidth", 27))
+                return *np ? tag : "image smaller than kernel width";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "ImageSmallerThanRadius", 22))
+                return *np ? tag : "image smaller than radius";
+              else
+              if (p - tp == 26 && !LocaleNCompare(tp, "ImageWidthsOrHeightsDiffer", 26))
+                return *np ? tag : "image widths or heights differ";
+              else
+                return tag;
+
+            case 'k':  case 'K':
+              if (p - tp == 22 && !LocaleNCompare(tp, "KernelRadiusIsTooSmall", 22))
+                return *np ? tag : "kernel radius is too small";
+              else
+              if (p - tp == 28 && !LocaleNCompare(tp, "KernelWidthMustBeAnOddNumber", 28))
+                return *np ? tag : "kernel width must be an odd number";
+              else
+                return tag;
+
+            case 'm':  case 'M':
+              if (p - tp == 16 && !LocaleNCompare(tp, "MapImageRequired", 16))
+                return *np ? tag : "Map image required";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "MissingAffineMatrix", 19))
+                return *np ? tag : "Missing affine matrix";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingAmplitude", 16))
+                return *np ? tag : "Missing amplitude";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "MissingAnImageFilename", 22))
+                return *np ? tag : "Missing an image filename";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "MissingArgument", 15))
+                return *np ? tag : "Missing argument";
+              else
+              if (p - tp == 14 && !LocaleNCompare(tp, "MissingAzimuth", 14))
+                return *np ? tag : "Missing azimuth";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "MissingBackgroundColor", 22))
+                return *np ? tag : "Missing background color";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingBevelWidth", 17))
+                return *np ? tag : "Missing bevel width";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "MissingBorderColor", 18))
+                return *np ? tag : "Missing border color";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "MissingCoefficients", 19))
+                return *np ? tag : "Missing coefficients";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MissingColorizeValue", 20))
+                return *np ? tag : "Missing colorize value";
+              else
+              if (p - tp == 13 && !LocaleNCompare(tp, "MissingColors", 13))
+                return *np ? tag : "Missing colors";
+              else
+              if (p - tp == 14 && !LocaleNCompare(tp, "MissingComment", 14))
+                return *np ? tag : "Missing comment";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "MissingCompressQuality", 22))
+                return *np ? tag : "Missing compression quality";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "MissingCycleAmount", 18))
+                return *np ? tag : "Missing an cycle amount";
+              else
+              if (p - tp == 12 && !LocaleNCompare(tp, "MissingDelay", 12))
+                return *np ? tag : "Missing delay";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MissingDisposeMethod", 20))
+                return *np ? tag : "Missing dispose method";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MissingDissolveValue", 20))
+                return *np ? tag : "Missing dissolve value";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "MissingDrawingPrimitive", 23))
+                return *np ? tag : "Missing drawing primitive";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "MissingEnodingType", 18))
+                return *np ? tag : "Missing encoding type";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingEventMask", 16))
+                return *np ? tag : "Missing event mask";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "MissingFilename", 15))
+                return *np ? tag : "Missing filename";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingFillColor", 16))
+                return *np ? tag : "Missing fill color";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "MissingFontName", 15))
+                return *np ? tag : "Missing font name";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "MissingFormatSpecifier", 22))
+                return *np ? tag : "Missing format specifier";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "MissingGeometry", 15))
+                return *np ? tag : "Missing geometry";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageDepth", 17))
+                return *np ? tag : "Missing image depth";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "MissingImageFrames", 18))
+                return *np ? tag : "Missing image frames";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageGamma", 17))
+                return *np ? tag : "Missing image gamma";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "MissingImageIterations", 22))
+                return *np ? tag : "Missing image iterations";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageLabel", 17))
+                return *np ? tag : "Missing image label";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "MissingImageProfile", 19))
+                return *np ? tag : "Missing image profile";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MissingImageRotation", 20))
+                return *np ? tag : "Missing image rotation";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageScene", 17))
+                return *np ? tag : "Missing image scene";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MissingImplodeAmount", 20))
+                return *np ? tag : "Missing an implode amount";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "MissingListName", 15))
+                return *np ? tag : "Missing list name";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingLogFormat", 16))
+                return *np ? tag : "Missing log format";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingMatteColor", 17))
+                return *np ? tag : "Missing matte color";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "MissingOpaqueColor", 18))
+                return *np ? tag : "Missing opaque color";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "MissingPageGeometry", 19))
+                return *np ? tag : "Missing page geometry";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "MissingPaintRadius", 18))
+                return *np ? tag : "Missing paint radius";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "MissingPassword", 15))
+                return *np ? tag : "Missing password";
+              else
+              if (p - tp == 12 && !LocaleNCompare(tp, "MissingPoint", 12))
+                return *np ? tag : "Missing point";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingPointsize", 16))
+                return *np ? tag : "Missing pointsize";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MissingResourceLimit", 20))
+                return *np ? tag : "Missing resource limit";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "MissingResourceType", 19))
+                return *np ? tag : "Missing resource type";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingSeedValue", 16))
+                return *np ? tag : "Missing seed value";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingServerName", 17))
+                return *np ? tag : "Missing server name";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "MissingSpreadAmount", 19))
+                return *np ? tag : "Missing an spread amount";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingThreshold", 16))
+                return *np ? tag : "Missing threshold";
+              else
+              if (p - tp == 11 && !LocaleNCompare(tp, "MissingTile", 11))
+                return *np ? tag : "Missing tile";
+              else
+              if (p - tp == 12 && !LocaleNCompare(tp, "MissingTitle", 12))
+                return *np ? tag : "Missing title";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "MissingTransparentColor", 23))
+                return *np ? tag : "Missing transparent color";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingTreeDepth", 16))
+                return *np ? tag : "Missing tree depth";
+              else
+              if (p - tp == 11 && !LocaleNCompare(tp, "MissingType", 11))
+                return *np ? tag : "Missing type";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MissingViewTransform", 20))
+                return *np ? tag : "Missing view transform";
+              else
+              if (p - tp == 25 && !LocaleNCompare(tp, "MissingVirtualPixelMethod", 25))
+                return *np ? tag : "Missing virtual pixel method";
+              else
+              if (p - tp == 12 && !LocaleNCompare(tp, "MissingWidth", 12))
+                return *np ? tag : "Missing width";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "MustSpecifyAnImageName", 22))
+                return *np ? tag : "Must specify a image name";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MustSpecifyImageSize", 20))
+                return *np ? tag : "Must specify image size";
+              else
+                return tag;
+
+            case 'n':  case 'N':
+              if (p - tp == 13 && !LocaleNCompare(tp, "NoBlobDefined", 13))
+                return *np ? tag : "No Binary Large OBjects defined";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "NoImagesDefined", 15))
+                return *np ? tag : "No images defined";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "NoImageVectorGraphics", 21))
+                return *np ? tag : "No image vector graphics";
+              else
+              if (p - tp == 29 && !LocaleNCompare(tp, "NonzeroWidthAndHeightRequired", 29))
+                return *np ? tag : "Non-zero width and height required";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "NoProfileNameWasGiven", 21))
+                return *np ? tag : "No profile name was given";
+              else
+                return tag;
+
+            case 'r':  case 'R':
+              if (p - tp == 22 && !LocaleNCompare(tp, "ReferenceImageRequired", 22))
+                return *np ? tag : "Reference image required";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "ReferenceIsNotMyType", 20))
+                return *np ? tag : "Reference is not my type";
+              else
+                return tag;
+
+            case 's':  case 'S':
+              if (p - tp == 20 && !LocaleNCompare(tp, "SteganoImageRequired", 20))
+                return *np ? tag : "Stegano image required";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "StereoImageRequired", 19))
+                return *np ? tag : "Stereo image required";
+              else
+              if (p - tp == 36 && !LocaleNCompare(tp, "SubimageSpecificationReturnsNoImages", 36))
+                return *np ? tag : "Subimage specification returns no images profile name was given";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAddOrRemoveProfile", 26))
+                return *np ? tag : "Unable to add or remove profile";
+              else
+              if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAllocateICCProfile", 26))
+                return *np ? tag : "unable to allocate ICC profile";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToBlurImage", 17))
+                return *np ? tag : "Unable to blur image";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnableToConstituteImage", 23))
+                return *np ? tag : "Unable to constitute image";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToConvolveImage", 21))
+                return *np ? tag : "Unable to convolve image";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToEdgeImage", 17))
+                return *np ? tag : "Unable to edge image";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToFilterImage", 19))
+                return *np ? tag : "Unable to filter image";
+              else
+              if (p - tp == 27 && !LocaleNCompare(tp, "UnableToFormatImageMetadata", 27))
+                return *np ? tag : "unable to format image meta data";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToFrameImage", 18))
+                return *np ? tag : "Unable to frame image";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToOilPaintImage", 21))
+                return *np ? tag : "unable to oil paint image";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToPaintImage", 18))
+                return *np ? tag : "Unable to paint image";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToRaiseImage", 18))
+                return *np ? tag : "Unable to raise image";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSharpenImage", 20))
+                return *np ? tag : "Unable to sharpen image";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToThresholdImage", 22))
+                return *np ? tag : "Unable to threshold image";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWaveImage", 17))
+                return *np ? tag : "Unable to wave image";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedAttribute", 21))
+                return *np ? tag : "Unrecognized attribute";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedChannelType", 23))
+                return *np ? tag : "Unrecognized channel type";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnrecognizedColor", 17))
+                return *np ? tag : "Unrecognized color";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedColorspace", 22))
+                return *np ? tag : "Unrecognized image colorspace";
+              else
+              if (p - tp == 27 && !LocaleNCompare(tp, "UnrecognizedComposeOperator", 27))
+                return *np ? tag : "Unrecognized compose operator";
+              else
+              if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
+                return *np ? tag : "Unrecognized dispose method";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnrecognizedElement", 19))
+                return *np ? tag : "Unrecognized element";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedEndianType", 22))
+                return *np ? tag : "Unrecognized endian type";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
+                return *np ? tag : "Unrecognized gravity type";
+              else
+              if (p - tp == 28 && !LocaleNCompare(tp, "UnrecognizedImageCompression", 28))
+                return *np ? tag : "Unrecognized image compression";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFilter", 23))
+                return *np ? tag : "Unrecognized image filter";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFormat", 23))
+                return *np ? tag : "Unrecognized image format";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageMode", 21))
+                return *np ? tag : "Unrecognized image mode";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageType", 21))
+                return *np ? tag : "Unrecognized image type";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedIntentType", 22))
+                return *np ? tag : "Unrecognized intent type";
+              else
+              if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedInterlaceType", 25))
+                return *np ? tag : "Unrecognized interlace type";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedListType", 20))
+                return *np ? tag : "Unrecognized list type";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedModeType", 20))
+                return *np ? tag : "Unrecognized mode type";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
+                return *np ? tag : "Unrecognized option";
+              else
+              if (p - tp == 28 && !LocaleNCompare(tp, "UnrecognizedPerlMagickMethod", 28))
+                return *np ? tag : "Unrecognized PerlMagick method";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedPixelMap", 20))
+                return *np ? tag : "Unrecognized pixel map";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedPreviewType", 23))
+                return *np ? tag : "Unrecognized preview type";
+              else
+              if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedResourceType", 24))
+                return *np ? tag : "Unrecognized resource type";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnrecognizedType", 16))
+                return *np ? tag : "Unrecognized type";
+              else
+              if (p - tp == 30 && !LocaleNCompare(tp, "UnrecognizedVirtualPixelMethod", 30))
+                return *np ? tag : "Unrecognized virtual pixel method";
+              else
+              if (p - tp == 10 && !LocaleNCompare(tp, "UsageError", 10))
+                return *np ? tag : "Improper arguments supplied, please see manual";
+              else
+                return tag;
+            }
           else
-          if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
-            return *np ? tag : "unrecognized dispose method";
-          else
-          if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedEndianType", 22))
-            return *np ? tag : "Unrecognized endian type";
-          else
-          if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedFilterType", 22))
-            return *np ? tag : "Unrecognized filter type";
-          else
-          if (p - tp == 32 && !LocaleNCompare(tp, "UnrecognizedImageCompressionType", 32))
-            return *np ? tag : "unrecognized compression type";
-          else
-          if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageType", 21))
-            return *np ? tag : "Unrecognized image type";
-          else
-          if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedInterlaceType", 25))
-            return *np ? tag : "Unrecognized interlace type";
-          else
-          if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
-            return *np ? tag : "Unrecognized option";
-          else
-          if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedResourceType", 24))
-            return *np ? tag : "Unrecognized resource type";
-          else
-          if (p - tp == 30 && !LocaleNCompare(tp, "UnrecognizedVirtualPixelMethod", 30))
-            return *np ? tag : "Unrecognized virtual pixel method";
+            return tag;
+
+        case 'f':  case 'F':
+          if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'm':  case 'M':
+              if (p - tp == 22 && !LocaleNCompare(tp, "MissingAnImageFilename", 22))
+                return *np ? tag : "Missing an image filename";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingBevelWidth", 17))
+                return *np ? tag : "Missing bevel width";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "MissingBorderColor", 18))
+                return *np ? tag : "Missing border color";
+              else
+              if (p - tp == 12 && !LocaleNCompare(tp, "MissingColor", 12))
+                return *np ? tag : "Missing color";
+              else
+              if (p - tp == 14 && !LocaleNCompare(tp, "MissingCommand", 14))
+                return *np ? tag : "Missing command";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "MissingCompressQuality", 22))
+                return *np ? tag : "Missing compression quality";
+              else
+              if (p - tp == 14 && !LocaleNCompare(tp, "MissingDegrees", 14))
+                return *np ? tag : "Missing degrees";
+              else
+              if (p - tp == 12 && !LocaleNCompare(tp, "MissingDepth", 12))
+                return *np ? tag : "Missing depth";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MissingDisposeMethod", 20))
+                return *np ? tag : "Missing dispose method";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "MissingEncodingType", 19))
+                return *np ? tag : "Missing encoding type";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingEventMask", 16))
+                return *np ? tag : "Missing event mask";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "MissingFilename", 15))
+                return *np ? tag : "Missing filename";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "MissingFontName", 15))
+                return *np ? tag : "Missing font name";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingForeground", 17))
+                return *np ? tag : "Missing foreground";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "MissingGeometry", 15))
+                return *np ? tag : "Missing geometry";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "MissingIDNameOrRoot", 19))
+                return *np ? tag : "Missing id name or 'root";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageDepth", 17))
+                return *np ? tag : "Missing image depth";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingLabelName", 16))
+                return *np ? tag : "Missing label name";
+              else
+              if (p - tp == 12 && !LocaleNCompare(tp, "MissingLevel", 12))
+                return *np ? tag : "Missing level";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingLogFormat", 16))
+                return *np ? tag : "Missing log format";
+              else
+              if (p - tp == 14 && !LocaleNCompare(tp, "MissingMapType", 14))
+                return *np ? tag : "Missing map type";
+              else
+              if (p - tp == 11 && !LocaleNCompare(tp, "MissingName", 11))
+                return *np ? tag : "Missing name";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "MissingPageGeometry", 19))
+                return *np ? tag : "Missing page geometry";
+              else
+              if (p - tp == 15 && !LocaleNCompare(tp, "MissingPassword", 15))
+                return *np ? tag : "Missing password";
+              else
+              if (p - tp == 14 && !LocaleNCompare(tp, "MissingQuality", 14))
+                return *np ? tag : "Missing quality";
+              else
+              if (p - tp == 20 && !LocaleNCompare(tp, "MissingResourceLimit", 20))
+                return *np ? tag : "Missing resource limit";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "MissingResourceType", 19))
+                return *np ? tag : "Missing resource limit";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "MissingSceneNumber", 18))
+                return *np ? tag : "Missing scene number";
+              else
+              if (p - tp == 14 && !LocaleNCompare(tp, "MissingSeconds", 14))
+                return *np ? tag : "Missing seconds";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "MissingServerName", 17))
+                return *np ? tag : "Missing server name";
+              else
+              if (p - tp == 11 && !LocaleNCompare(tp, "MissingSize", 11))
+                return *np ? tag : "Missing size";
+              else
+              if (p - tp == 12 && !LocaleNCompare(tp, "MissingSnaps", 12))
+                return *np ? tag : "Missing snaps";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "MissingThreshold", 16))
+                return *np ? tag : "Missing threshold";
+              else
+              if (p - tp == 12 && !LocaleNCompare(tp, "MissingTitle", 12))
+                return *np ? tag : "Missing title";
+              else
+              if (p - tp == 11 && !LocaleNCompare(tp, "MissingType", 11))
+                return *np ? tag : "Missing type";
+              else
+              if (p - tp == 25 && !LocaleNCompare(tp, "MissingVirtualPixelMethod", 25))
+                return *np ? tag : "Missing virtual pixel method";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "MissingVisualClass", 18))
+                return *np ? tag : "Missing visual class";
+              else
+              if (p - tp == 12 && !LocaleNCompare(tp, "MissingWidth", 12))
+                return *np ? tag : "Missing width";
+              else
+                return tag;
+
+            case 'o':  case 'O':
+              if (p - tp == 24 && !LocaleNCompare(tp, "OptionLengthExceedsLimit", 24))
+                return *np ? tag : "Option length exceeds limit";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedColormapType", 24))
+                return *np ? tag : "Unrecognized colormap type";
+              else
+              if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedColorspaceType", 26))
+                return *np ? tag : "Unrecognized colorspace type";
+              else
+              if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
+                return *np ? tag : "unrecognized dispose method";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedEndianType", 22))
+                return *np ? tag : "Unrecognized endian type";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedFilterType", 22))
+                return *np ? tag : "Unrecognized filter type";
+              else
+              if (p - tp == 32 && !LocaleNCompare(tp, "UnrecognizedImageCompressionType", 32))
+                return *np ? tag : "unrecognized compression type";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageType", 21))
+                return *np ? tag : "Unrecognized image type";
+              else
+              if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedInterlaceType", 25))
+                return *np ? tag : "Unrecognized interlace type";
+              else
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
+                return *np ? tag : "Unrecognized option";
+              else
+              if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedResourceType", 24))
+                return *np ? tag : "Unrecognized resource type";
+              else
+              if (p - tp == 30 && !LocaleNCompare(tp, "UnrecognizedVirtualPixelMethod", 30))
+                return *np ? tag : "Unrecognized virtual pixel method";
+              else
+                return tag;
+            }
           else
             return tag;
         }

@@ -15,11 +15,6 @@
 extern "C" {
 #endif
 
-#if defined(HasGS)
-#include "ps/iapi.h"
-#include "ps/errors.h"
-#endif
-
 /*
   Delegate structure definitions.
 */
@@ -48,6 +43,13 @@ typedef struct _DelegateInfo
     *next;
 } DelegateInfo;
 
+#if defined(MAGICK_IMPLEMENTATION)
+
+#if defined(HasGS)
+#include "ps/iapi.h"
+#include "ps/errors.h"
+#endif
+
 #ifndef gs_main_instance_DEFINED
 # define gs_main_instance_DEFINED
 typedef struct gs_main_instance_s gs_main_instance;
@@ -72,6 +74,7 @@ typedef struct _GhostscriptVectors
   void
     (MagickDLLCall *delete_instance)(gs_main_instance *);
 } GhostscriptVectors;
+#endif /* MAGICK_IMPLEMENTATION */
 
 /*
   Magick delegate methods.

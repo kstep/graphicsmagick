@@ -229,7 +229,7 @@ The <strong>GraphicsMagick</strong> utilities recognize the following image form
 <tr><td><dd><img SRC="../images/star.png" ALT="*">JPG      </td><td>*rw-</td><td>Joint Photographic Experts Group</td></tr>
 <tr><td>          </td><td>    </td><td>JFIF format</td></tr>
 <tr><td><dd><img SRC="../images/star.png" ALT="*">LABEL    </td><td>*r--</td><td>Text image format</td></tr>
-<tr><td><dd><img SRC="../images/star.png" ALT="*">LOGO     </td><td>*rw-</td><td>ImageMagick Logo</td></tr>
+<tr><td><dd><img SRC="../images/star.png" ALT="*">LOGO     </td><td>*rw-</td><td>GraphicsMagick Logo</td></tr>
 <tr><td><dd><img SRC="../images/star.png" ALT="*">M2V      </td><td>*rw+</td><td>MPEG-2 Video Stream</td></tr>
 <tr><td><dd><img SRC="../images/star.png" ALT="*">MAP      </td><td>*rw-</td><td>Colormap intensities (8 or 16 bits,</td></tr>
 <tr><td>          </td><td>    </td><td>depending on the image depth) and</td></tr>
@@ -455,7 +455,7 @@ until the set is terminated by the appearance of any option or <strong>-noop</st
 Some options only affect the decoding of images and others only the encoding.
 The latter can appear after the final group of input images.
 <p>
-This is a combined list of the commandline options used by the ImageMagick
+This is a combined list of the commandline options used by the GraphicsMagick
 utilities (<em>animate, composite, convert, display, identify,
 import, mogrify</em> and <em>montage</em>).
 <br>&nbsp;<br>
@@ -1251,7 +1251,7 @@ For example, to log cache and blob events, use</font></td></tr></table>
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The "User" domain is normally empty, but developers can log "User" events
-in their private copy of ImageMagick.</font></td></tr></table>
+in their private copy of GraphicsMagick.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use the <strong>-log</strong> option to specify the format for debugging output.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1760,7 +1760,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>color to use when filling a graphic primitive</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Colors are represented in ImageMagick in the same form used by SVG:</font></td></tr></table>
+Colors are represented in GraphicsMagick in the same form used by SVG:</font></td></tr></table>
 <pre>
     name                 ("convert -list color" to see names)
     #RGB                 (R,G,B are hex numbers, 4 bits each)
@@ -1918,8 +1918,8 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used with the <strong>mogrify</strong> utility,
 this option will convert any image to the image format you specify.
-See <em>ImageMagick(1)</em> for a list of image format types supported by
-<strong>ImageMagick</strong>.
+See above for a list of image format types supported by
+<strong>GraphicsMagick</strong>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default the file is written to its original name.  However, if the
@@ -1968,6 +1968,7 @@ characters:</font></td></tr></table>
      %x   x resolution
      %y   y resolution
      %#   signature
+     %%   percent sign
      \n   newline
      \r   carriage return
 </pre>
@@ -2529,7 +2530,7 @@ The value for File is in number of files and the values for the other
 resources are in Megabytes.  By default the limits are 64 files, 512MB memory,
 1024MB map, and unlimited disk, but these are adjusted at startup
 time on platforms that can provide information about available resources.
-When the limit is reached, ImageMagick will fail in some fashion, or
+When the limit is reached, GraphicsMagick will fail in some fashion, or
 take compensating actions if possible.
 For example, <tt>-limit memory 32 -limit map 64</tt> limits memory
 When the pixel cache reaches the memory limit it uses
@@ -2564,7 +2565,7 @@ Choices are: <strong>Delegate</strong>, <strong>Format</strong>, <strong>Magic</
 <strong>Module</strong>, <strong>Resource</strong>, or <strong>Type</strong>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This option lists information about the ImageMagick configuration.
+This option lists information about the GraphicsMagick configuration.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3552,7 +3553,7 @@ width=15><b><font face="Helvetica, Arial"
 The value can be any integer in the range 1 to 2**31-1.  Successive
 runs with a particular seed will generate the same sequence of
 pseudo-random numbers. If the <strong>-seed</strong> option is not present,
-ImageMagick will generate a random seed from system timers, clocks,
+GraphicsMagick will generate a random seed from system timers, clocks,
 etc., so that successive runs will generate different sequences.
 The pseudo-random numbers are used by options such as <strong>-noise</strong>,
 <strong>-spread</strong>, and the <strong>plasma</strong> format.</font></td></tr></table>
@@ -3620,7 +3621,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use shared memory</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option specifies whether the utility should attempt use shared memory
-for pixmaps.  ImageMagick must be compiled with shared memory support,
+for pixmaps.  GraphicsMagick must be compiled with shared memory support,
 and the display must support the <em>MIT-SHM</em> extension.  Otherwise, this
 option is ignored.  The default is <strong>True</strong>.
 </font></td></tr></table>
@@ -4178,7 +4179,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="details-version"></a>-version
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -4989,7 +4990,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-version">-version</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5207,7 +5208,7 @@ to alter the executable file name. The default is the application name.</dd>
 <dt><strong>sharedMemory</strong> <strong>(</strong><em>class</em> <strong>SharedMemory)</strong></dt>
 <dd>
 This resource specifies whether animate should attempt use shared memory
-for pixmaps. ImageMagick must be compiled with shared memory support, and
+for pixmaps. GraphicsMagick must be compiled with shared memory support, and
 the display must support the MIT-SHM extension. Otherwise, this resource
 is ignored. The default is True.</dd>
 <dt><strong>text_font</strong> <strong>(</strong><em>class</em> <strong>textFont)</strong></dt>
@@ -5893,7 +5894,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-version">-version</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5978,7 +5979,7 @@ PerlMagick, unless otherwise noted.
 April 2002.
 <br>&nbsp;<br>
 <p>
-This early announcement is to allow ImageMagick users to contribute ideas 
+This early announcement is to allow GraphicsMagick users to contribute ideas 
 early in the process so when the scripting language is released it will
 be useful/stable from the get-go!  If you want to contribute suggestions
 about the Magick scripting language (MSL), post them to
@@ -6089,7 +6090,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-version">-version</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -6276,8 +6277,8 @@ color="#FFFFFF"><font size="+1">
 <strong>Convert</strong> converts an input file using one image format to an output
 file with a differing image format. In addition, various types of image
 processing can be performed on the converted image during the conversion
-process. <strong>Convert</strong> recognizes the image formats listed in
-<a href="ImageMagick.html"><em>ImageMagick(1)</em></a>.
+process. <strong>Convert</strong> recognizes the image formats listed
+above.
 <br>&nbsp;<br>
 </td></tr></table>
      <p>
@@ -6301,7 +6302,7 @@ To make a thumbnail of a JPEG image, use:
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 In this example, <tt>'-size 120x120'</tt> gives a hint to the JPEG decoder
 that the image is going to be downscaled to 120x120, allowing it to run
-faster by avoiding returning full-resolution images to ImageMagick for
+faster by avoiding returning full-resolution images to GraphicsMagick for
 the subsequent resizing operation.  The
 <tt>'-resize 120x120'</tt> specifies the desired dimensions of the
 output image.  It will be scaled so its largest dimension is 120 pixels.  The
@@ -7799,7 +7800,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-version">-version</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -8822,7 +8823,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-version">-version</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -9237,7 +9238,7 @@ For example to display the fourth page preceding the current page, press
              or f/x.
     F1       Press to display helpful information about
              the "display" utility.
-    Find     Press to browse documentation about ImageMagick.
+    Find     Press to browse documentation about GraphicsMagick.
     1-9      Press to change the level of magnification.
 </pre>
 <p>
@@ -9319,7 +9320,7 @@ width=15><b><font face="Helvetica, Arial"
     browseCommand <i>(class browseCommand)</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
-Specifies the name of the preferred browser when displaying ImageMagick
+Specifies the name of the preferred browser when displaying GraphicsMagick
 documentation. The default is <tt>netscape %s</tt>.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -9554,7 +9555,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 This resource specifies whether display should attempt use shared memory
-for pixmaps. ImageMagick must be compiled with shared memory support, and
+for pixmaps. GraphicsMagick must be compiled with shared memory support, and
 the display must support the MIT-SHM extension. Otherwise, this resource
 is ignored. The default is True.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -11568,7 +11569,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-version">-version</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <p>
 For a more detailed description of each option, see
 Options, above.
@@ -12128,7 +12129,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-version">-version</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <p>
 For a more detailed description of each option, see
 Options, above.
@@ -12153,8 +12154,8 @@ option such as
 <strong>-format</strong> causes the output filename to be different from the input
 filename.
 <br>&nbsp;<br>
-The graphics formats supported by <strong>mogrify</strong> are listed in
-<a href="ImageMagick.html"><em>ImageMagick(1)</em></a>.
+The graphics formats supported by <strong>mogrify</strong> are listed
+above.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
@@ -12182,7 +12183,7 @@ To convert a directory full of JPEG images to thumbnails, use:
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 In this example, <tt>'-size 120x120'</tt> gives a hint to the JPEG decoder
 that the images are going to be downscaled to 120x120, allowing it to run
-faster by avoiding returning full-resolution images to ImageMagick for
+faster by avoiding returning full-resolution images to GraphicsMagick for
 the subsequent resizing operation.  The
 <tt>'-resize 120x120'</tt> specifies the desired dimensions of the
 output images.  It will be scaled so its largest dimension is 120 pixels.  The
@@ -13468,7 +13469,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-version">-version</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14401,7 +14402,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="gm.html#details-version">-version</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print ImageMagick version string</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>print GraphicsMagick version string</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14669,8 +14670,6 @@ authorization from the GraphicsMagick Development Group.</strong>
 <HR>
 
 <a href="#top"><img src="../images/top.jpg" border=0 width=42 height=42 align="right" alt="Top of page"></a>
-<form action="mailto:magick-users%40imagemagick.org" style="margin-top:5px">
- <input type="submit" title="E-Mail us" value="E-Mail" style="background-image:url('../images/background.gif'); color:white; font-weight:bold">
  <small>&quot;Image manipulation software that works like magick&quot;</small>
 </form></td>
 </tr></table>

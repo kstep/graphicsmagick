@@ -1,228 +1,236 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>resize - Methods to Resize an Image</title>
-<link rel="StyleSheet" href="../magick.css" type="text/css" />
-</head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+<STYLE>
+<!--
+@page { size: 8.5in 11in }
+TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+H2 { color: #000000 }
+A:link { color: #0085c0 }
+A:visited { color: #800080 }
+-->
+</STYLE>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080"> <A HREF="http://promote.pair.com/direct.pl?imagemagick.org"> <IMG SRC="../../images/promote.png" ALT="Pair" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A> <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<TITLE>resize - Methods to Resize an Image</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+</HEAD>
 
-<p><a name="__index__"></a></p>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+        <INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+        <INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+        <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+                <COL WIDTH=208*>
+                <COL WIDTH=48*>
+                <TR>
+                        <TD WIDTH=81%>
+                                <P ALIGN=LEFT>[<A HREF="../../index.html">Home</A>] [<A HREF="../mission.html">Mission
+                                Statement</A>] [<A HREF="../development.html">Development Process</A>] [<A HREF="../download.html">Download</A>]
+                                [<A HREF="../install.html">Installation</A>] [<A HREF="../cvs.html">CVS</A>]
+                                [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+                                Lists</A>] [<A HREF="../FAQ.html">FAQ</A>] [<A HREF="../formats.html">Formats</A>]
+                                [<A HREF="../NEWS.html">News</A> ] [<A HREF="../Changelog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>]
+                                [<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+                                Bugs</A>] [<A HREF="../utilities.html">Utilities</A>] [<A HREF="../programming.html">Programming</A>]
+                                [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
+                        </TD>
+                        <TD ROWSPAN=2 WIDTH=19%>
+                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                        </TD>
+                </TR>
+                <TR>
+                        <TD WIDTH=81%>
+                                <DIV ALIGN=CENTER>
+                                        <P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=20 MAXLENGTH=255>
+                                        <INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+                                        </P>
+                                </DIV>
+                        </TD>
+                </TR>
+        </TABLE>
+</FORM>
+
+
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
-<ul>
+<UL>
 
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
+	<LI><A HREF="#name">
+NAME</A>
+	<LI><A HREF="#synopsis">
+SYNOPSIS</A>
+	<LI><A HREF="#function descriptions">
+FUNCTION 
+DESCRIPTIONS</A>
+	<UL>
 
-		<li><a href="#magnifyimage">MagnifyImage</a></li>
-		<li><a href="#minifyimage">MinifyImage</a></li>
-		<li><a href="#resizeimage">ResizeImage</a></li>
-		<li><a href="#sampleimage">SampleImage</a></li>
-		<li><a href="#scaleimage">ScaleImage</a></li>
-		<li><a href="#thumbnailimage">ThumbnailImage</a></li>
-	</ul>
+		<LI><A HREF="#magnifyimage">MagnifyImage</A>
+		<LI><A HREF="#minifyimage">MinifyImage</A>
+		<LI><A HREF="#resizeimage">ResizeImage</A>
+		<LI><A HREF="#sampleimage">SampleImage</A>
+		<LI><A HREF="#scaleimage">ScaleImage</A>
+		<LI><A HREF="#thumbnailimage">ThumbnailImage</A>
+	</UL>
 
-</ul>
+</UL>
 <!-- INDEX END -->
 
-<hr />
-<p>
-</p>
-<h1><a name="name">NAME</a></h1>
-<p>resize - Methods to Resize an Image</p>
-<p>
-</p>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>Image * <strong>MagnifyImage</strong>( const Image *image, ExceptionInfo *exception );</p>
-<p>Image * <strong>MinifyImage</strong>( const Image *image, ExceptionInfo *exception );</p>
-<p>Image * <strong>ResizeImage</strong>( Image *image, const unsigned long columns, const unsigned long rows, const FilterTypes filter, const double blur, ExceptionInfo *exception );</p>
-<p>Image * <strong>SampleImage</strong>( const Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</p>
-<p>Image * <strong>ScaleImage</strong>( const Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</p>
-<p>Image * <strong>ThumbnailImage</strong>( const Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</p>
-<p>
-</p>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<p>
-</p>
-<h2><a name="magnifyimage">MagnifyImage</a></h2>
-<blockquote>MagnifyImage() is a convenience method that scales an image proportionally to twice its size. </blockquote><p>The format of the MagnifyImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *MagnifyImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_image%3a">o image:</a></strong><br />
-</dt>
-<dd>
+<HR>
+<P>
+<H2><A NAME="name">
+NAME</A></H2>
+<P>resize - Methods to Resize an Image</P>
+<P>
+<HR>
+<H2><A NAME="synopsis">
+SYNOPSIS</A></H2>
+<P>Image * <STRONG>MagnifyImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>MinifyImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ResizeImage</STRONG>( Image *image, const unsigned long columns, const unsigned long rows, const FilterTypes filter, const double blur, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>SampleImage</STRONG>( const Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ScaleImage</STRONG>( const Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ThumbnailImage</STRONG>( const Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
+<P>
+<HR>
+<H2><A NAME="function descriptions">
+FUNCTION 
+DESCRIPTIONS</A></H2>
+<P>
+<H3><A NAME="magnifyimage">MagnifyImage</A></H3>
+<blockquote>MagnifyImage() is a convenience method that scales an image proportionally to twice its size. </blockquote><P>The format of the MagnifyImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *MagnifyImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="minifyimage">MinifyImage</a></h2>
-<blockquote>MinifyImage() is a convenience method that scales an image proportionally to half its size. </blockquote><p>The format of the MinifyImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *MinifyImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="minifyimage">MinifyImage</A></H3>
+<blockquote>MinifyImage() is a convenience method that scales an image proportionally to half its size. </blockquote><P>The format of the MinifyImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *MinifyImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="resizeimage">ResizeImage</a></h2>
-<blockquote>ResizeImage() scales an image to the desired dimensions with one of these filters: </blockquote><pre>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="resizeimage">ResizeImage</A></H3>
+<blockquote>ResizeImage() scales an image to the desired dimensions with one of these filters: </blockquote><PRE>
   Bessel   Blackman   Box
   Catrom   Cubic      Gaussian
   Hanning  Hermite    Lanczos
   Mitchell Point      Quandratic
-  Sinc     Triangle</pre>
-<p>Most of the filters are FIR (finite impulse response), however, Bessel, Gaussian, and Sinc are IIR (infinite impulse response). Bessel and Sinc are windowed (brought down to zero) with the Blackman filter.</p>
-<blockquote>ResizeImage() was inspired by Paul Heckbert's zoom program. </blockquote><p>The format of the ResizeImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ResizeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, const <A HREF="types/Enumerations.html#FilterTypes">FilterTypes</A> filter, const double blur, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+  Sinc     Triangle</PRE>
+<P>Most of the filters are 
+FIR (finite impulse response), however, Bessel, Gaussian, and Sinc are 
+IIR (infinite impulse response). Bessel and Sinc are windowed (brought down to zero) with the Blackman filter.</P>
+<blockquote>ResizeImage() was inspired by Paul Heckbert's zoom program. </blockquote><P>The format of the ResizeImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *ResizeImage ( <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, const <A HREF="types.html#FilterTypes">FilterTypes</A> filter, const double blur, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_columns%3a">o columns:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_columns%3A">columns:</A></STRONG><BR>
+<DD>
 The number of columns in the scaled image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_rows%3a">o rows:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_rows%3A">rows:</A></STRONG><BR>
+<DD>
 The number of rows in the scaled image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_filter%3a">o filter:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_filter%3A">filter:</A></STRONG><BR>
+<DD>
 Image filter to use.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_blur%3a">o blur:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_blur%3A">blur:</A></STRONG><BR>
+<DD>
 The blur factor where &gt; 1 is blurry, &lt; 1 is sharp.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="sampleimage">SampleImage</a></h2>
-<blockquote>SampleImage() scales an image to the desired dimensions with pixel sampling. Unlike other scaling methods, this method does not introduce any additional color into the scaled image. </blockquote><p>The format of the SampleImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="sampleimage">SampleImage</A></H3>
+<blockquote>SampleImage() scales an image to the desired dimensions with pixel sampling. Unlike other scaling methods, this method does not introduce any additional color into the scaled image. </blockquote><P>The format of the SampleImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *SampleImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o columns:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>columns:</STRONG><BR>
+<DD>
 The number of columns in the sampled image.
-</dd>
-<p></p>
-<dt><strong>o rows:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>rows:</STRONG><BR>
+<DD>
 The number of rows in the sampled image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="scaleimage">ScaleImage</a></h2>
-<blockquote>ScaleImage() changes the size of an image to the given dimensions. </blockquote><p>The format of the ScaleImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="scaleimage">ScaleImage</A></H3>
+<blockquote>ScaleImage() changes the size of an image to the given dimensions. </blockquote><P>The format of the ScaleImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *ScaleImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o columns:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>columns:</STRONG><BR>
+<DD>
 The number of columns in the scaled image.
-</dd>
-<p></p>
-<dt><strong>o rows:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>rows:</STRONG><BR>
+<DD>
 The number of rows in the scaled image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="thumbnailimage">ThumbnailImage</a></h2>
-<blockquote>ThumbnailImage() changes the size of an image to the given dimensions. This method was designed by Bob Friesenhahn as a low cost thumbnail generator. </blockquote><p>The format of the ThumbnailImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ThumbnailImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="thumbnailimage">ThumbnailImage</A></H3>
+<blockquote>ThumbnailImage() changes the size of an image to the given dimensions. This method was designed by Bob Friesenhahn as a low cost thumbnail generator. </blockquote><P>The format of the ThumbnailImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *ThumbnailImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o columns:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>columns:</STRONG><BR>
+<DD>
 The number of columns in the scaled image.
-</dd>
-<p></p>
-<dt><strong>o rows:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>rows:</STRONG><BR>
+<DD>
 The number of rows in the scaled image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-</dl>
+</DL></DL>
 
-</body>
+</BODY>
 
-</html>
+</HTML>

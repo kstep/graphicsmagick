@@ -313,7 +313,7 @@ static unsigned int IsPSD(const unsigned char *magick,const size_t length)
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1230,7 +1230,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->next=layer_info[0].image;
           layer_info[0].image->previous=image;
 #else
-    returnImage = layer_info[0].image;  
+          DestroyImage(image);
+          returnImage = layer_info[0].image;  
 #endif
           LiberateMemory((void **) &layer_info);
 
@@ -1462,9 +1463,9 @@ ModuleExport void UnregisterPSDImage(void)
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
-%    o image:  A pointer to a Image structure.
+%    o image:  A pointer to an Image structure.
 %
 %
 */

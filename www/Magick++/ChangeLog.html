@@ -4,6 +4,18 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2003-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (InitializeMagick): InitializeMagick is
+        now a C++ function rather than a namespace inclusion.
+        An atexit() handler is registered to invoke DestroyMagick
+        when the program exits. Relying on static deconstruction
+        to invoke DestroyMagick proved to be unreliable due to
+        translation unit destruction uncertainty.
+
+</UL>
+<p>
 2003-04-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

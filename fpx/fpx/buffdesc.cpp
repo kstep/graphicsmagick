@@ -73,71 +73,33 @@ static void InitByteTo0 (unsigned char* buffer, long size)
     buffer += 4;
   }
 }
-/*
-// Rotate on the left by 8 bits on each 32 bits long and wrap the last one
-static void Shift8BitsLeft (unsigned char* buffer, long size)
-{
-  register unsigned long  tmp;
-  register unsigned long* all = (unsigned long*)(buffer);
-  while (size--) {
-    tmp = (*all) >> 24;
-    (*all) = ((*all) << 8) | tmp;
-    all++;
-  }
-} */
+
 //Updated the procedure to work on both architedture --**IM-05/16/97
 // Rotate on the left by 8 bits on each 32 bits long and wrap the last one
 static void Shift8BitsLeft (unsigned char* buffer, long size)
 {
-  register unsigned long  tmp;
-  register unsigned long* all = (unsigned long*)(buffer);
+  unsigned char  tmp;
   while (size--) {
-
-#ifdef  IN_LITTLE_ENDIAN
-    *all = (unsigned long) SwapBytes( (int32) *all );
-#endif
-
-    tmp = (*all) >> 24;
-    (*all) = ((*all) << 8) | tmp;
-
-#ifdef  IN_LITTLE_ENDIAN
-    *all = (unsigned long) SwapBytes( (int32) *all );
-#endif
-
-    all++;
+	tmp = buffer[0];
+	buffer[0] = buffer[1];
+	buffer[1] = buffer[2];
+	buffer[2] = buffer[3];
+	buffer[3] = tmp;
+	buffer += 4;
   }
 } 
-/*
-// Rotate on the right by 8 bits on each 32 bits long and wrap the last one
-static void Shift8BitsRight (unsigned char* buffer, long size)
-{
-  register unsigned long  tmp;
-  register unsigned long* all = (unsigned long*)(buffer);
-  while (size--) {
-    tmp = (*all) << 24;
-    (*all) = ((*all) >> 8) | tmp;
-    all++;
-  }
-}
-*/
 
 // Rotate on the right by 8 bits on each 32 bits long and wrap the last one
 static void Shift8BitsRight (unsigned char* buffer, long size)
 {
-  register unsigned long  tmp;
-  register unsigned long* all = (unsigned long*)(buffer);
+  unsigned char  tmp;
   while (size--) {
-
-#ifdef  IN_LITTLE_ENDIAN
-    *all = (unsigned long) SwapBytes( (int32) *all );
-#endif
-    tmp = (*all) << 24;
-    (*all) = ((*all) >> 8) | tmp;
-
-#ifdef  IN_LITTLE_ENDIAN
-    *all = (unsigned long) SwapBytes( (int32) *all );
-#endif
-    all++;
+	tmp = buffer[3];
+	buffer[3] = buffer[2];
+	buffer[2] = buffer[1];
+	buffer[1] = buffer[0];
+	buffer[0] = tmp;
+	buffer += 4;
   }
 }
 
@@ -1399,7 +1361,7 @@ Boolean CreateThumbnail(unsigned char* buf, FPXBaselineColorSpace baseSpace,
             unsigned short thumbNailWidth, unsigned short thumbNailHeight, 
             CLIPDATA * clipData)
 {
-  char* buffer;
+  Ptr buffer;
   long  thumbnailSize;
   ptr_Compresseur monCompresseur;
   BITMAPINFOHEADER  bmpInfoHdr;

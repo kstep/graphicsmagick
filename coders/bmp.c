@@ -300,7 +300,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
 %    o status:  Method EncodeImage returns the number of bytes in the
 %      runlength encoded compress_pixels array.
 %
-%    o image:  A pointer to a Image structure.
+%    o image:  A pointer to an Image structure.
 %
 %    o bytes_per_line: The number of bytes in a scanline of compressed pixels
 %
@@ -437,7 +437,7 @@ static unsigned int IsBMP(const unsigned char *magick,const size_t length)
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1394,9 +1394,9 @@ ModuleExport void UnregisterBMPImage(void)
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
-%    o image:  A pointer to a Image structure.
+%    o image:  A pointer to an Image structure.
 %
 %
 */

@@ -66,7 +66,7 @@
     typedef ConstStr255Param ConstStr63Param,ConstStr32Param,ConstStr31Param,
      ConstStr27Param,ConstStr15Param;
 
-    typedef unsigned32 OSType;
+    typedef unsigned long OSType;
     typedef OSType *OSTypePtr;
 
 #ifndef RGB_DEFINED

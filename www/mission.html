@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030406;17092600">
+	<META NAME="CHANGED" CONTENT="20030421;13514800">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,  sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
@@ -29,9 +29,9 @@
 		<TR>
 			<TD WIDTH=81%>
 				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="">Mission
-				Statement</A>] [<A HREF="download.html">Download</A>]
-				[<A HREF="install.html">Installation</A>] [<A HREF="cvs.html">CVS</A>]
-				[<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Statement</A>] [<A HREF="development.html">Development Process</A>] [<A HREF="contribute.html">Contribute</A>]
+				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
+				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
 				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
 				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
 				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
@@ -62,19 +62,19 @@
 		</TD>
 	</TR>
 </TABLE>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">In November,
-2002, the GraphicsMagick project was formed as a branch from
-ImageMagick 5.5.2. The project was formed in order to develop a more
-&quot;stable&quot; form of ImageMagick which is suitable to be use as
-a base for other open source (and proprietary) applications. It was
-perceived that ImageMagick provided tremendous value, but also proved
-to be difficult to rely on as a stable application component since
-the ImageMagick interfaces often changed between releases, and there
-was no concept of shared library ABI stability. GraphicsMagick
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>In
+November, 2002, the GraphicsMagick project was formed as a branch
+from ImageMagick 5.5.2. The project was formed in order to develop a
+more &quot;stable&quot; form of ImageMagick which is suitable to be
+use as a base for other open source (and proprietary) applications.
+It was perceived that ImageMagick provided tremendous value, but also
+proved to be difficult to rely on as a stable application component
+since the ImageMagick interfaces often changed between releases, and
+there was no concept of shared library ABI stability. GraphicsMagick
 intends to resolve these issues while providing an appealing
-development environment to attract the best available developers.</FONT></P>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">The objectives
-of the GraphicsMagick project are to:</FONT></P>
+development environment to attract the best available developers.</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
+objectives of the GraphicsMagick project are to:</FONT></FONT></P>
 <DL>
 	<DD>
 	<TABLE WIDTH=70% BORDER=0 CELLPADDING=4 CELLSPACING=0>
@@ -85,8 +85,8 @@ of the GraphicsMagick project are to:</FONT></P>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic4" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=95%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Use an open
-				development model.</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Use
+				an open development model.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -94,8 +94,8 @@ of the GraphicsMagick project are to:</FONT></P>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic5" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=95%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Encourage
-				new developers to join the project.</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Encourage
+				new developers to join the project.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -103,8 +103,8 @@ of the GraphicsMagick project are to:</FONT></P>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic6" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=95%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Avoid
-				unnecessary source code &quot;churn&quot;.</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Avoid
+				unnecessary source code &quot;churn&quot;.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -112,10 +112,10 @@ of the GraphicsMagick project are to:</FONT></P>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic7" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=95%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Establish
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Establish
 				and preserve both a stable API, and stable ABI, making
 				GraphicsMagick a stable component in Linux and *BSD
-				distributions.</FONT></P>
+				distributions.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -123,8 +123,8 @@ of the GraphicsMagick project are to:</FONT></P>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic9" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=95%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Use
-				efficient coding practices which result in fast code.</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Use
+				efficient coding practices which result in fast code.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -132,8 +132,8 @@ of the GraphicsMagick project are to:</FONT></P>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic10" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=95%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Improve
-				memory efficiency.</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Improve
+				memory efficiency.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -141,8 +141,8 @@ of the GraphicsMagick project are to:</FONT></P>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic11" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=95%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Use a
-				release process which assures a working product.</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Use
+				a release process which assures a working product.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -150,8 +150,8 @@ of the GraphicsMagick project are to:</FONT></P>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic14" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=95%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Prioritize
-				bug-fixes over new feature enhancements.</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Prioritize
+				bug-fixes over new feature enhancements.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -159,8 +159,8 @@ of the GraphicsMagick project are to:</FONT></P>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic12" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=95%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Maintain an
-				accurate change log.</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Maintain
+				an accurate change log.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
@@ -168,9 +168,9 @@ of the GraphicsMagick project are to:</FONT></P>
 				<P><IMG SRC="../images/ball.png" NAME="Graphic13" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=95%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Value, and
-				respect the contributions of developers, and observe and respect
-				the copyrights of other projects.</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Value,
+				and respect the contributions of developers, and observe and
+				respect the copyrights of other projects.</FONT></FONT></P>
 			</TD>
 		</TR>
 	</TABLE>
@@ -178,8 +178,8 @@ of the GraphicsMagick project are to:</FONT></P>
 <P STYLE="margin-left: 0.39in"><BR><BR>
 </P>
 <HR>
-<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic3" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic8" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=1>
-Image manipulation software that works like magic.</FONT> </FONT>
+<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic3" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic8" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">
+Image manipulation software that works like magic. </FONT></FONT>
 </P>
 </BODY>
 </HTML>

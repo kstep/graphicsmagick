@@ -8,27 +8,28 @@
 PACKAGE_NAME='GraphicsMagick'
 #
 # Package version.  This is is the numeric version suffix applied to
-# PACKAGE_NAME (e.g. "1.0.0").
-PACKAGE_VERSION='1.0.0'
+# PACKAGE_NAME (e.g. "1.0").
+PACKAGE_VERSION='1.0'
+
+#
+# Formal Package release date
+PACKAGE_RELEASE_DATE="05/05/03"
+
 #
 # Package version addendum.  This is an arbitrary suffix (if any)
 # appended to the package version. (e.g. "beta1")
 
-# To hardcode the version addendum, uncomment the following line
-PACKAGE_VERSION_ADDENDUM='-beta0'
-
-# If addendum is not defined above, then form a snapshot attendum.
-if test "${PACKAGE_VERSION_ADDENDUM}X" = 'X'
+# `echo -snapshot-``date '+%g%m%d'`
+CHANGE_DATE=`find ${srcdir}/ChangeLog -printf '%Ty%Tm%Td%\n' 2> /dev/null`
+if test -n "$CHANGE_DATE"
 then
-  # `echo -snapshot-``date '+%g%m%d'`
-  CHANGE_DATE=`find ${srcdir}/ChangeLog -printf '%Ty%Tm%Td%\n' 2> /dev/null`
-  if test -n "$CHANGE_DATE"
-  then
-    PACKAGE_VERSION_ADDENDUM="-${CHANGE_DATE}"
-  else
-    PACKAGE_VERSION_ADDENDUM="-snapshot"
-  fi
+  PACKAGE_VERSION_ADDENDUM="-${CHANGE_DATE}"
+else
+  PACKAGE_VERSION_ADDENDUM="-snapshot"
 fi
+
+# To hardcode the version addendum, uncomment the following line
+PACKAGE_VERSION_ADDENDUM=''
 
 #
 # Libtool library revision control info
@@ -51,6 +52,6 @@ fi
 #  6. If any interfaces have been removed since the last public release,
 #     then set age to 0.
 LIBRARY_CURRENT=0
-LIBRARY_REVISION=1
+LIBRARY_REVISION=2
 LIBRARY_AGE=0
 

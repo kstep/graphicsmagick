@@ -296,7 +296,7 @@ ModuleExport void UnregisterPS3Image(void)
 %    o status: Method WritePS3Image return True if the image is printed.
 %      False is returned if the image file cannot be opened for printing.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.

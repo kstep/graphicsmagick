@@ -167,7 +167,7 @@ inline DWORD CDirEntry::GetUserFlags() const
 
 inline CDirEntry* CDirSect::GetEntry(DIROFFSET iEntry)
 {
-    return &(_adeEntry[iEntry]);
+    return GetEntries() + iEntry;
 }
 
 //+------------------------------------------------------------------
@@ -206,7 +206,7 @@ inline void CDirEntry::ByteSwap(void)
 inline void CDirSect::ByteSwap(USHORT cbSector)    
 {
     for (unsigned int i=0; i< (cbSector/sizeof(CDirEntry)); i++)
-        _adeEntry[i].ByteSwap();
+        GetEntries()[i].ByteSwap();
 }
 
 //+------------------------------------------------------------------

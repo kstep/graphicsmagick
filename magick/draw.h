@@ -8,8 +8,6 @@
  
   ImageMagick Drawing API.
 
-  For internal use only!  Subject to change!
-
   Usage synopsis:
 
   DrawContext context;

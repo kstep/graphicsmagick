@@ -99,7 +99,6 @@ extern "C" {
 #define MagickSignature  0xabacadabUL
 
 #if !defined(vms) && !defined(macintosh)
-# include "magick/integral_types.h"
 # include "magick/semaphore.h"
 # include "magick/error.h"
 # include "magick/timer.h"
@@ -119,7 +118,6 @@ extern "C" {
 # include "magick/cache.h"
 # include "magick/cache_view.h"
 # include "magick/color.h"
-# include "magick/command.h"
 # include "magick/constitute.h"
 # include "magick/decorate.h"
 # include "magick/enhance.h"
@@ -143,7 +141,6 @@ extern "C" {
 # include "magick/version.h"
 # include "magick/deprecate.h"
 #else
-# include "integral_types.h"
 # include "semaphore.h"
 # include "timer.h"
 # include "error.h"
@@ -163,7 +160,6 @@ extern "C" {
 # include "cache.h"
 # include "cache_view.h"
 # include "color.h"
-# include "command.h"
 # include "constitute.h"
 # include "decorate.h"
 # include "enhance.h"

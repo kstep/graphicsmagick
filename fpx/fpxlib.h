@@ -44,7 +44,7 @@
     BYTE __RPC_FAR *pClipData;
   } CLIPDATA;
 
-#ifndef WCHAR
+#if !defined(WCHAR) && !defined(__BORLANDC__)
   typedef unsigned short WCHAR; 
   typedef WCHAR * LPWSTR; 
 #endif

@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030406;17124100">
+	<META NAME="CHANGED" CONTENT="20030424;10333900">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,  sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
@@ -30,9 +30,9 @@
 		<TR>
 			<TD WIDTH=81%>
 				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission
-				Statement</A>] [<A HREF="download.html">Download</A>]
-				[<A HREF="install.html">Installation</A>] [<A HREF="cvs.html">CVS</A>]
-				[<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Statement</A>] [<A HREF="development.html">Development Process</A>] [<A HREF="contribute.html">Contribute</A>]
+				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
+				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
 				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
 				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
 				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
@@ -46,7 +46,7 @@
 		<TR>
 			<TD WIDTH=81%>
 				<DIV ALIGN=CENTER>
-					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=18 MAXLENGTH=255>
 					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
 					</P>
 				</DIV>
@@ -63,9 +63,9 @@
 		</TD>
 	</TR>
 </TABLE>
-<P STYLE="margin-bottom: 0in"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><I>GraphicsMagick</I>
+<P STYLE="margin-bottom: 0in"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><I>GraphicsMagick</I>
 capabilities may be accessed from many languages and scripting
-environments via programming APIs as shown in the following table: </FONT>
+environments via programming APIs as shown in the following table: </FONT></FONT>
 </P>
 <DL>
 	<DD>
@@ -74,135 +74,157 @@ environments via programming APIs as shown in the following table: </FONT>
 		<COL WIDTH=208*>
 		<TR VALIGN=TOP>
 			<TH WIDTH=19% BGCOLOR="#52799e">
-				<P><FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><SPAN STYLE="background: transparent">Language</SPAN></FONT></FONT></P>
+				<P><FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><SPAN STYLE="background: transparent">Language</SPAN></FONT></FONT></FONT></P>
 			</TH>
 			<TH WIDTH=81% BGCOLOR="#52799e">
-				<P><FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><SPAN STYLE="background: transparent">Description</SPAN></FONT></FONT></P>
+				<P><FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><SPAN STYLE="background: transparent">Description</SPAN></FONT></FONT></FONT></P>
 			</TH>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="api.html">C</A></P>
+				<P ALIGN=LEFT><A HREF="api.html"><FONT SIZE=3>C</FONT></A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>C is the core programming interface to <EM>GraphicsMagick</EM>
-								</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="Magick++/index.html">C++</A></P>
-			</TD>
-			<TD WIDTH=81%>
-				<P>Magick++ provides an object-oriented C++ interface to
-				<EM>GraphicsMagick</EM> 
+				<P><FONT SIZE=3>C is the core programming interface to
+				</FONT><EM><FONT SIZE=3>GraphicsMagick</FONT></EM><FONT SIZE=3> </FONT>
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="perl.html">Perl</A></P>
+				<P ALIGN=LEFT><A HREF="Magick++/index.html"><FONT SIZE=3>C++</FONT></A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>PerlMagick provides an object-oriented Perl interface to
-				<EM>GraphicsMagick</EM></P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.procoders.net/pythonmagick">Python</A></P>
-			</TD>
-			<TD WIDTH=81%>
-				<P>PythonMagick an object-oriented Python interface to
-				<EM>GraphicsMagick</EM> 
+				<P><FONT SIZE=3>Magick++ provides an object-oriented C++
+				interface to </FONT><EM><FONT SIZE=3>GraphicsMagick</FONT></EM><FONT SIZE=3>
+				</FONT>
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.yeo.nu/jmagick/">Java</A></P>
+				<P ALIGN=LEFT><A HREF="http://www.alagad.com/index.cfm/name-products"><FONT SIZE=3>ColdFusion</FONT></A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>JMagick provides a Java interface to <EM>GraphicsMagick</EM></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>The
+				Alagad Magick Tag for ColdFusion is a free, open source,
+				ColdFusion Custom Tag.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">Visual
-				Basic</FONT></P>
+				<P ALIGN=LEFT><A HREF="http://www.simdesign.nl/components/imagemagick.html"><FONT SIZE=3>Dephi</FONT></A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif">The
-				ImageMagickObject OLE control supports access from Visual Basic
-				programs under Microsoft Windows.</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Delphi
+				component wrapper for ImageMagick library.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><FONT FACE="Verdana, Arial, Helvetica, sans-serif">Windows
-				Script Host (WSH)</FONT></P>
+				<P ALIGN=LEFT><A HREF="http://www.yeo.nu/jmagick/"><FONT SIZE=3>Java</FONT></A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>The ImageMagickObject OLE control supports access from <A HREF="http://msdn.microsoft.com/archive/default.asp?url=/archive/en-us/wsh/htm/WSHToc.asp">Windows
-				Script Host (WSH)</A> (cscript and wscript) under Microsoft
-				Windows.</P>
+				<P><FONT SIZE=3>JMagick provides a Java interface to
+				</FONT><EM><FONT SIZE=3>GraphicsMagick</FONT></EM></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.lazerware.com/imagemagick/">Macintosh
-				Scripting Interface</A></P>
+				<P ALIGN=LEFT><A HREF="http://www.lazerware.com/imagemagick/"><FONT SIZE=3>Macintosh
+				Scripting Interface</FONT></A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif">A scripting
-				interface for the Mac</FONT></P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>A
+				scripting interface for the Mac (unfortunately somewhat dated)</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.alagad.com/index.cfm/name-products">ColdFusion</A></P>
+				<P ALIGN=LEFT><A HREF="http://www.simplesystems.org/PtcMagick/"><FONT SIZE=3>OpenPTC</FONT></A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif">The Alagad
-				Magick Tag for ColdFusion is a free, open source, ColdFusion
-				Custom Tag.</FONT></P>
+				<P><FONT SIZE=3>PtcMagick provides an interface to OpenPTC (a
+				video game programming environment).</FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://pear.php.net/imagick/">PHP</A></P>
+				<P ALIGN=LEFT><A HREF="perl.html"><FONT SIZE=3>Perl</FONT></A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif">The PHP
-				ImageMagick module provides a comprehensive API to access
-				GraphicsMagick functions.</FONT></P>
+				<P><FONT SIZE=3>PerlMagick provides an object-oriented Perl
+				interface to </FONT><EM><FONT SIZE=3>GraphicsMagick</FONT></EM></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.simplesystems.org/PtcMagick/">PtcMagick
-				</A>
+				<P ALIGN=LEFT><A HREF="http://pear.php.net/imagick/"><FONT SIZE=3>PHP</FONT></A></P>
+			</TD>
+			<TD WIDTH=81%>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>The
+				PHP ImageMagick module provides a comprehensive API to access
+				GraphicsMagick functions.</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=19%>
+				<P ALIGN=LEFT><A HREF="http://www.procoders.net/pythonmagick"><FONT SIZE=3>Python</FONT></A></P>
+			</TD>
+			<TD WIDTH=81%>
+				<P><FONT SIZE=3>PythonMagick provides an object-oriented Python
+				interface to </FONT><EM><FONT SIZE=3>GraphicsMagick</FONT></EM><FONT SIZE=3>
+				</FONT>
 				</P>
 			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=19%>
+				<P ALIGN=LEFT><A HREF="http://home.nc.rr.com/rmagick/"><FONT SIZE=3>Ruby</FONT></A></P>
+			</TD>
 			<TD WIDTH=81%>
-				<P>A C++ interface between <EM>GraphicsMagick</EM> and OpenPTC.</P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>RMagick
+				provides a Ruby language extension to GraphicsMagick.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.inet.hr/~mturk/wximagick/index.htm">wxImagick</A></P>
+				<P ALIGN=LEFT><A HREF="http://www.scheme.dk/imagemagick-for-mzscheme/"><FONT SIZE=3>Scheme</FONT></A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>A C++ interface between <EM>GraphicsMagick</EM> and wxWindows.
-				Includes a sample image display program.</P>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>ImageMagick
+				for MzScheme provides a Scheme extension to GraphicsMagick.</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=19%>
+				<P ALIGN=LEFT><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><A HREF="ImageMagickObject.html">Windows
+				OLE</A></FONT></FONT></P>
+			</TD>
+			<TD WIDTH=81%>
+				<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>The
+				<A HREF="ImageMagickObject.html">ImageMagickObject OLE control</A>
+				supports utility-style access via a COM+ object from C++, C#,
+				Visual Basic, Windows Script Host, ASP, and Delphi, programs
+				under Microsoft Windows.</FONT></FONT></P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=19%>
+				<P ALIGN=LEFT><A HREF="http://www.inet.hr/~mturk/wximagick/index.htm"><FONT SIZE=3>wxWindows</FONT></A></P>
+			</TD>
+			<TD WIDTH=81%>
+				<P><FONT SIZE=3>wxImagick provides a C++ interface between
+				</FONT><EM><FONT SIZE=3>GraphicsMagick</FONT></EM><FONT SIZE=3>
+				and wxWindows. Includes a sample image display program.</FONT></P>
 			</TD>
 		</TR>
 	</TABLE>
 </DL>
-<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><I>Some of
-these languages and scripting environments are supported by the
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><I>Some
+of these languages and scripting environments are supported by the
 GraphicsMagick Group while others are developed and supported by
-third parties.</I></FONT></P>
+third parties.</I></FONT></FONT></P>
 <HR>
 <P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic3" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic8" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=3>
 Image manipulation software that works like magic. </FONT>

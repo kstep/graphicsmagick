@@ -17,10 +17,12 @@ INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = drawtest rwblob rwfile
+check_PROGRAMS = constitute drawtest rwblob rwfile
 
 LDADD = ../magick/libGraphicsMagick.la
 LDFLAGS	= @LDFLAGS@
+
+constitute_SOURCES = constitute.c
 
 rwblob_SOURCES = rwblob.c
 
@@ -228,7 +230,52 @@ CHECK_SIZED_FILE_FORMATS = \
 	UYVY \
 	YUV
 
-check-rwblob:
+CHECK_CONSTITUTE_MAPS = \
+	RGB \
+	rgb \
+	rgba \
+	cmy \
+	cmyk \
+	bGr \
+	Gbr \
+	i
+
+CHECK_CONSTITUTE_STORAGETYPES = \
+	char \
+	short \
+	integer \
+	long \
+	float \
+	double
+
+check-constitute: constitute$(EXEEXT)
+	-@status=0 ; \
+	storage_type='' ; \
+	for storage_type in $(CHECK_CONSTITUTE_STORAGETYPES) ; \
+	do \
+	  storage_type_failed=0 ; \
+	  for map in $(CHECK_CONSTITUTE_MAPS) ; \
+	  do \
+	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./constitute -storagetype $$storage_type $(srcdir)/input_truecolor.miff $$map ; \
+	    then \
+	      : ; \
+	    else \
+	      status=1 ; \
+	      storage_type_failed=1 ; \
+	    fi \
+	  done ; \
+	  if test $$storage_type_failed -gt 0 ; \
+	  then \
+	    failed="$$failed$$storage_type:$$map " ; \
+	  fi ; \
+	done ; \
+	if test -n "$$failed" ; \
+	then \
+	  echo "Failed constitute for tests: $$failed" ; \
+	fi ; \
+	exit $$status
+
+check-rwblob: rwblob$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_BLOB_FORMATS) ; \
@@ -255,7 +302,7 @@ check-rwblob:
 	fi ; \
 	exit $$status
 
-check-rwfile:
+check-rwfile: rwfile$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_FILE_FORMATS) ; \
@@ -282,7 +329,7 @@ check-rwfile:
 	fi ; \
 	exit $$status
 
-check-rwblob-sized:
+check-rwblob-sized: rwblob$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_SIZED_BLOB_FORMATS) ; \
@@ -309,7 +356,7 @@ check-rwblob-sized:
 	fi ; \
 	exit $$status
 
-check-rwfile-sized:
+check-rwfile-sized: rwfile$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_SIZED_FILE_FORMATS) ; \
@@ -336,10 +383,9 @@ check-rwfile-sized:
 	fi ; \
 	exit $$status
 
-check-drawtest:
+check-drawtest: drawtest$(EXEEXT)
 	-./drawtest drawtest_out.miff
 	-./drawtest drawtest_out.mvg
-	-./drawtest drawtest_out.svg
 
 CHECK_MIFF_FILE_COMPRESS= \
 	$(NOCOMPRESS) \
@@ -347,7 +393,7 @@ CHECK_MIFF_FILE_COMPRESS= \
 	$(BZIPCOMPRESS) \
 	$(RLECOMPRESS)
 
-check-miff:
+check-miff: rwfile$(EXEEXT)
 	-@status=0 ; \
 	compress='' ; \
 	for compress in $(CHECK_MIFF_FILE_COMPRESS) ; \
@@ -374,4 +420,10 @@ check-miff:
 	fi ; \
 	exit $$status
 
-check: check-drawtest check-rwfile check-miff check-rwblob check-rwblob-sized check-rwfile-sized 
+check: check-constitute \
+	check-drawtest \
+	check-rwfile \
+	check-miff \
+	check-rwblob \
+	check-rwblob-sized \
+	check-rwfile-sized 

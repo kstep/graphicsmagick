@@ -205,6 +205,9 @@ LaunchDelegate = @LaunchDelegate@
 MAGICKLIB = @MAGICKLIB@
 MAGICKLIBDIR = @MAGICKLIBDIR@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
+MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
+MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
 MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
@@ -227,6 +230,7 @@ OLDINCLUDE_DIR = @OLDINCLUDE_DIR@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
+PACKAGE_RELEASE_DATE = @PACKAGE_RELEASE_DATE@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
@@ -340,9 +344,11 @@ INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = drawtest rwblob rwfile
+check_PROGRAMS = constitute drawtest rwblob rwfile
 
 LDADD = ../magick/libGraphicsMagick.la
+
+constitute_SOURCES = constitute.c
 
 rwblob_SOURCES = rwblob.c
 
@@ -523,6 +529,26 @@ CHECK_SIZED_FILE_FORMATS = \
 	YUV
 
 
+CHECK_CONSTITUTE_MAPS = \
+	RGB \
+	rgb \
+	rgba \
+	cmy \
+	cmyk \
+	bGr \
+	Gbr \
+	i
+
+
+CHECK_CONSTITUTE_STORAGETYPES = \
+	char \
+	short \
+	integer \
+	long \
+	float \
+	double
+
+
 CHECK_MIFF_FILE_COMPRESS = \
 	$(NOCOMPRESS) \
 	$(LZWCOMPRESS) \
@@ -531,9 +557,16 @@ CHECK_MIFF_FILE_COMPRESS = \
 
 subdir = tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
+CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
+	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES =
-check_PROGRAMS = drawtest$(EXEEXT) rwblob$(EXEEXT) rwfile$(EXEEXT)
+check_PROGRAMS = constitute$(EXEEXT) drawtest$(EXEEXT) rwblob$(EXEEXT) \
+	rwfile$(EXEEXT)
+am_constitute_OBJECTS = constitute.$(OBJEXT)
+constitute_OBJECTS = $(am_constitute_OBJECTS)
+constitute_LDADD = $(LDADD)
+constitute_DEPENDENCIES = ../magick/libGraphicsMagick.la
+constitute_LDFLAGS =
 am_drawtest_OBJECTS = drawtest.$(OBJEXT)
 drawtest_OBJECTS = $(am_drawtest_OBJECTS)
 drawtest_LDADD = $(LDADD)
@@ -550,10 +583,11 @@ rwfile_LDADD = $(LDADD)
 rwfile_DEPENDENCIES = ../magick/libGraphicsMagick.la
 rwfile_LDFLAGS =
 
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick -I$(top_builddir)/magick
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/drawtest.Po ./$(DEPDIR)/rwblob.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/constitute.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/drawtest.Po ./$(DEPDIR)/rwblob.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/rwfile.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -562,9 +596,10 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(drawtest_SOURCES) $(rwblob_SOURCES) $(rwfile_SOURCES)
+DIST_SOURCES = $(constitute_SOURCES) $(drawtest_SOURCES) \
+	$(rwblob_SOURCES) $(rwfile_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(drawtest_SOURCES) $(rwblob_SOURCES) $(rwfile_SOURCES)
+SOURCES = $(constitute_SOURCES) $(drawtest_SOURCES) $(rwblob_SOURCES) $(rwfile_SOURCES)
 
 all: all-am
 
@@ -582,6 +617,9 @@ clean-checkPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+constitute$(EXEEXT): $(constitute_OBJECTS) $(constitute_DEPENDENCIES) 
+	@rm -f constitute$(EXEEXT)
+	$(LINK) $(constitute_LDFLAGS) $(constitute_OBJECTS) $(constitute_LDADD) $(LIBS)
 drawtest$(EXEEXT): $(drawtest_OBJECTS) $(drawtest_DEPENDENCIES) 
 	@rm -f drawtest$(EXEEXT)
 	$(LINK) $(drawtest_LDFLAGS) $(drawtest_OBJECTS) $(drawtest_LDADD) $(LIBS)
@@ -598,6 +636,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/constitute.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drawtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rwblob.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rwfile.Po@am__quote@
@@ -827,7 +866,34 @@ uninstall-am: uninstall-info-am
 clean-local:
 	rm -f *out*.*
 
-check-rwblob:
+check-constitute: constitute$(EXEEXT)
+	-@status=0 ; \
+	storage_type='' ; \
+	for storage_type in $(CHECK_CONSTITUTE_STORAGETYPES) ; \
+	do \
+	  storage_type_failed=0 ; \
+	  for map in $(CHECK_CONSTITUTE_MAPS) ; \
+	  do \
+	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./constitute -storagetype $$storage_type $(srcdir)/input_truecolor.miff $$map ; \
+	    then \
+	      : ; \
+	    else \
+	      status=1 ; \
+	      storage_type_failed=1 ; \
+	    fi \
+	  done ; \
+	  if test $$storage_type_failed -gt 0 ; \
+	  then \
+	    failed="$$failed$$storage_type:$$map " ; \
+	  fi ; \
+	done ; \
+	if test -n "$$failed" ; \
+	then \
+	  echo "Failed constitute for tests: $$failed" ; \
+	fi ; \
+	exit $$status
+
+check-rwblob: rwblob$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_BLOB_FORMATS) ; \
@@ -854,7 +920,7 @@ check-rwblob:
 	fi ; \
 	exit $$status
 
-check-rwfile:
+check-rwfile: rwfile$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_FILE_FORMATS) ; \
@@ -881,7 +947,7 @@ check-rwfile:
 	fi ; \
 	exit $$status
 
-check-rwblob-sized:
+check-rwblob-sized: rwblob$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_SIZED_BLOB_FORMATS) ; \
@@ -908,7 +974,7 @@ check-rwblob-sized:
 	fi ; \
 	exit $$status
 
-check-rwfile-sized:
+check-rwfile-sized: rwfile$(EXEEXT)
 	-@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_SIZED_FILE_FORMATS) ; \
@@ -935,12 +1001,11 @@ check-rwfile-sized:
 	fi ; \
 	exit $$status
 
-check-drawtest:
+check-drawtest: drawtest$(EXEEXT)
 	-./drawtest drawtest_out.miff
 	-./drawtest drawtest_out.mvg
-	-./drawtest drawtest_out.svg
 
-check-miff:
+check-miff: rwfile$(EXEEXT)
 	-@status=0 ; \
 	compress='' ; \
 	for compress in $(CHECK_MIFF_FILE_COMPRESS) ; \
@@ -967,7 +1032,13 @@ check-miff:
 	fi ; \
 	exit $$status
 
-check: check-drawtest check-rwfile check-miff check-rwblob check-rwblob-sized check-rwfile-sized 
+check: check-constitute \
+	check-drawtest \
+	check-rwfile \
+	check-miff \
+	check-rwblob \
+	check-rwblob-sized \
+	check-rwfile-sized 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

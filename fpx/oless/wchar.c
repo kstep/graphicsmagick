@@ -32,6 +32,8 @@
 
 #ifndef _MSC_VER
 
+#include <string.h>	/* strlen()'s declaration */
+
 size_t sbstowcs(WCHAR *pwcs, const char *s, size_t n )
 {
   size_t count=0;

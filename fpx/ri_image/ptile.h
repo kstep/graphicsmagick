@@ -211,7 +211,7 @@
   static    PTile**     locked;         // Locked tiles
   static    long      indexLocked;
 
-  static    char*     decompressBuffer;   // Global buffer for decompression
+  static    Ptr     decompressBuffer;   // Global buffer for decompression
   static    long      decompressSize;     // Size of the decompression buffer
   static    Boolean     decompressLock;     // true if buffer in use
 

@@ -68,7 +68,7 @@
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -173,8 +173,12 @@ static Image *ReadIconImage(const ImageInfo *image_info,
   icon_file.reserved=ReadBlobLSBShort(image);
   icon_file.resource_type=ReadBlobLSBShort(image);
   icon_file.count=ReadBlobLSBShort(image);
-  if ((icon_file.reserved != 0) || (icon_file.resource_type != 1) ||
-      (icon_file.count > MaxIcons))
+  /*
+    Windows ICO and CUR formats are essentially the same except that
+    .CUR uses resource_type==1 while .ICO uses resource_type=2.
+  */
+  if((icon_file.reserved != 0) || ((icon_file.resource_type != 1) &&
+     (icon_file.resource_type != 2)) || (icon_file.count > MaxIcons))
     ThrowReaderException(CorruptImageError,"NotAnICOImageFile",image);
   for (i=0; i < icon_file.count; i++)
   {
@@ -496,18 +500,27 @@ ModuleExport void RegisterICONImage(void)
   MagickInfo
     *entry;
 
+  entry=SetMagickInfo("CUR");
+  entry->decoder=(DecoderHandler) ReadIconImage;
+  entry->adjoin=False;
+  entry->seekable_stream=True;
+  entry->description=AcquireString("Microsoft Cursor Icon");
+  entry->module=AcquireString("ICON");
+  (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("ICO");
   entry->decoder=(DecoderHandler) ReadIconImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AcquireString("Microsoft icon");
+  entry->description=AcquireString("Microsoft Icon");
   entry->module=AcquireString("ICON");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("ICON");
   entry->decoder=(DecoderHandler) ReadIconImage;
   entry->adjoin=False;
   entry->seekable_stream=True;
-  entry->description=AcquireString("Microsoft icon");
+  entry->description=AcquireString("Microsoft Icon");
   entry->module=AcquireString("ICON");
   (void) RegisterMagickInfo(entry);
 }

@@ -20,6 +20,12 @@ extern "C" {
 #endif
 
 /*
+  Private functions and types should only be exposed by the
+  headers when MAGICK_IMPLEMENTATION is defined.
+*/
+#define MAGICK_IMPLEMENTATION 1
+
+/*
   System include declarations.
 */
 #define __EXTENSIONS__  1
@@ -41,6 +47,14 @@ extern "C" {
 # if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
 # endif
+#endif
+
+#if !defined(const)
+  /*
+    For some stupid reason the zlib headers define 'const' to nothing
+    under AIX unless STDC is defined.
+  */
+#  define STDC
 #endif
 
 #if defined(WIN32) && !defined(__CYGWIN__)
@@ -340,10 +354,15 @@ extern "C" {
 /*
   I/O defines.
 */
-#if defined(WIN32) && !defined(Windows95)
+#if defined(WIN32) && !defined(Windows95) && !defined(__BORLANDC__)
+  /* Windows '95 and Borland C do not support _lseeki64 */
 #  define MagickSeek(file,offset,whence)  _lseeki64(file,offset,whence)
+#  define MagickTell(file) _telli64(file)
+#  define MagickOffset ExtendedSignedIntegralType
 #else
 #  define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
+#  define MagickTell(file) tell(file)
+#  define MagickOffset off_t
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -935,6 +935,7 @@ static unsigned int IsPNG(const unsigned char *magick,const size_t length)
 extern "C" {
 #endif
 
+#if (PNG_LIBPNG_VER > 95)
 static size_t WriteBlobMSBULong(Image *image,const unsigned long value)
 {
   unsigned char
@@ -983,6 +984,7 @@ static void LogPNGChunk(int logging, png_bytep type, unsigned long length)
         "  Writing %c%c%c%c chunk, length: %lu",
         type[0],type[1],type[2],type[3],length);
 }
+#endif /* PNG_LIBPNG_VER > 95 */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -1017,7 +1019,7 @@ static void LogPNGChunk(int logging, png_bytep type, unsigned long length)
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1544,7 +1546,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
 %
 %    o mng_info: Specifies a pointer to a MngInfo structure.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1702,13 +1704,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
 
   png_read_info(ping,ping_info);
-  if (ping_info->bit_depth > 16)
-    image->depth=Min(QuantumDepth,32);
+
+#if (QuantumDepth == 8)
+  image->depth=8;
+#else
+  if (ping_info->bit_depth > 8)
+    image->depth=16;
   else
-    if (ping_info->bit_depth > 8)
-      image->depth=Min(QuantumDepth,16);
-    else
-      image->depth=8;
+    image->depth=8;
+#endif
     
   if (ping_info->bit_depth < 8)
     {
@@ -2811,7 +2815,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %    o mng_info: Specifies a pointer to a MngInfo structure.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -3419,7 +3423,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -5528,10 +5532,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   return(image);
 }
 #else /* PNG_LIBPNG_VER > 95 */
-static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  return (ReadPNGImage(image_info, exception);
-}
 static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   printf("Your PNG library is too old: You have libpng-%s\n",
@@ -5539,6 +5539,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ThrowException(exception,CoderError,"PNG library is too old",
     image_info->filename);
   return (Image *) NULL;
+}
+static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+{
+  return (ReadPNGImage(image_info,exception));
 }
 #endif /* PNG_LIBPNG_VER > 95 */
 #endif
@@ -5760,7 +5764,7 @@ ModuleExport void UnregisterPNGImage(void)
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o image:  A pointer to an Image structure.
 %
@@ -8504,11 +8508,16 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   return(True);
 }
 #else /* PNG_LIBPNG_VER > 95 */
-static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
+  image=image;
   printf("Your PNG library is too old: You have libpng-%s\n",
      PNG_LIBPNG_VER_STRING);
-  ThrowBinaryException(CoderError,"PNG library is too old",image->filename);
+  ThrowBinaryException(CoderError,"PNG library is too old",image_info->filename);
+}
+static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
+{
+  return (WritePNGImage(image_info,image));
 }
 #endif /* PNG_LIBPNG_VER > 95 */
 #endif

@@ -98,9 +98,6 @@ namespace Magick
   // The datatype for an RGB component
   using MagickLib::Quantum;
 
-  // ImageMagick library initialization routine
-  using MagickLib::InitializeMagick;
-
   // Image class types
   using MagickLib::ClassType;
   using MagickLib::UndefinedClass;

@@ -189,67 +189,74 @@ typedef struct _CacheInfo
   MagickExported interfaces.
 */
 extern MagickExport Cache
-  ReferenceCache(Cache);
+  ReferenceCache(Cache cache);
 
 extern MagickExport ClassType
-  GetCacheClass(const Cache);
+  GetCacheClass(const Cache cache);
 
 extern MagickExport ColorspaceType
-  GetCacheColorspace(const Cache);
+  GetCacheColorspace(const Cache cache);
 
 extern MagickExport const PixelPacket
-  *AcquireCacheNexus(const Image *,const long,const long,const unsigned long,
-    const unsigned long,const unsigned long,ExceptionInfo *);
+  *AcquireCacheNexus(const Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows,const unsigned long nexus,
+    ExceptionInfo *exception);
 
 extern MagickExport ExtendedSignedIntegralType
-  GetPixelCacheArea(const Image *);
+  GetPixelCacheArea(const Image *image);
 
 extern MagickExport IndexPacket
-  *GetIndexes(const Image *),
-  *GetNexusIndexes(const Cache,const unsigned long);
+  *GetIndexes(const Image *image),
+  *GetNexusIndexes(const Cache cache,const unsigned long nexus);
 
 MagickExport const PixelPacket
-  *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
-    const unsigned long,ExceptionInfo *);
+  *AcquireImagePixels(const Image *image,const long x,const long y,
+    const unsigned long columns,
+    const unsigned long rows,ExceptionInfo *exception);
 
 extern MagickExport PixelPacket
-   AcquireOnePixel(const Image *,const long,const long,ExceptionInfo *),
-  *GetCacheNexus(Image *,const long,const long,const unsigned long,
-    const unsigned long,const unsigned long),
-  *GetImagePixels(Image *,const long,const long,const unsigned long,
-    const unsigned long),
-  *GetNexusPixels(const Cache,const unsigned long),
-   GetOnePixel(Image *,const long,const long),
-  *GetPixels(const Image *),
-  *SetImagePixels(Image *,const long,const long,const unsigned long,
-     const unsigned long),
-  *SetCacheNexus(Image *,const long,const long,const unsigned long,
-    const unsigned long,const unsigned long);
+   AcquireOnePixel(const Image *image,const long x,const long y,
+     ExceptionInfo *exception),
+  *GetCacheNexus(Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows,
+    const unsigned long nexus),
+  *GetImagePixels(Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows),
+  *GetNexusPixels(const Cache cache,const unsigned long nexus),
+    GetOnePixel(Image *image,const long x,const long y),
+  *GetPixels(const Image *image),
+  *SetImagePixels(Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows),
+  *SetCacheNexus(Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows,
+    const unsigned long nexus);
 
 extern MagickExport unsigned int
-  OpenCache(Image *,const MapMode),
-  PersistCache(Image *,const char *,const unsigned int,
-    ExtendedSignedIntegralType *,ExceptionInfo *),
-  SyncCacheNexus(Image *,const unsigned long),
-  SyncImagePixels(Image *);
+  OpenCache(Image *image,const MapMode mode),
+  PersistCache(Image *image,const char *filename,const unsigned int attach,
+    ExtendedSignedIntegralType *offset,ExceptionInfo *exception),
+  SyncCacheNexus(Image *image,const unsigned long nexus),
+  SyncImagePixels(Image *image);
 
 extern MagickExport unsigned long
-  GetNexus(Cache);
+  GetNexus(Cache cache);
 
 extern MagickExport VirtualPixelMethod
-  GetImageVirtualPixelMethod(const Image *);
+  GetImageVirtualPixelMethod(const Image *image);
 
 extern MagickExport void
-  AllocateCacheNexus(CacheInfo *),
-  ClonePixelCacheMethods(Cache,const Cache),
-  DestroyCacheInfo(Cache),
-  DestroyCacheNexus(Cache,const unsigned long),
-  DestroyImagePixels(Image *),
-  GetCacheInfo(Cache *),
-  SetImageVirtualPixelMethod(const Image *,const VirtualPixelMethod),
-  SetPixelCacheMethods(Cache,AcquirePixelHandler,GetPixelHandler,
-    SetPixelHandler,SyncPixelHandler,GetPixelsFromHandler,GetIndexesFromHandler,
-    AcquireOnePixelFromHandler,GetOnePixelFromHandler,DestroyPixelHandler);
+  ClonePixelCacheMethods(Cache clone,const Cache cache),
+  DestroyCacheInfo(Cache cache),
+  DestroyCacheNexus(Cache cache,const unsigned long nexu),
+  DestroyImagePixels(Image *image),
+  GetCacheInfo(Cache *cache),
+  SetImageVirtualPixelMethod(const Image *image,
+    const VirtualPixelMethod method),
+  SetPixelCacheMethods(Cache cache,AcquirePixelHandler acquire_pixel,
+    GetPixelHandler get_pixel,SetPixelHandler set_pixel,SyncPixelHandler sync_pixel,
+    GetPixelsFromHandler get_pixels_from,GetIndexesFromHandler get_indexes_from,
+    AcquireOnePixelFromHandler acquire_one_pixel_from,
+    GetOnePixelFromHandler get_one_pixel_from,DestroyPixelHandler destroy_pixel);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

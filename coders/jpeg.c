@@ -175,7 +175,7 @@ typedef struct _SourceManager
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -647,6 +647,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    {
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+        image);
+    }
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
@@ -665,6 +670,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_destroy_decompress(&jpeg_info);
       ThrowException(exception,image->exception.severity,
         image->exception.reason,image->exception.description);
+      if (image->blob->type != UndefinedStream)
+        CloseBlob(image);
       number_pixels=image->columns*image->rows;
       if (number_pixels != 0)
         return(image);
@@ -1164,9 +1171,9 @@ ModuleExport void UnregisterJPEGImage(void)
 %      False is returned is there is of a memory shortage or if the image
 %      file cannot be opened for writing.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
-%    o jpeg_image:  A pointer to a Image structure.
+%    o jpeg_image:  A pointer to an Image structure.
 %
 %
 */
@@ -1338,10 +1345,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   const ImageAttribute
     *attribute;
 
-  double
-    x_resolution,
-    y_resolution;
-
   JSAMPLE
     *jpeg_pixels;
 
@@ -1435,19 +1438,24 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       jpeg_info.in_color_space=JCS_GRAYSCALE;
     }
   jpeg_set_defaults(&jpeg_info);
-  x_resolution=72.0;
-  y_resolution=72.0;
+  if ((image->x_resolution == 0) || (image->y_resolution == 0))
+    {
+      image->x_resolution=72.0;
+      image->y_resolution=72.0;
+      image->units=PixelsPerInchResolution;
+    }
   if (image_info->density != (char *) NULL)
     {
       int
         count;
 
-      count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
-      if (count != 2)
-        y_resolution=x_resolution;
+      /* FIXME: density should not be set via image_info->density
+         but removing this support may break some applications. */
+      count=sscanf(image_info->density,"%lfx%lf",&image->x_resolution,
+        &image->y_resolution);
+      if (count == 1 )
+        image->y_resolution=image->x_resolution;
     }
-  image->x_resolution=x_resolution;
-  image->y_resolution=y_resolution;
   jpeg_info.density_unit=1;  /* default to DPI */
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),

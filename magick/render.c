@@ -1497,6 +1497,10 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
 %  can affect how text is drawn by setting one or more members of the draw
 %  info structure.
 %
+%  Note that this is a legacy interface. Authors of new code should consider
+%  using the Draw* methods defined by magick/draw.h since they are better
+%  documented and less error prone.
+%
 %  The format of the DrawImage method is:
 %
 %      unsigned int DrawImage(Image *image,const DrawInfo *draw_info)

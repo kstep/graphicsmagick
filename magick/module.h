@@ -16,20 +16,20 @@ extern "C" {
 #endif
 
 /*
-  Module list entry
-  Maintains modules.mkg path, and the module name corresponding
+  Module alias list entry
+  Maintains modules.mgk path, and the module name corresponding
   to each magick tag.
   Used to support module_list, which is intialized by reading modules.mgk,
 */
 typedef struct _ModuleInfo
 {
   const char
-    *path,
-    *magick,
-    *name;
+    *path,		/* Path to modules.mgk which created alias */
+    *magick,		/* Format name */
+    *name;		/* Name of module supporting format. */
 
   unsigned int
-    stealth;
+    stealth;		/* If true, hide when printing module list */
 
   unsigned long
     signature;

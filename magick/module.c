@@ -115,6 +115,9 @@ static CoderInfo
 
 static ModuleInfo
   *module_list = (ModuleInfo *) NULL;
+
+static unsigned int
+  ltdl_initialized=False;
 
 /*
   Forward declarations.
@@ -166,8 +169,9 @@ static void *lt_dlopen(char *filename)
 }
 #endif /* defined(SupportMagickModules) */
 
-static void lt_dlclose(void *handle)
+static int lt_dlclose(void *handle)
 {
+  return 0;
 }
 
 static const char *lt_dlerror(void)
@@ -219,19 +223,24 @@ MagickExport void DestroyModuleInfo(void)
   register ModuleInfo
     *q;
 
-  /*
-    Free module & coder list.
-  */
   GetExceptionInfo(&exception);
   AcquireSemaphoreInfo(&module_semaphore);
+  /*
+    Free coder list.
+  */
   for (p=coder_list; p != (CoderInfo *) NULL; )
   {
     coder_info=p;
     p=p->next;
-    (void) UnregisterModule(coder_info->tag,&exception);
+    if( UnregisterModule(coder_info->tag,&exception) == False)
+      CatchException(&exception);
   }
   DestroyExceptionInfo(&exception);
   coder_list=(CoderInfo *) NULL;
+
+  /*
+    Free module alias list.
+  */
   for (q=module_list; q != (ModuleInfo *) NULL; )
   {
     module_info=q;
@@ -245,7 +254,11 @@ MagickExport void DestroyModuleInfo(void)
     LiberateMemory((void **) &module_info);
   }
   module_list=(ModuleInfo *) NULL;
-  (void) lt_dlexit();
+  if (ltdl_initialized)
+    {
+      (void) lt_dlexit();
+      ltdl_initialized=False;
+    }
   DestroySemaphoreInfo(&module_semaphore);
 }
 
@@ -831,9 +844,13 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
           /*
             Read modules.
           */
-          if (lt_dlinit() != 0)
-            MagickFatalError(ModuleFatalError,"UnableToInitializeModuleLoader",
-              lt_dlerror());
+          if (!ltdl_initialized)
+            {
+              if (lt_dlinit() != 0)
+                MagickFatalError(ModuleFatalError,
+                  "UnableToInitializeModuleLoader",lt_dlerror());
+              ltdl_initialized=True;
+            }
           RegisterStaticModules();
           (void) ReadConfigureFile(ModuleFilename,0,exception);
         }
@@ -1016,9 +1033,8 @@ MagickExport unsigned int OpenModule(const char *module,
       {
         FormatString(message,"\"%.1024s: %.1024s\"",path,lt_dlerror());
         ThrowException(exception,ModuleError,"UnableToLoadModule",message);
+        return(False);
       }
-    if (handle == (ModuleHandle) NULL)
-      return(False);
     /*
       Add module to coder module list.
     */
@@ -1555,15 +1571,14 @@ static void TagToFilterModuleName(const char *tag, char *module_name)
 static void TagToFunctionName(const char *tag,const char *format,char *function)
 {
   char
-    *function_name;
+    function_name[MaxTextExtent];
 
   assert(tag != (const char *) NULL);
   assert(format != (const char *) NULL);
   assert(function != (char *) NULL);
-  function_name=AllocateString(tag);
+  strncpy(function_name,tag,MaxTextExtent-1);
   LocaleUpper(function_name);
   FormatString(function,format,function_name);
-  LiberateMemory((void **) &function_name);
 }
 
 /*
@@ -1597,10 +1612,14 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
   ExceptionInfo *exception)
 {
   char
+    message[MaxTextExtent],
     name[MaxTextExtent];
 
   void
     (*method)(void);
+
+  unsigned int
+    status=True;
 
   /*
     Locate and execute UnregisterFORMATImage function
@@ -1609,11 +1628,20 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
   TagToFunctionName(coder_info->tag,"Unregister%sImage",name);
   method=(void (*)(void)) lt_dlsym((ModuleHandle) coder_info->handle,name);
   if (method == (void (*)(void)) NULL)
-    MagickError(ModuleError,"FailedToFindSymbol",lt_dlerror());
+    {
+      FormatString(message,"\"%.1024s: %.1024s\"",name,lt_dlerror());
+      ThrowException(exception,ModuleError,"FailedToFindSymbol",message);
+      status=False;
+    }
   else
     method();
-  (void) lt_dlclose((ModuleHandle) coder_info->handle);
-  return(True);
+  if(lt_dlclose((ModuleHandle) coder_info->handle))
+    {
+      FormatString(message,"\"%.1024s: %.1024s\"",name,lt_dlerror());
+      ThrowException(exception,ModuleError,"FailedToCloseModule",message);
+      status=False;
+    }
+  return (status);
 }
 
 /*
@@ -1654,12 +1682,15 @@ static unsigned int UnregisterModule(const char *tag,ExceptionInfo *exception)
   register CoderInfo
     *p;
 
+  unsigned int
+    status=False;
+
   assert(tag != (const char *) NULL);
   for (p=coder_list; p != (CoderInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)
       continue;
-    (void) UnloadModule((CoderInfo *) p,exception);
+    status=UnloadModule((CoderInfo *) p,exception);
     LiberateMemory((void **) &p->tag);
     if (p->previous != (CoderInfo *) NULL)
       p->previous->next=p->next;
@@ -1675,5 +1706,5 @@ static unsigned int UnregisterModule(const char *tag,ExceptionInfo *exception)
     LiberateMemory((void **) &coder_info);
     break;
   }
-  return(p != (CoderInfo *) NULL);
+  return (status);
 }

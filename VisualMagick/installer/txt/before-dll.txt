@@ -1,0 +1,129 @@
+
+Welcome to GraphicsMagick!
+
+  GraphicsMagick is copyrighted (C) by GraphicsMagick Group. It is free for any
+  use, commercial or private. However, this installation package is based on
+  additional programs and libraries which use a different license than
+  GraphicsMagick. None of these licenses prohibit you from using this package
+  for commercial or private use, but they may impose requirements on
+  re-distribution of the package. Please see the 'licenses' subdirectory in
+  the package installation directory after you the package is installed to
+  view the license restrictions of additional package components.
+
+Before You Start
+
+  Please note that the user who installs this package may require
+  "Administrator" privileges in order to properly GraphicsMagick.
+
+  While multiple versions of GraphicsMagick may be installed at one time, if
+  your intention is to replace a prior installation of GraphicsMagick with a
+  newer version, then it may be wise to uninstall the existing GraphicsMagick
+  prior to installing the newer version.
+
+  Before installing GraphicsMagick, please make sure that you are installing the
+  current release version. The current release version is posted to the site
+  "http://www.GraphicsMagick.org/". Before submitting a bug report please ensure
+  that you are using the current release version.
+  
+  While it is not a requirement, it is recommended that the Ghostscript
+  package be installed. Ghostscript is available from
+  "http://www.cs.wisc.edu/~ghost/". GraphicsMagick uses Ghostscript to render
+  Postscript and PDF files, as well as formats where a translator to
+  Postscript is available. GraphicsMagick will use the fonts delivered with
+  Ghostscript to support the set of standard Postscript fonts.
+  
+  The installation package includes the Perl Image::Magick extension
+  (PerlMagick) as an installation option. If you would like to use this
+  extension, then you should install ActiveState ActivePerl (available from
+  "http://www.activestate.com/Products/Download/Register.plex?id=ActivePerl")
+  prior to commencing with installation of GraphicsMagick. If you should decide to
+  install ActivePerl later, you can simply re-run this installation program
+  to install PerlMagick.
+  
+Installation Steps
+
+  The following describes the steps remaining to install GraphicsMagick.
+  
+  Select Destination Directory
+  
+    Specify what drive and directory to install GraphicsMagick into.
+    Approximately 17MB of free disk space is required to install GraphicsMagick.
+    The default installation directory is similar to
+    "C:\Program Files\GraphicsMagick-1.0-Q8". Once you have entered the
+    desired installation directory, then select "Next>" to continue.
+  
+  Select Start Menu Folder
+  
+    Select the folder where you would like the program's shortcuts to appear.
+    The default should normally be satisfactory. Click on "Next>" to continue.
+  
+  Select Additional Tasks
+  
+    A screen is displayed which provides the following options
+
+      o Create a desktop icon
+
+        This option adds an icon to the desktop for GraphicsMagick's
+        display program.
+
+      o Update executable search path
+
+        This option adds the GraphicsMagick installation directory to the
+        executable search path.
+
+      o Associate supported file extensions with GraphicsMagick
+
+        Regardless of this setting, formats which are invented by GraphicsMagick
+        will be associated with GraphicsMagick. If this box is checkmarked, then
+        *all* image formats that GraphicsMagick supports (including popular
+        formats like GIF, JPEG, TIFF, PDF, and Postscript) will be associated
+        with the GraphicsMagick display program. Please consider carefully if
+        you want to do this!
+
+      o Install PerlMagick for ActiveState Perl v5.8.0 build 804
+
+        This option runs the Perl installer to install the Image::Magick
+        extension.
+
+      o Install ImageMagickObject OLE Control
+
+        This option registers the ImageMagickObject DLL as an OLE Control to
+        support use from languages which support using COM objects.
+
+    Please ensure that you are satisified with your selections prior to
+    continuing.
+  
+  Ready to Install
+  
+    A screen is displayed which displays the selected options. If you are not
+    satisfied with a selected option, then click on "<Back" to go back to a
+    previous screen so that the option may be adjusted. If you are satisfied
+    with the options and are ready to install, then select "Install". To
+    abort the installation entirely, select "Cancel".
+  
+  Installation Progress
+  
+    While the install program is performing the installation, it will display
+    what it is doing in an installation progress window.
+  
+  Finishing Up
+  
+    By default "View index.html" is check-marked. This causes the
+    GraphicsMagick web pages to be displayed in a browser when "Finish" is
+    selected. If you do not want to view the web pages, then de-select
+    "View index.html". Select "Finish" to exit the installation program.
+    Under Windows '95 and Windows '98 it will be necessary to reboot the
+    system in order for some settings to take effect (such as executable
+    search path) since these are set in autoexec.bat.  It is advisable to
+    inspect the contents of autoexec.bat before rebooting to ensure that
+    the path has been updated correctly.
+  
+  Testing The Installation
+  
+    Select "Command Prompt" from the Windows Start menu. Within the window type
+    
+      gm convert logo: logo.miff
+      gmdisplay logo.miff
+    
+    and the GraphicsMagick logo should be displayed in a window.
+

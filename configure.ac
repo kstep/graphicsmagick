@@ -23,12 +23,27 @@ AC_SUBST(LIBRARY_AGE)dnl
 AC_SUBST(PACKAGE_NAME)dnl
 AC_SUBST(PACKAGE_VERSION)dnl
 AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
+AC_SUBST(PACKAGE_RELEASE_DATE)dnl
+
+# Definition used to define MagickLibVersion in version.h
+# As soon as any of these values exceeds 9, a more sophisticated formatting
+# scheme must be invented for this string.
+MAGICK_LIB_VERSION="0x0${LIBRARY_CURRENT}0${LIBRARY_AGE}0${LIBRARY_REVISION}"
+AC_SUBST(MAGICK_LIB_VERSION)
+
+# Definition used to define MagickLibVersionText in version.h
+MAGICK_LIB_VERSION_TEXT="${PACKAGE_VERSION}"
+AC_SUBST(MAGICK_LIB_VERSION_TEXT)
+
+# Definition used to define MagickLibVersionNumber in version.h
+MAGICK_LIB_VERSION_NUMBER="${LIBRARY_CURRENT},${LIBRARY_AGE},${LIBRARY_REVISION}"
+AC_SUBST(MAGICK_LIB_VERSION_NUMBER)
 
 # Ensure that make can run correctly
 AM_SANITY_CHECK
 
 # Generate configure header.
-AC_CONFIG_HEADERS([magick/magick_config.h])
+AC_CONFIG_HEADERS([magick/magick_config.h magick/magick_config_api.h])
 
 AM_INIT_AUTOMAKE($PACKAGE_NAME,"${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}", ' ')
 
@@ -650,6 +665,11 @@ AC_CHECK_TYPE(pid_t, int)
 # If the system does not provide a 'size_t', use 'unsigned int' instead
 AC_CHECK_TYPE(size_t, unsigned)
 
+# If `signal.h' declares signal as returning a pointer to a function
+# returning void, define RETSIGTYPE to be void; otherwise, define it
+# to be int.
+AC_TYPE_SIGNAL
+
 # Test for C compiler __func__ support
 if test "$ac_cv_have___func__" != 'yes' ; then
 AC_CACHE_CHECK(for C compiler __func__ support, ac_cv_have___func__,
@@ -678,8 +698,9 @@ fi
 #
 ########
 AC_FUNC_MMAP
-AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll pread \
-  pwrite putc_unlocked select tempnam times strerror sysconf vsprintf vsnprintf])
+AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll \
+  pread pwrite putc_unlocked raise select tempnam times sigemptyset sigaction \
+  strerror sysconf vsprintf vsnprintf])
 
 ########
 #
@@ -1318,7 +1339,6 @@ then
 	AC_DEFINE(HasJP2,1,Define if you have JPEG version 2 "Jasper" library)
 	AC_MSG_RESULT(yes)
 	have_jp2='yes'
-	AC_CHECK_HEADERS(jp2conf.h)
     fi
     else
     AC_MSG_RESULT(no)
@@ -2312,6 +2332,7 @@ AC_OUTPUT( \
         ltdl/Makefile \
         magick/GraphicsMagick-config \
         magick/GraphicsMagick.pc \
+        magick/version.h \
         Magick++/Makefile \
         Magick++/bin/GraphicsMagick++-config \
         Magick++/bin/Makefile \
@@ -2320,7 +2341,9 @@ AC_OUTPUT( \
         Magick++/lib/Makefile \
         Magick++/lib/Magick++/Makefile \
         Magick++/tests/Makefile \
+        PerlMagick/Magick.pm \
         PerlMagick/Makefile.PL )
+rm -f magick-version
 
 echo ""
 

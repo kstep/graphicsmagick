@@ -5,7 +5,7 @@ AC_INIT(fpx/buffdesc.h)
 MAJOR_VERSION=1
 MINOR_VERSION=2
 MICRO_VERSION=0
-PATCH_VERSION=7
+PATCH_VERSION=8
 echo "configuring Digital Imaging Group FlashPIX $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION.$PATCH_VERSION"
 AC_SUBST(MAJOR_VERSION)dnl
 AC_SUBST(MINOR_VERSION)dnl
@@ -57,7 +57,13 @@ AC_C_CONST
 AC_C_INLINE
 AC_C_BIGENDIAN
 
-AC_CHECK_HEADERS(wchar.h sys/statfs.h sys/param.h sys/mount.h)
+AC_CHECK_HEADERS([wchar.h sys/statfs.h sys/time.h])
+
+# <sys/mount.h> depends on <sys/param.h>
+AC_CHECK_HEADERS([sys/param.h])
+AC_CHECK_HEADERS([sys/mount.h], [], [], [#if HAVE_SYS_PARAM_H
+# include <sys/param.h>
+# endif ])
 
 #
 # Configure libtool

@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<TITLE>GraphicsMagick Development Process</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="CREATED" CONTENT="20020823;18090800">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20030421;13500600">
+	<META NAME="CLASSIFICATION" CONTENT="Description of the GraphicsMagick development and release processes.">
+	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate,  sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
+	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+	<STYLE>
+	<!--
+		@page { size: 8.5in 11in }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		H2 { color: #000000 }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<COL WIDTH=208*>
+		<COL WIDTH=48*>
+		<TR>
+			<TD WIDTH=81%>
+				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="">Mission
+				Statement</A>] [<A HREF="development.html">Development Process</A>] [<A HREF="contribute.html">Contribute</A>] [<A HREF="download.html">Download</A>]
+				[<A HREF="install.html">Installation</A>] [<A HREF="cvs.html">CVS</A>]
+				[<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
+				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>]
+				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</A>] [<A HREF="utilities.html">Utilities</A>] [<A HREF="programming.html">Programming</A>]
+				[<A HREF="books.html">Books</A>] [<A HREF="links.html">Links</A>]</P>
+			</TD>
+			<TD ROWSPAN=2 WIDTH=19%>
+				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=81%>
+				<DIV ALIGN=CENTER>
+					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=20 MAXLENGTH=255>
+					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+					</P>
+				</DIV>
+			</TD>
+		</TR>
+	</TABLE>
+</FORM>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
+			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
+			Development Process</FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>In
+order to ensure an orderly development process, and assure the
+highest quality releases, a development process has been established
+for GraphicsMagick.</FONT></FONT></P>
+<H2>Phases of Development</H2>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Four
+major development phases have been identified. These are the feature
+development phase, snapshot phase, beta phase, and release phase. The
+descriptions of these phases are as follows:</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Feature
+Development Phase</FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
+feature development phase is a time of rapid development. Work is
+normally done on the CVS trunk. Work which may temporarily
+destabilize the ability to build or execute the software is done on a
+separate development branch, which is merged into the CVS trunk once
+the work has been completed. During the feature development phase,
+CVS is the only way to access the work in progress. Before updates
+are committed to CVS, they should be proven to compile on at least
+one architecture.</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Entry
+Criteria: Changes from any release branch are merged into CVS trunk.</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Exit
+Criteria: Interfaces are stable, and code compiles and runs on
+multiple architectures.</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Snapshot Phase</FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
+snapshot phase is entered when it is decided that the work is stable
+enough for non-developers to test. API and user interfaces should be
+stable before the snapshot phase begins in order to avoid confusion.
+Snapshot development is done on the CVS trunk. Snapshot packages are
+identified by the date of the snapshot, and no CVS branching or
+tagging is performed to support the snapshot.</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Entry
+Criteria: Interfaces are stable, and code compiles and runs on
+multiple architectures.</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Exit
+Criteria: Code is considered ready for release. The test suite must
+show 100% completion for Q:8 and Q:16 quantum depths on at least
+three operating environments.</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Beta Phase</FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
+Beta phase is entered when the work is feature complete, the package
+passes all tests, and it is considered time for <SPAN LANG="en-US">versioned</SPAN>
+releases. As the first step of entering the beta phase, a release
+branch is created off of the trunk to support all development
+targeting the release. The purpose of the beta phase is to wring out
+any remaining bugs prior to release. When a beta package is prepared,
+a release tag is applied to the associated release branch in CVS.</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Entry
+Criteria: Code is considered ready for release. The test suite must
+show 100% completion for Q:8 and Q:16 quantum depths on at least
+three operating environments.</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Exit
+Criteria: The test suite must show 100% completion for Q:8, Q:16, and
+Q:32 quantum depths on at least three operating environments. The
+current beta package is determined to be sufficiently flawless for a
+final release.</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Release Phase</FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
+release phase is entered when the most recent Beta is considered to
+be of acceptable quality for a release or bug-fixes have been
+prepared based on a previous release. At this time, a formal release
+tag is applied to the release branch, and release packages are
+created. Once a release tag has been applied to a release branch,
+that release branch is considered to be in release state and may only
+be used to prepare additional releases intended to correct bugs found
+in preceding releases. The initial release on a release branch has a
+two-digit (i.e. X.X) release designation. Bug-fix releases have a
+three-digit (i.e. X.X.X) release designation. A release designation
+may only be used once. If a problem is discovered with the release
+package, a new release number is assigned to support the corrected
+release package.</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Entry
+Criteria: The test suite must show 100% completion for Q:8, Q:16, and
+Q:32 quantum depths on at least three operating environments. The
+current beta package is determined to be sufficiently flawless for a
+final release.</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Exit
+Criteria: None</FONT></FONT></P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
+			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
+			Testing</FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Verification
+testing is vital to ensure the correct operation of the package.
+GraphicsMagick is compiled, and its entire test suite is executed, in
+the following environments:</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Solaris
+9 (SPARC platform, GCC 3.2, compiled with 32 bits)</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Solaris
+9 (SPARC platform, Forte 7, compiled with 32 bits)</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>FreeBSD
+5.0 (x686 platform, GCC 3.2)</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>HP-UX
+11.00 (HP C/C++ vendor compiler)</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>IRIX
+6.5 (using vendor compiler)</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Windows
+XP (built with Visual Studio .net)</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Windows
+XP (built with MINGW)</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Windows
+XP (built with <SPAN LANG="en-US">Cygwin</SPAN>)</FONT></FONT></P>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
+output of any tests which do not support self-validation (e.g. the
+Magick++ demos) is visually inspected for correctness.</FONT></FONT></P>
+<HR>
+<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic3" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic8" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">
+Image manipulation software that works like magic. </FONT></FONT>
+</P>
+</BODY>
+</HTML>

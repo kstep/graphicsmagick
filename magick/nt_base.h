@@ -43,13 +43,20 @@ extern "C" {
 #define RW_OK 6
 #define HAVE_VSNPRINTF 1
 #define HAVE_TEMPNAM 1
+#define HAVE_RAISE 1
+
+#if !defined(chsize)
+# if defined(__BORLANDC__)
+#   define chsize(file,length) chsize(file,length)
+# else
+#   define chsize(file,length) _chsize(file,length)
+# endif
+#endif
+
 #if !defined(tempnam)
 # define tempnam _tempnam
 #endif
 #define vsnprintf _vsnprintf 
-#if !defined(HasLTDL)
-#  define lt_dlerror NTGetLastError
-#endif
 #if defined(_MT) && defined(WIN32)
 #define SAFE_GLOBAL __declspec(thread)
 #else
@@ -106,8 +113,10 @@ extern MagickExport int
   NTGhostscriptUnLoadDLL(void),
   NTSystemComman(const char *);
 
+#if defined(MAGICK_IMPLEMENTATION
 extern MagickExport const GhostscriptVectors
   *NTGhostscriptDLLVectors( void );
+#endif
 
 #if !defined(XS_VERSION)
 extern MagickExport DIR
@@ -119,8 +128,10 @@ extern MagickExport double
 
 extern MagickExport int
 #if !defined(HasLTDL)
+  lt_dlclose(void *),
   lt_dlexit(void),
   lt_dlinit(void),
+  lt_dlsetsearchpath(const char *),
 #endif /* !HasLTDL */
   munmap(void *,size_t);
 
@@ -130,6 +141,11 @@ extern MagickExport long
 extern MagickExport struct dirent
   *readdir(DIR *);
 
+#if !defined(HasLTDL)
+extern MagickExport const char
+  *lt_dlerror(void);
+#endif
+  
 extern MagickExport unsigned char
   *NTResourceToBlob(const char *);
 
@@ -149,10 +165,8 @@ extern MagickExport void
   seekdir(DIR *,long)
 #if !defined(HasLTDL)
   ,
-  lt_dlsetsearchpath(char *),
-  *lt_dlopen(char *),
-  lt_dlclose(void *),
-  *lt_dlsym(void *, char *)
+  *lt_dlopen(const char *),
+  *lt_dlsym(void *, const char *)
 #endif /* !HasLTDL */
   ;
 

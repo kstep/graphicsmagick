@@ -119,6 +119,7 @@ typedef struct _PICTRectangle
     right;
 } PICTRectangle;
 
+#define MaxPICTCode 0xa1
 static const PICTCode
   codes[] =
   {
@@ -316,7 +317,7 @@ static unsigned int
 %    o status:  Method DecodeImage returns True if all the pixels are
 %      uncompressed without error, otherwise False.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o blob,image: The address of a structure of type Image.
 %
@@ -703,7 +704,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -807,7 +808,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       code=ReadBlobByte(image);
     if (version == 2)
       code=ReadBlobMSBShort(image);
-    if (code > 0xa1)
+    if (EOFBlob(image))
+        ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+    if ((code < 0) || (code > MaxPICTCode) )
       {
         if (IsEventLogging())
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%04X:",code);
@@ -1384,9 +1387,9 @@ ModuleExport void UnregisterPICTImage(void)
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
-%    o image:  A pointer to a Image structure.
+%    o image:  A pointer to an Image structure.
 %
 %
 */

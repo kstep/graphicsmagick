@@ -94,6 +94,20 @@ typedef struct _CompositeOptions
 } CompositeOptions;
 
 /*
+  Liberate an allocated argument list
+*/
+static void LiberateArgumentList(const int argc,char **argv)
+{
+  unsigned int
+    i;
+
+  for (i=0; i< argc; i++)
+    if (argv[i])
+      LiberateMemory((void **)&argv[i]);
+  LiberateMemory((void **) &argv);
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -278,9 +292,6 @@ static void LiberateCompositeOptions(CompositeOptions *option_info)
     LiberateMemory((void **) &(option_info->watermark_geometry));
 }
 
-MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,char **metadata,ExceptionInfo *exception)
-{
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowCompositeException(code,reason,description) \
 { \
@@ -289,9 +300,12 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   DestroyImageList(composite_image); \
   DestroyImageList(mask_image); \
   ThrowException(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
   return(False); \
 }
-
+MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
   char
     *filename,
     *format,
@@ -325,6 +339,12 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   status=True;
+
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+    (char *) NULL);
+
   memset(&option_info,0,sizeof(CompositeOptions));
   option_info.dissolve=0.0;
   option_info.compose=OverCompositeOp;
@@ -350,7 +370,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       LocaleCompare("-?",argv[1]) == 0)))
     {
       CompositeUsage();
-      Exit(0);
+      ThrowCompositeException(OptionError,"UsageError",NULL);
     }
   j=1;
   for (i=1; i < (argc-1); i++)
@@ -907,6 +927,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
         if (LocaleCompare("help",option+1) == 0)
           {
             CompositeUsage();
+            ThrowCompositeException(OptionError,"UsageError",NULL);
             break;
           }
         ThrowCompositeException(OptionError,"UnrecognizedOption",option)
@@ -1379,6 +1400,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   DestroyImageList(composite_image);
   DestroyImageList(mask_image);
   DestroyImageList(image);
+  LiberateArgumentList(argc,argv);
   return(status);
 }
 
@@ -1456,18 +1478,18 @@ static unsigned int ConcatenateImages(const int argc,char **argv,
   return(True);
 }
 
-MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,char **metadata,ExceptionInfo *exception)
-{
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowConvertException(code,reason,description) \
 { \
   DestroyImageList(image); \
   DestroyImageList(image_list); \
   ThrowException(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
   return(False); \
 }
-
+MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
   char
     *filename,
     *format,
@@ -1493,13 +1515,18 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
     ping,
     status;
 
-  /*
-    Set defaults.
-  */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  status=True;
+
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      (char *) NULL);
+
+  /*
+    Set defaults.
+  */
   filename=(char *) NULL;
   format=(char *) NULL;
   image=NewImageList();
@@ -1518,7 +1545,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       LocaleCompare("-?",argv[1]) == 0)))
     {
       ConvertUsage();
-      Exit(0);
+      ThrowConvertException(OptionError,"UsageError",NULL);
     }
   j=1;
   k=0;
@@ -2242,6 +2269,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("help",option+1) == 0)
           {
             ConvertUsage();
+            ThrowConvertException(OptionError,"UsageError",NULL);
             continue;
           }
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
@@ -2832,6 +2860,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("resample",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == (argc-1)) || !IsGeometry(argv[i]))
+                  ThrowConvertException(OptionError,"MissingGeometry",option);
+              }
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -3230,8 +3268,11 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
       }
       case '?':
-        ConvertUsage();
-        continue;
+        {
+          ConvertUsage();
+          ThrowConvertException(OptionError,"UsageError",NULL);
+          continue;
+        }
       default:
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
     }
@@ -3271,6 +3312,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       LiberateMemory((void **) &text);
     }
   DestroyImageList(image_list);
+  LiberateArgumentList(argc,argv);
   return(status);
 }
 
@@ -3312,18 +3354,18 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,char **metadata,ExceptionInfo *exception)
-{
 #define ThrowIdentifyException(code,reason,description) \
 { \
   if (format != (char *) NULL) \
     LiberateMemory((void **) &format); \
   DestroyImageList(image); \
   ThrowException(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
   return(False); \
 }
-
+MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
   char
     *format,
     *option,
@@ -3356,15 +3398,25 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   number_images=0;
   status=True;
   ping=True;
+
   /*
-    Identify an image.
+    Expand argument list
   */
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      (char *) NULL);
+
+  /*
+    Check for sufficient arguments
+  */  
   if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
       LocaleCompare("-?",argv[1]) == 0)))
     {
       IdentifyUsage();
-      Exit(0);
+      ThrowIdentifyException(OptionError,"UsageError",NULL);
     }
+
   for (i=1; i < argc; i++)
   {
     option=argv[i];
@@ -3640,6 +3692,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   if (format != (char *) NULL)
     LiberateMemory((void **) &format);
   DestroyImageList(image);
+  LiberateArgumentList(argc,argv);
   return(status);
 }
 
@@ -3677,7 +3730,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
 %
 */
 MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
-  const int argc,char **argv,Image **image)
+  int argc,char **argv,Image **image)
 {
   char
     *option;
@@ -5108,6 +5161,58 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->render=(*option == '+');
             continue;
           }
+        if (LocaleCompare("resample",option+1) == 0)
+          {
+            Image
+              *resample_image;
+
+            unsigned char
+              resample_density[MaxTextExtent];
+
+            unsigned long
+              x_resolution,
+              y_resolution;
+
+            unsigned long
+              resample_height,
+              resample_width;
+
+            long
+              x,
+              y;
+
+            int
+              flags;
+
+            /*
+              Resample image.
+            */
+            flags=GetGeometry(argv[++i],&x,&y,&x_resolution,&y_resolution);
+            if (!(flags & HeightValue))
+              y_resolution=x_resolution;
+            FormatString(resample_density,"%lux%lu",x_resolution,y_resolution);
+            if ((*image)->x_resolution == 0)
+              (*image)->x_resolution=72.0;
+            if ((*image)->y_resolution == 0)
+              (*image)->y_resolution=72.0;
+            resample_width=(unsigned long)
+              ((*image)->columns*((double)x_resolution/(*image)->x_resolution)+0.5);
+            resample_height=(unsigned long)
+              ((*image)->rows*((double)y_resolution/(*image)->y_resolution)+0.5);
+            (void) CloneString(&clone_info->density,resample_density);
+            (void) CloneString(&draw_info->density,resample_density);
+            (*image)->x_resolution=x_resolution;
+            (*image)->y_resolution=y_resolution;
+            if ((((*image)->columns == resample_width)) && ((*image)->rows == resample_height))
+              break;
+            resample_image=ResizeImage(*image,resample_width,resample_height,(*image)->filter,
+              (*image)->blur,&(*image)->exception);
+            if (resample_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=resample_image;
+            continue;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             Image
@@ -5717,7 +5822,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 %
 */
 MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
-  const int argc,char **argv,Image **images)
+  int argc,char **argv,Image **images)
 {
 #define MogrifyImageText  "  Transform image...  "
 
@@ -6035,14 +6140,15 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 %
 %
 */
-MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,char **metadata,ExceptionInfo *exception)
-{
 #define ThrowMogrifyException(code,reason,description) \
 { \
   ThrowException(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
   return(False); \
 }
+MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
 
   char
     filename[MaxTextExtent],
@@ -6074,15 +6180,25 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   global_colormap=False;
   image=NewImageList();
   status=True;
+
   /*
-    Parse command line.
+    Expand argument list
+  */
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      (char *) NULL);
+
+  /*
+    Check for valid command line
   */
   if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
       LocaleCompare("-?",argv[1]) == 0)))
     {
       MogrifyUsage();
-      Exit(0);
+      ThrowMogrifyException(OptionError,"UsageError",NULL);
     }
+
   j=1;
   k=0;
   for (i=1; i < argc; i++)
@@ -7302,6 +7418,26 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("resample",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == (argc-1)) || !IsGeometry(argv[i]))
+                  ThrowMogrifyException(OptionError,"MissingGeometry",option);
+              }
+            break;
+          }
+        if (LocaleCompare("resize",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowMogrifyException(OptionError,"MissingGeometry",option);
+              }
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -7708,6 +7844,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           (char *) NULL);
       return(False);
     }
+  LiberateArgumentList(argc,argv);
   return(status);
 }
 
@@ -7745,17 +7882,18 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
-  const int argc,char **argv,char **metadata,ExceptionInfo *exception)
-{
 #define ThrowMontageException(code,reason,description) \
 { \
   DestroyImageList(image); \
   DestroyImageList(image_list); \
   DestroyImageList(montage_image); \
   ThrowException(exception,code,reason,description); \
+  LiberateArgumentList(argc,argv); \
   return(False); \
 }
+MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
   char
     *format,
     *option,
@@ -7797,25 +7935,36 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   first_scene=0;
   image=NewImageList();
   image_list=(Image *) NULL;
+  montage_image=NewImageList();
   last_scene=0;
+
+  /*
+    Expand argument list
+  */
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      (char *) NULL);
+
+  /*
+    Validate command line.
+  */
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      MontageUsage();
+      ThrowMontageException(OptionError,"UsageError",NULL);
+    }
+
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,exception);
-  montage_image=NewImageList();
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=0;
   scene=0;
   status=True;
   transparent_color=(char *) NULL;
-  /*
-    Parse command line.
-  */
-  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
-      LocaleCompare("-?",argv[1]) == 0)))
-    {
-      MontageUsage();
-      Exit(0);
-    }
+
   j=1;
   k=0;
   for (i=1; i < (argc-1); i++)
@@ -8966,12 +9115,15 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   (void) CatchImageException(montage_image);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) strncpy(montage_image->magick_filename,argv[argc-1],MaxTextExtent-1);
-  status&=WriteImages(image_info,montage_image,argv[argc-1],&image->exception);
+  status&=WriteImages(image_info,montage_image,argv[argc-1],exception);
   if (metadata != (char **) NULL)
     {
       char
         *text;
 
+      /*
+	Return metadata to user
+      */
       text=TranslateText(image_info,montage_image,(format != (char *) NULL) ? format : "%w,%h,%m");
       if (text == (char *) NULL)
         ThrowMontageException(ResourceLimitError,"MemoryAllocationFailed",
@@ -8982,6 +9134,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
     }
   DestroyImageList(montage_image);
   DestroyMontageInfo(montage_info);
+  LiberateArgumentList(argc,argv);
   return(status);
 }
 
@@ -9086,7 +9239,6 @@ MagickExport void AnimateUsage(void)
   (void) printf("\nButtons: \n");
   for (p=buttons; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
-  Exit(0);
 }
 MagickExport unsigned int AnimateImageCommand(int argc,char **argv)
 {
@@ -9145,11 +9297,7 @@ MagickExport unsigned int AnimateImageCommand(int argc,char **argv)
     Initialize command line arguments.
   */
   InitializeMagick(*argv);
-  ReadCommandlLine(argc,&argv);
-  status=ExpandFilenames(&argc,&argv);
-  if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      (char *) NULL);
+
   /*
     Set defaults.
   */
@@ -9185,15 +9333,27 @@ MagickExport unsigned int AnimateImageCommand(int argc,char **argv)
         break;
       }
     if (LocaleCompare("help",option+1) == 0)
-      AnimateUsage();
+      {
+        AnimateUsage();
+        return False;
+      }
     if (LocaleCompare("version",option+1) == 0)
       {
         (void) fprintf(stdout,"Version: %.1024s\n",
           GetMagickVersion((unsigned long *) NULL));
         (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
-        Exit(0);
+        return False;
       }
   }
+
+  /*
+    Expand argument list
+  */
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      (char *) NULL);
+
   /*
     Get user defaults from X resource database.
   */
@@ -10007,9 +10167,8 @@ MagickExport unsigned int AnimateImageCommand(int argc,char **argv)
       }
     }
   DestroyImageList(image_list);
-  LiberateMemory((void **) &argv);
-  DestroyMagick();
-  Exit(!status);
+  LiberateArgumentList(argc,argv);
+  return(!status);
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);
@@ -10110,7 +10269,6 @@ MagickExport void ImportUsage(void)
   (void) printf(
     "the filename suffix (i.e. image.ps).  Specify 'file' as '-' for\n");
   (void) printf("standard input or output.\n");
-  Exit(0);
 }
 
 MagickExport unsigned int ImportImageCommand(int argc,char **argv)
@@ -10159,12 +10317,6 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
   XrmDatabase
     resource_database;
 
-  InitializeMagick(*argv);
-  ReadCommandlLine(argc,&argv);
-  status=ExpandFilenames(&argc,&argv);
-  if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      (char *) NULL);
   /*
     Check for server name specified on the command line.
   */
@@ -10190,15 +10342,27 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
       }
     if (LocaleCompare("help",option+1) == 0 ||
         LocaleCompare("?", option+1) == 0)
-      ImportUsage();
+      {
+        ImportUsage();
+        return False;
+      }
     if (LocaleCompare("version",option+1) == 0)
       {
         (void) fprintf(stdout,"Version: %.1024s\n",
           GetMagickVersion((unsigned long *) NULL));
         (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
-        Exit(0);
+        return False;
       }
   }
+
+  /*
+    Expand argument list
+  */
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      (char *) NULL);
+
   /*
     Get user defaults from X resource database.
   */
@@ -10990,8 +11154,8 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
   status&=WriteImages(image_info,image,filename,&image->exception);
   DestroyImageList(image);
   DestroyMagick();
-  LiberateMemory((void **) &argv);
-  Exit(!status);
+  LiberateArgumentList(argc,argv);
+  return(!status);
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);
@@ -11043,10 +11207,8 @@ MagickExport void ConjureUsage(void)
   (void) printf("\nIn additiion, define any key value pairs required by "
     "your script.  For\nexample,\n\n");
   (void) printf("    conjure -size 100x100 -color blue -foo bar script.msl\n");
-  Exit(0);
 }
 
-
 MagickExport unsigned int ConjureImageCommand(int argc,char **argv)
 {
   char
@@ -11069,12 +11231,25 @@ MagickExport unsigned int ConjureImageCommand(int argc,char **argv)
 
   InitializeMagick(*argv);
   ReadCommandlLine(argc,&argv);
+
+  /*
+    Expand argument list
+  */
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       (char *) NULL);
+
+  /*
+    Validate command list
+  */
   if (argc < 2)
-    ConjureUsage();
+    {
+      ConjureUsage();
+      LiberateArgumentList(argc,argv);
+      return (False);
+    }
+
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->attributes=AllocateImage(image_info);
@@ -11153,10 +11328,8 @@ MagickExport unsigned int ConjureImageCommand(int argc,char **argv)
       DestroyImageList(image);
   }
   DestroyImageInfo(image_info);
-  DestroyMagick();
-  LiberateMemory((void **) &argv);
-  Exit(!status);
-  return(False);
+  LiberateArgumentList(argc,argv);
+  return(!status);
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -11286,7 +11459,6 @@ MagickExport void DisplayUsage(void)
   (void) printf("\nButtons: \n");
   for (p=buttons; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
-  Exit(0);
 }
 
 MagickExport unsigned int DisplayImageCommand(int argc,char **argv)
@@ -11343,12 +11515,14 @@ MagickExport unsigned int DisplayImageCommand(int argc,char **argv)
   XrmDatabase
     resource_database;
 
-  InitializeMagick(*argv);
-  ReadCommandlLine(argc,&argv);
+  /*
+    Expand Argument List
+  */
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       (char *) NULL);
+
   /*
     Set defaults.
   */
@@ -11391,13 +11565,18 @@ MagickExport unsigned int DisplayImageCommand(int argc,char **argv)
         break;
       }
     if (LocaleCompare("help",option+1) == 0)
-      DisplayUsage();
+      {
+        DisplayUsage();
+        LiberateArgumentList(argc,argv);
+        return False;
+      }
     if (LocaleCompare("version",option+1) == 0)
       {
         (void) fprintf(stdout,"Version: %.1024s\n",
           GetMagickVersion((unsigned long *) NULL));
         (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
-        Exit(0);
+        LiberateArgumentList(argc,argv);
+        return False;
       }
   }
   /*
@@ -12650,9 +12829,8 @@ MagickExport unsigned int DisplayImageCommand(int argc,char **argv)
       XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
       XSync(display,False);
     }
-  DestroyMagick();
-  LiberateMemory((void **) &argv);
-  Exit(!status);
+  LiberateArgumentList(argc,argv);
+  return(!status);
 #else
   MagickFatalError(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     (char *) NULL);
@@ -12758,7 +12936,6 @@ MagickExport void CompositeUsage(void)
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
-  Exit(0);
 }
 
 
@@ -12940,7 +13117,6 @@ MagickExport void ConvertUsage(void)
   (void) printf(
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
-  Exit(0);
 }
 
 
@@ -13107,7 +13283,6 @@ MagickExport void MogrifyUsage(void)
   (void) printf(
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
-  Exit(0);
 }
 
 
@@ -13225,7 +13400,6 @@ MagickExport void MontageUsage(void)
   (void) printf(
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
-  Exit(0);
 }
 
 /*
@@ -13281,5 +13455,4 @@ MagickExport void IdentifyUsage(void)
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
-  Exit(0);
 }

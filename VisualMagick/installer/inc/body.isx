@@ -1,0 +1,68 @@
+#ifdef COPYRIGHT
+;
+; Copyright (C) 2003 GraphicsMagick Group
+;
+; This program is covered by multiple licenses, which are described in
+; Copyright.txt. You should have received a copy of Copyright.txt with this
+; package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+;
+#endif
+
+#ifdef MagickStaticPackage
+  #define MagickPackageType "static"
+#else
+  #define MagickPackageType "dll"
+#endif
+
+#include "version.isx"
+
+[Setup]
+#include "setup.isx"
+
+; Optional Tasks
+[Tasks]
+#include "tasks-desktopicon.isx"
+#include "tasks-update-path.isx"
+#include "tasks-extensions.isx"
+#ifdef MagickDynamicPackage
+  #include "tasks-install-devel.isx"
+  #include "tasks-install-perlmagick.isx"
+#endif
+#include "tasks-install-com.isx"
+
+
+; Windows registry settings
+[Registry]
+#include "registry-application.isx"
+#include "registry-associations.isx"
+
+[Files]
+#include "files-base.isx"
+#include "files-configs.isx"
+#include "files-documentation.isx"
+#include "files-licenses.isx"
+#ifdef MagickDynamicPackage
+  #include "files-dlls.isx"
+  #include "files-perlmagick.isx"
+  #include "files-development.isx"
+#endif
+#include "files-com.isx"
+
+[Icons]
+#include "icons-associate.isx"
+
+[Run]
+#include "run-pathtool.isx"
+
+#ifdef MagickDynamicPackage
+  #include "run-ppm.isx"
+#endif
+#include "run-register-com.isx"
+
+[UninstallRun]
+#include "uninstallrun-pathtool.isx"
+#ifdef MagickDynamicPackage
+  #include "uninstallrun-ppm.isx"
+#endif
+#include "uninstallrun-unregister-com.isx"
+

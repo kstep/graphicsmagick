@@ -1,0 +1,21 @@
+#ifdef COPYRIGHT
+;
+; Copyright (C) 2003 GraphicsMagick Group
+;
+; This program is covered by multiple licenses, which are described in
+; Copyright.txt. You should have received a copy of Copyright.txt with this
+; package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+;
+#endif
+
+; Compiler-dependent DLLs
+Source: "..\bin\msvcr70.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\msvcp70.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\mfc70.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+; DLLs
+Source: "..\bin\CORE_RL*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\IM_MOD_RL*.dll"; DestDir: "{app}\modules\coders"; Flags: ignoreversion
+Source: "..\bin\analyze.dll"; DestDir: "{app}\modules\filters"; Flags: ignoreversion
+Source: "..\bin\X11.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\Xext.dll"; DestDir: "{app}"; Flags: ignoreversion

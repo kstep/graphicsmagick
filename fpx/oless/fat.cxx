@@ -37,7 +37,7 @@ SCODE CFatSect::Init(FSOFFSET uEntries)
     msfDebugOut((DEB_FAT,"In CFatSect constructor\n"));
 
     //This assumes that FREESECT is always 0xFFFFFFFF
-    memset(_asectEntry, 0xFF, uEntries * sizeof(SECT));
+    memset(GetSects(), 0xFF, uEntries * sizeof(SECT));
 
     msfDebugOut((DEB_FAT,"Out CFatSect constructor\n"));
     return S_OK;
@@ -67,7 +67,7 @@ SCODE CFatSect::InitCopy(USHORT uSize, CFatSect& fsOld)
 
     msfDebugOut((DEB_FAT,"Sector size is %u sectors\n",uSize));
 
-    memcpy(_asectEntry,fsOld._asectEntry,sizeof(SECT)*uSize);
+    memcpy(GetSects(),fsOld.GetSects(),sizeof(SECT)*uSize);
     msfDebugOut((DEB_FAT,"Out CFatSect copy constructor\n"));
     return S_OK;
 }

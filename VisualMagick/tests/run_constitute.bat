@@ -48,5 +48,4 @@ set srcdir=..\..\tests\
 %exedir%constitute -storagetype double %srcdir%input_truecolor.miff cmyk 
 %exedir%constitute -storagetype double %srcdir%input_truecolor.miff bGr 
 %exedir%constitute -storagetype double %srcdir%input_truecolor.miff Gbr 
-%exedir%constitute -storagetype double %srcdir%input_truecolor.miff i 
-
+%exedir%constitute -storagetype double %srcdir%input_truecolor.miff i

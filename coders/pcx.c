@@ -183,7 +183,7 @@ static unsigned int IsPCX(const unsigned char *magick,const size_t length)
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -343,28 +343,45 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
-    /*
-      Uncompress image data.
-    */
-    p=pcx_pixels;
-    while (pcx_packets != 0)
-    {
-      packet=ReadBlobByte(image);
-      if ((packet & 0xc0) != 0xc0)
-        {
-          *p++=packet;
-          pcx_packets--;
-          continue;
-        }
-      count=packet & 0x3f;
-      for (packet=ReadBlobByte(image); count != 0; count--)
+    if (pcx_info.encoding == 0)
       {
-        *p++=packet;
-        pcx_packets--;
-        if (pcx_packets == 0)
-          break;
+        /*
+          Data is not compressed
+        */
+        p=pcx_pixels;
+        while(pcx_packets != 0)
+          {
+            packet=ReadBlobByte(image);
+            *p++=packet;
+            pcx_packets--;
+            continue;
+          }
       }
-    }
+    else
+      {
+        /*
+          Uncompress image data.
+        */
+        p=pcx_pixels;
+        while (pcx_packets != 0)
+          {
+            packet=ReadBlobByte(image);
+            if ((packet & 0xc0) != 0xc0)
+              {
+                *p++=packet;
+                pcx_packets--;
+                continue;
+              }
+            count=packet & 0x3f;
+            for (packet=ReadBlobByte(image); count != 0; count--)
+              {
+                *p++=packet;
+                pcx_packets--;
+                if (pcx_packets == 0)
+                  break;
+              }
+          }
+      }
     if (image->storage_class == DirectClass)
       image->matte=pcx_info.planes > 3;
     else
@@ -698,9 +715,9 @@ ModuleExport void UnregisterPCXImage(void)
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
-%    o image:  A pointer to a Image structure.
+%    o image:  A pointer to an Image structure.
 %
 %
 */

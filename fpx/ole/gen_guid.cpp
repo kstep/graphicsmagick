@@ -32,7 +32,7 @@
   #include "b_error.h"
 #endif
 
-#ifdef _UNIX // FIXME: should be based on HAVE_SYS_TIME_H define.
+#if defined(HAVE_SYS_TIME_H)
   #include <sys/time.h>
 #endif
 
@@ -51,7 +51,7 @@
 //  Variables
 //  ---------
 
-#if   !defined(__unix)
+#if   !defined(__unix) && !defined(HAVE_SYS_TIME_H)
 typedef struct _timespec
 {
   unsigned long tv_nsec;

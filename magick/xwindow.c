@@ -171,7 +171,7 @@ MagickExport unsigned int IsTrue(const char *reason)
 %
 %    o annotate_info: Specifies a pointer to a XAnnotateInfo structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -582,7 +582,7 @@ MagickExport XFontStruct *XBestFont(Display *display,
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -1290,7 +1290,7 @@ static Window XClientWindow(Display *display,Window target_window)
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -1525,10 +1525,10 @@ MagickExport void XDestroyWindowColors(Display *display,Window window)
 %
 %    o windows: Specifies a pointer to a XWindows structure.
 %
-%    o undo_image: Specifies a pointer to a Image structure;  returned from
+%    o undo_image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -1681,7 +1681,7 @@ MagickExport void XDisplayImageInfo(Display *display,
 %
 %  A description of each parameter follows:
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %    o ximage: Specifies a pointer to a XImage structure;  returned from
@@ -1858,7 +1858,7 @@ static void XDitherImage(Image *image,XImage *ximage)
 %
 %    o draw_info: Specifies a pointer to a XDrawInfo structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %
@@ -2575,7 +2575,7 @@ MagickExport void XGetImportInfo(XImportInfo *ximage_info)
 %
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %    o pixel: Specifies a pointer to a XPixelInfo structure.
@@ -4946,7 +4946,7 @@ MagickExport Cursor XMakeCursor(Display *display,Window window,
 %
 %    o window: Specifies a pointer to a XWindowInfo structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %    o width: Specifies the width in pixels of the rectangular area to
@@ -5291,7 +5291,7 @@ MagickExport unsigned int XMakeImage(Display *display,
 %
 %    o window: Specifies a pointer to a XWindowInfo structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %    o ximage: Specifies a pointer to a XImage structure;  returned from
@@ -5855,7 +5855,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
 %
 %    o window: Specifies a pointer to a XWindowInfo structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %    o ximage: Specifies a pointer to a XImage structure;  returned from
@@ -6954,7 +6954,7 @@ static unsigned int XMakePixmap(Display *display,
 %
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
-%    o image: Specifies a pointer to a Image structure;  returned from
+%    o image: Specifies a pointer to an Image structure;  returned from
 %      ReadImage.
 %
 %    o map_info: If a Standard Colormap type is specified, this structure is

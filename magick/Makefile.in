@@ -209,6 +209,9 @@ LaunchDelegate = @LaunchDelegate@
 MAGICKLIB = @MAGICKLIB@
 MAGICKLIBDIR = @MAGICKLIBDIR@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
+MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
+MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
+MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
 MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
@@ -231,6 +234,7 @@ OLDINCLUDE_DIR = @OLDINCLUDE_DIR@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
+PACKAGE_RELEASE_DATE = @PACKAGE_RELEASE_DATE@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
@@ -342,7 +346,7 @@ AUTOMAKE_OPTIONS = 1.7 foreign
 # Shared libraries built in this directory
 lib_LTLIBRARIES = libGraphicsMagick.la
 
-BUILT_SOURCES = magick_config.h
+BUILT_SOURCES = magick_config.h magick_config_api.h
 
 INCLUDES = -I$(top_srcdir) $(INCLTDL)
 
@@ -411,14 +415,12 @@ pkginclude_HEADERS = \
 	error.h \
 	fx.h \
 	gem.h \
-	integral_types.h \
 	image.h \
 	list.h \
 	log.h \
 	magic.h \
 	magick.h \
 	magick.h \
-	magick_config.h \
 	module.h \
 	monitor.h \
 	montage.h \
@@ -444,6 +446,7 @@ pkginclude_HEADERS = \
 noinst_HEADERS = \
 	animate.h \
 	display.h \
+	integral_types.h \
 	mac.h \
 	nt_base.h \
 	nt_feature.h \
@@ -477,8 +480,8 @@ pkgconfig_DATA = GraphicsMagick.pc
 man_MANS = $(ALLMANPAGES)
 subdir = magick
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = magick_config.h
-CONFIG_CLEAN_FILES = GraphicsMagick-config GraphicsMagick.pc
+CONFIG_HEADER = magick_config.h magick_config_api.h
+CONFIG_CLEAN_FILES = GraphicsMagick-config GraphicsMagick.pc version.h
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 @WITH_LTDL_FALSE@@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
@@ -521,7 +524,7 @@ libGraphicsMagick_la_OBJECTS = $(am_libGraphicsMagick_la_OBJECTS)
 SCRIPTS = $(bin_SCRIPTS)
 
 
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I. -I.
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/PreRvIcccm.Plo \
@@ -570,10 +573,11 @@ HEADERS = $(noinst_HEADERS) $(pkginclude_HEADERS)
 
 DIST_COMMON = $(noinst_HEADERS) $(pkginclude_HEADERS) \
 	GraphicsMagick-config.in GraphicsMagick.pc.in Makefile.am \
-	Makefile.in magick_config.h.in
+	Makefile.in magick_config.h.in magick_config_api.h.in \
+	version.h.in
 SOURCES = $(libGraphicsMagick_la_SOURCES) $(EXTRA_libGraphicsMagick_la_SOURCES)
 
-all: $(BUILT_SOURCES) magick_config.h
+all: $(BUILT_SOURCES) magick_config.h magick_config_api.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
@@ -598,11 +602,27 @@ $(srcdir)/magick_config.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure.ac 
 	cd $(top_srcdir) && $(AUTOHEADER)
 	touch $(srcdir)/magick_config.h.in
 
+magick_config_api.h: stamp-h2
+	@if test ! -f $@; then \
+	  rm -f stamp-h2; \
+	  $(MAKE) stamp-h2; \
+	else :; fi
+
+stamp-h2: $(srcdir)/magick_config_api.h.in $(top_builddir)/config.status
+	@rm -f stamp-h2
+	cd $(top_builddir) && $(SHELL) ./config.status magick/magick_config_api.h
+
+$(srcdir)/magick_config_api.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure.ac $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOHEADER)
+	touch $(srcdir)/magick_config_api.h.in
+
 distclean-hdr:
-	-rm -f magick_config.h stamp-h1
+	-rm -f magick_config.h stamp-h1 magick_config_api.h stamp-h2
 GraphicsMagick-config: $(top_builddir)/config.status GraphicsMagick-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 GraphicsMagick.pc: $(top_builddir)/config.status GraphicsMagick.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+version.h: $(top_builddir)/config.status version.h.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 libLTLIBRARIES_INSTALL = $(INSTALL)
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
@@ -898,11 +918,11 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique
 
-TAGS:  $(HEADERS) $(SOURCES) magick_config.h.in $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES) magick_config.h.in magick_config_api.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS) magick_config.h.in $(LISP) $(TAGS_FILES)'; \
+	list='$(SOURCES) $(HEADERS) magick_config.h.in magick_config_api.h.in $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
@@ -913,11 +933,11 @@ TAGS:  $(HEADERS) $(SOURCES) magick_config.h.in $(TAGS_DEPENDENCIES) \
 	     $$tags $$unique
 
 ctags: CTAGS
-CTAGS:  $(HEADERS) $(SOURCES) magick_config.h.in $(TAGS_DEPENDENCIES) \
+CTAGS:  $(HEADERS) $(SOURCES) magick_config.h.in magick_config_api.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS) magick_config.h.in $(LISP) $(TAGS_FILES)'; \
+	list='$(SOURCES) $(HEADERS) magick_config.h.in magick_config_api.h.in $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
@@ -973,7 +993,7 @@ check-am: all-am
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(MANS) $(DATA) $(HEADERS) \
-		magick_config.h
+		magick_config.h magick_config_api.h
 
 installdirs:
 	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir) $(DESTDIR)$(pkgdir) $(DESTDIR)$(pkgconfigdir) $(DESTDIR)$(pkgdatadir) $(DESTDIR)$(pkgincludedir)
@@ -1022,8 +1042,9 @@ info: info-am
 
 info-am:
 
-install-data-am: install-man install-pkgDATA install-pkgconfigDATA \
-	install-pkgdataDATA install-pkgincludeHEADERS
+install-data-am: install-data-local install-man install-pkgDATA \
+	install-pkgconfigDATA install-pkgdataDATA \
+	install-pkgincludeHEADERS
 
 install-exec-am: install-binSCRIPTS install-libLTLIBRARIES
 
@@ -1054,6 +1075,8 @@ uninstall-am: uninstall-binSCRIPTS uninstall-info-am \
 	uninstall-libLTLIBRARIES uninstall-man uninstall-pkgDATA \
 	uninstall-pkgconfigDATA uninstall-pkgdataDATA \
 	uninstall-pkgincludeHEADERS
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
 
 uninstall-man: uninstall-man1
 
@@ -1062,11 +1085,12 @@ uninstall-man: uninstall-man1
 	distclean-compile distclean-depend distclean-generic \
 	distclean-hdr distclean-libtool distclean-tags distdir dvi \
 	dvi-am info info-am install install-am install-binSCRIPTS \
-	install-data install-data-am install-exec install-exec-am \
-	install-info install-info-am install-libLTLIBRARIES install-man \
-	install-man1 install-pkgDATA install-pkgconfigDATA \
-	install-pkgdataDATA install-pkgincludeHEADERS install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
+	install-data install-data-am install-data-local install-exec \
+	install-exec-am install-info install-info-am \
+	install-libLTLIBRARIES install-man install-man1 install-pkgDATA \
+	install-pkgconfigDATA install-pkgdataDATA \
+	install-pkgincludeHEADERS install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-binSCRIPTS \
@@ -1075,9 +1099,18 @@ uninstall-man: uninstall-man1
 	uninstall-pkgdataDATA uninstall-pkgincludeHEADERS
 
 
+# Install magick_config_api.h as magick_config.h
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
+	$(INSTALL_HEADER) magick_config_api.h $(DESTDIR)$(pkgincludedir)/magick_config.h
+
+uninstall-hook:
+	rm -f $(DESTDIR)$(pkgincludedir)/magick_config.h
+
 # Ensure that configuration header is not distributed
 dist-hook:
 	-rm $(distdir)/magick_config.h
+	-rm $(distdir)/magick_config_api.h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -2126,7 +2126,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
       const unsigned char
         *source;
 
-      count=ReadBlobStream(image,length,(void *) &source);
+      count=ReadBlobStream(image,length,(void *) (&source));
       if (count <= 10)
         {
           register size_t

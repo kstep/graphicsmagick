@@ -86,7 +86,7 @@ protected:
 //      Notes:      B-flat,C-sharp
 //
 //-----------------------------------------------------------------------
-const unsigned int CBDIRPAD = DIRENTRYSIZE - sizeof(SPreDirEntry);
+const unsigned int CBDIRPAD = (unsigned int)DIRENTRYSIZE - (unsigned int)sizeof(SPreDirEntry);
 
 //  DirEntry bit flags are used for the following private state
 
@@ -166,20 +166,15 @@ public:
     inline void ByteSwap(USHORT cbSector);
     
 private:
-#ifdef _MSC_VER
-#pragma warning(disable: 4200)    
-    CDirEntry _adeEntry[];
-#pragma warning(default: 4200)    
-#else
-#  ifdef __GNUC__
-     CDirEntry _adeEntry[0];
-#  else
-     // FIXME: braindamage
-     CDirEntry* _adeEntry;
-#  endif
-#endif
-
+     // GetEntries() relies on the fact, there are no data
+     // fields in the class...
+     inline CDirEntry* GetEntries(void) const;
 };
+
+inline CDirEntry * CDirSect::GetEntries(void) const
+{
+	return (CDirEntry *)this;
+}
 
 //+-------------------------------------------------------------------------
 //

@@ -118,7 +118,7 @@ static unsigned int IsPS(const unsigned char *magick,const size_t length)
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -504,7 +504,7 @@ ModuleExport void UnregisterPSImage(void)
 %    o status: Method WritePSImage return True if the image is printed.
 %      False is returned if the image file cannot be opened for printing.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: Specifies a pointer to a ImageInfo structure.
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.

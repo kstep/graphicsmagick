@@ -151,7 +151,7 @@ SCODE CDirSect::Init(USHORT cbSector)
 
     for (ULONG i = 0; i < cdeEntries; i++)
     {
-        _adeEntry[i].Init(STGTY_INVALID);
+        GetEntries()[i].Init(STGTY_INVALID);
     }
 
     return S_OK;

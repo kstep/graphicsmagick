@@ -1,135 +1,181 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>shear - Methods to Shear or Rotate an Image by an Arbitrary Angle</title>
-<link rel="StyleSheet" href="../magick.css" type="text/css" />
-</head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+<STYLE>
+<!--
+@page { size: 8.5in 11in }
+TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+H2 { color: #000000 }
+A:link { color: #0085c0 }
+A:visited { color: #800080 }
+-->
+</STYLE>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080"> <A HREF="http://promote.pair.com/direct.pl?imagemagick.org"> <IMG SRC="../../images/promote.png" ALT="Pair" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A> <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<TITLE>shear - Methods to Shear or Rotate an Image by an Arbitrary Angle</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+</HEAD>
 
-<p><a name="__index__"></a></p>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+        <INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+        <INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+        <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+                <COL WIDTH=208*>
+                <COL WIDTH=48*>
+                <TR>
+                        <TD WIDTH=81%>
+                                <P ALIGN=LEFT>[<A HREF="../../index.html">Home</A>] [<A HREF="../mission.html">Mission
+                                Statement</A>] [<A HREF="../development.html">Development Process</A>] [<A HREF="../download.html">Download</A>]
+                                [<A HREF="../install.html">Installation</A>] [<A HREF="../cvs.html">CVS</A>]
+                                [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+                                Lists</A>] [<A HREF="../FAQ.html">FAQ</A>] [<A HREF="../formats.html">Formats</A>]
+                                [<A HREF="../NEWS.html">News</A> ] [<A HREF="../Changelog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>]
+                                [<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+                                Bugs</A>] [<A HREF="../utilities.html">Utilities</A>] [<A HREF="../programming.html">Programming</A>]
+                                [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
+                        </TD>
+                        <TD ROWSPAN=2 WIDTH=19%>
+                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                        </TD>
+                </TR>
+                <TR>
+                        <TD WIDTH=81%>
+                                <DIV ALIGN=CENTER>
+                                        <P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=20 MAXLENGTH=255>
+                                        <INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+                                        </P>
+                                </DIV>
+                        </TD>
+                </TR>
+        </TABLE>
+</FORM>
+
+
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
-<ul>
+<UL>
 
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
+	<LI><A HREF="#name">
+NAME</A>
+	<LI><A HREF="#synopsis">
+SYNOPSIS</A>
+	<LI><A HREF="#function descriptions">
+FUNCTION 
+DESCRIPTIONS</A>
+	<UL>
 
-		<li><a href="#affinetransformimage">AffineTransformImage</a></li>
-		<li><a href="#rotateimage">RotateImage</a></li>
-		<li><a href="#shearimage">ShearImage</a></li>
-	</ul>
+		<LI><A HREF="#affinetransformimage">AffineTransformImage</A>
+		<LI><A HREF="#rotateimage">RotateImage</A>
+		<LI><A HREF="#shearimage">ShearImage</A>
+	</UL>
 
-</ul>
+</UL>
 <!-- INDEX END -->
 
-<hr />
-<p>
-</p>
-<h1><a name="name">NAME</a></h1>
-<p>shear - Methods to Shear or Rotate an Image by an Arbitrary Angle</p>
-<p>
-</p>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>Image * <strong>AffineTransformImage</strong>( const Image *image, AffineMatrix *affine, ExceptionInfo *exception );</p>
-<p>Image * <strong>RotateImage</strong>( const Image *image, const double degrees, ExceptionInfo *exception );</p>
-<p>Image * <strong>ShearImage</strong>( const Image *image, const double x_shear, const double y_shear, ExceptionInfo *exception );</p>
-<p>
-</p>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<p>
-</p>
-<h2><a name="affinetransformimage">AffineTransformImage</a></h2>
-<blockquote>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new <A HREF="types/Image.html">Image</A> structure and returns a pointer to the new image. </blockquote><p>The format of the AffineTransformImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *AffineTransformImage ( const <A HREF="types/Image.html">Image</A> *image, AffineMatrix *affine, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_image%3a">o image:</a></strong><br />
-</dt>
-<dd>
+<HR>
+<P>
+<H2><A NAME="name">
+NAME</A></H2>
+<P>shear - Methods to Shear or Rotate an Image by an Arbitrary Angle</P>
+<P>
+<HR>
+<H2><A NAME="synopsis">
+SYNOPSIS</A></H2>
+<P>Image * <STRONG>AffineTransformImage</STRONG>( const Image *image, AffineMatrix *affine, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>RotateImage</STRONG>( const Image *image, const double degrees, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ShearImage</STRONG>( const Image *image, const double x_shear, const double y_shear, ExceptionInfo *exception );</P>
+<P>
+<HR>
+<H2><A NAME="function descriptions">
+FUNCTION 
+DESCRIPTIONS</A></H2>
+<P>
+<H3><A NAME="affinetransformimage">AffineTransformImage</A></H3>
+<blockquote>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new <A HREF="types.html#Image">Image</A> structure and returns a pointer to the new image. </blockquote><P>The format of the AffineTransformImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *AffineTransformImage ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#AffineMatrix">AffineMatrix</A> *affine, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_affine%3a">o affine:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_affine%3A">affine:</A></STRONG><BR>
+<DD>
 The affine transform.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_exception%3a">o exception:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="rotateimage">RotateImage</a></h2>
-<p>Method RotateImage creates a new image that is a rotated copy of an existing one.  Positive angles rotate counter-clockwise (right-hand rule), while negative angles rotate clockwise.  Rotated images are usually larger than the originals and have 'empty' triangular corners.  X axis.  Empty triangles left over from shearing the image are filled with the color defined by the pixel at location (0,0). RotateImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
-<p>Method RotateImage is based on the paper ``A Fast Algorithm for General Raster Rotatation'' by Alan W.  Paeth.  RotateImage is adapted from a similar method based on the Paeth paper written by Michael Halle of the Spatial Imaging Group, MIT Media Lab.</p>
-<p>The format of the RotateImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *RotateImage ( const <A HREF="types/Image.html">Image</A> *image, const double degrees, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows.</p>
-<dl>
-<dt><strong><a name="item_o_status%3a">o status:</a></strong><br />
-</dt>
-<dd>
-Method RotateImage returns a pointer to the image after rotating.  A null image is returned if there is a memory shortage.
-</dd>
-<p></p>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="rotateimage">RotateImage</A></H3>
+<P>Method RotateImage creates a new image that is a rotated copy of an existing one.  Positive angles rotate counter-clockwise (right-hand rule), while negative angles rotate clockwise.  Rotated images are usually larger than the originals and have 'empty' triangular corners.  
+X axis.  Empty triangles left over from shearing the image are filled with the color specified by the image background_color.  RotateImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>Method RotateImage is based on the paper 
+``A Fast Algorithm for General Raster Rotatation'' by Alan 
+W.  Paeth.  RotateImage is adapted from a similar method based on the Paeth paper written by Michael Halle of the Spatial Imaging Group, 
+MIT Media Lab.</P>
+<P>The format of the RotateImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *RotateImage ( const <A HREF="types.html#Image">Image</A> *image, const double degrees, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows.</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<DD>
+Method RotateImage returns a pointer to the image after rotating.  
+A null image is returned if there is a memory shortage.
+<P></P>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image; returned from ReadImage.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_degrees%3a">o degrees:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_degrees%3A">degrees:</A></STRONG><BR>
+<DD>
 Specifies the number of degrees to rotate the image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="shearimage">ShearImage</a></h2>
-<p>Method ShearImage creates a new image that is a shear_image copy of an existing one.  Shearing slides one edge of an image along the X or Y axis, creating a parallelogram.  An X direction shear slides an edge along the X axis, while a Y direction shear slides an edge along the Y axis.  The amount of the shear is controlled by a shear angle.  For X direction shears, x_shear is measured relative to the Y axis, and similarly, for Y direction shears y_shear is measured relative to the X axis.  Empty triangles left over from shearing the image are filled with the color defined by the pixel at location (0,0). ShearImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
-<p>Method ShearImage is based on the paper ``A Fast Algorithm for General Raster Rotatation'' by Alan W.  Paeth.</p>
-<p>The format of the ShearImage method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *ShearImage ( const <A HREF="types/Image.html">Image</A> *image, const double x_shear, const double y_shear, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows.</p>
-<dl>
-<dt><strong>o status:</strong><br />
-</dt>
-<dd>
-Method ShearImage returns a pointer to the image after rotating.  A null image is returned if there is a memory shortage.
-</dd>
-<p></p>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="shearimage">ShearImage</A></H3>
+<P>Method ShearImage creates a new image that is a shear_image copy of an existing one.  Shearing slides one edge of an image along the 
+X or 
+Y axis, creating a parallelogram.  An 
+X direction shear slides an edge along the 
+X axis, while a 
+Y direction shear slides an edge along the 
+Y axis.  The amount of the shear is controlled by a shear angle.  For 
+X direction shears, x_shear is measured relative to the 
+Y axis, and similarly, for 
+Y direction shears y_shear is measured relative to the 
+X axis.  Empty triangles left over from shearing the image are filled with the color defined by the pixel at location (0,0). ShearImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
+<P>Method ShearImage is based on the paper 
+``A Fast Algorithm for General Raster Rotatation'' by Alan 
+W.  Paeth.</P>
+<P>The format of the ShearImage method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *ShearImage ( const <A HREF="types.html#Image">Image</A> *image, const double x_shear, const double y_shear, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows.</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>status:</STRONG><BR>
+<DD>
+Method ShearImage returns a pointer to the image after rotating.  
+A null image is returned if there is a memory shortage.
+<P></P>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image; returned from ReadImage.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_x_shear%2c_y_shear%3a">o x_shear, y_shear:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_x_shear%2C_y_shear%3A">x_shear, y_shear:</A></STRONG><BR>
+<DD>
 Specifies the number of degrees to shear the image.
-</dd>
-<p></p>
-<dt><strong>o exception:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
 Return any errors or warnings in this structure.
-</dd>
-</dl>
+</DL></DL>
 
-</body>
+</BODY>
 
-</html>
+</HTML>

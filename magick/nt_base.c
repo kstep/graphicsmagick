@@ -390,11 +390,11 @@ MagickExport int ftruncate(int filedes, off_t length)
   int
     status;
 
-  __int64
+  MagickOffset
     current_pos;
 
   status=0;
-  current_pos=_telli64(filedes);
+  current_pos=MagickTell(filedes);
 
   /*
     Truncate file to size, filling any extension with nulls.
@@ -407,7 +407,7 @@ MagickExport int ftruncate(int filedes, off_t length)
     the file EOF to the current file position. This approach does
     not ensure that bytes in the extended portion are null
   */ 
-  status=_chsize(filedes,length);
+  status=chsize(filedes,length);
 
   /*
     It is not documented if _chsize preserves the seek 
@@ -415,7 +415,7 @@ MagickExport int ftruncate(int filedes, off_t length)
     does
   */
   if (!status)
-    status=_lseeki64(filedes,current_pos,SEEK_SET);
+    status=MagickSeek(filedes,current_pos,SEEK_SET);
   return(status);
 }
 
@@ -468,6 +468,7 @@ MagickExport int IsWindows95()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %   Method lt_dlclose unloads the module associated with the passed handle.
+%   Zero is returned on success.
 %
 %  The format of the lt_dlclose method is:
 %
@@ -478,9 +479,48 @@ MagickExport int IsWindows95()
 %    o handle: Specifies a handle to a previously loaded dynamic module.
 %
 */
-void lt_dlclose(void *handle)
+int lt_dlclose(void *handle)
 {
-  FreeLibrary(handle);
+  /* FreeLibrary returns zero for failure */
+  return (!(FreeLibrary(handle)));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   l t _ d l e r r o r                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method lt_dlerror returns a pointer to a string describing the last error
+%   associated with a lt_dl* function. Note that this function is not thread
+%   safe so it should only be used under the protection of a lock.
+%
+%  The format of the lt_dlerror method is:
+%
+%      const char * lt_dlerror(void)
+%
+%  A description of each parameter follows:
+%
+*/
+const char *lt_dlerror(void)
+{
+  static char
+    last_error[MaxTextExtent];
+
+  char
+    *error;
+
+  last_error[0]='\0';
+  error=NTGetLastError();
+  if (error)
+    strncpy(last_error,error,MaxTextExtent-1);
+  LiberateMemory((void **) &error);
+  return (last_error);
 }
 
 /*
@@ -545,7 +585,7 @@ int lt_dlinit(void)
 %
 %  The format of the lt_dlopen method is:
 %
-%      void *lt_dlopen(char *filename)
+%      void *lt_dlopen(const char *filename)
 %
 %  A description of each parameter follows:
 %
@@ -553,7 +593,7 @@ int lt_dlinit(void)
 %            is to be loaded.
 %
 */
-void *lt_dlopen(char *filename)
+void *lt_dlopen(const char *filename)
 {
 #define MaxPathElements  31
 
@@ -624,7 +664,7 @@ void *lt_dlopen(char *filename)
 %
 %  The format of the lt_dlsetsearchpath method is:
 %
-%      long lt_dlsetsearchpath(char *path)
+%      int lt_dlsetsearchpath(char *path)
 %
 %  A description of each parameter follows:
 %
@@ -632,7 +672,7 @@ void *lt_dlopen(char *filename)
 %            for DLL's that can be dynamically loaded.
 %
 */
-void lt_dlsetsearchpath(char *path)
+int lt_dlsetsearchpath(const char *path)
 {
   if (lt_slsearchpath)
     {
@@ -641,6 +681,7 @@ void lt_dlsetsearchpath(char *path)
     }
   if (path != (char *) NULL)
     lt_slsearchpath=AllocateString(path);
+  return (0);
 }
 
 /*
@@ -659,7 +700,7 @@ void lt_dlsetsearchpath(char *path)
 %
 %  The format of the lt_dlsym method is:
 %
-%      void *lt_dlsym(void *handle,char *name)
+%      void *lt_dlsym(void *handle,const char *name)
 %
 %  A description of each parameter follows:
 %
@@ -668,7 +709,7 @@ void lt_dlsetsearchpath(char *path)
 %    o name: Specifies the procedure entry point to be returned.
 %
 */
-void *lt_dlsym(void *h,char *s)
+void *lt_dlsym(void *h,const char *s)
 {
   LPFNDLLFUNC1
     lpfnDllFunc1;
@@ -948,7 +989,7 @@ char *NTGetLastError(void)
     reason=AllocateString("An unknown error occurred");
   else
     {
-      reason=AllocateString(buffer);
+      reason=AllocateString((const char *)buffer);
       LocalFree(buffer);
     }
   return(reason);
@@ -1449,11 +1490,11 @@ MagickExport int NTGhostscriptLoadDLL(void)
 
   memset((void*)&gs_vectors, 0, sizeof(GhostscriptVectors));
 
-  gs_vectors.exit=lt_dlsym(gs_dll_handle,"gsapi_exit");
-  gs_vectors.init_with_args=lt_dlsym(gs_dll_handle,"gsapi_init_with_args");
-  gs_vectors.new_instance=lt_dlsym(gs_dll_handle,"gsapi_new_instance");
-  gs_vectors.run_string=lt_dlsym(gs_dll_handle,"gsapi_run_string");
-  gs_vectors.delete_instance=lt_dlsym(gs_dll_handle,"gsapi_delete_instance");
+  gs_vectors.exit=(int (MagickDLLCall *)(gs_main_instance*))lt_dlsym(gs_dll_handle,"gsapi_exit");
+  gs_vectors.init_with_args=(int (MagickDLLCall *)(gs_main_instance *, int, char **))(lt_dlsym(gs_dll_handle,"gsapi_init_with_args"));
+  gs_vectors.new_instance=(int (MagickDLLCall *)(gs_main_instance **, void *))(lt_dlsym(gs_dll_handle,"gsapi_new_instance"));
+  gs_vectors.run_string=(int (MagickDLLCall *)(gs_main_instance *, const char *, int, int *))(lt_dlsym(gs_dll_handle,"gsapi_run_string"));
+  gs_vectors.delete_instance=(void (MagickDLLCall *)(gs_main_instance *))(lt_dlsym(gs_dll_handle,"gsapi_delete_instance"));
 
   if ((gs_vectors.exit==NULL) ||
       (gs_vectors.init_with_args==NULL) ||

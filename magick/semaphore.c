@@ -51,15 +51,24 @@ struct SemaphoreInfo
 {
 #if defined(HasPTHREADS)
   pthread_mutex_t
-    mutex;
+    mutex;		/* POSIX thread mutex */
+
+  pthread_t
+    thread_id;		/* ID of thread which holds the lock */
 #endif
 #if defined(WIN32)
   CRITICAL_SECTION
-    mutex;
+    mutex;		/* Windows critical section */
+
+  DWORD
+    thread_id;		/* ID of thread which holds the lock */
 #endif
 
+  unsigned int
+    locked;		/* True if semaphore is locked */
+
   unsigned long
-    signature;
+    signature;		/* Used to validate structure */
 };
 
 /*
@@ -181,6 +190,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 #if defined(WIN32)
   InitializeCriticalSection(&semaphore_info->mutex);
 #endif
+  semaphore_info->locked=False;
   semaphore_info->signature=MagickSignature;
   return(semaphore_info);
 }
@@ -367,10 +377,15 @@ MagickExport unsigned int LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 #if defined(HasPTHREADS)
   if (pthread_mutex_lock(&semaphore_info->mutex))
     return(False);
+  /* Record the thread ID of the locking thread */
+  semaphore_info->thread_id=pthread_self();
 #endif
 #if defined(WIN32)
   EnterCriticalSection(&semaphore_info->mutex);
+  /* Record the thread ID of the locking thread */
+  semaphore_info->thread_id=GetCurrentThreadId();
 #endif
+  semaphore_info->locked=True;
   return(True);
 }
 
@@ -404,12 +419,19 @@ MagickExport unsigned int UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
+  if (semaphore_info->locked != True)
+    return (False);
 #if defined(HasPTHREADS)
+  /* Enforce that unlocking thread is the same as the locking thread */
+  assert(pthread_equal(semaphore_info->thread_id,pthread_self()));
   if (pthread_mutex_unlock(&semaphore_info->mutex))
     return(False);
 #endif
 #if defined(WIN32)
+  /* Enforce that unlocking thread is the same as the locking thread */
+  assert(GetCurrentThreadId() == semaphore_info->thread_id);
   LeaveCriticalSection(&semaphore_info->mutex);
 #endif
+  semaphore_info->locked=False;
   return(True);
 }

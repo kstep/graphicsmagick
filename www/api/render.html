@@ -1,179 +1,200 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>render - Methods to Draw on an Image</title>
-<link rel="StyleSheet" href="../magick.css" type="text/css" />
-</head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+<STYLE>
+<!--
+@page { size: 8.5in 11in }
+TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+H2 { color: #000000 }
+A:link { color: #0085c0 }
+A:visited { color: #800080 }
+-->
+</STYLE>
 
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080"> <A HREF="http://promote.pair.com/direct.pl?imagemagick.org"> <IMG SRC="../../images/promote.png" ALT="Pair" ALIGN=RIGHT WIDTH=120 HEIGHT=60 BORDER=0></A> <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<TITLE>render - Methods to Draw on an Image</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+</HEAD>
 
-<p><a name="__index__"></a></p>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+        <INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+        <INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+        <TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+                <COL WIDTH=208*>
+                <COL WIDTH=48*>
+                <TR>
+                        <TD WIDTH=81%>
+                                <P ALIGN=LEFT>[<A HREF="../../index.html">Home</A>] [<A HREF="../mission.html">Mission
+                                Statement</A>] [<A HREF="../development.html">Development Process</A>] [<A HREF="../download.html">Download</A>]
+                                [<A HREF="../install.html">Installation</A>] [<A HREF="../cvs.html">CVS</A>]
+                                [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+                                Lists</A>] [<A HREF="../FAQ.html">FAQ</A>] [<A HREF="../formats.html">Formats</A>]
+                                [<A HREF="../NEWS.html">News</A> ] [<A HREF="../Changelog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>]
+                                [<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+                                Bugs</A>] [<A HREF="../utilities.html">Utilities</A>] [<A HREF="../programming.html">Programming</A>]
+                                [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
+                        </TD>
+                        <TD ROWSPAN=2 WIDTH=19%>
+                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                        </TD>
+                </TR>
+                <TR>
+                        <TD WIDTH=81%>
+                                <DIV ALIGN=CENTER>
+                                        <P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=20 MAXLENGTH=255>
+                                        <INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+                                        </P>
+                                </DIV>
+                        </TD>
+                </TR>
+        </TABLE>
+</FORM>
+
+
+<A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
 
-<ul>
+<UL>
 
-	<li><a href="#name">NAME</a></li>
-	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
-	<ul>
+	<LI><A HREF="#name">
+NAME</A>
+	<LI><A HREF="#synopsis">
+SYNOPSIS</A>
+	<LI><A HREF="#function descriptions">
+FUNCTION 
+DESCRIPTIONS</A>
+	<UL>
 
-		<li><a href="#clonedrawinfo">CloneDrawInfo</a></li>
-		<li><a href="#destroydrawinfo">DestroyDrawInfo</a></li>
-		<li><a href="#drawaffineimage">DrawAffineImage</a></li>
-		<li><a href="#drawclippath">DrawClipPath</a></li>
-		<li><a href="#drawimage">DrawImage</a></li>
-		<li><a href="#drawpatternpath">DrawPatternPath</a></li>
-	</ul>
+		<LI><A HREF="#clonedrawinfo">CloneDrawInfo</A>
+		<LI><A HREF="#destroydrawinfo">DestroyDrawInfo</A>
+		<LI><A HREF="#drawaffineimage">DrawAffineImage</A>
+		<LI><A HREF="#drawclippath">DrawClipPath</A>
+		<LI><A HREF="#drawimage">DrawImage</A>
+		<LI><A HREF="#drawpatternpath">DrawPatternPath</A>
+	</UL>
 
-</ul>
+</UL>
 <!-- INDEX END -->
 
-<hr />
-<p>
-</p>
-<h1><a name="name">NAME</a></h1>
-<p>render - Methods to Draw on an Image</p>
-<p>
-</p>
-<hr />
-<h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>DrawInfo * <strong>CloneDrawInfo</strong>( const ImageInfo *image_info, const DrawInfo *draw_info );</p>
-<p>void  <strong>DestroyDrawInfo</strong>( DrawInfo *draw_info );</p>
-<p>unsigned int  <strong>DrawAffineImage</strong>( Image *image, const Image *composite, const AffineMatrix *affine );</p>
-<p>unsigned int  <strong>DrawClipPath</strong>( Image *image, const DrawInfo *draw_info, const char *name );</p>
-<p>unsigned int  <strong>DrawImage</strong>( Image *image, const DrawInfo *draw_info );</p>
-<p>unsigned int  <strong>DrawPatternPath</strong>( Image *image, const DrawInfo *draw_info, const char *name, Image ** pattern );</p>
-<p>
-</p>
-<hr />
-<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
-<p>
-</p>
-<h2><a name="clonedrawinfo">CloneDrawInfo</a></h2>
-<blockquote>CloneDrawInfo() makes a copy of the given draw info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><p>The format of the CloneDrawInfo method is:</p>
-<blockquote><A HREF="types/DrawInfo.html">DrawInfo</A> *CloneDrawInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_image_info%3a">o image_info:</a></strong><br />
-</dt>
-<dd>
+<HR>
+<P>
+<H2><A NAME="name">
+NAME</A></H2>
+<P>render - Methods to Draw on an Image</P>
+<P>
+<HR>
+<H2><A NAME="synopsis">
+SYNOPSIS</A></H2>
+<P>DrawInfo * <STRONG>CloneDrawInfo</STRONG>( const ImageInfo *image_info, const DrawInfo *draw_info );</P>
+<P>void  <STRONG>DestroyDrawInfo</STRONG>( DrawInfo *draw_info );</P>
+<P>unsigned int  <STRONG>DrawAffineImage</STRONG>( Image *image, const Image *composite, const AffineMatrix *affine );</P>
+<P>unsigned int  <STRONG>DrawClipPath</STRONG>( Image *image, const DrawInfo *draw_info, const char *name );</P>
+<P>unsigned int  <STRONG>DrawImage</STRONG>( Image *image, const DrawInfo *draw_info );</P>
+<P>unsigned int  <STRONG>DrawPatternPath</STRONG>( Image *image, const DrawInfo *draw_info, const char *name, Image ** pattern );</P>
+<P>
+<HR>
+<H2><A NAME="function descriptions">
+FUNCTION 
+DESCRIPTIONS</A></H2>
+<P>
+<H3><A NAME="clonedrawinfo">CloneDrawInfo</A></H3>
+<blockquote>CloneDrawInfo() makes a copy of the given draw info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><P>The format of the CloneDrawInfo method is:</P>
+<blockquote><A HREF="types.html#DrawInfo">DrawInfo</A> *CloneDrawInfo ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
+<DD>
 The image info.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_draw_info%3a">o draw_info:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_draw_info%3A">draw_info:</A></STRONG><BR>
+<DD>
 The draw info.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="destroydrawinfo">DestroyDrawInfo</a></h2>
-<blockquote>DestroyDrawInfo() deallocates memory associated with an <A HREF="types/DrawInfo.html">DrawInfo</A> structure. </blockquote><p>The format of the DestroyDrawInfo method is:</p>
-<blockquote>void DestroyDrawInfo ( <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o draw_info:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="destroydrawinfo">DestroyDrawInfo</A></H3>
+<blockquote>DestroyDrawInfo() deallocates memory associated with an <A HREF="types.html#DrawInfo">DrawInfo</A> structure. </blockquote><P>The format of the DestroyDrawInfo method is:</P>
+<blockquote>void DestroyDrawInfo ( <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>draw_info:</STRONG><BR>
+<DD>
 The draw info.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawaffineimage">DrawAffineImage</a></h2>
-<blockquote>DrawAffineImage() composites the source over the destination image as dictated by the affine transform. </blockquote><p>The format of the DrawAffineImage method is:</p>
-<blockquote>unsigned int DrawAffineImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *composite, const AffineMatrix *affine ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong><a name="item_o_image%3a">o image:</a></strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="drawaffineimage">DrawAffineImage</A></H3>
+<blockquote>DrawAffineImage() composites the source over the destination image as dictated by the affine transform. </blockquote><P>The format of the DrawAffineImage method is:</P>
+<blockquote>unsigned int DrawAffineImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *composite, const <A HREF="types.html#AffineMatrix">AffineMatrix</A> *affine ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The composite image.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_affine%3a">o affine:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_affine%3A">affine:</A></STRONG><BR>
+<DD>
 The affine transform.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawclippath">DrawClipPath</a></h2>
-<blockquote>DrawClipPath() draws the clip path on the image mask. </blockquote><p>The format of the DrawClipPath method is:</p>
-<blockquote>unsigned int DrawClipPath ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const char *name ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="drawclippath">DrawClipPath</A></H3>
+<blockquote>DrawClipPath() draws the clip path on the image mask. </blockquote><P>The format of the DrawClipPath method is:</P>
+<blockquote>unsigned int DrawClipPath ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, const char *name ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o draw_info:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>draw_info:</STRONG><BR>
+<DD>
 The draw info.
-</dd>
-<p></p>
-<dt><strong><a name="item_o_name%3a">o name:</a></strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
+<DD>
 The name of the clip path.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawimage">DrawImage</a></h2>
-<blockquote>Use DrawImage() to draw a graphic primitive on your image. The primitive may be represented as a string or filename. Precede the filename with an "at" sign ( @ ) and the contents of the file are drawn on the image. You can affect how text is drawn by setting one or more members of the draw info structure. </blockquote><p>The format of the DrawImage method is:</p>
-<blockquote>unsigned int DrawImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="drawimage">DrawImage</A></H3>
+<blockquote>Use DrawImage() to draw a graphic primitive on your image. The primitive may be represented as a string or filename. Precede the filename with an "at" sign ( @ ) and the contents of the file are drawn on the image. You can affect how text is drawn by setting one or more members of the draw info structure. </blockquote><P>Note that this is a legacy interface.  Authors of new code should consider using the Draw* methods defined by magick/draw.h since they are better documented and less error prone.</P>
+<P>The format of the DrawImage method is:</P>
+<blockquote>unsigned int DrawImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o draw_info:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>draw_info:</STRONG><BR>
+<DD>
 The draw info.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawpatternpath">DrawPatternPath</a></h2>
-<blockquote>DrawPatternPath() draws a pattern. </blockquote><p>The format of the DrawPatternPath method is:</p>
-<blockquote>unsigned int DrawPatternPath ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const char *name, <A HREF="types/Image.html">Image</A> **pattern ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P></DL></DL>
+<P>
+<H3><A NAME="drawpatternpath">DrawPatternPath</A></H3>
+<blockquote>DrawPatternPath() draws a pattern. </blockquote><P>The format of the DrawPatternPath method is:</P>
+<blockquote>unsigned int DrawPatternPath ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, const char *name, <A HREF="types.html#Image">Image</A> **pattern ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-<p></p>
-<dt><strong>o draw_info:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>draw_info:</STRONG><BR>
+<DD>
 The draw info.
-</dd>
-<p></p>
-<dt><strong>o name:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>name:</STRONG><BR>
+<DD>
 The pattern name.
-</dd>
-<p></p>
-<dt><strong>o image:</strong><br />
-</dt>
-<dd>
+<P></P>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
 The image.
-</dd>
-</dl>
+</DL></DL>
 
-</body>
+</BODY>
 
-</html>
+</HTML>

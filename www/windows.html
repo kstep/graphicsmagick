@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020718;12063600">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030406;15455200">
+	<META NAME="CHANGED" CONTENT="20030505;19105400">
 	<META NAME="CLASSIFICATION" CONTENT="Describes GraphicsMagick features which are peculiar to Microsoft Windows">
 	<META NAME="DESCRIPTION" CONTENT="Describes how to install GraphicsMagick for Windows.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, WebMagick, Web Magic, visualization, image processing, software development, image, software, Magick++">
@@ -16,11 +16,6 @@
 		TD P.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		P.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		BLOCKQUOTE.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		DD { margin-left: 0.4in }
-		DD.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		DT { margin-left: 0.4in }
-		DT.western { font-weight: bold }
-		DT.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
 		H4.western { font-family: "Albany"; font-size: 14pt }
 		H4.cjk { font-weight: medium }
 		A:link { color: #0085c0 }
@@ -37,24 +32,25 @@
 		<COL WIDTH=48*>
 		<TR>
 			<TD WIDTH=81%>
-				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission Statement</A>]
+				<P CLASS="western" ALIGN=LEFT>[<A HREF="../index.html">Home</A>]
+				[<A HREF="mission.html">Mission Statement</A>] [<A HREF="development.html">Development
+				Process</A>] [<A HREF="contribute.html">Contribute</A>]
 				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
 				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
 				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
 				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
 				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
-				Bugs</A>] [<A HREF="utilities.html">Utilities</A>]
-				[<A HREF="programming.html">Programming</A>] [<A HREF="books.html">Books</A>]
-				[<A HREF="links.html">Links</A>]</P>
+				Bugs</A>] [<A HREF="utilities.html">Utilities</A>] [<A HREF="programming.html">Programming</A>]
+				[<A HREF="books.html">Books</A>] [<A HREF="links.html">Links</A>]</P>
 			</TD>
 			<TD ROWSPAN=2 WIDTH=19%>
-				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+				<P CLASS="western" ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=81%>
 				<DIV ALIGN=CENTER>
-					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+					<P CLASS="western"><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
 					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
 					</P>
 				</DIV>
@@ -62,15 +58,14 @@
 		</TR>
 	</TABLE>
 </FORM>
-<P CLASS="western"> 
-</P>
 <BLOCKQUOTE CLASS="western"><I>This page provides information
 specific to GraphicsMagick installed via a &quot;setup.exe&quot;
 style installation wizard under Microsoft Windows. It applies only to
 the pre-built &quot;binaries&quot; package, and not to versions
 compiled from source code. If you would like to install
 GraphicsMagick from source code, then please refer to the
-<A HREF="install.html">GraphicsMagick installation guide</A> . </I>
+<A HREF="INSTALL-windows.html">GraphicsMagick installation guide</A>
+. </I>
 </BLOCKQUOTE>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
@@ -88,26 +83,43 @@ installation of GraphicsMagick with a newer version, then it may be
 wise to uninstall the existing GraphicsMagick (see uninstall
 procedure) prior to installing the newer version.<BR><BR>While it is
 not a requirement, it is strongly recommended that the <A HREF="http://www.cs.wisc.edu/~ghost/">Ghostscript</A>
-package be installed. GraphicsMagick uses Ghostscript to render
-Postscript and PDF files, as well as formats where a translator to
-Postscript is available. GraphicsMagick will also use the fonts
-delivered with Ghostscript to support the standard set of Postscript
-fonts. <BR><BR>The installation package includes the GraphicsMagick
-Perl extension ( <A HREF="perl.html">PerlMagick</A>) as an
-installation option. If you would like to use this extension, then
-you must install <A HREF="http://www.activestate.com/Products/ActivePerl/Download.html">ActiveState
+package (version 7.05 preferred since it has the least bugs) be
+installed. GraphicsMagick uses Ghostscript to render Postscript and
+PDF files, as well as formats where a translator to Postscript is
+available. GraphicsMagick will also use the fonts delivered with
+Ghostscript to support the standard set of Adobe Postscript fonts
+like &quot;Helvetica&quot; and &quot;Times Roman&quot;. <BR><BR>The
+installation package includes the GraphicsMagick Perl extension (
+<A HREF="perl.html">PerlMagick</A>) as an installation option. If you
+would like to use this extension, then you must install <A HREF="http://www.activestate.com/Products/ActivePerl/Download.html">ActiveState
 ActivePerl</A> prior to commencing with installation of
 GraphicsMagick. 
 </P>
 <H4 CLASS="western">Retrieve Install Package</H4>
 <P CLASS="western">Retrieve the GraphicsMagick Windows binary install
-package from a one of the ftp sites listed at the <A HREF="archives.html">GraphicsMagick
-Download Sites</A> page. The file will be named similar to
-GraphicsMagick-i686-pc-windows.exe (QuantumDepth=16 version) or
-GraphicsMagick-i686-Q8-windows.exe (QuantumDepth=8 version),and
-should be found in the 'binaries' subdirectory of the ftp site. Note
-that the QuantumDepth=8 version consumes much less memory and CPU
-than the QuantumDepth=16 version, but provides less color resolution.</P>
+package from a one of the ftp sites listed at the <A HREF="download.html">GraphicsMagick
+Download Sites</A> page. The available install packages are as
+follows</P>
+<P CLASS="western">Windows Dynamic-Multithread (DLL-based) install
+package with utilities, PerlMagick, ImageMagickObject COM object, API
+headers, DLLs, link libraries, and web pages.</P>
+<PRE>    GraphicsMagick-1.0-Q8-windows-dll.exe
+    GraphicsMagick-1.0-Q16-windows-dll.exe</PRE><P CLASS="western">
+Windows Static-Multithread package including the utilities (gm.exe,
+gmdisplay.exe, and MagickCMD.exe), the <A HREF="ImageMagickObject.html">ImageMagickObject</A>
+COM object, and the GraphicsMagick web pages. This package does not
+include PerlMagick.</P>
+<PRE>    GraphicsMagick-1.0-Q8-windows-static.exe
+    GraphicsMagick-1.0-Q16-windows-static.exe</PRE><P CLASS="western">
+Note that the QuantumDepth=8 version (Q8) which provides industry
+standard 24/32 bit pixels consumes half the memory and about 30% less
+CPU than the QuantumDepth=16 version (Q16) which provides 48/64 bit
+pixels for high-resolution color. A Q8 version is fine for processing
+typical photos. If you are dealing with scientific or medical images
+or deal with images that have limited contrast, then the Q16 version
+is recommended. It is also possible to build a Q32 version which has
+enough resolution to deal with the latest reconnaissance images.
+Please let us know if there is any demand for the Q32 versions.</P>
 <H4 CLASS="western">Start Installation Wizard 
 </H4>
 <P CLASS="western">Execute the downloaded file from your browser or
@@ -115,12 +127,20 @@ by double-clicking on the filename from within Windows Explorer. The
 GraphicsMagick Setup Wizard will appear. Click on &ldquo;Next&gt;&rdquo;
 to continue. 
 </P>
+<H4 CLASS="western">Read Installation Information</H4>
+<P CLASS="western">An informational screen is presented which
+provides a summary of things you should know before you proceed.
+Please take care to read this information. Once you have finished,
+Click on &ldquo;Next&gt;&rdquo; to continue. 
+</P>
 <H4 CLASS="western">Select Destination Directory</H4>
 <P CLASS="western">Specify what drive and directory to install
-GraphicsMagick into. Approximately 13MB of free disk space is
-required to install GraphicsMagick. The default installation
-directory is similar to &ldquo;C:\Program
-Files\GraphicsMagick-1.0.0-Q16&rdquo;. Once you have entered the
+GraphicsMagick into. Approximately 15MB of free disk space is
+required to install all of GraphicsMagick (you may choose to install
+a subset to save space). A message at the bottom of the screen will
+tell you exactly how much space is required to install the complete
+package. The default installation directory is similar to &ldquo;<FONT FACE="Cumberland">C:\Program
+Files\GraphicsMagick-1.0-Q8</FONT>&rdquo;. Once you have entered the
 desired installation directory, then select &ldquo;Next&gt;&rdquo; to
 continue. 
 </P>
@@ -130,11 +150,38 @@ program's shortcuts to appear. The default should normally be
 satisfactory. Click on &ldquo;Next&gt;&rdquo; to continue. 
 </P>
 <H4 CLASS="western">Select Additional Tasks</H4>
-<P CLASS="western">A screen is displayed which provides the option to
-create a desktop shortcut icon to the imdisplay program and to update
-the executable search path so that GraphicsMagick is available
-without specifying the full path to the programs. The default is to
-enable both of these. Once you have made your selections, click on
+<P CLASS="western">A screen is displayed which presents most (or all)
+of the following options:</P>
+<UL>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.1in">Create a desktop
+	icon</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.1in">Update
+	executable search path</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.1in">Associate
+	supported file extensions with GraphicsMagick</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.1in">Install
+	development headers and libraries for C and C++</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.1in">Install
+	PerlMagick for ActiveState Perl v5.8.0 build 804</P>
+	<LI><P CLASS="western" STYLE="margin-bottom: 0.1in">Install
+	ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH.</P>
+</UL>
+<P CLASS="western">&quot;Creating a desktop icon&quot; and &quot;Update
+the executable search path&quot; are selected by default. The
+remaining options default to un-selected. Select the options you
+prefer.</P>
+<P CLASS="western">Think twice before selecting &quot;Associate
+supported file extensions with GraphicsMagick&quot; since this will
+set up approximately fifty file associations, including common
+formats like JPEG, GIF, PNG, TIFF, and PDF. These file associations
+will be to the 'gmdisplay' program which is suitable for displaying
+images, but currently offers little more than that. Windows XP seems
+to handle the file assocations pretty well, allowing you to choose
+from a list of programs, but older systems like Windows NT 4.0 and
+Windows '98 only support a single association per format, which can
+be quite annoying. Associations for GraphicsMagick's native formats
+(such as MIFF) will always be made.</P>
+<P CLASS="western">Once you have made your selections, click on
 &ldquo;Next&gt;&rdquo; to continue. 
 </P>
 <H4 CLASS="western">Ready to Install</H4>
@@ -150,26 +197,33 @@ installation entirely, select &ldquo;Cancel&rdquo;.
 installation, it will display what it is doing in an installation
 progress window. 
 </P>
+<H4 CLASS="western">Final Information</H4>
+<P CLASS="western">A summary of post-install steps is provided. These
+steps include some commands you can execute to make sure that
+GraphicsMagick is working, as well as some notes about what has been
+installed on your system, and where to find additional information.
+Once you have read this information, click on &ldquo;Next&gt;&rdquo;
+to continue. 
+</P>
 <H4 CLASS="western">Finishing Up</H4>
 <P CLASS="western">By default &ldquo;View GraphicsMagick.html&rdquo;
 is check-marked. This causes the GraphicsMagick web pages to be
-displayed in a browser when &ldquo;Finish&rdquo; is selected. If you
-do not want to view the web pages, then de-select &ldquo;View
+displayed in your web browser when &ldquo;Finish&rdquo; is selected.
+If you do not want to view the web pages, then de-select &ldquo;View
 GraphicsMagick.html&rdquo;. Select &ldquo;Finish&rdquo; to exit the
 installation program. <BR>Under Windows '95 and Windows '98 it will
 be necessary to reboot the system in order for some settings to take
 effect (such as executable search path) since these are set in
-autoexec.bat. 
-</P>
+autoexec.bat. Please verify that autoexec.bat is updated correctly.
+We have received some reports that the path in autoexec.bat is not
+always updated correctly.</P>
 <H4 CLASS="western">Testing The Installation</H4>
 <P CLASS="western">Select &ldquo;Command Prompt&rdquo; from the
 Windows Start menu. Within the window type</P>
-<P CLASS="western" STYLE="margin-left: 0.79in"><FONT FACE="Courier New">convert
-logo: logo.miff<BR>imdisplay logo.miff</FONT></P>
+<P CLASS="western" STYLE="margin-left: 0.79in"><FONT FACE="Courier New">gm
+convert logo: logo.miff<BR>gmdisplay logo.miff</FONT></P>
 <P CLASS="western">and the GraphicsMagick logo should be displayed in
-a window. Note that NT-based Windows systems come with a program
-named 'convert' and if your path is set incorrectly, the wrong
-convert program will be executed!</P>
+a window.</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
 	<TR>
@@ -179,8 +233,6 @@ convert program will be executed!</P>
 		</TD>
 	</TR>
 </TABLE>
-<P CLASS="western" STYLE="margin-bottom: 0in"><BR>
-</P>
 <P CLASS="western">[ The following is transcribed from the <A HREF="http://www.jrsoftware.org/isinfo.php">Inno
 Setup</A> documentation. Inno Setup is used to create the binary
 install package. This information may be of value if the
@@ -190,95 +242,61 @@ installed as part of another package). ]</P>
 parameters. These can be useful to system administrators, and to
 other programs calling the Setup program. 
 </P>
-<DL>
-	<DT CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">/SP
-		</DT></DL>
-<DD CLASS="western" STYLE="margin-left: 0in">
-Disables the &quot;This will install... Do you wish to continue?&quot;
-prompt at the beginning of Setup. Of course, this will have no effect
-if the DisableStartupPrompt [Setup] section directive was set to yes.</DD><DD CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<BR><BR>
-</DD><DL>
-	<DT CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	/SILENT, /VERYSILENT 
-	</DT></DL>
-<DD CLASS="western" STYLE="margin-left: 0in">
-Instructs Setup to be silent or very silent. When Setup is silent the
-wizard and the background window are not displayed but the
-installation progress window is. When a setup is very silent this
-installation progress window is not displayed. Everything else is
-normal so for example error messages during installation are
-displayed and the startup prompt is (if you haven't disabled it with
-DisableStartupPrompt or the '/SP-' command line option explained
-above) 
-</DD><DD CLASS="western" STYLE="margin-left: 0in">
-If a restart is necessary and the '/NORESTART' command isn't used
-(see below) and Setup is silent, it will display a Reboot now?
-messagebox. If it's very silent it will reboot without asking.</DD><DD CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<BR><BR>
-</DD><DL>
-	<DT CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	/NORESTART 
-	</DT></DL>
-<DD CLASS="western" STYLE="margin-left: 0in">
-Instructs Setup not to reboot even if it's necessary.</DD><DD CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<BR><BR>
-</DD><DL>
-	<DT CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	/LOADINF=&quot;filename&quot; 
-	</DT></DL>
-<DD CLASS="western" STYLE="margin-left: 0in">
-Instructs Setup to load the settings from the specified file after
-having checked the command line. This file can be prepared using the
-'/SAVEINF=' command as explained below. Don't forget to use quotes if
-the filename contains spaces.</DD><DD CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<BR><BR>
-</DD><DL>
-	<DT CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	/SAVEINF=&quot;filename&quot; 
-	</DT></DL>
-<DD CLASS="western" STYLE="margin-left: 0in">
-Instructs Setup to save installation settings to the specified file.
-Don't forget to use quotes if the filename contains spaces.</DD><DD CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<BR><BR>
-</DD><DL>
-	<DT CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	/DIR=&ldquo;x:\dirname&rdquo; 
-	</DT></DL>
-<DD CLASS="western" STYLE="margin-left: 0in">
-Overrides the default directory name displayed on the Select
-Destination Directory wizard page. A fully qualified pathname must be
-specified. If the [Setup] section directive DisableDirPage was set to
-yes, this command line parameter is ignored.</DD><DD CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<BR><BR>
-</DD><DL>
-	<DT CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	/GROUP=&quot;folder name&quot; 
-	</DT></DL>
-<DD CLASS="western" STYLE="margin-left: 0in">
-Overrides the default folder name displayed on the Select Start Menu
-Folder wizard page. If the [Setup] section directive
-DisableProgramGroupPage was set to yes, this command line parameter
-is ignored. 
-</DD><DD CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<BR><BR>
-</DD><DL>
-	<DT CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	/NOICONS 
-	</DT></DL>
-<DD CLASS="western" STYLE="margin-left: 0in">
-Instructs Setup to initially disable the Don't create any icons check
-box on the Select Start Menu Folder wizard page. 
-</DD><DD CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-<BR><BR>
-</DD><DL>
-	<DT CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-	/COMPONENTS=&quot;comma separated list of component names&quot; 
-	</DT></DL>
-<DD CLASS="western" STYLE="margin-left: 0in; margin-bottom: 0.2in">
-Overrides the default components settings. Using this command line
-parameter causes Setup to automatically select a custom type. 
-</DD>
+<H4 CLASS="western">/SP</H4>
+<P CLASS="western" STYLE="margin-left: 0.79in">Disables the &quot;This
+will install... Do you wish to continue?&quot; prompt at the
+beginning of Setup. Of course, this will have no effect if the
+DisableStartupPrompt [Setup] section directive was set to yes.</P>
+<H4 CLASS="western">/SILENT, /VERYSILENT</H4>
+<P CLASS="western" STYLE="margin-left: 0.79in">Instructs Setup to be
+silent or very silent. When Setup is silent the wizard and the
+background window are not displayed but the installation progress
+window is. When a setup is very silent this installation progress
+window is not displayed. Everything else is normal so for example
+error messages during installation are displayed and the startup
+prompt is (if you haven't disabled it with DisableStartupPrompt or
+the '/SP-' command line option explained above) 
+</P>
+<P CLASS="western" STYLE="margin-left: 0.79in">If a restart is
+necessary and the '/NORESTART' command isn't used (see below) and
+Setup is silent, it will display a Reboot now? messagebox. If it's
+very silent it will reboot without asking.</P>
+<H4 CLASS="western">/NORESTART</H4>
+<P CLASS="western" STYLE="margin-left: 0.79in">Instructs Setup not to
+reboot even if it's necessary.</P>
+<H4 CLASS="western">/LOADINF=&quot;filename&quot;</H4>
+<P CLASS="western" STYLE="margin-left: 0.79in">Instructs Setup to
+load the settings from the specified file after having checked the
+command line. This file can be prepared using the '/SAVEINF=' command
+as explained below. Don't forget to use quotes if the filename
+contains spaces.</P>
+<H4 CLASS="western">/SAVEINF=&quot;filename&quot;</H4>
+<P CLASS="western" STYLE="margin-left: 0.79in">Instructs Setup to
+save installation settings to the specified file. Don't forget to use
+quotes if the filename contains spaces.</P>
+<H4 CLASS="western">/DIR=&ldquo;x:\dirname&rdquo;</H4>
+<P CLASS="western" STYLE="margin-left: 0.79in">Overrides the default
+directory name displayed on the Select Destination Directory wizard
+page. A fully qualified pathname must be specified. If the [Setup]
+section directive DisableDirPage was set to yes, this command line
+parameter is ignored.</P>
+<H4 CLASS="western">/GROUP=&quot;folder name&quot;</H4>
+<P CLASS="western" STYLE="margin-left: 0.79in">Overrides the default
+folder name displayed on the Select Start Menu Folder wizard page. If
+the [Setup] section directive DisableProgramGroupPage was set to yes,
+this command line parameter is ignored. 
+</P>
+<H4 CLASS="western">/NOICONS</H4>
+<P CLASS="western" STYLE="margin-left: 0.79in">Instructs Setup to
+initially disable the Don't create any icons check box on the Select
+Start Menu Folder wizard page. 
+</P>
+<H4 CLASS="western">/COMPONENTS=&quot;comma separated list of
+component names&quot;</H4>
+<P CLASS="western" STYLE="margin-left: 0.79in">Overrides the default
+components settings. Using this command line parameter causes Setup
+to automatically select a custom type. 
+</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
 	<TR>
@@ -312,17 +330,17 @@ the list, and click on &ldquo;Change/Remove&rdquo; to uninstall it.</P>
 </TABLE>
 <P CLASS="western" STYLE="margin-bottom: 0in"><BR>
 </P>
-<P CLASS="western">The GraphicsMagick utilities (e.g. convert,
-mogrify, composite, ...) may be executed as a sub-process by other
-programs. If the utilities are not in the systems executable search
-path (they should be since the GraphicsMagick install extends the
-path), then the utility should be executed via the complete path to
-the executable. Note that systems other than Windows '9X/ME provide a
-&ldquo;convert.exe&rdquo; as part of the operating system. Care must
-be taken to avoid executing the wrong &ldquo;convert.exe&rdquo; by
-mistake.</P>
+<P CLASS="western">The GraphicsMagick gm utility may be executed as a
+sub-process by other programs. If gm utility is not in the systems
+executable search path (it should be since the GraphicsMagick install
+extends the path), then the utility should be executed via the
+complete path to the executable.</P>
+<P CLASS="western">A COM object included with the &quot;utils&quot;
+package and known as <A HREF="ImageMagickObject.html">ImageMagickObject</A>
+may be used to execute the gm sub-functions (e.g. &quot;convert&quot;)
+without spawning a new process.</P>
 <P CLASS="western">A package which is linked against the
-GraphicsMagick core DLLs may use the DLLs from an installed
+GraphicsMagick core DLLs may use the DLLs from an installed DLL-based
 GraphicsMagick, provided that the GraphicsMagick release versions are
 identical, and the value of QuantumDepth matches the value used when
 building the package. One way to ensure this is to include a matching
@@ -339,14 +357,14 @@ DLLs.</P>
 Visual C++ 7.0 (.net). In order to use Magick++, you must either use
 the same compiler version used to build the distribution, or download
 the Windows source package and build everything yourself. While it
-should be possible to use the MinGW gcc compiler with the
+should be possible to use the free MinGW gcc compiler with the
 CORE_RL_magick_.dll (GraphicsMagick C library), it will certainly not
 be possible to use it with CORE_RL_Magick++_.dll (GraphicsMagick C++
 library) due to name mangling differences.</P>
 <P CLASS="western">The following project build options (change
-&ldquo;C:\GraphicsMagick&rdquo; to whever you have chosen to install)
-should ensure compatibility with the headers and libraries as
-delivered:</P>
+&ldquo;C:\GraphicsMagick&rdquo; to wherever you have chosen to
+install) should ensure compatibility with the headers and libraries
+as delivered:</P>
 <TABLE WIDTH=90% BORDER=1 CELLPADDING=4 CELLSPACING=3>
 	<COL WIDTH=86*>
 	<COL WIDTH=170*>
@@ -362,7 +380,7 @@ delivered:</P>
 	</TR>
 	<TR VALIGN=TOP>
 		<TD WIDTH=34% BGCOLOR="#e6e6e6">
-			<P CLASS="western"><FONT SIZE=3>Proprocessor Definitions</FONT></P>
+			<P CLASS="western"><FONT SIZE=3>Preprocessor Definitions</FONT></P>
 		</TD>
 		<TD WIDTH=66% BGCOLOR="#e6e6e6">
 			<P CLASS="western"><FONT SIZE=3>NDEBUG,WIN32,_CONSOLE,_VISUALC_,NeedFunctionPrototypes,_DLL,_MAGICKMOD_</FONT></P>
@@ -522,10 +540,11 @@ These registry entries are available under a registry path of the
 form:</P>
 <P CLASS="western"><FONT FACE="Courier New"><FONT SIZE=3>HKEY_LOCAL_MACHINE\SOFTWARE\GraphicsMagick\<I>VERSION</I>\Q:<I>DEPTH</I></FONT></FONT></P>
 <P CLASS="western">where VERSION represents the GraphicsMagick
-version and DEPTH (which may have the values 8 or 16) represents the
-number of bits per pixel quantum. Packages which require a particular
-version of GraphicsMagick built with a specific QuantumDepth may find
-a matching installation via these registry entries.</P>
+version and DEPTH (which may have the values 8, 16, or 32) represents
+the number of bits per pixel quantum. Packages which require a
+particular version of GraphicsMagick built with a specific
+QuantumDepth may find a matching installation via these registry
+entries.</P>
 <P CLASS="western">These keys are currently available:</P>
 <TABLE WIDTH=90% BORDER=1 CELLPADDING=4 CELLSPACING=3>
 	<COL WIDTH=68*>
