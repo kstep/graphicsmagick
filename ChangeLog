@@ -1,5 +1,6 @@
 2003-06-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* INSTALL-unix.txt: Add additional information regarding LZW.
 	* VisualMagick/magick/magick_config.h.in: Add additional notes
 	regarding UNISYS LZW patent.
 	* PerlMagick/Magick.xs: Applied Dissolve composite operator fix
