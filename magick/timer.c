@@ -54,7 +54,10 @@
   Include declarations.
 */
 #include "studio.h"
-
+
+/*
+  Define declarations.
+*/
 #if defined(macintosh)
 #define CLK_TCK  CLOCKS_PER_SEC
 #endif
