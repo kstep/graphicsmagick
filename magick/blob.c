@@ -108,11 +108,11 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   int
     file;
 
+  long
+    count;
+
   MagickInfo
     *magick_info;
-
-  off_t
-    count;
 
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -427,7 +427,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   int
     file;
 
-  off_t
+  long
     count;
 
   struct stat
@@ -549,11 +549,11 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   int
     file;
 
+  long
+    count;
+
   MagickInfo
     *magick_info;
-
-  off_t
-    count;
 
   struct stat
     attributes;
