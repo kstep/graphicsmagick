@@ -195,7 +195,7 @@ static char
     "CopyRed", "CopyGreen", "CopyBlue", "CopyOpacity", "Clear", "Dissolve",
     "Displace", "Modulate", "Threshold", "No", "Darken", "Lighten",
     "Hue", "Saturate", "Colorize", "Luminize", "Screen", "Overlay",
-    "ReplaceMatte", (char *) NULL
+    (char *) NULL
   },
   *CompressionTypes[] =
   {
@@ -5115,19 +5115,17 @@ Mogrify(ref,...)
               register PixelPacket
                 *q;
 
+              if (!composite_image->matte)
+                SetImageOpacity(composite_image,OpaqueOpacity);
               for (y=0; y < (long) composite_image->rows; y++)
               {
                 q=GetImagePixels(composite_image,0,y,
                   composite_image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
-                for (x=0; x < (long) composite_image->columns; x++)
+                for (x=(long) composite_image->columns; x > 0; x--)
                 {
-                  if (composite_image->matte)
-                    q->opacity=(Quantum)
-                      ((MaxRGB-q->opacity)*opacity)/100;
-                  else
-                    q->opacity=(Quantum) (MaxRGB*opacity)/100;
+                  q->opacity=(Quantum) ((opacity*(MaxRGB-q->opacity))/100.0);
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))

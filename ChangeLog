@@ -1,3 +1,10 @@
+2003-06-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Magick.xs: Applied Dissolve composite operator fix
+	obtained from from John Cristy's ImageMagick which ensures that an
+	unused matte channel is set to Opaque, and uses this knowledge to
+	simplify the math.
+
 2003-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/options.imdoc: Fix to formatting. Fix spelling of origin.
