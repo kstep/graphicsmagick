@@ -41,9 +41,6 @@ exceptions (<tt>&lt;exception></tt>)</li>
 namespaces</li>
 
 <li>
-C++ versions of standard C headers (e.g. <tt>&lt;cstring></tt>)</li>
-
-<li>
 Standard Template Library (STL) (e.g. <tt>&lt;list></tt>, <tt>&lt;vector></tt>)</li>
 </ul>
 The author has personally verified that Magick++ compiles and runs using
@@ -172,7 +169,7 @@ with Magick++:
 </tr>
 
 <tr>
-<td><font size=-1>Mac OS 8.1?</font></td>
+<td><font size=-1>Mac OS 9</font></td>
 
 <td><font size=-1>PowerPC</font></td>
 
@@ -205,23 +202,11 @@ that <b>ImageMagick must be installed before Magick++ is configured</b>.
 The library is currently named similar to 'libMagick++.a' and is installed
 under prefix/lib while the headers are installed with Magick++.h being
 installed in prefix/include and the remaining headers in prefix/include/Magick++.
-<p>While it is currently possible to select building a shared Magick++
-library (using the configure option --enable-shared), the resulting library
-may not be fully functional (exceptions and static constructors fail to
-work) because libtool does not yet arrange to invoke initializers when
-creating C++ shared libraries on most systems (reputed to work under Linux).
-A known workaround when using GNU C++ is to cd into the 'lib' subdirectory
-and execute an incantation similar to "c++ -shared -o .libs/libMagick++.so.0.0.0
-*.lo -L/usr/local/lib -L/usr/openwin/lib -lMagick -ljbig -ldf -ltiff -lttf
--ljpeg -lpng -ldpstk -ldps -lXext -lXt -lX11 -lsocket -lnsl -lbz2 -lz -lm
--lc". The exact incantation to use is derived from the one that libtool
-itself used. Obviously this is not for the faint of heart. If you plan
-to write many programs with Magick++, this effort may be worth it since
-it makes the executables *much* (typically 10X) smaller.
 <p>To influence the options the configure script chooses, you may specify
-environment variables when running the script. For example, the command
+'make' option variables when running the configure script. For example,
+the command
 <br>&nbsp;
-<blockquote><tt>CXX=CC CXXFLAGS=-O2 LIBS=-lposix ./configure</tt></blockquote>
+<blockquote><tt>./configure CXX=CC CXXFLAGS=-O2 LIBS=-lposix</tt></blockquote>
 
 <p><br>specifies additional options to the configure script.&nbsp; The
 following table shows the available options.
@@ -233,7 +218,7 @@ following table shows the available options.
 
 <tr>
 <td>
-<center><b>Environment Variable</b></center>
+<center><b>Make Option Variable</b></center>
 </td>
 
 <td>
@@ -331,12 +316,14 @@ are built by seperate workspaces.
 <h5>
 Magick++ Demos</h5>
 In order to build the Magick++ demos, open the workspace <i>ImageMagick\VisualMagick\Magick++Demos.dsw
-</i>and do a Batch Build, using the same options as used for VisualMagick.
-The executables for the demos are output to the <i>ImageMagick\VisualMagick\bin</i>
+</i>and
+do a Batch Build, using the same options as used for VisualMagick. The
+executables for the demos are output to the <i>ImageMagick\VisualMagick\bin</i>
 directory. The demos may be executed by running the batch script <i>Magick++Demo.bat
-</i>in the directory <i>ImageMagick\VisualMagick</i>, with output files
-written to the directory <i>ImageMagick\Magick++\demo</i>. An alternative
-way to run the demos is to add the directory <i>ImageMagick\VisualMagick\bin</i>
+</i>in
+the directory <i>ImageMagick\VisualMagick</i>, with output files written
+to the directory <i>ImageMagick\Magick++\demo</i>. An alternative way to
+run the demos is to add the directory <i>ImageMagick\VisualMagick\bin</i>
 (with actual path prefix) to your path, and then cd to the <i>ImageMagick\Magick++\demo</i>
 directory before running the demo (e.g. 'button').
 <p>Available demos are:
@@ -357,9 +344,10 @@ In order to build the Magick++ tests, open the workspace <i>ImageMagick\VisualMa
 and do a Batch Build, using the same options as used&nbsp; for VisualMagick.&nbsp;
 The executables for the tests are output to the <i>ImageMagick\VisualMagick\bin</i>
 directory. The tests may be executed by running the batch script <i>Magick++Tests.bat
-</i>in the directory <i>ImageMagick\VisualMagick</i>, with output files
-written to the directory <i>ImageMagick\Magick++\tests</i>. An alternative
-way to run the tests is to add the directory <i>ImageMagick\VisualMagick\bin</i>
+</i>in
+the directory <i>ImageMagick\VisualMagick</i>, with output files written
+to the directory <i>ImageMagick\Magick++\tests</i>. An alternative way
+to run the tests is to add the directory <i>ImageMagick\VisualMagick\bin</i>
 (with actual path prefix) to your path, and then cd to the <i>ImageMagick\Magick++\demo</i>
 directory to run the test (e.g. 'appendImages').
 <p>The available tests are:

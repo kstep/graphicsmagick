@@ -1,23 +1,6 @@
 Items large and small which remain to be done before Magick++ 1.0
 --------------------------------------------------------------------
 
-* Support an efficient yet simple way to manipulate image pixels and
-  colormap (if pseudocolor) via an array style mechanism. Probably
-  support image as a two-dimensional array of a derived class of
-  Magick::Color. This is a complex problem which will take time to
-  resolve since ImageMagick images are of six distinct varieties not
-  including the many colorspaces the pixels can be represented in.
-
-  Who wants this?
-
-  Rehan Ahmad <ahmadr@eee.bham.ac.uk>
-  Bill Radcliffe <BillR@corbis.com>
-  Daniel M. Duley <mosfet@jorsm.com> <mosfet@kde.org> (KDE2.0 developer)
-  Paul S. Mostert <pmostert@gte.net>
-  Mario Olimpio de Menezes <mario@curiango.ipen.br>
-
-  Note: For the moment we provide access to raw pixels via the pixel cache.
-
 * Support manipulating IPTC profiles directly. Bill Radcliffe
   <BillR@corbis.com> has agreed to write a container class to support
   this.
@@ -26,11 +9,6 @@ Items large and small which remain to be done before Magick++ 1.0
 
 * Port to Sun Workshop 5.0 under Solaris (no access to compiler yet
   but hope so eventually ...)
-
-* Support building working dynamic library under Unix.
-
-  Note: This is supported by the libtool multi-language-branch development
-        branch so it should not be long.  Currently works under Solaris!
 
 * Support building working DLL under Win32.
 
@@ -56,9 +34,5 @@ Items which will require the aid of volunteers.  Volunteers?
 
 * Port to Cray C++ compiler
 
-* Port to MacOS (with CodeWarrior)
-
 * Port to VMS
 
-* Provide integration with Blitz++ (http://monet.uwaterloo.ca/blitz/).
-  Not sure what it would do other than aid with transformations on pixels.

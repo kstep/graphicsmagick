@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Implementation of Blob
 //
@@ -8,7 +8,6 @@
 #define MAGICK_IMPLEMENTATION
 
 #include <string.h>
-#include <new>
 
 using namespace std;
 
@@ -132,15 +131,9 @@ Magick::BlobRef::BlobRef ( const void* data_,
     _length(length_),
     _refCount(1)
 {
-  if ( data_ != 0 )
+  if( data_ )
     {
-      // Use ImageMagick's allocator to avoid possible problems from mixed
-      // allocators
-      _data = AllocateMemory( length_ );
-      
-      if ( _data == 0 )
-	throw std::bad_alloc();
-      
+      _data = new unsigned char[length_];
       memcpy( _data, data_, length_ );
     }
 }
@@ -148,7 +141,5 @@ Magick::BlobRef::BlobRef ( const void* data_,
 // Destructor (actually destroys data)
 Magick::BlobRef::~BlobRef ( void )
 {
-  FreeMemory( &_data );
-  _length = 0;
-  _refCount = 0;
+  delete (unsigned char*)_data;
 }
