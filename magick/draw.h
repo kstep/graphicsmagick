@@ -59,7 +59,9 @@ typedef struct _DrawInfo
     linejoin;
 
   unsigned long
-    miterlimit,
+    miterlimit;
+
+  double
     dash_offset;
 
   DecorationType

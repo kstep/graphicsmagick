@@ -131,12 +131,13 @@ void Magick::Options::strokeDashArray ( const unsigned int* strokeDashArray_ )
       for (x=0; strokeDashArray_[x]; x++);
       // Allocate elements
       _drawInfo->dash_pattern =
-        static_cast<double*>(AcquireMemory((x+1)*sizeof(double)));
+        static_cast<unsigned int*>(AcquireMemory((x+1)*sizeof(unsigned int)));
       // Copy elements
-      memcpy(_drawInfo->dash_pattern,strokeDashArray_,(x+1)*sizeof(double));
+      memcpy(_drawInfo->dash_pattern,strokeDashArray_,
+             (x+1)*sizeof(unsigned int));
     }
 }
-const double* Magick::Options::strokeDashArray ( void ) const
+const unsigned int* Magick::Options::strokeDashArray ( void ) const
 {
   return _drawInfo->dash_pattern;
 }
