@@ -2594,9 +2594,9 @@ static const DicomInfo
     { 0x7ff1, 0x000d, (char *) "US", (char *) "?" },
     { 0x7ff1, 0x0010, (char *) "US", (char *) "?" },
     { 0xfffc, 0xfffc, (char *) "OB", (char *) "Data Set Trailing Padding" },
-    { 0xfffe, 0xe000, (char *) "xs", (char *) "Item" },
-    { 0xfffe, 0xe00d, (char *) "xs", (char *) "Item Delimitation Item" },
-    { 0xfffe, 0xe0dd, (char *) "xs", (char *) "Sequence Delimitation Item" },
+    { 0xfffe, 0xe000, (char *) "!!", (char *) "Item" },
+    { 0xfffe, 0xe00d, (char *) "!!", (char *) "Item Delimitation Item" },
+    { 0xfffe, 0xe0dd, (char *) "!!", (char *) "Sequence Delimitation Item" },
     { 0xffff, 0xffff, (char *) "xs", (char *) "" }
   };
 
@@ -2719,7 +2719,9 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *data;
 
   unsigned int
-    mask;
+    explicit_file,
+    mask,
+    use_explicit;
 
   unsigned long
     bits_allocated,
@@ -2765,6 +2767,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   data=NULL;
   element=0;
   explicit_vr[2]='\0';
+  explicit_file=False;
   graymap=(unsigned short *) NULL;
   group=0;
   height=0;
@@ -2775,6 +2778,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   samples_per_pixel=1;
   significant_bits=0;
   *transfer_syntax='\0';
+  use_explicit=False;
   width=0;
   while ((group != 0x7FE0) || (element != 0x0010))
   {
@@ -2794,11 +2798,25 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     (void) strncpy(implicit_vr,dicom_info[i].vr,MaxTextExtent-1);
     count=ReadBlob(image,2,(char *) explicit_vr);
-    if (strcmp(implicit_vr,"xs") == 0)
-      if (isupper((int) *explicit_vr) && isupper((int) *(explicit_vr+1)))
-        (void) strncpy(implicit_vr,explicit_vr,MaxTextExtent-1);
-    if (strcmp(implicit_vr,explicit_vr) == 0)
+    /*
+      Check for "explicitness", but meta-file headers always explicit.
+    */
+    if (group != 0x0002 && explicit_file == -1)
+      explicit_file=
+        isupper((int) *explicit_vr) && isupper((int) *(explicit_vr+1));
+    use_explicit=(explicit_file || (group == 0x0002));
+    if (use_explicit && (strcmp(implicit_vr,"xs") == 0))
+      (void) strncpy(implicit_vr,explicit_vr,MaxTextExtent-1);
+    if (!use_explicit || (strcmp(implicit_vr,"!!") == 0))
       {
+        (void) SeekBlob(image,(off_t) -2,SEEK_CUR);
+        quantum=4;
+      }
+    else
+      {
+        /*
+          Assume explicit type.
+        */
         quantum=2;
         if ((strcmp(explicit_vr,"OB") == 0) ||
             (strcmp(explicit_vr,"UN") == 0) ||
@@ -2807,22 +2825,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) ReadBlobLSBShort(image);
             quantum=4;
           }
-      }
-    else
-      {
-        if (strcmp(implicit_vr,"xs") != 0)
-          {
-            (void) SeekBlob(image,(off_t) -2,SEEK_CUR);
-            quantum=4;
-          }
-        else
-          if ((strcmp(explicit_vr,"SS") == 0) ||
-              (strcmp(explicit_vr,"US") == 0))
-            quantum=2;
-          else
-            (void) SeekBlob(image,(off_t) -2,SEEK_CUR);
-        if (strcmp(implicit_vr,"SQ") != 0)
-          quantum=4;
       }
     datum=0;
     if (quantum == 4)
@@ -2836,67 +2838,42 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if ((strcmp(implicit_vr,"SS") == 0) ||
             (strcmp(implicit_vr,"US") == 0))
-          switch ((int) datum)
-          {
-            case 2:
-            default:
-            {
-              quantum=2;
-              datum=datum/2;
-              length=(size_t) datum;
-              break;
-            }
-            case 4:
-            {
-              quantum=4;
-              break;
-            }
-            case 8:
-            {
-              quantum=2;
-              length=4;
-              break;
-            }
-          }
+          quantum=2;
         else
           if ((strcmp(implicit_vr,"UL") == 0) ||
-              (strcmp(implicit_vr,"SL") == 0))
+              (strcmp(implicit_vr,"SL") == 0) ||
+              (strcmp(implicit_vr,"FL") == 0))
             quantum=4;
           else
-            if (strcmp(implicit_vr,"xs") != 0)
-              {
-                quantum=1;
-                length=(size_t) datum;
-                if (datum == -1)
-                  length=8;
-              }
-            else
-              if ((strcmp(implicit_vr,"FL") == 0) ||
-                  (strcmp(explicit_vr,"SS") == 0) ||
-                  (strcmp(explicit_vr,"US") == 0))
-                quantum=2;
-              else
-                if (strcmp(implicit_vr,"FD") == 0)
-                  quantum=8;
-                else
-                  {
-                    quantum=2;
-                    datum=datum/2;
-                    length=(size_t) datum;
-                  }
+      if (strcmp(implicit_vr,"FD") != 0)
+        quantum=1;
+      else
+        quantum=8;
+      if (datum != -1)
+        length=(size_t) datum/quantum;
+      else
+        {
+          /*
+            Sequence and item of undefined length.
+          */
+          quantum=0;
+          length=0;
+        }
       }
     if (image_info->verbose)
       {
         /*
           Display Dicom info.
         */
+        if (!use_explicit)
+          explicit_vr[0]='\0';
         for (i=0; dicom_info[i].description != (char *) NULL; i++)
           if ((group == dicom_info[i].group) &&
               (element == dicom_info[i].element))
             break;
         (void) fprintf(stdout,"0x%04lx %4lu %.1024s-%.1024s (0x%04x,0x%04x)",
-          image->offset,(unsigned long) length,implicit_vr,
-          explicit_vr,group, element);
+          image->offset,(unsigned long) length,implicit_vr,explicit_vr,group,
+          element);
         if (dicom_info[i].description != (char *) NULL)
           (void) fprintf(stdout," %.1024s",dicom_info[i].description);
         (void) fprintf(stdout,": ");
