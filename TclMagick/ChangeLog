@@ -2,6 +2,8 @@
 
 	* generic/TclMagick.c (drawObjCmd): Sub-switches need 'default'
 	case to avoid warnings caused by options not handled.
+	* generic/TclMagick.c: Cast a few enum's to ints when used as
+	arguments to Tcl_NewIntObj.
 
 2004-01-07  Rolf Schroedter <rolf.schroedter@dlr.de>
 

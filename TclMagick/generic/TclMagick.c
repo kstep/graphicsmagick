@@ -483,7 +483,8 @@ static int magickCmd(
 	if( (fonts != NULL) && (listLen > 0) ) {
             listPtr = Tcl_NewListObj(0, NULL);
 	    for( i=0; i < listLen; i++ ) {
-                Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(fonts[i], strlen(fonts[i])) );
+                Tcl_ListObjAppendElement(interp, listPtr,
+					 Tcl_NewStringObj(fonts[i], strlen(fonts[i])) );
             }
     	    Tcl_SetObjResult(interp, listPtr);
         }
@@ -6261,7 +6262,7 @@ static int drawObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(rule));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)rule));
 	}
 	break;
     }
@@ -6303,7 +6304,7 @@ static int drawObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(unit));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)unit));
 	}
 	break;
     }
@@ -6481,7 +6482,7 @@ static int drawObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(rule));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)rule));
 	}
 	break;
     }
@@ -6614,7 +6615,7 @@ static int drawObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(stretch));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)stretch));
 	}
 	break;
     }
@@ -6656,7 +6657,7 @@ static int drawObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(style));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)style));
 	}
 	break;
     }
@@ -6684,7 +6685,7 @@ static int drawObjCmd(
 	    DrawSetFontWeight(wandPtr, value);
 	} else {    /* Get font weight */
 	    value = DrawGetFontWeight(wandPtr);
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(value));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)value));
 	}
 	break;
     }
@@ -6730,7 +6731,7 @@ static int drawObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(grav));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)grav));
 	}
 	break;
     }
@@ -6960,7 +6961,7 @@ static int drawObjCmd(
 	    DrawSetStrokeAntialias(wandPtr, flag);
 	} else {    /* Get antialias flag */
 	    flag = DrawGetStrokeAntialias(wandPtr);
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(flag));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)flag));
 	}
 	break;
     }
@@ -7077,7 +7078,7 @@ static int drawObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(cap));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)cap));
 	}
 	break;
     }
@@ -7288,7 +7289,7 @@ static int drawObjCmd(
 		    return TCL_OK;
 		}
 	    }
-	    Tcl_SetObjResult(interp, Tcl_NewIntObj(deco));
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj((int)deco));
 	}
 	break;
     }
