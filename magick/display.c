@@ -394,14 +394,13 @@ static unsigned int XAnnotateEditImage(Display *display,
                 "45",
                 "90",
                 "180",
-                (char *) NULL,
+                "Dialog...",
                 (char *) NULL,
               };
 
             /*
               Select a command from the pop-up menu.
             */
-            RotateMenu[8]=(char *) "Dialog...";
             entry=XMenuWidget(display,windows,AnnotateMenu[id],RotateMenu,
               command);
             if (entry < 0)
@@ -1804,14 +1803,13 @@ static unsigned int XColorEditImage(Display *display,
                 "5%",
                 "10%",
                 "15%",
-                (char *) NULL,
+                "Dialog...",
                 (char *) NULL,
               };
 
             /*
               Select a command from the pop-up menu.
             */
-            FuzzMenu[5]=(char *) "Dialog...";
             entry=XMenuWidget(display,windows,ColorEditMenu[id],FuzzMenu,
               command);
             if (entry < 0)
@@ -3981,14 +3979,13 @@ static unsigned int XDrawEditImage(Display *display,
                   "4",
                   "8",
                   "16",
-                  (char *) NULL,
+                  "Dialog...",
                   (char *) NULL,
                 };
 
               /*
                 Select a command from the pop-up menu.
               */
-              WidthsMenu[5]=(char *) "Dialog...";
               entry=XMenuWidget(display,windows,DrawMenu[id],WidthsMenu,
                 command);
               if (entry < 0)
@@ -7419,7 +7416,7 @@ static unsigned int XMatteEditImage(Display *display,
     Map Command widget.
   */
   windows->command.name=(char *) "Matte Edit";
-  windows->command.data=3;
+  windows->command.data=4;
   (void) XCommandWidget(display,windows,MatteEditMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
   XClientMessage(display,windows->image.id,windows->im_protocols,
@@ -7541,14 +7538,13 @@ static unsigned int XMatteEditImage(Display *display,
                 "5%",
                 "10%",
                 "15%",
-                (char *) NULL,
+                "Dialog...",
                 (char *) NULL,
               };
 
             /*
               Select a command from the pop-up menu.
             */
-            FuzzMenu[5]=(char *) "Dialog...";
             entry=XMenuWidget(display,windows,MatteEditMenu[id],FuzzMenu,
               command);
             if (entry < 0)
@@ -7569,14 +7565,36 @@ static unsigned int XMatteEditImage(Display *display,
           }
           case MatteEditValueCommand:
           {
-            char
+            static char
               message[MaxTextExtent];
 
+            static const char
+              *MatteMenu[]=
+              {
+                "Opaque",
+                "Transparent",
+                "Dialog...",
+                (char *) NULL,
+              };
+
             /*
-              Request matte value from the user.
+              Select a command from the pop-up menu.
             */
+            entry=XMenuWidget(display,windows,MatteEditMenu[id],MatteMenu,
+              command);
+            if (entry < 0)
+              break;
+            if (entry != 2)
+              {
+                FormatString(matte,"%lu",OpaqueOpacity);
+                if (LocaleCompare(MatteMenu[entry],"Transparent") == 0)
+                  FormatString(matte,"%lu",TransparentOpacity);
+                break;
+              }
             FormatString(message,"Enter matte value (0 - %lu):",MaxRGB);
             (void) XDialogWidget(display,windows,"Matte",message,matte);
+            if (*matte == '\0')
+              break;
             break;
           }
           case MatteEditUndoCommand:
