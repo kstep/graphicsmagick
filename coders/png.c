@@ -5577,7 +5577,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   scanlines[y]);
           else
             (void) PopImagePixels(image,(QuantumType) RedQuantum,scanlines[y]);
-          for (i=0; i<image->columns; i++)
+          for (i=0; i<(long) image->columns; i++)
              *(scanlines[y]+i)=(*(scanlines[y]+i)>128) ? 255 : 0;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))

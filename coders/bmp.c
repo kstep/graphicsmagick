@@ -679,7 +679,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   Skip future BMP Version information.
                 */
-                for (i=124; i < bmp_info.size; i++)
+                for (i=124; i < (long) bmp_info.size; i++)
                   ReadBlobByte(image);
               }
             }

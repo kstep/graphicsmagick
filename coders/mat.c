@@ -180,18 +180,18 @@ register PixelPacket *q;
 	  if(*p>0)
 	    {
 	    f=(*p/Max)*(MaxRGB-q->red);
-	    if(f+q->red>MaxRGB) q->red=MaxRGB;
-	                   else q->red+=f;
-            if(f/2.0>q->green) q->green=q->blue=0;
-			   else q->green=q->blue-=f/2.0;		
+	    if((int) f+q->red>MaxRGB) q->red=MaxRGB;
+	                   else q->red+=(int) f;
+            if((int) f/2.0>q->green) q->green=q->blue=0;
+			   else q->green=q->blue-=(int) (f/2.0);		
 	    }
 	  if(*p<0)
 	    {
 	    f=(*p/Max)*(MaxRGB-q->blue);
-	    if(f+q->blue>MaxRGB) q->blue=MaxRGB;
-	                    else q->blue+=f;
-            if(f/2.0>q->green) q->green=q->red=0;
-			  else q->green=q->red-=f/2.0;		
+	    if((int) f+q->blue>MaxRGB) q->blue=MaxRGB;
+	                    else q->blue+=(int) f;
+            if((int) f/2.0>q->green) q->green=q->red=0;
+			  else q->green=q->red-=(int) (f/2.0);		
 	    }
 	  p++;
           q++;

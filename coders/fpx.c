@@ -931,7 +931,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     Initialize FlashPix image description.
   */
   fpx_info.numberOfComponents=colorspace.numberOfComponents;
-  for (i=0; i < fpx_info.numberOfComponents; i++)
+  for (i=0; i < (long) fpx_info.numberOfComponents; i++)
   {
     fpx_info.components[i].myColorType.myDataType=DATA_TYPE_UNSIGNED_BYTE;
     fpx_info.components[i].horzSubSampFactor=1;
