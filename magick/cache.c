@@ -198,7 +198,7 @@ static void ClosePixelCache(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CompressCache compresses the disk-based pixel cache.  
+%  Method CompressCache compresses the disk-based pixel cache.
 %
 %  The format of the CompressCache method is:
 %
@@ -1525,21 +1525,21 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
 static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
+  CacheInfo
+    *cache_info;
+
+  off_t
+    offset;
+
   RectangleInfo
     region;
 
   unsigned int
     status;
 
-  /*
-    Validate pixel cache geometry.
-  */
   assert(image != (Image *) NULL);
   assert(image->cache != (Cache) NULL);
   assert(image->signature == MagickSignature);
-  if ((x < 0) || (y < 0) || ((x+(int) columns) > (int) image->columns) ||
-      ((y+(int) rows) > (int) image->rows) || (columns == 0) || (rows == 0))
-    return((PixelPacket *) NULL);
   if ((image->storage_class != GetCacheClass(image->cache)) ||
       (image->colorspace != GetCacheColorspace(image->cache)))
     {
@@ -1554,6 +1554,19 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
           return((PixelPacket *) NULL);
         }
     }
+  /*
+    Validate pixel cache geometry.
+  */
+  cache_info=(CacheInfo *) image->cache;
+  offset=y*cache_info->columns+x;
+  if (offset < 0)
+    return((PixelPacket *) NULL);
+  offset=y*(cache_info->columns+rows-1)+columns+x;
+  if (offset > (cache_info->columns*cache_info->rows))
+    return((PixelPacket *) NULL);
+  /*
+    Return pixel cache.
+  */
   region.x=x;
   region.y=y;
   region.width=columns;
@@ -1656,7 +1669,7 @@ static unsigned int SyncPixelCache(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UncompressCache uncompresses the disk-based pixel cache.  
+%  Method UncompressCache uncompresses the disk-based pixel cache.
 %
 %  The format of the UncompressCache method is:
 %
