@@ -768,14 +768,8 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
 MagickExport unsigned int IsGrayImage(const Image *image,
   ExceptionInfo *exception)
 {
-  long
-    y;
-
-  register const PixelPacket
-    *p;
-
   register long
-    x;
+    i;
 
   /*
     Determine if image is grayscale.
@@ -784,20 +778,9 @@ MagickExport unsigned int IsGrayImage(const Image *image,
   assert(image->signature == MagickSignature);
   if (!IsPaletteImage(image,exception))
     return(False);
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      if (p->red != p->green)
-        return(False);
-      if (p->green != p->blue)
-        return(False);
-      p++;
-    }
-  }
+  for (i=0; i < (long) image->colors; i++)
+    if (!IsGray(image->colormap[i]))
+      return(False);
   return(True);
 }
 
@@ -834,15 +817,6 @@ MagickExport unsigned int IsGrayImage(const Image *image,
 MagickExport unsigned int IsMonochromeImage(const Image *image,
   ExceptionInfo *exception)
 {
-  long
-    y;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    x;
-
   /*
     Determine if image is grayscale.
   */
@@ -850,22 +824,15 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
   assert(image->signature == MagickSignature);
   if (!IsGrayImage(image,exception))
     return(False);
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      return(True);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      if (p->red != p->green)
-        return(False);
-      if (p->green != p->blue)
-        return(False);
-      if ((p->red != 0) && (p->red != MaxRGB))
-        return(False);
-      p++;
-    }
-  }
+  if (image->colors > 2)
+    return(False);
+  if ((Intensity(image->colormap[0]) != 0) &&
+      (Intensity(image->colormap[0]) != MaxRGB))
+    return(False);
+  if (image->colors == 2)
+    if ((Intensity(image->colormap[1]) != 0) &&
+        (Intensity(image->colormap[1]) != MaxRGB))
+      return(False);
   return(True);
 }
 
