@@ -3678,19 +3678,17 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MatteFloodfill() changes the transparency value of any pixel that
-%  matches target and is an immediate neighbor.  If the method is
-%  FillToBorderMethod is specified, the transparency value is changed for
-%  any neighbor pixel that does not match the bordercolor member of
-%  image.
+%  MatteFloodfill() changes the transparency value of any pixel that matches
+%  target and is an immediate neighbor.  If the method FillToBorderMethod
+%  is specified, the transparency value is changed for any neighbor pixel
+%  that does not match the bordercolor member of image.
 %
 %  By default target must match a particular pixel transparency exactly.
-%  However, in many cases two transparency values may differ by a small
-%  amount.  The fuzz member of image defines how much tolerance is
-%  acceptable to consider two transparency values as the same.  For
-%  example, set fuzz to 10 and the opacity values of 100 and 102
-%  respectively are now interpreted as the same value for the purposes of
-%  the floodfill.
+%  However, in many cases two transparency values may differ by a
+%  small amount.  The fuzz member of image defines how much tolerance is
+%  acceptable to consider two transparency values as the same.  For example,
+%  set fuzz to 10 and the opacity values of 100 and 102 respectively are
+%  now interpreted as the same value for the purposes of the floodfill.
 %
 %  The format of the MatteFloodfillImage method is:
 %
@@ -5159,6 +5157,8 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
 %    o image: The image.
 %
 %    o target: The RGB value of the target color.
+%
+%    o opacity: The replacement opacity value.
 %
 %
 */
