@@ -66,17 +66,17 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadClipboardImage reads an image from the system clipboard and
+%  Method ReadCLIPBOARDImage reads an image from the system clipboard and
 %  returns it.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
-%  The format of the ReadClipboardImage method is:
+%  The format of the ReadCLIPBOARDImage method is:
 %
-%      Image *ReadClipboardImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadClipboardImage returns a pointer to the image after
+%    o image:  Method ReadCLIPBOARDImage returns a pointer to the image after
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
@@ -86,7 +86,7 @@
 %
 %
 */
-static Image *ReadClipboardImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -113,22 +113,106 @@ static Image *ReadClipboardImage(const ImageInfo *image_info,ExceptionInfo *exce
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"Must specify image size",image);
-  if (image_info->interlace != PartitionInterlace)
-    {
-      /*
-        Open image file.
-      */
-      status=OpenBlob(image_info,image,ReadBinaryType,exception);
-      if (status == False)
-        ThrowReaderException(FileOpenError,"Unable to open file",image);
-      for (i=0; i < image->offset; i++)
-        (void) ReadBlobByte(image);
-    }
 
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+#if defined(WIN32)
+{
+	HBITMAP	bitmapH;
+
+	OpenClipboard( NULL );
+	bitmapH = GetClipboardData( CF_BITMAP );
+	CloseClipboard();
+
+	if ( bitmapH != NULL )
+	{
+		BITMAPINFO
+			DIBinfo;
+
+		BITMAP
+			bitmap;
+
+		HBITMAP
+			hBitmap,
+			hOldBitmap;
+
+		HDC
+			hDC,
+			hMemDC;
+
+		RGBQUAD
+			*pBits,
+			*ppBits;
+
+		// create an offscreen DC for the source
+		hMemDC = CreateCompatibleDC( NULL );
+		hOldBitmap = SelectObject( hMemDC, bitmapH );
+		GetObject( bitmapH, sizeof( BITMAP ), (LPSTR) &bitmap );
+		if ((image->columns == 0) || (image->rows == 0))
+		{
+			image->rows=bitmap.bmHeight;
+			image->columns=bitmap.bmWidth;
+		}
+
+		/*
+			Initialize the bitmap header info.
+			Create a temp DC for the DIB to go into
+		*/
+		(void) memset(&DIBinfo,0,sizeof(BITMAPINFO));
+		DIBinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
+		DIBinfo.bmiHeader.biWidth=image->columns;
+		DIBinfo.bmiHeader.biHeight=(-1)*image->rows;
+		DIBinfo.bmiHeader.biPlanes=1;
+		DIBinfo.bmiHeader.biBitCount=32;
+		DIBinfo.bmiHeader.biCompression=BI_RGB;
+		hDC=GetDC(NULL);
+		if (!hDC)
+			ThrowReaderException(FatalException,"failed to create a DC",image);
+		hBitmap= CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,NULL,0);
+		ReleaseDC(NULL,hDC);
+		if (!hBitmap)
+			ThrowReaderException(FatalException,"failed to create bitmap",image);
+
+		// create an offscreen DC
+		hDC=CreateCompatibleDC(NULL);
+		if (!hDC)
+		{
+			DeleteObject(hBitmap);
+			ThrowReaderException(FatalException,"failed to create a memory DC",image);
+		}
+		hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
+		if (!hOldBitmap)
+		{
+			DeleteDC(hDC);
+			DeleteObject(hBitmap);
+			ThrowReaderException(FatalException,"failed to create bitmap",image);
+		}
+
+		// bitblt from the memory to the DIB-based one
+		BitBlt( hDC, 0, 0, image->columns, image->rows, hMemDC, 0, 0, SRCCOPY );
+
+		// finally copy the pixels!
+		pBits=ppBits;
+		for (y=0; y < (long) image->rows; y++)
+		{
+			q=SetImagePixels(image,0,y,image->columns,1);
+			if (q == (PixelPacket *) NULL)
+				break;
+			for (x=0; x < (long) image->columns; x++)
+			{
+				q->red=Upscale(pBits->rgbRed);
+				q->green=Upscale(pBits->rgbGreen);
+				q->blue=Upscale(pBits->rgbBlue);
+				q->opacity=OpaqueOpacity;
+				pBits++;
+				q++;
+			}
+			if (!SyncImagePixels(image))
+			break;
+		}
+	} else
+		ThrowReaderException(FatalException,"no bitmap on clipboard",image);
+}
+#endif
+
   CloseBlob(image);
   return(image);
 }
@@ -144,15 +228,15 @@ static Image *ReadClipboardImage(const ImageInfo *image_info,ExceptionInfo *exce
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteClipboardImage writes an image to the system clipboard.
+%  Method WriteCLIPBOARDImage writes an image to the system clipboard.
 %
-%  The format of the WriteClipboardImage method is:
+%  The format of the WriteCLIPBOARDImage method is:
 %
-%      unsigned int WriteClipboardImage(const ImageInfo *image_info,Image *image)
+%      unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WriteClipboardImage return True if the image is written.
+%    o status: Method WriteCLIPBOARDImage return True if the image is written.
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
@@ -162,7 +246,7 @@ static Image *ReadClipboardImage(const ImageInfo *image_info,ExceptionInfo *exce
 %
 %
 */
-static unsigned int WriteClipboardImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image)
 {
   int
     y;
@@ -259,26 +343,26 @@ static unsigned int WriteClipboardImage(const ImageInfo *image_info,Image *image
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterClipboardImage adds attributes for the clipboard "image format" to
+%  Method RegisterCLIPBOARDImage adds attributes for the clipboard "image format" to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterClipboardImage method is:
+%  The format of the RegisterCLIPBOARDImage method is:
 %
-%      RegisterClipboardImage(void)
+%      RegisterCLIPBOARDImage(void)
 %
 */
-ModuleExport void RegisterClipboardImage(void)
+ModuleExport void RegisterCLIPBOARDImage(void)
 {
   MagickInfo
     *entry;
 
   entry=SetMagickInfo("CLIPBOARD");
-  entry->decoder=ReadClipboardImage;
-  entry->encoder=WriteClipboardImage;
+  entry->decoder=ReadCLIPBOARDImage;
+  entry->encoder=WriteCLIPBOARDImage;
   entry->adjoin = False;
   entry->description=AcquireString("the system clipboard");
   entry->module=AcquireString("CLIPBOARD");
@@ -296,15 +380,15 @@ ModuleExport void RegisterClipboardImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterClipboardImage removes format registrations made by the
+%  Method UnregisterCLIPBOARDImage removes format registrations made by the
 %  RGB module from the list of supported formats.
 %
-%  The format of the UnregisterClipboardImage method is:
+%  The format of the UnregisterCLIPBOARDImage method is:
 %
-%      UnregisterClipboardImage(void)
+%      UnregisterCLIPBOARDImage(void)
 %
 */
-ModuleExport void UnregisterClipboardImage(void)
+ModuleExport void UnregisterCLIPBOARDImage(void)
 {
   (void) UnregisterMagickInfo("CLIPBOARD");
 }
