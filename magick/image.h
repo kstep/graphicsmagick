@@ -895,7 +895,6 @@ extern Export unsigned int
 extern Export void
   AllocateNextImage(const ImageInfo *,Image *),
   AnnotateImage(Image *,AnnotateInfo *),
-  BlackImage(Image *),
   CloseImage(Image *),
   CoalesceImages(Image *),
   ColorFloodfillImage(Image *,const RunlengthPacket *,const ColorPacket *,int x,
@@ -932,6 +931,7 @@ extern Export void
   OpenImage(const ImageInfo *,Image *,const char *),
   RaiseImage(Image *,RectangleInfo *,const int),
   RGBTransformImage(Image *,const unsigned int),
+  SetImage(Image *,ColorPacket *),
   SetImageInfo(ImageInfo *,unsigned int),
   SetNumberScenes(Image *),
   SignatureImage(Image *),

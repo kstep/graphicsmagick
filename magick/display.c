@@ -11016,7 +11016,6 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Read each image and convert them to a tile.
   */
-  GetMontageInfo(&montage_info);
   backdrop=(windows->visual_info->class == TrueColor) ||
    (windows->visual_info->class == DirectColor);
   local_info=resource_info->image_info;
@@ -11072,7 +11071,10 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Create the Visual Image Directory.
   */
+  GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,filename);
+  montage_info.font=resource_info->image_info.font;
+  montage_info.pointsize=resource_info->image_info.pointsize;
   montage_image=MontageImages(image,&montage_info);
   DestroyImages(image);
   XSetCursorState(display,windows,False);

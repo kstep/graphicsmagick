@@ -849,52 +849,6 @@ Export Image *AverageImages(Image *images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     B l a c k I m a g e                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method BlackImage initializes the reference image to the background color.
-%
-%  The format of the BlackImage routine is:
-%
-%      BlackImage(image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
-%
-%
-*/
-Export void BlackImage(Image *image)
-{
-  register int
-    i;
-
-  register RunlengthPacket
-    *p;
-
-  assert(image != (Image *) NULL);
-  if (image->packets != (image->columns*image->rows))
-    return;
-  p=image->pixels;
-  for (i=0; i < image->packets; i++)
-  {
-    p->red=image->background_color.red;
-    p->green=image->background_color.green;
-    p->blue=image->background_color.blue;
-    p->length=0;
-    p->index=0;
-    p++;
-  }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
 %                                                                             %
 %   B o r d e r I m a g e                                                     %
 %                                                                             %
@@ -928,25 +882,11 @@ Export Image *BorderImage(Image *image,RectangleInfo *border_info)
   Image
     *bordered_image;
 
-  int
-    y;
-
-  register int
-    runlength,
-    x;
-
-  register RunlengthPacket
-    *p,
-    *q;
-
-  RunlengthPacket
-    border;
-
-  /*
-    Initialize bordered image attributes.
-  */
   assert(image != (Image *) NULL);
   assert(border_info != (RectangleInfo *) NULL);
+  /*
+    Initialize bordered image tro border color.
+  */
   bordered_image=CloneImage(image,image->columns+(border_info->width << 1),
     image->rows+(border_info->height << 1),False);
   if (bordered_image == (Image *) NULL)
@@ -956,58 +896,12 @@ Export Image *BorderImage(Image *image,RectangleInfo *border_info)
       return((Image *) NULL);
     }
   bordered_image->class=DirectClass;
+  SetImage(bordered_image,&bordered_image->border_color);
   /*
-    Initialize border color.
+    Composite image onto bordered image.
   */
-  border.red=image->border_color.red;
-  border.green=image->border_color.green;
-  border.blue=image->border_color.blue;
-  border.index=image->border_color.index;
-  border.length=0;
-  /*
-    Copy image and put border around it.
-  */
-  q=bordered_image->pixels;
-  for (y=0; y < border_info->height; y++)
-    for (x=0; x < bordered_image->columns; x++)
-      *q++=border;
-  p=image->pixels;
-  runlength=p->length+1;
-  for (y=0; y < image->rows; y++)
-  {
-    /*
-      Initialize scanline with border color.
-    */
-    for (x=0; x < border_info->width; x++)
-      *q++=border;
-    /*
-      Transfer scanline.
-    */
-    for (x=0; x < image->columns; x++)
-    {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      *q=(*p);
-      q->length=0;
-      q++;
-    }
-    x=0;
-    while (x < (bordered_image->columns-image->columns-border_info->width))
-    {
-      *q++=border;
-      x++;
-    }
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(BorderImageText,y,image->rows);
-  }
-  for (y=(bordered_image->rows-image->rows-border_info->height-1); y >= 0; y--)
-    for (x=0; x < bordered_image->columns; x++)
-      *q++=border;
+  CompositeImage(bordered_image,ReplaceCompositeOp,image,
+    border_info->width,border_info->height);
   return(bordered_image);
 }
 
@@ -7745,7 +7639,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
     /*
       Initialize montage image to background color.
     */
-    BlackImage(montage_image);
+    SetImage(montage_image,&montage_image->background_color);
     handler=SetMonitorHandler((MonitorHandler) NULL);
     if (montage_info->texture != (char *) NULL)
       TextureImage(montage_image,montage_info->texture);
@@ -10132,6 +10026,54 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     FreeMemory((char *) scanline);
   FreeMemory((char *) x_vector);
   return(scaled_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e                                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetImage initializes the reference image to the specified color.
+%
+%  The format of the SetImage routine is:
+%
+%      SetImage(image,color)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%    o color: A ColorPacket structure.  This is the RGB value of the image
+%      color.
+%
+%
+*/
+Export void SetImage(Image *image,ColorPacket *color)
+{
+  register int
+    i;
+
+  register RunlengthPacket
+    *p;
+
+  assert(image != (Image *) NULL);
+  p=image->pixels;
+  for (i=0; i < image->packets; i++)
+  {
+    p->red=color->red;
+    p->green=color->green;
+    p->blue=color->blue;
+    if (image->packets == (image->columns*image->rows))
+      p->length=0;
+    p->index=0;
+    p++;
+  }
 }
 
 /*

@@ -537,7 +537,7 @@ Image *ReadBMPImage(const ImageInfo *image_info)
       AllocateMemory(image->packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
+    SetImage(image,&image->background_color);
     /*
       Convert BMP raster image to runlength-encoded packets.
     */
@@ -834,7 +834,7 @@ Image *ReadCMYKImage(const ImageInfo *image_info)
       AllocateMemory(image->packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
+    SetImage(image,&image->background_color);
     /*
       Convert raster image to runlength-encoded packets.
     */
@@ -1975,7 +1975,7 @@ Image *ReadDPSImage(const ImageInfo *image_info)
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
       return((Image *) NULL);
     }
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   p=image->pixels;
   switch (image->class)
   {
@@ -2495,7 +2495,7 @@ Image *ReadFITSImage(const ImageInfo *image_info)
   if ((image->pixels == (RunlengthPacket *) NULL) ||
       (fits_pixels == (unsigned char *) NULL))
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   /*
     Convert FITS pixels to runlength-encoded packets.
   */
@@ -3469,7 +3469,7 @@ Image *ReadGRADATIONImage(const ImageInfo *image_info)
     AllocateMemory(image->packets*sizeof(RunlengthPacket));
   if (image->pixels == (RunlengthPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   /*
     Determine (Hue, Saturation, Brightness) gradient.
   */
@@ -3846,7 +3846,7 @@ Image *ReadHDFImage(const ImageInfo *image_info)
     if ((hdf_pixels == (unsigned char *) NULL) ||
         (image->pixels == (RunlengthPacket *) NULL))
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
+    SetImage(image,&image->background_color);
     q=image->pixels;
     if (image->class == PseudoClass)
       {
@@ -4330,7 +4330,7 @@ Image *ReadICONImage(const ImageInfo *image_info)
       AllocateMemory(image->packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
+    SetImage(image,&image->background_color);
     /*
       Convert ICON raster image to runlength-encoded packets.
     */
@@ -7225,6 +7225,8 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image)
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image_info->filename);
   montage_image=MontageImages(image,&montage_info);
+  montage_info.font=image_info->font;
+  montage_info.pointsize=image_info->pointsize;
   if (montage_image == (Image *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   DestroyImage(image);
@@ -7390,7 +7392,7 @@ Image *ReadPCDImage(const ImageInfo *image_info)
           AllocateMemory(image->packets*sizeof(RunlengthPacket));
         if (image->pixels == (RunlengthPacket *) NULL)
           PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-        BlackImage(image);
+        SetImage(image,&image->background_color);
         y=luma;
         c1=chroma1;
         c2=chroma2;
@@ -7459,7 +7461,7 @@ Image *ReadPCDImage(const ImageInfo *image_info)
     AllocateMemory(image->packets*sizeof(RunlengthPacket));
   if (image->pixels == (RunlengthPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   /*
     Read interleaved image.
   */
@@ -11120,7 +11122,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
             PrematureExit(ResourceLimitWarning,"Memory allocation failed",
               image);
           }
-        BlackImage(layer_info[i].image);
+        SetImage(layer_info[i].image,&layer_info[i].image->background_color);
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
           compression=MSBFirstReadShort(layer_info[i].image->file);
@@ -11214,7 +11216,7 @@ Image *ReadPSDImage(const ImageInfo *image_info)
     AllocateMemory(image->packets*sizeof(RunlengthPacket));
   if (image->pixels == (RunlengthPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   if (compression != 0)
     {
       /*
@@ -11410,7 +11412,7 @@ Image *ReadRGBImage(const ImageInfo *image_info)
       AllocateMemory(image->packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
+    SetImage(image,&image->background_color);
     /*
       Convert raster image to runlength-encoded packets.
     */
@@ -11896,7 +11898,7 @@ Image *ReadRLAImage(const ImageInfo *image_info)
     AllocateMemory(image->packets*sizeof(RunlengthPacket));
   if (image->pixels == (RunlengthPacket *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   if (*rla_header.description != '\0')
     {
       /*
@@ -12333,7 +12335,7 @@ Image *ReadRLEImage(const ImageInfo *image_info)
       AllocateMemory(image->packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
+    SetImage(image,&image->background_color);
     q=image->pixels;
     if (number_planes >= 3)
       {
@@ -12769,7 +12771,7 @@ Image *ReadSGIImage(const ImageInfo *image_info)
       AllocateMemory(image->packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
+    SetImage(image,&image->background_color);
     /*
       Convert SGI raster image to runlength-encoded packets.
     */
@@ -12954,7 +12956,7 @@ Image *ReadSTEGANOImage(const ImageInfo *image_info)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",
       stegano_image);
   image=cloned_image;
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   image->class=PseudoClass;
   image->colors=1 << QuantumDepth;
   image->colormap=(ColorPacket *)
@@ -13506,7 +13508,7 @@ Image *ReadTGAImage(const ImageInfo *image_info)
       AllocateMemory(image->packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
+    SetImage(image,&image->background_color);
     if (tga_header.id_length != 0)
       {
         /*
@@ -15126,7 +15128,7 @@ Image *ReadTXTImage(const ImageInfo *image_info)
   image->background_color.red=XDownScale(color.red);
   image->background_color.green=XDownScale(color.green);
   image->background_color.blue=XDownScale(color.blue);
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   if (image_info->texture != (char *) NULL)
     TextureImage(image,image_info->texture);
   /*
@@ -15322,7 +15324,7 @@ Image *ReadUYVYImage(const ImageInfo *image_info)
   if ((uyvy_pixels == (unsigned char *) NULL) ||
       (image->pixels == (RunlengthPacket *) NULL))
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   (void) ReadData((char *) uyvy_pixels,1,2*image->packets,image->file);
   /*
     Accumulate UYVY, then unpack into two pixels.
@@ -15549,7 +15551,7 @@ Image *ReadVICARImage(const ImageInfo *image_info)
   if ((image->pixels == (RunlengthPacket *) NULL) ||
       (vicar_pixels == (unsigned char *) NULL))
     PrematureExit(CorruptImageWarning,"Unable to read image data",image);
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   /*
     Convert VICAR pixels to runlength-encoded packets.
   */
@@ -15668,7 +15670,6 @@ Image *ReadVIDImage(const ImageInfo *image_info)
   /*
     Read each image and convert them to a tile.
   */
-  GetMontageInfo(&montage_info);
   image=(Image *) NULL;
   local_info=(*image_info);
   commands[0]=SetClientName((char *) NULL);
@@ -15710,7 +15711,10 @@ Image *ReadVIDImage(const ImageInfo *image_info)
   /*
     Create the visual image directory.
   */
+  GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image_info->filename);
+  montage_info.font=image_info->font;
+  montage_info.pointsize=image_info->pointsize;
   montage_image=MontageImages(image,&montage_info);
   if (montage_image == (Image *) NULL)
     {
@@ -16228,7 +16232,7 @@ Image *ReadVIFFImage(const ImageInfo *image_info)
       AllocateMemory(image->packets*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
+    SetImage(image,&image->background_color);
     /*
       Convert VIFF raster image to runlength-encoded packets.
     */
@@ -17047,7 +17051,7 @@ Image *ReadXPMImage(const ImageInfo *image_info)
       FreeMemory((char *) textlist);
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
     }
-  BlackImage(image);
+  SetImage(image,&image->background_color);
   j=0;
   key[width]='\0';
   r=image->pixels;
@@ -17587,7 +17591,7 @@ Image *ReadYUVImage(const ImageInfo *image_info)
       AllocateMemory((image->packets << 2)*sizeof(RunlengthPacket));
     if (image->pixels == (RunlengthPacket *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
+    SetImage(image,&image->background_color);
     /*
       Convert raster image to runlength-encoded packets.
     */

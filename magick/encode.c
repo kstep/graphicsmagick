@@ -8162,6 +8162,13 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
   }
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image->filename);
+  montage_info.geometry=DefaultPreviewGeometry;
+  montage_info.tile=DefaultPreviewPageGeometry;
+  montage_info.font=image_info->font;
+  montage_info.pointsize=image_info->pointsize;
+  montage_info.frame=DefaultTileFrame;
+  montage_info.shadow=True;
+  montage_info.texture="Granite:";
   montage_image=MontageImages(*images,&montage_info);
   for (i=0;  i < i; i++)
     DestroyImage(images[i]);
