@@ -922,8 +922,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        FormatString(buffer,"%lu\n",
-          image->depth > 8 ? (long) MaxRGB : ScaleQuantum(MaxRGB));
+        FormatString(buffer,"%lu\n",(unsigned long)
+          (image->depth > 8 ? MaxRGB : ScaleQuantum(MaxRGB)));
         (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -958,8 +958,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        FormatString(buffer,"%lu\n",
-          image->depth > 8 ? (long) MaxRGB : ScaleQuantum(MaxRGB));
+        FormatString(buffer,"%lu\n",(unsigned long)
+          (image->depth > 8 ? MaxRGB : ScaleQuantum(MaxRGB)));
         (void) WriteBlobString(image,buffer);
         i=0;
         for (y=0; y < (long) image->rows; y++)
@@ -969,10 +969,10 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            FormatString(buffer," %lu %lu %lu",
-              image->depth > 8 ? (long) p->red : ScaleQuantum(p->red),
-              image->depth > 8 ? (long) p->green : ScaleQuantum(p->green),
-              image->depth > 8 ? (long) p->blue : ScaleQuantum(p->blue));
+            FormatString(buffer," %lu %lu %lu", (unsigned long) (image->depth >
+              8 ? p->red : ScaleQuantum(p->red)),(unsigned long) (image->depth >
+              8 ? p->green : ScaleQuantum(p->green)),(unsigned long)
+              (image->depth > 8 ?  p->blue : ScaleQuantum(p->blue)));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 4)
