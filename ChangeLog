@@ -1,3 +1,10 @@
+2003-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wpg.c: Applied patch from Fojtik Jaroslav to use the
+	GetMagicInfo() function to obtain the format of embedded images,
+	and to provide a default WPG palette if the WPG file does not
+	supply a palette.
+
 2003-08-22  William Radcliffe  <billr@corbis.com>
 	* magick\gm_messages.bin locale_c.h transform.c: Fixed missing
 	message problem and added support for new lcms error handler.

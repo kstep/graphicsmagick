@@ -218,9 +218,9 @@ label_la_LDFLAGS    = $(MODULECOMMONFLAGS)
 label_la_LIBADD     = $(LIBMAGICK)
 
 # LOCALE module
-locale_la_SOURCES     = locale.c
-locale_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-locale_la_LIBADD      = $(LIBMAGICK)
+locale_la_SOURCES   = locale.c
+locale_la_LDFLAGS   = $(MODULECOMMONFLAGS)
+locale_la_LIBADD    = $(LIBMAGICK)
 
 # LOGO module
 logo_la_SOURCES     = logo.c

@@ -40,10 +40,153 @@
 #include "magick/cache.h"
 #include "magick/color.h"
 #include "magick/constitute.h"
+#include "magick/magic.h"
 #include "magick/magick.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 
+
+typedef struct
+   {
+   unsigned char Red;
+   unsigned char Blue;
+   unsigned char Green;
+   } RGB_Record;
+
+/* Default palette for WPG level 1 */
+const RGB_Record WPG1_Palette[256]={
+{  0,  0,  0},		{  0,  0,168},
+{  0,168,  0},		{  0,168,168},
+{168,  0,  0},		{168,  0,168},
+{168, 84,  0},		{168,168,168},
+{ 84, 84, 84},		{ 84, 84,252},
+{ 84,252, 84},		{ 84,252,252},
+{252, 84, 84},		{252, 84,252},
+{252,252, 84},		{252,252,252},  /*16*/
+{  0,  0,  0},		{ 20, 20, 20},
+{ 32, 32, 32},		{ 44, 44, 44},
+{ 56, 56, 56},		{ 68, 68, 68},
+{ 80, 80, 80},		{ 96, 96, 96},
+{112,112,112},		{128,128,128},
+{144,144,144},		{160,160,160},
+{180,180,180},		{200,200,200},
+{224,224,224},		{252,252,252},  /*32*/
+{  0,  0,252},		{ 64,  0,252},
+{124,  0,252},		{188,  0,252},
+{252,  0,252},		{252,  0,188},
+{252,  0,124},		{252,  0, 64},
+{252,  0,  0},		{252, 64,  0},
+{252,124,  0},		{252,188,  0},
+{252,252,  0},		{188,252,  0},
+{124,252,  0},		{ 64,252,  0},	/*48*/
+{  0,252,  0},		{  0,252, 64},
+{  0,252,124},		{  0,252,188},
+{  0,252,252},		{  0,188,252},
+{  0,124,252},		{  0, 64,252},
+{124,124,252},		{156,124,252},
+{188,124,252},		{220,124,252},
+{252,124,252},		{252,124,220},
+{252,124,188},		{252,124,156},	/*64*/
+{252,124,124},		{252,156,124},
+{252,188,124},		{252,220,124},
+{252,252,124},		{220,252,124},
+{188,252,124},		{156,252,124},
+{124,252,124},		{124,252,156},
+{124,252,188},		{124,252,220},
+{124,252,252},		{124,220,252},
+{124,188,252},		{124,156,252},	/*80*/
+{180,180,252},		{196,180,252},
+{216,180,252},		{232,180,252},
+{252,180,252},		{252,180,232},
+{252,180,216},		{252,180,196},
+{252,180,180},		{252,196,180},
+{252,216,180},		{252,232,180},
+{252,252,180},		{232,252,180},
+{216,252,180},		{196,252,180},	/*96*/
+{180,220,180},		{180,252,196},
+{180,252,216},		{180,252,232},
+{180,252,252},		{180,232,252},
+{180,216,252},		{180,196,252},
+{0,0,112},		{28,0,112},
+{56,0,112},		{84,0,112},
+{112,0,112},		{112,0,84},
+{112,0,56},		{112,0,28},	/*112*/
+{112,0,0},		{112,28,0},
+{112,56,0},		{112,84,0},
+{112,112,0},		{84,112,0},
+{56,112,0},		{28,112,0},
+{0,112,0},		{0,112,28},
+{0,112,56},		{0,112,84},
+{0,112,112},		{0,84,112},
+{0,56,112},		{0,28,112}, 	/*128*/
+{56,56,112},		{68,56,112},
+{84,56,112},		{96,56,112},
+{112,56,112},		{112,56,96},
+{112,56,84},		{112,56,68},
+{112,56,56},		{112,68,56},
+{112,84,56},		{112,96,56},
+{112,112,56},		{96,112,56},
+{84,112,56},		{68,112,56},	/*144*/
+{56,112,56},		{56,112,69},
+{56,112,84},		{56,112,96},
+{56,112,112},		{56,96,112},
+{56,84,112},		{56,68,112},
+{80,80,112},		{88,80,112},
+{96,80,112},		{104,80,112},
+{112,80,112},		{112,80,104},
+{112,80,96},		{112,80,88},	/*160*/
+{112,80,80},		{112,88,80},
+{112,96,80},		{112,104,80},
+{112,112,80},		{104,112,80},
+{96,112,80},		{88,112,80},
+{80,112,80},		{80,112,88},
+{80,112,96},		{80,112,104},
+{80,112,112},		{80,114,112},
+{80,96,112},		{80,88,112},	/*176*/
+{0,0,64},		{16,0,64},
+{32,0,64},		{48,0,64},
+{64,0,64},		{64,0,48},
+{64,0,32},		{64,0,16},
+{64,0,0},		{64,16,0},
+{64,32,0},		{64,48,0},
+{64,64,0},		{48,64,0},
+{32,64,0},		{16,64,0},	/*192*/
+{0,64,0},		{0,64,16},
+{0,64,32},		{0,64,48},
+{0,64,64},		{0,48,64},
+{0,32,64},		{0,16,64},
+{32,32,64},		{40,32,64},
+{48,32,64},		{56,32,64},
+{64,32,64},		{64,32,56},
+{64,32,48},		{64,32,40},	/*208*/
+{64,32,32},		{64,40,32},
+{64,48,32},		{64,56,32},
+{64,64,32},		{56,64,32},
+{48,64,32},		{40,64,32},
+{32,64,32},		{32,64,40},
+{32,64,48},		{32,64,56},
+{32,64,64},		{32,56,64},
+{32,48,64},		{32,40,64},	/*224*/
+{44,44,64},		{48,44,64},
+{52,44,64},		{60,44,64},
+{64,44,64},		{64,44,60},
+{64,44,52},		{64,44,48},
+{64,44,44},		{64,48,44},
+{64,52,44},		{64,60,44},
+{64,64,44},		{60,64,44},
+{52,64,44},		{48,64,44},	/*240*/
+{44,64,44},		{44,64,48},
+{44,64,52},		{44,64,60},
+{44,64,64},		{44,60,64},
+{44,55,64},		{44,48,64},
+{0,0,0},		{0,0,0},
+{0,0,0},		{0,0,0},
+{0,0,0},		{0,0,0},
+{0,0,0},		{0,0,0}		/*256*/
+};
+
+
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -493,11 +636,16 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   ImageInfo
     *clone_info;
+    
+  const MagicInfo
+    *magic_info;    
 
   Image
     *image2;
     
-  char c,*FileFormat;    
+  unsigned char
+    magick[2*MaxTextExtent];    
+    
 
   if ((clone_info=CloneImageInfo(image_info)) == NULL)
     return(image);
@@ -511,28 +659,27 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   /* Copy postscript to temporary file */
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
-  c=ReadBlobByte(image);
-  fputc(c,ps_file);
-  while(--PS_Size > 0)
+  ReadBlob(image, 2*MaxTextExtent, magick);
+  
+  (void) SeekBlob(image,PS_Offset,SEEK_SET);
+  while(PS_Size-- > 0)
     {
       (void) fputc(ReadBlobByte(image),ps_file);
     }
   (void) fclose(ps_file);
   
-    /* Detect file format - brrrr this is ugly, why graphic magick cannot do this??? */
-  switch(c)
-    {
-    case 1:
-    case 215:FileFormat="WMF";
-	     break;
-    case '%':	     
-    case 4:
-    case 197:
-    default:FileFormat="PS";
-    }
+    /* Detect file format - Check magic.mgk configuration file. */
+  magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
+  if(magic_info == (const MagicInfo *) NULL) goto FINISH_UNL;
+/*     printf("Detected:%s  \n",magic_info->name); /**/
+  if(exception->severity != UndefinedException) goto FINISH_UNL;     
+  if(magic_info->name == (char *) NULL) goto FINISH_UNL;
+    
+  (void) strncpy(clone_info->magick,magic_info->name,MaxTextExtent-1);
   
     /* Read nested image */
-  FormatString(clone_info->filename,"%s:%.1024s",FileFormat,postscript_file);
+  /*FormatString(clone_info->filename,"%s:%.1024s",magic_info->name,postscript_file);*/
+  FormatString(clone_info->filename,"%.1024s",postscript_file);
   image2=ReadImage(clone_info,exception);
 
   if (!image2)
@@ -826,7 +973,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               image->rows=BitmapHeader2.Heigth;
               bpp=BitmapHeader2.Depth;
 
-            UnpackRaster:
+            UnpackRaster:	    
               if ((image->colors == 0) && (bpp != 24))
                 {
                   image->colors=1 << bpp;
@@ -835,14 +982,22 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     NoMemory:
                       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                            image)
-                        }
+                    }
+                  /* printf("Load default colormap \n"); */
+                  for(i=0;i<image->colors && i<256;i++)
+                    {               
+                      image->colormap[i].red=ScaleCharToQuantum(WPG1_Palette[i].Red);
+                      image->colormap[i].green=ScaleCharToQuantum(WPG1_Palette[i].Green);
+                      image->colormap[i].blue=ScaleCharToQuantum(WPG1_Palette[i].Blue);
+                    }
                 }
-              else {
-                if(bpp < 24)
-                  if( (image->colors < (1UL<<bpp)) && (bpp != 24) )
-                    MagickReallocMemory(image->colormap,
-                                        (1<<bpp)*sizeof(PixelPacket));
-              }
+              else
+                {
+                  if(bpp < 24)
+                    if( (image->colors < (1UL<<bpp)) && (bpp != 24) )
+                      MagickReallocMemory(image->colormap,
+                                          (1<<bpp)*sizeof(PixelPacket));
+                }
           
               if(bpp == 1)
                 {
