@@ -944,7 +944,7 @@ int main(int argc,char **argv)
   for (i=0; i < (long) Max(snapshots,1); i++)
   {
     next_image=XImportImage(image_info,&ximage_info);
-    statu&=next_image != (Image *) NULL;
+    status&=next_image != (Image *) NULL;
     if (next_image == (Image *) NULL)
       continue;
     (void) strncpy(next_image->filename,filename,MaxTextExtent-1);
