@@ -812,14 +812,12 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       if ((image->storage_class == DirectClass) ||
           !IsMonochromeImage(image,&image->exception))
         SetImageType(image,BilevelType);
-    if (LocaleCompare(magick,"PGM") == 0)
-      if (!IsGrayImage(image,&image->exception))
-        SetImageType(image,GrayscaleType);
     /*
       Write PNM file header.
     */
-    if ((image->storage_class == DirectClass) ||
-        (LocaleCompare(magick,"PPM") == 0))
+    if (((image->storage_class == DirectClass) ||
+         (LocaleCompare(magick,"PPM") == 0)) &&
+         (LocaleCompare(magick,"PGM") != 0))
       {
         /*
           Full color PNM image.
