@@ -185,11 +185,11 @@ EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = magick.h api.h classify.h image.h quantize.h gems.h 	blob.h compress.h utility.h cache.h monitor.h error.h memory.h 	delegates.h timer.h version.h xwindows.h config.h
+include_HEADERS = magick.h api.h classify.h image.h quantize.h gems.h 	blob.h compress.h utility.h cache.h cache_io.h monitor.h error.h 	memory.h delegates.h timer.h version.h xwindows.h config.h
 
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h cache_io.h defines.h display.h mac.h mng.h nt.h 	PreRvIcccm.h vms.h widget.h 
+noinst_HEADERS = animate.h defines.h display.h mac.h mng.h nt.h 	PreRvIcccm.h vms.h widget.h 
 
 
 # Additional files to distribute

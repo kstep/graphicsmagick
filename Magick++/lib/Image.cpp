@@ -92,7 +92,6 @@ Magick::Image::Image( const Geometry &size_,
 
 // Construct Image from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_ )
-  : _imgRef(new ImageRef)
 {
   // Ensure that error collection object is instantiated
   LastError::instance();
@@ -103,7 +102,6 @@ Magick::Image::Image ( const Blob &blob_ )
 
 // Construct Image of specified size from in-memory BLOB
 Magick::Image::Image ( const Geometry &size_, const Blob &blob_ )
-  : _imgRef(new ImageRef)
 {
   // Ensure that error collection object is instantiated
   LastError::instance();
@@ -121,7 +119,6 @@ Magick::Image::Image( void )
 }
 
 // Destructor
-/* virtual */
 Magick::Image::~Image()
 {
   if ( --_imgRef->_refCount == 0 )

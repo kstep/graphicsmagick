@@ -101,7 +101,7 @@
 /* Define if you have X11 library */
 #undef HasX11
 
-/* Include patented LZW compression */
+/* Include LZW compression */
 #undef HasLZW
 
 /* X11 server supports shape extension */

@@ -220,7 +220,7 @@ int main ( int argc, char **argv )
     fuzz_factor = 1;
 
   if ( !strcmp( "YUV", format ) )
-    fuzz_factor = 2;
+    fuzz_factor = 1;
 
   if ( CompareImage( fuzz_factor, original, final ) )
     {

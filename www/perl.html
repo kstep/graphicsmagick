@@ -19,10 +19,10 @@
   <link rev="made" href="mailto:magick@wizards.dupont.com">
 </head>
 <body text="#000000" link="#0062CE" vlink="#6C9EFF" alink="#FF0000"
-  background="../images/background.gif">
+  background="../images/background.png">
 
 <center>
-  <img SRC="../images/perl.gif" ALT="Perl Magick" height=57 width=355>
+  <img SRC="../images/perl.png" ALT="Perl Magick" height=57 width=355>
 </center>
 
 <p>
@@ -30,7 +30,7 @@
 <a NAME="contents"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Contents</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Contents</font></font></font></b></td>
 </tr>
 </table>
 
@@ -79,7 +79,7 @@
 <dl><a NAME="intr"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Introduction</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Introduction</font></font></font></b></td>
 </tr>
 </table>
 <p>
@@ -118,7 +118,7 @@ see <a href="http://starship.skyport.net/crew/zack/pymagick/">PythonMagick</a>.<
 <dl><a NAME="inst"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Installation</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Installation</font></font></font></b></td>
 </tr>
 </table>
 <p>
@@ -170,7 +170,7 @@ your Perl scripts.</dl>
 <dl><a NAME="over"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Overview</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Overview</font></font></font></b></td>
 </tr>
 </table>
 <p>
@@ -225,7 +225,7 @@ variable to work properly. For example,
 <dl><a NAME="exam"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Example
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Example
 Script</font></font></font></b></td>
 </tr>
 </table>
@@ -239,13 +239,13 @@ Here is an example script to get you started:</dd>
 &nbsp;&nbsp;&nbsp; my($image, $x);
 
 &nbsp;&nbsp;&nbsp; $image = Image::Magick-&gt;new;
-&nbsp;&nbsp;&nbsp; $x = $image-&gt;Read('girl.gif', 'logo.gif', 'rose.gif');
+&nbsp;&nbsp;&nbsp; $x = $image-&gt;Read('girl.png', 'logo.png', 'rose.png');
 &nbsp;&nbsp;&nbsp; warn "$x" if "$x";
 
 &nbsp;&nbsp;&nbsp; $x = $image-&gt;Crop(geometry=&gt;'100x100"+1"00"+1"00');
 &nbsp;&nbsp;&nbsp; warn "$x" if "$x";
 
-&nbsp;&nbsp;&nbsp; $x = $image-&gt;Write('x.gif');
+&nbsp;&nbsp;&nbsp; $x = $image-&gt;Write('x.png');
 &nbsp;&nbsp;&nbsp; warn "$x" if "$x";</pre>
 The script reads three images, crops them, and writes a single image as
 a GIF animation sequence. In many cases you may want to access individual
@@ -256,7 +256,7 @@ images of a sequence. The next example illustrates how this is done:
 &nbsp;&nbsp;&nbsp; my($image, $p, $q);
 
 &nbsp;&nbsp;&nbsp; $image = new Image::Magick;
-&nbsp;&nbsp;&nbsp; $image-&gt;Read('x1.gif');
+&nbsp;&nbsp;&nbsp; $image-&gt;Read('x1.png');
 &nbsp;&nbsp;&nbsp; $image-&gt;Read('j*.jpg');
 &nbsp;&nbsp;&nbsp; $image-&gt;Read('k.miff[1, 5, 3]');
 &nbsp;&nbsp;&nbsp; $image-&gt;Contrast;
@@ -292,7 +292,7 @@ Other clever things you can do with <b>PerlMagick</b> objects include
 <dl><a NAME="read"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Read
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Read
 or Write an Image</font></font></font></b></td>
 </tr>
 </table>
@@ -364,10 +364,10 @@ For example,
 Use <tt>-</tt> as the filename to method <tt>Read</tt> to read from standard
 in or to method <tt>Write</tt> to write to standard out:
 <pre>&nbsp;&nbsp;&nbsp; binmode STDOUT;
-&nbsp;&nbsp;&nbsp; $image-&gt;Write('gif:-');</pre>
+&nbsp;&nbsp;&nbsp; $image-&gt;Write(.png:-');</pre>
 To read an image in the GIF format from a PERL filehandle, use:
 <pre>&nbsp;&nbsp;&nbsp; $image = Image::Magick-&gt;new(magick=&gt;'GIF');
-&nbsp;&nbsp;&nbsp; open(DATA, 'image.gif');
+&nbsp;&nbsp;&nbsp; open(DATA, 'image.png');
 &nbsp;&nbsp;&nbsp; $image-&gt;Read(file=&gt;DATA);
 &nbsp;&nbsp;&nbsp; close(DATA);</pre>
 To write an image in the PNG format to a PERL filehandle, use:
@@ -383,7 +383,7 @@ You can optionally add <tt>Image</tt> to any method name. For example,
 <dl><a NAME="mani"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Manipulate
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Manipulate
 an Image</font></font></font></b></td>
 </tr>
 </table>
@@ -1005,7 +1005,7 @@ See the documentation for a more detailed description of these attributes.</dl>
 <dl><a NAME="seta"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Set
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Set
 an Image Attribute</font></font></font></b></td>
 </tr>
 </table>
@@ -1414,7 +1414,7 @@ See the documentation for a more detailed description of these attributes.</dl>
 <dl><a NAME="geta"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Get
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Get
 an Image Attribute</font></font></font></b></td>
 </tr>
 </table>
@@ -1668,7 +1668,7 @@ See the documentation for a more detailed description of these attributes.</dl>
 <dl><a NAME="mont"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Create
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Create
 an Image Montage</font></font></font></b></td>
 </tr>
 </table>
@@ -1845,7 +1845,7 @@ See the documentation for a more detailed description of these attributes.</dl>
 <dl><a NAME="misc"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Miscellaneous
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Miscellaneous
 Methods</font></font></font></b></td>
 </tr>
 </table>
@@ -1906,7 +1906,7 @@ use cloning to prevent an infinite loop:
 &nbsp;&nbsp;&nbsp; push(@$images, $clone);&nbsp; # same image but different object</pre>
 <tt>Ping</tt> accepts one or more image file names and returns their respective
 width, height, size in bytes, and format (e.g. GIF, JPEG, etc.). For example,
-<pre>&nbsp;&nbsp;&nbsp; ($width, $height, $size, $format) = split(',', $image-&gt;Ping('logo.gif'));</pre>
+<pre>&nbsp;&nbsp;&nbsp; ($width, $height, $size, $format) = split(',', $image-&gt;Ping('logo.png'));</pre>
 This is a more efficient and less memory intensive way to query if an image
 exists and what its characteristics are. Note, only information about the
 first image in a multi-frame image file is returned.
@@ -1928,7 +1928,7 @@ and blue color values:
 <dl><a NAME="erro"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Handling
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Handling
 Errors</font></font></font></b></td>
 </tr>
 </table>
@@ -2140,7 +2140,7 @@ is missing</td>
 </table>
 
 <p>The following illustrates how you can use a numeric status code:
-<pre>&nbsp;&nbsp;&nbsp; $x = $image-&gt;Read('rose.gif');
+<pre>&nbsp;&nbsp;&nbsp; $x = $image-&gt;Read('rose.png');
 &nbsp;&nbsp;&nbsp; $x =~ /(\d+)/;
 &nbsp;&nbsp;&nbsp; die "unable to continue" if ($1 == ResourceLimitError);</pre>
 </dl>
@@ -2150,7 +2150,7 @@ is missing</td>
 <dl><a NAME="blobs"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Working
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Working
 with Blobs</font></font></font></b></td>
 </tr>
 </table>
@@ -2216,7 +2216,7 @@ from the supplied blob:
 <dl><a NAME="copy"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Copyright</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Copyright</font></font></font></b></td>
 </tr>
 </table>
 <p>
@@ -2256,7 +2256,7 @@ from the E. I. du Pont de Nemours and Company.</b></dd>
 </dl>
 <a href="#contents">Back to Contents</a>
 <hr>
-<dl><a href="../ImageMagick.html"><img SRC="../images/home.gif" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>  Image
+<dl><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>  Image
 manipulation software that works like magic.</font></dl>
 
 </body>

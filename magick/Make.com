@@ -24,6 +24,7 @@ $call Make annotate.c
 $call Make avs.c
 $call Make blob.c
 $call Make bmp.c
+$call Make cache.c
 $call Make cmyk.c
 $call Make colors.c
 $call Make compress.c
@@ -96,6 +97,7 @@ $call Make tga.c
 $call Make tiff.c
 $call Make tile.c
 $call Make tim.c
+$call Make timer.c
 $call Make transform.c
 $call Make ttf.c
 $call Make txt.c
@@ -115,8 +117,9 @@ $call Make xwd.c
 $call Make xwindows.c
 $call Make yuv.c
 $call Make zoom.c
+$call Make 8bim.c
 $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
-  avs.obj,blob.obj,bmp.obj,cmyk.obj,colors.obj,compress.obj,dcm.obj, -
+  avs.obj,blob.obj,bmp.obj,cache.obj,cmyk.obj,colors.obj,compress.obj,dcm.obj, -
   decorate.obj,delegates.obj,display.obj,dps.obj,draw.obj, -
   effects.obj,enhance.obj,ept.obj,error.obj,fax.obj,fits.obj, -
   fpx.obj,gems.obj,gif.obj,gradation.obj,gray.obj,hdf.obj, -
@@ -128,9 +131,9 @@ $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
   preview.obj,ps.obj,ps2.obj,ps3.obj,psd.obj,pwp.obj,quantize.obj, -
   rgb.obj,rla.obj,rle.obj,segment.obj,sct.obj,sfw.obj,sgi.obj,shear.obj, -
   signature.obj,stegano.obj,sun.obj,tga.obj,tiff.obj,tile.obj, -
-  tim.obj,transform.obj,ttf.obj,txt.obj,uil.obj,utility.obj, -
+  tim.obj,timer.obj,transform.obj,ttf.obj,txt.obj,uil.obj,utility.obj, -
   uyvy.obj,vicar.obj,vid.obj,viff.obj,vms.obj,widget.obj,x.obj, -
-  xbm.obj,xc.obj,xpm.obj,xwd.obj,xwindows.obj,yuv.obj,zoom.obj
+  xbm.obj,xc.obj,xpm.obj,xwd.obj,xwindows.obj,yuv.obj,zoom.obj,8bim.obj
 $exit
 $
 $Make: subroutine
@@ -154,8 +157,7 @@ $  if (object_file .eqs. "")
 $  then
 $    write sys$output "Compiling ",p1
 $    cc'compile_options'/include_directory=([-],[-.jpeg],[-.png], -
-       [-.tiff],[-.ttf],[-.zlib])/define=("HasX11","HasJPEG","HasLZW", -
-       "HasPNG","HasTIFF","HasTTF","HasZLIB") 'source_file'  
+       [-.tiff],[-.ttf],[-.zlib]) 'source_file'  
 $  endif
 $endif
 $exit

@@ -27,7 +27,7 @@ $smile->Set(bordercolor=>'black');
 # Create image stack.
 #
 print "Transform image...\n";
-$images=Image::Magick->new;
+$images=Image::Magick->new();
 $example=$null->Clone();
 push(@$images,$example);
 $example=$null->Clone();
@@ -58,6 +58,10 @@ push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Composite');
 $example->Composite(image=>$smile,compose=>'over',geometry=>'+35+65');
+push(@$images,$example);
+$example=$model->Clone();
+$example->Label('Contrast');
+$example->Contrast();
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Crop');
@@ -210,7 +214,7 @@ $title->Composite(image=>$background,compose=>'Add');
 # Create image montage.
 #
 print "Montage image...\n";
-$montage=$images->montage(filename=>'PerlMagick',geometry=>'130x194+10+5>',
+$montage=$images->Montage(filename=>'PerlMagick',geometry=>'130x194+10+5>',
   gravity=>'Center',bordercolor=>'green',borderwidth=>1,tile=>'5x1000',
   compose=>'over',texture=>'granite:',font=>'@Generic.ttf',pen=>'#600');
 $montage->Composite(image=>$title,geometry=>'+90+50',compose=>'Over');

@@ -8,9 +8,6 @@ This file records noteworthy changes.
   * The condense, uncondense, and condensed methods have been removed
     since ImageMagick 5.0 no longer uses run-length encoding.
 
-(0.8.8)
-  * Fixed a Image constructor bug when constructing from a Blob
-
 (0.8.7)
   * Bugfix: condensed() was returning wrong state.
 

@@ -1,14 +1,3 @@
-1999-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
-	* lib/Blob.cpp (BlobRef): Bugfix -- start blob reference count at
- 	one rather than zero.
-
-1999-10-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
-	* lib/Image.cpp (Image): Fixed Image constructors from Blob.  The
- 	image reference was not being instantiated as it should have been,
- 	causing a crash.
-
 1999-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Blob.cpp: All blob length parameters are now of type size_t.

@@ -333,10 +333,6 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       TT_UShort
         code;
 
-      unsigned int
-        height,
-        width;
-
       unsigned short
         encoding,
         platform,
@@ -483,20 +479,19 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       }
       TT_Get_Face_Properties(face,&face_properties);
       TT_Get_Instance_Metrics(instance,&instance_metrics);
-      width=ceil(local_info->pointsize/2);
-      height=((int) (face_properties.horizontal->Ascender*
-        instance_metrics.y_ppem)/(int) face_properties.header->Units_Per_EM)-
-        ((int) (face_properties.horizontal->Descender*instance_metrics.y_ppem)/
-        (int) face_properties.header->Units_Per_EM)+1;
+      canvas.width=0;
       for (i=0; i < length; i++)
       {
         if (glyphs[unicode[i]].z == (TT_Glyph *) NULL)
           continue;
         TT_Get_Glyph_Metrics(glyphs[unicode[i]],&glyph_metrics);
-        width+=glyph_metrics.advance/64;
+        canvas.width+=glyph_metrics.advance/64;
       }
-      canvas.rows=height;
-      canvas.width=(width+3) & -4;
+      canvas.width=(canvas.width+3) & -4;
+      canvas.rows=((int) (face_properties.horizontal->Ascender*
+        instance_metrics.y_ppem)/(int) face_properties.header->Units_Per_EM)-
+        ((int) (face_properties.horizontal->Descender*instance_metrics.y_ppem)/
+        (int) face_properties.header->Units_Per_EM);
       canvas.flow=TT_Flow_Down;
       canvas.cols=canvas.width;
       canvas.size=canvas.rows*canvas.width;
@@ -506,7 +501,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       p=(unsigned char *) canvas.bitmap;
       for (i=0; i < canvas.size; i++)
         *p++=0;
-      character.rows=height;
+      character.rows=canvas.rows;
       character.width=(instance_metrics.x_ppem+32+3) & -4;
       character.flow=TT_Flow_Down;
       character.cols=character.width;
