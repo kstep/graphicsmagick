@@ -764,7 +764,7 @@ Export void SetCacheClassType(CacheHandle cache_handle,ClassType type)
 */
 Export void SetCacheThreshold(off_t threshold)
 {
-  (void) GetCacheMemory(-cache_threshold-threshold*1024*1024);
+  (void) GetCacheMemory(1024*1024*(-cache_threshold-threshold));
   cache_threshold=threshold;
 }
 
