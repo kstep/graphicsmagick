@@ -1708,7 +1708,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 break;
               }
             (void) QueryColorDatabase(token,&graphic_context[n]->box);
-            if (graphic_context[n]->box.opacity == OpaqueOpacity)
+            if (graphic_context[n]->box.opacity == TransparentOpacity)
               {
                 graphic_context[n]->decorate=NoDecoration;
                 break;
