@@ -51,7 +51,7 @@ extern "C" {
 #if defined(HasPTHREADS)
 #  include <pthread.h>
 #endif
-#if defined(sysv)
+#if defined(HAVE_POLL)
 #  include <sys/poll.h>
 #endif
 #else
