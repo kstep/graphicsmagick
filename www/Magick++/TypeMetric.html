@@ -1,0 +1,154 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Bob Friesenhahn">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="Description" content="Class to access raw image pixels.">
+   <meta name="Keywords" content="ImageMagick,Pixel,Magick++">
+   <title>Magick::TypeMetric Class</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#FF0000" alink="#000088">
+
+<center>
+<h3>
+Magick::TypeMetric</h3></center>
+The <i>TypeMetric</i> class provides the means to pass data from the Image
+classes TypeMetric method to the user. It provides information regarding
+font metrics. The <i>characterWidth</i> and <i>characterHeight</i> values
+are expressed in units of a pixel, while the <i>ascent</i>, <i>decent</i>,
+<i>textWidth</i>, <i>textHeight</i>, and <i>maxHorizontalAdvance</i> values
+are expressed in units of 1/64th of a pixel (FreeType 2.0 "26.6 format").&nbsp;
+See <a href="http://freetype.sourceforge.net/freetype2/docs/glyphs/index.html">FreeType
+Glyph Conventions</a> for a detailed description of glyph conventions.
+<p>The methods available in the <i>TypeMetric</i> class are shown in the
+following table:
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption><b>TypeMetric Methods</b></caption>
+
+<tr>
+<td>
+<center><b>Method</b></center>
+</td>
+
+<td>
+<center><b>Returns</b></center>
+</td>
+
+<td><b>Units</b></td>
+
+<td>
+<center><b>Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="characterWidth"></a><font size=-1>characterWidth</font></center>
+</td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>pixels</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Returns the character width</font></td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<center><a NAME="characterHeight"></a><font size=-1>characterHeight</font></center>
+</td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>pixels</font></td>
+
+<td NOSAVE><font size=-1>void</font></td>
+
+<td><font size=-1>Returns the character height</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="ascent"></a><font size=-1>ascent</font></center>
+</td>
+
+<td><font size=-1>int</font></td>
+
+<td><font size=-1>64ths of a pixel</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Returns the distance from the baseline to the highest/upper
+grid coordinate used to place an outline point. Always a positive value.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="decent"></a><font size=-1>decent</font></center>
+</td>
+
+<td><font size=-1>int</font></td>
+
+<td><font size=-1>64ths of a pixel</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Returns the distance from the baseline to the lowest
+grid coordinate used to place an outline point. Always a negative value.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="textWidth"></a><font size=-1>textWidth</font></center>
+</td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>64ths of a pixel</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Returns text width</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="textHeight"></a><font size=-1>textHeight</font></center>
+</td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>64ths of a pixel</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Returns text height</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="maxHorizontalAdvance"></a><font size=-1>maxHorizontalAdvance</font></center>
+</td>
+
+<td><font size=-1>unsigned int</font></td>
+
+<td><font size=-1>64ths of a pixel</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Returns the maximum horizontal advance</font></td>
+</tr>
+</table>
+
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>

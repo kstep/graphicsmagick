@@ -2067,6 +2067,23 @@ a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
 
 <tr NOSAVE>
 <td>
+<center><a NAME="fontTypeMetrics"></a><font size=-1>fontTypeMetrics</font></center>
+</td>
+
+<td><font size=-1><a href="TypeMetric.html">TypeMetric</a></font></td>
+
+<td><font size=-1>const std::string &amp;text_, <a href="TypeMetric.html">TypeMetric</a>
+*metrics</font></td>
+
+<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+
+<td><font size=-1>Update metrics with font type metrics using specified
+<i>text</i>, and current <a href="#font">font</a> and <a href="#fontPointsize">fontPointSize</a>
+settings.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td>
 <center><a NAME="format"></a><font size=-1>format</font></center>
 </td>
 
@@ -2658,8 +2675,7 @@ into the dash pattern to start the dash (default 0).</font></td>
 <td><font size=-1>Specify the pattern of dashes and gaps used to stroke
 paths. The strokeDashArray represents a zero-terminated array of numbers
 that specify the lengths (in pixels) of alternating dashes and gaps in
-user
-units. If an odd number of values is provided, then the list of values
+user units. If an odd number of values is provided, then the list of values
 is repeated to yield an even number of values.&nbsp; A typical strokeDashArray_
 array might contain the members 5 3 2 0, where the zero value indicates
 the end of the pattern array.</font></td>
