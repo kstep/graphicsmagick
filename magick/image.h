@@ -628,7 +628,7 @@ extern MagickExport Image
   *MedianFilterImage(Image *,const double,ExceptionInfo *),
   *MinifyImage(Image *,ExceptionInfo *),
   *MontageImages(Image *,const MontageInfo *,ExceptionInfo *),
-  *MorphImages(Image *,const unsigned int,ExceptionInfo *),
+  *MorphImages(Image *,const unsigned long,ExceptionInfo *),
   *MosaicImages(Image *,ExceptionInfo *),
   *MotionBlurImage(Image *,const double,const double,const double,
     ExceptionInfo *),

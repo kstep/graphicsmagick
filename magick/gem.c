@@ -788,7 +788,7 @@ MagickExport double Permutate(long n,long k)
   double
     r;
 
-  register int
+  register long
     i;
 
   r=1.0;

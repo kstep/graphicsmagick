@@ -1736,7 +1736,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
 %
 %  The format of the MorphImage method is:
 %
-%      Image *MorphImages(Image *image,const unsigned int number_frames,
+%      Image *MorphImages(Image *image,const unsigned long number_frames,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1755,7 +1755,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
 %
 %
 */
-MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
+MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
   ExceptionInfo *exception)
 {
 #define MorphImageText  "  Morph image sequence...  "

@@ -951,7 +951,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
     {
       (void) remove(filename);
       ThrowBinaryException(FileOpenWarning,"Unable to open file",
-        image_info->filename);
+        image_info->filename)
     }
   /*
     Allocate raw strip buffer.
@@ -967,7 +967,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
       TIFFClose(tiff);
       (void) remove(filename);
       ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
+        (char *) NULL)
     }
   /*
     Compress runlength encoded to 2D Huffman pixels.
@@ -1172,7 +1172,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateWarning,"LZW library is not available",
-    (char *) NULL);
+    (char *) NULL)
 }
 #endif
 

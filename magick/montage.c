@@ -310,7 +310,6 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     border_width,
     bevel_width,
     concatenate,
-    count,
     font_height,
     height,
     images_per_page,
@@ -325,6 +324,9 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     title_offset,
     total_tiles,
     width;
+
+  unsigned long
+    count;
 
   /*
     Create next tiles.
@@ -542,7 +544,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       {
         DestroyImages(montage_next);
         ThrowImageException(ResourceLimitWarning,"Unable to montage next_list",
-          "Memory allocation failed");
+          "Memory allocation failed")
       }
     x_offset=0;
     y_offset=title_offset;
