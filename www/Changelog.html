@@ -23,9 +23,12 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-01-03  Glenn Randers-Pehrson  &lt;randeg@alum.rpi.edu&gt;
+  * Fixed an out-of-bounds memset() when decoding 1-bit AVI, BMP,
+	  and DIB images.
+
 2002-01-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-	* coders/wmf.c (magick_brush): Fixed bug with setting
-	fill color.
+	* coders/wmf.c (magick_brush): Fixed bug with setting fill color.
 
 2002-01-03  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* Postscript Level II is now DCS compliant.
@@ -35,14 +38,13 @@ ImageMagick Changes</font></font></font></b></td>
 	* Added CropBox support to PDF writer
 	
 2001-12-26  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
-	* Conjure now supports having a list of files for the
-	  script to process being passed on the command line.
+	* Conjure now supports having a list of files for the script to
+  	process being passed on the command line.
 	* More features and options were added to conjure
 	
 2001-12-25  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
-	* Made a huge number of improvements to conjure.  It now
-	  supports over 15 different commands for manipulating your
-	  images.
+	* Made a huge number of improvements to conjure.  It now supports
+	  over 15 different commands for manipulating your images.
 
 2001-12-24  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* Started a new scripting language utility, conjure.
@@ -58,11 +60,11 @@ ImageMagick Changes</font></font></font></b></td>
 	* Added native BLOB support to coders/wmf.c.
 
 2001-12-13  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
-	* Added new composite operators to support PSD/XCF layer
-	  compositing:  NoCompositeOp, DarkenCompositeOp,
-	  LightenCompositeOp, HueCompositeOp, SaturateCompositeOp,
-	  ValueCompositeOp, ColorizeCompositeOp, LuminizeCompositeOp,
-	  ScreenCompositeOp, OverlayCompositeOp.
+	* Added new composite operators to support PSD/XCF
+  	layer compositing:  NoCompositeOp, DarkenCompositeOp,
+  	LightenCompositeOp, HueCompositeOp, SaturateCompositeOp,
+  	ValueCompositeOp, ColorizeCompositeOp, LuminizeCompositeOp,
+  	ScreenCompositeOp, OverlayCompositeOp.
 	* Modified the PSD coder to set the appropriate composite
 	  operator.
 	* Modified the XCF coder to set the appropriate composite
@@ -74,20 +76,20 @@ ImageMagick Changes</font></font></font></b></td>
 	  the composite operators to use when flattening an image.
 	
 2001-12-09  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
-	* Added new member to ImageInfo, flatten, used by
-	  PSD and XCF to determine whether to flatten an image when read.
+	* Added new member to ImageInfo, flatten, used by PSD and XCF
+	  to determine whether to flatten an image when read.
 	* PSD and XCF now respect image_info-&gt;flatten.
 	* Fixed bug in XCF loader when loading layered image as layers.
-	* Modified the convert program to set image_info-&gt;flatten
-	  if -flatten is specified; we still call FlattenImages for
-	  other formats that don't respect image_info-&gt;flatten.
+	* Modified the convert program to set image_info-&gt;flatten if
+	  -flatten is specified; we still call FlattenImages for other
+  	formats that don't respect image_info-&gt;flatten.
 	* Modified Magick++'s Image class to support image_info-&gt;flatten.
 
 2001-12-08  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
 	* Improvements to the Photoshop (PSD) coder:  1) added support
-	  for Duotone images loaded as grayscale as per PSD docs;  and
-	  2) added option to composite layers when reading respects layer
-	  visibility setting.
+	  for Duotone images loaded as grayscale as per PSD docs;  and 2)
+	  added option to composite layers when reading respects layer
+  	visibility setting.
 		
 2001-12-07  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* -dissolve wasn't working for the composite program (thanks to
@@ -111,13 +113,13 @@ ImageMagick Changes</font></font></font></b></td>
 	* Added API method, PingBlob().
 
 2001-11-14  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-	* Moved a few pixel related defines (e.g. Downscale()) to a
-	  corresponding method to enforce strong type checking at
-	  compile time.
+	* Moved a few pixel related defines (e.g. Downscale()) to
+	  a corresponding method to enforce strong type checking at
+  	compile time.
 
 2001-11-12  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-	* Previously ImageMagick did not write 8-bit ASCII PPM/PGM
-	  files when QuantumDepth == 16.
+	* Previously ImageMagick did not write 8-bit ASCII PPM/PGM files
+	  when QuantumDepth == 16.
 	* Added 'id' as an image attribute in PerlMagick (returns
 	  ImageMagick registry ID).
 
@@ -146,10 +148,9 @@ ImageMagick Changes</font></font></font></b></td>
 	* Added support for On-the-air bitmap.
 
 2001-09-29  Glenn  &lt;glennrp@home.kom&gt;
-        * When the delay setting for an image is greater than 4cs,
-          duplicate frames are inserted to achieve the desired delay
-          while creating MPEG files (contributed by Lawrence Livermore
-          National Laboratory (LLNL)).
+  * When the delay setting for an image is greater than 4cs, duplicate
+    frames are inserted to achieve the desired delay while creating MPEG
+    files (contributed by Lawrence Livermore National Laboratory (LLNL)).
 
 2001-10-29  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* ImageMagick now has a registry for storing image blobs.
@@ -158,10 +159,10 @@ ImageMagick Changes</font></font></font></b></td>
 	* Added VMS patches (thanks to Jouk Jansen).
 
 2001-10-25 Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-        * Fixed parsing bug for decorate #FFFFFF.
+  * Fixed parsing bug for decorate #FFFFFF.
 
 2001-10-22 Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-        * Added tests for mpeg2 library to configure.
+  * Added tests for mpeg2 library to configure.
 
 2001-10-22  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* Added a MPEG coder module.
@@ -169,22 +170,21 @@ ImageMagick Changes</font></font></font></b></td>
 	  by Glenn)
 
 2001-10-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-        * Eliminated libMagick.so dependency on libxml by not listing
-          -lxml when doing modules link.
+  * Eliminated libMagick.so dependency on libxml by not listing -lxml
+    when doing modules link.
 
 2001-10-18  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* Eliminated the libMagick.so dependancy on libtiff by moving
-	  Huffman2DEncodeImage() from magick/compress.c to coders/pdf.c,
-	  coders/ps2.c and coders/ps3.c (suggested by Bob Friesenhahn).
-          This change has the side-effect of elminating dependency
-          on libpng and libjpeg as well (which libtiff may depend on).
+  	Huffman2DEncodeImage() from magick/compress.c to coders/pdf.c,
+  	coders/ps2.c and coders/ps3.c (suggested by Bob Friesenhahn).
+  	This change has the side-effect of elminating dependency on
+  	libpng and libjpeg as well (which libtiff may depend on).
 
 2001-10-16  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* Convert now supports -channel {Cyan,Magenta,Yellow,Black}.
 
 2001-10-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-        * coders/wmf.c updated for libwmf 0.2.  Plenty of bugs
-          remain within.
+  * coders/wmf.c updated for libwmf 0.2.  Plenty of bugs remain within.
 
 2001-10-11  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* QueryFontMetrics() of PerlMagick now recognizes embedded
@@ -203,7 +203,7 @@ ImageMagick Changes</font></font></font></b></td>
 	* Added ExceptionInfo parameter to DispatchImage().
 
 2001-10-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-        * Find libxml headers under Debian Linux (bug ID 921).
+  * Find libxml headers under Debian Linux (bug ID 921).
 
 2001-10-02  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* Fixed assertion error on drawing stroked text.
@@ -214,8 +214,8 @@ ImageMagick Changes</font></font></font></b></td>
 2001-09-30  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* switched strcpy to strncpy to help protect against buffer
 	  overflow.
-	* ltdl.c passed int reference but a long was needed;
-	  caused a fault on Solaris 64-bit compiles.
+	* ltdl.c passed int reference but a long was needed; caused a
+	  fault on Solaris 64-bit compiles.
 
 2001-09-25  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* Removed most lint complaints from the source.
@@ -237,24 +237,24 @@ ImageMagick Changes</font></font></font></b></td>
 2001-09-12  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* Text drawing now handles UTF8-encoding.
 	* Off-by-one GetImagePixels() fix in draw.c
-	* PingImage() now reports attributes for all images in
-	  an image sequence.
+	* PingImage() now reports attributes for all images in an image
+	  sequence.
 
 2001-09-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 	* magick/image.h: Rename QuantumLeap define to QuantumDepth.
 	  QuantumDepth is set to the values 8 or 16, depending on user
-	  configuration option.
+  	configuration option.
 
 2001-09-09  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-	* Updated PerlMagick signatures to reflect new message
-	  digest algorithm.
+	* Updated PerlMagick signatures to reflect new message digest
+	  algorithm.
 
 2001-09-08  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-	* ImageMagick defaults to 16-bit quantum.  Set QuantumMagick for
-	  8-bit.
+	* ImageMagick defaults to 16-bit quantum.  Set QuantumMagick
+	  for 8-bit.
 	* Changed image-&gt;blob from BlobInfo to BlobInfo* so the Image
 	  structure size is not dependent on the large-file preprocessor
-	  defines.
+  	defines.
 
 2001-09-07  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* Added -background to convert program usage text.
@@ -263,7 +263,7 @@ ImageMagick Changes</font></font></font></b></td>
 2001-09-01  Glenn  &lt;glennrp@home.kom&gt;
 	* The compression quality setting is now recognized when creating
 	  MPEG images (contributed by Lawrence Livermore National Laboratory
-	  (LLNL)).
+  	(LLNL)).
 </pre>
 </dd>
 </dl>
