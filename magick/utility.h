@@ -41,6 +41,9 @@ extern MagickExport char
   **StringToList(const char *),
   *TranslateText(const ImageInfo *,const Image *,const char *);
 
+extern MagickExport double
+  StringToDouble(const char *,const double);
+
 extern MagickExport int
   GetGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
   GlobExpression(const char *,const char *),

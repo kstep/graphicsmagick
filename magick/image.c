@@ -4585,7 +4585,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleNCompare("-solarize",option,3) == 0)
           {
-            SolarizeImage(*image,atof(argv[++i]));
+            SolarizeImage(*image,StringToDouble(argv[++i],MaxRGB));
             continue;
           }
         if (LocaleNCompare("-spread",option,3) == 0)
@@ -4648,7 +4648,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Threshold image.
             */
-            threshold=atof(argv[++i]);
+            threshold=StringToDouble(argv[++i],MaxRGB);
             (void) ThresholdImage(*image,threshold);
             continue;
           }

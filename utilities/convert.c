@@ -1016,7 +1016,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing distance",option);
-                  image_info->fuzz=atof(argv[i]);
+                  image_info->fuzz=StringToDouble(argv[i],MaxRGB);
                 }
               break;
             }

@@ -2179,6 +2179,49 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  S t r i n g T o D o u b l e                                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method StringToDouble() converts a text string to a double.  If the string
+%  contains a percent sign (e.g. 50%) that percentage of the interval is
+%  returned.
+%
+%  The format of the StringToDouble method is:
+%
+%      double StringToDouble(const char *text,const double interval)
+%
+%  A description of each parameter follows:
+%
+%    o value:  Method StringToDouble returns the converted value.
+%
+%    o text:  Specifies the string to segment into a list.
+%
+%    o interval:  Specifies the interval; used for obtaining a percentage.
+%
+%
+*/
+MagickExport double *StringToDouble(const char *text,const double interval)
+{
+  char
+    *q;
+
+  double
+    value;
+
+  value=strtod(text,&q);
+  if (strchr(q,"%") != (char *) NULL)
+    value*=interval/100.0;
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  S t r i n g T o L i s t                                                    %
 %                                                                             %
 %                                                                             %
