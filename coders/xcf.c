@@ -3,19 +3,19 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                                                           %
-%                                                          %
-%                                                           %
-%                                                              %
-%                                                             %
+%                            X   X   CCCC  FFFFF                              %
+%                             X X   C      F                                  %
+%                              X    C      FFF                                %
+%                             X X   C      F                                  %
+%                            X   X   CCCC  F                                  %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                                Leonard Rosenthol                                 %
-%                                 November 2001                                   %
+%                              Leonard Rosenthol                              %
+%                               November 2001                                 %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
@@ -188,10 +188,8 @@ static unsigned int IsXCF(const unsigned char *magick,const size_t length)
 {
   if (length < 8)
     return(False);
-
   if (LocaleNCompare((char *) magick,"gimp xcf",8) == 0)
     return(True);
-
   return(False);
 }
 
@@ -751,9 +749,9 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* outL
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadXCFImage reads a GIMP (GNU Image Manipulation Program) image file and
-%  returns it.  It allocates the memory necessary for the new Image structure
-%  and returns a pointer to the new image.
+%  Method ReadXCFImage reads a GIMP (GNU Image Manipulation Program) image
+%  file and returns it.  It allocates the memory necessary for the new Image
+%  structure and returns a pointer to the new image.
 %
 %  The format of the ReadXCFImage method is:
 %

@@ -220,7 +220,7 @@ MAGICK_CODER_SRCS = art.c avi.c avs.c bmp.c cmyk.c cut.c dcm.c dib.c \
   ps.c ps2.c ps3.c psd.c pwp.c mpr.c rgb.c rla.c rle.c sct.c sfw.c \
   sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c \
   uil.c url.c uyvy.c vicar.c vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c \
-  xc.c xpm.c xwd.c yuv.c
+  xc.c xcf.c xpm.c xwd.c yuv.c
 
 @WITH_MODULES_TRUE@noinst_LTLIBRARIES = 
 @WITH_MODULES_FALSE@noinst_LTLIBRARIES = libCoders.la
@@ -251,7 +251,7 @@ noinst_HEADERS =
 @WITH_MODULES_TRUE@  psd.la pwp.la mpr.la rgb.la rla.la  rle.la sct.la sfw.la sgi.la \
 @WITH_MODULES_TRUE@  stegano.la sun.la svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la \
 @WITH_MODULES_TRUE@  uil.la url.la uyvy.la vicar.la vid.la viff.la wbmp.la wmf.la wpg.la \
-@WITH_MODULES_TRUE@  x.la xbm.la xc.la xpm.la xwd.la yuv.la
+@WITH_MODULES_TRUE@  x.la xbm.la xc.la xcf.la xpm.la xwd.la yuv.la
 
 @WITH_MODULES_FALSE@pkg_LTLIBRARIES = 
 
@@ -665,6 +665,11 @@ xc_la_SOURCES = xc.c
 xc_la_LDFLAGS = -no-undefined -module -avoid-version
 xc_la_LIBADD = ../magick/libMagick.la
 
+# XCF module
+xcf_la_SOURCES = xcf.c
+xcf_la_LDFLAGS = -no-undefined -module -avoid-version
+xcf_la_LIBADD = ../magick/libMagick.la
+
 # XPM module
 xpm_la_SOURCES = xpm.c
 xpm_la_LDFLAGS = -no-undefined -module -avoid-version
@@ -780,7 +785,7 @@ libCoders_la_LIBADD =
 @WITH_MODULES_FALSE@	stegano.lo sun.lo svg.lo tga.lo tiff.lo \
 @WITH_MODULES_FALSE@	tile.lo tim.lo ttf.lo txt.lo uil.lo url.lo \
 @WITH_MODULES_FALSE@	uyvy.lo vicar.lo vid.lo viff.lo wbmp.lo \
-@WITH_MODULES_FALSE@	wmf.lo wpg.lo x.lo xbm.lo xc.lo xpm.lo \
+@WITH_MODULES_FALSE@	wmf.lo wpg.lo x.lo xbm.lo xc.lo xpm.lo xpm.lo \
 @WITH_MODULES_FALSE@	xwd.lo yuv.lo
 libCoders_la_OBJECTS = $(am_libCoders_la_OBJECTS)
 logo_la_DEPENDENCIES = ../magick/libMagick.la
@@ -954,6 +959,9 @@ xbm_la_OBJECTS = $(am_xbm_la_OBJECTS)
 xc_la_DEPENDENCIES = ../magick/libMagick.la
 am_xc_la_OBJECTS = xc.lo
 xc_la_OBJECTS = $(am_xc_la_OBJECTS)
+xcf_la_DEPENDENCIES = ../magick/libMagick.la
+am_xcf_la_OBJECTS = xcf.lo
+xcf_la_OBJECTS = $(am_xcf_la_OBJECTS)
 xpm_la_DEPENDENCIES = ../magick/libMagick.la
 am_xpm_la_OBJECTS = xpm.lo
 xpm_la_OBJECTS = $(am_xpm_la_OBJECTS)
@@ -1008,7 +1016,7 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 @AMDEP_TRUE@	$(DEPDIR)/vid.Plo $(DEPDIR)/viff.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/wbmp.Plo $(DEPDIR)/wmf.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/wpg.Plo $(DEPDIR)/x.Plo $(DEPDIR)/xbm.Plo \
-@AMDEP_TRUE@	$(DEPDIR)/xc.Plo $(DEPDIR)/xpm.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/xc.Plo $(DEPDIR)/xcf.Plo $(DEPDIR)/xpm.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/xwd.Plo $(DEPDIR)/yuv.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -1045,7 +1053,7 @@ DIST_SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) \
 	$(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) \
 	$(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) \
 	$(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) \
-	$(xbm_la_SOURCES) $(xc_la_SOURCES) $(xpm_la_SOURCES) \
+	$(xbm_la_SOURCES) $(xc_la_SOURCES) $(xcf_la_SOURCES) $(xpm_la_SOURCES) \
 	$(xwd_la_SOURCES) $(yuv_la_SOURCES)
 DATA = $(pkg_DATA) $(pkgdata_DATA)
 
@@ -1053,7 +1061,7 @@ HEADERS = $(noinst_HEADERS)
 
 DIST_COMMON = $(noinst_HEADERS) Makefile.am Makefile.in \
 	delegates.mgk.in type.mgk.in
-SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dib_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(otb_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(mpr_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
+SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dib_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(otb_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(mpr_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xcf_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
 
 all: all-am
 
@@ -1267,6 +1275,8 @@ xbm.la: $(xbm_la_OBJECTS) $(xbm_la_DEPENDENCIES)
 	$(LINK) -rpath $(pkgdir) $(xbm_la_LDFLAGS) $(xbm_la_OBJECTS) $(xbm_la_LIBADD) $(LIBS)
 xc.la: $(xc_la_OBJECTS) $(xc_la_DEPENDENCIES) 
 	$(LINK) -rpath $(pkgdir) $(xc_la_LDFLAGS) $(xc_la_OBJECTS) $(xc_la_LIBADD) $(LIBS)
+xcf.la: $(xcf_la_OBJECTS) $(xcf_la_DEPENDENCIES) 
+	$(LINK) -rpath $(pkgdir) $(xcf_la_LDFLAGS) $(xcf_la_OBJECTS) $(xcf_la_LIBADD) $(LIBS)
 xpm.la: $(xpm_la_OBJECTS) $(xpm_la_DEPENDENCIES) 
 	$(LINK) -rpath $(pkgdir) $(xpm_la_LDFLAGS) $(xpm_la_OBJECTS) $(xpm_la_LIBADD) $(LIBS)
 xwd.la: $(xwd_la_OBJECTS) $(xwd_la_DEPENDENCIES) 
@@ -1362,6 +1372,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/xbm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/xc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/xcf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/xpm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/xwd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/yuv.Plo@am__quote@
