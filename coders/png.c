@@ -1086,7 +1086,6 @@ static void LogPNGChunk(int logging, png_bytep type, unsigned long length)
 extern "C" {
 #endif
 
-#if !defined(PNG_NO_STDIO)
 /*
   This is the function that does the actual reading of data.  It is
   the same as the one supplied in libpng, except that it receives the
@@ -1105,7 +1104,15 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
 
       check=(png_size_t) ReadBlob(image,(size_t) length,(char *) data);
       if (check != length)
-        png_error(png_ptr,"Read Exception");
+        {
+          char
+            msg[MaxTextExtent];
+ 
+          sprintf(msg,"Expected %lu bytes; found %lu bytes",
+             (unsigned long) length,(unsigned long) check);
+          png_warning(png_ptr,msg);
+          png_error(png_ptr,"Read Exception");
+        }
     }
 }
 
@@ -1217,7 +1224,6 @@ static void png_flush_data(png_structp png_ptr)
   image=(Image *) png_get_io_ptr(png_ptr);
   (void) SyncBlob(image);
 }
-#endif
 
 #ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
 static int PalettesAreEqual(Image *a,Image *b)
@@ -1649,17 +1655,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         PNG image is corrupt.
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+      LiberateSemaphoreInfo(&png_semaphore);
+#endif
       if (scanlines != (unsigned char **) NULL)
         LiberateMemory((void **) &scanlines);
       if (png_pixels != (unsigned char *) NULL)
         LiberateMemory((void **) &png_pixels);
-      CloseBlob(image);
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  exit ReadOnePNGImage() with error.");
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      LiberateSemaphoreInfo(&png_semaphore);
-#endif
+      if (image != (Image *) NULL)
+        image->columns=0;
       return(image);
     }
   /*
@@ -2129,6 +2136,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       LiberateSemaphoreInfo(&png_semaphore);
 #endif
+      if (image != (Image *) NULL)
+        image->columns=0;
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  exit ReadOnePNGImage().");
@@ -2724,16 +2733,20 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   previous=image;
   image=ReadOnePNGImage(mng_info,image_info,exception);
-  CloseBlob(image);
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   if (image == (Image *) NULL)
     {
-      DestroyImageList(previous);
+      if (previous != (Image *) NULL)
+        {
+          CloseBlob(previous);
+          DestroyImageList(previous);
+        }
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "exit ReadPNGImage() with error");
       return((Image *) NULL);
     }
+  CloseBlob(image);
   if (image->columns == 0 || image->rows == 0)
     {
       DestroyImageList(image);
@@ -4713,11 +4726,13 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image == (Image *) NULL)
       {
         DestroyImageList(previous);
+        CloseBlob(previous);
         MngInfoFreeStruct(mng_info,&have_mng_structure);
         return((Image *) NULL);
       }
     if (image->columns == 0 || image->rows == 0)
       {
+        CloseBlob(image);
         DestroyImageList(image);
         MngInfoFreeStruct(mng_info,&have_mng_structure);
         return((Image *) NULL);
@@ -5513,6 +5528,7 @@ ModuleExport void RegisterPNGImage(void)
 
   entry=SetMagickInfo("PNG24");
   *version='\0';
+#if defined(ZLIB_VERSION)
   (void) strcat(version,"zlib ");
   (void) strncat(version,ZLIB_VERSION,MaxTextExtent-2);
   if (LocaleCompare(ZLIB_VERSION,zlib_version) != 0)
@@ -5520,6 +5536,7 @@ ModuleExport void RegisterPNGImage(void)
       (void) strcat(version,",");
       (void) strncat(version,zlib_version,MaxTextExtent-strlen(version)-1);
     }
+#endif
   if (*version != '\0')
     entry->version=AcquireString(version);
 #if defined(HasPNG)
@@ -5860,7 +5877,6 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
       png_destroy_write_struct(&ping,&ping_info);
       LiberateMemory((void **) &scanlines);
       LiberateMemory((void **) &png_pixels);
-      CloseBlob(image);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       LiberateSemaphoreInfo(&png_semaphore);
 #endif
@@ -5881,6 +5897,15 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
   x=0;
   ping_info->width=image->columns;
   ping_info->height=image->rows;
+  if (logging)
+    {
+     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    width=%lu",ping_info->width);
+     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    height=%lu",ping_info->height);
+     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    image->depth=%lu",image->depth);
+    }
   if (image->depth > 16)
      image->depth=16;
   if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
@@ -6108,13 +6133,17 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     }
   else
     {
+      if (ping_info->bit_depth < 8)
+        ping_info->bit_depth=8;
       if (mng_info->optimize || mng_info->IsPalette || image_info->type ==
           BilevelType)
-        if (ImageIsMonochrome(image))
-          {
-            if (!image->matte)
-              ping_info->bit_depth=1;
-          }
+        {
+          if (ImageIsMonochrome(image))
+            {
+              if (!image->matte)
+                ping_info->bit_depth=1;
+            }
+        }
       ping_info->color_type=PNG_COLOR_TYPE_RGB;
       if (image_info->type == GrayscaleType)
         ping_info->color_type=PNG_COLOR_TYPE_GRAY;
@@ -6129,6 +6158,10 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
               "    Tentative PNG color type: %d",ping_info->color_type);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    image_info->type: %d",image_info->type);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    image->depth: %lu",image->depth);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    ping_info->bit_depth: %d",ping_info->bit_depth);
         }
 
       if (matte && (mng_info->optimize || mng_info->IsPalette))
@@ -8293,6 +8326,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     if (!status)
       {
         MngInfoFreeStruct(mng_info,&have_mng_structure);
+        CloseBlob(image);
         return (False);
       }
     CatchImageException(image);
