@@ -1021,7 +1021,7 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
                   clone_info=CloneImageInfo(image_info);
-                  clone_image=CloneImage(image,0,0,False,&image->exception);
+                  clone_image=CloneImage(image,0,0,True,&image->exception);
                   if (clone_image == (Image *) NULL)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
