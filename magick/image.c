@@ -5896,13 +5896,6 @@ Export Image *ReadImage(ImageInfo *image_info)
       next_image->magick_columns=next_image->columns;
     if (next_image->magick_rows == 0)
       next_image->magick_rows=next_image->rows;
-    if (next_image->class == PseudoClass)
-      if (IsMonochromeImage(next_image))
-        {
-          next_image->background_color.red=MaxRGB;
-          next_image->background_color.green=MaxRGB;
-          next_image->background_color.blue=MaxRGB;
-        }
   }
   return(image);
 }
@@ -6751,9 +6744,12 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   (void) strcpy(image->filename,image_info->filename);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    return;
+    {
+      DestroyImage(image);
+      return;
+    }
   if ((image->blob_info.data != (char *) NULL)  || !image->exempt)
-    (void) ReadBlob(image,MaxTextExtent,magick);
+    (void) ReadBlob(image,MaxTextExtent-1,magick);
   else
     {
       FILE

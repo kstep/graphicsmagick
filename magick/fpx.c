@@ -336,10 +336,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
   packets=0;
   scanline=(unsigned char *) AllocateMemory(colorspace.numberOfComponents*
     image->columns*(tile_height+1)*sizeof(unsigned char));
-  image->pixels=(PixelPacket *)
-    AllocateMemory(image->columns*image->rows*sizeof(PixelPacket));
-  if ((image->pixels == (PixelPacket *) NULL) ||
-      (scanline == (unsigned char *) NULL))
+  if (scanline == (unsigned char *) NULL)
     {
       FPX_ClearSystem();
       (void) FPX_CloseImage(flashpix);

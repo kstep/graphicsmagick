@@ -351,14 +351,6 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    image->pixels=(PixelPacket *)
-      AllocateMemory(image->columns*image->rows*sizeof(PixelPacket));
-    if (image->pixels == (PixelPacket *) NULL)
-      {
-        FreeMemory(scanline);
-        FreeMemory(pcx_pixels);
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-      }
     /*
       Uncompress image data.
     */

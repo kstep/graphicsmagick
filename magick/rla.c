@@ -277,7 +277,6 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
     for (channel=0; channel < (int) rla_header.number_channels; channel++)
     {
       length=MSBFirstReadShort(image);
-      q=image->pixels+(y*image->columns);
       while (length > 0)
       {
         byte=ReadByte(image);

@@ -206,7 +206,9 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
     }
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
-    q=image->pixels;
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
       q->green=MaxRGB-UpScale(ReadByte(image));
@@ -214,7 +216,9 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
     }
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
-    q=image->pixels;
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
       q->blue=MaxRGB-UpScale(ReadByte(image));
@@ -222,7 +226,9 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
     }
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
-    q=image->pixels;
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
       q->opacity=MaxRGB-UpScale(ReadByte(image));

@@ -180,8 +180,9 @@ Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
     Set floodfill color.
   */
   (void) QueryColorDatabase("black",&color);
-  if (GetPixelCache(tile,0,0,1,1))
-    color=(*tile->pixels);
+  p=GetPixelCache(tile,0,0,1,1);
+  if (p != (PixelPacket *) NULL)
+    color=(*p);
   if (ColorMatch(color,*target,image->fuzz))
     return;
   segment_stack=(SegmentInfo *)
@@ -1287,6 +1288,9 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case ColorPrimitive:
       {
+        register PixelPacket
+          *q;
+
         switch (p->method)
         {
           case PointMethod:
@@ -1308,11 +1312,13 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 
             if ((pixel->x == 0) && (pixel->y == 0))
               {
-                if (GetPixelCache(image,(int) p->x,(int) p->y,1,1))
-                  target=(*image->pixels);
+                q=GetPixelCache(image,(int) p->x,(int) p->y,1,1);
+                if (q != (PixelPacket *) NULL)
+                  target=(*q);
               }
-            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
-              color=(*image->pixels);
+            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
+            if (q != (PixelPacket *) NULL)
+              color=(*q);
             if (ColorMatch(color,target,(int) image->fuzz))
               opacity=Opaque;
             break;
@@ -1323,8 +1329,9 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->x+0.5)) &&
                 (pixel->y != (int) (p->y+0.5)))
               break;
-            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
-              target=(*image->pixels);
+            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
+            if (q != (PixelPacket *) NULL)
+              target=(*q);
             if (p->method == FillToBorderMethod)
               {
                 border_color=annotate_info->image_info->border_color;
@@ -1346,6 +1353,9 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case MattePrimitive:
       {
+        register PixelPacket
+          *q;
+
         if (!image->matte)
           MatteImage(image,Opaque);
         switch (p->method)
@@ -1356,9 +1366,10 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->x+0.5)) &&
                 (pixel->y != (int) (p->y+0.5)))
               break;
-            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
+            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
+            if (q != (PixelPacket *) NULL)
               {
-                image->pixels->opacity=Transparent;
+                q->opacity=Transparent;
                 (void) SyncPixelCache(image);
               }
             break;
@@ -1373,14 +1384,16 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 
             if ((pixel->x == 0) && (pixel->y == 0))
               {
-                if (GetPixelCache(image,(int) p->x,(int) p->y,1,1))
-                  target=(*image->pixels);
+                q=GetPixelCache(image,(int) p->x,(int) p->y,1,1);
+                if (q != (PixelPacket *) NULL)
+                  target=(*q);
               }
-            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
-              color=(*image->pixels);
+            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
+            if (q != (PixelPacket *) NULL)
+              color=(*q);
             if (ColorMatch(color,target,image->fuzz))
               {
-                image->pixels->opacity=Transparent;
+                q->opacity=Transparent;
                 (void) SyncPixelCache(image);
               }
             break;
@@ -1391,8 +1404,9 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->x+0.5)) &&
                 (pixel->y != (int) (p->y+0.5)))
               break;
-            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
-              target=(*image->pixels);
+            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
+            if (q != (PixelPacket *) NULL)
+              target=(*q);
             if (p->method == FillToBorderMethod)
               {
                 border_color=annotate_info->image_info->border_color;
@@ -1406,9 +1420,10 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           }
           case ResetMethod:
           {
-            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
+            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
+            if (q != (PixelPacket *) NULL)
               {
-                image->pixels->opacity=Opaque;
+                q->opacity=Opaque;
                 (void) SyncPixelCache(image);
               }
             break;
@@ -1533,9 +1548,10 @@ Export void MatteFloodfillImage(Image *image,const PixelPacket *target,
     return;
   if (target->opacity == (unsigned short) matte)
     return;
-  if (!GetPixelCache(image,x_offset,y_offset,1,1))
+  q=GetPixelCache(image,x_offset,y_offset,1,1);
+  if (q == (PixelPacket *) NULL)
     return;
-  if (image->pixels->opacity == (unsigned short) matte)
+  if (q->opacity == matte)
     return;
   /*
     Allocate segment stack.

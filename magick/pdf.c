@@ -794,7 +794,6 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) strcpy(buffer,"stream\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
     length=TellBlob(image);
-    p=image->pixels;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       switch (compression)
       {
@@ -1170,7 +1169,6 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) strcpy(buffer,"stream\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
     length=TellBlob(image);
-    p=tile_image->pixels;
     if (!IsPseudoClass(tile_image) && !IsGrayImage(tile_image))
       switch (compression)
       {

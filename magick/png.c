@@ -1641,7 +1641,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         png_destroy_read_struct(&ping,&ping_info,(png_info **) NULL);
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       }
-    image->pixels=(PixelPacket *) NULL;
     png_pixels=(unsigned char *) NULL;
     scanlines=(unsigned char **) NULL;
     if (setjmp(ping->jmpbuf))
@@ -2336,13 +2335,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     p->orphan=True;
                     image->columns=p->columns;
                     image->rows=p->rows;
-                    if (image->pixels != (PixelPacket *) NULL)
-                      FreeMemory(image->pixels);
-                    image->pixels=p->pixels;
-                    if (image->pixels == (PixelPacket *) NULL)
-                      MagickWarning(ResourceLimitWarning,"Unable to crop image",
-                       "image->pixels == NULL");
-                    p->pixels=(PixelPacket *)NULL;
                     p->orphan=True;
                     p->file=(FILE *)NULL;
                     p->blob_info.mapped=False;

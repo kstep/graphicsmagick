@@ -528,7 +528,6 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=EmitMessage;
   jpeg_info.err->error_exit=JPEGErrorHandler;
-  image->pixels=(PixelPacket *) NULL;
   jpeg_pixels=(JSAMPLE *) NULL;
   if (setjmp(error_recovery))
     {
@@ -620,10 +619,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
     }
   jpeg_pixels=(JSAMPLE *)
     AllocateMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
-  image->pixels=(PixelPacket *)
-    AllocateMemory(image->columns*image->rows*sizeof(PixelPacket));
-  if ((image->pixels == (PixelPacket *) NULL) ||
-      (jpeg_pixels == (JSAMPLE *) NULL))
+  if (jpeg_pixels == (JSAMPLE *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Convert JPEG pixels to pixel packets.

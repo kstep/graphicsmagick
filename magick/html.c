@@ -147,6 +147,9 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   register char
     *p;
 
+  register PixelPacket
+    *q;
+
   unsigned int
     height,
     status,
@@ -273,15 +276,14 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       if (image->montage != (char *) NULL)
         {
           char
-            color[MaxTextExtent];
+            color[MaxTextExtent] = "#000";
 
           /*
             Make montage background transparent.
           */
-          FormatString(color,HexColorFormat,
-            (unsigned int) image->pixels[0].red,
-            (unsigned int) image->pixels[0].green,
-            (unsigned int) image->pixels[0].blue);
+          q=GetPixelCache(image,0,0,1,1);
+          if (q != (PixelPacket *) NULL)
+            FormatString(color,HexColorFormat,q->red,q->green,q->blue);
           TransparentImage(image,color);
         }
       (void) strcpy(filename,image->filename);

@@ -2065,8 +2065,10 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Update color information using floodfill algorithm.
             */
-            if (GetPixelCache(*image,x_offset,y_offset,1,1))
-              target=(*(*image)->pixels);
+            p=GetPixelCache(*image,x_offset,y_offset,1,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            target=(*p);
             if (method == FillToBorderMethod)
               {
                 target.red=XDownScale(border_color.red);
@@ -10752,7 +10754,8 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         j;
 
       register PixelPacket
-        *r;
+        *r,
+        *s;
 
       /*
         Ensure all the images exist.
@@ -10776,11 +10779,18 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         */
         x_offset=width*(tile % ((image->columns-x)/width))+x;
         y_offset=height*(tile/((image->columns-x)/width))+y;
+	r=GetPixelCache(image,0,0,1,1);
+        if (r == (PixelPacket *) NULL)
+          continue;
         for (i=0; i < (int) height; i++)
         {
-          r=image->pixels+((y_offset+i)*image->columns+x_offset);
+          s=GetPixelCache(image,x_offset,y_offset+i,width,1);
+          if (s == (PixelPacket *) NULL)
+            break;
           for (j=0; j < (int) width; j++)
-            *r++=(*image->pixels);
+            *s++=(*r);
+          if (!SyncPixelCache(image))
+            break;
         }
         tile++;
       }

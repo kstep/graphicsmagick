@@ -1100,7 +1100,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         }
       else
         {
-          pixel=(*image->pixels);
+          pixel=(*p);
           index=0;
           if (image->class == PseudoClass)
             index=(*image->indexes);

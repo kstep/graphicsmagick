@@ -1760,13 +1760,15 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       /*
         Left pixel.
       */
-      if (GetPixelCache(image,(int) segment->x1,(int) segment->y1,1,1))
-        pixel_1=(*image->pixels);
-      if (GetPixelCache(image,(int) segment->x1,(int) segment->y2,1,1))
-        pixel_2=(*image->pixels);
-      if (SetPixelCache(image,(int) segment->x1,(int) y_mid,1,1))
+      q=GetPixelCache(image,(int) segment->x1,(int) segment->y1,1,1);
+      if (q != (PixelPacket *) NULL)
+        pixel_1=(*q);
+      q=GetPixelCache(image,(int) segment->x1,(int) segment->y2,1,1);
+      if (q != (PixelPacket *) NULL)
+        pixel_2=(*q);
+      q=SetPixelCache(image,(int) segment->x1,(int) y_mid,1,1);
+      if (q != (PixelPacket *) NULL)
         {
-          q=image->pixels;
           q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
           q->green=PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
           q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
@@ -1777,13 +1779,15 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           /*
             Right pixel.
           */
-          if (GetPixelCache(image,(int) segment->x2,(int) segment->y1,1,1))
-            pixel_1=(*image->pixels);
-          if (GetPixelCache(image,(int) segment->x2,(int) segment->y2,1,1))
-            pixel_2=(*image->pixels);
-          if (SetPixelCache(image,(int) segment->x2,(int) y_mid,1,1))
+          q=GetPixelCache(image,(int) segment->x2,(int) segment->y1,1,1);
+          if (q != (PixelPacket *) NULL)
+            pixel_1=(*q);
+          q=GetPixelCache(image,(int) segment->x2,(int) segment->y2,1,1);
+          if (q != (PixelPacket *) NULL)
+            pixel_2=(*q);
+          q=SetPixelCache(image,(int) segment->x2,(int) y_mid,1,1);
+          if (q != (PixelPacket *) NULL)
             {
-              q=image->pixels;
               q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
               q->green=
                 PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
@@ -1799,13 +1803,15 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           /*
             Bottom pixel.
           */
-          if (GetPixelCache(image,(int) segment->x1,(int) segment->y2,1,1))
-            pixel_1=(*image->pixels);
-          if (GetPixelCache(image,(int) segment->x2,(int) segment->y2,1,1))
-            pixel_2=(*image->pixels);
-          if (SetPixelCache(image,(int) x_mid,(int) segment->y2,1,1))
+          q=GetPixelCache(image,(int) segment->x1,(int) segment->y2,1,1);
+          if (q != (PixelPacket *) NULL)
+            pixel_1=(*q);
+          q=GetPixelCache(image,(int) segment->x2,(int) segment->y2,1,1);
+          if (q != (PixelPacket *) NULL)
+            pixel_2=(*q);
+          q=SetPixelCache(image,(int) x_mid,(int) segment->y2,1,1);
+          if (q != (PixelPacket *) NULL)
             {
-              q=image->pixels;
               q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
               q->green=
                 PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
@@ -1818,13 +1824,15 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           /*
             Top pixel.
           */
-          if (GetPixelCache(image,(int) segment->x1,(int) segment->y1,1,1))
-            pixel_1=(*image->pixels);
-          if (GetPixelCache(image,(int) segment->x2,(int) segment->y1,1,1))
-            pixel_2=(*image->pixels);
-          if (SetPixelCache(image,(int) x_mid,(int) segment->y1,1,1))
+          q=GetPixelCache(image,(int) segment->x1,(int) segment->y1,1,1);
+          if (q != (PixelPacket *) NULL)
+            pixel_1=(*q);
+          q=GetPixelCache(image,(int) segment->x2,(int) segment->y1,1,1);
+          if (q != (PixelPacket *) NULL)
+            pixel_2=(*q);
+          q=SetPixelCache(image,(int) x_mid,(int) segment->y1,1,1);
+          if (q != (PixelPacket *) NULL)
             {
-              q=image->pixels;
               q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
               q->green=
                 PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
@@ -1839,13 +1847,15 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       /*
         Middle pixel.
       */
-      if (GetPixelCache(image,(int) segment->x1,(int) segment->y1,1,1))
-        pixel_1=(*image->pixels);
-      if (GetPixelCache(image,(int) segment->x2,(int) segment->y2,1,1))
-        pixel_2=(*image->pixels);
-      if (SetPixelCache(image,(int) x_mid,(int) y_mid,1,1))
+      q=GetPixelCache(image,(int) segment->x1,(int) segment->y1,1,1);
+      if (q != (PixelPacket *) NULL)
+        pixel_1=(*q);
+      q=GetPixelCache(image,(int) segment->x2,(int) segment->y2,1,1);
+      if (q != (PixelPacket *) NULL)
+        pixel_2=(*q);
+      q=SetPixelCache(image,(int) x_mid,(int) y_mid,1,1);
+      if (q != (PixelPacket *) NULL)
         {
-          q=image->pixels;
           q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
           q->green=PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
           q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
@@ -2507,6 +2517,7 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
     x;
 
   register PixelPacket
+    *p,
     *q;
 
   assert(image != (Image *) NULL);
@@ -2536,10 +2547,11 @@ Export Image *SpreadImage(Image *image,const unsigned int amount)
     {
       x_distance=(rand() & (amount+1))-quantum;
       y_distance=(rand() & (amount+1))-quantum;
-      if (!GetPixelCache(image,Min(x+x_distance,image->columns-1),
-        Min(y+y_distance,image->rows-1),1,1))
+      p=GetPixelCache(image,Min(x+x_distance,image->columns-1),
+        Min(y+y_distance,image->rows-1),1,1);
+      if (p == (PixelPacket *) NULL)
         break;
-      *q++=(*image->pixels);
+      *q++=(*q);
     }
     if (!SyncPixelCache(spread_image))
       break;
@@ -2582,10 +2594,11 @@ Export Image *SteganoImage(Image *image,Image *watermark)
 {
 #define EmbedBit(byte) \
 { \
-  if (!GetPixelCache(watermark,j%watermark->columns,j/watermark->columns,1,1)) \
+  q=GetPixelCache(watermark,j % watermark->columns,j/watermark->columns,1,1); \
+  if (q == (PixelPacket *) NULL) \
     break;  \
   (byte)&=(~0x01); \
-  (byte)|=(Intensity(*watermark->pixels) >> shift) & 0x01; \
+  (byte)|=(Intensity(*q) >> shift) & 0x01; \
   j++; \
   if (j == (watermark->columns*watermark->rows)) \
     { \
@@ -2610,7 +2623,8 @@ Export Image *SteganoImage(Image *image,Image *watermark)
     x;
 
   register PixelPacket
-    *p;
+    *p,
+    *q;
 
   /*
     Initialize steganographic image attributes.

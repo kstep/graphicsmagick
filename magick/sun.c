@@ -648,7 +648,6 @@ Export unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to SUN raster pixels.
     */
-    p=image->pixels;
     x=0;
     y=0;
     if (!IsPseudoClass(image) && !IsGrayImage(image))

@@ -487,8 +487,6 @@ Export void SignatureImage(Image *image)
     *message;
 
   assert(image != (Image *) NULL);
-  if (image->pixels == (PixelPacket *) NULL)
-    return;
   /*
     Allocate memory for digital signature.
   */

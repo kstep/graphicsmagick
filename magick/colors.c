@@ -1500,8 +1500,6 @@ Export unsigned int IsMonochromeImage(Image *image)
     Determine if image is monochrome.
   */
   assert(image != (Image *) NULL);
-  if (image->pixels == (PixelPacket *) NULL)
-    return(False);
   if (!IsGrayImage(image))
     return(False);
   if (image->colors > 2)

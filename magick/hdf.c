@@ -277,7 +277,6 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
           q=SetPixelCache(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          q=image->pixels;
           for (x=0; x < (int) image->columns; x++)
           {
             q->red=UpScale(*p++);
@@ -488,13 +487,17 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 *q++=DownScale(p->red);
                 p++;
               }
-              p=image->pixels;
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
               for (x=0; x < (int) image->columns; x++)
               {
                 *q++=DownScale(p->green);
                 p++;
               }
-              p=image->pixels;
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
               for (x=0; x < (int) image->columns; x++)
               {
                 *q++=DownScale(p->blue);
