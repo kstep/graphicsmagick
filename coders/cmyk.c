@@ -351,7 +351,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             if (image_info->interlace == PartitionInterlace)
               {
                 CloseBlob(image);
-                AppendImageFormat("K",image->filename);
+                AppendImageFormat("A",image->filename);
                 status=OpenBlob(image_info,image,ReadBinaryType);
                 if (status == False)
                   ThrowReaderException(FileOpenWarning,"Unable to open file",
