@@ -2195,7 +2195,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     Paint each row of the image.
   */
   k=0;
-  for (y=width; y < (long) (image->rows-width-1); y++)
+  for (y=width; y < (long) (image->rows-width); y++)
   {
     p=AcquireImagePixels(image,0,y-width,image->columns,2*width+1,exception);
     q=GetImagePixels(paint_image,0,y,paint_image->columns,1);
@@ -2203,7 +2203,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       break;
     p+=width*image->columns+width;
     q+=width;
-    for (x=width; x < (long) (image->columns-width-1); x++)
+    for (x=width; x < (long) (image->columns-width); x++)
     {
       /*
         Determine most frequent color.
@@ -2213,7 +2213,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         histogram[i]=0;
       for (i=0; i < width; i++)
       {
-        r=p-(width-i)*image->columns-i-1;
+        r=p-(width-i)*image->columns-i;
         for (j=0; j < (2*i+1); j++)
         {
           k=Intensity(*r);
@@ -2225,7 +2225,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
             }
           r++;
         }
-        r=p+(width-i)*image->columns-i-1;
+        r=p+(width-i)*image->columns-i;
         for (j=0; j < (2*i+1); j++)
         {
           k=Intensity(*r);
@@ -2239,7 +2239,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         }
       }
       r=p-width;
-      for (j=0; j < (width+width+1); j++)
+      for (j=0; j < (2*width+1); j++)
       {
         k=Intensity(*r);
         histogram[k]++;
