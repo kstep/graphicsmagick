@@ -316,7 +316,7 @@ static unsigned int
 %  The format of the DecodeImage method is:
 %
 %      unsigned char* DecodeImage(const ImageInfo *image_info,Image *blob,
-%        Image *image,size_t bytes_per_line,const int bits_per_pixel)
+%        Image *image,unsigned long bytes_per_line,const int bits_per_pixel)
 %
 %  A description of each parameter follows:
 %
@@ -335,8 +335,8 @@ static unsigned int
 %
 */
 
-static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
-  const int bits_per_pixel)
+static unsigned char *ExpandBuffer(unsigned char *pixels,
+  unsigned long *bytes_per_line,const int bits_per_pixel)
 {
   register long
     i;
@@ -358,7 +358,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
       return(pixels);
     case 4:
     {
-      for (i=0; i < *bytes_per_line; i++)
+      for (i=0; i < (long) *bytes_per_line; i++)
       {
         *q++=(*p >> 4) & 0xff;
         *q++=(*p & 15);
@@ -369,7 +369,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
     }
     case 2:
     {
-      for (i=0; i < *bytes_per_line; i++)
+      for (i=0; i < (long) *bytes_per_line; i++)
       {
         *q++=(*p >> 6) & 0x03;
         *q++=(*p >> 4) & 0x03;
@@ -382,7 +382,7 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
     }
     case 1:
     {
-      for (i=0; i < *bytes_per_line; i++)
+      for (i=0; i < (long) *bytes_per_line; i++)
       {
         *q++=(*p >> 7) & 0x01;
         *q++=(*p >> 6) & 0x01;
@@ -491,7 +491,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
     else
       scanline_length=ReadBlobByte(blob);
     (void) ReadBlob(blob,scanline_length,(char *) scanline);
-    for (j=0; j < scanline_length; )
+    for (j=0; j < (long) scanline_length; )
       if ((scanline[j] & 0x80) == 0)
         {
           length=(scanline[j] & 0xff)+1;
@@ -506,7 +506,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
           length=((scanline[j]^0xff) & 0xff)+2;
           number_pixels=bytes_per_pixel;
           p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
-          for (i=0; i < length; i++)
+          for (i=0; i < (long) length; i++)
           {
             memcpy(q,p,number_pixels);
             q+=number_pixels;
@@ -534,7 +534,8 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
 %
 %  The format of the EncodeImage method is:
 %
-%      count=EncodeImage(image,scanline,bytes_per_line,pixels)
+%      size_t EncodeImage(Image *image,const unsigned char *scanline,
+%        const unsigned long bytes_per_line,unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -552,7 +553,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
 %
 */
 static size_t EncodeImage(Image *image,const unsigned char *scanline,
-  const int bytes_per_line,unsigned char *pixels)
+  const unsigned long bytes_per_line,unsigned char *pixels)
 {
 #define MaxCount  128
 #define MaxPackbitsRunlength  128
@@ -819,7 +820,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             length=ReadBlobMSBShort(image);
             if (length != 0x000a)
               {
-                for (i=0; i < (length-2); i++)
+                for (i=0; i < (long) (length-2); i++)
                   (void) ReadBlobByte(image);
                 break;
               }
@@ -863,7 +864,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             (void) ReadBlobMSBLong(image);
             flags=ReadBlobMSBShort(image);
             length=ReadBlobMSBShort(image);
-            for (i=0; i <= length; i++)
+            for (i=0; i <= (long) length; i++)
               (void) ReadBlobMSBLong(image);
             width=frame.bottom-frame.top;
             height=frame.right-frame.left;
@@ -878,7 +879,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               length=width;
             if (length < 8)
               {
-                for (i=0; i < (length*height); i++)
+                for (i=0; i < (long) (length*height); i++)
                   (void) ReadBlobByte(image);
               }
             else
@@ -914,7 +915,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               Skip polygon or region.
             */
             length=ReadBlobMSBShort(image);
-            for (i=0; i < (length-2); i++)
+            for (i=0; i < (long) (length-2); i++)
               (void) ReadBlobByte(image);
             break;
           }
@@ -993,7 +994,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   }
                 if (bytes_per_line & 0x8000)
                   {
-                    for (i=0; i < tile_image->colors; i++)
+                    for (i=0; i < (long) tile_image->colors; i++)
                     {
                       j=ReadBlobMSBShort(image) % tile_image->colors;
                       if (flags & 0x8000)
@@ -1008,7 +1009,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   }
                 else
                   {
-                    for (i=0; i < tile_image->colors; i++)
+                    for (i=0; i < (long) tile_image->colors; i++)
                     {
                       tile_image->colormap[i].red=MaxRGB-
                         tile_image->colormap[i].red;
@@ -1028,7 +1029,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   Skip region.
                 */
                 length=ReadBlobMSBShort(image);
-                for (i=0; i <= (length-2); i++)
+                for (i=0; i <= (long) (length-2); i++)
                   (void) ReadBlobByte(image);
               }
             if ((code != 0x9a) && (code != 0x9b) &&
@@ -1175,7 +1176,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             if (codes[code].length == -1)
               (void) ReadBlobMSBShort(image);
             else
-              for (i=0; i < (size_t) codes[code].length; i++)
+              for (i=0; i < (long) codes[code].length; i++)
                 (void) ReadBlobByte(image);
           }
         }
@@ -1219,7 +1220,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         ReadRectangle(frame);
         for (i=0; i < 122; i++)
           (void) ReadBlobByte(image);
-        for (i=0; i < (length-154); i++)
+        for (i=0; i < (long) (length-154); i++)
         {
           c=ReadBlobByte(image);
           (void) fputc(c,file);
@@ -1246,7 +1247,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           Skip reserved.
         */
         length=ReadBlobMSBShort(image);
-        for (i=0; i < length; i++)
+        for (i=0; i < (long) length; i++)
           (void) ReadBlobByte(image);
         continue;
       }
@@ -1256,7 +1257,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           Skip reserved.
         */
         length=(code >> 7) & 0xff;
-        for (i=0; i < length; i++)
+        for (i=0; i < (long) length; i++)
           (void) ReadBlobByte(image);
         continue;
       }
@@ -1659,7 +1660,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       WriteBlobMSBLong(image,0x00000000L);  /* color seed */
       WriteBlobMSBShort(image,0L);  /* color flags */
       WriteBlobMSBShort(image,(unsigned short) Max(image->colors-1,1));
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         red=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
         green=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);

@@ -154,14 +154,14 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlob(image,packet_size*image->colors,(char *) colormap);
   p=colormap;
   if (image->colors <= 256)
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (long) image->colors; i++)
     {
       image->colormap[i].red=UpScale(*p++);
       image->colormap[i].green=UpScale(*p++);
       image->colormap[i].blue=UpScale(*p++);
     }
   else
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (long) image->colors; i++)
     {
       image->colormap[i].red=(*p++ << 8);
       image->colormap[i].red|=(*p++);
@@ -356,14 +356,14 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   */
   q=colormap;
   if (image->colors <= 256)
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (long) image->colors; i++)
     {
       *q++=image->colormap[i].red;
       *q++=image->colormap[i].green;
       *q++=image->colormap[i].blue;
     }
   else
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (long) image->colors; i++)
     {
       *q++=image->colormap[i].red >> 8;
       *q++=image->colormap[i].red & 0xff;

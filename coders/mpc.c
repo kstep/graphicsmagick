@@ -715,7 +715,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Generic profile.
       */
-      for (i=0; i < image->generic_profiles; i++)
+      for (i=0; i < (long) image->generic_profiles; i++)
       {
         if (image->generic_profile[i].length == 0)
           continue;
@@ -763,14 +763,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) ReadBlob(image,packet_size*image->colors,colormap);
           p=colormap;
           if (image->colors <= 256)
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=UpScale(*p++);
               image->colormap[i].green=UpScale(*p++);
               image->colormap[i].blue=UpScale(*p++);
             }
           else
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=(*p++ << 8);
               image->colormap[i].red|=(*p++);

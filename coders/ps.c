@@ -251,13 +251,14 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ReadBlobLSBLong(image);
       count=ReadBlobLSBLong(image);
       filesize=ReadBlobLSBLong(image);
-      for (i=0; i < (count-12); i++)
+      for (i=0; i < (long) (count-12); i++)
         (void) ReadBlobByte(image);
     }
   box.width=0;
   box.height=0;
   p=command;
-  for (i=0; (LocaleCompare(image_info->magick,"EPT") != 0) || i < filesize; i++)
+  for (i=0; (LocaleCompare(image_info->magick,"EPT") != 0) ||
+    (i < (long) filesize); i++)
   {
     c=ReadBlobByte(image);
     if (c == EOF)
@@ -1312,7 +1313,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           */
           FormatString(buffer,"%u\n",image->colors);
           (void) WriteBlobString(image,buffer);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
           {
             FormatString(buffer,"%02lx%02lx%02lx\n",
               DownScale(image->colormap[i].red),

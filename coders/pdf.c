@@ -466,7 +466,7 @@ static char *EscapeParenthesis(const char *text)
 
   escapes=0;
   p=buffer;
-  for (i=0; i < Min(strlen(text),(MaxTextExtent-escapes-1)); i++)
+  for (i=0; i < (long) Min(strlen(text),(MaxTextExtent-escapes-1)); i++)
   {
     if ((text[i] == '(') || (text[i] == ')'))
       {
@@ -1451,7 +1451,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         length=TellBlob(image);
         if (compression == NoCompression)
           Ascii85Initialize(image);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
         {
           if (compression == NoCompression)
             {
@@ -1495,7 +1495,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer,"0 %u\n",object+1);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"0000000000 65535 f \n");
-  for (i=0; i < object; i++)
+  for (i=0; i < (long) object; i++)
   {
     FormatString(buffer,"%010lu 00000 n \n",xref[i]);
     (void) WriteBlobString(image,buffer);

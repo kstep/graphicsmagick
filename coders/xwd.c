@@ -409,7 +409,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,image->colors))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         image->colormap[i].red=XDownScale(colors[i].red);
         image->colormap[i].green=XDownScale(colors[i].green);
@@ -654,7 +654,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       if (colors == (XColor *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         colors[i].pixel=i;
         colors[i].red=XUpScale(image->colormap[i].red);
@@ -668,7 +668,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
             MSBOrderShort((char *) &colors[i].red,3*sizeof(short));
           }
       }
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         color.pixel=(CARD32) colors[i].pixel;
         color.red=colors[i].red;

@@ -382,7 +382,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           pixel=(double) (*((double *) long_quantum));
         fits_info.min_data=pixel*fits_info.scale-fits_info.zero;
         fits_info.max_data=pixel*fits_info.scale-fits_info.zero;
-        for (i=1; i < number_pixels; i++)
+        for (i=1; i < (long) number_pixels; i++)
         {
           long_quantum[0]=(*p);
           quantum=(*p++);

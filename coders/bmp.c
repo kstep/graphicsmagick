@@ -529,7 +529,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.y_pixels=ReadBlobLSBLong(image);
         bmp_info.number_colors=ReadBlobLSBLong(image);
         bmp_info.colors_important=ReadBlobLSBLong(image);
-        for (i=0; i < (bmp_info.size-40); i++)
+        for (i=0; i < (long) (bmp_info.size-40); i++)
           (void) ReadBlobByte(image);
         if ((bmp_info.compression == 3) && ((bmp_info.bits_per_pixel == 16) ||
             (bmp_info.bits_per_pixel == 32)))
@@ -593,7 +593,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           packet_size=3;
         (void) ReadBlob(image,packet_size*image->colors,(char *) bmp_colormap);
         p=bmp_colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
         {
           image->colormap[i].blue=UpScale(*p++);
           image->colormap[i].green=UpScale(*p++);
@@ -1219,14 +1219,14 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
         q=bmp_colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
         {
           *q++=DownScale(image->colormap[i].blue);
           *q++=DownScale(image->colormap[i].green);
           *q++=DownScale(image->colormap[i].red);
           *q++=(Quantum) 0x0;
         }
-        for ( ; i < (1UL << bmp_info.bits_per_pixel); i++)
+        for ( ; i < (1L << bmp_info.bits_per_pixel); i++)
         {
           *q++=(Quantum) 0x0;
           *q++=(Quantum) 0x0;

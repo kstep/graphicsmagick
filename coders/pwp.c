@@ -198,7 +198,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(FileOpenWarning,"Unable to write file",image);
     (void) fwrite("SFW94A",1,6,file);
     filesize=65535L*magick[2]+256L*magick[1]+magick[0];
-    for (i=0; i < filesize; i++)
+    for (i=0; i < (long) filesize; i++)
     {
       c=ReadBlobByte(pwp_image);
       (void) fputc(c,file);

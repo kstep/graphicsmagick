@@ -344,7 +344,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (scale == (Quantum *) NULL)
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
-          for (i=0; i <= max_value; i++)
+          for (i=0; i <= (long) max_value; i++)
             scale[i]=(Quantum) ((MaxRGB*i+(max_value >> 1))/max_value);
         }
     /*

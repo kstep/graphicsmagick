@@ -237,7 +237,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
         {
           switch (tga_info.colormap_size)
           {
@@ -684,7 +684,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
         q=targa_colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
         {
           *q++=DownScale(image->colormap[i].blue);
           *q++=DownScale(image->colormap[i].green);

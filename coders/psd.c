@@ -483,11 +483,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,length/3))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
         image->colormap[i].red=UpScale(ReadBlobByte(image));
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
         image->colormap[i].green=UpScale(ReadBlobByte(image));
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
         image->colormap[i].blue=UpScale(ReadBlobByte(image));
       image->matte=psd_info.channels >= 2;
     }
@@ -566,10 +566,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (ReadBlobMSBLong(image)-layer_info[i].mask.y);
                 layer_info[i].mask.width=(unsigned int)
                   (ReadBlobMSBLong(image)-layer_info[i].mask.x);
-                for (j=0; j < (length-16); j++)
+                for (j=0; j < (long) (length-16); j++)
                   (void) ReadBlobByte(image);
               }
-            for (j=0; j < (size-length-4); j++)
+            for (j=0; j < (long) (size-length-4); j++)
               (void) ReadBlobByte(image);
           }
         /*
@@ -609,7 +609,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 A layer without data.
               */
               SetImage(layer_info[i].image,OpaqueOpacity);
-              for (k=0; k < layer_info[i].channel_info[j].size; k++)
+              for (k=0; k < (long) layer_info[i].channel_info[j].size; k++)
                 (void) ReadBlobByte(layer_info[i].image);
               continue;
             }
@@ -1059,15 +1059,15 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         Write PSD raster colormap.
       */
       WriteBlobMSBLong(image,768);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
         (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
         (void) WriteBlobByte(image,DownScale(image->colormap[i].green));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
         (void) WriteBlobByte(image,DownScale(image->colormap[i].blue));
       for ( ; i < 256; i++)
         (void) WriteBlobByte(image,0);

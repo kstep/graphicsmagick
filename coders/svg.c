@@ -3286,7 +3286,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       primitive_info[i].coordinates=0;
       primitive_info[i].method=FloodfillMethod;
       i++;
-      if (i < (number_points-6*BezierQuantum-360))
+      if (i < (long) (number_points-6*BezierQuantum-360))
         continue;
       number_points+=6*BezierQuantum+360;
       ReacquireMemory((void **) &primitive_info,
@@ -3477,7 +3477,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         for (p=token; *p != '\0'; p++)
           if (isalpha((int) *p))
             number_attributes++;
-        if (i > (number_points-6*BezierQuantum*number_attributes-1))
+        if (i > (long) (number_points-6*BezierQuantum*number_attributes-1))
           {
             number_points+=6*BezierQuantum*number_attributes;
             ReacquireMemory((void **) &primitive_info,

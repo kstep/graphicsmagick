@@ -174,7 +174,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           MagickMonitor(LoadImageText,y,image->rows);
     }
     count=image->tile_info.height-image->rows-image->tile_info.y;
-    for (j=0; j < count; j++)
+    for (j=0; j < (long) count; j++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);

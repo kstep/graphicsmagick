@@ -1863,7 +1863,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 while (*p && ((p-chunk) < (int) length))
                   p++;  /* frame name */
                 p++;  /* frame name terminator */
-                if ((p-chunk) < (length-4))
+                if ((p-chunk) < (long) (length-4))
                   {
                     int
                       change_delay,
@@ -2031,7 +2031,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             first_object=(p[0]<<8) | p[1];
             last_object=(p[2]<<8) | p[3];
-            for (i=first_object; i <= last_object; i++)
+            for (i=first_object; i <= (long) last_object; i++)
             {
               if (mng_info->exists[i] && !mng_info->frozen[i])
                 {
@@ -2911,7 +2911,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               palette;
 
             png_get_PLTE(ping,ping_info,&palette,&number_colors);
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=UpScale(palette[i].red);
               image->colormap[i].green=UpScale(palette[i].green);
@@ -2926,7 +2926,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             scale=MaxRGB/((1<<ping_info->bit_depth)-1);
             if (scale < 1)
                scale=1;
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=(Quantum) (i*scale);
               image->colormap[i].green=(Quantum) (i*scale);
@@ -3254,7 +3254,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->depth = 8;
 #endif
     if (png_get_text(ping,ping_info,&text,&num_text) > 0)
-      for (i=0; i < (size_t) num_text; i++)
+      for (i=0; i < (long) num_text; i++)
       {
 
         /* Check for a profile */
@@ -4657,7 +4657,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          data_length=3*image->colors;
          WriteBlobMSBLong(image,data_length);
          PNGType(chunk,mng_PLTE);
-         for (i=0; i < image->colors; i++)
+         for (i=0; i < (long) image->colors; i++)
          {
            chunk[4+i*3]=DownScale(image->colormap[i].red) & 0xff;
            chunk[5+i*3]=DownScale(image->colormap[i].green) & 0xff;
@@ -4710,7 +4710,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 data_length=3*image->colors;
                 WriteBlobMSBLong(image,data_length);
                 PNGType(chunk,mng_PLTE);
-                for (i=0; i < image->colors; i++)
+                for (i=0; i < (long) image->colors; i++)
                 {
                   chunk[4+i*3]=DownScale(image->colormap[i].red) & 0xff;
                   chunk[5+i*3]=DownScale(image->colormap[i].green) & 0xff;
@@ -5084,7 +5084,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 png_set_PLTE(ping,ping_info,palette,(int) number_colors);
               }
             ping_info->bit_depth=1;
-            while ((1L << ping_info->bit_depth) < number_colors)
+            while ((1UL << ping_info->bit_depth) < number_colors)
               ping_info->bit_depth<<=1;
             /*
               Identify which colormap entry is transparent.
@@ -5094,7 +5094,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
             assert(number_colors <= 256);
-            for (i=0; i < number_colors; i++)
+            for (i=0; i < (long) number_colors; i++)
                ping_info->trans[i]=255;
             for (y=0; y < (int) image->rows; y++)
             {
@@ -5122,7 +5122,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               }
             }
             ping_info->num_trans=0;
-            for (i=0; i < number_colors; i++)
+            for (i=0; i < (long) number_colors; i++)
               if (ping_info->trans[i] != 255)
                 ping_info->num_trans=i+1;
             if (ping_info->num_trans == 0)

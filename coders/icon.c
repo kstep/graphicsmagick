@@ -242,7 +242,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           image);
       (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
       p=icon_colormap;
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         image->colormap[i].blue=UpScale(*p++);
         image->colormap[i].green=UpScale(*p++);

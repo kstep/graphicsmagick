@@ -243,7 +243,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlobLSBLong(image);
   count=ReadBlobLSBLong(image);
   filesize=ReadBlobLSBLong(image);
-  for (i=0; i < (count-12); i++)
+  for (i=0; i < (long) (count-12); i++)
     (void) ReadBlobByte(image);
   /*
     Copy Postscript to temporary file.
@@ -251,7 +251,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   box.width=0;
   box.height=0;
   p=command;
-  for (i=0; i < filesize; i++)
+  for (i=0; i < (long) filesize; i++)
   {
     c=ReadBlobByte(image);
     if (c == EOF)

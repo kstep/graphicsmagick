@@ -270,7 +270,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     Compute the character per pixel.
   */
   characters_per_pixel=1;
-  for (k=MaxCixels; colors > k; k*=MaxCixels)
+  for (k=MaxCixels; (long) colors > k; k*=MaxCixels)
     characters_per_pixel++;
   /*
     UIL header.
@@ -279,14 +279,14 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   GetPathComponent(image->filename,BasePath,basename);
   FormatString(buffer,"value\n  %.1024s_ct : color_table(\n",basename);
   (void) WriteBlobString(image,buffer);
-  for (i=0; i < colors; i++)
+  for (i=0; i < (long) colors; i++)
   {
     /*
       Define UIL color.
     */
     (void) QueryColorname(image,image->colormap+i,X11Compliance,name);
     if (transparent)
-      if (i == (colors-1))
+      if (i == (long) (colors-1))
         (void) strcpy(name,"None");
     /*
       Write UIL color.
@@ -306,7 +306,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
         name,Intensity(*p) < (0.5*(MaxRGB+1)) ? "background" : "foreground",
         symbol);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%.1024s",(i == (colors-1) ? ");\n" : ",\n"));
+    FormatString(buffer,"%.1024s",(i == (long) (colors-1) ? ");\n" : ",\n"));
     (void) WriteBlobString(image,buffer);
   }
   /*

@@ -4008,7 +4008,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"  {\n");
   (void) WriteBlobString(image,"    ");
   p=(char *) blob;
-  for (i=0; i < length ; i++)
+  for (i=0; i < (long) length ; i++)
   {
     FormatString(buffer,"0x%02x, ",*p & 0xff);
     (void) WriteBlobString(image,buffer);

@@ -193,7 +193,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         (void) ReadBlob(image,2*image->colors,(char *) tim_colormap);
         p=tim_colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
         {
           word=(*p++);
           word|=(*p++ << 8);

@@ -2887,7 +2887,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               (element == dicom_info[i].element))
             break;
         (void) fprintf(stdout,"0x%04lx %4lu %.1024s-%.1024s (0x%04x,0x%04x)",
-          image->offset,length,implicit_vr,explicit_vr,group,element);
+          image->offset,(unsigned long) length,implicit_vr,explicit_vr,group,
+          element);
         if (dicom_info[i].description != (char *) NULL)
           (void) fprintf(stdout," %.1024s",dicom_info[i].description);
         (void) fprintf(stdout,": ");
@@ -2962,7 +2963,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Photometric interpretation.
             */
-            for (i=0; i < length; i++)
+            for (i=0; i < (long) length; i++)
               photometric[i]=data[i];
             photometric[i]='\0';
             break;
@@ -3055,7 +3056,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (graymap == (unsigned short *) NULL)
               ThrowReaderException(ResourceLimitWarning,
                 "Unable to create graymap",image);
-            for (i=0; i < colors; i++)
+            for (i=0; i < (long) colors; i++)
               if (bytes_per_pixel == 1)
                 graymap[i]=data[i];
               else
@@ -3076,7 +3077,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(ResourceLimitWarning,
                 "Unable to create colormap",image);
             p=data;
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (long) image->colors; i++)
             {
               index=ValidateColormapIndex(image,*p | *(p+1) << 8);
               if (element == 0x1201)
@@ -3107,7 +3108,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (i=0; i < Max(length,4); i++)
               if (!isprint(data[i]))
                 break;
-            if ((i != length) && (length <= 4))
+            if ((i != (long) length) && (length <= 4))
               {
                 long
                   j;
@@ -3118,7 +3119,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (void) fprintf(stdout,"%lu",datum);
               }
             else
-              for (i=0; i < length; i++)
+              for (i=0; i < (long) length; i++)
                 if (isprint(data[i]))
                   (void) fprintf(stdout,"%c",data[i]);
                 else
@@ -3191,7 +3192,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (scale == (Quantum *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i <= max_value; i++)
+      for (i=0; i <= (long) max_value; i++)
         scale[i]=((unsigned long) (MaxRGB*i)/max_value);
     }
   for (scene=0; scene < (int) number_scenes; scene++)
@@ -3210,7 +3211,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert Planar RGB DCM Medical image to pixel packets.
         */
-        for (i=0; i < samples_per_pixel; i++)
+        for (i=0; i < (long) samples_per_pixel; i++)
         {
           for (y=0; y < (int) image->rows; y++)
           {

@@ -917,7 +917,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Use global colormap.
         */
         p=global_colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
         {
           image->colormap[i].red=UpScale(*p++);
           image->colormap[i].green=UpScale(*p++);
@@ -940,7 +940,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         (void) ReadBlob(image,3*image->colors,(char *) colormap);
         p=colormap;
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
         {
           image->colormap[i].red=UpScale(*p++);
           image->colormap[i].green=UpScale(*p++);
@@ -1248,13 +1248,13 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       if ((1UL << bits_per_pixel) >= image->colors)
         break;
     q=colormap;
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (long) image->colors; i++)
     {
       *q++=DownScale(image->colormap[i].red);
       *q++=DownScale(image->colormap[i].green);
       *q++=DownScale(image->colormap[i].blue);
     }
-    for ( ; i < (1UL << bits_per_pixel); i++)
+    for ( ; i < (1L << bits_per_pixel); i++)
     {
       *q++=(Quantum) 0x0;
       *q++=(Quantum) 0x0;
@@ -1315,7 +1315,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             {
               count=Min(strlen(p),255);
               (void) WriteBlobByte(image,(int) count);
-              for (i=0; i < count; i++)
+              for (i=0; i < (long) count; i++)
                 (void) WriteBlobByte(image,*p++);
             }
             (void) WriteBlobByte(image,0x0);

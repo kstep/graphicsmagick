@@ -217,7 +217,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           No background color-- initialize to black.
         */
-        for (i=0; i < number_planes; i++)
+        for (i=0; i < (long) number_planes; i++)
           background_color[i]=0;
         (void) ReadBlobByte(image);
       }
@@ -227,7 +227,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Initialize background color.
         */
         p=background_color;
-        for (i=0; i < number_planes; i++)
+        for (i=0; i < (long) number_planes; i++)
           *p++=ReadBlobByte(image);
       }
     if ((number_planes & 0x01) == 0)
@@ -243,7 +243,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         p=colormap;
-        for (i=0; i < number_colormaps; i++)
+        for (i=0; i < (long) number_colormaps; i++)
           for (x=0; x < (int) map_length; x++)
             *p++=XDownScale(ReadBlobLSBShort(image));
       }
@@ -289,14 +289,14 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Set background color.
         */
         p=rle_pixels;
-        for (i=0; i < number_pixels; i++)
+        for (i=0; i < (long) number_pixels; i++)
         {
           if (!image->matte)
-            for (j=0; j < number_planes; j++)
+            for (j=0; j < (long) number_planes; j++)
               *p++=background_color[j];
           else
             {
-              for (j=0; j < (number_planes-1); j++)
+              for (j=0; j < (long) (number_planes-1); j++)
                 *p++=background_color[j];
               *p++=0;  /* initialize matte channel */
             }
@@ -394,14 +394,14 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         mask=(map_length-1);
         p=rle_pixels;
         if (number_colormaps == 1)
-          for (i=0; i < number_pixels; i++)
+          for (i=0; i < (long) number_pixels; i++)
           {
             *p=colormap[*p & mask];
             p++;
           }
         else
           if ((number_planes >= 3) && (number_colormaps >= 3))
-            for (i=0; i < number_pixels; i++)
+            for (i=0; i < (long) number_pixels; i++)
               for (x=0; x < (int) number_planes; x++)
               {
                 *p=colormap[x*map_length+(*p & mask)];
@@ -450,7 +450,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         p=colormap;
         if (number_colormaps == 1)
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
           {
             /*
               Pseudocolor.
@@ -461,7 +461,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         else
           if (number_colormaps > 1)
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=UpScale(*p);
               image->colormap[i].green=UpScale(*(p+map_length));

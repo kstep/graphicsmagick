@@ -337,13 +337,13 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
           image->colormap[i].red=UpScale(sun_colormap[i]);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
           image->colormap[i].green=UpScale(sun_colormap[i]);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
-        for (i=0; i < image->colors; i++)
+        for (i=0; i < (long) image->colors; i++)
           image->colormap[i].blue=UpScale(sun_colormap[i]);
         LiberateMemory((void **) &sun_colormap);
         break;
@@ -829,11 +829,11 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           /*
             Dump colormap to file.
           */
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
             (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
             (void) WriteBlobByte(image,DownScale(image->colormap[i].green));
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
             (void) WriteBlobByte(image,DownScale(image->colormap[i].blue));
           /*
             Convert PseudoClass packet to SUN colormapped pixel.

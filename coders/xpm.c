@@ -328,7 +328,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   i=1;
   none=(-1);
-  for (j=0; j < image->colors; j++)
+  for (j=0; j < (long) image->colors; j++)
   {
     p=textlist[i++];
     if (p == (char *) NULL)
@@ -369,7 +369,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     (void) QueryColorDatabase(target,&image->colormap[j]);
   }
-  if (j < image->colors)
+  if (j < (long) image->colors)
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
         LiberateMemory((void **) &textlist[i]);
@@ -394,7 +394,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       (void) strncpy(key,p,width);
       if (strcmp(key,keys[j]) != 0)
-        for (j=0; j < Max(image->colors-1,1); j++)
+        for (j=0; j < (long) Max(image->colors-1,1); j++)
           if (strcmp(key,keys[j]) == 0)
             break;
       if (image->storage_class == PseudoClass)
@@ -410,7 +410,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Free resources.
   */
-  for (i=0; i < image->colors; i++)
+  for (i=0; i < (long) image->colors; i++)
     LiberateMemory((void **) &keys[i]);
   LiberateMemory((void **) &keys);
   for (i=0; textlist[i] != (char *) NULL; i++)
@@ -734,7 +734,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     Compute the character per pixel.
   */
   characters_per_pixel=1;
-  for (k=MaxCixels; colors > k; k*=MaxCixels)
+  for (k=MaxCixels; (long) colors > k; k*=MaxCixels)
     characters_per_pixel++;
   /*
     XPM header.
@@ -745,7 +745,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer,"\"%u %u %u %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
   (void) WriteBlobString(image,buffer);
-  for (i=0; i < colors; i++)
+  for (i=0; i < (long) colors; i++)
   {
     /*
       Define XPM color.
@@ -754,7 +754,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     (void) QueryColorname(image,image->colormap+i,X11Compliance,name);
     if (transparent)
       {
-        if (i == (colors-1))
+        if (i == (long) (colors-1))
           {
             if (LocaleCompare(image_info->magick,"PICON") == 0)
               (void) strcpy(name,"grey75");

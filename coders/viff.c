@@ -441,7 +441,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             }
             default: break;
           }
-        for (i=0; i < (viff_info.map_rows*image->colors); i++)
+        for (i=0; i < (long) (viff_info.map_rows*image->colors); i++)
         {
           switch (viff_info.map_storage_type)
           {
@@ -451,18 +451,18 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             case VFF_MAPTYP_DOUBLE: value=((double *) viff_colormap)[i]; break;
             default: value=viff_colormap[i]; break;
           }
-          if (i < image->colors)
+          if (i < (long) image->colors)
             {
               image->colormap[i].red=UpScale((unsigned int) value);
               image->colormap[i].green=UpScale((unsigned int) value);
               image->colormap[i].blue=UpScale((unsigned int) value);
             }
           else
-            if (i < (2*image->colors))
+            if (i < (long) (2*image->colors))
               image->colormap[i % image->colors].green=
                 UpScale((unsigned int) value);
             else
-              if (i < (3*image->colors))
+              if (i < (long) (3*image->colors))
                 image->colormap[i % image->colors].blue=
                   UpScale((unsigned int) value);
         }
@@ -536,7 +536,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         }
         max_value=value;
         min_value=value;
-        for (i=0; i < max_packets; i++)
+        for (i=0; i < (long) max_packets; i++)
         {
           switch (viff_info.data_storage_type)
           {
@@ -567,7 +567,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       Convert pixels to Quantum size.
     */
     p=(unsigned char *) viff_pixels;
-    for (i=0; i < max_packets; i++)
+    for (i=0; i < (long) max_packets; i++)
     {
       switch (viff_info.data_storage_type)
       {
@@ -628,7 +628,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           }
           if ((image->columns % 8) != 0)
             {
-              for (bit=0; bit < (image->columns % 8); bit++)
+              for (bit=0; bit < (long) (image->columns % 8); bit++)
                 indexes[x+bit]=(IndexPacket)
                   ((*p) & (0x01 << bit) ? !polarity : polarity);
               p++;
@@ -1077,11 +1077,11 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             ThrowWriterException(ResourceLimitWarning,
               "Memory allocation failed",image);
           q=viff_colormap;
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
             *q++=DownScale(image->colormap[i].red);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
             *q++=DownScale(image->colormap[i].green);
-          for (i=0; i < image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
             *q++=DownScale(image->colormap[i].blue);
           (void) WriteBlob(image,3*image->colors,(char *) viff_colormap);
           LiberateMemory((void **) &viff_colormap);

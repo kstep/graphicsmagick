@@ -192,7 +192,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlobByte(image);
   (void) ReadBlobByte(image);
   image->depth=ReadBlobByte(image) > 8 ? 16  : 8;
-  for (i=0; i < (headersize-804); i++)
+  for (i=0; i < (long) (headersize-804); i++)
     (void) ReadBlobByte(image);
   /*
     Convert DPX raster image to pixel packets.

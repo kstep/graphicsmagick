@@ -326,7 +326,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
       image->storage_class=DirectClass;
     p=pcx_colormap;
-    for (i=0; i < image->colors; i++)
+    for (i=0; i < (long) image->colors; i++)
     {
       image->colormap[i].red=UpScale(*p++);
       image->colormap[i].green=UpScale(*p++);
@@ -401,7 +401,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pcx_info.colormap_signature=ReadBlobByte(image);
                 (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
                 p=pcx_colormap;
-                for (i=0; i < image->colors; i++)
+                for (i=0; i < (long) image->colors; i++)
                 {
                   image->colormap[i].red=UpScale(*p++);
                   image->colormap[i].green=UpScale(*p++);
@@ -508,7 +508,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               if ((image->columns % 4) != 0)
                 {
-                  for (i=3; i >= (size_t) (4-(image->columns % 4)); i--)
+                  for (i=3; i >= (long) (4-(image->columns % 4)); i--)
                     *r++=(*p >> (i*2)) & 0x03;
                   p++;
                 }
@@ -824,7 +824,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       pcx_colormap[i]=0;
     q=pcx_colormap;
     if (image->storage_class == PseudoClass)
-      for (i=0; i < image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         *q++=DownScale(image->colormap[i].red);
         *q++=DownScale(image->colormap[i].green);
@@ -1007,7 +1007,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       page_table[scene+1]=0;
       (void) SeekBlob(image,0L,SEEK_SET);
       WriteBlobLSBLong(image,0x3ADE68B1L);
-      for (i=0; i <= scene; i++)
+      for (i=0; i <= (long) scene; i++)
         WriteBlobLSBLong(image,page_table[i]);
       LiberateMemory((void **) &page_table);
     }

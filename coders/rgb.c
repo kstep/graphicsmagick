@@ -186,7 +186,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               MagickMonitor(LoadImageText,y,image->rows);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
-        for (i=0; i < count; i++)
+        for (i=0; i < (long) count; i++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         break;
       }
@@ -222,7 +222,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               MagickMonitor(LoadImageText,y,image->rows);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
-        for (i=0; i < count; i++)
+        for (i=0; i < (long) count; i++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         break;
       }
@@ -262,7 +262,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
-        for (i=0; i < count; i++)
+        for (i=0; i < (long) count; i++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         if (image_info->interlace == PartitionInterlace)
           {
@@ -288,7 +288,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
-        for (i=0; i < count; i++)
+        for (i=0; i < (long) count; i++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         if (image_info->interlace == PartitionInterlace)
           {
@@ -314,7 +314,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
-        for (i=0; i < count; i++)
+        for (i=0; i < (long) count; i++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         if (image->matte)
           {
@@ -348,7 +348,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
               i++;
             }
             count=image->tile_info.height-image->rows-image->tile_info.y;
-            for (i=0; i < count; i++)
+            for (i=0; i < (long) count; i++)
               (void) ReadBlob(image,packet_size*image->tile_info.width,
                 scanline);
           }
