@@ -443,9 +443,6 @@ MagickExport unsigned int SignatureImage(Image *image)
   int
     y;
 
-  SignatureInfo
-    signature_info;
-
   register int
     x;
 
@@ -454,6 +451,9 @@ MagickExport unsigned int SignatureImage(Image *image)
 
   register unsigned char
     *q;
+
+  SignatureInfo
+    signature_info;
 
   unsigned char
     *message;
