@@ -17,7 +17,7 @@ extern "C" {
 */
 typedef struct _ErrorPacket
 {
-  int
+  long
     red,
     green,
     blue;

@@ -247,10 +247,10 @@ typedef struct _CubeInfo
   double
     distance,
     pruning_threshold,
-    next_pruning_threshold;
+    next_pruning_threshold,
+    *squares;
 
   unsigned int
-    *squares,
     nodes,
     free_nodes,
     color_number;
@@ -524,12 +524,14 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image)
 #define ClassifyImageText  "  Classifying image colors...  "
 
   double
+    bisect[MaxTreeDepth+1],
     mid_red,
     mid_green,
     mid_blue;
 
   register double
-    distance_squared;
+    distance_squared,
+    *squares;
 
   register int
     i;
@@ -541,16 +543,15 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image)
     *p;
 
   register unsigned int
-    index,
-    *squares;
-
-  static const double
-    bisect[] = { 128.0, 64.0, 32.0, 16.0, 8.0, 4.0, 2.0, 1.0, 0.5 };
+    index;
 
   unsigned int
     id,
     level;
 
+  bisect[0]=(MaxRGB+1.0)/2.0;
+  for (i=1; i <= MaxTreeDepth; i++)
+    bisect[i]=0.5*bisect[i-1];
   squares=cube_info->squares;
   cube_info->root->quantization_error=
     3.0*(MaxRGB/2.0)*(MaxRGB/2.0)*image->columns*image->rows;
@@ -603,11 +604,10 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image)
           /*
             Approximate the quantization error represented by this node.
           */
-          distance_squared=squares[(int) (DownScale(p->red)-mid_red)]+
-            squares[(int) (DownScale(p->green)-mid_green)]+
-            squares[(int) (DownScale(p->blue)-mid_blue)];
-          node_info->quantization_error+=
-            distance_squared*((double) p->length+1.0);
+          distance_squared=squares[(int) p->red-(int) mid_red]+
+            squares[(int) p->green-(int) mid_green]+
+            squares[(int) p->blue-(int) mid_blue];
+          node_info->quantization_error+=distance_squared*(p->length+1.0);
         }
       index--;
     }
@@ -708,7 +708,7 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
         Traverse any children.
       */
       if (node_info->census != 0)
-        for (id=0; id < 8; id++)
+        for (id=0; id < MaxTreeDepth; id++)
           if (node_info->census & (1 << id))
             ClosestColor(cube_info,node_info->child[id]);
       if (node_info->number_unique != 0)
@@ -717,9 +717,7 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
             *color;
 
           register double
-            distance_squared;
-
-          register unsigned int
+            distance_squared,
             *squares;
 
           /*
@@ -779,7 +777,7 @@ static void DefineColormap(CubeInfo *cube_info,NodeInfo *node_info)
     Traverse any children.
   */
   if (node_info->census != 0)
-    for (id=0; id < 8; id++)
+    for (id=0; id < MaxTreeDepth; id++)
       if (node_info->census & (1 << id))
         DefineColormap(cube_info,node_info->child[id]);
   if (node_info->number_unique != 0)
@@ -1003,9 +1001,9 @@ static void Dither(CubeInfo *cube_info,Image *image,
       */
       for (i=0; i < (ErrorQueueLength-1); i++)
         p->error[i]=p->error[i+1];
-      p->error[i].red=red-(int) image->colormap[index].red;
-      p->error[i].green=green-(int) image->colormap[index].green;
-      p->error[i].blue=blue-(int) image->colormap[index].blue;
+      p->error[i].red=(int) red-(int) image->colormap[index].red;
+      p->error[i].green=(int) green-(int) image->colormap[index].green;
+      p->error[i].blue=(int) blue-(int) image->colormap[index].blue;
     }
   switch (direction)
   {
@@ -1141,10 +1139,10 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,unsigned int dither,
     Initialize root node.
   */
   cube_info->root=GetNodeInfo(cube_info,0,0,(NodeInfo *) NULL);
-  cube_info->squares=(unsigned int *)
-    AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(unsigned int));
+  cube_info->squares=(double *)
+    AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(double));
   if ((cube_info->root == (NodeInfo *) NULL) ||
-      (cube_info->squares == (unsigned int *) NULL))
+      (cube_info->squares == (double *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to quantize image",
         "Memory allocation failed");
@@ -1194,7 +1192,7 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,unsigned int dither,
   for (i=0; i < ErrorQueueLength; i++)
   {
     cube_info->weights[ErrorQueueLength-i-1]=1.0/weight;
-     weight*=exp(log((double) MaxRGB+1.0)/(ErrorQueueLength-1.0));
+    weight*=exp(log((double) MaxRGB+1)/(ErrorQueueLength-1.0));
   }
   /*
     Normalize the weighting factors.
@@ -1204,6 +1202,9 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,unsigned int dither,
     weight+=cube_info->weights[i];
   for (i=0; i < ErrorQueueLength; i++)
     cube_info->weights[i]/=weight;
+  if (QuantumDepth == 16)
+    for (i=0; i < ErrorQueueLength; i++)
+      cube_info->weights[i]/=256.0;
   return(True);
 }
 
@@ -1264,7 +1265,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
   cube_info->free_nodes--;
   node_info=cube_info->next_node++;
   node_info->parent=parent;
-  for (i=0; i < 8; i++)
+  for (i=0; i < MaxTreeDepth; i++)
     node_info->child[i]=(NodeInfo *) NULL;
   node_info->id=id;
   node_info->level=level;
@@ -1737,7 +1738,7 @@ static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
     Traverse any children.
   */
   if (node_info->census != 0)
-    for (id=0; id < 8; id++)
+    for (id=0; id < MaxTreeDepth; id++)
       if (node_info->census & (1 << id))
         PruneChild(cube_info,node_info->child[id]);
   /*
@@ -1787,7 +1788,7 @@ static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
     Traverse any children.
   */
   if (node_info->census != 0)
-    for (id=0; id < 8; id++)
+    for (id=0; id < MaxTreeDepth; id++)
       if (node_info->census & (1 << id))
         PruneLevel(cube_info,node_info->child[id]);
   if (node_info->level == cube_info->depth)
@@ -1848,16 +1849,14 @@ unsigned int QuantizationError(Image *image)
     total_error;
 
   register double
-    distance_squared;
+    distance_squared,
+    *squares;
 
   register int
     i;
 
   register RunlengthPacket
     *p;
-
-  register unsigned int
-    *squares;
 
   /*
     Initialize measurement.
@@ -1869,9 +1868,9 @@ unsigned int QuantizationError(Image *image)
   image->normalized_maximum_error=0.0;
   if (image->class == DirectClass)
     return(True);
-  cube_info.squares=(unsigned int *)
-    AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(unsigned int));
-  if (cube_info.squares == (unsigned int *) NULL)
+  cube_info.squares=(double *)
+    AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(double));
+  if (cube_info.squares == (double *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to measure error",
         "Memory allocation failed");
@@ -1889,9 +1888,9 @@ unsigned int QuantizationError(Image *image)
   p=image->pixels;
   for (i=0; i < (int) image->packets; i++)
   {
-    distance_squared=squares[p->red-(int) image->colormap[p->index].red]+
-      squares[p->green-(int) image->colormap[p->index].green]+
-      squares[p->blue-(int) image->colormap[p->index].blue];
+    distance_squared=squares[(int) p->red-(int) image->colormap[p->index].red]+
+      squares[(int) p->green-(int) image->colormap[p->index].green]+
+      squares[(int) p->blue-(int) image->colormap[p->index].blue];
     total_error+=(distance_squared*((double) p->length+1.0));
     if (distance_squared > maximum_error_per_pixel)
       maximum_error_per_pixel=distance_squared;
@@ -2183,7 +2182,7 @@ static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
     Traverse any children.
   */
   if (node_info->census != 0)
-    for (id=0; id < 8; id++)
+    for (id=0; id < MaxTreeDepth; id++)
       if (node_info->census & (1 << id))
         Reduce(cube_info,node_info->child[id]);
   if (node_info->quantization_error <= cube_info->pruning_threshold)

@@ -250,7 +250,8 @@ static unsigned int Classify(Image *image,short **extrema,
     count;
 
   register double
-    distance_squared;
+    distance_squared,
+    *squares;
 
   register int
     i,
@@ -260,9 +261,6 @@ static unsigned int Classify(Image *image,short **extrema,
   register RunlengthPacket
     *p,
     *q;
-
-  register unsigned int
-    *squares;
 
   unsigned int
     number_clusters;
@@ -446,9 +444,8 @@ static unsigned int Classify(Image *image,short **extrema,
   /*
     Speed up distance calculations.
   */
-  squares=(unsigned int *)
-    AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(unsigned int));
-  if (squares == (unsigned int *) NULL)
+  squares=(double *) AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(double));
+  if (squares == (double *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL);
@@ -512,15 +509,15 @@ static unsigned int Classify(Image *image,short **extrema,
         for (j=0; j < (int) image->colors; j++)
         {
           sum=0.0;
-          distance_squared=squares[q->red-(int) image->colormap[j].red]+
-            squares[q->green-(int) image->colormap[j].green]+
-            squares[q->blue-(int) image->colormap[j].blue];
+          distance_squared=squares[(int) q->red-(int) image->colormap[j].red]+
+            squares[(int) q->green-(int) image->colormap[j].green]+
+            squares[(int) q->blue-(int) image->colormap[j].blue];
           numerator=sqrt(distance_squared);
           for (k=0; k < (int) image->colors; k++)
           {
-            distance_squared=squares[q->red-(int) image->colormap[k].red]+
-              squares[q->green-(int) image->colormap[k].green]+
-              squares[q->blue-(int) image->colormap[k].blue];
+            distance_squared=squares[(int) q->red-(int) image->colormap[k].red]+
+              squares[(int) q->green-(int) image->colormap[k].green]+
+              squares[(int) q->blue-(int) image->colormap[k].blue];
             ratio=numerator/sqrt(distance_squared);
             sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
           }
@@ -1274,9 +1271,8 @@ static void ScaleSpace(const long *histogram,const double tau,
 {
   double
     alpha,
-    beta;
-
-  double
+    beta,
+    gamma[MaxRGB+1],
     sum;
 
   register int
@@ -1286,10 +1282,12 @@ static void ScaleSpace(const long *histogram,const double tau,
   alpha=1.0/(tau*sqrt((double) (2.0*M_PI)));
   beta=(-1.0/(2.0*tau*tau));
   for (x=0; x <= MaxRGB; x++)
+    gamma[x]=exp((double) (beta*x*x));
+  for (x=0; x <= MaxRGB; x++)
   {
     sum=0.0;
     for (u=0; u <= MaxRGB; u++)
-      sum+=(double) histogram[u]*exp((double) (beta*(x-u)*(x-u)));
+      sum+=(double) histogram[u]*gamma[AbsoluteValue(x-u)];
     scaled_histogram[x]=alpha*sum;
   }
 }
