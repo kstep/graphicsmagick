@@ -458,7 +458,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       break;
     indexes=GetIndexes(image);
     if (image->matte)
-      for (x=(long) image->columns-1; x >= 0; x--)
+      for (x=0; x < (long) image->columns; x++)
       {
         marker[(int) indexes[x]]=True;
         opacity[(int) indexes[x]]=p->opacity;
@@ -469,7 +469,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
         p++;
       }
     else
-      for (x=(long) image->columns-1; x >= 0; x--)
+      for (x=0; x < (long) image->columns; x++)
       {
         marker[(int) indexes[x]]=True;
         if (indexes[x] > top_used)
@@ -622,7 +622,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
         if (p == (const PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=(long) image->columns-1; x >= 0; x--)
+        for (x=0; x < (long) image->columns; x++)
         {
           j=(int) indexes[x];
           indexes[x]=map[j];
@@ -3487,7 +3487,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 index;
 
               if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-                for (x=(long) image->columns-1; x >= 0; x--)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   index=indexes[x];
                   if (index < ping_info->num_trans)
@@ -3496,7 +3496,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   q++;
                 }
               else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
-                for (x=(long) image->columns-1; x >= 0; x--)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   index=indexes[x];
                   q->red=image->colormap[index].red;
@@ -5711,7 +5711,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               if (p == (const PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
-              for (x=(long) image->columns-1; x >= 0; x--)
+              for (x=0; x < (long) image->columns; x++)
               {
                 if (p->opacity != OpaqueOpacity)
                   {
