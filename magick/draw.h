@@ -72,15 +72,20 @@ typedef struct _DrawInfo
     compose;
 
   double
-    pointsize;
-
-  double
     stroke_width;
 
   char
     *font,
-    *encoding,
-    *density;
+    *family,
+    *style,
+    *weight;
+
+  double
+    pointsize;
+
+  char
+    *density,
+    *encoding;
 
   PixelPacket
     box,
@@ -112,7 +117,7 @@ typedef struct _DrawInfo
 } DrawInfo;
 
 typedef struct _TypeInfo
-{ 
+{
   char
     *filename,
     *foundry,
@@ -121,7 +126,7 @@ typedef struct _TypeInfo
     *alias,
     *description,
     *format,
-		*style,
+    *style,
     *weight,
     *stretch,
     *glyphs,
@@ -162,19 +167,19 @@ typedef struct _TypeMetric
 {
   PointInfo
     pixels_per_em;
-    
+
   double
     ascent,
     descent,
-    width, 
+    width,
     height,
     max_advance;
 
   SegmentInfo
-	  bounds;
+    bounds;
 
   double
-		underline_position,
+    underline_position,
     underline_thickness;
 } TypeMetric;
 
