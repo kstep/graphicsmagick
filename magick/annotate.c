@@ -848,19 +848,19 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
 */
 
 static inline PixelPacket AlphaComposite(const PixelPacket *p,
-  const QuantumPrecision alpha,const PixelPacket *q,const QuantumPrecision beta)
+  const double alpha,const PixelPacket *q,const double beta)
 {
   PixelPacket
     composite;
 
   composite.red=(Quantum)
-    (((MaxRGB-alpha)*p->red+alpha*((MaxRGB-beta)*q->red/MaxRGB))/MaxRGB);
+    (((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)/MaxRGB+0.5);
   composite.green=(Quantum)
-    (((MaxRGB-alpha)*p->green+alpha*((MaxRGB-beta)*q->green/MaxRGB))/MaxRGB);
+    (((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)/MaxRGB+0.5);
   composite.blue=(Quantum)
-    (((MaxRGB-alpha)*p->blue+alpha*((MaxRGB-beta)*q->blue/MaxRGB))/MaxRGB);
+    (((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)/MaxRGB+0.5);
   composite.opacity=(Quantum)
-    (MaxRGB-((MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB));
+    (MaxRGB-((MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB)+0.5);
   return(composite);
 }
 
