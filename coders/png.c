@@ -3882,7 +3882,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 length=image->columns;
 
-                DeleteImageList(image,image);
+                DeleteImageList(image,GetImageListIndex(image));
 
                 image=large_image;
 
