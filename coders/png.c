@@ -5938,6 +5938,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         ping_info->valid&=(~PNG_INFO_PLTE);
       }
 #endif
+    if (ping_info->valid & PNG_INFO_tRNS)
+      {
+        LiberateMemory((void **) &ping_info->trans);
+        ping_info->valid&=(~PNG_INFO_tRNS);
+      }
     png_destroy_write_struct(&ping,&ping_info);
     LiberateMemory((void **) &scanlines);
     LiberateMemory((void **) &png_pixels);
