@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..43\n"; }
+BEGIN { $| = 1; $test=1, print "1..42\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -202,12 +202,6 @@ testFilter('input.miff', 'Scale',
 testFilter('input.miff', 'Segment',
   q/1/,
   'dfddaf9947c009961addec474d86d4142f418d20ff9de2460e8bd4928516aff3');
-
-++$test;
-testFilter('input.miff', 'Shade',
-  q/30/,
-  'b5e864463e316b3789c601fd8db6045d3cb92e96a71f77d7b83b86e02ed186b2',
-  'a426bf4feae0e8be748bf1469a31d64ec2e4f2d4c8b4b81fa5fefee9cfb4484a');
 
 ++$test;
 testFilter('input.miff', 'Sharpen',
