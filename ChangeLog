@@ -1,5 +1,7 @@
-2003-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2003-04-20  Bob Friesenhahn  <bfriesen@scooby.simplesystems.org>
 
+	* www/programming.html: Added links to Delphi and Scheme
+	programming interfaces.
 	* configure.ac : Removed outdated test for jp2conf.h.
 
 2003-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
