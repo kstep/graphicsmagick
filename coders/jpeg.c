@@ -759,19 +759,19 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       {
         int
           hashval,
-          i,
-          sum=0;
-     
+          sum;
+
         /*
           Log the JPEG quality that was used for compression.A
         */
+        sum=0;
         for (i=0; i < NUM_QUANT_TBLS; i++)
         {
           int
             j;
 
           if (jpeg_info.quant_tbl_ptrs[i] != NULL)
-            for (j=0; j<DCTSIZE2; j++)
+            for (j=0; j < DCTSIZE2; j++)
             {
               UINT16 *c;
               c=jpeg_info.quant_tbl_ptrs[i]->quantval;
@@ -1603,7 +1603,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
         default:
         {
-          LogMagickEvent(CoderEvent,"   image->colorspace=%d",image->colorspace);
+          LogMagickEvent(CoderEvent,"   image->colorspace=%d",
+            image->colorspace);
           LogMagickEvent(CoderEvent,
             "   Sampling factors=(%d,%d),(%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
