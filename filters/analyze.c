@@ -22,12 +22,6 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Routine SignatureImage computes a digital signature from the image
-%  pixels.  This signature uniquely identifies the image.  The digital
-%  signature is from RSA Data Security MD5 Digest Algorithm described in
-%  Internet draft [MD5], July 1992.
-%
-%
 */
 
 /*

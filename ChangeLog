@@ -1,5 +1,8 @@
 2003-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* locale/Makefile: Added ability to generate gm_messages.mc
+	(for Windows message compiler) as well as adding 'clean' and
+	'install' targets.
 	* magick/delegate.h: Visual Studio .NET 2003 doesn't like
 	the chaining of GhostscriptVector members which share a
 	common return type. Splitting the definitions solves this
