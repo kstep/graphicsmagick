@@ -69,8 +69,9 @@ Introduction</font></font></font></b></td>
  
   </tbody>
 </table>
-<dd> <a href="archives.html">PerlMagick</a> is an objected-oriented <a href="http://www.perl.com/perl/">
-Perl</a> interface to <a href="../ImageMagick.html">ImageMagick</a>. Use
+<dd> <a href="archives.html">PerlMagick</a> is an objected-oriented
+<a href="http://www.perl.com/perl/">Perl</a>
+interface to <a href="../ImageMagick.html">ImageMagick</a>. Use
 the module to read, manipulate, or write an image or image sequence from
 within a Perl script. This makes it very suitable for Web CGI scripts. You
 must have <b>ImageMagick</b> 5.4.3 or above and Perl version 5.005_02 or greater
@@ -123,16 +124,19 @@ your installed version of <b>ImageMagick</b>. Build and install it like this:
  For Unix, you typically need to be <tt>root</tt> to install the software. 
 There are ways around this. Consult the Perl manual pages for more information. 
         </p>
-        <p><b>Windows NT / Windows 95</b> </p>
+        <p><b>Windows XP / Windows 2000</b> </p>
         <p>ImageMagick must already be installed on your system. Also, the 
 ImageMagick source distribution for <a href="archives.html">Windows 2000</a>
  is required. You must also have the <tt>nmake</tt> from the Visual C++ or
 J++ development environment. Copy <tt>\bin\IMagick.dll</tt> and <tt>\bin\X11.dll</tt>
  to a directory in your dynamic load path such as <tt>c:\perl\site\5.00502</tt>
 . Next, type <pre>&nbsp;&nbsp;&nbsp; cd PerlMagick<br>&nbsp;&nbsp;&nbsp; copy Makefile.nt Makefile.PL<br>&nbsp;&nbsp;&nbsp; perl Makefile.PL<br>&nbsp;&nbsp;&nbsp; nmake<br>&nbsp;&nbsp;&nbsp; nmake install</pre>
+<p>
+See the <a href="http://www.dylanbeattie.net/magick/">PerlMagick Windows
+HowTo</a> page for further installation instructions.
  <b>Running the Regression Tests</b> </p>
         <p>&nbsp;To verify a correct installation, type <pre>&nbsp;&nbsp;&nbsp; make test</pre>
- Use <tt>nmake test</tt> under Windows. There are ao few demonstration scripts 
+ Use <tt>nmake test</tt> under Windows. There are a few demonstration scripts 
 available to exercise many of the functions <b>PerlMagick</b> can perform. 
 Type <pre>&nbsp;&nbsp;&nbsp; cd demo<br>&nbsp;&nbsp;&nbsp; make</pre>
  You are now ready to utilize the <b>PerlMagick</b> methods from within your
