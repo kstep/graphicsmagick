@@ -333,6 +333,9 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   int
     quant;
 
+  register Image
+    *p;
+
   register int
     i;
 
@@ -352,6 +355,9 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   unsigned int
     mpeg;
 
+  unsigned long
+    count;
+
   /*
     Write parameter file (see mpeg2encode documentation for details).
   */
@@ -359,7 +365,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   if (file == (FILE *) NULL)
     return(False);
   (void) fprintf(file,"MPEG\n");  /* comment */
-  (void) fprintf(file,"%.1024s%%d\n",image->filename);  /* source frame file */
+  (void) fprintf(file,"%.1024s.%%lu\n",image->filename); /* source frame file */
   (void) fprintf(file,"-\n");  /* reconstructed frame file */
   if (image_info->quality == DefaultCompressionQuality)
     (void) fprintf(file,"-\n");  /* default intra quant matrix */
@@ -420,7 +426,10 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
     }
   (void) fprintf(file,"%.1024s.log\n",image_info->unique);  /* statistics log */
   (void) fprintf(file,"1\n");  /* input picture file format */
-  (void) fprintf(file,"%u\n",GetNumberScenes(image));  /* number of frames */
+  count=0;
+  for (p=image; p != (Image *) NULL; p=p->next)
+    count+=Max((p->delay+1)/3,1);
+  (void) fprintf(file,"%lu\n",count); /* number of frames */
   (void) fprintf(file,"0\n");  /* number of first frame */
   (void) fprintf(file,"00:00:00:00\n");  /* timecode of first frame */
   mpeg=LocaleCompare(image->magick,"M2V") != 0;
@@ -491,8 +500,15 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   register Image
     *p;
 
+  register int
+    i;
+
   unsigned int
     status;
+
+  unsigned long
+    count,
+    scene;
 
   /*
     Open output image file.
@@ -513,10 +529,19 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(DelegateWarning,"Unable to write MPEG parameters",
       image);
   (void) CoalesceImages(image,&image->exception);
+  count=0;
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    FormatString(p->filename,"%.1024s%%d.yuv",basename);
-    status=WriteImage(clone_info,p);
+    scene=p->scene;
+    for (i=0; i < Max((p->delay+1)/3,1); i++)
+    {
+      FormatString(p->filename,"%.1024s.%%lu.yuv",basename);
+      p->scene=count++;
+      status=WriteImage(clone_info,p);
+      if (status == False)
+        break;
+    }
+    p->scene=scene;
     if (status == False)
       break;
   }
@@ -530,10 +555,14 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Free resources.
   */
+  count=0;
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    FormatString(p->filename,"%.1024s%d.yuv",basename,p->scene);
-    (void) remove(p->filename);
+    for (i=0; i < Max((p->delay+1)/3,1); i++)
+    {
+      FormatString(p->filename,"%.1024s.%lu.yuv",basename,count++);
+      (void) remove(p->filename);
+    }
     (void) strncpy(p->filename,image_info->filename,MaxTextExtent-1);
   }
   (void) remove(basename);
