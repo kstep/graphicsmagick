@@ -24,7 +24,7 @@ extern "C" {
 #else
 #define MagickQuantumDepth  "Q?"
 #endif
-#define MagickReleaseDate  "10/01/02"
+#define MagickReleaseDate  "10/15/02"
 #define MagickVersion "ImageMagick " MagickLibVersionText " " \
   MagickReleaseDate " " MagickQuantumDepth " " MagickWebSite
 #define MagickWebSite  "http://www.imagemagick.org"
