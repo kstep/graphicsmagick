@@ -97,6 +97,8 @@ MagickExport PixelPacket AlphaComposite(const PixelPacket *p,
 
   if (alpha == OpaqueOpacity)
     return(*p);
+  if (alpha == TransparentOpacity)
+    return(*q);
   gamma=1.0/MaxRGB;
   composite.red=(Quantum) (gamma*((double) (MaxRGB-(alpha))*(p)->red+
     (double) (alpha)*(MaxRGB-(beta))*(q)->red/MaxRGB)+0.5);
