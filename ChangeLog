@@ -1,3 +1,11 @@
+2003-09-23  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick/readme.txt : Updated compilation instructions.
+	* BCBMagick/magick/libMagick.bpr : Updated project, now include map.c.
+	* BCBMagick/lcms/Projects/BCB6/lcms.bpr : Updated project, now include 
+	  cmscam02.c and cmsvirt.c.
+	Much thanks to Alex Dvoretsky for bringing this problem to my attention.
+	
 2003-09-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.h (Image): Moved private members to bottom of
