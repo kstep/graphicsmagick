@@ -289,8 +289,8 @@ can take any parameter that <a href="#seta">SetAttribute</a> knows about.
 For example, <pre>&nbsp;&nbsp;&nbsp; $image-&gt;Write(filename=&gt;'image.png', compression=&gt;'None');</pre>
  Use <tt>-</tt> as the filename to method Read() to read from standard in
 or to method Write() to write to standard out: <pre>&nbsp;&nbsp;&nbsp; binmode STDOUT;<br>&nbsp;&nbsp;&nbsp; $image-&gt;Write('png:-');</pre>
- To read an image in the GIF format from a PERL filehandle, use: <pre>&nbsp;&nbsp;&nbsp; $image = Image::Magick-&gt;new(magick=&gt;'GIF');<br>&nbsp;&nbsp;&nbsp; open(DATA, 'image.gif');<br>&nbsp;&nbsp;&nbsp; $image-&gt;Read(file=&gt;DATA);<br>&nbsp;&nbsp;&nbsp; close(DATA);</pre>
- To write an image in the PNG format to a PERL filehandle, use: <pre>&nbsp;&nbsp;&nbsp; $filename = "image.png";<br>&nbsp;&nbsp;&nbsp; open(DATA, "&gt;$filename");<br>&nbsp;&nbsp;&nbsp; $image-&gt;Write(file=&gt;DATA, filename=&gt;$filename);<br>&nbsp;&nbsp;&nbsp; close(DATA);</pre>
+ To read an image in the GIF format from a PERL filehandle, use: <pre>&nbsp;&nbsp;&nbsp; $image = Image::Magick-&gt;new(magick=&gt;'GIF');<br>&nbsp;&nbsp;&nbsp; open(IMAGE, 'image.gif');<br>&nbsp;&nbsp;&nbsp; $image-&gt;Read(file=&gt;IMAGE);<br>&nbsp;&nbsp;&nbsp; close(IMAGE);</pre>
+ To write an image in the PNG format to a PERL filehandle, use: <pre>&nbsp;&nbsp;&nbsp; $filename = "image.png";<br>&nbsp;&nbsp;&nbsp; open(IMAGE, "&gt;$filename");<br>&nbsp;&nbsp;&nbsp; $image-&gt;Write(file=&gt;IMAGE, filename=&gt;$filename);<br>&nbsp;&nbsp;&nbsp; close(IMAGE);</pre>
  The <tt>%</tt> character is always interpreted in output filenames. To get
 a <tt>%</tt> character in the filename, use <tt>%%</tt>. </p>
                     <p>You can optionally add <i>Image</i> to any method
