@@ -2074,13 +2074,19 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 #else
               for (x=0; x < (int) image->columns; x++)
               {
+#if (QuantumDepth == 16)
+                *r=((*p++) << 8);
+                *r++|=(*p++);
+#else
                 image->indexes[x]=(unsigned short) (((*p) << 8) | (*(p+1)));
                 *r++=(*p++);
                 p++;
+#endif
               }
 #endif
               break;
             }
+
             default:
               break;
           }
@@ -2560,9 +2566,26 @@ static void PNGType(png_bytep p,png_bytep type)
   (void) memcpy(p,type,4*sizeof(png_byte));
 }
 
-static void WriteTextChunk(const ImageInfo *image_info,png_info *ping_info,
-  char *keyword,char *value)
+static void WriteTextChunk(const ImageInfo *image_info,png_struct *ping,
+  png_info *ping_info, char *keyword,char *value)
 {
+#if (PNG_LIBPNG_VER > 10005)
+  png_textp
+    text;
+
+  text=(png_textp) png_malloc(ping, (png_uint_32)sizeof(png_text));
+  text[0].key=keyword;
+  text[0].text=value;
+  text[0].text_length=Extent(value);
+  text[0].compression=
+    image_info->compression == NoCompression ||
+    (image_info->compression == UndefinedCompression &&
+    text[0].text_length < 128) ? -1 : 0;
+  png_set_text(ping, ping_info, text, 1);
+  png_free(ping,text);
+#else
+  /* Work directly with ping_info struct; png_set_text before libpng version
+   * 1.0.5a is leaky */
   register int
     i;
 
@@ -2574,6 +2597,7 @@ static void WriteTextChunk(const ImageInfo *image_info,png_info *ping_info,
     image_info->compression == NoCompression ||
     (image_info->compression == UndefinedCompression &&
     ping_info->text[i].text_length < 128) ? -1 : 0;
+#endif
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -3634,19 +3658,19 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       Write a Software tEXt chunk only in the first PNG datastream.
     */
     if (image->scene == 0)
-      WriteTextChunk(image_info,ping_info,"Software",MagickVersion);
+      WriteTextChunk(image_info,ping,ping_info,"Software",MagickVersion);
     if (!image_info->adjoin)
       {
         SignatureImage(image);
         if (image->signature != (char *) NULL)
-            WriteTextChunk(image_info,ping_info,"Signature",image->signature);
+            WriteTextChunk(image_info,ping,ping_info,"Signature",image->signature);
         if (image->delay != 0)
           {
             char
               delay[MaxTextExtent];
 
             FormatString(delay,"%u",image->delay);
-            WriteTextChunk(image_info,ping_info,"Delay",delay);
+            WriteTextChunk(image_info,ping,ping_info,"Delay",delay);
           }
         if (image->scene != 0)
           {
@@ -3654,17 +3678,17 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               scene[MaxTextExtent];
 
             FormatString(scene,"%u",image->scene);
-            WriteTextChunk(image_info,ping_info,"Scene",scene);
+            WriteTextChunk(image_info,ping,ping_info,"Scene",scene);
           }
       }
     if (image->label != (char *) NULL)
-      WriteTextChunk(image_info,ping_info,"Title",image->label);
+      WriteTextChunk(image_info,ping,ping_info,"Title",image->label);
     if (image->montage != (char *) NULL)
-      WriteTextChunk(image_info,ping_info,"Montage",image->montage);
+      WriteTextChunk(image_info,ping,ping_info,"Montage",image->montage);
     if (image->directory != (char *) NULL)
-      WriteTextChunk(image_info,ping_info,"Directory",image->directory);
+      WriteTextChunk(image_info,ping,ping_info,"Directory",image->directory);
     if (image->comments != (char *) NULL)
-      WriteTextChunk(image_info,ping_info,"Comment",image->comments);
+      WriteTextChunk(image_info,ping,ping_info,"Comment",image->comments);
     png_write_end(ping,ping_info);
     if (need_fram && image->dispose == 2)
       {
