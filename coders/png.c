@@ -4268,7 +4268,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   page.y=0;
   have_write_global_plte=False;
 #ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
-  all_images_are_gray=False;
   need_local_plte=True;
 #endif
   have_write_global_srgb=False;
@@ -4842,11 +4841,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Select the color type.
     */
+    ping_info->bit_depth=8;
     if (ImageIsMonochrome(image))
       {
-        ping_info->bit_depth=1;
-        if (image->matte)
-          ping_info->bit_depth=8;
+        if (!image->matte)
+          ping_info->bit_depth=1;
       }
     ping_info->color_type=PNG_COLOR_TYPE_RGB;
     matte=image->matte;
@@ -4977,14 +4976,42 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           ping_info->bit_depth=16;
         else
           {
-            if (image->matte)
-              ping_info->bit_depth=8;
-            else
-            {
-              ping_info->bit_depth=1;
-              while ((1 << ping_info->bit_depth) < image->colors)
-                ping_info->bit_depth<<=1;
-            }
+            if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+              {
+                ping_info->bit_depth=1;
+                while ((1 << ping_info->bit_depth) < image->colors)
+                  ping_info->bit_depth<<=1;
+              }
+            else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY &&
+                image->colors < 17 && image->storage_class==PseudoClass)
+              {
+
+              /* Check if grayscale is reducible */
+                int
+                  i,
+                  depth_4_ok=True,
+                  depth_2_ok=True,
+                  depth_1_ok=True;
+
+                for (i=0; i<image->colors; i++)
+                {
+                   int
+                     intensity=DownScale(image->colormap[i].red);
+
+                   if ((intensity & 0x0f) != ((intensity & 0xf0)>>4))
+                     depth_4_ok=depth_2_ok=depth_1_ok=False;
+                   else if ((intensity & 0x03) != ((intensity & 0x0c)>>2))
+                     depth_2_ok=depth_1_ok=False;
+                   else if ((intensity & 0x01) != ((intensity & 0x02)>>1))
+                     depth_1_ok=False;
+                }
+                if(depth_1_ok)
+                   ping_info->bit_depth=1;
+                else if (depth_2_ok)
+                   ping_info->bit_depth=2;
+                else if (depth_4_ok)
+                   ping_info->bit_depth=4;
+              }
           }
       }
     else
