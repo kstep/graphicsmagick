@@ -754,8 +754,6 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
                           FloodfillMethod // const PaintMethod method
       );
 
-  // Reset to no texture
-  options()->penTexture(0);
   throwImageException();
 }
 void Magick::Image::floodFillTexture( const Magick::Geometry &point_,
@@ -785,8 +783,6 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
                         FillToBorderMethod // const PaintMethod method
                         );
 
-  // Reset to no texture
-  options()->penTexture(0);
   throwImageException();
 }
 void  Magick::Image::floodFillTexture( const Magick::Geometry &point_,
@@ -2356,7 +2352,7 @@ void Magick::Image::penColor ( const Color &penColor_ )
 {
   modifyImage();
   options()->fillColor(penColor_);
-  options()->strokeColor(Color());
+  options()->strokeColor(penColor_);
 }
 Magick::Color Magick::Image::penColor ( void  ) const
 {

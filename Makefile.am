@@ -49,7 +49,7 @@ SUBDIRS = delegates coders magick utilities tests $(MAGICK_PLUS_PLUS)
 endif # WITH_MODULES
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA = Copyright.txt QuickStart.txt
+pkgdata_DATA = Copyright.txt PLATFORMS.txt QuickStart.txt
 
 # Additional files to distribute
 EXTRA_DIST = Manifest.ps ImageMagick.html Magickshr.opt Make.com README.txt \
