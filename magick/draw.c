@@ -87,6 +87,13 @@ PathMode;
 
 struct _DrawContext
 {
+  /* Support structures */
+  ImageInfo
+    *image_info;
+
+  ExceptionInfo
+    exception;
+
   /* MVG output string and housekeeping */
   char
     *mvg;
@@ -201,6 +208,10 @@ MagickExport DrawContext DrawAllocateContext(void)
   if(context == (DrawContext) NULL)
     MagickFatalError(ResourceLimitFatalError,
       "Unable to allocate initial drawing context","Memory allocation failed");
+
+  /* Support structures */
+  GetExceptionInfo( &context->exception );
+  context->image_info = CloneImageInfo((const ImageInfo *)NULL);
 
   /* MVG output string and housekeeping */
   context->mvg = NULL;
@@ -407,6 +418,10 @@ MagickExport void DrawDestroyContext(DrawContext context)
   context->mvg_alloc = 0;
   context->mvg_length = 0;
 
+  /* Support structures */
+  DestroyImageInfo(context->image_info);
+  DestroyExceptionInfo(&context->exception);
+
   /* Context itself */
   context->signature = 0;
   LiberateMemory((void **) &context);
@@ -422,7 +437,6 @@ MagickExport void DrawEllipse(DrawContext context,
 
   DrawPrintf(context, "ellipse %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
              ox, oy, rx, ry, start, end);
-
 }
 
 MagickExport void DrawSetFill(DrawContext context,
@@ -718,13 +732,8 @@ MagickExport void DrawComposite(DrawContext context,
                                 const double x, const double y,
                                 const double width, const double height,
                                 const Image * image )
+
 {
-  ExceptionInfo
-    exception_info;
-
-  ImageInfo
-    *image_info;
-
   Image
     *clone_image;
 
@@ -733,127 +742,138 @@ MagickExport void DrawComposite(DrawContext context,
     *base64 = NULL;
 
   const char
-    *p = NULL;
+    *mode = NULL;
 
   unsigned char
-    *blob;
+    *blob = (unsigned char*)NULL;
 
   size_t
-    length = 2048;
+    blob_length = 2048;
 
   assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(width != 0);
   assert(height != 0);
   assert(*image->magick != '\0');
 
-  GetExceptionInfo( &exception_info );
+  clone_image = CloneImage(image,0,0,True,&context->exception);
+  if(!clone_image)
+    return;
 
-  clone_image = CloneImage(image,image->columns,image->rows,True,&exception_info);
-  image_info = CloneImageInfo((const ImageInfo *)NULL);
-  
-  blob = (unsigned char*)ImageToBlob( image_info, clone_image, &length, &exception_info );
-  if(blob != (unsigned char*)NULL)
+  blob = (unsigned char*)ImageToBlob( context->image_info, clone_image, &blob_length,
+                                      &context->exception );
+  DestroyImageList(clone_image);
+  if(!blob)
+    return;
+
+  base64 = Base64Encode(blob,blob_length);
+  LiberateMemory((void**)&blob);
+  if(!base64)
     {
-      base64 = Base64Encode(blob,length);
-      LiberateMemory((void**)&blob);
+      char
+        buffer[MaxTextExtent];
+
+      FormatString(buffer,"%d bytes", (4*blob_length/3+4));
+      ThrowException(&context->exception,ResourceLimitWarning,
+                     "allocating Base64 memory",buffer);
+      return;
     }
 
+  mode = "copy";
   switch (composite_operator)
     {
     case AddCompositeOp:
-      p = "add";
+      mode = "add";
       break;
     case AtopCompositeOp:
-      p = "atop";
+      mode = "atop";
       break;
     case BumpmapCompositeOp:
-      p = "bumpmap";
+      mode = "bumpmap";
       break;
     case ClearCompositeOp:
-      p = "clear";
+      mode = "clear";
       break;
     case ColorizeCompositeOp:
-      p = "colorize_not_supported";
+      mode = "colorize_not_supported";
       break;
     case CopyBlueCompositeOp:
-      p = "copyblue";
+      mode = "copyblue";
       break;
     case CopyCompositeOp:
-      p = "copy";
+      mode = "copy";
       break;
     case CopyGreenCompositeOp:
-      p = "copygreen";
+      mode = "copygreen";
       break;
     case CopyOpacityCompositeOp:
-      p = "copyopacity";
+      mode = "copyopacity";
       break;
     case CopyRedCompositeOp:
-      p = "copyred";
+      mode = "copyred";
       break;
     case DarkenCompositeOp:
-      p = "darken_not_supported";
+      mode = "darken_not_supported";
       break;
     case DifferenceCompositeOp:
-      p = "difference";
+      mode = "difference";
       break;
     case DisplaceCompositeOp:
-      p = "displace_not_supported";
+      mode = "displace_not_supported";
       break;
     case DissolveCompositeOp:
-      p = "dissolve_not_supported";
+      mode = "dissolve_not_supported";
       break;
     case HueCompositeOp:
-      p = "hue_not_supported";
+      mode = "hue_not_supported";
       break;
     case InCompositeOp:
-      p = "in";
+      mode = "in";
       break;
     case LightenCompositeOp:
-      p = "lighten_not_supported";
+      mode = "lighten_not_supported";
       break;
     case LuminizeCompositeOp:
-      p = "luminize_not_supported";
+      mode = "luminize_not_supported";
       break;
     case MinusCompositeOp:
-      p = "minus";
+      mode = "minus";
       break;
     case ModulateCompositeOp:
-      p = "modulate_not_supported";
+      mode = "modulate_not_supported";
       break;
     case MultiplyCompositeOp:
-      p = "multiply";
+      mode = "multiply";
       break;
     case NoCompositeOp:
-      p = "no_not_supported";
+      mode = "no_not_supported";
       break;
     case OutCompositeOp:
-      p = "out";
+      mode = "out";
       break;
     case OverCompositeOp:
-      p = "over";
+      mode = "over";
       break;
     case OverlayCompositeOp:
-      p = "overlay_not_supported";
+      mode = "overlay_not_supported";
       break;
     case PlusCompositeOp:
-      p = "plus";
+      mode = "plus";
       break;
     case SaturateCompositeOp:
-      p = "saturate_not_supported";
+      mode = "saturate_not_supported";
       break;
     case ScreenCompositeOp:
-      p = "screen_not_supported";
+      mode = "screen_not_supported";
       break;
     case SubtractCompositeOp:
-      p = "subtract";
+      mode = "subtract";
       break;
     case ThresholdCompositeOp:
-      p = "threshold";
+      mode = "threshold";
       break;
     case XorCompositeOp:
-      p = "xor";
+      mode = "xor";
       break;
     default:
       break;
@@ -861,11 +881,8 @@ MagickExport void DrawComposite(DrawContext context,
 
   media_type = MagickToMime( clone_image->magick );
 
-  if( (base64 != NULL) && (p != NULL) && (media_type != NULL) )
+  if( media_type != NULL )
     {
-      const unsigned int
-        line_width = 76;
-
       long
         remaining;
 
@@ -873,22 +890,22 @@ MagickExport void DrawComposite(DrawContext context,
         *str;
 
       DrawPrintf(context, "image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
-                 p, x, y, width, height, media_type);
+                      mode, x, y, width, height, media_type);
 
       remaining = strlen(base64);
       for( str = base64; remaining > 0; )
         {
-          DrawPrintf(context,"%.76s\n", str);
-          remaining -= line_width;
-          str += line_width;
+          DrawPrintf(context,"%.76s", str);
+          remaining -= 76;
+          str += 76;
+          if(remaining > 0)
+            DrawPrintf(context,"\n");
         }
 
       DrawPrintf(context,"'\n");
     }
 
   LiberateMemory((void**)&media_type);
-  DestroyExceptionInfo(&exception_info);
-  DestroyImageInfo(image_info);
 }
 
 MagickExport void DrawLine(DrawContext context,
