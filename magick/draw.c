@@ -4310,6 +4310,8 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           Compute arc points.
         */
         GetToken(p,&p,token);
+        if (*token == ',')
+          GetToken(p,&p,token);
         arc.x=atof(token);
         GetToken(p,&p,token);
         if (*token == ',')
@@ -4354,6 +4356,8 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           for (i=1; i <= 3; i++)
           {
             GetToken(p,&p,token);
+            if (*token == ',')
+              GetToken(p,&p,token);
             x=atof(token);
             GetToken(p,&p,token);
             if (*token == ',')
@@ -4377,6 +4381,8 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
         do
         {
           GetToken(p,&p,token);
+          if (*token == ',')
+            GetToken(p,&p,token);
           x=atof(token);
           point.x=attribute == 'H' ? x: point.x+x;
           TracePoint(q,point);
@@ -4390,6 +4396,8 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
         do
         {
           GetToken(p,&p,token);
+          if (*token == ',')
+            GetToken(p,&p,token);
           x=atof(token);
           GetToken(p,&p,token);
           if (*token == ',')
@@ -4414,6 +4422,8 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
         do
         {
           GetToken(p,&p,token);
+          if (*token == ',')
+            GetToken(p,&p,token);
           x=atof(token);
           GetToken(p,&p,token);
           if (*token == ',')
@@ -4439,6 +4449,8 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           for (i=1; i < 3; i++)
           {
             GetToken(p,&p,token);
+            if (*token == ',')
+              GetToken(p,&p,token);
             x=atof(token);
             GetToken(p,&p,token);
             if (*token == ',')
@@ -4472,6 +4484,8 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           for (i=2; i <= 3; i++)
           {
             GetToken(p,&p,token);
+            if (*token == ',')
+              GetToken(p,&p,token);
             x=atof(token);
             GetToken(p,&p,token);
             if (*token == ',')
@@ -4505,6 +4519,8 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
           for (i=2; i < 3; i++)
           {
             GetToken(p,&p,token);
+            if (*token == ',')
+              GetToken(p,&p,token);
             x=atof(token);
             GetToken(p,&p,token);
             if (*token == ',')
@@ -4528,6 +4544,8 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
         do
         {
           GetToken(p,&p,token);
+          if (*token == ',')
+            GetToken(p,&p,token);
           y=atof(token);
           point.y=attribute == 'V' ? y : point.y+y;
           TracePoint(q,point);
