@@ -85,6 +85,29 @@
 #undef DSTINVERT
 #undef BLACKNESS
 #undef WHITENESS
+
+/* The following additinal undefs were required for MinGW */
+#undef BS_HOLLOW
+#undef PS_STYLE_MASK
+#undef PS_ENDCAP_ROUND
+#undef PS_ENDCAP_SQUARE
+#undef PS_ENDCAP_FLAT
+#undef PS_ENDCAP_MASK
+#undef PS_JOIN_ROUND
+#undef PS_JOIN_BEVEL
+#undef PS_JOIN_MITER
+#undef PS_COSMETIC
+#undef PS_GEOMETRIC
+#undef PS_TYPE_MASK
+#undef STRETCH_ANDSCANS
+#undef STRETCH_ORSCANS
+#undef STRETCH_DELETESCANS
+#undef STRETCH_HALFTONE
+#undef ETO_OPAQUE
+#undef ETO_CLIPPED
+#undef ETO_GLYPH_INDEX
+#undef ETO_RTLREADING
+
 #include "libwmf/defs.h"
 #include "libwmf/ipa.h"
 #include "libwmf/color.h"
