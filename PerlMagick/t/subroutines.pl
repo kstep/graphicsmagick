@@ -502,7 +502,7 @@ sub testFilter {
       if ( $md5 ne $md5_16 ) {
          print "   if 16-bit: $md5_16\n";
       }
-#      $image->Display();
+      #$image->Display();
       print "not ok $test\n";
     } else {
       print "ok $test\n";
