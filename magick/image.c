@@ -7213,11 +7213,11 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           }
           default:
           {
-            pixel.red=(Quantum) ((pixel.red < 0) ? 0 :
+            pixel.red=(unsigned long) ((pixel.red < 0) ? 0 :
               (pixel.red > 65535) ? 65535 : pixel.red+0.5);
-            pixel.green=(Quantum) ((pixel.green < 0) ? 0 :
+            pixel.green=(unsigned long) ((pixel.green < 0) ? 0 :
               (pixel.green > 65535) ? 65535 : pixel.green+0.5);
-            pixel.blue=(Quantum) ((pixel.blue < 0) ? 0 :
+            pixel.blue=(unsigned long) ((pixel.blue < 0) ? 0 :
               (pixel.blue > 65535) ? 65535 : pixel.blue+0.5);
             image->colormap[i].red=ScaleShortToQuantum(pixel.red);
             image->colormap[i].green=ScaleShortToQuantum(pixel.green);
