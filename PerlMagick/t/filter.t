@@ -25,6 +25,11 @@ testFilter('input.miff', 'Border',
   'd786ed89a0fad7a401e200e57629faa8');
 
 ++$test;
+testFilter('input.miff', 'Channel',
+  q/Red/,
+  '855e49d855e2dffc8abdbb78014575e0');
+
+++$test;
 testFilter('input.miff', 'Chop',
   q/+10+10/,
   'd29da2e9202ebfbaceb18ebd29e47132');
@@ -109,11 +114,6 @@ testFilter('input.miff', 'Implode',
   q/30/,
   '595ba49fdaa2052c97ad604fefd2d89e',
   'a8e08e25ea60706c37b264edfdc9bd99');
-
-++$test;
-testFilter('input.miff', 'Layer',
-  q/Red/,
-  '855e49d855e2dffc8abdbb78014575e0');
 
 ++$test;
 testFilter('input.miff', 'Magnify',
