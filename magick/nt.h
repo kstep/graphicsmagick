@@ -55,34 +55,34 @@ struct dirent
 /*
   NT utilities routines.
 */
-extern __declspec(dllexport) char
+extern Export char
   *SetClientName(const char *);
 
-extern __declspec(dllexport) int
+extern Export int
   Exit(int),
   ImageFormatConflict(const char *),
   IsWindows95(),
   NTSystemCommand(const char *);
 
 #if !defined(XS_VERSION)
-extern __declspec(dllexport) DIR
+extern Export DIR
   *opendir(char *);
  
-extern __declspec(dllexport) double
+extern Export double
   NTElapsedTime(void),
   NTUserTime(void);
 
-extern __declspec(dllexport) int
+extern Export int
   munmap(void *,size_t),
   NTTemporaryFilename(char *);
 
-extern __declspec(dllexport) long
+extern Export long
   telldir(DIR *);
 
-extern __declspec(dllexport) struct dirent
+extern Export struct dirent
   *readdir(DIR *);
  
-extern __declspec(dllexport) void
+extern Export void
   closedir(DIR *),
   *mmap(char *,size_t,int,int,int,off_t),
   NTErrorHandler(const ExceptionType,const char *,const char *),
