@@ -53,6 +53,16 @@
 </tr>
 </table>
 <p>
+2003-05-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (CloneImage): Don't clone huffman ascii85
+        encoding support structure since it is not useful outside of the
+        current image context. Cloning a structure via pointer assignment
+        causes a memory leak.
+
+</UL>
+<p>
 2003-05-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

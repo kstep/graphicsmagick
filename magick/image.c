@@ -1101,7 +1101,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     image->exception.reason,image->exception.description);
   clone_image->client_data=image->client_data;
   clone_image->start_loop=image->start_loop;
-  clone_image->ascii85=image->ascii85;
+  clone_image->ascii85=0; /* Don't copy  ascii85 huffman support structure */
   clone_image->magick_columns=image->magick_columns;
   clone_image->magick_rows=image->magick_rows;
   (void) strncpy(clone_image->magick_filename,image->magick_filename,

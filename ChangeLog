@@ -1,3 +1,10 @@
+2003-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (CloneImage): Don't clone huffman ascii85
+	encoding support structure since it is not useful outside of the
+	current image context. Cloning a structure via pointer assignment
+	causes a memory leak.
+
 2003-05-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/shear.c: Incorporate math tweaks obtained from
