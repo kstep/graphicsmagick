@@ -466,12 +466,12 @@ static void output_switches(Image *image,struct locale_str *, int, int);
 #define INDENT 2         /* # of spaces to indent each line of the output */
 
 static const char prologue[] = "\
-\nconst char *GetLocaleMessage(const char *tag)\
+MagickExport const char *GetLocaleMessage(const char *tag)\
 \n{\
-\n   register const char *p, *tp, *np = tag;\
-\n#  define NEXT_FIELD ((p = (np = strchr((tp = np), '/')) ? np++ : (np = tp + strlen(tp))), tp)\n\
-\n   if (!tag || !tag[0])\
-\n      return \"\";\n";
+\n#define NEXT_FIELD ((p = (np = strchr((tp = np), '/')) ? np++ : (np = tp + strlen(tp))), tp)\n\
+\n  register const char *p, *tp, *np = tag;\
+\n  if (!tag || !tag[0])\
+\n    return \"\";\n";
 
 static const char epilogue[] = "\n   return tag;\n}\n";
 
