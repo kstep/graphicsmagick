@@ -342,6 +342,44 @@ static size_t EncodeImage(Image *image,const unsigned long bytes_per_line,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s D I B                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsDIB returns True if the image format type, identified by the
+%  magick string, is DIB.
+%
+%  The format of the IsDIB method is:
+%
+%      unsigned int IsDIB(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsDIB returns True if the image format type is DIB.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+static unsigned int IsDIB(const unsigned char *magick,const size_t length)
+{
+  if (length < 2)
+    return(False);
+  if( (*magick==40) && (*(magick+1)==0))
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d D I B I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -427,9 +465,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) memset(&dib_info,0,sizeof(DIBInfo));
   dib_info.size=ReadBlobLSBLong(image);
   if (dib_info.size!=40)
-    ThrowReaderException(CorruptImageWarning,"Not a DIB image",image);
+    ThrowReaderException(CorruptImageWarning,"Not a Windows 3.X DIB image",image);
   /*
-    Microsoft Windows DIB image file.
+    Microsoft Windows 3.X DIB image file.
   */
   dib_info.width=(short) ReadBlobLSBLong(image);
   dib_info.height=(short) ReadBlobLSBLong(image);
@@ -761,10 +799,11 @@ ModuleExport void RegisterDIBImage(void)
   entry=SetMagickInfo("DIB");
   entry->decoder=ReadDIBImage;
   entry->encoder=WriteDIBImage;
+  entry->magick=IsDIB;
   entry->adjoin=False;
   entry->stealth=True;
   entry->description=
-    AllocateString("Microsoft Windows Device-Independent Bitmap");
+    AllocateString("Microsoft Windows 3.X Device-Independent Bitmap");
   entry->module=AllocateString("DIB");
   (void) RegisterMagickInfo(entry);
 }
@@ -1036,6 +1075,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   /*
     Write DIB header.
   */
+  (void) WriteBlobLSBLong(image,dib_info.size);
   (void) WriteBlobLSBLong(image,dib_info.width);
   (void) WriteBlobLSBLong(image,dib_info.height);
   (void) WriteBlobLSBShort(image,dib_info.planes);
