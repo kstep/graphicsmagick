@@ -395,21 +395,25 @@ MagickExport const char *GetMagickVersion(unsigned int *version)
 MagickExport void InitializeMagick(const char *path)
 {
   char
-    directory[MaxTextExtent],
-    filename[MaxTextExtent];
+    directory[MaxTextExtent];
 
-  assert(path != (const char *) NULL);
   InitializeSemaphore();
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
-  GetPathComponent(path,HeadPath,filename);
-  (void) SetClientPath(filename);
+  if (path != (const char *) NULL)
+    {
+      char
+        filename[MaxTextExtent];
+
+      GetPathComponent(path,HeadPath,filename);
+      (void) SetClientPath(filename);
 #if defined(WIN32)
-  GetPathComponent(path,TailPath,filename);
+      GetPathComponent(path,TailPath,filename);
 #else
-  GetPathComponent(path,BasePath,filename);
+      GetPathComponent(path,BasePath,filename);
 #endif
-  (void) SetClientName(filename);
+      (void) SetClientName(filename);
+    }
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
 #if defined(WIN32) && defined(_DEBUG)
@@ -421,7 +425,6 @@ MagickExport void InitializeMagick(const char *path)
     debug|=_CRTDBG_CHECK_ALWAYS_DF;
     debug|=_CRTDBG_DELAY_FREE_MEM_DF;
     debug|=_CRTDBG_LEAK_CHECK_DF;
-    //  _CrtSetDbgFlag(debug);
   }
 #endif
 }
