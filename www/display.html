@@ -912,7 +912,7 @@ but not set as an image attribute (e.g. PNG images).
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
+    <a name="-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i> </i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1026,11 +1026,17 @@ or <strong>Partition</strong>. The default is <strong>None</strong>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This option is used to specify the type of interlacing scheme for raw image
-formats such as <strong>RGB</strong> or <strong>YUV</strong>. <strong>None</strong> means do not interlace
-(RGBRGBRGBRGBRGBRGB...), <strong>Line</strong> uses scanline interlacing
+formats such as <strong>RGB</strong> or <strong>YUV</strong>.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+<strong>None</strong> means do not interlace
+(RGBRGBRGBRGBRGBRGB...),</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+<strong>Line</strong> uses scanline interlacing
 (RRR...GGG...BBB...RRR...GGG...BBB...),
-and <strong>Plane</strong> uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).
-<strong>Partition</strong>
+and</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+<strong>Plane</strong> uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1"><strong>Partition</strong>
 is like plane except the different planes are saved to individual files
 (e.g. image.R, image.G, and image.B).
 </font></td></tr></table>
@@ -1784,7 +1790,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="-write">-write</a>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write the image to a file</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write the image to a file [<em>display</em>]</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 If <em>file</em> already exists, you will be prompted as to whether it should
 be overwritten.</font></td></tr></table>
@@ -1864,7 +1870,7 @@ a desired subimage of a multi-resolution image format like Photo CD
 (e.g. <tt>video.mpg[50-75]</tt>). A subimage
 specification can be disjoint (e.g. <tt>image.tiff[2,7,4]</tt>). For raw images,
 specify a subimage with a geometry
-(e.g. <tt>-size 640x512 image.rgb[320x256+50+50]</tt>).
+(e.g. <tt>-size 640x512</tt> <tt>image.rgb[320x256+50+50]</tt>).
 <p>Single images are written with the filename you specify. However, multi-part
 images (e.g., a multi-page PostScript document with <strong>+adjoin</strong> specified)
 are written

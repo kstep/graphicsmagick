@@ -257,7 +257,7 @@ text or graphic aliasing.
 .B "-frame"
 \fRinclude the X window frame in the imported image
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@} {!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 
 By default, the window size is the image
@@ -315,10 +315,16 @@ or \fBPartition\fP. The default is \fBNone\fP.
 
 
 This option is used to specify the type of interlacing scheme for raw image
-formats such as \fBRGB\fP or \fBYUV\fP. \fBNone\fP means do not interlace
-(RGBRGBRGBRGBRGBRGB...), \fBLine\fP uses scanline interlacing
+formats such as \fBRGB\fP or \fBYUV\fP.
+
+\fBNone\fP means do not interlace
+(RGBRGBRGBRGBRGBRGB...),
+
+\fBLine\fP uses scanline interlacing
 (RRR...GGG...BBB...RRR...GGG...BBB...),
-and \fBPlane\fP uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).
+and
+
+\fBPlane\fP uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).
 \fBPartition\fP
 is like plane except the different planes are saved to individual files
 (e.g. image.R, image.G, and image.B).
