@@ -8,13 +8,6 @@
 ;
 #endif
 
-#ifdef MagickStaticPackage
-  #define MagickConfigDirectory "{app}"
-#else
-  #define MagickConfigDirectory "{app}\config"
-  #define MagickModulesDirectory "{app}\modules\coders"
-#endif
-
 ; Configuration files
 Source: "..\..\magick\colors.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 Source: "..\..\magick\log.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
@@ -23,6 +16,6 @@ Source: "..\..\magick\magic.mgk"; DestDir: {#MagickConfigDirectory}; Flags: conf
 Source: "..\bin\type-ghostscript.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 Source: "..\bin\type.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
 
-#ifdef MagickModulesDirectory
-Source: "..\..\coders\modules.mgk"; DestDir: {#MagickModulesDirectory}; Flags: confirmoverwrite
+#ifdef MagickCodersDirectory
+Source: "..\..\coders\modules.mgk"; DestDir: {#MagickCodersDirectory}; Flags: confirmoverwrite
 #endif

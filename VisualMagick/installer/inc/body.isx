@@ -10,8 +10,16 @@
 
 #ifdef MagickStaticPackage
   #define MagickPackageType "static"
+  #define MagickAppDirectory "{app}"
+  #define MagickLibDirectory "{app}"
+  #define MagickConfigDirectory "{app}"
 #else
   #define MagickPackageType "dll"
+  #define MagickAppDirectory "{app}"
+  #define MagickLibDirectory "{app}"
+  #define MagickConfigDirectory "{app}\config"
+  #define MagickCodersDirectory "{app}\modules\coders"
+  #define MagickFiltersDirectory "{app}\modules\filters"
 #endif
 
 #include "version.isx"

@@ -8,7 +8,7 @@
 
 ; #pragma option -v+
 ; #pragma verboselevel 4
-; #define DEBUG 1
+#define DEBUG 1
 
 #define  public MagickStaticPackage 1
 #define  public QuantumDepth "8"

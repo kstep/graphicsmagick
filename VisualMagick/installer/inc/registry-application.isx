@@ -21,19 +21,26 @@ Root: HKLM; Subkey: {#KeyBase}; ValueType: none; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: {#KeyVersion}; ValueType: none; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: {#KeyVersionDepth}; ValueType: none; Flags: uninsdeletekey
 Root: HKLM; Subkey: {#KeyVersionDepth}; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
-Root: HKLM; Subkey: {#KeyVersionDepth}; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
+Root: HKLM; Subkey: {#KeyVersionDepth}; ValueType: string; ValueName: "ConfigurePath"; ValueData: {#MagickConfigDirectory}
 Root: HKLM; Subkey: {#KeyVersionDepth}; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
-Root: HKLM; Subkey: {#KeyVersionDepth}; ValueType: string; ValueName: "CoderModulesPath"; ValueData: "{app}\modules\coders"
-Root: HKLM; Subkey: {#KeyVersionDepth}; ValueType: string; ValueName: "FilterModulesPath"; ValueData: "{app}\modules\filters"
+#ifdef MagickCodersDirectory
+Root: HKLM; Subkey: {#KeyVersionDepth}; ValueType: string; ValueName: "CoderModulesPath"; ValueData: {#MagickCodersDirectory}
+#endif
+#ifdef MagickFiltersDirectory
+Root: HKLM; Subkey: {#KeyVersionDepth}; ValueType: string; ValueName: "FilterModulesPath"; ValueData: {#MagickFiltersDirectory}
+#endif
 
 
 Root: HKLM; Subkey: {#KeyCurrent}; ValueType: none; Flags: uninsdeletekey
-Root: HKLM; Subkey: {#KeyCurrent}; ValueType: string; ValueName: "Version"; ValueData: MagickPackageVersion
+Root: HKLM; Subkey: {#KeyCurrent}; ValueType: string; ValueName: "Version"; ValueData: {#MagickPackageVersion}
 Root: HKLM; Subkey: {#KeyCurrent}; ValueType: dword; ValueName: "QuantumDepth"; ValueData: {#QuantumDepth}
 
 Root: HKLM; Subkey: {#KeyCurrent}; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
-Root: HKLM; Subkey: {#KeyCurrent}; ValueType: string; ValueName: "ConfigurePath"; ValueData: "{app}\config"
+Root: HKLM; Subkey: {#KeyCurrent}; ValueType: string; ValueName: "ConfigurePath"; ValueData: {#MagickConfigDirectory}
 Root: HKLM; Subkey: {#KeyCurrent}; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
-Root: HKLM; Subkey: {#KeyCurrent}; ValueType: string; ValueName: "CoderModulesPath"; ValueData: "{app}\modules\coders"
-Root: HKLM; Subkey: {#KeyCurrent}; ValueType: string; ValueName: "FilterModulesPath"; ValueData: "{app}\modules\filters"
-
+#ifdef MagickCodersDirectory
+Root: HKLM; Subkey: {#KeyCurrent}; ValueType: string; ValueName: "CoderModulesPath"; ValueData: {#MagickCodersDirectory}
+#endif
+#ifdef MagickFiltersDirectory
+Root: HKLM; Subkey: {#KeyCurrent}; ValueType: string; ValueName: "FilterModulesPath"; ValueData: {#MagickFiltersDirectory}
+#endif
