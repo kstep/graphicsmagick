@@ -1757,14 +1757,13 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
     colorname[MaxTextExtent],
     text[MaxTextExtent];
 
-  double
-    bisect;
 
   int
     blue,
     count,
     green,
     left,
+    mid,
     opacity,
     red,
     right;
@@ -1871,23 +1870,22 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
   */
   left=0;
   right=NumberXColors-2;
-  for (bisect=(right-left)/2; bisect > 0.5; bisect/=2.0)
+  for (mid=(right+left)/2 ; mid > 1; mid=(right+left)/2)
   {
-    i=Latin1Compare(target,XColorlist[right].name);
+    i=Latin1Compare(target,XColorlist[mid].name);
     if (i < 0)
       {
-        right-=bisect;
+        right=mid;
         continue;
       }
     if (i > 0)
       {
-        left=right;
-        right+=bisect;
+        left=mid+1;
         continue;
       }
-    color->red=XColorlist[right].red;
-    color->green=XColorlist[right].green;
-    color->blue=XColorlist[right].blue;
+    color->red=XColorlist[mid].red;
+    color->green=XColorlist[mid].green;
+    color->blue=XColorlist[mid].blue;
     color->opacity=Opaque;
     return(True);
   }
