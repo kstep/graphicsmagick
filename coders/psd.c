@@ -453,7 +453,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
   psd_info.rows=ReadBlobMSBLong(image);
-  psd_info.columns= ReadBlobMSBLong(image);
+  psd_info.columns=ReadBlobMSBLong(image);
   psd_info.depth=ReadBlobMSBShort(image);
   psd_info.mode=ReadBlobMSBShort(image);
   /*
