@@ -452,7 +452,7 @@ int main(int argc,char **argv)
     Parse command line.
   */
 	status=True;
-  for (i=1; ((i <= argc) && !(state & ExitState)); i++)
+  for (i=1; ((i < argc) && !(state & ExitState)); i++)
   {
     if (i < argc)
       option=argv[i];
@@ -1362,8 +1362,9 @@ int main(int argc,char **argv)
             continue;
           status&=MogrifyImage(image_info,i-j,argv+j,&image);
           (void) CatchImageException(image);
-          option=argv[i+1];
-          if ((strlen(option) >= 2) && ((*option == '-') || (*option == '+')))
+          if (i < (argc-1))
+            option=argv[i+1];
+          if ((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
             j=i+1;
           do
           {

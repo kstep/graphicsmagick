@@ -185,7 +185,7 @@ int main(int argc,char **argv)
   for (i=1; i < argc; i++)
   {
     option=argv[i];
-    if ((strlen(option) > 1) && ((*option == '-') || (*option == '+')))
+    if ((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
       {
         if (LocaleCompare("debug",option+1) == 0)
           {

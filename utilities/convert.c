@@ -472,6 +472,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
+  j=1;
   ping=False;
   option=(char *) NULL;
   status=True;
@@ -480,11 +481,10 @@ static unsigned int ConvertUtility(int argc,char **argv)
   */
   if ((argc > 2) && (LocaleCompare("-concatenate",argv[1]) == 0))
     ConcatenateImages(argc,argv);
-  j=1;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
-    if ((strlen(option) < 2) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       {
         /*
           Read input image.
@@ -516,7 +516,8 @@ static unsigned int ConvertUtility(int argc,char **argv)
               }
           }
         option=argv[i+1];
-        if ((strlen(option) >= 2) && ((*option == '-') || (*option == '+')))
+        if (((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
+						||((i+2) == argc))
           j=i+1;
       }
     else

@@ -382,12 +382,11 @@ static unsigned int MogrifyUtility(int argc,char **argv)
   global_colormap=False;
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  j=0;
+  j=1;
   status=True;
   /*
     Parse command line.
   */
-  j=1;
   for (i=1; i < argc; i++)
   {
     option=argv[i];

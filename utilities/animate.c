@@ -313,7 +313,7 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
   first_scene=0;
   image=(Image *) NULL;
-  j=0;
+  j=1;
   last_scene=0;
 	status=True;
   /*
@@ -381,7 +381,7 @@ int main(int argc,char **argv)
   /*
     Parse command line.
   */
-  for (i=1; i <= argc; i++)
+  for (i=1; i < argc; i++)
   {
     if (i < argc)
       option=argv[i];
@@ -393,7 +393,7 @@ int main(int argc,char **argv)
           option=(char *) "-";
         else
           option=(char *) "logo:Untitled";
-    if ((strlen(option) > 1) && ((*option == '-') || (*option == '+')))
+    if ((strlen(option) != 1) && ((*option == '-') || (*option == '+')))
       switch (*(option+1))
       {
         case 'b':
@@ -988,7 +988,8 @@ int main(int argc,char **argv)
                   p->next=next_image;
                 }
             }
-          option=argv[i+1];
+          if (i < (argc-1))
+            option=argv[i+1];
           if ((strlen(option) >= 2) && ((*option == '-') || (*option == '+')))
             j=i+1;
         }
