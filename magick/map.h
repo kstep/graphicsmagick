@@ -63,15 +63,15 @@ extern MagickExport void
   Deep clone Magick Map (and any contained objects)
 */
 extern MagickExport MagickMap
-  MagickMapCloneMap(MagickMap map);
+  MagickMapCloneMap(MagickMap map,ExceptionInfo *exception);
 
 /*
   Add an entry to the Magick Map.
   Argument is copied into the map.
 */
-extern MagickExport void
+extern MagickExport unsigned int
   MagickMapAddEntry(MagickMap map,const char *key, const void *object,
-                    const size_t object_size);
+                    const size_t object_size, ExceptionInfo *exception);
 
 /*
   Remove (destroy) an entry from the Magick Map. False is returned if

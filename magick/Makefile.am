@@ -160,7 +160,6 @@ pkginclude_HEADERS = \
 	render.h \
 	resize.h \
 	resource.h \
-	semaphore.h \
 	shear.h \
 	signature.h \
 	stream.h \
@@ -178,8 +177,10 @@ noinst_HEADERS = \
 	display.h \
 	locale_c.h \
 	mac.h \
+	map.h \
 	nt_base.h \
 	nt_feature.h \
+	semaphore.h \
 	spinlock.h \
 	static.h \
 	studio.h \

@@ -55,6 +55,7 @@
 #include "magick/module.h"
 #include "magick/quantize.h"
 #include "magick/render.h"
+#include "magick/semaphore.h"
 #include "magick/signature.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -109,13 +110,19 @@ const unsigned long
 %    o options: List of key/value pairs to put in the coder options map. The
 %      format of the string is "key1=value1,key2=value2,...".
 %
+%    o exception: Errors result in updates to this structure.
+%
 */
 MagickExport unsigned int
-  AddCoderOptions(ImageInfo *image_info,const char *options)
+AddCoderOptions(ImageInfo *image_info,const char *options,
+  ExceptionInfo *exception)
 {
   char
     key[MaxTextExtent],
     value[MaxTextExtent];
+
+  unsigned int
+    status;
 
   int
     i,
@@ -123,6 +130,8 @@ MagickExport unsigned int
 
   size_t
     length;
+
+  status=True;
 
   if (image_info->coder_options == 0)
     image_info->coder_options=MagickMapAllocateMap(MagickMapCopyString,
@@ -142,11 +151,14 @@ MagickExport unsigned int
     i++;
     /* Accepts zero length values */
     if (strlen(key) > 0)
-      MagickMapAddEntry(image_info->coder_options,key,value,0);
+      status &= MagickMapAddEntry(image_info->coder_options,key,value,0,exception);
     else
-      return(False);
+      {
+        status=False;
+        break;
+      }
   }
-  return(True);
+  return(status);
 }
 
 /*
@@ -1235,7 +1247,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->iterations=image->iterations;
   clone_image->total_colors=image->total_colors;
   clone_image->error=image->error;
-  clone_image->semaphore=(SemaphoreInfo *) NULL;
+  clone_image->semaphore=0;
   clone_image->timer=image->timer;
   GetExceptionInfo(&clone_image->exception);
   CopyException(&clone_image->exception,&image->exception);
@@ -1370,7 +1382,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
       &image_info->attributes->exception);
   if (image_info->coder_options != (MagickMap) NULL)
-    clone_info->coder_options=MagickMapCloneMap(image_info->coder_options);
+    clone_info->coder_options=MagickMapCloneMap(image_info->coder_options,0);
   clone_info->client_data=image_info->client_data;
   clone_info->cache=image_info->cache;
   if (image_info->cache != (void *) NULL)
@@ -2112,11 +2124,11 @@ MagickExport void DestroyImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   destroy=False;
-  AcquireSemaphoreInfo(&image->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
   image->reference_count--;
   if (image->reference_count == 0)
     destroy=True;
-  LiberateSemaphoreInfo(&image->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
   if (!destroy)
     return;
   /*
@@ -2164,8 +2176,8 @@ MagickExport void DestroyImage(Image *image)
   if (image->ascii85 != (Ascii85Info *) NULL)
     MagickFreeMemory(image->ascii85);
   DestroyBlobInfo(image->blob);
-  if (image->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&image->semaphore);
+  if (image->semaphore)
+    DestroySemaphoreInfo((SemaphoreInfo **) &image->semaphore);
   memset((void *)image,0xbf,sizeof(Image));
   MagickFreeMemory(image);
 }
@@ -3542,16 +3554,16 @@ MagickExport void ModifyImage(Image **image,ExceptionInfo *exception)
   assert(*image != (Image *) NULL);
   assert((*image)->signature == MagickSignature);
   clone=False;
-  AcquireSemaphoreInfo(&(*image)->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
   if ((*image)->reference_count > 1)
     clone=True;
-  LiberateSemaphoreInfo(&(*image)->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
   if (!clone)
     return;
   clone_image=CloneImage(*image,0,0,True,exception);
-  AcquireSemaphoreInfo(&(*image)->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
   (*image)->reference_count--;
-  LiberateSemaphoreInfo(&(*image)->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &(*image)->semaphore);
   *image=clone_image;
 }
 
@@ -3784,9 +3796,9 @@ MagickExport Image *ReferenceImage(Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  AcquireSemaphoreInfo(&image->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
   image->reference_count++;
-  LiberateSemaphoreInfo(&image->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &image->semaphore);
   return(image);
 }
 

@@ -276,7 +276,8 @@ MagickMapAccessEntry(MagickMap map,const char *key, size_t *object_size)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickMapAddEntry() adds a new entry to a map, or replaces an existing
-%  matching entry.
+%  matching entry.  True is returned on success.  If False is returned, then
+%  the exception argument describes the reason for failure.
 %
 %  The format of the MagickMapAddEntry method is:
 %
@@ -294,10 +295,13 @@ MagickMapAccessEntry(MagickMap map,const char *key, size_t *object_size)
 %    o object_size: size of object data. If the copy function does not
 %        require the object size, then the value zero may be used.
 %
+%    o exception: check this argument for error information if False is
+%                 returned.
+%
 */
-MagickExport void
+MagickExport unsigned int
 MagickMapAddEntry(MagickMap map,const char *key, const void *object,
-  const size_t object_size)
+  const size_t object_size, ExceptionInfo *exception)
 {
   MagickMapObject
     *new_object;
@@ -309,6 +313,14 @@ MagickMapAddEntry(MagickMap map,const char *key, const void *object,
   new_object=MagickMapAllocateObject(key, object, object_size,
                                      map->clone_function,
                                      map->deallocate_function);
+
+  if (!new_object)
+    {
+      if (exception)
+        ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
+          NULL);
+      return (False);
+    }
 
   LockSemaphoreInfo(map->semaphore);
 
@@ -371,7 +383,7 @@ MagickMapAddEntry(MagickMap map,const char *key, const void *object,
 
   UnlockSemaphoreInfo(map->semaphore);
 
-  return;
+  return (True);
 }
 
 /*
@@ -437,7 +449,8 @@ MagickMapAllocateMap(MagickMapObjectClone clone,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickMapCloneMap() duplicates an existing map.
+%  MagickMapCloneMap() duplicates an existing map.  If the duplication fails,
+%  zero is returned and the error argument is updated.
 %
 %  The format of the MagickMapCloneMap method is:
 %
@@ -447,9 +460,11 @@ MagickMapAllocateMap(MagickMapObjectClone clone,
 %
 %    o map: map context to duplicate
 %
+%    o exception: check this structure for error details if null is returned.
+%
 */
 MagickExport MagickMap
-MagickMapCloneMap(MagickMap map)
+MagickMapCloneMap(MagickMap map,ExceptionInfo *exception)
 {
   MagickMap map_clone;
   MagickMapIterator iterator;
@@ -465,7 +480,13 @@ MagickMapCloneMap(MagickMap map)
   {
     const void *object=MagickMapDereferenceIterator(iterator,&size);
     /* Add clones key and object on insertion */
-    MagickMapAddEntry(map_clone,key,object,size);
+    if (MagickMapAddEntry(map_clone,key,object,size,exception) == False)
+      {
+        MagickMapDeallocateIterator(iterator);
+        MagickMapDeallocateMap(map_clone);
+        UnlockSemaphoreInfo(map->semaphore);
+        return 0;
+      }
   }
   MagickMapDeallocateIterator(iterator);
 

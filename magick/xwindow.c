@@ -52,7 +52,7 @@
    /* Need by some *BSD systems in order to use shmget */
 #  include <machine/param.h>
 # endif /* defined(HAVE_MACHINE_PARAM_H */
-# if __FreeBSD__ >= 5
+# if __FreeBSD__ >= 5 && defined(_POSIX_C_SOURCE)
    typedef unsigned short ushort; /* needed for sys/ipc.h at the moment */
 # endif
 # include <sys/ipc.h>

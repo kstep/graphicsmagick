@@ -52,6 +52,7 @@
 #include "magick/registry.h"
 #include "magick/resource.h"
 #include "magick/render.h"
+#include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 #include "magick/version.h"

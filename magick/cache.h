@@ -178,7 +178,7 @@ typedef struct _CacheInfo
   long
     reference_count;
 
-  SemaphoreInfo
+  void
     *semaphore;
 
   unsigned long

@@ -45,6 +45,7 @@
 #define USE_SPINLOCKS
 #define SPINLOCK_DELAY_MILLI_SECS 10
 #endif
+#include "magick/semaphore.h"
 
 /*
   Struct declaractions.

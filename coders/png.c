@@ -66,6 +66,7 @@
 #include "magick/monitor.h"
 #include "magick/quantize.h"
 #include "magick/static.h"
+#include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/transform.h"
 #include "magick/utility.h"

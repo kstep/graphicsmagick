@@ -47,6 +47,7 @@
 #if defined(WIN32) || defined(__CYGWIN__)
 # include "magick/nt_feature.h"
 #endif
+#include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 

@@ -93,7 +93,7 @@ typedef struct _BlobInfo
   unsigned char
     *data;
 
-  SemaphoreInfo
+  void
     *semaphore;
 
   long

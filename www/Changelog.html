@@ -56,7 +56,40 @@
 2003-09-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/image.h (Image): Moved private members to bottom of
+        structure.<BR>
+        (_ImageInfo): Moved private members to bottom of
+        structure.<BR>
+  <LI> magick/Makefile.am (pkginclude_HEADERS): Don't install
+        semaphore.h.<BR>
+        (noinst_HEADERS): Distribute map.h and semaphore.h.
+  <LI> magick/image.h (ImageInfo): Change coder_options member from
+        type 'MagickMap' to type 'void *'.
+  <LI> coders/png.c: include magick/semaphore.h.
+  <LI> magick/blob.c: include magick/semaphore.h.
+  <LI> magick/color.c: include magick/semaphore.h.
+  <LI> magick/constitute.c: include magick/semaphore.h.
+  <LI> magick/delegate.c: include magick/semaphore.h.
+  <LI> magick/log.c: include magick/semaphore.h.
+  <LI> magick/magic.c: include magick/semaphore.h.
+  <LI> magick/magick.c: include magick/semaphore.h.
+  <LI> magick/module.c: include magick/semaphore.h.
+  <LI> magick/semaphore.c: include magick/semaphore.h.
+  <LI> magick/stream.c: include magick/semaphore.h.
+  <LI> magick/tempfile.c: include magick/semaphore.h.
+  <LI> magick/type.c: include magick/semaphore.h.
+  <LI> magick/blob.h (_BlobInfo): Changed 'Semaphore *' to 'void *'.
+  <LI> magick/cache.h (_CacheInfo): Changed 'Semaphore *' to 'void *'.
+  <LI> magick/image.h (_Image): Changed 'Semaphore *' to 'void *'.
+  <LI> magick/command.c: Updated each invokation of MagickMapAddEntry()
+        to add an exception argument.<BR>
+  <LI> tests/maptest.c: Updated to pass an exception argument to
+        MagickMapAddEntry.<BR>
+  <LI> magick/image.c (AddCoderOptions): Added exception argument
+        and some more error handling.<BR>
   <LI> magick/map.c: Added formal documentation for methods.
+        (MagickMapCloneMap): Added exception argument.
+        (MagickMapAddEntry): Added exception argument and status.
 
 </UL>
 <p>

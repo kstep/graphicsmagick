@@ -39,6 +39,9 @@ int main ( int argc, char **argv )
     exit_status = 0,
     i;
 
+  ExceptionInfo
+    exception;
+
   MagickMap
     map;
 
@@ -65,12 +68,13 @@ int main ( int argc, char **argv )
     };
 
 
+  GetExceptionInfo(&exception);
   map=MagickMapAllocateMap(MagickMapCopyString,MagickMapDeallocateString);
 
   printf("Adding map entries ...\n");
   for (i=0; KeyVal[i].key; i++)
     {
-      MagickMapAddEntry(map,KeyVal[i].key,(void *)KeyVal[i].value,0);
+      MagickMapAddEntry(map,KeyVal[i].key,(void *)KeyVal[i].value,0,&exception);
     }
 
 
@@ -114,5 +118,6 @@ int main ( int argc, char **argv )
   MagickMapDeallocateIterator(iterator);
   MagickMapDeallocateMap(map);
 
+  DestroyExceptionInfo(&exception);
   return exit_status;
 }

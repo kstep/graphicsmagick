@@ -40,6 +40,7 @@
 #endif
 #include "magick/blob.h"
 #include "magick/log.h"
+#include "magick/semaphore.h"
 #include "magick/utility.h"
 
 /*

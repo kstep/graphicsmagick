@@ -34,11 +34,12 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/color.h"
-#include "magick/cache.h"
 #include "magick/blob.h"
-#include "magick/quantize.h"
+#include "magick/cache.h"
+#include "magick/color.h"
 #include "magick/monitor.h"
+#include "magick/quantize.h"
+#include "magick/semaphore.h"
 #include "magick/utility.h"
 
 /*

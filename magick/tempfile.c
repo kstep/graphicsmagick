@@ -12,6 +12,7 @@
 #include "magick/studio.h"
 #include "magick/error.h"
 #include "magick/log.h"
+#include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 

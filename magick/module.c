@@ -44,6 +44,7 @@
 #include "magick/magic.h"
 #include "magick/magick.h"
 #include "magick/module.h"
+#include "magick/semaphore.h"
 #include "magick/utility.h"
 #if defined(HasLTDL)
 #  include "ltdl.h"

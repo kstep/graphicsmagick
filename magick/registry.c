@@ -36,6 +36,7 @@
 */
 #include "magick/studio.h"
 #include "magick/registry.h"
+#include "magick/semaphore.h"
 #include "magick/utility.h"
 
 /*

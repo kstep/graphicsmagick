@@ -19,10 +19,8 @@ extern "C" {
 /*
   Include declarations.
 */
-#include "magick/semaphore.h"
 #include "magick/error.h"
 #include "magick/timer.h"
-#include "magick/map.h"
 
 /*
   Define declarations.
@@ -632,9 +630,6 @@ typedef struct _Image
 
   unsigned int
     dither,             /* True if image is to be dithered */
-    is_monochrome,      /* Private, True if image is known to be monochrome */
-    is_grayscale,       /* Private, True if image is known to be grayscale */
-    taint,              /* Private, True if image has not been modifed */
     matte;              /* True if image has an opacity channel */ 
 
   unsigned long
@@ -711,9 +706,6 @@ typedef struct _Image
   DisposeType
     dispose;            /* GIF disposal option */
 
-  struct _Image
-    *clip_mask;         /* Private, Clipping mask to apply when updating pixels */
-
   unsigned long
     scene,              /* Animation frame scene number */
     delay,              /* Animation frame scene delay */
@@ -732,17 +724,6 @@ typedef struct _Image
   void
     *client_data;       /* User specified opaque data pointer */
 
-  void
-    *cache;             /* Private, image pixel cache */
-
-  _ImageAttribute_
-    *attributes;        /* Private, Image attribute list */
-
-  _Ascii85Info_
-    *ascii85;           /* Private, supports huffman encoding */
-
-  _BlobInfo_
-    *blob;              /* Private, file I/O object */
 
   char
     filename[MaxTextExtent], /* Output filename */
@@ -756,19 +737,45 @@ typedef struct _Image
   ExceptionInfo
     exception;          /* Any error associated with this image frame */
 
+  struct _Image
+    *previous,          /* Pointer to previous frame */
+    *next;              /* Pointer to next frame */
+
+  /*
+    Only private members appear past this point
+  */
+
+  unsigned int
+    is_monochrome,      /* Private, True if image is known to be monochrome */
+    is_grayscale,       /* Private, True if image is known to be grayscale */
+    taint;              /* Private, True if image has not been modifed */
+
+  struct _Image
+    *clip_mask;         /* Private, Clipping mask to apply when updating pixels */
+
+  void
+    *cache;             /* Private, image pixel cache */
+
+  _ImageAttribute_
+    *attributes;        /* Private, Image attribute list */
+
+  _Ascii85Info_
+    *ascii85;           /* Private, supports huffman encoding */
+
+  _BlobInfo_
+    *blob;              /* Private, file I/O object */
+
   long
     reference_count;    /* Private, Image reference count */
 
-  SemaphoreInfo
+  void
     *semaphore;         /* Private, Per image lock (for reference count) */
+
+  struct _Image
+    *list;              /* Private, used only by display */
 
   unsigned long
     signature;          /* Private, Unique code to validate structure */
-
-  struct _Image
-    *previous,          /* Pointer to previous frame */
-    *list,              /* Private, used only by display */
-    *next;              /* Pointer to next frame */
 } Image;
 
 typedef unsigned int
@@ -782,7 +789,6 @@ typedef struct _ImageInfo
   unsigned int
     temporary,               /* Remove file "filename" once it has been read. */
     adjoin,                  /* If True, join multiple frames into one file */
-    affirm,                  /* Private, when true do not intuit image format */
     antialias;               /* If True, antialias while rendering */
 
   unsigned long
@@ -836,37 +842,50 @@ typedef struct _ImageInfo
   ImageType
     type;                    /* Desired image type (used while writing) */
 
-  PreviewType
-    preview_type;            /* Private, used by PreviewImage */
-
   long
     group;                   /* X11 window group ID */
 
   unsigned int
-    ping,                    /* Private, if true, read file header only */
     verbose;                 /* If true, display high-level processing */
 
   char
     *view,                   /* FlashPIX view specification */
     *authenticate;           /* Password used to decrypt file */
 
-  Image
-    *attributes;             /* Private. Image attribute list */
-
   void
     *client_data;            /* User-specified data to pass to coder */
-
-  MagickMap
-    coder_options;          /* Map of coder specific options passed by user */
-
-  void
-    *cache;                  /* Private. Used to pass image via open cache */
 
   StreamHandler
     stream;                  /* Pass in open blob stream handler for read/write */
 
   FILE
     *file;                   /* If not null, stdio FILE to read image from */
+
+  char
+    magick[MaxTextExtent],   /* File format to read. Overrides file extension */
+    filename[MaxTextExtent]; /* File name to read */
+
+  /*
+    Only private members appear past this point
+  */
+
+  void
+    *cache;                  /* Private. Used to pass image via open cache */
+
+  void
+    *coder_options;          /* Private. Map of coder specific options passed by user */
+
+  Image
+    *attributes;             /* Private. Image attribute list */
+
+  unsigned int
+    ping;                    /* Private, if true, read file header only */
+
+  PreviewType
+    preview_type;            /* Private, used by PreviewImage */
+
+  unsigned int
+    affirm;                  /* Private, when true do not intuit image format */
 
   void
     *blob;                   /* Private, used to pass in open blob */
@@ -875,10 +894,8 @@ typedef struct _ImageInfo
     length;                  /* Private, used to pass in open blob length */
 
   char
-    magick[MaxTextExtent],   /* File format to read. Overrides file extension */
     unique[MaxTextExtent],   /* Private, passes temporary filename to TranslateText */
-    zero[MaxTextExtent],     /* Private, passes temporary filename to TranslateText */
-    filename[MaxTextExtent]; /* File name to read */
+    zero[MaxTextExtent];     /* Private, passes temporary filename to TranslateText */
 
   unsigned long
     signature;               /* Private, used to validate structure */
@@ -935,7 +952,8 @@ extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
 
 extern MagickExport unsigned int
-  AddCoderOptions(ImageInfo *image_info,const char *options),
+  AddCoderOptions(ImageInfo *image_info,const char *options,
+    ExceptionInfo *exception),
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ChannelImage(Image *,const ChannelType),

@@ -39,6 +39,7 @@
 #include "magick/blob.h"
 #include "magick/cache.h"
 #include "magick/constitute.h"
+#include "magick/semaphore.h"
 #include "magick/stream.h"
 #include "magick/utility.h"
 
@@ -252,18 +253,18 @@ static void DestroyPixelStream(Image *image)
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  AcquireSemaphoreInfo(&stream_info->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
   stream_info->reference_count--;
   if (stream_info->reference_count > 0)
     {
-      LiberateSemaphoreInfo(&stream_info->semaphore);
+      LiberateSemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
       return;
     }
-  LiberateSemaphoreInfo(&stream_info->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
   if (stream_info->pixels != (PixelPacket *) NULL)
     MagickFreeMemory(stream_info->pixels);
   if (stream_info->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&stream_info->semaphore);
+    DestroySemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
   MagickFreeMemory(stream_info);
 }
 

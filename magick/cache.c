@@ -42,6 +42,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/resource.h"
+#include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 #if defined(HasZLIB)
@@ -996,14 +997,14 @@ MagickExport void DestroyCacheInfo(Cache cache)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  AcquireSemaphoreInfo(&cache_info->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   cache_info->reference_count--;
   if (cache_info->reference_count > 0)
     {
-      LiberateSemaphoreInfo(&cache_info->semaphore);
+      LiberateSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
       return;
     }
-  LiberateSemaphoreInfo(&cache_info->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   switch (cache_info->type)
   {
     default:
@@ -1048,7 +1049,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
       MagickFreeMemory(cache_info->nexus_info);
     }
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&cache_info->semaphore);
+    DestroySemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"destroy %.1024s",
      cache_info->filename);
   MagickFreeMemory(cache_info);
@@ -1998,7 +1999,7 @@ static unsigned int ModifyCache(Image *image)
     }
   /* we don't actually lock until we know for sure that someone else is using
      the same cache. */
-  AcquireSemaphoreInfo(&cache_info->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   cache_info->reference_count--;
   clone_image=(*image);
   GetCacheInfo(&image->cache);
@@ -2018,7 +2019,7 @@ static unsigned int ModifyCache(Image *image)
         (void) AcquireImagePixels(&clone_image,nexus_info.x,nexus_info.y,
           nexus_info.columns,nexus_info.rows,&image->exception);
     }
-  LiberateSemaphoreInfo(&cache_info->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   return(status);
 }
 
@@ -2420,7 +2421,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
         "Attach persistent cache");
       return(True);
     }
-  AcquireSemaphoreInfo(&cache_info->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   if ((cache_info->reference_count == 1) &&
       (cache_info->type != MemoryCache))
     {
@@ -2431,7 +2432,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       if (status == 0)
         {
           (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
-          LiberateSemaphoreInfo(&cache_info->semaphore);
+          LiberateSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
           cache_info=ReferenceCache(cache_info);
           *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -2439,7 +2440,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
           return(True);
         }
     }
-  LiberateSemaphoreInfo(&cache_info->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   /*
     Clone persistent pixel cache.
   */
@@ -2741,9 +2742,9 @@ MagickExport Cache ReferenceCache(Cache cache)
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  AcquireSemaphoreInfo(&cache_info->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   cache_info->reference_count++;
-  LiberateSemaphoreInfo(&cache_info->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &cache_info->semaphore);
   return(cache_info);
 }
 

@@ -48,6 +48,7 @@
 #include "magick/magick.h"
 #include "magick/module.h"
 #include "magick/resource.h"
+#include "magick/semaphore.h"
 #include "magick/stream.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -640,18 +641,18 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
-  AcquireSemaphoreInfo(&blob->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
   blob->reference_count--;
   if (blob->reference_count > 0)
     {
-      LiberateSemaphoreInfo(&blob->semaphore);
+      LiberateSemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
       return;
     }
-  LiberateSemaphoreInfo(&blob->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
   if (blob->mapped)
     (void) UnmapBlob(blob->data,blob->length);
-  if (blob->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&blob->semaphore);
+  if (blob->semaphore != (SemaphoreInfo **) NULL)
+    DestroySemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
   memset((void *)blob,0xbf,sizeof(BlobInfo));
   MagickFreeMemory(blob);
 }
@@ -2601,9 +2602,9 @@ MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
-  AcquireSemaphoreInfo(&blob->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
   blob->reference_count++;
-  LiberateSemaphoreInfo(&blob->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
   return(blob);
 }
 

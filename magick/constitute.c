@@ -43,6 +43,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/semaphore.h"
 #include "magick/stream.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"

@@ -53,6 +53,7 @@
 #include "magick/log.h"
 #include "magick/magic.h"
 #include "magick/magick.h"
+#include "magick/map.h"
 #include "magick/module.h"
 #include "magick/monitor.h"
 #include "magick/montage.h"
@@ -572,7 +573,7 @@ Display
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i]);
+                AddCoderOptions(image_info,argv[i],exception);
               }
             break;
           }
@@ -1609,7 +1610,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (i == argc)
                   ThrowCompositeException(OptionError,MissingArgument,
                     option);
-                AddCoderOptions(image_info,argv[i]);
+                AddCoderOptions(image_info,argv[i],exception);
               }
             break;
           }
@@ -3017,7 +3018,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 i++;
                 if (i == argc)
                   ThrowConvertException(OptionError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i]);
+                AddCoderOptions(image_info,argv[i],exception);
               }
             break;
           }
@@ -5510,7 +5511,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i]);
+                AddCoderOptions(image_info,argv[i],exception);
               }
             break;
           }
@@ -6749,7 +6750,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                 i++;
                 if (i == argc)
                   ThrowIdentifyException(OptionError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i]);
+                AddCoderOptions(image_info,argv[i],exception);
               }
             break;
           }
@@ -7435,7 +7436,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             else
               {
                 i++;
-                AddCoderOptions(clone_info,argv[i]);
+                AddCoderOptions(clone_info,argv[i],&(*image)->exception);
               }
             break;
           }
@@ -9889,7 +9890,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 i++;
                 if (i == argc)
                   ThrowMogrifyException(OptionError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i]);
+                AddCoderOptions(image_info,argv[i],exception);
               }
             break;
           }
@@ -11770,7 +11771,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 i++;
                 if (i == argc)
                   ThrowMontageException(OptionError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i]);
+                AddCoderOptions(image_info,argv[i],exception);
               }
             break;
           }
@@ -13179,7 +13180,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i]);
+                AddCoderOptions(image_info,argv[i],exception);
               }
             break;
           }
