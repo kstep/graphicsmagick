@@ -11,6 +11,8 @@ use Config;
 #   libpth='"C:\Perl\lib\CORE" "D:\DevStudio\VC98\lib"'
 #
 WriteMakefile(
+    'ABSTRACT'  => 'ImageMagick PERL Extension',
+    'AUTHOR'    => 'ImageMagick Studio',
     'NAME'      => 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
     'LIBS'      => ['-L..\VisualMagick\lib -L..\VisualMagick\bin -lCORE_RL_magick_.lib'],
@@ -18,6 +20,7 @@ WriteMakefile(
     'INC'       => '-I.. -I..\xlib\include',
     'BINARY_LOCATION'  => 'x86/Image-Magick.tar.gz',
     'dist' => {ZIP => "zip.exe", ZIPFLAGS=>"-r"},
+    'clean' => {FILES => "Image-Magick.ppd Image-Magick.tar.gz PerlMagick.zip " },
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 );
 
@@ -37,20 +40,28 @@ WriteMakefile(
 sub MY::postamble
 {
         '
+Image-Magick.tar.gz: ppd pure_all htmlifypods manifypods
+	if exist Image-Magick.tar.gz del Image-Magick.tar.gz
+	if exist Image-Magick.tar del Image-Magick.tar
+        $(TAR) $(TARFLAGS) Image-Magick.tar blib
+        $(COMPRESS) -q Image-Magick.tar
+
+release: Image-Magick.tar.gz
+
 ppm: ppd pure_all htmlifypods manifypods
         if exist PerlMagick.zip del PerlMagick.zip
-	if exist Image-Magick.tar$(SUFFIX) del Image-Magick.tar$(SUFFIX)
         $(TAR) $(TARFLAGS) Image-Magick.tar blib
         $(COMPRESS) -q Image-Magick.tar
         if exist x86 del x86 /f /q
         if exist x86 rd x86
         md x86
         copy Image-Magick.tar$(SUFFIX) x86
-#        del Image-Magick.tar$(SUFFIX)
+        del Image-Magick.tar$(SUFFIX)
         if exist ppm-readme.txt copy ppm-readme.txt readme
         $(ZIP) $(ZIPFLAGS) PerlMagick.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
         del x86\Image-Magick.tar$(SUFFIX)
         rd x86
+
 ppm-full: ppd pure_all htmlifypods manifypods
         if exist PerlMagick-full.zip del PerlMagick-full.zip
         copy ..\VisualMagick\bin\*.dll blib\arch\auto\Image\Magick

@@ -45,6 +45,9 @@ WriteMakefile
    # Module description
    'ABSTRACT'	=> 'ImageMagick PERL Extension',
 
+   # Module author
+   'AUTHOR'    => 'ImageMagick Studio',
+
    # Set compiler flags other than INC and OPTIMIZE
    # 'CCFLAGS'	=> '@CFLAGS@',
 
