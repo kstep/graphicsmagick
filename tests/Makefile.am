@@ -24,11 +24,6 @@ rwfile_SOURCES = rwfile.c
 clean-local:
 	rm -f out.*
 
-#	PCD \
-#	PCDS \
-#	UYVY \
-#	YUV
-
 CHECK_FILES = \
 	'LOGO:' \
 	'../PerlMagick/t/input_p4.pbm'  \
@@ -87,7 +82,7 @@ check-rwblob:
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if ./rwblob $$file $$format ; \
+	    if DELEGATE_PATH=../delegates ./rwblob $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -104,7 +99,7 @@ check-rwfile:
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if ./rwfile $$file $$format ; \
+	    if DELEGATE_PATH=../delegates ./rwfile $$file $$format ; \
 	    then \
 	      : ; \
 	    else \

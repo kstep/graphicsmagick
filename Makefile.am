@@ -139,7 +139,7 @@ endif # WITH_PERL_STATIC
 endif # WTIH_PERL_DYNAMIC
 
 check-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
+	DELEGATE_PATH=../delegates cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
 clean-perl: $(PERLMAKEFILE)
 	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && rm -f  Makefile.old PerlMagick

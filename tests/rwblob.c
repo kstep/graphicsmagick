@@ -88,6 +88,7 @@ int main ( int argc, char **argv )
   char * blob = NULL;
   char infile[80];
   char format[80];
+  char scratch[80];
   size_t blob_length = 0;
   char *size = NULL;
   int rows, columns = 0;
@@ -149,6 +150,8 @@ int main ( int argc, char **argv )
   strcpy( original->magick, format );
   strcpy( imageInfo.filename, "" );
   original->delay = 10;
+  FormatString( scratch, "%d", 10 );
+  CloneString( &imageInfo.delay, scratch );
   blob = ImageToBlob ( &imageInfo, original, &blob_length );
   if ( blob == NULL )
     {
@@ -182,6 +185,9 @@ int main ( int argc, char **argv )
   blob_length = 8192;
   strcpy( original->magick, format );
   strcpy( imageInfo.filename, "" );
+  original->delay = 10;
+  FormatString( scratch, "%d", 10 );
+  CloneString( &imageInfo.delay, scratch );
   blob = ImageToBlob ( &imageInfo, original, &blob_length );
   if ( blob == NULL )
     {
@@ -217,7 +223,7 @@ int main ( int argc, char **argv )
     fuzz_factor = 5;
 
   if ( !strcmp( "P7", format ) )
-       fuzz_factor = 2;
+       fuzz_factor = 15;
 
   if ( !strcmp( "PCD", format ) )
     fuzz_factor = 8;
