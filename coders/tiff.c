@@ -898,7 +898,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             else
               push_method=IndexQuantum;
 
-          for (y=0; y < (long) image->rows; y++)
+          for (y=0; y < image->rows; y++)
             {
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
@@ -914,7 +914,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   */
                   lsb_first=1;
                   if (*(char *) &lsb_first)
-                    MSBOrderShort(scanline, Max(TIFFScanlineSize(tiff),
+                    MSBOrderShort(scanline, Max((unsigned int) TIFFScanlineSize(tiff),
                                                 packet_size*width));
                 }
 
@@ -1967,7 +1967,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
           old_value=bits_per_sample;
           new_value=atoi(value);
-          if (new_value <= QuantumDepth)
+          if ((new_value > 0) && (new_value <= 32))
             {
               bits_per_sample=new_value;
               if (logging)
@@ -1979,8 +1979,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             {
               if (logging)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "User override (bits-per-sample) IGNORED (value %u exceeds limit of %u)",
-                  new_value, (unsigned int) QuantumDepth);
+                  "User override (bits-per-sample) IGNORED (value %u outside of range 1-32)",
+                  new_value);
             }
         }
 
