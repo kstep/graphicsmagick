@@ -805,20 +805,6 @@ ANIMATION
   apparently does not pad the structure so ImageMagick should be fine on
   this particular 64-bit machine.
 
-ACKNOWLEDGEMENT
-
-  ImageMagick has been significantly enhanced due to the efforts of these
-  individuals:
-
-      Bob Friesenhahn <bfriesen@simple.dallas.tx.us>:  Configure scripts,
-        regression tests, and Gperf magic handling routine.
-      Rick Mabry" <rmabry@server1.softdisk.com>:  tiled drawing pens and
-        numerous bug alerts and fixes
-      Bill Radcliffe <BillR@corbis.com>:  FlashPix and IPTC support.
-
-  And thanks to the hundreds of people that have sent e-mail with bug
-  reports and suggestions for improving ImageMagick.
-
 
 COPYRIGHT
 

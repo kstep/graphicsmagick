@@ -1673,6 +1673,7 @@ Export void XDisplayImageInfo(Display *display,
       /*
         Display information about the image in the Text View widget.
       */
+      XWithdrawWindow(display,windows->info.id,windows->info.screen);
       FormatString(title,"Image Info: %.1024s",image->filename);
       XTextViewWidget(display,resource_info,windows,True,title,
         (char const **) textlist);

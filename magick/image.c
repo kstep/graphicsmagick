@@ -3142,7 +3142,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     case BilevelType: (void) fprintf(file,"bilevel"); break;
     case GrayscaleType: (void) fprintf(file,"grayscale"); break;
     case PaletteType: (void) fprintf(file,"palette"); break;
-    case TrueColorType: (void) fprintf(file,"true color");
+    case TrueColorType: (void) fprintf(file,"true color"); break;
     case MatteType: (void) fprintf(file,"true color with transparency"); break;
     default: (void) fprintf(file,"undefined"); break;
   }
