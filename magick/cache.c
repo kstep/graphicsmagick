@@ -468,8 +468,8 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   image->cache_info.y=y;
   image->cache_info.width=columns;
   image->cache_info.height=rows;
-  if (((x == 0) && ((columns % image->columns) == 0)) ||
-      (((x+columns) <= image->columns) && (rows == 1)))
+  if ((((x+columns) <= image->columns) && (rows == 1)) ||
+      ((x == 0) && ((columns % image->columns) == 0)))
     {
       /*
         Direct access to the pixel cache-- no intermediate buffer.
