@@ -1056,7 +1056,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   assert(exception->signature == MagickSignature);
   assert((filter >= 0) && (filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
-    ThrowImageException(OptionError,"Unable to resize image",
+    ThrowImageException(ImageError,"UnableToResizeImage",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
     return(CloneImage(image,0,0,True,exception));
@@ -1209,7 +1209,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if ((columns == 0) || (rows == 0))
-    ThrowImageException(OptionError,"Unable to resize image",
+    ThrowImageException(ImageError,"UnableToResizeImage",
       "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,True,exception));

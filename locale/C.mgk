@@ -122,11 +122,26 @@
   </Delegate>
   <Draw>
     <Error>
+      <Message name="AlreadyPushingPatternDefinition">
+        Already pushing pattern definition
+      </Message>
       <Message name="NonconformingDrawingPrimitiveDefinition">
         Non-conforming drawing primitive definition
       </Message>
+      <Message name="NotARelativeURL">
+        Not a relative URL
+      </Message>
+      <Message name="NotCurrentlyPushingPatternDefinition">
+        Not currently pushing pattern definition
+      </Message>
+      <Message name="UnableToPrint">
+        Unable to print
+      </Message>
       <Message name="UnbalancedGraphicContextPushPop">
         unbalanced graphic context push/pop
+      </Message>
+      <Message name="URLNotFound">
+        URL not found
       </Message>
     </Draw>
   </Delegate>
@@ -162,8 +177,11 @@
       <Message name="UnableToCreateStereoImage">
         Unable to create stereo image
       </Message>
+      <Message name="UnableToResizeImage">
+        Unable to resize image
+      </Message>
       <Message name="UnableToSegmentImage">
-        Unable to segemtn image
+        Unable to segment image
       </Message>
       <Message name="UnableToSetImageClipMask">
         Unable to set image clip mask
@@ -415,6 +433,19 @@
       </Message>
     </Error>
   </Option>
+  <Registry>
+    <Error>
+      <Message name="UnableToGetRegistryID">
+        Unable to get registry ID
+      </Message>
+      <Message name="UnableToLocateImage">
+        Unable to locate image
+      </Message>
+      <Message name="UnableToSetRegistry">
+        Unable to set registry
+      </Message>
+    </Error>
+  </Registry>
   <Resource>
     <Limit>
       <Error>
@@ -457,6 +488,22 @@
       </Message>
     </Error>
   </Type>
+  <Stream>
+    <Error>
+      <Message name="PixelCacheIsNotOpen">
+        Pixel cache is not open
+      </Message>
+      <Message name="UnableToAcquirePixelStream">
+        Unable to acquire pixel stream
+      </Message>
+      <Message name="UnableToSetPixelStream">
+        Unable to set pixel stream
+      </Message>
+      <Message name="UnableToSyncPixelStream">
+        Unable to sync pixel stream
+      </Message>
+    </Error>
+  </Stream>
   <XServer>
     <Error>
       <Message name="NoWindowWithSpecifiedIDExists">

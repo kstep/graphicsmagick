@@ -249,7 +249,7 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
   }
   LiberateSemaphoreInfo(&registry_semaphore);
   if (image == (Image *) NULL)
-    ThrowException(exception,RegistryError,"Unable to locate image",name);
+    ThrowException(exception,RegistryError,"UnableToLocateImage",name);
   return(image);
 }
 
@@ -330,8 +330,8 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
         blob=(void *) AcquireMemory(registry_info->length);
         if (blob == (void *) NULL)
           {
-            ThrowException(exception,RegistryError,"Unable to get registry",
-              "MemoryAllocationFailed");
+            ThrowException(exception,ResourceLimitError,
+              "MemoryAllocationFailed","Unable to get registry");
             break;
           }
         (void) memcpy(blob,registry_info->blob,registry_info->length);
@@ -349,7 +349,7 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
         description[MaxTextExtent];
 
       FormatString(description,"id=%ld",id);
-      ThrowException(exception,RegistryError,"Unable to locate registry id",
+      ThrowException(exception,RegistryError,"UnableToLocateRegistryID",
         description);
     }
   return(blob);
@@ -406,14 +406,14 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       image=(Image *) blob;
       if (length != sizeof(Image))
         {
-          ThrowException(exception,RegistryError,"Unable to set registry",
-            "Structure size mismatch");
+          ThrowException(exception,RegistryError,"UnableToSetRegistry",
+            "structure size mismatch");
           return(-1);
         }
       if (image->signature != MagickSignature)
         {
-          ThrowException(exception,RegistryError,"Unable to set registry",
-            "Image expected");
+          ThrowException(exception,RegistryError,"UnableToSetRegistry",
+            "image expected");
           return(-1);
         }
       clone_blob=(void *) CloneImageList(image,exception);
@@ -429,14 +429,14 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       image_info=(ImageInfo *) blob;
       if (length != sizeof(ImageInfo))
         {
-          ThrowException(exception,RegistryError,"Unable to set registry",
-            "Structure size mismatch");
+          ThrowException(exception,RegistryError,"UnableToSetRegistry",
+            "structure size mismatch");
           return(-1);
         }
       if (image_info->signature != MagickSignature)
         {
-          ThrowException(exception,RegistryError,"Unable to set registry",
-            "Image info expected");
+          ThrowException(exception,RegistryError,"UnableToSetRegistry",
+            "image info expected");
           return(-1);
         }
       clone_blob=(void *) CloneImageInfo(image_info);

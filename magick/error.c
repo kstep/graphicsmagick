@@ -392,8 +392,10 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case ImageError: return("Image/Error/");
     case OptionError: return("Option/Error/");
     case MissingDelegateError: return("Missing/Delegate/Error/");
+    case RegistryError: return("Registry/Error/");
     case ResourceLimitError: return("Resource/Limit/Error/");
     case ResourceLimitWarning: return("Resource/Limit/Warning/");
+    case StreamError: return("Stream/Error/");
     case TypeError: return("Type/Error/");
     case XServerError: return("XServer/Error/");
     default: return("");

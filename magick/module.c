@@ -281,8 +281,8 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
             message[MaxTextExtent];
 
           FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
-          ThrowException(&(*image)->exception,ModuleError,
-            "UnableToLoadModule",message);
+          ThrowException(&(*image)->exception,ModuleError,"UnableToLoadModule",
+            message);
           LiberateMemory((void **) &module_name);
           return(status);
         }

@@ -309,18 +309,43 @@ const char *GetLocaleMessage(const char *tag)
               default:
                 return tag;
 
+              case 'a':  case 'A':
+                if (p - tp == 31 && !LocaleNCompare(tp, "AlreadyPushingPatternDefinition", 31))
+                  return *np ? tag : "Already pushing pattern definition";
+                else
+                  return tag;
+
               case 'n':  case 'N':
                 if (p - tp == 39 && !LocaleNCompare(tp, "NonconformingDrawingPrimitiveDefinition", 39))
                   return *np ? tag : "Non-conforming drawing primitive definition";
                 else
+                if (p - tp == 15 && !LocaleNCompare(tp, "NotARelativeURL", 15))
+                  return *np ? tag : "Not a relative URL";
+                else
+                if (p - tp == 36 && !LocaleNCompare(tp, "NotCurrentlyPushingPatternDefinition", 36))
+                  return *np ? tag : "Not currently pushing pattern definition";
+                else
                   return tag;
 
               case 'u':  case 'U':
+                if (p - tp == 13 && !LocaleNCompare(tp, "UnableToPrint", 13))
+                  return *np ? tag : "Unable to print";
+                else
                 if (p - tp == 31 && !LocaleNCompare(tp, "UnbalancedGraphicContextPushPop", 31))
-                  if (LocaleNCompare(NEXT_FIELD, "unbalanced graphic context push", 31) || p - tp != 31)
+                  switch (*NEXT_FIELD)
+                  {
+                  default:
                     return tag;
-                  else
-                    return *np ? tag : "pop";
+
+                  case 'u':  case 'U':
+                    if (p - tp == 31 && !LocaleNCompare(tp, "unbalanced graphic context push", 31))
+                      return *np ? tag : "pop";
+                    else
+                    if (p - tp == 11 && !LocaleNCompare(tp, "URLNotFound", 11))
+                      return *np ? tag : "URL not found";
+                    else
+                      return tag;
+                  }
                 else
                   return tag;
               }
@@ -390,8 +415,11 @@ const char *GetLocaleMessage(const char *tag)
                   if (p - tp == 25 && !LocaleNCompare(tp, "UnableToCreateStereoImage", 25))
                     return *np ? tag : "Unable to create stereo image";
                   else
+                  if (p - tp == 19 && !LocaleNCompare(tp, "UnableToResizeImage", 19))
+                    return *np ? tag : "Unable to resize image";
+                  else
                   if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSegmentImage", 20))
-                    return *np ? tag : "Unable to segemtn image";
+                    return *np ? tag : "Unable to segment image";
                   else
                   if (p - tp == 24 && !LocaleNCompare(tp, "UnableToSetImageClipMask", 24))
                     return *np ? tag : "Unable to set image clip mask";
@@ -714,6 +742,28 @@ const char *GetLocaleMessage(const char *tag)
               return tag;
 
           case 'r':  case 'R':
+            if (p - tp == 8 && !LocaleNCompare(tp, "Registry", 8))
+              if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+                return tag;
+              else
+                switch (*NEXT_FIELD)
+                {
+                default:
+                  return tag;
+
+                case 'u':  case 'U':
+                  if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetRegistryID", 21))
+                    return *np ? tag : "Unable to get registry ID";
+                  else
+                  if (p - tp == 19 && !LocaleNCompare(tp, "UnableToLocateImage", 19))
+                    return *np ? tag : "Unable to locate image";
+                  else
+                  if (p - tp == 19 && !LocaleNCompare(tp, "UnableToSetRegistry", 19))
+                    return *np ? tag : "Unable to set registry";
+                  else
+                    return tag;
+                }
+            else
             if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
               if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
                 return tag;
@@ -769,6 +819,37 @@ const char *GetLocaleMessage(const char *tag)
                       return tag;
                     else
                       return *np ? tag : "Memory allocation failed";
+                  else
+                    return tag;
+                }
+            else
+              return tag;
+
+          case 's':  case 'S':
+            if (p - tp == 6 && !LocaleNCompare(tp, "Stream", 6))
+              if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+                return tag;
+              else
+                switch (*NEXT_FIELD)
+                {
+                default:
+                  return tag;
+
+                case 'p':  case 'P':
+                  if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
+                    return *np ? tag : "Pixel cache is not open";
+                  else
+                    return tag;
+
+                case 'u':  case 'U':
+                  if (p - tp == 26 && !LocaleNCompare(tp, "UnableToAcquirePixelStream", 26))
+                    return *np ? tag : "Unable to acquire pixel stream";
+                  else
+                  if (p - tp == 22 && !LocaleNCompare(tp, "UnableToSetPixelStream", 22))
+                    return *np ? tag : "Unable to set pixel stream";
+                  else
+                  if (p - tp == 23 && !LocaleNCompare(tp, "UnableToSyncPixelStream", 23))
+                    return *np ? tag : "Unable to sync pixel stream";
                   else
                     return tag;
                 }

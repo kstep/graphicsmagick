@@ -437,8 +437,8 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
 
     if (formatted_length < 0)
       {
-        ThrowException(&context->image->exception,StreamError,"vsprintf failed",
-                       format);
+        ThrowException(&context->image->exception,DrawError,"UnableToPrint",
+          format);
       }
     else
       {
@@ -483,8 +483,8 @@ static int MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
 
   if (formatted_length < 0)
     {
-      ThrowException(&context->image->exception,StreamError,"vsprintf failed",
-                     format);
+      ThrowException(&context->image->exception,StreamError,"UnableToPrint",
+        format);
     }
   else
     {
@@ -1499,13 +1499,13 @@ MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_ur
   assert(fill_url != NULL);
 
   if(fill_url[0] != '#')
-    ThrowDrawException(OptionWarning,"Not relative URL", fill_url);
+    ThrowDrawException(DrawWarning,"NotARelativeuRL", fill_url);
 
   FormatString(pattern,"[%.1024s]",fill_url+1);
 
   if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(OptionWarning,"URL not found", fill_url)
+      ThrowDrawException(DrawWarning,"URLNotFound", fill_url)
     }
   else
     {
@@ -3951,7 +3951,7 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
     }
   else
     {
-      ThrowDrawException(CorruptImageError,"unbalanced graphic context push/pop",NULL)
+      ThrowDrawException(DrawError,"UnbalancedGraphicContextPushPop",NULL)
     }
 }
 
@@ -3987,7 +3987,7 @@ MagickExport void DrawPopPattern(DrawContext context)
   assert(context->signature == MagickSignature);
 
   if( context->pattern_id == NULL )
-    ThrowDrawException(OptionWarning,"Not currently pushing pattern definition",NULL);
+    ThrowDrawException(DrawWarning,"NotCurrentlyPushingPatternDefinition",NULL);
 
   FormatString(key,"[%.1024s]",context->pattern_id);
 
@@ -4123,10 +4123,6 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
     }
   CurrentContext=
     CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
-  if(CurrentContext == (DrawInfo*) NULL)
-    ThrowDrawException(ResourceLimitError, "Unable to draw image",
-                       "Failed to clone drawing context");
-
   MvgPrintf(context, "push graphic-context\n");
   context->indent_depth++;
 }
@@ -4181,8 +4177,8 @@ MagickExport void DrawPushPattern(DrawContext context,
   assert(pattern_id != (const char *) NULL);
 
   if( context->pattern_id != NULL )
-    ThrowDrawException(OptionWarning,"Already pushing pattern definition",
-                       context->pattern_id);
+    ThrowDrawException(DrawError,"AlreadyPushingPatternDefinition",
+      context->pattern_id);
 
   context->filter_off = True;
 
@@ -4690,13 +4686,13 @@ MagickExport void DrawSetStrokePatternURL(DrawContext context,
   assert(stroke_url != NULL);
 
   if(stroke_url[0] != '#')
-    ThrowDrawException(OptionWarning, "Not relative URL", stroke_url);
+    ThrowDrawException(OptionWarning, "NotARelativeURL", stroke_url);
 
   FormatString(pattern,"[%.1024s]",stroke_url+1);
 
   if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(OptionWarning, "URL not found", stroke_url)
+      ThrowDrawException(OptionWarning, "URLNotFound", stroke_url)
     }
   else
     {
@@ -4957,7 +4953,7 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
           else
             {
               ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-                "Unable to draw image")
+                "unable to draw image")
             }
         }
 

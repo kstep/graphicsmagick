@@ -199,7 +199,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
-      ThrowException(exception,StreamError,"Unable to acquire pixel stream",
+      ThrowException(exception,StreamError,"UnableToAcquirePixelStream",
         "image does not contain the stream geometry");
       return((PixelPacket *) NULL);
     }
@@ -207,7 +207,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   assert(stream_info->signature == MagickSignature);
   if (stream_info->type == UndefinedCache)
     {
-      ThrowException(exception,StreamError,"Pixel cache is not open",
+      ThrowException(exception,StreamError,"PixelCacheIsNotOpen",
         image->filename);
       return((PixelPacket *) NULL);
     }
@@ -558,14 +558,14 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
-      ThrowException(&image->exception,StreamError,
-        "Unable to set pixel stream","image does not contain the geometry");
+      ThrowException(&image->exception,StreamError,"UnableToSetPixelStream",
+        "image does not contain the geometry");
       return((PixelPacket *) NULL);
     }
   if (image->blob->stream == (StreamHandler) NULL)
     {
-      ThrowException(&image->exception,StreamError,
-        "Unable to set pixel stream","no stream handler is defined");
+      ThrowException(&image->exception,StreamError,"UnableToSetPixelStream",
+        "no stream handler is defined");
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
@@ -651,8 +651,8 @@ static unsigned int SyncPixelStream(Image *image)
   assert(stream_info->signature == MagickSignature);
   if (image->blob->stream == (StreamHandler) NULL)
     {
-      ThrowException(&image->exception,StreamError,
-        "Unable to sync pixel stream","no stream handler is defined");
+      ThrowException(&image->exception,StreamError,"UnableToSyncPixelStream",
+        "no stream handler is defined");
       return(False);
     }
   return(image->blob->stream(image,stream_info->pixels,stream_info->columns));
