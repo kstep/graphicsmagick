@@ -51,7 +51,6 @@ BEGIN_MESSAGE_MAP(CTargetPage, CPropertyPage)
 	//{{AFX_MSG_MAP(CTargetPage)
 	ON_BN_CLICKED(IDC_EditConfig, OnEditConfig)
 	//}}AFX_MSG_MAP
-  ON_BN_CLICKED(IDC_PROJECT_TYPE, OnBnClickedProjectType)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -77,8 +76,4 @@ void CTargetPage::OnEditConfig()
 
   if (WinExec(strCommandLine, SW_SHOW) <= 31)
 	  MessageBox(_T("Unable to run notepad"));
-}
-void CTargetPage::OnBnClickedProjectType()
-{
-  // TODO: Add your control notification handler code here
 }

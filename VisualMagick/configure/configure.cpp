@@ -2861,11 +2861,25 @@ BOOL CConfigureApp::InitInstance()
     {
       process_project_replacements("..","coders","LIBRARY.bak","LIBRARY.txt",OP_RENAMEFILES);
       process_project_replacements("..","coders","MODULE.txt","MODULE.bak",OP_RENAMEFILES);
+      if (optionalFiles)
+      {
+        process_project_replacements("..","contrib","LIBRARY.bak","LIBRARY.txt",OP_RENAMEFILES);
+        process_project_replacements("..","contrib","MODULE.txt","MODULE.bak",OP_RENAMEFILES);
+      }
+      process_project_replacements("..","filters","LIBRARY.bak","LIBRARY.txt",OP_RENAMEFILES);
+      process_project_replacements("..","filters","MODULE.txt","MODULE.bak",OP_RENAMEFILES);
     }
     else
     {
       process_project_replacements("..","coders","LIBRARY.txt","LIBRARY.bak",OP_RENAMEFILES);
       process_project_replacements("..","coders","MODULE.bak","MODULE.txt",OP_RENAMEFILES);
+      if (optionalFiles)
+      {
+        process_project_replacements("..","contrib","LIBRARY.txt","LIBRARY.bak",OP_RENAMEFILES);
+        process_project_replacements("..","contrib","MODULE.bak","MODULE.txt",OP_RENAMEFILES);
+      }
+      process_project_replacements("..","filters","LIBRARY.txt","LIBRARY.bak",OP_RENAMEFILES);
+      process_project_replacements("..","filters","MODULE.bak","MODULE.txt",OP_RENAMEFILES);
     }
     //waitdlg.Pumpit();
     process_project_type("..",projectType,"THIRDPARTY.txt",THIRDPARTY);
