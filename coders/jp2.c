@@ -179,6 +179,78 @@ static unsigned int IsJPC(const unsigned char *magick,const unsigned int length)
 %
 */
 #if defined(HasJP2)
+
+typedef struct _StreamManager
+{
+  jas_stream_t
+    *stream;
+
+  Image
+    *image;
+
+  unsigned char
+    *buffer,
+    start_of_blob;
+} StreamManager;
+
+static int BlobRead(jas_stream_obj_t *object,char *buf,int count)
+{
+  return(ReadBlob(((StreamManager *) object)->image,count,(void *) buf));
+}
+
+static int BlobWrite(jas_stream_obj_t *object,char *buf,int count)
+{
+  return(WriteBlob(((StreamManager *) object)->image,count,(void *) buf));
+}
+
+static long BlobSeek(jas_stream_obj_t *object,long offset,int origin)
+{
+  return(SeekBlob(((StreamManager *) object)->image,offset,origin));
+}
+
+static int BlobClose(jas_stream_obj_t *object)
+{
+  CloseBlob(((StreamManager *) object)->image);
+  return(0);
+}
+
+static jas_stream_ops_t
+  jp2_stream_fileops =
+  {
+    BlobRead,
+    BlobWrite,
+    BlobSeek,
+    BlobClose
+  };
+
+static jas_stream_t *JP2StreamManager(Image *image)
+{
+  jas_stream_t 
+    *stream;
+
+  StreamManager
+    *source;
+
+  stream=(jas_stream_t *) AcquireMemory(sizeof(jas_stream_t));
+  if (stream == (jas_stream_t *) NULL)
+    return((jas_stream_t *) NULL);
+  memset(stream,0,sizeof(jas_stream_t));
+  stream->rwlimit_=(-1);
+  stream->obj_=(jas_stream_obj_t *) AcquireMemory(sizeof(StreamManager));
+  source=(StreamManager *) stream->obj_;
+  source->buffer=(unsigned char *) NULL;
+  source->image=image;
+  stream->ops_=(&jp2_stream_fileops);
+  stream->openmode_=JAS_STREAM_READ | JAS_STREAM_WRITE | JAS_STREAM_BINARY;
+  stream->bufbase_=stream->tinybuf_;
+  stream->bufsize_=1;
+  stream->bufstart_=(&stream->bufbase_[JAS_STREAM_MAXPUTBACK]);
+  stream->ptr_=stream->bufstart_;
+  stream->cnt_=0;
+  stream->bufmode_|=JAS_STREAM_UNBUF & JAS_STREAM_BUFMODEMASK;
+  return(stream);
+}
+
 static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
@@ -218,10 +290,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     Initialize JPEG 2000 API.
   */
   jas_init();
-  if (image->blob.data != (unsigned char *) NULL)
-    jp2_stream=jas_stream_memopen((char *) image->blob.data,image->blob.length);
-  else
-    jp2_stream=jas_stream_freopen(image->filename,ReadBinaryType,image->file);
+  jp2_stream = JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   jp2_image=jas_image_decode(jp2_stream,-1,0);
@@ -252,7 +321,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     if (q == (PixelPacket *) NULL)
       break;
     for (i=0; i < (int) number_components; i++)
-      (void) jas_image_readcmpt(jp2_image,i,0,y,image->columns,1,pixels[i]);
+      (void) jas_image_readcmpt(jp2_image,(short) i,0,y,image->columns,1,
+	pixels[i]);
     for (x=0; x < (int) image->columns; x++)
     {
       q->red=UpScale(jas_matrix_getv(pixels[0],x));
@@ -393,7 +463,6 @@ ModuleExport void UnregisterJP2Image(void)
 static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
   char
-    filename[MaxTextExtent],
     magick[MaxTextExtent],
     options[MaxTextExtent];
 
@@ -430,16 +499,14 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) strcpy(filename,image->filename);
   if ((image->file == stdout) || image->pipet ||
       (image->blob.data != (unsigned char *) NULL))
-    TemporaryFilename(filename);
   /*
     Intialize JPEG 2000 API.
   */
   TransformRGBImage(image,RGBColorspace);
   jas_init();
-  jp2_stream=jas_stream_fopen(filename,WriteBinaryType);
+  jp2_stream = JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   number_components=image->matte ? 4 : 3;
@@ -454,7 +521,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     component_info[i].height=image->rows;
     component_info[i].prec=image->depth;
   }
-  jp2_image=jas_image_create(number_components,component_info,
+  jp2_image=jas_image_create((short)number_components,component_info,
     number_components == 1 ? JAS_IMAGE_CM_GRAY : JAS_IMAGE_CM_RGB);
   if (jp2_image == (jas_image_t *) NULL)
     ThrowWriterException(FileOpenWarning,"Unable to create image",image);
@@ -491,7 +558,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
       p++;
     }
     for (i=0; i < (int) number_components; i++)
-      (void) jas_image_writecmpt(jp2_image,i,0,y,image->columns,1,pixels[i]);
+      (void) jas_image_writecmpt(jp2_image,(short)i,0,y,image->columns,1,
+        pixels[i]);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         MagickMonitor(SaveImageText,y,image->rows);
@@ -507,30 +575,9 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenWarning,"Unable to encode image file",image);
   (void) jas_stream_close(jp2_stream);
   jas_image_destroy(jp2_image);
-  if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (unsigned char *) NULL))
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy temporary file to image blob.
-      */
-      file=fopen(filename,ReadBinaryType);
-      if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) WriteBlobByte(image,c);
-      (void) fclose(file);
-      (void) remove(filename);
-    }
   CloseBlob(image);
   return(True);
 }
-
 #else
 static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
