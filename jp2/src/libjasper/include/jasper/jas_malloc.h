@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -119,16 +119,20 @@
 #ifndef JAS_MALLOC_H
 #define JAS_MALLOC_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /******************************************************************************\
 * Includes.
 \******************************************************************************/
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/******************************************************************************\
+* Hack follows...
+\******************************************************************************/
 
 #if defined(DEBUG_MEMALLOC)
 /* This is somewhat of a hack, but it's a useful hack. :-) */

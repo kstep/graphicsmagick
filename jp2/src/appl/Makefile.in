@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# Copyright (c) 2001 Michael David Adams.
+# Copyright (c) 2001-2002 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -171,6 +171,8 @@ AWK = @AWK@
 CC = @CC@
 CPP = @CPP@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 JAS_BINARY_AGE = @JAS_BINARY_AGE@
 JAS_INTERFACE_AGE = @JAS_INTERFACE_AGE@
 JAS_MAJOR_VERSION = @JAS_MAJOR_VERSION@
@@ -185,15 +187,24 @@ LT_RELEASE = @LT_RELEASE@
 LT_REVISION = @LT_REVISION@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+OPENGL_LIBS = @OPENGL_LIBS@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
+@HAVE_OPENGL_TRUE@BIN_JIV = @HAVE_OPENGL_TRUE@jiv
+@HAVE_OPENGL_FALSE@BIN_JIV = 
+@HAVE_OPENGL_TRUE@EXTRA_JIV = 
+@HAVE_OPENGL_FALSE@EXTRA_JIV = @HAVE_OPENGL_FALSE@jiv
 
-bin_PROGRAMS = jasper imgcmp imginfo
+bin_PROGRAMS = jasper $(BIN_JIV) imgcmp imginfo
+EXTRA_PROGRAMS = $(EXTRA_JIV)
 
 jasper_SOURCES = jasper.c
 imgcmp_SOURCES = imgcmp.c
 imginfo_SOURCES = imginfo.c
+jiv_SOURCES = jiv.c
 
 INCLUDES = -I../libjasper/include
 
@@ -201,8 +212,13 @@ MYLDFLAGS = ../libjasper/libjasper.la
 jasper_LDADD = $(MYLDFLAGS)
 imgcmp_LDADD = $(MYLDFLAGS)
 imginfo_LDADD = $(MYLDFLAGS)
+jiv_LDADD = $(MYLDFLAGS) $(OPENGL_LIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
+@HAVE_OPENGL_FALSE@bin_PROGRAMS =  jasper$(EXEEXT) imgcmp$(EXEEXT) \
+@HAVE_OPENGL_FALSE@imginfo$(EXEEXT)
+@HAVE_OPENGL_TRUE@bin_PROGRAMS =  jasper$(EXEEXT) jiv$(EXEEXT) \
+@HAVE_OPENGL_TRUE@imgcmp$(EXEEXT) imginfo$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -210,13 +226,20 @@ DEFS = @DEFS@ -I. -I$(srcdir)
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-jasper_OBJECTS =  jasper.o
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+jiv_OBJECTS =  jiv.$(OBJEXT)
+jiv_DEPENDENCIES =  ../libjasper/libjasper.la
+jiv_LDFLAGS = 
+jasper_OBJECTS =  jasper.$(OBJEXT)
 jasper_DEPENDENCIES =  ../libjasper/libjasper.la
 jasper_LDFLAGS = 
-imgcmp_OBJECTS =  imgcmp.o
+imgcmp_OBJECTS =  imgcmp.$(OBJEXT)
 imgcmp_DEPENDENCIES =  ../libjasper/libjasper.la
 imgcmp_LDFLAGS = 
-imginfo_OBJECTS =  imginfo.o
+imginfo_OBJECTS =  imginfo.$(OBJEXT)
 imginfo_DEPENDENCIES =  ../libjasper/libjasper.la
 imginfo_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -231,12 +254,12 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(jasper_SOURCES) $(imgcmp_SOURCES) $(imginfo_SOURCES)
-OBJECTS = $(jasper_OBJECTS) $(imgcmp_OBJECTS) $(imginfo_OBJECTS)
+SOURCES = $(jiv_SOURCES) $(jasper_SOURCES) $(imgcmp_SOURCES) $(imginfo_SOURCES)
+OBJECTS = $(jiv_OBJECTS) $(jasper_OBJECTS) $(imgcmp_OBJECTS) $(imginfo_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps src/appl/Makefile
 
@@ -273,6 +296,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -281,6 +309,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -308,16 +337,24 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-jasper: $(jasper_OBJECTS) $(jasper_DEPENDENCIES)
-	@rm -f jasper
+jiv$(EXEEXT): $(jiv_OBJECTS) $(jiv_DEPENDENCIES)
+	@rm -f jiv$(EXEEXT)
+	$(LINK) $(jiv_LDFLAGS) $(jiv_OBJECTS) $(jiv_LDADD) $(LIBS)
+
+jasper$(EXEEXT): $(jasper_OBJECTS) $(jasper_DEPENDENCIES)
+	@rm -f jasper$(EXEEXT)
 	$(LINK) $(jasper_LDFLAGS) $(jasper_OBJECTS) $(jasper_LDADD) $(LIBS)
 
-imgcmp: $(imgcmp_OBJECTS) $(imgcmp_DEPENDENCIES)
-	@rm -f imgcmp
+jiv$(EXEEXT): $(jiv_OBJECTS) $(jiv_DEPENDENCIES)
+	@rm -f jiv$(EXEEXT)
+	$(LINK) $(jiv_LDFLAGS) $(jiv_OBJECTS) $(jiv_LDADD) $(LIBS)
+
+imgcmp$(EXEEXT): $(imgcmp_OBJECTS) $(imgcmp_DEPENDENCIES)
+	@rm -f imgcmp$(EXEEXT)
 	$(LINK) $(imgcmp_LDFLAGS) $(imgcmp_OBJECTS) $(imgcmp_LDADD) $(LIBS)
 
-imginfo: $(imginfo_OBJECTS) $(imginfo_DEPENDENCIES)
-	@rm -f imginfo
+imginfo$(EXEEXT): $(imginfo_OBJECTS) $(imginfo_DEPENDENCIES)
+	@rm -f imginfo$(EXEEXT)
 	$(LINK) $(imginfo_LDFLAGS) $(imginfo_OBJECTS) $(imginfo_LDADD) $(LIBS)
 
 tags: TAGS

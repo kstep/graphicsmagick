@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -131,6 +131,7 @@
 #include "jasper/jas_stream.h"
 
 #include "pnm_cod.h"
+#include "pnm_enc.h"
 
 /******************************************************************************\
 * Local types.
@@ -155,8 +156,11 @@ jas_taginfo_t pnm_opttab[] = {
 
 static int pnm_parseencopts(char *optstr, pnm_encopts_t *encopts);
 static int pnm_puthdr(jas_stream_t *out, pnm_hdr_t *hdr);
+static int pnm_putdata(jas_stream_t *out, pnm_hdr_t *hdr, jas_image_t *image, int numcmpts, int *cmpts);
+
+static int pnm_putsint(jas_stream_t *out, int wordsize, int_fast32_t *val);
+static int pnm_putuint(jas_stream_t *out, int wordsize, uint_fast32_t *val);
 static int pnm_putuint16(jas_stream_t *out, uint_fast16_t val);
-static int pnm_putdata(jas_stream_t *out, pnm_hdr_t *hdr, jas_image_t *image);
 
 /******************************************************************************\
 * Save function.
@@ -169,9 +173,13 @@ int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	uint_fast16_t cmptno;
 	pnm_hdr_t hdr;
 	pnm_encopts_t encopts;
+#if 0
 	uint_fast16_t numcmpts;
+#endif
 	int prec;
 	bool sgnd;
+	pnm_enc_t encbuf;
+	pnm_enc_t *enc = &encbuf;
 
 	/* Parse the encoder option string. */
 	if (pnm_parseencopts(optstr, &encopts)) {
@@ -179,11 +187,41 @@ int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		return -1;
 	}
 
+	switch (jas_image_colorspace(image)) {
+	case JAS_IMAGE_CS_RGB:
+		enc->numcmpts = 3;
+		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R))) < 0 ||
+		  (enc->cmpts[1] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G))) < 0 ||
+		  (enc->cmpts[2] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B))) < 0) {
+			jas_eprintf("error: missing color component\n");
+			return -1;
+		}
+		break;
+	case JAS_IMAGE_CS_GRAY:
+		enc->numcmpts = 1;
+		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) < 0) {
+			jas_eprintf("error: missing color component\n");
+			return -1;
+		}
+		break;
+	default:
+		jas_eprintf("error: unsupported color space\n");
+		return -1;
+		break;
+	}
+
+#if 0
 	numcmpts = jas_image_numcmpts(image);
-	width = jas_image_cmptwidth(image, 0);
-	height = jas_image_cmptheight(image, 0);
-	prec = jas_image_cmptprec(image, 0);
-	sgnd = jas_image_cmptsgnd(image, 0);
+#endif
+
+	width = jas_image_cmptwidth(image, enc->cmpts[0]);
+	height = jas_image_cmptheight(image, enc->cmpts[0]);
+	prec = jas_image_cmptprec(image, enc->cmpts[0]);
+	sgnd = jas_image_cmptsgnd(image, enc->cmpts[0]);
 
 	/* The PNM format is quite limited in the set of image geometries
 	  that it can handle.  Here, we check to ensure that the image to
@@ -194,15 +232,15 @@ int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	  precision.*/
 	/* All of the components must have their top-left corner located at
 	  the origin. */
-	for (cmptno = 0; cmptno < numcmpts; ++cmptno) {
-		if (jas_image_cmptwidth(image, cmptno) != width ||
-		  jas_image_cmptheight(image, cmptno) != height ||
-		  jas_image_cmptprec(image, cmptno) != prec ||
-		  jas_image_cmptsgnd(image, cmptno) != sgnd ||
-		  jas_image_cmpthstep(image, cmptno) != jas_image_cmpthstep(image, 0) ||
-		  jas_image_cmptvstep(image, cmptno) != jas_image_cmptvstep(image, 0) ||
-		  jas_image_cmpttlx(image, cmptno) != jas_image_cmpttlx(image, 0) ||
-		  jas_image_cmpttly(image, cmptno) != jas_image_cmpttly(image, 0)) {
+	for (cmptno = 0; cmptno < enc->numcmpts; ++cmptno) {
+		if (jas_image_cmptwidth(image, enc->cmpts[cmptno]) != width ||
+		  jas_image_cmptheight(image, enc->cmpts[cmptno]) != height ||
+		  jas_image_cmptprec(image, enc->cmpts[cmptno]) != prec ||
+		  jas_image_cmptsgnd(image, enc->cmpts[cmptno]) != sgnd ||
+		  jas_image_cmpthstep(image, enc->cmpts[cmptno]) != jas_image_cmpthstep(image, 0) ||
+		  jas_image_cmptvstep(image, enc->cmpts[cmptno]) != jas_image_cmptvstep(image, 0) ||
+		  jas_image_cmpttlx(image, enc->cmpts[cmptno]) != jas_image_cmpttlx(image, 0) ||
+		  jas_image_cmpttly(image, enc->cmpts[cmptno]) != jas_image_cmpttly(image, 0)) {
 			fprintf(stderr, "The PNM format cannot be used to represent an image with this geometry.\n");
 			return -1;
 		}
@@ -213,16 +251,10 @@ int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		fprintf(stderr, "You may not be able to read or correctly display the resulting PNM data with other software.\n");
 	}
 
-	/* The PNM format does not allow for binary data when the depth is
-	  greater than eight. */
-	if (prec > 8 || sgnd) {
-		encopts.bin = false;
-	}
-
 	/* Initialize the header. */
-	if (numcmpts == 1) {
+	if (enc->numcmpts == 1) {
 		hdr.magic = encopts.bin ? PNM_MAGIC_BINPGM : PNM_MAGIC_TXTPGM;
-	} else if (numcmpts == 3) {
+	} else if (enc->numcmpts == 3) {
 		hdr.magic = encopts.bin ? PNM_MAGIC_BINPPM : PNM_MAGIC_TXTPPM;
 	} else {
 		return -1;
@@ -230,6 +262,7 @@ int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	hdr.width = width;
 	hdr.height = height;
 	hdr.maxval = (1 << prec) - 1;
+	hdr.sgnd = sgnd;
 
 	/* Write the header. */
 	if (pnm_puthdr(out, &hdr)) {
@@ -237,7 +270,7 @@ int pnm_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	}
 
 	/* Write the image data. */
-	if (pnm_putdata(out, &hdr, image)) {
+	if (pnm_putdata(out, &hdr, image, enc->numcmpts, enc->cmpts)) {
 		return -1;
 	}
 
@@ -305,11 +338,18 @@ error:
 /* Write the header. */
 static int pnm_puthdr(jas_stream_t *out, pnm_hdr_t *hdr)
 {
+	int_fast32_t maxval;
+
 	if (pnm_putuint16(out, hdr->magic)) {
 		return -1;
 	}
-	jas_stream_printf(out, "\n%lu %lu\n%lu\n", (unsigned long) hdr->width,
-	  (unsigned long) hdr->height, (unsigned long) hdr->maxval);
+	if (hdr->sgnd) {
+		maxval = -hdr->maxval;
+	} else {
+		maxval = hdr->maxval;
+	}
+	jas_stream_printf(out, "\n%lu %lu\n%ld\n", (unsigned long) hdr->width,
+	  (unsigned long) hdr->height, (long) maxval);
 	if (jas_stream_error(out)) {
 		return -1;
 	}
@@ -321,14 +361,16 @@ static int pnm_puthdr(jas_stream_t *out, pnm_hdr_t *hdr)
 \******************************************************************************/
 
 /* Write the image sample data. */
-static int pnm_putdata(jas_stream_t *out, pnm_hdr_t *hdr, jas_image_t *image)
+static int pnm_putdata(jas_stream_t *out, pnm_hdr_t *hdr, jas_image_t *image, int numcmpts, int *cmpts)
 {
 	int ret;
 	uint_fast16_t cmptno;
 	uint_fast32_t x;
 	uint_fast32_t y;
 	jas_matrix_t *data[3];
+#if 0
 	int numcmpts;
+#endif
 	int fmt;
 	jas_seqent_t *d[3];
 	jas_seqent_t v;
@@ -336,12 +378,16 @@ static int pnm_putdata(jas_stream_t *out, pnm_hdr_t *hdr, jas_image_t *image)
 	int linelen;
 	int n;
 	char buf[256];
+	int depth;
 
 	ret = -1;
 	fmt = pnm_fmt(hdr->magic);
 	minval = -((int) hdr->maxval + 1);
+	depth = pnm_maxvaltodepth(hdr->maxval);
 
+#if 0
 	numcmpts = jas_image_numcmpts(image);
+#endif
 	data[0] = 0;
 	data[1] = 0;
 	data[2] = 0;
@@ -353,7 +399,7 @@ static int pnm_putdata(jas_stream_t *out, pnm_hdr_t *hdr, jas_image_t *image)
 
 	for (y = 0; y < hdr->height; ++y) {
 		for (cmptno = 0; cmptno < numcmpts; ++cmptno) {
-			if (jas_image_readcmpt(image, cmptno, 0, y, hdr->width, 1,
+			if (jas_image_readcmpt(image, cmpts[cmptno], 0, y, hdr->width, 1,
 			  data[cmptno])) {
 				goto done;
 			}
@@ -370,7 +416,19 @@ static int pnm_putdata(jas_stream_t *out, pnm_hdr_t *hdr, jas_image_t *image)
 					v = hdr->maxval;
 				}
 				if (fmt == PNM_FMT_BIN) {
-					jas_stream_putc(out, (unsigned char)(v));
+					if (hdr->sgnd) {
+						int_fast32_t sv;
+						sv = v;
+						if (pnm_putsint(out, depth, &sv)) {
+							goto done;
+						}
+					} else {
+						uint_fast32_t uv;
+						uv = v;
+						if (pnm_putuint(out, depth, &uv)) {
+							goto done;
+						}
+					}
 				} else {
 					n = sprintf(buf, "%s%ld", ((!(!x && !cmptno)) ? " " : ""),
 					  (long) v);
@@ -409,6 +467,32 @@ done:
 /******************************************************************************\
 * Miscellaneous functions.
 \******************************************************************************/
+
+static int pnm_putsint(jas_stream_t *out, int wordsize, int_fast32_t *val)
+{
+	uint_fast32_t tmpval;
+	tmpval = (*val < 0) ? ((~((-(*val)) + 1)) & PNM_ONES(wordsize)) : (*val);
+	return pnm_putuint(out, wordsize, &tmpval);
+}
+
+static int pnm_putuint(jas_stream_t *out, int wordsize, uint_fast32_t *val)
+{
+	int n;
+	uint_fast32_t tmpval;
+	int c;
+
+	n = (wordsize + 7) / 8;
+	tmpval &= PNM_ONES(8 * n);
+	tmpval = (*val) << (8 * (4 - n));
+	while (--n >= 0) {
+		c = (tmpval >> 24) & 0xff;
+		if (jas_stream_putc(out, c) == EOF) {
+			return -1;
+		}
+		tmpval = (tmpval << 8) & 0xffffffff;
+	}
+	return 0;
+}
 
 /* Write a 16-bit unsigned integer to a stream. */
 static int pnm_putuint16(jas_stream_t *out, uint_fast16_t val)

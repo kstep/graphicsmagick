@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# Copyright (c) 2001 Michael David Adams.
+# Copyright (c) 2001-2002 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -171,6 +171,8 @@ AWK = @AWK@
 CC = @CC@
 CPP = @CPP@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 JAS_BINARY_AGE = @JAS_BINARY_AGE@
 JAS_INTERFACE_AGE = @JAS_INTERFACE_AGE@
 JAS_MAJOR_VERSION = @JAS_MAJOR_VERSION@
@@ -185,12 +187,20 @@ LT_RELEASE = @LT_RELEASE@
 LT_REVISION = @LT_REVISION@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+OPENGL_LIBS = @OPENGL_LIBS@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
 
 noinst_LTLIBRARIES = libpnm.la
-libpnm_la_SOURCES =  	pnm_cod.h 	pnm_cod.c 	pnm_dec.c 	pnm_enc.c
+libpnm_la_SOURCES = \
+	pnm_cod.h \
+	pnm_enc.h \
+	pnm_cod.c \
+	pnm_dec.c \
+	pnm_enc.c
 
 
 INCLUDES = -I../include
@@ -203,6 +213,10 @@ DEFS = @DEFS@ -I. -I$(srcdir)
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 libpnm_la_LDFLAGS = 
 libpnm_la_LIBADD = 
 libpnm_la_OBJECTS =  pnm_cod.lo pnm_dec.lo pnm_enc.lo
@@ -223,7 +237,7 @@ OBJECTS = $(libpnm_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps src/libjasper/pnm/Makefile
 
@@ -244,6 +258,11 @@ maintainer-clean-noinstLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -252,6 +271,7 @@ maintainer-clean-noinstLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -176,7 +176,9 @@ int main(int argc, char **argv)
 	int verbose;
 	char *fmtname;
 
-	jas_init();
+	if (jas_init()) {
+		abort();
+	}
 
 	cmdname = argv[0];
 
@@ -238,7 +240,7 @@ int main(int argc, char **argv)
 	if (!(fmtname = jas_image_fmttostr(fmtid))) {
 		abort();
 	}
-	printf("%s %d %d %d %d %ld\n", fmtname, numcmpts, width, height, depth, (long) jas_image_getrawsize(image));
+	printf("%s %d %d %d %d %ld\n", fmtname, numcmpts, width, height, depth, (long) jas_image_rawsize(image));
 
 	jas_image_destroy(image);
 	jas_image_clearfmts();

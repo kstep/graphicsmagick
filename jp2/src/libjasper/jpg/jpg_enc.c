@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -122,6 +122,7 @@
 
 #include "jpg_jpeglib.h"
 #include "jpg_cod.h"
+#include "jpg_enc.h"
 
 /******************************************************************************\
 * Types.
@@ -148,6 +149,8 @@ typedef struct jpg_src_s {
 	  during decompression. */
 	int error;
 
+	jpg_enc_t *enc;
+
 } jpg_src_t;
 
 
@@ -173,6 +176,9 @@ static JDIMENSION jpg_get_pixel_rows(j_compress_ptr cinfo, struct jpg_src_s *sin
 	int i;
 	int cmptno;
 	int width;
+	int *cmpts;
+
+	cmpts = sinfo->enc->cmpts;
 
 	width = jas_image_width(sinfo->image);
 
@@ -180,7 +186,7 @@ static JDIMENSION jpg_get_pixel_rows(j_compress_ptr cinfo, struct jpg_src_s *sin
 		return 0;
 	}
 	for (cmptno = 0; cmptno < cinfo->input_components; ++cmptno) {
-		if (jas_image_readcmpt(sinfo->image, cmptno, 0, sinfo->row, width, 1, sinfo->data)) {
+		if (jas_image_readcmpt(sinfo->image, cmpts[cmptno], 0, sinfo->row, width, 1, sinfo->data)) {
 			;
 		}
 		bufptr = (sinfo->buffer[0]) + cmptno;
@@ -210,29 +216,71 @@ int jpg_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	struct jpeg_error_mgr jerr;
 	uint_fast32_t width;
 	uint_fast32_t height;
+#if 0
 	int numcmpts;
+#endif
 	jpg_src_t src_mgr_buf;
 	jpg_src_t *src_mgr = &src_mgr_buf;
 	FILE *output_file;
 	int cmptno;
+	jpg_enc_t encbuf;
+	jpg_enc_t *enc = &encbuf;
 
 	output_file = 0;
 
+	switch (jas_image_colorspace(image)) {
+	case JAS_IMAGE_CS_RGB:
+		enc->numcmpts = 3;
+		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R))) < 0 ||
+		  (enc->cmpts[1] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G))) < 0 ||
+		  (enc->cmpts[2] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B))) < 0) {
+			jas_eprintf("error: missing color component\n");
+			goto error;
+		}
+		break;
+	case JAS_IMAGE_CS_YCBCR:
+		enc->numcmpts = 3;
+		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_Y))) < 0 ||
+		  (enc->cmpts[1] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_CB))) < 0 ||
+		  (enc->cmpts[2] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_CR))) < 0) {
+			jas_eprintf("error: missing color component\n");
+			goto error;
+		}
+		break;
+	case JAS_IMAGE_CS_GRAY:
+		enc->numcmpts = 1;
+		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) < 0) {
+			jas_eprintf("error: missing color component\n");
+			goto error;
+		}
+		break;
+	default:
+		jas_eprintf("error: JPG format does not support color space\n");
+		goto error;
+		break;
+	}
+
 	width = jas_image_width(image);
 	height = jas_image_height(image);
-	numcmpts = jas_image_numcmpts(image);
 
-	for (cmptno = 0; cmptno < numcmpts; ++cmptno) {
-		if (jas_image_cmptwidth(image, cmptno) != width ||
-		  jas_image_cmptheight(image, cmptno) != height ||
-		  jas_image_cmpttlx(image, cmptno) != 0 ||
-		  jas_image_cmpttly(image, cmptno) != 0 ||
-		  jas_image_cmpthstep(image, cmptno) != 1 ||
-		  jas_image_cmptvstep(image, cmptno) != 1 ||
-		  jas_image_cmptprec(image, cmptno) != 8 ||
-		  jas_image_cmptsgnd(image, cmptno) != false) {
-			fprintf(stderr, "The JPG encoder cannot handle an image with this geometry.\n");
-			return -1;
+	for (cmptno = 0; cmptno < enc->numcmpts; ++cmptno) {
+		if (jas_image_cmptwidth(image, enc->cmpts[cmptno]) != width ||
+		  jas_image_cmptheight(image, enc->cmpts[cmptno]) != height ||
+		  jas_image_cmpttlx(image, enc->cmpts[cmptno]) != 0 ||
+		  jas_image_cmpttly(image, enc->cmpts[cmptno]) != 0 ||
+		  jas_image_cmpthstep(image, enc->cmpts[cmptno]) != 1 ||
+		  jas_image_cmptvstep(image, enc->cmpts[cmptno]) != 1 ||
+		  jas_image_cmptprec(image, enc->cmpts[cmptno]) != 8 ||
+		  jas_image_cmptsgnd(image, enc->cmpts[cmptno]) != false) {
+			jas_eprintf("error: The JPG encoder cannot handle an image with this geometry.\n");
+			goto error;
 		}
 	}
 
@@ -247,10 +295,10 @@ int jpg_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	/* Specify data destination for compression */
 	jpeg_stdio_dest(&cinfo, output_file);
 
-	cinfo.in_color_space = (numcmpts == 3) ? JCS_RGB : JCS_GRAYSCALE;
+	cinfo.in_color_space = tojpgcs(jas_image_colorspace(image));
 	cinfo.image_width = width;
 	cinfo.image_height = height;
-	cinfo.input_components = numcmpts;
+	cinfo.input_components = enc->numcmpts;
 	jpeg_set_defaults(&cinfo);
 
 	src_mgr->error = 0;
@@ -260,6 +308,7 @@ int jpg_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	  JPOOL_IMAGE, (JDIMENSION) width * cinfo.input_components,
 	  (JDIMENSION) 1);
 	src_mgr->buffer_height = 1;
+	src_mgr->enc = enc;
 
 	/* Read the input file header to obtain file size & colorspace. */
 	jpg_start_input(&cinfo, src_mgr);
@@ -296,3 +345,20 @@ error:
 	}
 	return -1;
 }
+
+static int tojpgcs(int colorspace)
+{
+	switch (colorspace) {
+	case JAS_IMAGE_CS_RGB:
+		return JCS_RGB;
+		break;
+	case JAS_IMAGE_CS_YCBCR:
+		return JCS_YCbCr;
+		break;
+	case JAS_IMAGE_CS_GRAY:
+		return JCS_GRAYSCALE;
+		break;
+	}
+	abort();
+}
+

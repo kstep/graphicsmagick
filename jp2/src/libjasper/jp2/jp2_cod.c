@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -120,6 +120,7 @@
 * Includes.
 \******************************************************************************/
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "jasper/jas_stream.h"
@@ -130,6 +131,8 @@
 /******************************************************************************\
 * Function prototypes.
 \******************************************************************************/
+
+#define	ONES(n)	((1 << (n)) - 1)
 
 jp2_boxinfo_t *jp2_boxinfolookup(int type);
 
@@ -142,7 +145,10 @@ static int jp2_putuint16(jas_stream_t *out, uint_fast16_t val);
 static int jp2_putuint32(jas_stream_t *out, uint_fast32_t val);
 static int jp2_putuint64(jas_stream_t *out, uint_fast64_t val);
 
+static int jp2_getint(jas_stream_t *in, int s, int n, int_fast32_t *val);
+
 jp2_box_t *jp2_box_get(jas_stream_t *in);
+void jp2_box_dump(jp2_box_t *box, FILE *out);
 
 static int jp2_jp_getdata(jp2_box_t *box, jas_stream_t *in);
 static int jp2_jp_putdata(jp2_box_t *box, jas_stream_t *out);
@@ -155,54 +161,65 @@ static int jp2_bpcc_getdata(jp2_box_t *box, jas_stream_t *in);
 static int jp2_bpcc_putdata(jp2_box_t *box, jas_stream_t *out);
 static int jp2_colr_getdata(jp2_box_t *box, jas_stream_t *in);
 static int jp2_colr_putdata(jp2_box_t *box, jas_stream_t *out);
+static void jp2_colr_dumpdata(jp2_box_t *box, FILE *out);
+static void jp2_colr_destroy(jp2_box_t *box);
 static void jp2_cdef_destroy(jp2_box_t *box);
 static int jp2_cdef_getdata(jp2_box_t *box, jas_stream_t *in);
 static int jp2_cdef_putdata(jp2_box_t *box, jas_stream_t *out);
+static void jp2_cdef_dumpdata(jp2_box_t *box, FILE *out);
+static void jp2_cmap_destroy(jp2_box_t *box);
+static int jp2_cmap_getdata(jp2_box_t *box, jas_stream_t *in);
+static int jp2_cmap_putdata(jp2_box_t *box, jas_stream_t *out);
+static void jp2_cmap_dumpdata(jp2_box_t *box, FILE *out);
+static void jp2_pclr_destroy(jp2_box_t *box);
+static int jp2_pclr_getdata(jp2_box_t *box, jas_stream_t *in);
+static int jp2_pclr_putdata(jp2_box_t *box, jas_stream_t *out);
+static void jp2_pclr_dumpdata(jp2_box_t *box, FILE *out);
 
 /******************************************************************************\
 * Local data.
 \******************************************************************************/
 
 jp2_boxinfo_t jp2_boxinfos[] = {
-	{JP2_BOX_JP, "Signature (JP)", 0,
-	  {0, 0, jp2_jp_getdata, jp2_jp_putdata}},
-	{JP2_BOX_FTYP, "File Type (FTYP)", 0,
-	  {0, 0, jp2_ftyp_getdata, jp2_ftyp_putdata}},
-	{JP2_BOX_JP2H, "JP2 Header (JP2H)", JP2_BOX_SUPER,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_IHDR, "Image Header (IHDR)", 0,
-	  {0, 0, jp2_ihdr_getdata, jp2_ihdr_putdata}},
-	{JP2_BOX_BPCC, "Bits Per Component (BPCC)", 0,
-	  {0, jp2_bpcc_destroy, jp2_bpcc_getdata, jp2_bpcc_putdata}},
-	{JP2_BOX_COLR, "Color Specification (COLR)", 0,
-	  {0, 0, jp2_colr_getdata, jp2_colr_putdata}},
-	{JP2_BOX_PCLR, "Palette (PCLR)", 0,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_CMAP, "Component Mapping (CMAP)", 0,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_CDEF, "Channel Definition (CDEF)", 0,
-	  {0, jp2_cdef_destroy, jp2_cdef_getdata, jp2_cdef_putdata}},
-	{JP2_BOX_RES, "Resolution (RES)", JP2_BOX_SUPER,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_RESC, "Capture Resolution (RESC)", 0,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_RESD, "Default Display Resolution (RESD)", 0,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_JP2C, "Contiguous Code Stream (JP2C)", JP2_BOX_NODATA,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_JP2I, "Intellectual Property (JP2I)", 0,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_XML, "XML (XML)", 0,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_UUID, "UUID (UUID)", 0,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_UINF, "UUID Info (UINF)", JP2_BOX_SUPER,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_ULST, "UUID List (ULST)", 0,
-	  {0, 0, 0, 0}},
-	{JP2_BOX_URL, "URL (URL)", 0,
-	  {0, 0, 0, 0}},
-	{0, 0, 0, {0, 0, 0, 0}},
+	{JP2_BOX_JP, "JP", 0,
+	  {0, 0, jp2_jp_getdata, jp2_jp_putdata, 0}},
+	{JP2_BOX_FTYP, "FTYP", 0,
+	  {0, 0, jp2_ftyp_getdata, jp2_ftyp_putdata, 0}},
+	{JP2_BOX_JP2H, "JP2H", JP2_BOX_SUPER,
+	  {0, 0, 0, 0, 0}},
+	{JP2_BOX_IHDR, "IHDR", 0,
+	  {0, 0, jp2_ihdr_getdata, jp2_ihdr_putdata, 0}},
+	{JP2_BOX_BPCC, "BPCC", 0,
+	  {0, jp2_bpcc_destroy, jp2_bpcc_getdata, jp2_bpcc_putdata, 0}},
+	{JP2_BOX_COLR, "COLR", 0,
+	  {0, jp2_colr_destroy, jp2_colr_getdata, jp2_colr_putdata, jp2_colr_dumpdata}},
+	{JP2_BOX_PCLR, "PCLR", 0,
+	  {0, jp2_pclr_destroy, jp2_pclr_getdata, jp2_pclr_putdata, jp2_pclr_dumpdata}},
+	{JP2_BOX_CMAP, "CMAP", 0,
+	  {0, jp2_cmap_destroy, jp2_cmap_getdata, jp2_cmap_putdata, jp2_cmap_dumpdata}},
+	{JP2_BOX_CDEF, "CDEF", 0,
+	  {0, jp2_cdef_destroy, jp2_cdef_getdata, jp2_cdef_putdata, jp2_cdef_dumpdata}},
+	{JP2_BOX_RES, "RES", JP2_BOX_SUPER,
+	  {0, 0, 0, 0, 0}},
+	{JP2_BOX_RESC, "RESC", 0,
+	  {0, 0, 0, 0, 0}},
+	{JP2_BOX_RESD, "RESD", 0,
+	  {0, 0, 0, 0, 0}},
+	{JP2_BOX_JP2C, "JP2C", JP2_BOX_NODATA,
+	  {0, 0, 0, 0, 0}},
+	{JP2_BOX_JP2I, "JP2I", 0,
+	  {0, 0, 0, 0, 0}},
+	{JP2_BOX_XML, "XML", 0,
+	  {0, 0, 0, 0, 0}},
+	{JP2_BOX_UUID, "UUID", 0,
+	  {0, 0, 0, 0, 0}},
+	{JP2_BOX_UINF, "UINF", JP2_BOX_SUPER,
+	  {0, 0, 0, 0, 0}},
+	{JP2_BOX_ULST, "ULST", 0,
+	  {0, 0, 0, 0, 0}},
+	{JP2_BOX_URL, "URL", 0,
+	  {0, 0, 0, 0, 0}},
+	{0, 0, 0, {0, 0, 0, 0, 0}},
 };
 
 jp2_boxinfo_t jp2_boxinfo_unk = {
@@ -256,9 +273,9 @@ static void jp2_bpcc_destroy(jp2_box_t *box)
 static void jp2_cdef_destroy(jp2_box_t *box)
 {
 	jp2_cdef_t *cdef = &box->data.cdef;
-	if (cdef->chans) {
-		jas_free(cdef->chans);
-		cdef->chans = 0;
+	if (cdef->ents) {
+		jas_free(cdef->ents);
+		cdef->ents = 0;
 	}
 }
 
@@ -318,6 +335,8 @@ jp2_box_t *jp2_box_get(jas_stream_t *in)
 		jas_stream_close(tmpstream);
 	}
 
+	jp2_box_dump(box, stderr);
+
 	return box;
 	abort();
 
@@ -329,6 +348,20 @@ error:
 		jas_stream_close(tmpstream);
 	}
 	return 0;
+}
+
+void jp2_box_dump(jp2_box_t *box, FILE *out)
+{
+	jp2_boxinfo_t *boxinfo;
+	boxinfo = jp2_boxinfolookup(box->type);
+	assert(boxinfo);
+
+	fprintf(out, "JP2 box: ");
+	fprintf(out, "type=%c%s%c (0x%08x); length=%d\n", '"', boxinfo->name,
+	  '"', box->type, box->len);
+	if (box->ops->dumpdata) {
+		(*box->ops->dumpdata)(box, out);
+	}
 }
 
 static int jp2_jp_getdata(jp2_box_t *box, jas_stream_t *in)
@@ -387,9 +420,27 @@ static int jp2_bpcc_getdata(jp2_box_t *box, jas_stream_t *in)
 	return 0;
 }
 
+static void jp2_colr_dumpdata(jp2_box_t *box, FILE *out)
+{
+	jp2_colr_t *colr = &box->data.colr;
+	fprintf(out, "method=%d; pri=%d; approx=%d\n", (int)colr->method, (int)colr->pri, (int)colr->approx);
+	switch (colr->method) {
+	case JP2_COLR_ENUM:
+		fprintf(out, "csid=%d\n", (int)colr->csid);
+		break;
+	case JP2_COLR_ICC:
+		jas_memdump(out, colr->iccp, colr->iccplen);
+		break;
+	}
+}
+
 static int jp2_colr_getdata(jp2_box_t *box, jas_stream_t *in)
 {
 	jp2_colr_t *colr = &box->data.colr;
+	colr->csid = 0;
+	colr->iccp = 0;
+	colr->iccplen = 0;
+
 	if (jp2_getuint8(in, &colr->method) || jp2_getuint8(in, &colr->pri) ||
 	  jp2_getuint8(in, &colr->approx)) {
 		return -1;
@@ -401,13 +452,34 @@ static int jp2_colr_getdata(jp2_box_t *box, jas_stream_t *in)
 		}
 		break;
 	case JP2_COLR_ICC:
-		/* XXX - Someday we really ought to do something about ICC profile
-		  data.  For now, we just read it and throw it away. */
-		/* There is no colorspace ID field in the ICC profile case. */
-		colr->csid = 0;
+		colr->iccplen = box->len - JP2_BOX_HDRLEN - 3;
+		if (!(colr->iccp = jas_malloc(colr->iccplen * sizeof(uint_fast8_t)))) {
+			return -1;
+		}
+		if (jas_stream_read(in, colr->iccp, colr->iccplen) != colr->iccplen) {
+			return -1;
+		}
 		break;
 	}
 	return 0;
+}
+
+static void jp2_cdef_dumpdata(jp2_box_t *box, FILE *out)
+{
+	jp2_cdef_t *cdef = &box->data.cdef;
+	int i;
+	for (i = 0; i < cdef->numchans; ++i) {
+		fprintf(out, "channo=%d; type=%d; assoc=%d\n",
+		  cdef->ents[i].channo, cdef->ents[i].type, cdef->ents[i].assoc);
+	}
+}
+
+static void jp2_colr_destroy(jp2_box_t *box)
+{
+	jp2_colr_t *colr = &box->data.colr;
+	if (colr->iccp) {
+		free(colr->iccp);
+	}
 }
 
 static int jp2_cdef_getdata(jp2_box_t *box, jas_stream_t *in)
@@ -418,12 +490,12 @@ static int jp2_cdef_getdata(jp2_box_t *box, jas_stream_t *in)
 	if (jp2_getuint16(in, &cdef->numchans)) {
 		return -1;
 	}
-	if (!(cdef->chans = jas_malloc(cdef->numchans * sizeof(jp2_cdefchan_t)))) {
+	if (!(cdef->ents = jas_malloc(cdef->numchans * sizeof(jp2_cdefchan_t)))) {
 		return -1;
 	}
 	for (channo = 0; channo < cdef->numchans; ++channo) {
-		chan = &cdef->chans[channo];
-		if (jp2_getuint16(in, &chan->ind) || jp2_getuint16(in, &chan->type) ||
+		chan = &cdef->ents[channo];
+		if (jp2_getuint16(in, &chan->channo) || jp2_getuint16(in, &chan->type) ||
 		  jp2_getuint16(in, &chan->assoc)) {
 			return -1;
 		}
@@ -557,7 +629,23 @@ static int jp2_colr_putdata(jp2_box_t *box, jas_stream_t *out)
 
 static int jp2_cdef_putdata(jp2_box_t *box, jas_stream_t *out)
 {
-	return -1;
+	jp2_cdef_t *cdef = &box->data.cdef;
+	int i;
+	jp2_cdefchan_t *ent;
+
+	if (jp2_putuint16(out, cdef->numchans)) {
+		return -1;
+	}
+
+	for (i = 0; i < cdef->numchans; ++i) {
+		ent = &cdef->ents[i];
+		if (jp2_putuint16(out, ent->channo) ||
+		  jp2_putuint16(out, ent->type) ||
+		  jp2_putuint16(out, ent->assoc)) {
+			return -1;
+		}
+	}
+	return 0;
 }
 
 /******************************************************************************\
@@ -679,4 +767,166 @@ jp2_boxinfo_t *jp2_boxinfolookup(int type)
 		}
 	}
 	return &jp2_boxinfo_unk;
+}
+
+
+
+
+
+static void jp2_cmap_destroy(jp2_box_t *box)
+{
+	jp2_cmap_t *cmap = &box->data.cmap;
+	if (cmap->ents) {
+		jas_free(cmap->ents);
+	}
+}
+
+static int jp2_cmap_getdata(jp2_box_t *box, jas_stream_t *in)
+{
+	jp2_cmap_t *cmap = &box->data.cmap;
+	jp2_cmapent_t *ent;
+	int i;
+
+	cmap->numchans = (box->len - JP2_BOX_HDRLEN) / 4;
+	if (!(cmap->ents = jas_malloc(cmap->numchans * sizeof(jp2_cmapent_t)))) {
+		return -1;
+	}
+	for (i = 0; i < cmap->numchans; ++i) {
+		ent = &cmap->ents[i];
+		if (jp2_getuint16(in, &ent->cmptno) ||
+		  jp2_getuint8(in, &ent->map) ||
+		  jp2_getuint8(in, &ent->pcol)) {
+			return -1;
+		}
+	}
+	
+	return 0;
+}
+
+static int jp2_cmap_putdata(jp2_box_t *box, jas_stream_t *out)
+{
+	return -1;
+}
+
+static void jp2_cmap_dumpdata(jp2_box_t *box, FILE *out)
+{
+	jp2_cmap_t *cmap = &box->data.cmap;
+	int i;
+	jp2_cmapent_t *ent;
+	fprintf(stderr, "numchans = %d\n", (int) cmap->numchans);
+	for (i = 0; i < cmap->numchans; ++i) {
+		ent = &cmap->ents[i];
+		fprintf(stderr, "cmptno=%d; map=%d; pcol=%d\n",
+		  (int) ent->cmptno, (int) ent->map, (int) ent->pcol);
+	}
+}
+
+static void jp2_pclr_destroy(jp2_box_t *box)
+{
+	jp2_pclr_t *pclr = &box->data.pclr;
+	if (pclr->lutdata) {
+		jas_free(pclr->lutdata);
+	}
+}
+
+static int jp2_pclr_getdata(jp2_box_t *box, jas_stream_t *in)
+{
+	jp2_pclr_t *pclr = &box->data.pclr;
+	int lutsize;
+	int i;
+	int j;
+	int_fast32_t x;
+
+	pclr->lutdata = 0;
+
+	if (jp2_getuint16(in, &pclr->numlutents) ||
+	  jp2_getuint8(in, &pclr->numchans)) {
+		return -1;
+	}
+	lutsize = pclr->numlutents * pclr->numchans;
+	if (!(pclr->lutdata = jas_malloc(lutsize * sizeof(int_fast32_t)))) {
+		return -1;
+	}
+	if (!(pclr->bpc = jas_malloc(pclr->numchans * sizeof(uint_fast8_t)))) {
+		return -1;
+	}
+	for (i = 0; i < pclr->numchans; ++i) {
+		if (jp2_getuint8(in, &pclr->bpc[i])) {
+			return -1;
+		}
+	}
+	for (i = 0; i < pclr->numlutents; ++i) {
+		for (j = 0; j < pclr->numchans; ++j) {
+			if (jp2_getint(in, (pclr->bpc[j] & 0x80) != 0,
+			  (pclr->bpc[j] & 0x7f) + 1, &x)) {
+				return -1;
+			}
+			pclr->lutdata[i * pclr->numchans + j] = x;
+		}
+	}
+	return 0;
+}
+
+static int jp2_pclr_putdata(jp2_box_t *box, jas_stream_t *out)
+{
+	jp2_pclr_t *pclr = &box->data.pclr;
+	return -1;
+}
+
+static void jp2_pclr_dumpdata(jp2_box_t *box, FILE *out)
+{
+	jp2_pclr_t *pclr = &box->data.pclr;
+	int i;
+	int j;
+	fprintf(out, "numents=%d; numchans=%d\n", (int) pclr->numlutents,
+	  (int) pclr->numchans);
+	for (i = 0; i < pclr->numlutents; ++i) {
+		for (j = 0; j < pclr->numchans; ++j) {
+			fprintf(out, "LUT[%d][%d]=%d\n", i, j, pclr->lutdata[i * pclr->numchans + j]);
+		}
+	}
+}
+
+static int jp2_getint(jas_stream_t *in, int s, int n, int_fast32_t *val)
+{
+	int c;
+	int i;
+	uint_fast32_t v;
+	int m;
+
+	m = (n + 7) / 8;
+
+	v = 0;
+	for (i = 0; i < m; ++i) {
+		if ((c = jas_stream_getc(in)) == EOF) {
+			return -1;
+		}
+		v = (v << 8) | c;
+	}
+	v &= ONES(n);
+	if (s) {
+		int sb;
+		sb = v & (1 << (8 * m - 1));
+		*val = ((~v) + 1) & ONES(8 * m);
+		if (sb) {
+			*val = -*val;
+		}
+	} else {
+		*val = v;
+	}
+
+	return 0;
+}
+
+jp2_cdefchan_t *jp2_cdef_lookup(jp2_cdef_t *cdef, int channo)
+{
+	int i;
+	jp2_cdefchan_t *cdefent;
+	for (i = 0; i < cdef->numchans; ++i) {
+		cdefent = &cdef->ents[i];
+		if (cdefent->channo == channo) {
+			return cdefent;
+		}
+	}
+	return 0;
 }

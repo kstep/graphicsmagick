@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -130,14 +130,17 @@
 \******************************************************************************/
 
 /* Magic numbers. */
+#define PNM_MAGIC_TXTPBM	0x5031 /* Text Portable BitMap (P1) */
 #define PNM_MAGIC_TXTPGM	0x5032 /* Text Portable GrayMap (P2) */
 #define PNM_MAGIC_TXTPPM	0x5033 /* Text Portable PixMap (P3) */
+#define PNM_MAGIC_BINPBM	0x5034 /* Binary Portable BitMap (P4) */
 #define PNM_MAGIC_BINPGM	0x5035 /* Binary Portable GrayMap (P5) */
 #define PNM_MAGIC_BINPPM	0x5036 /* Binary Portable PixMap (P6) */
 
 /* Type of image data. */
 #define PNM_TYPE_PPM	0 /* PixMap */
 #define PNM_TYPE_PGM	1 /* GrayMap */
+#define PNM_TYPE_PBM	2 /* BitMap */
 
 /* Format of image data. */
 #define PNM_FMT_TXT	0 /* Text */
@@ -165,6 +168,9 @@ typedef struct {
 	uint_fast32_t maxval;
 	/* The maximum allowable sample value. */
 
+	bool sgnd;
+	/* The sample data is signed. */
+
 } pnm_hdr_t;
 
 /******************************************************************************\
@@ -180,4 +186,6 @@ int pnm_fmt(uint_fast16_t magic);
 int pnm_maxvaltodepth(uint_fast32_t maxval);
 /* Determine depth (i.e., precision) from maximum value. */
 
+#define	PNM_ONES(n) \
+	(((n) < 32) ? ((1 << (n)) - 1) : 0xffffffffUL)
 #endif

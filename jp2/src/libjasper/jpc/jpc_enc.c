@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -461,7 +461,7 @@ static jpc_enc_cp_t *cp_create(char *optstr, jas_image_t *image)
 		memset(ccp->stepsizes, 0, sizeof(ccp->stepsizes));
 	}
 
-	cp->rawsize = jas_image_getrawsize(image);
+	cp->rawsize = jas_image_rawsize(image);
 	cp->totalsize = UINT_FAST32_MAX;
 
 	tcp = &cp->tcp;
@@ -653,10 +653,10 @@ static jpc_enc_cp_t *cp_create(char *optstr, jas_image_t *image)
 	} else {
 		mctvalid = false;
 	}
-	if (mctvalid && enablemct && jas_image_colormodel(image) != JAS_IMAGE_CM_RGB) {
+	if (mctvalid && enablemct && jas_image_colorspace(image) != JAS_IMAGE_CS_RGB) {
 		fprintf(stderr, "warning: color model apparently not RGB\n");
 	}
-	if (mctvalid && enablemct && jas_image_colormodel(image) == JAS_IMAGE_CM_RGB) {
+	if (mctvalid && enablemct && jas_image_colorspace(image) == JAS_IMAGE_CS_RGB) {
 		tcp->mctid = (tcp->intmode) ? (JPC_MCT_RCT) : (JPC_MCT_ICT);
 	} else {
 		tcp->mctid = JPC_MCT_NONE;

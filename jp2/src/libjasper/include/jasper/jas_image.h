@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -119,16 +119,16 @@
 #ifndef JAS_IMAGE_H
 #define JAS_IMAGE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /******************************************************************************\
 * Includes.
 \******************************************************************************/
 
 #include <jasper/jas_stream.h>
 #include <jasper/jas_seq.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /******************************************************************************\
 * Constants.
@@ -139,16 +139,35 @@ extern "C" {
  */
 
 /* The threshold at which image data is no longer stored in memory. */
-#define JAS_IMAGE_INMEMTHRESH	(64 * 1024 * 1024)
+#define JAS_IMAGE_INMEMTHRESH	(16 * 1024 * 1024)
 
 /*
  * Color models.
  */
 
-#define JAS_IMAGE_CM_UNKNOWN	0	/* Unknown color model. */
-#define	JAS_IMAGE_CM_GRAY		1	/* No color model (i.e., grayscale). */
-#define	JAS_IMAGE_CM_RGB		2	/* RGB color model. */
-#define	JAS_IMAGE_CM_YCC		3	/* YCC color model. */
+#define JAS_IMAGE_CS_UNKNOWN	0	/* Unknown */
+#define	JAS_IMAGE_CS_GRAY	1	/* Standard Gray */
+#define	JAS_IMAGE_CS_RGB	2	/* Standard RGB */
+#define	JAS_IMAGE_CS_YCBCR	3	/* Standard YCC */
+/*#define	JAS_IMAGE_CM_ICC	4	/* ICC Profile */
+
+/*
+ * Component types
+ */
+
+#define	JAS_IMAGE_CT_UNKNOWN	0x10000
+#define	JAS_IMAGE_CT_COLOR(n)	((n) & 0x7fff)
+#define	JAS_IMAGE_CT_OPACITY	0x08000
+
+#define	JAS_IMAGE_CT_RGB_R	0
+#define	JAS_IMAGE_CT_RGB_G	1
+#define	JAS_IMAGE_CT_RGB_B	2
+
+#define	JAS_IMAGE_CT_YCBCR_Y	0
+#define	JAS_IMAGE_CT_YCBCR_CB	1
+#define	JAS_IMAGE_CT_YCBCR_CR	2
+
+#define	JAS_IMAGE_CT_GRAY_Y	0
 
 /******************************************************************************\
 * Image class and supporting classes.
@@ -181,7 +200,7 @@ typedef struct {
 	sample).  If the samples are signed values, this quantity
 	includes the sign bit. */
 
-	bool sgnd_;
+	uint_fast8_t sgnd_;
 	/* The signedness of the sample data. */
 
 	jas_stream_t *stream_;
@@ -189,6 +208,9 @@ typedef struct {
 
 	int cps_;
 	/* The number of characters per sample in the stream. */
+
+	uint_fast32_t type_;
+	/* The type of component (e.g., opacity, red, green, blue, luma). */
 
 } jas_image_cmpt_t;
 
@@ -220,9 +242,14 @@ typedef struct {
 	jas_image_cmpt_t **cmpts_;
 	/* Per-component information. */
 
-	int colormodel_;
-	/* The color model used.  This field is only of particular relevance
-	in the case of a multiple component image. */
+	int colorspace_;
+	/* The color space used (e.g., RGB, YCbCr, gray).  This field is only
+	of particular relevance in the case of a multi-component image. */
+
+	uchar *iccp_;
+	/* ICC profile information. */
+
+	int iccplen_;
 
 	bool inmem_;
 
@@ -309,7 +336,7 @@ typedef struct {
 
 /* Create an image. */
 jas_image_t *jas_image_create(uint_fast16_t numcmpts,
-  jas_image_cmptparm_t *cmptparms, int colormodel);
+  jas_image_cmptparm_t *cmptparms, int colorspace);
 
 /* Create an "empty" image. */
 jas_image_t *jas_image_create0();
@@ -353,11 +380,17 @@ void jas_image_destroy(jas_image_t *image);
 	((image)->numcmpts_)
 
 /* Get the color model used by the image. */
-#define	jas_image_colormodel(image) \
-	((image)->colormodel_)
+#define	jas_image_colorspace(image) \
+	((image)->colorspace_)
 
 /* Set the color model for an image. */
-void jas_image_setcolormodel(jas_image_t *image, int colormodel);
+#define jas_image_setcolorspace(image, colorspace) \
+	((image)->colorspace_ = (colorspace))
+
+#define jas_image_cmpttype(image, cmptno) \
+	((image)->cmpts_[(cmptno)]->type_)
+#define jas_image_setcmpttype(image, cmptno, type) \
+	((image)->cmpts_[(cmptno)]->type_ = (type))
 
 /* Get the width of a component. */
 #define	jas_image_cmptwidth(image, cmptno) \
@@ -405,7 +438,7 @@ void jas_image_setcolormodel(jas_image_t *image, int colormodel);
 
 /* Get the raw size of an image (i.e., the nominal size of the image without
   any compression. */
-uint_fast32_t jas_image_getrawsize(jas_image_t *image);
+uint_fast32_t jas_image_rawsize(jas_image_t *image);
 
 /* Create an image from a stream in some specified format. */
 jas_image_t *jas_image_decode(jas_stream_t *in, int fmt, char *optstr);
@@ -436,6 +469,28 @@ int jas_image_addcmpt(jas_image_t *image, uint_fast16_t cmptno,
 /* Copy a component from one image to another. */
 int jas_image_copycmpt(jas_image_t *dstimage, int dstcmptno,
   jas_image_t *srcimage, int srccmptno);
+
+#if 0
+int_fast64_t jas_image_readcmpt1(jas_image_t *image, uint_fast16_t cmptno,
+  uint_fast32_t x, uint_fast32_t y);
+#endif
+
+#define	JAS_IMAGE_CDT_GETSGND(dtype) (((dtype) >> 7) & 1)
+#define	JAS_IMAGE_CDT_SETSGND(dtype) (((dtype) & 1) << 7)
+#define	JAS_IMAGE_CDT_GETPREC(dtype) ((dtype) & 0x7f)
+#define	JAS_IMAGE_CDT_SETPREC(dtype) ((dtype) & 0x7f)
+
+#define	jas_image_cmptdtype(image, cmptno) \
+	(JAS_IMAGE_CDT_SETSGND((image)->cmpts_[cmptno]->sgnd_) | JAS_IMAGE_CDT_SETPREC((image)->cmpts_[cmptno]->prec_))
+
+int jas_image_depalettize(jas_image_t *image, int cmptno, int numlutents,
+  int_fast32_t *lutents, int dtype, int newcmptno);
+
+int jas_image_readcmptsample(jas_image_t *image, int cmptno, int x, int y);
+void jas_image_writecmptsample(jas_image_t *image, int cmptno, int x, int y,
+  int_fast32_t v);
+
+int jas_image_getcmptbytype(jas_image_t *image, int ctype);
 
 /******************************************************************************\
 * Image format-related operations.

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -302,6 +302,20 @@ jas_image_t *jpc_decode(jas_stream_t *in, char *optstr)
 		goto error;
 	}
 
+	if (jas_image_numcmpts(dec->image) >= 3) {
+		jas_image_setcolorspace(dec->image, JAS_IMAGE_CS_RGB);
+		jas_image_setcmpttype(dec->image, 0,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R));
+		jas_image_setcmpttype(dec->image, 1,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G));
+		jas_image_setcmpttype(dec->image, 2,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B));
+	} else {
+		jas_image_setcolorspace(dec->image, JAS_IMAGE_CS_GRAY);
+		jas_image_setcmpttype(dec->image, 0,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y));
+	}
+
 	/* Save the return value. */
 	image = dec->image;
 
@@ -494,7 +508,7 @@ static int jpc_dec_process_sot(jpc_dec_t *dec, jpc_ms_t *ms)
 		}
 
 		if (!(dec->image = jas_image_create(dec->numcomps, compinfos,
-		  JAS_IMAGE_CM_UNKNOWN))) {
+		  JAS_IMAGE_CS_UNKNOWN))) {
 			return -1;
 		}
 		jas_free(compinfos);

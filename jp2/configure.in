@@ -18,8 +18,8 @@ dnl If any functions have been added, set JAS_INTERFACE_AGE to 0.
 dnl If backwards compatability has been broken, set JAS_BINARY_AGE and
 dnl JAS_INTERFACE_AGE to 0.
 JAS_MAJOR_VERSION=1
-JAS_MINOR_VERSION=500
-JAS_MICRO_VERSION=4
+JAS_MINOR_VERSION=600
+JAS_MICRO_VERSION=0
 JAS_INTERFACE_AGE=0
 JAS_BINARY_AGE=0
 JAS_VERSION=$JAS_MAJOR_VERSION.$JAS_MINOR_VERSION.$JAS_MICRO_VERSION
@@ -40,6 +40,9 @@ AC_SUBST(LT_RELEASE)
 AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
+
+# Indicate a configure-based build is being used.
+AC_DEFINE(JAS_CONFIGURE)
 
 ################################################################################
 # Perform automake initialization.
@@ -68,36 +71,97 @@ AC_PROG_RANLIB
 AM_DISABLE_SHARED
 AM_PROG_LIBTOOL
 
+AC_PATH_XTRA
+
 ################################################################################
 # Check for the IJG JPEG library.
 ################################################################################
 
-# By default, the presence of JPEG library is detected automatically.
-JAS_HAVE_LIBJPEG=""
-
 # Allow the user to explicitly specify whether the JPEG library is present.
 AC_ARG_ENABLE(libjpeg,
-[  --disable-libjpeg    force the IJG JPEG library to be ignored],
+[  --disable-libjpeg    Force the IJG JPEG library to be ignored],
 [
 case "${enableval}" in
 yes)
-	JAS_HAVE_LIBJPEG=1;;
+	ENABLE_LIBJPEG=yes;;
 no)
-	JAS_HAVE_LIBJPEG=0;;
+	ENABLE_LIBJPEG=no;;
 *)
 	AC_MSG_ERROR(bad value ${enableval} for --disable-libjpeg)
 	;;
 esac
-], )
+], ENABLE_LIBJPEG=yes)
 
-if test -z "$JAS_HAVE_LIBJPEG"; then
+HAVE_LIBJPEG=no
+if test $ENABLE_LIBJPEG = yes; then
 	# Check for the JPEG library.
-	AC_CHECK_LIB(jpeg, jpeg_destroy, JAS_HAVE_LIBJPEG=1, JAS_HAVE_LIBJPEG=0)
+	AC_CHECK_LIB(jpeg, jpeg_destroy, HAVE_LIBJPEG=yes, HAVE_LIBJPEG=no)
+	if test $HAVE_LIBJPEG = yes; then
+		LIBS="$LIBS -ljpeg"
+	fi
 fi
-if test $JAS_HAVE_LIBJPEG -ne 0; then
-	LIBS="$LIBS -ljpeg"
+AM_CONDITIONAL(HAVE_LIBJPEG, test $HAVE_LIBJPEG = yes)
+
+################################################################################
+# Check for OpenGL libraries.
+################################################################################
+
+AC_ARG_WITH(glut-include-dir,
+[  --with-glut-include-dir=DIR    Set GLUT include directory.],
+[
+	case "$withval" in
+	/*)
+		CFLAGS="$CFLAGS -I$withval"
+		CPPFLAGS="$CPPFLAGS -I$withval";;
+	*)
+		AC_MSG_ERROR(--with-glut-include-dir requires absolute path)
+		;;
+	esac
+],
+)
+AC_ARG_WITH(glut-lib-dir,
+[  --with-glut-lib-dir=DIR        Set GLUT library directory.],
+[
+	case "$withval" in
+	/*)
+		LIBS="$LIBS -L$withval";;
+	*)
+		AC_MSG_ERROR(--with-glut-lib-dir requires absolute path)
+		;;
+	esac
+],
+)
+
+AC_ARG_ENABLE(opengl,
+[  --disable-opengl    Disable use of OpenGL. ],
+[
+	case "$enableval" in
+	yes)
+		ENABLE_OPENGL=yes;;
+	no)
+		ENABLE_OPENGL=no;;
+	*)
+		AC_MSG_ERROR(bad value ${enableval} for --disable-libjpeg)
+		;;
+	esac
+],
+ENABLE_OPENGL=yes)
+
+HAVE_OPENGL=no
+OPENGL_LIBS=""
+if test $ENABLE_OPENGL = yes; then
+	if test $HAVE_OPENGL = no; then
+		TMPLIBS="-lglut -lGL -lGLU $X_PRE_LIBS -lX11 -lXmu -lXi -lXext -lXt $X_EXTRA_LIBS $X_LIBS"
+		AC_CHECK_LIB(glut, glutInit, [HAVE_OPENGL=yes;
+		  OPENGL_LIBS=$TMPLIBS], HAVE_OPENGL=no, $TMPLIBS)
+	fi
+	AC_CHECK_HEADER(GL/glut.h,, [HAVE_OPENGL=no; OPENGL_LIBS="";])
 fi
-AM_CONDITIONAL(HAVE_LIBJPEG, test $JAS_HAVE_LIBJPEG = 1)
+
+AM_CONDITIONAL(HAVE_OPENGL, test $HAVE_OPENGL = yes)
+AC_SUBST(OPENGL_LIBS)
+AC_MSG_CHECKING([whether OpenGL libraries and headers were detected])
+AC_MSG_RESULT($HAVE_OPENGL)
 
 ################################################################################
 # Check for other libraries.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -117,13 +117,13 @@
 #ifndef JAS_TVP_H
 #define JAS_TVP_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /******************************************************************************\
 * Includes.
 \******************************************************************************/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /******************************************************************************\
 * Types.

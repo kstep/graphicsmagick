@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -180,10 +180,10 @@ jas_image_t *ras_decode(jas_stream_t *in, char *optstr)
 	/* Calculate some quantities needed for creation of the image
 	object. */
 	if (RAS_ISRGB(&hdr)) {
-		colormodel = JAS_IMAGE_CM_RGB;
+		colormodel = JAS_IMAGE_CS_RGB;
 		numcmpts = 3;
 	} else {
-		colormodel = JAS_IMAGE_CM_GRAY;
+		colormodel = JAS_IMAGE_CS_GRAY;
 		numcmpts = 1;
 	}
 	for (i = 0, cmptparm = cmptparms; i < numcmpts; ++i, ++cmptparm) {
@@ -197,7 +197,7 @@ jas_image_t *ras_decode(jas_stream_t *in, char *optstr)
 		cmptparm->sgnd = false;
 	}
 	/* Create the image object. */
-	if (!(image = jas_image_create(numcmpts, cmptparms, colormodel))) {
+	if (!(image = jas_image_create(numcmpts, cmptparms, JAS_IMAGE_CS_UNKNOWN))) {
 		return 0;
 	}
 
@@ -211,6 +211,20 @@ jas_image_t *ras_decode(jas_stream_t *in, char *optstr)
 	if (ras_getdata(in, &hdr, &cmap, image)) {
 		jas_image_destroy(image);
 		return 0;
+	}
+
+	if (colormodel == JAS_IMAGE_CS_RGB) {
+		jas_image_setcolorspace(image, JAS_IMAGE_CS_RGB);
+		jas_image_setcmpttype(image, 0,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R));
+		jas_image_setcmpttype(image, 1,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G));
+		jas_image_setcmpttype(image, 2,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B));
+	} else {
+		jas_image_setcolorspace(image, JAS_IMAGE_CS_GRAY);
+		jas_image_setcmpttype(image, 0,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y));
 	}
 
 	return image;
@@ -264,7 +278,11 @@ static int ras_getdata(jas_stream_t *in, ras_hdr_t *hdr, ras_cmap_t *cmap,
 		ret = ras_getdatastd(in, hdr, cmap, image);
 		break;
 	case RAS_TYPE_RLE:
+		jas_eprintf("error: RLE encoding method not supported\n");
+		ret = -1;
+		break;
 	default:
+		jas_eprintf("error: encoding method not supported\n");
 		ret = -1;
 		break;
 	}

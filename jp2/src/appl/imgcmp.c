@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -236,7 +236,9 @@ int main(int argc, char **argv)
 	maxonly = 0;
 	minonly = 0;
 
-	jas_init();
+	if (jas_init()) {
+		abort();
+	}
 
 	cmdname = argv[0];
 
@@ -548,7 +550,7 @@ jas_image_t *makediffimage(jas_matrix_t *origdata, jas_matrix_t *recondata)
 		compparms[i].prec = 8;
 		compparms[i].sgnd = false;
 	}
-	if (!(diffimage = jas_image_create(3, compparms, JAS_IMAGE_CM_RGB))) {
+	if (!(diffimage = jas_image_create(3, compparms, JAS_IMAGE_CS_RGB))) {
 		abort();
 	}
 

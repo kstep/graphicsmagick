@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -119,16 +119,16 @@
 #ifndef JAS_SEQ_H
 #define JAS_SEQ_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /******************************************************************************\
 * Includes.
 \******************************************************************************/
 
 #include <jasper/jas_stream.h>
 #include <jasper/jas_types.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /******************************************************************************\
 * Constants.

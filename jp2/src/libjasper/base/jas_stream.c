@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -474,6 +474,9 @@ jas_stream_t *jas_stream_fdopen(int fd, const char *mode)
 	/* Select the operations for a file stream object. */
 	stream->ops_ = &jas_stream_fileops;
 
+/* Do not close the underlying file descriptor when the stream is closed. */
+	stream->openmode_ |= JAS_STREAM_NOCLOSE;
+
 	return stream;
 }
 
@@ -494,7 +497,9 @@ int jas_stream_close(jas_stream_t *stream)
 	jas_stream_flush(stream);
 
 	/* Close the underlying stream object. */
-	(*stream->ops_->close_)(stream->obj_);
+	if (!(stream->openmode_ & JAS_STREAM_NOCLOSE)) {
+		(*stream->ops_->close_)(stream->obj_);
+	}
 
 	jas_stream_destroy(stream);
 

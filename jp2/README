@@ -7,21 +7,6 @@ and manipulation of images.  This software can handle image data in a
 variety of formats.  One such format supported by JasPer is the JPEG-2000
 code stream format defined in ISO/IEC 15444-1:2000.
 
-The JasPer software only includes a partial implementation of the
-JPEG-2000 JP2 file format specified in ISO/IEC 15444-1:2000.  More
-specifically, the JasPer software does not provide a fully conforming JP2
-file reader as defined in ISO/IEC 15444-1:2000.  Several features required
-of a conforming JP2 file reader are missing from the JasPer software.
-These missing features include support for palettized color, component
-mapping, and restricted ICC profiles.
-
-When decoding JPEG-2000 code streams, the JasPer software allows the
-user to assume that the decoded components are in a RGB color space
-or grayscale.  In general, additional information is required in order
-to determine the true nature of the component data.  Support for such
-information is provided by the JP2 file format but is not processed by
-the JasPer software.
-
 The complete licensing terms for the JasPer software can be found in
 the file named "LICENSE" in the top level directory of this software
 distribution.  Any use of this software contrary to the terms of the

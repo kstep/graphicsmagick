@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -123,6 +123,11 @@ typedef struct {
 	jp2_box_t *cdef;
 	jp2_box_t *ihdr;
 	jp2_box_t *bpcc;
+	jp2_box_t *cmap;
+	jp2_box_t *colr;
+	jas_image_t *image;
+	uint_fast16_t numchans;
+	uint_fast16_t *chantocmptlut;
 
 } jp2_dec_t;
 

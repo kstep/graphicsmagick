@@ -1,4 +1,4 @@
-# Copyright (c) 2001 Michael David Adams.
+# Copyright (c) 2001-2002 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -108,6 +108,7 @@
 noinst_LTLIBRARIES = libbmp.la
 libbmp_la_SOURCES = \
 	bmp_cod.h \
+	bmp_enc.h \
 	bmp_cod.c \
 	bmp_dec.c \
 	bmp_enc.c

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -174,6 +174,11 @@ jas_image_t *pgx_decode(jas_stream_t *in, char *optstr)
 	if (pgx_getdata(in, &hdr, image)) {
 		goto error;
 	}
+
+	jas_image_setcolorspace(image, JAS_IMAGE_CS_GRAY);
+	jas_image_setcmpttype(image, 0,
+	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y));
+
 	return image;
 
 error:

@@ -1,4 +1,4 @@
-# Copyright (c) 2001 Michael David Adams.
+# Copyright (c) 2001-2002 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -108,6 +108,7 @@
 noinst_LTLIBRARIES = libpnm.la
 libpnm_la_SOURCES = \
 	pnm_cod.h \
+	pnm_enc.h \
 	pnm_cod.c \
 	pnm_dec.c \
 	pnm_enc.c

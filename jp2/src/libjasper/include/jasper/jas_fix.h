@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -119,10 +119,6 @@
 #ifndef JAS_FIX_H
 #define JAS_FIX_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /******************************************************************************\
 * Includes.
 \******************************************************************************/
@@ -132,6 +128,10 @@ extern "C" {
 #include <math.h>
 
 #include <jasper/jas_types.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /******************************************************************************\
 * Constants.

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -210,7 +210,9 @@ int main(int argc, char **argv)
 		cmdname = argv[0];
 	}
 
-	jas_init();
+	if (jas_init()) {
+		abort();
+	}
 
 	/* Parse the command line options. */
 	if (!(cmdopts = cmdopts_parse(argc, argv))) {
@@ -384,6 +386,7 @@ cmdopts_t *cmdopts_parse(int argc, char **argv)
 	cmdopts->verbose = 0;
 	cmdopts->version = 0;
 	cmdopts->cmptno = -1;
+	cmdopts->debug = 0;
 
 	while ((c = jas_getopt(argc, argv, cmdoptions)) != EOF) {
 		switch (c) {

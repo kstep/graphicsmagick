@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -127,6 +127,7 @@
 #include "jasper/jas_stream.h"
 
 #include "ras_cod.h"
+#include "ras_enc.h"
 
 /******************************************************************************\
 * Prototypes.
@@ -135,8 +136,8 @@
 static int ras_puthdr(jas_stream_t *out, ras_hdr_t *hdr);
 static int ras_putint(jas_stream_t *out, int val);
 
-static int ras_putdata(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image);
-static int ras_putdatastd(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image);
+static int ras_putdata(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image, int numcmpts, int *cmpts);
+static int ras_putdatastd(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image, int numcmpts, int *cmpts);
 
 /******************************************************************************\
 * Code.
@@ -148,45 +149,75 @@ int ras_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	uint_fast32_t height;
 	uint_fast32_t depth;
 	uint_fast16_t cmptno;
+#if 0
 	uint_fast16_t numcmpts;
+#endif
 	int i;
 	ras_hdr_t hdr;
 	int rowsize;
+	ras_enc_t encbuf;
+	ras_enc_t *enc = &encbuf;
 
 	if (optstr) {
 		fprintf(stderr, "warning: ignoring RAS encoder options\n");
 	}
 
-	numcmpts = jas_image_numcmpts(image);
-	width = jas_image_cmptwidth(image, 0);
-	height = jas_image_cmptheight(image, 0);
-	depth = jas_image_cmptprec(image, 0);
+	switch (jas_image_colorspace(image)) {
+	case JAS_IMAGE_CS_RGB:
+		enc->numcmpts = 3;
+		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R))) < 0 ||
+		  (enc->cmpts[1] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G))) < 0 ||
+		  (enc->cmpts[2] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B))) < 0) {
+			jas_eprintf("error: missing color component\n");
+			return -1;
+		}
+		break;
+	case JAS_IMAGE_CS_GRAY:
+		enc->numcmpts = 1;
+		if ((enc->cmpts[0] = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) < 0) {
+			jas_eprintf("error: missing color component\n");
+			return -1;
+		}
+		break;
+	default:
+		jas_eprintf("error: unsupported color space\n");
+		return -1;
+		break;
+	}
 
-	for (cmptno = 0; cmptno < numcmpts; ++cmptno) {
-		if (jas_image_cmptwidth(image, cmptno) != width ||
-		  jas_image_cmptheight(image, cmptno) != height ||
-		  jas_image_cmptprec(image, cmptno) != depth ||
-		  jas_image_cmptsgnd(image, cmptno) != false ||
-		  jas_image_cmpttlx(image, cmptno) != 0 ||
-		  jas_image_cmpttly(image, cmptno) != 0) {
+	width = jas_image_cmptwidth(image, enc->cmpts[0]);
+	height = jas_image_cmptheight(image, enc->cmpts[0]);
+	depth = jas_image_cmptprec(image, enc->cmpts[0]);
+
+	for (cmptno = 0; cmptno < enc->numcmpts; ++cmptno) {
+		if (jas_image_cmptwidth(image, enc->cmpts[cmptno]) != width ||
+		  jas_image_cmptheight(image, enc->cmpts[cmptno]) != height ||
+		  jas_image_cmptprec(image, enc->cmpts[cmptno]) != depth ||
+		  jas_image_cmptsgnd(image, enc->cmpts[cmptno]) != false ||
+		  jas_image_cmpttlx(image, enc->cmpts[cmptno]) != 0 ||
+		  jas_image_cmpttly(image, enc->cmpts[cmptno]) != 0) {
 			fprintf(stderr, "The RAS format cannot be used to represent an image with this geometry.\n");
 			return -1;
 		}
 	}
 
 	/* Ensure that the image can be encoded in the desired format. */
-	if (numcmpts == 3) {
+	if (enc->numcmpts == 3) {
 
 		/* All three components must have the same subsampling
 		  factor and have a precision of eight bits. */
-		if (numcmpts > 1) {
-			for (i = 0; i < numcmpts; ++i) {
-				if (jas_image_cmptprec(image, i) != 8) {
+		if (enc->numcmpts > 1) {
+			for (i = 0; i < enc->numcmpts; ++i) {
+				if (jas_image_cmptprec(image, enc->cmpts[i]) != 8) {
 					return -1;
 				}
 			}
 		}
-	} else if (numcmpts == 1) {
+	} else if (enc->numcmpts == 1) {
 		/* NOP */
 	} else {
 		return -1;
@@ -195,7 +226,7 @@ int ras_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	hdr.magic = RAS_MAGIC;
 	hdr.width = width;
 	hdr.height = height;
-	hdr.depth = (numcmpts == 3) ? 24 : depth;
+	hdr.depth = (enc->numcmpts == 3) ? 24 : depth;
 
 	rowsize = RAS_ROWSIZE(&hdr);
 	hdr.length = rowsize * hdr.height;
@@ -208,20 +239,20 @@ int ras_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		return -1;
 	}
 
-	if (ras_putdata(out, &hdr, image)) {
+	if (ras_putdata(out, &hdr, image, enc->numcmpts, enc->cmpts)) {
 		return -1;
 	}
 
 	return 0;
 }
 
-static int ras_putdata(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image)
+static int ras_putdata(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image, int numcmpts, int *cmpts)
 {
 	int ret;
 
 	switch (hdr->type) {
 	case RAS_TYPE_STD:
-		ret = ras_putdatastd(out, hdr, image);
+		ret = ras_putdatastd(out, hdr, image, numcmpts, cmpts);
 		break;
 	default:
 		ret = -1;
@@ -230,7 +261,7 @@ static int ras_putdata(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image)
 	return ret;
 }
 
-static int ras_putdatastd(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image)
+static int ras_putdatastd(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image,  int numcmpts, int *cmpts)
 {
 	int rowsize;
 	int pad;
@@ -243,7 +274,7 @@ static int ras_putdatastd(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image)
 	jas_matrix_t *data[3];
 	int i;
 
-	for (i = 0; i < jas_image_numcmpts(image); ++i) {
+	for (i = 0; i < numcmpts; ++i) {
 		data[i] = jas_matrix_create(jas_image_height(image), jas_image_width(image));
 		assert(data[i]);
 	}
@@ -254,8 +285,8 @@ static int ras_putdatastd(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image)
 	hdr->length = hdr->height * rowsize;
 
 	for (y = 0; y < hdr->height; y++) {
-		for (i = 0; i < jas_image_numcmpts(image); ++i) {
-			jas_image_readcmpt(image, i, 0, y, jas_image_width(image),
+		for (i = 0; i < numcmpts; ++i) {
+			jas_image_readcmpt(image, cmpts[i], 0, y, jas_image_width(image),
 			  1, data[i]);
 		}
 		z = 0;
@@ -293,7 +324,7 @@ static int ras_putdatastd(jas_stream_t *out, ras_hdr_t *hdr, jas_image_t *image)
 		}
 	}
 
-	for (i = 0; i < jas_image_numcmpts(image); ++i) {
+	for (i = 0; i < numcmpts; ++i) {
 		jas_matrix_destroy(data[i]);
 	}
 

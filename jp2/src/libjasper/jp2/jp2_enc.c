@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -143,6 +143,10 @@ int jp2_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	jp2_colr_t *colr;
 	char buf[4096];
 	uint_fast32_t overhead;
+	jp2_cdefchan_t *cdefchanent;
+	jp2_cdef_t *cdef;
+	int i;
+	uint_fast32_t typeasoc;
 
 	box = 0;
 	tmpstream = 0;
@@ -239,13 +243,51 @@ int jp2_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	colr->method = JP2_COLR_ENUM;
 	colr->pri = JP2_COLR_PRI;
 	colr->approx = 0;
-	colr->csid = (jas_image_colormodel(image) == JAS_IMAGE_CM_RGB) ? JP2_COLR_SRGB :
-	  JP2_COLR_GRAY;
+	colr->csid = (jas_image_colorspace(image) == JAS_IMAGE_CS_RGB) ? JP2_COLR_SRGB :
+	  JP2_COLR_SGRAY;
 	if (jp2_box_put(box, tmpstream)) {
 		goto error;
 	}
 	jp2_box_destroy(box);
 	box = 0;
+
+	if (!(jas_image_colorspace(image) == JAS_IMAGE_CS_RGB &&
+	  jas_image_numcmpts(image) == 3 &&
+	  jas_image_getcmptbytype(image, 0) ==
+	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_R) &&
+	  jas_image_getcmptbytype(image, 1) ==
+	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_G) &&
+	  jas_image_getcmptbytype(image, 2) ==
+	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_RGB_B)) &&
+	  !(jas_image_colorspace(image) == JAS_IMAGE_CS_YCBCR &&
+	  jas_image_numcmpts(image) != 3 &&
+	  jas_image_getcmptbytype(image, 0) ==
+	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_Y) &&
+	  jas_image_getcmptbytype(image, 1) ==
+	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_CB) &&
+	  jas_image_getcmptbytype(image, 2) ==
+	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_YCBCR_CR)) &&
+	  !(jas_image_colorspace(image) == JAS_IMAGE_CS_GRAY &&
+	  jas_image_numcmpts(image) == 1 &&
+	  jas_image_getcmptbytype(image, 0) ==
+	  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) {
+
+		if (!(box = jp2_box_create(JP2_BOX_CDEF))) {
+			goto error;
+		}
+		cdef = &box->data.cdef;
+		cdef->numchans = jas_image_numcmpts(image);
+		cdef->ents = jas_malloc(cdef->numchans * sizeof(jp2_cdefchan_t));
+		for (i = 0; i < jas_image_numcmpts(image); ++i) {
+			cdefchanent = &cdef->ents[i];
+			cdefchanent->channo = i;
+			typeasoc = jp2_gettypeasoc(jas_image_colorspace(image), jas_image_cmpttype(image, i));
+			cdefchanent->type = typeasoc >> 16;
+			cdefchanent->assoc = typeasoc & 0x7fff;
+		}
+		jp2_box_destroy(box);
+		box = 0;
+	}
 
 	/* Determine the total length of the JP2 header box. */
 
@@ -310,3 +352,61 @@ error:
 	}
 	return -1;
 }
+
+
+uint_fast32_t jp2_gettypeasoc(int colorspace, int ctype)
+{
+	int type;
+	int asoc;
+
+	if (ctype & JAS_IMAGE_CT_OPACITY) {
+		type = JP2_CDEF_TYPE_OPACITY;
+		asoc = JP2_CDEF_ASOC_ALL;
+		goto done;
+	}
+
+	type = JP2_CDEF_TYPE_UNSPEC;
+	asoc = JP2_CDEF_ASOC_NONE;
+	switch (colorspace) {
+	case JAS_IMAGE_CS_RGB:
+		switch (JAS_IMAGE_CT_COLOR(ctype)) {
+		case JAS_IMAGE_CT_RGB_R:
+			type = JP2_CDEF_TYPE_COLOR;
+			asoc = JP2_CDEF_RGB_R;
+			break;
+		case JAS_IMAGE_CT_RGB_G:
+			type = JP2_CDEF_TYPE_COLOR;
+			asoc = JP2_CDEF_RGB_G;
+			break;
+		case JAS_IMAGE_CT_RGB_B:
+			type = JP2_CDEF_TYPE_COLOR;
+			asoc = JP2_CDEF_RGB_B;
+			break;
+		}
+		break;
+	case JAS_IMAGE_CS_YCBCR:
+		switch (JAS_IMAGE_CT_COLOR(ctype)) {
+		case JAS_IMAGE_CT_YCBCR_Y:
+			type = JP2_CDEF_TYPE_COLOR;
+			asoc = JP2_CDEF_YCBCR_Y;
+			break;
+		case JAS_IMAGE_CT_YCBCR_CB:
+			type = JP2_CDEF_TYPE_COLOR;
+			asoc = JP2_CDEF_YCBCR_CB;
+			break;
+		case JAS_IMAGE_CT_YCBCR_CR:
+			type = JP2_CDEF_TYPE_COLOR;
+			asoc = JP2_CDEF_YCBCR_CR;
+			break;
+		}
+		break;
+	case JAS_IMAGE_CS_GRAY:
+		type = JP2_CDEF_TYPE_COLOR;
+		asoc = JP2_CDEF_GRAY_Y;
+		break;
+	}
+
+done:
+	return (type << 16) | asoc;
+}
+

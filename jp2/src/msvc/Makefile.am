@@ -1,4 +1,4 @@
-# Copyright (c) 2001 Michael David Adams.
+# Copyright (c) 2001-2002 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -110,6 +110,7 @@ EXTRA_DIST = \
 	jasper.dsw \
 	libjasper.dsp \
 	jasper.dsp \
+	jiv.dsp \
 	imgcmp.dsp \
 	imginfo.dsp
 

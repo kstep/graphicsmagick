@@ -1,4 +1,4 @@
-# Copyright (c) 2001 Michael David Adams.
+# Copyright (c) 2001-2002 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -104,8 +104,6 @@
 # NOTICE SPECIFIED IN THIS SECTION.
 # 
 # __END_OF_JASPER_LICENSE__
-
-EXTRA_DIST = README
 
 noinst_LTLIBRARIES = libjp2.la
 libjp2_la_SOURCES = \

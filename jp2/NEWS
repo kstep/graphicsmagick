@@ -1,21 +1,55 @@
 Hi, Folks.
 
-I am pleased to announce the availability of the next release of JasPer,
-version 1.500.4.  This release does not contain any significant code
-changes.  It does, however, contain updated documentation, including
-a detailed technical tutorial on the JPEG-2000 standard.
+I am pleased to announce the availability of JasPer version 1.600.0.
+Numerous changes have been made to the software since the last public release.
+A few of the highlights are listed below.  This list is in no particular
+order, and is not intended to be exhaustive.
 
-The new JasPer release is available via the JasPer Project Home Page
-(i.e., http://www.ece.ubc.ca/~mdadams/jasper).
-The software should also be available from the JPEG web site some time
-in the near future (i.e., http://www.jpeg.org/software).
+1) The support for the JP2 format has been improved.  Previously, the
+information contained in the types of boxes associated with component
+definitions/mappings was mostly ignored (i.e., CDEF, CMAP, PCLR, COLR).
+Now, these boxes are handled more intelligently.  As a result, palettized
+images are processed correctly.  Also, images with different color spaces
+are better handled.
+
+2) A new application program, called "jiv", has been added to the software
+distribution.  This program is a simple image viewer.  The code is based
+on the OpenGL and GLUT libraries, and is known to compile and run under
+Windows and various flavors of UNIX, provided that the necessary libraries
+are available.  (Incidentally, partial support for color images is included
+in the jiv application program, but is *disabled* by default.)
+
+3) The support for the PNM family of formats has been improved (and
+should now be truly complete).  The code has been modified to correctly
+handle image data in binary form with more than 8 bits/sample.  Also,
+the PBM case is handled now.
+
+4) Numerous other minor bugs have been fixed.
+
+The new JasPer release is available from the JasPer Project Home Page
+(i.e., http://www.ece.uvic.ca/~mdadams/jasper) and the JPEG web site
+(i.e., http://www.jpeg.org/software).
+
+Lastly, I would like to thank the following individuals for reporting
+bugs WITH SUGGESTED FIXES:
+    Brian Grattan <bgrattan@trimedia.com>
+    Christian Kostlin <koestlin@vivatech.de>
+    Otto Milvang <otto@axicon.no>
+    mikeunverferth <mju@microimages.com>
+    Mika Torhola <mika.torhola@atostek.com>
+    Khyre <khyre@rocketmail.com>
+    Huber Gerhard <support@pl32.de>
+    Mark Barton <mark@barton.ws>
+    Dierk Schmedes <dierk.schmedes@brainlab.com>
+(My apologies if I missed anyone in the above list.)
 
 Regards,
 Michael
 
 ---
-Michael Adams
+Michael Adams, Assistant Professor
 Department of Electrical and Computer Engineering
-University of British Columbia
-2356 Main Mall, Vancouver, BC, Canada V6T 1Z4
-http://www.ece.ubc.ca/~mdadams
+University of Victoria
+P.O. Box 3055 STN CSC, Victoria, BC, V8W 3P6, CANADA
+E-mail: mdadams@ece.uvic.ca
+Web: http://www.ece.uvic.ca/~mdadams

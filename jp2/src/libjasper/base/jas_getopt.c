@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000, Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved. 
  */
 
@@ -175,7 +175,7 @@ int jas_getopt(int argc, char **argv, jas_opt_t *opts)
 				}
 				if (!(opt = jas_optlookup(opts, cp))) {
 					if (jas_opterr) {
-						fprintf(stderr, "unknown option %s\n", s);
+						fprintf(stderr, "unknown long option %s\n", s);
 					}
 					return JAS_GETOPT_ERR;
 				}
@@ -186,7 +186,7 @@ int jas_getopt(int argc, char **argv, jas_opt_t *opts)
 				if (strlen(cp) != 1 ||
 				  !(opt = jas_optlookup(opts, cp))) {
 					if (jas_opterr) {
-						fprintf(stderr, "unknown option %s\n", s);
+						fprintf(stderr, "unknown short option %s\n", s);
 					}
 					return JAS_GETOPT_ERR;
 				}

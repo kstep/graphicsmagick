@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -120,13 +120,14 @@
 #include "jasper/jas_string.h"
 
 #include "pgx_cod.h"
+#include "pgx_enc.h"
 
 /******************************************************************************\
 * Local functions.
 \******************************************************************************/
 
 static int pgx_puthdr(jas_stream_t *out, pgx_hdr_t *hdr);
-static int pgx_putdata(jas_stream_t *out, pgx_hdr_t *hdr, jas_image_t *image);
+static int pgx_putdata(jas_stream_t *out, pgx_hdr_t *hdr, jas_image_t *image, int cmpt);
 static int pgx_putword(jas_stream_t *out, bool bigendian, int prec,
   uint_fast32_t val);
 static uint_fast32_t pgx_inttoword(int_fast32_t val, int prec, bool sgnd);
@@ -144,11 +145,27 @@ int pgx_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 	uint_fast32_t height;
 	bool sgnd;
 	int prec;
+	pgx_enc_t encbuf;
+	pgx_enc_t *enc = &encbuf;
 
-	width = jas_image_cmptwidth(image, 0);
-	height = jas_image_cmptheight(image, 0);
-	prec = jas_image_cmptprec(image, 0);
-	sgnd = jas_image_cmptsgnd(image, 0);
+	switch (jas_image_colorspace(image)) {
+	case JAS_IMAGE_CS_GRAY:
+		if ((enc->cmpt = jas_image_getcmptbytype(image,
+		  JAS_IMAGE_CT_COLOR(JAS_IMAGE_CT_GRAY_Y))) < 0) {
+			jas_eprintf("error: missing color component\n");
+			return -1;
+		}
+		break;
+	default:
+		jas_eprintf("error: BMP format does not support color space\n");
+		return -1;
+		break;
+	}
+
+	width = jas_image_cmptwidth(image, enc->cmpt);
+	height = jas_image_cmptheight(image, enc->cmpt);
+	prec = jas_image_cmptprec(image, enc->cmpt);
+	sgnd = jas_image_cmptsgnd(image, enc->cmpt);
 
 	/* The PGX format is quite limited in the set of image geometries
 	  that it can handle.  Here, we check to ensure that the image to
@@ -175,7 +192,7 @@ int pgx_encode(jas_image_t *image, jas_stream_t *out, char *optstr)
 		return -1;
 	}
 
-	if (pgx_putdata(out, &hdr, image)) {
+	if (pgx_putdata(out, &hdr, image, enc->cmpt)) {
 		return -1;
 	}
 
@@ -196,7 +213,7 @@ static int pgx_puthdr(jas_stream_t *out, pgx_hdr_t *hdr)
 	return 0;
 }
 
-static int pgx_putdata(jas_stream_t *out, pgx_hdr_t *hdr, jas_image_t *image)
+static int pgx_putdata(jas_stream_t *out, pgx_hdr_t *hdr, jas_image_t *image, int cmpt)
 {
 	jas_matrix_t *data;
 	uint_fast32_t x;
@@ -210,7 +227,7 @@ static int pgx_putdata(jas_stream_t *out, pgx_hdr_t *hdr, jas_image_t *image)
 		goto error;
 	}
 	for (y = 0; y < hdr->height; ++y) {
-		if (jas_image_readcmpt(image, 0, 0, y, hdr->width, 1, data)) {
+		if (jas_image_readcmpt(image, cmpt, 0, y, hdr->width, 1, data)) {
 			goto error;
 		}
 		for (x = 0; x < hdr->width; ++x) {

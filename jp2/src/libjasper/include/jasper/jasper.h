@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -111,10 +111,6 @@
 #ifndef JAS_JASPER_H
 #define JAS_JASPER_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <jasper/jas_types.h>
 #include <jasper/jas_version.h>
 
@@ -129,6 +125,10 @@ extern "C" {
 #include <jasper/jas_stream.h>
 #include <jasper/jas_string.h>
 #include <jasper/jas_tvp.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #ifdef __cplusplus
 }

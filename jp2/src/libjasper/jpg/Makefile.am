@@ -1,4 +1,4 @@
-# Copyright (c) 2001 Michael David Adams.
+# Copyright (c) 2001-2002 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -116,6 +116,7 @@ endif
 noinst_LTLIBRARIES = libjpg.la
 libjpg_la_SOURCES = \
 	jpg_cod.h \
+	jpg_enc.h \
 	jpg_jpeglib.h \
 	$(MISCSOURCES) \
 	jpg_val.c

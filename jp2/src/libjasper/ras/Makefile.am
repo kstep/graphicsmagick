@@ -1,4 +1,4 @@
-# Copyright (c) 2001 Michael David Adams.
+# Copyright (c) 2001-2002 Michael David Adams.
 # All rights reserved. 
 
 # __START_OF_JASPER_LICENSE__
@@ -108,6 +108,7 @@
 noinst_LTLIBRARIES = libras.la
 libras_la_SOURCES = \
 	ras_cod.h \
+	ras_enc.h \
 	ras_cod.c \
 	ras_dec.c \
 	ras_enc.c

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -120,7 +120,7 @@
 \******************************************************************************/
 
 /* Initialize the image format table. */
-void jas_init()
+int jas_init()
 {
 	jas_image_fmtops_t fmtops;
 	int fmtid;
@@ -195,4 +195,5 @@ void jas_init()
 	++fmtid;
 #endif
 
+	return 0;
 }

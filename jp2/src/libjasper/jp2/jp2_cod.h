@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 1999-2000 Image Power, Inc. and the University of
  *   British Columbia.
- * Copyright (c) 2001 Michael David Adams.
+ * Copyright (c) 2001-2002 Michael David Adams.
  * All rights reserved.
  */
 
@@ -214,31 +214,48 @@ typedef struct {
 #define	JP2_COLR_PRI	0
 
 #define	JP2_COLR_SRGB	16
-#define	JP2_COLR_GRAY	17
+#define	JP2_COLR_SGRAY	17
+#define	JP2_COLR_SYCC	18
 
 typedef struct {
 	uint_fast8_t method;
 	uint_fast8_t pri;
 	uint_fast8_t approx;
 	uint_fast32_t csid;
+	uint_fast8_t *iccp;
+	int iccplen;
 	/* XXX - Someday we ought to add ICC profile data here. */
 } jp2_colr_t;
 
 /* PCLR box data. */
 
 typedef struct {
-	uint_fast16_t numpalents;
-	uint_fast8_t numcmpts;
-	uint_fast8_t cmpts;
-	int CMAP; /* XXX this needs to change */
-	uint_fast32_t **cmaprowbuf;
-	uint_fast32_t *cmapbuf;
+	uint_fast16_t numlutents;
+	uint_fast8_t numchans;
+	int_fast32_t *lutdata;
+	uint_fast8_t *bpc;
 } jp2_pclr_t;
 
 /* CDEF box per-channel data. */
 
+#define JP2_CDEF_RGB_R	1
+#define JP2_CDEF_RGB_G	2
+#define JP2_CDEF_RGB_B	3
+
+#define JP2_CDEF_YCBCR_Y	1
+#define JP2_CDEF_YCBCR_CB	2
+#define JP2_CDEF_YCBCR_CR	3
+
+#define	JP2_CDEF_GRAY_Y	1
+
+#define	JP2_CDEF_TYPE_COLOR	0
+#define	JP2_CDEF_TYPE_OPACITY	1
+#define	JP2_CDEF_TYPE_UNSPEC	65535
+#define	JP2_CDEF_ASOC_ALL	0
+#define	JP2_CDEF_ASOC_NONE	65535
+
 typedef struct {
-	uint_fast16_t ind;
+	uint_fast16_t channo;
 	uint_fast16_t type;
 	uint_fast16_t assoc;
 } jp2_cdefchan_t;
@@ -247,8 +264,22 @@ typedef struct {
 
 typedef struct {
 	uint_fast16_t numchans;
-	jp2_cdefchan_t *chans;
+	jp2_cdefchan_t *ents;
 } jp2_cdef_t;
+
+typedef struct {
+	uint_fast16_t cmptno;
+	uint_fast8_t map;
+	uint_fast8_t pcol;
+} jp2_cmapent_t;
+
+typedef struct {
+	uint_fast16_t numchans;
+	jp2_cmapent_t *ents;
+} jp2_cmap_t;
+
+#define	JP2_CMAP_DIRECT		0
+#define	JP2_CMAP_PALETTE	1
 
 /* Generic box. */
 
@@ -269,6 +300,7 @@ typedef struct {
 		jp2_colr_t colr;
 		jp2_pclr_t pclr;
 		jp2_cdef_t cdef;
+		jp2_cmap_t cmap;
 	} data;
 
 } jp2_box_t;
@@ -278,6 +310,7 @@ typedef struct jp2_boxops_s {
 	void (*destroy)(jp2_box_t *box);
 	int (*getdata)(jp2_box_t *box, jas_stream_t *in);
 	int (*putdata)(jp2_box_t *box, jas_stream_t *out);
+	void (*dumpdata)(jp2_box_t *box, FILE *out);
 } jp2_boxops_t;
 
 /******************************************************************************\
@@ -299,5 +332,14 @@ jp2_box_t *jp2_box_create(int type);
 void jp2_box_destroy(jp2_box_t *box);
 jp2_box_t *jp2_box_get(jas_stream_t *in);
 int jp2_box_put(jp2_box_t *box, jas_stream_t *out);
+
+#define JP2_DTYPETOBPC(dtype) \
+  ((JAS_IMAGE_CDT_GETSGND(dtype) << 7) | (JAS_IMAGE_CDT_GETPREC(dtype) - 1))
+#define	JP2_BPCTODTYPE(bpc) \
+  (JAS_IMAGE_CDT_SETSGND(bpc >> 7) | JAS_IMAGE_CDT_SETPREC((bpc & 0x7f) + 1))
+
+#define ICC_CS_RGB	0x52474220
+#define ICC_CS_YCBCR	0x59436272
+#define ICC_CS_GRAY	0x47524159
 
 #endif
