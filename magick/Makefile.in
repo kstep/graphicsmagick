@@ -263,7 +263,7 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
   enhance.c effect.c decorate.c annotate.c type.c draw.c render.c montage.c \
   semaphore.c attribute.c signature.c compress.c gem.c registry.c magic.c \
   magick.c delegate.c module.c static.c timer.c utility.c cache_view.c \
-  stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c
+  stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c command.c
 
 
 # Platform specific source files that may appear in the library
@@ -285,7 +285,7 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
   cache_view.h classify.h compress.h magick_config.h delegate.h draw.h \
-  render.h error.h gem.h image.h list.h magic.h magick.h module.h monitor.h \
+  render.h error.h gem.h image.h command.h list.h magic.h magick.h module.h monitor.h \
   quantize.h registry.h semaphore.h timer.h utility.h version.h widget.h \
   xwindow.h
 
@@ -325,7 +325,7 @@ am__objects_1 = memory.lo blob.lo cache.lo error.lo monitor.lo \
 	annotate.lo type.lo draw.lo render.lo montage.lo semaphore.lo \
 	attribute.lo signature.lo compress.lo gem.lo registry.lo \
 	magic.lo magick.lo delegate.lo module.lo static.lo timer.lo \
-	utility.lo cache_view.lo stream.lo animate.lo display.lo \
+	utility.lo command.lo cache_view.lo stream.lo animate.lo display.lo \
 	widget.lo xwindow.lo PreRvIcccm.lo
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 =
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 = \
@@ -364,7 +364,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/shear.Plo ./$(DEPDIR)/signature.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/static.Plo ./$(DEPDIR)/stream.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/timer.Plo ./$(DEPDIR)/transform.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/type.Plo ./$(DEPDIR)/utility.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/type.Plo ./$(DEPDIR)/command.Plo ./$(DEPDIR)/utility.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/widget.Plo ./$(DEPDIR)/xwindow.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/zoom.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -515,6 +515,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transform.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/type.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/command.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xwindow.Plo@am__quote@

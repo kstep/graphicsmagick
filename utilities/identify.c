@@ -117,322 +117,6 @@ static void IdentifyUsage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I d e n t i f y U t i l i t y                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IdentifyUtility() describes the format and characteristics of one or more
-%  image files. It will also report if an image is incomplete or corrupt.
-%  The information displayed includes the scene number, the file name, the
-%  width and height of the image, whether the image is colormapped or not,
-%  the number of colors in the image, the number of bytes in the image, the
-%  format of the image (JPEG, PNM, etc.), and finally the number of seconds
-%  it took to read and process the image.
-%
-%  The format of the IdentifyUtility method is:
-%
-%      unsigned int IdentifyUtility(const int argc,char **argv)
-%
-%  A description of each parameter follows:
-%
-%    o argc: The number of elements in the argument vector.
-%
-%    o argv: A text array containing the command line arguments.
-%
-%
-*/
-static unsigned int IdentifyUtility(int argc,char **argv)
-{
-  char
-    *format,
-    *option,
-    *q,
-    *text;
-
-  double
-    sans;
-
-  ExceptionInfo
-    exception;
-
-  Image
-    *image;
-
-  ImageInfo
-    *image_info;
-
-  long
-    count,
-    number_images,
-    x;
-
-  register Image
-    *p;
-
-  register long
-    i;
-
-  unsigned int
-    status;
-
-  format=(char *) NULL;
-  for (i=1; i < argc; i++)
-  {
-    option=argv[i];
-    if (LocaleCompare("-format",argv[i]) == 0)
-      {
-        i++;
-        if (i == argc)
-          MagickFatalError(OptionFatalError,"Missing format string",option);
-        (void) CloneString(&format,argv[i]);
-        break;
-      }
-  }
-  status=ExpandFilenames(&argc,&argv);
-  if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
-      (char *) NULL);
-  if (argc < 2)
-    IdentifyUsage();
-  /*
-    Set defaults.
-  */
-  count=0;
-  GetExceptionInfo(&exception);
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-  image=(Image *) NULL;
-  number_images=0;
-  status=True;
-  /*
-    Identify an image.
-  */
-  for (i=1; i < argc; i++)
-  {
-    option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
-      {
-        /*
-          Identify image.
-        */
-        (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
-        if (format != (char *) NULL)
-          for (q=strchr(format,'%'); q != (char *) NULL; q=strchr(q+1,'%'))
-            if ((*(q+1) == 'k') || (*(q+1) == '#'))
-              {
-                image_info->verbose=True;
-                break;
-              }
-        if (image_info->verbose)
-          image=ReadImage(image_info,&exception);
-        else
-          image=PingImage(image_info,&exception);
-        if (exception.severity != UndefinedException)
-          CatchException(&exception);
-        status&=image != (Image *) NULL;
-        if (image == (Image *) NULL)
-          continue;
-        for (p=image; p != (Image *) NULL; p=p->next)
-        {
-          if (p->scene == 0)
-            p->scene=count++;
-          if (format == (char *) NULL)
-            {
-              DescribeImage(p,stdout,image_info->verbose);
-              continue;
-            }
-          text=TranslateText(image_info,p,format);
-          if (text == (char *) NULL)
-            ThrowBinaryException(ResourceLimitError,
-              "Unable to format image metadata","Memory allocation failed");
-          (void) fputs(text,stdout);
-          (void) fputc('\n',stdout);
-          LiberateMemory((void **) &text);
-        }
-        DestroyImageList(image);
-        number_images++;
-        continue;
-      }
-    switch(*(option+1))
-    {
-      case 'c':
-      {
-        if (LocaleCompare("cache",option+1) == 0)
-          {
-            SetCacheThreshold(0);
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                  MagickFatalError(OptionFatalError,"Missing threshold",option);
-                SetCacheThreshold(atol(argv[i]));
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"Unrecognized option",option);
-        break;
-      }
-      case 'd':
-      {
-        if (LocaleCompare("debug",option+1) == 0)
-          {
-            image_info->debug=(*option == '-');
-            break;
-          }
-        if (LocaleCompare("density",option+1) == 0)
-          {
-            (void) CloneString(&image_info->density,(char *) NULL);
-            if (*option == '-')
-              {
-              i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"Missing geometry",option);
-                (void) CloneString(&image_info->density,argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("depth",option+1) == 0)
-          {
-            image_info->depth=QuantumDepth;
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"Missing image depth",
-                    option);
-                image_info->depth=atol(argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"Unrecognized option",option);
-        break;
-      }
-      case 'f':
-      {
-        if (LocaleCompare("format",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing format string",
-                    option);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"Unrecognized option",option);
-        break;
-      }
-      case 'h':
-      {
-        if (LocaleCompare("help",option+1) == 0)
-          {
-            IdentifyUsage();
-            break;
-          }
-        MagickFatalError(OptionFatalError,"Unrecognized option",option);
-        break;
-      }
-      case 'i':
-      {
-        if (LocaleCompare("interlace",option+1) == 0)
-          {
-            if (*option == '-')
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,"Missing type",option);
-                option=argv[i];
-                image_info->interlace=UndefinedInterlace;
-                if (LocaleCompare("None",option) == 0)
-                  image_info->interlace=NoInterlace;
-                if (LocaleCompare("Line",option) == 0)
-                  image_info->interlace=LineInterlace;
-                if (LocaleCompare("Plane",option) == 0)
-                  image_info->interlace=PlaneInterlace;
-                if (LocaleCompare("Partition",option) == 0)
-                  image_info->interlace=PartitionInterlace;
-                if (image_info->interlace == UndefinedInterlace)
-                  MagickFatalError(OptionFatalError,"Invalid interlace type",
-                    option);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"Unrecognized option",option);
-        break;
-      }
-      case 'p':
-      {
-        if (LocaleCompare("ping",option+1) == 0)
-          break;  /* default is ping; silently ignore */
-        MagickFatalError(OptionFatalError,"Unrecognized option",option);
-        break;
-      }
-      case 's':
-      {
-        if (LocaleCompare("sampling_factor",option+1) == 0)
-          {
-            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"Missing geometry",option);
-                (void) CloneString(&image_info->sampling_factor,argv[i]);
-              }
-            break;
-          }
-        if (LocaleCompare("size",option+1) == 0)
-          {
-            (void) CloneString(&image_info->size,(char *) NULL);
-            if (*option == '-')
-              {
-                i++;
-                if ((i == argc) || !IsGeometry(argv[i]))
-                  MagickFatalError(OptionFatalError,"Missing geometry",option);
-                (void) CloneString(&image_info->size,argv[i]);
-              }
-            break;
-          }
-        MagickFatalError(OptionFatalError,"Unrecognized option",option);
-        break;
-      }
-      case 'v':
-      {
-        if (LocaleCompare("verbose",option+1) == 0)
-          {
-            image_info->verbose=(*option == '-');
-            break;
-          }
-        MagickFatalError(OptionFatalError,"Unrecognized option",option);
-        break;
-      }
-      case '?':
-      {
-        IdentifyUsage();
-        break;
-      }
-      default:
-      {
-        MagickFatalError(OptionFatalError,"Unrecognized option",option);
-        break;
-      }
-    }
-  }
-  if ((i != argc) || (number_images == 0))
-    MagickFatalError(OptionFatalError,"Missing an image file name",
-      (char *) NULL);
-  DestroyImageInfo(image_info);
-  return(status);
-}
-
-#if !defined(MagickAPI)
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %  M a i n                                                                    %
 %                                                                             %
 %                                                                             %
@@ -443,6 +127,18 @@ static unsigned int IdentifyUtility(int argc,char **argv)
 */
 int main(int argc,char **argv)
 {
+  char
+    *option;
+
+  ExceptionInfo
+    exception;
+
+  ImageInfo
+    *image_info;
+
+  register int
+    i;
+
   unsigned int
     status;
 
@@ -450,6 +146,16 @@ int main(int argc,char **argv)
     Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
+  for (i=1; i < argc; i++)
+  {
+    option=argv[i];
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
+      continue;
+    if (LocaleCompare("help",option+1) == 0)
+      IdentifyUsage();
+    if (LocaleCompare("?",option+1) == 0)
+      IdentifyUsage();
+  }
   InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
@@ -457,10 +163,15 @@ int main(int argc,char **argv)
       (char *) NULL);
   if (argc < 2)
     IdentifyUsage();
-  status=IdentifyUtility(argc,argv);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  GetExceptionInfo(&exception);
+  status=IdentifyImageCommand(image_info,argc,argv,&exception);
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
+  DestroyImageInfo(image_info);
+  DestroyExceptionInfo(&exception);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);
   return(False);
 }
-#endif

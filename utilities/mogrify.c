@@ -219,19 +219,19 @@ static void MogrifyUsage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%    M o g r i f y U t i l i t y                                              %
+%    M o g r i f y C o m m a n d                                              %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MogrifyUtility() ransforms an image or a sequence of images. These
+%  MogrifyCommand() ransforms an image or a sequence of images. These
 %  transforms include image scaling, image rotation, color reduction, and
 %  others. The transmogrified image overwrites the original image.
 %
-%  The format of the MogrifyUtility method is:
+%  The format of the MogrifyCommand method is:
 %
-%      unsigned int MogrifyUtility(const int argc,char **argv)
+%      unsigned int MogrifyCommand(const int argc,char **argv)
 %
 %  A description of each parameter follows:
 %
@@ -241,7 +241,7 @@ static void MogrifyUsage(void)
 %
 %
 */
-static unsigned int MogrifyUtility(int argc,char **argv)
+static unsigned int MogrifyCommand(int argc,char **argv)
 {
   char
     filename[MaxTextExtent],
@@ -1771,7 +1771,7 @@ int main(int argc,char **argv)
       (char *) NULL);
   if (argc < 3)
     MogrifyUsage();
-  status=MogrifyUtility(argc,argv);
+  status=MogrifyCommand(argc,argv);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);
