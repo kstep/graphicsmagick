@@ -6331,22 +6331,23 @@ QueryColor(ref,...)
         GetExceptionInfo(&exception);
         color_info=GetColorInfo("*",&exception);
         if (color_info == (ColorInfo *) NULL)
-          PUSHs(&sv_undef);
-        else
           {
-            i=0;
-            for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
-              i++;
-            EXTEND(sp,i);
-            for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
-            {
-              *message='\0'; 
-              if (p->name == (char *) NULL)
-                PUSHs(&sv_undef);
-              else
-                PUSHs(sv_2mortal(newSVpv(p->name,0)));
-            }
+            PUSHs(&sv_undef);
+            goto MethodException;
           }
+        i=0;
+        for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
+          i++;
+        EXTEND(sp,i);
+        for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
+        {
+          if (p->name == (char *) NULL)
+            {
+              PUSHs(&sv_undef);
+              continue;
+            }
+          PUSHs(sv_2mortal(newSVpv(p->name,0)));
+        }
         goto MethodException;
       }
     EXTEND(sp,4*items);
@@ -6472,21 +6473,23 @@ QueryFont(ref,...)
 
         font_info=GetFontInfo("*",&exception);
         if (font_info == (FontInfo *) NULL)
-          PUSHs(&sv_undef);
-        else
           {
-            i=0;
-            for (p=font_info; p != (FontInfo *) NULL; p=p->next)
-              i++;
-            EXTEND(sp,i);
-            for (p=font_info; p != (FontInfo *) NULL; p=p->next)
-            {
-              if (p->name == (char *) NULL)
-                PUSHs(&sv_undef);
-              else
-                PUSHs(sv_2mortal(newSVpv(p->name,0)));
-            }
+            PUSHs(&sv_undef);
+            goto MethodException;
           }
+        i=0;
+        for (p=font_info; p != (FontInfo *) NULL; p=p->next)
+          i++;
+        EXTEND(sp,i);
+        for (p=font_info; p != (FontInfo *) NULL; p=p->next)
+        {
+          if (p->name == (char *) NULL)
+            {
+              PUSHs(&sv_undef);
+              continue;
+            }
+          PUSHs(sv_2mortal(newSVpv(p->name,0)));
+        }
         goto MethodException;
       }
     EXTEND(sp,8*items);
@@ -6818,21 +6821,25 @@ QueryFormat(ref,...)
 
         magick_info=GetMagickInfo("*",&exception);
         if (magick_info == (MagickInfo *) NULL)
-          PUSHs(&sv_undef);
-        else
           {
-            i=0;
-            for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
-              i++;
-            EXTEND(sp,i);
-            for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
-            {
-              if (p->name == (char *) NULL)
-                PUSHs(&sv_undef);
-              else
-                PUSHs(sv_2mortal(newSVpv(p->name,0)));
-            }
+            PUSHs(&sv_undef);
+            goto MethodException;
           }
+        i=0;
+        for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
+          i++;
+        EXTEND(sp,i);
+        for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
+        {
+          if (p->name == (char *) NULL)
+            {
+              PUSHs(&sv_undef);
+              continue;
+            }
+          (void) strcpy(message,p->name);
+          LocaleLower(message);
+          PUSHs(sv_2mortal(newSVpv(message,0)));
+        }
         goto MethodException;
       }
     EXTEND(sp,8*items);
