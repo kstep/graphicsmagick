@@ -201,6 +201,9 @@
       <Message name="OnlyLevelZerofilesSupported">
         Only level zero files Supported
       </Message>
+      <Message name="PNGLibraryTooOld">
+        PNG library is too old
+      </Message>
       <Message name="RLECompressionNotSupported">
         RLE compression not supported
       </Message>

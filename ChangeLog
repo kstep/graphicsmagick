@@ -1,3 +1,7 @@
+2003-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* locale/C.mgk: Added message for "PNG library is too old".
+
 2003-09-04  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* magick/transform.c (ProfileImage): Bugfix: conditional
