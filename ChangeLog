@@ -1,6 +1,6 @@
 2002-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * magick/xwindow.c: Optimize loading of TrueColor images
-  with gamma = 1.0.
+  * magick/xwindow.c: Optimize loading of TrueColor images with
+    gamma = 1.0.
 
 2002-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * coders/wmf.c: Added logging facilities.
