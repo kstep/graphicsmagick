@@ -28,8 +28,8 @@ $call Make cache.c
 $call Make cache_view.c
 $call Make color.c
 $call Make command.c
-$call Make composite.c
 $call Make compress.c
+$call Make composite.c
 $call Make constitute.c
 $call Make decorate.c
 $call Make delegate.c
@@ -65,11 +65,12 @@ $call Make utility.c
 $call Make vms.c
 $call Make widget.c
 $call Make xwindow.c
-$library/create libMagick.olb memory,blob,cache,error,monitor,constitute, -
-  image,composite,list,color,quantize,segment,resize,transform,shear,enhance, -
-	effect,fx,decorate,annotate,type,draw,render,montage,semaphore,attribute, -
-	signature,compress,command,gem,registry,magic,magick,delegate,module,static, -
-	timer,utility,cache_view,stream,animate,display,widget,xwindow,PreRvIcccm,vms
+$library/create libMagick.olb memory,blob,cache,error,monitor,command, -
+  constitute,image,composite,list,color,quantize,segment,resize,transform, -
+  shear,enhance,effect,fx,decorate,annotate,type,draw,render,montage, -
+  semaphore,attribute,signature,compress,gem,registry,magic,magick,delegate, -
+  module,static,timer,utility,cache_view,stream,animate,display,widget, -
+  xwindow,PreRvIcccm,vms
 $exit
 $
 $Make: subroutine
