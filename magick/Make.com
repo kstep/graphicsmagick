@@ -33,6 +33,7 @@ $call Make composite.c
 $call Make constitute.c
 $call Make decorate.c
 $call Make delegate.c
+$call Make deprecate.c
 $call Make display.c
 $call Make draw.c
 $call Make effect.c
@@ -74,7 +75,7 @@ $library/create libMagick.olb memory,blob,cache,locale,error,monitor,command, -
   shear,enhance,effect,fx,decorate,annotate,type,draw,render,montage, -
   semaphore,attribute,signature,compress,gem,registry,magic,magick,delegate, -
   module,static,resource,log,timer,utility,cache_view,stream,animate,display, -
-	widget,xwindow,PreRvIcccm,version,vms
+	widget,xwindow,PreRvIcccm,version,deprecate,vms
 $exit
 $
 $Make: subroutine

@@ -56,7 +56,8 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 	annotate.c type.c draw.c render.c montage.c semaphore.c attribute.c \
 	signature.c compress.c command.c gem.c registry.c magic.c magick.c \
 	delegate.c module.c static.c resource.c log.c timer.c utility.c cache_view.c \
-	stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c version.c
+	stream.c version.c animate.c display.c widget.c xwindow.c PreRvIcccm.c \
+	deprecate.c
 
 # Platform specific source files that may appear in the library
 EXTRA_libMagick_la_SOURCES = nt_base.c nt_feature.c
@@ -84,11 +85,11 @@ endif # WITH_MODULES
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
+include_HEADERS = api.h attribute.h blob.h cache.h \
   cache_view.h command.h compress.h magick_config.h delegate.h \
   draw.h render.h error.h gem.h image.h list.h log.h magic.h magick.h \
   module.h monitor.h quantize.h resource.h registry.h semaphore.h timer.h \
-	utility.h version.h widget.h xwindow.h
+	utility.h version.h widget.h xwindow.h PreRvIcccm.h deprecate.h
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h studio.h vms.h

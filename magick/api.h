@@ -120,6 +120,7 @@ extern "C" {
 # include "magick/resource.h"
 # include "magick/log.h"
 # include "magick/version.h"
+# include "magick/deprecate.h"
 #else
 # include "semaphore.h"
 # include "timer.h"
@@ -146,6 +147,7 @@ extern "C" {
 # include "resource.h"
 # include "log.h"
 # include "version.h"
+# include "deprecate.h"
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
