@@ -310,6 +310,9 @@ typedef struct _TypeMetric
 /*
   Method declarations.
 */
+extern MagickExport char
+  **GetTypeList(const char *,unsigned long *);
+
 extern MagickExport const TypeInfo
   *GetTypeInfo(const char *,ExceptionInfo *),
   *GetTypeInfoByFamily(const char *,const StyleType,const StretchType,

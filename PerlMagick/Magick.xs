@@ -6973,36 +6973,26 @@ QueryFont(ref,...)
 
     dMY_CXT;
     MY_CXT.error_list=newSVpv("",0);
-    GetExceptionInfo(&exception);
     if (items == 1)
       {
-        register volatile const TypeInfo
-          *p;
+        char
+          **typelist;
 
-        type_info=GetTypeInfo("*",&exception);
-        if (type_info == (const TypeInfo *) NULL)
-          {
-            PUSHs(&sv_undef);
-            goto MethodException;
-          }
-        i=0;
-        for (p=type_info; p != (TypeInfo *) NULL; p=p->next)
-          i++;
-        EXTEND(sp,i);
-        for (p=type_info; p != (TypeInfo *) NULL; p=p->next)
+        unsigned long
+          types;
+
+        typelist=GetTypeList("*",&types);
+        EXTEND(sp,types);
+        for (i=0; i < types; i++)
         {
-          if (p->stealth)
-            continue;
-          if (p->name == (char *) NULL)
-            {
-              PUSHs(&sv_undef);
-              continue;
-            }
-          PUSHs(sv_2mortal(newSVpv(p->name,0)));
+          PUSHs(sv_2mortal(newSVpv(typelist[i],0)));
+          LiberateMemory((void **) &typelist[i]);
         }
+        LiberateMemory((void **) &typelist);
         goto MethodException;
       }
     EXTEND(sp,10*items);
+    GetExceptionInfo(&exception);
     for (i=1; i < items; i++)
     {
       name=(char *) SvPV(ST(i),na);

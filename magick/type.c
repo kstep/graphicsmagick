@@ -417,6 +417,74 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t T y p e l i s t                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetTypeList() returns any types that match the specified pattern.
+%
+%  The format of the GetTypeList function is:
+%
+%      char **GetTypeList(const char *pattern,unsigned long *number_types)
+%
+%  A description of each parameter follows:
+%
+%    o pattern: Specifies a pointer to a text string containing a pattern.
+%
+%    o number_types:  This integer returns the number of types in the list.
+%
+%
+*/
+MagickExport char **GetTypeList(const char *pattern,unsigned long *number_types)
+{
+  char
+    **typelist;
+
+  register const volatile TypeInfo
+    *p;
+
+  ExceptionInfo
+    exception;
+
+  register long
+    i;
+
+  /*
+    Allocate type list.
+  */
+  assert(pattern != (char *) NULL);
+  assert(number_types != (int *) NULL);
+  *number_types=0;
+  GetExceptionInfo(&exception);
+  p=GetTypeInfo("*",&exception);
+  DestroyExceptionInfo(&exception);
+  if (p == (const TypeInfo *) NULL)
+    return((char **) NULL);
+  i=0;
+  for (p=type_list; p != (const TypeInfo *) NULL; p=p->next)
+    i++;
+  typelist=(char **) AcquireMemory(i*sizeof(char *));
+  if (typelist == (char **) NULL)
+    return((char **) NULL);
+  i=0;
+  for (p=type_list; p != (const TypeInfo *) NULL; p=p->next)
+	{
+	  if (p->stealth)
+	    continue;
+    if (GlobExpression(p->name,pattern))
+      typelist[i++]=AllocateString(p->name);
+	}
+  *number_types=i;
+  return(typelist);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  L i s t T y p e I n f o                                                    %
 %                                                                             %
 %                                                                             %
