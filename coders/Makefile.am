@@ -36,7 +36,7 @@ MAGICK_CODER_SRCS = \
   art.c avi.c avs.c bmp.c cmyk.c cut.c dcm.c dib.c dps.c dpx.c \
   ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c \
   histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c logo.c \
-  map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c mpr.c \
+  map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c mpr.c msl.c \
   mtv.c mvg.c null.c otb.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c \
   pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
@@ -78,7 +78,7 @@ pkg_LTLIBRARIES = \
   art.la avi.la avs.la bmp.la cmyk.la cut.la dcm.la dib.la dps.la dpx.la \
   ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la hdf.la \
   histogram.la html.la icon.la jbig.la jp2.la jpeg.la label.la logo.la \
-  map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la \
+  map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la msl.la \
   mtv.la mvg.la null.la otb.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la \
   pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
   pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la \
@@ -264,7 +264,12 @@ mpeg_la_LIBADD     = $(LIBMAGICK) @LIB_MPEG2@
 # MPR module
 mpr_la_SOURCES      = mpr.c
 mpr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-mpr_la_LIBADD       = $(LIBMAGICK)
+mpr_la_LIBADD       = $(LIBMAGICK) @LIB_XML@ @LIB_ZLIB@ @LIB_X11@ $(LIB_MATH)
+
+# MSL module
+msl_la_SOURCES      = msl.c
+msl_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+msl_la_LIBADD       = $(LIBMAGICK)
 
 # MTV module
 mtv_la_SOURCES      = mtv.c

@@ -15,7 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                              Bill Radcliffe                                 %
+%                             William Radcliffe                               %
 %                                March 2000                                   %
 %                                                                             %
 %                                                                             %
@@ -158,44 +158,6 @@ typedef struct _SVGInfo
 */
 static unsigned int
   WriteSVGImage(const ImageInfo *,Image *);
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   I s S V G                                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method IsSVG returns True if the image format type, identified by the
-%  magick string, is SVG.
-%
-%  The format of the IsSVG method is:
-%
-%      unsigned int IsSVG(const unsigned char *magick,const size_t length)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method IsSVG returns True if the image format type is SVG.
-%
-%    o magick: This string is generally the first few bytes of an image file
-%      or blob.
-%
-%    o length: Specifies the length of the magick string.
-%
-%
-*/
-static unsigned int IsSVG(const unsigned char *magick,const size_t length)
-{
-  if (length < 5)
-    return(False);
-  if (LocaleNCompare((char *) magick,"<?xml",5) == 0)
-    return(True);
-  return(False);
-}
 
 #if defined(HasXML)
 /*
@@ -2557,15 +2519,8 @@ ModuleExport void RegisterSVGImage(void)
     *entry;
 
   entry=SetMagickInfo("SVG");
-  entry->magick=IsSVG;
   entry->decoder=ReadSVGImage;
   entry->encoder=WriteSVGImage;
-  entry->description=AllocateString("Scalable Vector Gaphics");
-  entry->module=AllocateString("SVG");
-  (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("XML");
-  entry->magick=IsSVG;
-  entry->decoder=ReadSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
   entry->module=AllocateString("SVG");
   (void) RegisterMagickInfo(entry);
