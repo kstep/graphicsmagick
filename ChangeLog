@@ -1,3 +1,12 @@
+2004-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/compress.c (HuffmanEncode2Image): Avoid out of bounds
+	array access.
+
+2004-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Fix minor shell syntax error (used ==).
+
 2004-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh (PACKAGE_VERSION): Release version 1.1.

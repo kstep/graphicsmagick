@@ -634,9 +634,6 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
 %    o image: The image.
 %
 */
-MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
-  Image *image, WriteByteHook write_byte, void *info)
-{
 #define HuffmanOutputCode(entry)  \
 {  \
   mask=1 << (entry->length-1);  \
@@ -660,6 +657,9 @@ MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
     }  \
 }
 
+MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
+  Image *image, WriteByteHook write_byte, void *info)
+{
   const HuffmanTable
     *entry;
 
@@ -769,8 +769,9 @@ MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
       }
       if (runlength >= 64)
         {
-          entry=MWTable+((runlength/64)-1);
-          if (runlength >= 1792)
+          if (runlength < 1792)
+            entry=MWTable+((runlength/64)-1);
+          else
             entry=EXTable+(Min(runlength,2560)-1792)/64;
           runlength-=entry->count;
           HuffmanOutputCode(entry);

@@ -162,9 +162,11 @@ extern "C" {
 # endif
 #endif
 
-#if defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)
-# define fseek  fseeko
-# define ftell  ftello
+#if defined(_FILE_OFFSET_BITS)
+# if (_FILE_OFFSET_BITS == 64)
+#  define fseek  fseeko
+#  define ftell  ftello
+# endif
 #endif
 
 #if !defined(ExtendedSignedIntegralType)

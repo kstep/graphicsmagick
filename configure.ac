@@ -1160,7 +1160,7 @@ if test "$ac_cv_func_vsnprintf" != 'yes' && test "$with_trio" != 'no'
 then
    AC_MSG_CHECKING(for TRIO vsnprintf replacement)
    AC_CHECK_LIB(trio,trio_vsnprintf,have_trio='yes',,)
-   if test "$have_trio" == 'yes'
+   if test "$have_trio" = 'yes'
    then
      LIB_TRIO="-ltrio"
      LIBS="$LIB_TRIO $LIBS"
