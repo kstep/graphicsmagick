@@ -98,6 +98,8 @@ Export unsigned int IsMIFF(const unsigned char *magick,
     return(False);
   if (strncmp((char *) magick,"id=ImageMagick",14) == 0)
     return(True);
+  if (strncmp((char *) magick,"Id=ImageMagick",14) == 0)
+    return(True);
   return(False);
 }
 
