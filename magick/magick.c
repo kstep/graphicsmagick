@@ -308,22 +308,21 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
         NULL
       };
 
-    for (i=0; registry_path_keys[i] != NULL; i++)
+    for (i=0; registry_path_keys[i] != (char *) NULL; i++)
     {
       key_value=NTRegistryKeyLookup(registry_path_keys[i]);
-      if (key_value != (char *) NULL)
-        {
-          FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-            filename);
-          LiberateMemory((void**) &key_value);
-          if (IsAccessible(path))
-            return(path);
-          ConcatenateString(&search_path,"; Registry[");
-          ConcatenateString(&search_path, registry_path_keys[i]);
-          ConcatenateString(&search_path,"]:");
-          ConcatenateString(&search_path,path);
-        }
-      }
+      if (key_value == (char *) NULL)
+        continue;
+      FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+        filename);
+      LiberateMemory((void **) &key_value);
+      if (IsAccessible(path))
+        return(path);
+      ConcatenateString(&search_path,"; Registry[");
+      ConcatenateString(&search_path, registry_path_keys[i]);
+      ConcatenateString(&search_path,"]:");
+      ConcatenateString(&search_path,path);
+    }
   }
 #endif
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
