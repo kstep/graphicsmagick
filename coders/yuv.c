@@ -156,6 +156,9 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert raster image to pixel packets.
     */
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     if (image_info->interlace == PartitionInterlace)
       {
         AppendImageFormat("Y",image->filename);

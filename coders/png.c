@@ -2916,8 +2916,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         clip=image_box;
       }
     image->compression=ZipCompression;
-    image->columns= ping_info->width;
-    image->rows= ping_info->height;
+    image->columns=ping_info->width;
+    image->rows=ping_info->height;
     if ((ping_info->color_type == PNG_COLOR_TYPE_PALETTE) ||
         (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
         (ping_info->color_type == PNG_COLOR_TYPE_GRAY))
@@ -2938,14 +2938,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->colors=number_colors;
           }
       }
-    png_pixels=(unsigned char *)
-      AcquireMemory(ping_info->rowbytes*image->rows*sizeof(Quantum));
-    scanlines=(unsigned char **)
-      AcquireMemory(image->rows*sizeof(unsigned char *));
-    if ((png_pixels == (unsigned char *) NULL) ||
-        (scanlines == (unsigned char **) NULL))
-      ThrowReaderException((ExceptionType) ResourceLimitWarning,
-        "Memory allocation failed",image);
 
     if (image->storage_class==PseudoClass)
       {
@@ -2987,9 +2979,20 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
          }
       }
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     /*
       Read image scanlines.
     */
+    png_pixels=(unsigned char *)
+      AcquireMemory(ping_info->rowbytes*image->rows*sizeof(Quantum));
+    scanlines=(unsigned char **)
+      AcquireMemory(image->rows*sizeof(unsigned char *));
+    if ((png_pixels == (unsigned char *) NULL) ||
+        (scanlines == (unsigned char **) NULL))
+      ThrowReaderException((ExceptionType) ResourceLimitWarning,
+        "Memory allocation failed",image);
     for (i=0; i < (long) image->rows; i++)
       scanlines[i]=png_pixels+(i*ping_info->rowbytes);
     png_read_image(ping,scanlines);

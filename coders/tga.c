@@ -281,6 +281,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i]=pixel;
         }
       }
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     /*
       Convert TGA pixels to pixel packets.
     */

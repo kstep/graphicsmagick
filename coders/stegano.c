@@ -135,6 +135,11 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   watermark->depth=QuantumDepth;
   if (!AllocateImageColormap(image,MaxRGB+1))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   /*
     Get hidden watermark from low-order bits of image.
   */

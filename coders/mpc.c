@@ -478,8 +478,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     *geometry;
 
                   geometry=PostscriptGeometry(values);
-                  (void) ParseImageGeometry(geometry,&image->page.x,&image->page.y,
-                    &image->page.width,&image->page.height);
+                  (void) ParseImageGeometry(geometry,&image->page.x,
+                    &image->page.y,&image->page.width,&image->page.height);
                   LiberateMemory((void **) &geometry);
                   break;
                 }

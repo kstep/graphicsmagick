@@ -165,6 +165,11 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->colormap[1].red=0;
   image->colormap[1].green=0;
   image->colormap[1].blue=0;
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   status=HuffmanDecodeImage(image);
   if (status == False)
     ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);

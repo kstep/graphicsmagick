@@ -171,6 +171,11 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap[i].blue|=(*p++);
     }
   LiberateMemory((void **) &colormap);
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   /*
     Read image pixels.
   */

@@ -181,10 +181,15 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=atol(buffer);
   (void) ReadBlob(image,196,(char *) buffer);
   (void) ReadBlob(image,768,(char *) buffer);
+  image->colorspace=CMYKColorspace;
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   /*
     Convert SCT raster image to pixel packets.
   */
-  image->colorspace=CMYKColorspace;
   for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);

@@ -293,8 +293,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           blue=0;
       }
     }
-  (void) XQueryColors(display,XDefaultColormap(display,visual_info->screen),colors,
-    visual_info->colormap_size);
+  (void) XQueryColors(display,XDefaultColormap(display,visual_info->screen),
+    colors,visual_info->colormap_size);
   /*
     Convert X image to MIFF format.
   */
@@ -303,6 +303,11 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->storage_class=PseudoClass;
   image->columns=dps_image->width;
   image->rows=dps_image->height;
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   switch (image->storage_class)
   {
     case DirectClass:

@@ -276,6 +276,11 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->colormap[1].red=MaxRGB;
   image->colormap[1].green=MaxRGB;
   image->colormap[1].blue=MaxRGB;
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   /*
     Initialize hex values.
   */
@@ -350,7 +355,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(LoadImageText,y,image->rows);
+       MagickMonitor(LoadImageText,y,image->rows);
   }
   LiberateMemory((void **) &data);
   SyncImage(image);

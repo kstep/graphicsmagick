@@ -439,6 +439,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (number_colors != 0)
           (void) memcpy(image->colormap,colormap,
             number_colors*sizeof(PixelPacket));
+        if (image_info->ping && (image_info->subrange != 0))
+          if (image->scene >= (image_info->subimage+image_info->subrange-1))
+            break;
         bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
         pixels=(unsigned char *) AcquireMemory(bytes_per_line*image->rows);
         if (LocaleCompare(id,"00db") == 0)

@@ -349,6 +349,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (i=0; i <= (long) max_value; i++)
             scale[i]=(Quantum) ((MaxRGB*i+(max_value >> 1))/max_value);
         }
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     /*
       Convert PNM pixels to runlength-encoded MIFF packets.
     */

@@ -136,6 +136,11 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   */
   if (!AllocateImageColormap(image,2))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   /*
     Convert bi-level image to pixel packets.
   */

@@ -314,129 +314,131 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     image->storage_class=PseudoClass;
   image->colors=header.ncolors;
-  switch (image->storage_class)
-  {
-    case DirectClass:
-    default:
+  if (!image_info->ping)
+    switch (image->storage_class)
     {
-      register unsigned long
-        color;
+      case DirectClass:
+      default:
+      {
+        register unsigned long
+          color;
 
-      unsigned long
-        blue_mask,
-        blue_shift,
-        green_mask,
-        green_shift,
-        red_mask,
-        red_shift;
+        unsigned long
+          blue_mask,
+          blue_shift,
+          green_mask,
+          green_shift,
+          red_mask,
+          red_shift;
 
-      /*
-        Determine shift and mask for red, green, and blue.
-      */
-      red_mask=ximage->red_mask;
-      red_shift=0;
-      while ((red_mask & 0x01) == 0)
-      {
-        red_mask>>=1;
-        red_shift++;
+        /*
+          Determine shift and mask for red, green, and blue.
+        */
+        red_mask=ximage->red_mask;
+        red_shift=0;
+        while ((red_mask & 0x01) == 0)
+        {
+          red_mask>>=1;
+          red_shift++;
+        }
+        green_mask=ximage->green_mask;
+        green_shift=0;
+        while ((green_mask & 0x01) == 0)
+        {
+          green_mask>>=1;
+          green_shift++;
+        }
+        blue_mask=ximage->blue_mask;
+        blue_shift=0;
+        while ((blue_mask & 0x01) == 0)
+        {
+          blue_mask>>=1;
+          blue_shift++;
+        }
+        /*
+          Convert X image to DirectClass packets.
+        */
+        if (image->colors != 0)
+          for (y=0; y < (long) image->rows; y++)
+          {
+            q=SetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (long) image->columns; x++)
+            {
+              pixel=XGetPixel(ximage,(int) x,(int) y);
+              index=(unsigned short) ((pixel >> red_shift) & red_mask);
+              q->red=XDownScale(colors[index].red);
+              index=(unsigned short) ((pixel >> green_shift) & green_mask);
+              q->green=XDownScale(colors[index].green);
+              index=(unsigned short) ((pixel >> blue_shift) & blue_mask);
+              q->blue=XDownScale(colors[index].blue);
+              q++;
+            }
+            if (!SyncImagePixels(image))
+              break;
+            if (QuantumTick(y,image->rows))
+              MagickMonitor(LoadImageText,y,image->rows);
+          }
+        else
+          for (y=0; y < (long) image->rows; y++)
+          {
+            q=SetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (long) image->columns; x++)
+            {
+              pixel=XGetPixel(ximage,(int) x,(int) y);
+              color=(pixel >> red_shift) & red_mask;
+              q->red=XDownScale((color*65535L)/red_mask);
+              color=(pixel >> green_shift) & green_mask;
+              q->green=XDownScale((color*65535L)/green_mask);
+              color=(pixel >> blue_shift) & blue_mask;
+              q->blue=XDownScale((color*65535L)/blue_mask);
+              q++;
+            }
+            if (!SyncImagePixels(image))
+              break;
+            if (QuantumTick(y,image->rows))
+              MagickMonitor(LoadImageText,y,image->rows);
+          }
+        break;
       }
-      green_mask=ximage->green_mask;
-      green_shift=0;
-      while ((green_mask & 0x01) == 0)
+      case PseudoClass:
       {
-        green_mask>>=1;
-        green_shift++;
-      }
-      blue_mask=ximage->blue_mask;
-      blue_shift=0;
-      while ((blue_mask & 0x01) == 0)
-      {
-        blue_mask>>=1;
-        blue_shift++;
-      }
-      /*
-        Convert X image to DirectClass packets.
-      */
-      if (image->colors != 0)
+        /*
+          Convert X image to PseudoClass packets.
+        */
+        if (!AllocateImageColormap(image,image->colors))
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
+        for (i=0; i < (long) image->colors; i++)
+        {
+          image->colormap[i].red=XDownScale(colors[i].red);
+          image->colormap[i].green=XDownScale(colors[i].green);
+          image->colormap[i].blue=XDownScale(colors[i].blue);
+        }
         for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
+          indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            pixel=XGetPixel(ximage,(int) x,(int) y);
-            index=(unsigned short) ((pixel >> red_shift) & red_mask);
-            q->red=XDownScale(colors[index].red);
-            index=(unsigned short) ((pixel >> green_shift) & green_mask);
-            q->green=XDownScale(colors[index].green);
-            index=(unsigned short) ((pixel >> blue_shift) & blue_mask);
-            q->blue=XDownScale(colors[index].blue);
-            q++;
+            index=
+              ValidateColormapIndex(image,XGetPixel(ximage,(int) x,(int) y));
+            indexes[x]=index;
+            *q++=image->colormap[index];
           }
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
             MagickMonitor(LoadImageText,y,image->rows);
         }
-      else
-        for (y=0; y < (long) image->rows; y++)
-        {
-          q=SetImagePixels(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            pixel=XGetPixel(ximage,(int) x,(int) y);
-            color=(pixel >> red_shift) & red_mask;
-            q->red=XDownScale((color*65535L)/red_mask);
-            color=(pixel >> green_shift) & green_mask;
-            q->green=XDownScale((color*65535L)/green_mask);
-            color=(pixel >> blue_shift) & blue_mask;
-            q->blue=XDownScale((color*65535L)/blue_mask);
-            q++;
-          }
-          if (!SyncImagePixels(image))
-            break;
-          if (QuantumTick(y,image->rows))
-            MagickMonitor(LoadImageText,y,image->rows);
-        }
-      break;
-    }
-    case PseudoClass:
-    {
-      /*
-        Convert X image to PseudoClass packets.
-      */
-      if (!AllocateImageColormap(image,image->colors))
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-          image);
-      for (i=0; i < (long) image->colors; i++)
-      {
-        image->colormap[i].red=XDownScale(colors[i].red);
-        image->colormap[i].green=XDownScale(colors[i].green);
-        image->colormap[i].blue=XDownScale(colors[i].blue);
+        break;
       }
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-          index=ValidateColormapIndex(image,XGetPixel(ximage,(int) x,(int) y));
-          indexes[x]=index;
-          *q++=image->colormap[index];
-        }
-        if (!SyncImagePixels(image))
-          break;
-        if (QuantumTick(y,image->rows))
-          MagickMonitor(LoadImageText,y,image->rows);
-      }
-      break;
     }
-  }
   /*
     Free image and colormap.
   */

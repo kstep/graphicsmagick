@@ -214,6 +214,9 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=8;
     if (image->storage_class == PseudoClass)
       image->colors=256;
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     packet_size=image->storage_class == DirectClass ? 3 : 1;
     hdf_pixels=(unsigned char *)
       AcquireMemory(packet_size*image->columns*image->rows);

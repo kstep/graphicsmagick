@@ -796,6 +796,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   jpeg=False;
   for ( ; ; )
   {
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     if ((version == 1) || ((TellBlob(image) % 2) != 0))
       code=ReadBlobByte(image);
     if (version == 2)

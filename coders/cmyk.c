@@ -163,6 +163,9 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       Convert raster image to pixel packets.
     */
     image->colorspace=CMYKColorspace;
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     switch (image_info->interlace)
     {
       case NoInterlace:

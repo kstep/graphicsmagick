@@ -2337,7 +2337,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloseBlob(image);
   DestroyImage(image);
   image=(Image *) NULL;
-  if (exception->severity == UndefinedException)
+  if (!image_info->ping && (exception->severity == UndefinedException))
     {
       /*
         Draw image.

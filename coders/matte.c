@@ -183,6 +183,11 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     return(False);
   if (!AllocateImageColormap(matte_image,MaxRGB+1))
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   /*
     Convert image to matte pixels.
   */

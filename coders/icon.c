@@ -258,6 +258,9 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     */
     image->columns=icon_file.directory[i].width;
     image->rows=icon_file.directory[i].height;
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     switch (icon_info.bits_per_pixel)
     {
       case 1:

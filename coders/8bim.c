@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                            BBBB   IIIII  M   M                              %
-%                            B   B    I    MM MM                              %
-%                            BBBB     I    M M M                              %
-%                            B   B    I    M   M                              %
-%                            BBBB   IIIII  M   M                              %
+%                        88888  BBBB   IIIII  M   M                           %
+%                        88 88  B   B    I    MM MM                           %
+%                         888   BBBB     I    M M M                           %
+%                        88 88  B   B    I    M   M                           %
+%                        88888  BBBB   IIIII  M   M                           %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %

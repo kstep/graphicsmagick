@@ -157,6 +157,9 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     if (!AllocateImageColormap(image,1 << image->depth))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     for (y=0; y < image->tile_info.y; y++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     for (y=0; y < (long) image->rows; y++)

@@ -516,6 +516,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) SetImageAttribute(image,"label",text);
     if (TIFFGetField(tiff,TIFFTAG_IMAGEDESCRIPTION,&text) == 1)
       (void) SetImageAttribute(image,"comment",text);
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     if (range < 0)
       range=max_sample_value;
     method=0;

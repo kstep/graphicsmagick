@@ -307,6 +307,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->columns=jas_image_width(jp2_image);
   image->rows=jas_image_height(jp2_image);
+  if (image_info->ping)
+    {
+      (void) jas_stream_close(jp2_stream);
+      jas_image_destroy(jp2_image);
+      CloseBlob(image);
+      return(image);
+    }
   number_components=Min(jas_image_numcmpts(jp2_image),4);
   for (i=0; i < (long) number_components; i++)
   {

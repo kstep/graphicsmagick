@@ -329,8 +329,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       }
     for (i=0; i < 420; i++)
       (void) ReadBlobByte(image);
-    image->columns= viff_info.rows;
-    image->rows= viff_info.columns;
+    image->columns=viff_info.rows;
+    image->rows=viff_info.columns;
     image->depth=viff_info.x_bits_per_pixel <= 8 ? 8 : QuantumDepth;
     /*
       Verify that we can read this VIFF image.
@@ -476,6 +476,17 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           "Colormap type is not supported",image)
     }
     /*
+      Initialize image structure.
+    */
+    image->matte=(viff_info.number_data_bands == 4);
+    image->storage_class=
+      (viff_info.number_data_bands < 3 ? PseudoClass : DirectClass);
+    image->columns=viff_info.rows;
+    image->rows=viff_info.columns;
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
+    /*
       Allocate VIFF pixels.
     */
     switch (viff_info.data_storage_type)
@@ -589,14 +600,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       *p=(Quantum) value;
       p++;
     }
-    /*
-      Initialize image structure.
-    */
-    image->matte=(viff_info.number_data_bands == 4);
-    image->storage_class=
-      (viff_info.number_data_bands < 3 ? PseudoClass : DirectClass);
-    image->columns= viff_info.rows;
-    image->rows= viff_info.columns;
     /*
       Convert VIFF raster image to pixel packets.
     */

@@ -690,6 +690,13 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     if (!AllocateImageColormap(image,1 << jpeg_info.data_precision))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
+  if (image_info->ping)
+    {
+      (void) jpeg_finish_decompress(&jpeg_info);
+      jpeg_destroy_decompress(&jpeg_info);
+      CloseBlob(image);
+      return(image);
+    }
   jpeg_pixels=(JSAMPLE *)
     AcquireMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)

@@ -255,15 +255,17 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   image->depth=8;
   if (!AllocateImageColormap(image,256))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   /*
-    Initialize image structure.
+    Read VICAR pixels.
   */
   scanline=(unsigned char *) AcquireMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
-  /*
-    Read VICAR pixels.
-  */
   for (y=0; y < (long) image->rows; y++)
   {
     if (!SetImagePixels(image,0,y,image->columns,1))

@@ -338,6 +338,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_info.palette_info=ReadBlobLSBShort(image);
     for (i=0; i < 58; i++)
       (void) ReadBlobByte(image);
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     /*
       Read image data.
     */

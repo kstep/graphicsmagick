@@ -132,10 +132,15 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
     ThrowReaderException(FileOpenWarning,"Unable to open file",image)
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
+  image->depth=8;
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   /*
     Accumulate UYVY, then unpack into two pixels.
   */
-  image->depth=8;
   for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);

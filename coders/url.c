@@ -166,7 +166,8 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (context != (void *) NULL)
         {
           if (xmlNanoFTPConnect(context) >= 0)
-            (void) xmlNanoFTPGet(context,GetFTPData,(void *) file,(char *) NULL);
+            (void) xmlNanoFTPGet(context,GetFTPData,(void *) file,
+              (char *) NULL);
           (void) xmlNanoFTPClose(context);
         }
     }

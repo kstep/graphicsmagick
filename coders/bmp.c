@@ -603,10 +603,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         LiberateMemory((void **) &bmp_colormap);
       }
-    (void) SeekBlob(image,start_position+bmp_info.offset_bits,SEEK_SET);
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     /*
       Read image data.
     */
+    (void) SeekBlob(image,start_position+bmp_info.offset_bits,SEEK_SET);
     if (bmp_info.compression == 2)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);

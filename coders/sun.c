@@ -369,7 +369,15 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CorruptImageWarning,
           "Colormap type is not supported",image)
-    }
+    } 
+    image->matte=(sun_info.depth == 32);
+    image->columns=sun_info.width;
+    image->rows=sun_info.height;
+    if (image_info->ping)
+      {
+        CloseBlob(image);
+        return(image);
+      }
     sun_data=(unsigned char *) AcquireMemory(sun_info.length);
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -396,12 +404,6 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) DecodeImage(sun_data,sun_info.length,sun_pixels);
         LiberateMemory((void **) &sun_data);
       }
-    /*
-      Initialize image structure.
-    */
-    image->matte=(sun_info.depth == 32);
-    image->columns= sun_info.width;
-    image->rows= sun_info.height;
     /*
       Convert SUN raster image to pixel packets.
     */

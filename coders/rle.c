@@ -272,6 +272,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((length & 0x01) == 0)
           (void) ReadBlobByte(image);
       }
+    if (image_info->ping && (image_info->subrange != 0))
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
     /*
       Allocate RLE pixels.
     */

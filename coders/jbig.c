@@ -180,8 +180,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   /*
     Create colormap.
   */
-  image->columns= jbg_dec_getwidth(&jbig_info);
-  image->rows= jbg_dec_getheight(&jbig_info);
+  image->columns=jbg_dec_getwidth(&jbig_info);
+  image->rows=jbg_dec_getheight(&jbig_info);
   if (!AllocateImageColormap(image,2))
     {
       LiberateMemory((void **) &buffer);
@@ -196,6 +196,11 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->colormap[1].blue=MaxRGB;
   image->x_resolution=300;
   image->y_resolution=300;
+  if (image_info->ping)
+    {
+      CloseBlob(image);
+      return(image);
+    }
   /*
     Convert X bitmap image to pixel packets.
   */
