@@ -439,8 +439,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if (psd_info.mode == CMYKMode)
     image->colorspace=CMYKColorspace;
-  else
-    image->matte=psd_info.channels >= 4;
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
   image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
@@ -562,8 +560,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (psd_info.mode == CMYKMode)
           layer_info[i].image->colorspace=CMYKColorspace;
-        else
-          layer_info[i].image->matte=layer_info[i].channels >= 4;
+        for (j=0; j < (int) layer_info[i].channels; j++)
+          if (layer_info[i].channel_info[j].type == -1)
+            layer_info[i].image->matte=True;
       }
       /*
         Read pixel data for each layer.
@@ -773,7 +772,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlobByte(image);
     }
   compression=ReadBlobMSBShort(image);
-  SetImage(image,OpaqueOpacity);
   if (compression == 1)
     {
       /*
@@ -812,11 +810,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           switch (i)
           {
-            case -1:
-            {
-              (void) PushImagePixels(image,OpacityQuantum,scanline);
-              break;
-            }
             case 0:
             {
               if (image->storage_class == PseudoClass)
@@ -836,6 +829,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             }
             case 3:
+            {
+              (void) PushImagePixels(image,OpacityQuantum,scanline);
+              break;
+            }
+            case 4:
             {
               if (image->colorspace == CMYKColorspace)
                 (void) PushImagePixels(image,BlackQuantum,scanline);
