@@ -696,13 +696,14 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetImageInfo initializes the `magick' field of the ImageInfo
+%  Method SetImageInfo() initializes the `magick' field of the ImageInfo
 %  structure.  It is set to a type of image format based on the prefix or
 %  suffix of the filename.  For example, `ps:image' returns PS indicating
 %  a Postscript image.  JPEG is returned for this filename: `image.jpg'.
-%  The filename prefix has precendence over the suffix.  Use an optional index
-%  enclosed in brackets after a file name to specify a desired subimage of a
-%  multi-resolution image format like Photo CD (e.g. img0001.pcd[4]).
+%  The filename prefix has precendence over the suffix.  Use an optional
+%  index enclosed in brackets after a file name to specify a desired subimage
+%  of a multi-resolution image format like Photo CD (e.g. img0001.pcd[4]).
+%  A True (non-zero) return value indicates success.
 %
 %  The format of the SetImageInfo method is:
 %
@@ -890,7 +891,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   */
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
-    return(True);
+    return(False);
   /*
     Determine the image format from the first few bytes of the file.
   */
@@ -900,7 +901,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     {
       CloseBlob(image);
       DestroyImage(image);
-      return(True);
+      return(False);
     }
   if ((image->blob.data != (unsigned char *) NULL)  || !image->exempt)
     (void) ReadBlob(image,2*MaxTextExtent,magick);
@@ -935,13 +936,25 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     }
   CloseBlob(image);
   DestroyImage(image);
-  p=GetImageMagick(magick,2*MaxTextExtent);
-  if (p != (char *) NULL)
-    (void) strcpy(image_info->magick,p);
+  /*
+    Check magic.mgk.
+  */
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
   if ((magic_info != (MagicInfo *) NULL) && (magic_info->name != (char *) NULL))
+  {
     (void) strcpy(image_info->magick,magic_info->name);
-  return(True);
+    return(True);
+  }
+  /*
+    Check module Is* functions
+  */
+  p=GetImageMagick(magick,2*MaxTextExtent);
+  if (p != (char *) NULL)
+  {
+    (void) strcpy(image_info->magick,p);
+    return(True);
+  }
+  return(False);
 }
 
 /*
