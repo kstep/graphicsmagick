@@ -88,9 +88,10 @@
 %    -quality value      JPEG/MIFF/PNG compression level
 %    -resize geometry    resize the image
 %    -rotate degrees     apply Paeth rotation to the image
-%    -scene value        number of screen snapshots
+%    -scene value        image scene number
 %    -screen             select image from root window
 %    -silent             operate silently, i.e. don't ring any bells
+%    -snaps value        number of screen snapshots
 %    -transparent color  make this color transparent within the image
 %    -treedepth value    depth of the color tree
 %    -trim               trim image edges
@@ -169,9 +170,10 @@ static void ImportUsage(void)
       "-quality value      JPEG/MIFF/PNG compression level",
       "-resize geometry    resize the image",
       "-rotate degrees     apply Paeth rotation to the image",
-      "-scene value        number of screen snapshots",
+      "-scene value        image scene number",
       "-screen             select image from root window",
       "-silent             operate silently, i.e. don't ring any bells ",
+      "-snaps value        number of screen snapshots",
       "-transparent color  make this color transparent within the image",
       "-treedepth value    depth of the color tree",
       "-trim               trim image edges",
@@ -244,7 +246,7 @@ int main(int argc,char **argv)
     x;
 
   long
-    number_scenes;
+    snapshots;
 
   QuantizeInfo
     *quantize_info;
@@ -363,8 +365,8 @@ int main(int argc,char **argv)
   resource_value=
     XGetResourceInstance(resource_database,client_name,"dither","True");
   quantize_info->dither=IsTrue(resource_value);
-  number_scenes=1;
-	status=True;
+  snapshots=1;
+  status=True;
   /*
     Check command syntax.
   */
@@ -793,10 +795,12 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("scene",option+1) == 0)
             {
-              i++;
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
-                MagickError(OptionError,"Missing scene",option);
-              number_scenes=atol(argv[i]);
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                    MagickError(OptionError,"Missing scene number",option);
+                }
               break;
             }
           if (LocaleCompare("screen",option+1) == 0)
@@ -819,6 +823,15 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing geometry",option);
                   (void) CloneString(&image_info->size,argv[i]);
                 }
+              break;
+            }
+          if (LocaleCompare("snaps",option+1) == 0)
+            {
+              (void) strcpy(argv[i]+1,"sans");
+              i++;
+              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                MagickError(OptionError,"Missing snaps value",option);
+              snapshots=atol(argv[i]);
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -928,10 +941,10 @@ int main(int argc,char **argv)
   image_info->colorspace=quantize_info->colorspace;
   image_info->dither=quantize_info->dither;
   image=(Image *) NULL;
-  for (i=0; i < (long) Max(number_scenes,1); i++)
+  for (i=0; i < (long) Max(snapshots,1); i++)
   {
     next_image=XImportImage(image_info,&ximage_info);
-		status&=next_image != (Image *) NULL;
+    statu&=next_image != (Image *) NULL;
     if (next_image == (Image *) NULL)
       continue;
     (void) strncpy(next_image->filename,filename,MaxTextExtent-1);
