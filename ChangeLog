@@ -1,3 +1,8 @@
+2003-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Search for the shmctl() function.  Under current
+	Cygwin, this is hiding in -lcygipc.
+
 2003-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/composite.c: Fixed the composite operator list in the
