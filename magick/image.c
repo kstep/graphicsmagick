@@ -982,6 +982,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->directory=(char *) NULL;
   clone_image->semaphore=(SemaphoreInfo *) NULL;
   clone_image->clip_mask=(Image *) NULL;
+  GetExceptionInfo(&clone_image->exception);
   ThrowException(&clone_image->exception,image->exception.severity,
     image->exception.reason,image->exception.description);
   clone_image->reference_count=1;
@@ -5076,11 +5077,12 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   {
     image=PopImageList(images);
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    status|=MogrifyImage(image_info,argc,argv,&image);
+    status&=MogrifyImage(image_info,argc,argv,&image);
     (void) SetMonitorHandler(handler);
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
     PushImageList(&mogrify_images,image,&image->exception);
+    DestroyImage(image);
     MagickMonitor(MogrifyImageText,i,number_images);
   }
   *images=mogrify_images;
