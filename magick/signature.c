@@ -384,7 +384,7 @@ static void UpdateSignature(SignatureInfo *signature_info,unsigned char *message
   if (signature_info->offset)
     {
       i=SignatureSize-signature_info->offset;
-      if (i > length)
+      if ((size_t) i > length)
         i=length;
       memcpy(signature_info->message+signature_info->offset,message,i);
       length-=i;
