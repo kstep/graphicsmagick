@@ -150,22 +150,6 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     rank;
 
-  register IndexPacket
-    *indexes;
-
-  register int
-    i,
-    x;
-
-  register unsigned char
-    *p;
-
-  register PixelPacket
-    *q;
-
-  unsigned int
-    status;
-
   /*
     Open image file.
   */
