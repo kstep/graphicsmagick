@@ -288,11 +288,6 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
 
   AcquireSemaphore(&magick_semaphore);
   initialize=magick_list == (MagickInfo *) NULL;
-  if (initialize)
-    {
-      RegisterMagickInfo(SetMagickInfo(MagickSignature));
-      atexit(DestroyMagickInfo);
-    }
   LiberateSemaphore(&magick_semaphore);
   if (initialize)
     {
@@ -675,22 +670,11 @@ MagickExport MagickInfo *SetMagickInfo(const char *tag)
   if (entry == (MagickInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
+  memset(entry,0,sizeof(MagickInfo));
   entry->tag=AllocateString(tag);
-  entry->image_info=(ImageInfo *) NULL;
-  entry->decoder=(Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL;
-  entry->encoder=(unsigned int (*)(const ImageInfo *,Image *)) NULL;
-  entry->magick=
-    (unsigned int (*)(const unsigned char *,const unsigned int)) NULL;
   entry->adjoin=True;
   entry->blob_support=True;
-  entry->raw=False;
-  entry->stealth=False;
-  entry->description=(char *) NULL;
-  entry->module=(char *) NULL;
-  entry->client_data=(void *) NULL;
   entry->signature=MagickSignature;
-  entry->previous=(MagickInfo *) NULL;
-  entry->next=(MagickInfo *) NULL;
   return(entry);
 }
 
