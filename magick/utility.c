@@ -3277,7 +3277,7 @@ MagickExport void TemporaryFilename(char *filename)
 #else
   (void) tmpnam(filename);
 #endif
-  AppendImageFormat(filename,".tmp");
+  (void) strncat(filename,".tmp",MaxTextExtent-strlen(filename)-1);
 }
 
 /*
