@@ -181,6 +181,13 @@ print("TILE (Tile image with a texture) ...\n");
 ++$test;
 testReadSized( 'TILE:input.miff', '140x92', '79610a0f0d4dd5f5ae1c69607e881792');
 
+
+print("CMYK format ...\n");
+++$test;
+testReadSized( 'input_70x46.cmyk', '70x46',
+                                            'a69ea409ec1962729ed7b5c6985619b6',
+                                            'undetermined, platform dependent');
+
 print("GRAY format ...\n");
 ++$test;
 testReadSized( 'input_70x46.gray', '70x46', 'f0ad0e33df6ed019b9e15ee5e1741d16',
@@ -195,18 +202,6 @@ print("RGBA format ...\n");
 ++$test;
 testReadSized( 'input_70x46.rgba', '70x46', 'eb4d6e084afe2835a1ad28ad7fc12ced',
                                             '97558e5d40363309da60696286664df1' );
-
-
-print("CMYK format ...\n");
-++$test;
-testReadSized( 'input_70x46.cmyk', '70x46',
-#                         Glenn and Bob, 8-bit
-                                            'e6486a5c7d1d7c31ea652f8b9fc63134',
-#                                 Glenn, 16-bit:
-#                                           'ef52612de5e73ca35401272a0d21b64a' );
-#                                   Bob, 16-bit:
-#                                           '840c11bcfa1e39cb97589813dc139c28' );
-                                            'undetermined, platform dependent' );
 
 
 print("UYVY format ...\n");

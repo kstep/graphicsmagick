@@ -234,6 +234,16 @@ testReadWrite( 'XWD:input.xwd',
                'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 
+print("CMYK format ...\n");
+++$test;
+testReadWriteSized( 'CMYK:input_70x46.cmyk',
+		    'CMYK:output_70x46.cmyk',
+		    '70x46',
+		    q//,
+		    'a69ea409ec1962729ed7b5c6985619b6',
+                    '97558e5d40363309da60696286664df1' );
+
+
 print("GRAY format ...\n");
 ++$test;
 testReadWriteSized( 'GRAY:input_70x46.gray',
