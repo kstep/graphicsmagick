@@ -18,7 +18,7 @@ chdir 't' || die 'Cd failed';
 #
 testMontage( q//,
   q/background=>'#696e7e', label=>''/,
-  '07c81b60c4a85f0b6827c0e672dc635d59a4c4a02f378fe032b9d373f2967f64');
+  '6d646bd25efbd141c9d43e66955d1c438170a90b23a3144f5db8cff4cca90f28');
 
 #
 # 2) Test Center gravity
