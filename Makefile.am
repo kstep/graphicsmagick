@@ -33,7 +33,7 @@
 # Don't require all the GNU mandated files
 # Remove comment from no-dependencies for distributions compatable with
 # traditional 'make'
-AUTOMAKE_OPTIONS = 1.2 foreign # no-dependencies
+AUTOMAKE_OPTIONS = 1.4 foreign # no-dependencies
 
 MAGICK_LIB	= magick/libMagick.la # libtool library name
 INCLUDES	= -I$(srcdir) $(INCLTDL) $(X_CFLAGS)

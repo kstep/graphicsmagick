@@ -199,7 +199,7 @@ install_sh = @install_sh@
 # traditional 'make'
 
 
-AUTOMAKE_OPTIONS = 1.2 foreign # no-dependencies
+AUTOMAKE_OPTIONS = 1.4 foreign # no-dependencies
 
 MAGICK_LIB = magick/libMagick.la # libtool library name
 INCLUDES = -I$(srcdir) $(INCLTDL) $(X_CFLAGS)
