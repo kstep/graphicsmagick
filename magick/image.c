@@ -4451,6 +4451,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   image_type;
 
                 option=argv[++i];
+                image_type=GetImageType(*image);
                 if (LocaleCompare("Bilevel",option) == 0)
                   image_type=BilevelType;
                 if (LocaleCompare("Grayscale",option) == 0)
@@ -5896,7 +5897,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
   assert(image->signature == MagickSignature);
   switch (image_type)
   {
-    BilevelType:
+    case BilevelType:
     {
       GetQuantizeInfo(&quantize_info);
       quantize_info.number_colors=2;
@@ -5905,7 +5906,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       (void) QuantizeImage(&quantize_info,image);
       break;
     }
-    GrayscaleType:
+    case GrayscaleType:
     {
       GetQuantizeInfo(&quantize_info);
       quantize_info.number_colors=2;
@@ -5914,7 +5915,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       (void) QuantizeImage(&quantize_info,image);
       break;
     }
-    PaletteType:
+    case PaletteType:
     {
       GetQuantizeInfo(&quantize_info);
       quantize_info.number_colors=256;
@@ -5922,7 +5923,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       (void) QuantizeImage(&quantize_info,image);
       break;
     }
-    PaletteMatteType:
+    case PaletteMatteType:
     {
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
@@ -5933,12 +5934,12 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       (void) QuantizeImage(&quantize_info,image);
       break;
     }
-    TrueColorType:
+    case TrueColorType:
     {
       image->storage_class=DirectClass;
       break;
     }
-    TrueColorMatteType:
+    case TrueColorMatteType:
     {
       image->storage_class=DirectClass;
       if (!image->matte)
@@ -5946,12 +5947,14 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       image->matte=True;
       break;
     }
-    ColorSeparationType:
+    case ColorSeparationType:
     {
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
       break;
     }
+    default:
+      break;
   }
 }
 
