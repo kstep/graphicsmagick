@@ -1228,6 +1228,7 @@ EOF
       -m32 | -m64)
 	case $with_gcc/$host in
 	yes/sparc-sun-solaris2*)
+          compile_command="$compile_command $arg"
 	  compiler_flags="$compiler_flags $arg"
 	  ;;
 	esac
