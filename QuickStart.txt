@@ -37,12 +37,12 @@ Unix/Linux/Darwin/Cygwin Install:
 
   Download
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.1.tar.gz
+      ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.0.tar.gz
 
   and type
 
-      gunzip -c ImageMagick-5.4.1.tar.gz | tar xvf -
-      cd ImageMagick-5.4.1
+      gunzip -c ImageMagick-5.4.0.tar.gz | tar xvf -
+      cd ImageMagick-5.4.0
       ./configure -prefix=/usr/local
       make
       make install
@@ -80,7 +80,7 @@ Win2K, WinME, NT, Win98, Win95 Install:
 
   Alternatively, download the ImageMagick Win2K source
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/win2k/ImageMagick-5.4.1.zip
+      ftp://ftp.imagemagick.org/pub/ImageMagick/win2k/ImageMagick-5.4.0.zip
 
   and read README.txt for detailed instructions on compiling the ImageMagick
   source.
@@ -102,7 +102,7 @@ MAC Install:
 
   Alternatively, download the ImageMagick Classic Macintosh source
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/mac/ImageMagick-5.4.1.sit
+      ftp://ftp.imagemagick.org/pub/ImageMagick/mac/ImageMagick-5.4.0.sit
 
   and double click on the Make AppleScript script to build from the source.
 
@@ -111,7 +111,7 @@ VMS Install:
 
   Type
 
-      unzip ImageMagick-5.4.1.zip
+      unzip ImageMagick-5.4.0.zip
       set default [.imagemagick]
       @make
       identify -verbose logo:
