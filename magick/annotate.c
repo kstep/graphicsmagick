@@ -1031,6 +1031,12 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (face->num_charmaps != 0)
     status=FT_Set_Charmap(face,face->charmaps[0]);
   encoding_type=ft_encoding_unicode;
+  status=FT_Select_Charmap(face,encoding_type);
+  if (status != 0)
+    {
+      encoding_type=ft_encoding_none;
+      status=FT_Select_Charmap(face,encoding_type);
+    }
   if (encoding != (char *) NULL)
     {
       if (LocaleCompare(encoding,"AdobeCustom") == 0)
@@ -1055,11 +1061,11 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_unicode;
       if (LocaleCompare(encoding,"Wansung") == 0)
         encoding_type=ft_encoding_wansung;
+      status=FT_Select_Charmap(face,encoding_type);
+      if (status != 0)
+        ThrowBinaryException(DelegateError,"Unrecognized font encoding",
+          encoding);
     }
-  status=FT_Select_Charmap(face,encoding_type);
-  if (status != 0)
-    ThrowBinaryException(DelegateError,"Unrecognized font encoding",
-      encoding);
   /*
     Set text size.
   */
