@@ -530,17 +530,11 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 %  A description of each parameter follows.
 %
-%    o number_colors: Method GetNumberColors returns the number of unique
-%      colors in the specified image.
+%    o image: The image.
 %
-%    o image: The address of a byte (8 bits) array of run-length
-%      encoded pixel data of your source image.  The sum of the
-%      run-length counts in the source image must be equal to or exceed
-%      the number of pixels.
+%    o file:  Write a histogram of the color distribution to this file handle.
 %
-%    o file:  An pointer to a FILE.  If it is non-null a list of unique pixel
-%      field values and the number of times each occurs in the image is
-%      written to the file.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */

@@ -90,9 +90,32 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AnnotateImage annotates an image with text.  Optionally the
-%  annotation can include the image filename, type, width, height, or scene
-%  number by embedding special format characters (e.g. %f for image filename).
+%  AnnotateImage() annotates an image with text.  Optionally you can include
+%  any of the following bits of information about the image by embedding
+%  the appropriate special characters:
+%
+%    %b   file size in bytes.
+%    %c   comment.
+%    %d   directory in which the image resides.
+%    %e   extension of the image file.
+%    %f   original filename of the image.
+%    %h   height of image.
+%    %i   filename of the image.
+%    %k   number of unique colors.
+%    %l   image label.
+%    %m   image file format.
+%    %n   number of images in a image sequence.
+%    %o   output image filename.
+%    %p   page number of the image.
+%    %q   image depth (8 or 16).
+%    %p   page number of the image.
+%    %q   image depth (8 or 16).
+%    %s   image scene number.
+%    %t   image filename without any extension.
+%    %u   a unique temporary filename.
+%    %w   image width.
+%    %x   x resolution of the image.
+%    %y   y resolution of the image.
 %
 %  The format of the AnnotateImage method is:
 %
@@ -491,8 +514,8 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetTypeMetrics returns the following information for the specified
-%  font and text:
+%  GetTypeMetrics() returns the following information for the specified font
+%  and text:
 %
 %    o character width, expressed in integer pixels
 %    o character height, expressed in integer pixels
@@ -504,19 +527,16 @@ static unsigned short *ConvertTextToUnicode(const char *text,size_t *count)
 %
 %  The format of the GetTypeMetrics method is:
 %
-%      unsigned int GetTypeMetrics(Image *image,
-%        const DrawInfo *draw_info,TypeMetric *metrics)
+%      unsigned int GetTypeMetrics(Image *image,const DrawInfo *draw_info,
+%        TypeMetric *metrics)
 %
 %  A description of each parameter follows:
-%
-%    o status: Method GetTypeMetrics returns True if the metrics are
-%      available otherwise False.
 %
 %    o image: The image.
 %
 %    o draw_info: The draw info.
 %
-%    o metrics: Updated with font metrics.
+%    o metrics: Return the font metrics in this structure.
 %
 %
 */

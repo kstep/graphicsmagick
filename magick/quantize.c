@@ -775,8 +775,8 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CompressColormap compresses an image colormap removing any
-%  duplicate and unused color entries.
+%  CompressColormap() compresses an image colormap by removing any duplicate
+%  or unused color entries.
 %
 %  The format of the CompressColormap method is:
 %
