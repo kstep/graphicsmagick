@@ -524,7 +524,6 @@ int main(int argc,char **argv)
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing threshold",option);
                 }
-              SetCacheThreshold(atoi(argv[i]));
               break;
             }
           if (strncmp("colormap",option+1,6) == 0)

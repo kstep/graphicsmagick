@@ -99,6 +99,7 @@ typedef struct _CacheInfo
   Global declarations.
 */
 static size_t
+  cache_threshold = PixelCacheThreshold,
   free_memory = PixelCacheThreshold*1024*1024;
 
 /*
@@ -279,6 +280,37 @@ Export void GetCacheInfo(CacheHandle *cache_handle)
   cache_info->rows=0;
   cache_info->columns=0;
   *cache_handle=cache_info;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e T h e s h o l d                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheThreshold gets the amount of free memory allocated for the
+%  pixel cache.  Once this threshold is exceeded, all subsequent pixels cache
+%  operations are to/from disk.
+%
+%  The format of the GetCacheThreshold method is:
+%
+%      unsigned int GetCacheThreshold()
+%
+%  A description of each parameter follows:
+%
+%    o threshold: The number of megabytes of memory available to the pixel
+%      cache.
+%
+%
+*/
+Export unsigned int GetCacheThreshold()
+{
+  return(cache_threshold);
 }
 
 /*
@@ -685,7 +717,8 @@ Export void SetCacheClassType(CacheHandle cache_handle,ClassType type)
 */
 Export void SetCacheThreshold(unsigned int threshold)
 {
-  free_memory=threshold*1024*1024;
+  free_memory-=(cache_threshold-threshold)*1024*1024;
+  cache_threshold=threshold;
 }
 
 /*

@@ -487,7 +487,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     Write Info object.
   */
   object=0;
-  (void) strcpy(buffer,"%PDF-1.1 \n");
+  (void) strcpy(buffer,"%PDF-1.2 \n");
   (void) WriteBlob(image,strlen(buffer),buffer);
   xref[object++]=TellBlob(image);
   info_id=object;

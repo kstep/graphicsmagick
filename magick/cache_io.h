@@ -19,6 +19,7 @@ extern Export ClassType
   GetCacheClassType(CacheHandle);
 
 extern Export unsigned int
+  GetCacheThreshold(),
   InitializePixelCache(CacheHandle,ClassType,
     const unsigned int,const unsigned int),
   ReadCachePixels(CacheHandle,RectangleInfo *,PixelPacket *),
