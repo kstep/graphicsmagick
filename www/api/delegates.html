@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>delegates - Methods to Read/Write/Invoke Delegates</TITLE>
-<LINK REV="made" HREF="mailto:magick@mystic.es.dupont.com">
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.gif">
@@ -15,10 +15,11 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
 	<UL>
 
-		<LI><A HREF="#DestroyDelegates">DestroyDelegates</A>
+		<LI><A HREF="#DestroyDelegateInfo">DestroyDelegateInfo</A>
 		<LI><A HREF="#GetDelegateInfo">GetDelegateInfo</A>
 		<LI><A HREF="#GetDelegateCommand">GetDelegateCommand</A>
 		<LI><A HREF="#InvokeDelegate">InvokeDelegate</A>
+		<LI><A HREF="#ListDelegateInfo">ListDelegateInfo</A>
 		<LI><A HREF="#SetDelegateInfo">SetDelegateInfo</A>
 	</UL>
 
@@ -35,7 +36,7 @@ delegates - Methods to Read/Write/Invoke Delegates
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>DestroyDelegates</STRONG>(image_info)
+<STRONG>DestroyDelegateInfo</STRONG>(image_info)
 
 <P>
 command=<STRONG>GetDelegateCommand</STRONG>(image_info,image,decode_tag,encode_tag)
@@ -47,6 +48,9 @@ status=<STRONG>GetDelegateInfo</STRONG>(decode_tag,encode_tag,delegate_info)
 <STRONG>InvokeDelegate</STRONG>(image_info,image,decode_tag,encode_tag)
 
 <P>
+<STRONG>ListDelegateInfo</STRONG>(file)
+
+<P>
 delegate_info=<STRONG>SetDelegateInfo</STRONG>(delegate_info)
 
 <P>
@@ -54,16 +58,16 @@ delegate_info=<STRONG>SetDelegateInfo</STRONG>(delegate_info)
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
 <HR>
-<H2><A NAME="DestroyDelegates">DestroyDelegates</A></H2>
+<H2><A NAME="DestroyDelegateInfo">DestroyDelegateInfo</A></H2>
 <P>
-Method DestroyDelegates deallocates memory associated with the delegates
+Method DestroyDelegateInfo deallocates memory associated with the delegates
 list.
 
 <P>
-The format of the DestroyDelegates routine is:
+The format of the DestroyDelegateInfo routine is:
 
 <P>
-<PRE>        DestroyDelegates(image_info)
+<PRE>        DestroyDelegateInfo(image_info)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -174,6 +178,27 @@ The address of a structure of type ImageInfo.
 <DT><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ListDelegateInfo">ListDelegateInfo</A></H2>
+<P>
+Method ListDelegateInfo lists the image formats to a file.
+
+<P>
+The format of the ListDelegateInfo routine is:
+
+<P>
+<PRE>        ListDelegateInfo(file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>file:</STRONG><DD>
+<P>
+An pointer to a FILE.
 
 </DL></DL>
 <P>

@@ -18,7 +18,7 @@
 %                                 August 1996                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -471,7 +471,7 @@ Export void Hull(int x_offset,int y_offset,int polarity,unsigned int columns,
 Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
   AnnotateInfo *annotate_info,int x,int y,Image *image)
 {
-  float
+  double
     mid,
     slope,
     trix,
@@ -524,7 +524,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
                 (y >= (p->y-mid)) && (y < (p->y+mid));
             else
               {
-                slope=(float) (p->y-(p+1)->y)/(p->x-(p+1)->x);
+                slope=(double) (p->y-(p+1)->y)/(p->x-(p+1)->x);
                 trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
                 triy=slope*(trix-p->x)+p->y;
                 inside=(((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
@@ -602,7 +602,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
                 (y >= (p->y-mid)) && (y < (p->y+mid));
               continue;
             }
-          slope=(float) (p->y-(p+1)->y)/(p->x-(p+1)->x);
+          slope=(double) (p->y-(p+1)->y)/(p->x-(p+1)->x);
           trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
           triy=slope*(trix-p->x)+p->y;
           inside|=(((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
@@ -623,7 +623,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               (y >= (p->y-mid)) && (y < (p->y+mid));
           else
             {
-              slope=(float) (p->y-q->y)/(p->x-q->x);
+              slope=(double) (p->y-q->y)/(p->x-q->x);
               trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
               triy=slope*(trix-p->x)+p->y;
               inside=(((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
@@ -874,32 +874,36 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n t e r p o l a t e                                                     %
+%   I n t e r p o l a t e C o l o r                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Interpolate applies bi-linear interpolation between a pixel and
+%  Method InterpolateColor applies bi-linear interpolation between a pixel and
 %  it's neighbors.
 %
-%  The format of the Interpolate routine is:
+%  The format of the InterpolateColor routine is:
 %
-%      Interpolate(image,pixel,x,y)
+%      InterpolateColor(image,x,y)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image.
 %
-%    o pixel: A pointer to a RunlengthPacket representing the current pixel.
-%
 %    o x,y: A double representing the current (x,y) position of the pixel.
 %
 %
 */
-Export RunlengthPacket Interpolate(Image *image,RunlengthPacket *pixel,double x,
-  double y)
+Export ColorPacket InterpolateColor(Image *image,double x, double y)
 {
+  ColorPacket
+    interpolated_pixel;
+
+  double
+    alpha,
+    beta;
+
   register RunlengthPacket
     *p,
     *q,
@@ -907,35 +911,61 @@ Export RunlengthPacket Interpolate(Image *image,RunlengthPacket *pixel,double x,
     *s;
 
   RunlengthPacket
-    interpolated_pixel;
+    background_pixel;
 
   assert(image != (Image *) NULL);
-  assert(pixel != (RunlengthPacket *) NULL);
-  if ((x < 0) || (x >= image->columns) || (y < 0) || (y >= image->rows))
-    return(*pixel);
-  if (!UncondenseImage(image))
-    return(*pixel);
-  p=image->pixels+(int) y*image->columns+(int) x;
-  q=p+1;
-  if (q > (image->pixels+image->packets-1))
-    q=p;
-  r=p+image->columns;
-  if (r > (image->pixels+image->packets-1))
-    r=p;
-  s=q+image->columns;
-  if (s > (image->pixels+image->packets-1))
-    s=q;
-  x=fmod(x,1.0);
-  y=fmod(y,1.0);
+  if (image->packets != (image->columns*image->rows))
+    if (!UncondenseImage(image))
+      return(image->background_color);
+  if ((x < -1) || (x >= image->columns) || (y < -1) || (y >= image->rows))
+    return(image->background_color);
+  background_pixel.red=image->background_color.red;
+  background_pixel.green=image->background_color.green;
+  background_pixel.blue=image->background_color.blue;
+  background_pixel.index=image->background_color.index;
+  if ((x >= 0) && (y >= 0))
+    {
+      p=image->pixels+((int) y)*image->columns+(int) x;
+      q=p+1;
+      if ((x+1) >= image->columns)
+        q=(&background_pixel);
+      r=p+image->columns;
+      if ((y+1) >= image->rows)
+        r=(&background_pixel);
+      s=p+1+image->columns;
+      if (((x+1) >= image->columns) || ((y+1) >= image->rows))
+        s=(&background_pixel);
+    }
+  else
+    {
+      p=(&background_pixel);
+      q=(&background_pixel);
+      r=image->pixels+(int) x;
+      s=r+1;
+      if ((x >= -1) && (x < 0))
+        {
+          q=image->pixels+(int) y*image->columns;
+          r=(&background_pixel);
+          s=q+(int) image->columns;
+          if ((y >= -1) && (y < 0))
+            {
+              q=(&background_pixel);
+              s=image->pixels;
+            }
+        }
+    }
+  x-=floor(x);
+  y-=floor(y);
+  alpha=1.0-x;
+  beta=1.0-y;
   interpolated_pixel.red=(Quantum)
-    ((1.0-y)*((1.0-x)*p->red+x*q->red)+y*((1.0-x)*r->red+x*s->red));
+    (beta*(alpha*p->red+x*q->red)+y*(alpha*r->red+x*s->red));
   interpolated_pixel.green=(Quantum)
-    ((1.0-y)*((1.0-x)*p->green+x*q->green)+y*((1.0-x)*r->green+x*s->green));
+    (beta*(alpha*p->green+x*q->green)+y*(alpha*r->green+x*s->green));
   interpolated_pixel.blue=(Quantum)
-    ((1.0-y)*((1.0-x)*p->blue+x*q->blue)+y*((1.0-x)*r->blue+x*s->blue));
+    (beta*(alpha*p->blue+x*q->blue)+y*(alpha*r->blue+x*s->blue));
   interpolated_pixel.index=(unsigned short)
-    ((1.0-y)*((1.0-x)*p->index+x*q->index)+y*((1.0-x)*r->index+x*s->index));
-  interpolated_pixel.length=p->length;
+    (beta*(alpha*p->index+x*q->index)+y*(alpha*r->index+x*s->index));
   return(interpolated_pixel);
 }
 

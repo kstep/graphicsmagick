@@ -4,8 +4,8 @@
 extern Export Quantum
   GenerateNoise(Quantum,NoiseType);
    
-extern Export RunlengthPacket
-  Interpolate(Image *,RunlengthPacket *,double,double);
+extern Export ColorPacket
+  InterpolateColor(Image *,double,double);
 
 extern Export unsigned int
   InsidePrimitive(PrimitiveInfo *,AnnotateInfo *,int,int,Image *);

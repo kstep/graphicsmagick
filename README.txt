@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.5.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.6.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -83,8 +83,8 @@ UNIX COMPILATION
 
   Type:
 
-    gunzip ImageMagick-4.1.5.tar.gz
-    tar xvf ImageMagick-4.1.5.tar
+    gunzip ImageMagick-4.1.6.tar.gz
+    tar xvf ImageMagick-4.1.6.tar
     cd ImageMagick
 
   If you do not have gunzip(1), it is available as
@@ -495,6 +495,12 @@ MAGICK DELEGATES
 
           http://the-tech.mit.edu/KPT/
 
+    o ImageMagick requires an X server for display and animate to work
+      properly.  There is a free X server available for Windows and
+      Macintosh at
+
+	  http://www.microimages.com/freestuf/mix/
+
 
 HOW TO COMPILE
 
@@ -614,7 +620,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-4.1.5.zip
+      unzip ImageMagick-4.1.6.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::

@@ -19,7 +19,7 @@
 %                            September 1994                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -154,11 +154,11 @@ int main(int argc,char **argv)
   if (argc < 2)
     Usage(client_name);
   count=0;
+  GetImageInfo(&image_info);
   number_images=0;
   /*
     Identify an image.
   */
-  GetImageInfo(&image_info);
   (void) ExpandFilenames(&argc,&argv);
   for (i=1; i < argc; i++)
   {
@@ -258,7 +258,7 @@ int main(int argc,char **argv)
   }
   if (number_images == 0)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  DestroyDelegates;
+  DestroyDelegateInfo;
   Exit(0);
   return(False);
 }

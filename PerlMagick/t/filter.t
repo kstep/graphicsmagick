@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..40\n"; }
+BEGIN { $| = 1; $test=1, print "1..39\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -135,7 +135,7 @@ testFilter('input.miff', 'Opaque',
 ++$test;
 testFilter('input.miff', 'Quantize',
   q/128/,
-  '817354c4d53baba4a17a44bf282d592b');
+  '352b0481cecacb8bcbe1eaf46eea8126');
 
 ++$test;
 testFilter('input.miff', 'Raise',
@@ -165,7 +165,7 @@ testFilter('input.miff', 'Scale',
 ++$test;
 testFilter('input.miff', 'Segment',
   q/1/,
-  '492cfb48dd301a0dad2cbf79afea916c');
+  'b159206bc65c655d6760b137025b8bd8');
 
 ++$test;
 testFilter('input.miff', 'Shade',
@@ -201,11 +201,6 @@ testFilter('input.miff', 'Threshold',
 testFilter('input.miff', 'Trim',
   q/ /,
   '7785d161ea66bd39394bb74ef704a0aa');
-
-++$test;
-testFilter('input.miff', 'Wave',
-  q/30x30/,
-  '8deef5668bd2dc3d6e49b31f0b248b42');
 
 ++$test;
 testFilter('input.miff', 'Zoom',

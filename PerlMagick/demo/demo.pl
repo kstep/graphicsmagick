@@ -183,7 +183,7 @@ $example->Swirl(90);
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Wave');
-$example->Wave(10);
+$example->Wave('10x30');
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Zoom');

@@ -18,7 +18,7 @@
 %                                  July 1992                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -722,15 +722,18 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
   unsigned int number_colors,XColor *color)
 {
   double
-    distance_squared,
     min_distance;
 
   int
-    distance,
+    mean,
     query_server,
     status;
 
+  register double
+    distance_squared;
+
   register int
+    distance,
     i,
     j;
 
@@ -766,12 +769,15 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
   j=0;
   for (i=0; i < number_colors; i++)
   {
+    mean=(colors[i].red+color->red)/2;
     distance=(int) colors[i].red-(int) color->red;
-    distance_squared=(unsigned int) (distance*distance);
+    distance_squared=(unsigned int)
+      (((2*(MaxRGB+1))+mean)*distance*distance) >> QuantumDepth;
     distance=(int) colors[i].green-(int) color->green;
-    distance_squared+=(unsigned int) (distance*distance);
+    distance_squared+=(unsigned int) (4*distance*distance);
     distance=(int) colors[i].blue-(int) color->blue;
-    distance_squared+=(unsigned int) (distance*distance);
+    distance_squared+=(unsigned int)
+      (((3*(MaxRGB+1)-1)-mean)*distance*distance) >> QuantumDepth;
     if (distance_squared < min_distance)
       {
         min_distance=distance_squared;
@@ -3552,7 +3558,7 @@ Export char *XGetScreenDensity(Display *display)
     density[MaxTextExtent],
     geometry[MaxTextExtent];
 
-  float
+  double
     x_density,
     y_density;
 
@@ -3568,7 +3574,7 @@ Export char *XGetScreenDensity(Display *display)
     Set density as determined by screen size.
   */
   (void) strcpy(density,PSDensityGeometry);
-  (void) sscanf(density,"%fx%f",&x_density,&y_density);
+  (void) sscanf(density,"%lfx%lf",&x_density,&y_density);
   (void) strcpy(geometry,PSPageGeometry);
   (void) strcat(geometry,"~");
   width=XDisplayWidth(display,XDefaultScreen(display));

@@ -19,7 +19,7 @@
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -55,11 +55,6 @@
 */
 #include "magick.h"
 #include "Colorlist.h"
-/*
-  Define declarations.
-*/
-#define MaxTreeDepth  8
-#define NodesInAList  2048
 
 /*
   Structures.
@@ -313,9 +308,6 @@ Export unsigned int IsPseudoClass(Image *image)
   CubeInfo
     color_cube;
 
-  NodeInfo
-    *node_info;
-
   Nodes
     *nodes;
 
@@ -323,13 +315,18 @@ Export unsigned int IsPseudoClass(Image *image)
     i,
     j;
 
+  register NodeInfo
+    *node_info;
+
   register RunlengthPacket
     *p;
 
   register unsigned int
-    id,
     index,
     level;
+
+  unsigned int
+    id;
 
   assert(image != (Image *) NULL);
   if ((image->class == PseudoClass) && (image->colors <= 256))
@@ -470,8 +467,13 @@ Export unsigned int IsPseudoClass(Image *image)
 Export unsigned int QueryColorName(ColorPacket *color,char *name)
 {
   double
-    distance_squared,
     min_distance;
+
+  int
+    mean;
+
+  register double
+    distance_squared;
 
   register int
     distance;
@@ -483,12 +485,15 @@ Export unsigned int QueryColorName(ColorPacket *color,char *name)
   min_distance=3.0*65536.0*65536.0;
   for (p=Colorlist; p->name != (char *) NULL; p++)
   {
+    mean=(DownScale(color->red)+(int) p->red)/2;
     distance=(int) DownScale(color->red)-(int) p->red;
-    distance_squared=distance*distance;
+    distance_squared=
+      (((2*(MaxRGB+1))+mean)*distance*distance) >> 8;
     distance=(int) DownScale(color->green)-(int) p->green;
-    distance_squared+=distance*distance;
+    distance_squared+=4*distance*distance;
     distance=(int) DownScale(color->blue)-(int) p->blue;
-    distance_squared+=distance*distance;
+    distance_squared+=
+      (((3*(MaxRGB+1)-1)-mean)*distance*distance) >> 8;
     if (distance_squared < min_distance)
       {
         min_distance=distance_squared;

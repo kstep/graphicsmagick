@@ -8,7 +8,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 
-BEGIN { $| = 1; $test=1; print "1..35\n"; }
+BEGIN { $| = 1; $test=1; print "1..34\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -326,16 +326,6 @@ testReadWriteSized( 'UYVY:input_70x46.uyvy',
 		    '70x46',
 		    q//,
 		    'b063c2f7ad1a48a58d3f80291b780180' );
-
-#
-# YUV format
-#
-++$test;
-testReadWriteSized( 'YUV:input_70x46.yuv',
-		    'YUV:output_70x46.yuv',
-		    '70x46',
-		    q//,
-		    'c14b9bfbfba0105196ce2cccda7405ce' );
 
 
 1;

@@ -5,9 +5,9 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'	=> 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'	=> ['-L/usr/local/lib -L/usr/openwin/lib -R/usr/openwin/lib -L/usr/local/lib -lMagick  -ldpstk -ldps -lXext -lXt -lX11 -lsocket -lnsl -lm'],
+    'LIBS'	=> ['-L/usr/local/lib -L/usr/openwin/lib -R/usr/openwin/lib -L/usr/local/lib -L/usr/local/lib -lMagick  -lX11 -lsocket -lnsl -lXext -lXt -ldpstk -ldps -lm'],
     'DEFINE'	=> '',     # e.g., '-DHAVE_SOMETHING' 
-    'INC'	=> '-I../magick -I/usr/local/include -I/usr/openwin/include -I/usr/openwin/include/X11',
+    'INC'	=> '-I../magick -I/usr/local/include/magick -I/usr/openwin/include -I/usr/openwin/include/X11',
 );
 
 #
@@ -40,7 +40,7 @@ sub MY::test
    #
    # e.g. my @DELEGATES = qw/jpeg tiff/;
    #
-   my @DELEGATES = qw/ cgm hpgl mpeg ps rad x xfig/;
+   my @DELEGATES = qw/ /;
 
    package MY; # so that "SUPER" works right
    my $inherited = shift->SUPER::test(@_);

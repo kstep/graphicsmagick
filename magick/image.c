@@ -18,7 +18,7 @@
 %                                  July 1992                                  %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -235,7 +235,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
       int
         count;
 
-      count=sscanf(image_info->density,"%fx%f",&allocated_image->x_resolution,
+      count=sscanf(image_info->density,"%lfx%lf",&allocated_image->x_resolution,
         &allocated_image->y_resolution);
       if (count != 2)
         allocated_image->y_resolution=allocated_image->x_resolution;
@@ -1854,11 +1854,14 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
     }
     case DisplaceCompositeOp:
     {
+      ColorPacket
+        interpolated_color;
+
       double
         x_displace,
         y_displace;
 
-      float
+      double
         horizontal_scale,
         vertical_scale;
 
@@ -1891,7 +1894,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           /*
             Determine the horizontal and vertical displacement scale.
           */
-          count=sscanf(composite_image->geometry,"%fx%f\n",
+          count=sscanf(composite_image->geometry,"%lfx%lf\n",
             &horizontal_scale,&vertical_scale);
           if (count == 1)
             vertical_scale=horizontal_scale;
@@ -1921,13 +1924,18 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               q++;
               continue;
             }
-          x_displace=(horizontal_scale*((float) Intensity(*p)-
+          x_displace=(horizontal_scale*((double) Intensity(*p)-
             ((MaxRGB+1) >> 1)))/((MaxRGB+1) >> 1);
           y_displace=x_displace;
           if (composite_image->matte)
-            y_displace=(vertical_scale*((float) p->index-
+            y_displace=(vertical_scale*((double) p->index-
               ((MaxRGB+1) >> 1)))/((MaxRGB+1) >> 1);
-          *r=Interpolate(image,q,x_offset+x+x_displace,y_offset+y+y_displace);
+          interpolated_color=
+            InterpolateColor(image,x_offset+x+x_displace,y_offset+y+y_displace);
+          r->red=interpolated_color.red;
+          r->green=interpolated_color.green;
+          r->blue=interpolated_color.blue;
+          r->index=interpolated_color.index;
           r->length=0;
           q++;
           r++;
@@ -4773,7 +4781,6 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
   annotate_info->bounds.height=annotate_info->pointsize;
   annotate_info->bounds.x=0;
   annotate_info->bounds.y=0;
-  setlocale(LC_ALL,"");
   if (annotate_info->font == (char *) NULL)
     return;
   /*
@@ -4929,7 +4936,7 @@ Export void GetMontageInfo(MontageInfo *montage_info)
 */
 Export unsigned int IsGeometry(char *geometry)
 {
-  float
+  double
     value;
 
   int
@@ -6975,7 +6982,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (strncmp("-segment",option,4) == 0)
       {
-        float
+        double
           cluster_threshold,
           smoothing_threshold;
 
@@ -6984,7 +6991,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
         */
         cluster_threshold=1.0;
         smoothing_threshold=1.5;
-        (void) sscanf(argv[++i],"%fx%f",&cluster_threshold,
+        (void) sscanf(argv[++i],"%lfx%lf",&cluster_threshold,
           &smoothing_threshold);
         (void) SegmentImage(*image,quantize_info.colorspace,image_info->verbose,
           (double) cluster_threshold,(double) smoothing_threshold);
@@ -6993,7 +7000,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (strncmp("shade",option+1,5) == 0)
       {
-        float
+        double
           azimuth,
           elevation;
 
@@ -7006,7 +7013,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
         azimuth=30.0;
         elevation=30.0;
         if (*option == '-')
-          (void) sscanf(argv[++i],"%fx%f",&azimuth,&elevation);
+          (void) sscanf(argv[++i],"%lfx%lf",&azimuth,&elevation);
         shaded_image=ShadeImage(*image,*option == '-',(double) azimuth,
           (double) elevation);
         if (shaded_image != (Image *) NULL)
@@ -7038,7 +7045,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (strncmp("-shear",option,4) == 0)
       {
-        float
+        double
           x_shear,
           y_shear;
 
@@ -7050,7 +7057,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
         */
         x_shear=0.0;
         y_shear=0.0;
-        (void) sscanf(argv[++i],"%fx%f",&x_shear,&y_shear);
+        (void) sscanf(argv[++i],"%lfx%lf",&x_shear,&y_shear);
         sheared_image=
           ShearImage(*image,(double) x_shear,(double) y_shear,False);
         if (sheared_image != (Image *) NULL)
@@ -7130,7 +7137,7 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
       }
     if (Latin1Compare("wave",option+1) == 0)
       {
-        float
+        double
           amplitude,
           wavelength;
 
@@ -7141,9 +7148,9 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
           Wave image.
         */
         amplitude=10.0;
-        wavelength=10.0;
+        wavelength=30.0;
         if (*option == '-')
-          (void) sscanf(argv[++i],"%fx%f",&amplitude,&wavelength);
+          (void) sscanf(argv[++i],"%lfx%lf",&amplitude,&wavelength);
         waved_image=WaveImage(*image,(double) amplitude,(double) wavelength);
         if (waved_image != (Image *) NULL)
           {
@@ -7368,6 +7375,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
 
   Image
     **images,
+    **masterlist,
     *montage_image,
     *tile_image;
 
@@ -7426,6 +7434,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
         "Memory allocation failed");
       return((Image *) NULL);
     }
+  masterlist=images;
   /*
     Create image tiles.
   */
@@ -7729,7 +7738,9 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
               border_info.width=(width-image->columns+1) >> 1;
               border_info.height=(height-image->rows+1) >> 1;
             }
+          image->orphan=True;
           bordered_image=BorderImage(image,&border_info);
+          image->orphan=False;
           if (bordered_image != (Image *) NULL)
             {
               DestroyImage(image);
@@ -7814,7 +7825,9 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
           tile_info.width=width+(frame_info.width << 1);
           tile_info.height=height+(frame_info.height << 1)+(font_height+4)*
             MultilineCensus(image->label);
+          image->orphan=True;
           framed_image=FrameImage(image,&tile_info);
+          image->orphan=False;
           if (framed_image != (Image *) NULL)
             {
               DestroyImage(image);
@@ -7914,7 +7927,7 @@ Export Image *MontageImages(Image *image,MontageInfo *montage_info)
         number_images-=tiles_per_page;
       }
   }
-  FreeMemory((char *) images);
+  FreeMemory((char *) masterlist);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;
   return(montage_image);
@@ -8739,7 +8752,7 @@ Export int ParseImageGeometry(char *image_geometry,int *x, int *y,
       int
         count;
 
-      float
+      double
         x_scale,
         y_scale;
 
@@ -8748,7 +8761,7 @@ Export int ParseImageGeometry(char *image_geometry,int *x, int *y,
       */
       x_scale=(*width);
       y_scale=(*height);
-      count=sscanf(geometry,"%fx%f",&x_scale,&y_scale);
+      count=sscanf(geometry,"%lfx%lf",&x_scale,&y_scale);
       if (count == 1)
         y_scale=x_scale;
       *width=Max((unsigned int) ((x_scale*former_width)/100.0),1);

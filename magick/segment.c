@@ -18,7 +18,7 @@
 %                                April 1993                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -121,14 +121,14 @@ typedef struct _ExtentPacket
 
 typedef struct _IntervalTree
 {
-  float
+  double
     tau;
 
   int
     left,
     right;
 
-  float
+  double
     mean_stability,
     stability;
 
@@ -139,7 +139,7 @@ typedef struct _IntervalTree
 
 typedef struct _ZeroCrossing
 {
-  float
+  double
     tau,
     histogram[MaxRGB+1];
 
@@ -154,8 +154,8 @@ static int
   DefineRegion(const short *,ExtentPacket *);
 
 static void
-  ScaleSpace(const long *,const double,float *),
-  ZeroCrossHistogram(float *,const double,short *);
+  ScaleSpace(const long *,const double,double *),
+  ZeroCrossHistogram(double *,const double,short *);
 
 /*
   Global declarations.
@@ -195,7 +195,7 @@ static IntervalTree
 %      represent the peaks and valleys of the histogram for each color
 %      component.
 %
-%    o cluster_threshold:  This float represents the minimum number of pixels
+%    o cluster_threshold:  This double represents the minimum number of pixels
 %      contained in a hexahedra before it can be considered valid (expressed
 %      as a percentage).
 %
@@ -238,7 +238,6 @@ static unsigned int Classify(Image *image,short **extrema,
     *colormap;
 
   double
-    distance_squared,
     local_minima,
     numerator,
     ratio,
@@ -250,10 +249,14 @@ static unsigned int Classify(Image *image,short **extrema,
     red;
 
   int
-    distance,
-    count;
+    count,
+    mean;
+
+  register double
+    distance_squared;
 
   register int
+    distance,
     i,
     j,
     k;
@@ -513,21 +516,27 @@ static unsigned int Classify(Image *image,short **extrema,
         for (j=0; j < image->colors; j++)
         {
           sum=0.0;
-          distance=image->colormap[j].red-(int) q->red;
-          distance_squared=squares[distance];
-          distance=image->colormap[j].green-(int) q->green;
-          distance_squared+=squares[distance];
-          distance=image->colormap[j].blue-(int) q->blue;
-          distance_squared+=squares[distance];
+          mean=(q->red+image->colormap[j].red)/2;
+          distance=(int) q->red-(int) image->colormap[j].red;
+          distance_squared=
+            (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth;
+          distance=(int) q->green-(int) image->colormap[j].green;
+          distance_squared+=4*squares[distance];
+          distance=(int) q->blue-(int) image->colormap[j].blue;
+          distance_squared+=
+            (((3*(MaxRGB+1)-1)-mean)*squares[distance]) >> QuantumDepth;
           numerator=sqrt(distance_squared);
           for (k=0; k < image->colors; k++)
           {
-            distance=image->colormap[k].red-(int) q->red;
-            distance_squared=squares[distance];
-            distance=image->colormap[k].green-(int) q->green;
-            distance_squared+=squares[distance];
-            distance=image->colormap[k].blue-(int) q->blue;
-            distance_squared+=squares[distance];
+            mean=(q->red+image->colormap[k].red)/2;
+            distance=(int) q->red-(int) image->colormap[k].red;
+            distance_squared=
+              (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth;
+            distance=(int) q->green-(int) image->colormap[k].green;
+            distance_squared+=4*squares[distance];
+            distance=(int) q->blue-(int) image->colormap[k].blue;
+            distance_squared+=
+              (((3*(MaxRGB+1)-1)-mean)*squares[distance]) >> QuantumDepth;
             ratio=numerator/sqrt(distance_squared);
             sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
           }
@@ -757,15 +766,15 @@ static int DefineRegion(const short *extrema,ExtentPacket *extents)
 %
 %  A description of each parameter follows.
 %
-%    o histogram: Specifies an array of floats representing the number of
+%    o histogram: Specifies an array of doubles representing the number of
 %      pixels for each intensity of a paritcular color component.
 %
-%    o derivative: This array of floats is initialized by DerivativeHistogram
+%    o derivative: This array of doubles is initialized by DerivativeHistogram
 %      to the derivative of the histogram using centeral differencing.
 %
 %
 */
-static void DerivativeHistogram(const float *histogram,float *derivative)
+static void DerivativeHistogram(const double *histogram,double *derivative)
 {
   register int
     i,
@@ -1064,7 +1073,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
   const double min_tau,const double delta_tau,const double smoothing_threshold,
   short *extrema)
 {
-  float
+  double
     average_tau,
     derivative[MaxRGB+1],
     second_derivative[MaxRGB+1],
@@ -1212,7 +1221,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
   average_tau=0.0;
   for (i=0; i < number_nodes; i++)
     average_tau+=list[i]->tau;
-  average_tau/=(float) number_nodes;
+  average_tau/=(double) number_nodes;
   /*
     Free memory.
   */
@@ -1241,15 +1250,15 @@ static double OptimalTau(const long *histogram,const double max_tau,
 %
 %  A description of each parameter follows.
 %
-%    o histogram: Specifies an array of floats representing the number of
+%    o histogram: Specifies an array of doubles representing the number of
 %      pixels for each intensity of a paritcular color component.
 %
 %
 */
 static void ScaleSpace(const long *histogram,const double tau,
-  float *scaled_histogram)
+  double *scaled_histogram)
 {
-  float
+  double
     alpha,
     beta;
 
@@ -1293,7 +1302,7 @@ static void ScaleSpace(const long *histogram,const double tau,
 %
 %  A description of each parameter follows.
 %
-%    o second_derivative: Specifies an array of floats representing the
+%    o second_derivative: Specifies an array of doubles representing the
 %      second derivative of the histogram of a particular color component.
 %
 %    o crossings:  This array of shortegers is initialized with
@@ -1302,7 +1311,7 @@ static void ScaleSpace(const long *histogram,const double tau,
 %
 %
 */
-static void ZeroCrossHistogram(float *second_derivative,
+static void ZeroCrossHistogram(double *second_derivative,
   const double smoothing_threshold,short *crossings)
 {
   int

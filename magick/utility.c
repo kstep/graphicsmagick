@@ -18,7 +18,7 @@
 %                              January 1993                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -2108,7 +2108,10 @@ Export char *SetClientName(const char *name)
     client_name[MaxTextExtent] = "Magick";
 
   if (name != (char *) NULL)
-    (void) strcpy(client_name,BaseFilename(name));
+    {
+      (void) strcpy(client_name,BaseFilename(name));
+      setlocale(LC_ALL,"");
+    }
   return(client_name);
 }
 

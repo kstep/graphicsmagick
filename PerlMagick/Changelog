@@ -1,5 +1,8 @@
 Revision history for Perl extension Image::Magick.
 
+1.55 Tue Jan 01 1999
+        - Minor changes to regression tests to match changes in the
+          ImageMagick library.
 1.54 Tue Dec 01 1998
  	- Changed XMontageImages method to MontageImages method.
 1.53 Tue Nov 20 1998

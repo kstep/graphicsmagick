@@ -5,7 +5,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..45\n"; }
+BEGIN { $| = 1; $test=1; print "1..44\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -282,11 +282,3 @@ testReadSized( 'input_70x46.cmyk', '70x46', 'e9b162b8431709942886f79b7b7c11bb' )
 #
 ++$test;
 testReadSized( 'input_70x46.uyvy', '70x46', 'ed295a710186b6853c6ad587f8a01b7e' );
-
-#
-# YUV CCIR 601 4:1:1 file
-#
-++$test;
-testReadSized( 'input_70x46.yuv', '70x46', 'eeaff40e9ef6c843d63e93c3c6a111d4' );
-
-

@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>X - X11 Utility Methods for ImageMagick</TITLE>
-<LINK REV="made" HREF="mailto:magick@mystic.es.dupont.com">
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.gif">
@@ -36,7 +36,6 @@
 		<LI><A HREF="#XGetAnnotateInfo">XGetAnnotateInfo</A>
 		<LI><A HREF="#XGetMapInfo">XGetMapInfo</A>
 		<LI><A HREF="#XGetImageInfo">XGetImageInfo</A>
-		<LI><A HREF="#XGetMontageInfo">XGetMontageInfo</A>
 		<LI><A HREF="#XGetPixelInfo">XGetPixelInfo</A>
 		<LI><A HREF="#XGetResourceClass">XGetResourceClass</A>
 		<LI><A HREF="#XGetResourceDatabase">XGetResourceDatabase</A>
@@ -58,7 +57,6 @@
 		<LI><A HREF="#XMakePixmap">XMakePixmap</A>
 		<LI><A HREF="#XMakeStandardColormap">XMakeStandardColormap</A>
 		<LI><A HREF="#XMakeWindow">XMakeWindow</A>
-		<LI><A HREF="#XMontageImage">XMontageImage</A>
 		<LI><A HREF="#XProgressMonitor">XProgressMonitor</A>
 		<LI><A HREF="#XQueryColorDatabase">XQueryColorDatabase</A>
 		<LI><A HREF="#XQueryPosition">XQueryPosition</A>
@@ -145,9 +143,6 @@ status=<STRONG>XDrawImage</STRONG>(display,pixel_info,draw_info,image)
 
 <P>
 <STRONG>XGetMapInfo</STRONG>(visual_info,colormap,map_info)
-
-<P>
-<STRONG>XGetMontageInfo</STRONG>(montage_info)
 
 <P>
 value=<STRONG>XGetResourceClass</STRONG>(database,client_name,keyword,resource_default)
@@ -944,27 +939,6 @@ Specifies a pointer to a ImageInfo structure.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="XGetMontageInfo">XGetMontageInfo</A></H2>
-<P>
-Method XGetMontageInfo initializes the MontageInfo structure.
-
-<P>
-The format of the GetMontageInfo routine is:
-
-<P>
-<PRE>        XGetMontageInfo(montage_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>montage_info:</STRONG><DD>
-<P>
-Specifies a pointer to a MontageInfo structure.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="XGetPixelInfo">XGetPixelInfo</A></H2>
 <P>
 Method XGetPixelInfo initializes the PixelInfo structure.
@@ -1739,36 +1713,6 @@ Specifies a pointer to a X11 XWMHints structure.
 <DT><STRONG>window_info:</STRONG><DD>
 <P>
 Specifies a pointer to a X11 XWindowInfo structure.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="XMontageImage">XMontageImage</A></H2>
-<P>
-Method XMontageImages creates a composite image by combining several
-separate images.
-
-<P>
-The format of the MontageImages routine is:
-
-<P>
-<PRE>    XMontageImages(image_info,montage_info,image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to a ImageInfo structure.
-
-<DT><STRONG>montage_info:</STRONG><DD>
-<P>
-Specifies a pointer to a XMontageInfo structure.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-Specifies a pointer to an array of Image structures.
 
 </DL></DL>
 <P>

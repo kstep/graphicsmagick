@@ -44,8 +44,8 @@
 # not.
 # 
 # If you use a less-equal-greater sign (<=>) the delegate bypasses
-# ImageMagick and directly converts the image file (this assumes you do not
-# apply any image transforms such as sizing or rotation).
+# ImageMagick and directly converts the image file if it is untainted
+# (no image manipulations such as resize or rotation).
 # 
 # Lines that begin with a pound sign (#) are comments and are ignored.
 # 
@@ -87,11 +87,13 @@ bzip=>
 
 cgm=>
 	ralcgm -d ps %i %o %u
-	mv %o.ps %o
-	rm -f %u
+	convert -concatenate %o*.ps %o
 
 compress=>
 	|uncompress -c %i
+
+dot=>
+	dot -Tps %i -o %o 
 
 dvi=>
 	dvips -q -o %o %i
@@ -121,7 +123,6 @@ ftp=>
 gplt=>
 	echo "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
 	gnuplot %u
-	rm -f %u
 
 gs-color=>
 	gs -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
@@ -134,7 +135,8 @@ gs-mono=>
 	  -sOutputFile="%s" -- "%s" -c quit
 
 hpgl=>
-	hp2xx -q -m eps -f %i %o
+	hp2xx -q -m eps -f `basename %o` %i
+	mv `basename %o` %o
 
 htm=>
 	html2ps -o %o %i
@@ -145,15 +147,16 @@ html=>
 http=>
 	GET %m:%i > %o 2>&1
 
+man=>
+	groff -man -Tps %i > %o
+
 mpg=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
-	rm -f %o*.ppm
 
 m2v=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
-	rm -f %o*.ppm
 
 pdf<=>eps
 	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
@@ -174,8 +177,7 @@ pnm<=win
 
 pov=>
 	povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
-	convert %o*.png %o
-	rm -f %o*.png
+	convert -concatenate %o*.png %o
 
 ps<=>eps
 	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
@@ -186,7 +188,7 @@ ps<=>pdf
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=print
-	lp -c -s %i
+	/usr/bin/lp -c -s %i
 
 rad=>
 	ra_ppm -g 1.0 %i %o
@@ -203,11 +205,11 @@ shtml=>
 
 yuv<=m2v
 	mpeg2encode %u %o
-	rm -f %i*.yuv %u*
+	convert -concatenate %i*.yuv %u
 
 yuv<=mpg
 	mpeg2encode %u %o
-	rm -f %i*.yuv %u*
+	convert -concatenate %i*.yuv %u
 
 zip=>
 	|gzip -cdfq %i

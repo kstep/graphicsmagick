@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>encode - Methods to Write Image Formats</TITLE>
-<LINK REV="made" HREF="mailto:magick@mystic.es.dupont.com">
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.gif">
@@ -30,8 +30,10 @@
 		<LI><A HREF="#WriteJBIGImage">WriteJBIGImage</A>
 		<LI><A HREF="#WriteJPEGImage">WriteJPEGImage</A>
 		<LI><A HREF="#WriteICCImage">WriteICCImage</A>
+		<LI><A HREF="#WriteIPTCImage">WriteIPTCImage</A>
 		<LI><A HREF="#WriteLOGOImage">WriteLOGOImage</A>
 		<LI><A HREF="#WriteMAPImage">WriteMAPImage</A>
+		<LI><A HREF="#WriteMATTEImage">WriteMATTEImage</A>
 		<LI><A HREF="#WriteMIFFImage">WriteMIFFImage</A>
 		<LI><A HREF="#WriteMONOImage">WriteMONOImage</A>
 		<LI><A HREF="#WriteMTVImage">WriteMTVImage</A>
@@ -115,6 +117,9 @@ status=<STRONG>WriteHTMLImage</STRONG>(image_info,image)
 status=<STRONG>WriteICCImage</STRONG>(image_info,image)
 
 <P>
+status=<STRONG>WriteIPTCImage</STRONG>(image_info,image)
+
+<P>
 status=<STRONG>WriteImage</STRONG>(image_info,image)
 
 <P>
@@ -128,6 +133,9 @@ status=<STRONG>WriteLOGOImage</STRONG>(image_info,image)
 
 <P>
 status=<STRONG>WriteMAPImage</STRONG>(image_info,image)
+
+<P>
+status=<STRONG>WriteMATTEImage</STRONG>(image_info,image)
 
 <P>
 status=<STRONG>WriteMIFFImage</STRONG>(image_info,image)
@@ -691,6 +699,36 @@ A pointer to a Image structure.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="WriteIPTCImage">WriteIPTCImage</A></H2>
+<P>
+Method WriteIPTCImage writes an image in the IPTC format.
+
+<P>
+The format of the WriteIPTCImage routine is:
+
+<P>
+<PRE>        status=WriteIPTCImage(image_info,image)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method WriteIPTCImage return True if the image is written. False is
+returned is there is a memory shortage or if the image file fails to write.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+A pointer to a Image structure.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="WriteLOGOImage">WriteLOGOImage</A></H2>
 <P>
 Method WriteLOGOImage writes an image in the LOGO encoded image format. We
@@ -742,6 +780,37 @@ A description of each parameter follows.
 <P>
 Method WriteMAPImage return True if the image is written. False is returned
 is there is a memory shortage or if the image file fails to write.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+A pointer to a Image structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="WriteMATTEImage">WriteMATTEImage</A></H2>
+<P>
+Function WriteMATTEImage writes an image of matte bytes to a file. It
+consists of data from the matte component of the image [0..255].
+
+<P>
+The format of the WriteMATTEImage routine is:
+
+<P>
+<PRE>        status=WriteMATTEImage(image_info,image)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Function WriteMATTEImage return True if the image is written. False is
+returned is there is a memory shortage or if the image file fails to write.
 
 <DT><STRONG>image_info:</STRONG><DD>
 <P>

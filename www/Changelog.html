@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE>ImageMagick Changelog</TITLE>
 <LINK rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.1.5, is a package for
+<meta name="description" content="ImageMagick, version 4.1.6, is a package for
   display and interactive manipulation of images for the X Window System. It
   is written in C and interfaces to the X library, and therefore does not
   require any proprietary toolkit in order to compile.  Although the software
@@ -20,8 +20,16 @@
 <pre>
  
 </pre>
-<h3><A HREF="../ImageMagick.html">ImageMagick</A> 4.1.5, December 1, 1998</h3>
+<h3><A HREF="../ImageMagick.html">ImageMagick</A> 4.1.6, January 1, 1999</h3>
 <ul>
+<li> Odd size widths or height now work properly when encoding MPEG.
+<p>
+<li> Montage was sometimes freeing the wrong location causing a memory fault.
+<p>
+<p>
+<li> Improved ImplodeImage, WaveImage, and SwirlImage methods
+(source patches by <a href="mailto:rmabry@server1.softdisk.com">Rick Mabry</a>).
+<p>
 <li> Added pyramid-encoded TIFF (i.e. <tt>convert image.jpg
 ptif:image.tif[64x64]</tt>).
 Source patches by Keith Trummel, Island Graphics.

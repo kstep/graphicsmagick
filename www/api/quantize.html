@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>quantize - Methods to Reduce the Number of Unique Colors in an Image</TITLE>
-<LINK REV="made" HREF="mailto:magick@mystic.es.dupont.com">
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.gif">
@@ -15,6 +15,7 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
 	<UL>
 
+		<LI><A HREF="#DestroyCubeInfo">DestroyCubeInfo</A>
 		<LI><A HREF="#GetQuantizeInfo">GetQuantizeInfo</A>
 		<LI><A HREF="#MapImage">MapImage</A>
 		<LI><A HREF="#MapImages">MapImages</A>
@@ -35,6 +36,9 @@ quantize - Methods to Reduce the Number of Unique Colors in an Image
 <P>
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<STRONG>DestroyCubeInfo</STRONG>(cube_info))
+
 <P>
 <STRONG>GetQuantizeInfo</STRONG>(quantize_info)
 
@@ -58,6 +62,27 @@ status=<STRONG>QuantizeImages</STRONG>(quantize_info,number_images,images)
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
 <HR>
+<H2><A NAME="DestroyCubeInfo">DestroyCubeInfo</A></H2>
+<P>
+Method DestroyCubeInfo deallocates memory associated with an image.
+
+<P>
+The format of the DestroyCubeInfo routine is:
+
+<P>
+<PRE>        DestroyCubeInfo(cube_info))
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">cube_info:</A></STRONG><DD>
+<P>
+The address of a structure of type CubeInfo.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="GetQuantizeInfo">GetQuantizeInfo</A></H2>
 <P>
 Method GetQuantizeInfo initializes the QuantizeInfo structure.
@@ -72,7 +97,7 @@ The format of the GetQuantizeInfo routine is:
 A description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">quantize_info:</A></STRONG><DD>
+<DT><STRONG>quantize_info:</STRONG><DD>
 <P>
 Specifies a pointer to a MontageInfo structure.
 

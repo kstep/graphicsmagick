@@ -93,6 +93,7 @@ extern "C" {
 #include "config.h"
 #endif
 #include "image.h"
+#include "quantize.h"
 #include "gems.h"
 #include "compress.h"
 #include "utility.h"

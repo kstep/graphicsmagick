@@ -1,4 +1,14 @@
 /*
+  ImageMagick Quantization declarations.
+*/
+#ifndef _IMAGE_H
+#define _IMAGE_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+/*
   Image define declarations.
 */
 #define ColorMatch(color,target,delta) \
@@ -314,14 +324,14 @@ typedef struct _ColorPacket
     green,
     blue;
 
+  unsigned short
+    index;
+
   unsigned char
     flags;
 
   char
     key[3];
-
-  unsigned short
-    index;
 
   unsigned long
     count;
@@ -485,17 +495,6 @@ typedef struct _PrimitiveInfo
     *text;
 } PrimitiveInfo;
 
-typedef struct _QuantizeInfo
-{
-  unsigned int
-    number_colors,
-    tree_depth,
-    dither;
-
-  ColorspaceType
-    colorspace;
-} QuantizeInfo;
-
 typedef struct _RectangleInfo
 {
   unsigned int
@@ -657,7 +656,7 @@ typedef struct _Image
   ResolutionType
     units;
 
-  float
+  double
     x_resolution,
     y_resolution;
 
@@ -725,7 +724,7 @@ typedef struct _Image
 } Image;
 
 /*
-  Image utilities mathods.
+  Image utilities methods.
 */
 extern Export Image
   *AddNoiseImage(Image *,NoiseType),
@@ -840,10 +839,6 @@ extern Export unsigned int
   MapImages(Image *,Image *,const unsigned int),
   PingImage(ImageInfo *,unsigned int *,unsigned int *),
   PlasmaImage(Image *,SegmentInfo *,int,int),
-  QuantizationError(Image *),
-  QuantizeImage(QuantizeInfo *,Image *),
-  QuantizeImages(QuantizeInfo *,Image *),
-  QueryColorName(ColorPacket *,char *),
   SegmentImage(Image *,const unsigned int,const unsigned int,const double,
     const double),
   UncondenseImage(Image *),
@@ -921,7 +916,6 @@ extern Export void
   GetAnnotateInfo(ImageInfo *,AnnotateInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(MontageInfo *),
-  GetQuantizeInfo(QuantizeInfo *),
   HSLTransform(double,const double,const double,Quantum *,Quantum *,Quantum *),
   LabelImage(Image *,char *),
   LayerImage(Image *,LayerType),
@@ -950,3 +944,9 @@ extern Export void
   TransformImage(Image **,char *,char *),
   TransformRGBImage(Image *,const unsigned int),
   TransparentImage(Image *,char *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+#endif

@@ -18,7 +18,7 @@
 %                                 October 1996                                %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -1049,12 +1049,15 @@ Export Image *EmbossImage(Image *image)
 Export Image *EnhanceImage(Image *image)
 {
 #define Enhance(weight) \
+  mean=(s->red+red)/2; \
   distance=(int) s->red-(int) red; \
-  distance_squared=squares[distance]; \
+  distance_squared= \
+    (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth; \
   distance=(int) s->green-(int) green; \
-  distance_squared+=squares[distance]; \
+  distance_squared+=4*squares[distance]; \
   distance=(int) s->blue-(int) blue; \
-  distance_squared+=squares[distance]; \
+  distance_squared+= \
+    (((3*(MaxRGB+1)-1)-mean)*squares[distance]) >> QuantumDepth; \
   if (distance_squared < Threshold) \
     { \
       total_red+=(weight)*(s->red); \
@@ -1074,6 +1077,7 @@ Export Image *EnhanceImage(Image *image)
 
   int
     distance,
+    mean,
     y;
 
   Quantum
@@ -1312,6 +1316,9 @@ Export Image *ImplodeImage(Image *image,double factor)
 {
 #define ImplodeImageText  "  Imploding image...  "
 
+  ColorPacket
+    interpolated_color;
+
   double
     amount,
     distance,
@@ -1331,9 +1338,7 @@ Export Image *ImplodeImage(Image *image,double factor)
     *q;
 
   register unsigned int
-    x;
-
-  unsigned int
+    x,
     y;
 
   assert(image != (Image *) NULL);
@@ -1394,8 +1399,13 @@ Export Image *ImplodeImage(Image *image,double factor)
           factor=1.0;
           if (distance > 0.0)
             factor=pow(sin(M_PI*0.5*sqrt(distance)/radius),-amount);
-          *q=Interpolate(image,p,factor*x_distance/x_scale+x_center,
+          interpolated_color=InterpolateColor(image,
+            factor*x_distance/x_scale+x_center,
             factor*y_distance/y_scale+y_center);
+          q->red=interpolated_color.red;
+          q->green=interpolated_color.green;
+          q->blue=interpolated_color.blue;
+          q->index=interpolated_color.index;
         }
       p++;
       q++;
@@ -1514,7 +1524,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
       for (i=0; i < radius; i++)
       {
         s=p-(radius-i)*image->columns-1-i;
-        for (j=0; j < (i+i+1); j++)
+        for (j=0; j < (2*i+1); j++)
         {
           if (s >= image->pixels)
             k=Intensity(*s);
@@ -1528,7 +1538,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
           s++;
         }
         s=p+(radius-i)*image->columns-1-i;
-        for (j=0; j < (i+i+1); j++)
+        for (j=0; j < (2*i+1); j++)
         {
           if (s < (image->pixels+image->packets-1))
             k=Intensity(*s);
@@ -1671,7 +1681,7 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
   /*
     Average pixels and apply plasma.
   */
-  plasma=(MaxRGB+1)/(2.0*(float) attenuate);
+  plasma=(MaxRGB+1)/(2.0*(double) attenuate);
   if ((segment_info->x1 != x_mid) || (segment_info->x2 != x_mid))
     {
       /*
@@ -2809,6 +2819,9 @@ Export Image *SwirlImage(Image *image,double degrees)
 {
 #define SwirlImageText  "  Swirling image...  "
 
+  ColorPacket
+    interpolated_color;
+
   double
     cosine,
     distance,
@@ -2830,9 +2843,7 @@ Export Image *SwirlImage(Image *image,double degrees)
     *q;
 
   register unsigned int
-    x;
-
-  unsigned int
+    x,
     y;
 
   assert(image != (Image *) NULL);
@@ -2889,9 +2900,13 @@ Export Image *SwirlImage(Image *image,double degrees)
           factor*=factor;
           sine=sin(degrees*factor);
           cosine=cos(degrees*factor);
-          *q=Interpolate(image,p,
+          interpolated_color=InterpolateColor(image,
             (cosine*x_distance-sine*y_distance)/x_scale+x_center,
             (sine*x_distance+cosine*y_distance)/y_scale+y_center);
+          q->red=interpolated_color.red;
+          q->green=interpolated_color.green;
+          q->blue=interpolated_color.blue;
+          q->index=interpolated_color.index;
         }
       p++;
       q++;
@@ -2939,19 +2954,21 @@ Export Image *WaveImage(Image *image,double amplitude,double wavelength)
 {
 #define WaveImageText  "  Waving image...  "
 
+  ColorPacket
+    interpolated_color;
+
+  double
+    offset,
+    *sine_map;
+
   Image
     *waved_image;
 
-  int
-    *sine_map,
+  register int
+    x,
     y;
 
-  register int
-    i,
-    x;
-
   register RunlengthPacket
-    *p,
     *q;
 
   assert(image != (Image *) NULL);
@@ -2969,21 +2986,11 @@ Export Image *WaveImage(Image *image,double amplitude,double wavelength)
       return((Image *) NULL);
     }
   waved_image->class=DirectClass;
-  p= waved_image->pixels;
-  for (i=0; i < waved_image->packets; i++)
-  {
-    p->red=image->background_color.red;
-    p->green=image->background_color.green;
-    p->blue=image->background_color.blue;
-    p->index=image->background_color.index;
-    p->length=0;
-    p++;
-  }
   /*
     Allocate sine map.
   */
-  sine_map=(int *) AllocateMemory(image->columns*sizeof(int));
-  if (sine_map == (int *) NULL)
+  sine_map=(double *) AllocateMemory(image->columns*sizeof(double));
+  if (sine_map == (double *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to wave image",
         "Memory allocation failed");
@@ -2991,20 +2998,25 @@ Export Image *WaveImage(Image *image,double amplitude,double wavelength)
       return((Image *) NULL);
     }
   for (x=0; x < image->columns; x++)
-    sine_map[x]=(int) (amplitude*sin(((double) x)/wavelength));
+    sine_map[x]=
+      AbsoluteValue(amplitude)+amplitude*sin((2*M_PI*x)/wavelength);
   /*
     Wave image.
   */
-  amplitude=AbsoluteValue(amplitude);
   q=waved_image->pixels;
   for (y=0; y < waved_image->rows; y++)
   {
     for (x=0; x < waved_image->columns; x++)
     {
-      i=(int) (y-amplitude-sine_map[x]);
-      p=image->pixels+(i*image->columns+x);
-      if ((i >= 0) && (i < image->rows))
-        *q=Interpolate(image,p,x,i);
+      offset=y-sine_map[x];
+      if ((offset >= 0) && (offset < image->rows))
+        {
+          interpolated_color=InterpolateColor(image,x,offset);
+          q->red=interpolated_color.red;
+          q->green=interpolated_color.green;
+          q->blue=interpolated_color.blue;
+          q->index=interpolated_color.index;
+        }
       q++;
     }
     if (QuantumTick(y,image->rows))

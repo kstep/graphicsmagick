@@ -17,7 +17,7 @@
 %                              January 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -585,7 +585,7 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 */
 unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 {
-  float
+  double
     black_generation,
     undercolor;
 
@@ -624,7 +624,7 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
   black_generation=1.0;
   if (image_info->undercolor != (char *) NULL)
     {
-      (void) sscanf(image_info->undercolor,"%fx%f",&undercolor,
+      (void) sscanf(image_info->undercolor,"%lfx%lf",&undercolor,
         &black_generation);
       if (black_generation == 1.0)
         black_generation=undercolor;
@@ -1266,7 +1266,7 @@ static void ColorTwistMultiply(FPXColorTwistMatrix first,
     second.dummy3_zero)+(first.dummy7_one*second.dummy7_one);
 }
 
-static void SetBrightness(float brightness,FPXColorTwistMatrix *color_twist)
+static void SetBrightness(double brightness,FPXColorTwistMatrix *color_twist)
 {
   FPXColorTwistMatrix
     effect,
@@ -1276,7 +1276,7 @@ static void SetBrightness(float brightness,FPXColorTwistMatrix *color_twist)
     Set image brightness in color twist matrix.
   */
   assert(color_twist != (FPXColorTwistMatrix *) NULL);
-  brightness=(float) sqrt((double) brightness);
+  brightness=sqrt((double) brightness);
   effect.byy=brightness;
   effect.byc1=0.0;
   effect.byc2=0.0;
@@ -1297,7 +1297,7 @@ static void SetBrightness(float brightness,FPXColorTwistMatrix *color_twist)
   *color_twist=result;
 }
 
-static void SetColorBalance(float red,float green,float blue,
+static void SetColorBalance(double red,double green,double blue,
   FPXColorTwistMatrix *color_twist)
 {
   FPXColorTwistMatrix
@@ -1312,9 +1312,9 @@ static void SetColorBalance(float red,float green,float blue,
     Set image color balance in color twist matrix.
   */
   assert(color_twist != (FPXColorTwistMatrix *) NULL);
-  red=(float) sqrt((double) red)-1.0;
-  green=(float) sqrt((double) green)-1.0;
-  blue=(float) sqrt((double) blue)-1.0;
+  red=sqrt((double) red)-1.0;
+  green=sqrt((double) green)-1.0;
+  blue=sqrt((double) blue)-1.0;
   red_effect.byy=1.0;
   red_effect.byc1=0.0;
   red_effect.byc2=0.299*red;
@@ -1369,7 +1369,7 @@ static void SetColorBalance(float red,float green,float blue,
   *color_twist=result;
 }
 
-static void SetSaturation(float saturation,FPXColorTwistMatrix *color_twist)
+static void SetSaturation(double saturation,FPXColorTwistMatrix *color_twist)
 {
   FPXColorTwistMatrix
     effect,
@@ -1696,7 +1696,7 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       color_twist_valid=False;
       sharpen=0.0;
       sharpen_valid=False;
-      aspect_ratio=(float) image->columns/image->rows;
+      aspect_ratio=(double) image->columns/image->rows;
       aspect_ratio_valid=False;
       view_rect.left=0.1;
       view_rect.width=aspect_ratio-0.2;
@@ -3286,7 +3286,7 @@ static void EmitMessage(j_common_ptr jpeg_info,int level)
 
 unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
-  float
+  double
     black_generation,
     undercolor;
 
@@ -3363,7 +3363,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       black_generation=1.0;
       if (image_info->undercolor != (char *) NULL)
         {
-          (void) sscanf(image_info->undercolor,"%fx%f",&undercolor,
+          (void) sscanf(image_info->undercolor,"%lfx%lf",&undercolor,
             &black_generation);
           if (black_generation == 1.0)
             black_generation=undercolor;
@@ -5374,7 +5374,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   CompressionType
     compression;
 
-  float
+  double
     dx_resolution,
     dy_resolution,
     x_resolution,
@@ -5559,7 +5559,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
+    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
@@ -5569,7 +5569,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       }
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }
@@ -7773,7 +7773,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
     factor[MaxTextExtent],
     label[MaxTextExtent];
 
-  float
+  double
     degrees,
     gamma,
     percentage,
@@ -7827,7 +7827,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
   local_info=(*image_info);
   local_info.quality=0;
   degrees=0;
-  gamma=(float) (-0.2);
+  gamma=(double) (-0.2);
   colors=2;
   x=0;
   y=0;
@@ -7912,7 +7912,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case GammaPreview:
       {
-        FormatString(factor,"%.1f",gamma+=(float) 0.4);
+        FormatString(factor,"%.1f",gamma+=(double) 0.4);
         FormatString(label,"gamma %.1024s",factor);
         commands[argc++]="-gamma";
         commands[argc++]=factor;
@@ -8056,7 +8056,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case SegmentPreview:
       {
-        FormatString(factor,"1.5x%.1f",threshold+=(float) 0.4);
+        FormatString(factor,"1.5x%.1f",threshold+=(double) 0.4);
         FormatString(label,"segment %.1024s",factor);
         commands[argc++]="-colors";
         commands[argc++]=factor;
@@ -8476,7 +8476,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   const char
     **q;
 
-  float
+  double
     dx_resolution,
     dy_resolution,
     x_resolution,
@@ -8548,12 +8548,12 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
+    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }
@@ -8650,10 +8650,10 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 (void) QuantizeImage(&quantize_info,preview_image);
                 SyncImage(preview_image);
               }
-            polarity=Intensity(image->colormap[0]) < (MaxRGB >> 1);
-            if (image->colors == 2)
-              polarity=
-                Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
+            polarity=Intensity(preview_image->colormap[0]) < (MaxRGB >> 1);
+            if (preview_image->colors == 2)
+              polarity=Intensity(preview_image->colormap[0]) >
+                Intensity(preview_image->colormap[1]);
             bit=0;
             byte=0;
             count=0;
@@ -9324,7 +9324,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   CompressionType
     compression;
 
-  float
+  double
     dx_resolution,
     dy_resolution,
     x_resolution,
@@ -9401,7 +9401,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     dy_resolution=72.0;
     x_resolution=72.0;
     (void) strcpy(density,PSDensityGeometry);
-    count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
+    count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
@@ -9411,7 +9411,7 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       }
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }
@@ -10434,7 +10434,7 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         */
         sun_header.depth=(image->matte ? 32 : 24);
         sun_header.length=image->columns*image->rows*(image->matte ? 4 : 3);
-        sun_header.length+=image->columns % 2 ? image->rows : 0;
+        sun_header.length+=image->columns & 0x01 ? image->rows : 0;
       }
     else
       if (IsMonochromeImage(image))
@@ -10454,7 +10454,7 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           */
           sun_header.depth=8;
           sun_header.length=image->columns*image->rows;
-          sun_header.length+=image->columns % 2 ? image->rows : 0;
+          sun_header.length+=image->columns & 0x01 ? image->rows : 0;
           sun_header.maptype=RMT_EQUAL_RGB;
           sun_header.maplength=image->colors*3;
         }
@@ -10509,7 +10509,7 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             x++;
             if (x == image->columns)
               {
-                if ((image->columns % 2) != 0)
+                if (image->columns & 0x01)
                   WriteQuantum(0,q);  /* pad scanline */
                 (void) fwrite((char *) pixels,1,q-pixels,image->file);
                 if (image->previous == (Image *) NULL)
@@ -10599,7 +10599,7 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               x++;
               if (x == image->columns)
                 {
-                  if ((image->columns % 2) != 0)
+                  if (image->columns & 0x01)
                     (void) fputc(0,image->file);  /* pad scanline */
                   if (image->previous == (Image *) NULL)
                     if (QuantumTick(y,image->rows))
@@ -11070,7 +11070,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   if (!TIFFIsTiled(tiff))
     return(TIFFWriteScanline(tiff,scanline,row,sample));
   if (scanlines == (unsigned char *) NULL)
-    scanlines=(unsigned char *) 
+    scanlines=(unsigned char *)
       AllocateMemory(image->tile_info.height*TIFFScanlineSize(tiff));
   if (scanlines == (unsigned char *) NULL)
     return(-1);
@@ -11224,7 +11224,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         height=(height+1)/2;
         if ((width == 0) || (height == 0))
           break;
-      } while ((width >= image->tile_info.width) ||
+      } while ((width >= image->tile_info.width) &&
                (height >= image->tile_info.height));
       image=pyramid_image;
     }
@@ -11334,14 +11334,16 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
     TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
-    if (Latin1Compare(image_info->magick,"PTIF") != 0)
-    if ((image->tile_info.width*image->tile_info.height) == 0)
+    if (image_info->tile == (char *) NULL)
       TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
     else
-      {
-        TIFFSetField(tiff,TIFFTAG_TILEWIDTH,image->tile_info.width);
-        TIFFSetField(tiff,TIFFTAG_TILELENGTH,image->tile_info.height);
-      }
+      if (IsSubimage(image_info->tile,False))
+        TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+      else
+        {
+          TIFFSetField(tiff,TIFFTAG_TILEWIDTH,image->tile_info.width);
+          TIFFSetField(tiff,TIFFTAG_TILELENGTH,image->tile_info.height);
+        }
     if (photometric == PHOTOMETRIC_RGB)
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
@@ -11561,7 +11563,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       }
       case PHOTOMETRIC_SEPARATED:
       {
-        float
+        double
            black_generation,
            undercolor;
 
@@ -11578,7 +11580,7 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         black_generation=1.0;
         if (image_info->undercolor != (char *) NULL)
           {
-            (void) sscanf(image_info->undercolor,"%fx%f",&undercolor,
+            (void) sscanf(image_info->undercolor,"%lfx%lf",&undercolor,
               &black_generation);
             if (black_generation == 1.0)
               black_generation=undercolor;
@@ -11766,8 +11768,6 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-  if (Latin1Compare(image_info->magick,"PTIF") == 0)
-    DestroyImages(image);
   (void) TIFFClose(tiff);
   if (image->temporary)
     {
@@ -11790,6 +11790,8 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       image->temporary=False;
       CloseImage(&encode_image);
     }
+  if (Latin1Compare(image_info->magick,"PTIF") == 0)
+    DestroyImages(image);
   return(True);
 }
 #else
@@ -11844,16 +11846,19 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     symbol[MaxTextExtent];
 
   double
-    distance_squared,
     min_distance;
 
   int
-    distance,
     j,
     k,
+    mean,
     y;
 
+  register double
+    distance_squared;
+
   register int
+    distance,
     i,
     runlength,
     x;
@@ -11956,12 +11961,15 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     min_distance=3.0*65536.0*65536.0;
     for (q=XPMColorlist; q->name != (char *) NULL; q++)
     {
+      mean=(DownScale(p->red)+q->red)/2;
       distance=(int) DownScale(p->red)-(int) q->red;
-      distance_squared=(unsigned int) (distance*distance);
+      distance_squared=(unsigned int)
+        (((2*(MaxRGB+1))+mean)*(distance*distance)) >> 8;
       distance=(int) DownScale(p->green)-(int) q->green;
-      distance_squared+=(unsigned int) (distance*distance);
+      distance_squared+=(unsigned int) 4*(distance*distance);
       distance=(int) DownScale(p->blue)-(int) q->blue;
-      distance_squared+=(unsigned int) (distance*distance);
+      distance_squared+=(unsigned int)
+        (((3*(MaxRGB+1)-1)-mean)*(distance*distance)) >> 8;
       if (distance_squared <= min_distance)
         {
           min_distance=distance_squared;
@@ -13037,16 +13045,19 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     symbol[MaxTextExtent];
 
   double
-    distance_squared,
     min_distance;
 
   int
-    distance,
     j,
     k,
+    mean,
     y;
 
+  register double
+    distance_squared;
+
   register int
+    distance,
     i,
     runlength,
     x;
@@ -13153,12 +13164,15 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     min_distance=3.0*65536.0*65536.0;
     for (q=XPMColorlist; q->name != (char *) NULL; q++)
     {
+      mean=(DownScale(p->red)+(int) q->red)/2;
       distance=(int) DownScale(p->red)-(int) q->red;
-      distance_squared=(unsigned int) (distance*distance);
+      distance_squared=(unsigned int)
+        (((2*(MaxRGB+1))+mean)*(distance*distance)) >> 8;
       distance=(int) DownScale(p->green)-(int) q->green;
-      distance_squared+=(unsigned int) (distance*distance);
+      distance_squared+=(unsigned int) 4*(distance*distance);
       distance=(int) DownScale(p->blue)-(int) q->blue;
-      distance_squared+=(unsigned int) (distance*distance);
+      distance_squared+=(unsigned int)
+        (((3*(MaxRGB+1)-1)-mean)*(distance*distance)) >> 8;
       if (distance_squared <= min_distance)
         {
           min_distance=distance_squared;
@@ -13252,7 +13266,8 @@ unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 {
   Image
-    *downsampled_image;
+    *downsampled_image,
+    *yuv_image;
 
   register int
     i,
@@ -13284,28 +13299,44 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
+      Zoom image to an even width and height.
+    */
+    image->orphan=True;
+    yuv_image=ZoomImage(image,
+      image->columns+(image->columns & 0x01 ? 1 : 0),
+      image->rows+(image->rows & 0x01 ? 1 : 0));
+    image->orphan=False;
+    if (yuv_image == (Image *) NULL)
+      PrematureExit(ResourceLimitWarning,"Unable to zoom image",image);
+    /*
       Initialize Y channel.
     */
-    RGBTransformImage(image,YCbCrColorspace);
-    p=image->pixels;
-    for (i=0; i < image->packets; i++)
+    if (image->previous == (Image *) NULL)
+      ProgressMonitor(SaveImageText,100,400);
+    RGBTransformImage(yuv_image,YCbCrColorspace);
+    p=yuv_image->pixels;
+    for (i=0; i < yuv_image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
         (void) fputc(DownScale(p->red),image->file);
       p++;
     }
+    DestroyImage(yuv_image);
     /*
-      Scale image.
+      Downsample image.
     */
-    ProgressMonitor(SaveImageText,100,400);
     image->orphan=True;
-    downsampled_image=MinifyImage(image);
+    downsampled_image=ZoomImage(image,
+      (image->columns+(image->columns & 0x01 ? 1 : 0)) >> 1,
+      (image->rows+(image->rows & 0x01 ? 1 : 0)) >> 1);
     image->orphan=False;
     if (downsampled_image == (Image *) NULL)
-      PrematureExit(ResourceLimitWarning,"Unable to scale image",image);
+      PrematureExit(ResourceLimitWarning,"Unable to zoom image",image);
     /*
       Initialize U channel.
     */
+    if (image->previous == (Image *) NULL)
+      ProgressMonitor(SaveImageText,200,400);
     if (image_info->interlace == PartitionInterlace)
       {
         CloseImage(image);
@@ -13314,7 +13345,7 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         if (image->file == (FILE *) NULL)
           PrematureExit(FileOpenWarning,"Unable to open file",image);
       }
-    ProgressMonitor(SaveImageText,200,400);
+    RGBTransformImage(downsampled_image,YCbCrColorspace);
     p=downsampled_image->pixels;
     for (i=0; i < downsampled_image->packets; i++)
     {
@@ -13325,6 +13356,8 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize V channel.
     */
+    if (image->previous == (Image *) NULL)
+      ProgressMonitor(SaveImageText,300,400);
     if (image_info->interlace == PartitionInterlace)
       {
         CloseImage(image);
@@ -13333,7 +13366,6 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         if (image->file == (FILE *) NULL)
           PrematureExit(FileOpenWarning,"Unable to open file",image);
       }
-    ProgressMonitor(SaveImageText,300,400);
     p=downsampled_image->pixels;
     for (i=0; i < downsampled_image->packets; i++)
     {
@@ -13342,10 +13374,10 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       p++;
     }
     DestroyImage(downsampled_image);
-    TransformRGBImage(image,YCbCrColorspace);
     if (image_info->interlace == PartitionInterlace)
       (void) strcpy(image->filename,image_info->filename);
-    ProgressMonitor(SaveImageText,400,400);
+    if (image->previous == (Image *) NULL)
+      ProgressMonitor(SaveImageText,400,400);
     if (image->next == (Image *) NULL)
       break;
     image->next->file=image->file;

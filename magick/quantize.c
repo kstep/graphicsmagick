@@ -18,7 +18,7 @@
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -182,13 +182,7 @@
 %  For efficiency, QUANTIZE requires that the reference image be in a
 %  run-length encoded format.
 %
-%  With the permission of USC Information Sciences Institute, 4676 Admiralty
-%  Way, Marina del Rey, California  90292, this code was adapted from module
-%  ALCOLS written by Paul Raveling.
-%
-%  The names of ISI and USC are not used in advertising or publicity
-%  pertaining to distribution of the software without prior specific
-%  written permission from ISI.
+%  This method is based on a similiar algorithm written by Paul Raveling.
 %
 %
 */
@@ -199,15 +193,7 @@
 #include "magick.h"
 
 /*
-  Define declarations.
-*/
-#define MaxNodes  266817
-#define MaxSpan ((1 << MaxTreeDepth)-1)
-#define MaxTreeDepth  8
-#define NodesInAList  2048
-
-/*
-  Structures.
+  Typdef declarations.
 */
 typedef struct _NodeInfo
 {
@@ -273,13 +259,29 @@ typedef struct _CubeInfo
 
   Nodes
     *node_queue;
+
+  int
+    dither,
+    x,
+    y,
+    *cache;
+
+  Quantum
+    *range_limit;
+
+  ErrorPacket
+    error[ErrorQueueLength];
+
+  double
+    weights[ErrorQueueLength];
 } CubeInfo;
+
 
 /*
   Method prototypes.
 */
 static NodeInfo
-  *InitializeNodeInfo(CubeInfo *,const unsigned int,const unsigned int,
+  *GetNodeInfo(CubeInfo *,const unsigned int,const unsigned int,
     NodeInfo *);
 
 static unsigned int
@@ -288,6 +290,7 @@ static unsigned int
 static void
   ClosestColor(CubeInfo *,const NodeInfo *),
   DefineColormap(CubeInfo *,NodeInfo *),
+  HilbertCurve(CubeInfo *,Image *,int,unsigned int),
   PruneLevel(CubeInfo *,const NodeInfo *);
 
 /*
@@ -301,7 +304,7 @@ static void
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure Assignment generates the output image from the pruned tree.  The
+%  Method Assignment generates the output image from the pruned tree.  The
 %  output image consists of two parts: (1)  A color map, which is an
 %  array of color descriptions (RGB triples) for each color present in
 %  the output image;  (2)  A pixel array, which represents each pixel as
@@ -320,7 +323,7 @@ static void
 %
 %  The format of the Assignment routine is:
 %
-%      Assignment(color_cube,quantize_info,image)
+%      Assignment(cube_info,quantize_info,image)
 %
 %  A description of each parameter follows.
 %
@@ -333,7 +336,7 @@ static void
 %
 %
 */
-static unsigned int Assignment(CubeInfo *color_cube,QuantizeInfo *quantize_info,
+static unsigned int Assignment(CubeInfo *cube_info,QuantizeInfo *quantize_info,
   Image *image)
 {
 #define AssignImageText  "  Assigning image colors...  "
@@ -341,7 +344,7 @@ static unsigned int Assignment(CubeInfo *color_cube,QuantizeInfo *quantize_info,
   register int
     i;
 
-  const NodeInfo
+  register const NodeInfo
     *node_info;
 
   register RunlengthPacket
@@ -358,19 +361,19 @@ static unsigned int Assignment(CubeInfo *color_cube,QuantizeInfo *quantize_info,
   */
   if (image->colormap == (ColorPacket *) NULL)
     image->colormap=(ColorPacket *)
-      AllocateMemory(color_cube->colors*sizeof(ColorPacket));
+      AllocateMemory(cube_info->colors*sizeof(ColorPacket));
   else
     image->colormap=(ColorPacket *) ReallocateMemory((char *) image->colormap,
-      color_cube->colors*sizeof(ColorPacket));
+      cube_info->colors*sizeof(ColorPacket));
   if (image->colormap == (ColorPacket *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to quantize image",
         "Memory allocation failed");
       return(False);
     }
-  color_cube->colormap=image->colormap;
-  color_cube->colors=0;
-  DefineColormap(color_cube,color_cube->root);
+  cube_info->colormap=image->colormap;
+  cube_info->colors=0;
+  DefineColormap(cube_info,cube_info->root);
   if ((quantize_info->number_colors == 2) &&
       (quantize_info->colorspace == GRAYColorspace))
     {
@@ -393,12 +396,12 @@ static unsigned int Assignment(CubeInfo *color_cube,QuantizeInfo *quantize_info,
       image->matte=False;
       image->class=PseudoClass;
     }
-  image->colors=(unsigned int) color_cube->colors;
+  image->colors=(unsigned int) cube_info->colors;
   /*
     Create a reduced color image.
   */
   if (quantize_info->dither)
-    quantize_info->dither=!DitherImage(color_cube,image);
+    quantize_info->dither=!DitherImage(cube_info,image);
   p=image->pixels;
   if (!quantize_info->dither)
     for (i=0; i < image->packets; i++)
@@ -406,7 +409,7 @@ static unsigned int Assignment(CubeInfo *color_cube,QuantizeInfo *quantize_info,
       /*
         Identify the deepest node containing the pixel's color.
       */
-      node_info=color_cube->root;
+      node_info=cube_info->root;
       for (index=MaxTreeDepth-1; (int) index > 0; index--)
       {
         id=((DownScale(p->red) >> index) & 0x01) << 2 |
@@ -419,12 +422,12 @@ static unsigned int Assignment(CubeInfo *color_cube,QuantizeInfo *quantize_info,
       /*
         Find closest color among siblings and their children.
       */
-      color_cube->color.red=p->red;
-      color_cube->color.green=p->green;
-      color_cube->color.blue=p->blue;
-      color_cube->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
-      ClosestColor(color_cube,node_info->parent);
-      index=color_cube->color_number;
+      cube_info->color.red=p->red;
+      cube_info->color.green=p->green;
+      cube_info->color.blue=p->blue;
+      cube_info->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
+      ClosestColor(cube_info,node_info->parent);
+      index=cube_info->color_number;
       if (image->class == PseudoClass)
         p->index=index;
       else
@@ -451,7 +454,7 @@ static unsigned int Assignment(CubeInfo *color_cube,QuantizeInfo *quantize_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure Classification begins by initializing a color description tree
+%  Method Classification begins by initializing a color description tree
 %  of sufficient depth to represent each possible input color in a leaf.
 %  However, it is impractical to generate a fully-formed color
 %  description tree in the classification phase for realistic values of
@@ -490,7 +493,7 @@ static unsigned int Assignment(CubeInfo *color_cube,QuantizeInfo *quantize_info,
 %
 %  The format of the Classification routine is:
 %
-%      Classification(color_cube,image)
+%      Classification(cube_info,image)
 %
 %  A description of each parameter follows.
 %
@@ -501,64 +504,60 @@ static unsigned int Assignment(CubeInfo *color_cube,QuantizeInfo *quantize_info,
 %
 %
 */
-static unsigned int Classification(CubeInfo *color_cube,Image *image)
+static unsigned int Classification(CubeInfo *cube_info,Image *image)
 {
 #define ClassifyImageText  "  Classifying image colors...  "
 
-  float
+  double
     mid_red,
     mid_green,
     mid_blue;
 
-  NodeInfo
-    *node_info;
-
-  register double
-    distance_squared;
-
-  register float
-    distance;
-
   register int
     i;
+
+  register NodeInfo
+    *node_info;
 
   register RunlengthPacket
     *p;
 
   register unsigned int
-    index;
+    index,
+    *squares;
 
-  static const float
+  static const double
     bisect[] = { 128.0, 64.0, 32.0, 16.0, 8.0, 4.0, 2.0, 1.0, 0.5 };
 
   unsigned int
     id,
     level;
 
-  color_cube->root->quantization_error=
+  squares=cube_info->squares;
+  cube_info->root->quantization_error=
     3.0*(MaxRGB/2.0)*(MaxRGB/2.0)*image->columns*image->rows;
   if (image->packets == (image->columns*image->rows))
     CondenseImage(image);
   p=image->pixels;
   for (i=0; i < image->packets; i++)
   {
-    if (color_cube->nodes > MaxNodes)
+    if (cube_info->nodes > MaxNodes)
       {
         /*
           Prune one level if the color tree is too large.
         */
-        PruneLevel(color_cube,color_cube->root);
-        color_cube->depth--;
+        PruneLevel(cube_info,cube_info->root);
+        cube_info->depth--;
       }
     /*
       Start at the root and descend the color cube tree.
     */
-    node_info=color_cube->root;
+    node_info=cube_info->root;
     index=MaxTreeDepth-1;
     mid_red=MaxRGB/2.0;
     mid_green=MaxRGB/2.0;
     mid_blue=MaxRGB/2.0;
-    for (level=1; level <= color_cube->depth; level++)
+    for (level=1; level <= cube_info->depth; level++)
     {
       id=((DownScale(p->red) >> index) & 0x01) << 2 |
          ((DownScale(p->green) >> index) & 0x01) << 1 |
@@ -572,31 +571,40 @@ static unsigned int Classification(CubeInfo *color_cube,Image *image)
             Set colors of new node to contain pixel.
           */
           node_info->census|=1 << id;
-          node_info->child[id]=
-            InitializeNodeInfo(color_cube,id,level,node_info);
+          node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
           if (node_info->child[id] == (NodeInfo *) NULL)
             {
               MagickWarning(ResourceLimitWarning,"Unable to quantize image",
                 "Memory allocation failed");
               return(False);
             }
-          if (level == color_cube->depth)
-            color_cube->colors++;
+          if (level == cube_info->depth)
+            cube_info->colors++;
         }
       node_info=node_info->child[id];
       if (level != 8)
         {
+          int
+            distance,
+            mean;
+
+          register double
+            distance_squared;
+
+          register int
+            i;
+
           /*
             Approximate the quantization error represented by this node.
           */
-          distance=AbsoluteValue(DownScale(p->red)-mid_red);
-          distance_squared=color_cube->squares[(int) distance]+distance-0.25;
-          distance=AbsoluteValue(DownScale(p->green)-mid_green);
-          distance_squared+=color_cube->squares[(int) distance]+distance-0.25;
-          distance=AbsoluteValue(DownScale(p->blue)-mid_blue);
-          distance_squared+=color_cube->squares[(int) distance]+distance-0.25;
-          node_info->quantization_error+=
-            distance_squared*((double) p->length+1);
+          mean=(DownScale(p->red)+mid_red)/2;
+          distance=(int) DownScale(p->red)-mid_red;
+          distance_squared=(((2*(MaxRGB+1))+mean)*squares[distance]) >> 8;
+          distance=(int) DownScale(p->green)-mid_green;
+          distance_squared+=4*squares[distance];
+          distance=(int) DownScale(p->blue)-mid_blue;
+          distance_squared+=(((3*(MaxRGB+1)-1)-mean)*squares[distance]) >> 8;
+          node_info->quantization_error+=distance_squared*(p->length+1);
         }
       index--;
     }
@@ -604,9 +612,9 @@ static unsigned int Classification(CubeInfo *color_cube,Image *image)
       Sum RGB values for this leaf for later derivation of the mean cube color.
     */
     node_info->number_unique+=(p->length+1);
-    node_info->total_red+=p->red*((double) p->length+1);
-    node_info->total_green+=p->green*((double) p->length+1);
-    node_info->total_blue+=p->blue*((double) p->length+1);
+    node_info->total_red+=p->red*(p->length+1);
+    node_info->total_green+=p->green*(p->length+1);
+    node_info->total_blue+=p->blue*(p->length+1);
     p++;
     if (QuantumTick(i,image->packets))
       ProgressMonitor(ClassifyImageText,i,image->packets);
@@ -625,12 +633,12 @@ static unsigned int Classification(CubeInfo *color_cube,Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure ClosestColor traverses the color cube tree at a particular node
+%  Method ClosestColor traverses the color cube tree at a particular node
 %  and determines which colormap entry best represents the input color.
 %
 %  The format of the ClosestColor routine is:
 %
-%      ClosestColor(color_cube,node_info)
+%      ClosestColor(cube_info,node_info)
 %
 %  A description of each parameter follows.
 %
@@ -641,7 +649,7 @@ static unsigned int Classification(CubeInfo *color_cube,Image *image)
 %
 %
 */
-static void ClosestColor(CubeInfo *color_cube,const NodeInfo *node_info)
+static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
 {
   register unsigned int
     id;
@@ -652,32 +660,40 @@ static void ClosestColor(CubeInfo *color_cube,const NodeInfo *node_info)
   if (node_info->census != 0)
     for (id=0; id < 8; id++)
       if (node_info->census & (1 << id))
-        ClosestColor(color_cube,node_info->child[id]);
+        ClosestColor(cube_info,node_info->child[id]);
   if (node_info->number_unique != 0)
     {
-      register float
+      register double
         distance_squared;
 
       register int
-        distance;
+        distance,
+        mean;
 
       register ColorPacket
         *color;
 
+      register unsigned int
+        *squares;
+
       /*
         Determine if this color is "closest".
       */
-      color=color_cube->colormap+node_info->color_number;
-      distance=(int) color->red-(int) color_cube->color.red;
-      distance_squared=color_cube->squares[distance];
-      distance=(int) color->green-(int) color_cube->color.green;
-      distance_squared+=color_cube->squares[distance];
-      distance=(int) color->blue-(int) color_cube->color.blue;
-      distance_squared+=color_cube->squares[distance];
-      if (distance_squared < color_cube->distance)
+      squares=cube_info->squares;
+      color=cube_info->colormap+node_info->color_number;
+      mean=(color->red+cube_info->color.red)/2;
+      distance=(int) color->red-(int) cube_info->color.red;
+      distance_squared=
+        (((2*(MaxRGB+1))+mean)*squares[distance]) >> QuantumDepth;
+      distance=(int) color->green-(int) cube_info->color.green;
+      distance_squared+=4*squares[distance];
+      distance=(int) color->blue-(int) cube_info->color.blue;
+      distance_squared+=
+        (((3*(MaxRGB+1)-1)-mean)*squares[distance]) >> QuantumDepth;
+      if (distance_squared < cube_info->distance)
         {
-          color_cube->distance=distance_squared;
-          color_cube->color_number=(unsigned short) node_info->color_number;
+          cube_info->distance=distance_squared;
+          cube_info->color_number=(unsigned short) node_info->color_number;
         }
     }
 }
@@ -693,13 +709,13 @@ static void ClosestColor(CubeInfo *color_cube,const NodeInfo *node_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure DefineColormap traverses the color cube tree and notes each
+%  Method DefineColormap traverses the color cube tree and notes each
 %  colormap entry.  A colormap entry is any node in the color cube tree where
 %  the number of unique colors is not zero.
 %
 %  The format of the DefineColormap routine is:
 %
-%      DefineColormap(color_cube,node_info)
+%      DefineColormap(cube_info,node_info)
 %
 %  A description of each parameter follows.
 %
@@ -710,7 +726,7 @@ static void ClosestColor(CubeInfo *color_cube,const NodeInfo *node_info)
 %
 %
 */
-static void DefineColormap(CubeInfo *color_cube,NodeInfo *node_info)
+static void DefineColormap(CubeInfo *cube_info,NodeInfo *node_info)
 {
   register double
     number_unique;
@@ -724,21 +740,207 @@ static void DefineColormap(CubeInfo *color_cube,NodeInfo *node_info)
   if (node_info->census != 0)
     for (id=0; id < 8; id++)
       if (node_info->census & (1 << id))
-        DefineColormap(color_cube,node_info->child[id]);
+        DefineColormap(cube_info,node_info->child[id]);
   if (node_info->number_unique != 0)
     {
       /*
-        Colormap entry is defined by the mean color in this color_cube.
+        Colormap entry is defined by the mean color in this cube_info.
       */
       number_unique=node_info->number_unique;
-      color_cube->colormap[color_cube->colors].red=(Quantum)
+      cube_info->colormap[cube_info->colors].red=(Quantum)
         ((node_info->total_red+number_unique/2)/number_unique);
-      color_cube->colormap[color_cube->colors].green=(Quantum)
+      cube_info->colormap[cube_info->colors].green=(Quantum)
         ((node_info->total_green+number_unique/2)/number_unique);
-      color_cube->colormap[color_cube->colors].blue=(Quantum)
+      cube_info->colormap[cube_info->colors].blue=(Quantum)
         ((node_info->total_blue+number_unique/2)/number_unique);
-      node_info->color_number=(unsigned int) color_cube->colors++;
+      node_info->color_number=(unsigned int) cube_info->colors++;
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y C u b e I n f o                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyCubeInfo deallocates memory associated with an image.
+%
+%  The format of the DestroyCubeInfo routine is:
+%
+%      DestroyCubeInfo(cube_info))
+%
+%  A description of each parameter follows:
+%
+%    o cube_info: The address of a structure of type CubeInfo.
+%
+%
+*/
+static void DestroyCubeInfo(CubeInfo *cube_info)
+{
+  register Nodes
+    *nodes;
+
+  /*
+    Release color cube tree storage.
+  */
+  do
+  {
+    nodes=cube_info->node_queue->next;
+    FreeMemory((char *) cube_info->node_queue);
+    cube_info->node_queue=nodes;
+  } while (cube_info->node_queue != (Nodes *) NULL);
+  cube_info->squares-=MaxRGB;
+  FreeMemory((char *) cube_info->squares);
+  if (!cube_info->dither)
+    return;
+  /*
+    Free memory resources.
+  */
+  cube_info->range_limit-=(MaxRGB+1);
+  FreeMemory((char *) cube_info->range_limit);
+  FreeMemory((char *) cube_info->cache);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D i t h e r                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Dither distributes the difference between an original image and the
+%  corresponding color reduced algorithm to neighboring pixels along a Hilbert
+%  curve.
+%
+%  The format of the Dither routine is:
+%
+%      Dither(cube_info,image,direction)
+%
+%  A description of each parameter follows.
+%
+%    o cube: A pointer to the Cube structure.
+%
+%    o image: Specifies a pointer to an Image structure;  returned from
+%      ReadImage.
+%
+%    o direction:  This unsigned direction describes which direction
+%      to move to next to follow the Hilbert curve.
+%
+*/
+static void Dither(CubeInfo *cube_info,Image *image,unsigned int direction)
+{
+  register CubeInfo
+    *p;
+
+  p=cube_info;
+  if ((p->x >= 0) && (p->x < image->columns) &&
+      (p->y >= 0) && (p->y < image->rows))
+    {
+      double
+        blue_error,
+        green_error,
+        red_error;
+
+      Quantum
+        blue,
+        green,
+        red;
+
+      register int
+        i;
+
+      register RunlengthPacket
+        *q;
+
+      unsigned short
+        index;
+
+      /*
+        Distribute error.
+      */
+      q=image->pixels+p->y*image->columns+p->x;
+      red_error=0.0;
+      green_error=0.0;
+      blue_error=0.0;
+      for (i=0; i < ErrorQueueLength; i++)
+      {
+        red_error+=p->error[i].red*p->weights[i];
+        green_error+=p->error[i].green*p->weights[i];
+        blue_error+=p->error[i].blue*p->weights[i];
+      }
+      red=p->range_limit[q->red+(int) red_error];
+      green=p->range_limit[q->green+(int) green_error];
+      blue=p->range_limit[q->blue+(int) blue_error];
+      i=(blue >> CacheShift) << 12 | (green >> CacheShift) << 6 |
+        (red >> CacheShift);
+      if (p->cache[i] < 0)
+        {
+          register NodeInfo
+            *node_info;
+
+          register unsigned int
+            id;
+
+          /*
+            Identify the deepest node containing the pixel's color.
+          */
+          node_info=p->root;
+          for (index=MaxTreeDepth-1; (int) index > 0; index--)
+          {
+            id=((DownScale(red) >> index) & 0x01) << 2 |
+               ((DownScale(green) >> index) & 0x01) << 1 |
+               ((DownScale(blue) >> index) & 0x01);
+            if ((node_info->census & (1 << id)) == 0)
+              break;
+            node_info=node_info->child[id];
+          }
+          /*
+            Find closest color among siblings and their children.
+          */
+          p->color.red=red;
+          p->color.green=green;
+          p->color.blue=blue;
+          p->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
+          ClosestColor(p,node_info->parent);
+          p->cache[i]=p->color_number;
+        }
+      /*
+        Assign pixel to closest colormap entry.
+      */
+      index=(unsigned short) p->cache[i];
+      if (image->class == PseudoClass)
+        q->index=index;
+      else
+        {
+          q->red=image->colormap[index].red;
+          q->green=image->colormap[index].green;
+          q->blue=image->colormap[index].blue;
+        }
+      /*
+        Propagate the error as the last entry of the error queue.
+      */
+      for (i=0; i < (ErrorQueueLength-1); i++)
+        p->error[i]=p->error[i+1];
+      p->error[i].red=red-(int) image->colormap[index].red;
+      p->error[i].green=green-(int) image->colormap[index].green;
+      p->error[i].blue=blue-(int) image->colormap[index].blue;
+    }
+  switch (direction)
+  {
+    case WestGravity: p->x--; break;
+    case EastGravity: p->x++; break;
+    case NorthGravity: p->y--; break;
+    case SouthGravity: p->y++; break;
+  }
 }
 
 /*
@@ -752,26 +954,16 @@ static void DefineColormap(CubeInfo *color_cube,NodeInfo *node_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure DitherImage uses the Floyd-Steinberg algorithm to dither the
-%  image.  Refer to "An Adaptive Algorithm for Spatial GreySscale", Robert W.
-%  Floyd and Louis Steinberg, Proceedings of the S.I.D., Volume 17(2), 1976.
+%  Method DitherImage distributes the difference between an original image and
+%  the corresponding color reduced algorithm to neighboring pixels along a
+%  Hilbert curve.
 %
-%  First find the closest representation to the reference pixel color in the
-%  colormap, the node pixel is assigned this color.  Next, the colormap color
-%  is subtracted from the reference pixels color, this represents the
-%  quantization error.  Various amounts of this error are added to the pixels
-%  ahead and below the node pixel to correct for this error.  The error
-%  proportions are:
-%
-%            P     7/16
-%      3/16  5/16  1/16
-%
-%  The error is distributed left-to-right for even scanlines and right-to-left
-%  for odd scanlines.
+%  This algorithm is strongly based on a similiar algorithm by Thiadmer
+%  Riemersma.
 %
 %  The format of the DitherImage routine is:
 %
-%      DitherImage(color_cube,image)
+%      DitherImage(cube_info,image)
 %
 %  A description of each parameter follows.
 %
@@ -782,60 +974,13 @@ static void DefineColormap(CubeInfo *color_cube,NodeInfo *node_info)
 %
 %
 */
-static unsigned int DitherImage(CubeInfo *color_cube,Image *image)
+static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
 {
-#define CacheShift  (QuantumDepth-6)
-#define DitherImageText  "  Dithering image...  "
-
-
-  typedef struct _ErrorPacket
-  {
-    int
-      red,
-      green,
-      blue;
-  } ErrorPacket;
-
-  ErrorPacket
-    *error;
-
-  int
-    blue_error,
-    green_error,
-    red_error,
-    step;
-
-  NodeInfo
-    *node_info;
-
-  Quantum
-    blue,
-    green,
-    red;
-
-  register ErrorPacket
-    *cs,
-    *ns;
-
   register int
-    *cache,
-    *error_limit,
     i;
 
-  register Quantum
-    *range_limit;
-
-  register RunlengthPacket
-    *q;
-
-  register unsigned short
-    index;
-
   unsigned int
-    id,
-    quantum,
-    x,
-    y;
+    depth;
 
   /*
     Image must be uncompressed.
@@ -843,174 +988,220 @@ static unsigned int DitherImage(CubeInfo *color_cube,Image *image)
   if (!UncondenseImage(image))
     return(True);
   /*
-    Allocate memory.
+    Distribute quantization error along a Hilbert curve.
   */
-  cache=(int *) AllocateMemory((1 << 18)*sizeof(int));
-  error=(ErrorPacket *)
-    AllocateMemory(((image->columns+2) << 1)*sizeof(ErrorPacket));
-  error_limit=(int *) AllocateMemory((MaxRGB*2+1)*sizeof(int));
-  range_limit=(Quantum *) AllocateMemory(3*(MaxRGB+1)*sizeof(Quantum));
-  if ((cache == (int *) NULL) || (error == (ErrorPacket *) NULL) ||
-      (error_limit == (int *) NULL) || (range_limit == (Quantum *) NULL))
+  i=image->columns > image->rows ? image->columns : image->rows;
+  for (depth=1; i != 0; depth++)
+    i>>=1;
+  HilbertCurve(cube_info,image,depth-1,NorthGravity);
+  Dither(cube_info,image,ForgetGravity);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t C u b e I n f o                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCubeInfo initialize the Cube data structure.
+%
+%  The format of the GetCubeInfo routine is:
+%
+%      status=GetCubeInfo(cube_info,dither,depth)
+%
+%  A description of each parameter follows.
+%
+%    o cube: A pointer to the Cube structure.
+%
+%    o dither: Set this integer value to something other than zero to
+%      dither the quantized image.
+%
+%    o depth: Normally, this integer value is zero or one.  A zero or
+%      one tells Quantize to choose a optimal tree depth of Log4(number_colors).
+%      A tree of this depth generally allows the best representation of the
+%      reference image with the least amount of memory and the fastest
+%      computational speed.  In some cases, such as an image with low color
+%      dispersion (a few number of colors), a value other than
+%      Log4(number_colors) is required.  To expand the color tree completely,
+%      use a value of 8.
+%
+%
+*/
+static unsigned int GetCubeInfo(CubeInfo *cube_info,unsigned int dither,
+  int depth)
+{
+  double
+    weight;
+
+  register int
+    i;
+
+  /*
+    Initialize tree to describe color cube_info.
+  */
+  cube_info->node_queue=(Nodes *) NULL;
+  cube_info->nodes=0;
+  cube_info->free_nodes=0;
+  if (depth > MaxTreeDepth)
+    depth=MaxTreeDepth;
+  if (depth < 2)
+    depth=2;
+  cube_info->depth=depth;
+  /*
+    Initialize root node.
+  */
+  cube_info->root=GetNodeInfo(cube_info,0,0,(NodeInfo *) NULL);
+  cube_info->squares=(unsigned int *)
+    AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(unsigned int));
+  if ((cube_info->root == (NodeInfo *) NULL) ||
+      (cube_info->squares == (unsigned int *) NULL))
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to quantize image",
+        "Memory allocation failed");
+      return(False);
+    }
+  cube_info->root->parent=cube_info->root;
+  cube_info->root->quantization_error=0.0;
+  cube_info->colors=0;
+  cube_info->squares+=MaxRGB;
+  for (i=(-MaxRGB); i <= MaxRGB; i++)
+    cube_info->squares[i]=i*i;
+  cube_info->dither=dither;
+  if (!cube_info->dither)
+    return(True);
+  /*
+    Initialize dither resources.
+  */
+  cube_info->x=0;
+  cube_info->y=0;
+  cube_info->cache=(int *) AllocateMemory((1 << 18)*sizeof(int));
+  cube_info->range_limit=(Quantum *)
+    AllocateMemory(3*(MaxRGB+1)*sizeof(Quantum));
+  if ((cube_info->cache == (int *) NULL) ||
+      (cube_info->range_limit == (Quantum *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to dither image",
         "Memory allocation failed");
       return(True);
     }
   /*
-    Initialize color cache.
-  */
-  for (i=0; i < (1 << 18); i++)
-    cache[i]=(-1);
-  /*
-    Initialize error tables.
-  */
-  for (i=0; i < ((image->columns+2) << 1); i++)
-  {
-    error[i].red=0;
-    error[i].green=0;
-    error[i].blue=0;
-  }
-  /*
-    Initialize error limit (constrain error).
-  */
-  quantum=(unsigned int) Max(image->colors >> 4,1);
-  if ((quantum > 1) && (QuantumDepth != 8))
-    quantum>>=1;
-  error_limit+=MaxRGB;
-  step=0;
-  for (i=0; i < ((MaxRGB+1)/quantum); i++)
-  {
-    error_limit[i]=step;
-    error_limit[-i]=(-step);
-    step++;
-  }
-  if (quantum > 3)
-    for ( ; i < (3*(MaxRGB+1)/quantum); i++)
-    {
-      error_limit[i]=step;
-      error_limit[-i]=(-step);
-      step+=(i & 0x01) ? 0 : 1;
-    }
-  for ( ; i <= MaxRGB; i++)
-  {
-    error_limit[i]=step;
-    error_limit[-i]=(-step);
-  }
-  /*
     Initialize range tables.
   */
   for (i=0; i <= MaxRGB; i++)
   {
-    range_limit[i]=0;
-    range_limit[i+(MaxRGB+1)]=(Quantum) i;
-    range_limit[i+(MaxRGB+1)*2]=MaxRGB;
+    cube_info->range_limit[i]=0;
+    cube_info->range_limit[i+(MaxRGB+1)]=(Quantum) i;
+    cube_info->range_limit[i+(MaxRGB+1)*2]=MaxRGB;
   }
-  range_limit+=(MaxRGB+1);
+  cube_info->range_limit+=(MaxRGB+1);
   /*
-    Dither image.
+    Initialize color cache.
   */
-  for (y=0; y < image->rows; y++)
+  for (i=0; i < (1 << 18); i++)
+    cube_info->cache[i]=(-1);
+  /*
+    Initialize error queue.
+  */
+  for (i=0; i < ErrorQueueLength; i++)
   {
-    q=image->pixels+image->columns*y;
-    cs=error+1;
-    ns=cs+image->columns+2;
-    step=y & 0x01 ? -1 : 1;
-    if (step < 0)
-      {
-        /*
-          Distribute error right-to-left for odd scanlines.
-        */
-        q+=(image->columns-1);
-        ns=error+image->columns;
-        cs=ns+image->columns+2;
-      }
-    for (x=0; x < image->columns; x++)
-    {
-      red_error=error_limit[(cs->red+8)/16];
-      green_error=error_limit[(cs->green+8)/16];
-      blue_error=error_limit[(cs->blue+8)/16];
-      red=range_limit[(int) q->red+red_error];
-      green=range_limit[(int) q->green+green_error];
-      blue=range_limit[(int) q->blue+blue_error];
-      i=(blue >> CacheShift) << 12 | (green >> CacheShift) << 6 |
-        (red >> CacheShift);
-      if (cache[i] < 0)
-        {
-          /*
-            Identify the deepest node containing the pixel's color.
-          */
-          node_info=color_cube->root;
-          for (index=MaxTreeDepth-1; (int) index > 0; index--)
-          {
-            id=((DownScale(red) >> index) & 0x01) << 2 |
-               ((DownScale(green) >> index) & 0x01) << 1 |
-               ((DownScale(blue) >> index) & 0x01);
-            if ((node_info->census & (1 << id)) == 0)
-              break;
-            node_info=node_info->child[id];
-          }
-          /*
-            Find closest color among siblings and their children.
-          */
-          color_cube->color.red=red;
-          color_cube->color.green=green;
-          color_cube->color.blue=blue;
-          color_cube->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
-          ClosestColor(color_cube,node_info->parent);
-          cache[i]=color_cube->color_number;
-        }
-      index=(unsigned short) cache[i];
-      if (image->class == PseudoClass)
-        q->index=index;
-      else
-        {
-          q->red=image->colormap[index].red;
-          q->green=image->colormap[index].green;
-          q->blue=image->colormap[index].blue;
-        }
-      q+=step;
-      /*
-        Propagate the error in these proportions:
-                Q     7/16
-          3/16  5/16  1/16
-      */
-      red_error=(int) red-(int) image->colormap[index].red;
-      green_error=(int) green-(int) image->colormap[index].green;
-      blue_error=(int) blue-(int) image->colormap[index].blue;
-      cs->red=0;
-      cs->green=0;
-      cs->blue=0;
-      cs+=step;
-      cs->red+=7*red_error;
-      cs->green+=7*green_error;
-      cs->blue+=7*blue_error;
-      ns-=step;
-      ns->red+=3*red_error;
-      ns->green+=3*green_error;
-      ns->blue+=3*blue_error;
-      ns+=step;
-      ns->red+=5*red_error;
-      ns->green+=5*green_error;
-      ns->blue+=5*blue_error;
-      ns+=step;
-      ns->red+=red_error;
-      ns->green+=green_error;
-      ns->blue+=blue_error;
-    }
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(DitherImageText,y,image->rows);
+    cube_info->error[i].red=0;
+    cube_info->error[i].green=0;
+    cube_info->error[i].blue=0;
   }
   /*
-    Free up memory.
+    Distribute weights along a curve of exponential decay.
   */
-  range_limit-=(MaxRGB+1);
-  FreeMemory((char *) range_limit);
-  error_limit-=MaxRGB;
-  FreeMemory((char *) error_limit);
-  FreeMemory((char *) error);
-  FreeMemory((char *) cache);
-  return(False);
+  weight=1.0;
+  for (i=0; i < ErrorQueueLength; i++)
+  {
+    cube_info->weights[ErrorQueueLength-i-1]=1.0/weight;
+    weight*=exp(log(MaxRGB+1)/(ErrorQueueLength-1));
+  }
+  /*
+    Normalize the weighting factors.
+  */
+  weight=0.0;
+  for (i=0; i < ErrorQueueLength; i++)
+    weight+=cube_info->weights[i];
+  for (i=0; i < ErrorQueueLength; i++)
+    cube_info->weights[i]/=weight;
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t N o d e I n f o                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetNodeInfo allocates memory for a new node in the color cube
+%  tree and presets all fields to zero.
+%
+%  The format of the GetNodeInfo routine is:
+%
+%      node=GetNodeInfo(cube_info,node,id,level)
+%
+%  A description of each parameter follows.
+%
+%    o node: The GetNodeInfo routine returns this integer address.
+%
+%    o id: Specifies the child number of the node.
+%
+%    o level: Specifies the level in the classification the node resides.
+%
+%
+*/
+static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
+  const unsigned int level,NodeInfo *parent)
+{
+  register int
+    i;
+
+  NodeInfo
+    *node_info;
+
+  if (cube_info->free_nodes == 0)
+    {
+      Nodes
+        *nodes;
+
+      /*
+        Allocate a new nodes of nodes.
+      */
+      nodes=(Nodes *) AllocateMemory(sizeof(Nodes));
+      if (nodes == (Nodes *) NULL)
+        return((NodeInfo *) NULL);
+      nodes->next=cube_info->node_queue;
+      cube_info->node_queue=nodes;
+      cube_info->next_node=nodes->nodes;
+      cube_info->free_nodes=NodesInAList;
+    }
+  cube_info->nodes++;
+  cube_info->free_nodes--;
+  node_info=cube_info->next_node++;
+  node_info->parent=parent;
+  for (i=0; i < 8; i++)
+    node_info->child[i]=(NodeInfo *) NULL;
+  node_info->id=id;
+  node_info->level=level;
+  node_info->census=0;
+  node_info->number_unique=0;
+  node_info->quantization_error=0.0;
+  node_info->total_red=0.0;
+  node_info->total_green=0.0;
+  node_info->total_blue=0.0;
+  return(node_info);
 }
 
 /*
@@ -1050,140 +1241,124 @@ Export void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   I n i t i a l i z e C u b e                                               %
++   H i l b e r t C u r v e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method InitializeCube initialize the Cube data structure.
+%  Method HilbertCurve s a space filling curve that visits every point in a
+%  square grid with any power of 2.  Hilbert is useful in dithering due to
+%  the coherence between neighboring pixels.  Here, the quantization error is
+%  distributed along the Hilbert curve.
 %
-%  The format of the InitializeCube routine is:
+%  The format of the HilbertCurve routine is:
 %
-%      status=InitializeCube(color_cube,depth)
+%      HilbertCurve(cube_info,image,direction)
 %
 %  A description of each parameter follows.
 %
 %    o cube: A pointer to the Cube structure.
 %
-%    o depth: Normally, this integer value is zero or one.  A zero or
-%      one tells Quantize to choose a optimal tree depth of Log4(number_colors).
-%      A tree of this depth generally allows the best representation of the
-%      reference image with the least amount of memory and the fastest
-%      computational speed.  In some cases, such as an image with low color
-%      dispersion (a few number of colors), a value other than
-%      Log4(number_colors) is required.  To expand the color tree completely,
-%      use a value of 8.
+%    o image: Specifies a pointer to an Image structure;  returned from
+%      ReadImage.
+%
+%    o direction:  This unsigned direction describes which direction
+%      to move to next to follow the Hilbert curve.
 %
 %
 */
-static unsigned int InitializeCube(CubeInfo *color_cube,int depth)
+static void HilbertCurve(CubeInfo *cube_info,Image *image,int level,
+  unsigned int direction)
 {
-  register int
-    i;
-
-  /*
-    Initialize tree to describe color color_cube.
-  */
-  color_cube->node_queue=(Nodes *) NULL;
-  color_cube->nodes=0;
-  color_cube->free_nodes=0;
-  if (depth > MaxTreeDepth)
-    depth=MaxTreeDepth;
-  if (depth < 2)
-    depth=2;
-  color_cube->depth=depth;
-  /*
-    Initialize root node.
-  */
-  color_cube->root=InitializeNodeInfo(color_cube,0,0,(NodeInfo *) NULL);
-  color_cube->squares=(unsigned int *)
-    AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(unsigned int));
-  if ((color_cube->root == (NodeInfo *) NULL) ||
-      (color_cube->squares == (unsigned int *) NULL))
+  if (level == 1)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to quantize image",
-        "Memory allocation failed");
-      return(False);
+      switch (direction)
+      {
+        case WestGravity:
+        {
+          Dither(cube_info,image,EastGravity);
+          Dither(cube_info,image,SouthGravity);
+          Dither(cube_info,image,WestGravity);
+          break;
+        }
+        case EastGravity:
+        {
+          Dither(cube_info,image,WestGravity);
+          Dither(cube_info,image,NorthGravity);
+          Dither(cube_info,image,EastGravity);
+          break;
+        }
+        case NorthGravity:
+        {
+          Dither(cube_info,image,SouthGravity);
+          Dither(cube_info,image,EastGravity);
+          Dither(cube_info,image,NorthGravity);
+          break;
+        }
+        case SouthGravity:
+        {
+          Dither(cube_info,image,NorthGravity);
+          Dither(cube_info,image,WestGravity);
+          Dither(cube_info,image,SouthGravity);
+          break;
+        }
+        default:
+          break;
+      }
+      return;
     }
-  color_cube->root->parent=color_cube->root;
-  color_cube->root->quantization_error=0.0;
-  color_cube->colors=0;
-  color_cube->squares+=MaxRGB;
-  for (i=(-MaxRGB); i <= MaxRGB; i++)
-    color_cube->squares[i]=i*i;
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I n i t i a l i z e N o d e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method InitializeNodeInfo allocates memory for a new node in the color cube
-%  tree and presets all fields to zero.
-%
-%  The format of the InitializeNodeInfo routine is:
-%
-%      node=InitializeNodeInfo(color_cube,node,id,level)
-%
-%  A description of each parameter follows.
-%
-%    o node: The InitializeNodeInfo routine returns this integer address.
-%
-%    o id: Specifies the child number of the node.
-%
-%    o level: Specifies the level in the classification the node resides.
-%
-%
-*/
-static NodeInfo *InitializeNodeInfo(CubeInfo *color_cube,const unsigned int id,
-  const unsigned int level,NodeInfo *parent)
-{
-  register int
-    i;
-
-  NodeInfo
-    *node_info;
-
-  if (color_cube->free_nodes == 0)
+  switch (direction)
+  {
+    case WestGravity:
     {
-      Nodes
-        *nodes;
-
-      /*
-        Allocate a new nodes of nodes.
-      */
-      nodes=(Nodes *) AllocateMemory(sizeof(Nodes));
-      if (nodes == (Nodes *) NULL)
-        return((NodeInfo *) NULL);
-      nodes->next=color_cube->node_queue;
-      color_cube->node_queue=nodes;
-      color_cube->next_node=nodes->nodes;
-      color_cube->free_nodes=NodesInAList;
+      HilbertCurve(cube_info,image,level-1,NorthGravity);
+      Dither(cube_info,image,EastGravity);
+      HilbertCurve(cube_info,image,level-1,WestGravity);
+      Dither(cube_info,image,SouthGravity);
+      HilbertCurve(cube_info,image,level-1,WestGravity);
+      Dither(cube_info,image,WestGravity);
+      HilbertCurve(cube_info,image,level-1,SouthGravity);
+      break;
     }
-  color_cube->nodes++;
-  color_cube->free_nodes--;
-  node_info=color_cube->next_node++;
-  node_info->parent=parent;
-  for (i=0; i < 8; i++)
-    node_info->child[i]=(NodeInfo *) NULL;
-  node_info->id=id;
-  node_info->level=level;
-  node_info->census=0;
-  node_info->number_unique=0;
-  node_info->quantization_error=0.0;
-  node_info->total_red=0.0;
-  node_info->total_green=0.0;
-  node_info->total_blue=0.0;
-  return(node_info);
+    case EastGravity:
+    {
+      HilbertCurve(cube_info,image,level-1,SouthGravity);
+      Dither(cube_info,image,WestGravity);
+      HilbertCurve(cube_info,image,level-1,EastGravity);
+      Dither(cube_info,image,NorthGravity);
+      HilbertCurve(cube_info,image,level-1,EastGravity);
+      Dither(cube_info,image,EastGravity);
+      HilbertCurve(cube_info,image,level-1,NorthGravity);
+      break;
+    }
+    case NorthGravity:
+    {
+      HilbertCurve(cube_info,image,level-1,WestGravity);
+      Dither(cube_info,image,SouthGravity);
+      HilbertCurve(cube_info,image,level-1,NorthGravity);
+      Dither(cube_info,image,EastGravity);
+      HilbertCurve(cube_info,image,level-1,NorthGravity);
+      Dither(cube_info,image,NorthGravity);
+      HilbertCurve(cube_info,image,level-1,EastGravity);
+      break;
+    }
+    case SouthGravity:
+    {
+      HilbertCurve(cube_info,image,level-1,EastGravity);
+      Dither(cube_info,image,NorthGravity);
+      HilbertCurve(cube_info,image,level-1,SouthGravity);
+      Dither(cube_info,image,WestGravity);
+      HilbertCurve(cube_info,image,level-1,SouthGravity);
+      Dither(cube_info,image,SouthGravity);
+      HilbertCurve(cube_info,image,level-1,WestGravity);
+      break;
+    }
+    default:
+      break;
+  }
 }
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1201,7 +1376,7 @@ static NodeInfo *InitializeNodeInfo(CubeInfo *color_cube,const unsigned int id,
 %
 %  The format of the PruneSubtree routine is:
 %
-%      PruneChild(color_cube,node_info)
+%      PruneChild(cube_info,node_info)
 %
 %  A description of each parameter follows.
 %
@@ -1211,7 +1386,7 @@ static NodeInfo *InitializeNodeInfo(CubeInfo *color_cube,const unsigned int id,
 %
 %
 */
-static void PruneChild(CubeInfo *color_cube,const NodeInfo *node_info)
+static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
 {
   NodeInfo
     *parent;
@@ -1225,7 +1400,7 @@ static void PruneChild(CubeInfo *color_cube,const NodeInfo *node_info)
   if (node_info->census != 0)
     for (id=0; id < 8; id++)
       if (node_info->census & (1 << id))
-        PruneChild(color_cube,node_info->child[id]);
+        PruneChild(cube_info,node_info->child[id]);
   /*
     Merge color statistics into parent.
   */
@@ -1235,7 +1410,7 @@ static void PruneChild(CubeInfo *color_cube,const NodeInfo *node_info)
   parent->total_red+=node_info->total_red;
   parent->total_green+=node_info->total_green;
   parent->total_blue+=node_info->total_blue;
-  color_cube->nodes--;
+  cube_info->nodes--;
 }
 
 /*
@@ -1249,12 +1424,12 @@ static void PruneChild(CubeInfo *color_cube,const NodeInfo *node_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure PruneLevel deletes all nodes at the bottom level of the color
+%  Method PruneLevel deletes all nodes at the bottom level of the color
 %  tree merging their color statistics into their parent node.
 %
 %  The format of the PruneLevel routine is:
 %
-%      PruneLevel(color_cube,node_info)
+%      PruneLevel(cube_info,node_info)
 %
 %  A description of each parameter follows.
 %
@@ -1264,7 +1439,7 @@ static void PruneChild(CubeInfo *color_cube,const NodeInfo *node_info)
 %
 %
 */
-static void PruneLevel(CubeInfo *color_cube,const NodeInfo *node_info)
+static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
 {
   register int
     id;
@@ -1275,9 +1450,9 @@ static void PruneLevel(CubeInfo *color_cube,const NodeInfo *node_info)
   if (node_info->census != 0)
     for (id=0; id < 8; id++)
       if (node_info->census & (1 << id))
-        PruneLevel(color_cube,node_info->child[id]);
-  if (node_info->level == color_cube->depth)
-    PruneChild(color_cube,node_info);
+        PruneLevel(cube_info,node_info->child[id]);
+  if (node_info->level == cube_info->depth)
+    PruneChild(cube_info,node_info);
 }
 
 /*
@@ -1296,7 +1471,7 @@ static void PruneLevel(CubeInfo *color_cube,const NodeInfo *node_info)
 %
 %  The format of the Reduce routine is:
 %
-%      Reduce(color_cube,node_info)
+%      Reduce(cube_info,node_info)
 %
 %  A description of each parameter follows.
 %
@@ -1306,7 +1481,7 @@ static void PruneLevel(CubeInfo *color_cube,const NodeInfo *node_info)
 %
 %
 */
-static void Reduce(CubeInfo *color_cube,const NodeInfo *node_info)
+static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
 {
   register unsigned int
     id;
@@ -1317,18 +1492,18 @@ static void Reduce(CubeInfo *color_cube,const NodeInfo *node_info)
   if (node_info->census != 0)
     for (id=0; id < 8; id++)
       if (node_info->census & (1 << id))
-        Reduce(color_cube,node_info->child[id]);
-  if (node_info->quantization_error <= color_cube->pruning_threshold)
-    PruneChild(color_cube,node_info);
+        Reduce(cube_info,node_info->child[id]);
+  if (node_info->quantization_error <= cube_info->pruning_threshold)
+    PruneChild(cube_info,node_info);
   else
     {
       /*
         Find minimum pruning threshold.
       */
       if (node_info->number_unique > 0)
-        color_cube->colors++;
-      if (node_info->quantization_error < color_cube->next_pruning_threshold)
-        color_cube->next_pruning_threshold=node_info->quantization_error;
+        cube_info->colors++;
+      if (node_info->quantization_error < cube_info->next_pruning_threshold)
+        cube_info->next_pruning_threshold=node_info->quantization_error;
     }
 }
 
@@ -1377,7 +1552,7 @@ static void Reduce(CubeInfo *color_cube,const NodeInfo *node_info)
 %
 %  The format of the Reduction routine is:
 %
-%      Reduction(color_cube,number_colors)
+%      Reduction(cube_info,number_colors)
 %
 %  A description of each parameter follows.
 %
@@ -1390,22 +1565,22 @@ static void Reduce(CubeInfo *color_cube,const NodeInfo *node_info)
 %
 %
 */
-static void Reduction(CubeInfo *color_cube,const unsigned int number_colors)
+static void Reduction(CubeInfo *cube_info,const unsigned int number_colors)
 {
 #define ReduceImageText  "  Reducing image colors...  "
 
   unsigned int
     span;
 
-  span=(unsigned int) color_cube->colors;
-  color_cube->next_pruning_threshold=0.0;
-  while (color_cube->colors > number_colors)
+  span=(unsigned int) cube_info->colors;
+  cube_info->next_pruning_threshold=0.0;
+  while (cube_info->colors > number_colors)
   {
-    color_cube->pruning_threshold=color_cube->next_pruning_threshold;
-    color_cube->next_pruning_threshold=color_cube->root->quantization_error;
-    color_cube->colors=0;
-    Reduce(color_cube,color_cube->root);
-    ProgressMonitor(ReduceImageText,(unsigned int) (span-color_cube->colors),
+    cube_info->pruning_threshold=cube_info->next_pruning_threshold;
+    cube_info->next_pruning_threshold=cube_info->root->quantization_error;
+    cube_info->colors=0;
+    Reduce(cube_info,cube_info->root);
+    ProgressMonitor(ReduceImageText,(unsigned int) (span-cube_info->colors),
       span-number_colors+1);
   }
 }
@@ -1443,10 +1618,7 @@ static void Reduction(CubeInfo *color_cube,const unsigned int number_colors)
 unsigned int MapImage(Image *image,Image *map_image,const unsigned int dither)
 {
   CubeInfo
-    color_cube;
-
-  Nodes
-    *nodes;
+    cube_info;
 
   QuantizeInfo
     quantize_info;
@@ -1460,32 +1632,22 @@ unsigned int MapImage(Image *image,Image *map_image,const unsigned int dither)
   /*
     Initialize color cube.
   */
-  status=InitializeCube(&color_cube,8);
+  status=GetCubeInfo(&cube_info,dither,8);
   if (status == False)
     return(False);
-  status=Classification(&color_cube,map_image);
+  status=Classification(&cube_info,map_image);
   if (status != False)
     {
       /*
         Classify image colors from the reference image.
       */
-      quantize_info.number_colors=color_cube.colors;
+      quantize_info.number_colors=cube_info.colors;
       quantize_info.dither=dither;
       quantize_info.colorspace=
         image->matte ? TransparentColorspace : RGBColorspace;
-      status=Assignment(&color_cube,&quantize_info,image);
+      status=Assignment(&cube_info,&quantize_info,image);
     }
-  /*
-    Release color cube tree storage.
-  */
-  do
-  {
-    nodes=color_cube.node_queue->next;
-    FreeMemory((char *) color_cube.node_queue);
-    color_cube.node_queue=nodes;
-  } while (color_cube.node_queue != (Nodes *) NULL);
-  color_cube.squares-=MaxRGB;
-  FreeMemory((char *) color_cube.squares);
+  DestroyCubeInfo(&cube_info);
   return(status);
 }
 
@@ -1523,13 +1685,10 @@ Export unsigned int MapImages(Image *images,Image *map_image,
   const unsigned int dither)
 {
   CubeInfo
-    color_cube;
+    cube_info;
 
   Image
     *image;
-
-  Nodes
-    *nodes;
 
   QuantizeInfo
     quantize_info;
@@ -1562,36 +1721,26 @@ Export unsigned int MapImages(Image *images,Image *map_image,
   /*
     Classify image colors from the reference image.
   */
-  status=InitializeCube(&color_cube,8);
+  status=GetCubeInfo(&cube_info,dither,8);
   if (status == False)
     return(False);
-  status=Classification(&color_cube,map_image);
+  status=Classification(&cube_info,map_image);
   if (status != False)
     {
       /*
         Classify image colors from the reference image.
       */
-      quantize_info.number_colors=color_cube.colors;
+      quantize_info.number_colors=cube_info.colors;
       for (image=images; image != (Image *) NULL; image=image->next)
       {
         quantize_info.colorspace=
           image->matte ? TransparentColorspace : RGBColorspace;
-        status=Assignment(&color_cube,&quantize_info,image);
+        status=Assignment(&cube_info,&quantize_info,image);
         if (status == False)
           break;
       }
     }
-  /*
-    Release color cube tree storage.
-  */
-  do
-  {
-    nodes=color_cube.node_queue->next;
-    FreeMemory((char *) color_cube.node_queue);
-    color_cube.node_queue=nodes;
-  } while (color_cube.node_queue != (Nodes *) NULL);
-  color_cube.squares-=MaxRGB;
-  FreeMemory((char *) color_cube.squares);
+  DestroyCubeInfo(&cube_info);
   return(status);
 }
 
@@ -1606,7 +1755,7 @@ Export unsigned int MapImages(Image *images,Image *map_image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure OrderedDitherImage uses the ordered dithering technique of
+%  Method OrderedDitherImage uses the ordered dithering technique of
 %  reducing color images to monochrome using positional information to retain
 %  as much information as possible.
 %
@@ -1623,6 +1772,8 @@ Export unsigned int MapImages(Image *images,Image *map_image,
 */
 static unsigned int OrderedDitherImage(Image *image)
 {
+#define DitherImageText  "  Dithering image...  "
+
   static Quantum
     DitherMatrix[8][8] =
     {
@@ -1747,14 +1898,12 @@ static unsigned int OrderedDitherImage(Image *image)
 unsigned int QuantizationError(Image *image)
 {
   CubeInfo
-    color_cube;
+    cube_info;
 
   double
-    total_error;
-
-  float
     distance_squared,
-    maximum_error_per_pixel;
+    maximum_error_per_pixel,
+    total_error;
 
   int
     distance;
@@ -1775,17 +1924,17 @@ unsigned int QuantizationError(Image *image)
   NumberColors(image,(FILE *) NULL);
   if (image->class == DirectClass)
     return(True);
-  color_cube.squares=(unsigned int *)
+  cube_info.squares=(unsigned int *)
     AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(unsigned int));
-  if (color_cube.squares == (unsigned int *) NULL)
+  if (cube_info.squares == (unsigned int *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to measure error",
         "Memory allocation failed");
       return(False);
     }
-  color_cube.squares+=MaxRGB;
+  cube_info.squares+=MaxRGB;
   for (i=(-MaxRGB); i <= MaxRGB; i++)
-    color_cube.squares[i]=i*i;
+    cube_info.squares[i]=i*i;
   /*
     For each pixel, collect error statistics.
   */
@@ -1795,12 +1944,12 @@ unsigned int QuantizationError(Image *image)
   for (i=0; i < image->packets; i++)
   {
     distance=(int) p->red-(int) image->colormap[p->index].red;
-    distance_squared=color_cube.squares[distance];
+    distance_squared=cube_info.squares[distance];
     distance=(int) p->green-(int) image->colormap[p->index].green;
-    distance_squared+=color_cube.squares[distance];
+    distance_squared+=cube_info.squares[distance];
     distance=(int) p->blue-(int) image->colormap[p->index].blue;
-    distance_squared+=color_cube.squares[distance];
-    total_error+=(distance_squared*((double) p->length+1.0));
+    distance_squared+=cube_info.squares[distance];
+    total_error+=(distance_squared*(p->length+1));
     if (distance_squared > maximum_error_per_pixel)
       maximum_error_per_pixel=distance_squared;
     p++;
@@ -1814,8 +1963,8 @@ unsigned int QuantizationError(Image *image)
     (image->mean_error_per_pixel)/(3.0*(MaxRGB+1)*(MaxRGB+1));
   image->normalized_maximum_error=
     maximum_error_per_pixel/(3.0*(MaxRGB+1)*(MaxRGB+1));
-  color_cube.squares-=MaxRGB;
-  FreeMemory((char *) color_cube.squares);
+  cube_info.squares-=MaxRGB;
+  FreeMemory((char *) cube_info.squares);
   return(True);
 }
 
@@ -1849,13 +1998,10 @@ unsigned int QuantizationError(Image *image)
 Export unsigned int QuantizeImage(QuantizeInfo *quantize_info,Image *image)
 {
   CubeInfo
-    color_cube;
+    cube_info;
 
   int
     depth;
-
-  Nodes
-    *nodes;
 
   unsigned int
     number_colors,
@@ -1893,36 +2039,26 @@ Export unsigned int QuantizeImage(QuantizeInfo *quantize_info,Image *image)
   /*
     Initialize color cube.
   */
-  status=InitializeCube(&color_cube,depth);
+  status=GetCubeInfo(&cube_info,quantize_info->dither,depth);
   if (status == False)
     return(False);
   if (quantize_info->colorspace != RGBColorspace)
     RGBTransformImage(image,quantize_info->colorspace);
-  status=Classification(&color_cube,image);
+  status=Classification(&cube_info,image);
   if (status != False)
     {
       /*
         Reduce the number of colors in the continuous tone image.
       */
-      if ((color_cube.colors >> 1) < number_colors)
+      if ((cube_info.colors >> 1) < number_colors)
         quantize_info->dither=False;
-      if (number_colors < color_cube.colors)
-        Reduction(&color_cube,number_colors);
-      status=Assignment(&color_cube,quantize_info,image);
+      if (number_colors < cube_info.colors)
+        Reduction(&cube_info,number_colors);
+      status=Assignment(&cube_info,quantize_info,image);
       if (quantize_info->colorspace != RGBColorspace)
         TransformRGBImage(image,quantize_info->colorspace);
     }
-  /*
-    Release color cube tree storage.
-  */
-  do
-  {
-    nodes=color_cube.node_queue->next;
-    FreeMemory((char *) color_cube.node_queue);
-    color_cube.node_queue=nodes;
-  } while (color_cube.node_queue != (Nodes *) NULL);
-  color_cube.squares-=MaxRGB;
-  FreeMemory((char *) color_cube.squares);
+  DestroyCubeInfo(&cube_info);
   return(status);
 }
 
@@ -1960,7 +2096,7 @@ Export unsigned int QuantizeImage(QuantizeInfo *quantize_info,Image *image)
 Export unsigned int QuantizeImages(QuantizeInfo *quantize_info,Image *images)
 {
   CubeInfo
-    color_cube;
+    cube_info;
 
   int
     depth;
@@ -1970,9 +2106,6 @@ Export unsigned int QuantizeImages(QuantizeInfo *quantize_info,Image *images)
 
   Image
     *image;
-
-  Nodes
-    *nodes;
 
   register int
     i;
@@ -2022,7 +2155,7 @@ Export unsigned int QuantizeImages(QuantizeInfo *quantize_info,Image *images)
   /*
     Initialize color cube.
   */
-  status=InitializeCube(&color_cube,depth);
+  status=GetCubeInfo(&cube_info,quantize_info->dither,depth);
   if (status == False)
     return(False);
   image=images;
@@ -2037,7 +2170,7 @@ Export unsigned int QuantizeImages(QuantizeInfo *quantize_info,Image *images)
   for (i=0; image != (Image *) NULL; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    status=Classification(&color_cube,image);
+    status=Classification(&cube_info,image);
     if (status == False)
       break;
     image=image->next;
@@ -2049,14 +2182,14 @@ Export unsigned int QuantizeImages(QuantizeInfo *quantize_info,Image *images)
       /*
         Reduce the number of colors in the continuous tone image sequence.
       */
-      if ((color_cube.colors >> 1) < number_colors)
+      if ((cube_info.colors >> 1) < number_colors)
         quantize_info->dither=False;
-      Reduction(&color_cube,number_colors);
+      Reduction(&cube_info,number_colors);
       image=images;
       for (i=0; image != (Image *) NULL; i++)
       {
         handler=SetMonitorHandler((MonitorHandler) NULL);
-        status=Assignment(&color_cube,quantize_info,image);
+        status=Assignment(&cube_info,quantize_info,image);
         if (status == False)
           break;
         if (quantize_info->colorspace != RGBColorspace)
@@ -2066,16 +2199,6 @@ Export unsigned int QuantizeImages(QuantizeInfo *quantize_info,Image *images)
         ProgressMonitor(AssignImageText,i,number_images);
       }
     }
-  /*
-    Release color cube tree storage.
-  */
-  do
-  {
-    nodes=color_cube.node_queue->next;
-    FreeMemory((char *) color_cube.node_queue);
-    color_cube.node_queue=nodes;
-  } while (color_cube.node_queue != (Nodes *) NULL);
-  color_cube.squares-=MaxRGB;
-  FreeMemory((char *) color_cube.squares);
+  DestroyCubeInfo(&cube_info);
   return(status);
 }

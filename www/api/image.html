@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>image - ImageMagick Image Methods</TITLE>
-<LINK REV="made" HREF="mailto:magick@mystic.es.dupont.com">
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.gif">
@@ -37,7 +37,6 @@
 		<LI><A HREF="#CycleImage">CycleImage</A>
 		<LI><A HREF="#DescribeImage">DescribeImage</A>
 		<LI><A HREF="#DestroyImage">DestroyImage</A>
-		<LI><A HREF="#DestroyImageInfo">DestroyImageInfo</A>
 		<LI><A HREF="#DestroyImages">DestroyImages</A>
 		<LI><A HREF="#DrawImage">DrawImage</A>
 		<LI><A HREF="#EqualizeImage">EqualizeImage</A>
@@ -47,6 +46,7 @@
 		<LI><A HREF="#GammaImage">GammaImage</A>
 		<LI><A HREF="#GetAnnotateInfo">GetAnnotateInfo</A>
 		<LI><A HREF="#GetImageInfo">GetImageInfo</A>
+		<LI><A HREF="#GetMontageInfo">GetMontageInfo</A>
 		<LI><A HREF="#IsGeometry">IsGeometry</A>
 		<LI><A HREF="#IsGrayImage">IsGrayImage</A>
 		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A>
@@ -61,6 +61,7 @@
 		<LI><A HREF="#ModulateImage">ModulateImage</A>
 		<LI><A HREF="#MogrifyImage">MogrifyImage</A>
 		<LI><A HREF="#MogrifyImages">MogrifyImages</A>
+		<LI><A HREF="#MontageImages">MontageImages</A>
 		<LI><A HREF="#MorphImages">MorphImages</A>
 		<LI><A HREF="#NegateImage">NegateImage</A>
 		<LI><A HREF="#NormalizeImage">NormalizeImage</A>
@@ -157,9 +158,6 @@ cropped_image=<STRONG>CropImage</STRONG>(image,crop_info)
 <STRONG>DestroyImage</STRONG>(image)
 
 <P>
-<STRONG>DestroyImageInfo</STRONG>(image_info)
-
-<P>
 <STRONG>DestroyImages</STRONG>(image)
 
 <P>
@@ -185,6 +183,9 @@ framed_image=<STRONG>FrameImage</STRONG>(image,frame_info)
 
 <P>
 <STRONG>GetImageInfo</STRONG>(image_info)
+
+<P>
+<STRONG>GetMontageInfo</STRONG>(montage_info)
 
 <P>
 status=<STRONG>IsGeometry</STRONG>(geometry)
@@ -227,6 +228,9 @@ minified_image=<STRONG>MinifyImage</STRONG>(image)
 
 <P>
 <STRONG>MogrifyImages</STRONG>(image_info,argc,argv,images)
+
+<P>
+<STRONG>MontageImages</STRONG>(image,montage_info)
 
 <P>
 morphed_image=<STRONG>MorphImages</STRONG>(images,number_frames)
@@ -915,28 +919,6 @@ The address of a structure of type Image.
 </DL></DL>
 <P>
 <HR>
-<H2><A NAME="DestroyImageInfo">DestroyImageInfo</A></H2>
-<P>
-Method DestroyImageInfo deallocates memory associated with an ImageInfo
-structure.
-
-<P>
-The format of the DestroyImageInfo routine is:
-
-<P>
-<PRE>        DestroyImageInfo(image_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to a ImageInfo structure.
-
-</DL></DL>
-<P>
-<HR>
 <H2><A NAME="DestroyImages">DestroyImages</A></H2>
 <P>
 Method DestroyImages deallocates memory associated with a linked list of
@@ -1162,6 +1144,27 @@ A description of each parameter follows:
 <DT><STRONG>image_info:</STRONG><DD>
 <P>
 Specifies a pointer to a ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetMontageInfo">GetMontageInfo</A></H2>
+<P>
+Method GetMontageInfo initializes the MontageInfo structure.
+
+<P>
+The format of the GetMontageInfo routine is:
+
+<P>
+<PRE>        GetMontageInfo(montage_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>montage_info:</STRONG><DD>
+<P>
+Specifies a pointer to a MontageInfo structure.
 
 </DL></DL>
 <P>
@@ -1613,6 +1616,32 @@ Specifies a pointer to a text array containing the command line arguments.
 <DT><STRONG>images:</STRONG><DD>
 <P>
 The address of a structure of type Image; returned from ReadImage.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="MontageImages">MontageImages</A></H2>
+<P>
+Method MontageImages creates a composite image by combining several
+separate images.
+
+<P>
+The format of the MontageImages routine is:
+
+<P>
+<PRE>        MontageImages(image,montage_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Specifies a pointer to an array of Image structures.
+
+<DT><STRONG>montage_info:</STRONG><DD>
+<P>
+Specifies a pointer to a XMontageInfo structure.
 
 </DL></DL>
 <P>

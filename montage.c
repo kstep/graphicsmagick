@@ -19,7 +19,7 @@
 %                              July 1992                                      %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -300,6 +300,7 @@ int main(int argc,char **argv)
   /*
     Parse command line.
   */
+  (void) ExpandFilenames(&argc,&argv);
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
@@ -1123,7 +1124,7 @@ int main(int argc,char **argv)
   if (image_info.verbose)
     DescribeImage(montage_image,stderr,False);
   DestroyImage(montage_image);
-  DestroyDelegates;
+  DestroyDelegateInfo;
   Exit(0);
   return(False);
 }

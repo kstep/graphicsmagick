@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>decode - Methods to Read Image Formats</TITLE>
-<LINK REV="made" HREF="mailto:magick@mystic.es.dupont.com">
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
 </HEAD>
 
 <body background="../../images/background.gif">
@@ -28,9 +28,11 @@
 		<LI><A HREF="#ReadGRAYImage">ReadGRAYImage</A>
 		<LI><A HREF="#ReadHDFImage">ReadHDFImage</A>
 		<LI><A HREF="#ReadHISTOGRAMImage">ReadHISTOGRAMImage</A>
+		<LI><A HREF="#ReadICCImage">ReadICCImage</A>
+		<LI><A HREF="#ReadICONImage">ReadICONImage</A>
+		<LI><A HREF="#ReadIPTCImage">ReadIPTCImage</A>
 		<LI><A HREF="#ReadJBIGImage">ReadJBIGImage</A>
 		<LI><A HREF="#ReadJPEGImage">ReadJPEGImage</A>
-		<LI><A HREF="#ReadICONImage">ReadICONImage</A>
 		<LI><A HREF="#ReadLABELImage">ReadLABELImage</A>
 		<LI><A HREF="#ReadLOGOImage">ReadLOGOImage</A>
 		<LI><A HREF="#ReadMAPImage">ReadMAPImage</A>
@@ -127,7 +129,13 @@ image=<STRONG>ReadHDFImage</STRONG>(image_info)
 image=<STRONG>ReadHISTOGRAMImage</STRONG>(image_info)
 
 <P>
+image=<STRONG>ReadICCImage</STRONG>(image_info)
+
+<P>
 image=<STRONG>ReadICONImage</STRONG>(image_info)
+
+<P>
+image=<STRONG>ReadIPTCImage</STRONG>(image_info)
 
 <P>
 image=<STRONG>ReadImage</STRONG>(image_info)
@@ -644,6 +652,97 @@ Specifies a pointer to an ImageInfo structure.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="ReadICCImage">ReadICCImage</A></H2>
+<P>
+Method ReadICCImage reads an image file in the ICC format and returns it.
+It allocates the memory necessary for the new Image structure and returns a
+pointer to the new image. This method differs from the other decoder
+methods in that only the color profile information is useful in the
+returned image.
+
+<P>
+The format of the ReadICCImage routine is:
+
+<P>
+<PRE>        image=ReadICCImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadICCImage returns a pointer to the image after reading. A null
+image is returned if there is a a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadICONImage">ReadICONImage</A></H2>
+<P>
+Method ReadICONImage reads a Microsoft icon image file and returns it. It
+allocates the memory necessary for the new Image structure and returns a
+pointer to the new image.
+
+<P>
+The format of the ReadICONImage routine is:
+
+<P>
+<PRE>        image=ReadICONImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadICONImage returns a pointer to the image after reading. A null
+image is returned if there is a a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadIPTCImage">ReadIPTCImage</A></H2>
+<P>
+Method ReadIPTCImage reads an image file in the IPTC format and returns it.
+It allocates the memory necessary for the new Image structure and returns a
+pointer to the new image. This method differs from the other decoder
+methods in that only the iptc profile information is useful in the returned
+image.
+
+<P>
+The format of the ReadIPTCImage routine is:
+
+<P>
+<PRE>        image=ReadIPTCImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadIPTCImage returns a pointer to the image after reading. A null
+image is returned if there is a a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="ReadJBIGImage">ReadJBIGImage</A></H2>
 <P>
 Method ReadJBIGImage reads a JBIG image file and returns it. It allocates
@@ -698,35 +797,6 @@ read.
 <DT><STRONG>filename:</STRONG><DD>
 <P>
 Specifies the name of the jpeg image to read.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="ReadICONImage">ReadICONImage</A></H2>
-<P>
-Method ReadICONImage reads a Microsoft icon image file and returns it. It
-allocates the memory necessary for the new Image structure and returns a
-pointer to the new image.
-
-<P>
-The format of the ReadICONImage routine is:
-
-<P>
-<PRE>        image=ReadICONImage(image_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-Method ReadICONImage returns a pointer to the image after reading. A null
-image is returned if there is a a memory shortage or if the image cannot be
-read.
-
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-Specifies a pointer to an ImageInfo structure.
 
 </DL></DL>
 <P>

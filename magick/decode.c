@@ -18,7 +18,7 @@
 %                              January 1992                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%  Copyright 1999 E. I. du Pont de Nemours and Company                        %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -6493,7 +6493,7 @@ Image *ReadMIFFImage(const ImageInfo *image_info)
                     else
                       image->rendering_intent=UndefinedIntent;
             if (Latin1Compare(keyword,"resolution") == 0)
-              (void) sscanf(value,"%fx%f",&image->x_resolution,
+              (void) sscanf(value,"%lfx%lf",&image->x_resolution,
                 &image->y_resolution);
             if (Latin1Compare(keyword,"rows") == 0)
               image->rows=(unsigned int) atoi(value);
@@ -8152,12 +8152,12 @@ Image *ReadPDFImage(const ImageInfo *image_info)
   DelegateInfo
     delegate_info;
 
-  FILE
-    *file;
-
-  float
+  double
     dx_resolution,
     dy_resolution;
+
+  FILE
+    *file;
 
   Image
     *image,
@@ -8228,7 +8228,7 @@ Image *ReadPDFImage(const ImageInfo *image_info)
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
      (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%fx%f",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
@@ -10546,12 +10546,12 @@ Image *ReadPSImage(const ImageInfo *image_info)
   DelegateInfo
     delegate_info;
 
-  FILE
-    *file;
-
-  float
+  double
     dx_resolution,
     dy_resolution;
+
+  FILE
+    *file;
 
   Image
     *image,
@@ -10626,7 +10626,7 @@ Image *ReadPSImage(const ImageInfo *image_info)
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
       (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%fx%f",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
@@ -13756,7 +13756,7 @@ Image *ReadTEXTImage(const ImageInfo *image_info)
     *status,
     text[MaxTextExtent];
 
-  float
+  double
     dx_resolution,
     dy_resolution;
 
@@ -13802,7 +13802,7 @@ Image *ReadTEXTImage(const ImageInfo *image_info)
         density[MaxTextExtent];
 
       (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%fx%f",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
