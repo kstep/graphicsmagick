@@ -397,7 +397,7 @@ static unsigned int IsLogAccessible(const char *filename)
     return(False);
   status=stat(filename,&file_info);
   if (status != 0)
-    return(-1);
+    return(False);
   return(S_ISREG(file_info.st_mode));
 }
 
