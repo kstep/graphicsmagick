@@ -46,6 +46,7 @@ void CTargetPage::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CTargetPage, CPropertyPage)
 	//{{AFX_MSG_MAP(CTargetPage)
+	ON_BN_CLICKED(IDC_EditConfig, OnEditConfig)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -61,4 +62,15 @@ BOOL CTargetPage::OnInitDialog()
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CTargetPage::OnEditConfig() 
+{
+  CString strConfigFile = "..\\magick\\config.h.in";
+
+  CString strCommandLine;
+  strCommandLine.Format("notepad.exe \"%s\"",strConfigFile);
+
+  if (WinExec(strCommandLine, SW_SHOW) <= 31)
+	  MessageBox(_T("Unable to run notepad"));
 }

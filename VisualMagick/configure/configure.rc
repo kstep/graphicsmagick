@@ -123,6 +123,7 @@ BEGIN
     CONTROL         "Generate all utility projects with full paths rather then relative paths.",
                     IDC_STANDALONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
                     167,236,10
+    PUSHBUTTON      "Edit ""config.h""",IDC_EditConfig,117,199,69,14
 END
 
 IDD_SYSTEM_PAGE DIALOG DISCARDABLE  0, 0, 318, 233

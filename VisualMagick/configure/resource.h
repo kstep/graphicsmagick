@@ -36,6 +36,7 @@
 #define IDC_DECORATE_FILES              1025
 #define IDC_INCLUDE_OPTIONAL            1026
 #define IDC_STANDALONE                  1027
+#define IDC_EditConfig                  1028
 #define IDD_WAITDIALOG                  23040
 #define IDC_MSGCTRL                     23041
 #define IDC_PROGRESSCTRL                23042
@@ -46,7 +47,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_CONTROL_VALUE         1029
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif
