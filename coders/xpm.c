@@ -746,7 +746,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     color.green=DownScale(image->colormap[i].green);
     color.blue=DownScale(image->colormap[i].blue);
     color.opacity=DownScale(image->colormap[i].opacity);
-    (void) QueryColorName(color,name);
+    (void) QueryColorName(&color,name);
     if (transparent)
       {
         if (i == (int) (colors-1))
