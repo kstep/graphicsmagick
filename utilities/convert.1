@@ -1,4 +1,8 @@
 .TH convert 1 "Date: 2002/01/01 01:00:00" "ImageMagick"
+.TP
+.in 15
+.in 15
+.in 20
 .SH NAME
 
 convert - convert an image or sequence of images
@@ -394,9 +398,9 @@ behavior.
 \fRappend a set of images
 
 All the input images must have the same width or height. Images of the
-same width are stacked top-to-bottom. Images of the same height are stacked
-left-to-right. Use \fB+append\fP to stack rectangular images
-left-to-right.
+same width are stacked top-to-bottom. Images with the same height are stacked
+left-to-right. Use \fB+append\fP to stack images of the same
+width and the same height top-to-bottom.
 
 .TP
 .B "-average"
@@ -464,6 +468,17 @@ row to remove.
 The \fB-chop\fP option removes entire rows and columns,
 and moves the remaining corner blocks leftward and upward to close the gaps.
 
+.TP
+.B "-clip"
+\fRapply the clipping path, if one is present
+
+If a clipping path is present, it will be applied to subsequent operations.
+
+For example, if you type the following command:
+
+    convert -clip -negate cockatoo.tif negated_cockatoo.tif
+
+only the pixels within the clipping path are negated.
 .TP
 .B "-coalesce"
 \fRmerge a sequence of images
@@ -1122,8 +1137,7 @@ font.  For example, Arial.ttf is a Truetype font, ps:helvetica
 is Postscript, and x:fixed is OPTION1. 
 
 .TP
-.B "-frame
-<width>x<height>+<outer bevel width>+<inner bevel width>"
+.B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>"\fP
 \fRsurround the image with an ornamental border
 
 See \fIX(1)\fP for details
@@ -1611,8 +1625,7 @@ details about the geometry specification.
 Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
 
 .TP
-.B "-region \fI<width>x<height>{+-}<x
-offset>{+-}<y offset>"
+.B "-region \fI<width>x<height>{+-}<x offset>{+-}<y offset>"\fP
 \fRapply options to a portion of the image
 .TP
 .B "-roll \fI{+-}<x offset>{+-}<y offset>"\fP
@@ -1966,31 +1979,32 @@ display(1), animate(1), identify(1), montage(1), mogrify(1),
 composite(1)
 
 .SH COPYRIGHT
-Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
-to making software imaging solutions freely available.
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files ("ImageMagick"),
+\fBCopyright (C) 2002 ImageMagick Studio\fP
+
+\fBPermission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files ("ImageMagick"),
 to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of ImageMagick, and to permit persons to whom the
-ImageMagick is furnished to do so, subject to the following conditions:
+and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
+is furnished to do so, subject to the following conditions:\fP
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of ImageMagick.
+\fBThe above copyright notice and this permission notice shall be included
+in all copies or substantial portions of ImageMagick.\fP
 
-The software is provided "as is", without warranty of any kind, express or
-implied, including but not limited to the warranties of merchantability,
-fitness for a particular purpose and noninfringement.  In no event shall
+\fBThe software is provided "as is", without warranty of any kind, express
+or implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement.In no event shall
 ImageMagick Studio be liable for any claim, damages or other liability,
-whether in an action of contract, tort or otherwise, arising from, out of
-or in connection with ImageMagick or the use or other dealings in
-ImageMagick.
+whether in an action of contract, tort or otherwise, arising from, out
+of or in connection with ImageMagick or the use or other dealings in
+ImageMagick.\fP
 
-Except as contained in this notice, the name of the ImageMagick Studio
-shall not be used in advertising or otherwise to promote the sale, use or
-other dealings in ImageMagick without prior written authorization from the
-ImageMagick Studio.
-
+\fBExcept as contained in this notice, the name of the
+ImageMagick Studio LLC shall not be used in advertising or otherwise to
+promote the sale, use or other dealings in ImageMagick without prior written
+authorization from the ImageMagick Studio.\fP
 .SH AUTHORS
-John Cristy, ImageMagick Studio LLC
+
+\fIJohn Cristy, ImageMagick Studio LLC\fP.
+

@@ -793,11 +793,23 @@ font.  For example, Arial.ttf is a Truetype font, ps:helvetica
 is Postscript, and x:fixed is OPTION1. 
 
 .TP
-.B "-format \fI\"string\""\fP
-\fRoutput formatted image characteristics
+.B "-format \fItype"\fP
+\fRthe image format type
+
+This option will convert any image to the image format you specify.
+See \fBconvert(1)\fP for a list of image format types supported by
+\fBImageMagick\fP.
+
+
+By default the file is written to its original name.  However, if the
+filename extension matches a supported format, the extension is replaced
+with the image format type specified with \fB-format\fP.  For example,
+if you specify <em>tiff</em> as the format type and the input image
+filename is <em>image.gif</em>, the output image filename becomes
+<em>image.tiff</em>.
+
 .TP
-.B "-frame
-<width>x<height>+<outer bevel width>+<inner bevel width>"
+.B "-frame \fI<width>x<height>+<outer bevel width>+<inner bevel width>"\fP
 \fRsurround the image with an ornamental border
 
 See \fIX(1)\fP for details
@@ -1219,8 +1231,7 @@ details about the geometry specification.
 Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
 
 .TP
-.B "-region \fI<width>x<height>{+-}<x
-offset>{+-}<y offset>"
+.B "-region \fI<width>x<height>{+-}<x offset>{+-}<y offset>"\fP
 \fRapply options to a portion of the image
 .TP
 .B "-roll \fI{+-}<x offset>{+-}<y offset>"\fP
@@ -1551,31 +1562,32 @@ display(1), animate(1), identify(1), montage(1), convert(1),
 composite(1)
 
 .SH COPYRIGHT
-Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
-to making software imaging solutions freely available.
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files ("ImageMagick"),
+\fBCopyright (C) 2002 ImageMagick Studio\fP
+
+\fBPermission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files ("ImageMagick"),
 to deal in ImageMagick without restriction, including without limitation
 the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of ImageMagick, and to permit persons to whom the
-ImageMagick is furnished to do so, subject to the following conditions:
+and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
+is furnished to do so, subject to the following conditions:\fP
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of ImageMagick.
+\fBThe above copyright notice and this permission notice shall be included
+in all copies or substantial portions of ImageMagick.\fP
 
-The software is provided "as is", without warranty of any kind, express or
-implied, including but not limited to the warranties of merchantability,
-fitness for a particular purpose and noninfringement.  In no event shall
+\fBThe software is provided "as is", without warranty of any kind, express
+or implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement.In no event shall
 ImageMagick Studio be liable for any claim, damages or other liability,
-whether in an action of contract, tort or otherwise, arising from, out of
-or in connection with ImageMagick or the use or other dealings in
-ImageMagick.
+whether in an action of contract, tort or otherwise, arising from, out
+of or in connection with ImageMagick or the use or other dealings in
+ImageMagick.\fP
 
-Except as contained in this notice, the name of the ImageMagick Studio
-shall not be used in advertising or otherwise to promote the sale, use or
-other dealings in ImageMagick without prior written authorization from the
-ImageMagick Studio.
-
+\fBExcept as contained in this notice, the name of the
+ImageMagick Studio LLC shall not be used in advertising or otherwise to
+promote the sale, use or other dealings in ImageMagick without prior written
+authorization from the ImageMagick Studio.\fP
 .SH AUTHORS
-John Cristy, ImageMagick Studio LLC
+
+\fIJohn Cristy, ImageMagick Studio LLC\fP.
+
