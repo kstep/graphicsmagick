@@ -1391,11 +1391,16 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           extra_samples,
           sample_info[1];
 
+        unsigned short
+          samples_per_pixel;
+
         /*
           TIFF has a matte channel.
         */
         extra_samples=1;
         sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
+        TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
+        TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+1);
         TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,&sample_info);
       }
     switch (image_info->compression)
