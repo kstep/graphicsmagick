@@ -147,21 +147,16 @@ static void DestroyModuleInfo(void)
     *q;
 
   register ModuleInfo
-    *p,
-    *pnext;
+    *p;
 
   /*
     Unload and unregister all loaded modules.
   */
-  p=module_list;
-  while (p != (ModuleInfo *) NULL)
-    {
-      pnext=p->next;
-      UnloadDynamicModule(p->tag);
-      UnregisterModuleInfo(p->tag);
-      p=pnext;
-    }
-
+  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
+  {
+    UnloadDynamicModule(p->tag);
+    UnregisterModuleInfo(p->tag);
+  }
   /*
     Free module list and aliases.
   */

@@ -376,7 +376,7 @@ builddir=`pwd`
 #
 # Most delegates have includes in the same directory as the library
 #
-for dir in bzlib fpx hdf/src jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/objs/.libs ttf/include wmf xml xml/.libs zlib
+for dir in bzlib fpx hdf/src hdf/src/.libs jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/objs/.libs ttf/include wmf xml xml/.libs zlib
 do
   if test -d "$builddir/$dir"
   then
@@ -991,14 +991,14 @@ then
     AC_MSG_RESULT()
     failed=0;
     passed=0;
-    AC_CHECK_HEADERS(hdf5.h hdf/src/hdf5.h)
+    AC_CHECK_HEADERS(hdf5.h)
     if test "$ac_cv_header_hdf_h" = 'yes' -o "$ac_cv_header_hdf_hdf_h" = 'yes'
     then
 	passed=`expr $passed + 1`
     else
 	failed=`expr $failed + 1`
     fi
-    AC_CHECK_LIB(df,DFANputlabel,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(hdf5,H5FDread,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if HDF package is complete)
     if test $passed -gt 0
     then

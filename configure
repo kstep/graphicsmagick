@@ -4053,7 +4053,7 @@ builddir=`pwd`
 #
 # Most delegates have includes in the same directory as the library
 #
-for dir in bzlib fpx hdf/src jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/objs/.libs ttf/include wmf xml xml/.libs zlib
+for dir in bzlib fpx hdf/src hdf/src/.libs jbig/libjbig jpeg lcms/src png tiff/libtiff ttf/objs/.libs ttf/include wmf xml xml/.libs zlib
 do
   if test -d "$builddir/$dir"
   then
@@ -7955,7 +7955,7 @@ echo "${ECHO_T}" >&6
     failed=0;
     passed=0;
 
-for ac_header in hdf5.h hdf/src/hdf5.h
+for ac_header in hdf5.h 
 do
 ac_ac_Header=`echo "ac_cv_header_$ac_header" | $ac_tr_sh`
 echo "$as_me:7961: checking for $ac_header" >&5
@@ -8010,9 +8010,9 @@ done
 	failed=`expr $failed + 1`
     fi
 
-echo "$as_me:8013: checking for DFANputlabel in -lhdf5" >&5
-echo $ECHO_N "checking for DFANputlabel in -lhdf5... $ECHO_C" >&6
-if test "${ac_cv_lib_df_DFANputlabel+set}" = set; then
+echo "$as_me:8013: checking for H5FDread in -lhdf5" >&5
+echo $ECHO_N "checking for H5FDread in -lhdf5... $ECHO_C" >&6
+if test "${ac_cv_lib_hdf_H5FDread+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -8027,11 +8027,11 @@ extern "C"
 #endif
 /* We use char because int might match the return type of a gcc2
    builtin and then its argument prototype would still apply.  */
-char DFANputlabel ();
+char H5FDread ();
 int
 main ()
 {
-DFANputlabel ();
+H5FDread ();
   ;
   return 0;
 }
@@ -8047,18 +8047,18 @@ if { (eval echo "$as_me:8040: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:8048: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  ac_cv_lib_df_DFANputlabel=yes
+  ac_cv_lib_hdf_H5FDread=yes
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-ac_cv_lib_df_DFANputlabel=no
+ac_cv_lib_hdf_H5FDread=no
 fi
 rm -f conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-echo "$as_me:8059: result: $ac_cv_lib_df_DFANputlabel" >&5
-echo "${ECHO_T}$ac_cv_lib_df_DFANputlabel" >&6
-if test $ac_cv_lib_df_DFANputlabel = yes; then
+echo "$as_me:8059: result: $ac_cv_lib_hdf_H5FDread" >&5
+echo "${ECHO_T}$ac_cv_lib_hdf_H5FDread" >&6
+if test $ac_cv_lib_hdf_H5FDread = yes; then
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
