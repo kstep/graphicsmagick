@@ -1,3 +1,7 @@
+2004-07-28  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am:  Update to Automake 1.9.
+
 2004-07-20  Mike Chiarappa  <mikechiarappa@libero.it>
 	* BCBMagick\magick\GM_magick.bpr: Updated to reflect changes since last update.
 	* BCBMagick\magick\libMagick.bpr: Updated to reflect changes since last update.
