@@ -1,0 +1,137 @@
+# ImageMagick delegates for Unix.  The format is as follows.  Each
+# delegate begins with a tag and/or format separated by a colon (:).
+# This line must be followed by one or more commands preceded with a tab
+# (\t) character.  If a command exceeds the length of a line, use the
+# backslash continuation character.  End the command with an ampersand
+# (&) to execute the command in the background.
+#
+# Optionally you can include the image filename, type, width, height, or
+# other image attributes by embedding special format characters:
+# 
+#   %b   file size
+#   %d   directory
+#   %e   filename extention
+#   %f   filename
+#   %h   height
+#   %l   label
+#   %m   magick
+#   %p   page number
+#   %s   scene number
+#   %t   top of filename
+#   %u   unique temporary filename
+#   %w   width
+#   %x   x resolution
+#   %y   y resolution
+# 
+# There are two types of delegates: decode and encode.  Decode delegates
+# begin with a image format (tag) specified (e.g. mpeg) followed with a
+# colon.  The delegate is invoked whenever ImageMagick attempts to read
+# an image whose format specifier or filename extension matches the tag
+# (e.g.  image.mpg for tag mpg:).  The delegate must write an image to
+# the file designated by %o in an image format that ImageMagick
+# understands (e.g. pnm).
+# 
+# An encode delegate begins with an image format, a colon, and a tag.
+# The The delegate is invoked whenever ImageMagick attempts to write an
+# image whose format specifier or filename extension matches the tag
+# (e.g. image.mpg for tag :mpg).  ImageMagick writes to a temporary file
+# in the format you specify.  The delegate can then read this file and
+# convert it to a format it supports and pesumably ImageMagick does not.
+# 
+# Delegates must be separated with a blank line.
+#
+# Lines that begin with a pound sign (#) are comments and are ignored.
+# 
+# There are a number of delegates used by ImageMagick for special
+# circumstances.  For example, the print or Ghostscript delegate.  Don't
+# remove these or ImageMagick may behave strangely.
+# 
+# 
+
+: bzip
+	|@BZIPDelegate@ -f > %o
+
+: compress
+	|@LZWEncodeDelegate@ -c > %o
+
+: zip
+	|gzip -cf > %o
+
+: mpeg
+	@MPEGEncodeDelegate@ %u %o
+
+browse:
+	@BrowseDelegate@ http://www.wizards.dupont.com/cristy/ImageMagick.html &
+
+bzip:
+	|@BZIPDelegate@ -cd %i
+
+cgm:
+	@CGMDecodeDelegate@ -d ps %i %o %u
+	mv %o.ps %o
+
+compress:
+	|@LZWEncodeDelegate@ -c %i
+
+edit:
+	@EditorDelegate@ -title "Edit Image Comment" -e vi %i
+
+file:
+	@WWWDecodeDelegate@ %m:%i > %o 2>&1
+
+fig:
+	@FIGDecodeDelegate@  -L ps %i %o
+
+ftp:
+	@WWWDecodeDelegate@ %m:%i > %o 2>&1
+
+gs:
+	@PSDelegate@ -sDEVICE=%s -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
+	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- \
+	  "%s" -c quit
+
+hpgl:
+	@HPGLDecodeDelegate@ -q -m eps -f %i %o
+
+htm:
+	@HTMLDecodeDelegate@ -o %o %i
+
+html:
+	@HTMLDecodeDelegate@ -o %o %i
+
+http:
+	@WWWDecodeDelegate@ %m:%i > %o 2>&1
+
+launch: pnm
+	@LaunchDelegate@ %i
+
+mpg:
+	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%d
+	cat %o*.ppm > %o
+	rm -f %o*.ppm
+
+m2v:
+	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%d
+	cat %o*.ppm > %o
+	rm -f %o*.ppm
+
+print: ps
+	@LPDelegate@ -c -s %i
+
+rad:
+	@RADDecodeDelegate@ -g 1.0 %i %o
+
+rgba: rle
+	@RLEEncodeDelegate@ -w %w -h %h -n 4 -o %o %i
+
+scan:
+	@SCANDecodeDelegate@  -d %i > %o
+
+show: %m
+	@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" tmp:%i &
+
+shtml:
+	@HTMLDecodeDelegate@ -o %o %i
+
+zip:
+	|gzip -cdfq %i
