@@ -15,7 +15,8 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                 July 1992                                   %
+%                              Bill Radcliffe                                 %
+%                                March 2000                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
@@ -189,7 +190,7 @@ static unsigned int GetToken(Image *image,char **token,int *c,
   return(True);
 }
 
-ModuleExport char **StringToTokens(const char *text,int *number_tokens)
+Export char **StringToTokens(const char *text,int *number_tokens)
 {
   char
     **tokens;
@@ -1062,8 +1063,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->primitive,filename);
   status=DrawImage(image,draw_info);
-  /* puts(filename); if (0) */
-  /* (void) remove(filename+1); */
+  (void) remove(filename+1);
   if (status == False)
     ThrowReaderException(CorruptImageWarning,"Unable to read SVG image",image);
   DestroyDrawInfo(draw_info);
@@ -1093,7 +1093,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %      RegisterSVGImage(void)
 %
 */
-ModuleExport void RegisterSVGImage(void)
+Export void RegisterSVGImage(void)
 {
   MagickInfo
     *entry;
@@ -1131,7 +1131,7 @@ ModuleExport void RegisterSVGImage(void)
 %      UnregisterSVGImage(void)
 %
 */
-ModuleExport void UnregisterSVGImage(void)
+Export void UnregisterSVGImage(void)
 {
   UnregisterMagickInfo("SVG");
 }
