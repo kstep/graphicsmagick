@@ -1223,10 +1223,24 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 #endif
         if (*type == 'r')
           {
-            image->blob_info.length=0;
-            image->blob_info.data=(char *)
-              MapBlob(filename,ReadMode,&image->blob_info.length);
-            image->blob_info.mapped=image->blob_info.data != (void *) NULL;
+            MagickInfo
+              *magick_info;
+
+            magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
+            if (magick_info != (MagickInfo *) NULL)
+              {
+                if (magick_info->blob_support)
+                  {
+                    /*
+                      Format supports blobs-- try memory-mapped I/O.
+                    */
+                    image->blob_info.length=0;
+                    image->blob_info.data=(char *)
+                      MapBlob(filename,ReadMode,&image->blob_info.length);
+                    image->blob_info.mapped=
+                      image->blob_info.data != (void *) NULL;
+                  }
+              }
           }
         if (!image->blob_info.mapped)
           image->file=(FILE *) fopen(filename,type);
