@@ -106,7 +106,6 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     *annotate_image;
 
   int
-    j,
     x,
     y;
 
@@ -197,24 +196,18 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     */
     FormatString(label,"%.1024s",textlist[i]);
     FreeMemory(textlist[i]);
-    for (j=strlen(label)-1; ; j--)
-    {
-      (void) strcpy(local_info->image_info->filename,label);
-      annotate_image=ReadLABELImage(local_info->image_info);
-      if (annotate_image == (Image *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to annotate image",
-            (char *) NULL);
-          for ( ; textlist[i] != (char *) NULL; i++)
-            FreeMemory(textlist[i]);
-          FreeMemory(textlist);
-          break;
-        }
-      if ((annotate_image->columns <= width) || (strlen(label) < 4))
-        break;
-      DestroyImage(annotate_image);
-      (void) strcpy(label+j,"...");
-    }
+    (void) strcpy(local_info->image_info->filename,label);
+    annotate_image=ReadLABELImage(local_info->image_info);
+    if (annotate_image == (Image *) NULL)
+      {
+        MagickWarning(ResourceLimitWarning,"Unable to annotate image",
+          (char *) NULL);
+        for ( ; textlist[i] != (char *) NULL; i++)
+          FreeMemory(textlist[i]);
+        FreeMemory(textlist);
+        DestroyAnnotateInfo(local_info);
+        return;
+      }
     if (annotate_info->degrees != 0.0)
       {
         Image
@@ -364,7 +357,7 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
 
   cloned_info=(AnnotateInfo *) AllocateMemory(sizeof(AnnotateInfo));
   if (cloned_info == (AnnotateInfo *) NULL)
-    MagickError(ResourceLimitWarning,"Unable to clone annotate info",
+    MagickError(ResourceLimitError,"Unable to clone annotate info",
       "Memory allocation failed");
   if (annotate_info == (AnnotateInfo *) NULL)
     {

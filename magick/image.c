@@ -1263,6 +1263,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
     Initialize composited image.
   */
   width=Min(composite_image->columns,image->columns-x_offset);
+  if (width > image->columns)
+    width=image->columns;
   height=Min(composite_image->rows,image->rows-y_offset);
   for (y=0; y < height; y++)
   {
@@ -1274,11 +1276,6 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       break;
     for (x=0; x < width; x++)
     {
-      if ((x+x_offset) < 0)
-        {  
-          p++;
-          continue;
-        }
       switch (compose)
       {
         case AnnotateCompositeOp:
