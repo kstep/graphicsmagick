@@ -452,7 +452,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
 
 #define EXIF_NUM_FORMATS 12
 static int exiffmtbytes[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
-#define EXIF_FMT_BYTE       1 
+#define EXIF_FMT_BYTE       1
 #define EXIF_FMT_STRING     2
 #define EXIF_FMT_USHORT     3
 #define EXIF_FMT_ULONG      4
@@ -472,88 +472,88 @@ static const struct {
     unsigned short Tag;
     char * Desc;
 } TagTable[] = {
-  {	0x100,	"ImageWidth"},
-  {	0x101,	"ImageLength"},
-  {	0x102,	"BitsPerSample"},
-  {	0x103,	"Compression"},
-  {	0x106,	"PhotometricInterpretation"},
-  {	0x10A,	"FillOrder"},
-  {	0x10D,	"DocumentName"},
-  {	0x10E,	"ImageDescription"},
-  {	0x10F,	"Make"},
-  {	0x110,	"Model"},
-  {	0x111,	"StripOffsets"},
-  {	0x112,	"Orientation"},
-  {	0x115,	"SamplesPerPixel"},
-  {	0x116,	"RowsPerStrip"},
-  {	0x117,	"StripByteCounts"},
-  {	0x11A,	"XResolution"},
-  {	0x11B,	"YResolution"},
-  {	0x11C,	"PlanarConfiguration"},
-  {	0x128,	"ResolutionUnit"},
-  {	0x12D,	"TransferFunction"},
-  {	0x131,	"Software"},
-  {	0x132,	"DateTime"},
-  {	0x13B,	"Artist"},
-  {	0x13E,	"WhitePoint"},
-  {	0x13F,	"PrimaryChromaticities"},
-  {	0x156,	"TransferRange"},
-  {	0x200,	"JPEGProc"},
-  {	0x201,	"JPEGInterchangeFormat"},
-  {	0x202,	"JPEGInterchangeFormatLength"},
-  {	0x211,	"YCbCrCoefficients"},
-  {	0x212,	"YCbCrSubSampling"},
-  {	0x213,	"YCbCrPositioning"},
-  {	0x214,	"ReferenceBlackWhite"},
-  {	0x828D,	"CFARepeatPatternDim"},
-  {	0x828E,	"CFAPattern"},
-  {	0x828F,	"BatteryLevel"},
-  {	0x8298,	"Copyright"},
-  {	0x829A,	"ExposureTime"},
-  {	0x829D,	"FNumber"},
-  {	0x83BB,	"IPTC/NAA"},
-  {	0x8769,	"ExifOffset"},
-  {	0x8773,	"InterColorProfile"},
-  {	0x8822,	"ExposureProgram"},
-  {	0x8824,	"SpectralSensitivity"},
-  {	0x8825,	"GPSInfo"},
-  {	0x8827,	"ISOSpeedRatings"},
-  {	0x8828,	"OECF"},
-  {	0x9000,	"ExifVersion"},
-  {	0x9003,	"DateTimeOriginal"},
-  {	0x9004,	"DateTimeDigitized"},
-  {	0x9101,	"ComponentsConfiguration"},
-  {	0x9102,	"CompressedBitsPerPixel"},
-  {	0x9201,	"ShutterSpeedValue"},
-  {	0x9202,	"ApertureValue"},
-  {	0x9203,	"BrightnessValue"},
-  {	0x9204,	"ExposureBiasValue"},
-  {	0x9205,	"MaxApertureValue"},
-  {	0x9206,	"SubjectDistance"},
-  {	0x9207,	"MeteringMode"},
-  {	0x9208,	"LightSource"},
-  {	0x9209,	"Flash"},
-  {	0x920A,	"FocalLength"},
-  {	0x927C,	"MakerNote"},
-  {	0x9286,	"UserComment"},
-  {	0x9290,	"SubSecTime"},
-  {	0x9291,	"SubSecTimeOriginal"},
-  {	0x9292,	"SubSecTimeDigitized"},
-  {	0xA000,	"FlashPixVersion"},
-  {	0xA001,	"ColorSpace"},
-  {	0xA002,	"ExifImageWidth"},
-  {	0xA003,	"ExifImageLength"},
-  {	0xA005,	"InteroperabilityOffset"},
-  {	0xA20B,	"FlashEnergy"},			        // 0x920B in TIFF/EP
-  {	0xA20C,	"SpatialFrequencyResponse"},	// 0x920C    -  -
-  {	0xA20E,	"FocalPlaneXResolution"},    	// 0x920E    -  -
-  {	0xA20F,	"FocalPlaneYResolution"},	    // 0x920F    -  -
-  {	0xA210,	"FocalPlaneResolutionUnit"},	// 0x9210    -  -
-  {	0xA214,	"SubjectLocation"},		        // 0x9214    -  -
-  {	0xA215,	"ExposureIndex"},		        // 0x9215    -  -
-  {	0xA217,	"SensingMethod"},		        // 0x9217    -  -
-  {	0xA300,	"FileSource"},
-  {	0xA301,	"SceneType"},
+  {  0x100,  "ImageWidth"},
+  {  0x101,  "ImageLength"},
+  {  0x102,  "BitsPerSample"},
+  {  0x103,  "Compression"},
+  {  0x106,  "PhotometricInterpretation"},
+  {  0x10A,  "FillOrder"},
+  {  0x10D,  "DocumentName"},
+  {  0x10E,  "ImageDescription"},
+  {  0x10F,  "Make"},
+  {  0x110,  "Model"},
+  {  0x111,  "StripOffsets"},
+  {  0x112,  "Orientation"},
+  {  0x115,  "SamplesPerPixel"},
+  {  0x116,  "RowsPerStrip"},
+  {  0x117,  "StripByteCounts"},
+  {  0x11A,  "XResolution"},
+  {  0x11B,  "YResolution"},
+  {  0x11C,  "PlanarConfiguration"},
+  {  0x128,  "ResolutionUnit"},
+  {  0x12D,  "TransferFunction"},
+  {  0x131,  "Software"},
+  {  0x132,  "DateTime"},
+  {  0x13B,  "Artist"},
+  {  0x13E,  "WhitePoint"},
+  {  0x13F,  "PrimaryChromaticities"},
+  {  0x156,  "TransferRange"},
+  {  0x200,  "JPEGProc"},
+  {  0x201,  "JPEGInterchangeFormat"},
+  {  0x202,  "JPEGInterchangeFormatLength"},
+  {  0x211,  "YCbCrCoefficients"},
+  {  0x212,  "YCbCrSubSampling"},
+  {  0x213,  "YCbCrPositioning"},
+  {  0x214,  "ReferenceBlackWhite"},
+  {  0x828D,  "CFARepeatPatternDim"},
+  {  0x828E,  "CFAPattern"},
+  {  0x828F,  "BatteryLevel"},
+  {  0x8298,  "Copyright"},
+  {  0x829A,  "ExposureTime"},
+  {  0x829D,  "FNumber"},
+  {  0x83BB,  "IPTC/NAA"},
+  {  0x8769,  "ExifOffset"},
+  {  0x8773,  "InterColorProfile"},
+  {  0x8822,  "ExposureProgram"},
+  {  0x8824,  "SpectralSensitivity"},
+  {  0x8825,  "GPSInfo"},
+  {  0x8827,  "ISOSpeedRatings"},
+  {  0x8828,  "OECF"},
+  {  0x9000,  "ExifVersion"},
+  {  0x9003,  "DateTimeOriginal"},
+  {  0x9004,  "DateTimeDigitized"},
+  {  0x9101,  "ComponentsConfiguration"},
+  {  0x9102,  "CompressedBitsPerPixel"},
+  {  0x9201,  "ShutterSpeedValue"},
+  {  0x9202,  "ApertureValue"},
+  {  0x9203,  "BrightnessValue"},
+  {  0x9204,  "ExposureBiasValue"},
+  {  0x9205,  "MaxApertureValue"},
+  {  0x9206,  "SubjectDistance"},
+  {  0x9207,  "MeteringMode"},
+  {  0x9208,  "LightSource"},
+  {  0x9209,  "Flash"},
+  {  0x920A,  "FocalLength"},
+  {  0x927C,  "MakerNote"},
+  {  0x9286,  "UserComment"},
+  {  0x9290,  "SubSecTime"},
+  {  0x9291,  "SubSecTimeOriginal"},
+  {  0x9292,  "SubSecTimeDigitized"},
+  {  0xA000,  "FlashPixVersion"},
+  {  0xA001,  "ColorSpace"},
+  {  0xA002,  "ExifImageWidth"},
+  {  0xA003,  "ExifImageLength"},
+  {  0xA005,  "InteroperabilityOffset"},
+  {  0xA20B,  "FlashEnergy"},              // 0x920B in TIFF/EP
+  {  0xA20C,  "SpatialFrequencyResponse"},  // 0x920C    -  -
+  {  0xA20E,  "FocalPlaneXResolution"},      // 0x920E    -  -
+  {  0xA20F,  "FocalPlaneYResolution"},      // 0x920F    -  -
+  {  0xA210,  "FocalPlaneResolutionUnit"},  // 0x9210    -  -
+  {  0xA214,  "SubjectLocation"},            // 0x9214    -  -
+  {  0xA215,  "ExposureIndex"},            // 0x9215    -  -
+  {  0xA217,  "SensingMethod"},            // 0x9217    -  -
+  {  0xA300,  "FileSource"},
+  {  0xA301,  "SceneType"},
   {      0, NULL}
 } ;
 
@@ -729,10 +729,8 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
   if (tag < 0)
     return(False);
   status=False;
-
   length=image->generic_profile[index].length;
   info=image->generic_profile[index].info;
-
   while (length > 0)
   {
     if (ReadByte((char **) &info,&length) != 0x45)
@@ -751,7 +749,6 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
   }
   if (length < 16)
     return(False);
-
   tiffp=info;
   id=Read16u(0,tiffp);
   morder=0;
@@ -761,17 +758,14 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
     morder=1;
   else
     return(False);
-
   /* The next values now have to obey the Intel - Motorola flag */
   if (Read16u(morder,tiffp+2) != 0x002a)
     return(False);
-
   /* This is the offset to the first IFD. It will be 8 if the IFD
      immediately follows the header */
   offset=Read32u(morder,tiffp+4);
   if (offset >= length)
     return(False);
-
   /* set the pointer to the first IFD and follow it were it leads */
   ifdp=tiffp+offset;
   level=0;
@@ -847,7 +841,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
               FormatString(s,"%hu",Read16s(morder,pval));
               value=AllocateString(s);
               break;
-            case EXIF_FMT_ULONG:     
+            case EXIF_FMT_ULONG:
               FormatString(s,"%lu",Read32u(morder,pval));
               value=AllocateString(s);
               break;
@@ -859,7 +853,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
               FormatString(s,"%d/%d",Read32u(morder,pval),Read32u(morder,4+(char *)pval));
               value=AllocateString(s);
               break;
-            case EXIF_FMT_SRATIONAL: 
+            case EXIF_FMT_SRATIONAL:
               FormatString(s,"%d/%d",Read32s(morder,pval),Read32s(morder,4+(char *)pval));
               value=AllocateString(s);
               break;
