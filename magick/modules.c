@@ -65,6 +65,7 @@ typedef void *ModuleHandle;
 /*
   Define declarations.
 */
+#define ModuleFilename  "modules.mgk"
 #if !defined(WIN32)
 # if !defined(CoderModuleDirectory)
 #  define CoderModuleDirectory  ""
@@ -337,7 +338,7 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
       /*
         Read modules.
       */
-      (void) ReadConfigurationFile("modules.mgk",exception);
+      (void) ReadConfigurationFile(ModuleFilename,exception);
     }
   LiberateSemaphoreInfo(&module_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
@@ -398,7 +399,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
       /*
         Read modules.
       */
-      (void) ReadConfigurationFile("modules.mgk",exception);
+      (void) ReadConfigurationFile(ModuleFilename,exception);
     }
   LiberateSemaphoreInfo(&module_semaphore);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
@@ -457,7 +458,7 @@ static char **GetModuleList(void)
   if (modules == (char **) NULL)
     return((char **) NULL);
   *modules=(char *) NULL;
-  path=GetMagickConfigurePath("modules.mgk");
+  path=GetMagickConfigurePath(ModuleFilename);
   if (path == (char *) NULL)
     return((char **) NULL);
   GetPathComponent(path,HeadPath,filename);

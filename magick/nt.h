@@ -29,7 +29,7 @@ extern "C" {
 #define W_OK 2
 #define RW_OK 6
 #define lt_dlerror NTGetLastError
-#if defined(_MT) && defined(_VISUALC_)
+#if defined(_MT) && defined(WIN32)
 #define SAFE_GLOBAL __declspec(thread)
 #else
 #define SAFE_GLOBAL
