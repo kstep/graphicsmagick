@@ -500,8 +500,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image->temporary=True;
     }
   CloseBlob(image);
-  TIFFSetErrorHandler((void *) TIFFWarningHandler);
-  TIFFSetWarningHandler((void *) TIFFWarningHandler);
+  TIFFSetErrorHandler((TIFFErrorHandler) TIFFWarningHandler);
+  TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarningHandler);
   tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
   if (tiff == (TIFF *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
