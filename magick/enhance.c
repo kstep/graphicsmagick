@@ -360,22 +360,13 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 {
 #define GammaImageText  "  Gamma correcting the image...  "
 
-  typedef struct _GammaPacket
-  {
-    unsigned short 
-      red,
-      green,
-      blue,
-      opacity;
-  } GammaPacket;
+  ColorPacket
+    *gamma_map;
 
   double
     blue_gamma,
     green_gamma,
     red_gamma;
-
-  GammaPacket
-    *gamma_map;
 
   int
     count;
@@ -412,9 +403,9 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   /*
     Allocate and initialize gamma maps.
   */
-  length=(ScaleQuantumToShort(MaxRGB)+1)*sizeof(GammaPacket);
-  gamma_map=(GammaPacket *) AcquireMemory(length);
-  if (gamma_map == (GammaPacket *) NULL)
+  length=(ScaleQuantumToShort(MaxRGB)+1)*sizeof(ColorPacket);
+  gamma_map=(ColorPacket *) AcquireMemory(length);
+  if (gamma_map == (ColorPacket *) NULL)
     ThrowBinaryException(ResourceLimitError,"Unable to gamma correct image",
       "Memory allocation failed");
   (void) memset(gamma_map,0,length);

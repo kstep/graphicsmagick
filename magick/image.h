@@ -102,6 +102,15 @@ typedef struct _ChromaticityInfo
     white_point;
 } ChromaticityInfo;
 
+typedef struct _ColorPacket
+{
+  unsigned short
+    red,
+    green,
+    blue,
+    opacity;
+} ColorPacket;
+
 typedef struct _PixelPacket
 {
 #if defined(WORDS_BIGENDIAN)
