@@ -85,7 +85,7 @@ bmp<=win
 	mspaint %i.
 
 browse=>
-	cmd /C start http://www.wizards.dupont.com/magick/ImageMagick.html &
+	cmd /C start http://www.wizards.dupont.com/cristy/ImageMagick.html &
 
 bzip=>
 	|bzip2 -cd %i

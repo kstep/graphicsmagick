@@ -51,69 +51,12 @@ extern "C" {
 #else
 #define XFD_SET  fd_set
 #endif
+
 /*
   Define declarations.
 */
-#define DoOpacity  (1 << 20)
+#define MaxNumberPens  11
 #define MaxNumberFonts  11
-#define MaxNumberPens  11 
-#if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "/usr/X11R6/lib/X11/rgb.txt"
-#endif
-#define SuspendTime  50
-#define TextWidth(font,text,length)  XTextWidth(font,(char *) (text),length)
-#define XGammaPixel(map,gamma,color,dx)  (unsigned long) (map->base_pixel+ \
-  ((gamma[(color)->red].red*map->red_max+(1 << (dx-1)))/((1 << dx)-1))* \
-    map->red_mult+ \
-  ((gamma[(color)->green].green*map->green_max+(1 << (dx-1)))/((1 << dx)-1))* \
-    map->green_mult+ \
-  ((gamma[(color)->blue].blue*map->blue_max+(1 << (dx-1)))/((1 << dx)-1))* \
-    map->blue_mult)
-#define XStandardPixel(map,color,dx)  (unsigned long) (map->base_pixel+ \
-  (((color).red*map->red_max+(1 << (dx-1)))/((1 << dx)-1))*map->red_mult+ \
-  (((color).green*map->green_max+(1 << (dx-1)))/((1 << dx)-1))*map->green_mult+\
-  (((color).blue*map->blue_max+(1 << (dx-1)))/((1 << dx)-1))*map->blue_mult)
-
-/*
-  Default colors declarations.
-*/
-#define BackgroundColor  "#bdbdbd"  /* gray */
-#define BorderColor  "#bdbdbd"  /* gray */
-#define ForegroundColor  "#000"  /* black */
-#define MatteColor  "#bdbdbd"  /* gray */
-#define Pen0Color  "#bdbdbd"  /* gray */
-#define Pen1Color  "#000000"  /* black */
-#define Pen2Color  "#0000ff"  /* blue */
-#define Pen3Color  "#00ffff"  /* cyan */
-#define Pen4Color  "#00ff00"  /* green */
-#define Pen5Color  "#bdbdbd"  /* gray */
-#define Pen6Color  "#ff0000"  /* red */
-#define Pen7Color  "#ff00ff"  /* magenta */
-#define Pen8Color  "#ffff00"  /* yellow */
-#define Pen9Color  "#ffffff"  /* white */
-
-/*
-  Display state declarations.
-*/
-#define DefaultState  0x0000
-#define EscapeState  0x0001
-#define ExitState  0x0002
-#define FormerImageState  0x0004
-#define ModifierState  0x0008
-#define MontageImageState  0x0010
-#define NextImageState  0x0020
-#define RetainColorsState  0x0040
-#define UpdateConfigurationState  0x0080
-#define UpdateRegionState  0x0100
-/*
-  Animate state declarations.
-*/
-#define AutoReverseAnimationState 0x0004
-#define ForwardAnimationState 0x0008
-#define HighlightState  0x0010
-#define PlayAnimationState 0x0020
-#define RepeatAnimationState 0x0040
-#define StepAnimationState 0x0080
 
 /*
   Enumeration declarations.

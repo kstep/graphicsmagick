@@ -12,6 +12,8 @@ extern "C" {
 #define VC_EXTRALEAN
 #include <windows.h>
 #include <winuser.h>
+#include <wingdi.h>
+#include <errno.h>
 
 /*
   Typedef declarations.

@@ -67,9 +67,6 @@ extern "C" {
 #pragma warning( disable : 4018 )
 #pragma warning( disable : 4244 )
 #pragma warning( disable : 4142 )
-#ifdef _VISUALC_
-#define INT32  X11_INT32
-#endif
 #endif
 
 #undef index
@@ -106,6 +103,9 @@ extern "C" {
 #include "utility.h"
 #include "monitor.h"
 #include "error.h"
+#if defined(_VISUALC_)
+#define INT32  X11_INT32
+#endif
 #include "X.h"
 #include "widget.h"
 #include "PreRvIcccm.h"

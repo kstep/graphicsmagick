@@ -122,9 +122,9 @@ extern "C" {
 #define DefaultPSFont  "Helvetica"
 #define DefaultPyramidHeight  64
 #define DefaultPyramidWidth  64
-#define DefaultTextBackground  "#cccccc"
+#define DefaultTextBackground  "#c0c0c0"
 #define DefaultTextForeground  "#000000"
-#define DefaultTileBackground  "#cccccc"
+#define DefaultTileBackground  "#c0c0c0"
 #define DefaultTileBorderWidth  0
 #define DefaultTileFrame  "15x15+3+3"
 #define DefaultTileGeometry  "106x106+4+3>"
@@ -172,7 +172,6 @@ extern "C" {
   (((color).red == (color).green) && ((color).green == (color).blue))
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define MaxColormapSize  65535L
-#define MaxNumberPens  11 
 #define MaxTreeDepth  8
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
 #if !defined(M_PI)
@@ -239,14 +238,6 @@ extern "C" {
 }
 
 /*
-  Image Geometry defines (extends XParseGeometry flags).
-*/
-#define PercentValue  0x1000
-#define AspectValue  0x2000
-#define LessValue  0x4000
-#define GreaterValue  0x8000
-
-/*
   3D effects.
 */
 #define AccentuateModulate  UpScale(80)
@@ -262,6 +253,20 @@ extern "C" {
 #define BorderColor  "#bdbdbd"  /* gray */
 #define ForegroundColor  "#000"  /* black */
 #define MatteColor  "#bdbdbd"  /* gray */
+/*
+  Display state declarations.
+*/
+#define DefaultState  0x0000
+#define EscapeState  0x0001
+#define ExitState  0x0002
+#define FormerImageState  0x0004
+#define ModifierState  0x0008
+#define MontageImageState  0x0010
+#define NextImageState  0x0020
+#define RetainColorsState  0x0040
+#define UpdateConfigurationState  0x0080
+#define UpdateRegionState  0x0100
+
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -39,6 +39,7 @@ in this Software without prior written authorization from the X Consortium.
 #include <unistd.h>
 #else
 #pragma warning( disable : 4035 )
+#pragma warning( disable : 4716 )
 #endif
 
 #ifdef USG
@@ -1504,7 +1505,11 @@ char *XGetDefault(
     _Xconst char* c	/* option */		  
 #endif
 ){}
+#if defined(_VISUALC_)
+__declspec(dllexport) extern char *XDisplayName(
+#else
 char *XDisplayName(
+#endif
 #if NeedFunctionPrototypes
     _Xconst char* a	/* string */
 #endif
@@ -2391,7 +2396,11 @@ XClearWindow(
 #endif
 ){}
 
+#if defined(_VISUALC_)
+__declspec(dllexport) extern XCloseDisplay(
+#else
 XCloseDisplay(
+#endif
 #if NeedFunctionPrototypes
     Display* a		/* display */
 #endif
@@ -5008,7 +5017,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
   int c_class;					/* C++ */
 #else
-  int class;
+  int c_class;
 #endif
   unsigned long red_mask;
   unsigned long green_mask;

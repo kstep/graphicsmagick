@@ -80,7 +80,7 @@
 	|@ZipDelegate@ -cf > %o
 
 browse=>
-	@BrowseDelegate@ http://www.wizards.dupont.com/magick/ImageMagick.html &
+	@BrowseDelegate@ http://www.wizards.dupont.com/cristy/ImageMagick.html &
 
 bzip=>
 	|@BZIPDelegate@ -cd %i

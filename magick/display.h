@@ -13,23 +13,8 @@ extern "C" {
 */
 #define DefaultPageSize  "Letter"
 #define MaxColors  Min(windows->visual_info->colormap_size,256)
-#define MaxNumberFonts  11
 #define MinPanSize  96
 #define RoiDelta  8
-
-/*
-  Display state declarations.
-*/
-#define DefaultState  0x0000
-#define EscapeState  0x0001
-#define ExitState  0x0002
-#define FormerImageState  0x0004
-#define ModifierState  0x0008
-#define MontageImageState  0x0010
-#define NextImageState  0x0020
-#define RetainColorsState  0x0040
-#define UpdateConfigurationState  0x0080
-#define UpdateRegionState  0x0100
 
 /*
   Static declarations.

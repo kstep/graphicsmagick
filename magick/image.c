@@ -888,7 +888,7 @@ Export Image *AverageImages(Image *images)
 Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
 {
   ColorPacket
-    color;
+    matte_color;
 
   Image
     *bordered_image;
@@ -904,10 +904,11 @@ Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
   frame_info.y=border_info->height;
   frame_info.inner_bevel=0;
   frame_info.outer_bevel=0;
-  color=image->border_color;
+  matte_color=image->matte_color;
   image->matte_color=image->border_color;
   bordered_image=FrameImage(image,&frame_info);
-  image->border_color=color;
+  bordered_image->matte_color=matte_color;
+  image->matte_color=matte_color;
   return(bordered_image);
 }
 
@@ -5002,7 +5003,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
   {
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=highlight;
-    for (x=0; x < (int) (framed_image->columns-(frame_info->outer_bevel << 1)); x++)
+    for (x=0; x < (int) (framed_image->columns-2*frame_info->outer_bevel); x++)
       *q++=matte;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
@@ -5089,7 +5090,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
   {
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=highlight;
-    for (x=0; x < (int) (framed_image->columns-(frame_info->outer_bevel << 1)); x++)
+    for (x=0; x < (int) (framed_image->columns-2*frame_info->outer_bevel); x++)
       *q++=matte;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
