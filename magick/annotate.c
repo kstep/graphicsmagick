@@ -823,7 +823,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       RectangleInfo
         crop_info;
 
-      crop_info=GetImageBoundingBox(annotate_image);
+      crop_info=GetImageBoundingBox(annotate_image,&annotate_image->exception);
       crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize-0.5);
       crop_info.y=(int) ceil((resolution.y/72.0)*extent.y/8.0-0.5);

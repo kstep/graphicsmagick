@@ -23,7 +23,7 @@ extern MagickExport int
 extern MagickExport PixelPacket
   AlphaComposite(const CompositeOperator,const PixelPacket *,const double,
     const PixelPacket *,const double),
-  InterpolateColor(Image *,const double,const double);
+  InterpolateColor(const Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport Quantum
   GenerateNoise(const Quantum,const NoiseType);

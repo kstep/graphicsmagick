@@ -354,8 +354,7 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
-  Image *image)
+MagickExport unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 {
   char
     *client_name;
@@ -387,8 +386,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
   return(image->exception.severity == UndefinedException);
 }
 #else
-MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
-  Image *image)
+MagickExport unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -570,7 +568,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
 %
 %  The format of the AverageImage method is:
 %
-%      Image *AverageImages(const Image *image,ExceptionInfo *exception)
+%      Image *AverageImages(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -599,7 +597,10 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
   long
     y;
 
-  register Image
+  register const PixelPacket
+    *p;
+
+  register const Image
     *next;
 
   register long
@@ -607,7 +608,6 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   SumPacket
@@ -663,7 +663,7 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
     i=0;
     for (y=0; y < (long) next->rows; y++)
     {
-      p=GetImagePixels(next,0,y,next->columns,1);
+      p=AcquireImagePixels(next,0,y,next->columns,1,exception);
       if (p == (PixelPacket *) NULL)
         break;
       for (x=0; x < (long) next->columns; x++)
@@ -821,7 +821,7 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %
 %  The format of the CloneImage method is:
 %
-%      Image *CloneImage(Image *image,const unsigned long columns,
+%      Image *CloneImage(const Image *image,const unsigned long columns,
 %        const unsigned long rows,const unsigned int orphan,
 %        ExceptionInfo *exception)
 %
@@ -842,7 +842,7 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %
 %
 */
-MagickExport Image *CloneImage(Image *image,const unsigned long columns,
+MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   const unsigned long rows,const unsigned int orphan,ExceptionInfo *exception)
 {
   Image
@@ -959,11 +959,13 @@ MagickExport Image *CloneImage(Image *image,const unsigned long columns,
       int
         y;
 
+      register const PixelPacket
+        *p;
+
       register IndexPacket
         *indexes;
 
       register PixelPacket
-        *p,
         *q;
 
       /*
@@ -971,7 +973,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned long columns,
       */
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
+        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
@@ -1226,8 +1228,8 @@ MagickExport unsigned int CompositeImage(Image *image,
           if (composite_image->matte)
             y_displace=(vertical_scale*((double) p->opacity-
               ((MaxRGB+1)/2)))/((MaxRGB+1)/2);
-          *r=InterpolateColor(image,x_offset+x+x_displace,
-            y_offset+y+y_displace);
+          *r=InterpolateColor(image,x_offset+x+x_displace,y_offset+y+y_displace,
+            &image->exception);
           p++;
           q++;
           r++;
@@ -1822,7 +1824,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     default: (void) fprintf(file,"undefined"); break;
   }
   (void) fprintf(file,"\n");
-  (void) fprintf(file,"  Depth: %lu-bits\n",GetImageDepth(image));
+  (void) fprintf(file,"  Depth: %lu bits per pixel component\n",
+    GetImageDepth(image));
   x=0;
   p=(Image *) NULL;
   if ((image->matte && (strcmp(image->magick,"GIF") != 0)) || image->taint)
@@ -2438,8 +2441,7 @@ MagickExport void DestroyImages(Image *image)
 %
 %
 */
-MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
-  Image *image)
+MagickExport unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
 {
   char
     *client_name;
@@ -2483,8 +2485,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
   return(image->exception.severity != UndefinedException);
 }
 #else
-MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
-  Image *image)
+MagickExport unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -2511,7 +2512,8 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 %
 %  The format of the GetImageBoundingBox method is:
 %
-%      RectangleInfo GetImageBoundingBox(Image *image)
+%      RectangleInfo GetImageBoundingBox(const Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2520,9 +2522,12 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 %
 %    o image: The image.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport RectangleInfo GetImageBoundingBox(Image *image)
+MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
+  ExceptionInfo *exception)
 {
   long
     y;
@@ -2533,11 +2538,11 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
   RectangleInfo
     bounds;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
-
-  register PixelPacket
-    *p;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2545,13 +2550,13 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
   bounds.height=0;
   bounds.x=image->columns;
   bounds.y=image->rows;
-  corners[0]=GetOnePixel(image,0,0);
-  corners[1]=GetOnePixel(image,image->columns-1,0);
-  corners[2]=GetOnePixel(image,0,image->rows-1);
+  corners[0]=AcquireOnePixel(image,0,0,exception);
+  corners[1]=AcquireOnePixel(image,image->columns-1,0,exception);
+  corners[2]=AcquireOnePixel(image,0,image->rows-1,exception);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     if (image->matte)
       for (x=0; x < (long) image->columns; x++)
@@ -2919,7 +2924,7 @@ MagickExport unsigned int IsGeometry(const char *geometry)
 %      measure is normalized to a range between 0 and 1.  It is independent
 %      of the range of red, green, and blue values in the image.
 %
-%    o normalized_maximum_error:  Thsi value is the normalized
+%    o normalized_maximum_error:  This value is the normalized
 %      maximum quantization error for any single pixel in the image.  This
 %      distance measure is normalized to a range between 0 and 1.  It is
 %      independent of the range of red, green, and blue values in your image.
@@ -3148,7 +3153,7 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %
 %
 */
-MagickExport Image **ListToGroupImage(Image *image,unsigned long *number_images)
+MagickExport Image **ListToGroupImage(const Image *image,unsigned long *number_images)
 {
   Image
     **images,
@@ -5757,7 +5762,7 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (clip_mask != (Image *) NULL)
+  if (clip_mask != (const Image *) NULL)
     if ((clip_mask->columns != image->columns) ||
         (clip_mask->rows != image->rows))
       ThrowBinaryException(OptionWarning,"Unable to set clip mask",

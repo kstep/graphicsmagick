@@ -693,7 +693,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
 %
 %  The format of the ConvolveImage method is:
 %
-%      Image *ConvolveImage(Image *image,const unsigned int order,
+%      Image *ConvolveImage(const Image *image,const unsigned int order,
 %        const double *kernel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -712,7 +712,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
 %
 %
 */
-MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
+MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   const double *kernel,ExceptionInfo *exception)
 {
 #define ConvolveImageText  "  Convolving image...  "
@@ -735,11 +735,14 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
     y;
 
   PixelPacket
-    *p,
     pixel;
 
   register const double
     *k;
+
+  register const PixelPacket
+    *p,
+    *r;
 
   register long
     i,
@@ -748,8 +751,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
     x;
 
   register PixelPacket
-    *q,
-    *s;
+    *q;
 
   /*
     Initialize convolved image attributes.
@@ -777,7 +779,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
     normalize+=kernel[i];
   for (y=0; y < (long) convolve_image->rows; y++)
   {
-    p=(PixelPacket *) NULL;
+    p=(const PixelPacket *) NULL;
     q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
@@ -792,7 +794,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
           {
             for (u=(-width/2); u <= (width/2); u++)
             {
-              pixel=GetOnePixel(image,Cx(x+u),Cy(y+v));
+              pixel=AcquireOnePixel(image,Cx(x+u),Cy(y+v),exception);
               aggregate.red+=(*k)*pixel.red;
               aggregate.green+=(*k)*pixel.green;
               aggregate.blue+=(*k)*pixel.blue;
@@ -803,24 +805,25 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
         }
       else
         {
-          if (p == (PixelPacket *) NULL)
+          if (p == (const PixelPacket *) NULL)
             {
-              p=GetImagePixels(image,0,y-width/2,image->columns,width);
-              if (p == (PixelPacket *) NULL)
+              p=AcquireImagePixels(image,0,y-width/2,image->columns,width,
+                exception);
+              if (p == (const PixelPacket *) NULL)
                 break;
             }
-          s=p+x;
+          r=p+x;
           for (v=(-width/2); v <= (width/2); v++)
           {
             for (u=(-width/2); u <= (width/2); u++)
             {
-              aggregate.red+=(*k)*s[u].red;
-              aggregate.green+=(*k)*s[u].green;
-              aggregate.blue+=(*k)*s[u].blue;
-              aggregate.opacity+=(*k)*s[u].opacity;
+              aggregate.red+=(*k)*r[u].red;
+              aggregate.green+=(*k)*r[u].green;
+              aggregate.blue+=(*k)*r[u].blue;
+              aggregate.opacity+=(*k)*r[u].opacity;
               k++;
             }
-            s+=image->columns;
+            r+=image->columns;
           }
         }
       if ((normalize != 0.0) && (normalize != 1.0))
@@ -1342,7 +1345,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %
 %  The format of the BlurImage method is:
 %
-%      Image *GaussianBlurImage(Image *image,const double radius,
+%      Image *GaussianBlurImage(const Image *image,const double radius,
 %        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1360,7 +1363,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %
 %
 */
-MagickExport Image *GaussianBlurImage(Image *image,const double radius,
+MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   double
@@ -1377,7 +1380,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
     u,
     v;
 
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -1523,7 +1526,7 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
           if (distance > 0.0)
             factor=pow(sin(0.5*MagickPI*sqrt(distance)/radius),-amount);
           *q=InterpolateColor(image,factor*x_distance/x_scale+x_center,
-            factor*y_distance/y_scale+y_center);
+            factor*y_distance/y_scale+y_center,exception);
         }
       q++;
     }
@@ -1768,6 +1771,9 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
   MonitorHandler
     handler;
 
+  register const PixelPacket
+    *p;
+
   register Image
     *next;
 
@@ -1775,7 +1781,6 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   register long
@@ -1848,9 +1853,9 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
       morph_images->storage_class=DirectClass;
       for (y=0; y < (long) morph_images->rows; y++)
       {
-        p=GetImagePixels(morph_image,0,y,morph_image->columns,1);
+        p=AcquireImagePixels(morph_image,0,y,morph_image->columns,1,exception);
         q=GetImagePixels(morph_images,0,y,morph_images->columns,1);
-        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         for (x=0; x < (long) morph_images->columns; x++)
         {
@@ -1908,7 +1913,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
 %
 %  The format of the MotionBlurImage method is:
 %
-%    Image *MotionBlurImage(Image *image,const double radius,
+%    Image *MotionBlurImage(const Image *image,const double radius,
 %      const double sigma,const double amount,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1966,7 +1971,7 @@ static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
   return(width);
 }
 
-MagickExport Image *MotionBlurImage(Image *image,const double radius,
+MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   const double sigma,const double angle,ExceptionInfo *exception)
 {
   AggregatePacket
@@ -2069,7 +2074,7 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
         if ((u < 0) || (u >= (long) image->columns) ||
             (v < 0) || (v >= (long) image->rows))
           continue;
-        pixel=GetOnePixel(image,u,v);
+        pixel=AcquireOnePixel(image,u,v,exception);
         aggregate.red+=kernel[i]*pixel.red;
         aggregate.green+=kernel[i]*pixel.green;
         aggregate.blue+=kernel[i]*pixel.blue;
@@ -2107,7 +2112,7 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
 %
 %  The format of the OilPaintImage method is:
 %
-%      Image *OilPaintImage(Image *image,const double radius,
+%      Image *OilPaintImage(const Image *image,const double radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2124,7 +2129,7 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
 %
 %
 */
-MagickExport Image *OilPaintImage(Image *image,const double radius,
+MagickExport Image *OilPaintImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
 #define OilPaintImageText  "  Oil paint image...  "
@@ -2139,14 +2144,16 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
     width,
     y;
 
+  register const PixelPacket
+    *p,
+    *r;
+
   register long
     i,
     x;
 
   register PixelPacket
-    *p,
-    *q,
-    *s;
+    *q;
 
   unsigned int
     *histogram;
@@ -2154,7 +2161,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   /*
     Initialize painted image attributes.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -2182,9 +2189,9 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   k=0;
   for (y=width; y < (long) (image->rows-width-1); y++)
   {
-    p=GetImagePixels(image,0,y-width,image->columns,2*width+1);
+    p=AcquireImagePixels(image,0,y-width,image->columns,2*width+1,exception);
     q=GetImagePixels(paint_image,0,y,paint_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     p+=width*image->columns+width;
     q+=width;
@@ -2198,42 +2205,42 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
         histogram[i]=0;
       for (i=0; i < width; i++)
       {
-        s=p-(width-i)*image->columns-i-1;
+        r=p-(width-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
-          k=Intensity(*s);
+          k=Intensity(*r);
           histogram[k]++;
           if ((int) histogram[k] > count)
             {
-              *q=(*s);
+              *q=(*r);
               count=histogram[k];
             }
-          s++;
+          r++;
         }
-        s=p+(width-i)*image->columns-i-1;
+        r=p+(width-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
-          k=Intensity(*s);
+          k=Intensity(*r);
           histogram[k]++;
           if ((int) histogram[k] > count)
             {
-              *q=(*s);
+              *q=(*r);
               count=histogram[k];
             }
-          s++;
+          r++;
         }
       }
-      s=p-width;
+      r=p-width;
       for (j=0; j < (width+width+1); j++)
       {
-        k=Intensity(*s);
+        k=Intensity(*r);
         histogram[k]++;
         if ((int) histogram[k] > count)
           {
-            *q=(*s);
+            *q=(*r);
             count=histogram[k];
           }
-        s++;
+        r++;
       }
       p++;
       q++;
@@ -2461,7 +2468,7 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %  The format of the ReduceNoiseImage method is:
 %
-%      Image *ReduceNoiseImage(Image *image,const double radius,
+%      Image *ReduceNoiseImage(const Image *image,const double radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2479,7 +2486,7 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %
 */
-MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
+MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
 #define ReduceNoiseImageText  "  Reduce the image noise...  "
@@ -2493,10 +2500,13 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
     y;
 
   PixelPacket
-    *p,
     pixel,
     *w,
     *window;
+
+  register const PixelPacket
+    *p,
+    *r;
 
   register long
     i,
@@ -2505,8 +2515,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
     x;
 
   register PixelPacket
-    *q,
-    *s;
+    *q;
 
   /*
     Initialize noised image attributes.
@@ -2540,19 +2549,19 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
   for (y=0; y < (long) noise_image->rows; y++)
   {
     i=Min(Max(y-width/2,0),(long) image->rows-width);
-    p=GetImagePixels(image,0,i,image->columns,width);
+    p=AcquireImagePixels(image,0,i,image->columns,width,exception);
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (long) noise_image->columns; x++)
     {
       w=window;
-      s=p+Min(Max(x-width/2,0),(long) image->columns-width);
+      r=p+Min(Max(x-width/2,0),(long) image->columns-width);
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
-          *w++=s[u];
-        s+=image->columns;
+          *w++=r[u];
+        r+=image->columns;
       }
       qsort((void *) window,width*width,sizeof(PixelPacket),RedCompare);
       pixel=window[center];
@@ -2654,7 +2663,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
 %
 %  The format of the ShadeImage method is:
 %
-%      Image *ShadeImage(Image *image,const unsigned int color_shading,
+%      Image *ShadeImage(const Image *image,const unsigned int color_shading,
 %        double azimuth,double elevation,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2675,8 +2684,9 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
 %
 %
 */
-MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
-  double azimuth,double elevation,ExceptionInfo *exception)
+MagickExport Image *ShadeImage(const Image *image,
+  const unsigned int color_shading,double azimuth,double elevation,
+  ExceptionInfo *exception)
 {
 #define ShadeImageText  "  Shade image...  "
 
@@ -2697,20 +2707,22 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
     light,
     normal;
 
+  register const PixelPacket
+    *p,
+    *s0,
+    *s1,
+    *s2;
+
   register long
     x;
 
   register PixelPacket
-    *p,
-    *s0,
-    *s1,
-    *s2,
     *q;
 
   /*
     Initialize shaded image attributes.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -2732,8 +2744,8 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,Min(Max(y-1,0),(long) image->rows-3),
-      image->columns,3);
+    p=AcquireImagePixels(image,0,Min(Max(y-1,0),(long) image->rows-3),
+      image->columns,3,exception);
     q=SetImagePixels(shade_image,0,y,shade_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -2809,7 +2821,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
 %
 %  The format of the SharpenImage method is:
 %
-%    Image *SharpenImage(Image *image,const double radius,
+%    Image *SharpenImage(const Image *image,const double radius,
 %      const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2827,7 +2839,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
 %
 %
 */
-MagickExport Image *SharpenImage(Image *image,const double radius,
+MagickExport Image *SharpenImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   double
@@ -2845,7 +2857,7 @@ MagickExport Image *SharpenImage(Image *image,const double radius,
     u,
     v;
 
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -2980,7 +2992,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
 %
 %  The format of the SpreadImage method is:
 %
-%      Image *SpreadImage(Image *image,const unsigned int amount,
+%      Image *SpreadImage(iconst Image *image,const unsigned int amount,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2998,7 +3010,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
 %
 %
 */
-MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
+MagickExport Image *SpreadImage(const Image *image,const unsigned int amount,
   ExceptionInfo *exception)
 {
 #define SpreadImageText  "  Spread image...  "
@@ -3018,7 +3030,7 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
   register PixelPacket
     *q;
 
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -3049,7 +3061,7 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
       } while (((x+x_distance) < 0) || ((y+y_distance) < 0) ||
                ((x+x_distance) >= (long) image->columns) ||
                ((y+y_distance) >= (long) image->rows));
-      *q++=GetOnePixel(image,x+x_distance,y+y_distance);
+      *q++=AcquireOnePixel(image,x+x_distance,y+y_distance,exception);
     }
     if (!SyncImagePixels(spread_image))
       break;
@@ -3091,14 +3103,14 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
 %
 %
 */
-MagickExport Image *SteganoImage(Image *image,Image *watermark,
+MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   ExceptionInfo *exception)
 {
 #define EmbedBit(byte) \
 { \
-  p=GetImagePixels(watermark,(long) (j % watermark->columns), \
-    (long) (j/watermark->columns),1,1); \
-  if (p == (PixelPacket *) NULL) \
+  p=AcquireImagePixels(watermark,(long) (j % watermark->columns), \
+    (long) (j/watermark->columns),1,1,exception); \
+  if (p == (const PixelPacket *) NULL) \
     break;  \
   (byte)&=(~0x01); \
   (byte)|=((unsigned long) Intensity(*p) >> shift) & 0x01; \
@@ -3122,6 +3134,9 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     shift,
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
@@ -3129,19 +3144,17 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
     Initialize steganographic image attributes.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(watermark != (Image *) NULL);
+  assert(watermark != (const Image *) NULL);
   assert(watermark->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image->depth=QuantumDepth;
   stegano_image=CloneImage(image,0,0,False,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
@@ -3238,7 +3251,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
 %
 %  The format of the StereoImage method is:
 %
-%      Image *StereoImage(Image *image,Image *offset_image,
+%      Image *StereoImage(const Image *image,const Image *offset_image,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -3254,7 +3267,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
 %
 %
 */
-MagickExport Image *StereoImage(Image *image,Image *offset_image,
+MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
   ExceptionInfo *exception)
 {
 #define StereoImageText  "  Stereo image...  "
@@ -3265,19 +3278,21 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
   long
     y;
 
+  register const PixelPacket
+    *p,
+    *q;
+
   register long
     x;
 
   register PixelPacket
-    *p,
-    *q,
     *r;
 
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  assert(offset_image != (Image *) NULL);
+  assert(offset_image != (const Image *) NULL);
   if ((image->columns != offset_image->columns) ||
       (image->rows != offset_image->rows))
     ThrowImageException(ResourceLimitWarning,"Unable to create stereo image",
@@ -3294,8 +3309,8 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
   */
   for (y=0; y < (long) stereo_image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    q=GetImagePixels(offset_image,0,y,offset_image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    q=AcquireImagePixels(offset_image,0,y,offset_image->columns,1,exception);
     r=SetImagePixels(stereo_image,0,y,stereo_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
         (r == (PixelPacket *) NULL))
@@ -3335,7 +3350,8 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
 %
 %  The format of the SwirlImage method is:
 %
-%      Image *SwirlImage(Image *image,double degrees,ExceptionInfo *exception)
+%      Image *SwirlImage(const Image *image,double degrees,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3351,7 +3367,7 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
 %
 %
 */
-MagickExport Image *SwirlImage(Image *image,double degrees,
+MagickExport Image *SwirlImage(const Image *image,double degrees,
   ExceptionInfo *exception)
 {
 #define SwirlImageText  "  Swirl image...  "
@@ -3375,21 +3391,19 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
   Image
     *swirl_image;
 
-  register long
-    x;
-
   register PixelPacket
     *q;
+
+  register long
+    x;
 
   /*
     Initialize swirl image attributes.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (!image->matte)
-    SetImageOpacity(image,OpaqueOpacity);
   swirl_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
@@ -3425,7 +3439,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
       x_distance=x_scale*(x-x_center);
       distance=x_distance*x_distance+y_distance*y_distance;
       if (distance >= (radius*radius))
-        *q=GetOnePixel(image,x,y);
+        *q=AcquireOnePixel(image,x,y,exception);
       else
         {
           /*
@@ -3436,7 +3450,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
           cosine=cos(degrees*factor*factor);
           *q=InterpolateColor(image,
             (cosine*x_distance-sine*y_distance)/x_scale+x_center,
-            (sine*x_distance+cosine*y_distance)/y_scale+y_center);
+            (sine*x_distance+cosine*y_distance)/y_scale+y_center,exception);
         }
       q++;
     }
@@ -3535,7 +3549,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %  The format of the UnsharpMaskImage method is:
 %
-%    Image *UnsharpMaskImage(Image *image,const double radius,
+%    Image *UnsharpMaskImage(const Image *image,const double radius,
 %      const double sigma,const double amount,const double threshold,
 %      ExceptionInfo *exception)
 %
@@ -3559,7 +3573,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %
 %
 */
-MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
+MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   const double sigma,const double amount,const double threshold,
   ExceptionInfo *exception)
 {
@@ -3577,24 +3591,26 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
     *q;
 
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  sharp_image=GaussianBlurImage(image,radius,sigma,&(image->exception));
+  sharp_image=GaussianBlurImage(image,radius,sigma,exception);
   if (sharp_image == (Image *) NULL)
     return((Image *) NULL);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     q=GetImagePixels(sharp_image,0,y,sharp_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (long) image->columns; x++)
     {
@@ -3652,7 +3668,7 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
 %
 %  The format of the WaveImage method is:
 %
-%      Image *WaveImage(Image *image,const double amplitude,
+%      Image *WaveImage(const Image *image,const double amplitude,
 %        const double wave_length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -3669,7 +3685,7 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
 %
 %
 */
-MagickExport Image *WaveImage(Image *image,const double amplitude,
+MagickExport Image *WaveImage(const Image *image,const double amplitude,
   const double wave_length,ExceptionInfo *exception)
 {
 #define WaveImageText  "  Wave image...  "
@@ -3690,14 +3706,12 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
     *q;
 
   /*
-    Initialize waved image attributes.
+    Initialize wave image attributes.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (!image->matte)
-    SetImageOpacity(image,OpaqueOpacity);
   wave_image=CloneImage(image,image->columns,(int)
     (int) (image->rows+2.0*fabs(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)
@@ -3725,7 +3739,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
       break;
     for (x=0; x < (long) wave_image->columns; x++)
     {
-      *q=InterpolateColor(image,(double) x,(double) y-sine_map[x]);
+      *q=InterpolateColor(image,(double) x,(double) y-sine_map[x],exception);
       q++;
     }
     if (!SyncImagePixels(wave_image))

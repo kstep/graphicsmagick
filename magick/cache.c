@@ -72,6 +72,7 @@ static SemaphoreInfo
   Declare pixel cache interfaces.
 */
 static const PixelPacket
+  AcquireOnePixelFromCache(const Image *,const long,const long,ExceptionInfo *),
   *AcquirePixelCache(const Image *,const long,const long,const unsigned long,
     const unsigned long,ExceptionInfo *);
 
@@ -83,7 +84,7 @@ static off_t
 
 static PixelPacket
   GetOnePixelFromCache(Image *,const long,const long),
-  *SetNexus(Image *,const RectangleInfo *,const unsigned long),
+  *SetNexus(const Image *,const RectangleInfo *,const unsigned long),
   *GetPixelsFromCache(const Image *),
   *GetPixelCache(Image *,const long,const long,const unsigned long,
     const unsigned long),
@@ -93,8 +94,8 @@ static PixelPacket
 static unsigned int
   CompressCache(Cache),
   IsNexusInCore(const Cache,const unsigned long),
-  ReadCacheIndexes(Cache,const unsigned long),
-  ReadCachePixels(Cache,const unsigned long),
+  ReadCacheIndexes(const Cache,const unsigned long),
+  ReadCachePixels(const Cache,const unsigned long),
   SyncPixelCache(Image *),
   UncompressCache(Cache),
   WriteCacheInfo(Image *),
@@ -108,6 +109,9 @@ static void
 /*
   Preload the image pixel methods.
 */
+static AcquireOnePixelFromHandler
+  acquire_one_pixel_from_handler = AcquireOnePixelFromCache;
+
 static AcquirePixelHandler
   acquire_pixel_handler = AcquirePixelCache;
 
@@ -146,9 +150,9 @@ static SyncPixelHandler
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireCacheNexus() gets pixels from the in-memory or disk pixel cache
-%  as defined by the geometry parameters.   A pointer to the pixels is returned
-%  if the pixels are transferred, otherwise a NULL is returned.
+%  Method AcquireCacheNexus() acquires pixels from the in-memory or disk pixel
+%  cache as defined by the geometry parameters.   A pointer to the pixels is
+%  returned if the pixels are transferred, otherwise a NULL is returned.
 %
 %  The format of the AcquireCacheNexus() method is:
 %
@@ -174,21 +178,56 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,const long 
   const long y,const unsigned long columns,const unsigned long rows,
   const unsigned long id,ExceptionInfo *exception)
 {
-#if defined(FUTURE)
+  CacheInfo
+    *cache_info;
+
+  off_t
+    offset;
+
   PixelPacket
     *pixels;
+
+  RectangleInfo
+    region;
 
   unsigned int
     status;
 
+  unsigned long
+    number_pixels;
+
   /*
     Transfer pixels from the cache.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
+  assert(image->cache != (Cache) NULL);
   assert(image->signature == MagickSignature);
-  pixels=SetCacheNexus(image,x,y,columns,rows,id);
-  if (pixels == (PixelPacket *) NULL)
+  if ((image->storage_class != GetCacheClass(image->cache)) ||
+      (image->colorspace != GetCacheColorspace(image->cache)))
+    {
+      ThrowException(exception,CacheWarning,"Pixel cache is not open",
+        image->filename);
+      return((PixelPacket *) NULL);
+    }
+  /*
+    Validate pixel cache geometry.
+  */
+  cache_info=(CacheInfo *) image->cache;
+  offset=y*cache_info->columns+x;
+  if (offset < 0)
     return((PixelPacket *) NULL);
+  number_pixels=cache_info->columns*cache_info->rows;
+  offset+=(rows-1)*cache_info->columns+columns-1;
+  if (offset > number_pixels)
+    return((PixelPacket *) NULL);
+  /*
+    Return pixel cache.
+  */
+  region.x=x;
+  region.y=y;
+  region.width=columns;
+  region.height=rows;
+  pixels=SetNexus(image,&region,id);
   if (IsNexusInCore(image->cache,id))
     return(pixels);
   status=ReadCachePixels(image->cache,id);
@@ -197,13 +236,11 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,const long 
     status|=ReadCacheIndexes(image->cache,id);
   if (status == False)
     {
-      ThrowException(exception,CacheWarning,"Unable to get pixels from cache",
+      ThrowException(exception,CacheWarning,"Unable to acquire pixels from cache",
         image->filename);
       return((PixelPacket *) NULL);
     }
   return(pixels);
-#endif
-  return((const PixelPacket *) NULL);
 }
 
 /*
@@ -217,9 +254,9 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,const long 
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireImagePixels() gets pixels from the in-memory or disk pixel cache
-%  as defined by the geometry parameters.   A pointer to the pixels is returned
-%  if the pixels are transferred, otherwise a NULL is returned.
+%  Method AcquireImagePixels() acquires pixels from the in-memory or disk pixel
+%  cache as defined by the geometry parameters.   A pointer to the pixels is
+%  returned if the pixels are transferred, otherwise a NULL is returned.
 %
 %  The format of the AcquireImagePixels() method is:
 %
@@ -261,9 +298,9 @@ MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquirePixelCache() gets pixels from the in-memory or disk pixel cache
-%  as defined by the geometry parameters.   A pointer to the pixels is returned
-%  if the pixels are transferred, otherwise a NULL is returned.
+%  Method AcquirePixelCache() acquires pixels from the in-memory or disk pixel
+%  cache as defined by the geometry parameters.   A pointer to the pixels is
+%  returned if the pixels are transferred, otherwise a NULL is returned.
 %
 %  The format of the AcquirePixelCache() method is:
 %
@@ -283,6 +320,7 @@ MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
 %
 %    o exception: Return any errors or warnings in this structure.
 %
+%
 */
 static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
   const long y,const unsigned long columns,const unsigned long rows,
@@ -290,6 +328,93 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 {
   return(AcquireCacheNexus(image,x,y,columns,rows,0,exception));
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e O n e P i x e l                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquireOnePixel() returns a single pixel at the specified (x,y)
+%  location.  The image background color is returned if an error occurs.
+%
+%  The format of the AcquireOnePixel() method is:
+%
+%      const PixelPacket *AcquireOnePixel(const Image image,const long x,
+%        const long y,ExceptionInfo exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method AcquireOnePixel() returns a pixel at the specified (x,y)
+%      location.
+%
+%    o image: The image.
+%
+%    o x,y:  These values define the location of the pixel to return.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport const PixelPacket AcquireOnePixel(const Image *image,const long x,
+  const long y,ExceptionInfo *exception)
+{
+  if (acquire_one_pixel_from_handler == (AcquireOnePixelFromHandler) NULL)
+    return(image->background_color);
+  return((*acquire_one_pixel_from_handler)(image,x,y,exception));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   A c q u i r e O n e P i x e l F r o m C a c h e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquireOnePixelFromCache() returns a single pixel at the specified
+%  (x,y) location.  The image background color is returned if an error occurs.
+%
+%  The format of the AcquireOnePixelFromCache() method is:
+%
+%      const PixelPacket *AcquireOnePixelFromCache(const Image image,
+%        const long x,const long y,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method AcquireOnePixelFromCache returns a pixel at the specified
+%      (x,y) location.
+%
+%    o image: The image.
+%
+%    o x,y:  These values define the location of the pixel to return.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static const PixelPacket AcquireOnePixelFromCache(const Image *image,
+  const long x,const long y,ExceptionInfo *exception)
+{
+  register const PixelPacket
+    *pixel;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  pixel=AcquirePixelCache(image,x,y,1,1,exception);
+  if (pixel != (PixelPacket *) NULL)
+    return(*pixel);
+  return(image->background_color);
+}
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1606,7 +1731,7 @@ else
 %
 %  The format of the ReadCacheIndexes() method is:
 %
-%      unsigned int ReadCacheIndexes(Cache cache,const unsigned long id)
+%      unsigned int ReadCacheIndexes(const Cache cache,const unsigned long id)
 %
 %  A description of each parameter follows:
 %
@@ -1619,7 +1744,7 @@ else
 %
 %
 */
-static unsigned int ReadCacheIndexes(Cache cache,const unsigned long id)
+static unsigned int ReadCacheIndexes(const Cache cache,const unsigned long id)
 {
   CacheInfo
     *cache_info;
@@ -1720,7 +1845,7 @@ static unsigned int ReadCacheIndexes(Cache cache,const unsigned long id)
 %
 %
 */
-static unsigned int ReadCachePixels(Cache cache,const unsigned long id)
+static unsigned int ReadCachePixels(const Cache cache,const unsigned long id)
 {
   CacheInfo
     *cache_info;
@@ -1813,6 +1938,7 @@ MagickExport void ResetPixelCacheMethods(void)
   sync_pixel_handler=SyncPixelCache;
   get_pixels_from_handler=GetPixelsFromCache;
   get_indexes_from_handler=GetIndexesFromCache;
+  acquire_one_pixel_from_handler=AcquireOnePixelFromCache;
   get_one_pixel_from_handler=GetOnePixelFromCache;
   close_pixel_handler=ClosePixelCache;
   destroy_pixel_handler=DestroyPixelCache;
@@ -2017,7 +2143,7 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %
 %
 */
-static PixelPacket *SetNexus(Image *image,const RectangleInfo *region,
+static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   const unsigned long id)
 {
   CacheInfo
@@ -2142,6 +2268,7 @@ static PixelPacket *SetPixelCache(Image *image,const long x,const long y,
 %        GetPixelHandler get_pixel,SetPixelHandler set_pixel,
 %        SyncPixelHandler sync_pixel,GetPixelsFromHandler get_pixels_from,
 %        GetIndexesFromHandler get_indexes_from,
+%        AcquireOnePixelFromHandler acquire_one_pixel_from,
 %        GetOnePixelFromHandler get_one_pixel_from,
 %        ClosePixelHandler close_pixel,DestroyPixelHandler destroy_pixel)
 %
@@ -2150,6 +2277,7 @@ static PixelPacket *SetPixelCache(Image *image,const long x,const long y,
 MagickExport void SetPixelCacheMethods(AcquirePixelHandler acquire_pixel,
   GetPixelHandler get_pixel,SetPixelHandler set_pixel,SyncPixelHandler sync_pixel,
   GetPixelsFromHandler get_pixels_from,GetIndexesFromHandler get_indexes_from,
+  AcquireOnePixelFromHandler acquire_one_pixel_from,
   GetOnePixelFromHandler get_one_pixel_from,ClosePixelHandler close_pixel,
   DestroyPixelHandler destroy_pixel)
 {
@@ -2162,6 +2290,7 @@ MagickExport void SetPixelCacheMethods(AcquirePixelHandler acquire_pixel,
   assert(sync_pixel != (SyncPixelHandler) NULL);
   assert(get_pixels_from != (GetPixelsFromHandler) NULL);
   assert(get_indexes_from != (GetIndexesFromHandler) NULL);
+  assert(acquire_one_pixel_from != (AcquireOnePixelFromHandler) NULL);
   assert(get_one_pixel_from != (GetOnePixelFromHandler) NULL);
   assert(close_pixel != (ClosePixelHandler) NULL);
   assert(destroy_pixel != (DestroyPixelHandler) NULL);
@@ -2171,6 +2300,7 @@ MagickExport void SetPixelCacheMethods(AcquirePixelHandler acquire_pixel,
   sync_pixel_handler=sync_pixel;
   get_pixels_from_handler=get_pixels_from;
   get_indexes_from_handler=get_indexes_from;
+  acquire_one_pixel_from_handler=acquire_one_pixel_from;
   get_one_pixel_from_handler=get_one_pixel_from;
   close_pixel_handler=close_pixel;
   destroy_pixel_handler=destroy_pixel;

@@ -589,7 +589,8 @@ extern MagickExport char
 
 extern MagickExport const PixelPacket
   *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
-    const unsigned long,ExceptionInfo *);
+    const unsigned long,ExceptionInfo *),
+  AcquireOnePixel(const Image *,const long,const long,ExceptionInfo *);
 
 extern MagickExport ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);
@@ -603,13 +604,14 @@ extern MagickExport Image
   *BorderImage(Image *,const RectangleInfo *,ExceptionInfo *),
   *CharcoalImage(Image *,const double,const double,ExceptionInfo *),
   *ChopImage(Image *,const RectangleInfo *,ExceptionInfo *),
-  *CloneImage(Image *,const unsigned long,const unsigned long,
+  *CloneImage(const Image *,const unsigned long,const unsigned long,
     const unsigned int,ExceptionInfo *),
   *CoalesceImages(Image *,ExceptionInfo *),
   *ColorizeImage(Image *,const char *,const PixelPacket,ExceptionInfo *),
   *ConstituteImage(const unsigned int,const unsigned int,const char *,
     const StorageType,const void *,ExceptionInfo *),
-  *ConvolveImage(Image *,const unsigned int,const double *,ExceptionInfo *),
+  *ConvolveImage(const Image *,const unsigned int,const double *,
+    ExceptionInfo *),
   *CropImage(Image *,const RectangleInfo *,ExceptionInfo *),
   *DeconstructImages(Image *,ExceptionInfo *),
   *DespeckleImage(Image *,ExceptionInfo *),
@@ -621,23 +623,23 @@ extern MagickExport Image
   *FlopImage(Image *,ExceptionInfo *),
   *FrameImage(Image *,const FrameInfo *,ExceptionInfo *),
   *GetNextImage(Image *),
-  *GaussianBlurImage(Image *,const double,const double,ExceptionInfo *),
+  *GaussianBlurImage(const Image *,const double,const double,ExceptionInfo *),
   *ImplodeImage(Image *,const double,ExceptionInfo *),
-  **ListToGroupImage(Image *,unsigned long *),
+  **ListToGroupImage(const Image *,unsigned long *),
   *MagnifyImage(Image *,ExceptionInfo *),
   *MedianFilterImage(Image *,const double,ExceptionInfo *),
   *MinifyImage(Image *,ExceptionInfo *),
   *MontageImages(Image *,const MontageInfo *,ExceptionInfo *),
   *MorphImages(Image *,const unsigned long,ExceptionInfo *),
   *MosaicImages(Image *,ExceptionInfo *),
-  *MotionBlurImage(Image *,const double,const double,const double,
+  *MotionBlurImage(const Image *,const double,const double,const double,
     ExceptionInfo *),
-  *OilPaintImage(Image *,const double,ExceptionInfo *),
+  *OilPaintImage(const Image *,const double,ExceptionInfo *),
   *PingImage(const ImageInfo *,ExceptionInfo *),
   *ReadImage(const ImageInfo *,ExceptionInfo *),
   *ReadStream(const ImageInfo *,
     int (*)(const Image *,const void *,const size_t),ExceptionInfo *),
-  *ReduceNoiseImage(Image *,const double,ExceptionInfo *),
+  *ReduceNoiseImage(const Image *,const double,ExceptionInfo *),
   *ReferenceImage(Image *),
   *ResizeImage(Image *,const unsigned long,const unsigned long,
     const FilterTypes,const double,ExceptionInfo *),
@@ -645,17 +647,17 @@ extern MagickExport Image
   *RotateImage(Image *,const double,ExceptionInfo *),
   *SampleImage(Image *,const unsigned long,const unsigned long,ExceptionInfo *),
   *ScaleImage(Image *,const unsigned long,const unsigned long,ExceptionInfo *),
-  *ShadeImage(Image *,const unsigned int,double,double,ExceptionInfo *),
-  *SharpenImage(Image *,const double,const double,ExceptionInfo *),
+  *ShadeImage(const Image *,const unsigned int,double,double,ExceptionInfo *),
+  *SharpenImage(const Image *,const double,const double,ExceptionInfo *),
   *ShaveImage(Image *,const RectangleInfo *,ExceptionInfo *),
   *ShearImage(Image *,const double,const double,ExceptionInfo *),
-  *SpreadImage(Image *,const unsigned int,ExceptionInfo *),
-  *SteganoImage(Image *,Image *,ExceptionInfo *),
-  *StereoImage(Image *,Image *,ExceptionInfo *),
-  *SwirlImage(Image *,double,ExceptionInfo *),
-  *UnsharpMaskImage(Image *,const double,const double,const double,const double,
-    ExceptionInfo *),
-  *WaveImage(Image *,const double,const double,ExceptionInfo *),
+  *SpreadImage(const Image *,const unsigned int,ExceptionInfo *),
+  *SteganoImage(const Image *,const Image *,ExceptionInfo *),
+  *StereoImage(const Image *,const Image *,ExceptionInfo *),
+  *SwirlImage(const Image *,double,ExceptionInfo *),
+  *UnsharpMaskImage(const Image *,const double,const double,const double,
+    const double,ExceptionInfo *),
+  *WaveImage(const Image *,const double,const double,ExceptionInfo *),
   *ZoomImage(Image *,const unsigned long,const unsigned long,ExceptionInfo *);
 
 extern MagickExport ImageInfo
@@ -689,7 +691,7 @@ extern MagickExport PixelPacket
     const unsigned long);
 
 extern MagickExport RectangleInfo
-  GetImageBoundingBox(Image *);
+  GetImageBoundingBox(const Image *,ExceptionInfo *exception);
 
 extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned long),

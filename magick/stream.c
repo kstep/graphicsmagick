@@ -65,12 +65,11 @@ typedef CacheInfo
 /*
   Declare pixel stream interfaces.
 */
-static IndexPacket
-  *GetIndexesFromStream(const Image *);
+static const PixelPacket
+  *AcquirePixelStream(const Image *,const long,const long,const unsigned long,
+    const unsigned long,ExceptionInfo *);
 
 static PixelPacket
-  GetOnePixelFromStream(Image *,const long,const long),
-  *GetPixelsFromStream(const Image *),
   *GetPixelStream(Image *,const long,const long,const unsigned long,
     const unsigned long),
   *SetPixelStream(Image *,const long,const long,const unsigned long,
@@ -78,10 +77,53 @@ static PixelPacket
 
 static unsigned int
   SyncPixelStream(Image *);
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   A c q u i r e O n e P i x e l F r o m S t r e a m                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AcquireOnePixelFromStream() returns a single pixel at the specified
+%  (x,y) location.  The image background color is returned if an error occurs.
+%
+%  The format of the AcquireOnePixelFromStream() method is:
+%
+%      const PixelPacket *GetOnePixelFromStream(const Image image,const long x,
+%        const long y,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetOnePixelFromStream returns a pixel at the specified
+%      (x,y) location.
+%
+%    o image: The image.
+%
+%    o x,y:  These values define the location of the pixel to return.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static const PixelPacket AcquireOnePixelFromStream(const Image *image,
+  const long x,const long y,ExceptionInfo *exception)
+{
+  register const PixelPacket
+    *pixel;
 
-static void
-  ClosePixelStream(Image *),
-  DestroyPixelStream(Image *);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  pixel=AcquirePixelStream(image,x,y,1,1,exception);
+  if (pixel != (PixelPacket *) NULL)
+    return(*pixel);
+  return(image->background_color);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,16 +165,57 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   const long y,const unsigned long columns,const unsigned long rows,
   ExceptionInfo *exception)
 {
-#if defined(FUTURE)
-  PixelPacket
-    *pixels;
+  StreamInfo
+    *stream_info;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  pixels=SetPixelStream(image,x,y,columns,rows);
-  return(pixels);
-#endif
-  return((const PixelPacket *) NULL);
+  size_t
+    length;
+
+  unsigned long
+    number_pixels;
+
+  /*
+    Validate pixel cache geometry.
+  */
+  assert(image != (const Image *) NULL);
+  if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
+      ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
+    {
+      ThrowException(exception,StreamWarning,"Unable to acquire pixel stream",
+        "image does not contain the stream geometry");
+      return((PixelPacket *) NULL);
+    }
+  stream_info=(StreamInfo *) image->cache;
+  assert(stream_info->signature == MagickSignature);
+  if ((image->storage_class != GetCacheClass(image->cache)) ||
+      (image->colorspace != GetCacheColorspace(image->cache)))
+    {
+      ThrowException(exception,CacheWarning,"Pixel cache is not open",
+        image->filename);
+      return((PixelPacket *) NULL);
+    }
+  /*
+    Pixels are stored in a temporary buffer until they are synced to the cache.
+  */
+  number_pixels=columns*rows;
+  length=number_pixels*sizeof(PixelPacket);
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace == CMYKColorspace))
+    length+=number_pixels*sizeof(IndexPacket);
+  if (stream_info->pixels == (PixelPacket *) NULL)
+    stream_info->pixels=(PixelPacket *) AcquireMemory(length);
+  else
+    if (length != stream_info->length)
+      ReacquireMemory((void **) &stream_info->pixels,length);
+  if (stream_info->pixels == (void *) NULL)
+    MagickError(ResourceLimitError,"Memory allocation failed",
+      "unable to allocate cache info");
+  stream_info->length=length;
+  stream_info->indexes=(IndexPacket *) NULL;
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace == CMYKColorspace))
+    stream_info->indexes=(IndexPacket *) (stream_info->pixels+number_pixels);
+  return(stream_info->pixels);
 }
 
 /*
@@ -422,7 +505,8 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   SetPixelCacheMethods(AcquirePixelStream,GetPixelStream,SetPixelStream,
     SyncPixelStream,GetPixelsFromStream,GetIndexesFromStream,
-    GetOnePixelFromStream,ClosePixelStream,DestroyPixelStream);
+    AcquireOnePixelFromStream,GetOnePixelFromStream,ClosePixelStream,
+    DestroyPixelStream);
   clone_info=CloneImageInfo(image_info);
   clone_info->fifo=fifo;
   image=ReadImage(clone_info,exception);

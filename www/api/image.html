@@ -71,9 +71,9 @@
 <P>void  <STRONG>AllocateNextImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>unsigned int  <STRONG>AnimateImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>Image * <STRONG>AppendImages</STRONG>( Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>AverageImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>AverageImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ChannelImage</STRONG>( Image *image, const ChannelType channel );</P>
-<P>Image * <STRONG>CloneImage</STRONG>( Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>CloneImage</STRONG>( const Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
 <P>ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo *image_info );</P>
 <P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, Image *composite_image, const long x_offset, const long y_offset );</P>
 <P><STRONG>CycleColormapImage</STRONG>( Image *image, const int amount );</P>
@@ -181,7 +181,7 @@ Return any errors or warnings in this structure.
 <P>The <CODE>Average()</CODE> method takes a set of images and averages them together.  Each image in the set must have the same width and the same height.  <CODE>Average()</CODE> returns a single image with each corresponding pixel component of each image averaged.  On failure, a 
 <FONT SIZE=-1>NULL</FONT> image is returned and exception describes the reason for the failure.</P>
 <P>The format of the AverageImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *AverageImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *AverageImages ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -212,7 +212,7 @@ The image.
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
 <blockquote>CloneImage ( ) copies an image and returns the copy as a new image object.If the specified columns and rows is 0, an exact copy of the image isreturned, otherwise the pixel data is undefined and must be initializedwith the SetImagePixels ( ) and SyncImagePixels ( ) methods. A NULL imageis returned if the image cannot be cloned; check exception for the reasonwhy.; </blockquote><P>The format of the CloneImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -426,7 +426,7 @@ This value is the normalized mean quantization error for any single pixel in the
 <P></P>
 <p><dt><STRONG><A NAME="item_o_normalized_maximum_error%3A">normalized_maximum_error:</A></STRONG><BR>
 <DD>
-Thsi value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.
+This value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.
 <P></P></DL></DL>
 <P>
 <FONT SIZE=-1>A</FONT> small normalized mean square error, accessed as image-&gt;normalized_mean_error, suggests the images are very similiar in spatial layout and color.</P>

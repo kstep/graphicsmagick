@@ -628,8 +628,8 @@ MagickExport void IdentityAffine(AffineMatrix *affine)
 %
 %  The format of the InterpolateColor method is:
 %
-%      PixelPacket InterpolateColor(Image *image,const double x_offset,
-%        const double y_offset)
+%      PixelPacket InterpolateColor(const Image *image,const double x_offset,
+%        const double y_offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -640,8 +640,8 @@ MagickExport void IdentityAffine(AffineMatrix *affine)
 %
 %
 */
-MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
-  const double y_offset)
+MagickExport PixelPacket InterpolateColor(const Image *image,
+  const double x_offset,const double y_offset,ExceptionInfo *exception)
 {
   double
     alpha,
@@ -666,22 +666,21 @@ MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
     return(image->background_color);
   p=image->background_color;
   if ((x >= 0.0) && (y >= 0.0))
-    p=GetOnePixel(image,(int) x,(int) y);
+    p=AcquireOnePixel(image,(int) x,(int) y,exception);
   q=image->background_color;
   if (((x+1.0) < image->columns) && (y >= 0.0))
-    q=GetOnePixel(image,(int) (x+1.0),(int) y);
+    q=AcquireOnePixel(image,(int) (x+1.0),(int) y,exception);
   r=image->background_color;
   if ((x >= 0.0) && ((y+1.0) < image->rows))
-    r=GetOnePixel(image,(int) x,(int) (y+1.0));
+    r=AcquireOnePixel(image,(int) x,(int) (y+1.0),exception);
   s=image->background_color;
   if (((x+1.0) < image->columns) && ((y+1.0) < image->rows))
-    s=GetOnePixel(image,(int) (x+1.0),(int) (y+1.0));
+    s=AcquireOnePixel(image,(int) (x+1.0),(int) (y+1.0),exception);
   x-=floor(x);
   y-=floor(y);
   alpha=1.0-x;
   beta=1.0-y;
-  color.red=(Quantum)
-    (beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red)+0.5);
+  color.red=(Quantum) (beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red)+0.5);
   color.green=(Quantum)
     (beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green)+0.5);
   color.blue=(Quantum)

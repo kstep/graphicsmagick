@@ -386,7 +386,7 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
       /*
         Set bounding box to the image dimensions.
       */
-      page=GetImageBoundingBox(image);
+      page=GetImageBoundingBox(image,exception);
       page.width+=crop_info->x*2;
       page.height+=crop_info->y*2;
       page.x-=crop_info->x;

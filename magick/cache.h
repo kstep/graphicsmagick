@@ -81,6 +81,8 @@ typedef struct _CacheInfo
 } CacheInfo;
 
 typedef const PixelPacket
+  (*AcquireOnePixelFromHandler)(const Image *,const long,const long,
+    ExceptionInfo *),
   *(*AcquirePixelHandler)(const Image *,const long,const long,const unsigned long,
     const unsigned long,ExceptionInfo *);
 
@@ -139,7 +141,8 @@ extern MagickExport void
   SetCacheThreshold(const off_t),
   SetPixelCacheMethods(AcquirePixelHandler,GetPixelHandler,SetPixelHandler,
     SyncPixelHandler,GetPixelsFromHandler,GetIndexesFromHandler,
-    GetOnePixelFromHandler,ClosePixelHandler,DestroyPixelHandler);
+    AcquireOnePixelFromHandler,GetOnePixelFromHandler,ClosePixelHandler,
+    DestroyPixelHandler);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -21,6 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#acquireimagepixels">AcquireImagePixels</A></LI>
+		<LI><A HREF="#acquireonepixel">AcquireOnePixel</A></LI>
 		<LI><A HREF="#closeimagepixels">CloseImagePixels</A></LI>
 		<LI><A HREF="#destroyimagepixels">DestroyImagePixels</A></LI>
 		<LI><A HREF="#getimagepixels">GetImagePixels</A></LI>
@@ -45,6 +46,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>status: Method  <STRONG>AcquireImagePixels</STRONG>( )returns a pointer to the pixels if they are transferred, otherwise a 
 <FONT SIZE=-1>NULL</FONT> is returned.;</P>
+<P>pixels: Method  <STRONG>AcquireOnePixel</STRONG>( )returns a pixel at the specified( x, y );</P>
 <P>void  <STRONG>CloseImagePixels</STRONG>( Image *image );</P>
 <P>void  <STRONG>DestroyImagePixels</STRONG>( Image *image );</P>
 <P>status: Method  <STRONG>GetImagePixels</STRONG>( )returns a pointer to the pixels if they are transferred, otherwise a 
@@ -61,7 +63,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="acquireimagepixels">AcquireImagePixels</A></H2>
-<blockquote>Method AcquireImagePixels ( ) gets pixels from the in-memory or disk pixel cacheas defined by the geometry parameters. A pointer to the pixels is returnedif the pixels are transferred, otherwise a NULL is returned.; </blockquote><blockquote>The format of the AcquireImagePixels ( ) method is:; </blockquote><blockquote>const <A HREF="types/PixelPacket.html">PixelPacket</A> *AcquireImagePixels ( const <A HREF="types/Image.html">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>Method AcquireImagePixels ( ) acquires pixels from the in-memory or disk pixelcache as defined by the geometry parameters. A pointer to the pixels isreturned if the pixels are transferred, otherwise a NULL is returned.; </blockquote><blockquote>The format of the AcquireImagePixels ( ) method is:; </blockquote><blockquote>const <A HREF="types/PixelPacket.html">PixelPacket</A> *AcquireImagePixels ( const <A HREF="types/Image.html">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <blockquote>status: Method AcquireImagePixels ( ) returns a pointer to the pixels if they are transferred, otherwise a NULL is returned.; </blockquote><DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -73,6 +75,27 @@ The image.
 These values define the perimeter of a region of pixels.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="acquireonepixel">AcquireOnePixel</A></H2>
+<blockquote>Method AcquireOnePixel ( ) returns a single pixel at the specified ( x, y ); </blockquote><P>location.  The image background color is returned if an error occurs.</P>
+<blockquote>The format of the AcquireOnePixel ( ) method is:; </blockquote><blockquote>const <A HREF="types/PixelPacket.html">PixelPacket</A> *AcquireOnePixel ( const <A HREF="types/Image.html">Image</A> image, const long x, const long y, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<blockquote>pixels: Method AcquireOnePixel ( ) returns a pixel at the specified ( x, y ); </blockquote><PRE>
+    location.
+=over 4</PRE>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_x%2Cy%3A">x,y:</A></STRONG><BR>
+<DD>
+These values define the location of the pixel to return.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
@@ -128,7 +151,7 @@ The image.
 <DD>
 The image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_x%2Cy%3A">x,y:</A></STRONG><BR>
+<p><dt><STRONG>x,y:</STRONG><BR>
 <DD>
 These values define the location of the pixel to return.
 <P></P></DL></DL>
