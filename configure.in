@@ -65,7 +65,9 @@ then
 fi
 AC_MSG_RESULT($result)
 
+#
 # Tests for Windows
+#
 AC_CYGWIN
 AC_EXEEXT
 AC_OBJEXT
@@ -73,10 +75,26 @@ AC_OBJEXT
 # Must also pass -no-undefined to libtool in Makefile
 # AC_LIBTOOL_WIN32_DLL
 
+#
+# Configure libtool and ltdl
+#
+AC_LIBLTDL_CONVENIENCE
+# Substitute INCLTDL and LIBLTDL in the Makefiles
+AC_SUBST(INCLTDL)
+AC_SUBST(LIBLTDL)
+# Check for dlopen support
+AC_LIBTOOL_DLOPEN
 # Configure libtool
 AM_ENABLE_SHARED(no)
 AM_ENABLE_STATIC(yes)
 AM_PROG_LIBTOOL
+# Configure libltdl
+AC_CONFIG_SUBDIRS(libltdl)
+# Set DLLDFLAGS
+if test X"$enable_shared" = Xyes; then
+  DLLDFLAGS=-export-dynamic
+  AC_SUBST(DLLDFLAGS)
+fi
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'

@@ -36,10 +36,10 @@
 AUTOMAKE_OPTIONS = 1.2 foreign # no-dependencies
 
 MAGICK_LIB	= magick/libMagick.la # libtool library name
-INCLUDES	= -I$(srcdir) $(X_CFLAGS)
+INCLUDES	= -I$(srcdir) $(INCLTDL) $(X_CFLAGS)
 
 # Subdirectories to build
-SUBDIRS = delegates magick tests
+SUBDIRS = delegates libltdl magick tests
 
 STDMANPAGES = ImageMagick.1  combine.1 convert.1  identify.1 \
    miff.4 mogrify.1 montage.1 quantize.5
@@ -66,8 +66,10 @@ mogrify_SOURCES  = mogrify.c
 identify_SOURCES = identify.c
 combine_SOURCES  = combine.c
 
-# Libtool libraries used by all executables
-LDADD		 = $(MAGICK_LIB)
+# Libtool libraries, dependencies, and linker flags used by all executables
+LDADD		 = $(top_builddir)/libltdl/libltdlc.la $(MAGICK_LIB)
+DEPENDENCIES     = $(LIBLTDL) $(MAGICK_LIB)
+LDFLAGS          = @DLLDFLAGS@
 
 # Manual pages to install
 man_MANS = $(MANPAGES)
@@ -133,7 +135,7 @@ install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
 	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) && \
 	$(MAKE) -f Makefile.aperl map_clean && \
 	$(MAKE) clean && rm -f  Makefile.old )
-	
+
 check-perl: $(PERLMAGICK)/$(PERLMAGICK)
 	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
 

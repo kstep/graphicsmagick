@@ -1871,8 +1871,7 @@ EOF
 		if test `expr "$ldd_output" : ".*$deplib_match"` -ne 0 ; then
 		  newdeplibs="$newdeplibs $i"
 		else
-#		  droppeddeps=yes
-		  newdeplibs="$newdeplibs $i"
+		  droppeddeps=yes
 		  echo
 		  echo "*** Warning: This library needs some functionality provided by $i."
 		  echo "*** I have the capability to make that library automatically link in when"
@@ -1902,8 +1901,7 @@ EOF
 		  if test `expr "$ldd_output" : ".*$deplib_match"` -ne 0 ; then
 		    newdeplibs="$newdeplibs $i"
 		  else
-#		    droppeddeps=yes
-		    newdeplibs="$newdeplibs $i"
+		    droppeddeps=yes
 		    echo
 		    echo "*** Warning: This library needs some functionality provided by $i."
 		    echo "*** I have the capability to make that library automatically link in when"
@@ -1963,8 +1961,7 @@ EOF
 		    done
 	      done
 	      if test -n "$a_deplib" ; then
-#		droppeddeps=yes
-	      newdeplibs="$newdeplibs $a_deplib"
+		droppeddeps=yes
 		echo
 		echo "*** Warning: This library needs some functionality provided by $a_deplib."
 		echo "*** I have the capability to make that library automatically link in when"

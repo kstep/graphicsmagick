@@ -56,6 +56,37 @@ libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.c bmp.c \
 # Source files not used for Unix library but which are distributed
 EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 
+#
+# Libtool Modules
+#
+pkgdir            = $(libdir)/ImageMagick/coders
+pkg_LTLIBRARIES   = hdf.la jbig.la jpeg.la png.la tiff.la
+
+# HDF module
+hdf_la_SOURCES    = hdf.c
+hdf_la_LDFLAGS    = -no-undefined -module -avoid-version
+hdf_la_LIBADD     = -ldf -ljpeg -lz
+
+# JBIG module
+jbig_la_SOURCES   = jbig.c
+jbig_la_LDFLAGS   = -no-undefined -module -avoid-version
+jbig_la_LIBADD    = -ljbig
+
+# JPEG module
+jpeg_la_SOURCES   = jpeg.c
+jpeg_la_LDFLAGS   = -no-undefined -module -avoid-version
+jpeg_la_LIBADD    = -ljpeg
+
+# PNG module
+png_la_SOURCES    = png.c
+png_la_LDFLAGS    = -no-undefined -module -avoid-version
+png_la_LIBADD     = -lpng -lz
+
+# TIFF module
+tiff_la_SOURCES   = tiff.c
+tiff_la_LDFLAGS   = -no-undefined -module -avoid-version
+tiff_la_LIBADD    = -ltiff -lz
+
 # Binary scripts
 bin_SCRIPTS = Magick-config
 
