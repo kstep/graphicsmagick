@@ -14,7 +14,7 @@ PACKAGE_VERSION='1.1'
 #
 # Formal Package release date
 # Set to string "unreleased" if package is not a formal release.
-PACKAGE_RELEASE_DATE="03/28/04"
+PACKAGE_RELEASE_DATE="03/29/04"
 #PACKAGE_RELEASE_DATE="unreleased"
 
 #
@@ -30,7 +30,7 @@ if test "$PACKAGE_RELEASE_DATE" = "unreleased"
 then
   PACKAGE_VERSION_ADDENDUM=".0${PACKAGE_CHANGE_DATE}"
 else
-  PACKAGE_VERSION_ADDENDUM='Beta2'
+  PACKAGE_VERSION_ADDENDUM='Beta3'
 fi
 
 #

@@ -1,5 +1,6 @@
 2004-03-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* version.sh (PACKAGE_CHANGE_DATE): Updated version to 1.1Beta3
 	* magick/nt_base.c (NTSystemComman): Have not been successful with using
 	MsgWaitForMultipleObjects() reliably, so back out usage of it for
 	now.
