@@ -1919,7 +1919,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if (image->color_profile.length != 0)
-    (void) fprintf(file,"  Profile-color: %u bytes\n",
+    (void) fprintf(file,"  Profile-color: %lu bytes\n",(unsigned long)
       image->color_profile.length);
   if (image->iptc_profile.length != 0)
     {
@@ -1933,7 +1933,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       /*
         Describe IPTC data.
       */
-      (void) fprintf(file,"  Profile-iptc: %u bytes\n",
+      (void) fprintf(file,"  Profile-iptc: %lu bytes\n",(unsigned long)
         image->iptc_profile.length);
       for (i=0; i < (int) image->iptc_profile.length; )
       {
@@ -2034,9 +2034,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   {
     if (image->generic_profile[i].length == 0)
       continue;
-    (void) fprintf(file,"  Profile-%.1024s: %u bytes\n",
+    (void) fprintf(file,"  Profile-%.1024s: %lu bytes\n",
       image->generic_profile[i].name == (char *) NULL ? "generic" :
-      image->generic_profile[i].name,image->generic_profile[i].length);
+      image->generic_profile[i].name,(unsigned long)
+      image->generic_profile[i].length);
   }
   if ((image->tile_info.width*image->tile_info.height) != 0)
     (void) fprintf(file,"  Tile Geometry: %ux%u%+d%+d\n",image->tile_info.width,
