@@ -4212,7 +4212,7 @@ Mogrify(ref,...)
                   &fill_color);
             }
           if (attribute_flag[3] || attribute_flag[4])
-            image->background_color=fill_color;
+            image->border_color=fill_color;
           image=BorderImage(image,&rectangle_info,&exception);
           break;
         }

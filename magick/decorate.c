@@ -109,7 +109,7 @@ MagickExport Image *BorderImage(const Image *image,
   clone_image=CloneImage(image,0,0,False,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
-  clone_image->matte_color=image->background_color;
+  clone_image->matte_color=image->border_color;
   border_image=FrameImage(clone_image,&frame_info,exception);
   DestroyImage(clone_image);
   return(border_image);

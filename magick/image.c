@@ -4755,6 +4755,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             TransformImage(image,geometry,(char *) NULL);
             if ((width == (*image)->columns) && (height == (*image)->rows))
               break;
+            (*image)->border_color=(*image)->background_color;
             border_info.width=(width-(*image)->columns+1)/2;
             border_info.height=(height-(*image)->rows+1)/2;
             border_image=BorderImage(*image,&border_info,&(*image)->exception);

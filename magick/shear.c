@@ -881,6 +881,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   /*
     Surround image with a border.
   */
+  integral_image->border_color=integral_image->background_color;
   border_info.width=x_offset;
   border_info.height=y_offset;
   rotate_image=BorderImage(integral_image,&border_info,exception);
@@ -997,6 +998,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   /*
     Surround image with border.
   */
+  integral_image->border_color=integral_image->background_color;
   border_info.width=x_offset;
   border_info.height=y_offset;
   shear_image=BorderImage(integral_image,&border_info,exception);
