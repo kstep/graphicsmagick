@@ -1,7 +1,10 @@
 2001-11-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Magick++/CoderInfo.h (CoderInfo): Syntax fix.
+	ImageMagick bug #975.
+
 	* lib/Image.cpp (draw): Delete ostrstream data when it is no
- 	longer needed.  Bug reported by ghoudmon@yahoo.fr.
+ 	longer needed.  ImageMagick bug #988.
 
 2001-11-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

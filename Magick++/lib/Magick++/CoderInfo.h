@@ -51,10 +51,10 @@ namespace Magick
   private:
 
     // Default constructor (not supported)
-    CoderInfo::CoderInfo ( void );
+    CoderInfo ( void );
 
     // Copy constructor (not supported)
-//     CoderInfo::CoderInfo ( const CoderInfo &coder_ );
+    //    CoderInfo ( const CoderInfo &coder_ );
 
     // Assignment operator (not supported)
     CoderInfo& operator= (const CoderInfo &coder_ );
