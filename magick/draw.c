@@ -1270,11 +1270,11 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info,Image *image)
 {
   double
-    dash_offset,
-    distance,
-    maximum_distance,
+    length,
+    maximum_length,
+    offset,
     scale,
-    this_distance;
+    total_length;
 
   DrawInfo
     *clone_info;
@@ -1315,35 +1315,34 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   if (dash_polygon == (PrimitiveInfo *) NULL)
     return(False);
   scale=ExpandAffine(&draw_info->affine);
-  dash_offset=draw_info->dash_offset != 0.0 ?
-    scale*draw_info->dash_offset : 0.0;
-  distance=0.0;
-  for (n=(-1); dash_offset > 0.0; )
+  offset=draw_info->dash_offset != 0.0 ?  scale*draw_info->dash_offset : 0.0;
+  length=0.0;
+  for (n=(-1); offset > 0.0; )
   {
     if (n == -1)
       n=0;
     if (draw_info->dash_pattern[n] == 0.0)
       break;
-    if (dash_offset > (scale*draw_info->dash_pattern[n]))
+    if (offset > (scale*draw_info->dash_pattern[n]))
       {
-        dash_offset-=scale*draw_info->dash_pattern[n];
+        offset-=scale*draw_info->dash_pattern[n];
         n++;
         continue;
       }
-    if (dash_offset < (scale*draw_info->dash_pattern[n]))
+    if (offset < (scale*draw_info->dash_pattern[n]))
       {
-        distance=scale*draw_info->dash_pattern[n]-dash_offset;
-        dash_offset=0.0;
+        length=scale*draw_info->dash_pattern[n]-offset;
+        offset=0.0;
         break;
       }
-    dash_offset=0.0;
-    distance=scale*draw_info->dash_pattern[n];
+    offset=0.0;
+    length=scale*draw_info->dash_pattern[n];
     n++;
   }
   j=0;
   if (n == -1)
     {
-      distance=scale*draw_info->dash_pattern[0];
+      length=scale*draw_info->dash_pattern[0];
       dash_polygon[0]=primitive_info[0];
       n=0;
       j=1;
@@ -1353,33 +1352,33 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   {
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
     dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
-    maximum_distance=sqrt(dx*dx+dy*dy+MagickEpsilon);
-    if (distance == 0)
+    maximum_length=sqrt(dx*dx+dy*dy+MagickEpsilon);
+    if (length == 0)
       {
         n++;
         if (draw_info->dash_pattern[n] == 0.0)
           n=0;
-        distance=scale*draw_info->dash_pattern[n];
+        length=scale*draw_info->dash_pattern[n];
       }
-    for (this_distance=0.0; maximum_distance >= (distance+this_distance); )
+    for (total_length=0.0; maximum_length >= (length+total_length); )
     {
-      this_distance+=distance;
+      total_length+=length;
       if (n & 0x01)
         {
           dash_polygon[0]=primitive_info[0];
           dash_polygon[0].point.x=primitive_info[i-1].point.x+
-            dx*this_distance/maximum_distance;
+            dx*total_length/maximum_length;
           dash_polygon[0].point.y=primitive_info[i-1].point.y+
-            dy*this_distance/maximum_distance;
+            dy*total_length/maximum_length;
           j=1;
         }
       else
         {
           dash_polygon[j]=primitive_info[i-1];
           dash_polygon[j].point.x=primitive_info[i-1].point.x+
-            dx*this_distance/maximum_distance;
+            dx*total_length/maximum_length;
           dash_polygon[j].point.y=primitive_info[i-1].point.y+
-            dy*this_distance/maximum_distance;
+            dy*total_length/maximum_length;
           dash_polygon[j].coordinates=1;
           j++;
           dash_polygon[0].coordinates=j;
@@ -1389,9 +1388,9 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
       n++;
       if (draw_info->dash_pattern[n] == 0.0)
         n=0;
-      distance=scale*draw_info->dash_pattern[n];
+      length=scale*draw_info->dash_pattern[n];
     }
-    distance-=(maximum_distance-this_distance);
+    length-=(maximum_length-total_length);
     if (n & 0x01)
       continue;
     dash_polygon[j]=primitive_info[i];
@@ -3414,7 +3413,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                 {
                   color=GetOnePixel(draw_info->tile,
                     (long) (x % draw_info->tile->columns),
-		    (long) (y % draw_info->tile->rows));
+                    (long) (y % draw_info->tile->rows));
                   if (!draw_info->tile->matte)
                     color.opacity=OpaqueOpacity;
                 }
