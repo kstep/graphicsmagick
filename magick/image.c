@@ -54,16 +54,6 @@
   Include declarations.
 */
 #include "studio.h"
-#define MaxRGB  65535
-#define ScaleCharToQuantum(value)  ((Quantum) (257*(value)))
-#define ScaleLongToQuantum(value)  ((Quantum) ((value)/65537))
-#define ScaleQuantum(quantum)  ((unsigned long) ((quantum)/257))
-#define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/257))
-#define ScaleQuantumToLong(quantum)  ((unsigned long) (65537*(quantum)))
-#define ScaleQuantumToShort(quantum)  ((unsigned short) (quantum))
-#define ScaleShortToQuantum(value)  ((Quantum) (value))
-#define ScaleToQuantum(value)  ((unsigned long) (257*(value)))
-
 
 /*
   Constant declaration.
