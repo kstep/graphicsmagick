@@ -482,8 +482,16 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   image->columns=(int) (image->bounding_box.x2-image->bounding_box.x1+3) & -4;
   image->rows=image->bounding_box.y2-image->bounding_box.y1;
   SetImage(image,TransparentOpacity);
-  FormatString(label,"%s %s",face->family_name,face->style_name);
-  (void) SetImageAttribute(image,"Label",label);
+  if (face->family_name != (char *) NULL)
+    {
+      (void) strcpy(label,face->family_name);
+      if (face->family_name != (char *) NULL)
+        {
+          (void) strcat(label," ");
+          (void) strcat(label,face->style_name);
+        }
+      (void) SetImageAttribute(image,"Label",label);
+    }
   /*
     Render label.
   */
