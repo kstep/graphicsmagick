@@ -757,9 +757,11 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
         {
           ThrowException(exception,BlobWarning,"Unable to write blob",
             clone_info->magick);
+          LiberateMemory((void **) &image->blob->data);
           DestroyImageInfo(clone_info);
           return((void *) NULL);
         }
+      ReacquireMemory((void **) &image->blob->data,image->blob->length+1);
       blob=image->blob->data;
       *length=image->blob->length;
       DetachBlob(image->blob);
@@ -1882,7 +1884,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
     return(image->fifo(image,data,length));
   if (image->blob->data != (unsigned char *) NULL)
     {
-      if ((image->blob->offset+length) +1>= image->blob->extent)
+      if ((image->blob->offset+length) >= image->blob->extent)
         {
           if (image->blob->mapped)
             return(0);
