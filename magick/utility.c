@@ -279,7 +279,7 @@ Export unsigned int CloneString(char **destination,const char *source)
 %
 %  The format of the ConcatenateString method is:
 %
-%      char *ConcatenateString(char **destination,const char *source)
+%      unsigned int ConcatenateString(char **destination,const char *source)
 %
 %  A description of each parameter follows:
 %

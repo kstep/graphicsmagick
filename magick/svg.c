@@ -281,6 +281,9 @@ Export char **StringToTokens(const char *text,int *number_tokens)
 
 static char *TraversePath(const char *data)
 {
+#define BezierQuantum  1
+#define BezierCoordinates  4
+      
   char
     *path,
     points[MaxTextExtent];
@@ -290,6 +293,7 @@ static char *TraversePath(const char *data)
     y;
 
   int
+    attribute,
     n;
 
   PointInfo
@@ -308,39 +312,68 @@ static char *TraversePath(const char *data)
   {
     while (isspace(*p))
       p++;
-    switch (*p)
+    attribute=(*p);
+    switch (attribute)
     {
       case 'c':
+      case 'C':
       {
-        for (n=0; ; n=0)
+        double
+          alpha,
+          coefficients[BezierCoordinates],
+          weight;
+      
+        PointInfo
+          pixel,
+	  pixels[BezierCoordinates];
+      
+        register int
+          i,
+          j;
+      
+        /*
+          Compute bezier points.
+        */
+        pixels[0]=point;
+        for (i=1; i < BezierCoordinates; i++)
         {
+          n=0;
           (void) sscanf(p+1,"%lf%lf%n",&x,&y,&n);
           if (n == 0)
             (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
           if (n == 0)
             break;
-          point.x+=x;
-          point.y+=y;
-          (void) FormatString(points,"%g,%g ",point.x,point.y);
+          point.x=attribute == 'C' ? x : point.x+x;
+          point.y=attribute == 'C' ? y : point.y+y;
+          pixels[i]=point;
+          p+=n;
+        }
+        for (i=0; i < BezierCoordinates; i++)
+          coefficients[i]=Permutate(BezierCoordinates-1,i);
+        weight=0.0;
+        for (i=0; i < (BezierCoordinates*BezierQuantum); i++)
+        {
+          pixel.x=0;
+          pixel.y=0;
+          alpha=pow(1.0-weight,BezierCoordinates-1);
+          for (j=0; j < BezierCoordinates; j++)
+          {
+            pixel.x+=alpha*coefficients[j]*pixels[j].x;
+            pixel.y+=alpha*coefficients[j]*pixels[j].y;
+            alpha*=weight/(1.0-weight);
+          }
+          (void) FormatString(points,"%g,%g ",pixel.x,pixel.y);
           if (!ConcatenateString(&path,points))
             return((char *) NULL);
-          p+=n;
+          weight+=1.0/BezierQuantum/BezierCoordinates;
         }
         break;
       }
       case 'h':
-      {
-        (void) sscanf(p+1,"%lf%n",&x,&n);
-        point.x+=x;
-        (void) FormatString(points,"%g,%g ",point.x,point.y);
-        if (!ConcatenateString(&path,points))
-          return((char *) NULL);
-        p+=n;
-        break;
-      }
       case 'H':
       {
-        (void) sscanf(p+1,"%lf%n",&point.x,&n);
+        (void) sscanf(p+1,"%lf%n",&x,&n);
+        point.x=attribute == 'H' ? x: point.x+x;
         (void) FormatString(points,"%g,%g ",point.x,point.y);
         if (!ConcatenateString(&path,points))
           return((char *) NULL);
@@ -348,6 +381,7 @@ static char *TraversePath(const char *data)
         break;
       }
       case 'l':
+      case 'L':
       {
         for (n=0; ; n=0)
         {
@@ -356,24 +390,8 @@ static char *TraversePath(const char *data)
             (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
           if (n == 0)
             break;
-          point.x+=x;
-          point.y+=y;
-          (void) FormatString(points,"%g,%g ",point.x,point.y);
-          if (!ConcatenateString(&path,points))
-            return((char *) NULL);
-          p+=n;
-        }
-        break;
-      }
-      case 'L':
-      {
-        for (n=0; ; n=0)
-        {
-          (void) sscanf(p+1,"%lf%lf%n",&point.x,&point.y,&n);
-          if (n == 0)
-            (void) sscanf(p+1,"%lf,%lf%n",&point.x,&point.y,&n);
-          if (n == 0)
-            break;
+          point.x=attribute == 'L' ? x : point.x+x;
+          point.y=attribute == 'L' ? y : point.y+y;
           (void) FormatString(points,"%g,%g  ",point.x,point.y);
           if (!ConcatenateString(&path,points))
             return((char *) NULL);
@@ -396,18 +414,10 @@ static char *TraversePath(const char *data)
         break;
       }
       case 'v':
-      {
-        (void) sscanf(p+1,"%lf%n",&y,&n);
-        point.y+=y;
-        (void) FormatString(points,"%g,%g ",point.x,point.y);
-        if (!ConcatenateString(&path,points))
-          return((char *) NULL);
-        p+=n;
-        break;
-      }
       case 'V':
       {
-        (void) sscanf(p+1,"%lf%n",&point.y,&n);
+        (void) sscanf(p+1,"%lf%n",&y,&n);
+        point.y=attribute == 'V' ? y : point.y+y;
         (void) FormatString(points,"%g,%g ",point.x,point.y);
         if (!ConcatenateString(&path,points))
           return((char *) NULL);
@@ -941,6 +951,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->primitive,filename);
   status=DrawImage(image,draw_info);
+puts(filename); if (0)
   (void) remove(filename+1);
   if (status == False)
     ThrowReaderException(CorruptImageWarning,"Unable to read SVG image",image);
