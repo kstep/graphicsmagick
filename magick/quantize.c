@@ -248,7 +248,7 @@ typedef struct _CubeInfo
   unsigned int
     depth;
 
-  unsigned long
+  size_t
     colors;
 
   PixelPacket
@@ -376,10 +376,10 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   */
   if (image->colormap == (PixelPacket *) NULL)
     image->colormap=(PixelPacket *)
-      AcquireMemory((cube_info->colors+1)*sizeof(PixelPacket));
+      AcquireMemory(cube_info->colors*sizeof(PixelPacket));
   else
     ReacquireMemory((void **) &image->colormap,
-      (cube_info->colors+1)*sizeof(PixelPacket));
+      cube_info->colors*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
       "Memory allocation failed");
@@ -847,6 +847,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   if (!cube_info->quantize_info->dither)
     return;
   LiberateMemory((void **) &cube_info->cache);
+  LiberateMemory((void **) &cube_info);
 }
 
 /*
@@ -1108,8 +1109,7 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
 %
 %  The format of the GetCubeInfo method is:
 %
-%      unsigned int GetCubeInfo(CubeInfo *cube_info,
-%        const QuantizeInfo *quantize_info,int depth)
+%      cube_info=GetCubeInfo(const QuantizeInfo *quantize_info,int depth)
 %
 %  A description of each parameter follows.
 %
@@ -1128,9 +1128,11 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
 %
 %
 */
-static unsigned int GetCubeInfo(CubeInfo *cube_info,
-  const QuantizeInfo *quantize_info,int depth)
+static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,int depth)
 {
+  CubeInfo
+    *cube_info;
+
   double
     weight;
 
@@ -1140,9 +1142,10 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
   /*
     Initialize tree to describe color cube_info.
   */
-  cube_info->node_queue=(Nodes *) NULL;
-  cube_info->nodes=0;
-  cube_info->free_nodes=0;
+  cube_info=(CubeInfo *) AcquireMemory(sizeof(CubeInfo));
+  if (cube_info == (CubeInfo *) NULL)
+    return((CubeInfo *) NULL);
+  memset(cube_info,0,sizeof(CubeInfo));
   if (depth > MaxTreeDepth)
     depth=MaxTreeDepth;
   if (depth < 2)
@@ -1153,17 +1156,17 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
   */
   cube_info->root=GetNodeInfo(cube_info,0,0,(NodeInfo *) NULL);
   if (cube_info->root == (NodeInfo *) NULL)
-    return(False);
+    return((CubeInfo *) NULL);
   cube_info->root->parent=cube_info->root;
   cube_info->quantize_info=quantize_info;
   if (!cube_info->quantize_info->dither)
-    return(True);
+    return(cube_info);
   /*
     Initialize dither resources.
   */
   cube_info->cache=(int *) AcquireMemory((1 << 18)*sizeof(int));
   if (cube_info->cache == (int *) NULL)
-    return(False);
+    return((CubeInfo *) NULL);
   /*
     Initialize color cache.
   */
@@ -1189,7 +1192,7 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
   if (QuantumDepth == 16)
     for (i=0; i < ExceptionQueueLength; i++)
       cube_info->weights[i]/=256.0;
-  return(True);
+  return(cube_info);
 }
 
 /*
@@ -1443,7 +1446,7 @@ MagickExport unsigned int MapImage(Image *image,Image *map_image,
   const unsigned int dither)
 {
   CubeInfo
-    cube_info;
+    *cube_info;
 
   QuantizeInfo
     quantize_info;
@@ -1461,20 +1464,20 @@ MagickExport unsigned int MapImage(Image *image,Image *map_image,
   GetQuantizeInfo(&quantize_info);
   quantize_info.dither=dither;
   quantize_info.colorspace=image->matte ? TransparentColorspace : RGBColorspace;
-  status=GetCubeInfo(&cube_info,&quantize_info,8);
-  if (status == False)
+  cube_info=GetCubeInfo(&quantize_info,8);
+  if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to map image",
       "Memory allocation failed");
-  status=Classification(&cube_info,map_image);
+  status=Classification(cube_info,map_image);
   if (status != False)
     {
       /*
         Classify image colors from the reference image.
       */
-      quantize_info.number_colors=cube_info.colors;
-      status=Assignment(&cube_info,image);
+      quantize_info.number_colors=cube_info->colors;
+      status=Assignment(cube_info,image);
     }
-  DestroyCubeInfo(&cube_info);
+  DestroyCubeInfo(cube_info);
   return(status);
 }
 
@@ -1513,7 +1516,7 @@ MagickExport unsigned int MapImages(Image *images,Image *map_image,
   const unsigned int dither)
 {
   CubeInfo
-    cube_info;
+    *cube_info;
 
   Image
     *image;
@@ -1551,27 +1554,27 @@ MagickExport unsigned int MapImages(Image *images,Image *map_image,
   /*
     Classify image colors from the reference image.
   */
-  status=GetCubeInfo(&cube_info,&quantize_info,8);
-  if (status == False)
+  cube_info=GetCubeInfo(&quantize_info,8);
+  if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to map image sequence",
       "Memory allocation failed");
-  status=Classification(&cube_info,map_image);
+  status=Classification(cube_info,map_image);
   if (status != False)
     {
       /*
         Classify image colors from the reference image.
       */
-      quantize_info.number_colors=cube_info.colors;
+      quantize_info.number_colors=cube_info->colors;
       for (image=images; image != (Image *) NULL; image=image->next)
       {
         quantize_info.colorspace=image->matte ? TransparentColorspace :
           RGBColorspace;
-        status=Assignment(&cube_info,image);
+        status=Assignment(cube_info,image);
         if (status == False)
           break;
       }
     }
-  DestroyCubeInfo(&cube_info);
+  DestroyCubeInfo(cube_info);
   return(status);
 }
 
@@ -1933,7 +1936,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   Image *image)
 {
   CubeInfo
-    cube_info;
+    *cube_info;
 
   int
     depth;
@@ -1977,27 +1980,27 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   /*
     Initialize color cube.
   */
-  status=GetCubeInfo(&cube_info,quantize_info,depth);
-  if (status == False)
+  cube_info=GetCubeInfo(quantize_info,depth);
+  if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
       "Memory allocation failed");
   if ((quantize_info->colorspace != RGBColorspace) &&
       (quantize_info->colorspace != CMYKColorspace))
     RGBTransformImage(image,quantize_info->colorspace);
-  status=Classification(&cube_info,image);
+  status=Classification(cube_info,image);
   if (status != False)
     {
       /*
         Reduce the number of colors in the image.
       */
-      if (number_colors < cube_info.colors)
-        Reduction(&cube_info,number_colors);
-      status=Assignment(&cube_info,image);
+      if (number_colors < cube_info->colors)
+        Reduction(cube_info,number_colors);
+      status=Assignment(cube_info,image);
       if ((quantize_info->colorspace != RGBColorspace) &&
           (quantize_info->colorspace != CMYKColorspace))
         TransformRGBImage(image,quantize_info->colorspace);
     }
-  DestroyCubeInfo(&cube_info);
+  DestroyCubeInfo(cube_info);
   return(status);
 }
 
@@ -2034,7 +2037,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   Image *images)
 {
   CubeInfo
-    cube_info;
+    *cube_info;
 
   int
     depth;
@@ -2096,8 +2099,8 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   /*
     Initialize color cube.
   */
-  status=GetCubeInfo(&cube_info,quantize_info,depth);
-  if (status == False)
+  cube_info=GetCubeInfo(quantize_info,depth);
+  if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,
       "Unable to quantize image sequence","Memory allocation failed");
   image=images;
@@ -2113,7 +2116,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   for (i=0; image != (Image *) NULL; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    status=Classification(&cube_info,image);
+    status=Classification(cube_info,image);
     if (status == False)
       break;
     image=image->next;
@@ -2125,12 +2128,12 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
       /*
         Reduce the number of colors in an image sequence.
       */
-      Reduction(&cube_info,number_colors);
+      Reduction(cube_info,number_colors);
       image=images;
       for (i=0; image != (Image *) NULL; i++)
       {
         handler=SetMonitorHandler((MonitorHandler) NULL);
-        status=Assignment(&cube_info,image);
+        status=Assignment(cube_info,image);
         if (status == False)
           break;
         if ((quantize_info->colorspace != RGBColorspace) &&
@@ -2141,7 +2144,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
         MagickMonitor(AssignImageText,i,number_images);
       }
     }
-  DestroyCubeInfo(&cube_info);
+  DestroyCubeInfo(cube_info);
   return(status);
 }
 

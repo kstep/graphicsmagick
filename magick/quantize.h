@@ -43,6 +43,9 @@ extern MagickExport char
 extern MagickExport QuantizeInfo
   *CloneQuantizeInfo(const QuantizeInfo *);
 
+extern MagickExport size_t
+  GetNumberColors(Image *,FILE *);
+
 extern MagickExport unsigned int
   MapImage(Image *,Image *,const unsigned int),
   MapImages(Image *,Image *,const unsigned int),
@@ -52,9 +55,6 @@ extern MagickExport unsigned int
   QueryColorName(const PixelPacket *,char *),
   SegmentImage(Image *,const ColorspaceType,const unsigned int,const double,
     const double);
-
-extern MagickExport unsigned long
-  GetNumberColors(Image *,FILE *);
 
 extern MagickExport void
   DestroyQuantizeInfo(QuantizeInfo *),

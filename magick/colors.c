@@ -85,7 +85,7 @@ typedef struct _ColorPacket
   unsigned short
     index;
 
-  unsigned long
+  size_t
     count;
 } ColorPacket;
 
@@ -94,7 +94,7 @@ typedef struct _NodeInfo
   unsigned char
     level;
 
-  unsigned long
+  size_t
     number_unique;
 
   ColorPacket
@@ -121,7 +121,7 @@ typedef struct _CubeInfo
   unsigned int
     progress;
 
-  unsigned long
+  size_t
     colors;
 
   unsigned int
@@ -131,7 +131,7 @@ typedef struct _CubeInfo
     *node_info;
 
   Nodes
-    *node_list;
+    *node_queue;
 } CubeInfo;
 
 /*
@@ -396,7 +396,11 @@ static const ColorlistInfo
 /*
   Forward declarations.
 */
+static NodeInfo
+  *GetNodeInfo(CubeInfo *,const unsigned int);
+
 static void
+  DestroyList(const NodeInfo *),
   Histogram(CubeInfo *,const NodeInfo *,FILE *);
 
 /*
@@ -436,6 +440,47 @@ MagickExport void CompressColormap(Image *image)
   quantize_info.number_colors=image->colors;
   quantize_info.tree_depth=8;
   (void) QuantizeImage(&quantize_info,image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D e s t r o y C u b e I n f o                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyCubeInfo deallocates memory associated with an image.
+%
+%  The format of the DestroyCubeInfo method is:
+%
+%      DestroyCubeInfo(CubeInfo *cube_info)
+%
+%  A description of each parameter follows:
+%
+%    o cube_info: The address of a structure of type CubeInfo.
+%
+%
+*/
+static void DestroyCubeInfo(CubeInfo *cube_info)
+{
+  register Nodes
+    *nodes;
+
+  /*
+    Release color cube tree storage.
+  */
+  DestroyList(cube_info->root);
+  do
+  {
+    nodes=cube_info->node_queue->next;
+    LiberateMemory((void **) &cube_info->node_queue);
+    cube_info->node_queue=nodes;
+  } while (cube_info->node_queue != (Nodes *) NULL);
+  LiberateMemory((void **) &cube_info);
 }
 
 /*
@@ -483,6 +528,56 @@ static void DestroyList(const NodeInfo *node_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t C u b e I n f o                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCubeInfo initialize the Cube data structure.
+%
+%  The format of the GetCubeInfo method is:
+%
+%      cube_info=GetCubeInfo()
+%
+%  A description of each parameter follows.
+%
+%    o cube_info: A pointer to the Cube structure.
+%
+%
+*/
+static CubeInfo *GetCubeInfo(void)
+{
+  CubeInfo
+    *cube_info;
+
+  double
+    weight;
+
+  register int
+    i;
+
+  /*
+    Initialize tree to describe color cube.
+  */
+  cube_info=(CubeInfo *) AcquireMemory(sizeof(CubeInfo));
+  if (cube_info == (CubeInfo *) NULL)
+    return((CubeInfo *) NULL);
+  memset(cube_info,0,sizeof(CubeInfo));
+  /*
+    Initialize root node.
+  */
+  cube_info->root=GetNodeInfo(cube_info,0);
+  if (cube_info->root == (NodeInfo *) NULL)
+    return((CubeInfo *) NULL);
+  return(cube_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  G e t N o d e I n f o                                                      %
 %                                                                             %
 %                                                                             %
@@ -494,22 +589,22 @@ static void DestroyList(const NodeInfo *node_info)
 %
 %  The format of the GetNodeInfo method is:
 %
-%      node_info=GetNodeInfo(color_cube,level)
+%      node_info=GetNodeInfo(cube_info,level)
 %
 %  A description of each parameter follows.
 %
-%    o color_cube: A pointer to the CubeInfo structure.
+%    o cube_info: A pointer to the CubeInfo structure.
 %
 %    o level: Specifies the level in the storage_class the node resides.
 %
 %
 */
-static NodeInfo *GetNodeInfo(CubeInfo *color_cube,const unsigned int level)
+static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 {
   NodeInfo
     *node_info;
 
-  if (color_cube->free_nodes == 0)
+  if (cube_info->free_nodes == 0)
     {
       Nodes
         *nodes;
@@ -520,13 +615,13 @@ static NodeInfo *GetNodeInfo(CubeInfo *color_cube,const unsigned int level)
       nodes=(Nodes *) AcquireMemory(sizeof(Nodes));
       if (nodes == (Nodes *) NULL)
         return((NodeInfo *) NULL);
-      nodes->next=color_cube->node_list;
-      color_cube->node_list=nodes;
-      color_cube->node_info=nodes->nodes;
-      color_cube->free_nodes=NodesInAList;
+      nodes->next=cube_info->node_queue;
+      cube_info->node_queue=nodes;
+      cube_info->node_info=nodes->nodes;
+      cube_info->free_nodes=NodesInAList;
     }
-  color_cube->free_nodes--;
-  node_info=color_cube->node_info++;
+  cube_info->free_nodes--;
+  node_info=cube_info->node_info++;
   memset(node_info,0,sizeof(NodeInfo));
   node_info->level=level;
   return(node_info);
@@ -566,12 +661,12 @@ static NodeInfo *GetNodeInfo(CubeInfo *color_cube,const unsigned int level)
 %
 %
 */
-MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
+MagickExport size_t GetNumberColors(Image *image,FILE *file)
 {
 #define NumberColorsImageText  "  Compute image colors...  "
 
   CubeInfo
-    color_cube;
+    *cube_info;
 
   int
     y;
@@ -594,21 +689,20 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
     index,
     level;
 
+  size_t
+    number_colors;
+
   /*
     Initialize color description tree.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  color_cube.node_list=(Nodes *) NULL;
-  color_cube.progress=0;
-  color_cube.colors=0;
-  color_cube.free_nodes=0;
-  color_cube.root=GetNodeInfo(&color_cube,0);
-  if (color_cube.root == (NodeInfo *) NULL)
+  cube_info=GetCubeInfo();
+  if (cube_info == (CubeInfo *) NULL)
     {
       ThrowException(&image->exception,ResourceLimitWarning,
         "unable to determine the number of image colors",
-        "memory allocation failed");
+        "Memory allocation failed");
       return(0);
     }
   for (y=0; y < (int) image->rows; y++)
@@ -621,7 +715,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
       /*
         Start at the root and proceed level by level.
       */
-      node_info=color_cube.root;
+      node_info=cube_info->root;
       index=MaxTreeDepth-1;
       for (level=1; level <= MaxTreeDepth; level++)
       {
@@ -630,7 +724,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
            (((Quantum) DownScale(p->blue) >> index) & 0x01);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
-            node_info->child[id]=GetNodeInfo(&color_cube,level);
+            node_info->child[id]=GetNodeInfo(cube_info,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
               {
                 ThrowException(&image->exception,ResourceLimitWarning,
@@ -668,7 +762,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
         node_info->list[i].blue=p->blue;
         node_info->list[i].count=1;
         node_info->number_unique++;
-        color_cube.colors++;
+        cube_info->colors++;
       }
       p++;
     }
@@ -678,21 +772,12 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
   if (file != (FILE *) NULL)
     {
       (void) fputs("\n",file);
-      Histogram(&color_cube,color_cube.root,file);
+      Histogram(cube_info,cube_info->root,file);
       (void) fflush(file);
     }
-  /*
-    Release color cube tree storage.
-  */
-  DestroyList(color_cube.root);
-  do
-  {
-    nodes=color_cube.node_list->next;
-    LiberateMemory((void **) &color_cube.node_list);
-    color_cube.node_list=nodes;
-  }
-  while (color_cube.node_list != (Nodes *) NULL);
-  return(color_cube.colors);
+  number_colors=cube_info->colors;
+  DestroyCubeInfo(cube_info);
+  return(number_colors);
 }
 
 /*
@@ -711,19 +796,19 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
 %
 %  The format of the Histogram method is:
 %
-%      void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,
+%      void Histogram(CubeInfo *cube_info,const NodeInfo *node_info,
 %        FILE *file)
 %
 %  A description of each parameter follows.
 %
-%    o color_cube: A pointer to the CubeInfo structure.
+%    o cube_info: A pointer to the CubeInfo structure.
 %
 %    o node_info: The address of a structure of type NodeInfo which points to a
 %      node in the color cube tree that is to be pruned.
 %
 %
 */
-static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
+static void Histogram(CubeInfo *cube_info,const NodeInfo *node_info,FILE *file)
 {
 #define HistogramImageText  "  Compute image histogram...  "
 
@@ -735,7 +820,7 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
   */
   for (id=0; id < 8; id++)
     if (node_info->child[id] != (NodeInfo *) NULL)
-      Histogram(color_cube,node_info->child[id],file);
+      Histogram(cube_info,node_info->child[id],file);
   if (node_info->level == MaxTreeDepth)
     {
       char
@@ -765,10 +850,10 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
         (void) fprintf(file,"\n");
         p++;
       }
-      if (QuantumTick(color_cube->progress,color_cube->colors))
-        MagickMonitor(HistogramImageText,color_cube->progress,
-          color_cube->colors);
-      color_cube->progress++;
+      if (QuantumTick(cube_info->progress,cube_info->colors))
+        MagickMonitor(HistogramImageText,cube_info->progress,
+          cube_info->colors);
+      cube_info->progress++;
     }
 }
 
@@ -960,7 +1045,7 @@ MagickExport unsigned int IsOpaqueImage(Image *image)
 MagickExport unsigned int IsPseudoClass(Image *image)
 {
   CubeInfo
-    color_cube;
+    *cube_info;
 
   int
     y;
@@ -998,24 +1083,21 @@ MagickExport unsigned int IsPseudoClass(Image *image)
   /*
     Initialize color description tree.
   */
-  color_cube.node_list=(Nodes *) NULL;
-  color_cube.colors=0;
-  color_cube.free_nodes=0;
-  color_cube.root=GetNodeInfo(&color_cube,0);
-  if (color_cube.root == (NodeInfo *) NULL)
+  cube_info=GetCubeInfo();
+  if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to determine image class",
       "Memory allocation failed");
-  for (y=0; (y < (int) image->rows) && (color_cube.colors <= 256); y++)
+  for (y=0; (y < (int) image->rows) && (cube_info->colors <= 256); y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       return(False);
-    for (x=0; (x < (int) image->columns) && (color_cube.colors <= 256); x++)
+    for (x=0; (x < (int) image->columns) && (cube_info->colors <= 256); x++)
     {
       /*
         Start at the root and proceed level by level.
       */
-      node_info=color_cube.root;
+      node_info=cube_info->root;
       index=MaxTreeDepth-1;
       for (level=1; level < MaxTreeDepth; level++)
       {
@@ -1024,7 +1106,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
            ((DownScale(p->blue) >> index) & 0x01);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
-            node_info->child[id]=GetNodeInfo(&color_cube,level);
+            node_info->child[id]=GetNodeInfo(cube_info,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
               ThrowBinaryException(ResourceLimitWarning,
                 "Unable to determine image class","Memory allocation failed");
@@ -1051,13 +1133,13 @@ MagickExport unsigned int IsPseudoClass(Image *image)
           node_info->list[i].red=p->red;
           node_info->list[i].green=p->green;
           node_info->list[i].blue=p->blue;
-          node_info->list[i].index=color_cube.colors++;
+          node_info->list[i].index=cube_info->colors++;
           node_info->number_unique++;
         }
       p++;
     }
   }
-  if (color_cube.colors <= 256)
+  if (cube_info->colors <= 256)
     {
       IndexPacket
         index;
@@ -1066,7 +1148,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
         Create colormap.
       */
       image->storage_class=PseudoClass;
-      image->colors=color_cube.colors;
+      image->colors=cube_info->colors;
       if (image->colormap == (PixelPacket *) NULL)
         image->colormap=(PixelPacket *)
           AcquireMemory(image->colors*sizeof(PixelPacket));
@@ -1087,7 +1169,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
           /*
             Start at the root and proceed level by level.
           */
-          node_info=color_cube.root;
+          node_info=cube_info->root;
           index=MaxTreeDepth-1;
           for (level=1; level < MaxTreeDepth; level++)
           {
@@ -1111,16 +1193,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
           break;
       }
     }
-  /*
-    Release color cube tree storage.
-  */
-  DestroyList(color_cube.root);
-  do
-  {
-    nodes=color_cube.node_list->next;
-    LiberateMemory((void **) &color_cube.node_list);
-    color_cube.node_list=nodes;
-  } while (color_cube.node_list != (Nodes *) NULL);
+  DestroyCubeInfo(cube_info);
   return((image->storage_class == PseudoClass) && (image->colors <= 256));
 }
 
