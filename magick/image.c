@@ -1605,7 +1605,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       (void) fprintf(file,"  Base Geometry: %ux%u\n",image->magick_columns,
         image->magick_rows);
   (void) fprintf(file,"  Geometry: %ux%u\n",image->columns,image->rows);
-  (void) fprintf(file,"  Depth: %u\n",image->depth);
+  (void) fprintf(file,"  Depth: %u\n",GetImageDepth(image));
   x=0;
   p=(Image *) NULL;
   if (!image->matte)

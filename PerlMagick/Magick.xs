@@ -2870,7 +2870,7 @@ Get(ref,...)
               if (info)
                 s=newSViv(info->image_info->depth);
               if (image)
-                s=newSViv(image->depth);
+                s=newSViv(GetImageDepth(image));
               break;
             }
           if (strEQcase(attribute,"dither"))
