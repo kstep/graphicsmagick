@@ -15,10 +15,6 @@
 #include "TclMagick.h"
 #include <wand/magick_wand.h>
 
-#define TCLMAGICK_VERSION_STR "0.43"
-#define TCLMAGICK_VERSION_HI  0
-#define TCLMAGICK_VERSION_LO  43
-
 /**********************************************************************/
 /* Workaround for bugs: */
 
@@ -556,7 +552,7 @@ static int magickCmd(
 	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
 	    return TCL_ERROR;
 	}
-	Tcl_SetResult(interp, TCLMAGICK_VERSION_STR, TCL_VOLATILE);
+	Tcl_SetResult(interp, VERSION, TCL_VOLATILE);
 
 	break;
     }
@@ -8162,9 +8158,7 @@ EXPORT(int, Tclmagick_Init)(Tcl_Interp *interp)
     /*
      * Create commands per interpreter
      */
-    Tcl_CreateObjCommand(interp, "magick",  magickCmd,  NULL, NULL);
-
-    if ( Tcl_PkgProvide(interp,"TclMagick", TCLMAGICK_VERSION_STR) != TCL_OK ) {
+    if ( Tcl_PkgProvide(interp,"TclMagick", VERSION) != TCL_OK ) {
         return TCL_ERROR;
     }
 

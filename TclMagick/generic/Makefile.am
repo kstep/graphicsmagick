@@ -6,7 +6,7 @@
 # AM_CFLAGS = @TCL_INCLUDES@ @GM_CPPFLAGS@
 
 # Put this in its own package directory.
-libdir = @libdir@/TclMagick/
+libdir = @libdir@/TclMagick@VERSION@
 lib_LTLIBRARIES = libTclMagick.la libTkMagick.la
 
 libTclMagick_la_SOURCES = TclMagick.c TclMagick.h

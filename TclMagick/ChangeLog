@@ -1,3 +1,20 @@
+2005-01-12  David N. Welton  <davidw@dedasys.com>
+
+	* generic/Makefile.am (libdir): Make the version part of the
+	install directory.
+
+	* pkgIndex.tcl: Moved the Tk and TclMagick requires here for
+	TkMagick.
+
+	* generic/TclMagick.c (Tclmagick_Init): Use VERSION instead of
+	hard coded version.
+
+	* generic/TkMagick.c: Added stubs ifdef's.
+	(Tkmagick_Init): Use VERSION instead of hard-coded version.
+
+	* generic/TclMagick.c (TCLMAGICK_VERSION_STR): Bumped version
+	string.
+
 2005-01-11  David N. Welton  <davidw@dedasys.com>
 
 	* ltmain.sh: I'm not terribly happy about including this, but not

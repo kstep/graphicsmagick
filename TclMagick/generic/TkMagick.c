@@ -216,22 +216,23 @@ static int PhotoToMagick(
 
 EXPORT(int, Tkmagick_Init)(Tcl_Interp *interp)
 {
+#ifdef USE_TCL_STUBS
     if (Tcl_InitStubs(interp, "8", 0) == NULL) {
 	return TCL_ERROR;
     }
+#endif
+#ifdef USE_TK_STUBS
     if (Tk_InitStubs(interp, "8", 0) == NULL) {
 	return TCL_ERROR;
     }
-
-    if ( Tcl_PkgRequire(interp, "TclMagick", "0.4", 0) == NULL) {
-	return TCL_ERROR;
-    }
-    if ( Tcl_PkgProvide(interp,"TkMagick", "0.2") != TCL_OK ) {
-        return TCL_ERROR;
-    }
+#endif
 
     Tcl_CreateObjCommand(interp, "magicktophoto",  MagickToPhoto,  NULL, NULL);
     Tcl_CreateObjCommand(interp, "phototomagick",  PhotoToMagick,  NULL, NULL);
+
+    if ( Tcl_PkgProvide(interp,"TkMagick", VERSION) != TCL_OK ) {
+        return TCL_ERROR;
+    }
 
     return TCL_OK;
 }
