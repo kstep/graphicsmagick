@@ -1162,10 +1162,15 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   char
     filename[MaxTextExtent];
 
+  FILE
+    *file;
+
+
   ImageAttribute
     *attribute;
 
   int
+    c,
     y;
 
   register IndexPacket
@@ -1237,10 +1242,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   tiff_exception=(&image->exception);
   TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  (void) strcpy(filename,image->filename);
-  if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (unsigned char *) NULL))
-    TemporaryFilename(filename);
+  TemporaryFilename(filename);
   tiff=TIFFOpen(filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);
@@ -1721,26 +1723,16 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   TIFFClose(tiff);
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);
-  if ((image->file == stdout) || image->pipet ||
-      (image->blob.data != (unsigned char *) NULL))
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy temporary file to image blob.
-      */
-      file=fopen(filename,ReadBinaryType);
-      if (file == (FILE *) NULL)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) WriteBlobByte(image,c);
-      (void) fclose(file);
-      (void) remove(filename);
-    }
+  /*
+    Copy temporary file to image blob.
+  */
+  file=fopen(filename,ReadBinaryType);
+  if (file == (FILE *) NULL)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  for (c=fgetc(file); c != EOF; c=fgetc(file))
+    (void) WriteBlobByte(image,c);
+  (void) fclose(file);
+  (void) remove(filename);
   CloseBlob(image);
   return(True);
 }
