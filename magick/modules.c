@@ -291,12 +291,12 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
         status;
 
       /*
-        Read fonts.
+        Read modules.
       */
       status=ReadConfigurationFile("modules.mgk");
       if (status == False)
         ThrowException(exception,FileOpenWarning,
-          "Unable to read font configuration file","modules.mgk");
+          "Unable to read module configuration file","modules.mgk");
       atexit(DestroyModuleInfo);
     }
   LiberateSemaphore(&module_semaphore);
