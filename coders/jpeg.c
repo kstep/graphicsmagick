@@ -134,7 +134,7 @@ typedef struct _ErrorManager
     *image;
 
   jmp_buf
-	  error_recovery;
+    error_recovery;
 } ErrorManager;
 
 typedef struct _SourceManager
@@ -251,7 +251,7 @@ static void InitializeSource(j_decompress_ptr cinfo)
 static void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
   ErrorManager
-	  *error_manager;
+    *error_manager;
 
   (void) EmitMessage(jpeg_info,0);
   error_manager=( ErrorManager *) jpeg_info->client_data;
@@ -556,7 +556,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   ErrorManager
-	  error_manager;
+    error_manager;
 
   Image
     *image;
