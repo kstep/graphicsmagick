@@ -114,12 +114,12 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   (void) strncpy(colorname,image_info->filename,MaxTextExtent-1);
   (void) sscanf(image_info->filename,"%[^-]",colorname);
-  (void) QueryColorDatabase(colorname,&start_color);
+  (void) QueryColorDatabase(colorname,&start_color,exception);
   (void) strcpy(colorname,"white");
   if (Intensity(&start_color) > (0.5*MaxRGB))
     (void) strcpy(colorname,"black");
   (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
-  (void) QueryColorDatabase(colorname,&stop_color);
+  (void) QueryColorDatabase(colorname,&stop_color,exception);
   (void) GradientImage(image,&start_color,&stop_color);
   return(image);
 }

@@ -1395,7 +1395,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->debug=False;
-  (void) QueryColorDatabase("#000000ff",&clone_info->fill);
+  (void) QueryColorDatabase("#000000ff",&clone_info->fill,&image->exception);
   resolution.x=72.0;
   resolution.y=72.0;
   if (clone_info->density != (char *) NULL)
@@ -1438,9 +1438,11 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       for (i=0; i < polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].direction)
-          (void) QueryColorDatabase("red",&clone_info->stroke);
+          (void) QueryColorDatabase("red",&clone_info->stroke,
+            &image->exception);
         else
-          (void) QueryColorDatabase("green",&clone_info->stroke);
+          (void) QueryColorDatabase("green",&clone_info->stroke,
+            &image->exception);
         start.x=polygon_info->edges[i].bounds.x1-mid;
         start.y=polygon_info->edges[i].bounds.y1-mid;
         end.x=polygon_info->edges[i].bounds.x2+mid;
@@ -1453,7 +1455,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
         (void) DrawPrimitive(image,clone_info,primitive_info);
       }
     }
-  (void) QueryColorDatabase("blue",&clone_info->stroke);
+  (void) QueryColorDatabase("blue",&clone_info->stroke,&image->exception);
   start.x=bounds.x1-mid;
   start.y=bounds.y1-mid;
   end.x=bounds.x2+mid;
@@ -1529,13 +1531,14 @@ static unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
       (void) SetImageClipMask(image,clip_mask);
       DestroyImage(clip_mask);
     }
-  (void) QueryColorDatabase("none",&image->clip_mask->background_color);
+  (void) QueryColorDatabase("none",&image->clip_mask->background_color,
+    &image->exception);
   SetImage(image->clip_mask,TransparentOpacity);
   if (draw_info->debug)
     (void) fprintf(stdout,"\nbegin clip-path %.1024s\n",draw_info->clip_path);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) CloneString(&clone_info->primitive,attribute->value);
-  (void) QueryColorDatabase("white",&clone_info->fill);
+  (void) QueryColorDatabase("white",&clone_info->fill,&image->exception);
   clone_info->clip_path=(char *) NULL;
   status=DrawImage(image->clip_mask,clone_info);
   (void) NegateImage(image->clip_mask,False);
@@ -1867,7 +1870,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
     }
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   token=AllocateString(primitive);
-  (void) QueryColorDatabase("black",&start_color);
+  (void) QueryColorDatabase("black",&start_color,&image->exception);
   SetImageType(image,TrueColorType);
   status=True;
   for (q=primitive; *q != '\0'; )
@@ -2033,7 +2036,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 graphic_context[n]->decorate=LineThroughDecoration;
                 break;
               }
-            if (QueryColorDatabase(token,&graphic_context[n]->box))
+            if (QueryColorDatabase(token,&graphic_context[n]->box,&image->exception))
               {
                 if (graphic_context[n]->box.opacity == TransparentOpacity)
                   graphic_context[n]->decorate=NoDecoration;
@@ -2074,7 +2077,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             GetToken(q,&q,token);
             FormatString(pattern,"[%.1024s]",token);
             if (GetImageAttribute(image,pattern) == (ImageAttribute *) NULL)
-              (void) QueryColorDatabase(token,&graphic_context[n]->fill);
+              (void) QueryColorDatabase(token,&graphic_context[n]->fill,
+                &image->exception);
             else
               DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->fill_pattern);
@@ -2671,7 +2675,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               stop_color;
 
             GetToken(q,&q,token);
-            (void) QueryColorDatabase(token,&stop_color);
+            (void) QueryColorDatabase(token,&stop_color,&image->exception);
             GradientImage(image,&start_color,&stop_color);
             start_color=stop_color;
             GetToken(q,&q,token);
@@ -2682,7 +2686,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             GetToken(q,&q,token);
             FormatString(pattern,"[%.1024s]",token);
             if (GetImageAttribute(image,pattern) == (ImageAttribute *) NULL)
-              (void) QueryColorDatabase(token,&graphic_context[n]->stroke);
+              (void) QueryColorDatabase(token,&graphic_context[n]->stroke,
+                &image->exception);
             else
               DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->stroke_pattern);
@@ -3298,7 +3303,8 @@ static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
   image_info->size=AllocateString(geometry->value);
   *pattern=AllocateImage(image_info);
   DestroyImageInfo(image_info);
-  (void) QueryColorDatabase("none",&(*pattern)->background_color);
+  (void) QueryColorDatabase("none",&(*pattern)->background_color,
+    &image->exception);
   SetImage(*pattern,OpaqueOpacity);
   if (draw_info->debug)
     (void) fprintf(stdout,"\nbegin pattern-path %.1024s %.1024s\n",name,

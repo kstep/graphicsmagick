@@ -246,7 +246,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     (void) SetImageAttribute(preview_image,"label",DefaultTileLabel);
     if (i == (NumberTiles >> 1))
       {
-        (void) QueryColorDatabase("#dfdfdf",&preview_image->matte_color);
+        (void) QueryColorDatabase("#dfdfdf",&preview_image->matte_color,
+          &image->exception);
         PushImageList(&images,preview_image,&image->exception);
         DestroyImage(preview_image);
         continue;

@@ -533,8 +533,8 @@ unsigned int CompositeUtility(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing background color",
                     option);
-                (void) QueryColorDatabase(argv[i],
-                  &image_info->background_color);
+                (void) QueryColorDatabase(argv[i],&image_info->background_color,
+                  &exception);
               }
             break;
           }

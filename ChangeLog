@@ -1,3 +1,6 @@
+2002-04-15  Cristy  <cristy@mystic.es.dupont.com>
+  * Added ExceptionInfo parameter to C API method, QueryColorDatabase().
+
 2002-04-17  Leonard Rosenthol  <leonardr@lazerware.com>
   * Fixed all known bugs with the IMDisplay utility for Windows.
 

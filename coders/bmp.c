@@ -112,7 +112,7 @@ typedef struct _BMPInfo
   long
     colorspace;
 
-  PointInfo
+  PrimaryInfo
     red_primary,
     green_primary,
     blue_primary,

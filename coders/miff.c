@@ -318,7 +318,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"background-color") == 0)
                   {
-                    (void) QueryColorDatabase(values,&image->background_color);
+                    (void) QueryColorDatabase(values,&image->background_color,
+                      exception);
                     break;
                   }
                 if (LocaleCompare(keyword,"blue-primary") == 0)
@@ -330,7 +331,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"border-color") == 0)
                   {
-                    (void) QueryColorDatabase(values,&image->border_color);
+                    (void) QueryColorDatabase(values,&image->border_color,
+                      exception);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -458,7 +460,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"matte-color") == 0)
                   {
-                    (void) QueryColorDatabase(values,&image->matte_color);
+                    (void) QueryColorDatabase(values,&image->matte_color,
+                      exception);
                     break;
                   }
                 if (LocaleCompare(keyword,"montage") == 0)

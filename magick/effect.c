@@ -2651,7 +2651,7 @@ MagickExport Image *ShadeImage(const Image *image,
     dy,
     y;
 
-  PointInfo
+  PrimaryInfo
     light,
     normal;
 

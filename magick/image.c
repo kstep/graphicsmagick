@@ -128,9 +128,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->interlace=NoInterlace;
   allocate_image->colorspace=RGBColorspace;
   allocate_image->compose=OverCompositeOp;
-  (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color);
-  (void) QueryColorDatabase(BorderColor,&allocate_image->border_color);
-  (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color);
   allocate_image->blur=1.0;
   allocate_image->reference_count=1;
   GetExceptionInfo(&allocate_image->exception);
@@ -138,6 +135,12 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   GetCacheInfo(&allocate_image->cache);
   allocate_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   allocate_image->signature=MagickSignature;
+  (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color,
+    &allocate_image->exception);
+  (void) QueryColorDatabase(BorderColor,&allocate_image->border_color,
+    &allocate_image->exception);
+  (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color,
+    &allocate_image->exception);
   if (image_info == (ImageInfo *) NULL)
     return(allocate_image);
   /*
@@ -846,7 +849,8 @@ MagickExport unsigned int ClipImage(Image *image)
   if (attribute == (const ImageAttribute *) NULL)
     return(False);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) QueryColorDatabase("none",&image_info->background_color);
+  (void) QueryColorDatabase("none",&image_info->background_color,
+    &image->exception);
   clip_mask=BlobToImage(image_info,attribute->value,strlen(attribute->value),
     &image->exception);
   DestroyImageInfo(image_info);
@@ -3087,6 +3091,9 @@ MagickExport int GetImageGeometry(const Image *image,const char *geometry,
 */
 MagickExport void GetImageInfo(ImageInfo *image_info)
 {
+  ExceptionInfo
+    exception;
+
   /*
     File and image dimension members.
   */
@@ -3098,10 +3105,13 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->quality=DefaultCompressionQuality;
   image_info->antialias=True;
   image_info->pointsize=12;
-  (void) QueryColorDatabase(BackgroundColor,&image_info->background_color);
-  (void) QueryColorDatabase(BorderColor,&image_info->border_color);
-  (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
   image_info->dither=True;
+  GetExceptionInfo(&exception);
+  (void) QueryColorDatabase(BackgroundColor,&image_info->background_color,
+     &exception);
+  (void) QueryColorDatabase(BorderColor,&image_info->border_color,&exception);
+  (void) QueryColorDatabase(MatteColor,&image_info->matte_color,&exception);
+  DestroyExceptionInfo(&exception);
   image_info->signature=MagickSignature;
 }
 
@@ -3690,7 +3700,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (LocaleCompare("-background",option) == 0)
           {
-            (void) QueryColorDatabase(argv[++i],&clone_info->background_color);
+            (void) QueryColorDatabase(argv[++i],&clone_info->background_color,
+              &(*image)->exception);
             (*image)->background_color=clone_info->background_color;
             continue;
           }
@@ -3734,14 +3745,16 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-bordercolor",option) == 0)
           {
-            (void) QueryColorDatabase(argv[++i],&clone_info->border_color);
+            (void) QueryColorDatabase(argv[++i],&clone_info->border_color,
+              &(*image)->exception);
             draw_info->border_color=clone_info->border_color;
             (*image)->border_color=clone_info->border_color;
             continue;
           }
         if (LocaleCompare("-box",option) == 0)
           {
-            (void) QueryColorDatabase(argv[++i],&draw_info->box);
+            (void) QueryColorDatabase(argv[++i],&draw_info->box,
+              &(*image)->exception);
             continue;
           }
         break;
@@ -4188,7 +4201,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (LocaleCompare("-fill",option) == 0)
           {
-            (void) QueryColorDatabase(argv[++i],&draw_info->fill);
+            (void) QueryColorDatabase(argv[++i],&draw_info->fill,
+              &(*image)->exception);
             continue;
           }
         if (LocaleCompare("filter",option+1) == 0)
@@ -4564,7 +4578,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-mattecolor",option) == 0)
           {
-            (void) QueryColorDatabase(argv[++i],&clone_info->matte_color);
+            (void) QueryColorDatabase(argv[++i],&clone_info->matte_color,
+              &(*image)->exception);
             (*image)->matte_color=clone_info->matte_color;
             continue;
           }
@@ -4662,7 +4677,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               target;
 
             target=AcquireOnePixel(*image,0,0,&(*image)->exception);
-            (void) QueryColorDatabase(argv[++i],&target);
+            (void) QueryColorDatabase(argv[++i],&target,&(*image)->exception);
             (void) OpaqueImage(*image,target,draw_info->fill);
             continue;
           }
@@ -4691,7 +4706,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-pen",option) == 0)
           {
-            (void) QueryColorDatabase(argv[i++],&draw_info->fill);
+            (void) QueryColorDatabase(argv[i++],&draw_info->fill,
+              &(*image)->exception);
             continue;
           }
         if (LocaleCompare("-pointsize",option) == 0)
@@ -5039,7 +5055,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-stroke",option) == 0)
           {
-            (void) QueryColorDatabase(argv[++i],&draw_info->stroke);
+            (void) QueryColorDatabase(argv[++i],&draw_info->stroke,
+              &(*image)->exception);
             continue;
           }
         if (LocaleCompare("-strokewidth",option) == 0)
@@ -5118,7 +5135,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               target;
 
             target=AcquireOnePixel(*image,0,0,&(*image)->exception);
-            (void) QueryColorDatabase(argv[++i],&target);
+            (void) QueryColorDatabase(argv[++i],&target,&(*image)->exception);
             (void) TransparentImage(*image,target,TransparentOpacity);
             continue;
           }

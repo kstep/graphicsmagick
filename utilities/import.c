@@ -188,6 +188,9 @@ int main(int argc,char **argv)
   double
     sans;
 
+  ExceptionInfo
+    exception;
+
   Image
     *image,
     *next_image;
@@ -322,6 +325,7 @@ int main(int argc,char **argv)
   /*
     Check command syntax.
   */
+  GetExceptionInfo(&exception);
   for (i=1; i < argc; i++)
   {
     option=argv[i];
@@ -357,7 +361,8 @@ int main(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing border color",
                     option);
-                (void) QueryColorDatabase(argv[i],&image_info->border_color);
+                (void) QueryColorDatabase(argv[i],&image_info->border_color,
+                  &exception);
               }
             break;
           }
@@ -938,6 +943,7 @@ int main(int argc,char **argv)
       }
     }
   }
+  DestroyExceptionInfo(&exception);
   if (filename == (char *) NULL)
     filename=(char *) "magick.miff";
   /*

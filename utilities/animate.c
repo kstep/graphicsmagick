@@ -425,8 +425,8 @@ int main(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing color",option);
                 resource_info.background_color=argv[i];
-                (void) QueryColorDatabase(argv[i],
-                  &image_info->background_color);
+                (void) QueryColorDatabase(argv[i],&image_info->background_color,
+                  &exception);
               }
             break;
           }
@@ -438,7 +438,8 @@ int main(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing color",option);
                 resource_info.border_color=argv[i];
-                (void) QueryColorDatabase(argv[i],&image_info->border_color);
+                (void) QueryColorDatabase(argv[i],&image_info->border_color,
+                  &exception);
               }
             break;
           }
@@ -759,7 +760,8 @@ int main(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing color",option);
                 resource_info.matte_color=argv[i];
-                (void) QueryColorDatabase(argv[i],&image_info->matte_color);
+                (void) QueryColorDatabase(argv[i],&image_info->matte_color,
+                  &exception);
               }
             break;
           }

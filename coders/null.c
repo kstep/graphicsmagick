@@ -113,7 +113,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
     image->rows=1;
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   (void) QueryColorDatabase((char *) image_info->filename,
-    &image->background_color);
+    &image->background_color,exception);
   if (!AllocateImageColormap(image,1))
     ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   image->colormap[0]=image->background_color;

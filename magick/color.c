@@ -448,20 +448,23 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
   for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
     if (LocaleCompare(colorname,p->name) == 0)
       break;
-  if ((p != (ColorInfo *) NULL) && (p != color_list))
-    {
-      /*
-        Self-adjusting list.
-      */
-      if (p->previous != (ColorInfo *) NULL)
-        p->previous->next=p->next;
-      if (p->next != (ColorInfo *) NULL)
-        p->next->previous=p->previous;
-      p->previous=(ColorInfo *) NULL;
-      p->next=color_list;
-      color_list->previous=p;
-      color_list=p;
-    }
+  if (p == (ColorInfo *) NULL)
+    ThrowException(exception,OptionWarning,"Unrecognized color name",name);
+  else
+    if (p != color_list)
+      {
+        /*
+          Self-adjusting list.
+        */
+        if (p->previous != (ColorInfo *) NULL)
+          p->previous->next=p->next;
+        if (p->next != (ColorInfo *) NULL)
+          p->next->previous=p->previous;
+        p->previous=(ColorInfo *) NULL;
+        p->next=color_list;
+        color_list->previous=p;
+        color_list=p;
+      }
   LiberateSemaphoreInfo(&color_semaphore);
   return(p);
 }
@@ -1287,7 +1290,8 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 %
 %  The format of the QueryColorDatabase method is:
 %
-%      unsigned int QueryColorDatabase(const char *name,PixelPacket *color)
+%      unsigned int QueryColorDatabase(const char *name,PixelPacket *color,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1296,14 +1300,13 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 %    o color: The red, green, blue, and opacity intensities values of the
 %      named color in this structure.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
 MagickExport unsigned int QueryColorDatabase(const char *name,
-  PixelPacket *color)
+  PixelPacket *color,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    exception;
-
   int
     blue,
     green,
@@ -1443,9 +1446,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       color->opacity=Upscale((int) (scale*opacity+0.5));
       return(True);
     }
-  GetExceptionInfo(&exception);
-  p=GetColorInfo(name,&exception);
-  DestroyExceptionInfo(&exception);
+  p=GetColorInfo(name,exception);
   if (p == (const ColorInfo *) NULL)
     return(False);
   if ((LocaleCompare(p->name,"opaque") == 0) ||

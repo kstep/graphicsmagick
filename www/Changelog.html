@@ -24,7 +24,25 @@ ImageMagick Changes</font></font></font></b></td>
 <dd>
 <pre>
 2002-04-15  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Added ExceptionInfo parameter to C API method, QueryColorDatabase().
+
+2002-04-17  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
+  * Fixed all known bugs with the IMDisplay utility for Windows.
+
+2002-04-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * configure.ac (libtool_build_static_libs): Added
+    --enable-delegate-build option to suuport building ImageMagick
+    using delegate libraries in subdirectories of the ImageMagick source
+    directory.
+
+2002-04-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * WMF now supplies bitmaps as inline images rather than via a mpri
+    reference.
+
+2002-04-15  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Fixed DrawImage() to properly handle affine image transforms.
+  * Added AffineTransformImage() to C API.
+  * Added -transform option to convert/mogrify program.
 
 2002-04-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * magick/magick.c (MagickToMime): New method to return the MIME

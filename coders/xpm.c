@@ -345,7 +345,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         none=j;
         (void) strcpy(target,"black");
       }
-    (void) QueryColorDatabase(target,&image->colormap[j]);
+    (void) QueryColorDatabase(target,&image->colormap[j],exception);
   }
   if (j < (long) image->colors)
     {

@@ -2077,7 +2077,7 @@ static unsigned int XColorEditImage(Display *display,
             draw_info=
               CloneDrawInfo(resource_info->image_info,(DrawInfo *) NULL);
             (void) QueryColorDatabase(resource_info->pen_colors[pen_id],
-              &draw_info->fill);
+              &draw_info->fill,&(*image)->exception);
             (void) ColorFloodfillImage(*image,draw_info,target,x_offset,
               y_offset,method);
             DestroyDrawInfo(draw_info);

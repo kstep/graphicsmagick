@@ -61,17 +61,17 @@ typedef struct _AffineMatrix
     ty;
 } AffineMatrix;
 
-typedef struct _PointInfo
+typedef struct _PrimaryInfo
 {
   double
     x,
     y,
     z;
-} PointInfo;
+} PrimaryInfo;
 
 typedef struct _ChromaticityInfo
 {
-  PointInfo
+  PrimaryInfo
     red_primary,
     green_primary,
     blue_primary,
@@ -651,7 +651,7 @@ extern MagickExport unsigned int
   PopImagePixels(const Image *,const QuantumType,unsigned char *),
   ProfileImage(Image *,const char *,const unsigned char *,const size_t),
   PushImagePixels(Image *,const QuantumType,const unsigned char *),
-  QueryColorDatabase(const char *,PixelPacket *),
+  QueryColorDatabase(const char *,PixelPacket *,ExceptionInfo *),
   QueryColorname(const Image *,const PixelPacket *,const ComplianceType,char *,
     ExceptionInfo *),
   RaiseImage(Image *,const RectangleInfo *,const int),

@@ -392,8 +392,8 @@ static unsigned int MogrifyUtility(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing background color",
                     option);
-                (void) QueryColorDatabase(argv[i],
-                  &image_info->background_color);
+                (void) QueryColorDatabase(argv[i],&image_info->background_color,
+                  &exception);
               }
             break;
           }
@@ -422,7 +422,8 @@ static unsigned int MogrifyUtility(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing border color",
                     option);
-                (void) QueryColorDatabase(argv[i],&image_info->border_color);
+                (void) QueryColorDatabase(argv[i],&image_info->border_color,
+                  &exception);
               }
             break;
           }
@@ -775,14 +776,14 @@ static unsigned int MogrifyUtility(int argc,char **argv)
       {
         if (LocaleCompare("fill",option+1) == 0)
           {
-            (void) QueryColorDatabase("none",&image_info->pen);
+            (void) QueryColorDatabase("none",&image_info->pen,&exception);
             if (*option == '-')
               {
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing fill color",
                     option);
-                (void) QueryColorDatabase(argv[i],&image_info->pen);
+                (void) QueryColorDatabase(argv[i],&image_info->pen,&exception);
               }
             break;
           }
@@ -1173,7 +1174,8 @@ static unsigned int MogrifyUtility(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing matte color",
                     option);
-                (void) QueryColorDatabase(argv[i],&image_info->matte_color);
+                (void) QueryColorDatabase(argv[i],&image_info->matte_color,
+                  &exception);
               }
             break;
           }
@@ -1284,14 +1286,14 @@ static unsigned int MogrifyUtility(int argc,char **argv)
           }
         if (LocaleCompare("pen",option+1) == 0)
           {
-            (void) QueryColorDatabase("none",&image_info->pen);
+            (void) QueryColorDatabase("none",&image_info->pen,&exception);
             if (*option == '-')
               {
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing fill color",
                     option);
-                (void) QueryColorDatabase(argv[i],&image_info->pen);
+                (void) QueryColorDatabase(argv[i],&image_info->pen,&exception);
               }
             break;
           }

@@ -344,9 +344,9 @@ static unsigned int MontageUtility(int argc,char **argv)
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing color",option);
                 (void) QueryColorDatabase(argv[i],
-                  &montage_info->background_color);
-                (void) QueryColorDatabase(argv[i],
-                  &image_info->background_color);
+                  &montage_info->background_color,&exception);
+                (void) QueryColorDatabase(argv[i],&image_info->background_color,
+                  &exception);
               }
             break;
           }
@@ -367,8 +367,10 @@ static unsigned int MontageUtility(int argc,char **argv)
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing color",option);
-                (void) QueryColorDatabase(argv[i],&montage_info->border_color);
-                (void) QueryColorDatabase(argv[i],&image_info->border_color);
+                (void) QueryColorDatabase(argv[i],&montage_info->border_color,
+                  &exception);
+                (void) QueryColorDatabase(argv[i],&image_info->border_color,
+                  &exception);
               }
             break;
           }
@@ -669,16 +671,17 @@ static unsigned int MontageUtility(int argc,char **argv)
       {
         if (LocaleCompare("fill",option+1) == 0)
           {
-            (void) QueryColorDatabase("none",&image_info->pen);
-            (void) QueryColorDatabase("none",&montage_info->fill);
+            (void) QueryColorDatabase("none",&image_info->pen,&exception);
+            (void) QueryColorDatabase("none",&montage_info->fill,&exception);
             if (*option == '-')
               {
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing fill color",
                     option);
-                (void) QueryColorDatabase(argv[i],&image_info->pen);
-                (void) QueryColorDatabase(argv[i],&montage_info->fill);
+                (void) QueryColorDatabase(argv[i],&image_info->pen,&exception);
+                (void) QueryColorDatabase(argv[i],&montage_info->fill,
+                  &exception);
               }
             break;
           }
@@ -887,8 +890,10 @@ static unsigned int MontageUtility(int argc,char **argv)
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing color",option);
-                (void) QueryColorDatabase(argv[i],&montage_info->matte_color);
-                (void) QueryColorDatabase(argv[i],&image_info->matte_color);
+                (void) QueryColorDatabase(argv[i],&montage_info->matte_color,
+                  &exception);
+                (void) QueryColorDatabase(argv[i],&image_info->matte_color,
+                  &exception);
               }
             break;
           }
@@ -971,13 +976,13 @@ static unsigned int MontageUtility(int argc,char **argv)
           }
         if (LocaleCompare("pen",option+1) == 0)
           {
-            (void) QueryColorDatabase("none",&image_info->pen);
+            (void) QueryColorDatabase("none",&image_info->pen,&exception);
             if (*option == '-')
               {
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing pen color",option);
-                (void) QueryColorDatabase(argv[i],&image_info->pen);
+                (void) QueryColorDatabase(argv[i],&image_info->pen,&exception);
               }
             break;
           }
@@ -1096,13 +1101,14 @@ static unsigned int MontageUtility(int argc,char **argv)
           }
         if (LocaleCompare("stroke",option+1) == 0)
           {
-            (void) QueryColorDatabase("none",&montage_info->stroke);
+            (void) QueryColorDatabase("none",&montage_info->stroke,&exception);
             if (*option == '-')
               {
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,"Missing color",option);
-                (void) QueryColorDatabase(argv[i],&montage_info->stroke);
+                (void) QueryColorDatabase(argv[i],&montage_info->stroke,
+                  &exception);
               }
             break;
           }

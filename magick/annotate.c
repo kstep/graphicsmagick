@@ -1142,7 +1142,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   affine.xy=(FT_Fixed) (-65536.0*draw_info->affine.ry);
   affine.yy=(FT_Fixed) (65536.0*draw_info->affine.sy);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  (void) QueryColorDatabase("#000000ff",&clone_info->fill);
+  (void) QueryColorDatabase("#000000ff",&clone_info->fill,&image->exception);
   (void) CloneString(&clone_info->primitive,"path '");
   pattern=draw_info->fill_pattern;
   for (i=0; i < (long) length; i++)

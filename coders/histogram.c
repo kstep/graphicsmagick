@@ -278,7 +278,8 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Initialize histogram image.
   */
-  (void) QueryColorDatabase("black",&histogram_image->background_color);
+  (void) QueryColorDatabase("black",&histogram_image->background_color,
+    &image->exception);
   SetImage(histogram_image,OpaqueOpacity);
   for (x=0; x < (long) histogram_image->columns; x++)
   {

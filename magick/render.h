@@ -128,6 +128,13 @@ typedef struct _ElementInfo
     angle;
 } ElementInfo;
 
+typedef struct _PointInfo
+{
+  double
+    x,
+    y;
+} PointInfo;
+
 typedef struct _TypeInfo
 {
   const char

@@ -665,7 +665,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(keyword, "fill") == 0)
               {
                 (void) QueryColorDatabase(value,
-                    &msl_info->image[n]->border_color);
+                  &msl_info->image[n]->border_color,&exception);
                 break;
               }
               ThrowException(msl_info->exception,OptionError,
@@ -1633,7 +1633,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(keyword, "fill") == 0)
               {
                 (void) QueryColorDatabase(value,
-                    &msl_info->image[n]->border_color);
+                  &msl_info->image[n]->border_color,&exception);
                 break;
               }
               ThrowException(msl_info->exception,OptionError,
@@ -1924,7 +1924,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"background") == 0)
           {
             (void) QueryColorDatabase(value,
-                      &msl_info->image_info[n]->background_color);
+              &msl_info->image_info[n]->background_color,&exception);
             break;
           }
           ThrowException(msl_info->exception,OptionError,
@@ -2922,13 +2922,13 @@ static void MSLStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(keyword,"background") == 0)
               {
                 (void) QueryColorDatabase(value,
-                          &msl_info->image_info[n]->background_color);
+                  &msl_info->image_info[n]->background_color,&exception);
                 break;
               }
               else if (LocaleCompare(keyword,"bordercolor") == 0)
               {
                 (void) QueryColorDatabase(value,
-                          &msl_info->image_info[n]->border_color);
+                  &msl_info->image_info[n]->border_color,&exception);
                 break;
               }
               ThrowException(msl_info->exception,OptionError,
@@ -3000,7 +3000,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               else if (LocaleCompare(keyword,"mattecolor") == 0)
               {
                 (void) QueryColorDatabase(value,
-                          &msl_info->image_info[n]->matte_color);
+                  &msl_info->image_info[n]->matte_color,&exception);
                 break;
               }
               ThrowException(msl_info->exception,OptionError,
@@ -3741,7 +3741,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   target;
 
                 target=GetOnePixel(msl_info->image[n],0,0);
-                (void) QueryColorDatabase(value,&target);
+                (void) QueryColorDatabase(value,&target,&exception);
                 (void) TransparentImage(msl_info->image[n],target,TransparentOpacity);
                 break;
               }
