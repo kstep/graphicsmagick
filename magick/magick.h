@@ -83,11 +83,11 @@ extern MagickExport void
   DestroyMagickInfo(void),
   InitializeMagick(const char *);
 
-extern const MagickExport MagickInfo
+extern MagickExport const MagickInfo
   *GetMagickInfo(const char *,ExceptionInfo *exception);
 
-extern const MagickExport MagickInfo **
-  GetMagickInfoArray(ExceptionInfo *exception);
+extern MagickExport const MagickInfo
+  **GetMagickInfoArray(ExceptionInfo *exception);
 
 extern MagickExport MagickInfo
   *RegisterMagickInfo(MagickInfo *),

@@ -1217,6 +1217,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 #endif /* defined(WIN32) */
 #endif /* !defined(UseInstalledMagick) */
   ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",path);
+  return 0;
 }
 
 /*

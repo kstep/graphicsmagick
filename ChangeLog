@@ -1,5 +1,9 @@
 2003-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.c (GetConfigureBlob): GetConfigureBlob should always
+	return a value.
+	* magick/type.c (GetTypeBlob): GetTypeBlob should always return a
+	value.
 	* magick/log.c (GetLogBlob): GetLogBlob should always return
 	a value.
 	* magick/magick.c (GetMagickInfoArray): Fixed array memory

@@ -305,6 +305,7 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
 #endif
 #endif
   ThrowException(exception,ConfigureError,"UnableToAccessFontFile",filename);
+  return 0;
 }
 
 /*

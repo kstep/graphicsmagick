@@ -360,10 +360,12 @@ static int MagickInfoCompare(const void *x, const void *y)
 MagickExport const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
 {
   const MagickInfo
-    **array,
+    **array;
+
+  MagickInfo
     *p;
 
-  const MagickInfo
+  MagickInfo
     *list;
 
   size_t
@@ -414,7 +416,7 @@ MagickExport const MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
   */
   qsort((void *) array, entries, sizeof(MagickInfo *), MagickInfoCompare);
 
-  return array;
+  return (array);
 }
 
 /*

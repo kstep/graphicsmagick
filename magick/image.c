@@ -1381,9 +1381,6 @@ MagickExport unsigned int DescribeImage(Image *image,FILE *file,
   long
     y;
 
-  unsigned int
-    status=True;
-
   register long
     i,
     x;
