@@ -98,10 +98,10 @@ struct _DrawContext
 
   /* Graphic context */
   long
-    context_index;
+    index;
 
   DrawInfo
-    **context_array;
+    **graphic_context;
 
   /* Pretty-printing depth */
   long
@@ -170,26 +170,34 @@ MagickExport void DrawAnnotation(DrawContext context, const double x,
 
 MagickExport void DrawSetAffine(DrawContext context, const AffineMatrix *affine)
 {
-  const AffineMatrix
-    *laffine;
-
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  laffine = &context->context_array[context->context_index]->affine;
-  if(laffine->sx != affine->sx ||
-     laffine->rx != affine->rx ||
-     laffine->ry != affine->ry ||
-     laffine->sy != affine->sy ||
-     laffine->tx != affine->tx ||
-     laffine->ty != affine->ty )
+  if ((affine->sx != 1.0) || (affine->rx != 0.0) || (affine->ry != 0.0) ||
+      (affine->sy != 1.0) || (affine->tx != 0.0) || (affine->ty != 0.0))
     {
-      context->context_array[context->context_index]->affine = *affine;
+      AffineMatrix
+        current;
 
-      DrawPrintf(context, "affine %.4g,%.4g,%.4g,%.4g,%.4g,%.4g\n",
-                 affine->sy, affine->rx, affine->ry, affine->sy,
-                 affine->tx, affine->ty);
+      current = context->graphic_context[context->index]->affine;
+
+      context->graphic_context[context->index]->affine.sx=
+        current.sx*affine->sx+current.ry*affine->rx;
+      context->graphic_context[context->index]->affine.rx=
+        current.rx*affine->sx+current.sy*affine->rx;
+      context->graphic_context[context->index]->affine.ry=
+        current.sx*affine->ry+current.ry*affine->sy;
+      context->graphic_context[context->index]->affine.sy=
+        current.rx*affine->ry+current.sy*affine->sy;
+      context->graphic_context[context->index]->affine.tx=
+        current.sx*affine->tx+current.ry*affine->ty+current.tx;
+      context->graphic_context[context->index]->affine.ty=
+        current.rx*affine->tx+current.sy*affine->ty+current.ty;
     }
+
+  DrawPrintf(context, "affine %.4g,%.4g,%.4g,%.4g,%.4g,%.4g\n",
+             affine->sy, affine->rx, affine->ry, affine->sy,
+             affine->tx, affine->ty);
 }
 
 MagickExport DrawContext DrawAllocateContext(void)
@@ -209,16 +217,16 @@ MagickExport DrawContext DrawAllocateContext(void)
   context->mvg_length = 0;
 
   /* Graphic context */
-  context->context_index = 0;
-  context->context_array=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
-  if(context->context_array == (DrawInfo **) NULL)
+  context->index = 0;
+  context->graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
+  if(context->graphic_context == (DrawInfo **) NULL)
     MagickError(ResourceLimitError,"Unable to allocate draw info",
                 "Memory allocation failed");
-  context->context_array[context->context_index]=(DrawInfo *) AcquireMemory(sizeof(DrawInfo));
-  if(context->context_array[context->context_index]==(DrawInfo *) NULL)
+  context->graphic_context[context->index]=(DrawInfo *) AcquireMemory(sizeof(DrawInfo));
+  if(context->graphic_context[context->index]==(DrawInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocatedraw info",
                 "Memory allocation failed");
-  GetDrawInfo((const ImageInfo *)NULL,context->context_array[context->context_index]);
+  GetDrawInfo((const ImageInfo *)NULL,context->graphic_context[context->index]);
 
   /* Pretty-printing depth */
   context->indention_depth = 0;
@@ -289,14 +297,14 @@ MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
   assert(context->signature == MagickSignature);
   assert(clip_path != (const char *) NULL);
 
-  if( context->context_array[context->context_index]->clip_path == NULL ||
-      LocaleCompare(context->context_array[context->context_index]->clip_path,
+  if( context->graphic_context[context->index]->clip_path == NULL ||
+      LocaleCompare(context->graphic_context[context->index]->clip_path,
                     clip_path) != 0)
     {
-      CloneString(&context->context_array[context->context_index]->clip_path,clip_path);
+      CloneString(&context->graphic_context[context->index]->clip_path,clip_path);
 #if 0
-      (void) DrawClipPath(context->image,context->context_array[context->context_index,
-                          context->context_array[context->context_index]->clip_path));
+      (void) DrawClipPath(context->image,context->graphic_context[context->index,
+                          context->graphic_context[context->index]->clip_path));
 #endif
       DrawPrintf(context, "clip-path url(%s)\n", clip_path);
     }
@@ -311,9 +319,9 @@ MagickExport void DrawSetClipRule(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->context_array[context->context_index]->fill_rule != fill_rule)
+  if(context->graphic_context[context->index]->fill_rule != fill_rule)
     {
-      context->context_array[context->context_index]->fill_rule = fill_rule;
+      context->graphic_context[context->index]->fill_rule = fill_rule;
       
       switch (fill_rule)
         {
@@ -341,9 +349,9 @@ MagickExport void DrawSetClipUnits(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->context_array[context->context_index]->clip_units != clip_units)
+  if(context->graphic_context[context->index]->clip_units != clip_units)
     {
-      context->context_array[context->context_index]->clip_units = clip_units;
+      context->graphic_context[context->index]->clip_units = clip_units;
 
       switch (clip_units)
         {
@@ -419,9 +427,9 @@ MagickExport void DrawDestroyContext(DrawContext context)
   context->indention_depth = 0;
 
   /* Graphic context */
-  for ( ; context->context_index >= 0; context->context_index--)
-    DestroyDrawInfo(context->context_array[context->context_index]);
-  LiberateMemory((void **) &context->context_array);
+  for ( ; context->index >= 0; context->index--)
+    DestroyDrawInfo(context->graphic_context[context->index]);
+  LiberateMemory((void **) &context->graphic_context);
 
   /* MVG output string and housekeeping */
   LiberateMemory((void **) &context->mvg);
@@ -459,15 +467,15 @@ MagickExport void DrawSetFill(DrawContext context,
 
   new_fill = *fill_color;
   if(new_fill.opacity != TransparentOpacity)
-    new_fill.opacity = context->context_array[context->context_index]->opacity;
+    new_fill.opacity = context->graphic_context[context->index]->opacity;
 
-  current_fill = &context->context_array[context->context_index]->fill;
+  current_fill = &context->graphic_context[context->index]->fill;
   if(current_fill->red != new_fill.red ||
      current_fill->green != new_fill.green ||
      current_fill->blue != new_fill.blue ||
      current_fill->opacity != new_fill.opacity )
     {
-      context->context_array[context->context_index]->fill = new_fill;
+      context->graphic_context[context->index]->fill = new_fill;
 
       if (new_fill.opacity == OpaqueOpacity)
         DrawPrintf(context,
@@ -500,9 +508,9 @@ MagickExport void DrawSetFillOpacity(DrawContext context,
 
   opacity = (Quantum)(MaxRGB*(1.0-(fill_opacity <= 1.0 ? fill_opacity : 1.0 )));
 
-  if (context->context_array[context->context_index]->opacity != opacity)
+  if (context->graphic_context[context->index]->opacity != opacity)
     {
-      context->context_array[context->context_index]->opacity = opacity;
+      context->graphic_context[context->index]->opacity = opacity;
       DrawPrintf(context, "fill-opacity %.4g\n", fill_opacity);
     }
 }
@@ -516,9 +524,9 @@ MagickExport void DrawSetFillRule(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->context_array[context->context_index]->fill_rule != fill_rule)
+  if(context->graphic_context[context->index]->fill_rule != fill_rule)
     {
-      context->context_array[context->context_index]->fill_rule = fill_rule;
+      context->graphic_context[context->index]->fill_rule = fill_rule;
 
       switch (fill_rule)
         {
@@ -543,10 +551,10 @@ MagickExport void DrawSetFont(DrawContext context, const char *font_name)
   assert(context->signature == MagickSignature);
   assert(font_name != (const char *) NULL);
 
-  if(context->context_array[context->context_index]->font == NULL ||
-     LocaleCompare(context->context_array[context->context_index]->font,font_name) != 0)
+  if(context->graphic_context[context->index]->font == NULL ||
+     LocaleCompare(context->graphic_context[context->index]->font,font_name) != 0)
     {
-      (void) CloneString(&context->context_array[context->context_index]->font,font_name);
+      (void) CloneString(&context->graphic_context[context->index]->font,font_name);
       DrawPrintf(context, "font %s\n", font_name);
     }
 }
@@ -558,10 +566,10 @@ MagickExport void DrawSetFontFamily(DrawContext context,
   assert(context->signature == MagickSignature);
   assert(font_family != (const char *) NULL);
 
-  if(context->context_array[context->context_index]->family == NULL ||
-     LocaleCompare(context->context_array[context->context_index]->family,font_family) != 0)
+  if(context->graphic_context[context->index]->family == NULL ||
+     LocaleCompare(context->graphic_context[context->index]->family,font_family) != 0)
     {
-      (void) CloneString(&context->context_array[context->context_index]->family,font_family);
+      (void) CloneString(&context->graphic_context[context->index]->family,font_family);
 
       DrawPrintf(context, "font-family %s\n", font_family);
     }
@@ -573,9 +581,9 @@ MagickExport void DrawSetFontSize(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->context_array[context->context_index]->pointsize != font_pointsize)
+  if(context->graphic_context[context->index]->pointsize != font_pointsize)
     {
-      context->context_array[context->context_index]->pointsize=font_pointsize;
+      context->graphic_context[context->index]->pointsize=font_pointsize;
 
       DrawPrintf(context, "font-size %.4g\n", font_pointsize);
     }
@@ -590,9 +598,9 @@ MagickExport void DrawSetFontStretch(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->context_array[context->context_index]->stretch != font_stretch)
+  if(context->graphic_context[context->index]->stretch != font_stretch)
     {
-      context->context_array[context->context_index]->stretch=font_stretch;
+      context->graphic_context[context->index]->stretch=font_stretch;
 
       switch (font_stretch)
         {
@@ -642,9 +650,9 @@ MagickExport void DrawSetFontStyle(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->context_array[context->context_index]->style != font_style)
+  if(context->graphic_context[context->index]->style != font_style)
     {
-      context->context_array[context->context_index]->style=font_style;
+      context->graphic_context[context->index]->style=font_style;
 
       switch (font_style)
         {
@@ -673,9 +681,9 @@ MagickExport void DrawSetFontWeight(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->context_array[context->context_index]->weight != font_weight)
+  if(context->graphic_context[context->index]->weight != font_weight)
     {
-      context->context_array[context->context_index]->weight=font_weight;
+      context->graphic_context[context->index]->weight=font_weight;
       DrawPrintf(context, "font-weight %.4g\n", font_weight);
     }
 }
@@ -689,9 +697,9 @@ MagickExport void DrawSetGravity(DrawContext context,
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->context_array[context->context_index]->gravity != gravity)
+  if(context->graphic_context[context->index]->gravity != gravity)
     {
-      context->context_array[context->context_index]->gravity=gravity;
+      context->graphic_context[context->index]->gravity=gravity;
 
       switch (gravity)
         {
@@ -879,8 +887,9 @@ MagickExport void DrawComposite(DrawContext context,
   DestroyExceptionInfo(&exceptionInfo);
 }
 
-MagickExport void DrawLine(DrawContext context, const double sx,
-                           const double sy, const double ex, const double ey)
+MagickExport void DrawLine(DrawContext context,
+                           const double sx, const double sy,
+                           const double ex, const double ey)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -888,8 +897,9 @@ MagickExport void DrawLine(DrawContext context, const double sx,
   DrawPrintf(context, "line %.4g,%.4g %.4g,%.4g\n", sx, sy, ex, ey);
 }
 
-MagickExport void DrawMatte(DrawContext context, const double x,
-                            const double y, const PaintMethod paint_method)
+MagickExport void DrawMatte(DrawContext context,
+                            const double x, const double y,
+                            const PaintMethod paint_method)
 {
   const char
     *p = NULL;
@@ -928,9 +938,11 @@ MagickExport void DrawPathClose(DrawContext context)
   DrawPrintf(context, "%s", context->path_mode == AbsolutePathMode ? "Z" : "z");
 }
 
-static void DrawPathCurveTo(DrawContext context, const PathMode mode,
-                            const double x1, const double y1, const double x2,
-                            const double y2, const double x, const double y)
+static void DrawPathCurveTo(DrawContext context,
+                            const PathMode mode,
+                            const double x1, const double y1,
+                            const double x2, const double y2,
+                            const double x, const double y)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -971,9 +983,9 @@ MagickExport void DrawPathCurveToRelative(DrawContext context,
 }
 
 static void DrawPathCurveToQuadraticBezier(DrawContext context,
-                                           const PathMode mode, const double x1,
-                                           const double y1, const double x,
-                                           const double y)
+                                           const PathMode mode,
+                                           const double x1, double y1,
+                                           const double x, const double y)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -1034,9 +1046,9 @@ static void DrawPathCurveToQuadraticBezierSmooth(DrawContext context,
 }
 
 MagickExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawContext
-                                                                  context,
-                                                                  const double x,
-                                                                  const double y)
+                                                               context,
+                                                               const double x,
+                                                               const double y)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -1095,8 +1107,8 @@ static void DrawPathEllipticArc(DrawContext context, const PathMode mode,
                                 const double rx, const double ry,
                                 const double x_axis_rotation,
                                 unsigned int large_arc_flag,
-                                unsigned int sweep_flag, const double x,
-                                const double y)
+                                unsigned int sweep_flag,
+                                const double x, const double y)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -1150,7 +1162,8 @@ MagickExport void DrawPathFinish(DrawContext context)
   context->path_mode = DefaultPathMode;
 }
 
-static void DrawPathLineTo(DrawContext context, const PathMode mode,
+static void DrawPathLineTo(DrawContext context,
+                           const PathMode mode,
                            const double x, const double y)
 {
   assert(context != (DrawContext)NULL);
@@ -1168,8 +1181,8 @@ static void DrawPathLineTo(DrawContext context, const PathMode mode,
     DrawPrintf(context, " %.4g,%.4g", x, y);
 }
 
-MagickExport void DrawPathLineToAbsolute(DrawContext context, const double x,
-                                         const double y)
+MagickExport void DrawPathLineToAbsolute(DrawContext context,
+                                         const double x, const double y)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -1177,8 +1190,8 @@ MagickExport void DrawPathLineToAbsolute(DrawContext context, const double x,
   DrawPathLineTo(context, AbsolutePathMode, x, y);
 }
 
-MagickExport void DrawPathLineToRelative(DrawContext context, const double x,
-                                         const double y)
+MagickExport void DrawPathLineToRelative(DrawContext context,
+                                         const double x, const double y)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -1279,8 +1292,8 @@ MagickExport void DrawPathMoveToAbsolute(DrawContext context, const double x,
 
   DrawPathMoveTo(context, AbsolutePathMode, x, y);
 }
-MagickExport void DrawPathMoveToRelative(DrawContext context, const double x,
-                                            const double y)
+MagickExport void DrawPathMoveToRelative(DrawContext context,
+                                         const double x, const double y)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
@@ -1298,15 +1311,17 @@ MagickExport void DrawPathStart(DrawContext context)
   context->path_mode = DefaultPathMode;
 }
 
-MagickExport void DrawPoint(DrawContext context, const double x,
-                            const double y)
+MagickExport void DrawPoint(DrawContext context,
+                            const double x, const double y)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
   DrawPrintf(context, "point %.4g,%.4g\n", x, y);
 }
-MagickExport void DrawPolygon(DrawContext context, const size_t num_coords,
+
+MagickExport void DrawPolygon(DrawContext context,
+                              const size_t num_coords,
                               const PointInfo * coordinates)
 {
   const PointInfo
@@ -1327,7 +1342,8 @@ MagickExport void DrawPolygon(DrawContext context, const size_t num_coords,
   DrawPrintf(context, "\n");
 }
 
-MagickExport void DrawPolyline(DrawContext context, const size_t num_coords,
+MagickExport void DrawPolyline(DrawContext context,
+                               const size_t num_coords,
                                const PointInfo * coordinates)
 {
   const PointInfo
@@ -1371,18 +1387,18 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->context_index > 0)
+  if(context->index > 0)
     {
 
 #if 0
       /* Destroy clip path if not same in preceding context */
-      if (context->context_array[context->context_index]->clip_path != (char *) NULL)
-        if (LocaleCompare(context->context_array[context->context_index]->clip_path,
-                          context->context_array[context->context_index-1]->clip_path) != 0)
+      if (context->graphic_context[context->index]->clip_path != (char *) NULL)
+        if (LocaleCompare(context->graphic_context[context->index]->clip_path,
+                          context->graphic_context[context->index-1]->clip_path) != 0)
           (void) SetImageClipMask(image,(Image *) NULL);
 #endif
-      DestroyDrawInfo(context->context_array[context->context_index]);
-      context->context_index--;
+      DestroyDrawInfo(context->graphic_context[context->index]);
+      context->index--;
       
       context->indention_depth--;
       DrawPrintf(context, "pop graphic-context\n");
@@ -1492,15 +1508,15 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  context->context_index++;
-  ReacquireMemory((void **) &context->context_array,
-                  (context->context_index+1)*sizeof(DrawInfo *));
-  if (context->context_array == (DrawInfo **) NULL)
+  context->index++;
+  ReacquireMemory((void **) &context->graphic_context,
+                  (context->index+1)*sizeof(DrawInfo *));
+  if (context->graphic_context == (DrawInfo **) NULL)
     {
       /* FIXME error */
     }
-  context->context_array[context->context_index]=
-    CloneDrawInfo((ImageInfo *) NULL,context->context_array[context->context_index-1]);
+  context->graphic_context[context->index]=
+    CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
 
   DrawPrintf(context, "push graphic-context\n");
   context->indention_depth++;
@@ -1551,8 +1567,18 @@ MagickExport int DrawRender(Image * image, const ImageInfo * image_info,
 
 MagickExport void DrawSetRotate(DrawContext context, const double degrees)
 {
+  AffineMatrix
+    affine;
+
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
+
+  IdentityAffine(&affine);
+  affine.sx=cos(DegreesToRadians(fmod(degrees,360.0)));
+  affine.rx=sin(DegreesToRadians(fmod(degrees,360.0)));
+  affine.ry=(-sin(DegreesToRadians(fmod(degrees,360.0))));
+  affine.sy=cos(DegreesToRadians(fmod(degrees,360.0)));
+  DrawSetAffine(context,&affine);
 
   DrawPrintf(context, "rotate %.4g\n", degrees);
 }
@@ -1569,43 +1595,49 @@ MagickExport void DrawRoundRectangle(DrawContext context,
                 x1, y1, x2, y2, rx, ry);
 }
 
-MagickExport void DrawSetScale(DrawContext context, const double x,
-                               const double y)
+MagickExport void DrawSetScale(DrawContext context,
+                               const double x, const double y)
 {
+  AffineMatrix
+    affine;
+
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  if(context->context_array[context->context_index]->affine.sx != x ||
-     context->context_array[context->context_index]->affine.sy != y)
-    {
-      context->context_array[context->context_index]->affine.sx=x;
-      context->context_array[context->context_index]->affine.sy=y;
+  IdentityAffine(&affine);
+  affine.sx=x;
+  affine.sy=y;
+  DrawSetAffine(context,&affine);
 
-      DrawPrintf(context, "scale %.4g,%.4g\n", x, y);
-    }
+  DrawPrintf(context, "scale %.4g,%.4g\n", x, y);
 }
 
 MagickExport void DrawSetSkewX(DrawContext context, const double degrees)
 {
-  double
-    ry;
+  AffineMatrix
+    affine;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  ry=tan(DegreesToRadians(fmod(degrees,360.0)));
+  IdentityAffine(&affine);
+  affine.ry=tan(DegreesToRadians(fmod(degrees,360.0)));
+  DrawSetAffine(context,&affine);
 
-  if(context->context_array[context->context_index]->affine.ry != ry)
-    {
-      context->context_array[context->context_index]->affine.ry=ry;
-      DrawPrintf(context, "skewX %.4g\n", degrees);
-    }
+  DrawPrintf(context, "skewX %.4g\n", degrees);
 }
 
 MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
 {
+  AffineMatrix
+    affine;
+
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
+
+  IdentityAffine(&affine);
+  affine.rx=tan(DegreesToRadians(fmod(degrees,360.0)));
+  DrawSetAffine(context,&affine);
 
   DrawPrintf(context, "skewY %.4g\n", degrees);
 }
@@ -1854,8 +1886,16 @@ MagickExport void DrawSetTextUnderColor(DrawContext context,
 MagickExport void DrawSetTranslate(DrawContext context,
                                    const double x, const double y)
 {
+  AffineMatrix
+    affine;
+
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
+
+  IdentityAffine(&affine);
+  affine.tx=x;
+  affine.ty=y;
+  DrawSetAffine(context,&affine);
 
   DrawPrintf(context, "translate %.4g,%.4g\n", x, y);
 }
