@@ -1359,7 +1359,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
-      support=0.500000000001;
+      support=0.50000000001;
       scale_factor=1.0;
     }
   for (x=0; x < (int) destination->columns; x++)
@@ -1497,7 +1497,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
-      support=0.500000000001;
+      support=0.50000000001;
       scale_factor=1.0;
     }
   for (y=0; y < (int) destination->rows; y++)
