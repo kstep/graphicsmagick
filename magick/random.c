@@ -221,6 +221,26 @@ MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
       seconds=time(0);
       DistillRandomEvent((const unsigned char *) &seconds,sizeof(time_t),
         exception);
+#ifdef HAVE_GETTIMEOFDAY
+      {
+        struct timeval
+          timer;
+
+        (void) gettimeofday(&timer,NULL);
+        DistillRandomEvent((const unsigned char *) &timer.tv_usec,sizeof(long),
+          exception);
+      }
+#endif
+#if HAVE_FTIME
+      {
+        struct timeb
+          timer;
+
+        (void) ftime(&timer);
+        DistillRandomEvent((const unsigned char *) &timer.millitm,
+          sizeof(unsigned short),exception);
+      }
+#endif
       pid=getpid();
       DistillRandomEvent((const unsigned char *) &pid,sizeof(pid_t),exception);
       DistillRandomEvent((const unsigned char *) *roulette,
