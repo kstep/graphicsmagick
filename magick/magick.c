@@ -64,6 +64,11 @@
 */
 static MagickInfo
   *magick_list = (MagickInfo *) NULL;
+
+#if defined(HasPTHREADS)
+  static pthread_mutex_t
+    magick_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -92,9 +97,6 @@ MagickExport void DestroyMagickInfo(void)
     *p;
 
 #if defined(HasPTHREADS)
-  static pthread_mutex_t
-    magick_mutex = PTHREAD_MUTEX_INITIALIZER;
-
   pthread_mutex_lock(&magick_mutex);
 #endif
   for (p=magick_list; p != (MagickInfo *) NULL; )
@@ -150,9 +152,6 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
     *p;
 
 #if defined(HasPTHREADS)
-  static pthread_mutex_t
-    magick_mutex = PTHREAD_MUTEX_INITIALIZER;
-
   pthread_mutex_lock(&magick_mutex);
 #endif
   if (magick_list == (MagickInfo *) NULL)
@@ -356,9 +355,6 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
     *p;
 
 #if defined(HasPTHREADS)
-  static pthread_mutex_t
-    magick_mutex = PTHREAD_MUTEX_INITIALIZER;
-
   pthread_mutex_lock(&magick_mutex);
 #endif
   /*
@@ -431,9 +427,6 @@ MagickExport MagickInfo *SetMagickInfo(const char *tag)
     *entry;
 
 #if defined(HasPTHREADS)
-  static pthread_mutex_t
-    magick_mutex = PTHREAD_MUTEX_INITIALIZER;
-
   pthread_mutex_lock(&magick_mutex);
 #endif
   entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
