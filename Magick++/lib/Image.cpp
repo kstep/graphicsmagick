@@ -3407,5 +3407,5 @@ Magick::MagickCleanUp::MagickCleanUp ( void )
 
 Magick::MagickCleanUp::~MagickCleanUp ( void )
 {
-  // DestroyMagick();
+  DestroyMagick();
 }
