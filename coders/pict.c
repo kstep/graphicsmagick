@@ -315,8 +315,8 @@ static unsigned int
 %
 %  The format of the DecodeImage method is:
 %
-%      unsigned char* DecodeImage(const ImageInfo *image_info,Image *image,
-%        int bytes_per_line,const int bits_per_pixel)
+%      unsigned char* DecodeImage(const ImageInfo *image_info,Image *blob,
+%        Image *image,int bytes_per_line,const int bits_per_pixel)
 %
 %  A description of each parameter follows:
 %
@@ -325,7 +325,7 @@ static unsigned int
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o image: The address of a structure of type Image.
+%    o blob,image: The address of a structure of type Image.
 %
 %    o bytes_per_line: This integer identifies the number of bytes in a
 %      scanline.
@@ -403,8 +403,8 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,int *bytes_per_line,
   return(scanline);
 }
 
-static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
-  int bytes_per_line,const int bits_per_pixel)
+static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
+  Image *image,int bytes_per_line,const int bits_per_pixel)
 {
   int
     bytes_per_pixel,
@@ -468,7 +468,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
       {
         q=pixels+y*width;
         number_pixels=bytes_per_line;
-        (void) ReadBlob(image,number_pixels,(char *) scanline);
+        (void) ReadBlob(blob,number_pixels,(char *) scanline);
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
         memcpy(q,p,number_pixels);
       }
@@ -482,10 +482,10 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
   {
     q=pixels+y*width;
     if ((bytes_per_line > 250) || (bits_per_pixel > 8))
-      scanline_length=ReadBlobMSBShort(image);
+      scanline_length=ReadBlobMSBShort(blob);
     else
-      scanline_length=ReadBlobByte(image);
-    (void) ReadBlob(image,scanline_length,(char *) scanline);
+      scanline_length=ReadBlobByte(blob);
+    (void) ReadBlob(blob,scanline_length,(char *) scanline);
     for (x=0; x < scanline_length; )
       if ((scanline[x] & 0x80) == 0)
         {
@@ -927,6 +927,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               j;
 
             PICTRectangle
+              source,
               destination;
 
             register unsigned char
@@ -952,7 +953,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               }
             ReadRectangle(frame);
             /*
-              Initialize tile_image.
+              Initialize tile image.
             */
             tile_image=image;
             if ((frame.left != 0) || (frame.top != 0) ||
@@ -1013,7 +1014,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                     }
                   }
               }
-            ReadRectangle(destination);
+            ReadRectangle(source);
             ReadRectangle(destination);
             (void) ReadBlobMSBShort(image);
             if ((code == 0x91) || (code == 0x99) || (code == 0x9b))
@@ -1022,14 +1023,14 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   Skip region.
                 */
                 length=ReadBlobMSBShort(image);
-                for (i=0; i < (length-2); i++)
+                for (i=0; i <= (length-2); i++)
                   (void) ReadBlobByte(image);
               }
             if ((code != 0x9a) && (code != 0x9b) &&
                 (bytes_per_line & 0x8000) == 0)
-              pixels=DecodeImage(image_info,image,bytes_per_line,1);
+              pixels=DecodeImage(image_info,image,tile_image,bytes_per_line,1);
             else
-              pixels=DecodeImage(image_info,image,bytes_per_line,
+              pixels=DecodeImage(image_info,image,tile_image,bytes_per_line,
                 pixmap.bits_per_pixel);
             if (pixels == (unsigned char *) NULL)
               {
@@ -1097,8 +1098,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             (void) LiberateMemory((void **) &pixels);
             if (tile_image != image)
               {
-                CompositeImage(image,CopyCompositeOp,tile_image,
-                  destination.left,destination.top);
+                if ((code == 0x9a) || (code == 0x9b) ||
+                    (bytes_per_line & 0x8000))
+                  CompositeImage(image,CopyCompositeOp,tile_image,
+                    destination.left,destination.top);
                 DestroyImage(tile_image);
               }
             if (destination.bottom != (int) image->rows)
@@ -1194,8 +1197,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         FormatString(geometry,"%ux%u",Max(image->columns,tile_image->columns),
           Max(image->rows,tile_image->rows));
         TransformImage(&image,(char *) NULL,geometry);
-        CompositeImage(image,CopyCompositeOp,tile_image,frame.left,
-          frame.right);
+        CompositeImage(image,CopyCompositeOp,tile_image,frame.left,frame.right);
         DestroyImage(tile_image);
         continue;
       }
