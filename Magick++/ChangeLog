@@ -1,3 +1,8 @@
+2002-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Options.h (antiAlias): Bugfix, set
+ 	drawInfo->text_antialias to control text antialiasing.
+
 2002-01-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h : Imported new composition operators to

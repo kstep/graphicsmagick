@@ -269,13 +269,14 @@ namespace Magick
 // Inlines
 //
 
+// Anti-alias Postscript and TrueType fonts (default true)
 inline void Magick::Options::antiAlias( bool flag_ )
 {
-  _imageInfo->antialias = static_cast<unsigned int>( flag_ );
+  _drawInfo->text_antialias = static_cast<unsigned int>( flag_ );
 }
 inline bool Magick::Options::antiAlias( void )
 {
-  return static_cast<bool>(_imageInfo->antialias);
+  return static_cast<bool>(_drawInfo->text_antialias);
 }
 
 inline void Magick::Options::adjoin ( bool flag_ )
