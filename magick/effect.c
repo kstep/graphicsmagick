@@ -3635,7 +3635,7 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
         blue=p->blue;
       else
         blue=p->blue+(blue*amount);
-      opacity=p->opacity-(int) q->blue;
+      opacity=p->opacity-(int) q->opacity;
       if (AbsoluteValue(2.0*opacity) < (MaxRGB*threshold))
         opacity=p->opacity;
       else
