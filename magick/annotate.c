@@ -1231,7 +1231,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
             if (status != False)
               continue;
             bitmap=(FT_BitmapGlyph) glyph.image;
-            SetImageType(image,TrueColorType);
+            SetImageType(image,TrueColorMatteType);
             fill_pattern=draw_info->fill_pattern;
             point.x=offset->x+bitmap->left;
             point.y=offset->y-bitmap->top;

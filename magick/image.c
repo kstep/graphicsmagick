@@ -1160,7 +1160,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(composite_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
     return(True);
-  SetImageType(image,TrueColorType);
+  SetImageType(image,TrueColorMatteType);
   switch (compose)
   {
     case DisplaceCompositeOp:
@@ -6442,7 +6442,6 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
       (void) RGBTransformImage(image,GRAYColorspace);
-      image->matte=False;
       break;
     }
     case GrayscaleMatteType:
@@ -6466,7 +6465,6 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
         (void) RGBTransformImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
       (void) QuantizeImage(&quantize_info,image);
-      image->matte=False;
       break;
     }
     case PaletteMatteType:
@@ -6491,7 +6489,6 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       if (image->colorspace != RGBColorspace)
         (void) RGBTransformImage(image,RGBColorspace);
       image->storage_class=DirectClass;
-      image->matte=False;
       break;
     }
     case TrueColorMatteType:
@@ -6511,7 +6508,6 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       if (image->colorspace == CMYKColorspace)
         break;
       (void) RGBTransformImage(image,CMYKColorspace);
-      image->matte=False;
       break;
     }
     case ColorSeparationMatteType:
