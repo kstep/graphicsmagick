@@ -40,7 +40,9 @@ extern "C" {
 /*
   Support library symbol prefixing
 */
-#include "magick/symbols.h"
+#if defined(PREFIX_MAGICK_SYMBOLS)
+#  include "magick/symbols.h"
+#endif /* defined(PREFIX_MAGICK_SYMBOLS) */
 
 #if !defined(const)
   /*
@@ -153,6 +155,14 @@ extern "C" {
 #if !defined(ExtendedUnsignedIntegralType)
 # define ExtendedUnsignedIntegralType magick_uint64_t
 #endif
+
+#define MagickPassFail unsigned int
+#define MagickPass     1
+#define MagickFail     0
+
+#define MagickBool     unsigned int
+#define MagickTrue     1
+#define MagickFalse    0
 
 #include <string.h>
 #include <ctype.h>

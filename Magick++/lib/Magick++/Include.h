@@ -298,6 +298,18 @@ namespace Magick
   using MagickLib::FillToBorderMethod;
   using MagickLib::ResetMethod;
 
+  // Arithmetic and bitwise operators
+  using MagickLib::AddQuantumOp;
+  using MagickLib::AndQuantumOp;
+  using MagickLib::DivideQuantumOp;
+  using MagickLib::LShiftQuantumOp;
+  using MagickLib::MultiplyQuantumOp;
+  using MagickLib::OrQuantumOp;
+  using MagickLib::RShiftQuantumOp;
+  using MagickLib::SubtractQuantumOp;
+  using MagickLib::XorQuantumOp;
+  using MagickLib::QuantumOperator;
+
   // Preview types.  Not currently used by Magick++
   using MagickLib::PreviewType;
   using MagickLib::UndefinedPreview;
@@ -665,6 +677,8 @@ namespace Magick
   using MagickLib::PushImagePixels;
   using MagickLib::QuantizeImage;
   using MagickLib::QuantizeInfo;
+  using MagickLib::QuantumOperatorImage;
+  using MagickLib::QuantumOperatorRegionImage;
   using MagickLib::QueryColorDatabase;
   using MagickLib::RGBTransformImage;
   using MagickLib::RaiseImage;

@@ -411,6 +411,17 @@ namespace Magick
     // Quantize image (reduce number of colors)
     void            quantize ( const bool measureError_ = false );
 
+    // Apply an arithmetic or bitwise operator to the image pixel quantums.
+    void            quantumOperator ( const ChannelType channel_,
+                                      const QuantumOperator operator_,
+                                      Quantum rvalue_);
+    void            quantumOperator ( const int x_,const int y_,
+                                      const unsigned int columns_,
+                                      const unsigned int rows_,
+                                      const ChannelType channel_,
+                                      const QuantumOperator operator_,
+                                      const Quantum rvalue_);
+
     // Execute a named process module using an argc/argv syntax similar to
     // that accepted by a C 'main' routine. An exception is thrown if the
     // requested process module doesn't exist, fails to load, or fails during

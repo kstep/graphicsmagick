@@ -1244,6 +1244,30 @@ void Magick::Image::quantize ( const bool measureError_  )
   throwImageException();
 }
 
+// Apply an arithmetic or bitwise operator to the image pixel quantums.
+void Magick::Image::quantumOperator ( const ChannelType channel_,
+                                      const QuantumOperator operator_,
+                                      Quantum rvalue_)
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  QuantumOperatorImage( image(), channel_, operator_, rvalue_, &exceptionInfo);
+  throwException( exceptionInfo );
+}
+void Magick::Image::quantumOperator ( const int x_,const int y_,
+                                      const unsigned int columns_,
+                                      const unsigned int rows_,
+                                      const ChannelType channel_,
+                                      const QuantumOperator operator_,
+                                      const Quantum rvalue_)
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  QuantumOperatorRegionImage( image(), x_, y_, columns_, rows_, channel_,
+                              operator_, rvalue_, &exceptionInfo);
+  throwException( exceptionInfo );
+}
+
 // Raise image (lighten or darken the edges of an image to give a 3-D
 // raised or lowered effect)
 void Magick::Image::raise ( const Geometry &geometry_ ,

@@ -1,3 +1,11 @@
+2004-03-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (quantumOperator): New image method to apply an
+	arithmetic or bitwise operator to the pixel quantums in an image.
+	Still needs documentation.
+	(quantumOperator): New image method to apply an arithmetic or
+	bitwise operator to the pixel quantums in an image region.
+
 2004-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am (../www/Magick++/ChangeLog.html): Fix execution of

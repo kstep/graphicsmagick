@@ -53,6 +53,7 @@
 #include "magick/map.h"
 #include "magick/monitor.h"
 #include "magick/module.h"
+#include "magick/pixel_iterator.h"
 #include "magick/quantize.h"
 #include "magick/render.h"
 #include "magick/semaphore.h"
@@ -3472,27 +3473,57 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
 %    o reference: The reference image.
 %
 */
-MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
+typedef struct _PixelErrorStats {
+  double
+    maximum_error_per_pixel,
+    total_error;
+} PixelErrorStats;
+
+static MagickPassFail
+ComputePixelError(void *user_data,
+                  const long x,
+                  const long y,
+                  const Image *first_image,
+                  const PixelPacket *first_pixel,
+                  const Image *second_image,
+                  const PixelPacket *second_pixel,
+                  ExceptionInfo *exception)
 {
+  PixelErrorStats
+    *stats = (PixelErrorStats *) user_data;
+
   double
     difference,
     distance,
-    distance_squared,
-    maximum_error_per_pixel,
+    distance_squared;
+
+  difference=(first_pixel->red-(double) second_pixel->red)/MaxRGB;
+  distance_squared=(difference*difference);
+  difference=(first_pixel->green-(double) second_pixel->green)/MaxRGB;
+  distance_squared+=(difference*difference);
+  difference=(first_pixel->blue-(double) second_pixel->blue)/MaxRGB;
+  distance_squared+=(difference*difference);
+  if (first_image->matte)
+    {
+      difference=(first_pixel->opacity-(double) second_pixel->opacity)/MaxRGB;
+      distance_squared+=(difference*difference);
+    }
+  distance=sqrt(distance_squared);
+  stats->total_error+=distance;
+  if (distance > stats->maximum_error_per_pixel)
+    stats->maximum_error_per_pixel=distance;
+  return (MagickPass);
+}
+
+MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
+{
+  PixelErrorStats
+    stats;
+
+  double
     mean_error_per_pixel,
-    number_pixels,
     normalize,
-    total_error;
-
-  long
-    y;
-
-  register const PixelPacket
-    *p,
-    *q;
-
-  register long
-    x;
+    number_pixels;
 
   /*
     Initialize measurement.
@@ -3512,39 +3543,17 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   if(image->matte != reference->matte)
     ThrowBinaryException3(ImageError,UnableToCompareImages,
       ImageOpacityDiffers);
+
   /*
     For each pixel, collect error statistics.
   */
   number_pixels=(double) image->columns*image->rows;
-  maximum_error_per_pixel=0.0;
-  total_error=0.0;
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-    q=AcquireImagePixels(reference,0,y,reference->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    for (x=(long) image->columns; x > 0; x--)
-      {
-        difference=(p->red-(double) q->red)/MaxRGB;
-        distance_squared=(difference*difference);
-        difference=(p->green-(double) q->green)/MaxRGB;
-        distance_squared+=(difference*difference);
-        difference=(p->blue-(double) q->blue)/MaxRGB;
-        distance_squared+=(difference*difference);
-        if (image->matte)
-          {
-            difference=(p->opacity-(double) q->opacity)/MaxRGB;
-            distance_squared+=(difference*difference);
-          }
-        distance=sqrt(distance_squared);
-        total_error+=distance;
-        if (distance > maximum_error_per_pixel)
-          maximum_error_per_pixel=distance;
-        p++;
-        q++;
-      }
-  }
+  stats.maximum_error_per_pixel=0.0;
+  stats.total_error=0.0;
+
+  PixelIterateDualRead(ComputePixelError,(void *) &stats,0,0,image->columns,
+                       image->rows,image,reference,&image->exception);
+
   /*
     Compute final error statistics.
   */
@@ -3553,10 +3562,10 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
     normalize = sqrt(4.0); /* sqrt(1.0*1.0+1.0*1.0+1.0*1.0+1.0*1.0) */
   else
     normalize = sqrt(3.0); /* sqrt(1.0*1.0+1.0*1.0+1.0*1.0) */
-  mean_error_per_pixel=total_error/number_pixels;
+  mean_error_per_pixel=stats.total_error/number_pixels;
   image->error.mean_error_per_pixel=mean_error_per_pixel*MaxRGB;
   image->error.normalized_mean_error=mean_error_per_pixel/normalize;
-  image->error.normalized_maximum_error=maximum_error_per_pixel/normalize;
+  image->error.normalized_maximum_error=stats.maximum_error_per_pixel/normalize;
   return(image->error.normalized_mean_error == 0.0);
 }
 
@@ -3910,6 +3919,511 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
   if (((segment->x2-segment->x1) < 3.0) && ((segment->y2-segment->y1) < 3.0))
     return(True);
   return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   Q u a n t u m O p e r a t o r I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  QuantumOperatorImage() performs the requested integer arithmetic
+%  operation on the selected channels of the image.
+%
+%  The format of the QuantumOperatorImage method is:
+%
+%      MagickPassFail QuantumOperatorImage(Image *image,
+%        ChannelType channel, QuantumOperator operator,
+%        Quantum rvalue)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o channel: Channel to operate on.
+%
+%    o quantum_operator: Arithmetic operator to use (AddQuantumOp,
+%                        DivideQuantumOp, MultiplyQuantumOp,
+%                        SubtractQuantumOp, XorQuantumOp).
+%
+%    o rvalue: Operator argument.
+%
+%    o exception: Updated with error description.
+%
+*/
+MagickExport MagickPassFail QuantumOperatorImage(Image *image,
+  const ChannelType channel,const QuantumOperator quantum_operator,
+  const Quantum rvalue,ExceptionInfo *exception)
+{
+  return QuantumOperatorRegionImage(image,0,0,image->columns,image->rows,
+                                    channel,quantum_operator,rvalue,exception);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   Q u a n t u m O p e r a t o r R e g i o n I m a g e                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  QuantumOperatorRegionImage() performs the requested integer arithmetic
+%  operation on the selected channels of the image over the specified region.
+%
+%  The format of the QuantumOperatorRegionImage method is:
+%
+%      MagickPassFail QuantumOperatorRegionImage(Image *image,
+%        long x, long y, unsigned long columns, unsigned long rows,
+%        ChannelType channel, QuantumOperator quantum_operator,
+%        Quantum rvalue)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o channel: Channel to operate on.
+%
+%    o x: Ordinate of left row of region.
+%
+%    o y: Orginate of top column of region.
+%
+%    o columns: Width of region.
+%
+%    o rows: Height of region.
+%
+%    o quantum_operator: Arithmetic operator to use (AddQuantumOp,
+%                        DivideQuantumOp, MultiplyQuantumOp,
+%                        SubtractQuantumOp, XorQuantumOp).
+%
+%    o rvalue: Operator argument.
+%
+%    o exception: Updated with error description.
+%
+*/
+
+#define ApplyArithmeticOperator(lvalue,op,rvalue)       \
+  {                                                     \
+    double                                              \
+      result;                                           \
+                                                        \
+    result=(double) lvalue op (double) rvalue;          \
+    lvalue=RoundSignedToQuantum(result);                \
+}
+
+typedef struct _QuantumContext
+{
+  ChannelType channel;
+  Quantum rvalue;
+} QuantumContext;
+
+static MagickPassFail
+QuantumAdd(void *user_data,const long x,const long y,
+  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      ApplyArithmeticOperator(pixel->red,+,context->rvalue);
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      ApplyArithmeticOperator(pixel->green,+,context->rvalue);
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      ApplyArithmeticOperator(pixel->blue,+,context->rvalue);
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      ApplyArithmeticOperator(pixel->opacity,+,context->rvalue);
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      ApplyArithmeticOperator(pixel->red,+,context->rvalue);
+      ApplyArithmeticOperator(pixel->green,+,context->rvalue);
+      ApplyArithmeticOperator(pixel->blue,+,context->rvalue);
+      if (const_image->matte)
+        ApplyArithmeticOperator(pixel->opacity,+,context->rvalue);
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumAnd(void *user_data,const long x,const long y,
+  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      pixel->red &= context->rvalue;
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      pixel->green &= context->rvalue;
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      pixel->blue &= context->rvalue;
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      pixel->opacity &= context->rvalue;
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      pixel->red &= context->rvalue;
+      pixel->green &= context->rvalue;
+      pixel->blue &= context->rvalue;
+      if (const_image->matte)
+        pixel->opacity &= context->rvalue;
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumDivide(void *user_data,const long x,const long y,
+  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      ApplyArithmeticOperator(pixel->red,/,context->rvalue);
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      ApplyArithmeticOperator(pixel->green,/,context->rvalue);
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      ApplyArithmeticOperator(pixel->blue,/,context->rvalue);
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      ApplyArithmeticOperator(pixel->opacity,/,context->rvalue);
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      ApplyArithmeticOperator(pixel->red,/,context->rvalue);
+      ApplyArithmeticOperator(pixel->green,/,context->rvalue);
+      ApplyArithmeticOperator(pixel->blue,/,context->rvalue);
+      if (const_image->matte)
+        ApplyArithmeticOperator(pixel->opacity,/,context->rvalue);
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumLShift(void *user_data,const long x,const long y,
+  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      pixel->red <<= context->rvalue;
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      pixel->green <<= context->rvalue;
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      pixel->blue <<= context->rvalue;
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      pixel->opacity <<= context->rvalue;
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      pixel->red <<= context->rvalue;
+      pixel->green <<= context->rvalue;
+      pixel->blue <<= context->rvalue;
+      if (const_image->matte)
+        pixel->opacity <<= context->rvalue;
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumMultiply(void *user_data,const long x,const long y,
+  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      ApplyArithmeticOperator(pixel->red,*,context->rvalue);
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      ApplyArithmeticOperator(pixel->green,*,context->rvalue);
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      ApplyArithmeticOperator(pixel->blue,*,context->rvalue);
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      ApplyArithmeticOperator(pixel->opacity,*,context->rvalue);
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      ApplyArithmeticOperator(pixel->red,*,context->rvalue);
+      ApplyArithmeticOperator(pixel->green,*,context->rvalue);
+      ApplyArithmeticOperator(pixel->blue,*,context->rvalue);
+      if (const_image->matte)
+        ApplyArithmeticOperator(pixel->opacity,*,context->rvalue);
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumOr(void *user_data,const long x,const long y,
+  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      pixel->red |= context->rvalue;
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      pixel->green |= context->rvalue;
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      pixel->blue |= context->rvalue;
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      pixel->opacity |= context->rvalue;
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      pixel->red |= context->rvalue;
+      pixel->green |= context->rvalue;
+      pixel->blue |= context->rvalue;
+      if (const_image->matte)
+        pixel->opacity |= context->rvalue;
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumRShift(void *user_data,const long x,const long y,
+  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      pixel->red >>= context->rvalue;
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      pixel->green >>= context->rvalue;
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      pixel->blue >>= context->rvalue;
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      pixel->opacity >>= context->rvalue;
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      pixel->red >>= context->rvalue;
+      pixel->green >>= context->rvalue;
+      pixel->blue >>= context->rvalue;
+      if (const_image->matte)
+        pixel->opacity >>= context->rvalue;
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumSubtract(void *user_data,const long x,const long y,
+  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      ApplyArithmeticOperator(pixel->red,-,context->rvalue);
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      ApplyArithmeticOperator(pixel->green,-,context->rvalue);
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      ApplyArithmeticOperator(pixel->blue,-,context->rvalue);
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      ApplyArithmeticOperator(pixel->opacity,-,context->rvalue);
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      ApplyArithmeticOperator(pixel->red,-,context->rvalue);
+      ApplyArithmeticOperator(pixel->green,-,context->rvalue);
+      ApplyArithmeticOperator(pixel->blue,-,context->rvalue);
+      if (const_image->matte)
+        ApplyArithmeticOperator(pixel->opacity,-,context->rvalue);
+      break;
+    }
+
+  return (MagickPass);
+}
+static MagickPassFail
+QuantumXor(void *user_data,const long x,const long y,
+  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+{
+  QuantumContext
+    *context=(QuantumContext *) user_data;
+
+  switch (context->channel)
+    {
+    case RedChannel:
+    case CyanChannel:
+      pixel->red ^= context->rvalue;
+      break;
+    case GreenChannel:
+    case MagentaChannel:
+      pixel->green ^= context->rvalue;
+      break;
+    case BlueChannel:
+    case YellowChannel:
+      pixel->blue ^= context->rvalue;
+      break;
+    case BlackChannel:
+    case MatteChannel:
+    case OpacityChannel:
+      pixel->opacity ^= context->rvalue;
+      break;
+    case UndefinedChannel:
+    case AllChannels:
+      pixel->red ^= context->rvalue;
+      pixel->green ^= context->rvalue;
+      pixel->blue ^= context->rvalue;
+      if (const_image->matte)
+        pixel->opacity ^= context->rvalue;
+      break;
+    }
+  return (MagickPass);
+}
+MagickExport MagickPassFail
+QuantumOperatorRegionImage(Image *image,
+                           const long x,const long y,
+                           const unsigned long columns,
+                           const unsigned long rows,
+                           const ChannelType channel,
+                           const QuantumOperator quantum_operator,
+                           const Quantum rvalue,
+                           ExceptionInfo *exception)
+{
+  QuantumContext
+    context;
+
+  MagickPassFail
+    status = MagickFail;
+
+  PixelIteratorMonoModifyCallback
+    call_back = 0;
+
+  context.channel=channel;
+  context.rvalue=rvalue;
+
+  switch (quantum_operator)
+    {
+    case UndefinedQuantumOp:
+      break;
+    case AddQuantumOp:
+      call_back=QuantumAdd;
+      break;
+    case AndQuantumOp:
+      call_back=QuantumAnd;
+      break;
+    case DivideQuantumOp:
+      call_back=QuantumDivide;
+      break;
+    case LShiftQuantumOp:
+      call_back=QuantumLShift;
+      break;
+    case MultiplyQuantumOp:
+      call_back=QuantumMultiply;
+      break;
+    case OrQuantumOp:
+      call_back=QuantumOr;
+      break;
+    case RShiftQuantumOp:
+      call_back=QuantumRShift;
+      break;
+    case SubtractQuantumOp:
+      call_back=QuantumSubtract;
+      break;
+    case XorQuantumOp:
+      call_back=QuantumXor;
+      break;
+    }
+
+  if (call_back)
+    status=PixelIterateMonoModify(call_back,(void *) &context,x,y,columns,rows,
+                                  image,exception);
+  return (status);
 }
 
 /*

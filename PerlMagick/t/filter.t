@@ -116,7 +116,7 @@ testFilterCompare('input.miff', q//, 'reference/filter/Modulate.miff', 'Modulate
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/MotionBlur.miff', 'MotionBlur',
-  q/radius=>2,sigma=>1,angle=>30/, 0, 0);
+  q/radius=>2,sigma=>1,angle=>30/, 0.003, 0.004);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Negate.miff', 'Negate',

@@ -86,8 +86,8 @@ am__libGraphicsMagick_la_SOURCES_DIST = animate.c annotate.c \
 	composite.c compress.c constitute.c decorate.c delegate.c \
 	deprecate.c display.c draw.c effect.c enhance.c error.c fx.c \
 	gem.c image.c list.c locale.c log.c magic.c magick.c map.c \
-	memory.c module.c monitor.c montage.c paint.c profile.c \
-	PreRvIcccm.c quantize.c registry.c render.c resize.c \
+	memory.c module.c monitor.c montage.c paint.c pixel_iterator.c \
+	profile.c PreRvIcccm.c quantize.c registry.c render.c resize.c \
 	resource.c segment.c semaphore.c shear.c signature.c static.c \
 	stream.c tempfile.c timer.c transform.c type.c utility.c \
 	version.c widget.c xwindow.c nt_feature.c
@@ -96,11 +96,12 @@ am__objects_1 = animate.lo annotate.lo attribute.lo blob.lo cache.lo \
 	constitute.lo decorate.lo delegate.lo deprecate.lo display.lo \
 	draw.lo effect.lo enhance.lo error.lo fx.lo gem.lo image.lo \
 	list.lo locale.lo log.lo magic.lo magick.lo map.lo memory.lo \
-	module.lo monitor.lo montage.lo paint.lo profile.lo \
-	PreRvIcccm.lo quantize.lo registry.lo render.lo resize.lo \
-	resource.lo segment.lo semaphore.lo shear.lo signature.lo \
-	static.lo stream.lo tempfile.lo timer.lo transform.lo type.lo \
-	utility.lo version.lo widget.lo xwindow.lo
+	module.lo monitor.lo montage.lo paint.lo pixel_iterator.lo \
+	profile.lo PreRvIcccm.lo quantize.lo registry.lo render.lo \
+	resize.lo resource.lo segment.lo semaphore.lo shear.lo \
+	signature.lo static.lo stream.lo tempfile.lo timer.lo \
+	transform.lo type.lo utility.lo version.lo widget.lo \
+	xwindow.lo
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 =  \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@	nt_feature.lo
 @WIN32_NATIVE_BUILD_TRUE@am__objects_2 = nt_base.lo nt_feature.lo
@@ -133,6 +134,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/module.Plo ./$(DEPDIR)/monitor.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/montage.Plo ./$(DEPDIR)/nt_base.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/nt_feature.Plo ./$(DEPDIR)/paint.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/pixel_iterator.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/profile.Plo ./$(DEPDIR)/quantize.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/registry.Plo ./$(DEPDIR)/render.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/resize.Plo ./$(DEPDIR)/resource.Plo \
@@ -536,6 +538,7 @@ MAGICK_BASE_SRCS = \
 	monitor.c \
 	montage.c \
 	paint.c \
+	pixel_iterator.c \
 	profile.c \
 	PreRvIcccm.c \
 	quantize.c \
@@ -640,6 +643,7 @@ noinst_HEADERS = \
 	map.h \
 	nt_base.h \
 	nt_feature.h \
+	pixel_iterator.h \
 	semaphore.h \
 	spinlock.h \
 	static.h \
@@ -837,6 +841,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nt_base.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nt_feature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paint.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pixel_iterator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/profile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quantize.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/registry.Plo@am__quote@

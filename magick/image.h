@@ -411,6 +411,20 @@ typedef enum
 
 typedef enum
 {
+  UndefinedQuantumOp = 0,
+  AddQuantumOp,
+  AndQuantumOp,
+  DivideQuantumOp,
+  LShiftQuantumOp,
+  MultiplyQuantumOp,
+  OrQuantumOp,
+  RShiftQuantumOp,
+  SubtractQuantumOp,
+  XorQuantumOp
+ } QuantumOperator;
+
+typedef enum
+{
   UndefinedIntent,
   SaturationIntent,
   PerceptualIntent,
@@ -1023,6 +1037,15 @@ extern MagickExport unsigned int
   TextureImage(Image *,const Image *),
   TransformColorspace(Image *,const ColorspaceType),
   TransformRGBImage(Image *,const ColorspaceType);
+
+extern MagickExport MagickPassFail
+  QuantumOperatorImage(Image *image,const ChannelType channel,
+    const QuantumOperator quantum_operator,const Quantum rvalue,
+    ExceptionInfo *exception),
+  QuantumOperatorRegionImage(Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows,
+    const ChannelType channel,const QuantumOperator quantum_operator,
+    const Quantum rvalue,ExceptionInfo *exception);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *);

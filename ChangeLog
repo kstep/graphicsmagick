@@ -1,5 +1,23 @@
-2004-03-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2004-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (QuantumOperatorRegionImage): Properly handle
+	over and underflow of arithmetic operators.
+	* magick/draw.c (DrawGetFillOpacity): Use fill opacity, and invert
+	opacity range so it is 0.0 to 1.0 (was acting like transparency).
+	(DrawSetStrokeOpacity): Validate range of stroke_opacity.
+	(DrawSetFillOpacity): Save value to context->fill.opacity and
+	validate the range of fill_opacity.
+	* magick/image.c (QuantumOperatorImage): New function to apply an
+	arithmetic or bitwise operator to the pixel quantums in an image.
+	(QuantumOperatorRegionImage): New function to apply an arithmetic
+	or bitwise operator to the pixel quantums in an image region.
+	* magick/image.c (IsImagesEqual): Re-implemented using the new
+	pixel iteration functions as a proof of concept.
+	* magick/pixel_iterator.h: Added some pixel iteration functions in
+	order to make it easier to implement algorithms which only need to
+	iteratively access pixels in a region. These functions are not
+	part of the API yet so their interface should be considered
+	unstable.
 	* doc/GNUmakefile: Rename Makefile to GNUmakefile since it relies
 	on GNU make extensions.
 

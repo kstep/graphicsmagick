@@ -98,8 +98,18 @@ extern "C" {
 #define MaxTextExtent  2053
 #define MagickSignature  0xabacadabUL
 
+#define MagickPassFail unsigned int
+#define MagickPass     1
+#define MagickFail     0
+
+#define MagickBool     unsigned int
+#define MagickTrue     1
+#define MagickFalse    0
+
 #if !defined(vms) && !defined(macintosh)
-# include "magick/symbols.h"
+# if defined(PREFIX_MAGICK_SYMBOLS)
+#  include "magick/symbols.h"
+# endif /* defined(PREFIX_MAGICK_SYMBOLS) */
 # include "magick/magick_types.h"
 # include "magick/error.h"
 # include "magick/log.h"
@@ -143,7 +153,9 @@ extern "C" {
 # include "magick/resource.h"
 # include "magick/version.h"
 #else
-# include "magick/symbols.h"
+# if defined(PREFIX_MAGICK_SYMBOLS)
+#  include "symbols.h"
+# endif /* defined(PREFIX_MAGICK_SYMBOLS) */
 # include "magick_types.h"
 # include "timer.h"
 # include "error.h"

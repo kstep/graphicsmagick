@@ -441,6 +441,10 @@
 #define LevelImageChannel GmLevelImageChannel
 #define LiberateMagickResource GmLiberateMagickResource
 #define LiberateMemory GmLiberateMemory
+#define PixelIterateDualModify GmPixelIterateDualModify
+#define PixelIterateDualRead GmPixelIterateDualRead
+#define PixelIterateMonoModify GmPixelIterateMonoModify
+#define PixelIterateMonoRead GmPixelIterateMonoRead
 #define LiberateSemaphoreInfo GmLiberateSemaphoreInfo
 #define LiberateTemporaryFile GmLiberateTemporaryFile
 #define ListColorInfo GmListColorInfo

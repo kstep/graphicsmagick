@@ -67,6 +67,7 @@ MAGICK_BASE_SRCS = \
 	monitor.c \
 	montage.c \
 	paint.c \
+	pixel_iterator.c \
 	profile.c \
 	PreRvIcccm.c \
 	quantize.c \
@@ -184,6 +185,7 @@ noinst_HEADERS = \
 	map.h \
 	nt_base.h \
 	nt_feature.h \
+	pixel_iterator.h \
 	semaphore.h \
 	spinlock.h \
 	static.h \
