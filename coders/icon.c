@@ -435,7 +435,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
               (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
         }
      if (image->columns % 32) 
-       for (x=0; x < ((32-(image->columns % 32))/8); x++)
+       for (x=0; x < (long) ((32-(image->columns % 32))/8); x++)
          ReadBlobByte(image);
       if (!SyncImagePixels(image))
         break;
