@@ -2515,7 +2515,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  montage: %.1024s\n",image->montage);
   if (image->directory != (char *) NULL)
     {
-      ErrorHandler
+      WarningHandler
         handler;
 
       Image
@@ -2543,7 +2543,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         image_info.filename[q-p]='\0';
         p=q;
         (void) fprintf(file,"    %.1024s",image_info.filename);
-        handler=SetWarningHandler((ErrorHandler) NULL);
+        handler=SetWarningHandler((WarningHandler) NULL);
         tile=ReadImage(&image_info);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)

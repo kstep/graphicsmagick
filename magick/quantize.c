@@ -687,7 +687,7 @@ Export QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 
   cloned_info=(QuantizeInfo *) AllocateMemory(sizeof(QuantizeInfo));
   if (cloned_info == (QuantizeInfo *) NULL)
-    MagickError(ResourceLimitWarning,"Unable to clone image info",
+    MagickError(ResourceLimitError,"Unable to clone image info",
       "Memory allocation failed");
   if (quantize_info == (QuantizeInfo *) NULL)
     {

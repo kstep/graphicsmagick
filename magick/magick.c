@@ -977,7 +977,7 @@ Export MagickInfo *SetMagickInfo(const char *tag)
 
   entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
   if (entry == (MagickInfo *) NULL)
-    MagickError(ResourceLimitWarning,"Unable to allocate image",
+    MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
   entry->tag=AllocateString(tag);
   entry->decoder=(Image *(*)(const ImageInfo *)) NULL;

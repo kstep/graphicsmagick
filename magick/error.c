@@ -75,7 +75,9 @@ static void
   Global declarations.
 */
 static ErrorHandler
-  error_handler = DefaultErrorHandler,
+  error_handler = DefaultErrorHandler;
+
+static WarningHandler
   warning_handler = DefaultWarningHandler;
 
 /*
@@ -235,7 +237,7 @@ Export void MagickError(const ErrorType error,const char *message,
 Export void MagickWarning(const WarningType warning,const char *message,
   const char *qualifier)
 {
-  if (warning_handler != (ErrorHandler) NULL)
+  if (warning_handler != (WarningHandler) NULL)
     (*warning_handler)(warning,message,qualifier);
 }
 
@@ -297,9 +299,9 @@ Export ErrorHandler SetErrorHandler(ErrorHandler handler)
 %
 %
 */
-Export ErrorHandler SetWarningHandler(ErrorHandler handler)
+Export WarningHandler SetWarningHandler(WarningHandler handler)
 {
-  ErrorHandler
+  WarningHandler
     previous_handler;
 
   previous_handler=warning_handler;

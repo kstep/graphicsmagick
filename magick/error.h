@@ -29,17 +29,22 @@ extern int
 */
 typedef void
   (*ErrorHandler)(const ErrorType,const char *,const char *);
+
+typedef void
+  (*WarningHandler)(const WarningType,const char *,const char *);
 
 /*
   Error declarations.
 */
 extern Export ErrorHandler
-  SetErrorHandler(ErrorHandler),
-  SetWarningHandler(ErrorHandler);
+  SetErrorHandler(ErrorHandler);
 
 extern Export void
   MagickError(const ErrorType,const char *,const char *),
   MagickWarning(const WarningType,const char *,const char *);
+
+extern Export WarningHandler
+  SetWarningHandler(WarningHandler);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
