@@ -63,6 +63,8 @@
 static MagicTest
   **magic_test_list = (MagicTest**) NULL;
 
+static void IntializeImageMagic(void);
+
 
 
 /*
@@ -97,7 +99,7 @@ Export unsigned int GetImageMagic(unsigned char* magic,
                 if(arg->value_offset+arg->value_length > magick_length)
                   break;
 
-                if(memcmp((void*)magick+arg->value_offset,(void*)arg->value,
+                if(memcmp((char*)magick+arg->value_offset,(char*)arg->value,
                           arg->value_length)==0)
                   {
                     if(member->truth_value == True)
@@ -153,4 +155,36 @@ Export void ExitMagic(void)
         }
     }
   FreeMemory((void**)&magic_test_list[i]);
+}
+
+/* Initialize magic_test_list */
+static void IntializeImageMagic(void)
+{
+  char
+    buffer[MaxTextExtent],
+    tag[MaxTextExtent],
+    *p;
+  
+  FILE*
+    file;
+
+  strcpy(buffer,DelegatePath);
+  strcpy(buffer,DirectorySeparator);
+  strcpy(buffer,"magic.mgk");
+
+  file = fopen(buffer, "r");
+  if(file != (FILE*) NULL)
+    {
+      while(!feof(file))
+        {
+          fgets(buffer,MaxTextExtent,file);
+          buffer[MaxTextExtent-1]='\0';
+          Strip(buffer);
+          if(*buffer=='\0' || *buffer=='#')
+            continue;
+          
+
+        }
+      fclose(file);
+    }
 }
