@@ -444,6 +444,7 @@ then
     fi
 fi
 
+
 #
 # Check for JPEG
 #
@@ -468,7 +469,9 @@ then
         have_jpeg='no (failed tests)'
     else
 	LIB_JPEG='-ljpeg'
-	LIBS="$LIBS $LIB_JPEG"
+dnl Other libs may depend on -ljpeg and some linkers don't work very well so put -ljpeg in trailing libs
+        TRAILING_LIBS="$LIB_JPEG $TRAILING_LIBS"
+	#LIBS="$LIBS $LIB_JPEG"
 	AC_DEFINE(HasJPEG)
 	AC_MSG_RESULT(yes)
         have_jpeg='yes'
@@ -477,6 +480,7 @@ then
         AC_MSG_RESULT(no)
     fi
 fi
+
 
 #
 # Check for BZLIB
@@ -537,7 +541,7 @@ then
     else
       LIB_ZLIB='-lz'
 dnl Other libs may depend on -lz and some linkers don't work very well so put -lz in trailing libs
-      TRAILING_LIBS="$LIB_ZLIB $TRAILING_LIBS"
+      TRAILING_LIBS="$TRAILING_LIBS $LIB_ZLIB"
       AC_DEFINE(HasZLIB)
       AC_MSG_RESULT(yes)
       have_zlib='yes'
