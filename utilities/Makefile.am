@@ -37,7 +37,7 @@
 AUTOMAKE_OPTIONS = 1.4 foreign # no-dependencies
 
 MAGICK_LIB	= ../magick/libMagick.la # libtool library name
-INCLUDES	= -I$(top_srcdir) $(INCLTDL) $(X_CFLAGS)
+INCLUDES	= -I../ -I$(top_srcdir) $(INCLTDL) $(X_CFLAGS)
 
 STDMANPAGES = ImageMagick.1  combine.1 convert.1  identify.1 \
    miff.4 mogrify.1 montage.1 quantize.5
@@ -63,6 +63,10 @@ convert_SOURCES  = convert.c
 mogrify_SOURCES  = mogrify.c
 identify_SOURCES = identify.c
 combine_SOURCES  = combine.c
+
+# Temporary for magic testing
+#noinst_PROGRAMS  = magic
+#magic_SOURCES    = magic.c
 
 # Libtool libraries, dependencies, and linker flags used by all executables
 if WITH_MODULES
