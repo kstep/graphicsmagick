@@ -157,7 +157,8 @@ MagickExport void DestroyMagickInfo(void)
 %
 %  The format of the GetImageMagick method is:
 %
-%      char *GetImageMagick(const unsigned char *magick,const size_t length)
+%      const char *GetImageMagick(const unsigned char *magick,
+%        const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -171,7 +172,7 @@ MagickExport void DestroyMagickInfo(void)
 %
 %
 */
-MagickExport char *GetImageMagick(const unsigned char *magick,
+MagickExport const char *GetImageMagick(const unsigned char *magick,
   const size_t length)
 {
   register MagickInfo
@@ -645,6 +646,9 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   char
     magic[MaxTextExtent];
 
+  const char
+    *r;
+
   const MagicInfo
     *magic_info;
 
@@ -866,10 +870,10 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   /*
     Check module IsImage() methods.
   */
-  p=GetImageMagick(magick,2*MaxTextExtent);
-  if (p != (char *) NULL)
+  r=GetImageMagick(magick,2*MaxTextExtent);
+  if (r != (const char *) NULL)
     {
-      (void) strncpy(image_info->magick,p,MaxTextExtent-1);
+      (void) strncpy(image_info->magick,r,MaxTextExtent-1);
       return(True);
     }
   return(False);
