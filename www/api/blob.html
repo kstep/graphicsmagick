@@ -29,8 +29,8 @@
 		<LI><A HREF="#filetoblob">FileToBlob</A>
 		<LI><A HREF="#getblobinfo">GetBlobInfo</A>
 		<LI><A HREF="#getconfigureblob">GetConfigureBlob</A>
-		<LI><A HREF="#getfontblob">GetFontBlob</A>
 		<LI><A HREF="#getmoduleblob">GetModuleBlob</A>
+		<LI><A HREF="#gettypeblob">GetTypeBlob</A>
 		<LI><A HREF="#imagetoblob">ImageToBlob</A>
 		<LI><A HREF="#pingblob">PingBlob</A>
 		<LI><A HREF="#referenceblob">ReferenceBlob</A>
@@ -57,8 +57,8 @@
 <P>void * <STRONG>FileToBlob</STRONG>( const char *filename, size_t *length, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetBlobInfo</STRONG>( BlobInfo *blob_info );</P>
 <P>void * <STRONG>GetConfigureBlob</STRONG>( const char *filename, ExceptionInfo *exception );</P>
-<P>void * <STRONG>GetFontBlob</STRONG>( const char *filename, ExceptionInfo *exception );</P>
 <P>void * <STRONG>GetModuleBlob</STRONG>( const char *filename, ExceptionInfo *exception );</P>
+<P>void * <STRONG>GetTypeBlob</STRONG>( const char *filename, ExceptionInfo *exception );</P>
 <P>void * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, size_t *length, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>PingBlob</STRONG>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>BlobInfo  <STRONG>ReferenceBlob</STRONG>( BlobInfo *blob_info );</P>
@@ -224,28 +224,6 @@ This pointer to a size_t integer sets the initial length of the blob.  On return
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="getfontblob">GetFontBlob</A></H2>
-<blockquote>GetFontBlob() returns the specified font file as a blob. </blockquote><P>The format of the GetFontBlob method is:</P>
-<blockquote>void *GetFontBlob ( const char *filename, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>filename:</STRONG><BR>
-<DD>
-The font file name.
-<P></P>
-<dd><p></p><dt><STRONG>path:</STRONG><BR>
-<DD>
-return the full path information of the font file.
-<P></P>
-<dd><p></p><dt><STRONG>length:</STRONG><BR>
-<DD>
-This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.
-<P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="getmoduleblob">GetModuleBlob</A></H2>
 <blockquote>GetModuleBlob() returns the specified module file as a blob. </blockquote><P>The format of the GetModuleBlob method is:</P>
 <blockquote>void *GetModuleBlob ( const char *filename, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
@@ -258,6 +236,28 @@ The module file name.
 <dd><p></p><dt><STRONG>path:</STRONG><BR>
 <DD>
 return the full path information of the module file.
+<P></P>
+<dd><p></p><dt><STRONG>length:</STRONG><BR>
+<DD>
+This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="gettypeblob">GetTypeBlob</A></H2>
+<blockquote>GetTypeBlob() returns the specified font file as a blob. </blockquote><P>The format of the GetTypeBlob method is:</P>
+<blockquote>void *GetTypeBlob ( const char *filename, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>filename:</STRONG><BR>
+<DD>
+The font file name.
+<P></P>
+<dd><p></p><dt><STRONG>path:</STRONG><BR>
+<DD>
+return the full path information of the font file.
 <P></P>
 <dd><p></p><dt><STRONG>length:</STRONG><BR>
 <DD>
