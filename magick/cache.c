@@ -1484,7 +1484,10 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
       "unable to allocate cache nexus");
   nexus->length=length;
   nexus->pixels=(PixelPacket *) nexus->line;
-  nexus->indexes=(IndexPacket *) (nexus->pixels+nexus->columns*nexus->rows);
+  nexus->indexes=(IndexPacket *) NULL;
+  if ((cache_info->storage_class == PseudoClass) ||
+      (cache_info->colorspace == CMYKColorspace))
+    nexus->indexes=(IndexPacket *) (nexus->pixels+nexus->columns*nexus->rows);
   return(nexus->pixels);
 }
 
