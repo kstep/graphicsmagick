@@ -538,7 +538,6 @@ static void WmfFinish(CSTRUCT *cstruct)
       draw_info->primitive = ((IM*)cstruct->userdata)->mvg;
       DrawImage( ((IM*)cstruct->userdata)->image, draw_info );
       draw_info->primitive = (char*)NULL;
-      LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
 
       DestroyImageInfo(image_info);
       DestroyDrawInfo(draw_info);
@@ -630,7 +629,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if(((IM*)cstruct->userdata)->mvg == (char*)NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   ((IM*)cstruct->userdata)->image=(Image*)NULL;
-
   wmfinit(cstruct);
 
   /* Open metafile */
@@ -676,6 +674,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       LiberateMemory((void**)&(metafile));
 
       /* Destroy cstruct */
+      LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
       LiberateMemory((void**)&(cstruct->userdata));
       LiberateMemory((void**)&(cstruct->dc));
       LiberateMemory((void**)&(cstruct));
@@ -706,6 +705,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void**)&(metafile));
 
   /* Destroy cstruct handle */
+  LiberateMemory((void**)&((IM*)cstruct->userdata)->mvg);
   LiberateMemory((void**)&(cstruct->userdata));
   LiberateMemory((void**)&(cstruct->dc));
   LiberateMemory((void**)&(cstruct));
