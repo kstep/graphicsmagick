@@ -928,6 +928,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->next == (Image *) NULL)
           {
             DestroyImageList(image);
+            LiberateMemory((void **) &global_colormap);
             return((Image *) NULL);
           }
         image=image->next;

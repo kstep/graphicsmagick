@@ -526,14 +526,11 @@ static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
   SourceManager
     *source;
 
-  if (cinfo->src == (JOCTET) NULL)
-    {
-      cinfo->src=(struct jpeg_source_mgr *) (*cinfo->mem->alloc_small)
-        ((j_common_ptr) cinfo,JPOOL_PERMANENT,sizeof(SourceManager));
-      source=(SourceManager *) cinfo->src;
-      source->buffer=(JOCTET *) (*cinfo->mem->alloc_small)
-        ((j_common_ptr) cinfo,JPOOL_PERMANENT,MaxBufferExtent*sizeof(JOCTET));
-    }
+  cinfo->src=(struct jpeg_source_mgr *) (*cinfo->mem->alloc_small)
+    ((j_common_ptr) cinfo,JPOOL_IMAGE,sizeof(SourceManager));
+  source=(SourceManager *) cinfo->src;
+  source->buffer=(JOCTET *) (*cinfo->mem->alloc_small)
+    ((j_common_ptr) cinfo,JPOOL_IMAGE,MaxBufferExtent*sizeof(JOCTET));
   source=(SourceManager *) cinfo->src;
   source->manager.init_source=InitializeSource;
   source->manager.fill_input_buffer=FillInputBuffer;
@@ -1068,9 +1065,8 @@ static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
   DestinationManager
     *destination;
 
-  if (cinfo->dest == (JOCTET) NULL)
-    cinfo->dest=(struct jpeg_destination_mgr *) (*cinfo->mem->alloc_small)
-      ((j_common_ptr) cinfo,JPOOL_PERMANENT,sizeof(DestinationManager));
+  cinfo->dest=(struct jpeg_destination_mgr *) (*cinfo->mem->alloc_small)
+    ((j_common_ptr) cinfo,JPOOL_IMAGE,sizeof(DestinationManager));
   destination=(DestinationManager *) cinfo->dest;
   destination->manager.init_destination=InitializeDestination;
   destination->manager.empty_output_buffer=EmptyOutputBuffer;
