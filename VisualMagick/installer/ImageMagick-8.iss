@@ -52,9 +52,9 @@
 AppName=GraphicsMagick 1.0.0 Q:8
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=GraphicsMagick 1.0.0 Q:8 Beta (December 6, 2002)
+AppVerName=GraphicsMagick 1.0.0 Q:8 Beta (December 11, 2002)
 AppVersion=1.0.0
-AppCopyright=Copyright (C) 2002 GraphicsMagick Group LLC
+AppCopyright=Copyright (C) 2002 GraphicsMagick Group
 AppPublisher=GraphicsMagick Group
 AppPublisherURL=http://www.GraphicsMagick.org/
 AppSupportURL=http://www.GraphicsMagick.org/www/magick-list.html
