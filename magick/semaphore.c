@@ -132,13 +132,13 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 #endif
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     *semaphore_info=AllocateSemaphoreInfo();
-  (void) LockSemaphoreInfo(*semaphore_info);
 #if defined(HasPTHREADS)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
   LeaveCriticalSection(&critical_section);
 #endif
+  (void) LockSemaphoreInfo(*semaphore_info);
 }
 
 /*
