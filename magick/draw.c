@@ -150,6 +150,7 @@ static void
   MvgAppendColor(DrawContext context, const PixelPacket *color);
 
 
+/* "Printf" for MVG commands */
 static int MvgPrintf(DrawContext context, const char *format, ...)
 {
   const size_t
@@ -181,7 +182,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
 
   /* Write to end of existing MVG string */
   {
-    long
+    int
       str_length;
 
     va_list
@@ -219,6 +220,38 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
 
     return str_length;
   }
+}
+
+/* "Printf" for MVG commands, with autowrap at 78 characters */
+static int MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
+{
+  va_list
+    argp;
+
+  int
+    str_length;
+
+  char
+    buffer[MaxTextExtent];
+
+  va_start(argp, format);
+#if !defined(HAVE_VSNPRINTF)
+  str_length = vsprintf(buffer, format, argp);
+#else
+  str_length =
+    vsnprintf(buffer,
+              sizeof(buffer) - 1, format, argp);
+#endif
+  va_end(argp);
+  *(buffer+sizeof(buffer)-1)=0;
+
+  if( ((context->mvg_width + str_length) > 78) &&
+      buffer[str_length-1] != '\n' )
+    MvgPrintf(context, "\n");
+
+  MvgPrintf(context, "%s", buffer);
+
+  return str_length;
 }
 
 static void MvgAppendColor(DrawContext context, const PixelPacket *color)
@@ -259,28 +292,14 @@ static void MvgAppendPointsCommand(DrawContext context, const char* command,
   size_t
     i;
 
-  int
-    length,
-    sub_length;
-
-  char
-    buffer[MaxTextExtent];
-
-  length = context->indent_depth;
-  length += MvgPrintf(context, command);
+  MvgPrintf(context, command);
   for (i = num_coords, coordinate = coordinates; i; i--)
     {
-      sub_length = sprintf(buffer," %.4g,%.4g", coordinate->x, coordinate->y);
-      if( (length + sub_length) > 78)
-        {
-          MvgPrintf(context, "\n");
-          length = context->indent_depth;
-        }
-      length += MvgPrintf(context, "%s", buffer);
+      MvgAutoWrapPrintf(context," %.4g,%.4g", coordinate->x, coordinate->y);
       ++coordinate;
     }
-  if(length)
-    MvgPrintf(context, "\n");
+
+  MvgPrintf(context, "\n");
 }
 
 
