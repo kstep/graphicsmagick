@@ -4727,12 +4727,13 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   */
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
   if ((magic_info != (const MagicInfo *) NULL) &&
-      (magic_info->name != (char *) NULL))
+      (magic_info->name != (char *) NULL) &&
+      (exception->severity == UndefinedException))
     {
       (void) strncpy(image_info->magick,magic_info->name,MaxTextExtent-1);
       return(True);
     }
-  return(True);
+  return(False);
 }
 
 /*

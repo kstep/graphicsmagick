@@ -1,5 +1,9 @@
 2003-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c: (SetMagickInfo): Don't mask failure to
+	read magic.mgk.
+	* magick/constitute.c (ReadImage): Don't overwrite specific
+	exception info.
 	* magick/nt_base.c (NTResourceToBlob): Add logging similar
 	to that used in IsAccessible() in order to make operation
 	more clear.

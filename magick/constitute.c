@@ -17,7 +17,7 @@
 %     CCCC   OOO   N   N  SSSSS    T    IIIII    T     UUU     T    EEEEE     %
 %                                                                             %
 %                                                                             %
-%                       Methods to Consitute an Image                         %
+%                      Methods to Constitute an Image                         %
 %                                                                             %
 %                                                                             %
 %                             Software Design                                 %
@@ -2739,6 +2739,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     Call appropriate image reader based on image type.
   */
   magick_info=GetMagickInfo(clone_info->magick,exception);
+  if (exception->severity != UndefinedException)
+    return (False);
   if ((magick_info != (const MagickInfo *) NULL) &&
       magick_info->seekable_stream)
     {
@@ -2794,14 +2796,21 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   else
     {
       delegate_info=GetDelegateInfo(clone_info->magick,(char *) NULL,exception);
-      if (delegate_info == (const DelegateInfo *) NULL)
+      if ((delegate_info == (const DelegateInfo *) NULL) ||
+          (exception->severity != UndefinedException))
         {
-          if (IsAccessibleAndNotEmpty(clone_info->filename))
-            ThrowException(exception,MissingDelegateError,
-              "NoDecodeDelegateForThisImageFormat",clone_info->filename);
-          else
-            ThrowException(exception,FileOpenError,"UnableToOpenFile",
-              clone_info->filename);
+          if (exception->severity == UndefinedException)
+          {
+            /*
+              Try to choose a useful error type
+            */
+            if (IsAccessibleAndNotEmpty(clone_info->filename))
+              ThrowException(exception,MissingDelegateError,
+                "NoDecodeDelegateForThisImageFormat",clone_info->filename);
+            else
+              ThrowException(exception,FileOpenError,"UnableToOpenFile",
+                clone_info->filename);
+            }
           if (clone_info->temporary)
             LiberateTemporaryFile(clone_info->filename);
           DestroyImageInfo(clone_info);
@@ -2832,14 +2841,18 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (void) SetImageInfo(clone_info,False,exception);
       magick_info=GetMagickInfo(clone_info->magick,exception);
       if ((magick_info == (const MagickInfo *) NULL) ||
-          (magick_info->decoder == NULL))
+          (magick_info->decoder == NULL) ||
+          (exception->severity != UndefinedException))
         {
-          if (IsAccessibleAndNotEmpty(clone_info->filename))
-            ThrowException(exception,MissingDelegateError,
-              "NoDecodeDelegateForThisImageFormat",clone_info->filename);
-          else
-            ThrowException(exception,FileOpenError,"UnableToOpenFile",
-              clone_info->filename);
+          if (exception->severity == UndefinedException)
+          {
+            if (IsAccessibleAndNotEmpty(clone_info->filename))
+              ThrowException(exception,MissingDelegateError,
+                "NoDecodeDelegateForThisImageFormat",clone_info->filename);
+            else
+              ThrowException(exception,FileOpenError,"UnableToOpenFile",
+                clone_info->filename);
+          }
           if (clone_info->temporary)
             LiberateTemporaryFile(clone_info->filename);
           DestroyImageInfo(clone_info);
