@@ -152,6 +152,23 @@ static unsigned int IsTIFF(const unsigned char *magick,
 %
 */
 
+static SemaphoreInfo
+  *tiff_semaphore = (SemaphoreInfo *) NULL;
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static void DestroyTIFF(void)
+{
+  AcquireSemaphore(&tiff_semaphore);
+  DestroySemaphore(tiff_semaphore);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 #if defined(ICC_SUPPORT)
 static unsigned int ReadColorProfile(char *text,long int length,Image *image)
 {
@@ -306,9 +323,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   register unsigned char
     *p;
 
-  static SemaphoreInfo
-    *tiff_semaphore = (SemaphoreInfo *) NULL;
-
   TIFF
     *tiff;
 
@@ -362,6 +376,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   }
   (void) fclose(file);
   (void) strcpy(image->filename,image_info->filename);
+  atexit(DestroyTIFF);
   AcquireSemaphore(&tiff_semaphore);
   tiff_exception=exception;
   TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);

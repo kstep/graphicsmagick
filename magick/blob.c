@@ -216,9 +216,6 @@ MagickExport void CloseBlob(Image *image)
     }
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     {
-      /*
-        Signal that all data has been written to the stream.
-      */
       (void) image->fifo(image,(const void *) NULL,0);
       image->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
       return;
@@ -312,6 +309,82 @@ MagickExport int EOFBlob(const Image *image)
   if (image->blob.data == (unsigned char *) NULL)
     return(feof(image->file));
   return(image->blob.offset > image->blob.length);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   F i l e T o B l o b                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method FileToBlob returns the contents of a file as a blob.  It returns
+%  the file as a blob and its length.
+%
+%  The format of the FileToBlob method is:
+%
+%      void *FileToBlob(const char *filename,size_t *length,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o blob:  Method FileToBlob returns the contents of a file as a blob.  If
+%      an error occurs NULL is returned.
+%
+%    o filename: The filename.
+%
+%    o length: This pointer to a size_t integer sets the initial length of the
+%      blob.  On return, it reflects the actual length of the blob.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport void *FileToBlob(const char *filename,size_t *length,
+  ExceptionInfo *exception)
+{
+  int
+    file;
+
+  off_t
+    count;
+
+  struct stat
+    attributes;
+
+  unsigned char
+    *blob;
+
+  assert(filename != (const char *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  file=open(filename,O_RDONLY | O_BINARY,0777);
+  if (file == -1)
+    {
+      ThrowException(exception,BlobWarning,"Unable to create blob",filename);
+      return((void *) NULL);
+    }
+  *length=fstat(file,&attributes) < 0 ? 0 : attributes.st_size;
+  blob=(unsigned char *) AcquireMemory(*length+1);
+  if (blob == (unsigned char *) NULL)
+    {
+      (void) close(file);
+      ThrowException(exception,BlobWarning,"Unable to create blob",filename);
+      return((void *) NULL);
+    }
+  count=read(file,blob,*length);
+  blob[*length]='\0';
+  (void) close(file);
+  if (count != *length)
+    {
+      ThrowException(exception,BlobWarning,"Unable to read blob",(char *) NULL);
+      return((void *) NULL);
+    }
+  return(blob);
+
 }
 
 /*
@@ -483,16 +556,15 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
         image->filename);
       return((void *) NULL);
     }
+  DestroyImageInfo(clone_info);
   /*
     Read image from disk as blob.
   */
   file=open(image->filename,O_RDONLY | O_BINARY,0777);
-  DestroyImageInfo(clone_info);
   if (file == -1)
     {
       (void) remove(image->filename);
       (void) strcpy(image->filename,filename);
-      DestroyImageInfo(clone_info);
       ThrowException(exception,BlobWarning,"Unable to create blob",
         image->filename);
       return((void *) NULL);
@@ -503,7 +575,6 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     {
       (void) remove(image->filename);
       (void) strcpy(image->filename,filename);
-      DestroyImageInfo(clone_info);
       ThrowException(exception,BlobWarning,"Unable to create blob",
         "Memory allocation failed");
       return((void *) NULL);
@@ -512,7 +583,6 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   (void) close(file);
   (void) remove(image->filename);
   (void) strcpy(image->filename,filename);
-  DestroyImageInfo(clone_info);
   if (count != *length)
     {
       ThrowException(exception,BlobWarning,"Unable to read blob",(char *) NULL);
@@ -754,8 +824,6 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       */
       image->fifo=image_info->fifo;
       image->exempt=True;
-      if (*type == 'w')
-        return(True);
     }
   if (image_info->file != (FILE *) NULL)
     {

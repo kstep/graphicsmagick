@@ -8,6 +8,13 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+  UserSpace,
+  ObjectBoundingBox,
+  UserSpaceOnUse
+} DrawUnits;
+
 /*
   Typedef declarations.
 */
@@ -106,8 +113,14 @@ typedef struct _DrawInfo
   unsigned int
     *dash_pattern;
 
-  PolygonInfo
-    clip_path;
+  DrawUnits
+    clip_units;
+
+  char
+    *clip_path;
+
+  Image
+    *canvas;
 
   unsigned int
     debug;

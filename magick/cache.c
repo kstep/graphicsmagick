@@ -63,10 +63,11 @@
   Global declarations.
 */
 static off_t
-  cache_threshold = ~0;
-
-static off_t
+  cache_threshold = ~0,
   free_memory = 0;
+
+static SemaphoreInfo
+  *cache_semaphore = (SemaphoreInfo *) NULL;
 
 /*
   Declare pixel cache interfaces.
@@ -581,11 +582,24 @@ MagickExport void GetCacheInfo(Cache *cache)
 %
 %
 */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static void DestroyCache(void)
+{
+  AcquireSemaphore(&cache_semaphore);
+  DestroySemaphore(cache_semaphore);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 static off_t GetCacheMemory(const off_t memory)
 {
-  static SemaphoreInfo
-    *cache_semaphore = (SemaphoreInfo *) NULL;
-
+  atexit(DestroyCache);
   AcquireSemaphore(&cache_semaphore);
   free_memory+=memory;
   LiberateSemaphore(&cache_semaphore);

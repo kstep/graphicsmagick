@@ -47,9 +47,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Bill Radcliffe of Corbis (www.corbis.com) contributed the polygon
-% rendering code.  Parts of the fast rendering algorithm was inspired by
-% libart.  Digital Applications (www.digapp.com) contributed the dash
-% pattern and linecap stroking algorithm.  It was written by David Harr.
+% rendering code.  Leonard Rosenthal and David Harr of Appligent
+% (www.appligent.com) contributed the dash pattern, linecap stroking
+% algorithm, and minor rendering improvements.  Parts of the fast
+% rendering algorithm was inspired by libart.
 %
 */
 
@@ -124,6 +125,126 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l i p I m a g e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ClipImage() copies pixels from the composite to the image as defined by a
+%  mask.
+%
+%  The format of the ClipImage method is:
+%
+%      ClipImage(Image *image,Image *composite,const char *clip_path)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o composite: The composite image.
+%
+%    o clip_path: The clip path name.
+%
+%
+*/
+static unsigned int ClipImage(Image *image,Image *composite,
+  const char *clip_path)
+{
+  char
+    name[MaxTextExtent];
+
+  DrawInfo
+    *draw_info;
+
+  Image
+    *mask;
+
+  ImageAttribute
+    *attribute;
+
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *p,
+    *q,
+    *r;
+
+  unsigned int
+    status,
+    sync;
+
+  /*
+    Allocate image mask.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(composite != (Image *) NULL);
+  assert(composite->signature == MagickSignature);
+  if ((composite->columns != image->columns) ||
+      (composite->rows != image->rows))
+    ThrowBinaryException(OptionWarning,"Unable to clip image",
+      "images are not the same size");
+  FormatString(name,"[%.1024s]",clip_path);
+  attribute=GetImageAttribute(image,name);
+  if (attribute == (ImageAttribute *) NULL)
+    return(False);
+  mask=CloneImage(image,0,0,True,&image->exception);
+  if (mask == (Image *) NULL)
+    return(False);
+  SetImage(mask,TransparentOpacity);
+  /*
+    Draw clip path.
+  */
+  draw_info=CloneDrawInfo((ImageInfo *) NULL,(DrawInfo *) NULL);
+  draw_info->primitive=AllocateString(attribute->value);
+  (void) QueryColorDatabase("black",&draw_info->fill);
+  status=DrawImage(mask,draw_info);
+  if (status == False)
+    {
+      DestroyImage(mask);
+      return(False);
+    }
+  /*
+    Transfer composite pixel to image if corresponding mask pixel is opaque.
+  */
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=GetImagePixels(composite,0,y,composite->columns,1);
+    r=GetImagePixels(mask,0,y,mask->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
+        (r == (PixelPacket *) NULL))
+      break;
+    sync=False;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      if (r->opacity != TransparentOpacity)
+        {
+          *p=(*q);
+          sync=True;
+        }
+      p++;
+      q++;
+      r++;
+    }
+    if (sync)
+      if (!SyncImagePixels(image))
+        break;
+  }
+  DestroyImage(mask);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C l o n e D r a w I n f o                                                 %
 %                                                                             %
 %                                                                             %
@@ -192,16 +313,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       memcpy(clone_info->dash_pattern,draw_info->dash_pattern,
         (x+1)*sizeof(unsigned int));
     }
-  if (draw_info->clip_path.number_edges != 0)
-    {
-      clone_info->clip_path.edges=(EdgeInfo *)
-        AcquireMemory(draw_info->clip_path.number_edges*sizeof(EdgeInfo));
-      if (clone_info->clip_path.edges == (EdgeInfo *) NULL)
-        MagickError(ResourceLimitWarning,"Unable to clone draw info",
-          "Memory allocation failed");
-      memcpy(clone_info->clip_path.edges,draw_info->clip_path.edges,
-        draw_info->clip_path.number_edges*sizeof(EdgeInfo));
-    }
+  clone_info->clip_path=(char *) NULL;
   return(clone_info);
 }
 
@@ -968,8 +1080,8 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->server_name);
   if (draw_info->dash_pattern != (unsigned *) NULL)
     LiberateMemory((void **) &draw_info->dash_pattern);
-  if (draw_info->clip_path.edges != (EdgeInfo *) NULL)
-    LiberateMemory((void **) &draw_info->clip_path.edges);
+  if (draw_info->clip_path != (char *) NULL)
+    LiberateMemory((void **) &draw_info->clip_path);
   LiberateMemory((void **) &draw_info);
 }
 
@@ -1103,7 +1215,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
 
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->debug=False;
-  QueryColorDatabase("#000000ff",&clone_info->fill);
+  (void) QueryColorDatabase("#000000ff",&clone_info->fill);
   resolution.x=72.0;
   resolution.y=72.0;
   if (clone_info->density != (char *) NULL)
@@ -1158,9 +1270,9 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
       for (i=0; i < polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].direction)
-          QueryColorDatabase("red",&clone_info->stroke);
+          (void) QueryColorDatabase("red",&clone_info->stroke);
         else
-          QueryColorDatabase("green",&clone_info->stroke);
+          (void) QueryColorDatabase("green",&clone_info->stroke);
         start.x=floor(polygon_info->edges[i].bounds.x1-mid+0.5);
         start.y=floor(polygon_info->edges[i].bounds.y1-mid+0.5);
         end.x=ceil(polygon_info->edges[i].bounds.x2+mid-0.5);
@@ -1173,7 +1285,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
         (void) DrawPrimitive(clone_info,primitive_info,image);
       }
     }
-  QueryColorDatabase("blue",&clone_info->stroke);
+  (void) QueryColorDatabase("blue",&clone_info->stroke);
   start.x=floor(bounds.x1-mid+0.5);
   start.y=floor(bounds.y1-mid+0.5);
   end.x=ceil(bounds.x2+mid-0.5);
@@ -1380,10 +1492,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     keyword[MaxTextExtent],
     *primitive,
     *q,
-    value[MaxTextExtent];
+    *token;
 
   double
-    angle;
+    angle,
+    factor;
 
   DrawInfo
     **graphic_context;
@@ -1409,8 +1522,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     i,
     x;
 
+  size_t
+    length;
+
   unsigned int
-    length,
     status;
 
   /*
@@ -1430,49 +1545,16 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       char
         *text;
 
-      FILE
-        *file;
-
-      int
-        c;
-
-      register char
-        *q;
-
       /*
         Read text from a file.
       */
-      file=(FILE *) fopen(draw_info->primitive+1,"r");
-      if (file == (FILE *) NULL)
-        ThrowBinaryException(FileOpenWarning,"Unable to read primitive file",
-          draw_info->primitive+1);
-      length=MaxTextExtent;
-      text=AllocateString((char *) NULL);
-      q=text;
-      while (text != (char *) NULL)
-      {
-        c=fgetc(file);
-        if (c == EOF)
-          break;
-        if ((q-text+1) >= (int) length)
-          {
-            *q='\0';
-            length<<=1;
-            ReacquireMemory((void **) &text,length);
-            if (text == (char *) NULL)
-              break;
-            q=text+Extent(text);
-          }
-        *q++=c;
-      }
-      (void) fclose(file);
+      text=FileToBlob(draw_info->primitive+1,&length,&image->exception);
       if (text == (char *) NULL)
-        ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
-          "Memory allocation failed");
-      *q='\0';
+        return(False);
       primitive=TranslateText((ImageInfo *) NULL,image,text);
       LiberateMemory((void **) &text);
     }
+  (void) SetImageAttribute(image,"[MVG]",primitive);
   /*
     Allocate primitive info memory.
   */
@@ -1484,7 +1566,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
-  graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   number_points=2047;
   primitive_info=(PrimitiveInfo *)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
@@ -1497,15 +1578,22 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
-  status=True;
-  (void) SetImageAttribute(image,"[MVG]",primitive);
+  graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  graphic_context[n]->canvas=image;
   if (graphic_context[n]->debug)
     (void) fprintf(stdout,"begin vector-graphics\n");
+  token=AllocateString(primitive);
+  status=True;
   for (q=primitive; *q != '\0'; )
   {
-    while (isspace((int) (*q)) && (*q != '\0'))
-      q++;
-    if (*q == '#')
+    /*
+      Interpret graphic primitive.
+    */
+    p=q;
+    GetToken(q,&q,keyword);
+    if (*keyword == '\0')
+      break;
+    if (*keyword == '#')
       {
         /*
           Comment.
@@ -1514,17 +1602,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           q++;
         continue;
       }
-    /*
-      Define primitive.
-    */
-    p=q;
-    for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-      keyword[x]=(*q++);
-    keyword[x]='\0';
-    if (*keyword == '\0')
-      break;
-    while (isspace((int) (*q)) && (*q != '\0'))
-      q++;
     primitive_type=UndefinedPrimitive;
     current=graphic_context[n]->affine;
     IdentityAffine(&affine);
@@ -1537,27 +1614,33 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("affine",keyword) == 0)
           {
-            affine.sx=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.rx=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.ry=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.sy=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.tx=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.ty=strtod(q,&q);
+            GetToken(q,&q,token);
+            affine.sx=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.rx=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.ry=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.sy=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.tx=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.ty=atof(token);
             break;
           }
         if (LocaleCompare("angle",keyword) == 0)
           {
-            (void) strtod(q,&q);
+            GetToken(q,&q,token);
             break;
           }
         if (LocaleCompare("arc",keyword) == 0)
@@ -1584,13 +1667,33 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("clip-path",keyword) == 0)
           {
-            if ((LocaleNCompare(q,"url(",4) == 0))
-              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
-                value[x]=(*q++);
-            else
-              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-                value[x]=(*q++);
-            value[x]='\0';
+            GetToken(q,&q,token);
+            CloneString(&graphic_context[n]->clip_path,token);
+            graphic_context[n]->canvas=CloneImage(
+              graphic_context[n-1]->canvas,0,0,True,&image->exception);
+            if (graphic_context[n]->canvas == (Image *) NULL)
+              ThrowException(&image->exception,ResourceLimitWarning,
+                "Unable to draw image","Memory allocation failed");
+            break;
+          }
+        if (LocaleCompare("clip-rule",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            if (LocaleCompare("evenodd",token) == 0)
+              graphic_context[n]->fill_rule=EvenOddRule;
+            if (LocaleCompare("nonzero",token) == 0)
+              graphic_context[n]->fill_rule=NonZeroRule;
+            break;
+          }
+        if (LocaleCompare("clip-units",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            if (LocaleCompare("userSpace",token) == 0)
+              graphic_context[n]->clip_units=UserSpaceOnUse;
+            if (LocaleCompare("objectBoundingBox",token) == 0)
+              graphic_context[n]->clip_units=ObjectBoundingBox;
+            if (LocaleCompare("userSpaceOnUse",token) == 0)
+              graphic_context[n]->clip_units=UserSpaceOnUse;
             break;
           }
         if (LocaleCompare("circle",keyword) == 0)
@@ -1611,16 +1714,14 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("decorate",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("#000000ff",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("#000000ff",token) == 0)
               graphic_context[n]->decorate=NoDecoration;
-            if (LocaleCompare("underline",value) == 0)
+            if (LocaleCompare("underline",token) == 0)
               graphic_context[n]->decorate=UnderlineDecoration;
-            if (LocaleCompare("overline",value) == 0)
+            if (LocaleCompare("overline",token) == 0)
               graphic_context[n]->decorate=OverlineDecoration;
-            if (LocaleCompare("line-through",value) == 0)
+            if (LocaleCompare("line-through",token) == 0)
               graphic_context[n]->decorate=LineThroughDecoration;
             break;
           }
@@ -1643,48 +1744,41 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("fill",keyword) == 0)
           {
-            if ((LocaleNCompare(q,"rgb(",4) == 0))
-              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
-                value[x]=(*q++);
-            else
-              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-                value[x]=(*q++);
-            value[x]='\0';
-            (void) QueryColorDatabase(value,&graphic_context[n]->fill);
+            GetToken(q,&q,token);
+            (void) QueryColorDatabase(token,&graphic_context[n]->fill);
             if (graphic_context[n]->fill.opacity != TransparentOpacity)
               graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("evenodd",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("evenodd",token) == 0)
               graphic_context[n]->fill_rule=EvenOddRule;
-            if (LocaleCompare("nonzero",value) == 0)
+            if (LocaleCompare("nonzero",token) == 0)
               graphic_context[n]->fill_rule=NonZeroRule;
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
+            GetToken(q,&q,token);
+            factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->fill.opacity=(Quantum)
-              ceil(MaxRGB*(1.0-strtod(q,&q))/100.0-0.5);
+              (MaxRGB*(1.0-factor*atof(token)));
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
+            GetToken(q,&q,token);
             if (draw_info->font != (char *) NULL)
-              (void) strcpy(value,draw_info->font);
-            CloneString(&graphic_context[n]->font,value);
+              (void) strcpy(token,draw_info->font);
+            CloneString(&graphic_context[n]->font,token);
             break;
           }
         if (LocaleCompare("font-size",keyword) == 0)
           {
-            graphic_context[n]->pointsize=strtod(q,&q);
+            GetToken(q,&q,token);
+            graphic_context[n]->pointsize=atof(token);
             break;
           }
         status=False;
@@ -1695,26 +1789,24 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("gravity",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("NorthWest",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("NorthWest",token) == 0)
               graphic_context[n]->gravity=NorthWestGravity;
-            if (LocaleCompare("North",value) == 0)
+            if (LocaleCompare("North",token) == 0)
               graphic_context[n]->gravity=NorthGravity;
-            if (LocaleCompare("NorthEast",value) == 0)
+            if (LocaleCompare("NorthEast",token) == 0)
               graphic_context[n]->gravity=NorthEastGravity;
-            if (LocaleCompare("West",value) == 0)
+            if (LocaleCompare("West",token) == 0)
               graphic_context[n]->gravity=WestGravity;
-            if (LocaleCompare("Center",value) == 0)
+            if (LocaleCompare("Center",token) == 0)
               graphic_context[n]->gravity=CenterGravity;
-            if (LocaleCompare("East",value) == 0)
+            if (LocaleCompare("East",token) == 0)
               graphic_context[n]->gravity=EastGravity;
-            if (LocaleCompare("SouthWest",value) == 0)
+            if (LocaleCompare("SouthWest",token) == 0)
               graphic_context[n]->gravity=SouthWestGravity;
-            if (LocaleCompare("South",value) == 0)
+            if (LocaleCompare("South",token) == 0)
               graphic_context[n]->gravity=SouthGravity;
-            if (LocaleCompare("SouthEast",value) == 0)
+            if (LocaleCompare("SouthEast",token) == 0)
               graphic_context[n]->gravity=SouthEastGravity;
             break;
           }
@@ -1726,44 +1818,42 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("image",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("Over",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("Over",token) == 0)
               graphic_context[n]->compose=OverCompositeOp;
-            if (LocaleCompare("In",value) == 0)
+            if (LocaleCompare("In",token) == 0)
               graphic_context[n]->compose=InCompositeOp;
-            if (LocaleCompare("Out",value) == 0)
+            if (LocaleCompare("Out",token) == 0)
               graphic_context[n]->compose=OutCompositeOp;
-            if (LocaleCompare("Atop",value) == 0)
+            if (LocaleCompare("Atop",token) == 0)
               graphic_context[n]->compose=AtopCompositeOp;
-            if (LocaleCompare("Xor",value) == 0)
+            if (LocaleCompare("Xor",token) == 0)
               graphic_context[n]->compose=XorCompositeOp;
-            if (LocaleCompare("Plus",value) == 0)
+            if (LocaleCompare("Plus",token) == 0)
               graphic_context[n]->compose=PlusCompositeOp;
-            if (LocaleCompare("Minus",value) == 0)
+            if (LocaleCompare("Minus",token) == 0)
               graphic_context[n]->compose=MinusCompositeOp;
-            if (LocaleCompare("Add",value) == 0)
+            if (LocaleCompare("Add",token) == 0)
               graphic_context[n]->compose=AddCompositeOp;
-            if (LocaleCompare("Subtract",value) == 0)
+            if (LocaleCompare("Subtract",token) == 0)
               graphic_context[n]->compose=SubtractCompositeOp;
-            if (LocaleCompare("Difference",value) == 0)
+            if (LocaleCompare("Difference",token) == 0)
               graphic_context[n]->compose=DifferenceCompositeOp;
-            if (LocaleCompare("Multiply",value) == 0)
+            if (LocaleCompare("Multiply",token) == 0)
               graphic_context[n]->compose=MultiplyCompositeOp;
-            if (LocaleCompare("Bumpmap",value) == 0)
+            if (LocaleCompare("Bumpmap",token) == 0)
               graphic_context[n]->compose=BumpmapCompositeOp;
-            if (LocaleCompare("Copy",value) == 0)
+            if (LocaleCompare("Copy",token) == 0)
               graphic_context[n]->compose=CopyCompositeOp;
-            if (LocaleCompare("CopyRed",value) == 0)
+            if (LocaleCompare("CopyRed",token) == 0)
               graphic_context[n]->compose=CopyRedCompositeOp;
-            if (LocaleCompare("CopyGreen",value) == 0)
+            if (LocaleCompare("CopyGreen",token) == 0)
               graphic_context[n]->compose=CopyGreenCompositeOp;
-            if (LocaleCompare("CopyBlue",value) == 0)
+            if (LocaleCompare("CopyBlue",token) == 0)
               graphic_context[n]->compose=CopyBlueCompositeOp;
-            if (LocaleCompare("CopyOpacity",value) == 0)
+            if (LocaleCompare("CopyOpacity",token) == 0)
               graphic_context[n]->compose=CopyOpacityCompositeOp;
-            if (LocaleCompare("Clear",value) == 0)
+            if (LocaleCompare("Clear",token) == 0)
               graphic_context[n]->compose=ClearCompositeOp;
             primitive_type=ImagePrimitive;
             break;
@@ -1798,8 +1888,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("opacity",keyword) == 0)
           {
-            graphic_context[n]->opacity=(Quantum)
-              ceil(MaxRGB*(1.0-strtod(q,&q))/100.0-0.5);
+            GetToken(q,&q,token);
+            factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
+            graphic_context[n]->opacity=(Quantum) (MaxRGB*(1.0-((1.0-(double)
+              graphic_context[n]->opacity/MaxRGB)*factor*atof(token))));
             graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
@@ -1832,43 +1924,55 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("pop",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("clip-path",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("clip-path",token) == 0)
               break;
-            if (LocaleCompare("defs",value) == 0)
+            if (LocaleCompare("defs",token) == 0)
               break;
-            if (LocaleCompare("graphic-context",value) == 0)
+            if (LocaleCompare("graphic-context",token) == 0)
               {
+                if (graphic_context[n]->clip_path != (char *) NULL)
+                  {
+                    ClipImage(graphic_context[n-1]->canvas,
+                      graphic_context[n]->canvas,graphic_context[n]->clip_path);
+                    DestroyImage(graphic_context[n]->canvas);
+                  }
                 DestroyDrawInfo(graphic_context[n]);
                 n--;
                 if (n < 0)
-                  {
-                    ThrowException(&image->exception,CorruptImageWarning,
-                      "unbalanced graphic context push/pop",value);
-                    break;
-                  }
+                  ThrowException(&image->exception,CorruptImageWarning,
+                    "unbalanced graphic context push/pop",token);
+                break;
               }
             break;
           }
         if (LocaleCompare("push",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("clip-path",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("clip-path",token) == 0)
               {
-                while (isspace((int) (*q)) && (*q != '\0'))
-                  q++;
-                for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-                  value[x]=(*q++);
-                value[x]='\0';
+                char
+                  name[MaxTextExtent];
+
+                GetToken(q,&q,token);
+                FormatString(name,"[%.1024s]",token);
+                for (p=q; *q != '\0'; )
+                {
+                  GetToken(q,&q,token);
+                  if (LocaleCompare(token,"pop") != 0)
+                    continue;
+                  GetToken(q,(char **) NULL,token);
+                  if (LocaleCompare(token,"clip-path") != 0)
+                    continue;
+                  break;
+                }
+                (void) strncpy(token,p,q-p-4);
+                token[q-p-4]='\0';
+                (void) SetImageAttribute(image,name,token);
+                GetToken(q,&q,token);
                 break;
               }
-            if (LocaleCompare("defs",value) == 0)
-              break;
-            if (LocaleCompare("graphic-context",value) == 0)
+            if (LocaleCompare("graphic-context",token) == 0)
               {
                 n++;
                 ReacquireMemory((void **) &graphic_context,
@@ -1881,7 +1985,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   }
                 graphic_context[n]=
                   CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
+                break;
               }
+            if (LocaleCompare("defs",token) == 0)
+              break;
             break;
           }
         status=False;
@@ -1890,23 +1997,24 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       case 'r':
       case 'R':
       {
-        if (LocaleNCompare("rect",keyword,4) == 0)
+        if (LocaleCompare("rectangle",keyword) == 0)
           {
             primitive_type=RectanglePrimitive;
+            break;
+          }
+        if (LocaleCompare("rotate",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            angle=atof(token);
+            affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
+            affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
+            affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
+            affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
             break;
           }
         if (LocaleCompare("roundRectangle",keyword) == 0)
           {
             primitive_type=RoundRectanglePrimitive;
-            break;
-          }
-        if (LocaleCompare("rotate",keyword) == 0)
-          {
-            angle=strtod(q,&q);
-            affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
-            affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
-            affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
-            affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
             break;
           }
         status=False;
@@ -1917,41 +2025,40 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("scale",keyword) == 0)
           {
-            affine.sx=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.sy=strtod(q,&q);
+            GetToken(q,&q,token);
+            affine.sx=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.sy=atof(token);
             break;
           }
         if (LocaleCompare("skewX",keyword) == 0)
           {
-            angle=strtod(q,&q);
+            GetToken(q,&q,token);
+            angle=atof(token);
             affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
             break;
           }
         if (LocaleCompare("skewY",keyword) == 0)
           {
-            angle=strtod(q,&q);
+            GetToken(q,&q,token);
+            angle=atof(token);
             affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
             break;
           }
         if (LocaleCompare("stroke",keyword) == 0)
           {
-            if ((LocaleNCompare(q,"rgb(",4) == 0))
-              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
-                value[x]=(*q++);
-            else
-              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-                value[x]=(*q++);
-            value[x]='\0';
-            (void) QueryColorDatabase(value,&graphic_context[n]->stroke);
+            GetToken(q,&q,token);
+            (void) QueryColorDatabase(token,&graphic_context[n]->stroke);
             if (graphic_context[n]->stroke.opacity != TransparentOpacity)
               graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
           {
-            graphic_context[n]->stroke_antialias=(unsigned int) strtod(q,&q);
+            GetToken(q,&q,token);
+            graphic_context[n]->stroke_antialias=atoi(token);
             break;
           }
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
@@ -1959,11 +2066,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (IsGeometry(q))
               {
                 char
-                  *r;
+                  *p;
 
-                r=q;
-                for (x=0; IsGeometry(r); x++)
-                  (void) strtod(r,&r);
+                p=q;
+                GetToken(p,&p,token);
+                for (x=0; IsGeometry(token); x++)
+                  GetToken(p,&p,token);
                 graphic_context[n]->dash_pattern=(unsigned int *)
                   AcquireMemory((x+1)*sizeof(unsigned int));
                 if (graphic_context[n]->dash_pattern == (unsigned int *) NULL)
@@ -1972,16 +2080,16 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                       "Unable to draw image","Memory allocation failed");
                     break;
                   }
-                for (x=0; IsGeometry(q); x++)
-                  graphic_context[n]->dash_pattern[x]=
-                    (unsigned int) strtod(q,&q);
-                graphic_context[n]->dash_pattern[x]=0;
+                for (j=0; j < x; j++)
+                {
+                  GetToken(q,&q,token);
+                  graphic_context[n]->dash_pattern[j]=atoi(token);
+                }
+                graphic_context[n]->dash_pattern[j]=0;
                 break;
               }
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare(value,"#000000ff") != 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare(token,"#000000ff") != 0)
               break;
             if (graphic_context[n]->dash_pattern != (unsigned int *) NULL)
               LiberateMemory((void **) &graphic_context[n]->dash_pattern);
@@ -1990,49 +2098,50 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
-            graphic_context[n]->dash_offset=(unsigned int) strtod(q,&q);
+            GetToken(q,&q,token);
+            graphic_context[n]->dash_offset=atoi(token);
             break;
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("butt",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("butt",token) == 0)
               graphic_context[n]->linecap=ButtCap;
-            if (LocaleCompare("round",value) == 0)
+            if (LocaleCompare("round",token) == 0)
               graphic_context[n]->linecap=RoundCap;
-            if (LocaleCompare("square",value) == 0)
+            if (LocaleCompare("square",token) == 0)
               graphic_context[n]->linecap=SquareCap;
             break;
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("butt",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("butt",token) == 0)
               graphic_context[n]->linejoin=MiterJoin;
-            if (LocaleCompare("round",value) == 0)
+            if (LocaleCompare("round",token) == 0)
               graphic_context[n]->linejoin=RoundJoin;
-            if (LocaleCompare("square",value) == 0)
+            if (LocaleCompare("square",token) == 0)
               graphic_context[n]->linejoin=BevelJoin;
             break;
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
           {
-            graphic_context[n]->miterlimit=(unsigned int) strtod(q,&q);
+            GetToken(q,&q,token);
+            graphic_context[n]->miterlimit=atoi(token);
             break;
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
           {
+            GetToken(q,&q,token);
+            factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->stroke.opacity=(Quantum)
-              ceil(MaxRGB*(1.0*strtod(q,&q))/100.0-0.5);
+              (MaxRGB*(1.0*factor*atof(token)));
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
-            graphic_context[n]->stroke_width=strtod(q,&q);
+            GetToken(q,&q,token);
+            graphic_context[n]->stroke_width=atof(token);
             continue;
           }
         status=False;
@@ -2048,15 +2157,18 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (LocaleCompare("text-antialias",keyword) == 0)
           {
-            graphic_context[n]->text_antialias=(unsigned int) strtod(q,&q);
+            GetToken(q,&q,token);
+            graphic_context[n]->text_antialias=atoi(token);
             break;
           }
         if (LocaleCompare("translate",keyword) == 0)
           {
-            affine.tx=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.ty=strtod(q,&q);
+            GetToken(q,&q,token);
+            affine.tx=atof(token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            GetToken(q,&q,token);
+            affine.ty=atof(token);
             break;
           }
         status=False;
@@ -2067,16 +2179,16 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("viewbox",keyword) == 0)
           {
-            (void) strtod(q,&q);
-            if (*q == ',')
-              q++;
-            (void) strtod(q,&q);
-            if (*q == ',')
-              q++;
-            (void) strtod(q,&q);
-            if (*q == ',')
-              q++;
-            (void) strtod(q,&q);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            GetToken(q,&q,token);
             break;
           }
         status=False;
@@ -2118,22 +2230,18 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       /*
         Define points.
       */
-      while (isspace((int) (*q)) && (*q != '\0'))
-        q++;
       if (!IsGeometry(q))
         break;
-      point.x=strtod(q,&q);
-      if (*q == ',')
-        q++;
-      point.y=strtod(q,&q);
-      if (*q == ',')
-        q++;
+      GetToken(q,&q,token);
+      point.x=atof(token);
+      GetToken(q,&q,token);
+      if (*token == ',')
+        GetToken(q,&q,token);
+      point.y=atof(token);
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].point=point;
       primitive_info[i].coordinates=0;
       primitive_info[i].method=FloodfillMethod;
-      while ((isspace((int) (*q)) || (*q == ',')) && (*q != '\0'))
-        q++;
       i++;
       if (i < (int) (number_points-6*BezierQuantum-360))
         continue;
@@ -2147,8 +2255,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           break;
         }
     }
-    while (isspace((int) (*q)) && (*q != '\0'))
-      q++;
     primitive_info[j].primitive=primitive_type;
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
@@ -2274,65 +2380,30 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
       case PathPrimitive:
       {
-        char
-          *path;
-
         int
           number_attributes;
 
-        if (*q == '\0')
-          break;
+        register char
+          *p;
+
+        GetToken(q,&q,token);
         number_attributes=1;
-        p=q;
-        if (*q == '"')
-          {
-            p++;
-            for (q++; *q != '\0'; q++)
-            {
-              if (isalpha((int) *q))
-                number_attributes++;
-              if ((*q == '"') && (*(q-1) != '\\'))
-                break;
-            }
-          }
-        else
-          if (*q == '\'')
-            {
-              p++;
-              for (q++; *q != '\0'; q++)
-              {
-                if (isalpha((int) *q))
-                  number_attributes++;
-                if ((*q == '\'') && (*(q-1) != '\\'))
-                  break;
-              }
-            }
-          else
-            for (q++;  *q != '\0'; q++)
-            {
-              if (isalpha((int) *q))
-                number_attributes++;
-              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
-                break;
-            }
-        path=(char *) AcquireMemory(q-p+1);
+        for (p=token; *p != '\0'; p++)
+          if (isalpha((int) *p))
+            number_attributes++;
         if (i > (number_points-6*BezierQuantum*number_attributes-1))
           {
             number_points+=6*BezierQuantum*number_attributes;
             ReacquireMemory((void **) &primitive_info,
               number_points*sizeof(PrimitiveInfo));
+            if (primitive_info == (PrimitiveInfo *) NULL)
+              {
+                ThrowException(&image->exception,ResourceLimitWarning,
+                  "Unable to draw path","Memory allocation failed");
+                break;
+              }
           }
-        if ((path == (char *) NULL) ||
-            (primitive_info == (PrimitiveInfo *) NULL))
-          {
-            ThrowException(&image->exception,ResourceLimitWarning,
-              "Unable to draw image","Memory allocation failed");
-            break;
-          }
-        (void) strncpy(path,p,q-p+1);
-        path[q-p]='\0';
-        i=j+TracePath(primitive_info+j,path);
-        LiberateMemory((void **) &path);
+        i=j+TracePath(primitive_info+j,token);
         break;
       }
       case ColorPrimitive:
@@ -2343,110 +2414,39 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             status=False;
             break;
           }
-        /*
-          Define method.
-        */
-        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-          keyword[x]=(*q++);
-        keyword[x]='\0';
-        if (*keyword == '\0')
-          break;
-        if (LocaleCompare("point",keyword) == 0)
+        GetToken(q,&q,token);
+        if (LocaleCompare("point",token) == 0)
           primitive_info[j].method=PointMethod;
-        else
-          if (LocaleCompare("replace",keyword) == 0)
-            primitive_info[j].method=ReplaceMethod;
-          else
-            if (LocaleCompare("floodfill",keyword) == 0)
-              primitive_info[j].method=FloodfillMethod;
-            else
-              if (LocaleCompare("filltoborder",keyword) == 0)
-                primitive_info[j].method=FillToBorderMethod;
-              else
-                if (LocaleCompare("reset",keyword) == 0)
-                  primitive_info[j].method=ResetMethod;
-                else
-                  status=False;
+        if (LocaleCompare("replace",token) == 0)
+          primitive_info[j].method=ReplaceMethod;
+        if (LocaleCompare("floodfill",token) == 0)
+          primitive_info[j].method=FloodfillMethod;
+        if (LocaleCompare("filltoborder",token) == 0)
+          primitive_info[j].method=FillToBorderMethod;
+        if (LocaleCompare("reset",token) == 0)
+          primitive_info[j].method=ResetMethod;
         break;
       }
       case TextPrimitive:
       {
-        register char
-          *p;
-
         if (primitive_info[j].coordinates != 1)
           {
             status=False;
             break;
           }
-        if (*q == '\0')
-          break;
-        p=q;
-        if (*q == '"')
-          {
-            p++;
-            for (q++; *q != '\0'; q++)
-              if ((*q == '"') && (*(q-1) != '\\'))
-                break;
-          }
-        else
-          if (*q == '\'')
-            {
-              p++;
-              for (q++; *q != '\0'; q++)
-                if ((*q == '\'') && (*(q-1) != '\\'))
-                  break;
-            }
-          else
-            for (q++;  *q != '\0'; q++)
-              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
-                break;
-        primitive_info[j].text=(char *) AcquireMemory(q-p+1);
-        if (primitive_info[j].text != (char *) NULL)
-          {
-            (void) strncpy(primitive_info[j].text,p,q-p+1);
-            primitive_info[j].text[q-p]='\0';
-          }
+        GetToken(q,&q,token);
+        primitive_info[j].text=AllocateString(token);
         break;
       }
       case ImagePrimitive:
       {
-        register char
-          *p;
-
         if (primitive_info[j].coordinates != 2)
           {
             status=False;
             break;
           }
-        if (*q == '\0')
-          break;
-        p=q;
-        if (*p == '"')
-          {
-            p++;
-            for (q++; *q != '\0'; q++)
-              if ((*q == '"') && (*(q-1) != '\\'))
-                break;
-          }
-        else
-          if (*p == '\'')
-            {
-              p++;
-              for (q++; *q != '\0'; q++)
-                if ((*q == '\'') && (*(q-1) != '\\'))
-                  break;
-            }
-          else
-            for (q++;  *q != '\0'; q++)
-              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
-                break;
-        primitive_info[j].text=(char *) AcquireMemory(q-p+1);
-        if (primitive_info[j].text != (char *) NULL)
-          {
-            (void) strncpy(primitive_info[j].text,p,q-p);
-            primitive_info[j].text[q-p]='\0';
-          }
+        GetToken(q,&q,token);
+        primitive_info[j].text=AllocateString(token);
         break;
       }
     }
@@ -2456,10 +2456,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       (void) fprintf(stdout,"  %.*s\n",(int) (q-p),p);
     if (status == False)
       break;
-    if ((*q == '"') || (*q == '\''))
-      q++;
-    while (isspace((int) (*q)) && (*q != '\0'))
-      q++;
     primitive_info[i].primitive=UndefinedPrimitive;
     /*
       Transform points.
@@ -2472,17 +2468,17 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_info[i].point.y=graphic_context[n]->affine.rx*point.x+
         graphic_context[n]->affine.sy*point.y+graphic_context[n]->affine.ty;
     }
-    status=DrawPrimitive(graphic_context[n],primitive_info,image);
+    (void) DrawPrimitive(graphic_context[n],primitive_info,
+      graphic_context[n]->canvas);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
-    if (status == False)
-      break;
   }
   if (graphic_context[n]->debug)
     (void) fprintf(stdout,"end vector-graphics\n");
   /*
     Free resources.
   */
+  LiberateMemory((void **) &token);
   if (primitive_info != (PrimitiveInfo *) NULL)
     LiberateMemory((void **) &primitive_info);
   LiberateMemory((void **) &primitive);
@@ -3217,7 +3213,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
           /*
             Resize image.
           */
-          FormatString(geometry,"%gx%g",primitive_info[1].point.x,
+          FormatString(geometry,"%gx%g!",primitive_info[1].point.x,
             primitive_info[1].point.y);
           TransformImage(&composite_image,(char *) NULL,geometry);
         }
@@ -4574,7 +4570,8 @@ static void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
 static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
 {
   char
-    *p;
+    *p,
+    token[MaxTextExtent];
 
   double
     x,
@@ -4636,25 +4633,32 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
           Compute arc points.
         */
         subpath=True;
-        arc.x=strtod(p,&p);
-        if (*p == ',')
-          p++;
-        arc.y=strtod(p,&p);
-        if (*p == ',')
-          p++;
-        angle=strtod(p,&p);
-        if (*p == ',')
-          p++;
-        large_arc=(unsigned int) strtod(p,&p);
-        if (*p == ',')
-          p++;
-        sweep=(unsigned int) strtod(p,&p);
-        if (*p == ',')
-          p++;
-        x=strtod(p,&p);
-        if (*p == ',')
-          p++;
-        y=strtod(p,&p);
+        GetToken(p,&p,token);
+        arc.x=atof(token);
+        GetToken(p,&p,token);
+        if (*token == ',')
+          GetToken(p,&p,token);
+        arc.y=atof(token);
+        GetToken(p,&p,token);
+        if (*token == ',')
+          GetToken(p,&p,token);
+        angle=atof(token);
+        GetToken(p,&p,token);
+        if (*token == ',')
+          GetToken(p,&p,token);
+        large_arc=atoi(token);
+        GetToken(p,&p,token);
+        if (*token == ',')
+          GetToken(p,&p,token);
+        sweep=atoi(token);
+        GetToken(p,&p,token);
+        if (*token == ',')
+          GetToken(p,&p,token);
+        x=atof(token);
+        GetToken(p,&p,token);
+        if (*token == ',')
+          GetToken(p,&p,token);
+        y=atof(token);
         end.x=attribute == 'A' ? x : point.x+x;
         end.y=attribute == 'A' ? y : point.y+y;
         TraceArc(q,point,end,arc,angle,large_arc,sweep);
@@ -4674,12 +4678,12 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
           points[0]=point;
           for (i=1; i <= 3; i++)
           {
-            x=strtod(p,&p);
-            if (*p == ',')
-              p++;
-            y=strtod(p,&p);
-            if (*p == ',')
-              p++;
+            GetToken(p,&p,token);
+            x=atof(token);
+            GetToken(p,&p,token);
+            if (*token == ',')
+              GetToken(p,&p,token);
+            y=atof(token);
             end.x=attribute == 'C' ? x : point.x+x;
             end.y=attribute == 'C' ? y : point.y+y;
             points[i]=end;
@@ -4697,7 +4701,8 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
       {
         do
         {
-          x=strtod(p,&p);
+          GetToken(p,&p,token);
+          x=atof(token);
           point.x=attribute == 'H' ? x: point.x+x;
           TracePoint(q,point);
           q+=q->coordinates;
@@ -4709,12 +4714,12 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
       {
         do
         {
-          x=strtod(p,&p);
-          if (*p == ',')
-            p++;
-          y=strtod(p,&p);
-          if (*p == ',')
-            p++;
+          GetToken(p,&p,token);
+          x=atof(token);
+          GetToken(p,&p,token);
+          if (*token == ',')
+            GetToken(p,&p,token);
+          y=atof(token);
           point.x=attribute == 'L' ? x : point.x+x;
           point.y=attribute == 'L' ? y : point.y+y;
           TracePoint(q,point);
@@ -4733,10 +4738,12 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
           }
         do
         {
-          x=strtod(p,&p);
-          if (*p == ',')
-            p++;
-          y=strtod(p,&p);
+          GetToken(p,&p,token);
+          x=atof(token);
+          GetToken(p,&p,token);
+          if (*token == ',')
+            GetToken(p,&p,token);
+          y=atof(token);
           point.x=attribute == 'M' ? x : point.x+x;
           point.y=attribute == 'M' ? y : point.y+y;
           TracePoint(q,point);
@@ -4757,10 +4764,12 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
           points[0]=point;
           for (i=1; i < 3; i++)
           {
-            x=strtod(p,&p);
-            if (*p == ',')
-              p++;
-            y=strtod(p,&p);
+            GetToken(p,&p,token);
+            x=atof(token);
+            GetToken(p,&p,token);
+            if (*token == ',')
+              GetToken(p,&p,token);
+            y=atof(token);
             if (*p == ',')
               p++;
             end.x=attribute == 'Q' ? x : point.x+x;
@@ -4789,10 +4798,12 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
           points[1].y=2.0*points[3].y-points[2].y;
           for (i=2; i <= 3; i++)
           {
-            x=strtod(p,&p);
-            if (*p == ',')
-              p++;
-            y=strtod(p,&p);
+            GetToken(p,&p,token);
+            x=atof(token);
+            GetToken(p,&p,token);
+            if (*token == ',')
+              GetToken(p,&p,token);
+            y=atof(token);
             if (*p == ',')
               p++;
             end.x=attribute == 'S' ? x : point.x+x;
@@ -4821,12 +4832,12 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
           points[1].y=2.0*points[2].y-points[1].y;
           for (i=2; i < 3; i++)
           {
-            x=strtod(p,&p);
-            if (*p == ',')
-              p++;
-            y=strtod(p,&p);
-            if (*p == ',')
-              p++;
+            GetToken(p,&p,token);
+            x=atof(token);
+            GetToken(p,&p,token);
+            if (*token == ',')
+              GetToken(p,&p,token);
+            y=atof(token);
             end.x=attribute == 'T' ? x : point.x+x;
             end.y=attribute == 'T' ? y : point.y+y;
             points[i]=end;
@@ -4844,7 +4855,8 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
       {
         do
         {
-          y=strtod(p,&p);
+          GetToken(p,&p,token);
+          y=atof(token);
           point.y=attribute == 'V' ? y : point.y+y;
           TracePoint(q,point);
           q+=q->coordinates;

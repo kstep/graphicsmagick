@@ -79,7 +79,7 @@ static SemaphoreInfo
   Forward declaractions.
 */
 static unsigned int
-  ReadConfigurationFile(const char *);
+  ReadConfigurationFile(const char *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -129,7 +129,7 @@ static void DestroyDelegateInfo(void)
     LiberateMemory((void **) &delegate);
   }
   delegate_list=(DelegateInfo *) NULL;
-  LiberateSemaphore(&delegate_semaphore);
+  DestroySemaphore(delegate_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -179,16 +179,10 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
   AcquireSemaphore(&delegate_semaphore);
   if (delegate_list == (DelegateInfo *) NULL)
     {
-      unsigned int
-        status;
-
       /*
         Read delegates.
       */
-      status=ReadConfigurationFile(DelegateFilename);
-      if (status == False)
-        ThrowException(exception,FileOpenWarning,
-          "Unable to read delegates configuration file",DelegateFilename);
+      (void) ReadConfigurationFile(DelegateFilename,exception);
       atexit(DestroyDelegateInfo);
     }
   LiberateSemaphore(&delegate_semaphore);
@@ -604,117 +598,100 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigurationFile reads the delegate configuration file which
-%  maps external delegates to a a particular image format.
+%  Method ReadConfigurationFile reads the color configuration file which maps
+%  color strings with a particular image format.
 %
 %  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadConfigurationFile(const char *filename)
+%      unsigned int ReadConfigurationFile(const char *basename,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigurationFile returns True if at least one delegate
+%    o status: Method ReadConfigurationFile returns True if at least one color
 %      is defined otherwise False.
 %
-%    o basename:  The delegate configuration filename.
+%    o basename:  The color configuration filename.
+%
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-static unsigned int ReadConfigurationFile(const char *basename)
+static unsigned int ReadConfigurationFile(const char *basename,
+  ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
     keyword[MaxTextExtent],
     *path,
-    value[MaxTextExtent];
+    *q,
+    *token,
+    *xml;
 
-  FILE
-    *file;
+  size_t
+    length;
 
-  int
-    c;
-
-  register char
-    *p;
-
+  /*
+    Read the delegates configuration file.
+  */
   path=GetMagickConfigurePath(basename);
   if (path == (char *) NULL)
     return(False);
   FormatString(filename,"%.1024s",path);
   LiberateMemory((void **) &path);
-  file=fopen(filename,"r");
-  if (file == (FILE *) NULL)
+  xml=(char *) FileToBlob(filename,&length,exception);
+  if (xml == (char *) NULL)
     return(False);
-  for (c=fgetc(file); c != EOF; c=fgetc(file))
+  token=AllocateString(xml);
+  for (q=xml; *q != '\0'; )
   {
     /*
-      Parse keyword.
+      Interpret XML.
     */
-    while (isspace(c))
-      c=fgetc(file);
-    p=keyword;
-    do
-    {
-      if ((p-keyword) < (MaxTextExtent-1))
-        *p++=c;
-      c=fgetc(file);
-    } while ((c == '<') || isalnum(c) || (c == '!'));
-    *p='\0';
-    if (*keyword == '<')
+    GetToken(q,&q,token);
+    if (*token == '\0')
+      break;
+    FormatString(keyword,"%.1024s",token);
+    if (LocaleCompare(keyword,"<!") == 0)
       {
-        if (LocaleCompare(keyword,"<!") == 0)
-          for (c=fgetc(file); (c != '>') && (c != EOF); c=fgetc(file));
-        if (LocaleCompare(keyword,"<delegate") == 0)
-          {
-            DelegateInfo
-              *delegate_info;
-
-            /*
-              Allocate memory for the delegate list.
-            */
-            delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
-            if (delegate_info == (DelegateInfo *) NULL)
-              MagickError(ResourceLimitError,"Unable to allocate delegates",
-                "Memory allocation failed");
-            memset(delegate_info,0,sizeof(DelegateInfo));
-            if (delegate_list == (DelegateInfo *) NULL)
-              {
-                delegate_info->filename=AllocateString(filename);
-                delegate_list=delegate_info;
-              }
-            else
-              {
-                delegate_list->next=delegate_info;
-                delegate_info->previous=delegate_list;
-                delegate_list=delegate_list->next;
-              }
-          }
+        /*
+          Comment.
+        */
+        while ((*token != '>') && (*q != '\0'))
+          GetToken(q,&q,token);
         continue;
       }
-    while (isspace(c))
-      c=fgetc(file);
-    if (c != '=')
-      continue;
-    for (c=fgetc(file); isspace(c); c=fgetc(file));
-    if ((c != '"') && (c != '\''))
-      continue;
-    /*
-      Parse value.
-    */
-    p=value;
-    if (c == '"')
+    if (LocaleCompare(keyword,"<delegate") == 0)
       {
-        for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
-          if ((p-value) < (MaxTextExtent-1))
-            *p++=c;
+        DelegateInfo
+          *delegate_info;
+
+        /*
+          Allocate memory for the delegate list.
+        */
+        delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
+        if (delegate_info == (DelegateInfo *) NULL)
+          MagickError(ResourceLimitError,"Unable to allocate delegates",
+            "Memory allocation failed");
+        memset(delegate_info,0,sizeof(DelegateInfo));
+        if (delegate_list == (DelegateInfo *) NULL)
+          {
+            delegate_info->filename=AllocateString(filename);
+            delegate_list=delegate_info;
+            continue;
+          }
+        delegate_list->next=delegate_info;
+        delegate_info->previous=delegate_list;
+        delegate_list=delegate_list->next;
+        continue;
       }
-    else
-      for (c=fgetc(file); (c != '\'') && (c != EOF); c=fgetc(file))
-        if ((p-value) < (MaxTextExtent-1))
-          *p++=c;
-    *p='\0';
     if (delegate_list == (DelegateInfo *) NULL)
       continue;
+    GetToken(q,(char **) NULL,token);
+    if (*token != '=')
+      continue;
+    GetToken(q,&q,token);
+    GetToken(q,&q,token);
     switch (*keyword) 
     {
       case 'C':
@@ -722,7 +699,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"command") == 0)
           {
-            delegate_list->commands=AllocateString(value);
+            delegate_list->commands=AllocateString(token);
             break;
           }
         break;
@@ -732,7 +709,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"decode") == 0)
           {
-            delegate_list->decode=AllocateString(value);
+            delegate_list->decode=AllocateString(token);
             delegate_list->mode=1;
             break;
           }
@@ -743,7 +720,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"encode") == 0)
           {
-            delegate_list->encode=AllocateString(value);
+            delegate_list->encode=AllocateString(token);
             delegate_list->mode=(-1);
             break;
           }
@@ -755,10 +732,10 @@ static unsigned int ReadConfigurationFile(const char *basename)
         if (LocaleCompare((char *) keyword,"mode") == 0)
           {
             delegate_list->mode=1;
-            if (LocaleCompare(value,"bi") == 0)
+            if (LocaleCompare(token,"bi") == 0)
               delegate_list->mode=0;
             else
-              if (LocaleCompare(value,"encode") == 0)
+              if (LocaleCompare(token,"encode") == 0)
                 delegate_list->mode=(-1);
             break;
           }
@@ -769,7 +746,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"restrain") == 0)
           {
-            delegate_list->restrain=LocaleCompare(value,"True") == 0;
+            delegate_list->restrain=LocaleCompare(token,"True") == 0;
             break;
           }
         break;
@@ -779,7 +756,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"spawn") == 0)
           {
-            delegate_list->spawn=LocaleCompare(value,"True") == 0;
+            delegate_list->spawn=LocaleCompare(token,"True") == 0;
             break;
           }
         break;
@@ -788,7 +765,8 @@ static unsigned int ReadConfigurationFile(const char *basename)
         break;
     }
   }
-  (void) fclose(file);
+  LiberateMemory((void **) &token);
+  LiberateMemory((void **) &xml);
   if (delegate_list == (DelegateInfo *) NULL)
     return(False);
   while (delegate_list->previous != (DelegateInfo *) NULL)

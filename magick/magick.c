@@ -114,7 +114,7 @@ static void DestroyMagickInfo(void)
     LiberateMemory((void **) &magick_info);
   }
   magick_list=(MagickInfo *) NULL;
-  LiberateSemaphore(&magick_semaphore);
+  DestroySemaphore(magick_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

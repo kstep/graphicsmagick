@@ -86,6 +86,11 @@ struct SemaphoreInfo
 /*
   Static declaractions.
 */
+#if defined(WIN32)
+  CRITICAL_SECTION
+    critical_section = (CRITICAL_SECTION) NULL;
+#endif
+
 #if defined(HasPTHREADS)
   static pthread_mutex_t
     semaphore_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -114,16 +119,40 @@ struct SemaphoreInfo
 %
 %
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static void DestroySemaphoreInfo(void)
+{
+#if defined(WIN32)
+  DeleteCriticalSection(&critical_section);
+#endif
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 MagickExport void AcquireSemaphore(SemaphoreInfo **semaphore_info)
 {
 #if defined(HasPTHREADS)
   pthread_mutex_lock(&semaphore_mutex);
 #endif
+#if defined(WIN32)
+  if (critical_section == (CRITICAL_SECTION) NULL)
+    InitializeCriticalSection(&critical_section);
+  EnterCriticalSection(&critical_section);
+#endif
+  atexit(DestroySemaphoreInfo);
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     *semaphore_info=AllocateSemaphoreInfo();
   (void) LockSemaphore(*semaphore_info);
 #if defined(HasPTHREADS)
   pthread_mutex_unlock(&semaphore_mutex);
+#endif
+#if defined(WIN32)
+  LeaveCriticalSection(&critical_section);
 #endif
 }
 
@@ -198,7 +227,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y S e m a p h o r e I n f o                                   %
+%   D e s t r o y S e m a p h o r e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -216,19 +245,19 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 %
 %
 */
-MagickExport void DestroySemaphoreInfo(SemaphoreInfo *semaphore_info)
+MagickExport void DestroySemaphore(SemaphoreInfo *semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
   if (semaphore_info == (SemaphoreInfo *) NULL)
     return;
+  (void) UnlockSemaphore(semaphore_info);
 #if defined(WIN32) && defined(_MT)
   CloseHandle(semaphore_info->id);
 #endif
 #if defined(HasPTHREADS)
   pthread_mutex_destroy(&semaphore_info->id);
 #endif
-  LiberateMemory((void **) &semaphore_info);
 }
 
 /*
@@ -258,8 +287,9 @@ MagickExport void LiberateSemaphore(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
   assert((*semaphore_info)->signature == MagickSignature);
-  if (*semaphore_info != (SemaphoreInfo *) NULL)
-    (void) UnlockSemaphore(*semaphore_info);
+  if (*semaphore_info == (SemaphoreInfo *) NULL)
+    return;
+  (void) UnlockSemaphore(*semaphore_info);
 }
 
 /*

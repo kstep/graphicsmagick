@@ -72,7 +72,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static unsigned int
-  ReadConfigurationFile(const char *);
+  ReadConfigurationFile(const char *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,7 +119,7 @@ MagickExport void DestroyMagicInfo(void)
     LiberateMemory((void **) &magic_list);
   }
   magic_list=(MagicInfo *) NULL;
-  LiberateSemaphore(&magic_semaphore);
+  DestroySemaphore(magic_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -169,16 +169,10 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
   AcquireSemaphore(&magic_semaphore);
   if (magic_list == (MagicInfo *) NULL)
     {
-      unsigned int
-        status;
-
       /*
         Read magic list.
       */
-      status=ReadConfigurationFile(MagicFilename);
-      if (status == False)
-        ThrowException(exception,FileOpenWarning,
-          "Unable to read magic configuration file",MagicFilename);
+      (void) ReadConfigurationFile(MagicFilename,exception);
       atexit(DestroyMagicInfo);
     }
   LiberateSemaphore(&magic_semaphore);
@@ -262,38 +256,38 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigurationFile reads the magic configuration file which maps
-%  magic strings with a particular image format.
+%  Method ReadConfigurationFile reads the color configuration file which maps
+%  color strings with a particular image format.
 %
 %  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadConfigurationFile(const char *basename)
+%      unsigned int ReadConfigurationFile(const char *basename,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigurationFile returns True if at least one magic
+%    o status: Method ReadConfigurationFile returns True if at least one color
 %      is defined otherwise False.
 %
-%    o basename:  The magic configuration filename.
+%    o basename:  The color configuration filename.
+%
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-static unsigned int ReadConfigurationFile(const char *basename)
+static unsigned int ReadConfigurationFile(const char *basename,
+  ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
     keyword[MaxTextExtent],
     *path,
-    value[MaxTextExtent];
+    *q,
+    *token,
+    *xml;
 
-  FILE
-    *file;
-
-  int
-    c;
-
-  register char
-    *p;
+  size_t
+    length;
 
   /*
     Read the magic configuration file.
@@ -303,79 +297,59 @@ static unsigned int ReadConfigurationFile(const char *basename)
     return(False);
   FormatString(filename,"%.1024s",path);
   LiberateMemory((void **) &path);
-  file=fopen(filename,"r");
-  if (file == (FILE *) NULL)
+  xml=(char *) FileToBlob(filename,&length,exception);
+  if (xml == (char *) NULL)
     return(False);
-  for (c=fgetc(file); c != EOF; c=fgetc(file))
+  token=AllocateString(xml);
+  for (q=xml; *q != '\0'; )
   {
     /*
-      Parse keyword.
+      Interpret XML.
     */
-    while (isspace(c))
-      c=fgetc(file);
-    p=keyword;
-    do
-    {
-      if ((p-keyword) < (MaxTextExtent-1))
-        *p++=c;
-      c=fgetc(file);
-    } while ((c == '<') || isalnum(c) || (c == '!'));
-    *p='\0';
-    if (*keyword == '<')
+    GetToken(q,&q,token);
+    if (*token == '\0')
+      break;
+    FormatString(keyword,"%.1024s",token);
+    if (LocaleCompare(keyword,"<!") == 0)
       {
-        if (LocaleCompare(keyword,"<!") == 0)
-          for (c=fgetc(file); (c != '>') && (c != EOF); c=fgetc(file));
-        if (LocaleCompare(keyword,"<magic") == 0)
-          {
-            MagicInfo
-              *magic_info;
-
-            /*
-              Allocate memory for the magic list.
-            */
-            magic_info=(MagicInfo *) AcquireMemory(sizeof(MagicInfo));
-            if (magic_info == (MagicInfo *) NULL)
-              MagickError(ResourceLimitError,"Unable to allocate magic list",
-                "Memory allocation failed");
-            memset(magic_info,0,sizeof(MagicInfo));
-            if (magic_list == (MagicInfo *) NULL)
-              {
-                magic_info->filename=AllocateString(filename);
-                magic_list=magic_info;
-              }
-            else
-              {
-                magic_list->next=magic_info;
-                magic_info->previous=magic_list;
-                magic_list=magic_list->next;
-              }
-          }
+        /*
+          Comment.
+        */
+        while ((*token != '>') && (*q != '\0'))
+          GetToken(q,&q,token);
         continue;
       }
-    while (isspace(c))
-      c=fgetc(file);
-    if (c != '=')
-      continue;
-    for (c=fgetc(file); isspace(c); c=fgetc(file));
-    if ((c != '"') && (c != '\''))
-      continue;
-    /*
-      Parse value.
-    */
-    p=value;
-    if (c == '"')
+    if (LocaleCompare(keyword,"<magic") == 0)
       {
-        for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
-          if ((p-value) < (MaxTextExtent-1))
-            *p++=c;
+        MagicInfo
+          *magic_info;
+
+        /*
+          Allocate memory for the magic list.
+        */
+        magic_info=(MagicInfo *) AcquireMemory(sizeof(MagicInfo));
+        if (magic_info == (MagicInfo *) NULL)
+          MagickError(ResourceLimitError,"Unable to allocate magics",
+            "Memory allocation failed");
+        memset(magic_info,0,sizeof(MagicInfo));
+        if (magic_list == (MagicInfo *) NULL)
+          {
+            magic_info->filename=AllocateString(filename);
+            magic_list=magic_info;
+            continue;
+          }
+        magic_list->next=magic_info;
+        magic_info->previous=magic_list;
+        magic_list=magic_list->next;
+        continue;
       }
-    else
-      for (c=fgetc(file); (c != '\'') && (c != EOF); c=fgetc(file))
-        if ((p-value) < (MaxTextExtent-1))
-          *p++=c;
-    *p='\0';
     if (magic_list == (MagicInfo *) NULL)
       continue;
+    GetToken(q,(char **) NULL,token);
+    if (*token != '=')
+      continue;
+    GetToken(q,&q,token);
+    GetToken(q,&q,token);
     switch (*keyword) 
     {
       case 'N':
@@ -383,7 +357,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            magic_list->name=AllocateString(value);
+            magic_list->name=AllocateString(token);
             break;
           }
         break;
@@ -393,7 +367,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"offset") == 0)
           {
-            magic_list->offset=atoi(value);
+            magic_list->offset=atoi(token);
             break;
           }
         break;
@@ -409,8 +383,8 @@ static unsigned int ReadConfigurationFile(const char *basename)
             register unsigned char
               *q;
 
-            magic_list->target=AllocateString(value);
-            magic_list->magic=(unsigned char *) AllocateString(value);
+            magic_list->target=AllocateString(token);
+            magic_list->magic=(unsigned char *) AllocateString(token);
             q=magic_list->magic;
             for (p=magic_list->target; *p != '\0'; )
             {
@@ -451,7 +425,8 @@ static unsigned int ReadConfigurationFile(const char *basename)
         break;
     }
   }
-  (void) fclose(file);
+  LiberateMemory((void **) &token);
+  LiberateMemory((void **) &xml);
   if (magic_list == (MagicInfo *) NULL)
     return(False);
   while (magic_list->previous != (MagicInfo *) NULL)

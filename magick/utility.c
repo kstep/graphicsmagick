@@ -402,6 +402,23 @@ MagickExport unsigned short *ConvertTextToUnicode(const char *text,int *count)
 #if defined(HasGS)
 #include "ps/iapi.h"
 #include "ps/errors.h"
+
+static SemaphoreInfo
+  *ps_semaphore = (SemaphoreInfo *) NULL;
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static void DestroyUtility(void)
+{
+  AcquireSemaphore(&ps_semaphore);
+  DestroySemaphore(ps_semaphore);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
 #endif
 
 MagickExport unsigned int ExecutePostscriptInterpreter(const unsigned int
@@ -422,9 +439,7 @@ MagickExport unsigned int ExecutePostscriptInterpreter(const unsigned int
   register int
     i;
 
-  static SemaphoreInfo
-    *ps_semaphore = (SemaphoreInfo *) NULL;
-
+  atexit(DestroyUtility);
   AcquireSemaphore(&ps_semaphore);
   if (verbose)
     (void) fputs(command,stdout);
@@ -942,6 +957,119 @@ MagickExport void GetPathComponent(const char *path,PathType type,
       break;
     }
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t T o k e n                                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetToken gets a token from the token stream.  A token is defined
+%  as sequence of characters delimited by whitespace (e.g. clip-path), a
+%  sequence delimited with quotes (.e.g "Quote me"), or a sequence enclosed
+%  in parenthesis (e.g. rgb(0,0,0)).
+%
+%  The format of the GetToken method is:
+%
+%      void GetToken(const char *start,char **end, char *token)
+%
+%  A description of each parameter follows:
+%
+%    o start: the start of the token sequence.
+%
+%    o end: point to the end of the token sequence.
+%
+%    o token: copy the token to this buffer.
+%
+%
+*/
+MagickExport void GetToken(const char *start,char **end,char *token)
+{
+  register char
+    *p;
+
+  register int
+    i;
+
+  i=0;
+  for (p=(char *) start; *p != '\0'; )
+  {
+    while (isspace((int) (*p)) && (*p != '\0'))
+      p++;
+    switch (*p)
+    {
+      case '"':
+      {
+        for (p++; *p != '\0'; p++)
+        {
+          if ((*p == '"') && (*(p-1) != '\\'))
+            {
+              p++;
+              break;
+            }
+          token[i++]=(*p);
+        }
+        break;
+      }
+      case '\'':
+      {
+        for (p++; *p != '\0'; p++)
+        {
+          if ((*p == '\'') && (*(p-1) != '\\'))
+            {
+              p++;
+              break;
+            }
+          token[i++]=(*p);
+        }
+        break;
+      }
+      default:
+      {
+        char
+          *q;
+
+        (void) strtod(p,&q);
+        if (p != q)
+          {
+            for ( ; p < q; p++)
+              token[i++]=(*p);
+            if (*p == '%')
+              token[i++]=(*p++);
+            break;
+          }
+        if (!isalpha((int) *p) && (*p != '#') && (*p != '<'))
+          {
+            token[i++]=(*p++);
+            break;
+          }
+        for ( ; *p != '\0'; p++)
+        {
+          if ((isspace((int) *p) || (*p == '=')) && (*(p-1) != '\\'))
+            break;
+          token[i++]=(*p);
+          if (*p == '(')
+            for (p++; *p != '\0'; p++)
+            {
+              token[i++]=(*p);
+              if ((*p == ')') && (*(p-1) != '\\'))
+                break;
+            }
+        }
+        break;
+      }
+    }
+    break;
+  }
+  token[i]='\0';
+  if (end != (char **) NULL)
+    *end=p;
 }
 
 /*
@@ -2843,6 +2971,9 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     *text,
     *translated_text;
 
+  ImageInfo
+    *clone_info;
+
   register char
     *p,
     *q;
@@ -2850,10 +2981,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   register int
     i;
 
-  ImageInfo
-    *clone_info;
-
-  unsigned int
+  size_t
     length;
 
   assert(image != (Image *) NULL);
@@ -2862,42 +2990,10 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   text=(char *) formatted_text;
   if (*text == '@')
     {
-      FILE
-        *file;
-
-      file=(FILE *) fopen(text+1,"r");
-      if (file != (FILE *) NULL)
-        {
-          int
-            c;
-
-          /*
-            Read text from a file.
-          */
-          length=MaxTextExtent;
-          text=AllocateString((char *) NULL);
-          for (q=text; text != (char *) NULL; q++)
-          {
-            c=fgetc(file);
-            if (c == EOF)
-              break;
-            if ((q-text+1) >= (int) length)
-              {
-                *q='\0';
-                length<<=1;
-                ReacquireMemory((void **) &text,length);
-                if (text == (char *) NULL)
-                  break;
-                q=text+Extent(text);
-              }
-            *q=(unsigned char) c;
-          }
-          (void) fclose(file);
-          if (text == (char *) NULL)
-            MagickError(ResourceLimitError,"Unable to translate text",
-              "Memory allocation failed");
-          *q='\0';
-        }
+      text=(char *) FileToBlob(text+1,&length,&image->exception);
+      if (text == (char *) NULL)
+        MagickError(ResourceLimitError,"Unable to translate text",
+          "Memory allocation failed");
     }
   /*
     Translate any embedded format characters.
@@ -3026,6 +3122,13 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       {
         (void) strcpy(q,image->filename);
         q+=Extent(image->filename);
+        break;
+      }
+      case 'k':
+      {
+        FormatString(q,"%u",(unsigned int)
+          GetNumberColors(image,(FILE *) NULL));
+        q=translated_text+Extent(translated_text);
         break;
       }
       case 'l':

@@ -66,6 +66,7 @@ extern MagickExport void
   AppendImageFormat(const char *,char *),
   ExpandFilename(char *),
   GetPathComponent(const char *,PathType,char *),
+  GetToken(const char *,char **,char *),
   FormatString(char *,const char *,...),
   LiberateMemory(void **),
   LocaleLower(char *),

@@ -136,7 +136,7 @@ static NodeInfo
   *GetNodeInfo(CubeInfo *,const unsigned int);
 
 static unsigned int
-  ReadConfigurationFile(const char *);
+  ReadConfigurationFile(const char *,ExceptionInfo *);
 
 static void
   DestroyColorList(const NodeInfo *),
@@ -183,7 +183,7 @@ MagickExport void DestroyColorInfo(void)
     LiberateMemory((void **) &color_list);
   }
   color_list=(ColorInfo *) NULL;
-  LiberateSemaphore(&color_semaphore);
+  DestroySemaphore(color_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -316,16 +316,10 @@ MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
   AcquireSemaphore(&color_semaphore);
   if (color_list == (ColorInfo *) NULL)
     {
-      unsigned int
-        status;
-
       /*
         Read color list.
       */
-      status=ReadConfigurationFile(ColorFilename);
-      if (status == False)
-        ThrowException(exception,FileOpenWarning,
-          "Unable to read color configuration file",ColorFilename);
+      (void) ReadConfigurationFile(ColorFilename,exception);
       atexit(DestroyColorInfo);
     }
   LiberateSemaphore(&color_semaphore);
@@ -1418,7 +1412,8 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
 %
 %  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadConfigurationFile(const char *basename)
+%      unsigned int ReadConfigurationFile(const char *basename,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1427,24 +1422,23 @@ MagickExport unsigned int QueryColorname(Image *image,const PixelPacket *color,
 %
 %    o basename:  The color configuration filename.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-static unsigned int ReadConfigurationFile(const char *basename)
+static unsigned int ReadConfigurationFile(const char *basename,
+  ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
     keyword[MaxTextExtent],
     *path,
-    value[MaxTextExtent];
+    *q,
+    *token,
+    *xml;
 
-  FILE
-    *file;
-
-  int
-    c;
-
-  register char
-    *p;
+  size_t
+    length;
 
   /*
     Read the color configuration file.
@@ -1454,87 +1448,67 @@ static unsigned int ReadConfigurationFile(const char *basename)
     return(False);
   FormatString(filename,"%.1024s",path);
   LiberateMemory((void **) &path);
-  file=fopen(filename,"r");
-  if (file == (FILE *) NULL)
+  xml=(char *) FileToBlob(filename,&length,exception);
+  if (xml == (char *) NULL)
     return(False);
-  for (c=fgetc(file); c != EOF; c=fgetc(file))
+  token=AllocateString(xml);
+  for (q=xml; *q != '\0'; )
   {
     /*
-      Parse keyword.
+      Interpret XML.
     */
-    while (isspace(c))
-      c=fgetc(file);
-    p=keyword;
-    do
-    {
-      if ((p-keyword) < (MaxTextExtent-1))
-        *p++=c;
-      c=fgetc(file);
-    } while ((c == '<') || isalnum(c) || (c == '!'));
-    *p='\0';
-    if (*keyword == '<')
+    GetToken(q,&q,token);
+    if (*token == '\0')
+      break;
+    FormatString(keyword,"%.1024s",token);
+    if (LocaleCompare(keyword,"<!") == 0)
       {
-        if (LocaleCompare(keyword,"<!") == 0)
-          for (c=fgetc(file); (c != '>') && (c != EOF); c=fgetc(file));
-        if (LocaleCompare(keyword,"<color") == 0)
-          {
-            ColorInfo
-              *color_info;
-
-            /*
-              Allocate memory for the color list.
-            */
-            color_info=(ColorInfo *) AcquireMemory(sizeof(ColorInfo));
-            if (color_info == (ColorInfo *) NULL)
-              MagickError(ResourceLimitError,"Unable to allocate color list",
-                "Memory allocation failed");
-            memset(color_info,0,sizeof(ColorInfo));
-            if (color_list == (ColorInfo *) NULL)
-              {
-                color_info->filename=AllocateString(filename);
-                color_list=color_info;
-              }
-            else
-              {
-                color_list->next=color_info;
-                color_info->previous=color_list;
-                color_list=color_list->next;
-              }
-          }
+        /*
+          Comment.
+        */
+        while ((*token != '>') && (*q != '\0'))
+          GetToken(q,&q,token);
         continue;
       }
-    while (isspace(c))
-      c=fgetc(file);
-    if (c != '=')
-      continue;
-    for (c=fgetc(file); isspace(c); c=fgetc(file));
-    if ((c != '"') && (c != '\''))
-      continue;
-    /*
-      Parse value.
-    */
-    p=value;
-    if (c == '"')
+    if (LocaleCompare(keyword,"<color") == 0)
       {
-        for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
-          if ((p-value) < (MaxTextExtent-1))
-            *p++=c;
+        ColorInfo
+          *color_info;
+
+        /*
+          Allocate memory for the color list.
+        */
+        color_info=(ColorInfo *) AcquireMemory(sizeof(ColorInfo));
+        if (color_info == (ColorInfo *) NULL)
+          MagickError(ResourceLimitError,"Unable to allocate colors",
+            "Memory allocation failed");
+        memset(color_info,0,sizeof(ColorInfo));
+        if (color_list == (ColorInfo *) NULL)
+          {
+            color_info->filename=AllocateString(filename);
+            color_list=color_info;
+            continue;
+          }
+        color_list->next=color_info;
+        color_info->previous=color_list;
+        color_list=color_list->next;
+        continue;
       }
-    else
-      for (c=fgetc(file); (c != '\'') && (c != EOF); c=fgetc(file))
-        if ((p-value) < (MaxTextExtent-1))
-          *p++=c;
-    *p='\0';
     if (color_list == (ColorInfo *) NULL)
       continue;
-    switch (*keyword) 
+    GetToken(q,(char **) NULL,token);
+    if (*token != '=')
+      continue;
+    GetToken(q,&q,token);
+    GetToken(q,&q,token);
+    switch (*keyword)
     {
       case 'B':
       case 'b':
       {
         if (LocaleCompare((char *) keyword,"blue") == 0)
           {
-            color_list->color.blue=UpScale(atoi(value));
+            color_list->color.blue=UpScale(atoi(token));
             break;
           }
         break;
@@ -1544,10 +1518,10 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"compliance") == 0)
           {
-            if (GlobExpression(value,"*SVG*") && GlobExpression(value,"*X11*"))
+            if (GlobExpression(token,"*SVG*") && GlobExpression(token,"*X11*"))
               color_list->compliance=AllCompliance;
             else
-              if (GlobExpression(value,"SVG"))
+              if (GlobExpression(token,"SVG"))
                 color_list->compliance=SVGCompliance;
               else
                 color_list->compliance=X11Compliance;
@@ -1560,7 +1534,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"green") == 0)
           {
-            color_list->color.green=UpScale(atoi(value));
+            color_list->color.green=UpScale(atoi(token));
             break;
           }
         break;
@@ -1570,7 +1544,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            color_list->name=AllocateString(value);
+            color_list->name=AllocateString(token);
             break;
           }
         break;
@@ -1580,7 +1554,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"opacity") == 0)
           {
-            color_list->color.opacity=UpScale(atoi(value));
+            color_list->color.opacity=UpScale(atoi(token));
             break;
           }
         break;
@@ -1590,7 +1564,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"red") == 0)
           {
-            color_list->color.red=UpScale(atoi(value));
+            color_list->color.red=UpScale(atoi(token));
             break;
           }
         break;
@@ -1599,7 +1573,8 @@ static unsigned int ReadConfigurationFile(const char *basename)
         break;
     }
   }
-  (void) fclose(file);
+  LiberateMemory((void **) &token);
+  LiberateMemory((void **) &xml);
   if (color_list == (ColorInfo *) NULL)
     return(False);
   while (color_list->previous != (ColorInfo *) NULL)

@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                     FFFFF   OOO   N   N  TTTTT  SSSSS                       %
-%                     F      O   O  NN  N    T    SS                          %
-%                     FFF    O   O  N N N    T     SSS                        %
-%                     F      O   O  N  NN    T       SS                       %
-%                     F       OOO   N   N    T    SSSSS                       %
+%                        FFFFF   OOO   N   N  TTTTT                           %
+%                        F      O   O  NN  N    T                             %
+%                        FFF    O   O  N N N    T                             %
+%                        F      O   O  N  NN    T                             %
+%                        F       OOO   N   N    T                             %
 %                                                                             %
 %                                                                             %
 %                     ImageMagick Image Font Methods                          %
@@ -55,9 +55,9 @@
 #include "magick.h"
 #include "defines.h"
 
-/* 
+/*
   Define declarations.
-*/ 
+*/
 #define FontFilename  "fonts.mgk"
 
 /*
@@ -73,7 +73,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static unsigned int
-  ReadConfigurationFile(const char *);
+  ReadConfigurationFile(const char *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,7 +132,7 @@ MagickExport void DestroyFontInfo(void)
     LiberateMemory((void **) &font_list);
   }
   font_list=(FontInfo *) NULL;
-  LiberateSemaphore(&font_semaphore);
+  DestroySemaphore(font_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -176,16 +176,10 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
   AcquireSemaphore(&font_semaphore);
   if (font_list == (FontInfo *) NULL)
     {
-      unsigned int
-        status;
-
       /*
         Read fonts.
       */
-      status=ReadConfigurationFile(FontFilename);
-      if (status == False)
-        ThrowException(exception,FileOpenWarning,
-          "Unable to read font configuration file",FontFilename);
+      (void) ReadConfigurationFile(FontFilename,exception);
       atexit(DestroyFontInfo);
     }
   LiberateSemaphore(&font_semaphore);
@@ -268,38 +262,38 @@ MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigurationFile reads the font configuration file which maps
-%  font names with Type1 or TrueType glyph files on disk.
+%  Method ReadConfigurationFile reads the color configuration file which maps
+%  color strings with a particular image format.
 %
 %  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadConfigurationFile(const char *basename)
+%      unsigned int ReadConfigurationFile(const char *basename,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigurationFile returns True if at least one font
+%    o status: Method ReadConfigurationFile returns True if at least one color
 %      is defined otherwise False.
 %
-%    o basename:  The font configuration filename.
+%    o basename:  The color configuration filename.
+%
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-static unsigned int ReadConfigurationFile(const char *basename)
+static unsigned int ReadConfigurationFile(const char *basename,
+  ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
     keyword[MaxTextExtent],
     *path,
-    value[MaxTextExtent];
+    *q,
+    *token,
+    *xml;
 
-  FILE
-    *file;
-
-  int
-    c;
-
-  register char
-    *p;
+  size_t
+    length;
 
   /*
     Read the font configuration file.
@@ -309,87 +303,67 @@ static unsigned int ReadConfigurationFile(const char *basename)
     return(False);
   FormatString(filename,"%.1024s",path);
   LiberateMemory((void **) &path);
-  file=fopen(filename,"r");
-  if (file == (FILE *) NULL)
+  xml=(char *) FileToBlob(filename,&length,exception);
+  if (xml == (char *) NULL)
     return(False);
-  for (c=fgetc(file); c != EOF; c=fgetc(file))
+  token=AllocateString(xml);
+  for (q=xml; *q != '\0'; )
   {
     /*
-      Parse keyword.
+      Interpret XML.
     */
-    while (isspace(c))
-      c=fgetc(file);
-    p=keyword;
-    do
-    {
-      if ((p-keyword) < (MaxTextExtent-1))
-        *p++=c;
-      c=fgetc(file);
-    } while ((c == '<') || isalnum(c) || (c == '!'));
-    *p='\0';
-    if (*keyword == '<')
+    GetToken(q,&q,token);
+    if (*token == '\0')
+      break;
+    FormatString(keyword,"%.1024s",token);
+    if (LocaleCompare(keyword,"<!") == 0)
       {
-        if (LocaleCompare(keyword,"<!") == 0)
-          for (c=fgetc(file); (c != '>') && (c != EOF); c=fgetc(file));
-        if (LocaleCompare(keyword,"<font") == 0)
-          {
-            FontInfo
-              *font_info;
-
-            /*
-              Allocate memory for the font list.
-            */
-            font_info=(FontInfo *) AcquireMemory(sizeof(FontInfo));
-            if (font_info == (FontInfo *) NULL)
-              MagickError(ResourceLimitError,"Unable to allocate fonts",
-                "Memory allocation failed");
-            memset(font_info,0,sizeof(FontInfo));
-            if (font_list == (FontInfo *) NULL)
-              {
-                font_info->filename=AllocateString(filename);
-                font_list=font_info;
-              }
-            else
-              {
-                font_list->next=font_info;
-                font_info->previous=font_list;
-                font_list=font_list->next;
-              }
-          }
+        /*
+          Comment.
+        */
+        while ((*token != '>') && (*q != '\0'))
+          GetToken(q,&q,token);
         continue;
       }
-    while (isspace(c))
-      c=fgetc(file);
-    if (c != '=')
-      continue;
-    for (c=fgetc(file); isspace(c); c=fgetc(file));
-    if ((c != '"') && (c != '\''))
-      continue;
-    /*
-      Parse value.
-    */
-    p=value;
-    if (c == '"')
+    if (LocaleCompare(keyword,"<font") == 0)
       {
-        for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
-          if ((p-value) < (MaxTextExtent-1))
-            *p++=c;
+        FontInfo
+          *font_info;
+
+        /*
+          Allocate memory for the font list.
+        */
+        font_info=(FontInfo *) AcquireMemory(sizeof(FontInfo));
+        if (font_info == (FontInfo *) NULL)
+          MagickError(ResourceLimitError,"Unable to allocate fonts",
+            "Memory allocation failed");
+        memset(font_info,0,sizeof(FontInfo));
+        if (font_list == (FontInfo *) NULL)
+          {
+            font_info->filename=AllocateString(filename);
+            font_list=font_info;
+            continue;
+          }
+        font_list->next=font_info;
+        font_info->previous=font_list;
+        font_list=font_list->next;
+        continue;
       }
-    else
-      for (c=fgetc(file); (c != '\'') && (c != EOF); c=fgetc(file))
-        if ((p-value) < (MaxTextExtent-1))
-          *p++=c;
-    *p='\0';
     if (font_list == (FontInfo *) NULL)
       continue;
-    switch (*keyword) 
+    GetToken(q,(char **) NULL,token);
+    if (*token != '=')
+      continue;
+    GetToken(q,&q,token);
+    GetToken(q,&q,token);
+    switch (*keyword)
     {
       case 'A':
       case 'a':
       {
         if (LocaleCompare((char *) keyword,"alias") == 0)
           {
-            font_list->alias=AllocateString(value);
+            font_list->alias=AllocateString(token);
             break;
           }
         break;
@@ -399,12 +373,12 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"format") == 0)
           {
-            font_list->format=AllocateString(value);
+            font_list->format=AllocateString(token);
             break;
           }
         if (LocaleCompare((char *) keyword,"fullname") == 0)
           {
-            font_list->description=AllocateString(value);
+            font_list->description=AllocateString(token);
             break;
           }
         break;
@@ -414,7 +388,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"glyphs") == 0)
           {
-            font_list->glyphs=AllocateString(value);
+            font_list->glyphs=AllocateString(token);
             break;
           }
         break;
@@ -424,7 +398,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"metrics") == 0)
           {
-            font_list->metrics=AllocateString(value);
+            font_list->metrics=AllocateString(token);
             break;
           }
         break;
@@ -434,7 +408,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            font_list->name=AllocateString(value);
+            font_list->name=AllocateString(token);
             break;
           }
         break;
@@ -444,7 +418,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"version") == 0)
           {
-            font_list->version=AllocateString(value);
+            font_list->version=AllocateString(token);
             break;
           }
         break;
@@ -454,7 +428,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"weight") == 0)
           {
-            font_list->weight=AllocateString(value);
+            font_list->weight=AllocateString(token);
             break;
           }
         break;
@@ -463,7 +437,8 @@ static unsigned int ReadConfigurationFile(const char *basename)
         break;
     }
   }
-  (void) fclose(file);
+  LiberateMemory((void **) &token);
+  LiberateMemory((void **) &xml);
   if (font_list == (FontInfo *) NULL)
     return(False);
   while (font_list->previous != (FontInfo *) NULL)

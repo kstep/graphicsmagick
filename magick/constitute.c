@@ -2036,9 +2036,6 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
     *command,
     **images;
 
-  FILE
-    *file;
-
   Image
     *image;
 
@@ -2046,12 +2043,7 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
     *clone_info;
 
   int
-    c,
-    length,
     number_images;
-
-  register char
-    *p;
 
   register Image
     *next;
@@ -2059,45 +2051,18 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
   register int
     i;
 
+  size_t
+    length;
+
   /*
     Read image list from a file.
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  file=(FILE *) fopen(image_info->filename+1,"r");
-  if (file == (FILE *) NULL)
-    {
-      ThrowException(exception,ResourceLimitWarning,"Unable to read image list",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
-  length=MaxTextExtent;
-  command=AllocateString((char *) NULL);
-  for (p=command; command != (char *) NULL; p++)
-  {
-    c=fgetc(file);
-    if (c == EOF)
-      break;
-    if ((p-command+1) >= length)
-      {
-        *p='\0';
-        length<<=1;
-        ReacquireMemory((void **) &command,length);
-        if (command == (char *) NULL)
-          break;
-        p=command+Extent(command);
-      }
-    *p=c;
-  }
-  (void) fclose(file);
+  command=(char *) FileToBlob(image_info->filename+1,&length,exception);
   if (command == (char *) NULL)
-    {
-      ThrowException(exception,ResourceLimitWarning,"Unable to read image list",
-        "Memory allocation failed");
-      return((Image *) NULL);
-    }
-  *p='\0';
+    return((Image *) NULL);
   Strip(command);
   images=StringToArgv(command,&number_images);
   LiberateMemory((void **) &command);

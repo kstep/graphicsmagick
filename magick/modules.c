@@ -107,7 +107,7 @@ static ModuleInfo
   *SetModuleInfo(const char *);
 
 static unsigned int
-  ReadConfigurationFile(const char *);
+  ReadConfigurationFile(const char *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,6 +160,8 @@ static void DestroyModuleInfo(void)
   AcquireSemaphore(&module_semaphore);
   for (q=module_aliases; q != (ModuleAlias *) NULL; )
   {
+    if (q->filename != (char *) NULL)
+      LiberateMemory((void **) &q->filename);
     if (q->name != (char *) NULL)
       LiberateMemory((void **) &q->name);
     if (q->alias != (char *) NULL)
@@ -178,7 +180,7 @@ static void DestroyModuleInfo(void)
     LiberateMemory((void **) &module_list);
   }
   module_list=(ModuleInfo *) NULL;
-  LiberateSemaphore(&module_semaphore);
+  DestroySemaphore(module_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -301,16 +303,16 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
   AcquireSemaphore(&module_semaphore);
   if (module_aliases == (ModuleAlias *) NULL)
     {
-      unsigned int
-        status;
-
+      /*
+        Initialize ltdl.
+      */
+      if (lt_dlinit() != 0)
+        MagickError(DelegateError,"unable to initialize module loader",
+          lt_dlerror());
       /*
         Read modules.
       */
-      status=ReadConfigurationFile("modules.mgk");
-      if (status == False)
-        ThrowException(exception,FileOpenWarning,
-          "Unable to read module configuration file","modules.mgk");
+      (void) ReadConfigurationFile("modules.mgk",exception);
       atexit(DestroyModuleInfo);
     }
   LiberateSemaphore(&module_semaphore);
@@ -359,19 +361,20 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
   register ModuleInfo
     *p;
 
+  (void) GetMagicInfo((unsigned char *) NULL,0,exception);
   AcquireSemaphore(&module_semaphore);
   if (module_list == (ModuleInfo *) NULL)
     {
-      unsigned int
-        status;
-
+      /*
+        Initialize ltdl.
+      */
+      if (lt_dlinit() != 0)
+        MagickError(DelegateError,"unable to initialize module loader",
+          lt_dlerror());
       /*
         Read modules.
       */
-      status=ReadConfigurationFile("modules.mgk");
-      if (status == False)
-        ThrowException(exception,FileOpenWarning,
-          "Unable to read module configuration file","modules.mgk");
+      (void) ReadConfigurationFile("modules.mgk",exception);
       atexit(DestroyModuleInfo);
     }
   LiberateSemaphore(&module_semaphore);
@@ -750,45 +753,39 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigurationFile reads the module configuration file which maps
-%  module modulees with a particular image format.
+%  Method ReadConfigurationFile reads the color configuration file which maps
+%  color strings with a particular image format.
 %
 %  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadConfigurationFile(const char *basename)
+%      unsigned int ReadConfigurationFile(const char *basename,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigurationFile returns True if at least one font
+%    o status: Method ReadConfigurationFile returns True if at least one color
 %      is defined otherwise False.
 %
-%    o basename:  The font configuration filename.
+%    o basename:  The color configuration filename.
+%
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-static unsigned int ReadConfigurationFile(const char *basename)
+static unsigned int ReadConfigurationFile(const char *basename,
+  ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
     keyword[MaxTextExtent],
     *path,
-    value[MaxTextExtent];
+    *q,
+    *token,
+    *xml;
 
-  FILE
-    *file;
+  size_t
+    length;
 
-  int
-    c;
-
-  register char
-    *p;
-
-  /*
-    Initialize ltdl.
-  */
-  if (lt_dlinit() != 0)
-    MagickError(DelegateError,"unable to initialize module loader",
-      lt_dlerror());
   /*
     Read the module configuration file.
   */
@@ -797,24 +794,28 @@ static unsigned int ReadConfigurationFile(const char *basename)
     return(False);
   FormatString(filename,"%.1024s",path);
   LiberateMemory((void **) &path);
-  file=fopen(filename,"r");
-  if (file == (FILE *) NULL)
+  xml=(char *) FileToBlob(filename,&length,exception);
+  if (xml == (char *) NULL)
     return(False);
-  for (c=fgetc(file); c != EOF; c=fgetc(file))
+  token=AllocateString(xml);
+  for (q=xml; *q != '\0'; )
   {
     /*
-      Parse keyword.
+      Interpret XML.
     */
-    while (isspace(c))
-      c=fgetc(file);
-    p=keyword;
-    do
-    {
-      if ((p-keyword) < (MaxTextExtent-1))
-        *p++=c;
-      c=fgetc(file);
-    } while ((c == '<') || isalnum(c));
-    *p='\0';
+    GetToken(q,&q,token);
+    if (*token == '\0')
+      break;
+    FormatString(keyword,"%.1024s",token);
+    if (LocaleCompare(keyword,"<!") == 0)
+      {
+        /*
+          Comment.
+        */
+        while ((*token != '>') && (*q != '\0'))
+          GetToken(q,&q,token);
+        continue;
+      }
     if (LocaleCompare(keyword,"<module") == 0)
       {
         ModuleAlias
@@ -832,44 +833,20 @@ static unsigned int ReadConfigurationFile(const char *basename)
           {
             alias_info->filename=AllocateString(filename);
             module_aliases=alias_info;
+            continue;
           }
-        else
-          {
-            module_aliases->next=alias_info;
-            alias_info->previous=module_aliases;
-            module_aliases=module_aliases->next;
-          }
+        module_aliases->next=alias_info;
+        alias_info->previous=module_aliases;
+        module_aliases=module_aliases->next;
+        continue;
       }
-    if (*keyword == '<')
-      continue;
-    while (isspace(c))
-      c=fgetc(file);
-    if (c != '=')
-      continue;
-    do
-    {
-      c=fgetc(file);
-    }
-    while (isspace(c));
-    if ((c != '"') && (c != '\''))
-      continue;
-    /*
-      Parse value.
-    */
-    p=value;
-    if (c == '"')
-      {
-        for (c=fgetc(file); (c != '"') && (c != EOF); c=fgetc(file))
-          if ((p-value) < (MaxTextExtent-1))
-            *p++=c;
-      }
-    else
-      for (c=fgetc(file); (c != '\'') && (c != EOF); c=fgetc(file))
-        if ((p-value) < (MaxTextExtent-1))
-          *p++=c;
-    *p='\0';
     if (module_aliases == (ModuleAlias *) NULL)
       continue;
+    GetToken(q,(char **) NULL,token);
+    if (*token != '=')
+      continue;
+    GetToken(q,&q,token);
+    GetToken(q,&q,token);
     switch (*keyword) 
     {
       case 'A':
@@ -877,7 +854,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"alias") == 0)
           {
-            module_aliases->alias=AllocateString(value);
+            module_aliases->alias=AllocateString(token);
             break;
           }
         break;
@@ -887,7 +864,7 @@ static unsigned int ReadConfigurationFile(const char *basename)
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            module_aliases->name=AllocateString(value);
+            module_aliases->name=AllocateString(token);
             break;
           }
         break;
@@ -896,7 +873,8 @@ static unsigned int ReadConfigurationFile(const char *basename)
         break;
     }
   }
-  (void) fclose(file);
+  LiberateMemory((void **) &token);
+  LiberateMemory((void **) &xml);
   if (module_aliases == (ModuleAlias *) NULL)
     return(False);
   while (module_aliases->previous != (ModuleAlias *) NULL)

@@ -174,7 +174,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
       if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
         {
           if (indexes != (IndexPacket *) NULL)
-            chop_indexes[x]=indexes[x];
+            *chop_indexes++=indexes[x];
           *q=(*p);
           q++;
         }
@@ -201,8 +201,8 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     {
       if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
         {
-          if (image->storage_class == PseudoClass)
-            chop_indexes[x]=indexes[x];
+          if (indexes != (IndexPacket *) NULL)
+            *chop_indexes++=indexes[x];
           *q=(*p);
           q++;
         }

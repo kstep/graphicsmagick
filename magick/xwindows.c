@@ -1556,7 +1556,7 @@ MagickExport void XDisplayImageInfo(Display *display,
     Write info about the X server to a file.
   */
   TemporaryFilename(filename);
-  file=fopen(filename,"w+");
+  file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {
       XNoticeWidget(display,windows,"Unable to display image info",filename);

@@ -7980,46 +7980,15 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         *text,
         **textlist;
 
-      FILE
-        *file;
-
-      int
-        c;
-
-      register char
-        *p;
-
-      unsigned int
+      size_t
         length;
 
       /*
         Unknown image format.
       */
-      file=(FILE *) fopen(filename,"r");
-      if (file == (FILE *) NULL)
-        return((Image *) NULL);
-      length=MaxTextExtent;
-      text=AllocateString((char *) NULL);
-      for (p=text ; text != (char *) NULL; p++)
-      {
-        c=fgetc(file);
-        if (c == EOF)
-          break;
-        if ((p-text+1) >= (int) length)
-          {
-            *p='\0';
-            length<<=1;
-            ReacquireMemory((void **) &text,length);
-            if (text == (char *) NULL)
-              break;
-            p=text+Extent(text);
-          }
-        *p=c;
-      }
-      (void) fclose(file);
+      text=FileToBlob(filename,&length,&exception);
       if (text == (char *) NULL)
         return((Image *) NULL);
-      *p='\0';
       textlist=StringToList(text);
       if (textlist != (char **) NULL)
         {

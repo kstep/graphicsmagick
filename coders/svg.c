@@ -233,7 +233,8 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
   const char *string)
 {
   char
-    *p;
+    *p,
+    token[MaxTextExtent];
 
   double
     value;
@@ -244,8 +245,9 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
   assert(string != (const char *) NULL);
   n=svg_info->n;
   p=(char *) string;
-  value=strtod(p,&p);
-  if (*p == '%')
+  GetToken(p,&p,token);
+  value=atof(token);
+  if (strchr(token,'%') != (char *) NULL)
     {
       double
         scale;
@@ -253,21 +255,22 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
       scale=ExpandAffine(&svg_info->affine);
       return(value*svg_info->width/svg_info->scale[n]/scale/100.0);
     }
-  if (LocaleNCompare(p,"cm",2) == 0)
+  GetToken(p,&p,token);
+  if (LocaleNCompare(token,"cm",2) == 0)
     return(72.0/2.54*value/svg_info->scale[n]);
-  if (LocaleNCompare(p,"em",2) == 0)
+  if (LocaleNCompare(token,"em",2) == 0)
     return(svg_info->pointsize*value/svg_info->scale[n]);
-  if (LocaleNCompare(p,"ex",2) == 0)
+  if (LocaleNCompare(token,"ex",2) == 0)
     return(svg_info->pointsize*value/svg_info->scale[n]/2.0);
-  if (LocaleNCompare(p,"in",2) == 0)
+  if (LocaleNCompare(token,"in",2) == 0)
     return(72.0*value/svg_info->scale[n]);
-  if (LocaleNCompare(p,"mm",2) == 0)
+  if (LocaleNCompare(token,"mm",2) == 0)
     return(72.0/25.4*value/svg_info->scale[n]);
-  if (LocaleNCompare(p,"pc",2) == 0)
+  if (LocaleNCompare(token,"pc",2) == 0)
     return(72.0/6.0*value/svg_info->scale[n]);
-  if (LocaleNCompare(p,"pt",2) == 0)
+  if (LocaleNCompare(token,"pt",2) == 0)
     return(value/svg_info->scale[n]);
-  if (LocaleNCompare(p,"px",2) == 0)
+  if (LocaleNCompare(token,"px",2) == 0)
     return(value/svg_info->scale[n]);
   return(value);
 }
@@ -709,6 +712,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     *font_weight,
     *id,
     *p,
+    token[MaxTextExtent],
     **tokens,
     *units;
 
@@ -741,6 +745,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare(keyword,"id") == 0)
         {
           CloneString(&id,value);
+          if ((LocaleNCompare(id,"url(#",5) == 0))
+            {
+              (void) strcpy(id,id+5);
+              id[Extent(id)-1]='\0';
+            }
           break;
         }
     }
@@ -903,12 +912,24 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"clip-path") == 0)
             {
-              (void) fprintf(svg_info->file,"clip-path %s\n",value);
+              CloneString(&id,value);
+              if ((LocaleNCompare(id,"url(#",5) == 0))
+                {
+                  (void) strcpy(id,id+4);
+                  id[Extent(id)-1]='\0';
+                }
+              (void) fprintf(svg_info->file,"clip-path %s\n",id);
+              break;
+            }
+          if (LocaleCompare(keyword,"clip-rule") == 0)
+            {
+              (void) fprintf(svg_info->file,"clip-rule %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"clipPathUnits") == 0)
             {
               CloneString(&units,value);
+              (void) fprintf(svg_info->file,"clip-units %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"color") == 0)
@@ -963,8 +984,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"fill-opacity") == 0)
             {
-              (void) fprintf(svg_info->file,"fill-opacity %g\n",atof(value)*
-                (strchr(value,'%') != (char *) NULL ? 1.0 : 100.0));
+              (void) fprintf(svg_info->file,"fill-opacity %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"font-family") == 0)
@@ -1035,8 +1055,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"opacity") == 0)
             {
-              (void) fprintf(svg_info->file,"opacity %g\n",atof(value)*
-                (strchr(value,'%') != (char *) NULL ? 1.0 : 100.0));
+              (void) fprintf(svg_info->file,"opacity %s\n",value);
               break;
             }
           break;
@@ -1133,8 +1152,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"stroke-opacity") == 0)
             {
-              (void) fprintf(svg_info->file,"stroke-opacity %g\n",atof(value)*
-                (strchr(value,'%') != (char *) NULL ? 1.0 : 100.0));
+              (void) fprintf(svg_info->file,"stroke-opacity %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"stroke-width") == 0)
@@ -1161,12 +1179,24 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                      if (LocaleCompare(keyword,"clip-path") == 0)
                        {
-                         (void) fprintf(svg_info->file,"clip-path %s\n",value);
+                         CloneString(&id,value);
+                         if ((LocaleNCompare(id,"url(#",5) == 0))
+                           {
+                             (void) strcpy(id,id+5);
+                             id[Extent(id)-1]='\0';
+                           }
+                         (void) fprintf(svg_info->file,"clip-path %s\n",id);
                          break;
                        }
+                    if (LocaleCompare(keyword,"clip-rule") == 0)
+                      {
+                        (void) fprintf(svg_info->file,"clip-rule %s\n",value);
+                        break;
+                      }
                      if (LocaleCompare(keyword,"clipPathUnits") == 0)
                        {
                          CloneString(&units,value);
+                        (void) fprintf(svg_info->file,"clip-units %s\n",value);
                          break;
                        }
                     if (LocaleCompare(keyword,"color") == 0)
@@ -1201,9 +1231,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                     if (LocaleCompare(keyword,"fill-opacity") == 0)
                       {
-                        (void) fprintf(svg_info->file,"fill-opacity %g\n",
-                          atof(value)*(strchr(value,'%') != (char *) NULL ?
-                          1.0 : 100.0));
+                        (void) fprintf(svg_info->file,"fill-opacity %s\n",
+                          value);
                         break;
                       }
                     if (LocaleCompare(keyword,"font-family") == 0)
@@ -1242,9 +1271,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   {
                     if (LocaleCompare(keyword,"opacity") == 0)
                       {
-                        (void) fprintf(svg_info->file,"opacity %g\n",
-                          atof(value)*(strchr(value,'%') != (char *) NULL ?
-                          1.0 : 100.0));
+                        (void) fprintf(svg_info->file,"opacity %s\n",value);
                         break;
                       }
                     break;
@@ -1300,9 +1327,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       }
                     if (LocaleCompare(keyword,"stroke-opacity") == 0)
                       {
-                        (void) fprintf(svg_info->file,"stroke-opacity %g\n",
-                          atof(value)*(strchr(value,'%') != (char *) NULL ?
-                          1.0 : 100.0));
+                        (void) fprintf(svg_info->file,"stroke-opacity %s\n",
+                          value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-width") == 0)
@@ -1412,22 +1438,28 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"matrix") == 0)
                       {
                         p=(char *) value;
-                        affine.sx=strtod(p,&p);
-                        if (*p ==',')
-                          p++;
-                        affine.rx=strtod(p,&p);
-                        if (*p ==',')
-                          p++;
-                        affine.ry=strtod(p,&p);
-                        if (*p ==',')
-                          p++;
-                        affine.sy=strtod(p,&p);
-                        if (*p ==',')
-                          p++;
-                        affine.tx=strtod(p,&p);
-                        if (*p ==',')
-                          p++;
-                        affine.ty=strtod(p,&p);
+                        GetToken(p,&p,token);
+                        affine.sx=atof(value);
+                        GetToken(p,&p,token);
+                        if (*token == ',')
+                          GetToken(p,&p,token);
+                        affine.rx=atof(token);
+                        GetToken(p,&p,token);
+                        if (*token == ',')
+                          GetToken(p,&p,token);
+                        affine.ry=atof(token);
+                        GetToken(p,&p,token);
+                        if (*token == ',')
+                          GetToken(p,&p,token);
+                        affine.sy=atof(token);
+                        GetToken(p,&p,token);
+                        if (*token == ',')
+                          GetToken(p,&p,token);
+                        affine.tx=atof(token);
+                        GetToken(p,&p,token);
+                        if (*token == ',')
+                          GetToken(p,&p,token);
+                        affine.ty=atof(token);
                         break;
                       }
                     break;
@@ -1533,18 +1565,20 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"viewBox") == 0)
             {
               p=(char *) value;
-              svg_info->view_box.x=strtod(p,&p);
-              if (*p == ',');
-                p++;
-              svg_info->view_box.y=strtod(p,&p);
-              if (*p == ',');
-                p++;
-              svg_info->view_box.width=strtod(p,&p);
-              if (*p == ',');
-                p++;
-              svg_info->view_box.height=strtod(p,&p);
-              if (*p == ',');
-                p++;
+              GetToken(p,&p,token);
+              svg_info->view_box.x=atof(token);
+              GetToken(p,&p,token);
+              if (*token == ',')
+                GetToken(p,&p,token);
+              svg_info->view_box.y=atof(token);
+              GetToken(p,&p,token);
+              if (*token == ',')
+                GetToken(p,&p,token);
+              svg_info->view_box.width=atof(token);
+              GetToken(p,&p,token);
+              if (*token == ',')
+                GetToken(p,&p,token);
+              svg_info->view_box.height=atof(token);
               break;
             }
           break;
@@ -2587,6 +2621,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     keyword[MaxTextExtent],
     message[MaxTextExtent],
     *q,
+    *token,
     value[MaxTextExtent];
 
   ImageAttribute
@@ -2621,9 +2656,16 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  attribute=GetImageAttribute(image,"[MVG]");
+  if ((attribute == (ImageAttribute *) NULL) ||
+      (attribute->value == (char *) NULL))
+    ThrowWriterException(DelegateWarning,"no image vector graphics",image);
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  /*
+    Write SVG header.
+  */
   (void) WriteBlobString(image,"<?xml version=\"1.0\" standalone=\"no\"?>\n");
   (void) WriteBlobString(image,
     "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20000802//EN\"\n");
@@ -2632,10 +2674,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   (void) FormatString(message,"<svg width=\"%u\" height=\"%u\">\n",
     image->columns,image->rows);
   (void) WriteBlobString(image,message);
-  attribute=GetImageAttribute(image,"[MVG]");
-  if ((attribute == (ImageAttribute *) NULL) ||
-      (attribute->value == (char *) NULL))
-    ThrowWriterException(DelegateWarning,"no image vector graphics",image);
   /*
     Allocate primitive info memory.
   */
@@ -2644,14 +2682,21 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+  token=AllocateString(attribute->value);
   active=False;
   n=0;
   status=True;
   for (q=attribute->value; *q != '\0'; )
   {
-    while (isspace((int) (*q)) && (*q != '\0'))
-      q++;
-    if (*q == '#')
+    /*
+      Interpret graphic primitive.
+    */
+    p=q;
+    GetToken(q,&q,keyword);
+    if (*keyword == '\0')
+      break;
+puts(keyword);
+    if (*keyword == '#')
       {
         /*
           Comment.
@@ -2671,17 +2716,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         WriteBlobString(image,"</desc>\n");
         continue;
       }
-    /*
-      Define primitive.
-    */
-    p=q;
-    for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-      keyword[x]=(*q++);
-    keyword[x]='\0';
-    if (*keyword == '\0')
-      break;
-    while (isspace((int) (*q)) && (*q != '\0'))
-      q++;
     primitive_type=UndefinedPrimitive;
     switch (*keyword)
     {
@@ -2692,28 +2726,35 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("affine",keyword) == 0)
           {
-            affine.sx=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.rx=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.ry=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.sy=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.tx=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.ty=strtod(q,&q);
+            GetToken(q,&q,token);
+            affine.sx=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.rx=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.ry=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.sy=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.tx=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.ty=atof(token);
             AffineToTransform(image,&affine);
             break;
           }
         if (LocaleCompare("angle",keyword) == 0)
           {
-            FormatString(message,"rotate(%g) ",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"rotate(%.1024s) ",token);
             WriteBlobString(image,message);
             break;
           }
@@ -2741,14 +2782,22 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("clip-path",keyword) == 0)
           {
-            if ((LocaleNCompare(q,"url(",4) == 0))
-              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
-                value[x]=(*q++);
-            else
-              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-                value[x]=(*q++);
-            value[x]='\0';
-            FormatString(message,"clip-path:%.1024s;",value);
+            GetToken(q,&q,token);
+            FormatString(message,"clip-path:url(#%.1024s);",token);
+            WriteBlobString(image,message);
+            break;
+          }
+        if (LocaleCompare("clip-rule",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            FormatString(message,"clip-rule:%.1024s;",token);
+            WriteBlobString(image,message);
+            break;
+          }
+        if (LocaleCompare("clip-units",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            FormatString(message,"clipPathUnits=%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
@@ -2770,10 +2819,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("decorate",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            FormatString(message,"text-decoration:%.1024s;",value);
+            GetToken(q,&q,token);
+            FormatString(message,"text-decoration:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
@@ -2796,44 +2843,36 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("fill",keyword) == 0)
           {
-            if ((LocaleNCompare(q,"rgb(",4) == 0))
-              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
-                value[x]=(*q++);
-            else
-              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-                value[x]=(*q++);
-            value[x]='\0';
-            FormatString(message,"fill:%.1024s;",value);
+            GetToken(q,&q,token);
+            FormatString(message,"fill:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            FormatString(message,"fill-rule:%.1024s;",value);
+            GetToken(q,&q,token);
+            FormatString(message,"fill-rule:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
-            FormatString(message,"fill-opacity:%g;",strtod(q,&q)/100.0);
+            GetToken(q,&q,token);
+            FormatString(message,"fill-opacity:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            FormatString(message,"font-family:%.1024s;",value);
+            GetToken(q,&q,token);
+            FormatString(message,"font-family:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("font-size",keyword) == 0)
           {
-            FormatString(message,"font-size:%g;",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"font-size:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
@@ -2845,14 +2884,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("gravity",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("NorthWest",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("NorthWest",token) == 0)
               WriteBlobString(image,"text-align:left;");
-            if (LocaleCompare("NorthEast",value) == 0)
+            if (LocaleCompare("NorthEast",token) == 0)
               WriteBlobString(image,"text-align:right;");
-            if (LocaleCompare("North",value) == 0)
+            if (LocaleCompare("North",token) == 0)
               WriteBlobString(image,"text-align:center;");
             break;
           }
@@ -2864,9 +2901,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("image",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
+            GetToken(q,&q,token);
             primitive_type=ImagePrimitive;
             break;
           }
@@ -2900,7 +2935,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("opacity",keyword) == 0)
           {
-            FormatString(message,"opacity(%g) ",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"opacity %.1024s ",token);
             WriteBlobString(image,message);
             break;
           }
@@ -2932,20 +2968,18 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("pop",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("clip-path",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("clip-path",token) == 0)
               {
                 (void) WriteBlobString(image,"</clipPath>\n");
                 break;
               }
-            if (LocaleCompare("defs",value) == 0)
+            if (LocaleCompare("defs",token) == 0)
               {
                 (void) WriteBlobString(image,"</defs>\n");
                 break;
               }
-            if (LocaleCompare("graphic-context",value) == 0)
+            if (LocaleCompare("graphic-context",token) == 0)
               {
                 n--;
                 if (n < 0)
@@ -2957,17 +2991,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("push",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            if (LocaleCompare("clip-path",value) == 0)
+            GetToken(q,&q,token);
+            if (LocaleCompare("clip-path",token) == 0)
               {
-                while (isspace((int) (*q)) && (*q != '\0'))
-                  q++;
-                for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-                  value[x]=(*q++);
-                value[x]='\0';
-                FormatString(message,"<clipPath id=\"%s\">\n",value);
+                GetToken(q,&q,token);
+                FormatString(message,"<clipPath id=\"%s\">\n",token);
                 (void) WriteBlobString(image,message);
                 break;
               }
@@ -2976,7 +3004,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 (void) WriteBlobString(image,"<defs>\n");
                 break;
               }
-            if (LocaleCompare("graphic-context",value) == 0)
+            if (LocaleCompare("graphic-context",token) == 0)
               {
                 n++;
                 if (active)
@@ -2992,7 +3020,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       case 'r':
       case 'R':
       {
-        if (LocaleNCompare("rect",keyword,4) == 0)
+        if (LocaleCompare("rectangle",keyword) == 0)
           {
             primitive_type=RectanglePrimitive;
             break;
@@ -3004,7 +3032,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("rotate",keyword) == 0)
           {
-            FormatString(message,"rotate(%g) ",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"rotate(%.1024s) ",token);
             WriteBlobString(image,message);
             break;
           }
@@ -3016,42 +3045,41 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("scale",keyword) == 0)
           {
-            affine.sx=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.sy=strtod(q,&q);
+            GetToken(q,&q,token);
+            affine.sx=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.sy=atof(token);
             FormatString(message,"scale(%g,%g) ",affine.sx,affine.sy);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("skewX",keyword) == 0)
           {
-            FormatString(message,"skewX(%g) ",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"skewX(%.1024s) ",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("skewY",keyword) == 0)
           {
-            FormatString(message,"skewY(%g) ",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"skewY(%.1024s) ",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke",keyword) == 0)
           {
-            if ((LocaleNCompare(q,"rgb(",4) == 0))
-              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
-                value[x]=(*q++);
-            else
-              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-                value[x]=(*q++);
-            value[x]='\0';
-            FormatString(message,"stroke:%.1024s;",value);
+            GetToken(q,&q,token);
+            FormatString(message,"stroke:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
           {
-            FormatString(message,"stroke-antialias:%g;",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"stroke-antialias:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
@@ -3059,61 +3087,67 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             if (IsGeometry(q))
               {
+                char
+                  *p;
+
+                p=q;
+                GetToken(p,&p,token);
+                for (x=0; IsGeometry(token); x++)
+                  GetToken(p,&p,token);
                 WriteBlobString(image,"stroke-dasharray:");
-                for (x=0; IsGeometry(q); x++)
+                for (j=0; j < x; j++)
                 {
-                  FormatString(message,"%g ",strtod(q,&q));
+                  GetToken(q,&q,token);
+                  FormatString(message,"%.1024s ",token);
                   WriteBlobString(image,message);
                 }
                 WriteBlobString(image,";");
                 break;
               }
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            FormatString(message,"stroke-dasharray:%.1024s;",value);
+            GetToken(q,&q,token);
+            FormatString(message,"stroke-dasharray:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
-            FormatString(message,"stroke-dashoffset:%g;",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"stroke-dashoffset:%.1024;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            FormatString(message,"stroke-linecap:%.1024s;",value);
+            GetToken(q,&q,token);
+            FormatString(message,"stroke-linecap:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
           {
-            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-              value[x]=(*q++);
-            value[x]='\0';
-            FormatString(message,"stroke-linejoin:%.1024s;",value);
+            GetToken(q,&q,token);
+            FormatString(message,"stroke-linejoin:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
           {
-            FormatString(message,"stroke-miterlimit:%g;",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"stroke-miterlimit:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
           {
-            FormatString(message,"stroke-opacity:%g;",strtod(q,&q)/100.0);
+            GetToken(q,&q,token);
+            FormatString(message,"stroke-opacity:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
           {
-            FormatString(message,"stroke-width:%g;",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"stroke-width:%.1024s;",token);
             WriteBlobString(image,message);
             continue;
           }
@@ -3130,16 +3164,19 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("text-antialias",keyword) == 0)
           {
-            FormatString(message,"text-antialias:%g;",strtod(q,&q));
+            GetToken(q,&q,token);
+            FormatString(message,"text-antialias:%.1024s;",token);
             WriteBlobString(image,message);
             break;
           }
         if (LocaleCompare("translate",keyword) == 0)
           {
-            affine.tx=strtod(q,&q);
-            if (*q == ',')
-              q++;
-            affine.ty=strtod(q,&q);
+            GetToken(q,&q,token);
+            affine.tx=atof(token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            affine.ty=atof(token);
             FormatString(message,"translate(%g,%g) ",affine.tx,affine.ty);
             WriteBlobString(image,message);
             break;
@@ -3152,16 +3189,16 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("viewbox",keyword) == 0)
           {
-            (void) strtod(q,&q);
-            if (*q == ',')
-              q++;
-            (void) strtod(q,&q);
-            if (*q == ',')
-              q++;
-            (void) strtod(q,&q);
-            if (*q == ',')
-              q++;
-            (void) strtod(q,&q);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            GetToken(q,&q,token);
             break;
           }
         status=False;
@@ -3187,22 +3224,18 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       /*
         Define points.
       */
-      while (isspace((int) (*q)) && (*q != '\0'))
-        q++;
       if (!IsGeometry(q))
         break;
-      point.x=strtod(q,&q);
-      if (*q == ',')
-        q++;
-      point.y=strtod(q,&q);
-      if (*q == ',')
-        q++;
+      GetToken(q,&q,token);
+      point.x=atof(token);
+      GetToken(q,&q,token);
+      if (*token == ',')
+        GetToken(q,&q,token);
+      point.y=atof(token);
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].point=point;
       primitive_info[i].coordinates=0;
       primitive_info[i].method=FloodfillMethod;
-      while ((isspace((int) (*q)) || (*q == ',')) && (*q != '\0'))
-        q++;
       i++;
       if (i < (int) (number_points-6*BezierQuantum-360))
         continue;
@@ -3216,8 +3249,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           break;
         }
     }
-    while (isspace((int) (*q)) && (*q != '\0'))
-      q++;
     primitive_info[j].primitive=primitive_type;
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
@@ -3389,67 +3420,32 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       }
       case PathPrimitive:
       {
-        char
-          *path;
-
         int
           number_attributes;
 
-        if (*q == '\0')
-          break;
+        register char
+          *p;
+
+        GetToken(q,&q,token);
         number_attributes=1;
-        p=q;
-        if (*q == '"')
-          {
-            p++;
-            for (q++; *q != '\0'; q++)
-            {
-              if (isalpha((int) *q))
-                number_attributes++;
-              if ((*q == '"') && (*(q-1) != '\\'))
-                break;
-            }
-          }
-        else
-          if (*q == '\'')
-            {
-              p++;
-              for (q++; *q != '\0'; q++)
-              {
-                if (isalpha((int) *q))
-                  number_attributes++;
-                if ((*q == '\'') && (*(q-1) != '\\'))
-                  break;
-              }
-            }
-          else
-            for (q++;  *q != '\0'; q++)
-            {
-              if (isalpha((int) *q))
-                number_attributes++;
-              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
-                break;
-            }
-        path=(char *) AcquireMemory(q-p+1);
+        for (p=token; *p != '\0'; p++)
+	  if (isalpha((int) *p))
+	    number_attributes++;
         if (i > (number_points-6*BezierQuantum*number_attributes-1))
           {
             number_points+=6*BezierQuantum*number_attributes;
             ReacquireMemory((void **) &primitive_info,
               number_points*sizeof(PrimitiveInfo));
+            if (primitive_info == (PrimitiveInfo *) NULL)
+              {
+                ThrowException(&image->exception,ResourceLimitWarning,
+                  "Unable to draw image","Memory allocation failed");
+                break;
+              }
           }
-        if ((path == (char *) NULL) ||
-            (primitive_info == (PrimitiveInfo *) NULL))
-          {
-            ThrowException(&image->exception,ResourceLimitWarning,
-              "Unable to draw image","Memory allocation failed");
-            break;
-          }
-        (void) strncpy(path,p,q-p+1);
-        path[q-p]='\0';
         (void) WriteBlobString(image,"  <path d=\"");
-        (void) WriteBlobString(image,path);
+        (void) WriteBlobString(image,token);
         (void) WriteBlobString(image,"\"/>\n");
-        LiberateMemory((void **) &path);
         break;
       }
       case ColorPrimitive:
@@ -3460,30 +3456,17 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
-        /*
-          Define method.
-        */
-        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
-          keyword[x]=(*q++);
-        keyword[x]='\0';
-        if (*keyword == '\0')
-          break;
-        if (LocaleCompare("point",keyword) == 0)
+        GetToken(q,&q,token);
+        if (LocaleCompare("point",token) == 0)
           primitive_info[j].method=PointMethod;
-        else
-          if (LocaleCompare("replace",keyword) == 0)
-            primitive_info[j].method=ReplaceMethod;
-          else
-            if (LocaleCompare("floodfill",keyword) == 0)
-              primitive_info[j].method=FloodfillMethod;
-            else
-              if (LocaleCompare("filltoborder",keyword) == 0)
-                primitive_info[j].method=FillToBorderMethod;
-              else
-                if (LocaleCompare("reset",keyword) == 0)
-                  primitive_info[j].method=ResetMethod;
-                else
-                  status=False;
+        if (LocaleCompare("replace",token) == 0)
+          primitive_info[j].method=ReplaceMethod;
+        if (LocaleCompare("floodfill",token) == 0)
+          primitive_info[j].method=FloodfillMethod;
+        if (LocaleCompare("filltoborder",token) == 0)
+          primitive_info[j].method=FillToBorderMethod;
+        if (LocaleCompare("reset",token) == 0)
+          primitive_info[j].method=ResetMethod;
         break;
       }
       case TextPrimitive:
@@ -3496,38 +3479,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
-        if (*q == '\0')
-          break;
-        p=q;
-        if (*q == '"')
-          {
-            p++;
-            for (q++; *q != '\0'; q++)
-              if ((*q == '"') && (*(q-1) != '\\'))
-                break;
-          }
-        else
-          if (*q == '\'')
-            {
-              p++;
-              for (q++; *q != '\0'; q++)
-                if ((*q == '\'') && (*(q-1) != '\\'))
-                  break;
-            }
-          else
-            for (q++;  *q != '\0'; q++)
-              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
-                break;
-        primitive_info[j].text=(char *) AcquireMemory(q-p+1);
-        if (primitive_info[j].text != (char *) NULL)
-          {
-            (void) strncpy(primitive_info[j].text,p,q-p+1);
-            primitive_info[j].text[q-p]='\0';
-          }
+        GetToken(q,&q,token);
         (void) FormatString(message,"  <text x=\"%g\" y=\"%g\">",
           primitive_info[j].point.x,primitive_info[j].point.y);
         (void) WriteBlobString(image,message);
-        for (p=primitive_info[j].text; *p != '\0'; p++)
+        for (p=token; *p != '\0'; p++)
           switch (*p)
           {
             case '<': WriteBlobString(image,"&lt;"); break;
@@ -3540,62 +3496,23 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       }
       case ImagePrimitive:
       {
-        register char
-          *p;
-
         if (primitive_info[j].coordinates != 2)
           {
             status=False;
             break;
           }
-        if (*q == '\0')
-          break;
-        p=q;
-        if (*p == '"')
-          {
-            p++;
-            for (q++; *q != '\0'; q++)
-              if ((*q == '"') && (*(q-1) != '\\'))
-                break;
-          }
-        else
-          if (*p == '\'')
-            {
-              p++;
-              for (q++; *q != '\0'; q++)
-                if ((*q == '\'') && (*(q-1) != '\\'))
-                  break;
-            }
-          else
-            for (q++;  *q != '\0'; q++)
-              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
-                break;
-        primitive_info[j].text=(char *) AcquireMemory(q-p+1);
-        if (primitive_info[j].text != (char *) NULL)
-          {
-            (void) strncpy(primitive_info[j].text,p,q-p);
-            primitive_info[j].text[q-p]='\0';
-          }
+        GetToken(q,&q,token);
         (void) FormatString(message,"  <image x=\"%g\" y=\"%g\" "
           "width=\"%g\" height=\"%g\" xlink:href=\"%.1024s\"/>\n",
           primitive_info[j].point.x,primitive_info[j].point.y,
-          primitive_info[j+1].point.x,primitive_info[j+1].point.y,
-          primitive_info[j].text);
+          primitive_info[j+1].point.x,primitive_info[j+1].point.y,token);
         (void) WriteBlobString(image,message);
         break;
       }
     }
     if (primitive_info == (PrimitiveInfo *) NULL)
       break;
-    if (status == False)
-      break;
-    if ((*q == '"') || (*q == '\''))
-      q++;
-    while (isspace((int) (*q)) && (*q != '\0'))
-      q++;
     primitive_info[i].primitive=UndefinedPrimitive;
-    if (primitive_info->text != (char *) NULL)
-      LiberateMemory((void **) &primitive_info->text);
     if (status == False)
       break;
   }
@@ -3603,6 +3520,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   /*
     Free resources.
   */
+  LiberateMemory((void **) &token);
   if (primitive_info != (PrimitiveInfo *) NULL)
     LiberateMemory((void **) &primitive_info);
   CloseBlob(image);

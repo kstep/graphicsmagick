@@ -28,8 +28,8 @@ extern MagickExport SemaphoreInfo
   *AllocateSemaphoreInfo(void);
 
 extern MagickExport void
-  DestroySemaphoreInfo(SemaphoreInfo *),
   AcquireSemaphore(SemaphoreInfo **),
+  DestroySemaphore(SemaphoreInfo *),
   LiberateSemaphore(SemaphoreInfo **);
 
 #if defined(__cplusplus) || defined(c_plusplus)
