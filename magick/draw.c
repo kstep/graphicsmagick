@@ -1232,7 +1232,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
     number_vertices;
 
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  clone_info->miterlimit=0.0;
+  clone_info->miterlimit=0;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
   number_vertices=i;
   dash_polygon=(PrimitiveInfo *)
@@ -3695,7 +3695,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(left_points[2].y-center.y,left_points[2].x-center.x);
           if (theta.q < theta.p)
             theta.q+=2.0*MagickPI;
-          arc_segments=ceil(((theta.q-theta.p)/(2.0*sqrt(1.0/mid)))-0.5);
+          arc_segments=(int) ceil(((theta.q-theta.p)/(2.0*sqrt(1.0/mid)))-0.5);
           left_strokes[l].x=left_points[1].x;
           left_strokes[l].y=left_points[1].y;
           l++;
@@ -3799,7 +3799,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(right_points[2].y-center.y,right_points[2].x-center.x);
           if (theta.p < theta.q)
             theta.p+=2.0*MagickPI;
-          arc_segments=ceil(((theta.p-theta.q)/(2.0*sqrt(1.0/mid)))-0.5);
+          arc_segments=(int) ceil(((theta.p-theta.q)/(2.0*sqrt(1.0/mid)))-0.5);
           right_strokes[r].x=right_points[1].x;
           right_strokes[r].y=right_points[1].y;
           r++;
@@ -4324,7 +4324,7 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   else
     if ((theta > 0.0) && !sweep)
       theta-=2.0*MagickPI;
-  arc_segments=ceil((fabs(theta/(0.5*MagickPI+MagickEpsilon)))-0.5);
+  arc_segments=(int) ceil((fabs(theta/(0.5*MagickPI+MagickEpsilon)))-0.5);
   p=primitive_info;
   for (i=0; i < arc_segments; i++)
   {
@@ -4394,10 +4394,10 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     {
       alpha=fabs(primitive_info[j].point.x-primitive_info[i].point.x);
       if (alpha > quantum)
-        quantum=alpha;
+        quantum=(unsigned int) alpha;
       alpha=fabs(primitive_info[j].point.y-primitive_info[i].point.y);
       if (alpha > quantum)
-        quantum=alpha;
+        quantum=(unsigned int) alpha;
     }
   }
   quantum=Min(quantum/number_coordinates,BezierQuantum);
@@ -4589,10 +4589,10 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
         angle=strtod(p,&p);
         if (*p == ',')
           p++;
-        large_arc=strtod(p,&p);
+        large_arc=(unsigned int) strtod(p,&p);
         if (*p == ',')
           p++;
-        sweep=strtod(p,&p);
+        sweep=(unsigned int) strtod(p,&p);
         if (*p == ',')
           p++;
         x=strtod(p,&p);

@@ -1964,8 +1964,8 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
       return((Image *) NULL);
     }
   blur_image->storage_class=DirectClass;
-  x=width*sin(DegreesToRadians(angle));
-  y=width*cos(DegreesToRadians(angle));
+  x=(int) (width*sin(DegreesToRadians(angle)));
+  y=(int) (width*cos(DegreesToRadians(angle)));
   for (i=0; i < width; i++)
   {
     offsets[i].x=i*x/sqrt(x*x+y*y);
@@ -1984,8 +1984,8 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
       opacity=0.0;
       for (i=0; i < width; i++)
       {
-        u=x+offsets[i].x;
-        v=y+offsets[i].y;
+        u=(int) (x+offsets[i].x);
+        v=(int) (y+offsets[i].y);
         if ((u < 0) || (u >= image->columns) || (v < 0) || (v >= image->rows))
           continue;
         pixel=GetOnePixel(image,u,v);

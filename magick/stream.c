@@ -453,8 +453,8 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   if (image->storage_class != GetCacheClassType(image->cache))
     {
       if (GetCacheClassType(image->cache) == UndefinedClass)
-        (void) image->fifo(image,(void *) NULL,stream_info->columns);
-      stream_info->class=image->storage_class;
+        (void) image->fifo(image,(const void *) NULL,stream_info->columns);
+      stream_info->storage_class=image->storage_class;
       stream_info->columns=image->columns;
       stream_info->rows=image->rows;
       image->cache=stream_info;

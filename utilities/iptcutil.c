@@ -1099,7 +1099,7 @@ int jpegembed(FILE *ifile, FILE *ofile, FILE *iptc)
 
 int main(int argc, char *argv[])
 {            
-  unsigned int
+  int
     length;
 
   unsigned char

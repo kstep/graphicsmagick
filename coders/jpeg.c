@@ -1066,6 +1066,10 @@ static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
 
 static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
+  double
+    x_resolution,
+    y_resolution;
+
   ImageAttribute
     *attribute;
 
@@ -1095,9 +1099,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     jpeg_error;
 
   unsigned int
-    status,
-    x_resolution,
-    y_resolution;
+    status;
 
   /*
     Open image file.
@@ -1167,7 +1169,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       int
         count;
 
-      count=sscanf(image_info->density,"%ux%u",&x_resolution,&y_resolution);
+      count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
       if (count != 2)
         y_resolution=x_resolution;
     }

@@ -1071,7 +1071,7 @@ int main(int argc,char **argv)
               break;
             case NorthGravity:
             {
-              x+=0.5*width-composite_image->columns/2;
+              x+=(int) (0.5*width-composite_image->columns/2);
               break;
             }
             case NorthEastGravity:
@@ -1081,7 +1081,7 @@ int main(int argc,char **argv)
             }
             case WestGravity:
             {
-              y+=0.5*height-composite_image->rows/2;
+              y+=(int) (0.5*height-composite_image->rows/2);
               break;
             }
             case ForgetGravity:
@@ -1089,14 +1089,14 @@ int main(int argc,char **argv)
             case CenterGravity:
             default:
             {
-              x+=0.5*width-composite_image->columns/2;
-              y+=0.5*height-composite_image->rows/2;
+              x+=(int) (0.5*width-composite_image->columns/2);
+              y+=(int) (0.5*height-composite_image->rows/2);
               break;
             }
             case EastGravity:
             {
               x+=width-composite_image->columns;
-              y+=0.5*height-composite_image->rows/2;
+              y+=(int) (0.5*height-composite_image->rows/2);
               break;
             }
             case SouthWestGravity:
@@ -1106,7 +1106,7 @@ int main(int argc,char **argv)
             }
             case SouthGravity:
             {
-              x+=0.5*width-composite_image->columns/2;
+              x+=(int) (0.5*width-composite_image->columns/2);
               y+=height-composite_image->rows;
               break;
             }

@@ -119,13 +119,13 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
         case TransparentOpacity:
         {
           color=(*q);
-          color.opacity=beta;
+          color.opacity=(Quantum) beta;
           return(color);
         }
         case OpaqueOpacity:
         {
           color=(*p);
-          color.opacity=alpha;
+          color.opacity=(Quantum) alpha;
           return(color);
         }
         default:
@@ -296,7 +296,7 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
     case CopyOpacityCompositeOp:
     {
       color=(*q);
-      color.opacity=alpha;
+      color.opacity=(Quantum) alpha;
       return(color);
     }
     case ClearCompositeOp:

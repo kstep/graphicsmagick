@@ -937,8 +937,8 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
     {
       clone_image->page.width=columns;
       clone_image->page.height=rows;
-      clone_image->page.x*=(double) columns/clone_image->columns;
-      clone_image->page.y*=(double) rows/clone_image->rows;
+      clone_image->page.x*=(int) ((double) columns/clone_image->columns);
+      clone_image->page.y*=(int) ((double) rows/clone_image->rows);
       clone_image->columns=columns;
       clone_image->rows=rows;
     }
@@ -2852,7 +2852,8 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   normalize=3.0*(MaxRGB+1)*(MaxRGB+1);
   if (image->matte || (image->colorspace == CMYKColorspace))
     normalize=4.0*(MaxRGB+1)*(MaxRGB+1);
-  image->mean_error_per_pixel=total_error/(image->columns*image->rows);
+  image->mean_error_per_pixel=(unsigned int)
+    (total_error/(image->columns*image->rows));
   image->normalized_mean_error=image->mean_error_per_pixel/normalize;
   image->normalized_maximum_error=maximum_error_per_pixel/normalize;
   return(image->normalized_mean_error == 0.0);
@@ -3447,13 +3448,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             */
             count=sscanf(argv[++i],"%lf-%lf",&minimum_delay,&maximum_delay);
             if (count == 1)
-              (*image)->delay=minimum_delay;
+              (*image)->delay=(unsigned int) minimum_delay;
             else
               {
                 if ((*image)->delay < minimum_delay)
-                  (*image)->delay=minimum_delay;
+                  (*image)->delay=(unsigned int) minimum_delay;
                 if ((*image)->delay > maximum_delay)
-                  (*image)->delay=maximum_delay;
+                  (*image)->delay=(unsigned int) maximum_delay;
               }
             continue;
           }

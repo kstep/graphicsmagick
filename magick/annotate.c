@@ -701,11 +701,12 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   metrics->pixels_per_em.x=(resolution.y/72.0)*
     ExpandAffine(&draw_info->affine)*draw_info->pointsize;
   metrics->pixels_per_em.y=metrics->pixels_per_em.x;
-  metrics->ascent=metrics->pixels_per_em.x;
+  metrics->ascent=(int) metrics->pixels_per_em.x;
   metrics->descent=(int) metrics->pixels_per_em.y/-5;
-  metrics->width=annotate_image->columns/ExpandAffine(&draw_info->affine);
-  metrics->height=1.152*metrics->pixels_per_em.x;
-  metrics->max_advance=metrics->pixels_per_em.x;
+  metrics->width=(unsigned int)
+    (annotate_image->columns/ExpandAffine(&draw_info->affine));
+  metrics->height=(unsigned int) (1.152*metrics->pixels_per_em.x);
+  metrics->max_advance=(unsigned int) metrics->pixels_per_em.x;
   if (!render)
     {
       DestroyImage(annotate_image);
@@ -1147,7 +1148,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
   metrics->ascent=face->size->metrics.ascender >> 6;
   metrics->descent=face->size->metrics.descender >> 6;
-  metrics->width=Max(origin.x >> 6,extent.x2);
+  metrics->width=(unsigned int) Max(origin.x >> 6,extent.x2);
   metrics->height=face->size->metrics.height >> 6;
   metrics->max_advance=face->size->metrics.max_advance >> 6;
   /*

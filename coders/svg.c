@@ -1624,8 +1624,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if ((svg_info->view_box.width == 0.0) ||
               (svg_info->view_box.height == 0.0))
             svg_info->view_box=svg_info->bounds;
-          page.width=svg_info->bounds.width;
-          page.height=svg_info->bounds.height;
+          page.width=(unsigned int) svg_info->bounds.width;
+          page.height=(unsigned int) svg_info->bounds.height;
           page.x=0;
           page.y=0;
           geometry=(char *) NULL;

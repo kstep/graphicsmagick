@@ -459,7 +459,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   draw_info->gravity=CenterGravity;
   draw_info->stroke=montage_info->stroke;
   draw_info->fill=montage_info->fill;
-  font_height=ExpandAffine(&draw_info->affine)*draw_info->pointsize;
+  font_height=(unsigned int)
+    (ExpandAffine(&draw_info->affine)*draw_info->pointsize);
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
