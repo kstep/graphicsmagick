@@ -133,7 +133,7 @@ extern MagickExport void
 /*
   Allocate memory
 */
-#define MagickAllocateMemory(type,size) ((type) malloc(size))
+#define MagickAllocateMemory(type,size) ((type) malloc((size_t) (size)))
 
 /*
   Free memory and set pointer to NULL
@@ -158,10 +158,10 @@ extern MagickExport void
 { \
     void *_magick_mp; \
     if (memory == 0) \
-      _magick_mp=malloc(size); \
+      _magick_mp=malloc((size_t) (size)); \
     else \
       { \
-        _magick_mp=realloc(memory,size); \
+        _magick_mp=realloc(memory,(size_t) (size)); \
         if (_magick_mp == 0) \
           free(memory); \
       } \

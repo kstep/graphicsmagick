@@ -250,7 +250,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           (void) strncpy(url,image_info->magick,MaxTextExtent-1);
           (void) strcat(url,":");
           url[strlen(url)+p-image->filename]='\0';
-          (void) strncat(url,image->filename,p-image->filename);
+          (void) strncat(url,image->filename,(size_t)(p-image->filename));
           (void) strncpy(image->filename,p,MaxTextExtent-1);
         }
     }
@@ -375,7 +375,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       for (p=filename+strlen(filename)-1; p > (filename+1); p--)
         if (*p == '.')
           {
-            (void) strncpy(image->filename,filename,p-filename);
+            (void) strncpy(image->filename,filename,(size_t) (p-filename));
             image->filename[p-filename]='\0';
             break;
           }

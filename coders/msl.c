@@ -2836,7 +2836,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
                 if (value[len-1] == '%') {
                   char  tmp[100];
-                  strncpy(tmp, value, len-1);
+                  strncpy(tmp, value, (size_t) (len-1));
                   opac = atoi( tmp );
                   opac = (int)(MaxRGB * ((float)opac/100));
                 } else

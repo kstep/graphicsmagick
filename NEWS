@@ -184,7 +184,12 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     * Support is provided for issuing log messages to the Windows standard
     logging system.
     * Project files are now provided for use with Borland C++ Builder 6.0.
-    * Updated version of LCMS used for Windows build to version 1.11.
+    * Updated LCMS version to 1.12.
+    * Updated FreeType version to 2.1.5.
+    * Updated JBIG-KIT to version 1.5.
+    * Updated libpng to version 1.2.5.
+    * Updated libwmf to version 0.2.8.2.
+    * Updates zlib to version 1.2.1.
     * GraphicsMagick now compiles using Visual Studio .NET 2003.
 
 ---------------------------------------------------------------------------

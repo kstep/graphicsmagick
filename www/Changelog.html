@@ -53,6 +53,30 @@
 </tr>
 </table>
 <p>
+2004-01-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/sfw.c (ReadSFWImage): Added size_t cast.
+  <LI> coders/msl.c (MSLStartElement): Added size_t cast.
+  <LI> coders/meta.c (convertHTMLcodes): Added size_t cast.
+  <LI> coders/locale.c: Add size_t casts and update to use memory
+        allocation macros.<BR>
+  <LI> coders/html.c (WriteHTMLImage): Added size_t cast.
+  <LI> magick/utility.h (MagickAllocateMemory): Added size_t cast.
+        (MagickReallocMemory): Added size_t cast.
+  <LI> coders/bmp.c (WriteBMPImage): Added size_t cast.
+  <LI> coders/art.c (ReadARTImage): Use memory allocation macros.
+  <LI> VisualMagick/configure/configure.cpp: Update to support library
+        .def exports files with Visual C++ 7.0.
+  <LI> Updated Windows delegate libraries: LCMS 1.12, FreeType 2.1.5,
+        BIG-KIT 1.5, libpng 1.2.5, libwmf 0.2.8.2, and zlib 1.2.1.
+  <LI> Verified Windows static and DLL compilation with Visual C++ 6.0.
+  <LI> Makefile.am: Update to automake 1.8.2.
+  <LI> coders/gif.c (WriteGIFImage): Use ColorMatch rather than
+        FuzzyColorMatch when comparing colormap entries.
+
+</UL>
+<p>
 2004-01-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -1887,7 +1887,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Colormap: %ld entries",image->colors);
         bmp_colormap=MagickAllocateMemory(unsigned char *,
-          4*(1 << bmp_info.bits_per_pixel));
+          (size_t) (4*(1 << bmp_info.bits_per_pixel)));
         if (bmp_colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);

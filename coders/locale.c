@@ -240,7 +240,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
         }
         for (p=q; (*q != '<') && (*q != '\0'); q++);
         {
-          (void) strncpy(message,p,q-p);
+          (void) strncpy(message,p,(size_t)(q-p));
           message[q-p]='\0';
           Strip(message);
           (void) strncat(locale,message,MaxTextExtent-strlen(locale)-2);
@@ -509,7 +509,7 @@ static char *EscapeLocaleString(const char *str)
         if (*p == '"' || *p == '\\')
             ++n;
 
-    if (!(strput = (char *)malloc(n + 1)))
+    if (!(strput = MagickAllocateMemory(char *,n + 1)))
     {
         fprintf(stderr, "out of memory!\n");
         exit(1);
@@ -533,8 +533,8 @@ static void FreeAccumulatedStrings(void *handle)
         return;
     FreeAccumulatedStrings((void *)xl->next);
     FreeAccumulatedStrings((void *)xl->lower);
-    free((void *)xl->name);
-    free(handle);
+    MagickFreeMemory(xl->name);
+    MagickFreeMemory(handle);
 }
 
 /*  accumulate -- read a line from the file, break it up at the '/'s into
@@ -575,7 +575,7 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
                     if (LocaleCompare((*xloc)->name, xp))
                         fprintf(stderr, "ignoring dup message for `%s'\n",
                                          buf[n]);
-                    free(xp);
+                    MagickFreeMemory(xp);
                     break;
                 }
                 /* fall through to create the node */
@@ -594,12 +594,12 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
             {
                 int x;
 
-                if (!(xp = (char *)malloc(np - tp + 1)))
+                if (!(xp = MagickAllocateMemory(char *,np - tp + 1)))
                 {
                     fprintf(stderr, "out of memory!\n" );
                     exit(1);
                 }
-                strncpy(xp, tp, np - tp);
+                strncpy(xp, tp, (size_t) (np - tp));
                 xp[np - tp] = '\0';
                 tp = ++np;
 
@@ -611,7 +611,7 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
 
                 if (x == 0)   /* subfield exists */
                 {
-                    free(xp);
+                    MagickFreeMemory(xp);
                     xloc = &xl->lower;
                     continue;
                 }
@@ -622,7 +622,7 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
             if (*xp == '\0')
                 fprintf(stderr, "warning: message is null for '%s'\n", buf[n]);
 
-            if (!(xl = (struct locale_str *)malloc(sizeof *xl)))
+            if (!(xl = MagickAllocateMemory(struct locale_str *,sizeof *xl)))
             {
                 fprintf(stderr, "out of memory!\n");
                 exit(1);
@@ -681,7 +681,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
 
             output_switches(image, locstr->lower, indent+INDENT, 1);
         }
-        free(p);
+        MagickFreeMemory(p);
         return;
     }
 
@@ -696,7 +696,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
         FormatString(message, "\n%*scase '\\0':\n%*sreturn \"%s\";\n",
                 indent, "", indent+INDENT, "", p);
         WriteBlobString(image,message);
-        free(p);
+        MagickFreeMemory(p);
         xl = xl->next;
     }
 
@@ -713,7 +713,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
         FormatString(message, "%*sif (p - tp == %ld && !LocaleNCompare(tp, \"%s\", %ld))\n",
                 indent+INDENT, "", (long) strlen(xl->name), p, (long) strlen(xl->name));
         WriteBlobString(image,message);
-        free(p);
+        MagickFreeMemory(p);
 
         output_switches(image,xl->lower, indent+INDENT+INDENT, 0);
         FormatString(message, "%*selse\n", indent+INDENT, "");

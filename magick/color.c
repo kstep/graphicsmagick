@@ -409,7 +409,10 @@ static void DestroyColorList(NodeInfo *node_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FuzzyColorMatch() returns true if two pixels are identical in color.
+%  FuzzyColorMatch() returns true if the distance between two colors is
+%  less than the specified distance in a linear three dimensional color space.
+%  This function is used by ColorFloodFill and other algorithms which
+%  compare two colors.
 %
 %  The format of the ColorMatch method is:
 %
@@ -422,8 +425,8 @@ static void DestroyColorList(NodeInfo *node_info)
 %
 %    o q: Pixel q.
 %
-%    o distance:  Define how much tolerance is acceptable to consider
-%      two colors as the same.
+%    o fuzz:  Define how much difference is acceptable in order to
+%      consider two colors to be the same.
 %
 %
 */

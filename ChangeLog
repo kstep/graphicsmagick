@@ -1,3 +1,24 @@
+2004-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sfw.c (ReadSFWImage): Added size_t cast.
+	* coders/msl.c (MSLStartElement): Added size_t cast.
+	* coders/meta.c (convertHTMLcodes): Added size_t cast.
+	* coders/locale.c: Add size_t casts and update to use memory
+	allocation macros.
+	* coders/html.c (WriteHTMLImage): Added size_t cast.
+	* magick/utility.h (MagickAllocateMemory): Added size_t cast.
+	(MagickReallocMemory): Added size_t cast.
+	* coders/bmp.c (WriteBMPImage): Added size_t cast.
+	* coders/art.c (ReadARTImage): Use memory allocation macros.
+	* VisualMagick/configure/configure.cpp: Update to support library
+	.def exports files with Visual C++ 7.0.
+	* Updated Windows delegate libraries: LCMS 1.12, FreeType 2.1.5,
+	BIG-KIT 1.5, libpng 1.2.5, libwmf 0.2.8.2, and zlib 1.2.1.
+	* Verified Windows static and DLL compilation with Visual C++ 6.0.
+	* Makefile.am: Update to automake 1.8.2.
+	* coders/gif.c (WriteGIFImage): Use ColorMatch rather than
+	FuzzyColorMatch when comparing colormap entries.
+
 2004-01-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/profile.c: Needed to include "magick/profile.h" in order

@@ -210,7 +210,7 @@ static int convertHTMLcodes(char *s, int len)
       for (i=0; i < codes; i++)
       {
         if (html_codes[i].len <= len)
-          if (stringnicmp(s, html_codes[i].code, html_codes[i].len) == 0)
+          if (stringnicmp(s, html_codes[i].code, (size_t) (html_codes[i].len)) == 0)
             {
               strcpy(s+1, s+html_codes[i].len);
               *s = html_codes[i].val;

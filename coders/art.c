@@ -156,33 +156,34 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if(GetBlobSize(image)!=(8+((long)ldblk+k)*height))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
- image->columns=width;
- image->rows=height;
- image->depth=1;
- image->colors=1l << image->depth;
+  image->columns=width;
+  image->rows=height;
+  image->depth=1;
+  image->colors=1l << image->depth;
  
-/* printf("ART header checked OK %d,%d\n",image->colors,image->depth); */
+  /* printf("ART header checked OK %d,%d\n",image->colors,image->depth); */
 
- if (!AllocateImageColormap(image,image->colors)) goto NoMemory;
+  if (!AllocateImageColormap(image,image->colors)) goto NoMemory;
 
-/* ----- Load RLE compressed raster ----- */
- BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
- if(BImgBuff==NULL)
-NoMemory:
+  /* ----- Load RLE compressed raster ----- */
+  BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);  /*Ldblk was set in the check phase*/
+  if(BImgBuff==NULL)
+    NoMemory:
   ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
- for(i=0;i< (int) height;i++)
-      {
-      (void) ReadBlob(image,ldblk,(char *)BImgBuff);
+  for(i=0;i< (int) height;i++)
+    {
+      (void) ReadBlob(image,(size_t)ldblk,(char *)BImgBuff);
       (void) ReadBlob(image,k,(char *)&dummy);
       InsertRow(BImgBuff,i,image);
-      }
- if(BImgBuff!=NULL) free(BImgBuff);
- if (EOFBlob(image))
-   ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
-      image->filename);
- CloseBlob(image);
- return(image);
+    }
+  if(BImgBuff!=NULL)
+    MagickFreeMemory(BImgBuff);
+  if (EOFBlob(image))
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+                   image->filename);
+  CloseBlob(image);
+  return(image);
 }
 
 
