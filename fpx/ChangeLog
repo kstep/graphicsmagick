@@ -1,3 +1,9 @@
+2002-11-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+        * Updated to autoconf 2.54
+        * Updated to automake 1.7.1
+	* Updated to libtool 1.4e (1.1148 2002/10/28 15:38:37)
+
 2002-03-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
         * Updated to autoconf 2.53
