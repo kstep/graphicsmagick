@@ -82,7 +82,7 @@ The actual number of colors in the image may be less than your request,
 but never more.  Note, this is a color reduction option.  Images with
 less unique colors than specified with this option will have any duplicate
 or unused colors removed.
-Refer to \fBquantize(9)\fP for more details.
+Refer to \fBquantize(5)\fP for more details.
 
 If more than one image is specified on the command line, a single
 colormap is created and saved with each image.
@@ -99,7 +99,7 @@ Color reduction, by default, takes place in the RGB color space.
 Empirical evidence suggests that distances in color spaces such as YUV
 or YIQ correspond to perceptual color differences more closely
 than do distances in RGB space.  These color spaces may give better
-results when color reducing an image.  Refer to \fBquantize(9)\fP for
+results when color reducing an image.  Refer to \fBquantize(5)\fP for
 more details.
 
 The \fBTransparent\fP color space behaves uniquely in that it preserves
@@ -883,7 +883,7 @@ An optimal depth generally allows the best representation of the source
 image with the fastest computational speed and the least amount of
 memory.  However, the default depth is inappropriate for some images.
 To assure the best representation, try values between 2 and 8 for this
-parameter.  Refer to \fBquantize(9)\fP for more details.
+parameter.  Refer to \fBquantize(5)\fP for more details.
 
 The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
@@ -912,7 +912,7 @@ transform the image.  Refer to \fBmiff(5)\fP for a description of
 the image class.
 
 If \fB-colors\fP is also specified, the total unique colors in the image
-and color reduction error values are printed.  Refer to \fBquantize(9)\fP
+and color reduction error values are printed.  Refer to \fBquantize(5)\fP
 for a description of these values.
 .TP
 .B "-view \fIstring\fP"
