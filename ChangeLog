@@ -1,5 +1,7 @@
 2002-04-15  Cristy  <cristy@mystic.es.dupont.com>
   * Fixed DrawImage() to properly handle affine image transforms.
+  * Added AffineTransformImage() to C API.
+  * Added -transform option to convert/mogrify program.
 
 2002-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * magick/magick.c (MagickToMime): New method to return the MIME
