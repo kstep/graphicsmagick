@@ -23,9 +23,12 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
-2002-01-03  Glenn Randers-Pehrson  &lt;randeg@alum.rpi.edu&gt;
-  * Fixed an out-of-bounds memset() when decoding 1-bit AVI, BMP,
-	  and DIB images.
+2002-01-05  Glenn Randers-Pehrson  &lt;randeg@alum.rpi.edu&gt;
+        * Fixed an out-of-bounds memset() and two other memory overruns
+          when decoding 1-bit AVI, BMP, and DIB images.
+
+2002-01-04 Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+        * Fix lcms header inclusion in transform.c.
 
 2002-01-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 	* coders/wmf.c (magick_brush): Fixed bug with setting fill color.
@@ -147,7 +150,7 @@ ImageMagick Changes</font></font></font></b></td>
 2001-10-30  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
 	* Added support for On-the-air bitmap.
 
-2001-09-29  Glenn  &lt;glennrp@home.kom&gt;
+2001-09-29  Glenn  &lt;randeg@alum.rpi.edu&gt;
   * When the delay setting for an image is greater than 4cs, duplicate
     frames are inserted to achieve the desired delay while creating MPEG
     files (contributed by Lawrence Livermore National Laboratory (LLNL)).
@@ -260,7 +263,7 @@ ImageMagick Changes</font></font></font></b></td>
 	* Added -background to convert program usage text.
 	* DispatchImage() now properly handles grayscale images.
 
-2001-09-01  Glenn  &lt;glennrp@home.kom&gt;
+2001-09-01  Glenn  &lt;randeg@alum.rpi.edu&gt;
 	* The compression quality setting is now recognized when creating
 	  MPEG images (contributed by Lawrence Livermore National Laboratory
   	(LLNL)).
