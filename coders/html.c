@@ -223,7 +223,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
     *clone_info;
 
   RectangleInfo
-	  geometry;
+    geometry;
 
   register char
     *p;
@@ -307,7 +307,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) strncpy(filename,image->filename,MaxTextExtent-1);
       AppendImageFormat("gif",filename);
       FormatString(buffer,
-        "<img ismap usemap=#%.1024s src=\"%.1024s\" border=0>\n",
+        "<img ismap usemap=\"#%.1024s\" src=\"%.1024s\" border=0>\n",
         mapname,filename);
       (void) WriteBlobString(image,buffer);
       /*
@@ -315,8 +315,12 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       */
       SetGeometry(image,&geometry);
       if (image->montage != (char *) NULL)
-        (void) GetMagickGeometry(image->montage,&geometry.x,&geometry.y,
-          &geometry.width,&geometry.height);
+        {
+          (void) GetGeometry(image->montage,&geometry.x,&geometry.y,
+            &geometry.width,&geometry.height);
+          (void) GetMagickGeometry(image->montage,&geometry.x,&geometry.y,
+            &geometry.width,&geometry.height);
+        }
       /*
         Write an image map.
       */
@@ -326,7 +330,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,buffer);
       if (image->directory == (char *) NULL)
         {
-          FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%lu,%lu>\n",
+          FormatString(buffer,"%.1024s\" shape=rect coords=\"0,0,%lu,%lu\">\n",
             image->filename,geometry.width-1,geometry.height-1);
           (void) WriteBlobString(image,buffer);
         }
@@ -336,7 +340,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobByte(image,*p);
           else
             {
-              FormatString(buffer,"\" shape=rect coords=%ld,%ld,%ld,%ld>\n",
+              FormatString(buffer,"\" shape=rect coords=\"%ld,%ld,%ld,%ld\">\n",
                 geometry.x,geometry.y,geometry.x+(long) geometry.width-1,
                 geometry.y+(long) geometry.height-1);
               (void) WriteBlobString(image,buffer);
@@ -354,7 +358,8 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
             }
       (void) WriteBlobString(image,"</map>\n");
       if (image->montage != (char *) NULL)
-        (void) TransparentImage(image,GetOnePixel(image,0,0),TransparentOpacity);
+        (void) TransparentImage(image,GetOnePixel(image,0,0),
+          TransparentOpacity);
       (void) strncpy(filename,image->filename,MaxTextExtent-1);
       (void) WriteBlobString(image,"</center>\n");
       (void) WriteBlobString(image,"</body>\n");
@@ -395,8 +400,12 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   */
   SetGeometry(image,&geometry);
   if (image->montage != (char *) NULL)
-    (void) GetMagickGeometry(image->montage,&geometry.x,&geometry.y,
-      &geometry.width,&geometry.height);
+    {
+      (void) GetGeometry(image->montage,&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
+      (void) GetMagickGeometry(image->montage,&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
+    }
   /*
     Write an image map.
   */
@@ -406,7 +415,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   if (image->directory == (char *) NULL)
     {
-      FormatString(buffer,"%.1024s\" shape=rect coords=0,0,%lu,%lu>\n",
+      FormatString(buffer,"%.1024s\" shape=rect coords=\"0,0,%lu,%lu\">\n",
         image->filename,geometry.width-1,geometry.height-1);
       (void) WriteBlobString(image,buffer);
     }
@@ -416,7 +425,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,*p);
       else
         {
-          FormatString(buffer," shape=rect coords=%ld,%ld,%ld,%ld>\n",
+          FormatString(buffer,"\" shape=rect coords=\"%ld,%ld,%ld,%ld\">\n",
             geometry.x,geometry.y,geometry.x+(long) geometry.width-1,
             geometry.y+(long) geometry.height-1);
           (void) WriteBlobString(image,buffer);
