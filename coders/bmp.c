@@ -486,7 +486,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.offset_bits=LSBFirstReadLong(image);
       status=ReadBlob(image,2,(char *) magick);
     }
-    if ((status == False) || (LocaleNCompare((char *) magick,"BM",2) != 0))
+    if ((status == False) || 
+        (LocaleNCompare((char *) magick,"BM",2) != 0 && LocaleNCompare((char *) magick,"CI",2) != 0) )
       ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     bmp_info.file_size=LSBFirstReadLong(image);
     (void) LSBFirstReadLong(image);

@@ -155,7 +155,10 @@ static unsigned int DecodeImage(Image *image,const int channel)
             case 3:
             default:
             {
-              q->opacity=MaxRGB-pixel;
+              if (image->colorspace == CMYKColorspace)
+                q->opacity=pixel;
+              else
+                q->opacity=MaxRGB-pixel;
               break;
             }
           }
@@ -199,7 +202,10 @@ static unsigned int DecodeImage(Image *image,const int channel)
         case 3:
         default:
         {
-          q->opacity=MaxRGB-pixel;
+          if (image->colorspace == CMYKColorspace)
+            q->opacity=pixel;
+          else
+            q->opacity=MaxRGB-pixel;
           break;
         }
       }
@@ -327,8 +333,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     char
       blendkey[4];
 
+    Quantum
+      opacity;
+
     unsigned char
-      opacity,
       clipping,
       flags;
 
@@ -603,8 +611,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   case 3:
                   default:
                   {
-                    (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
-                      scanline);
+                    if (layer_info[i].image->colorspace == CMYKColorspace)
+                      (void) PushImagePixels(layer_info[i].image,BlackQuantum,
+                        scanline);
+                    else
+                      (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
+                        scanline);
                     break;
                   }
                 }
@@ -653,7 +665,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   break;
                 for (x=0; x < (int) layer_info[i].image->columns; x++)
                 {
-                  q->opacity=MaxRGB-(unsigned long)
+                  q->opacity=(unsigned long)
                     (q->opacity*layer_info[i].opacity)/MaxRGB;
                   q++;
                 }
@@ -679,13 +691,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (int) (image->rows*psd_info.channels); i++)
         (void) MSBFirstReadShort(image);
       for (i=0; i < (int) psd_info.channels; i++)
-        (void) DecodeImage(image,i);
+        (void) DecodeImage(image,image->matte ? i-1 : i);
     }
   else
     {
-      int
-        channel_map[24];
-
       /*
         Read uncompressed pixel data as separate planes.
       */
@@ -698,8 +707,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         if (image->depth > 8)
           packet_size++;
-      for (i=0; i < psd_info.channels; i++)
-        channel_map[i]=!image->matte ? i : i-1;
       scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
       if (scanline == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -712,7 +719,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           status=ReadBlob(image,packet_size*image->columns,(char *) scanline);
           if ((status == False) || (q == (PixelPacket *) NULL))
             break;
-          switch (channel_map[i])
+          switch (i)
           {
             case 0:
             {
@@ -735,7 +742,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 3:
             default:
             {
-              (void) PushImagePixels(image,OpacityQuantum,scanline);
+              if (image->colorspace == CMYKColorspace)
+                (void) PushImagePixels(image,BlackQuantum,scanline);
+              else
+                (void) PushImagePixels(image,OpacityQuantum,scanline);
               break;
             }
           }
@@ -915,7 +925,8 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     MSBFirstWriteShort(image,image->matte ? 4 : 3);
   MSBFirstWriteLong(image,image->rows);
   MSBFirstWriteLong(image,image->columns);
-  MSBFirstWriteShort(image,image->storage_class == PseudoClass ? 8 : image->depth);
+  MSBFirstWriteShort(image,
+    image->storage_class == PseudoClass ? 8 : image->depth);
   if (((image_info->colorspace != UndefinedColorspace) ||
        (image->colorspace != CMYKColorspace)) &&
        (image_info->colorspace != CMYKColorspace))
