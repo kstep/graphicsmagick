@@ -3897,6 +3897,25 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=emboss_image;
             continue;
           }
+        if (LocaleCompare("endian",option+1) == 0)
+          {
+            EndianType
+              endian;
+
+            if (*option == '+')
+              {
+                clone_info->endian=LSBEndian;
+                continue;
+              }
+            option=argv[++i];
+            endian=UndefinedEndian;
+            if (LocaleCompare("LSB",option) == 0)
+              endian=LSBEndian;
+            if (LocaleCompare("MSB",option) == 0)
+              endian=MSBEndian;
+            clone_info->endian=endian;
+            continue;
+          }
         if (LocaleCompare("-enhance",option) == 0)
           {
             Image
@@ -4153,6 +4172,29 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               break;
             DestroyImage(*image);
             *image=implode_image;
+            continue;
+          }
+        if (LocaleCompare("interlace",option+1) == 0)
+          {
+            InterlaceType
+              interlace;
+
+            if (*option == '+')
+              {
+                clone_info->interlace=NoInterlace;
+                continue;
+              }
+            option=argv[++i];
+            interlace=UndefinedInterlace;
+            if (LocaleCompare("None",option) == 0)
+              interlace=NoInterlace;
+            if (LocaleCompare("Line",option) == 0)
+              interlace=LineInterlace;
+            if (LocaleCompare("Plane",option) == 0)
+              interlace=PlaneInterlace;
+            if (LocaleCompare("Partition",option) == 0)
+              interlace=PartitionInterlace;
+            clone_info->interlace=interlace;
             continue;
           }
         if (LocaleCompare("intent",option+1) == 0)

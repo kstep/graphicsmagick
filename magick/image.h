@@ -373,6 +373,9 @@ typedef struct _Image
   InterlaceType
     interlace;
 
+  EndianType
+    endian;
+
   GravityType
     gravity;
 
@@ -476,6 +479,9 @@ typedef struct _ImageInfo
 
   InterlaceType
     interlace;
+
+  EndianType
+    endian;
 
   ResolutionType
     units;

@@ -179,6 +179,10 @@ static char
     "Undefined", "None", "BZip", "Fax", "Group4", "JPEG", "LosslessJPEG",
     "LZW", "RLE", "Zip", (char *) NULL
   },
+  *EndianTypes[] =
+  {
+    "Undefined", "LSB", "MSB", (char *) NULL
+  },
   *FilterTypess[] =
   {
     "Undefined", "Point", "Box", "Triangle", "Hermite", "Hanning",
@@ -1276,6 +1280,26 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           display:
           if (info)
             (void) CloneString(&info->image_info->server_name,SvPV(sval,na));
+          return;
+        }
+      break;
+    }
+    case 'E':
+    case 'e':
+    {
+      if (LocaleCompare(attribute,"endian") == 0)
+        {
+          sp=SvPOK(sval) ? LookupStr(EndianTypes,SvPV(sval,na)) : SvIV(sval);
+          if (sp < 0)
+            {
+              MagickWarning(OptionWarning,"Invalid endian value",
+                SvPV(sval,na));
+              return;
+            }
+          if (info)
+            info->image_info->endian=(EndianType) sp;
+          for ( ; image; image=image->next)
+            image->endian=(EndianType) sp;
           return;
         }
       break;
@@ -3090,6 +3114,18 @@ Get(ref,...)
         case 'E':
         case 'e':
         {
+          if (LocaleCompare(attribute,"endian") == 0)
+            {
+              j=info ? info->image_info->endian : image->endian;
+              s=newSViv(j);
+              if ((j >= 0) && (j < (int) NumberOf(EndianTypes)-1))
+                {
+                  (void) sv_setpv(s,EndianTypes[j]);
+                  SvIOK_on(s);
+                }
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
           if (LocaleCompare(attribute,"error") == 0)
             {
               if (image)

@@ -1432,11 +1432,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
     (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
-#if defined(HOST_BIGENDIAN)
-    (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
-#else
-    (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
-#endif
+    if (image_info->endian == LSBEndian)
+      (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
+    else
+      if (image_info->endian == MSBEndian)
+        (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
     (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
     if (photometric == PHOTOMETRIC_RGB)

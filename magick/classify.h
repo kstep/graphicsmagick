@@ -139,6 +139,13 @@ typedef enum
 
 typedef enum
 {
+  UndefinedEndian,
+  LSBEndian,
+  MSBEndian
+} EndianType;
+
+typedef enum
+{
   UndefinedException,
   ResourceLimitWarning = 300,
   TypeWarning = 305,

@@ -103,6 +103,7 @@ static void MontageUsage(void)
       "-dispose method      GIF disposal method",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-draw string         annotate the image with a graphic primitive",
+      "-endian type         LSB or MSB",
       "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
       "-frame geometry      surround image with an ornamental border",
@@ -622,6 +623,30 @@ static unsigned int MontageUtility(int argc,char **argv)
                 i++;
                 if (i == argc)
                   MagickError(OptionError,"Missing primitive",option);
+              }
+            break;
+          }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'e':
+      {
+        if (LocaleCompare("endian",option+1) == 0)
+          {
+            image_info->endian=UndefinedEndian;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->endian=EndianInterlace;
+                if (LocaleCompare("LSB",option) == 0)
+                  image_info->endian=LSBEndian;
+                if (LocaleCompare("MSB",option) == 0)
+                  image_info->endian=MSBEndian;
+                if (image_info->endian == EndianInterlace)
+                  MagickError(OptionError,"Invalid endian type",option);
               }
             break;
           }

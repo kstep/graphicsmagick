@@ -184,6 +184,7 @@ static void ConvertUsage(void)
       "-draw string         annotate the image with a graphic primitive",
       "-edge radius         apply a filter to detect edges in the image",
       "-emboss radius       emboss an image",
+      "-endian type         LSB or MSB",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
       "-fill color          color to use when filling a graphic primitive",
@@ -803,6 +804,25 @@ static unsigned int ConvertUtility(int argc,char **argv)
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                   MagickError(OptionError,"Missing radius",option);
+              }
+            break;
+          }
+        if (LocaleCompare("endian",option+1) == 0)
+          {
+            image_info->endian=UndefinedEndian;
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickError(OptionError,"Missing type",option);
+                option=argv[i];
+                image_info->endian=UndefinedEndian;
+                if (LocaleCompare("LSB",option) == 0)
+                  image_info->endian=LSBEndian;
+                if (LocaleCompare("MSB",option) == 0)
+                  image_info->endian=MSBEndian;
+                if (image_info->endian == UndefinedEndian)
+                  MagickError(OptionError,"Invalid endian type",option);
               }
             break;
           }
