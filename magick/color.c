@@ -834,7 +834,6 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   }
   if (file != (FILE *) NULL)
     {
-      image->depth=QuantumDepth;
       Histogram(image,cube_info,cube_info->root,file,exception);
       (void) fflush(file);
     }
@@ -888,8 +887,7 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
   if (node_info->level == MaxTreeDepth)
     {
       char
-        name[MaxTextExtent],
-        tuple[MaxTextExtent];
+        name[MaxTextExtent];
 
       register ColorPacket
         *p;
@@ -900,8 +898,8 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
       p=node_info->list;
       for (i=0; i < (long) node_info->number_unique; i++)
       {
-        GetColorTuple(image,&p->pixel,False,tuple);
-        (void) fprintf(file,"%10lu: %.1024s  ",p->count,tuple);
+        (void) fprintf(file,"%10lu: (%5u,%5u,%5u)  ",p->count,
+					p->pixel.red,p->pixel.green,p->pixel.blue);
         (void) fprintf(file,"  ");
         (void) QueryColorname(image,&p->pixel,SVGCompliance,name,exception);
         (void) fprintf(file,"%.1024s",name);
