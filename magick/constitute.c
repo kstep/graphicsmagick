@@ -2065,7 +2065,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   else
     if (!GetDelegateInfo((char *) NULL,clone_info->magick,&delegate_info))
       {
-        magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+        magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
         if ((magick_info == (MagickInfo *) NULL) ||
             (magick_info->encoder ==
               (unsigned int (*)(const ImageInfo *,Image *)) NULL))
