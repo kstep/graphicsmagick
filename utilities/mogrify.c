@@ -111,6 +111,7 @@
 %    -page geometry       size and location of an image canvas
 %    -paint radius        simulate an oil painting
 %    -pointsize value     pointsize of Postscript font
+%    -profile filename    add ICC or IPTC information profile to image
 %    -quality value       JPEG/MIFF/PNG compression level
 %    -raise value         lighten/darken image edges to create a 3-D effect
 %    -region geometry     apply options to a portion of the image
@@ -239,6 +240,7 @@ static void Usage()
       "-paint radius        simulate an oil painting",
       "-fill color           color for annotating or changing opaque color",
       "-pointsize value     pointsize of Postscript font",
+      "-profile filename    add ICC or IPTC information profile to image",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-region geometry     apply options to a portion of the image",
@@ -1143,6 +1145,13 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing size",option);
                   image_info->pointsize=atof(argv[i]);
                 }
+              break;
+            }
+          if (LocaleNCompare("profile",option+1,4) == 0)
+            {
+              i++;
+              if (i == argc)
+                MagickError(OptionError,"Missing profile",option);
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
