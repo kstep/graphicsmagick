@@ -586,8 +586,7 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             hdf_palette=(unsigned char *)
               AllocateMemory(768*sizeof(unsigned char));
             if (hdf_palette == (unsigned char *) NULL)
-              WriterExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
+              WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
             q=hdf_palette;
             for (i=0; i < (int) image->colors; i++)
             {

@@ -2065,6 +2065,10 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     color[MaxTextExtent],
     **textlist;
 
+  double
+    elapsed_time,
+    user_time;
+
   Image
     *p;
 
@@ -2084,15 +2088,13 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   unsigned long
     number_colors;
 
-
   assert(image != (Image *) NULL);
   assert(file != (FILE *) NULL);
+  elapsed_time=GetElapsedTime(&image->timer_info);
+  user_time=GetUserTime(&image->timer_info);
+  ContinueTimer(&image->timer_info);
   if (!verbose)
     {
-      double
-        elapsed_time,
-        user_time;
-
       /*
         Display detailed info about the image.
       */
@@ -2140,9 +2142,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
             else
               (void) fprintf(file,"%db ",image->filesize);
         }
-      elapsed_time=GetElapsedTime(&image->timer_info);
-      user_time=GetUserTime(&image->timer_info);
-      ContinueTimer(&image->timer_info);
       (void) fprintf(file,"%.1024s %.1fu %d:%02d\n",image->magick,user_time,
         (int) (elapsed_time/60.0),(int) fmod(elapsed_time+0.5,60.0));
       return;
@@ -2478,6 +2477,11 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  tainted: False\n");
   SignatureImage(image);
   (void) fprintf(file,"  signature: %.1024s\n",image->signature);
+  if (user_time != 0.0)
+    (void) fprintf(file,"  user time: %.1fu\n",user_time);
+  if (elapsed_time != 0.0)
+    (void) fprintf(file,"  elapsed time: %d:%02d\n",
+      (int) (elapsed_time/60.0),(int) fmod(elapsed_time+0.5,60.0));
   if (image->comments != (char *) NULL)
     {
       /*
@@ -5815,6 +5819,7 @@ Export Image *ReadImage(ImageInfo *image_info)
   for (next_image=image; next_image; next_image=next_image->next)
   {
     DestroyBlobInfo(&image->blob_info);
+    next_image->tainted=False;
     (void) strcpy(next_image->magick_filename,image_info->filename);
     if (image->temporary)
       (void) strcpy(next_image->filename,image_info->filename);

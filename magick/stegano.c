@@ -143,8 +143,7 @@ Export Image *ReadSTEGANOImage(const ImageInfo *image_info)
   cloned_image=CloneImage(stegano_image,image->columns,image->rows,True);
   DestroyImage(image);
   if (cloned_image == (Image *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-      stegano_image);
+    ReaderExit(ResourceLimitWarning,"Memory allocation failed",stegano_image);
   image=cloned_image;
   image->class=PseudoClass;
   image->colors=1 << QuantumDepth;

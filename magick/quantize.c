@@ -291,8 +291,7 @@ const long
   Method prototypes.
 */
 static NodeInfo
-  *GetNodeInfo(CubeInfo *,const unsigned int,const unsigned int,
-    NodeInfo *);
+  *GetNodeInfo(CubeInfo *,const unsigned int,const unsigned int,NodeInfo *);
 
 static unsigned int
   DitherImage(CubeInfo *,Image *);

@@ -314,8 +314,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
             image->colormap=(PixelPacket *)
               AllocateMemory(image->colors*sizeof(PixelPacket));
             if (image->colormap == (PixelPacket *) NULL)
-              ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
+              ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
             for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=(MaxRGB*i)/(image->colors-1);
@@ -370,8 +369,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
         break;
       }
       default:
-        ReaderExit(CorruptImageWarning,"Colormap type is not supported",
-          image);
+        ReaderExit(CorruptImageWarning,"Colormap type is not supported",image);
     }
     sun_data=(unsigned char *)
       AllocateMemory(sun_header.length*sizeof(unsigned char));

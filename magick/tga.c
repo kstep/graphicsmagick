@@ -582,8 +582,7 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         targa_colormap=(unsigned char *) AllocateMemory(3*
           targa_header.colormap_length*sizeof(unsigned char));
         if (targa_colormap == (unsigned char *) NULL)
-          WriterExit(ResourceLimitWarning,"Memory allocation failed",
-            image);
+          WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
         q=targa_colormap;
         for (i=0; i < (int) image->colors; i++)
         {

@@ -327,11 +327,11 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         (viff_header.data_storage_type != VFF_TYP_4_BYTE) &&
         (viff_header.data_storage_type != VFF_TYP_FLOAT) &&
         (viff_header.data_storage_type != VFF_TYP_DOUBLE))
-      ReaderExit(CorruptImageWarning,
-        "Data storage type is not supported",image);
+      ReaderExit(CorruptImageWarning,"Data storage type is not supported",
+        image);
     if (viff_header.data_encode_scheme != VFF_DES_RAW)
-      ReaderExit(CorruptImageWarning,
-        "Data encoding scheme is not supported",image);
+      ReaderExit(CorruptImageWarning,"Data encoding scheme is not supported",
+        image);
     if ((viff_header.map_storage_type != VFF_MAPTYP_NONE) &&
         (viff_header.map_storage_type != VFF_MAPTYP_1_BYTE) &&
         (viff_header.map_storage_type != VFF_MAPTYP_2_BYTE) &&
@@ -370,8 +370,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
             image->colormap=(PixelPacket *)
               AllocateMemory(image->colors*sizeof(PixelPacket));
             if (image->colormap == (PixelPacket *) NULL)
-              ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
+              ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
             for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=(MaxRGB*i)/(image->colors-1);

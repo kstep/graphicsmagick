@@ -201,8 +201,8 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   status=ReadBlob(image,length,(char *) image->comments);
   image->comments[length]='\0';
   if (status == False)
-    ReaderExit(CorruptImageWarning,
-      "Unable to read window name from dump file",image);
+    ReaderExit(CorruptImageWarning,"Unable to read window name from dump file",
+      image);
   /*
     Initialize the X image.
   */

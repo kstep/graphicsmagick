@@ -389,8 +389,8 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
             Initialize image colormap.
           */
           if (image->colors > 256)
-            ReaderExit(CorruptImageWarning,
-              "PCX colormap exceeded 256 colors",image);
+            ReaderExit(CorruptImageWarning,"PCX colormap exceeded 256 colors",
+              image);
           if ((pcx_header.bits_per_pixel*pcx_header.planes) == 1)
             {
               /*

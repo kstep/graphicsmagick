@@ -3240,14 +3240,22 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            if (p->opacity == Opaque)
+            if (p->opacity != Opaque)
               break;
             p++;
           }
           if (x < (int) image->columns)
             break;
         }
-        if ((y < (int) image->rows) && (x < (int) image->columns))
+        if ((y == (int) image->rows) && (x == (int) image->columns))
+          { 
+            /*
+              No transparent pixels are present.  Changes 4 or 6 to 0 or 2.
+            */
+            image->matte=False;
+            ping_info->color_type&=0x03;
+          }
+        else
           {
             ping_info->valid|=PNG_INFO_tRNS;
             ping_info->trans_values.red=p->red;
@@ -3256,14 +3264,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.gray=(unsigned short) Intensity(*p);
             ping_info->trans_values.index=(unsigned short)
               DownScale(p->opacity);
-          }
-        else
-          { 
-            /*
-              No transparent pixels are present.  Changes 4 or 6 to 0 or 2.
-            */
-            image->matte=False;
-            ping_info->color_type&=0x03;
           }
         if (ping_info->valid & PNG_INFO_tRNS)
           {
@@ -3286,9 +3286,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                         break;
                       }
                     if (p->opacity)
-                      {
-                        ping_info->valid&=(~PNG_INFO_tRNS);
-                      }
+                      ping_info->valid&=(~PNG_INFO_tRNS);
                   }
                  else
                   {

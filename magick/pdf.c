@@ -809,8 +809,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           pixels=(unsigned char *)
             AllocateMemory(number_packets*sizeof(unsigned char));
           if (pixels == (unsigned char *) NULL)
-            WriterExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
+            WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
           /*
             Dump runlength encoded pixels.
           */
@@ -1152,8 +1151,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           if (pixels == (unsigned char *) NULL)
             {
               DestroyImage(tile_image);
-              WriterExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
+              WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
             }
           /*
             Dump runlength encoded pixels.
@@ -1364,8 +1362,8 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
-                  WriterExit(ResourceLimitWarning,
-                    "Memory allocation failed",image);
+                  WriterExit(ResourceLimitWarning,"Memory allocation failed",
+                    image);
                 }
               /*
                 Dump Runlength encoded pixels.

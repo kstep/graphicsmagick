@@ -195,8 +195,7 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           matte_image=(unsigned char *)
             AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
           if (matte_image == (unsigned char *) NULL)
-            WriterExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
+            WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
           for (y=0; y < (int) image->rows; y++)
           {
             p=GetPixelCache(image,0,y,image->columns,1);

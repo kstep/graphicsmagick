@@ -287,8 +287,7 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         pixels=(unsigned char *)
           AllocateMemory(number_packets*sizeof(unsigned char));
         if (pixels == (unsigned char *) NULL)
-          WriterExit(ResourceLimitWarning,"Memory allocation failed",
-            image);
+          WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           Dump Packbit encoded pixels.
         */

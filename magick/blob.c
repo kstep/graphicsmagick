@@ -1171,6 +1171,10 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   if (Latin1Compare(filename,"-") == 0)
     {
       image->file=(*type == 'r') ? stdin : stdout;
+#if defined(WIN32)
+      if (strchr(mode,'b') != (char *) NULL)
+        _setmode(_fileno(image->file),_O_BINARY);
+#endif
       image->exempt=True;
     }
   else

@@ -743,8 +743,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
+            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
           }
         TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
           &sample_info);

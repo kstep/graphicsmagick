@@ -601,8 +601,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
             bmp_colormap=(unsigned char *)
               AllocateMemory(4*image->colors*sizeof(unsigned char));
             if (bmp_colormap == (unsigned char *) NULL)
-              ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
+              ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
             packet_size=4;
             if (bmp_header.size == 12)
               packet_size=3;
@@ -1156,8 +1155,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           if (bmp_pixels == (unsigned char *) NULL)
             {
               FreeMemory(bmp_pixels);
-              WriterExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
+              WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
             }
           bmp_header.file_size-=bmp_header.image_size;
           bmp_header.image_size=

@@ -144,9 +144,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   x=0;
   y=0;
   (void) ParseImageGeometry(DefaultPreviewGeometry,&x,&y,&width,&height);
-  image->orphan=True;
   preview_image=ZoomImage(image,width,height);
-  image->orphan=False;
   if (preview_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   LabelImage(preview_image,DefaultTileLabel);
@@ -179,7 +177,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
     if (i == (NumberTiles >> 1))
       {
         commands[argc++]="-mattecolor";
-        commands[argc++]="#dfdfdf";;
+        commands[argc++]="#dfdfdf";
         MogrifyImage(local_info,argc,commands,&images[i]);
         continue;
       }
@@ -486,16 +484,15 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   }
   GetMontageInfo(&montage_info);
   (void) strcpy(montage_info.filename,image->filename);
-  (void) CloneString(&montage_info.geometry,DefaultPreviewGeometry);
-  (void) CloneString(&montage_info.tile,"3x3");
-  (void) CloneString(&montage_info.font,image_info->font);
   montage_info.pointsize=image_info->pointsize;
-  (void) CloneString(&montage_info.frame,DefaultTileFrame);
   montage_info.shadow=True;
+  (void) CloneString(&montage_info.font,image_info->font);
+  (void) CloneString(&montage_info.tile,"3x3");
+  (void) CloneString(&montage_info.geometry,DefaultPreviewGeometry);
+  (void) CloneString(&montage_info.frame,DefaultTileFrame);
   montage_image=MontageImages(*images,&montage_info);
   DestroyMontageInfo(&montage_info);
-  for (i=0;  i < i; i++)
-    DestroyImage(images[i]);
+  DestroyImages(*images);
   if (montage_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   if (montage_image->montage != (char *) NULL)
