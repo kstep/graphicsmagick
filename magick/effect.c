@@ -837,8 +837,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   despeckle_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
-  if (!IsGrayImage(despeckle_image,exception))
-    SetImageType(despeckle_image,TrueColorType);
+  SetImageType(despeckle_image,TrueColorType);
   /*
     Allocate image buffers.
   */
