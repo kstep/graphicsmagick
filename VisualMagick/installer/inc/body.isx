@@ -27,9 +27,8 @@
 #ifdef MagickDynamicPackage
   #include "tasks-install-perlmagick.isx"
 #endif
-#ifdef MagickStaticPackage
-  #include "tasks-install-com.isx"
-#endif
+#include "tasks-install-com.isx"
+
 
 ; Windows registry settings
 [Registry]
@@ -46,9 +45,7 @@
   #include "files-perlmagick.isx"
   #include "files-development.isx"
 #endif
-#ifdef MagickStaticPackage
-  #include "files-com.isx"
-#endif
+#include "files-com.isx"
 
 [Icons]
 #include "icons-associate.isx"
@@ -59,16 +56,12 @@
 #ifdef MagickDynamicPackage
   #include "run-ppm.isx"
 #endif
-#ifdef MagickStaticPackage
-  #include "run-register-com.isx"
-#endif
+#include "run-register-com.isx"
 
 [UninstallRun]
 #include "uninstallrun-pathtool.isx"
 #ifdef MagickDynamicPackage
   #include "uninstallrun-ppm.isx"
 #endif
-#ifdef MagickStaticPackage
-  #include "uninstallrun-unregister-com.isx"
-#endif
+#include "uninstallrun-unregister-com.isx"
 

@@ -11,7 +11,7 @@
 ; #define DEBUG 1
 
 #define  public MagickStaticPackage 1
-#define  public QuantumDepth 8
+#define  public QuantumDepth "8"
 #include "inc\body.isi"
 
 #ifdef Debug

@@ -11,8 +11,8 @@
 ; #define DEBUG 1
 
 #define  public MagickDynamicPackage 1
-#define  public QuantumDepth 8
-#include "inc\body.isi"
+#define  public QuantumDepth "8"
+#include "inc\body.isx"
 
 #ifdef Debug
   #expr SaveToFile(AddBackslash(SourcePath) + "gm-dynamic-8.isp")

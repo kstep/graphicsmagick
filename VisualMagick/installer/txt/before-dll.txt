@@ -47,7 +47,7 @@ Installation Steps
   Select Destination Directory
   
     Specify what drive and directory to install GraphicsMagick into.
-    Approximately 14MB of free disk space is required to install GraphicsMagick.
+    Approximately 17MB of free disk space is required to install GraphicsMagick.
     The default installation directory is similar to
     "C:\Program Files\GraphicsMagick-1.0-Q8". Once you have entered the
     desired installation directory, then select "Next>" to continue.

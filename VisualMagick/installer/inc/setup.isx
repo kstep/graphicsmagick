@@ -21,7 +21,7 @@ AppUpdatesURL=http://www.{#MagickPackageName}.org/www/download.html
 ; Default install is under "C:\Program Files\GraphicsMagick-1.0-Q16":
 DefaultDirName={pf}\{#MagickPackageName}-{#MagickPackageVersion}-Q{#QuantumDepth}
 DefaultGroupName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth}
-Compression=zip/9
+Compression=bzip/9
 ChangesAssociations=1
 AllowRootDirectory=no
 InfoBeforeFile=txt\before-{#MagickPackageType}.txt
