@@ -130,7 +130,6 @@ extern "C" {
 #include "version.h"
 #endif
 
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
