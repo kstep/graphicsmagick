@@ -6832,7 +6832,6 @@ QueryColor(ref,...)
 
     dMY_CXT;
     MY_CXT.error_list=newSVpv("",0);
-    GetExceptionInfo(&exception);
     if (items == 1)
       {
         char
@@ -6842,6 +6841,7 @@ QueryColor(ref,...)
           colors;
 
         colorlist=GetColorList("*",&colors);
+        EXTEND(sp,colors);
         for (i=0; i < colors; i++)
         {
           PUSHs(sv_2mortal(newSVpv(colorlist[i],0)));
@@ -6851,6 +6851,7 @@ QueryColor(ref,...)
         goto MethodException;
       }
     EXTEND(sp,4*items);
+    GetExceptionInfo(&exception);
     for (i=1; i < items; i++)
     {
       name=(char *) SvPV(ST(i),na);
