@@ -1451,8 +1451,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           if (info)
             (void) CloneString(&info->image_info->page,geometry);
           for ( ; image; image=image->next)
-            (void) ParseImageGeometry(geometry,&image->page.x,&image->page.y,
-              &image->page.width,&image->page.height);
+            (void) GetImageGeometry(image,geometry,False,&image->page);
           LiberateMemory((void **) &geometry);
           return;
         }
@@ -4340,12 +4339,6 @@ Mogrify(ref,...)
         }
         case 15:  /* Frame */
         {
-          frame_info.width=15;
-          frame_info.height=15;
-          frame_info.x=0;
-          frame_info.y=0;
-          frame_info.inner_bevel=3;
-          frame_info.outer_bevel=3;
           if (attribute_flag[0])
             {
               flags=GetImageGeometry(image,argument_list[0].string_reference,
@@ -4354,8 +4347,6 @@ Mogrify(ref,...)
               frame_info.height=geometry.height;
               frame_info.outer_bevel=geometry.x;
               frame_info.inner_bevel=geometry.y;
-              frame_info.x=(long) frame_info.width;
-              frame_info.y=(long) frame_info.height;
               frame_info.width=image->columns+2*frame_info.width;
               frame_info.height=image->rows+2*frame_info.height;
             }
@@ -4793,15 +4784,15 @@ Mogrify(ref,...)
                 DestroyImage(rotate_image);
               break;
             }
+          if (attribute_flag[2])
+            flags=GetGeometry(argument_list[2].string_reference,&geometry.x,
+              &geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[3])
             geometry.x=argument_list[3].int_reference;
           if (attribute_flag[4])
             geometry.y=argument_list[4].int_reference;
           if (attribute_flag[5])
             image->gravity=(GravityType) argument_list[5].int_reference;
-          if (attribute_flag[2])
-            flags=GetGeometry(argument_list[2].string_reference,&geometry.x,
-              &geometry.y,&geometry.width,&geometry.height);
           /*
             Composite image.
           */
