@@ -301,6 +301,12 @@ ModuleExport void UnregisterIPTCImage(void)
 
 static long GetIPTCStream(unsigned char **info,long length)
 {
+  unsigned char
+    buffer[4];
+
+  register int
+    i;
+
   register unsigned char
     *p;
 
@@ -363,7 +369,7 @@ static long GetIPTCStream(unsigned char **info,long length)
       break; 
     info_length++;
     /*
-      Then we decode the length of the block that follows - long or short fmt.
+      Decode the length of the block that follows - long or short format.
     */
     c=(*p++);
     length--;
@@ -372,12 +378,6 @@ static long GetIPTCStream(unsigned char **info,long length)
     info_length++;
     if (c & (unsigned char) 0x80)
       {
-        unsigned char
-          buffer[4];
-
-        int
-          i;
-
         for (i=0; i < 4; i++)
         {
           buffer[i]=(*p++);
@@ -399,8 +399,12 @@ static long GetIPTCStream(unsigned char **info,long length)
         info_length++;
         tag_length|=(long) c;
       }
+    if (tag_length > length)
+      break;
     p+=tag_length;
     length-=tag_length;
+    if (length <= 0)
+      break; 
     info_length+=tag_length;  
   }
   return(info_length);
