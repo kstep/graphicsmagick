@@ -1026,7 +1026,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   } GlyphInfo;
 
   char
-    filename[MaxTextExtent],
     font[MaxTextExtent];
 
   DrawInfo
