@@ -415,7 +415,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       }
       LiberateSemaphoreInfo(&registry_semaphore);
       if (id >= 0)
-        (void) DeleteMagickRegistry(p->id);
+        (void) DeleteMagickRegistry(id);
       break;
     }
     case ImageInfoRegistryType:
