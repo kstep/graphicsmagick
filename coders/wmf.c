@@ -1683,21 +1683,13 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   (void) CloneString(&(clone_info->size), buff);
   if(image_info->texture == (char*)NULL)
     {
-      if(QueryColorDatabase("none", &clone_info->background_color))
-        {
-          if(!(image_info->background_color.red == clone_info->background_color.red &&
-               image_info->background_color.green == clone_info->background_color.green &&
-               image_info->background_color.blue == clone_info->background_color.blue &&
-               image_info->background_color.opacity == clone_info->background_color.opacity))
-            {
-              printf("Setting background white\n");
-              QueryColorDatabase("white", &clone_info->background_color);
-            }
-          else
-            printf("Not setting background color\n");
-        }
+      QueryColorDatabase("none", &clone_info->background_color);
+      if(ColorMatch(&image_info->background_color,
+                    &clone_info->background_color,
+                    0))
+        QueryColorDatabase("white", &clone_info->background_color);
       else
-        printf("QueryColorDatabase failed!\n");
+        clone_info->background_color = image_info->background_color;
 
       sprintf(clone_info->filename,
 #if QuantumDepth == 8
@@ -1712,7 +1704,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
     }
   else
     sprintf(clone_info->filename,"TILE:%.1024s",image_info->texture);
-  printf("filename: %s\n", clone_info->filename);
   GetExceptionInfo(exception);
   DestroyImage(image);
   image=ReadImage( clone_info, exception );
