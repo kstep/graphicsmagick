@@ -229,6 +229,8 @@ static char **StringToTokens(const char *text,int *number_tokens)
     while (isspace((int) (*p)))
       p++;
     (*number_tokens)++;
+    while (isalpha((int) (*p)))
+      p++;
     if (*p == '"')
       for (p++; (*p != '"') && (*p != '\0'); p++);
     if (*p == '\'')
@@ -255,6 +257,8 @@ static char **StringToTokens(const char *text,int *number_tokens)
     while (isspace((int) (*p)))
       p++;
     q=p;
+    while (isalpha((int) (*q)))
+      q++;
     if (*q == '"')
       {
         p++;
@@ -670,61 +674,94 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"style") == 0)
         {
+          if (svg_info->verbose)
+            (void) fprintf(stdout,"\n");
           tokens=StringToTokens(value,&number_tokens);
-          for (j=0; j < (number_tokens-1); j++)
+          for (j=0; j < (number_tokens-1); j+=2)
           {
-            if ((LocaleCompare(tokens[j],"fill:") == 0) ||
-                (LocaleCompare(tokens[j],"fillcolor:") == 0))
-              (void) CloneString(&q->fill,tokens[++j]);
-            if (LocaleCompare(tokens[j],"font-family:") == 0)
-              (void) CloneString(&q->font,tokens[++j]);
-            if (LocaleCompare(tokens[j],"fill-opacity:") == 0)
+            keyword=(char *) tokens[j];
+            value=(char *) tokens[j+1];
+            if (svg_info->verbose)
+              (void) fprintf(stdout,"  %s %s\n",keyword,value);
+            if (LocaleCompare(keyword,"fill:") == 0)
               {
-                q->opacity=atof(tokens[++j]);
-                if (strchr(tokens[j],'%') == (char *) NULL)
+                (void) CloneString(&q->fill,value);
+                continue;
+              }
+            if (LocaleCompare(keyword,"fillcolor:") == 0)
+              {
+                (void) CloneString(&q->fill,value);
+                continue;
+              }
+            if (LocaleCompare(keyword,"font-family:") == 0)
+              {
+                (void) CloneString(&q->font,value);
+                continue;
+              }
+            if (LocaleCompare(keyword,"fill-opacity:") == 0)
+              {
+                q->opacity=atof(value);
+                if (strchr(value,'%') == (char *) NULL)
                   q->opacity*=100.0;
+                continue;
               }
-            if (LocaleCompare(tokens[j],"font-size:") == 0)
+            if (LocaleCompare(keyword,"font-size:") == 0)
               {
-                q->pointsize=atof(tokens[++j]);
-                q->pointsize*=UnitOfMeasure(tokens[j]);
+                q->pointsize=atof(value)*UnitOfMeasure(value);
+                continue;
               }
-            if (LocaleCompare(tokens[j],"opacity:") == 0)
+            if (LocaleCompare(keyword,"opacity:") == 0)
               {
-                q->opacity=atof(tokens[++j]);
-                if (strchr(tokens[j],'%') == (char *) NULL)
+                q->opacity=atof(value);
+                if (strchr(value,'%') == (char *) NULL)
                   q->opacity*=100.0;
+                continue;
               }
-            if (LocaleCompare(tokens[j],"stroke:") == 0)
-              (void) CloneString(&q->stroke,tokens[++j]);
-            if (LocaleCompare(tokens[j],"stroke-antialiasing:") == 0)
-              q->antialias=LocaleCompare(tokens[++j],"true");
-            if (LocaleCompare(tokens[j],"stroke-opacity:") == 0)
-              q->opacity=atof(tokens[++j]);
-            if (LocaleCompare(tokens[j],"stroke-width:") == 0)
-              q->linewidth=atof(tokens[++j])*UnitOfMeasure(tokens[j]);
-            if (LocaleCompare(tokens[j],"text-align:") == 0)
+            if (LocaleCompare(keyword,"stroke:") == 0)
               {
-                j++;
-                if (LocaleCompare(tokens[j],"center") == 0)
+                (void) CloneString(&q->stroke,value);
+                continue;
+              }
+            if (LocaleCompare(keyword,"stroke-antialiasing:") == 0)
+              {
+                q->antialias=LocaleCompare(value,"true");
+                continue;
+              }
+            if (LocaleCompare(keyword,"stroke-opacity:") == 0)
+              {
+                q->opacity=atof(value);
+                continue;
+              }
+            if (LocaleCompare(keyword,"stroke-width:") == 0)
+              {
+                q->linewidth=atof(value)*UnitOfMeasure(value);
+                continue;
+              }
+            if (LocaleCompare(keyword,"text-align:") == 0)
+              {
+                if (LocaleCompare(value,"center") == 0)
                   q->gravity=NorthGravity;
-                if (LocaleCompare(tokens[j],"left") == 0)
+                if (LocaleCompare(value,"left") == 0)
                   q->gravity=NorthWestGravity;
-                if (LocaleCompare(tokens[j],"right") == 0)
+                if (LocaleCompare(value,"right") == 0)
                   q->gravity=NorthEastGravity;
+                continue;
               }
-            if (LocaleCompare(tokens[j],"text-decoration:") == 0)
+            if (LocaleCompare(keyword,"text-decoration:") == 0)
               {
-                j++;
-                if (LocaleCompare(tokens[j],"underline") == 0)
+                if (LocaleCompare(value,"underline") == 0)
                   q->decorate=UnderlineDecoration;
-                if (LocaleCompare(tokens[j],"line-through") == 0)
+                if (LocaleCompare(value,"line-through") == 0)
                   q->decorate=LineThroughDecoration;
-                if (LocaleCompare(tokens[j],"overline") == 0)
+                if (LocaleCompare(value,"overline") == 0)
                   q->decorate=OverlineDecoration;
+                continue;
               }
-            if (LocaleCompare(tokens[j],"text-antialiasing:") == 0)
-              q->antialias=LocaleCompare(tokens[++j],"true");
+            if (LocaleCompare(keyword,"text-antialiasing:") == 0)
+              {
+                q->antialias=LocaleCompare(value,"true");
+                continue;
+              }
           }
           for (j=0; j < number_tokens; j++)
             FreeMemory((void **) &tokens[j]);
@@ -733,17 +770,23 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"transform") == 0)
         {
+          if (svg_info->verbose)
+            (void) fprintf(stdout,"\n");
           tokens=StringToTokens(value,&number_tokens);
-          for (j=0; j < (number_tokens-1); j++)
+          for (j=0; j < (number_tokens-1); j+=2)
           {
+            keyword=(char *) tokens[j];
+            value=(char *) tokens[j+1];
+            if (svg_info->verbose)
+              (void) fprintf(stdout,"  %s %s\n",keyword,value);
             for (k=0; k < 6; k++)
             {
               current[k]=q->affine[k];
               affine[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
             }
-            if (LocaleCompare(tokens[j],"matrix") == 0)
+            if (LocaleCompare(keyword,"matrix") == 0)
               {
-                p=tokens[++j]+1;
+                p=(char *) (value+1);
                 for (k=0; k < 6; k++)
                 {
                   affine[k]=strtod(p,&p);
@@ -751,43 +794,43 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     p++;
                 }
               }
-            if (LocaleCompare(tokens[j],"rotate") == 0)
+            if (LocaleCompare(keyword,"rotate") == 0)
               {
                 double
                   angle;
 
-                angle=atof(tokens[++j]+1);
+                angle=atof(value+1);
                 affine[0]=cos(DegreesToRadians(fmod(angle,360.0)));
                 affine[1]=(-sin(DegreesToRadians(fmod(angle,360.0))));
                 affine[2]=sin(DegreesToRadians(fmod(angle,360.0)));
                 affine[3]=cos(DegreesToRadians(fmod(angle,360.0)));
               }
-            if (LocaleCompare(tokens[j],"scale") == 0)
+            if (LocaleCompare(keyword,"scale") == 0)
               {
-                p=tokens[++j]+1;
+                p=(char *) (value+1);
                 affine[0]=strtod(p,&p);
                 affine[3]=affine[0];
               }
-            if (LocaleCompare(tokens[j],"skewX") == 0)
+            if (LocaleCompare(keyword,"skewX") == 0)
               {
                 affine[0]=1.0;
                 affine[2]=
-                  tan(DegreesToRadians(fmod(atof(tokens[++j]+1),360.0)));
+                  tan(DegreesToRadians(fmod(atof(value+1),360.0)));
                 affine[3]=1.0;
               }
-            if (LocaleCompare(tokens[j],"skewY") == 0)
+            if (LocaleCompare(keyword,"skewY") == 0)
               {
                 affine[0]=1.0;
                 affine[1]=
-                  tan(DegreesToRadians(fmod(atof(tokens[++j]+1),360.0)));
+                  tan(DegreesToRadians(fmod(atof(value+1),360.0)));
                 affine[3]=1.0;
               }
-            if (LocaleCompare(tokens[j],"translate") == 0)
+            if (LocaleCompare(keyword,"translate") == 0)
               {
                 affine[0]=1.0;
                 affine[3]=1.0;
-                k=sscanf(tokens[++j]+1,"%lf%lf",&affine[4],&affine[5]);
-                k=sscanf(tokens[j]+1,"%lf,%lf",&affine[4],&affine[5]);
+                k=sscanf(value+1,"%lf%lf",&affine[4],&affine[5]);
+                k=sscanf(keyword+1,"%lf,%lf",&affine[4],&affine[5]);
                 if (k == 1)
                   affine[5]=affine[4];
               }
