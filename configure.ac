@@ -499,9 +499,10 @@ then
  OLIBS="$LIBS"
  LIBS=''
  AC_LANG_PUSH(C++)
- AC_CHECK_HEADERS(algorithm cctype cerrno cmath cstdio cstdlib cstring \
-   ctime exception functional iomanip iosfwd iostream iterator list string \
-   strstream utility)
+# Full set of headers used ...
+# algorithm cctype cerrno cmath cstdio cstdlib cstring ctime exception
+# functional iomanip iosfwd iostream iterator list string strstream utility
+ AC_CHECK_HEADERS(iosfwd)
  AC_LANG_CPLUSPLUS
  AC_PROG_CXX
  AC_CXX_BOOL

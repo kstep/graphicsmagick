@@ -238,8 +238,8 @@ AUTOMAKE_OPTIONS = 1.6 dist-zip dist-bzip2 foreign
 # Directories to include in distribution
 DIST_SUBDIRS = ltdl coders magick utilities tests Magick++
 
-@WITH_MODULES_TRUE@SUBDIRS = ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
-@WITH_MODULES_FALSE@SUBDIRS = coders magick utilities tests $(MAGICK_PLUS_PLUS)
+@WITH_MODULES_TRUE@SUBDIRS = ltdl magick coders $(MAGICK_PLUS_PLUS) utilities tests
+@WITH_MODULES_FALSE@SUBDIRS = coders magick $(MAGICK_PLUS_PLUS) utilities tests
 
 # Architecture independent data files installed in the package's data directory
 pkgdata_DATA = Copyright.txt QuickStart.txt
@@ -675,6 +675,9 @@ uninstall-data-html:
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) CC='@CC@' install && \
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) clean && rm -f  Makefile.old )
 
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@uninstall-exec-perl: $(PERLMAKEFILE)
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	echo "Uninstall not supported for PerlMagick"
+
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@check-perl: $(PERLMAKEFILE)
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
@@ -682,13 +685,16 @@ uninstall-data-html:
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME) $(PERL_MAKE_OPTIONS)
 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@$(PERLMAGICK)/$(PERLMAGICK): $(PERLMAKEFILE)
-@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	rm -f @BIN_DIR@/$(PERLSTATICNAME)
 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	( cd $(PERLMAGICK) && \
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) && \
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) -f Makefile.aperl map_clean && \
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) clean && rm -f  Makefile.old )
+
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@uninstall-exec-perl: $(PERLMAKEFILE)
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	( cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl uninstall MAP_TARGET=$(PERLSTATICNAME) )
 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@check-perl: $(PERLMAGICK)/$(PERLMAGICK)
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
@@ -702,6 +708,7 @@ uninstall-data-html:
 # Satisfy makefile requirements if not building PERL
 @WITH_PERL_FALSE@all-perl:
 @WITH_PERL_FALSE@install-exec-perl:
+@WITH_PERL_FALSE@uninstall-exec-perl:
 @WITH_PERL_FALSE@check-perl:
 @WITH_PERL_FALSE@clean-perl:
 @WITH_PERL_FALSE@distclean-perl:

@@ -18818,28 +18818,12 @@ ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
+# Full set of headers used ...
+# algorithm cctype cerrno cmath cstdio cstdlib cstring ctime exception
+# functional iomanip iosfwd iostream iterator list string strstream utility
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-for ac_header in algorithm cctype cerrno cmath cstdio cstdlib cstring \
-   ctime exception functional iomanip iosfwd iostream iterator list string \
-   strstream utility
+for ac_header in iosfwd
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then

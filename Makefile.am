@@ -39,9 +39,9 @@ endif # WITH_MAGICK_PLUS_PLUS
 DIST_SUBDIRS=ltdl coders magick utilities tests Magick++
 
 if WITH_MODULES
-SUBDIRS = ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
+SUBDIRS = ltdl magick coders $(MAGICK_PLUS_PLUS) utilities tests
 else
-SUBDIRS = coders magick utilities tests $(MAGICK_PLUS_PLUS)
+SUBDIRS = coders magick $(MAGICK_PLUS_PLUS) utilities tests
 endif # WITH_MODULES
 
 # Architecture independent data files installed in the package's data directory
@@ -115,6 +115,9 @@ install-exec-perl: $(PERLMAKEFILE)
 	$(MAKE) CC='@CC@' install && \
 	$(MAKE) clean && rm -f  Makefile.old )
 
+uninstall-exec-perl: $(PERLMAKEFILE)
+	echo "Uninstall not supported for PerlMagick"
+
 check-perl: $(PERLMAKEFILE)
 	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
@@ -127,13 +130,16 @@ $(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME) $(PERL_MAKE_OPTIONS)
 
 $(PERLMAGICK)/$(PERLMAGICK): $(PERLMAKEFILE)
-	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
+	rm -f @BIN_DIR@/$(PERLSTATICNAME)
 
 install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
 	( cd $(PERLMAGICK) && \
 	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) && \
 	$(MAKE) -f Makefile.aperl map_clean && \
 	$(MAKE) clean && rm -f  Makefile.old )
+
+uninstall-exec-perl: $(PERLMAKEFILE)
+	( cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl uninstall MAP_TARGET=$(PERLSTATICNAME) )
 
 check-perl: $(PERLMAGICK)/$(PERLMAGICK)
 	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
@@ -152,6 +158,7 @@ else
 # Satisfy makefile requirements if not building PERL
 all-perl:
 install-exec-perl:
+uninstall-exec-perl:
 check-perl:
 clean-perl:
 distclean-perl:
