@@ -290,6 +290,7 @@ static void ConcatenateImages(int argc,char **argv)
     for (c=fgetc(input); c != EOF; c=fgetc(input))
       (void) fputc((char) c,output);
     (void) fclose(input);
+    (void) remove(argv[i]);
   }
   (void) fclose(output);
   Exit(0);

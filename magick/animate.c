@@ -1259,7 +1259,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         Window name is the base of the filename.
       */
       p=displayed_image->filename+Extent(displayed_image->filename)-1;
-      while ((p > displayed_image->filename) && (*(p-1) != *BasenameSeparator))
+      while ((p > displayed_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
       FormatString(windows->image.name,"ImageMagick: %s[%u of %u]",p,
         displayed_image->scene,number_scenes);

@@ -80,8 +80,7 @@ bzip=>
 
 cgm=>
 	ralcgm -d ps %i %o %u
-	rename %o.ps %o
-	delete %u
+	convert -concatenate %o*.ps %o
 
 compress=>
 	|uncompress -c %i
@@ -114,7 +113,6 @@ ftp=>
 gplt=>
 	echo "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
 	gnuplot %u
-	delete %u
 
 gs-color=>
 	gs -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
@@ -144,12 +142,10 @@ launch=>pnm
 mpg=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
-	delete %o*.ppm
 
 m2v=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
-	delete %o*.ppm
 
 pdf<=>eps
 	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
@@ -168,7 +164,7 @@ pnm<=win
 pov=>
 	povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
 	convert %o*.png %o
-	delete %o*.png
+	convert -concatenate %o*.png %o
 
 print=>ps
 	print/delete %i
@@ -199,11 +195,11 @@ shtml=>
 
 yuv<=m2v
 	mpeg2encode %u %o
-	delete %i*.yuv %u*
+	convert -concatenate %o*.yuv %u
 
 yuv<=mpg
 	mpeg2encode %u %o
-	delete %i*.yuv %u*
+	convert -concatenate %o*.yuv %u
 
 zip=>
 	|gzip -cdfq %i

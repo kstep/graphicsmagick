@@ -169,8 +169,6 @@ AC_ARG_WITH(zlib,
 	      [with_zlib=$withval],
 	      [with_zlib='yes'])
 
-# Extend includedir to include magick subdirectory offset
-includedir="$includedir/magick"
 
 # Check for delegate sub-directories and add -I & -L options as required.
 # This presumes that delegates are installed as detailed in the ImageMagick
@@ -241,9 +239,12 @@ eval "eval INFO_DIR=$infodir"
 eval "eval MAN_DIR=$mandir"
 
 
-LDFLAGS="$LDFLAGS -L$BIN_DIR"
+LDFLAGS="$LDFLAGS -L$LIB_DIR"
 CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
 TRAILING_LIBS=''
+
+# Extend includedir to include magick subdirectory offset
+includedir="$includedir/magick"
 
 #
 # Find math library

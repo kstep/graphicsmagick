@@ -83,8 +83,7 @@ bzip=>
 
 cgm=>
 	ralcgm -d ps %i %o %u
-	move %o.ps %o
-	del %u
+	convert -concatenate %o*.ps %o
 
 compress=>
 	|uncompress -c %i
@@ -117,7 +116,6 @@ ftp=>
 gplt=>
 	echo "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
 	gnuplot %u
-	del %u
 
 gs-color=>
 	gswin32 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
@@ -142,17 +140,15 @@ http=>
 	GET %m:%i > %o 2>&1
 
 launch=>bmp
-	mspaint %i
+	c:\Program Files\Accessories\mspaint %i
 
 mpg=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
-	del %o*.ppm
 
 m2v=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
-	del %o*.ppm
 
 pdf<=>eps
 	gswin32 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
@@ -166,12 +162,11 @@ pgp=>
 	pgpv -fq %i
 
 pnm<=win
-	c:\Program Files\Accessories\mspaint %i
+	mspaint %i
 
 pov=>
 	povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
-	convert %o*.png %o
-	del %o*.png
+	convert -concatenate %o*.png %o
 
 print=>pcl
 	print %i
@@ -202,11 +197,11 @@ shtml=>
 
 yuv<=m2v
 	mpeg2encode %u %o
-	del %i*.yuv %u*
+	convert -concatenate %i*.yuv %u
 
 yuv<=mpg
 	mpeg2encode %u %o
-	del %i*.yuv %u*
+	convert -concatenate %i*.yuv %u
 
 zip=>
 	|gzip -cdfq %i

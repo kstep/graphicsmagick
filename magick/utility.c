@@ -102,7 +102,7 @@ Export void AppendImageFormat(const char *format,char *filename)
       return;
     }
   p=filename+Extent(filename)-1;
-  while ((p > filename) && (*p != *BasenameSeparator))
+  while ((p > filename) && !IsBasenameSeparator(*p))
   {
     if (*(p-1) == '.')
       {
@@ -155,7 +155,7 @@ Export char *BaseFilename(const char *name)
   p=basename+(Extent(basename)-1);
   while (p > basename)
   {
-    if (*p == *BasenameSeparator)
+    if (IsBasenameSeparator(*p))
       {
         (void) strcpy(basename,p+1);
         break;
@@ -472,7 +472,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
     */
     (void) getcwd(working_directory,MaxTextExtent-1);
     for (p=option+Extent(option)-1; p > option; p--)
-      if (*p == *BasenameSeparator)
+      if (IsBasenameSeparator(*p))
         {
           /*
             Filename includes a directory name.
@@ -1253,12 +1253,12 @@ Export void LocaleFilename(char *filename)
 
   assert(filename != (char *) NULL);
   p=filename+Extent(filename)-1;
-  while ((*p != *BasenameSeparator) && (p >= filename))
+  while ((p > filename) && !IsBasenameSeparator(*p))
     p--;
   p++;
   TemporaryFilename(p);
   q=filename+Extent(filename)-1;
-  while ((*q != *BasenameSeparator) && (q >= p))
+  while ((q >= p) && !IsBasenameSeparator(*q))
     q--;
   q++;
   (void) strcpy(p,q);
@@ -2626,8 +2626,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
         (void) strcpy(directory,image->magick_filename);
         extension=directory+Extent(directory);
         filename=extension;
-        while ((filename > directory) &&
-               (*(filename-1) != *BasenameSeparator))
+        while ((filename > directory) && !IsBasenameSeparator(*(filename-1)))
         {
           if (*filename == '.')
             if (*extension == '\0')

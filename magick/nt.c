@@ -366,6 +366,10 @@ Export int NTTemporaryFilename(char *filename)
   status=GetTempPath(sizeof(path),path);
   if (status != 0)
     status=GetTempFileName(path,"magick",0,filename);
+  (void) remove(filename);
+  if (strlen(filename) > 4)
+    if (strcmp(filename+strlen(filename)-4,".tmp") == 0)
+      filename[strlen(filename)-4]='\0';
   return(status);
 }
 

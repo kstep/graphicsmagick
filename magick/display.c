@@ -9924,7 +9924,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
         *p;
 
       p=image->filename+Extent(image->filename)-1;
-      while ((p > image->filename) && (*(p-1) != *BasenameSeparator))
+      while ((p > image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
       (void) strcpy(filename,p);
       (void) strcpy(working_directory,image->filename);
@@ -12029,7 +12029,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Window name is the base of the filename.
       */
       p=displayed_image->filename+Extent(displayed_image->filename)-1;
-      while ((p > displayed_image->filename) && (*(p-1) != *BasenameSeparator))
+      while ((p > displayed_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
       FormatString(windows->image.name,"ImageMagick: %s[%u]",p,
         displayed_image->scene);

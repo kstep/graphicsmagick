@@ -12552,7 +12552,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
     &resource_info,&window_info);
   window_info.name=name;
   p=image->filename+Extent(image->filename)-1;
-  while ((p > image->filename) && (*(p-1) != *BasenameSeparator))
+  while ((p > image->filename) && !IsBasenameSeparator(*(p-1)))
     p--;
   FormatString(window_info.name,"%s[%u]",p,image->scene);
   if (image->scene == 0)

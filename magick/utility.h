@@ -51,21 +51,21 @@
    (strchr(text,'}') != (char *) NULL))
 #endif
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#define BasenameSeparator  "/"
+#define IsBasenameSeparator(c)  ((c) == '/')
 #define DirectorySeparator  "/"
 #define TemporaryTemplate  "magick"
 #else
 #if defined(vms)
-#define BasenameSeparator  "]"
+#define IsBasenameSeparator(c)  ((c) == ']')
 #define DirectorySeparator  ""
 #endif
 #if defined(macintosh)
-#define BasenameSeparator  ":"
+#define IsBasenameSeparator(c)  ((c) == ':')
 #define DirectorySeparator  ":"
 #endif
 #if defined(WIN32)
-#define BasenameSeparator  "/"
-#define DirectorySeparator  "/"
+#define IsBasenameSeparator(c)  (((c) == '/') || ((c) == '\\'))
+#define DirectorySeparator  "\\"
 #endif
 #endif
 

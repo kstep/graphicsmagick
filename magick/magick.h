@@ -8,6 +8,10 @@
 extern "C" {
 #endif
 
+#if defined(sun)
+#define __EXTENSIONS__  1
+#endif
+
 #if defined(__hpux)
 #define _HPUX_SOURCE  1
 #endif

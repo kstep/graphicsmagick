@@ -84,8 +84,7 @@ bzip=>
 
 cgm=>
 	@CGMDecodeDelegate@ -d ps %i %o %u
-	@MVDelegate@ %o.ps %o
-	@RMDelegate@ -f %u
+	@ConvertDelegate@ -concatenate %o*.ps %o
 
 compress=>
 	|@LZWDecodeDelegate@ -c %i
@@ -121,7 +120,6 @@ ftp=>
 gplt=>
 	@EchoDelegate@ "set size 1.25,0.62; set terminal postscript portrait color solid; set output '%o'; load '%i'" > %u
 	@GnuplotDecodeDelegate@ %u
-	@RMDelegate@ -f %u
 
 gs-color=>
 	@PSDelegate@ -sDEVICE=@GSColorDevice@ -q -dNOPAUSE -dSAFER \
@@ -151,12 +149,10 @@ launch=>pnm
 mpg=>
 	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%05d
 	@ConvertDelegate@ -concatenate %o*.ppm %o
-	@RMDelegate@ -f %o*.ppm
 
 m2v=>
 	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%05d
 	@ConvertDelegate@ -concatenate %o*.ppm %o
-	@RMDelegate@ -f %o*.ppm
 
 pdf<=>eps
 	@PSDelegate@ -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
@@ -174,8 +170,7 @@ pnm<=win
 
 pov=>
 	@POVDelegate@ +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
-	@ConvertDelegate@ %o*.png %o
-	@RMDelegate@ -f %o*.png
+	@ConvertDelegate@ -concatenate %o*.png %o
 
 print=>ps
 	@LPDelegate@ -c -s %i
@@ -206,11 +201,11 @@ shtml=>
 
 yuv<=m2v
 	@MPEGEncodeDelegate@ %u %o
-	@RMDelegate@ -f %i*.yuv %u*
+	@ConvertDelegate@ -concatenate %i*.yuv %u
 
 yuv<=mpg
 	@MPEGEncodeDelegate@ %u %o
-	@RMDelegate@ -f %i*.yuv %u*
+	@ConvertDelegate@ -concatenate %i*.yuv %u
 
 zip=>
 	|@ZipDelegate@ -cdfq %i
