@@ -7433,7 +7433,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       (void) WriteBlobMSBULong(image,1L);
       PNGType(chunk,mng_sRGB);
       LogPNGChunk(logging,mng_sRGB,1L);
-      chunk[4]=(int) image->rendering_intent+1;
+      chunk[4]=(int) image->rendering_intent-1;
       (void) WriteBlob(image,5,(char *) chunk);
       (void) WriteBlobMSBULong(image,crc32(0,chunk,5));
     }
@@ -8209,7 +8209,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
          (void) WriteBlobMSBULong(image,1L);
          PNGType(chunk,mng_sRGB);
          LogPNGChunk(logging,mng_sRGB,1L);
-         chunk[4]=(int) image->rendering_intent+1;
+         chunk[4]=(int) image->rendering_intent-1;
          (void) WriteBlob(image,5,(char *) chunk);
          (void) WriteBlobMSBULong(image,crc32(0,chunk,5));
          mng_info->have_write_global_srgb=True;
