@@ -1816,12 +1816,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         memset(blue,0,65536L*sizeof(unsigned short));
         for (i=0; i < (long) image->colors; i++)
         {
-          red[i]=(unsigned short)
-            (((double) image->colormap[i].red*65535L)/MaxRGB+0.5);
-          green[i]=(unsigned short)
-            (((double) image->colormap[i].green*65535L)/MaxRGB+0.5);
-          blue[i]=(unsigned short)
-            (((double) image->colormap[i].blue*65535L)/MaxRGB+0.5);
+          red[i]=ScaleQuantumToShort(image->colormap[i].red);
+          green[i]=ScaleQuantumToShort(image->colormap[i].green);
+          blue[i]=ScaleQuantumToShort(image->colormap[i].blue);
         }
         (void) TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
         LiberateMemory((void **) &red);

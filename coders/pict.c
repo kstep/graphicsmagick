@@ -562,7 +562,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 #define MaxCount  128
 #define MaxPackbitsRunlength  128
 
-  int
+  long
     count,
     repeat_count,
     runlength;
@@ -729,12 +729,12 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
 
   int
     c,
-    code,
-    flags,
-    j,
-    version;
+    code;
 
   long
+    flags,
+    j,
+    version,
     y;
 
   PICTRectangle
@@ -849,10 +849,10 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           case 0x13:
           case 0x14:
           {
-            int
+            long
               pattern;
 
-            unsigned int
+            unsigned long
               height,
               width;
 
@@ -942,7 +942,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           case 0x9a:
           case 0x9b:
           {
-            int
+            long
               bytes_per_line;
 
             PICTRectangle
@@ -1087,14 +1087,16 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                         i=(*p++);
                         j=(*p);
                         q->red=ScaleCharToQuantum((i & 0x7c) << 1);
-                        q->green=ScaleCharToQuantum(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
+                        q->green=ScaleCharToQuantum(((i & 0x03) << 6) |
+                          ((j & 0xe0) >> 2));
                         q->blue=ScaleCharToQuantum((j & 0x1f) << 3);
                       }
                     else
                       if (!tile_image->matte)
                         {
                           q->red=ScaleCharToQuantum(*p);
-                          q->green=ScaleCharToQuantum(*(p+tile_image->columns));
+                          q->green=
+                            ScaleCharToQuantum(*(p+tile_image->columns));
                           q->blue=ScaleCharToQuantum(*(p+2*tile_image->columns));
                         }
                       else
@@ -1103,7 +1105,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                           q->red=ScaleCharToQuantum(*(p+tile_image->columns));
                           q->green=(Quantum)
                             ScaleCharToQuantum(*(p+2*tile_image->columns));
-                          q->blue=ScaleCharToQuantum(*(p+3*tile_image->columns));
+                          q->blue=
+                           ScaleCharToQuantum(*(p+3*tile_image->columns));
                         }
                   }
                 p++;
@@ -1137,7 +1140,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             unsigned char
               *info;
 
-            unsigned short
+            unsigned long
               type;
 
             /*
@@ -1406,6 +1409,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
+  off_t
+    offset;
+
   PICTPixmap
     pixmap;
 
@@ -1428,8 +1434,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     x;
 
   size_t
-    count,
-    offset;
+    count;
 
   unsigned char
     *buffer,
@@ -1676,11 +1681,6 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,(unsigned long) pixmap.reserved);
   if (storage_class == PseudoClass)
     {
-      unsigned short
-        red,
-        green,
-        blue;
-
       /*
         Write image colormap.
       */
@@ -1689,16 +1689,13 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobMSBShort(image,(unsigned short) (image->colors-1));
       for (i=0; i < (long) image->colors; i++)
       {
-        red=(unsigned short)
-          (((double) image->colormap[i].red*65535L)/MaxRGB+0.5);
-        green=(unsigned short)
-          (((double) image->colormap[i].green*65535L)/MaxRGB+0.5);
-        blue=(unsigned short)
-          (((double) image->colormap[i].blue*65535L)/MaxRGB+0.5);
         (void) WriteBlobMSBShort(image,i);
-        (void) WriteBlobMSBShort(image,red);
-        (void) WriteBlobMSBShort(image,green);
-        (void) WriteBlobMSBShort(image,blue);
+        (void) WriteBlobMSBShort(image,
+          ScaleQuantumToShort(image->colormap[i].red));
+        (void) WriteBlobMSBShort(image,
+          ScaleQuantumToShort(image->colormap[i].green));
+        (void) WriteBlobMSBShort(image,
+          ScaleQuantumToShort(image->colormap[i].blue));
       }
     }
   /*
