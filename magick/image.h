@@ -517,7 +517,7 @@ typedef struct _AnnotateInfo
 
 typedef struct _MagickInfo
 {
-  const char
+  char
     *tag;
 
   Image
@@ -529,7 +529,7 @@ typedef struct _MagickInfo
     adjoin,
     blob_support;
 
-  const char
+  char
     *description;
 
   void
@@ -748,6 +748,7 @@ extern Export unsigned int
   IsXWD(const unsigned char *,const unsigned int),
   PlasmaImage(Image *,const SegmentInfo *,int,int),
   QueryColorDatabase(const char *,PixelPacket *),
+  UnregisterMagickInfo(const char *),
   Write8BIMImage(const ImageInfo *image_info,Image *image),
   WriteAVSImage(const ImageInfo *image_info,Image *image),
   WriteBMPImage(const ImageInfo *image_info,Image *image),

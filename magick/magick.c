@@ -446,7 +446,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   if (tag == (char *) NULL)
     return(magick_info);
   for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
-    if (Latin1Compare(tag,p->tag) == 0)
+    if (Latin1Compare(p->tag,tag) == 0)
       return(p);
   return((MagickInfo *) NULL);
 }
@@ -559,8 +559,33 @@ Export MagickInfo *RegisterMagickInfo(const char *tag,
   register MagickInfo
     *p;
 
+  p=(MagickInfo*) NULL;
+  if (magick_info != (MagickInfo *) NULL)
+    for (p=magick_info; p->next != (MagickInfo *) NULL; p=p->next)
+    {
+      if (Latin1Compare(p->tag,tag) == 0)
+        {
+          /*
+            Tag already exists-- update it.
+          */
+          if (p->tag == (char *) NULL)
+            FreeMemory(p->tag);
+          p->tag=AllocateString(tag);
+          p->decoder=decoder;
+          p->encoder=encoder;
+          p->magick=magick;
+          p->adjoin=adjoin;
+          p->blob_support=blob_support;
+          if (p->description == (char *) NULL)
+            FreeMemory(p->description);
+          p->description=AllocateString(description);
+          return(p);
+        }
+      if (Latin1Compare(p->tag,tag) > 0)
+        break;
+    }
   /*
-    Add tag info to the end of the image format list.
+    Add tag info to the image format list.
   */
   entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
   if (entry == (MagickInfo *) NULL)
@@ -581,8 +606,64 @@ Export MagickInfo *RegisterMagickInfo(const char *tag,
       magick_info=entry;
       return(entry);
     }
-  for (p=magick_info; p->next != (MagickInfo *) NULL; p=p->next);
-  p->next=entry;
   entry->previous=p;
+  entry->next=p->next;
+  p->next=entry;
   return(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r M a g i c k I n f o                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterMagickInfo removes a tag from the magick info list.  It
+%  returns False if the tag does not exist in the list otherwise True.
+%
+%  The format of the UnregisterMagickInfo method is:
+%
+%      unsigned int UnregisterMagickInfo(const char *tag)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method UnregisterMagickInfo returns False if the tag does not
+%      exist in the list otherwise True.
+%
+%    o tag: a character string that represents the image format we are
+%      looking for.
+%
+*/
+Export unsigned int UnregisterMagickInfo(const char *tag)
+{
+  register MagickInfo
+    *p;
+
+  for (p=GetMagickInfo((char *) NULL); p != (MagickInfo *) NULL; p=p->next)
+  {
+    if (Latin1Compare(p->tag,tag) == 0)
+    {
+      if (p->tag != (char *) NULL)
+	FreeMemory(p->tag);
+      if (p->description != (char *) NULL)
+	FreeMemory(p->description);
+      if (p->previous != (MagickInfo *) NULL)
+         p->previous->next=p->next;
+      else
+        {
+          magick_info=p->next;
+          p->next->previous=(MagickInfo *) NULL;
+        }
+      if (p->next != (MagickInfo*) NULL)
+	p->next->previous=p->previous;
+      FreeMemory(p);
+      return(True);
+    }
+  }
+  return(False);
 }
