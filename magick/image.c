@@ -5087,7 +5087,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   for (i=0; i < argc; i++)
   {
     option=argv[i];
-    if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))
+    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       continue;
     switch (*(option+1))
     {
