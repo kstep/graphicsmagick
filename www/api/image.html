@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>image - ImageMagick Image Methods</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:prospector@porky.devel.redhat.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
@@ -37,6 +37,7 @@
 		<LI><A HREF="#destroyimages">DestroyImages</A></LI>
 		<LI><A HREF="#displayimages">DisplayImages</A></LI>
 		<LI><A HREF="#getimageboundingbox">GetImageBoundingBox</A></LI>
+		<LI><A HREF="#getimagedepth">GetImageDepth</A></LI>
 		<LI><A HREF="#getimageinfo">GetImageInfo</A></LI>
 		<LI><A HREF="#getimagetype">GetImageType</A></LI>
 		<LI><A HREF="#getnextimage">GetNextImage</A></LI>
@@ -44,8 +45,9 @@
 		<LI><A HREF="#getpageinfo">GetPageInfo</A></LI>
 		<LI><A HREF="#getpixelpacket">GetPixelPacket</A></LI>
 		<LI><A HREF="#isgeometry">IsGeometry</A></LI>
-		<LI><A HREF="#issubimage">IsSubimage</A></LI>
+		<LI><A HREF="#isimagesequal">IsImagesEqual</A></LI>
 		<LI><A HREF="#isimagetainted">IsImageTainted</A></LI>
+		<LI><A HREF="#issubimage">IsSubimage</A></LI>
 		<LI><A HREF="#listtogroupimage">ListToGroupImage</A></LI>
 		<LI><A HREF="#mogrifyimage">MogrifyImage</A></LI>
 		<LI><A HREF="#mogrifyimages">MogrifyImages</A></LI>
@@ -53,6 +55,7 @@
 		<LI><A HREF="#parseimagegeometry">ParseImageGeometry</A></LI>
 		<LI><A HREF="#rgbtransformimage">RGBTransformImage</A></LI>
 		<LI><A HREF="#setimage">SetImage</A></LI>
+		<LI><A HREF="#setimagedepth">SetImageDepth</A></LI>
 		<LI><A HREF="#setimageinfo">SetImageInfo</A></LI>
 		<LI><A HREF="#setimageopacity">SetImageOpacity</A></LI>
 		<LI><A HREF="#sortcolormapbyintentsity">SortColormapByIntentsity</A></LI>
@@ -92,6 +95,7 @@
 <P>void  <STRONG>DestroyImages</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>RectangleInfo  <STRONG>GetImageBoundingBox</STRONG>( Image *image );</P>
+<P>unsigned int  <STRONG>GetImageDepth</STRONG>( Image *image );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( Image *image );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
@@ -100,6 +104,7 @@
 <P>void  <STRONG>GetPixelPacket</STRONG>( PixelPacket *pixel );</P>
 <P>unsigned int  <STRONG>IsGeometry</STRONG>( const char *geometry );</P>
 <P>unsigned int  <STRONG>IsImageTainted</STRONG>( const Image *image );</P>
+<P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
 <P>unsigned int  <STRONG>IsSubimage</STRONG>( const char *geometry, const unsigned int pedantic );</P>
 <P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned int *number_images );</P>
 <P>unsigned int  <STRONG>MogrifyImage</STRONG>( const ImageInfo *image_info, const int argc, char ** argv, Image ** image );</P>
@@ -108,6 +113,7 @@
 <P>int  <STRONG>ParseImageGeometry</STRONG>( const char *geometry, int *x, int *y, unsigned int *width, unsigned int *height );</P>
 <P>unsigned int  <STRONG>RGBTransformImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, opacity );</P>
+<P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned int );</P>
 <P>unsigned int  <STRONG>SetImageInfo</STRONG>( ImageInfo *image_info, const unsigned int rectify );</P>
 <P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
 <P>void  <STRONG>SyncImage</STRONG>( Image *image );</P>
@@ -424,6 +430,21 @@ Method GetImageBoundingBox returns the bounding box of an image canvas.
 The address of a structure of type Image.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="getimagedepth">GetImageDepth</A></H2>
+<P>Method GetImageDepth returns the depth of the image.</P>
+<P>The format of the GetImageDepth method is:</P>
+<blockquote>unsigned int GetImageDepth ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_depth%3A">depth:</A></STRONG><BR>
+<DD>
+Method GetImageDepth returns the depth of the image.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="getimageinfo">GetImageInfo</A></H2>
 <P>Method GetImageInfo initializes the ImageInfo structure.</P>
 <P>The format of the GetImageInfo method is:</P>
@@ -517,6 +538,50 @@ Method IsGeometry returns True if the geometry specification is valid otherwise 
 This string is the geometry specification.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="isimagesequal">IsImagesEqual</A></H2>
+<P>Method IsImagesEqual measures the difference between two images.  The error is computed by summing over all pixels in an image the distance squared in 
+<FONT SIZE=-1>RGB</FONT> space between each image pixel and its corresponding pixel in the reference image.  These values are computed:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_mean_error_per_pixel%3A">mean_error_per_pixel:</A></STRONG><BR>
+<DD>
+This value is the mean error for any single pixel in the image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_normalized_mean_square_error%3A">normalized_mean_square_error:</A></STRONG><BR>
+<DD>
+This value is the normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_normalized_maximum_square_error%3A">normalized_maximum_square_error:</A></STRONG><BR>
+<DD>
+Thsi value is the normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.
+<P></P></DL></DL>
+<P>The format of the IsImagesEqual method is:</P>
+<blockquote>unsigned int IsImagesEqual ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *reference ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+Specifies a pointer to an Image structure.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_reference%3A">reference:</A></STRONG><BR>
+<DD>
+Specifies a pointer to an Image structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="isimagetainted">IsImageTainted</A></H2>
+<P>Method IsImageTainted returns True if the image has been altered since it was first read or if any image in the sequence has a difference magic or filename.</P>
+<P>The format of the IsImageTainted method is:</P>
+<blockquote>unsigned int IsImageTainted ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><BR>
+<DD>
+Method IsImageTainted returns True if the image has been altered since it was first read.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="issubimage">IsSubimage</A></H2>
 <P>Method IsSubimage returns True if the geometry is a valid subimage specification (e.g.  [1], [1-9], [1,7,4]).</P>
 <P>The format of the IsSubimage method is:</P>
@@ -535,21 +600,6 @@ This string is the geometry specification.
 <DD>
 
 <FONT SIZE=-1>A</FONT> value other than 0 invokes a more restriction set of conditions for a valid specification (e.g.  [1], [1-4], [4-1]).
-<P></P></DL></DL>
-<P>
-<H2><A NAME="isimagetainted">IsImageTainted</A></H2>
-<P>Method IsImageTainted returns True if the image has been altered since it was first read or if any image in the sequence has a difference magic or filename.</P>
-<P>The format of the IsImageTainted method is:</P>
-<blockquote>unsigned int IsImageTainted ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
-<DD>
-Method IsImageTainted returns True if the image has been altered since it was first read.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listtogroupimage">ListToGroupImage</A></H2>
@@ -687,6 +737,25 @@ The address of a structure of type Image; returned from ReadImage.
 <p><dt><STRONG><A NAME="item_o_opacity%3A">opacity:</A></STRONG><BR>
 <DD>
 The transparency of the background color.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="setimagedepth">SetImageDepth</A></H2>
+<P>Method SetImageDepth sets the depth of the image.</P>
+<P>The format of the SetImageDepth method is:</P>
+<blockquote>unsigned int SetImageDepth ( <A HREF="types/Image.html">Image</A> *image, const unsigned int ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><BR>
+<DD>
+Method SetImageDepth returns True if the image depth is set.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG>depth:</STRONG><BR>
+<DD>
+specified the image depth.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimageinfo">SetImageInfo</A></H2>
