@@ -302,7 +302,9 @@ import, mogrify\fP and \fImontage\fP).
 
 In this document, angle brackets ("<>") enclose variables, and curly
 brackets ("{}") enclose optional parameters. For example,
-\fB"-fuzz <distance>{%}"\fP means you could use the option "-fuzz 2%".
+"\fB-fuzz <distance>{%}\fP" means you can use the
+option "-fuzz 10"
+or "-fuzz 2%".
 
 .TP
 .B "-adjoin"
@@ -572,7 +574,7 @@ is read from a file titled by the remaining characters in the string.
 
 [This option is not used by \fIconvert\fP but this section
 is included because it describes the composite operators that are used
-by the \fI-draw\fP option of \fIconvert\fP.]
+by the \fB-draw\fP option of \fIconvert\fP.]
 
 
 By default, each of the composite image pixels are replaced by the
@@ -1261,7 +1263,7 @@ line option.
 A number of algorithms search for a target color. By default the color
 must be exact. Use this option to match colors that are close to the target
 color in RGB space. For example, if you want to automatically trim the
-edges of an image with \fI-trim\fP but the image was scanned and the
+edges of an image with \fB-trim\fP but the image was scanned and the
 target background color may differ by a small amount. This option can account
 for these differences.
 
@@ -1966,7 +1968,7 @@ A negative \fIx\fP  offset rolls the image left-to-right. A negative \fIy\fP
 offset rolls the image top-to-bottom.
 
 .TP
-.B "-rotate \fI<degrees{<}{>}>"\fP
+.B "-rotate \fI<degrees>{<}{>}"\fP
 \fRapply Paeth image rotation to the image
 
 Use > to rotate the image only if its width exceeds the height.
@@ -2227,10 +2229,10 @@ minimum intensity.
 \fRtile image when filling a graphic primitive
 .TP
 .B "-tile \fI<geometry>"\fP
-\fRlayout of images
+\fRlayout of images [\fImontage]
 .TP
 .B "-title \fI<string>"\fP
-\fRassign a title to the displayed image
+\fRassign title to displayed image [\fIanimate, display, montage\fP]
 
 Use this option to assign a specific title to the image. This is assigned
 to the image window and is typically displayed in the window title bar.
@@ -2536,5 +2538,6 @@ promote the sale, use or other dealings in ImageMagick without prior written
 authorization from the ImageMagick Studio.\fP
 .SH AUTHORS
 
-\fIJohn Cristy, ImageMagick Studio LLC\fP.
+\fIJohn Cristy, ImageMagick Studio LLC,\fP
+\fIGlenn Randers-Pehrson, ImageMagick Studio LLC.\fP
 

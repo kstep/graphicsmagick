@@ -399,7 +399,9 @@ import, mogrify</em> and <em>montage</em>).
 <p>
 In this document, angle brackets ("&lt;&gt;") enclose variables, and curly
 brackets ("{}") enclose optional parameters. For example,
-<strong>"-fuzz &lt;distance&gt;{%}"</strong> means you could use the option "-fuzz 2%".
+"<strong>-fuzz &lt;distance&gt;{%}</strong>" means you can use the
+option "<tt>-fuzz 10</tt>"
+or "<tt>-fuzz 2%</tt>".
 <br>&nbsp;<br>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -864,7 +866,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 [This option is not used by <em>convert</em> but this section
 is included because it describes the composite operators that are used
-by the <em>-draw</em> option of <em>convert</em>.]
+by the <strong>-draw</strong> option of <em>convert</em>.]
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, each of the composite image pixels are replaced by the
@@ -1749,7 +1751,7 @@ width=15><b><font face="Helvetica, Arial"
 A number of algorithms search for a target color. By default the color
 must be exact. Use this option to match colors that are close to the target
 color in RGB space. For example, if you want to automatically trim the
-edges of an image with <em>-trim</em> but the image was scanned and the
+edges of an image with <strong>-trim</strong> but the image was scanned and the
 target background color may differ by a small amount. This option can account
 for these differences.
 </font></td></tr></table>
@@ -2867,7 +2869,7 @@ offset rolls the image top-to-bottom.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-rotate">-rotate</a> <i>&lt;degrees</i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i>&gt;</i>
+    <a name="-rotate">-rotate</a> <i>&lt;degrees&gt;</i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply Paeth image rotation to the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -3356,7 +3358,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="-tile">-tile</a> <i>&lt;geometry&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>layout of images</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>layout of images [<em>montage</a>]</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3367,7 +3369,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="-title">-title</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>assign a title to the displayed image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>assign title to displayed image [<em>animate, display, montage</em>]</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to assign a specific title to the image. This is assigned
 to the image window and is typically displayed in the window title bar.
@@ -3831,6 +3833,9 @@ color="#FFFFFF"><font size="+1">
 <p>
 <em>John Cristy</em>, <em><a href="mailto:magick-users@imagemagick.org">
 magick-users@imagemagick.org</a>, ImageMagick Studio LLC</em>.
+<p>
+<em>Glenn Randers-Pehrson</em>, <em><a href="mailto:randeg@alum.rpi.edu">
+randeg@alum.rpi.edu</a>, ImageMagick Studio LLC</em>.
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 

@@ -238,7 +238,7 @@ For a more detailed description of each option, see
 .B "-resize \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{<}{>}"\fP
 \fRresize and locate an image
 .TP
-.B "-rotate \fI<degrees{<}{>}>"\fP
+.B "-rotate \fI<degrees>{<}{>}"\fP
 \fRapply Paeth image rotation to the image
 .TP
 .B "-scenes \fI<value-value>"\fP
@@ -263,10 +263,10 @@ For a more detailed description of each option, see
 \fRname of texture to tile onto the image background
 .TP
 .B "-tile \fI<geometry>"\fP
-\fRlayout of images
+\fRlayout of images [\fImontage]
 .TP
 .B "-title \fI<string>"\fP
-\fRassign a title to the displayed image
+\fRassign title to displayed image [\fIanimate, display, montage\fP]
 .TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
@@ -383,5 +383,6 @@ promote the sale, use or other dealings in ImageMagick without prior written
 authorization from the ImageMagick Studio.\fP
 .SH AUTHORS
 
-\fIJohn Cristy, ImageMagick Studio LLC\fP.
+\fIJohn Cristy, ImageMagick Studio LLC,\fP
+\fIGlenn Randers-Pehrson, ImageMagick Studio LLC.\fP
 
