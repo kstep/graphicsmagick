@@ -3437,20 +3437,21 @@ static inline double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
       beta=0.0;
       if (!p->ghostline)
         {
-          alpha=(mid+0.25)+0.5;
-          if ((*stroke_opacity < 1.0) && (distance <= (alpha*alpha)))
+          alpha=mid+0.5;
+          if ((*stroke_opacity < 1.0) &&
+              (distance <= ((alpha+0.25)*(alpha+0.25))))
             {
-              alpha=(mid+0.25)-0.5;
-              if (distance <= (alpha*alpha))
+              alpha=mid-0.5;
+              if (distance <= ((alpha+0.25)*(alpha+0.25)))
                 *stroke_opacity=1.0;
               else
                 {
                   beta=1.0;
                   if (distance != 1.0)
                     beta=sqrt(distance);
-                  alpha=beta-(mid+0.25)-0.5;
-                  if (*stroke_opacity < (alpha*alpha))
-                    *stroke_opacity=alpha*alpha;
+                  alpha=beta-mid-0.5;
+                  if (*stroke_opacity < ((alpha-0.25)*(alpha-0.25)))
+                    *stroke_opacity=(alpha-0.25)*(alpha-0.25);
                 }
             }
         }
