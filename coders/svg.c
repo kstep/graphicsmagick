@@ -2289,9 +2289,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
       image);
   point=0;
-  for(j=0; j < image->rows; j++)
+  for (j=0; j < image->rows; j++)
   {
-    for(i=0; i < image->columns; i++)
+    for (i=0; i < image->columns; i++)
     {
       p=GetOnePixel(image,i,j);
       bitmap.bitmap[point++]=pixel->red;

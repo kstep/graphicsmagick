@@ -177,6 +177,18 @@ static int ReadMagicConfigureFile(const char *filename)
   register unsigned char
     *q;
 
+  if (magic_list == (MagicInfo **) NULL)
+    {
+      /*
+        Allocate the magic format list.
+      */
+      magic_list=(MagicInfo **)
+        AcquireMemory(MagicInfoListExtent*sizeof(MagicInfo *));
+      if (magic_list == (MagicInfo **) NULL)
+        MagickError(ResourceLimitError,"Unable to allocate image",
+          "Memory allocation failed");
+      magic_list[0]=(MagicInfo *) NULL;
+    }
   /*
     Allocate and initialize the format list.
   */
@@ -184,15 +196,8 @@ static int ReadMagicConfigureFile(const char *filename)
   file=fopen(filename,"r");
   if (file == (FILE *) NULL)
     return(False);
-  magic_list=(MagicInfo **)
-    AcquireMemory(MagicInfoListExtent*sizeof(MagicInfo *));
-  if (magic_list == (MagicInfo **) NULL)
-    MagickError(ResourceLimitError,"Unable to allocate image",
-      "Memory allocation failed");
-  line_number=0;
-  i=0;
-  magic_list[i]=(MagicInfo *) NULL;
-  while ((i < MagicInfoListExtent-1) && !feof(file))
+  for (i=0; magic_list[i] != (MagicInfo *) NULL; i++);
+  for (line_number=0; (i < MagicInfoListExtent-1) && !feof(file); )
   {
     line_number++;
     (void) fgets(buffer,MaxTextExtent,file);

@@ -3831,13 +3831,19 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
   Image
     *image;
 
-  if (LocaleCompare(image_info->magick,"GRANITE") == 0)
-    image=BlobToImage(image_info,GraniteImage,GraniteImageExtent,exception);
+  ImageInfo
+    *clone_info;
+
+  clone_info=CloneImageInfo(image_info);
+  (void) strcpy(clone_info->magick,"GIF"); 
+  if (LocaleCompare(image->magick,"GRANITE") == 0)
+    image=BlobToImage(clone_info,GraniteImage,GraniteImageExtent,exception);
   else
-    if (LocaleCompare(image_info->magick,"NETSCAPE") == 0)
-      image=BlobToImage(image_info,NetscapeImage,NetscapeImageExtent,exception);
+    if (LocaleCompare(image->magick,"NETSCAPE") == 0)
+      image=BlobToImage(clone_info,NetscapeImage,NetscapeImageExtent,exception);
     else
-      image=BlobToImage(image_info,LogoImage,LogoImageExtent,exception);
+      image=BlobToImage(clone_info,LogoImage,LogoImageExtent,exception);
+  DestroyImageInfo(clone_info);
   return(image);
 }
 

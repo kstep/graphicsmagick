@@ -1663,8 +1663,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   else
     if (!GetDelegateInfo(clone_info->magick,(char *) NULL,&delegate_info))
       {
-        ThrowException(exception,MissingDelegateWarning,
-          "no delegate for this image format",clone_info->filename);
+        if (IsAccessible(clone_info->filename))
+          ThrowException(exception,MissingDelegateWarning,
+            "no delegate for this image format",clone_info->filename);
+        else
+          ThrowException(exception,FileOpenWarning,"Unable to open file",
+            clone_info->filename);
         DestroyImageInfo(clone_info);
         return((Image *) NULL);
       }
@@ -1695,8 +1699,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             (magick_info->decoder ==
               (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
           {
-            ThrowException(exception,MissingDelegateWarning,
-              "no delegate for this image format",clone_info->filename);
+            if (IsAccessible(clone_info->filename))
+              ThrowException(exception,MissingDelegateWarning,
+                "no delegate for this image format",clone_info->filename);
+            else
+              ThrowException(exception,FileOpenWarning,"Unable to open file",
+                clone_info->filename);
             DestroyImageInfo(clone_info);
             return((Image *) NULL);
           }
