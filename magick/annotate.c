@@ -83,6 +83,12 @@
 #  include <freetype/ftoutln.h>
 #endif /* defined(FT_OUTLINE_H) */
 
+#if defined(FT_BBOX_H)
+#  include FT_BBOX_H
+#else
+#  include <freetype/ftbbox.h>
+#endif /* defined(FT_BBOX_H) */
+
 #endif /* defined(HasTTF) */
 
 /*
@@ -1198,7 +1204,20 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
     status=FT_Get_Glyph(face->glyph,&glyph.image);
     if (status != False)
       continue;
-    FT_Glyph_Get_CBox(glyph.image,0,&bounds);
+#if 0
+    /*
+      Obtain glyph's control box. Usually faster than computing the
+      exact bounding box but may be slightly larger in some
+      situations.
+    */
+    FT_Glyph_Get_CBox(glyph.image,FT_GLYPH_BBOX_SUBPIXELS,&bounds);
+#else
+    /*
+      Compute exact bounding box for scaled outline. If necessary, the
+      outline Bezier arcs are walked over to extract their extrema.
+    */
+    FT_Outline_Get_BBox(&((FT_OutlineGlyph) glyph.image)->outline,&bounds);
+#endif
     if ((i == 0) || (bounds.xMin < metrics->bounds.x1))
       metrics->bounds.x1=bounds.xMin;
     if ((i == 0) || (bounds.yMin < metrics->bounds.y1))

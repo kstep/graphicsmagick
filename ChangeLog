@@ -1,3 +1,11 @@
+2004-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/ttf/read.t: Set a desired label size so output
+	image should be the same size as the reference image even if the
+	FreeType type hinter is disabled.
+	* magick/annotate.c (RenderFreetype): Improve outline bounding box
+	computation accuracy.
+
 2004-03-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/x/write.t: Don't test X11 if DISPLAY is not set.
