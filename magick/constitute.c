@@ -726,15 +726,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
           "color separation image type required",map);
         return(False);
       }
-      case 'i':
-      case 'I':
-      {
-        if (image->storage_class == PseudoClass)
-          break;
-        ThrowException(exception,OptionWarning,"palette image type required",
-          map);
-        return(False);
-      }
       default:
         break;
     }
@@ -793,7 +784,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=indexes[x];
+                *q++=Downscale(Intensity(p));
                 break;
               }
               default:
@@ -861,7 +852,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=indexes[x];
+                *q++=Intensity(p);
                 break;
               }
               default:
@@ -929,7 +920,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=indexes[x];
+                *q++=Intensity(p);
                 break;
               }
               default:
@@ -997,7 +988,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=indexes[x];
+                *q++=Intensity(p);
                 break;
               }
               default:
@@ -1065,7 +1056,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=indexes[x];
+                *q++=Intensity(p);
                 break;
               }
               default:
@@ -1133,7 +1124,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=indexes[x];
+                *q++=Intensity(p);
                 break;
               }
               default:
