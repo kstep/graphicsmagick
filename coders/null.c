@@ -99,6 +99,9 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   Image
     *image;
 
+  unsigned int
+    status;
+
   /*
     Initialize Image structure.
   */
@@ -112,8 +115,13 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   if (image->rows == 0)
     image->rows=1;
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-  (void) QueryColorDatabase((char *) image_info->filename,
+  status=QueryColorDatabase((char *) image_info->filename,
     &image->background_color,exception);
+  if (status == False)
+    {
+      DestroyImage(image);
+      return((Image *) NULL);
+    }
   if (!AllocateImageColormap(image,1))
     ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   image->colormap[0]=image->background_color;
