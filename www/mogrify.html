@@ -482,15 +482,15 @@ average a set of images.</dd>
 <table BORDER=0 WIDTH="65%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-blur
-<i>factor</i></font></font></font></b></td>
+<i>order</i></font></font></font></b></td>
 </tr>
 </table>
 
 <dd>
-blur an image while resizing. Specify factor as the percent enhancement
-(0.0 - 99.9%).</dd>
+blur an image.
 
-<p><br>To blur without resizing, use <b>-geometry 100%</b>.</dl>
+Good order values are odd numbers from 3 to 31</dd>
+</dl>
 
 <dl>&nbsp;
 <table BORDER=0 WIDTH="65%" >
@@ -1005,13 +1005,14 @@ the <b>-draw</b> option.</dl>
 <table BORDER=0 WIDTH="65%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-edge
-<i>factor</i></font></font></font></b></td>
+<i>order</i></font></font></font></b></td>
 </tr>
 </table>
 
 <dd>
-detect edges within an image. Specify <i>factor</i> as the percent enhancement
-(0.0 - 99.9%).</dd>
+detect edges within an image.
+
+Good order values are odd numbers from 3 to 31</dd>
 </dl>
 
 <dl>&nbsp;
@@ -1437,16 +1438,14 @@ use: <b>-modulate 20,-10</b>.</dd>
 <table BORDER=0 WIDTH="65%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-median
-<i>radius</i></font></font></font></b></td>
+<i>order</i></font></font></font></b></td>
 </tr>
 </table>
 
 <dd>
-apply a median filter to the image.</dd>
+apply a median filter to the image.
 
-<dd>
-Each pixel is replaced by the median color in a circular neighborhood whose
-width is specified with <i>radius</i>.</dd>
+Good order values are odd numbers from 3 to 31</dd>
 </dl>
 
 <dl>&nbsp;
@@ -1506,7 +1505,7 @@ to only negate the grayscale pixels of the image.</dd>
 <dl>&nbsp;
 <table BORDER=0 WIDTH="65%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-noise</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-noise <i>value</i></font></font></font></b></td>
 </tr>
 </table>
 
@@ -1517,9 +1516,10 @@ add or reduce noise in an image.</dd>
 The principal function of noise peak elimination filter is to smooth the
 objects within an image without losing edge information and without creating
 undesired structures. The central idea of the algorithm is to replace a
-pixel with its next neighbor in value within a 3 x 3 window, if this pixel
+pixel with its next neighbor in value within a pixel window, if this pixel
 has been found to be noise. A pixel is defined as noise if and only if
-this pixel is a maximum or minimum within the 3 x 3 window.</dd>
+this pixel is a maximum or minimum within the pixel window.
+Use \fIorder\fP to specify the width of the neighborhood.</dd>
 
 <dd>
 Use <b>+noise</b> followed by a noise type to add noise to an image. Choose
@@ -1959,13 +1959,14 @@ image. image.</dd>
 <table BORDER=0 WIDTH="65%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-sharpen
-<i>factor</i></font></font></font></b></td>
+<i>order</i></font></font></font></b></td>
 </tr>
 </table>
 
 <dd>
-sharpen an image. Specify <i>factor</i> as the percent enhancement (0.0
-- 99.9%).</dd>
+sharpen an image.
+
+Good order values are odd numbers from 3 to 31</dd>
 </dl>
 
 <dl>&nbsp;

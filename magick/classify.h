@@ -258,7 +258,7 @@ typedef enum
 
 typedef enum
 {
-  UndefinedPrimitive = 0,
+  UndefinedPrimitive = 6,
   PointPrimitive,
   LinePrimitive,
   RectanglePrimitive,

@@ -281,7 +281,7 @@ static struct
     { "Colorize", { {"pen", StringReference}, {"opacity", StringReference} } },
     { "Border", { {"geom", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"color", StringReference} } },
-    { "Blur", { {"factor", DoubleReference} } },
+    { "Blur", { {"order", IntegerReference} } },
     { "Chop", { {"geom", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
@@ -289,8 +289,8 @@ static struct
       {"height", IntegerReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Despeckle", },
-    { "Edge", { {"factor", DoubleReference} } },
-    { "Emboss", },
+    { "Edge", { {"order", IntegerReference} } },
+    { "Emboss", { {"order", IntegerReference} } },
     { "Enhance", },
     { "Flip", },
     { "Flop", },
@@ -302,7 +302,7 @@ static struct
     { "MedianFilter", { {"radius", IntegerReference} } },
     { "Minify", },
     { "OilPaint", { {"radius", IntegerReference} } },
-    { "ReduceNoise", },
+    { "ReduceNoise", { {"order", IntegerReference} } },
     { "Roll", { {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Rotate", { {"degree", DoubleReference} } },
@@ -312,7 +312,7 @@ static struct
       {"height", IntegerReference} } },
     { "Shade", { {"geom", StringReference}, {"azimuth", DoubleReference},
       {"elevat", DoubleReference}, {"color", BooleanTypes} } },
-    { "Sharpen", { {"factor", DoubleReference} } },
+    { "Sharpen", { {"order", IntegerReference} } },
     { "Shear", { {"geom", StringReference}, {"x", DoubleReference},
       {"y", DoubleReference} } },
     { "Spread", { {"amount", IntegerReference} } },
@@ -3825,8 +3825,8 @@ Mogrify(ref,...)
         case 6:  /* Blur */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=50.0;
-          image=BlurImage(image,argument_list[0].double_reference,&exception);
+            argument_list[0].int_reference=3;
+          image=BlurImage(image,argument_list[0].int_reference,&exception);
           break;
         }
         case 7:  /* Chop */
@@ -3884,13 +3884,15 @@ Mogrify(ref,...)
         case 10:  /* Edge */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=50.0;
-          image=EdgeImage(image,argument_list[0].double_reference,&exception);
+            argument_list[0].int_reference=3;
+          image=EdgeImage(image,argument_list[0].int_reference,&exception);
           break;
         }
         case 11:  /* Emboss */
         {
-          image=EmbossImage(image,&exception);
+          if (!attribute_flag[0])
+            argument_list[0].int_reference=3;
+          image=EmbossImage(image,argument_list[0].int_reference,&exception);
           break;
         }
         case 12:  /* Enhance */
@@ -3983,7 +3985,10 @@ Mogrify(ref,...)
         }
         case 21:  /* ReduceNoise */
         {
-          image=ReduceNoiseImage(image,&exception);
+          if (!attribute_flag[0])
+            argument_list[0].int_reference=3;
+          image=
+            ReduceNoiseImage(image,argument_list[0].int_reference,&exception);
           break;
         }
         case 22:  /* Roll */
@@ -4056,9 +4061,8 @@ Mogrify(ref,...)
         case 27:  /* Sharpen */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=30.0;
-          image=
-            SharpenImage(image,argument_list[0].double_reference,&exception);
+            argument_list[0].int_reference=3;
+          image=SharpenImage(image,argument_list[0].int_reference,&exception);
           break;
         }
         case 28:  /* Shear */
@@ -4619,7 +4623,7 @@ Mogrify(ref,...)
         case 58:  /* Charcoal */
         {
           if (!attribute_flag[0])
-            argument_list[0].string_reference="50";
+            argument_list[0].string_reference="3";
           commands[0]=client_name;
           commands[1]="-charcoal";
           commands[2]=argument_list[0].string_reference;
@@ -4709,7 +4713,7 @@ Mogrify(ref,...)
           AV
             *av;
 
-          float
+          double
             *kernel;
 
           register int
@@ -4722,9 +4726,9 @@ Mogrify(ref,...)
             break;
           av=(AV*) argument_list[0].array_reference;
           order=sqrt(av_len(av)+1);
-          kernel=(float *) safemalloc(order*order*sizeof(float));
+          kernel=(double *) safemalloc(order*order*sizeof(double));
           for (j=0; j < (av_len(av)+1); j++)
-            kernel[j]=(float) SvNV(*(av_fetch(av,j,0)));
+            kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
           for ( ; j < (order*order); j++)
             kernel[j]=0.0;
           image=ConvolveImage(image,order,kernel,&exception);

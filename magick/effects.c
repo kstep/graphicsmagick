@@ -156,16 +156,6 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %  one with the pixels blurred.  It allocates the memory necessary for the
 %  new Image structure and returns a pointer to the new image.
 %
-%  BlurImage convolves the pixel neighborhood with this blurring mask:
-%
-%     1  2  1
-%     2  W  2
-%     1  2  1
-%
-%  The scan only processes pixels that have a full set of neighbors.  Pixels
-%  in the top, bottom, left, and right pairs of rows and columns are omitted
-%  from the scan.
-%
 %  The format of the BlurImage method is:
 %
 %      Image *BlurImage(Image *image,const double factor,
@@ -180,100 +170,44 @@ Export Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o factor:  An double value reflecting the percent weight to give to the
-%      center pixel of the neighborhood.
+%    o order: An unsigned int that is the order of the pixel neighborhood.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-Export Image *BlurImage(Image *image,const double factor,
+Export Image *BlurImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {
-#define Blur(weight) \
-  red+=(weight)*s->red; \
-  green+=(weight)*s->green; \
-  blue+=(weight)*s->blue; \
-  opacity+=(weight)*s->opacity; \
-  s++;
-#define BlurImageText  "  Blur image...  "
-
   double
-    blue,
-    green,
-    opacity,
-    quantum,
-    red,
-    weight;
+    *kernel;
 
   Image
     *blur_image;
 
   int
-    y;
+    i;
 
   register int
-    x;
-
-  register PixelPacket
-    *p,
-    *q,
-    *s;
-
-  /*
-    Initialize blurred image attributes.
-  */
+    u,
+    v;
+  
   assert(image != (Image *) NULL);
-  blur_image=CloneImage(image,image->columns,image->rows,False,exception);
-  if (blur_image == (Image *) NULL)
-    return((Image *) NULL);
-  blur_image->class=DirectClass;
-  if ((image->columns < 3) || (image->rows < 3))
-    return(blur_image);
-  /*
-    Blur image.
-  */
-  weight=((100.0-factor)/2)+1;
-  quantum=Max(weight+12.0,1.0);
-  for (y=0; y < (int) image->rows; y++)
+  kernel=(double *) AllocateMemory(order*order*sizeof(double));
+  if (kernel == (double *) NULL)
+    ThrowImageException(ResourceLimitWarning,"Unable to blur image",
+      "Memory allocation failed");
+  i=0;
+  for (v=(-(int) order/2); v <= ((int) order/2); v++)
   {
-    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetImagePixels(blur_image,0,y,blur_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    /*
-      Blur this row of pixels.
-    */
-    *q++=(*(p+image->columns));
-    for (x=1; x < (int) (image->columns-1); x++)
+    for (u=(-(int) order/2); u <= ((int) order/2); u++)
     {
-      /*
-        Compute weighted average of target pixel color components.
-      */
-      red=0.0;
-      green=0.0;
-      blue=0.0;
-      opacity=0.0;
-      s=p;
-      Blur(1); Blur(2); Blur(1);
-      s=p+image->columns;
-      Blur(2); Blur(weight); Blur(2);
-      s=p+2*image->columns;
-      Blur(1); Blur(2); Blur(1);
-      q->red=(red+(quantum/2))/quantum;
-      q->green=(green+(quantum/2))/quantum;
-      q->blue=(blue+(quantum/2))/quantum;
-      q->opacity=(opacity+(quantum/2))/quantum;
-      p++;
-      q++;
+      kernel[i]=exp(-(double) v*v-u*u);
+      i++;
     }
-    p++;
-    *q++=(*p);
-    if (!SyncImagePixels(blur_image))
-      break;
-    if (QuantumTick(y,image->rows-1))
-      ProgressMonitor(BlurImageText,y,image->rows-1);
   }
+  blur_image=ConvolveImage(image,order,kernel,exception);
+  FreeMemory((void *) &kernel);
   return(blur_image);
 }
 
@@ -398,7 +332,7 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
 %  The format of the ConvolveImage method is:
 %
 %      Image *ConvolveImage(Image *image,const unsigned int order,
-%        const float *kernel,ExceptionInfo *exception)
+%        const double *kernel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -411,20 +345,16 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
 %
 %    o order:  The number of columns and rows in the filter kernel.
 %
-%    o kernel:  An array of floats representing the convolution kernel.
+%    o kernel:  An array of double representing the convolution kernel.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
 Export Image *ConvolveImage(Image *image,const unsigned int order,
-  const float *kernel,ExceptionInfo *exception)
+  const double *kernel,ExceptionInfo *exception)
 {
 #define ConvolveImageText  "  Convolving image...  "
-#define Cx(x) \
-  x >= image->columns ? x-image->columns+1 : x < 0 ? (x)+image->columns : x
-#define Cy(y) \
-  y >= image->rows ? y-image->rows+1 : y < 0 ? y+image->rows : y
 
   double
     blue,
@@ -440,23 +370,30 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
     y;
 
   PixelPacket
-    pixel;
+    *p;
 
-  register const float
+  register const double
     *k;
 
   register int
-    x,
     u,
-    v;
+    v,
+    x;
 
   register PixelPacket
-    *q;
+    *q,
+    *s;
 
   /*
     Initialize convolved image attributes.
   */
   assert(image != (Image *) NULL);
+  if ((order % 2) == 0)
+    ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
+      "kernel order must be an odd number");
+  if ((image->columns < order) || (image->rows < order))
+    ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
+      "image smaller than kernel order");
   convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
@@ -469,8 +406,10 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
     weight+=kernel[v];
   for (y=0; y < (int) convolve_image->rows; y++)
   {
+    v=Min(Max(y-(int) order/2,0),image->rows-order);
+    p=GetImagePixels(image,0,v,image->columns,order);
     q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
-    if (q == (PixelPacket *) NULL)
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (int) convolve_image->columns; x++)
     {
@@ -479,17 +418,18 @@ Export Image *ConvolveImage(Image *image,const unsigned int order,
       blue=0.0;
       opacity=0.0;
       k=kernel;
-      for (v=(-(int) order/2); v <= (int) (order/2); v++)
+      s=p+Min(Max(x-(int) order/2,0),image->columns-order);
+      for (v=0; v < order; v++)
       {
-        for (u=(-(int) order/2); u <= (int) (order/2); u++)
+        for (u=0; u < order; u++)
         {
-          pixel=GetOnePixel(image,Cx(x-u),Cy(y-v));
-          red+=(*k)*pixel.red;
-          green+=(*k)*pixel.green;
-          blue+=(*k)*pixel.blue;
-          opacity+=(*k)*pixel.opacity;
+          red+=(*k)*s[u].red;
+          green+=(*k)*s[u].green;
+          blue+=(*k)*s[u].blue;
+          opacity+=(*k)*s[u].opacity;
           k++;
         }
+        s+=image->columns;
       }
       red/=weight;
       green/=weight;
@@ -719,19 +659,9 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 %  one with the edges highlighted.  It allocates the memory necessary for the
 %  new Image structure and returns a pointer to the new image.
 %
-%  EdgeImage convolves the pixel neighborhood with this edge detection mask:
-%
-%    -1 -1 -1
-%    -1  W -1
-%    -1 -1 -1
-%
-%  The scan only processes pixels that have a full set of neighbors.  Pixels
-%  in the top, bottom, left, and right pairs of rows and columns are omitted
-%  from the scan.
-%
 %  The format of the EdgeImage method is:
 %
-%      Image *EdgeImage(Image *image,const double factor,
+%      Image *EdgeImage(Image *image,const unsigned int order,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -743,102 +673,34 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o factor:  An double value reflecting the percent weight to give to the
-%      center pixel of the neighborhood.
+%    o order: An unsigned int that is the order of the pixel neighborhood.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-Export Image *EdgeImage(Image *image,const double factor,
+Export Image *EdgeImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {
-#define Edge(weight) \
-  red+=(weight)*s->red; \
-  green+=(weight)*s->green; \
-  blue+=(weight)*s->blue; \
-  opacity+=(weight)*s->opacity; \
-  s++;
-#define EdgeImageText  "  Detecting image edges...  "
-
   double
-    blue,
-    green,
-    opacity,
-    red,
-    weight;
+    *kernel;
 
   Image
     *edge_image;
 
   int
-    y;
+    i;
 
-  register int
-    x;
-
-  register PixelPacket
-    *p,
-    *q,
-    *s;
-
-  /*
-    Initialize edge image attributes.
-  */
   assert(image != (Image *) NULL);
-  if ((image->columns < 3) || (image->rows < 3))
-    return((Image *) NULL);
-  edge_image=CloneImage(image,image->columns,image->rows,False,exception);
-  if (edge_image == (Image *) NULL)
-    return((Image *) NULL);
-  edge_image->class=DirectClass;
-  /*
-    Edge detect image.
-  */
-  weight=factor/8.0;
-  for (y=0; y < (int) image->rows; y++)
-  {
-    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetImagePixels(edge_image,0,y,edge_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    /*
-      Edge detect this row of pixels.
-    */
-    *q++=(*(p+image->columns));
-    for (x=1; x < (int) (image->columns-1); x++)
-    {
-      /*
-        Compute weighted average of target pixel color components.
-      */
-      red=0.0;
-      green=0.0;
-      blue=0.0;
-      opacity=0.0;
-      s=p;
-      Edge(-weight/8); Edge(-weight/8) Edge(-weight/8);
-      s=p+image->columns;
-      Edge(-weight/8); Edge(weight); Edge(-weight/8);
-      s=p+2*image->columns;
-      Edge(-weight/8); Edge(-weight/8); Edge(-weight/8);
-      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
-      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
-      p++;
-      q++;
-    }
-    p++;
-    *q++=(*p);
-    if (!SyncImagePixels(edge_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(EdgeImageText,y,image->rows-1);
-  }
-  /*
-    Normalize image.
-  */
-  NormalizeImage(edge_image);
+  kernel=(double *) AllocateMemory(order*order*sizeof(double));
+  if (kernel == (double *) NULL)
+    ThrowImageException(ResourceLimitWarning,"Unable to detect edges",
+      "Memory allocation failed");
+  for (i=0; i < (order*order); i++)
+    kernel[i]=(-1.0);
+  kernel[i/2]=order*order-1.0;
+  edge_image=ConvolveImage(image,order,kernel,exception);
+  FreeMemory((void *) &kernel);
   return(edge_image);
 }
 
@@ -856,19 +718,10 @@ Export Image *EdgeImage(Image *image,const double factor,
 %  one with the edge highlighted.  It allocates the memory necessary for the
 %  new Image structure and returns a pointer to the new image.
 %
-%  EmbossImage convolves the pixel neighborhood with this edge detection mask:
-%
-%    -1 -2  0
-%    -2  0  2
-%     0  2  1
-%
-%  The scan only processes pixels that have a full set of neighbors.  Pixels
-%  in the top, bottom, left, and right pairs of rows and columns are omitted
-%  from the scan.
-%
 %  The format of the EmbossImage method is:
 %
-%      Image *EmbossImage(Image *image,ExceptionInfo *exception)
+%      Image *EmbossImage(Image *image,unsigned int order,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -879,98 +732,49 @@ Export Image *EdgeImage(Image *image,const double factor,
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
+%    o order: An unsigned int that is the order of the pixel neighborhood.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-Export Image *EmbossImage(Image *image,ExceptionInfo *exception)
+Export Image *EmbossImage(Image *image,const unsigned int order,
+  ExceptionInfo *exception)
 {
-#define EmbossImageText  "  Embossing image...  "
-#define Emboss(weight) \
-  red+=(weight)*s->red; \
-  green+=(weight)*s->green; \
-  blue+=(weight)*s->blue; \
-  s++;
-
   double
-    blue,
-    green,
-    red;
+    *kernel;
 
   Image
     *emboss_image;
 
   int
-    y;
+    i,
+    j;
 
   register int
-    x;
-
-  register PixelPacket
-    *p,
-    *q,
-    *s;
-
-  /*
-    Initialize embossed image attributes.
-  */
+    u,
+    v;
+  
   assert(image != (Image *) NULL);
-  if ((image->columns < 3) || (image->rows < 3))
-    return((Image *) NULL);
-  emboss_image=CloneImage(image,image->columns,image->rows,False,exception);
-  if (emboss_image == (Image *) NULL)
-    return((Image *) NULL);
-  emboss_image->class=DirectClass;
-  /*
-    Emboss image.
-  */
-  for (y=0; y < (int) image->rows; y++)
+  kernel=(double *) AllocateMemory(order*order*sizeof(double));
+  if (kernel == (double *) NULL)
+    ThrowImageException(ResourceLimitWarning,"Unable to emboss image",
+      "Memory allocation failed");
+  i=0;
+  j=(int) order/2;
+  for (v=(-(int) order/2); v <= ((int) order/2); v++)
   {
-    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetImagePixels(emboss_image,0,y,emboss_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    /*
-      Emboss this row of pixels.
-    */
-    *q++=(*(p+image->columns));
-    for (x=1; x < (int) (image->columns-1); x++)
+    for (u=(-(int) order/2); u <= ((int) order/2); u++)
     {
-      /*
-        Compute weighted average of target pixel color components.
-      */
-      red=0.0;
-      green=0.0;
-      blue=0.0;
-      s=p;
-      Emboss(-1); Emboss(-2); Emboss( 0);
-      s=p+image->columns;
-      Emboss(-2); Emboss( 0); Emboss( 2);
-      s=p+2*image->columns;
-      Emboss( 0); Emboss( 2); Emboss( 1);
-      red+=(MaxRGB+1)/2;
-      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-      green+=(MaxRGB+1)/2;
-      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-      blue+=(MaxRGB+1)/2;
-      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
-      q->opacity=(p+image->columns)->opacity;
-      p++;
-      q++;
+      kernel[i]=(u < 0 || v < 0 ? -1 : 1)*exp(-(double) v*v-u*u);
+      if (u == j)
+        kernel[i]=0.0;
+      i++;
     }
-    p++;
-    *q++=(*p);
-    if (!SyncImagePixels(emboss_image))
-      break;
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(EmbossImageText,y,image->rows-1);
+    j--;
   }
-  /*
-    Convert image to grayscale and normalize.
-  */
-  emboss_image->class=DirectClass;
-  (void) IsGrayImage(emboss_image);
-  NormalizeImage(emboss_image);
+  emboss_image=ConvolveImage(image,order,kernel,exception);
+  FreeMemory((void *) &kernel);
   return(emboss_image);
 }
 
@@ -1545,12 +1349,12 @@ Export Image *ImplodeImage(Image *image,const double factor,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method MedianFilterImage creates a new image that is a copy of an existing
-%  one with each pixel component replaced with the median color in a
-%  circular neighborhood.
+%  one with each pixel component replaced with the median color in a pixel
+%  neighborhood.
 %
 %  The format of the MedianFilterImage method is:
 %
-%      Image *MedianFilterImage(Image *image,const unsigned int radius,
+%      Image *MedianFilterImage(Image *image,const unsigned int order,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1562,15 +1366,14 @@ Export Image *ImplodeImage(Image *image,const double factor,
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o radius: An unsigned int that is the radius of the circular
-%      neighborhood.
+%    o order: An unsigned int that is the order of the pixel neighborhood.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
 
-static int MedianCompare(const void *x,const void *y)
+static int BlueCompare(const void *x,const void *y)
 {
   PixelPacket
     *color_1,
@@ -1578,100 +1381,130 @@ static int MedianCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return((int) Intensity(*color_1)-(int) Intensity(*color_2));
+  return((int) color_1->blue-color_2->blue);
 }
 
-Export Image *MedianFilterImage(Image *image,const unsigned int radius,
+static int GreenCompare(const void *x,const void *y)
+{
+  PixelPacket
+    *color_1,
+    *color_2;
+
+  color_1=(PixelPacket *) x;
+  color_2=(PixelPacket *) y;
+  return((int) color_1->green-color_2->green);
+}
+
+static int OpacityCompare(const void *x,const void *y)
+{
+  PixelPacket
+    *color_1,
+    *color_2;
+
+  color_1=(PixelPacket *) x;
+  color_2=(PixelPacket *) y;
+  return((int) color_1->opacity-color_2->opacity);
+}
+
+static int RedCompare(const void *x,const void *y)
+{
+  PixelPacket
+    *color_1,
+    *color_2;
+
+  color_1=(PixelPacket *) x;
+  color_2=(PixelPacket *) y;
+  return((int) color_1->red-color_2->red);
+}
+
+Export Image *MedianFilterImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {
-#define MedianFilterImageText  "  Filtering image with neighborhood ranking...  "
+#define MedianFilterImageText \
+  "  Filtering image with neighborhood ranking...  "
 
   Image
     *median_image;
 
   int
+    center,
     y;
 
   PixelPacket
-    *neighbors;
+    *window,
+    *p,
+    *w;
 
   register int
-    i,
+    u,
+    v,
     x;
 
   register PixelPacket
-    *p,
     *q,
-    *s,
-    *t;
-
-  unsigned int
-    length;
+    *s;
 
   /*
-    Initialize median image attributes.
+    Initialize mediand image attributes.
   */
   assert(image != (Image *) NULL);
-  if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
+  if ((image->columns < order) || (image->rows < order))
     ThrowImageException(ResourceLimitWarning,"Unable to median filter image",
-      "image smaller than radius");
+      "image smaller than kernel order");
   median_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (median_image == (Image *) NULL)
     return((Image *) NULL);
   median_image->class=DirectClass;
   /*
-    Allocate neighbors and scanline.
+    Allocate window.
   */
-  length=M_PI*(radius+1)*(radius+1)*sizeof(PixelPacket);
-  neighbors=(PixelPacket *) AllocateMemory(length*sizeof(PixelPacket));
-  if (neighbors == (PixelPacket *) NULL)
+  window=(PixelPacket *) AllocateMemory(order*order*sizeof(PixelPacket));
+  if (window == (PixelPacket *) NULL)
     {
       DestroyImage(median_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to reduce noise",
+      ThrowImageException(ResourceLimitWarning,"Unable to median filter image",
         "Memory allocation failed");
     }
   /*
-    Paint each row of the image.
+    Median filter each image row.
   */
-  for (y=radius; y < (int) (image->rows-radius); y++)
+  center=order*order/2;
+  for (y=0; y < (int) median_image->rows; y++)
   {
-    p=GetImagePixels(image,0,y-radius,image->columns,2*radius+1);
-    q=GetImagePixels(median_image,0,y,median_image->columns,1);
+    v=Min(Max(y-(int) order/2,0),image->rows-order);
+    p=GetImagePixels(image,0,v,image->columns,order);
+    q=SetImagePixels(median_image,0,y,median_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    p+=radius*image->columns+radius;
-    q+=radius;
-    for (x=radius; x < (int) (image->columns-radius); x++)
+    for (x=0; x < (int) median_image->columns; x++)
     {
-      /*
-        Determine most frequent color.
-      */
-      t=neighbors;
-      for (i=0; i < (int) radius; i++)
+      w=window;
+      s=p+Min(Max(x-(int) order/2,0),image->columns-order);
+      for (v=0; v < order; v++)
       {
-        s=p-(radius-i)*image->columns-i-1;
-        memcpy(t,s,(2*i+1)*sizeof(PixelPacket));
-        t+=2*i+1;
-        s=p+(radius-i)*image->columns-i-1;
-        memcpy(t,s,(2*i+1)*sizeof(PixelPacket));
-        t+=2*i+1;
+        for (u=0; u < order; u++)
+          *w++=s[u];
+        s+=image->columns;
       }
-      s=p-radius;
-      memcpy(t,s,(radius+radius+1)*sizeof(PixelPacket));
-      t+=radius+radius+1;
-      qsort((void *) neighbors,t-neighbors,sizeof(PixelPacket),
-        (int (*)(const void *, const void *)) MedianCompare);
-      t-=(t-neighbors)/2;
-      *q=(*t);
-      p++;
+      qsort((void *) window,order*order,sizeof(PixelPacket),
+        (int (*)(const void *,const void *)) RedCompare);
+      q->red=window[center].red;
+      qsort((void *) window,order*order,sizeof(PixelPacket),
+        (int (*)(const void *,const void *)) GreenCompare);
+      q->green=window[center].green;
+      qsort((void *) window,order*order,sizeof(PixelPacket),
+        (int (*)(const void *,const void *)) BlueCompare);
+      q->blue=window[center].blue;
+      qsort((void *) window,order*order,sizeof(PixelPacket),
+        (int (*)(const void *,const void *)) OpacityCompare);
+      q->opacity=window[center].opacity;
       q++;
     }
     if (!SyncImagePixels(median_image))
       break;
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(MedianFilterImageText,y,image->rows);
+    if (QuantumTick(y,median_image->rows))
+      ProgressMonitor(MedianFilterImageText,y,median_image->rows);
   }
-  FreeMemory((void *) &neighbors);
   return(median_image);
 }
 
@@ -2194,14 +2027,14 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %  The principal function of noise peak elimination filter is to smooth the
 %  objects within an image without losing edge information and without
 %  creating undesired structures.  The central idea of the algorithm is to
-%  replace a pixel with its next neighbor in value within a 3 x 3 window,
-%  if this pixel has been found to be noise.  A pixel is defined as noise
-%  if and only if this pixel is a maximum or minimum within the 3 x 3
-%  window.
+%  replace a pixel with its next neighbor in value within a window, if this
+%  pixel has been found to be noise.  A pixel is defined as noise if and
+%  only if this pixel is a maximum or minimum within the window.
 %
 %  The format of the ReduceNoiseImage method is:
 %
-%      Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
+%      Image *ReduceNoiseImage(Image *image,const unsigned int,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2211,6 +2044,8 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
+%
+%    o order: An unsigned int that is the order of the pixel neighborhood.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -2228,7 +2063,8 @@ static int ReduceNoiseCompare(const void *x,const void *y)
   return((int) Intensity(*color_1)-(int) Intensity(*color_2));
 }
 
-Export Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
+Export Image *ReduceNoiseImage(Image *image,const unsigned int order,
+  ExceptionInfo *exception)
 {
 #define ReduceNoiseImageText  "  Reducing the image noise...  "
 
@@ -2236,97 +2072,149 @@ Export Image *ReduceNoiseImage(Image *image,ExceptionInfo *exception)
     *noise_image;
 
   int
+    center,
+    i,
     y;
 
+  PixelPacket
+    *p,
+    pixel,
+    *w,
+    *window;
+
   register int
-    i,
+    u,
+    v,
     x;
 
   register PixelPacket
-    *p,
     *q,
     *s;
 
-  PixelPacket
-    pixel,
-    window[9];
-
   /*
-    Initialize noise image attributes.
+    Initialize noised image attributes.
   */
   assert(image != (Image *) NULL);
-  if ((image->columns < 3) || (image->rows < 3))
-    return((Image *) NULL);
+  if ((image->columns < order) || (image->rows < order))
+    ThrowImageException(ResourceLimitWarning,"Unable to noise filter image",
+      "image smaller than kernel order");
   noise_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (noise_image == (Image *) NULL)
     return((Image *) NULL);
   noise_image->class=DirectClass;
   /*
-    Reduce noise in image.
+    Allocate window.
   */
-  for (y=0; y < (int) image->rows; y++)
+  window=(PixelPacket *) AllocateMemory(order*order*sizeof(PixelPacket));
+  if (window == (PixelPacket *) NULL)
+    {
+      DestroyImage(noise_image);
+      ThrowImageException(ResourceLimitWarning,"Unable to noise filter image",
+        "Memory allocation failed");
+    }
+  /*
+    Median filter each image row.
+  */
+  center=order*order/2;
+  for (y=0; y < (int) noise_image->rows; y++)
   {
-    /*
-      Read another scan line.
-    */
-    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
+    i=Min(Max(y-(int) order/2,0),image->rows-order);
+    p=GetImagePixels(image,0,i,image->columns,order);
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    /*
-      Reduce noise in this row.
-    */
-    *q++=(*(p+image->columns));
-    for (x=1; x < (int) (image->columns-1); x++)
+    for (x=0; x < (int) noise_image->columns; x++)
     {
-      /*
-        Sort window pixels by increasing intensity.
-      */
-      s=p;
-      window[0]=(*s++);
-      window[1]=(*s++);
-      window[2]=(*s++);
-      s=p+image->columns;
-      window[3]=(*s++);
-      window[4]=(*s++);
-      window[5]=(*s++);
-      s=p+2*image->columns;
-      window[6]=(*s++);
-      window[7]=(*s++);
-      window[8]=(*s++);
-      pixel=window[4];
-      qsort((void *) window,9,sizeof(PixelPacket),
-        (int (*)(const void *, const void *)) ReduceNoiseCompare);
-      if (Intensity(pixel) == Intensity(window[0]))
+      w=window;
+      s=p+Min(Max(x-(int) order/2,0),image->columns-order);
+      for (v=0; v < order; v++)
+      {
+        for (u=0; u < order; u++)
+          *w++=s[u];
+        s+=image->columns;
+      }
+      qsort((void *) window,order*order,sizeof(PixelPacket),
+        (int (*)(const void *,const void *)) RedCompare);
+      pixel=window[center];
+      if (pixel.red == window[0].red)
         {
-          /*
-            Pixel is minimum noise; replace with next neighbor in value.
-          */
-          for (i=1; i < 8; i++)
-            if (Intensity(window[i]) != Intensity(window[0]))
+          for (i=1; i < (order*order-1); i++)
+            if (window[i].red != window[0].red)
               break;
           pixel=window[i];
         }
       else
-        if (Intensity(pixel) == Intensity(window[8]))
+        if (pixel.red == window[order*order-1].red)
           {
-            /*
-              Pixel is maximum noise; replace with next neighbor in value.
-            */
-            for (i=7; i > 0; i--)
-              if (Intensity(window[i]) != Intensity(window[8]))
+            for (i=(order*order-2); i > 0; i--)
+              if (window[i].red != window[order*order-1].red)
                 break;
             pixel=window[i];
           }
-      p++;
+      q->red=pixel.red;
+      qsort((void *) window,order*order,sizeof(PixelPacket),
+        (int (*)(const void *,const void *)) GreenCompare);
+      pixel=window[center];
+      if (pixel.green == window[0].green)
+        {
+          for (i=1; i < (order*order-1); i++)
+            if (window[i].green != window[0].green)
+              break;
+          pixel=window[i];
+        }
+      else
+        if (pixel.green == window[order*order-1].green)
+          {
+            for (i=(order*order-2); i > 0; i--)
+              if (window[i].green != window[order*order-1].green)
+                break;
+            pixel=window[i];
+          }
+      q->green=pixel.green;
+      qsort((void *) window,order*order,sizeof(PixelPacket),
+        (int (*)(const void *,const void *)) BlueCompare);
+      pixel=window[center];
+      if (pixel.blue == window[0].blue)
+        {
+          for (i=1; i < (order*order-1); i++)
+            if (window[i].blue != window[0].blue)
+              break;
+          pixel=window[i];
+        }
+      else
+        if (pixel.blue == window[order*order-1].blue)
+          {
+            for (i=(order*order-2); i > 0; i--)
+              if (window[i].blue != window[order*order-1].blue)
+                break;
+            pixel=window[i];
+          }
+      q->blue=pixel.blue;
+      qsort((void *) window,order*order,sizeof(PixelPacket),
+        (int (*)(const void *,const void *)) OpacityCompare);
+      pixel=window[center];
+      if (pixel.opacity == window[0].opacity)
+        {
+          for (i=1; i < (order*order-1); i++)
+            if (window[i].opacity != window[0].opacity)
+              break;
+          pixel=window[i];
+        }
+      else
+        if (pixel.opacity == window[order*order-1].opacity)
+          {
+            for (i=(order*order-2); i > 0; i--)
+              if (window[i].opacity != window[order*order-1].opacity)
+                break;
+            pixel=window[i];
+          }
+      q->opacity=pixel.opacity;
       q++;
     }
-    p++;
-    *q++=(*p);
-    if (!SyncImagePixels(image))
+    if (!SyncImagePixels(noise_image))
       break;
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(ReduceNoiseImageText,y,image->rows-1);
+    if (QuantumTick(y,noise_image->rows))
+      ProgressMonitor(ReduceNoiseImageText,y,noise_image->rows);
   }
   return(noise_image);
 }
@@ -2500,16 +2388,6 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 %  one with the pixels sharpened.  It allocates the memory necessary for the
 %  new Image structure and returns a pointer to the new image.
 %
-%  SharpenImage convolves the pixel neighborhood with this sharpening mask:
-%
-%    -1 -2 -1
-%    -2  W -2
-%    -1 -2 -1
-%
-%  The scan only processes pixels that have a full set of neighbors.  Pixels
-%  in the top, bottom, left, and right pairs of rows and columns are omitted
-%  from the scan.
-%
 %  The format of the SharpenImage method is:
 %
 %      Image *SharpenImage(Image *image,const double factor,
@@ -2531,97 +2409,39 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
 %
 %
 */
-Export Image *SharpenImage(Image *image,const double factor,
+Export Image *SharpenImage(Image *image,const unsigned int order,
   ExceptionInfo *exception)
 {
-#define Sharpen(weight) \
-  red+=(weight)*s->red; \
-  green+=(weight)*s->green; \
-  blue+=(weight)*s->blue; \
-  opacity+=(weight)*s->opacity; \
-  s++;
-#define SharpenImageText  "  Sharpening image...  "
-
   double
-    blue,
-    green,
-    opacity,
-    quantum,
-    red,
-    weight;
+    *kernel;
 
   Image
     *sharpen_image;
 
   int
-    y;
+    i;
 
   register int
-    x;
-
-  register PixelPacket
-    *p,
-    *q,
-    *s;
-
+    u,
+    v;
+  
   assert(image != (Image *) NULL);
-  if ((image->columns < 3) || (image->rows < 3))
-    return((Image *) NULL);
-  /*
-    Initialize sharpened image attributes.
-  */
-  sharpen_image=CloneImage(image,image->columns,image->rows,False,exception);
-  if (sharpen_image == (Image *) NULL)
-    return((Image *) NULL);
-  sharpen_image->class=DirectClass;
-  /*
-    Sharpen image.
-  */
-  weight=((100.0-factor)/2.0+13.0);
-  quantum=Max(weight-12.0,1.0);
-  for (y=0; y < (int) image->rows; y++)
+  kernel=(double *) AllocateMemory(order*order*sizeof(double));
+  if (kernel == (double *) NULL)
+    ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
+      "Memory allocation failed");
+  i=0;
+  for (v=(-(int) order/2); v <= ((int) order/2); v++)
   {
-    p=GetImagePixels(image,0,Min(Max(y-1,0),image->rows-3),image->columns,3);
-    q=SetImagePixels(sharpen_image,0,y,sharpen_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    /*
-      Sharpen this row of pixels.
-    */
-    *q++=(*(p+image->columns));
-    for (x=1; x < (int) (image->columns-1); x++)
+    for (u=(-(int) order/2); u <= ((int) order/2); u++)
     {
-      /*
-        Compute weighted average of target pixel color components.
-      */
-      red=0.0;
-      green=0.0;
-      blue=0.0;
-      opacity=0.0;
-      s=p;
-      Sharpen(-1); Sharpen(-2); Sharpen(-1);
-      s=p+image->columns;
-      Sharpen(-2); Sharpen(weight); Sharpen(-2);
-      s=p+2*image->columns;
-      Sharpen(-1); Sharpen(-2); Sharpen(-1);
-      q->red=(red < 0) ? 0 : (red > (MaxRGB*quantum)) ? MaxRGB :
-        (red+(quantum/2.0))/quantum;
-      q->green=(green < 0) ? 0 : (green > (MaxRGB*quantum)) ? MaxRGB :
-        (green+(quantum/2.0))/quantum;
-      q->blue=(blue < 0) ? 0 : (blue > (MaxRGB*quantum)) ? MaxRGB :
-        (blue+(quantum/2.0))/quantum;
-      q->opacity=(opacity < 0) ? 0 : (opacity > (Opaque*quantum)) ? MaxRGB :
-        (opacity+(quantum/2.0))/quantum;
-      p++;
-      q++;
+      kernel[i]=(i % 2 ? -1 : 1)*exp(-(double) v*v-u*u);
+      i++;
     }
-    p++;
-    *q++=(*p);
-    if (!SyncImagePixels(sharpen_image))
-      break;
-    if (QuantumTick(y,image->rows-1))
-      ProgressMonitor(SharpenImageText,y,image->rows-1);
   }
+  kernel[i/2]=order+2.0;
+  sharpen_image=ConvolveImage(image,order,kernel,exception);
+  FreeMemory((void *) &kernel);
   return(sharpen_image);
 }
 

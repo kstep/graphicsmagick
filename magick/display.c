@@ -6086,13 +6086,24 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case EmbossCommand:
     {
+      static char
+        order[MaxTextExtent] = "3";
+
       /*
-        Emboss image scanlines.
+        Query user for emboss order.
+      */
+      (void) XDialogWidget(display,windows,"Emboss",
+        "Enter the emboss order (e.g. 3, 5, 7):",order);
+      if (*order == '\0')
+        break;
+      /*
+        Reduce noise in the image.
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-emboss";
-      MogrifyImage(resource_info->image_info,2,argv,image);
+      argv[2]=order;
+      MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6102,13 +6113,24 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case ReduceNoiseCommand:
     {
+      static char
+        order[MaxTextExtent] = "3";
+
+      /*
+        Query user for noise order.
+      */
+      (void) XDialogWidget(display,windows,"Reduce Noise",
+        "Enter the noise order (e.g. 3, 5, 7):",order);
+      if (*order == '\0')
+        break;
       /*
         Reduce noise in the image.
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-noise";
-      MogrifyImage(resource_info->image_info,2,argv,image);
+      argv[2]=order;
+      MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6143,14 +6165,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case SharpenCommand:
     {
       static char
-        factor[MaxTextExtent] = "60.0";
+        order[MaxTextExtent] = "3";
 
       /*
-        Query user for sharpen factor.
+        Query user for sharpen order.
       */
       (void) XDialogWidget(display,windows,"Sharpen",
-        "Enter the sharpening factor (0.0 - 99.9%):",factor);
-      if (*factor == '\0')
+        "Enter the sharpen order (e.g. 3, 5, 7):",order);
+      if (*order == '\0')
         break;
       /*
         Sharpen image scanlines.
@@ -6158,7 +6180,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-sharpen";
-      argv[2]=factor;
+      argv[2]=order;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6170,14 +6192,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case BlurCommand:
     {
       static char
-        factor[MaxTextExtent] = "60.0";
+        order[MaxTextExtent] = "3";
 
       /*
-        Query user for blur factor.
+        Query user for blur order.
       */
       (void) XDialogWidget(display,windows,"Blur",
-        "Enter the blurring factor (0.0 - 99.9%):",factor);
-      if (*factor == '\0')
+        "Enter the blur order (e.g. 3, 5, 7):",order);
+      if (*order == '\0')
         break;
       /*
         Blur an image.
@@ -6185,7 +6207,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-blur";
-      argv[2]=factor;
+      argv[2]=order;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6494,23 +6516,23 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case CharcoalDrawingCommand:
     {
       static char
-        factor[MaxTextExtent] = "50";
+        order[MaxTextExtent] = "3";
 
       /*
-        Query user for bevel width.
+        Query user for charcoal order.
       */
       (void) XDialogWidget(display,windows,"Charcoal Drawing",
-        "Enter the charcoal factor (0 - 99.9%):",factor);
-      if (*factor == '\0')
+        "Enter the charcoal order (e.g. 3, 5, 7):",order);
+      if (*order == '\0')
         break;
       /*
-        Raise an image.
+        Charcoal the image.
       */
       (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-charcoal";
-      argv[2]=factor;
+      argv[2]=order;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)

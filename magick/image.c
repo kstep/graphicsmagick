@@ -3128,19 +3128,19 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (strncmp("-blur",option,4) == 0)
       {
-        double
-          factor;
-
         Image
           *blurred_image;
+
+        unsigned int
+          order;
 
         /*
           Blur an image.
         */
-        factor=atof(argv[++i]);
-        blurred_image=BlurImage(*image,factor,&(*image)->exception);
+        order=atoi(argv[++i]);
+        blurred_image=BlurImage(*image,order,&(*image)->exception);
         if (blurred_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=blurred_image;
         continue;
@@ -3166,7 +3166,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           border_info.height=border_info.width;
         bordered_image=BorderImage(*image,&border_info,&(*image)->exception);
         if (bordered_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         bordered_image->class=DirectClass;
         *image=bordered_image;
@@ -3227,7 +3227,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         colorized_image=
           ColorizeImage(*image,argv[++i],target,&(*image)->exception);
         if (colorized_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=colorized_image;
         continue;
@@ -3362,7 +3362,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         */
         despeckled_image=DespeckleImage(*image,&(*image)->exception);
         if (despeckled_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=despeckled_image;
         continue;
@@ -3389,36 +3389,40 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (strncmp("-edge",option,3) == 0)
       {
-        double
-          factor;
-
         Image
-          *edged_image;
+          *edge_image;
+
+        unsigned int
+          order;
 
         /*
           Detect edges in the image.
         */
-        factor=atof(argv[++i]);
-        edged_image=EdgeImage(*image,factor,&(*image)->exception);
-        if (edged_image == (Image *) NULL)
-          return(False);
+        order=atoi(argv[++i]);
+        edge_image=EdgeImage(*image,order,&(*image)->exception);
+        if (edge_image == (Image *) NULL)
+          break;
         DestroyImage(*image);
-        *image=edged_image;
+        *image=edge_image;
         continue;
       }
     if (strncmp("-emboss",option,3) == 0)
       {
         Image
-          *embossed_image;
+          *emboss_image;
+
+        unsigned int
+          order;
 
         /*
-          Emboss image.
+          Emboss the image.
         */
-        embossed_image=EmbossImage(*image,&(*image)->exception);
-        if (embossed_image == (Image *) NULL)
-          return(False);
+        order=atoi(argv[++i]);
+        emboss_image=EmbossImage(*image,order,&(*image)->exception);
+        if (emboss_image == (Image *) NULL)
+          break;
         DestroyImage(*image);
-        *image=embossed_image;
+        *image=emboss_image;
         continue;
       }
     if (strncmp("-enhance",option,3) == 0)
@@ -3431,7 +3435,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         */
         enhanced_image=EnhanceImage(*image,&(*image)->exception);
         if (enhanced_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=enhanced_image;
         continue;
@@ -3497,7 +3501,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         */
         flipped_image=FlipImage(*image,&(*image)->exception);
         if (flipped_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=flipped_image;
         continue;
@@ -3512,7 +3516,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         */
         flopped_image=FlopImage(*image,&(*image)->exception);
         if (flopped_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=flopped_image;
         continue;
@@ -3546,7 +3550,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         frame_info.height=(*image)->rows+(frame_info.height << 1);
         framed_image=FrameImage(*image,&frame_info,&(*image)->exception);
         if (framed_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         framed_image->class=DirectClass;
         *image=framed_image;
@@ -3589,7 +3593,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           (void) sscanf(argv[++i],"%lfx%lf",&width,&sigma);
         blur_image=GaussianBlurImage(*image,width,sigma,&(*image)->exception);
         if (blur_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=blur_image;
         continue;
@@ -3610,7 +3614,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
         zoom_image=ZoomImage(*image,width,height,&(*image)->exception);
         if (zoom_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=zoom_image;
         continue;
@@ -3656,7 +3660,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         amount=atof(argv[++i]);
         imploded_image=ImplodeImage(*image,amount,&(*image)->exception);
         if (imploded_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=imploded_image;
         continue;
@@ -3730,7 +3734,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         median_image=
           MedianFilterImage(*image,atoi(argv[++i]),&(*image)->exception);
         if (median_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=median_image;
         continue;
@@ -3758,17 +3762,18 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         Image
           *noisy_image;
 
-        /*
-          Reduce noise in image.
-        */
+        option=argv[++i];
         if (*option == '-')
-          noisy_image=ReduceNoiseImage(*image,&(*image)->exception);
+          noisy_image=
+            ReduceNoiseImage(*image,atoi(option),&(*image)->exception);
         else
           {
             NoiseType
               noise_type;
 
-            option=argv[++i];
+            /*
+              Add noise to image.
+            */
             noise_type=UniformNoise;
             if (Latin1Compare("Gaussian",option) == 0)
               noise_type=GaussianNoise;
@@ -3783,7 +3788,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
             noisy_image=AddNoiseImage(*image,noise_type,&(*image)->exception);
           }
         if (noisy_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=noisy_image;
         continue;
@@ -3816,7 +3821,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         */
         paint_image=OilPaintImage(*image,atoi(argv[++i]),&(*image)->exception);
         if (paint_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=paint_image;
         continue;
@@ -3952,7 +3957,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           &region_info.width,&region_info.height);
         cropped_image=CropImage(*image,&region_info,&(*image)->exception);
         if (cropped_image == (Image *) NULL)
-          return(False);
+          break;
         region_image=(*image);
         *image=cropped_image;
         continue;
@@ -3970,7 +3975,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         flags=ParseGeometry(argv[++i],&x,&y,&width,&height);
         rolled_image=RollImage(*image,x,y,&(*image)->exception);
         if (rolled_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=rolled_image;
         continue;
@@ -3999,7 +4004,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         degrees=atof(argv[i]);
         rotated_image=RotateImage(*image,degrees,&(*image)->exception);
         if (rotated_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=rotated_image;
         continue;
@@ -4019,7 +4024,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
         sampled_image=SampleImage(*image,width,height,&(*image)->exception);
         if (sampled_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=sampled_image;
         continue;
@@ -4043,7 +4048,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
         scale_image=ScaleImage(*image,width,height,&(*image)->exception);
         if (scale_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=scale_image;
         continue;
@@ -4088,26 +4093,26 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         shade_image=ShadeImage(*image,*option == '-',(double) azimuth,
           (double) elevation,&(*image)->exception);
         if (shade_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=shade_image;
         continue;
       }
     if (strncmp("-sharpen",option,5) == 0)
       {
-        double
-          factor;
-
         Image
           *sharpen_image;
+
+        unsigned int
+          order;
 
         /*
           Sharpen an image.
         */
-        factor=atof(argv[++i]);
-        sharpen_image=SharpenImage(*image,factor,&(*image)->exception);
+        order=atoi(argv[++i]);
+        sharpen_image=SharpenImage(*image,order,&(*image)->exception);
         if (sharpen_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=sharpen_image;
         continue;
@@ -4130,7 +4135,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         shear_image=ShearImage(*image,(double) x_shear,(double) y_shear,
           &(*image)->exception);
         if (shear_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         shear_image->class=DirectClass;
         *image=shear_image;
@@ -4155,7 +4160,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         amount=atoi(argv[++i]);
         spread_image=SpreadImage(*image,amount,&(*image)->exception);
         if (spread_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=spread_image;
         continue;
@@ -4174,7 +4179,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         degrees=atof(argv[++i]);
         swirl_image=SwirlImage(*image,degrees,&(*image)->exception);
         if (swirl_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=swirl_image;
         continue;
@@ -4243,7 +4248,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           (void) sscanf(argv[++i],"%lfx%lf",&amplitude,&wavelength);
         wave_image=WaveImage(*image,amplitude,wavelength,&(*image)->exception);
         if (wave_image == (Image *) NULL)
-          return(False);
+          break;
         DestroyImage(*image);
         *image=wave_image;
         continue;

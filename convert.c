@@ -59,12 +59,12 @@
 %    -antialias           remove pixel-aliasing
 %    -append              append an image sequence
 %    -average             average an image sequence
-%    -blur factor         apply a filter to blur the image
+%    -blur order          apply a filter to blur the image
 %    -border geometry     surround image with a border of color
 %    -bordercolor color   border color
 %    -box color           color for annotation bounding box
 %    -cache threshold     number of megabytes available to the pixel cache
-%    -charcoal factor     simulate a charcoal drawing
+%    -charcoal order      simulate a charcoal drawing
 %    -coalesce            merge a sequence of images
 %    -colorize value      colorize the image with the pen color
 %    -colors value        preferred number of colors in the image
@@ -83,8 +83,8 @@
 %    -dispose method      GIF disposal method
 %    -dither              apply Floyd/Steinberg error diffusion to image
 %    -draw string         annotate the image with a graphic primitive
-%    -edge factor         apply a filter to detect edges in the image
-%    -emboss              emboss an image
+%    -edge order          apply a filter to detect edges in the image
+%    -emboss order        emboss an image
 %    -enhance             apply a digital filter to enhance a noisy image
 %    -equalize            perform histogram equalization to an image
 %    -filter type         use this filter when resizing an image
@@ -105,7 +105,7 @@
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
 %    -matte               store matte channel if the image has one
-%    -median radius       apply a median filter to the image
+%    -median order        apply a median filter to the image
 %    -modulate value      vary the brightness, saturation and hue
 %    -monochrome          transform image to black and white
 %    -morph value         morph an image sequence
@@ -132,7 +132,7 @@
 %    -seed value          pseudo-random number generator seed value
 %    -segment values      segment an image
 %    -shade degrees       shade the image using a distant light source
-%    -sharpen factor      apply a filter to sharpen the image
+%    -sharpen order       apply a filter to sharpen the image
 %    -shear geometry      slide one edge of the image along the X or Y axis
 %    -size geometry       width and height of image
 %    -solarize threshold   negate all pixels above the threshold level
@@ -257,12 +257,12 @@ static void Usage(const char *client_name)
       "-antialias           remove pixel-aliasing",
       "-append              append an image sequence",
       "-average             average an image sequence",
-      "-blur factor         apply a filter to blur the image",
+      "-blur order          apply a filter to blur the image",
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
       "-cache threshold     megabytes of memory available to the pixel cache",
-      "-charcoal factor     simulate a charcoal drawing",
+      "-charcoal order      simulate a charcoal drawing",
       "-coalesce            merge a sequence of images",
       "-colorize value      colorize the image with the pen color",
       "-colors value        preferred number of colors in the image",
@@ -281,8 +281,8 @@ static void Usage(const char *client_name)
       "-dispose method      GIF disposal method",
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-draw string         annotate the image with a graphic primitive",
-      "-edge factor         apply a filter to detect edges in the image",
-      "-emboss              emboss an image",
+      "-edge order          apply a filter to detect edges in the image",
+      "-emboss order        emboss an image",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
       "-filter type         use this filter when resizing an image",
@@ -304,7 +304,7 @@ static void Usage(const char *client_name)
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
       "-matte               store matte channel if the image has one",
-      "-median radius       apply a median filter to the image",
+      "-median order        apply a median filter to the image",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-morph value         morph an image sequence",
@@ -331,7 +331,7 @@ static void Usage(const char *client_name)
       "-segment values      segment an image",
       "-seed value          pseudo-random number generator seed value",
       "-shade degrees       shade the image using a distant light source",
-      "-sharpen factor      apply a filter to sharpen the image",
+      "-sharpen order       apply a filter to sharpen the image",
       "-shear geometry      slide one edge of the image along the X or Y axis",
       "-size geometry       width and height of image",
       "-solarize threshold   negate all pixels above the threshold level",
@@ -530,7 +530,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing factor",option);
+                    MagickError(OptionError,"Missing order",option);
                 }
               break;
             }
@@ -587,7 +587,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing factor",option);
+                    MagickError(OptionError,"Missing order",option);
                 }
               break;
             }
@@ -815,12 +815,20 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing factor",option);
+                    MagickError(OptionError,"Missing order",option);
                 }
               break;
             }
           if (strncmp("emboss",option+1,2) == 0)
-            break;
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing order",option);
+                }
+              break;
+            }
           if (strncmp("enhance",option+1,2) == 0)
             break;
           if (strncmp("equalize",option+1,2) == 0)
@@ -1167,6 +1175,12 @@ int main(int argc,char **argv)
             break;
           if (strncmp("noise",option+1,3) == 0)
             {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing value",option);
+                }
               if (*option == '+')
                 {
                   i++;
@@ -1468,7 +1482,7 @@ int main(int argc,char **argv)
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing factor",option);
+                    MagickError(OptionError,"Missing order",option);
                 }
               break;
             }

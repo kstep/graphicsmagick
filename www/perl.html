@@ -421,9 +421,9 @@ y=><i>integer</i>, degrees=><i>double</i></td>
 <tr>
 <td>Blur</td>
 
-<td>factor=><i>percentage</i></td>
+<td>order=><i>integer</i></td>
 
-<td>blurs an image</td>
+<td>blur the image.  Good order values are odd numbers from 3 to 31.</td>
 </tr>
 
 <tr>
@@ -438,7 +438,7 @@ color=<i>colorname</i></td>
 <tr>
 <td>Charcoal</td>
 
-<td>factor=><i>percentage</i></td>
+<td>order=><i>integer</i></td>
 
 <td>simulate a charcoal drawing</td>
 </tr>
@@ -528,7 +528,7 @@ SouthWest, South, SouthEast}</i></td>
 
 <td>coefficients=><i>array of float values</i></td>
 
-<td>apply a convolution kernel to the image.  Given the kernel <i>order</i>,
+<td>apply a convolution kernel to the image.  Given a kernel <i>order</i>,
 you would supply <i>order*order</i> float values (e.g. 3x3 implies 9 values).
 </td>
 </tr>
@@ -582,17 +582,17 @@ linewidth=><i>integer</i>, server=><i>string</i>,&nbsp;</td>
 <tr>
 <td>Edge</td>
 
-<td>factor=><i>percentage</i></td>
+<td>order=><i>integer</i></td>
 
-<td>detect edges within an image</td>
+<td>detect edges within the image.  Good order values are odd numbers from 3 to 31.</td>
 </tr>
 
 <tr>
 <td>Emboss</td>
 
-<td></td>
+<td>order=><i>integer</i></td>
 
-<td>emboss the image</td>
+<td>emboss the image.  Good order values are odd numbers from 3 to 31.</td>
 </tr>
 
 <tr>
@@ -710,9 +710,10 @@ value is changed for any neighbor pixel that is not that color.</td>
 <tr>
 <td>MedianFilter</td>
 
-<td>radius=><i>integer</i></td>
+<td>order=><i>integer</i></td>
 
-<td>replace each pixel with the median intensity pixel of a neighborhood.</td>
+<td>replace each pixel with the median intensity pixel of a neighborhood.
+Good order values are odd numbers from 3 to 31.</td>
 </tr>
 
 <tr>
@@ -786,9 +787,9 @@ x=><i>integer</i>, y=><i>integer</i>, raise=>{True, False}</td>
 <tr>
 <td>ReduceNoise</td>
 
-<td></td>
+<td>order=><i>integer</i></td>
 
-<td>add or reduce the noise in an image</td>
+<td>reduce noise in the image with a noise peak elimination filter </td>
 </tr>
 
 <tr>
@@ -845,9 +846,9 @@ color=>{true, false}&nbsp;</td>
 <tr>
 <td>Sharpen</td>
 
-<td>factor=><i>percentage</i></td>
+<td>order=><i>integer</i></td>
 
-<td>sharpen an image</td>
+<td>sharpen the image.  Good order values are odd numbers from 3 to 31.</td>
 </tr>
 
 <tr>

@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..43\n"; }
+BEGIN { $| = 1; $test=1, print "1..44\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -14,8 +14,8 @@ require 't/subroutines.pl';
 chdir 't' || die 'Cd failed';
 
 testFilter('input.miff', 'Blur',
-  q/60/,
-  '6f686c9082206187c20c3329fa7ad6d6',
+  q/3/,
+  'bb471b3a01f502a3cdd3ff9c588426a5',
   'b96d206387adfbd8a3a9d6b0f7fc109c');
 
 ++$test;
@@ -50,7 +50,7 @@ testFilter('input.miff', 'Contrast',
 ++$test;
 testFilter('input.miff', 'Convolve',
   [1, 2, 1, 2, 4, 2, 1, 2, 1],
-  'fa17249c3ad0b8553e4b724c0743a130',
+  '64f541fe5c3141caac6ead973cbcde3a',
   'e4d90d8d2af844650864c4e193acb270');
 
 ++$test;
@@ -66,14 +66,14 @@ testFilter('input.miff', 'Despeckle',
 
 ++$test;
 testFilter('input.miff', 'Edge',
-  q/60/,
-  '6c9b138455a7270dc922568d572e1442',
+  q/3/,
+  '8ffcdf7f3cf7a1be3ccdc1784ee50f84',
   '89457006d11b4d9ea348d90f2fa75ec7');
 
 ++$test;
 testFilter('input.miff', 'Emboss',
-  q/ /,
-  '3bb942f03a99570cf58428650b0073ea',
+  q/3/,
+  'f283a4e53680cae33afd75f397103bfc',
   '9d45e8fce500ab54db41d2d48ebfe1a6');
 
 ++$test;
@@ -205,6 +205,12 @@ testFilter('input.miff', 'Shade',
   q/30x30/,
   'b306584435d209023ced321daee65af7',
   'f958c014337453f741ffcbea791005ed');
+
+++$test;
+testFilter('input.miff', 'Sharpen',
+  q/3/,
+  'fec14aa977f24fe1668eb697f89640eb',
+  'b96d206387adfbd8a3a9d6b0f7fc109c');
 
 ++$test;
 testFilter('input.miff', 'Shear',

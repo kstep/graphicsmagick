@@ -28,9 +28,10 @@ pixels in height, use:
 .B "-antialias
 remove pixel aliasing.
 .TP
-.B "-blur \fIfactor\fP"
-blur an image.  Specify \fIfactor\fP as the percent enhancement
-(0.0 - 99.9%).
+.B "-blur \fIorder\fP"
+blur an image.
+
+Good order values are odd numbers from 3 to 31.
 .TP
 .B "-border \fI<width>x<height>\fP"
 surround the image with a border of color.  See \fBX(1)\fP for details
@@ -54,8 +55,10 @@ Operations to memory are significantly faster but if your computer does not
 have a sufficient amount of free memory you may want to adjust this threshold
 value.
 .TP
-.B "-charcoal \fIfactor\fP"
+.B "-charcoal \fIorder\fP"
 simulate a charcoal drawing.
+
+Good order values are odd numbers from 3 to 31.
 .TP
 .B "-colorize \fIvalue\fP"
 colorize the image with the pen color.
@@ -323,11 +326,14 @@ processed in command line order so be sure to use \fB-pen\fP
 \fIbefore\fP the \fB-draw\fP option.
 .TP
 .B "-edge \fIfactor\fP"
-detect edges with an image.  Specify \fIfactor\fP as the percent enhancement
-(0.0 - 99.9%).
+detect edges with an image. 
+
+Good order values are odd numbers from 3 to 31.
 .TP
-.B "-emboss"
+.B "-emboss \fIorder\fP"
 emboss the image.
+
+Good order values are odd numbers from 3 to 31.
 .TP
 .B "-enhance"
 apply a digital filter to enhance a noisy image.
@@ -536,11 +542,10 @@ optimal set of colors that best represent all the images.
 .B "-matte"
 store matte channel if the image has one otherwise create an opaque one.
 .TP
-.B "-median \fIradius\fP"
+.B "-median \fIorder\fP"
 apply a median filter to the image.
 
-Each pixel is replaced by the median color in a circular neighborhood
-whose width is specified with \fIradius\fP.
+Good order values are odd numbers from 3 to 31.
 .TP
 .B "-modulate \fIvalue\fP"
 vary the brightness, saturation, and hue of an image.
@@ -560,16 +565,17 @@ becomes blue, etc.).
 The red, green, and blue intensities of an image are negated.    Use
 \fB+negate\fP to only negate the grayscale pixels of the image.
 .TP
-.B "-noise"
+.B "-noise \fIvalue\fP"
 add or reduce noise in an image.
 
 The principal function of noise peak elimination filter is to smooth
 the objects within an image without losing edge information and without
 creating undesired structures.  The central idea of the algorithm is to
-replace a pixel with its next neighbor in value within a 3 x 3 window,
+replace a pixel with its next neighbor in value within a pixel window,
 if this pixel has been found to be noise.  A pixel is defined as noise
-if and only if this pixel is a maximum or minimum within the 3 x 3 window.
-PP
+if and only if this pixel is a maximum or minimum within the pixel window.
+Use \fIorder\fP to specify the width of the neighborhood.
+
 Use \fB+noise\fP followed by a noise type to add noise to an image.  Choose
 from these noise types:
 
@@ -760,9 +766,10 @@ shade the image using a distant light source.
 Specify \fIazimuth\fP and \fIelevation\fP as the position of the light source.
 Use \fB+shade\fP to return the shading results as a grayscale image.
 .TP
-.B "-sharpen \fIfactor\fP"
-sharpen an image.  Specify \fIfactor\fP as the percent
-enhancement (0.0 - 99.9%).
+.B "-sharpen \fIorder\fP"
+sharpen an image.
+
+Good order values are odd numbers from 3 to 31.
 .TP
 .B "-shear \fI<x degrees>x<y degrees>\fP"
 shear the image along the X or Y axis by a positive or negative shear angle.
