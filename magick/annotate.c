@@ -78,8 +78,8 @@
 static FontInfo
   *font_list = (FontInfo *) NULL;
 
-static SemaphoreInfo *
-  font_semaphore = (SemaphoreInfo *) NULL;
+static SemaphoreInfo
+  *font_semaphore = (SemaphoreInfo *) NULL;
 
 /*
   Forward declarations.
