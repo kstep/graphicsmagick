@@ -3584,7 +3584,6 @@ echo "$as_me:$LINENO: result: $lt_cv_deplibs_check_method" >&5
 echo "${ECHO_T}$lt_cv_deplibs_check_method" >&6
 file_magic_cmd=$lt_cv_file_magic_cmd
 deplibs_check_method=$lt_cv_deplibs_check_method
-deplibs_check_method=pass_all
 test -z "$deplibs_check_method" && deplibs_check_method=unknown
 
 
@@ -20286,7 +20285,7 @@ echo "${ECHO_T}" >&6
 
     OLD_LDFLAGS="$LDFLAGS"
     OLD_CPPFLAGS="$CPPFLAGS"
-    if test "$with_delegate_build" != 'no' -a test -d "$builddir/ttf/include"
+    if test "$with_delegate_build" != 'no' -a -d "$builddir/ttf/include"
     then
        :
     else

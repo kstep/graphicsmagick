@@ -4,6 +4,21 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2002-04-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (getConstPixels): Changed offset parameter type
+        from 'unsigned int' to 'int'.<BR>
+        (getPixels): Changed offset parameter type from 'unsigned int' to
+        'int'.<BR>
+        (setPixels): Changed offset parameter type from 'unsigned int' to
+        'int'.
+
+  <LI> lib/Pixels.cpp (getConst): New method to return read-only pixels.
+        (get): Offset parameter types changed from 'unsigned int' to 'int'.
+
+</UL>
+<p>
 2002-04-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
