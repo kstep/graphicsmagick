@@ -30,6 +30,7 @@
 #define IDC_PROJECT_TYPE                1019
 #define IDC_PROJECT_TYPE1               1020
 #define IDC_PROJECT_TYPE2               1021
+#define IDC_PROJECT_TYPE3               1022
 #define IDC_USE_X11_STUBS               1023
 #define IDC_BuildIt                     1024
 #define IDC_DECORATE_FILES              1025

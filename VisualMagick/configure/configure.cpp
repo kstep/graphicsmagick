@@ -143,18 +143,15 @@ void CConfigureApp::generate_global_dependencies(
     if (strDepends.FindNoCase("IM_MOD_",0) == 0)
 		  add_project_dependency(dsw, strDepends );
 	}
-  if (runtime == MULTITHREADEDDLL)
-  {
-		for (
-			std::list<std::string>::iterator it5 = dependency_list.begin();
-			it5 != dependency_list.end();
-			it5++)
-		{
-      strDepends = (*it5).c_str();
-      if (strDepends.FindNoCase("UTIL_",0) == 0)
-		    add_project_dependency(dsw, strDepends );
-		}
-  }
+	for (
+		std::list<std::string>::iterator it5 = dependency_list.begin();
+		it5 != dependency_list.end();
+		it5++)
+	{
+    strDepends = (*it5).c_str();
+    if (strDepends.FindNoCase("UTIL_",0) == 0)
+		  add_project_dependency(dsw, strDepends );
+	}
 }
 
 void CConfigureApp::process_utility(ofstream &dsw,
@@ -188,6 +185,7 @@ void CConfigureApp::process_utility(ofstream &dsw,
   project += staging;
   project += "\\";
   project += name;
+	dependency_list.push_back(name.c_str());
   switch (runtime)
   {
     case MULTITHREADEDSTATIC:
@@ -286,7 +284,6 @@ void CConfigureApp::process_utility(ofstream &dsw,
       break;
     default:
     case MULTITHREADEDDLL:
-		  dependency_list.push_back(name.c_str());
       project += "_mt_exe.dsp";
 	    begin_project(dsw, name.c_str(), project.c_str());
 	    add_project_dependency(dsw, "CORE_magick");
