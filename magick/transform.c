@@ -1007,6 +1007,8 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           if (transform == (cmsHTRANSFORM) NULL)
             ThrowBinaryException(ResourceLimitWarning,"Unable to manage color",
               "failed to create color transform");
+          if (image->colorspace == CMYKColorspace)
+            image->matte=1;
           for (y=0; y < (int) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
@@ -1030,6 +1032,9 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
             if (!SyncImagePixels(image))
               break;
           }
+          if (image->colorspace == CMYKColorspace)
+            image->matte=0;
+          image->colorspace=profile_image->colorspace;
           cmsDeleteTransform(transform);
           cmsCloseProfile(image_profile);
           cmsCloseProfile(transform_profile);     
