@@ -133,7 +133,7 @@ static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
 static unsigned int
-  DrawPatternPath(Image *,DrawInfo *,const char *,Image **),
+  DrawPatternPath(Image *,const DrawInfo *,const char *,Image **),
   DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *);
 
@@ -1471,7 +1471,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   D r a w C l i p P a t h                                                   %
+%   D r a w C l i p P a t h                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1724,7 +1724,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
 %
 %  The format of the DrawImage method is:
 %
-%      unsigned int DrawImage(Image *image,DrawInfo *draw_info)
+%      unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 %  A description of each parameter follows:
 %
@@ -1744,7 +1744,7 @@ static inline unsigned int IsPoint(const char *point)
   return(p != point);
 }
 
-MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
+MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 {
   AffineMatrix
     affine,
@@ -3246,7 +3246,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 %
 %  The format of the DrawPatternPath method is:
 %
-%      unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
+%      unsigned int DrawPatternPath(Image *image,const DrawInfo *draw_info,
 %        const char *name,Image **pattern)
 %
 %  A description of each parameter follows:
@@ -3261,7 +3261,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 %
 %
 */
-static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
+static unsigned int DrawPatternPath(Image *image,const DrawInfo *draw_info,
   const char *name,Image **pattern)
 {
   char

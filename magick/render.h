@@ -224,7 +224,7 @@ extern MagickExport unsigned int
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const long,
     const long,const PaintMethod),
   DrawAffineImage(Image *,const Image *,const AffineMatrix *),
-  DrawImage(Image *,DrawInfo *),
+  DrawImage(Image *,const DrawInfo *),
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
   ListTypeInfo(FILE *,ExceptionInfo *),
   MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const long,
