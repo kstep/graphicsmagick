@@ -1,3 +1,9 @@
+2005-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/render.c (TraceBezier): Avoid probable bug under Visual
+	C++ 7.0 or later due to the argument to pow not being promoted to
+	double.
+
 2005-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/color.c (IsPaletteImage): Fix memory leak reported by
