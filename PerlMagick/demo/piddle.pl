@@ -19,14 +19,14 @@ for ($i=0; $i < 300; $i+=10)
 #
 # Draw rounded rectangle.
 #
-$image->Draw(primitve=>'RoundRectangle',fill=>blue,stroke=>'red',
+$image->Draw(primitive=>'RoundRectangle',fill=>blue,stroke=>'red',
   points=>'65,65 70,70 10,10');
-$image->Draw(primitve=>'roundRectangle',stroke=>maroon,linewidth=>4,
+$image->Draw(primitive=>'roundRectangle',stroke=>maroon,linewidth=>4,
   points=>'65,65 70,70 10,10');
 #
 # Draw curve.
 #
-$image->Draw(primitve=>'bezier',points=>'20,20, 100,50, 50,100, 160,160',
+$image->Draw(primitive=>'bezier',points=>'20,20, 100,50, 50,100, 160,160',
   stroke=>black,linewidth=>4);
 #
 # Draw line.
@@ -37,7 +37,7 @@ $image->Draw(primitive=>'line',points=>"10,200 20,190",stroke=>red);
 #
 $image->Draw(primitive=>'circle',stroke=>'black',fill=>'yellow',linewidth=>4,
   points=>"160,70 200,70");
-$image->Draw(primitve=>'Arc',stroke=>'black',fill=>'blue',linewidth=>4,
+$image->Draw(primitive=>'Arc',stroke=>'black',fill=>'blue',linewidth=>4,
   points=>'120,30 200,100 45,90');
 #
 # Draw pentogram.
@@ -58,11 +58,11 @@ $image->Draw(primitive=>'color',points=>'180,170',fill=>LimeGreen,
 #
 # Draw rectangle.
 #
-$image->Draw(primitve=>'rectangle',points=>'200,200 260,260',stroke=>yellow,
+$image->Draw(primitive=>'rectangle',points=>'200,200 260,260',stroke=>yellow,
   linewidth=>5);
-$image->Draw(primitve=>'line',points=>'200,260 260,260',stroke=>green,
+$image->Draw(primitive=>'line',points=>'200,260 260,260',stroke=>green,
   linewidth=>5);
-$image->Draw(primitve=>'line',points=>'260,200 260,260',stroke=>red,linewidth=>5);
+$image->Draw(primitive=>'line',points=>'260,200 260,260',stroke=>red,linewidth=>5);
 #
 # Draw text.
 #
