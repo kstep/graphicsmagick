@@ -406,7 +406,7 @@ MAGICK DELEGATES
 
       to read the TransFig image format.
 
-    o ImageMagick requires the FreeType software, version 1.1 or above,
+    o ImageMagick requires the FreeType software, version 2.0 or above,
       available as
 
 	 http://www.freetype.org/
