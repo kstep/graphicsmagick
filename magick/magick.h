@@ -106,6 +106,7 @@
 #define HasZLIB
 #define HasBZLIB
 #define HasHDF
+#define HasFPX
 #define HAVE_MMAP
 #endif
 
