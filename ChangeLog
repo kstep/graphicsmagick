@@ -1,3 +1,11 @@
+2004-07-05  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_wand.c (MagickSetPassphrase): String was being
+	copied to a null pointer.  Now memory is allocated as required
+	prior to a copy.
+	Ensure that all unimplemented functions return a proper error
+	report.
+
 2004-06-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImage): For -units, don't reset

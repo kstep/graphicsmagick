@@ -718,7 +718,7 @@ WandExport unsigned int MagickBlackThresholdImage(MagickWand *wand,
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickBlackThresholdImage");
 #endif
 }
 
@@ -1283,7 +1283,7 @@ WandExport MagickWand *MagickCompareImageChannels(MagickWand *wand,
     return((MagickWand *) NULL);
   return(CloneMagickWandWithImages(wand,compare_image));
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickCompareImageChannels");
 #endif /* NOT_IMPLEMENTED */
 }
 
@@ -1336,7 +1336,7 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
     return((MagickWand *) NULL);
   return(CloneMagickWandWithImages(wand,compare_image));
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickCompareImages");
 #endif /* NOT_IMPLEMENTED */
 }
 
@@ -2266,7 +2266,7 @@ WandExport MagickWand *MagickFxImage(MagickWand *wand,const char *expression)
     return((MagickWand *) NULL);
   return(CloneMagickWandWithImages(wand,fx_image));
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickFxImage");
 #endif
 }
 
@@ -2316,7 +2316,7 @@ WandExport MagickWand * MagickFxImageChannel(MagickWand *wand,
     return((MagickWand *) NULL);
   return(CloneMagickWandWithImages(wand,fx_image));
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickFxImageChannel");
 #endif
 }
 
@@ -2420,7 +2420,7 @@ WandExport unsigned int MagickGammaImageChannel(MagickWand *wand,
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickGammaImageChannel");
 #endif
 }
 
@@ -2826,7 +2826,7 @@ WandExport unsigned int MagickGetImageChannelExtrema(MagickWand *wand,
     &wand->exception);
   return(status);
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickGetImageChannelExtrema");
 #endif
 }
 
@@ -2877,7 +2877,7 @@ WandExport unsigned int MagickGetImageChannelMean(MagickWand *wand,
     &wand->exception);
   return(status);
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickGetImageChannelMean");
 #endif
 }
 
@@ -3159,7 +3159,7 @@ WandExport unsigned int MagickGetImageExtrema(MagickWand *wand,
   status=GetImageExtrema(wand->image,min,max,&wand->exception);
   return(status);
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickGetImageExtrema");
 #endif /* NOT_IMPLEMENTED */
 }
 
@@ -5241,7 +5241,7 @@ WandExport unsigned int MagickNegateImageChannel(MagickWand *wand,
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickNegateImageChannel");
 #endif
 }
 
@@ -5524,7 +5524,7 @@ WandExport MagickWand *MagickPreviewImages(MagickWand *wand,
     return((MagickWand *) NULL);
   return(CloneMagickWand(wand,preview_image));
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickPreviewImages");
 #endif
 }
 
@@ -6012,7 +6012,7 @@ WandExport unsigned int MagickRadialBlurImage(MagickWand *wand,
   wand->images=GetFirstImageInList(wand->image);
   return(True);
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickRadialBlurImage");
 #endif
 }
 
@@ -8209,8 +8209,7 @@ WandExport unsigned int MagickSetPassphrase(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  (void) CopyMagickString(wand->image_info->authenticate,passphrase,
-    MaxTextExtent);
+  (void) CloneString(&wand->image_info->authenticate,passphrase);
   return(True);
 }
 
@@ -8765,7 +8764,7 @@ WandExport unsigned int MagickThresholdImageChannel(MagickWand *wand,
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickThresholdImageChannel");
 #endif /* NOT_IMPLEMENTED */
 }
 
@@ -8829,7 +8828,7 @@ WandExport unsigned int MagickTintImage(MagickWand *wand,
   wand->images=GetFirstImageInList(wand->image);
   return(True);
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickTintImage");
 #endif /* NOT_IMPLEMENTED */
 }
 
@@ -9146,7 +9145,7 @@ WandExport unsigned int MagickWhiteThresholdImage(MagickWand *wand,
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
 #else
-  return False;
+  ThrowWandException(WandError,WandAPINotImplemented,"MagickWhiteThresholdImage");
 #endif
 }
 
