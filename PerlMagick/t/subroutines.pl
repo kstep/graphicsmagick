@@ -42,95 +42,92 @@ elsif ($QuantumDepth == 32)
 sub testRead {
   my( $infile, $md5, $md5_16 ) =  @_;
 
-  my($image);
+  my($image,$success);
 
-  if ( !defined( $md5_16 ) )
-    {
-      $md5_16 = $md5;
-    }
-  
-  $image=Image::Magick->new;
-  $image->Set(size=>'512x512');
-  $status=$image->ReadImage("$infile");
-  if( "$status" ) {
-    print "ReadImage $infile: $status";
-    print "not ok $test\n";
-  } else {
-    $signature=$image->Get('signature');
-    if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
-      print "Image: $infile, signatures do not match.\n";
-      print "       Computed: $signature\n";
-      print "       Expected: $md5\n";
-      if ( $md5 ne $md5_16 ) {
-         print "      if 16-bit: $md5_16\n";
-      }
-      #$image->Display();
-      print "not ok $test\n";
-    } else {
-      print "ok $test\n";
-    }
-  }
-}
-
-#
-# Test reading a 16-bit file as a BLOB in which two signatures are possible,
-# depending on whether 16-bit pixels data has been enabled
-#
-# Usage: testReadBlob( read filename, expected md5 [, expected md5_16] );
-#
-sub testReadBlob {
-  my( $infile, $md5, $md5_16 ) =  @_;
-
-  my($blob, $blob_length, $image);
+  $failure=0;
 
   if ( !defined( $md5_16 ) )
     {
       $md5_16 = $md5;
     }
 
-  if(!open( FILE, "< $infile")) {
-    print("Failed to open \"$infile\": $!\n");
-    print("not ok $test\n");
-    return;
-  }
-  binmode( FILE );
-  $blob_length = read( FILE, $blob, 10000000 );
-  if( !defined($blob) )
-    {
-      print("Failed to read \"$infile\": $!\n");
-      print("not ok $test\n");
-      return;
-    }
-  close( FILE );
+  #
+  # Test reading from file
+  #
+  {
+    my($image, $signature, $status);
 
-  $image=Image::Magick->new(magick=>'MIFF');
-  if( !defined($image) ) {
-    print("Failed to open \"$infile\": image object not defined\n");
-    print("not ok $test\n");
-    return;
+    print( "  testing reading from file ...\n");
+    $image=Image::Magick->new;
+    $image->Set(size=>'512x512');
+    $status=$image->ReadImage("$infile");
+    if( "$status" ) {
+      print "ReadImage $infile: $status";
+      ++$failure;
+    } else {
+      $signature=$image->Get('signature');
+      if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+        print "Image: $infile, signatures do not match.\n";
+        print "       Computed: $signature\n";
+        print "       Expected: $md5\n";
+        if ( $md5 ne $md5_16 ) {
+          print "      if 16-bit: $md5_16\n";
+        }
+        ++$failure;
+        #$image->Display();
+      }
+    }
+    undef $image;
   }
-  $image->Set(size=>'512x512');
-  $status=$image->BlobToImage($blob);
-  if( "$status" ) {
-    print "BlobToImage $infile: $status";
+
+  #
+  # Test reading from blob
+  #
+  {
+    my($blob, $blob_length, $image, $signature, $status);
+
+    if(open( FILE, "< $infile"))
+      {
+        print( "  testing reading from BLOB ...\n");
+        binmode( FILE );
+        $blob_length = read( FILE, $blob, 10000000 );
+        close( FILE );
+        if( defined( $blob ) ) {
+          $image=Image::Magick->new(magick=>'MIFF');
+          $image->Set(size=>'512x512');
+          $status=$image->BlobToImage($blob);
+          undef $blob;
+          if( "$status" ) {
+            print "BlobToImage $infile: $status";
+            ++$failure;
+          } else {
+            $signature=$image->Get('signature');
+            if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+              print "Image: $infile, signatures do not match.\n";
+              print "       Computed: $signature\n";
+              print "       Expected: $md5\n";
+              if ( $md5 ne $md5_16 ) {
+                print "      if 16-bit: $md5_16\n";
+              }
+              #$image->Display();
+              ++$failure;
+            }
+          }
+        }
+      }
+    undef $image;
+  }
+
+  #
+  # Display test status
+  #
+  if ( $failure != 0 ) {
     print "not ok $test\n";
   } else {
-    $signature=$image->Get('signature');
-    if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
-      print "Image: $infile, signatures do not match.\n";
-      print "       Computed: $signature\n";
-      print "       Expected: $md5\n";
-      if ( $md5 ne $md5_16 ) {
-         print "      if 16-bit: $md5_16\n";
-      }
-      #$image->Display();
-      print "not ok $test\n";
-    } else {
-      print "ok $test\n";
-    }
-  }
-  undef $blob;
+    print "ok $test\n";
+  }    
 }
+
 
 #
 # Test reading a file, and compare with a reference file
