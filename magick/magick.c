@@ -153,11 +153,9 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 
       number_files = 256;
 
-      /* Use ImageMagick's memory allocators */
-      lt_dlmalloc = AllocateMemory;
-      lt_dlfree = FreeMemory;
-
-      /* Initialize ltdl */
+      /*
+	Initialize ltdl
+      */
       if( lt_dlinit() != 0 )
         {
           const char *dlerror = lt_dlerror();
@@ -171,12 +169,14 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       /* Set ltdl module search path */
       lt_dlsetsearchpath( coder_dir );
 
-      /* List module files */
+      /*
+	List module files
+      */
       file_list=ListFiles(coder_dir,
-        	      "*.la", &number_files);
+			  "*.la", &number_files);
       if (file_list == (char **) NULL)
         {
-          FreeMemory((void *) &coder_dir);
+          FreeMemory((void **) &coder_dir);
           return (MagickInfo *)NULL;
         }
 
@@ -185,17 +185,23 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         {
           void (*func)(void);
 
-	  /* Load module */
+	  /*
+	    Load module
+	  */
 	  printf("Loading %s\n", file_list[i]);
 	  if( ( handle=lt_dlopen(file_list[i]) ) == 0)
 	    {
-	      printf("ERROR: failed to load module %s: %s\n", file_list[i], lt_dlerror());
+	      printf("ERROR: failed to load module %s: %s\n",
+		     file_list[i], lt_dlerror());
 	      continue;
 	      /*exit(1);*/
 	    }
 
-	  /* Locate and execute RegisterFORMATImage function */
+	  /*
+	    Locate and execute RegisterFORMATImage function
+	  */
 	  strcpy(func_name, "Register");
+	  // The result from BaseFilename() should not be freed!
 	  base_name = BaseFilename( file_list[i] );
 	  Latin1Upper(base_name);
 
@@ -204,26 +210,24 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	     strcat(func_name,"8");
 
 	  strcat(func_name,base_name);
-	  FreeMemory((void *) &base_name);
 	  strcat(func_name, "Image");
 
-#if 0
 	  func=(void (*)(void))lt_dlsym(handle, func_name);
 	  if (func == NULL)
 	    {
-	      printf("ERROR: failed to find symbol : %s\n", lt_dlerror());
+	      printf("ERROR: failed to find symbol : %s\n",
+		     lt_dlerror());
 	      continue;
 	    }
 	  func();
-#endif
         }
-      FreeMemory((void *) &func_name);
-      FreeMemory((void *) &coder_dir);
+      FreeMemory((void **) &func_name);
+      FreeMemory((void **) &coder_dir);
 
       for (i=0; i < number_files; i++)
-          FreeMemory((void *) &file_list[i]);
+          FreeMemory((void **) &file_list[i]);
       if (file_list != (char **) NULL)
-          FreeMemory((void *) &file_list);
+          FreeMemory((void **) &file_list);
 
 #else
       Register8BIMImage();
@@ -242,7 +246,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterHistogramImage();
       RegisterHTMLImage();
       RegisterICCImage();
-      RegisterIconImage();
+      RegisterICONImage();
       RegisterIPTCImage();
       RegisterJBIGImage();
       RegisterJPEGImage();
@@ -260,10 +264,10 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterPDFImage();
       RegisterPICTImage();
       RegisterPIXImage();
-      RegisterPlasmaImage();
+      RegisterPLASMAImage();
       RegisterPNGImage();
       RegisterPNMImage();
-      RegisterPreviewImage();
+      RegisterPREVIEWImage();
       RegisterPSImage();
       RegisterPS2Image();
       RegisterPS3Image();
@@ -297,10 +301,6 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterYUVImage();
 #endif
     }
-#if defined(HasLTDL)
-  printf("MagickInfo List:\n");
-  ListMagickInfo(stdout);
-#endif /* HasLTDL */
   if (tag == (char *) NULL)
     return(magick_info);
   for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
@@ -386,13 +386,6 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
 {
   register MagickInfo
     *p;
-
-#if defined(HasLTDL)
-  p=entry;
-  (void) printf("%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
-    p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',p->encoder ? 'w' : '-',
-    p->encoder && p->adjoin ? '+' : '-',p->description ? p->description : "");
-#endif /* HasLTDL */
 
   /*
     Add tag info to the image format list.

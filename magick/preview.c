@@ -78,24 +78,24 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterPreviewImage adds attributes for the Preview image format to
+%  Method RegisterPREVIEWImage adds attributes for the Preview image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterPreviewImage method is:
+%  The format of the RegisterPREVIEWImage method is:
 %
-%      RegisterPreviewImage(void)
+%      RegisterPREVIEWImage(void)
 %
 */
-Export void RegisterPreviewImage(void)
+Export void RegisterPREVIEWImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("Preview");
+  entry=SetMagickInfo("PREVIEW");
   entry->encoder=WritePreviewImage;
   entry->adjoin=False;
   entry->description=

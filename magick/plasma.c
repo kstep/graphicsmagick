@@ -190,24 +190,24 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,ExceptionInfo *excepti
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterPlasmaImage adds attributes for the Plasma image format to
+%  Method RegisterPLASMAImage adds attributes for the Plasma image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterPlasmaImage method is:
+%  The format of the RegisterPLASMAImage method is:
 %
-%      RegisterPlasmaImage(void)
+%      RegisterPLASMAImage(void)
 %
 */
-Export void RegisterPlasmaImage(void)
+Export void RegisterPLASMAImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("Plasma");
+  entry=SetMagickInfo("PLASMA");
   entry->decoder=ReadPlasmaImage;
   entry->adjoin=False;
   entry->description=AllocateString("Plasma fractal image");

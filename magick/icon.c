@@ -434,19 +434,19 @@ static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterIconImage adds attributes for the Icon image format to
+%  Method RegisterICONImage adds attributes for the Icon image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterIconImage method is:
+%  The format of the RegisterICONImage method is:
 %
-%      RegisterIconImage(void)
+%      RegisterICONImage(void)
 %
 */
-Export void RegisterIconImage(void)
+Export void RegisterICONImage(void)
 {
   MagickInfo
     *entry;
