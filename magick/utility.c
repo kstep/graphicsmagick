@@ -2317,7 +2317,7 @@ MagickExport char **StringToList(const char *text)
       p=text;
       for (i=0; i < (long) lines; i++)
       {
-        textlist[i]=(char *) AcquireMemory(MaxTextExtent);
+        textlist[i]=(char *) AcquireMemory(2*MaxTextExtent);
         if (textlist[i] == (char *) NULL)
           MagickError(ResourceLimitError,"Unable to convert text",
             "Memory allocation failed");

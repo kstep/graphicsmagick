@@ -585,8 +585,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               *green_colormap,
               *red_colormap;
 
-            (void) TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,&green_colormap,
-              &blue_colormap);
+            (void) TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,
+              &green_colormap,&blue_colormap);
             range=256L;  /* might be old style 8-bit colormap */
             for (i=0; i < (long) image->colors; i++)
               if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
