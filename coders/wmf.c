@@ -82,6 +82,90 @@ typedef struct _ImUserData
   Image*   image;
 } ImUserData;
 
+typedef struct _ImWmfFont
+{
+  char*    family;
+  char*    face;
+  char*    fontspec;
+} ImWmfFont;
+
+static const ImWmfFont FontList [] =
+{
+  { (char *) "Arial Rounded MT",  (char *) "Arial Rounded MT Bold", (char *) "arlrdbd.ttf" },
+  { (char *) "Arial Special G1",  (char *) "Arial Special G1", (char *) "msgeoar1.ttf" },
+  { (char *) "Arial Special G1",  (char *) "Arial Special G1 Bold", (char *) "msgeoab1.ttf" },
+  { (char *) "Arial Special G1",  (char *) "Arial Special G1 Bold Italic", (char *) "msgeoax1.ttf" },
+  { (char *) "Arial Special G1",  (char *) "Arial Special G1 Italic", (char *) "msgeoai1.ttf" },
+  { (char *) "Arial Special G2",  (char *) "Arial Special G2 Bold", (char *) "msgeoab2.ttf" },
+  { (char *) "Arial Special G2",  (char *) "Arial Special G2 Bold Italic", (char *) "msgeoax2.ttf" },
+  { (char *) "Arial Special G2",  (char *) "Arial Special G2 Italic", (char *) "msgeoai2.ttf" },
+  { (char *) "Arial",  (char *) "Arial", (char *) "arial.ttf" },
+  { (char *) "Arial",  (char *) "Arial Black", (char *) "ariblk.ttf" },
+  { (char *) "Arial",  (char *) "Arial Bold", (char *) "arialbd.ttf" },
+  { (char *) "Arial",  (char *) "Arial Bold Italic", (char *) "arialbi.ttf" },
+  { (char *) "Arial",  (char *) "Arial Italic", (char *) "ariali.ttf" },
+  { (char *) "Bookman Old Style",  (char *) "Bookman Old Style", (char *) "bkmnos.ttf" },
+  { (char *) "Bookman Old Style",  (char *) "Bookman Old Style Bold", (char *) "bookosb.ttf" },
+  { (char *) "Bookman Old Style",  (char *) "Bookman Old Style Bold Italic", (char *) "bookosbi.ttf" },
+  { (char *) "Bookman Old Style",  (char *) "Bookman Old Style Italic", (char *) "boookosi.ttf" },
+  { (char *) "Century Schoolbook",  (char *) "Century Schoolbook", (char *) "censcbk.ttf" },
+  { (char *) "Century Schoolbook",  (char *) "Century Schoolbook Bold", (char *) "schlbkb.ttf" },
+  { (char *) "Century Schoolbook",  (char *) "Century Schoolbook Bold Italic", (char *) "schlbkbi.ttf" },
+  { (char *) "Century Schoolbook",  (char *) "Century Schoolbook Italic", (char *) "schlbki.ttf" },
+  { (char *) "Comic Sans MS",  (char *) "Comic Sans MS", (char *) "comic.ttf" },
+  { (char *) "Comic Sans MS",  (char *) "Comic Sans MS Bold", (char *) "comicbd.ttf" },
+  { (char *) "Courier New",  (char *) "Courier New", (char *) "cour.ttf" },
+  { (char *) "Courier New",  (char *) "Courier New Bold", (char *) "courbd.ttf" },
+  { (char *) "Courier New",  (char *) "Courier New Bold Italic", (char *) "courbi.ttf" },
+  { (char *) "Courier New",  (char *) "Courier New Italic", (char *) "couri.ttf" },
+  { (char *) "Courier",  (char *) "Courier", (char *) "cour.ttf" },
+  { (char *) "Garamond",  (char *) "Garamond", (char *) "gara.ttf" },
+  { (char *) "Garamond",  (char *) "Garamond Bold", (char *) "garabd.ttf" },
+  { (char *) "Garamond",  (char *) "Garamond Italic", (char *) "garait.ttf" },
+  { (char *) "Gill Sans MT",  (char *) "Gill Sans MT Ext Condensed Bold", (char *) "glsnecb.ttf" },
+  { (char *) "Impact",  (char *) "Impact", (char *) "impact.ttf" },
+  { (char *) "Lucida Blackletter",  (char *) "Lucida Blackletter", (char *) "lblack.ttf" },
+  { (char *) "Lucida Bright",  (char *) "Lucida Bright", (char *) "lbrite.ttf" },
+  { (char *) "Lucida Bright",  (char *) "Lucida Bright Demibold", (char *) "lbrited.ttf" },
+  { (char *) "Lucida Bright",  (char *) "Lucida Bright Demibold Italic", (char *) "lbritedi.ttf" },
+  { (char *) "Lucida Bright",  (char *) "Lucida Bright Italic", (char *) "lbritei.ttf" },
+  { (char *) "Lucida Caligraphy",  (char *) "Lucida Caligraphy Italic", (char *) "lcalig.ttf" },
+  { (char *) "Lucida Console",  (char *) "Lucida Console", (char *) "lucon.ttf" },
+  { (char *) "Lucida Fax",  (char *) "Lucida Fax Demibold", (char *) "lfaxd.ttf" },
+  { (char *) "Lucida Fax",  (char *) "Lucida Fax Demibold Italic", (char *) "lfaxdi.ttf" },
+  { (char *) "Lucida Fax",  (char *) "Lucida Fax Italic", (char *) "lfaxi.ttf" },
+  { (char *) "Lucida Fax",  (char *) "Lucida Fax Regular", (char *) "lfax.ttf" },
+  { (char *) "Lucida Handwriting",  (char *) "Lucida Handwriting Italic", (char *) "lhandw.ttf" },
+  { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Bold", (char *) "ltypeb.ttf" },
+  { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Bold Oblique", (char *) "ltypebo.ttf" },
+  { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Oblique", (char *) "ltypeo.ttf" },
+  { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Regular", (char *) "ltype.ttf" },
+  { (char *) "Lucida Sans",  (char *) "Lucida Sans Demibold Italic", (char *) "lsansdi.ttf" },
+  { (char *) "Lucida Sans",  (char *) "Lucida Sans Demibold Roman", (char *) "lsansd.ttf" },
+  { (char *) "Lucida Sans",  (char *) "Lucida Sans Demibold Italic", (char *) "lsansdi.ttf" },
+  { (char *) "Lucida Sans",  (char *) "Lucida Sans Regular", (char *) "lsans.ttf" },
+  { (char *) "MS Sans Serif",  (char *) "MS Sans Serif", (char *) "sseriff.ttf" },
+  { (char *) "MS Serif",  (char *) "MS Serif", (char *) "seriff.ttf" },
+  { (char *) "Modern",  (char *) "Modern", (char *) "modern.ttf" },
+  { (char *) "Monotype Corsiva",  (char *) "Monotype Corsiva", (char *) "mtcorsva.ttf" },
+  { (char *) "Small Fonts",  (char *) "Small Fonts", (char *) "smallf.ttf" },
+  { (char *) "Symbol",  (char *) "Symbol", (char *) "symbol.ttf" },
+  { (char *) "Tahoma",  (char *) "Tahoma", (char *) "tahoma.ttf" },
+  { (char *) "Tahoma",  (char *) "Tahoma Bold", (char *) "tahomabd.ttf" },
+  { (char *) "Times New Roman",  (char *) "Times New Roman", (char *) "times.ttf" },
+  { (char *) "Times New Roman",  (char *) "Times New Roman Bold", (char *) "timesbd.ttf" },
+  { (char *) "Times New Roman",  (char *) "Times New Roman Bold Italic", (char *) "timesbi.ttf" },
+  { (char *) "Times New Roman",  (char *) "Times New Roman Italic", (char *) "timesi.ttf" },
+  { (char *) "Times New Roman MT",  (char *) "Times New Roman MT Extra Bold", (char *) "timnreb.ttf" },
+  { (char *) "Times",  (char *) "Times", (char *) "times.ttf" },
+  { (char *) "Verdana",  (char *) "Verdana Bold", (char *) "verdanab.ttf" },
+  { (char *) "Verdana",  (char *) "Verdana Bold Italic", (char *) "verdanaz.ttf" },
+  { (char *) "Verdana",  (char *) "Verdana Italic", (char *) "verdanai.ttf" },
+  { (char *) "WingDings",  (char *) "WingDings", (char *) "winding.ttf" },
+  { (char *) "WingDings",  (char *) "Wingdings 2", (char *) "wingdng2.ttf" },
+  { (char *) NULL,  (char *) NULL, (char *) NULL }
+};
+
 #define MVG_PTR ((ImUserData*)(cstruct->userdata))->mvg
 #define IMG_PTR ((ImUserData*)(cstruct->userdata))->image
 
@@ -864,13 +948,14 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
   char
     buff[MaxTextExtent],
     *facename,
-    fontname[MaxTextExtent],
+    fontspec[MaxTextExtent],
     gravity[10];
 
   double
     angle;
 
   int
+    i,
     pointsize,
     rotate,
     strikeout,
@@ -903,23 +988,72 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
   if(strikeout)
     ExtendMVG(cstruct,"decorate line-through\n");
 
-  /* Compute font name */
-  if (!(strcmp("Times New Roman",facename)))
-    sprintf(fontname,"%s.ttf","times");
-  else if (!(strcmp("Courier New",facename)))
-    sprintf(fontname,"%s.ttf","cour");
-  else if (!(strcmp("MS Sans Serif",facename)))
-    sprintf(fontname,"%s.ttf","arial");
-  else if (!(strcmp("MS Serif",facename)))
-    sprintf(fontname,"%s.ttf","arial");
-  else if (!(strcmp("Arial",facename)))
-    sprintf(fontname,"%s.ttf","arial");
-  else if (!(strcmp("Symbol",facename)))
-    sprintf(fontname,"%s.ttf","arial");
-  else
-    sprintf(fontname,"%s.ttf","arial");
-/*   printf("facename=\"%s\", fontname=\"%s\"\n", facename, fontname); */
-  sprintf(buff, "font %s\n", fontname);
+  /* Determine font specification */
+  *fontspec='\0';
+  /* First look for an exact match */
+  for( i=0; FontList[i].family != (char*)NULL; ++i )
+  {
+    if(LocaleCompare(facename,FontList[i].face) == 0)
+      {
+        strcpy(fontspec,FontList[i].fontspec);
+        break;
+      }
+  }
+  /* Look for an approximate match */
+  if( *fontspec == '\0' )
+    {
+      char
+        *candidate;
+
+      int
+        is_bold,
+        is_italic,
+        is_oblique,
+        maxscore,
+        score,
+        target_bold,
+        target_italic,
+        target_oblique;
+
+      target_bold=target_italic=target_oblique=False;
+      is_bold=is_italic=is_oblique=False;
+      maxscore=score=0;
+      candidate=NULL;
+
+      if(strstr(facename, "Bold") != 0 || strstr(facename, "Demibold") != 0)
+        target_bold=True;
+      if(strstr(facename, "Italic") != 0)
+        target_italic=True;
+      if(strstr(facename, "Oblique") != 0)
+        target_oblique=True;
+
+      for( i=0; FontList[i].family != (char*)NULL; ++i )
+        {
+          if(LocaleNCompare(facename,FontList[i].family,strlen(FontList[i].family)) == 0)
+            {
+              if(candidate==NULL)
+                candidate=FontList[i].fontspec;
+              if(strstr(FontList[i].face, "Bold") != 0 || strstr(FontList[i].face, "Demibold") != 0)
+                is_bold=True;
+              if(strstr(FontList[i].face, "Italic") != 0)
+                is_italic=True;
+              if(strstr(FontList[i].face, "Oblique") != 0)
+                is_oblique=True;
+              score=(target_bold&is_bold)+(target_italic&is_italic)+(target_oblique&is_oblique);
+              if(score>maxscore)
+                {
+                  maxscore=score;
+                  candidate=FontList[i].fontspec;
+                }
+            }
+        }
+      if(candidate!=NULL)
+        strcpy(fontspec,candidate);
+    }
+
+
+/*   printf("facename=\"%s\", fontspec=\"%s\"\n", facename, fontspec); */
+  sprintf(buff, "font %s\n", fontspec);
   ExtendMVG(cstruct,buff);
 
   /* Compute gravity */
