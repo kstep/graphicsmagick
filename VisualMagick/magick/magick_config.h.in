@@ -76,10 +76,20 @@
 //
 // HasLZW
 //
-// Define to support Unisys patented LZW compression.  The patent
-// expires in the USA (and most of the rest of the world) as of June
-// 2003.
-// #undef HasLZW
+// Define to support UNISYS patented LZW compression as used by GIF.
+// The U.S. patent expired on June 20, 2003, the counterpart Canadian
+// patent expires on July 7, 2004, the counterpart patents in the
+// United Kingdom, France, Germany and Italy expire on June 18, 2004,
+// and the Japanese counterpart patents expire on June 20,
+// 2004. Please be advised that if the software is to be built or used
+// in a country where the patent is in effect, that IT MAY BE ILLEGAL
+// TO ENABLE THIS OPTION without a license from UNISYS. The
+// GraphicsMagick Group DOES NOT RECOMMEND OR ENCOURAGE THE UNLICENSED
+// USE OF LZW in a country where the UNISYS patent applies. The
+// GraphicsMagick Group does not support the illegal import of
+// LZW-enabled software into a country where the UNISYS LZW patent
+// applies.
+#undef HasLZW
 
 /////////////
 //

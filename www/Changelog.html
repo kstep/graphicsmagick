@@ -56,10 +56,18 @@
 2003-06-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> VisualMagick/magick/magick_config.h.in: Add additional notes
+        regarding UNISYS LZW patent.<BR>
   <LI> PerlMagick/Magick.xs: Applied Dissolve composite operator fix
         obtained from from John Cristy's ImageMagick which ensures that an
         unused matte channel is set to Opaque, and uses this knowledge to
-        simplify the math.
+        simplify the math.<BR>
+  <LI> VisualMagick/configure/configure.cpp: The 'wand' library has a
+        linkage dependency on the 'magick' library. Also don't include
+        the magick subdirectory so that headers must be included like
+        &lt;magick/api.h&gt; for safety.<BR>
+  <LI> coders/xtrn.c: Fix magick header inclusion.
+  <LI> lcms\src\cmserr.c: Fix magick header inclusion.
 
 </UL>
 <p>
