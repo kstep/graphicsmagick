@@ -1444,7 +1444,7 @@ public:
       return _hight;
     }
 
-void cornerWidth( double cornerWidth_ )
+  void cornerWidth( double cornerWidth_ )
     {
       _cornerWidth = cornerWidth_;
     }
@@ -2031,7 +2031,7 @@ public:
       return _largeArcFlag;
     }
 
-void sweepFlag( bool sweepFlag_ )
+  void sweepFlag( bool sweepFlag_ )
     {
       _sweepFlag = sweepFlag_;
     }

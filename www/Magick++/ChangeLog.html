@@ -1,0 +1,1508 @@
+<HTML>
+<HEAD>
+<TITLE>Magick++ ChangeLog</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
+<p>
+2002-02-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (endianImage): New class to specify the
+        endian option for formats which support this notion (e.g. TIFF).
+
+  <LI> lib/Image.cpp (endian): New method to specify the endian option
+        for formats which support this notion (e.g. TIFF).
+
+</UL>
+<p>
+2002-02-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableFont): Support specifying a font via
+        font-family, font-style, font-weight, and font-stretch. Wildcard
+        matches are supported.
+
+</UL>
+<p>
+2002-02-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (charcoal): Replace Magick++'s charcoal effect
+        with the output of ImageMagick's CharcoalImage function in order
+        to ensure consistency.
+
+  <LI> lib/Magick++/CoderInfo.h (MatchType): Scope the MatchType
+        enumeration to the CoderInfo class so these enumeration names can
+        be re-used elsewhere without conflict.  This results in a minor
+        API change to the coderInfoList() templated function since
+        enumerations must be specified like "CoderInfo::TrueMatch" rather
+        than just "TrueMatch".  Hopefully not a problem since this
+        function and class were not documented outside of the headers
+        until this release.
+
+</UL>
+<p>
+2002-02-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (coderInfoList): Finally wrote some
+        documentation.
+
+</UL>
+<p>
+2002-01-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Options.cpp : Use DestroyImageList() rather than DestroyImage().
+
+  <LI> lib/Geometry.cpp (operator =): Use GetPageGeometry() rather than
+        PostscriptGeometry() to parse geometry specifications containing a
+        page size.
+
+</UL>
+<p>
+2002-01-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Remove bogus cast of blob data in readImages().
+
+</UL>
+<p>
+2002-01-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (throwImageException): Throwing exceptions was
+        leaking memory.
+
+  <LI> lib/Exception.cpp (throwException): Throwing exceptions was
+        leaking memory.
+
+  <LI> lib/Image.cpp (replaceImage): Updated to properly handle
+        registration ids.<BR>
+        (modifyImage): Updated to properly handle registration ids.
+
+</UL>
+<p>
+2002-01-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (Magick::DrawableGravity::print):
+        Bugfix. Remove "Gravity" from the end of each gravity
+        specification string.  Reported as PR#1084 by stefan@dotify.com.
+
+</UL>
+<p>
+2002-01-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp, Magick++/Include.h: Use DestroyImageList() rather
+        than DestroyImages().
+
+</UL>
+<p>
+2002-01-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Options.h (antiAlias): Bugfix, set
+        drawInfo-&gt;text_antialias to control text antialiasing.
+
+</UL>
+<p>
+2002-01-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Include.h : Imported new composition operators to
+        namespace: NoCompositeOp, DarkenCompositeOp, LightenCompositeOp,
+        HueCompositeOp, SaturateCompositeOp, ValueCompositeOp,
+        ColorizeCompositeOp, LuminizeCompositeOp, ScreenCompositeOp,
+        OverlayCompositeOp.
+
+</UL>
+<p>
+2001-12-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (strokePattern): New method to specify image to
+        use as pattern while drawing stroked-outlines of drawn objects.
+        (fillPattern): New method to specify image to use as pattern while
+        filling drawn objects.<BR>
+        (penTexture): Method is officially deprecated.  Don't use anymore.
+        (penColor): Method is officially deprecated. Don't use anymore.
+
+  <LI> lib/Drawable.cpp (DrawablePushPattern): Support pushing
+        (starting) pattern definition.<BR>
+        (DrawablePopPattern): Support popping (terminating) pattern
+        definition.
+
+</UL>
+<p>
+2001-12-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableCompositeImage): Read image
+        immediately if provided by filename, register with peristent
+        registry, and pass as perisistant image type.
+        (DrawableCompositeImage): Support specifying Image in memory.
+        Passed as perisistant image type.
+
+</UL>
+<p>
+2001-12-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Color.cpp (operator std::string): Color string buffer was
+        one character too short!
+
+</UL>
+<p>
+2001-12-20  Bob Friesenhahn  &lt;bfriesen@sun1107.ssd.usa.alcatel.com&gt;
+
+<UL>
+  <LI> lib/TypeMetric.cpp (characterWidth): Eliminate method.
+        (characterHeight): Eliminate method.
+        (all remaining methods): Change return type to 'double'.  Fix
+        documentation in source files to reflect that units are in pixels
+        rather than points.<BR>
+        (descent): Renamed method from 'decent' to 'descent'.
+
+</UL>
+<p>
+2001-11-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (Magick): Invoke DestroyMagick() to clean up
+        ImageMagick allocations.
+
+  <LI> lib/Magick++/Include.h (ImageType): Added some missing enums to
+        Magick namespace.
+
+</UL>
+<p>
+2001-11-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/CoderInfo.h (CoderInfo): Syntax fix.
+        ImageMagick bug #975.
+
+  <LI> lib/Image.cpp (draw): Delete ostrstream data when it is no
+        longer needed.  ImageMagick bug #988.
+
+</UL>
+<p>
+2001-11-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (pixelColor): Implementation didn't handle pixels
+        indexes correctly.  Now it does.
+
+</UL>
+<p>
+2001-11-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (matteFloodfill): Coordinates are long values.
+        (floodFillOpacity): New method to floodfill opacity across pixels
+        matching color (within fuzz-factor) at point. Similar to
+        matteFloodfill except that color is selected from starting point.
+
+</UL>
+<p>
+2001-10-29  Bob Friesenhahn  &lt;bfriesen@sun1107.ssd.usa.alcatel.com&gt;
+
+<UL>
+  <LI> lib/Image.cpp (strokeDashArray): Change to type double.
+        (strokeDashOffset): Change to type double.
+
+</UL>
+<p>
+2001-10-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Geometry.cpp (Geometry): Add constructor from
+        MagickLib::RectangleInfo.
+
+  <LI> lib/Image.cpp (boundingBox): Method to return smallest bounding
+        box enclosing non-border pixels.
+
+</UL>
+<p>
+2001-10-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (getConstIndexes): Add method to obtain read-only
+        pixel indexes.<BR>
+        (getIndexes): Add method to obtain read-write pixel indexes.
+        (Image::Image): Send warnings from Image constructor to cerr
+        rather than throwing.
+
+  <LI> lib/Color.cpp (Color(PixelPacket&amp;)): Change argument to const
+        PixelPacket&amp; as it should have been from the beginning.
+
+  <LI> lib/Image.cpp (pixelColor): Reimplemented to be a const method.
+
+</UL>
+<p>
+2001-10-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (getConstPixels): New method for returning a
+        read-only pixel view.  Still requires documentation.
+
+  <LI> lib/Magick++/STL.h (coderInfoList): Fixed compilation problem
+        when compiling with Visual C++.
+
+</UL>
+<p>
+2001-10-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Color.h (scaleQuantumToDouble): Add polymorphic
+        version that accepts double to avoid downconversion error.
+
+</UL>
+<p>
+2001-10-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Color.h (scaleQuantumToDouble): Cast Quantum to
+        double prior to division.  Hopefully fix bug.
+
+</UL>
+<p>
+2001-10-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Color.h (Color(const std::string)): Pass argument by reference.
+  <LI> (operator=): Pass argument by const reference.
+
+</UL>
+<p>
+2001-09-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (coderInfoList): New function to support
+        obtaining format coder information (as a list of type CoderInfo).
+
+  <LI> lib/CoderInfo.cpp (CoderInfo): New class to support obtaining
+        format coder information.
+
+</UL>
+<p>
+2001-09-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (depth): Use GetImageDepth and SetImageDepth
+        rather than just getting/setting depth attributes.
+
+  <LI> lib/Magick++/STL.h (opacityImage): New unary function object to
+        set, or attenuate, image pixel opacity throughout the image.
+
+  <LI> lib/Image.cpp (opacity): New method to set, or attenuate, image
+        pixel opacity throughout the image.
+
+  <LI> lib/Magick++/STL.h (typeImage): New unary function object to set
+        image type.
+
+  <LI> lib/Image.cpp (type): Added ability to set image type.
+
+</UL>
+<p>
+2001-09-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (write(Blob)): Tell blob to use malloc allocator.
+
+  <LI> lib/Blob.cpp (updateNoCopy): Added parameter so that user can
+        specify the allocation system (malloc or new) the memory came
+        from.  Defaults to C++ memory allocator.
+
+</UL>
+<p>
+2001-09-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (fileSize): Decided to change return type to off_t
+        for increased range and portability.
+
+</UL>
+<p>
+2001-09-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (fileSize): Changed return value to double.
+
+</UL>
+<p>
+2001-09-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (colorMap): Allocate a colormap if it does not
+        already exist.
+
+  <LI> lib/Pixels.cpp (indexes): Don't attempt to validate image type.
+
+  <LI> lib/Image.cpp (colorMap): Optimized more for performance.
+
+</UL>
+<p>
+2001-09-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (fontTypeMetrics): New method to support
+        retrieving font metrics.
+
+  <LI> lib/TypeMetric.cpp : New class to support font metrics
+        information.
+
+</UL>
+<p>
+2001-09-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Color.h (scaleDoubleToQuantum): Inline static
+        method made from previous ScaleDoubleToQuantum #define.
+        (scaleQuantumToDouble): Inline static method made from previous
+        ScaleQuantumToDouble #define. Helps avoid possibility of clash
+        with user code.
+
+</UL>
+<p>
+2001-08-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (colorMap): Automatically extend colormap if
+        specified index is past end of current colormap.  Colormap is
+        limited to a maximum depth of MaxRGB entries.
+
+</UL>
+<p>
+2001-08-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (clipMask): New method to add a clip mask to the
+        image.  Adds clipping to any image operation wherever the clip
+        mask image is tranparent.
+
+</UL>
+<p>
+2001-08-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (print): Add single quotes around file names
+        and font specifications.
+
+</UL>
+<p>
+2001-07-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (read): Ensure that only a single image frame is read.
+
+</UL>
+<p>
+2001-07-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (flattenImages): New function to flatten a
+        layered image.
+
+  <LI> lib/Montage.cpp (Montage): Montage initial defaults are no
+        longer drawn from ImageInfo.  MontageInfo structure is entirely
+        filled out by updateMontageInfo();
+
+</UL>
+<p>
+2001-07-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Montage.cpp (updateMontageInfo): Bugfix; colors which were
+        intentionally specified as invalid (unset) were being ignored.
+        This produced unattractive label text when doing a montage.
+
+</UL>
+<p>
+2001-07-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (medianFilterImage): Changed argument from
+        unsigned int to const double.<BR>
+        (fillColorImage): New method.<BR>
+        (strokeColorImage): New method.
+        (isValidImage): New method.
+
+  <LI> lib/Magick++/Image.h (edge): Change argument from unsigned int to double.
+        (medianFilter): Changed argument from unsigned int to const double.
+
+  <LI> lib/Magick++/STL.h (edgeImage): Change argument from unsigned int to double.
+
+  <LI> demo/demo.cpp (main): Updated to match PerlMagick demo.
+
+</UL>
+<p>
+2001-06-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (shaveImage): New function to shave edges from image.
+
+  <LI> lib/Image.cpp (shave): New method to shave edges from image.
+
+</UL>
+<p>
+2001-06-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (quantize): Remove conditions on whether
+        quantization should be done.  Now quantization is always done.
+
+</UL>
+<p>
+2001-06-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Image.h (blur,charcoal,emboss,sharpen): Changed
+        radius and sigma parameters to match current ImageMagick defaults.
+
+</UL>
+<p>
+2001-02-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Options.cpp (updateDrawInfo): The updateDrawInfo() method
+        was no longer needed.  Due to ImageMagick changes, calling it was
+        causing some options to be lost.
+
+</UL>
+<p>
+2001-01-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (fillRule): New method to specify the rule to use when filling drawn objects.
+
+</UL>
+<p>
+2001-01-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (erase): New method to reset image to background
+        color.<BR>
+        (strokeAntiAlias): New method to control antialiasing of stroked
+        objects.
+
+</UL>
+<p>
+2001-01-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (channel): Renamed method from 'layer' to match
+        equivalent change in ImageMagick (ChannelImage).  Enumeration
+        names *Layer renamed to *Channel.
+
+</UL>
+<p>
+2001-01-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Montage.h (strokeColor): New method.
+        (fillColor): New method.
+
+  <LI> lib/Image.cpp (replaceImage): Revised logic so that an inValid
+        image should be returned if a NULL pointer is passed.  Before this
+        change the existing image was preserved.
+        (label): Work-around ImageMagick SetImageAttribute bug.
+
+</UL>
+<p>
+2001-01-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp : Adjusted to ImageMagick animation parameter API change.
+
+</UL>
+<p>
+2000-12-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableCompositeImage): Support specifying
+        composition rule.
+
+</UL>
+<p>
+2000-12-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (draw): Bugfix - the primitive string was not
+        properly null terminated. It is a wonder that the code usually
+        worked at all.  Thanks to afatela@marktest.pt for reporting it.
+
+</UL>
+<p>
+2000-12-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (deconstructImages): New STL function for
+        deconstructing an image list to assist with creating an animation.
+        (mosaicImages): New STL function for inlaying an image list to
+        form a single coherent picture.
+
+</UL>
+<p>
+2000-12-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (convolve): New method to convolve image using
+        user-supplied convolution matrix.
+        (unsharpmask): New method to replace image with a sharpened
+        version of the original image using the unsharp mask algorithm.
+
+</UL>
+<p>
+2000-12-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> : Adapted to ImageMagick API change which eliminates AnnotateInfo.
+
+</UL>
+<p>
+2000-12-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (annotateImage): Brought into sync with
+        annotate methods in Image.
+
+</UL>
+<p>
+2000-12-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (annotate): Usage of Geometry parameter was
+        incorrect. Geometry parameter is used to specify bounding area.
+        This changes the interpretation for two of the annotate methods
+        (which probably weren't usable before).
+
+</UL>
+<p>
+2000-11-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Color.h (alphaQuantum): Bugfix.  Due to change in
+        treatment of opacity member, alphaQuantum() was not allowing value
+        to be set.
+
+</UL>
+<p>
+2000-11-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableFillRule): New class to specify fill
+        rule (see SVG's fill-rule).<BR>
+        (DrawableDashOffset): New class to specify initial offset in dash
+        array.<BR>
+        (DrawableDashArray): New class to specify a stroke dash pattern.
+        (DrawableStrokeLineCap): New class to specify the shape to be used
+        at the end of open subpaths when they are stroked.
+        (DrawableStrokeLineJoin): New class to specify the shape to be
+        used at the corners of paths (or other vector shapes) when they
+        are stroked.<BR>
+        (DrawableMiterLimit): New class to specify extension limit for
+        miter joins.
+
+</UL>
+<p>
+2000-11-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (annotate): Reimplement text rotation using affine
+        member of AnnotateInfo.<BR>
+        (strokeDashOffset): New method for specifying the dash offset to use for
+        drawing vector objects. Similar to SVG stroke-dashoffset.
+        (strokeDashArray): New method for specifying the dash pattern to use
+        for drawing vector objects.  Similar to SVG stroke-dasharray
+        (strokeLineCap): New method to specify the shape to be used at the end
+        of open subpaths when they are stroked. Similar to SVG
+        stroke-linecap.<BR>
+        (strokLineJoin): New method to specify the shape to be used at the
+        corners of paths (or other vector shapes) when they are
+        stroked. Similar to SVG stroke-linejoin.
+        (strokeMiterLimit): New method to specify the miter limit when joining
+        lines using MiterJoin. Similar to SVG stroke-miterlimit.
+        (strokeWidth): Renamed lineWidth method to strokeWidth.
+
+</UL>
+<p>
+2000-10-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Drawable.h (DrawableCompositeImage): Add a
+        short-form constructor to support specifying image location and
+        name, but without specifying rendered size (use existing image
+        size).
+
+</UL>
+<p>
+2000-10-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Drawable.h (DrawablePopGraphicContext): New class
+        to pop graphic context.<BR>
+        (DrawablePushGraphicContext): New class to push graphic context.
+
+  <LI> lib/Drawable.cpp (DrawableStrokeAntialias): New class to set
+        stroke antialiasing.<BR>
+        (DrawableTextAntialias): New class to set text antialiasing.
+
+</UL>
+<p>
+2000-10-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (transformOrigin): New method to set origin of
+        coordinate system for use when annotating with text or drawing
+        (transformRotation): New method to set rotation for use when
+        annotating with text or drawing
+        (transformScale): New method to set scale for use when annotating
+        with text or drawing.<BR>
+        (transformSkewX): New method to set skew for use in X axis when
+        annotating with text or drawing.
+        (transformSkewY): New method to set skew for use in Y axis when
+        annotating with text or drawing.
+        (transformReset): New method to reset transformation to default.
+
+  <LI> lib/Drawable.cpp (DrawablePath): New class for drawing SVG-style
+        vector paths.<BR>
+        (PathArcArgs): New class. Argument for PathArcArgs &amp; PathArcAbs.
+        (PathArcAbs): New class. Draw arc using absolute coordinates.
+        (PathArcRel): New class. Draw arc using relative coordinates.
+        (PathClosePath): New class. Close drawing path.
+        (PathCurvetoArgs): New class. Argument class for PathCurvetoAbs &amp;
+        PathCurvetoRel.<BR>
+        (PathCurvetoAbs): New class. Cubic bezier, absolute coordinates
+        (PathCurvetoRel): New class. Cubic bezier, relative coordinates
+        (PathSmoothCurvetoAbs): New class. Cubic bezier, absolute
+        coordinates<BR>
+        (PathSmoothCurvetoRel): New class. Cubic bezier, relative
+        coordinates<BR>
+        (PathQuadraticCurvetoArgs): New class. Argument class for
+        PathQuadraticCurvetoAbs and PathQuadraticCurvetoRel.
+        (PathQuadraticCurvetoAbs): New class. Quadratic bezier, absolute
+        coordinates<BR>
+        (PathQuadraticCurvetoRel): New class. Quadratic bezier, relative
+        coordinates<BR>
+        (PathSmoothQuadraticCurvetoAbs): New class. Quadratic bezier,
+        absolute coordinates<BR>
+        (PathSmoothQuadraticCurvetoRel): New class. Quadratic bezier,
+        relative coordinates<BR>
+        (PathLinetoAbs): New class. Line to, absolute coordinates
+        (PathLinetoRel): New class. Line to, relative coordinates
+        (PathLinetoHorizontalAbs): New class. Horizontal lineto, absolute
+        coordinates<BR>
+        (PathLinetoHorizontalRel): New class. Horizontal lineto, relative
+        coordinates<BR>
+        (PathLinetoVerticalAbs): New class. Veritical lineto, absolute
+        coordinates.<BR>
+        (PathLinetoVerticalRel): New class. Vertical lineto, relative
+        coordinates.<BR>
+        (PathMovetoAbs): New class. Moveto, absolute coordinates
+        (PathMovetoRel): New class. Moveto, relative coordinates
+
+</UL>
+<p>
+2000-10-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableSkewX): New object to apply skew in X direction.
+        (DrawableSkewY): New object to apply skew in Y direction.
+
+</UL>
+<p>
+2000-10-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (edge): Change argument from 'unsigned int' to
+        'double' in order to match ImageMagick API.
+
+</UL>
+<p>
+2000-10-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableCompositeImage): Renamed from
+        DrawableImage.<BR>
+        (DrawableTextDecoration): Renamed form DrawableDecoration.
+        (all-classes): Complete re-write to write the drawing command to a
+        stream when draw() is invoked rather than at object construction
+        time. This may be somewhat slower for individual draw operations
+        but but should be at least as fast for lists of drawing commands,
+        and is more flexible going into the future. Drawable classes now
+        inherit from DrawableBase but are passed into STL lists and Image
+        draw() methods via the surrogate class Drawable.  The upshot of
+        all this is that the existing published API has not been altered
+        but things work much differently under the covers.
+
+</UL>
+<p>
+2000-10-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableStrokeColor): Renamed from DrawableStroke
+        (DrawableFillColor): Renamed from DrawableFill
+        (DrawableRotation): New class to influence object rotation.
+        (DrawableScaling): New class to influence object scaling.
+        (DrawableTranslation): New class to influence object translation.
+
+</UL>
+<p>
+2000-10-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableAffine): New class to influence object
+        scaling, rotation, and translation (as defined by SVG XML).
+        (DrawableAngle): New class to influence drawing angle.
+        (DrawableDecoration): New class to influence text decoration such
+        as underline.<BR>
+        (DrawableFill): New class to set object filling color.
+        (DrawableFillOpacity): New class to set opacity to use when
+        filling object.<BR>
+        (DrawableFont::): New class to set font.
+        (DrawableGravity): New class to set text placement gravity.
+        (DrawablePointSize): New class to set font point size.
+        (DrawableStroke): New class to set drawing stroke color.
+        (DrawableStrokeOpacity): New class to set drawing stroke opacity.
+        (DrawableStrokeWidth): New class to set drawing stroke width.
+
+</UL>
+<p>
+2000-10-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableImage): Added width and height
+        parameters to specify size to scale rendered image to.  This is
+        actually a bug-fix since it seems that the correct drawing command
+        was no longer being generated.
+
+</UL>
+<p>
+2000-09-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (read): New overloaded method to read an image
+        based on an array of raw pixels, of specified type and mapping, in
+        memory.<BR>
+        (write): New overloaded method to write image to an array of
+        pixels, of specified type and mapping.
+        (Image): New overloaded constructor to construct an image based on
+        an array of raw pixels, of specified type and mapping, in memory.
+
+</UL>
+<p>
+2000-09-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (colorize): API change to match change in
+        ImageMagick.  Now accepts percentage of red, green, and blue to
+        colorize with using specified pen color.
+
+</UL>
+<p>
+2000-09-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Drawable.h: Reverted Coordinate implemenation back
+        from and STL pair based implementation to a simple class.  Maybe
+        this will improve portability.  It is more understandable anyway.
+
+</UL>
+<p>
+2000-09-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Options.cpp : Bugfix.  Some DrawInfo attributes were not
+        being updated.  This lead to options like fontPointsize not
+        changing the font.
+
+</UL>
+<p>
+2000-08-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (blurImage, charcoalImage, embossImage,
+        sharpenImage): Expand order_ argument to radius_ &amp; sigma_
+        arguments for more control (matches ImageMagick API change).
+
+  <LI> lib/Image.cpp (blur, charcoal, emboss, sharpen): Expand order_
+        argument to radius_ &amp; sigma_ arguments for more control (matches
+        ImageMagick API change).
+
+</UL>
+<p>
+2000-08-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (read): Check returned Image for embedded
+        exception, as well as the existing parameter check.  This fixes
+        the bug that warnings are not reported.
+
+</UL>
+<p>
+2000-07-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> test/*.cpp demo/*.cpp: Added call to MagickIncarnate() to set
+        ImageMagick install location for Windows.  Hopefully this hack can
+        be removed someday.
+
+</UL>
+<p>
+2000-07-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (colorFuzz): Changed type to 'double' from
+        'unsigned int' to match change in ImageMagick.
+
+  <LI> lib/Color.cpp (Color*): Added copy constructor from base class.
+        (operator =): Added assignment operator from base class.
+
+</UL>
+<p>
+2000-06-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Include.h : Changed enumeration FilterType to
+        FilterTypes, and QuantumTypes to QuantumType in order to match
+        last-minute API change in ImageMagick.
+
+</UL>
+<p>
+2000-06-22  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Pixels.cpp (indexes): Bugfix, use GetCacheViewIndexes()
+        rather than GetIndexes().
+
+</UL>
+<p>
+2000-05-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Montage.h (gravity): Type of gravity_ argument, and
+        return value changed from 'unsigned int' to GravityType.
+
+</UL>
+<p>
+2000-04-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (DrawableArc, DrawableBezier, DrawablePolyline,
+        RoundRectangle): Added support for new drawing objects.
+
+</UL>
+<p>
+2000-04-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp: Removed all public methods which accept
+        Coordinate arguments except those that accept lists of
+        Coordinates.  Converted remaining drawable object methods into
+        individual classes which inherit from Drawable (e.g. "circle"
+        becomes "DrawableCircle"). The constructor for each class is
+        compatible with the original method. This results in annoying
+        changes to user code but provides more implementation flexibility.
+
+</UL>
+<p>
+2000-04-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp
+        (fillEllipse,fillRectangle,fillCircle,fillPolygon): Removed
+        methods.  Object filling is now based on whether fillColor or
+        penTexture are valid or not.  This reflects ImageMagick internal
+        changes.
+
+  <LI> lib/Image.cpp (fillColor): New method to specify fill color when
+        drawing objects.<BR>
+        (strokeColor): New method to specify outline color when drawing
+        objects.<BR>
+        (penColor): Setting penColor now sets fillColor and
+        strokeColor. Getting penColor retrieves the value of
+        strokeColor. This supports backwards compatability.
+
+</UL>
+<p>
+2000-03-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (lineWidth): Type changed from unsigned int to double.
+
+</UL>
+<p>
+2000-03-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (Magick):
+
+</UL>
+<p>
+2000-03-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (blurImage,charcoalImage,edgeImage,embossImage,
+        reduceNoiseImage,sharpenImage): Modified to support order of the
+        pixel neighborhood. Backward compatable function objects constructors
+        are provided for embossImage, and reduceNoiseImage.
+
+  <LI> lib/Image.cpp (blur,charcoal,edge,emboss,reduceNoise,sharpen):
+        Now accept unsigned int argument which represents the order of the
+        pixel neighborhood (e.g. 3).  This is not a backwards compatable
+        change, however, backward compatable methods are provided for emboss,
+        and reduceNoise.
+
+</UL>
+<p>
+2000-03-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Pixels.h (Pixels): Moved Image pixel methods to
+        Pixels class.
+
+</UL>
+<p>
+2000-02-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (annotate): Re-wrote to improve performance.
+        (draw): Re-wrote to improve performance.
+
+</UL>
+<p>
+2000-02-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Drawable.cpp (text): Bugfix: support spaces in annotation text.
+
+</UL>
+<p>
+2000-02-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (gaussianBlurImage): New function object to
+        Gaussian blur image.
+
+  <LI> lib/Image.cpp (gaussianBlur): New method to Gaussian blur image.
+
+</UL>
+<p>
+2000-02-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp : Call-back based LastError class is eliminated in
+        favor of ImageMagick 5.2's re-entrant ExceptionInfo reporting.
+        This should make Magick++ thread safe under Win32.
+
+</UL>
+<p>
+2000-02-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (floodFillTexture): Fixed bug due to pixel pointer
+        becoming invalid in ImageMagick function.
+
+</UL>
+<p>
+2000-01-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp : Added locking to reference counting to ensure
+        thread (pthread) safety.
+
+  <LI> lib/Blob.cpp : Added locking to reference counting to ensure
+        thread (pthread) safety.
+
+  <LI> lib/LastError.cpp: Added support for thread specific data
+        (pthreads) so that error reporting is thread safe.
+
+  <LI> lib/Magick++/Thread.h: Added thread wrapper class to provide
+        thread-safe locking (pthreads) to Magick++.
+
+</UL>
+<p>
+2000-01-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp: Added methods getPixels, setPixels, syncPixels,
+        readPixels, and writePixels, in order to provide low-level access
+        to Image pixels.  This approach (direct wrapper around ImageMagick
+        functions) does not mean that the planned object-oriented wrapper
+        has been forgotten, only that this wrapper is not ready yet, and
+        users need to manipulate pixels *now*.
+
+</UL>
+<p>
+2000-01-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/LastError.cpp: Complete re-implementation of LastError so
+        that it hides its implementation.  Also assures that all memory is
+        explicitly deallocated at program exit to avoid the appearance of
+        a leak.
+
+</UL>
+<p>
+2000-01-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (size): Bug-fix. Set image columns and rows as
+        well as image options columns and rows.
+
+  <LI> lib/Image.cpp :Depth parameters are now all unsigned in for consistency.
+
+  <LI> lib/Image.cpp (write): Parameters for writing Blobs re-arranged
+        again to hopefully be more sensible.
+
+  <LI> lib/Magick++/STL.h: Bug-fix. Re-number scenes from zero when linking
+        image range in container into a list. This provides expected results.
+
+</UL>
+<p>
+1999-12-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp
+        (write): Additional overloaded methods for BLOBs.
+        (read):  Additional overloaded methods for BLOBs. Re-ordered
+                 parameters for one existing method.
+        (Image): Additional overloaded methods for BLOBs.  Re-ordered
+                 parameters for one existing method.
+
+</UL>
+<p>
+1999-12-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (floodFillTexture): Changed coordinates to unsigned.
+
+</UL>
+<p>
+1999-12-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (medianFilter): New method.
+
+</UL>
+<p>
+1999-12-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (density): Bug fix. Was not setting image x &amp; y density.
+
+</UL>
+<p>
+1999-11-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (page): psPageSize() is renamed to page() and now
+        properly returns the attribute from the image.
+
+</UL>
+<p>
+1999-11-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp: Rename transformColorSpace() to colorSpace().
+        Added colorSpace() accessor method.
+
+</UL>
+<p>
+1999-11-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Color.cpp: Re-implemented PixelPacket pointer so that it is
+        never NULL and added a 'valid' field for tracking object validity.
+
+</UL>
+<p>
+1999-11-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (quantizeError): Eliminated method.
+
+</UL>
+<p>
+1999-11-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (annotate &amp; draw): Changed implementation to
+        reflect change to the way AnnotateInfo is managed by ImageMagick.
+
+</UL>
+<p>
+1999-11-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (cacheThreshold): New method to set the pixel
+        cache threshold.
+
+  <LI> lib/Magick++/Include.h (Magick): Added new enumerations from
+        classify.h.
+
+</UL>
+<p>
+1999-10-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Options.h (fontPointsize): Argument is now a double
+        to match change in ImageMagick.
+
+  <LI> lib/Image.cpp (fontPointsize): Argument is now a double to match
+        change in ImageMagick.
+
+</UL>
+<p>
+1999-10-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Blob.cpp (BlobRef): Bugfix -- start blob reference count at
+        one rather than zero.
+
+</UL>
+<p>
+1999-10-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (Image): Fixed Image constructors from Blob.  The
+        image reference was not being instantiated as it should have been,
+        causing a crash.
+
+</UL>
+<p>
+1999-10-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Blob.cpp: All blob length parameters are now of type size_t.
+
+  <LI> lib/Image.cpp (write): Length estimate is now of type size_t.
+
+</UL>
+<p>
+1999-09-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (rotate): No longer accepts a crop option since
+        ImageMagick no longer supports this.
+        (shear): No longer accepts a crop option since ImageMagick no
+        longer supports this.
+
+</UL>
+<p>
+1999-09-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp:
+        (rotate): No longer accepts sharpen argument.
+        User must sharpen seperately if desired.  This change is due to a
+        similar change in ImageMagick 5.0.
+        (condense): Removed method.<BR>
+        (uncondense): Removed method.<BR>
+        (condensed): Removed method.<BR>
+        (pixelColor): Adapted to 5.0.
+
+  <LI> lib/Magick++/Color.h : Rewrote to efficiently use ImageMagick
+        5.0's PixelPacket color representation.
+
+  <LI> lib/Color.cpp : Rewrote to efficiently use ImageMagick 5.0's
+        PixelPacket color representation.
+
+</UL>
+<p>
+1999-09-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (condensed): Bug fix.  The condensed() method was returning the opposite bool value than it should.  Oops!
+
+</UL>
+<p>
+1999-09-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Include.h (MagickLib): Eliminated requirement for
+        including &lt;magick/define.h&gt;.
+
+</UL>
+<p>
+1999-08-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp: Added accessor methods for other key ImageMagick
+        structs.
+
+  <LI> lib/Options.cpp (penTexture): Fixed bug with removing texture
+        caused by change in Image constructor.
+
+  <LI> lib/Image.cpp: Changed strategy such that an Image containing a
+        null MagickLib::Image pointer is never constructed except for
+        under error conditions.  Removed existing checks for null image
+        pointer on attribute methods.
+
+</UL>
+<p>
+        Use image() and constImage() accessor methods as part of Image
+        implementation in order to clean-up code and ensure
+        const-correctness.
+
+<p>
+1999-08-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (Magick): Added STL function readImages().
+        Not tested yet.<BR>
+        (Magick): Added STL function writeImages(). Not tested yet.
+
+  <LI> lib/Image.cpp: Removed support for 'text' attribute as this is
+        no longer present in ImageMagick as of 4.2.8.
+
+</UL>
+<p>
+1999-07-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (condense): Skip condensing image if already
+        condensed.<BR>
+        (uncondense): Skip uncondensing image if not condensed.
+        (condensed): New method to test if image is condensed.
+        (classType): New method which supports conversion of the image
+        storage class. May result in loss of color information
+        (quantization is used) if a DirectClass image is converted to
+        PseudoClass.
+
+</UL>
+<p>
+1999-07-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Color.h (Magick::Color): Color parameters are now
+        stored in a MagickLib::RunlengthPacket structure which is
+        referenced via a pointer.  This structure is either allocated by a
+        Magick::Color constructor or passed as an argument to a
+        Magick::Color constructor so that it may refer to to a
+        MagickLib::Image pixel. The owner of the structure is managed so
+        that the structure is only deleted if it was allocated by
+        Magick::Color.
+
+</UL>
+<p>
+1999-07-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> overall : Removed 'Magick' prefix from all source file
+        names. Moved class headers to Magick++ subdirectory.  This should
+        not break any code using the documented interface (via
+        Magick++.h).
+
+</UL>
+<p>
+1999-07-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickImage.cpp (composite): Support composition placement
+        by gravity like PerlMagick does.
+
+</UL>
+<p>
+1999-07-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickImage.cpp (Image): Added constructors to construct an
+        Image from a BLOB.
+
+</UL>
+<p>
+1999-07-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tests/manipulate.cpp (main): Wrote a basic sanity test for
+        reading and writing BLOBS.
+
+</UL>
+<p>
+1999-06-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickImage.cpp (read): Added support for reading an encoded
+        image stored in a BLOB.  Uses new ImageMagick APIs introduced on
+        July 21, 1999.<BR>
+        (write): Added support for writing an encoded image to a BLOB.
+
+</UL>
+<p>
+1999-06-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickInclude.h : Use new &lt;magick/api.h&gt; interface to
+        ImageMagick to avoid namespace-induced problems.
+
+  <LI> configure.in : CPPFLAGS and LDFLAGS specified via the
+        environment take precidence over flags from Magick-config.
+
+</UL>
+<p>
+1999-05-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickSTL.h (mapImages): New algorithm to map the sequence
+        of images to the color map of a provided image.
+        (quantizeImages): New algorithm to quantize a sequence of images
+        to a common color map.
+
+</UL>
+<p>
+1999-05-24  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickBlob.cpp (updateNoCopy): New method to allow derived
+        classes to insert data into the base class without making a copy
+        of the data. This represents a transfer of ownership of the data
+        from the derived class to the base class.
+
+</UL>
+<p>
+1999-05-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickColor.cpp (operator =): Adapted to new ImageMagick
+        4.2.6 as of 5/23/99 which removes X11 compatability functions.
+
+  <LI> lib/MagickGeometry.cpp (operator =): Adapted to new ImageMagick
+        4.2.6 as of 5/23/99 which removes X11 compatability functions.
+
+</UL>
+<p>
+1999-05-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickBlob.cpp (Blob): Support default constructor for Blob.
+
+</UL>
+<p>
+1999-05-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickSTL.h (transformColorSpaceImage): New unary function object
+        to invoke transformColorSpace on STL container object.
+
+  <LI> lib/MagickImage.cpp (transformColorSpace): New method to
+        transform the image data to a new colorspace.
+
+</UL>
+<p>
+1999-05-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickImage.cpp (ping): Re-implemented to match (requested)
+        API change in ImageMagick 4.2.5. Method signature has changed to
+        be like 'read'.<BR>
+        (annotate): Added two new overloaded methods for text annotation
+        in order to support the new rotated text capability in ImageMagick
+        4.2.5.  To accomplish this, the default for gravity had to be
+        removed from several methods. This may impact existing code.
+        Still not sure if this is the best set of method signatures.
+
+</UL>
+<p>
+1999-05-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickImage.cpp (ping): New method to obtain image size in
+        bytes and geometry without the overhead of reading the complete
+        image.<BR>
+        (uncondense): New method to uncompress run-length encoded pixels
+        into a simple array to make them easy to operate on.
+
+</UL>
+<p>
+1999-05-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickImage.cpp (comment): Passing an empty string as the
+        comment results in no comment at all rather than a comment with no
+        data.
+
+</UL>
+<p>
+1999-05-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickImage.cpp (iccColorProfile): Implemented method to set
+        ICC color profile from opaque object in memory (must be formatted
+        outside of Magick++).<BR>
+        (iptcProfile): Implemented method to set IPTC profile from opaque
+        object in memory (must be formatted outside of Magick++).
+
+  <LI> lib/MagickBlob.cpp: New class to support managing user-supplied
+        opaque Binary Large OBjects (BLOBS) in the API. Reference counted
+        to improve semantics and to possibly reduce memory consumption.
+
+</UL>
+<p>
+1999-05-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Makefile.am (libMagick): Updated to use libtool 1.3 so that
+        shared library can be built.
+
+</UL>
+<p>
+1999-04-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickImage.cpp (montageGeometry): Return Magick::Geometry
+        rather than std::string.
+
+</UL>
+<p>
+1999-04-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickColor.cpp (alpha): Added support for setting alpha via
+        scaled-double to the Color class.  The new method name is 'alpha'.
+
+</UL>
+<p>
+1999-04-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/MagickColor.cpp: Added support for setting an alpha value
+        (unscaled Quantum only) for use on DirectColor images that have
+        matte enabled.  This requires ImageMagick 4.2.2 dated April 13,
+        1999 or later to compile since Cristy added a special flag to
+        allow testing to see if the user has specified an opacity value:
+        "I added XColorFlags to magick/classify.h.  If DoMatte is set in
+        color-&gt;flags then the opacity value is valid in color-&gt;pixel."
+
+</UL>
+<p>
+1999-04-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> demo/flip.cpp (main): New file.  Demonstrates use of flipImage
+        function object as well as morphImages algorithm.
+
+</UL>
+<p>
+1999-04-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tests/color.cpp : New file to support testing the Magick::Color
+        classes.
+
+  <LI> lib/MagickOptions.cpp: The ImageInfo filter member is now
+        ignored by ImageMagick (as of ImageMagick 4.2.2 April 10, 1998) so
+        support for setting it is removed. The Image filter member is
+        still updated. According to Cristy, this ImageMagick version
+        removes automatic sharpening of resized images.  The blur member
+        is added to the Image structure. A blur value &lt; 1 causes the image
+        to be sharpened when resizing while a value &gt; 1 leaves the image
+        blurry.  Magick++ does not yet support the blur member.
+
+</UL>
+
+</BODY>
+</HTML>
