@@ -1835,6 +1835,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("font-stretch",keyword) == 0)
           {
             GetToken(q,&q,token);
+            if (LocaleCompare(token,"all") == 0)
+              graphic_context[n]->stretch=AnyStretch;
             if (LocaleCompare(token,"condensed") == 0)
               graphic_context[n]->stretch=CondensedStretch;
             if (LocaleCompare(token,"expanded") == 0)
@@ -1864,6 +1866,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("font-style",keyword) == 0)
           {
             GetToken(q,&q,token);
+            if (LocaleCompare(token,"all") == 0)
+              graphic_context[n]->style=AnyStyle;
             if (LocaleCompare(token,"italic") == 0)
               graphic_context[n]->style=ItalicStyle;
             if (LocaleCompare(token,"normal") == 0)
@@ -1876,6 +1880,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             graphic_context[n]->weight=atol(token);
+            if (LocaleCompare(token,"all") == 0)
+              graphic_context[n]->weight=0;
             if (LocaleCompare(token,"bold") == 0)
               graphic_context[n]->weight=700;
             if (LocaleCompare(token,"bolder") == 0)
