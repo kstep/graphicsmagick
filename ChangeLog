@@ -1,3 +1,24 @@
+2003-04-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/installer/inc/tasks-install-devel.isx (Name): 
+	Added an installation checkbox so the user can select to install
+	development headers and libraries for C & C++.
+	* VisualMagick/installer/inc/files-perlmagick.isx (Source):
+	Only install PerlMagick PPD files if the user selects to install
+	PerlMagick.	
+	* VisualMagick/installer/inc/files-com.isx (Source): Only
+	install ImageMagickObject files if the user selects to install
+	ImageMagickObject.
+	* magick/version.h.in: Added some documentation for the
+	functioning of MagickLibVersion and MagickLibVersionNumber.
+	* configure.ac: Perform substutions to create
+	VisualMagick/installer/inc/version.isx from
+	VisualMagick/installer/inc/version.isx.in. This allows Windows
+	versioning info to be updated from info in version.sh.
+	* Makefile.am (magick-version): For a VPATH build, update
+	VisualMagick/installer/inc/version.isx in the source directory if
+	it is out of date.
+
 2003-04-28  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/cache.c: CloneImagePixels(): applied Cristy's bugfix

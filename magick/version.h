@@ -18,13 +18,27 @@ extern "C" {
 
 /*
   Define declarations.
+
+  MagickLibVersion and MagickLibVersionNumber are defined differently
+  than they are in ImageMagick. The three fields are based on library
+  interface versioning.  Each field in MagickLibVersion is one byte.
+  The most significant field (third byte from the right) defines the
+  library major interface, which is incremented whenever the library
+  ABI changes incompatibly with preceding versions. The second field
+  identifies an interface in a series of upward-compatible interfaces
+  with the same major interface (such as when only new functions have)
+  been added. The least significant field specifies the revision across
+  100% compatible interfaces.
+
+  MagickLibVersionText provides a simple human-readable string for
+  identifying the release.
 */
 #define MagickPackageName "GraphicsMagick"
 #define MagickCopyright  "Copyright (C) 2003 " MagickPackageName " Group"
 #define MagickLibVersion  0x000001
 #define MagickLibVersionText  "1.0"
 #define MagickLibVersionNumber 0,0,1
-#define MagickReleaseDate  "04/27/03"
+#define MagickReleaseDate  "04/29/03"
 
 
 #if (QuantumDepth == 8)

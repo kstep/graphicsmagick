@@ -25,6 +25,7 @@
 #include "tasks-update-path.isx"
 #include "tasks-extensions.isx"
 #ifdef MagickDynamicPackage
+  #include "tasks-install-devel.isx"
   #include "tasks-install-perlmagick.isx"
 #endif
 #include "tasks-install-com.isx"

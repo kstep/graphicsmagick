@@ -13,27 +13,23 @@ PACKAGE_VERSION='1.0'
 
 #
 # Formal Package release date
-PACKAGE_RELEASE_DATE="04/27/03"
+PACKAGE_RELEASE_DATE="04/29/03"
 
 #
 # Package version addendum.  This is an arbitrary suffix (if any)
 # appended to the package version. (e.g. "beta1")
 
+# `echo -snapshot-``date '+%g%m%d'`
+CHANGE_DATE=`find ${srcdir}/ChangeLog -printf '%Ty%Tm%Td%\n' 2> /dev/null`
+if test -n "$CHANGE_DATE"
+then
+  PACKAGE_VERSION_ADDENDUM="-${CHANGE_DATE}"
+else
+  PACKAGE_VERSION_ADDENDUM="-snapshot"
+fi
+
 # To hardcode the version addendum, uncomment the following line
 PACKAGE_VERSION_ADDENDUM='-Beta1'
-
-# If addendum is not defined above, then form a snapshot attendum.
-if test "${PACKAGE_VERSION_ADDENDUM}X" = 'X'
-then
-  # `echo -snapshot-``date '+%g%m%d'`
-  CHANGE_DATE=`find ${srcdir}/ChangeLog -printf '%Ty%Tm%Td%\n' 2> /dev/null`
-  if test -n "$CHANGE_DATE"
-  then
-    PACKAGE_VERSION_ADDENDUM="-${CHANGE_DATE}"
-  else
-    PACKAGE_VERSION_ADDENDUM="-snapshot"
-  fi
-fi
 
 #
 # Libtool library revision control info

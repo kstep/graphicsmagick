@@ -93,6 +93,11 @@ magick-version: magick/version.h
 	    echo "Updating $(srcdir)/magick/version.h ..."; \
 	    cp magick/version.h $(srcdir)/magick/version.h ; \
 	  fi ; \
+	  cmp VisualMagick/installer/inc/version.isx $(srcdir)/VisualMagick/installer/inc/version.isx > /dev/null ; \
+          if test $$? -eq 1 ; then \
+	    echo "Updating $(srcdir)/VisualMagick/installer/inc/version.isx ..."; \
+	    cp VisualMagick/installer/inc/version.isx $(srcdir)/VisualMagick/installer/inc/version.isx ; \
+	  fi ; \
 	fi ; \
 	touch magick-version
 

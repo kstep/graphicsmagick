@@ -8,7 +8,4 @@
 ;
 #endif
 
-#define public MagickPackageName "GraphicsMagick"
-#define public MagickPackageVersion "1.0"
-#define public MagickPackageVersionAddendum "-Beta1"
-#define public MagickPackageReleaseDate "04/29/03"
+Name: install_Devel; Description: "Install development headers for C and C++"; Flags: unchecked

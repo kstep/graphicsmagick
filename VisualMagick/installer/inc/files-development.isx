@@ -9,88 +9,88 @@
 #endif
 
 ;  Development libraries
-Source: "..\lib\CORE_RL_Magick++_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_bzlib_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_fpx_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_jbig_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_jp2_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_jpeg_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_lcms_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_libxml_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-Source: "..\lib\CORE_RL_magick_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_png_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_tiff_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_ttf_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_wmf_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-;Source: "..\lib\CORE_RL_zlib_.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
-Source: "..\lib\X11.lib"; DestDir: "{app}\lib"; Flags: ignoreversion
+Source: "..\lib\CORE_RL_Magick++_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_bzlib_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_fpx_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_jbig_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_jp2_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_jpeg_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_lcms_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_libxml_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\lib\CORE_RL_magick_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_png_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_tiff_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_ttf_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_wmf_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+;Source: "..\lib\CORE_RL_zlib_.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\lib\X11.lib"; DestDir: "{app}\lib"; Tasks: install_Devel; Flags: ignoreversion
 ;  Development headers
-Source: "..\..\magick\api.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\attribute.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\blob.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\cache.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\cache_view.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\color.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\command.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\composite.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\compress.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\constitute.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\decorate.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\delegate.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\deprecate.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\draw.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\effect.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\enhance.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\error.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\fx.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\gem.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\image.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\integral_types.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\list.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\log.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\magic.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\magick_config.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\magick.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\module.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\monitor.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\montage.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\nt_base.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\nt_feature.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\paint.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\PreRvIcccm.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\quantize.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\registry.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\render.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\resize.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\resource.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\semaphore.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\shear.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\signature.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\stream.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\timer.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\transform.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\utility.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\version.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\widget.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
-Source: "..\..\magick\xwindow.h"; DestDir: "{app}\include\magick"; Flags: ignoreversion
+Source: "..\..\magick\api.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\attribute.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\blob.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\cache.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\cache_view.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\color.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\command.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\composite.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\compress.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\constitute.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\decorate.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\delegate.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\deprecate.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\draw.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\effect.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\enhance.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\error.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\fx.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\gem.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\image.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\integral_types.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\list.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\log.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\magic.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\magick_config.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\magick.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\module.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\monitor.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\montage.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\nt_base.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\nt_feature.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\paint.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\PreRvIcccm.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\quantize.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\registry.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\render.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\resize.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\resource.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\semaphore.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\shear.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\signature.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\stream.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\timer.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\transform.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\utility.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\version.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\widget.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\xwindow.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
 ; Magick++ headers
-Source: "..\..\Magick++\lib\Magick++.h"; DestDir: "{app}\include"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\Blob.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\CoderInfo.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\Color.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\Drawable.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\Exception.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\Geometry.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\Image.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\Include.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\Montage.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\Pixels.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\STL.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
-Source: "..\..\Magick++\lib\Magick++\TypeMetric.h"; DestDir: "{app}\include\Magick++"; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++.h"; DestDir: "{app}\include"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\Blob.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\CoderInfo.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\Color.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\Drawable.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\Exception.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\Geometry.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\Image.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\Include.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\Montage.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\Pixels.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\STL.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\lib\Magick++\TypeMetric.h"; DestDir: "{app}\include\Magick++"; Tasks: install_Devel; Flags: ignoreversion
 ; Magick++ demos
-Source: "Magick++_Demo\*.dsw"; DestDir: "{app}\Magick++_Demo"; Flags: ignoreversion
-Source: "Magick++_Demo\*.dsp"; DestDir: "{app}\Magick++_Demo"; Flags: ignoreversion
-Source: "Magick++_Demo\*.bat"; DestDir: "{app}\Magick++_Demo"; Flags: ignoreversion
-Source: "Magick++_Demo\README.txt"; DestDir: "{app}\Magick++_Demo"; Flags: ignoreversion
-Source: "..\..\Magick++\demo\*.cpp"; DestDir: "{app}\Magick++_Demo"; Flags: ignoreversion
-Source: "..\..\Magick++\demo\*.miff"; DestDir: "{app}\Magick++_Demo"; Flags: ignoreversion
+Source: "Magick++_Demo\*.dsw"; DestDir: "{app}\Magick++_Demo"; Tasks: install_Devel; Flags: ignoreversion
+Source: "Magick++_Demo\*.dsp"; DestDir: "{app}\Magick++_Demo"; Tasks: install_Devel; Flags: ignoreversion
+Source: "Magick++_Demo\*.bat"; DestDir: "{app}\Magick++_Demo"; Tasks: install_Devel; Flags: ignoreversion
+Source: "Magick++_Demo\README.txt"; DestDir: "{app}\Magick++_Demo"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\demo\*.cpp"; DestDir: "{app}\Magick++_Demo"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\Magick++\demo\*.miff"; DestDir: "{app}\Magick++_Demo"; Tasks: install_Devel; Flags: ignoreversion
