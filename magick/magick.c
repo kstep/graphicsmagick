@@ -474,9 +474,13 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
   MagickInfo
     *p;
 
+  unsigned int
+    status;
+
 #if defined(HasPTHREADS)
   pthread_mutex_lock(&magick_mutex);
 #endif
+  status=False;
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)
@@ -491,13 +495,11 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
     FreeMemory((void **) &p->description);
     FreeMemory((void **) &p->module);
     FreeMemory((void **) &p);
-#if defined(HasPTHREADS)
-  pthread_mutex_unlock(&magick_mutex);
-#endif
-    return(True);
+    status=True;
+    break;
   }
 #if defined(HasPTHREADS)
   pthread_mutex_unlock(&magick_mutex);
 #endif
-  return(False);
+  return(status);
 }
