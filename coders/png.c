@@ -4067,7 +4067,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 #if (PNG_LIBPNG_VER > 10005)
    text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
    description_length=strlen((const char *) profile_description);
-   allocated_length= (png_uint_32) (length*2 + (length>>5) + 10
+   allocated_length= (png_uint_32) (length*2 + (length>>5) + 20
       + description_length);
    text[0].text=(png_charp) png_malloc(ping,allocated_length);
    text[0].key=(png_charp) png_malloc(ping, (png_uint_32) 80);
