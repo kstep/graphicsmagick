@@ -31,7 +31,7 @@ testRead( 'input.ttf',
 print("Draw text using font ...\n");
 $infile = 'input.ttf';
 $md5    = '63da735482d91fcb5959e08849cba86250b5206c81437a9941cda69d11705f6d';
-$md5_16 = '2ab3be9e71bf00282b32ab5b7c10c5f46faeec5023f0de76a371d97c6334b7a1';
+$md5_16 = 'fa93387d58f6f700e80ea57156480c0aee84b8768c72e1d43ac449d15478be74';
 
 $image=Image::Magick->new;
 $status=$image->Set(font=>"\@$infile", pen=>'#0000FF', pointsize=>14);
