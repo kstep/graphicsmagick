@@ -511,6 +511,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 
 	includes_list.push_back("..\\..\\zlib");
 	includes_list.push_back("..\\..\\tiff\\libtiff");
+	includes_list.push_back("..\\..\\lcms\\src");
 	includes_list.push_back("..\\..\\lcms\\source");
 	includes_list.push_back("..\\..\\ttf\\include");
 
