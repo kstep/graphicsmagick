@@ -1660,6 +1660,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((char *) name,"text") == 0)
         {
+          if (Extent(svg_info->text) == 0)
+            break;
           if (strchr(svg_info->text,'\'') != (char *) NULL)
             {
               (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",

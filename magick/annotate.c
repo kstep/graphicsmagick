@@ -812,8 +812,8 @@ static unsigned int RenderTruetype(Image *image,
   bounds->y1=32000;
   bounds->y2=(-32000);
   affine.xx=(FT_Fixed) (65536.0*annotate_info->affine.sx);
-  affine.xy=(FT_Fixed) (65536.0*annotate_info->affine.rx);
-  affine.yx=(FT_Fixed) (65536.0*annotate_info->affine.ry);
+  affine.yx=(FT_Fixed) (-65536.0*annotate_info->affine.rx);
+  affine.xy=(FT_Fixed) (-65536.0*annotate_info->affine.ry);
   affine.yy=(FT_Fixed) (65536.0*annotate_info->affine.sy);
   glyph=glyphs;
   for (i=0; i < length; i++)
