@@ -145,15 +145,13 @@ typedef struct _StreamInfo
 %    o compression:  A value of 1 means the compressed pixels are runlength
 %      encoded for a 256-color bitmap.  A value of 2 means a 16-color bitmap.
 %
-%    o bytes_per_line: The number of bytes in a scanline of compressed pixels
-%
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the decoding process.
 %
 %
 */
 static unsigned int DecodeImage(Image *image,const unsigned int compression,
-  unsigned long bytes_per_line,unsigned char *pixels)
+  unsigned char *pixels)
 {
   long
     byte,
@@ -167,7 +165,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   register unsigned char
     *q;
 
-  (void) memset(pixels,0,bytes_per_line*image->rows);
+  (void) memset(pixels,0,image->columns*image->rows);
   byte=0;
   x=0;
   q=pixels;
@@ -209,7 +207,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             */
             x=0;
             y++;
-            q=pixels+y*bytes_per_line;
+            q=pixels+y*image->columns;
             break;
           }
           case 0x02:
@@ -219,7 +217,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             */
             x+=ReadBlobByte(image);
             y+=ReadBlobByte(image);
-            q=pixels+y*bytes_per_line+x;
+            q=pixels+y*image->columns+x;
             break;
           }
           default:
@@ -449,12 +447,14 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->scene >= (image_info->subimage+image_info->subrange-1))
             break;
         bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
-        pixels=(unsigned char *) AcquireMemory(bytes_per_line*image->rows);
+        pixels=(unsigned char *) AcquireMemory(Max(bytes_per_line,
+          image->columns+1)*image->rows);
+
         if (LocaleCompare(id,"00db") == 0)
           (void) ReadBlob(image,bytes_per_line*image->rows,(char *) pixels);
         else
           {
-            status=DecodeImage(image,1,bytes_per_line,pixels);
+            status=DecodeImage(image,1,pixels);
             if (status == False)
               ThrowReaderException(CorruptImageWarning,
                 "unable to runlength decode",image);

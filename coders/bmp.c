@@ -143,7 +143,7 @@ static unsigned int
 %  The format of the DecodeImage method is:
 %
 %      unsigned int DecodeImage(Image *image,const unsigned long compression,
-%        unsigned long bytes_per_line, unsigned char *pixels)
+%        unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -157,15 +157,13 @@ static unsigned int
 %      A value of 2 means a 16-color bitmap.  A value of 3 means bitfields
 %      encoding.
 %
-%    o bytes_per_line: The number of bytes in a scanline of compressed pixels
-%
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the decoding process.
 %
 %
 */
 static unsigned int DecodeImage(Image *image,const unsigned long compression,
-  unsigned long bytes_per_line,unsigned char *pixels)
+  unsigned char *pixels)
 {
   long
     byte,
@@ -181,7 +179,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
 
   assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  (void) memset(pixels,0,bytes_per_line*image->rows);
+  (void) memset(pixels,0,image->columns*image->rows);
   byte=0;
   x=0;
   q=pixels;
@@ -223,7 +221,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
             */
             x=0;
             y++;
-            q=pixels+y*bytes_per_line;
+            q=pixels+y*image->columns;
             break;
           }
           case 0x02:
@@ -233,7 +231,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
             */
             x+=ReadBlobByte(image);
             y+=ReadBlobByte(image);
-            q=pixels+y*bytes_per_line+x;
+            q=pixels+y*image->columns+x;
             break;
           }
           default:
@@ -759,7 +757,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=bytes_per_line*image->rows;
-    pixels=(unsigned char *) AcquireMemory(length);
+    pixels=(unsigned char *) AcquireMemory(Max(bytes_per_line,
+      image->columns+1)*image->rows);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -771,7 +770,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert run-length encoded raster pixels.
         */
-        status=DecodeImage(image,bmp_info.compression,bytes_per_line,pixels);
+        status=DecodeImage(image,bmp_info.compression,pixels);
         if (status == False)
           ThrowReaderException(CorruptImageWarning,"runlength decoding failed",
             image);
