@@ -115,6 +115,7 @@ static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterXImage(void)
 {
+#if defined(HasX11)
   MagickInfo
     *entry;
 
@@ -125,6 +126,7 @@ ModuleExport void RegisterXImage(void)
   entry->description=AcquireString("X Image");
   entry->module=AcquireString("X");
   (void) RegisterMagickInfo(entry);
+#endif
 }
 
 /*
@@ -148,7 +150,9 @@ ModuleExport void RegisterXImage(void)
 */
 ModuleExport void UnregisterXImage(void)
 {
+#if defined(HasX11)
   (void) UnregisterMagickInfo("X");
+#endif
 }
 
 #if defined(HasX11)
