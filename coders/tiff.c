@@ -777,6 +777,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
           unsigned int
             quantum;
+
+          unsigned int
+            matte_scale=1;
           
 #if QuantumDepth < 16
           unsigned int
@@ -784,6 +787,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           
           index_scale = (1U << bits_per_sample) / image->colors + 1;
 #endif
+
+          if (QuantumDepth > bits_per_sample)
+            matte_scale=MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample));
 
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -825,7 +831,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   /* matte */
                   quantum = BitStreamRead(&stream,bits_per_sample);
                   if (QuantumDepth > bits_per_sample)
-                    quantum <<= (QuantumDepth-bits_per_sample);
+                    quantum = quantum * matte_scale;
                   else
                     quantum >>= (bits_per_sample - QuantumDepth);
                   q->opacity = (Quantum) (MaxRGB - quantum);
@@ -1222,14 +1228,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image=image->previous;
   return(image);
 }
-#else
-static Image *ReadTIFFImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateError,TIFFLibraryIsNotAvailable,
-    image_info->filename);
-  return((Image *) NULL);
-}
 #endif
 
 /*
@@ -1397,13 +1395,7 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
   DestroyImageInfo(clone_info);
   return(status);
 }
-#else
-static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,
-    image->filename);
-}
-#endif
+#endif /* defined(HasTIFF) */
 
 #if defined(HasTIFF)
 /*
@@ -1508,6 +1500,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   Encode row of DirectClass gray pixels into TIFF packed format.
   Currently supported bits-per-sample are 4 & 8.
 */
+#if 0
 static unsigned int EncodeGrayPixels(const Image *image,
   const unsigned int bits_per_sample, const unsigned int matte_flag,
   unsigned char *destination)
@@ -1585,6 +1578,31 @@ static unsigned int EncodeGrayPixels(const Image *image,
           for (x= number_pixels; x > 0; --x)
             *q++=(unsigned char) ScaleQuantumToChar(p++->red);
         break;
+      }
+    default:
+      {
+        register unsigned long
+          scale;
+
+        register unsigned int
+          quantum;
+
+        BitStreamWriteHandle
+          bit_stream;
+        
+        scale=MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample));
+        BitStreamInitializeWrite(&bit_stream,destination);
+        for (x= number_pixels; x > 0; --x)
+          {
+            quantum=p->red/scale;
+            BitStreamWrite(&bit_stream,bits_per_sample,quantum);
+            if (matte_flag)
+              {
+                quantum=(MaxRGB - p->opacity)/scale;
+                BitStreamWrite(&bit_stream,bits_per_sample,quantum);
+              }
+            p++;
+          }
       }
     }
 
@@ -1702,10 +1720,22 @@ static unsigned int EncodeIndexPixels(const Image *image,
           *q++=(unsigned char) *indexes++;
         break;
       }
+    default:
+      {
+        BitStreamWriteHandle
+          bit_stream;
+        
+        BitStreamInitializeWrite(&bit_stream,destination);
+        for (x= number_pixels; x > 0; --x)
+          {
+            BitStreamWrite(&bit_stream,bits_per_sample,*indexes++);
+          }
+      }
     }
 
   return True;
 }
+#endif
 
 static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
   tsample_t sample,Image *image)
@@ -1799,7 +1829,6 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
 #endif
 static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
-
   char
     filename[MaxTextExtent];
 
@@ -1818,9 +1847,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   register long
     i,
     x;
-
-  register unsigned char
-    *q;
 
   TIFF
     *tiff;
@@ -1992,7 +2018,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "Using PHOTOMETRIC_RGB, 3 samples per pixel");
-        if (image_info->type != TrueColorType)
+        if ((image_info->type != TrueColorType) &&
+            (compress_tag != COMPRESSION_ADOBE_DEFLATE) &&
+            (compress_tag != COMPRESSION_JPEG) &&
+            (compress_tag != COMPRESSION_LZW))
           {
             if ((image_info->type != PaletteType) &&
                 IsGrayImage(image,&image->exception))
@@ -2003,7 +2032,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     IsMonochromeImage(image,&image->exception))
                   {
                     /* Monochrome PseudoClass Image */
-
                     bits_per_sample=1;
                     (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
                     photometric=PHOTOMETRIC_MINISWHITE;
@@ -2026,20 +2054,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     if (logging)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                         "depth %lu, colors %lu",depth, image->colors);
-
                     if (image->matte)
                       opacity_depth=GetImageChannelDepth(image,OpacityChannel,
                         &image->exception);
-
                     depth=Max(depth,opacity_depth);
-
-                    if (depth <= 4)
-                      bits_per_sample=4;
-                    else if (depth <= 8)
-                      bits_per_sample=8;
-
+                    for (bits_per_sample=1; bits_per_sample < depth; )
+                      bits_per_sample*=2;
                     (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
-
                     photometric=PHOTOMETRIC_MINISBLACK;
                     if (logging)
                       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2054,15 +2075,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     Colormapped TIFF raster.
                   */
 
-                  if (image->colors <= 2)
-                    bits_per_sample=1;
-                  else if (image->colors <= 4)
-                    bits_per_sample=2;
-                  else if (image->colors <= 16)
-                    bits_per_sample=4;
-                  else if (image->colors <= 256)
-                    bits_per_sample=8;
-
+                  bits_per_sample=1;
+                  while ((1UL << bits_per_sample) < image->colors)
+                    bits_per_sample*=2;
                   (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                   (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
                   photometric=PHOTOMETRIC_PALETTE;
@@ -2173,6 +2188,19 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case COMPRESSION_CCITTFAX4:
       {
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+        break;
+      }
+      case COMPRESSION_LZW:
+      {
+        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
+        /*
+          Use horizontal differencing (type 2) for images which are
+          likely to be continuous tone.  The TIFF spec says that this
+          usually leads to better compression.
+        */
+        if((photometric == PHOTOMETRIC_RGB) ||
+           ((photometric == PHOTOMETRIC_MINISBLACK) && (bits_per_sample >= 8)))
+          (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
         break;
       }
       default:
@@ -2427,99 +2455,76 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         MagickFreeMemory(red);
         MagickFreeMemory(green);
         MagickFreeMemory(blue);
+        /* Notice that this case falls through to the default case */
       }
       default:
       {
-        register unsigned char
-          bit,
-          byte,
-          polarity;
-
-        if ((image->storage_class == DirectClass) ||
-            (image_info->type == PaletteType) ||
-            !IsMonochromeImage(image,&image->exception))
-          {
-            /*
-              Convert PseudoClass packets to contiguous scanlines.
-            */
-            for (y=0; y < (long) image->rows; y++)
-            {
-              p=AcquireImagePixels(image,0,y,image->columns,1,
-                &image->exception);
-              if (p == (const PixelPacket *) NULL)
-                break;
-              if (image->matte)
-                /* Grayscale DirectClass with Opacity */
-                (void) EncodeGrayPixels(image,bits_per_sample,True,scanline);
-              else
-                if (photometric != PHOTOMETRIC_PALETTE)
-                  /* Grayscale DirectClass */
-                  (void) EncodeGrayPixels(image,bits_per_sample,False,scanline);
-                else
-                  /* Color PseudoClass */
-                  (void) EncodeIndexPixels(image,bits_per_sample,scanline);
-              if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-                break;
-              if (image->previous == (Image *) NULL)
-                if (QuantumTick(y,image->rows))
-                  {
-                    status=MagickMonitor(SaveImageText,y,image->rows,
-                      &image->exception);
-                    if (status == False)
-                      break;
-                  }
-            }
-            break;
-          }
         /*
-          Convert PseudoClass packets to contiguous monochrome scanlines.
+          Convert PseudoClass packets to contiguous scanlines.
         */
-        SetImageType(image,BilevelType);
-        if (logging)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Set image type to BilevelType");
-        polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
-        if (photometric == PHOTOMETRIC_PALETTE)
-          polarity=1;
-        else
-          if (image->colors == 2)
-            {
-              polarity=PixelIntensityToQuantum(&image->colormap[0]) <
-                PixelIntensityToQuantum(&image->colormap[1]);
-              if (photometric == PHOTOMETRIC_MINISBLACK)
-                polarity=!polarity;
-            }
         for (y=0; y < (long) image->rows; y++)
-        {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
-          bit=0;
-          byte=0;
-          q=scanline;
-          for (x=0; x < (long) image->columns; x++)
           {
-            byte<<=1;
-            if (indexes[x] != polarity)
-              byte|=0x01;
-            bit++;
-            if (bit == 8)
+            BitStreamWriteHandle
+              bit_stream;
+            
+            register unsigned long
+              scale;
+            
+            register unsigned int
+              quantum;
+            
+            scale=MaxRGB / (MaxRGB >> (QuantumDepth-bits_per_sample));
+            p=AcquireImagePixels(image,0,y,image->columns,1,
+                                 &image->exception);
+            if (p == (const PixelPacket *) NULL)
+              break;
+            BitStreamInitializeWrite(&bit_stream,scanline);
+            if (photometric != PHOTOMETRIC_PALETTE)
               {
-                *q++=byte;
-                bit=0;
-                byte=0;
+                /* Grayscale DirectClass */
+                for (x= image->columns; x > 0; --x)
+                  {
+                    quantum=p->red/scale;
+                    if ((bits_per_sample == 1))
+                      /* PHOTOMETRIC_MINISWHITE */
+                      quantum ^= 0x01;
+                    BitStreamWrite(&bit_stream,bits_per_sample,quantum);
+                    if (image->matte)
+                      /* with opacity */
+                      {
+                        quantum=(MaxRGB - p->opacity)/scale;
+                        BitStreamWrite(&bit_stream,bits_per_sample,quantum);
+                      }
+                    p++;
+                  }
               }
+            else
+              {
+                /* Color/Gray PseudoClass */
+                indexes=GetIndexes(image);
+                for (x= image->columns; x > 0; --x)
+                  {
+                    BitStreamWrite(&bit_stream,bits_per_sample,*indexes++);
+                    if (image->matte)
+                      /* with opacity */
+                      {
+                        quantum=(MaxRGB - p->opacity)/scale;
+                        BitStreamWrite(&bit_stream,bits_per_sample,quantum);
+                        p++;
+                      }
+                  }
+              }
+            if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
+              break;
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                {
+                  status=MagickMonitor(SaveImageText,y,image->rows,
+                                       &image->exception);
+                  if (status == False)
+                    break;
+                }
           }
-          if (bit != 0)
-            *q++=byte << (8-bit);
-          if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-            break;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                break;
-        }
         break;
       }
     }
@@ -2628,11 +2633,5 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
 #endif
   return(True);
-}
-#else
-static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,
-    image->filename);
 }
 #endif

@@ -56,8 +56,30 @@
 2003-10-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> PerlMagick/t/tiff/read.t: Added 16-color and 256 color
+        colormapped tests with a matte channel.
+  <LI> PerlMagick/t/tiff/write.t: Added 16-color and 256 color
+        colormapped tests with a matte channel.
+  <LI> coders/tiff.c (WriteTIFFImage): When using LZW compression,
+        apply the horizontal differencing predictor to RGB truecolor and
+        deep gray images since the TIFF spec says that LZW compression is
+        usually improved by using horizontal differencing with continuous
+        tone images.<BR>
+        Re-implemented grayscale and colormapped scanline preparation to
+        use the new bit-stream interface.  This is a bit slower, but very
+        flexible, and the implementation is very compact.  Writing of a
+        matte (transparency) channel is now believed to be correct for all
+        depths.<BR>
   <LI> magick/command.c (MogrifyImage): Only transform the colorspace
         if it has been set (i.e. is not UndefinedColorspace).
+
+</UL>
+<p>
+2003-10-06  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/png.c (ReadOnePNGImage): PNG decoder would exit too
+        early when reading image.png[0].
 
 </UL>
 <p>

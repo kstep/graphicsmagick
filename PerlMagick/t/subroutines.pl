@@ -247,7 +247,7 @@ sub testRead {
 	print "     Expected: $ref_signature\n";
         print "     Depth:    $depth\n";
         ++$failure;
-        #$image->Display();
+        $image->Display();
       }
     }
     undef $image;
