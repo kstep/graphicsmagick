@@ -1313,12 +1313,12 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
   /*
     Roll image.
   */
-  offset.x=x_offset % image->columns;
-  offset.y=y_offset % image->rows;
   while (offset.x < 0.0)
     offset.x+=image->columns;
   while (offset.y < 0.0)
     offset.y+=image->rows;
+  offset.x=x_offset % image->columns;
+  offset.y=y_offset % image->rows;
   for (y=0; y < (long) image->rows; y++)
   {
     /*
