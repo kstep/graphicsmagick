@@ -114,13 +114,13 @@ eps<=>ps
 	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
-	@WWWDecodeDelegate@ %m:%i > %o 2>&1
+	@WWWDecodeDelegate@ --quiet --output-document=%o %m:%i
 
 fig=>
 	@FIGDecodeDelegate@ -L ps %i %o
 
 ftp=>
-	@WWWDecodeDelegate@ %m:%i > %o 2>&1
+	@WWWDecodeDelegate@ --quiet --output-document=%o %m:%i
 
 # Gnuplot format (rendered as Postscript)
 # Add additional gnuplot commands to the input file to adjust output.
@@ -149,7 +149,7 @@ html=>
 	@HTMLDecodeDelegate@ -U -o %o %i
 
 http=>
-	@WWWDecodeDelegate@ %m:%i > %o 2>&1
+	@WWWDecodeDelegate@ --quiet --output-document=%o %m:%i
 
 ilbm=>
 	@ILBMDecodeDelegate@ %i > %o 

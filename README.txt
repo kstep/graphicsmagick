@@ -508,14 +508,12 @@ MAGICK DELEGATES
 
       to read the Windows Meta File image format.
 
-    o ImageMagick requires GET(1) available via the Web as
+    o ImageMagick requires wget available via the Web as
 
-          http://www.linpro.no/lwp/
+          http://www.gnu.org/software/wget/wget.html
 
       to read images specified with a World Wide Web (WWW) uniform
-      resource locator (URL).  If you do not have a HTTP server, you
-      can use xtp(1), available in the ImageMagick distribution, for
-      URL's whose protocol is FTP.
+      resource locator (URL). 
 
     o ImageMagick requires an X server for display and animate to work
       properly.  There is a nearly free X server available for Windows and
