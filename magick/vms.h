@@ -17,14 +17,26 @@ extern "C" {
 #include <descrip.h>
 #include <rmsdef.h>
 #include <ctype.h> 
-
-#include <iledef.h>
-#if defined(__NEW_STARLET)
-#  define ile3 ILE3
-#endif
 #include <dvidef.h>
 #include <dcdef.h>
 #include <ssdef.h>
+
+#pragma __member_alignment __save
+typedef struct _ile3
+{
+#pragma __nomember_alignment
+  unsigned short int
+    ile3$w_length,
+    ile3$w_code;
+
+  void
+    *ile3$ps_bufaddr;
+
+  unsigned short int
+    *ile3$ps_retlen_addr;
+} ile3;
+#pragma __member_alignment __restore
+
 
 #if defined(__VMS_VER) && (__VMS_VER >= 70000000)
 #include <dirent.h>

@@ -95,64 +95,6 @@ void closedir(DIR *directory)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I m a g e F o r m a t C o n f l i c t                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ImageFormatConflict returns true if the image format conflicts with
-%  with a logical drive (.e.g. SYS$SCRATCH:).
-%
-%  Contributed by Forrest Cahoon (forrest@wiredaemons.com)
-%
-%  The format of the ImageFormatConflict method is:
-%
-%      status=ImageFormatConflict(magick)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method ImageFormatConflict returns true if the image format
-%      conflicts with a logical drive.
-%
-%    o magick: Specifies the image format.
-%
-%
-*/
-MagickExport int ImageFormatConflict(char *magick)
-{
-  ile3
-    item_list[2];
-
-  int
-    device_class,
-    status;
-
-  struct dsc$descriptor_s
-    device;
-
-  assert(magick != (char *) NULL);
-  device.dsc$w_length=strlen(magick);
-  device.dsc$a_pointer=magick;
-  device.dsc$b_class=DSC$K_CLASS_S;
-  device.dsc$b_dtype=DSC$K_DTYPE_T;
-  item_list[0].ile3$w_length=sizeof(device_class);
-  item_list[0].ile3$w_code=DVI$_DEVCLASS;
-  item_list[0].ile3$ps_bufaddr=&device_class;
-  item_list[0].ile3$ps_retlen_addr=NULL;
-  memset(&item_list[1],0,sizeof(item_list[1]));
-  status=sys$getdviw(0,0,&device,&item_list,0,0,0,0);
-  if ((status == SS$_NONLOCAL) || 
-      ((status & 0x01) && (device_class & (DC$_DISK | DC$_TAPE))))
-    return(True);
-  return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   o p e n d i r                                                             %
 %                                                                             %
 %                                                                             %
@@ -283,4 +225,62 @@ struct dirent *readdir(DIR *directory)
   return(&directory->entry);
 }
 #endif /* !defined(_AXP_) && (!defined(__VMS_VER) || (__VMS_VER < 70000000)) */
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I m a g e F o r m a t C o n f l i c t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ImageFormatConflict returns true if the image format conflicts with
+%  with a logical drive (.e.g. SYS$SCRATCH:).
+%
+%  Contributed by Forrest Cahoon (forrest@wiredaemons.com)
+%
+%  The format of the ImageFormatConflict method is:
+%
+%      status=ImageFormatConflict(magick)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ImageFormatConflict returns true if the image format
+%      conflicts with a logical drive.
+%
+%    o magick: Specifies the image format.
+%
+%
+*/
+MagickExport int ImageFormatConflict(char *magick)
+{
+  ile3
+    item_list[2];
+
+  int
+    device_class,
+    status;
+
+  struct dsc$descriptor_s
+    device;
+
+  assert(magick != (char *) NULL);
+  device.dsc$w_length=strlen(magick);
+  device.dsc$a_pointer=magick;
+  device.dsc$b_class=DSC$K_CLASS_S;
+  device.dsc$b_dtype=DSC$K_DTYPE_T;
+  item_list[0].ile3$w_length=sizeof(device_class);
+  item_list[0].ile3$w_code=DVI$_DEVCLASS;
+  item_list[0].ile3$ps_bufaddr=&device_class;
+  item_list[0].ile3$ps_retlen_addr=NULL;
+  memset(&item_list[1],0,sizeof(item_list[1]));
+  status=sys$getdviw(0,0,&device,&item_list,0,0,0,0);
+  if ((status == SS$_NONLOCAL) || 
+      ((status & 0x01) && (device_class & (DC$_DISK | DC$_TAPE))))
+    return(True);
+  return(False);
+}
 #endif /* defined(vms) */
