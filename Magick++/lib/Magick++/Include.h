@@ -18,21 +18,6 @@
 # undef class
 #endif
 
-// Forward declarations for iostream classes
-// #if defined(HAVE_IOSFWD)
-// # include <iosfwd>
-// #else
-// class std::ios;
-// class std::streambuf;
-// class std::istream;
-// class std::ostream;
-// class std::iostream;
-// class std::filebuf;
-// class std::ifstream;
-// class std::ofstream;
-// class std::fstream;
-// #endif // HAVE_IOSFWD
-
 // Needed for stdio FILE
 #include <stdio.h>
 

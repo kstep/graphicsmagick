@@ -1088,6 +1088,28 @@ Magick::DrawableBase* Magick::DrawableTextDecoration::copy() const
   return new DrawableTextDecoration(*this);
 }
 
+// Set text undercolor
+Magick::DrawableTextUnderColor::DrawableTextUnderColor ( const Magick::Color &color_ )
+  : _color(color_)
+{
+}
+Magick::DrawableTextUnderColor::DrawableTextUnderColor ( const Magick::DrawableTextUnderColor& original_ )
+  : _color(original_._color)
+{
+}
+Magick::DrawableTextUnderColor::~DrawableTextUnderColor ( void )
+{
+}
+void Magick::DrawableTextUnderColor::operator()( MagickLib::DrawContext context_ ) const
+{
+  PixelPacket color = static_cast<PixelPacket>(_color);
+  DrawSetTextUnderColor( context_, &color );
+}
+Magick::DrawableBase* Magick::DrawableTextUnderColor::copy() const
+{
+  return new DrawableTextUnderColor(*this);
+}
+
 // Apply Translation
 Magick::DrawableTranslation::~DrawableTranslation ( void )
 {

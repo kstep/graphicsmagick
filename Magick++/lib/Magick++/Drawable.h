@@ -1819,6 +1819,35 @@ namespace Magick
     DecorationType _decoration;
   };
 
+  // Text undercolor box
+  class DrawableTextUnderColor : public DrawableBase
+  {
+  public:
+    DrawableTextUnderColor ( const Color &color_ );
+
+    DrawableTextUnderColor ( const DrawableTextUnderColor& original_ );
+
+    /*virtual*/ ~DrawableTextUnderColor ( void );
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/ DrawableBase* copy() const;
+
+    void color( const Color& color_ )
+      {
+        _color = color_;
+      }
+    Color color( void ) const
+      {
+        return _color;
+      }
+
+  private:
+    Color _color;
+  };
+
   // Apply Translation
   class DrawableTranslation : public DrawableBase
   {

@@ -1,3 +1,9 @@
+2002-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableTextUnderColor): New class to set the
+ 	text undercolor.  When text undercolor is set, a rectangle of the
+ 	specified color is rendered under text annotations.
+
 2002-05-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Magick++ library no longer depends on iostreams at all.
