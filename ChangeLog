@@ -1,3 +1,8 @@
+2004-01-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/png.c: Add DestroyBlobInfo() calls to stop memory leak when
+	processing JNG datastreams.
+
 2004-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.h (MagickReallocMemory): Added a cast required to

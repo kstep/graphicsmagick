@@ -7275,15 +7275,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       if (jpeg_image == (Image *) NULL)
         ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
-#if defined(WHAT_IS_THIS_FOR)
-      /* This code looks like a memory leak (or worse)
-         jpeg_image->blob= CloneBlobInfo((BlobInfo *) NULL);
-         can be used to do the same job, however, image->blob is
-         allocated by default!
-      */
-      jpeg_image->blob=MagickAllocateMemory(BlobInfo *,sizeof(BlobInfo));
-      GetBlobInfo(jpeg_image->blob);
-#endif
+      DestroyBlobInfo(jpeg_image->blob);
+      jpeg_image->blob=CloneBlobInfo((BlobInfo *) NULL);
       status=ChannelImage(jpeg_image,OpacityChannel);
       status=NegateImage(jpeg_image,False);
       jpeg_image->matte=False;
@@ -7625,16 +7618,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   if (jpeg_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
         image);
-#if defined(WHAT_IS_THIS_FOR)
-      /* This code looks like a memory leak (or worse)
-         jpeg_image->blob= CloneBlobInfo((BlobInfo *) NULL);
-         can be used to do the same job, however, image->blob is
-         allocated by default!
-      */
-  jpeg_image->blob=MagickAllocateMemory(BlobInfo *,sizeof(BlobInfo));
-  GetBlobInfo(jpeg_image->blob);
-#endif
-
+  DestroyBlobInfo(jpeg_image->blob);
+  jpeg_image->blob=CloneBlobInfo((BlobInfo *) NULL);
   AcquireUniqueFilename(jpeg_image->filename);
   FormatString(jpeg_image_info->filename,"%.1024s",jpeg_image->filename);
 
