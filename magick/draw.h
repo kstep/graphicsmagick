@@ -114,6 +114,21 @@ typedef struct _DrawInfo
     signature;
 } DrawInfo;
 
+typedef struct _FontMetric
+{
+  PointInfo
+    pixels_per_em;
+    
+  int
+    ascent,
+    descent;
+    
+  unsigned int
+    width, 
+    height,
+    max_advance;
+} FontMetric;
+
 typedef struct _PrimitiveInfo
 {
   PointInfo
@@ -143,6 +158,7 @@ extern MagickExport unsigned int
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,
     const int y,const PaintMethod),
   DrawImage(Image *,const DrawInfo *),
+  GetFontMetrics(Image *,const DrawInfo *,FontMetric *),
   MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const int x,
     const int y,const PaintMethod);
 

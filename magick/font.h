@@ -28,21 +28,6 @@ typedef struct _FontInfo
     *previous,
     *next;
 } FontInfo;
-
-typedef struct _FontMetric
-{
-  PointInfo
-    pixels_per_em;
-
-  int
-    ascent,
-    descent;
-
-  unsigned int
-    width,
-    height,
-    max_advance;
-} FontMetric;
 
 /*
   Method declarations.
@@ -51,7 +36,6 @@ extern MagickExport FontInfo
   *GetFontInfo(const char *,ExceptionInfo *);
 
 extern MagickExport unsigned int
-  GetFontMetrics(Image *,const DrawInfo *,FontMetric *),
   ListFontInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport void

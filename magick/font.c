@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%           AAA   N   N  N   N   OOO   TTTTT   AAA   TTTTT  EEEEE             %
-%          A   A  NN  N  NN  N  O   O    T    A   A    T    E                 %
-%          AAAAA  N N N  N N N  O   O    T    AAAAA    T    EEE               %
-%          A   A  N  NN  N  NN  O   O    T    A   A    T    E                 %
-%          A   A  N   N  N   N   OOO     T    A   A    T    EEEEE             %
+%                        FFFFF   OOO   N   N  TTTTT                           %
+%                        F      O   O  NN  N    T                             %
+%                        FFF    O   O  N N N    T                             %
+%                        F      O   O  N  NN    T                             %
+%                        F       OOO   N   N    T                             %
 %                                                                             %
 %                                                                             %
-%                  ImageMagick Image Annotation Methods                       %
+%                     ImageMagick Image Font Methods                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -45,9 +45,6 @@
 %  ImageMagick Studio.                                                        %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Digital Applications (www.digapp.com) contributed the stroked text algorithm.
-% It was written by Leonard Rosenthol.
 %
 %
 */
@@ -192,64 +189,6 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
     if ((p->name != (char *) NULL) && (LocaleCompare(p->name,name) == 0))
       break;
   return(p);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t F o n t M e t r i c s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetFontMetrics returns the following information for the specified
-%  font and text:
-%
-%    o character width, expressed in integer pixels
-%    o character height, expressed in integer pixels
-%    o ascent, expressed in 26.6 fixed point pixels
-%    o descent, expressed in 26.6 fixed point pixels
-%    o text width, expressed in 26.6 fixed point pixels
-%    o text height, expressed in 26.6 fixed point pixels
-%    o maximum horizontal advance, expressed in 26.6 fixed point pixels
-%
-%  The format of the GetFontMetrics method is:
-%
-%      unsigned int GetFontMetrics(Image *image,
-%        const DrawInfo *draw_info,FontMetric metrics)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method GetFontMetrics returns True if the metrics are
-%      available otherwise False.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o draw_info: Specifies a pointer to a DrawInfo structure.
-%
-%    o metrics: Method GetFontMetrics returns the font metrics.
-%
-%
-*/
-MagickExport unsigned int GetFontMetrics(Image *image,
-  const DrawInfo *draw_info,FontMetric *metrics)
-{
-  PointInfo
-    offset;
-
-  unsigned int
-    status;
-
-  assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->text != (char *) NULL);
-  assert(draw_info->signature == MagickSignature);
-  offset.x=0.0;
-  offset.y=0.0;
-  status=RenderFont(image,draw_info,&offset,False,metrics);
-  return(status);
 }
 
 /*

@@ -76,6 +76,7 @@ extern "C" {
 #include "magick/classify.h"
 #include "magick/image.h"
 #include "magick/draw.h"
+#include "magick/font.h"
 #include "magick/gems.h"
 #include "magick/quantize.h"
 #include "magick/compress.h"

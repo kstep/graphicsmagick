@@ -327,8 +327,7 @@ $(DEPDIR)/cache.Plo $(DEPDIR)/cache_view.Plo $(DEPDIR)/colors.Plo \
 $(DEPDIR)/compress.Plo $(DEPDIR)/constitute.Plo $(DEPDIR)/decorate.Plo \
 $(DEPDIR)/delegates.Plo $(DEPDIR)/display.Plo $(DEPDIR)/draw.Plo \
 $(DEPDIR)/effects.Plo $(DEPDIR)/enhance.Plo $(DEPDIR)/error.Plo \
-$(DEPDIR)/font.Plo
-$(DEPDIR)/gems.Plo $(DEPDIR)/image.Plo $(DEPDIR)/magic.Plo \
+$(DEPDIR)/font.Plo $(DEPDIR)/gems.Plo $(DEPDIR)/image.Plo $(DEPDIR)/magic.Plo \
 $(DEPDIR)/magick.Plo $(DEPDIR)/memory.Plo $(DEPDIR)/modules.Plo \
 $(DEPDIR)/monitor.Plo $(DEPDIR)/montage.Plo $(DEPDIR)/quantize.Plo \
 $(DEPDIR)/segment.Plo $(DEPDIR)/semaphore.Plo $(DEPDIR)/shear.Plo \
