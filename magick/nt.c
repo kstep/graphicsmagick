@@ -1167,9 +1167,6 @@ MagickExport struct dirent *readdir(DIR *entry)
   int
     status;
 
-  static struct dirent
-    file_info;
-
   if (entry == (DIR *) NULL)
     return((struct dirent *) NULL);
   if (!entry->firsttime)
@@ -1179,10 +1176,10 @@ MagickExport struct dirent *readdir(DIR *entry)
         return((struct dirent *) NULL);
     }
   entry->firsttime=FALSE;
-  (void) strncpy(file_info.d_name,entry->Win32FindData.cFileName,
+  (void) strncpy(entry->file_info.d_name,entry->Win32FindData.cFileName,
     MaxTextExtent-1);
-  file_info.d_namlen=strlen(file_info.d_name);
-  return(&file_info);
+  entry->file_info.d_namlen=strlen(entry->file_info.d_name);
+  return(&entry->file_info);
 }
 
 /*

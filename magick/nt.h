@@ -45,6 +45,15 @@ extern "C" {
 typedef UINT (CALLBACK *LPFNDLLFUNC1)(DWORD,UINT);
 
 #if !defined(XS_VERSION)
+struct dirent
+{
+  char
+    d_name[2048];
+
+  int
+    d_namlen;
+};
+
 typedef struct _DIR
 {
   HANDLE
@@ -55,16 +64,11 @@ typedef struct _DIR
 
   BOOL
     firsttime;
+
+  struct dirent
+    file_info;
 } DIR;
 
-struct dirent
-{
-  char
-    d_name[2048];
-
-  int
-    d_namlen;
-};
 #endif
 
 /*
