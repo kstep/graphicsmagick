@@ -2686,10 +2686,10 @@ MagickExport Image *ShadeImage(const Image *image,
   */
   azimuth=DegreesToRadians(azimuth);
   elevation=DegreesToRadians(elevation);
-  light.x=MaxRGB*cos(azimuth)*cos(elevation);
-  light.y=MaxRGB*sin(azimuth)*cos(elevation);
-  light.z=MaxRGB*sin(elevation);
-  normal.z=2*MaxRGB;  /* constant Z of surface normal */
+  light.x=65535*cos(azimuth)*cos(elevation);
+  light.y=65535*sin(azimuth)*cos(elevation);
+  light.z=65535*sin(elevation);
+  normal.z=2*65535;  /* constant Z of surface normal */
   /*
     Shade image.
   */
@@ -2710,14 +2710,20 @@ MagickExport Image *ShadeImage(const Image *image,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=PixelIntensityToQuantum(s0-1)+PixelIntensityToQuantum(s1-1)+
-        PixelIntensityToQuantum(s2-1)-(double) PixelIntensityToQuantum(s0+1)-
-        (double) PixelIntensityToQuantum(s1+1)-
-        (double) PixelIntensityToQuantum(s2+1);
-      normal.y=PixelIntensityToQuantum(s2-1)+PixelIntensityToQuantum(s2)+
-        PixelIntensityToQuantum(s2+1)-(double) PixelIntensityToQuantum(s0-1)-
-        (double) PixelIntensityToQuantum(s0)-
-        (double) PixelIntensityToQuantum(s0+1);
+      normal.x=
+        ScaleQuantumToShort(PixelIntensityToQuantum(s0-1))+
+	ScaleQuantumToShort(PixelIntensityToQuantum(s1-1))+
+        ScaleQuantumToShort(PixelIntensityToQuantum(s2-1))-
+	(long) ScaleQuantumToShort(PixelIntensityToQuantum(s0+1))-
+        (long) ScaleQuantumToShort(PixelIntensityToQuantum(s1+1))-
+        (long) ScaleQuantumToShort(PixelIntensityToQuantum(s2+1));
+      normal.y=
+        ScaleQuantumToShort(PixelIntensityToQuantum(s2-1))+
+        ScaleQuantumToShort(PixelIntensityToQuantum(s2))+
+        ScaleQuantumToShort(PixelIntensityToQuantum(s2+1))-
+        (long) ScaleQuantumToShort(PixelIntensityToQuantum(s0-1))-
+        (long) ScaleQuantumToShort(PixelIntensityToQuantum(s0))-
+        (long) ScaleQuantumToShort(PixelIntensityToQuantum(s0+1));
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
@@ -2734,15 +2740,15 @@ MagickExport Image *ShadeImage(const Image *image,
         }
       if (!color_shading)
         {
-          q->red=(Quantum) shade;
-          q->green=(Quantum) shade;
-          q->blue=(Quantum) shade;
+          q->red=ScaleShortToQuantum(shade);
+          q->green=q->red;
+          q->blue=q->red;
         }
       else
         {
-          q->red=(Quantum) ((double) (shade*s1->red)/MaxRGB);
-          q->green=(Quantum) ((double) (shade*s1->green)/MaxRGB);
-          q->blue=(Quantum) ((double) (shade*s1->blue)/MaxRGB);
+          q->red=ScaleShortToQuantum((shade*s1->red)/65535.0);
+          q->green=ScaleShortToQuantum((shade*s1->green)/65535.0);
+          q->blue=ScaleShortToQuantum((shade*s1->blue)/65535.0);
         }
       q->opacity=s1->opacity;
       s0++;
