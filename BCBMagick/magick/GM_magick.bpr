@@ -9,7 +9,7 @@
       composite.obj compress.obj constitute.obj decorate.obj delegate.obj 
       deprecate.obj display.obj draw.obj effect.obj enhance.obj error.obj fx.obj 
       gem.obj image.obj list.obj locale.obj log.obj magic.obj magick.obj map.obj 
-      memory.obj module.obj monitor.obj montage.obj nt_base.obj nt_feature.obj 
+      memory.obj module.obj monitor.obj montage.obj nt_base.obj nt_feature.obj operator.c 
       paint.obj pixel_iterator.obj PreRvIcccm.obj profile.obj quantize.obj registry.obj
       render.obj resize.obj resource.obj segment.obj semaphore.obj shear.obj 
       signature.obj static.obj stream.obj tempfile.obj timer.obj transform.obj 
@@ -119,6 +119,7 @@
       <FILE FILENAME="montage.c" FORMNAME="" UNITNAME="montage.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="nt_base.c" FORMNAME="" UNITNAME="nt_base.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="nt_feature.c" FORMNAME="" UNITNAME="nt_feature.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="operator.c" FORMNAME="" UNITNAME="operator.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="paint.c" FORMNAME="" UNITNAME="paint.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="pixel_iterator.c" FORMNAME="" UNITNAME="pixel_iterator.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="PreRvIcccm.c" FORMNAME="" UNITNAME="PreRvIcccm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
