@@ -97,30 +97,30 @@ then
 fi
 
 #
-# Enable support for modules
-# Only support modules if we are building shared libraries
-AC_ARG_WITH(modules,
-	      [  --with-modules          enable support for dynamically loadable modules],
-	      [with_modules=$withval],
-	      [with_modules='no'])
-if test "$with_modules" != 'no' && test "$libtool_build_shared_libs" = 'no'
+# Enable support for module
+# Only support module if we are building shared libraries
+AC_ARG_WITH(module,
+	      [  --with-module          enable support for dynamically loadable module],
+	      [with_module=$withval],
+	      [with_module='no'])
+if test "$with_module" != 'no' && test "$libtool_build_shared_libs" = 'no'
 then
-  with_modules='no'
+  with_module='no'
 fi
-AM_CONDITIONAL(WITH_MODULES, test "$with_modules" != 'no')
+AM_CONDITIONAL(WITH_MODULES, test "$with_module" != 'no')
 # Configure libltdl
 AC_CONFIG_SUBDIRS(ltdl)
-if test "$with_modules" != 'no'
+if test "$with_module" != 'no'
 then
-  AC_DEFINE(HasLTDL,,Define if using libltdl to create dynamically loadable modules)
+  AC_DEFINE(HasLTDL,,Define if using libltdl to create dynamically loadable module)
 
   # Set DLLDFLAGS
   if test X"$enable_shared" = Xyes; then
     DLLDFLAGS=-export-dynamic
     AC_SUBST(DLLDFLAGS)
   fi
-   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/module/coder/"
-  AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_modules",Location of coder modules)
+   eval "eval im_cv_x_coder_module=${libdir}/ImageMagick/module/coder/"
+  AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_module",Location of coder module)
 fi
 
 # Add configure option --enable-maintainer-mode which enables dependency

@@ -691,7 +691,7 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
   --with-pic              try to use only PIC/non-PIC objects default=use both
-  --with-modules          enable support for dynamically loadable modules
+  --with-module          enable support for dynamically loadable module
   --with-cache            set pixel cache threshhold (default 2047MB)
   --without-threads       disable threads support
   --without-frozenpaths   disable frozen delegate paths
@@ -3582,22 +3582,22 @@ then
 fi
 
 #
-# Enable support for modules
-# Only support modules if we are building shared libraries
+# Enable support for module
+# Only support module if we are building shared libraries
 
-# Check whether --with-modules or --without-modules was given.
-if test "${with_modules+set}" = set; then
-  withval="$with_modules"
-  with_modules=$withval
+# Check whether --with-module or --without-module was given.
+if test "${with_module+set}" = set; then
+  withval="$with_module"
+  with_module=$withval
 else
-  with_modules='no'
+  with_module='no'
 fi;
-if test "$with_modules" != 'no' && test "$libtool_build_shared_libs" = 'no'
+if test "$with_module" != 'no' && test "$libtool_build_shared_libs" = 'no'
 then
-  with_modules='no'
+  with_module='no'
 fi
 
-if test "$with_modules" != 'no'; then
+if test "$with_module" != 'no'; then
   WITH_MODULES_TRUE=
   WITH_MODULES_FALSE='#'
 else
@@ -3608,7 +3608,7 @@ fi
 
 subdirs="$subdirs ltdl"
 
-if test "$with_modules" != 'no'
+if test "$with_module" != 'no'
 then
 
 cat >>confdefs.h <<\EOF
@@ -3620,10 +3620,10 @@ EOF
     DLLDFLAGS=-export-dynamic
 
   fi
-   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/module/coder/"
+   eval "eval im_cv_x_coder_module=${libdir}/ImageMagick/module/coder/"
 
 cat >>confdefs.h <<EOF
-#define MagickModulesPath "$im_cv_x_coder_modules"
+#define MagickModulesPath "$im_cv_x_coder_module"
 EOF
 
 fi
