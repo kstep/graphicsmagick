@@ -2809,11 +2809,10 @@ MagickExport Image *GetNextImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   CloseImagePixels(image);
-  if (image->next != (Image *) NULL)
-    {
-      image->next->blob=image->blob;
-      image->next->file=image->file;
-    }
+  if (image->next == (Image *) NULL)
+    return((Image *) NULL);
+  image->next->blob=image->blob;
+  image->next->file=image->file;
   return(image->next);
 }
 
@@ -4878,10 +4877,10 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   (void) SetMonitorHandler(handler);
   if (status == False)
     return(False);
+  if (image_info->verbose)
+    DescribeImage(*images,stdout,False);
   mogrify_images=(*images);
   image=(*images)->next;
-  if (image_info->verbose)
-    DescribeImage(mogrify_images,stdout,False);
   for (scene=1; scene < number_images; scene++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
