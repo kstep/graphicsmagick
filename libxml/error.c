@@ -3,15 +3,51 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel Veillard <Daniel.Veillard@w3.org>
+ * Daniel Veillard <daniel@veillard.com>
  */
 
+#define IN_LIBXML
 #include "libxml.h"
 
 #include <stdarg.h>
 #include <libxml/parser.h>
 #include <libxml/xmlerror.h>
 #include <libxml/xmlmemory.h>
+#include <libxml/globals.h>
+
+void xmlGenericErrorDefaultFunc	(void *ctx ATTRIBUTE_UNUSED,
+				 const char *msg,
+				 ...);
+
+#define XML_GET_VAR_STR(msg, str) {				\
+    int       size;						\
+    int       chars;						\
+    char      *larger;						\
+    va_list   ap;						\
+								\
+    str = (char *) xmlMalloc(150);				\
+    if (str == NULL) 						\
+	return;							\
+								\
+    size = 150;							\
+								\
+    while (1) {							\
+	va_start(ap, msg);					\
+  	chars = vsnprintf(str, size, msg, ap);			\
+	va_end(ap);						\
+	if ((chars > -1) && (chars < size))			\
+	    break;						\
+	if (chars > -1)						\
+	    size += chars + 1;					\
+	else							\
+	    size += 100;					\
+	if ((larger = (char *) xmlRealloc(str, size)) == NULL) {\
+	    xmlFree(str);					\
+	    return;						\
+	}							\
+	str = larger;						\
+    }								\
+}
 
 /************************************************************************
  * 									*
@@ -27,7 +63,7 @@
  * 
  * Default handler for out of context error messages.
  */
-static void
+void
 xmlGenericErrorDefaultFunc(void *ctx ATTRIBUTE_UNUSED, const char *msg, ...) {
     va_list args;
 
@@ -39,9 +75,20 @@ xmlGenericErrorDefaultFunc(void *ctx ATTRIBUTE_UNUSED, const char *msg, ...) {
     va_end(args);
 }
 
-xmlGenericErrorFunc xmlGenericError = xmlGenericErrorDefaultFunc;
-void *xmlGenericErrorContext = NULL;
-
+/**
+ * initGenericErrorDefaultFunc:
+ * @handler:  the handler
+ * 
+ * Set or reset (if NULL) the default handler for generic errors
+ */
+void
+initGenericErrorDefaultFunc(xmlGenericErrorFunc * handler)
+{
+    if (handler == NULL)
+        xmlGenericError = xmlGenericErrorDefaultFunc;
+    else
+        (*handler) = xmlGenericErrorDefaultFunc;
+}
 
 /**
  * xmlSetGenericErrorFunc:
@@ -132,16 +179,22 @@ xmlParserPrintFileContext(xmlParserInputPtr input) {
 		cur--;
 	}
     n = 0;
-	ctnt = content;
+    ctnt = content;
     while ((n++ < 79) && (cur > base) && (*cur != '\n') && (*cur != '\r')) {
 	*ctnt++ = ' ';
 	cur--;
     }
-    *(--ctnt) = '^';
-    *(++ctnt) = 0;
+    if (ctnt > content) {
+	*(--ctnt) = '^';
+	*(++ctnt) = 0;
+    } else {
+	*ctnt = '^';
+	*(++ctnt) = 0;
+    }
     xmlGenericError(xmlGenericErrorContext,"%s\n", content);
 }
 
+#if 0
 /**
  * xmlGetVarStr:
  * @msg:  the message format
@@ -157,6 +210,7 @@ xmlGetVarStr(const char * msg, va_list args) {
     int       length;
     int       chars, left;
     char      *str, *larger;
+    va_list   ap;
 
     str = (char *) xmlMalloc(150);
     if (str == NULL)
@@ -168,7 +222,9 @@ xmlGetVarStr(const char * msg, va_list args) {
     while (1) {
 	left = size - length;
 		    /* Try to print in the allocated space. */
-  	chars = vsnprintf(str + length, left, msg, args);
+	va_start(msg, ap);
+  	chars = vsnprintf(str + length, left, msg, ap);
+	va_end(ap);
 			  /* If that worked, we're done. */
 	if ((chars > -1) && (chars < left ))
 	    break;
@@ -185,6 +241,7 @@ xmlGetVarStr(const char * msg, va_list args) {
     }
     return(str);
 }
+#endif
 
 /**
  * xmlParserError:
@@ -202,7 +259,6 @@ xmlParserError(void *ctx, const char *msg, ...)
     xmlParserInputPtr input = NULL;
     xmlParserInputPtr cur = NULL;
     char * str;
-    va_list args;
 
     if (ctxt != NULL) {
 	input = ctxt->input;
@@ -215,10 +271,8 @@ xmlParserError(void *ctx, const char *msg, ...)
     }
 
     xmlGenericError(xmlGenericErrorContext, "error: ");
-    va_start(args, msg);
-    str = xmlGetVarStr(msg, args);
-    va_end(args);
-    xmlGenericError(xmlGenericErrorContext, str);
+    XML_GET_VAR_STR(msg, str);
+    xmlGenericError(xmlGenericErrorContext, "%s", str);
     if (str != NULL)
 	xmlFree(str);
 
@@ -248,7 +302,6 @@ xmlParserWarning(void *ctx, const char *msg, ...)
     xmlParserInputPtr input = NULL;
     xmlParserInputPtr cur = NULL;
     char * str;
-    va_list args;
 
     if (ctxt != NULL) {
 	input = ctxt->input;
@@ -261,10 +314,8 @@ xmlParserWarning(void *ctx, const char *msg, ...)
     }
         
     xmlGenericError(xmlGenericErrorContext, "warning: ");
-    va_start(args, msg);
-    str = xmlGetVarStr(msg, args);
-    va_end(args);
-    xmlGenericError(xmlGenericErrorContext, str);
+    XML_GET_VAR_STR(msg, str);
+    xmlGenericError(xmlGenericErrorContext, "%s", str);
     if (str != NULL)
 	xmlFree(str);
 
@@ -299,7 +350,6 @@ xmlParserValidityError(void *ctx, const char *msg, ...)
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
     xmlParserInputPtr input = NULL;
     char * str;
-    va_list args;
 
     if (ctxt != NULL) {
 	input = ctxt->input;
@@ -310,10 +360,8 @@ xmlParserValidityError(void *ctx, const char *msg, ...)
     }
 
     xmlGenericError(xmlGenericErrorContext, "validity error: ");
-    va_start(args, msg);
-    str = xmlGetVarStr(msg, args);
-    va_end(args);
-    xmlGenericError(xmlGenericErrorContext, str);
+    XML_GET_VAR_STR(msg, str);
+    xmlGenericError(xmlGenericErrorContext, "%s", str);
     if (str != NULL)
 	xmlFree(str);
 
@@ -337,7 +385,6 @@ xmlParserValidityWarning(void *ctx, const char *msg, ...)
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
     xmlParserInputPtr input = NULL;
     char * str;
-    va_list args;
 
     if (ctxt != NULL) {
 	input = ctxt->input;
@@ -348,10 +395,8 @@ xmlParserValidityWarning(void *ctx, const char *msg, ...)
     }
         
     xmlGenericError(xmlGenericErrorContext, "validity warning: ");
-    va_start(args, msg);
-    str = xmlGetVarStr(msg, args);
-    va_end(args);
-    xmlGenericError(xmlGenericErrorContext, str);
+    XML_GET_VAR_STR(msg, str);
+    xmlGenericError(xmlGenericErrorContext, "%s", str);
     if (str != NULL)
 	xmlFree(str);
 

@@ -4,7 +4,8 @@
 >entities</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
 HREF="book1.html"><LINK
@@ -18,6 +19,7 @@ REL="NEXT"
 TITLE="valid"
 HREF="libxml-valid.html"></HEAD
 ><BODY
+CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
 LINK="#0000FF"
@@ -121,7 +123,7 @@ NAME="LIBXML-ENTITIES"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN7313"
+NAME="AEN7905"
 ></A
 ><H2
 >Name</H2
@@ -129,7 +131,7 @@ NAME="AEN7313"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN7316"
+NAME="AEN7908"
 ></A
 ><H2
 >Synopsis</H2
@@ -149,12 +151,8 @@ HREF="libxml-entities.html#XMLENTITYTYPE"
 >xmlEntityType</A
 >;
 struct      <A
-HREF="libxml-entities.html#XMLENTITY"
+HREF="libxml-tree.html#XMLENTITY"
 >xmlEntity</A
->;
-typedef     <A
-HREF="libxml-entities.html#XMLENTITYPTR"
->xmlEntityPtr</A
 >;
 typedef     <A
 HREF="libxml-entities.html#XMLENTITIESTABLEPTR"
@@ -165,7 +163,7 @@ HREF="libxml-entities.html#XMLINITIALIZEPREDEFINEDENTITIES"
 >xmlInitializePredefinedEntities</A
 > (void);
 <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > <A
 HREF="libxml-entities.html#XMLADDDOCENTITY"
@@ -192,7 +190,7 @@ HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *content);
 <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > <A
 HREF="libxml-entities.html#XMLADDDTDENTITY"
@@ -219,7 +217,7 @@ HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *content);
 <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > <A
 HREF="libxml-entities.html#XMLGETPREDEFINEDENTITY"
@@ -229,7 +227,7 @@ HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *name);
 <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > <A
 HREF="libxml-entities.html#XMLGETDOCENTITY"
@@ -243,7 +241,7 @@ HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *name);
 <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > <A
 HREF="libxml-entities.html#XMLGETDTDENTITY"
@@ -257,7 +255,7 @@ HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
 > *name);
 <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > <A
 HREF="libxml-entities.html#XMLGETPARAMETERENTITY"
@@ -355,7 +353,7 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 >xmlBufferPtr</A
 > buf,
                                              <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > ent);
 void        <A
@@ -369,7 +367,7 @@ HREF="libxml-entities.html#XMLCLEANUPPREDEFINEDENTITIES"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN7379"
+NAME="AEN7970"
 ></A
 ><H2
 >Description</H2
@@ -379,14 +377,14 @@ NAME="AEN7379"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN7382"
+NAME="AEN7973"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7384"
+NAME="AEN7975"
 ></A
 ><H3
 ><A
@@ -419,7 +417,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7389"
+NAME="AEN7980"
 ></A
 ><H3
 ><A
@@ -436,14 +434,12 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 >struct xmlEntity {
-#ifndef XML_WITHOUT_CORBA
-    void           *_private;	        /* for Corba, must be first ! */
-#endif
+    void           *_private;	        /* application data */
     xmlElementType          type;       /* XML_ENTITY_DECL, must be second ! */
-    const xmlChar          *name;	/* Attribute name */
-    struct _xmlNode    *children;	/* NULL */
-    struct _xmlNode        *last;	/* NULL */
-    struct _xmlDtd       *parent;	/* - DTD */
+    const xmlChar          *name;	/* Entity name */
+    struct _xmlNode    *children;	/* First child link */
+    struct _xmlNode        *last;	/* Last child link */
+    struct _xmlDtd       *parent;	/* -&gt; DTD */
     struct _xmlNode        *next;	/* next sibling link  */
     struct _xmlNode        *prev;	/* previous sibling link  */
     struct _xmlDoc          *doc;       /* the containing document */
@@ -467,33 +463,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7394"
-></A
-><H3
-><A
-NAME="XMLENTITYPTR"
-></A
->xmlEntityPtr</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->typedef xmlEntity *xmlEntityPtr;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN7399"
+NAME="AEN7985"
 ></A
 ><H3
 ><A
@@ -519,7 +489,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7404"
+NAME="AEN7990"
 ></A
 ><H3
 ><A
@@ -547,7 +517,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7410"
+NAME="AEN7996"
 ></A
 ><H3
 ><A
@@ -564,7 +534,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > xmlAddDocEntity                (<A
 HREF="libxml-tree.html#XMLDOCPTR"
@@ -596,6 +566,9 @@ HREF="libxml-tree.html#XMLCHAR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8008"
+></A
 ><P
 ></P
 ><TABLE
@@ -605,6 +578,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -615,7 +589,7 @@ CLASS="PARAMETER"
 ><I
 >doc</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -632,7 +606,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -649,7 +623,7 @@ CLASS="PARAMETER"
 ><I
 >type</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -666,7 +640,7 @@ CLASS="PARAMETER"
 ><I
 >ExternalID</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -683,7 +657,7 @@ CLASS="PARAMETER"
 ><I
 >SystemID</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -700,7 +674,7 @@ CLASS="PARAMETER"
 ><I
 >content</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -722,6 +696,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >a pointer to the entity or NULL in case of error</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -730,7 +705,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7455"
+NAME="AEN8041"
 ></A
 ><H3
 ><A
@@ -747,7 +722,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > xmlAddDtdEntity                (<A
 HREF="libxml-tree.html#XMLDOCPTR"
@@ -779,6 +754,9 @@ HREF="libxml-tree.html#XMLCHAR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8053"
+></A
 ><P
 ></P
 ><TABLE
@@ -788,6 +766,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -798,7 +777,7 @@ CLASS="PARAMETER"
 ><I
 >doc</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -815,7 +794,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -832,7 +811,7 @@ CLASS="PARAMETER"
 ><I
 >type</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -849,7 +828,7 @@ CLASS="PARAMETER"
 ><I
 >ExternalID</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -866,7 +845,7 @@ CLASS="PARAMETER"
 ><I
 >SystemID</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -883,7 +862,7 @@ CLASS="PARAMETER"
 ><I
 >content</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -905,6 +884,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >a pointer to the entity or NULL in case of error</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -913,7 +893,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7500"
+NAME="AEN8086"
 ></A
 ><H3
 ><A
@@ -930,7 +910,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > xmlGetPredefinedEntity         (const <A
 HREF="libxml-tree.html#XMLCHAR"
@@ -945,6 +925,9 @@ HREF="libxml-tree.html#XMLCHAR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8094"
+></A
 ><P
 ></P
 ><TABLE
@@ -954,6 +937,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -964,7 +948,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -984,8 +968,9 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->NULL if not, othervise the entity</TD
+>NULL if not, otherwise the entity</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -994,7 +979,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7521"
+NAME="AEN8107"
 ></A
 ><H3
 ><A
@@ -1011,7 +996,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > xmlGetDocEntity                (<A
 HREF="libxml-tree.html#XMLDOCPTR"
@@ -1026,12 +1011,15 @@ HREF="libxml-tree.html#XMLCHAR"
 ></TABLE
 ><P
 >Do an entity lookup in the document entity hash table and
-returns the corrsponding entity, otherwise a lookup is done
+returns the corresponding entity, otherwise a lookup is done
 in the predefined entities too.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8116"
+></A
 ><P
 ></P
 ><TABLE
@@ -1041,6 +1029,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1051,7 +1040,7 @@ CLASS="PARAMETER"
 ><I
 >doc</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1068,7 +1057,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1090,6 +1079,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >A pointer to the entity structure or NULL if not found.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1098,7 +1088,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7547"
+NAME="AEN8133"
 ></A
 ><H3
 ><A
@@ -1115,7 +1105,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > xmlGetDtdEntity                (<A
 HREF="libxml-tree.html#XMLDOCPTR"
@@ -1129,12 +1119,16 @@ HREF="libxml-tree.html#XMLCHAR"
 ></TR
 ></TABLE
 ><P
->Do an entity lookup in the Dtd entity hash table and
-returns the corresponding entity, if found.</P
+>Do an entity lookup in the DTD entity hash table and
+returns the corresponding entity, if found.
+Note: the first argument is the document node, not the DTD node.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8142"
+></A
 ><P
 ></P
 ><TABLE
@@ -1144,6 +1138,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1154,7 +1149,7 @@ CLASS="PARAMETER"
 ><I
 >doc</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1171,7 +1166,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1193,6 +1188,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >A pointer to the entity structure or NULL if not found.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1201,7 +1197,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7573"
+NAME="AEN8159"
 ></A
 ><H3
 ><A
@@ -1218,7 +1214,7 @@ CELLPADDING="6"
 ><PRE
 CLASS="PROGRAMLISTING"
 ><A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > xmlGetParameterEntity          (<A
 HREF="libxml-tree.html#XMLDOCPTR"
@@ -1238,6 +1234,9 @@ returns the corresponding parameter entity, if found.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8168"
+></A
 ><P
 ></P
 ><TABLE
@@ -1247,6 +1246,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1257,7 +1257,7 @@ CLASS="PARAMETER"
 ><I
 >doc</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1274,7 +1274,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1296,6 +1296,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >A pointer to the entity structure or NULL if not found.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1304,7 +1305,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7599"
+NAME="AEN8185"
 ></A
 ><H3
 ><A
@@ -1347,6 +1348,9 @@ This routine will issue a warning when encountered.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8196"
+></A
 ><P
 ></P
 ><TABLE
@@ -1356,6 +1360,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1366,7 +1371,7 @@ CLASS="PARAMETER"
 ><I
 >doc</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1383,7 +1388,7 @@ CLASS="PARAMETER"
 ><I
 >input</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1405,6 +1410,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >A newly allocated string with the substitution done.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1413,7 +1419,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7627"
+NAME="AEN8213"
 ></A
 ><H3
 ><A
@@ -1452,6 +1458,9 @@ must be deallocated.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8222"
+></A
 ><P
 ></P
 ><TABLE
@@ -1461,6 +1470,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1471,7 +1481,7 @@ CLASS="PARAMETER"
 ><I
 >doc</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1488,7 +1498,7 @@ CLASS="PARAMETER"
 ><I
 >input</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1510,6 +1520,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >A newly allocated string with the substitution done.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1518,7 +1529,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7653"
+NAME="AEN8239"
 ></A
 ><H3
 ><A
@@ -1555,6 +1566,9 @@ this routine is reentrant, and result must be deallocated.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8248"
+></A
 ><P
 ></P
 ><TABLE
@@ -1564,6 +1578,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1574,7 +1589,7 @@ CLASS="PARAMETER"
 ><I
 >doc</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1591,7 +1606,7 @@ CLASS="PARAMETER"
 ><I
 >input</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1613,6 +1628,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >A newly allocated string with the substitution done.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1621,7 +1637,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7679"
+NAME="AEN8265"
 ></A
 ><H3
 ><A
@@ -1650,6 +1666,9 @@ HREF="libxml-entities.html#XMLENTITIESTABLEPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8272"
+></A
 ><P
 ></P
 ><TABLE
@@ -1659,6 +1678,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1674,6 +1694,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the xmlEntitiesTablePtr just created or NULL in case of error.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1682,7 +1703,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7695"
+NAME="AEN8281"
 ></A
 ><H3
 ><A
@@ -1714,6 +1735,9 @@ HREF="libxml-entities.html#XMLENTITIESTABLEPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8289"
+></A
 ><P
 ></P
 ><TABLE
@@ -1723,6 +1747,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1733,7 +1758,7 @@ CLASS="PARAMETER"
 ><I
 >table</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1755,6 +1780,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the new xmlEntitiesTablePtr or NULL in case of error.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1763,7 +1789,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7716"
+NAME="AEN8302"
 ></A
 ><H3
 ><A
@@ -1792,6 +1818,9 @@ HREF="libxml-entities.html#XMLENTITIESTABLEPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8309"
+></A
 ><P
 ></P
 ><TABLE
@@ -1801,6 +1830,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1811,13 +1841,14 @@ CLASS="PARAMETER"
 ><I
 >table</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  An entity table</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1826,7 +1857,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7732"
+NAME="AEN8318"
 ></A
 ><H3
 ><A
@@ -1859,6 +1890,9 @@ HREF="libxml-entities.html#XMLENTITIESTABLEPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8326"
+></A
 ><P
 ></P
 ><TABLE
@@ -1868,6 +1902,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1878,7 +1913,7 @@ CLASS="PARAMETER"
 ><I
 >buf</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1895,13 +1930,14 @@ CLASS="PARAMETER"
 ><I
 >table</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  An entity table</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1910,7 +1946,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7753"
+NAME="AEN8339"
 ></A
 ><H3
 ><A
@@ -1931,7 +1967,7 @@ HREF="libxml-tree.html#XMLBUFFERPTR"
 >xmlBufferPtr</A
 > buf,
                                              <A
-HREF="libxml-entities.html#XMLENTITYPTR"
+HREF="libxml-tree.html#XMLENTITYPTR"
 >xmlEntityPtr</A
 > ent);</PRE
 ></TD
@@ -1943,6 +1979,9 @@ HREF="libxml-entities.html#XMLENTITYPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN8347"
+></A
 ><P
 ></P
 ><TABLE
@@ -1952,6 +1991,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1962,7 +2002,7 @@ CLASS="PARAMETER"
 ><I
 >buf</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1979,13 +2019,14 @@ CLASS="PARAMETER"
 ><I
 >ent</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  An entity table</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1994,7 +2035,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN7774"
+NAME="AEN8360"
 ></A
 ><H3
 ><A

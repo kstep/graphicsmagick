@@ -4,9 +4,10 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
 
+#define IN_LIBXML
 #include "libxml.h"
 
 #include <string.h>
@@ -22,6 +23,9 @@
 #include <libxml/parserInternals.h>
 #include <libxml/xmlerror.h>
 #include <libxml/list.h>
+#include <libxml/globals.h>
+
+/* #define DEBUG_VALID_ALGO */
 
 /*
  * Generic function for accessing stacks in the Validity Context
@@ -36,6 +40,7 @@ scope int name##VPush(xmlValidCtxtPtr ctxt, type value) {		\
         if (ctxt->name##Tab == NULL) {					\
 	    xmlGenericError(xmlGenericErrorContext,			\
 		    "malloc failed !\n");				\
+	    ctxt->name##Max = 0;					\
 	    return(0);							\
 	}								\
     }									\
@@ -67,8 +72,8 @@ scope type name##VPop(xmlValidCtxtPtr ctxt) {				\
 }									\
 
 /*
- * I will use a home made algorithm less complex and easier to
- * debug/maintin than a generic NFA -> DFA state based algo. The
+ * I use a home made algorithm less complex and easier to
+ * debug/maintain than a generic NFA -> DFA state based algo. The
  * only restriction is on the deepness of the tree limited by the
  * size of the occurs bitfield
  *
@@ -78,10 +83,10 @@ scope type name##VPop(xmlValidCtxtPtr ctxt) {				\
 #define ROLLBACK_OR	0
 #define ROLLBACK_PARENT	1
 
-struct _xmlValidState {
+typedef struct _xmlValidState {
     xmlElementContentPtr cont;	/* pointer to the content model subtree */
     xmlNodePtr           node;	/* pointer to the current node in the list */
-    long                 occurs;/* bitfield for multiple occurences */
+    long                 occurs;/* bitfield for multiple occurrences */
     unsigned char        depth; /* current depth in the overall tree */
     unsigned char        state; /* ROLLBACK_XXX */
 } _xmlValidState;
@@ -93,16 +98,18 @@ struct _xmlValidState {
 #define OCCURS ctxt->vstate->occurs
 #define STATE ctxt->vstate->state
 
-#define OCCURENCE (ctxt->vstate->occurs & (1 << DEPTH))
-#define PARENT_OCCURENCE (ctxt->vstate->occurs & ((1 << DEPTH) - 1))
+#define OCCURRENCE (ctxt->vstate->occurs & (1 << DEPTH))
+#define PARENT_OCCURRENCE (ctxt->vstate->occurs & ((1 << DEPTH) - 1))
 
-#define SET_OCCURENCE ctxt->vstate->occurs |= (1 << DEPTH)
-#define RESET_OCCURENCE ctxt->vstate->occurs &= ((1 << DEPTH) - 1)
+#define SET_OCCURRENCE ctxt->vstate->occurs |= (1 << DEPTH)
+#define RESET_OCCURRENCE ctxt->vstate->occurs &= ((1 << DEPTH) - 1)
 
 static int
 vstateVPush(xmlValidCtxtPtr ctxt, xmlElementContentPtr cont,
 	    xmlNodePtr node, unsigned char depth, long occurs,
 	    unsigned char state) {
+    int i = ctxt->vstateNr - 1;
+
     if (ctxt->vstateNr >= ctxt->vstateMax) {
 	ctxt->vstateMax *= 2;
         ctxt->vstateTab = (xmlValidState *) xmlRealloc(ctxt->vstateTab,
@@ -114,6 +121,15 @@ vstateVPush(xmlValidCtxtPtr ctxt, xmlElementContentPtr cont,
 	}
 	ctxt->vstate = &ctxt->vstateTab[0];
     }
+    /*
+     * Don't push on the stack a state already here
+     */
+    if ((i >= 0) && (ctxt->vstateTab[i].cont == cont) &&
+	(ctxt->vstateTab[i].node == node) &&
+	(ctxt->vstateTab[i].depth == depth) &&
+	(ctxt->vstateTab[i].occurs == occurs) &&
+	(ctxt->vstateTab[i].state == state))
+	return(ctxt->vstateNr);
     ctxt->vstateTab[ctxt->vstateNr].cont = cont;
     ctxt->vstateTab[ctxt->vstateNr].node = node;
     ctxt->vstateTab[ctxt->vstateNr].depth = depth;
@@ -136,8 +152,6 @@ vstateVPop(xmlValidCtxtPtr ctxt) {
 }
 
 PUSH_AND_POP(static, xmlNodePtr, node)
-
-/* #define DEBUG_VALID_ALGO */
 
 #ifdef DEBUG_VALID_ALGO
 static void
@@ -186,6 +200,11 @@ xmlValidPrintNode(xmlNodePtr cur) {
 	case XML_HTML_DOCUMENT_NODE:
 	    xmlGenericError(xmlGenericErrorContext, "?html? ");
 	    break;
+#ifdef LIBXML_DOCB_ENABLED
+	case XML_DOCB_DOCUMENT_NODE:
+	    xmlGenericError(xmlGenericErrorContext, "?docb? ");
+	    break;
+#endif
 	case XML_DTD_NODE:
 	    xmlGenericError(xmlGenericErrorContext, "?dtd? ");
 	    break;
@@ -228,7 +247,7 @@ xmlValidDebug(xmlNodePtr cur, xmlElementContentPtr cont) {
     xmlGenericError(xmlGenericErrorContext, "valid: ");
     xmlValidPrintNodeList(cur);
     xmlGenericError(xmlGenericErrorContext, "against ");
-    xmlSprintfElementContent(expr, cont, 1);
+    xmlSnprintfElementContent(expr, 5000, cont, 1);
     xmlGenericError(xmlGenericErrorContext, "%s\n", expr);
 }
 
@@ -284,7 +303,7 @@ xmlValidStateDebug(xmlValidCtxtPtr ctxt) {
 #define DEBUG_VALID_MSG(m)
 #endif
 
-/* TODO: use hash table for accesses to elem and attribute dedinitions */
+/* TODO: use hash table for accesses to elem and attribute definitions */
 
 #define VERROR							\
    if ((ctxt != NULL) && (ctxt->error != NULL)) ctxt->error
@@ -297,7 +316,6 @@ xmlValidStateDebug(xmlValidCtxtPtr ctxt) {
    else if ((doc->intSubset == NULL) &&				\
 	    (doc->extSubset == NULL)) return(0)
 
-xmlElementPtr xmlGetDtdElementDesc(xmlDtdPtr dtd, const xmlChar *name);
 static xmlElementPtr xmlGetDtdElementDesc2(xmlDtdPtr dtd, const xmlChar *name,
 	                           int create);
 xmlAttributePtr xmlScanAttributeDecl(xmlDtdPtr dtd, const xmlChar *elem);
@@ -332,10 +350,12 @@ xmlSplitQName2(const xmlChar *name, xmlChar **prefix) {
 
     *prefix = NULL;
 
+#ifndef XML_XML_NAMESPACE
     /* xml: prefix is not really a namespace */
     if ((name[0] == 'x') && (name[1] == 'm') &&
         (name[2] == 'l') && (name[3] == ':'))
 	return(NULL);
+#endif
 
     /* nasty but valid */
     if (name[0] == ':')
@@ -370,7 +390,7 @@ xmlSplitQName2(const xmlChar *name, xmlChar **prefix) {
  *
  * Allocate an element content structure.
  *
- * Returns NULL if not, othervise the new element content structure
+ * Returns NULL if not, otherwise the new element content structure
  */
 xmlElementContentPtr
 xmlNewElementContent(xmlChar *name, xmlElementContentType type) {
@@ -402,12 +422,19 @@ xmlNewElementContent(xmlChar *name, xmlElementContentType type) {
 		"xmlNewElementContent : out of memory!\n");
 	return(NULL);
     }
+    memset(ret, 0, sizeof(xmlElementContent));
     ret->type = type;
     ret->ocur = XML_ELEMENT_CONTENT_ONCE;
-    if (name != NULL)
-        ret->name = xmlStrdup(name);
-    else
+    if (name != NULL) {
+	xmlChar *prefix = NULL;
+	ret->name = xmlSplitQName2(name, &prefix);
+	if (ret->name == NULL)
+	    ret->name = xmlStrdup(name);
+	ret->prefix = prefix;
+    } else {
         ret->name = NULL;
+	ret->prefix = NULL;
+    }
     ret->c1 = ret->c2 = ret->parent = NULL;
     return(ret);
 }
@@ -431,6 +458,8 @@ xmlCopyElementContent(xmlElementContentPtr cur) {
 		"xmlCopyElementContent : out of memory\n");
 	return(NULL);
     }
+    if (cur->prefix != NULL)
+	ret->prefix = xmlStrdup(cur->prefix);
     ret->ocur = cur->ocur;
     if (cur->c1 != NULL) ret->c1 = xmlCopyElementContent(cur->c1);
     if (ret->c1 != NULL)
@@ -464,6 +493,7 @@ xmlFreeElementContent(xmlElementContentPtr cur) {
     if (cur->c1 != NULL) xmlFreeElementContent(cur->c1);
     if (cur->c2 != NULL) xmlFreeElementContent(cur->c2);
     if (cur->name != NULL) xmlFree((xmlChar *) cur->name);
+    if (cur->prefix != NULL) xmlFree((xmlChar *) cur->prefix);
     xmlFree(cur);
 }
 
@@ -485,6 +515,10 @@ xmlDumpElementContent(xmlBufferPtr buf, xmlElementContentPtr content, int glob) 
             xmlBufferWriteChar(buf, "#PCDATA");
 	    break;
 	case XML_ELEMENT_CONTENT_ELEMENT:
+	    if (content->prefix != NULL) {
+		xmlBufferWriteCHAR(buf, content->prefix);
+		xmlBufferWriteChar(buf, ":");
+	    }
 	    xmlBufferWriteCHAR(buf, content->name);
 	    break;
 	case XML_ELEMENT_CONTENT_SEQ:
@@ -539,43 +573,90 @@ xmlDumpElementContent(xmlBufferPtr buf, xmlElementContentPtr content, int glob) 
  * @content:  An element table
  * @glob: 1 if one must print the englobing parenthesis, 0 otherwise
  *
+ * Deprecated, unsafe, use xmlSnprintfElementContent
+ */
+void
+xmlSprintfElementContent(char *buf ATTRIBUTE_UNUSED,
+	                 xmlElementContentPtr content ATTRIBUTE_UNUSED,
+			 int glob ATTRIBUTE_UNUSED) {
+}
+
+/**
+ * xmlSnprintfElementContent:
+ * @buf:  an output buffer
+ * @size:  the buffer size
+ * @content:  An element table
+ * @glob: 1 if one must print the englobing parenthesis, 0 otherwise
+ *
  * This will dump the content of the element content definition
  * Intended just for the debug routine
  */
 void
-xmlSprintfElementContent(char *buf, xmlElementContentPtr content, int glob) {
+xmlSnprintfElementContent(char *buf, int size, xmlElementContentPtr content, int glob) {
+    int len;
+
     if (content == NULL) return;
+    len = strlen(buf);
+    if (size - len < 50) {
+	if ((size - len > 4) && (buf[len - 1] != '.'))
+	    strcat(buf, " ...");
+	return;
+    }
     if (glob) strcat(buf, "(");
     switch (content->type) {
         case XML_ELEMENT_CONTENT_PCDATA:
             strcat(buf, "#PCDATA");
 	    break;
 	case XML_ELEMENT_CONTENT_ELEMENT:
+	    if (content->prefix != NULL) {
+		if (size - len < xmlStrlen(content->prefix) + 10) {
+		    strcat(buf, " ...");
+		    return;
+		}
+		strcat(buf, (char *) content->prefix);
+		strcat(buf, ":");
+	    }
+	    if (size - len < xmlStrlen(content->name) + 10) {
+		strcat(buf, " ...");
+		return;
+	    }
 	    strcat(buf, (char *) content->name);
 	    break;
 	case XML_ELEMENT_CONTENT_SEQ:
 	    if ((content->c1->type == XML_ELEMENT_CONTENT_OR) ||
 	        (content->c1->type == XML_ELEMENT_CONTENT_SEQ))
-		xmlSprintfElementContent(buf, content->c1, 1);
+		xmlSnprintfElementContent(buf, size, content->c1, 1);
 	    else
-		xmlSprintfElementContent(buf, content->c1, 0);
+		xmlSnprintfElementContent(buf, size, content->c1, 0);
+	    len = strlen(buf);
+	    if (size - len < 50) {
+		if ((size - len > 4) && (buf[len - 1] != '.'))
+		    strcat(buf, " ...");
+		return;
+	    }
             strcat(buf, " , ");
 	    if (content->c2->type == XML_ELEMENT_CONTENT_OR)
-		xmlSprintfElementContent(buf, content->c2, 1);
+		xmlSnprintfElementContent(buf, size, content->c2, 1);
 	    else
-		xmlSprintfElementContent(buf, content->c2, 0);
+		xmlSnprintfElementContent(buf, size, content->c2, 0);
 	    break;
 	case XML_ELEMENT_CONTENT_OR:
 	    if ((content->c1->type == XML_ELEMENT_CONTENT_OR) ||
 	        (content->c1->type == XML_ELEMENT_CONTENT_SEQ))
-		xmlSprintfElementContent(buf, content->c1, 1);
+		xmlSnprintfElementContent(buf, size, content->c1, 1);
 	    else
-		xmlSprintfElementContent(buf, content->c1, 0);
+		xmlSnprintfElementContent(buf, size, content->c1, 0);
+	    len = strlen(buf);
+	    if (size - len < 50) {
+		if ((size - len > 4) && (buf[len - 1] != '.'))
+		    strcat(buf, " ...");
+		return;
+	    }
             strcat(buf, " | ");
 	    if (content->c2->type == XML_ELEMENT_CONTENT_SEQ)
-		xmlSprintfElementContent(buf, content->c2, 1);
+		xmlSnprintfElementContent(buf, size, content->c2, 1);
 	    else
-		xmlSprintfElementContent(buf, content->c2, 0);
+		xmlSnprintfElementContent(buf, size, content->c2, 0);
 	    break;
     }
     if (glob)
@@ -642,7 +723,7 @@ xmlFreeElement(xmlElementPtr elem) {
  *
  * Register a new element declaration
  *
- * Returns NULL if not, othervise the entity
+ * Returns NULL if not, otherwise the entity
  */
 xmlElementPtr
 xmlAddElementDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *name,
@@ -741,7 +822,7 @@ xmlAddElementDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *name,
     if (ret != NULL) {
 	if (ret->etype != XML_ELEMENT_TYPE_UNDEFINED) {
 	    /*
-	     * The element is already defined in this Dtd.
+	     * The element is already defined in this DTD.
 	     */
 	    VERROR(ctxt->userData, "Redefinition of element %s\n", name);
 	    if (uqname != NULL)
@@ -770,7 +851,7 @@ xmlAddElementDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *name,
 	 */
 	if (xmlHashAddEntry2(table, name, ns, ret)) {
 	    /*
-	     * The element is already defined in this Dtd.
+	     * The element is already defined in this DTD.
 	     */
 	    VERROR(ctxt->userData, "Redefinition of element %s\n", name);
 	    xmlFreeElement(ret);
@@ -788,7 +869,7 @@ xmlAddElementDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *name,
     ret->attributes = oldAttributes;
 
     /*
-     * Link it to the Dtd
+     * Link it to the DTD
      */
     ret->parent = dtd;
     ret->doc = dtd->doc;
@@ -877,16 +958,28 @@ xmlDumpElementDecl(xmlBufferPtr buf, xmlElementPtr elem) {
     switch (elem->etype) {
 	case XML_ELEMENT_TYPE_EMPTY:
 	    xmlBufferWriteChar(buf, "<!ELEMENT ");
+	    if (elem->prefix != NULL) {
+		xmlBufferWriteCHAR(buf, elem->prefix);
+		xmlBufferWriteChar(buf, ":");
+	    }
 	    xmlBufferWriteCHAR(buf, elem->name);
 	    xmlBufferWriteChar(buf, " EMPTY>\n");
 	    break;
 	case XML_ELEMENT_TYPE_ANY:
 	    xmlBufferWriteChar(buf, "<!ELEMENT ");
+	    if (elem->prefix != NULL) {
+		xmlBufferWriteCHAR(buf, elem->prefix);
+		xmlBufferWriteChar(buf, ":");
+	    }
 	    xmlBufferWriteCHAR(buf, elem->name);
 	    xmlBufferWriteChar(buf, " ANY>\n");
 	    break;
 	case XML_ELEMENT_TYPE_MIXED:
 	    xmlBufferWriteChar(buf, "<!ELEMENT ");
+	    if (elem->prefix != NULL) {
+		xmlBufferWriteCHAR(buf, elem->prefix);
+		xmlBufferWriteChar(buf, ":");
+	    }
 	    xmlBufferWriteCHAR(buf, elem->name);
 	    xmlBufferWriteChar(buf, " ");
 	    xmlDumpElementContent(buf, elem->content, 1);
@@ -894,6 +987,10 @@ xmlDumpElementDecl(xmlBufferPtr buf, xmlElementPtr elem) {
 	    break;
 	case XML_ELEMENT_TYPE_ELEMENT:
 	    xmlBufferWriteChar(buf, "<!ELEMENT ");
+	    if (elem->prefix != NULL) {
+		xmlBufferWriteCHAR(buf, elem->prefix);
+		xmlBufferWriteChar(buf, ":");
+	    }
 	    xmlBufferWriteCHAR(buf, elem->name);
 	    xmlBufferWriteChar(buf, " ");
 	    xmlDumpElementContent(buf, elem->content, 1);
@@ -1037,7 +1134,7 @@ xmlScanAttributeDeclCallback(xmlAttributePtr attr, xmlAttributePtr *list,
  * @elem:  the element name
  *
  * When inserting a new element scan the DtD for existing attributes
- * for taht element and initialize the Attribute chain
+ * for that element and initialize the Attribute chain
  *
  * Returns the pointer to the first attribute decl in the chain,
  *         possibly NULL.
@@ -1136,7 +1233,7 @@ xmlFreeAttribute(xmlAttributePtr attr) {
  * Register a new attribute declaration
  * Note that @tree becomes the ownership of the DTD
  *
- * Returns NULL if not new, othervise the attribute decl
+ * Returns NULL if not new, otherwise the attribute decl
  */
 xmlAttributePtr
 xmlAddAttributeDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *elem,
@@ -1165,6 +1262,7 @@ xmlAddAttributeDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *elem,
 	xmlFreeEnumeration(tree);
 	return(NULL);
     }
+
     /*
      * Check the type and possibly the default value.
      */
@@ -1200,6 +1298,19 @@ xmlAddAttributeDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *elem,
 	VERROR(ctxt->userData, "Attribute %s on %s: invalid default value\n",
 	       elem, name, defaultValue);
 	defaultValue = NULL;
+	ctxt->valid = 0;
+    }
+
+    /*
+     * Check first that an attribute defined in the external subset wasn't
+     * already defined in the internal subset
+     */
+    if ((dtd->doc != NULL) && (dtd->doc->extSubset == dtd) &&
+	(dtd->doc->intSubset != NULL) &&
+	(dtd->doc->intSubset->attributes != NULL)) {
+        ret = xmlHashLookup3(dtd->doc->intSubset->attributes, name, ns, elem);
+	if (ret != NULL)
+	    return(NULL);
     }
 
     /*
@@ -1244,7 +1355,7 @@ xmlAddAttributeDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *elem,
      */
     if (xmlHashAddEntry3(table, name, ns, elem, ret) < 0) {
 	/*
-	 * The attribute is already defined in this Dtd.
+	 * The attribute is already defined in this DTD.
 	 */
 	VWARNING(ctxt->userData,
 		 "Attribute %s on %s: already defined\n",
@@ -1259,17 +1370,47 @@ xmlAddAttributeDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *elem,
      */
     elemDef = xmlGetDtdElementDesc2(dtd, elem, 1);
     if (elemDef != NULL) {
+
         if ((type == XML_ATTRIBUTE_ID) &&
-	    (xmlScanIDAttributeDecl(NULL, elemDef) != 0))
+	    (xmlScanIDAttributeDecl(NULL, elemDef) != 0)) {
 	    VERROR(ctxt->userData, 
 	   "Element %s has too may ID attributes defined : %s\n",
 		   elem, name);
-        ret->nexth = elemDef->attributes;
-        elemDef->attributes = ret;
+	    ctxt->valid = 0;
+	}
+
+	/*
+	 * Insert namespace default def first they need to be
+	 * processed first.
+	 */
+	if ((xmlStrEqual(ret->name, BAD_CAST "xmlns")) ||
+	    ((ret->prefix != NULL &&
+	     (xmlStrEqual(ret->prefix, BAD_CAST "xmlns"))))) {
+	    ret->nexth = elemDef->attributes;
+	    elemDef->attributes = ret;
+	} else {
+	    xmlAttributePtr tmp = elemDef->attributes;
+
+	    while ((tmp != NULL) &&
+		   ((xmlStrEqual(tmp->name, BAD_CAST "xmlns")) ||
+		    ((ret->prefix != NULL &&
+		     (xmlStrEqual(ret->prefix, BAD_CAST "xmlns")))))) {
+		if (tmp->nexth == NULL)
+		    break;
+		tmp = tmp->nexth;
+	    }
+	    if (tmp != NULL) {
+		ret->nexth = tmp->nexth;
+	        tmp->nexth = ret;
+	    } else {
+		ret->nexth = elemDef->attributes;
+		elemDef->attributes = ret;
+	    }
+	}
     }
 
     /*
-     * Link it to the Dtd
+     * Link it to the DTD
      */
     ret->parent = dtd;
     ret->doc = dtd->doc;
@@ -1313,6 +1454,7 @@ xmlCopyAttribute(xmlAttributePtr attr) {
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlAttribute));
+    cur->type = XML_ATTRIBUTE_DECL;
     cur->atype = attr->atype;
     cur->def = attr->def;
     cur->tree = xmlCopyEnumeration(attr->tree);
@@ -1320,6 +1462,8 @@ xmlCopyAttribute(xmlAttributePtr attr) {
 	cur->elem = xmlStrdup(attr->elem);
     if (attr->name != NULL)
 	cur->name = xmlStrdup(attr->name);
+    if (attr->prefix != NULL)
+	cur->prefix = xmlStrdup(attr->prefix);
     if (attr->defaultValue != NULL)
 	cur->defaultValue = xmlStrdup(attr->defaultValue);
     return(cur);
@@ -1392,7 +1536,7 @@ xmlDumpAttributeDecl(xmlBufferPtr buf, xmlAttributePtr attr) {
 	    break;
 	default:
 	    xmlGenericError(xmlGenericErrorContext,
-		"xmlDumpAttributeTable: internal: unknown type %d\n",
+		"xmlDumpAttributeDecl: internal: unknown type %d\n",
 		    attr->atype);
     }
     switch (attr->def) {
@@ -1409,7 +1553,7 @@ xmlDumpAttributeDecl(xmlBufferPtr buf, xmlAttributePtr attr) {
 	    break;
 	default:
 	    xmlGenericError(xmlGenericErrorContext,
-		"xmlDumpAttributeTable: internal: unknown default %d\n",
+		"xmlDumpAttributeDecl: internal: unknown default %d\n",
 		    attr->def);
     }
     if (attr->defaultValue != NULL) {
@@ -1478,7 +1622,7 @@ xmlFreeNotation(xmlNotationPtr nota) {
  *
  * Register a new notation declaration
  *
- * Returns NULL if not, othervise the entity
+ * Returns NULL if not, otherwise the entity
  */
 xmlNotationPtr
 xmlAddNotationDecl(xmlValidCtxtPtr ctxt ATTRIBUTE_UNUSED, xmlDtdPtr dtd,
@@ -1500,6 +1644,7 @@ xmlAddNotationDecl(xmlValidCtxtPtr ctxt ATTRIBUTE_UNUSED, xmlDtdPtr dtd,
     if ((PublicID == NULL) && (SystemID == NULL)) {
         xmlGenericError(xmlGenericErrorContext,
 		"xmlAddNotationDecl: no PUBLIC ID nor SYSTEM ID\n");
+	return(NULL);
     }
 
     /*
@@ -1680,7 +1825,7 @@ xmlFreeID(xmlIDPtr id) {
  *
  * Register a new id declaration
  *
- * Returns NULL if not, othervise the new xmlIDPtr
+ * Returns NULL if not, otherwise the new xmlIDPtr
  */
 xmlIDPtr 
 xmlAddID(xmlValidCtxtPtr ctxt, xmlDocPtr doc, const xmlChar *value,
@@ -1690,17 +1835,17 @@ xmlAddID(xmlValidCtxtPtr ctxt, xmlDocPtr doc, const xmlChar *value,
 
     if (doc == NULL) {
         xmlGenericError(xmlGenericErrorContext,
-		"xmlAddIDDecl: doc == NULL\n");
+		"xmlAddID: doc == NULL\n");
 	return(NULL);
     }
     if (value == NULL) {
         xmlGenericError(xmlGenericErrorContext,
-		"xmlAddIDDecl: value == NULL\n");
+		"xmlAddID: value == NULL\n");
 	return(NULL);
     }
     if (attr == NULL) {
         xmlGenericError(xmlGenericErrorContext,
-		"xmlAddIDDecl: attr == NULL\n");
+		"xmlAddID: attr == NULL\n");
 	return(NULL);
     }
 
@@ -1731,9 +1876,10 @@ xmlAddID(xmlValidCtxtPtr ctxt, xmlDocPtr doc, const xmlChar *value,
 
     if (xmlHashAddEntry(table, value, ret) < 0) {
 	/*
-	 * The id is already defined in this Dtd.
+	 * The id is already defined in this DTD.
 	 */
-	VERROR(ctxt->userData, "ID %s already defined\n", value);
+	if (ctxt != NULL)
+	    VERROR(ctxt->userData, "ID %s already defined\n", value);
 	xmlFreeID(ret);
 	return(NULL);
     }
@@ -1757,7 +1903,7 @@ xmlFreeIDTable(xmlIDTablePtr table) {
  * @elem:  the element carrying the attribute
  * @attr:  the attribute
  *
- * Determine whether an attribute is of type ID. In case we have Dtd(s)
+ * Determine whether an attribute is of type ID. In case we have DTD(s)
  * then this is simple, otherwise we use an heuristic: name ID (upper
  * or lowercase).
  *
@@ -1901,11 +2047,11 @@ xmlCreateRefTable(void) {
  */
 static void
 xmlFreeRef(xmlLinkPtr lk) {
-	xmlRefPtr ref = (xmlRefPtr)xmlLinkGetData(lk);
-	if (ref == NULL) return;
-	if (ref->value != NULL)
-		xmlFree((xmlChar *)ref->value);
-	xmlFree(ref);
+    xmlRefPtr ref = (xmlRefPtr)xmlLinkGetData(lk);
+    if (ref == NULL) return;
+    if (ref->value != NULL)
+        xmlFree((xmlChar *)ref->value);
+    xmlFree(ref);
 }
 
 /**
@@ -1916,8 +2062,8 @@ xmlFreeRef(xmlLinkPtr lk) {
  */
 static void
 xmlFreeRefList(xmlListPtr list_ref) {
-	if (list_ref == NULL) return;
-	xmlListDelete(list_ref);
+    if (list_ref == NULL) return;
+    xmlListDelete(list_ref);
 }
 
 /**
@@ -1925,20 +2071,20 @@ xmlFreeRefList(xmlListPtr list_ref) {
  * @data:  Contents of current link
  * @user:  Value supplied by the user
  *
- * Return 0 to abort the walk or 1 to continue
+ * Returns 0 to abort the walk or 1 to continue
  */
 static int
 xmlWalkRemoveRef(const void *data, const void *user)
 {
-	xmlAttrPtr attr0 = ((xmlRefPtr)data)->attr;
-	xmlAttrPtr attr1 = ((xmlRemoveMemoPtr)user)->ap;
-	xmlListPtr ref_list = ((xmlRemoveMemoPtr)user)->l;
+    xmlAttrPtr attr0 = ((xmlRefPtr)data)->attr;
+    xmlAttrPtr attr1 = ((xmlRemoveMemoPtr)user)->ap;
+    xmlListPtr ref_list = ((xmlRemoveMemoPtr)user)->l;
 
-	if (attr0 == attr1) { /* Matched: remove and terminate walk */
-		xmlListRemoveFirst(ref_list, (void *)data);
-		return 0;
-	}
-	return 1;
+    if (attr0 == attr1) { /* Matched: remove and terminate walk */
+        xmlListRemoveFirst(ref_list, (void *)data);
+        return 0;
+    }
+    return 1;
 }
 
 /**
@@ -1950,78 +2096,78 @@ xmlWalkRemoveRef(const void *data, const void *user)
  *
  * Register a new ref declaration
  *
- * Returns NULL if not, othervise the new xmlRefPtr
+ * Returns NULL if not, otherwise the new xmlRefPtr
  */
 xmlRefPtr 
 xmlAddRef(xmlValidCtxtPtr ctxt ATTRIBUTE_UNUSED, xmlDocPtr doc, const xmlChar *value,
     xmlAttrPtr attr) {
-	xmlRefPtr ret;
-	xmlRefTablePtr table;
-	xmlListPtr ref_list;
+    xmlRefPtr ret;
+    xmlRefTablePtr table;
+    xmlListPtr ref_list;
 
-	if (doc == NULL) {
-		xmlGenericError(xmlGenericErrorContext,
-		    "xmlAddRefDecl: doc == NULL\n");
-		return(NULL);
-	}
-	if (value == NULL) {
-		xmlGenericError(xmlGenericErrorContext,
-		    "xmlAddRefDecl: value == NULL\n");
-		return(NULL);
-	}
-	if (attr == NULL) {
-		xmlGenericError(xmlGenericErrorContext,
-		    "xmlAddRefDecl: attr == NULL\n");
-		return(NULL);
-	}
+    if (doc == NULL) {
+        xmlGenericError(xmlGenericErrorContext,
+            "xmlAddRef: doc == NULL\n");
+        return(NULL);
+    }
+    if (value == NULL) {
+        xmlGenericError(xmlGenericErrorContext,
+            "xmlAddRef: value == NULL\n");
+        return(NULL);
+    }
+    if (attr == NULL) {
+        xmlGenericError(xmlGenericErrorContext,
+            "xmlAddRef: attr == NULL\n");
+        return(NULL);
+    }
 
-	/*
+    /*
      * Create the Ref table if needed.
      */
-	table = (xmlRefTablePtr) doc->refs;
-	if (table == NULL) 
-		doc->refs = table = xmlCreateRefTable();
-	if (table == NULL) {
-		xmlGenericError(xmlGenericErrorContext,
-		    "xmlAddRef: Table creation failed!\n");
-		return(NULL);
-	}
+    table = (xmlRefTablePtr) doc->refs;
+    if (table == NULL) 
+        doc->refs = table = xmlCreateRefTable();
+    if (table == NULL) {
+        xmlGenericError(xmlGenericErrorContext,
+            "xmlAddRef: Table creation failed!\n");
+        return(NULL);
+    }
 
-	ret = (xmlRefPtr) xmlMalloc(sizeof(xmlRef));
-	if (ret == NULL) {
-		xmlGenericError(xmlGenericErrorContext,
-		    "xmlAddRef: out of memory\n");
-		return(NULL);
-	}
+    ret = (xmlRefPtr) xmlMalloc(sizeof(xmlRef));
+    if (ret == NULL) {
+        xmlGenericError(xmlGenericErrorContext,
+            "xmlAddRef: out of memory\n");
+        return(NULL);
+    }
 
-	/*
+    /*
      * fill the structure.
      */
- 	ret->value = xmlStrdup(value);
-	ret->attr = attr;
+    ret->value = xmlStrdup(value);
+    ret->attr = attr;
 
-	/* To add a reference :-
-	 * References are maintained as a list of references,
-	 * Lookup the entry, if no entry create new nodelist
-	 * Add the owning node to the NodeList
-	 * Return the ref
-	 */
+    /* To add a reference :-
+     * References are maintained as a list of references,
+     * Lookup the entry, if no entry create new nodelist
+     * Add the owning node to the NodeList
+     * Return the ref
+     */
 
-	if(NULL == (ref_list = xmlHashLookup(table, value))) {
-		if(NULL == (ref_list = xmlListCreate(xmlFreeRef, NULL))) {
-			xmlGenericError(xmlGenericErrorContext,
-			    "xmlAddRef: Reference list creation failed!\n");
-			return(NULL);
-		}
-		if (xmlHashAddEntry(table, value, ref_list) < 0) {
-			xmlListDelete(ref_list);
-			xmlGenericError(xmlGenericErrorContext,
-			    "xmlAddRef: Reference list insertion failed!\n");
-			return(NULL);
-		}
-	}
-	xmlListInsert(ref_list, ret);
-	return(ret);
+    if (NULL == (ref_list = xmlHashLookup(table, value))) {
+        if (NULL == (ref_list = xmlListCreate(xmlFreeRef, NULL))) {
+            xmlGenericError(xmlGenericErrorContext,
+                "xmlAddRef: Reference list creation failed!\n");
+            return(NULL);
+        }
+        if (xmlHashAddEntry(table, value, ref_list) < 0) {
+            xmlListDelete(ref_list);
+            xmlGenericError(xmlGenericErrorContext,
+                "xmlAddRef: Reference list insertion failed!\n");
+            return(NULL);
+        }
+    }
+    xmlListInsert(ref_list, ret);
+    return(ret);
 }
 
 /**
@@ -2032,7 +2178,7 @@ xmlAddRef(xmlValidCtxtPtr ctxt ATTRIBUTE_UNUSED, xmlDocPtr doc, const xmlChar *v
  */
 void
 xmlFreeRefTable(xmlRefTablePtr table) {
-	xmlHashFree(table, (xmlHashDeallocator) xmlFreeRefList);
+    xmlHashFree(table, (xmlHashDeallocator) xmlFreeRefList);
 }
 
 /**
@@ -2041,7 +2187,7 @@ xmlFreeRefTable(xmlRefTablePtr table) {
  * @elem:  the element carrying the attribute
  * @attr:  the attribute
  *
- * Determine whether an attribute is of type Ref. In case we have Dtd(s)
+ * Determine whether an attribute is of type Ref. In case we have DTD(s)
  * then this is simple, otherwise we use an heuristic: name Ref (upper
  * or lowercase).
  *
@@ -2049,23 +2195,25 @@ xmlFreeRefTable(xmlRefTablePtr table) {
  */
 int
 xmlIsRef(xmlDocPtr doc, xmlNodePtr elem, xmlAttrPtr attr) {
-	if ((doc->intSubset == NULL) && (doc->extSubset == NULL)) {
-		return(0);
-	} else if (doc->type == XML_HTML_DOCUMENT_NODE) {
-		/* TODO @@@ */
-		return(0);    
-	} else {
-		xmlAttributePtr attrDecl;
+    if ((doc->intSubset == NULL) && (doc->extSubset == NULL)) {
+        return(0);
+    } else if (doc->type == XML_HTML_DOCUMENT_NODE) {
+        /* TODO @@@ */
+        return(0);    
+    } else {
+        xmlAttributePtr attrDecl;
 
-		attrDecl = xmlGetDtdAttrDesc(doc->intSubset, elem->name, attr->name);
-		if ((attrDecl == NULL) && (doc->extSubset != NULL))
-			attrDecl = xmlGetDtdAttrDesc(doc->extSubset, elem->name,
-			    attr->name);
+        attrDecl = xmlGetDtdAttrDesc(doc->intSubset, elem->name, attr->name);
+        if ((attrDecl == NULL) && (doc->extSubset != NULL))
+            attrDecl = xmlGetDtdAttrDesc(doc->extSubset,
+		                         elem->name, attr->name);
 
-		if ((attrDecl != NULL) && (attrDecl->atype == XML_ATTRIBUTE_IDREF))
-			return(1);
-	}
-	return(0);
+	if ((attrDecl != NULL) &&
+	    (attrDecl->atype == XML_ATTRIBUTE_IDREF ||
+	     attrDecl->atype == XML_ATTRIBUTE_IDREFS))
+	return(1);
+    }
+    return(0);
 }
 
 /**
@@ -2079,50 +2227,50 @@ xmlIsRef(xmlDocPtr doc, xmlNodePtr elem, xmlAttrPtr attr) {
  */
 int
 xmlRemoveRef(xmlDocPtr doc, xmlAttrPtr attr) {
-	xmlListPtr ref_list;
-	xmlRefTablePtr table;
-	xmlChar *ID;
-	xmlRemoveMemo target;
+    xmlListPtr ref_list;
+    xmlRefTablePtr table;
+    xmlChar *ID;
+    xmlRemoveMemo target;
 
-	if (doc == NULL) return(-1);
-	if (attr == NULL) return(-1);
-	table = (xmlRefTablePtr) doc->refs;
-	if (table == NULL) 
-		return(-1);
+    if (doc == NULL) return(-1);
+    if (attr == NULL) return(-1);
+    table = (xmlRefTablePtr) doc->refs;
+    if (table == NULL) 
+        return(-1);
 
-	if (attr == NULL)
-		return(-1);
-	ID = xmlNodeListGetString(doc, attr->children, 1);
-	if (ID == NULL)
-		return(-1);
-	ref_list = xmlHashLookup(table, ID);
+    if (attr == NULL)
+        return(-1);
+    ID = xmlNodeListGetString(doc, attr->children, 1);
+    if (ID == NULL)
+        return(-1);
+    ref_list = xmlHashLookup(table, ID);
 
-	if(ref_list == NULL) {
-		xmlFree(ID);
-		return (-1);
-	}
-	/* At this point, ref_list refers to a list of references which
-	 * have the same key as the supplied attr. Our list of references
-	 * is ordered by reference address and we don't have that information
-	 * here to use when removing. We'll have to walk the list and
-	 * check for a matching attribute, when we find one stop the walk
-	 * and remove the entry.
-	 * The list is ordered by reference, so that means we don't have the
-	 * key. Passing the list and the reference to the walker means we
-	 * will have enough data to be able to remove the entry.
-	 */
-	target.l = ref_list;
-	target.ap = attr;
-	
-	/* Remove the supplied attr from our list */
-	xmlListWalk(ref_list, xmlWalkRemoveRef, &target);
+    if(ref_list == NULL) {
+        xmlFree(ID);
+        return (-1);
+    }
+    /* At this point, ref_list refers to a list of references which
+     * have the same key as the supplied attr. Our list of references
+     * is ordered by reference address and we don't have that information
+     * here to use when removing. We'll have to walk the list and
+     * check for a matching attribute, when we find one stop the walk
+     * and remove the entry.
+     * The list is ordered by reference, so that means we don't have the
+     * key. Passing the list and the reference to the walker means we
+     * will have enough data to be able to remove the entry.
+     */
+    target.l = ref_list;
+    target.ap = attr;
+    
+    /* Remove the supplied attr from our list */
+    xmlListWalk(ref_list, xmlWalkRemoveRef, &target);
 
-	/*If the list is empty then remove the list entry in the hash */
-	if (xmlListEmpty(ref_list))
-	    xmlHashUpdateEntry(table, ID, NULL, (xmlHashDeallocator)
-	    xmlFreeRefList);
-	xmlFree(ID);
-	return(0);
+    /*If the list is empty then remove the list entry in the hash */
+    if (xmlListEmpty(ref_list))
+        xmlHashUpdateEntry(table, ID, NULL, (xmlHashDeallocator)
+        xmlFreeRefList);
+    xmlFree(ID);
+    return(0);
 }
 
 /**
@@ -2136,23 +2284,23 @@ xmlRemoveRef(xmlDocPtr doc, xmlAttrPtr attr) {
  */
 xmlListPtr 
 xmlGetRefs(xmlDocPtr doc, const xmlChar *ID) {
-	xmlRefTablePtr table;
+    xmlRefTablePtr table;
 
-	if (doc == NULL) {
-		xmlGenericError(xmlGenericErrorContext, "xmlGetRef: doc == NULL\n");
-		return(NULL);
-	}
+    if (doc == NULL) {
+        xmlGenericError(xmlGenericErrorContext, "xmlGetRefs: doc == NULL\n");
+        return(NULL);
+    }
 
-	if (ID == NULL) {
-		xmlGenericError(xmlGenericErrorContext, "xmlGetRef: ID == NULL\n");
-		return(NULL);
-	}
+    if (ID == NULL) {
+        xmlGenericError(xmlGenericErrorContext, "xmlGetRefs: ID == NULL\n");
+        return(NULL);
+    }
 
-	table = (xmlRefTablePtr) doc->refs;
-	if (table == NULL) 
-		return(NULL);
+    table = (xmlRefTablePtr) doc->refs;
+    if (table == NULL) 
+        return(NULL);
 
-	return (xmlHashLookup(table, ID));
+    return (xmlHashLookup(table, ID));
 }
 
 /************************************************************************
@@ -2166,7 +2314,7 @@ xmlGetRefs(xmlDocPtr doc, const xmlChar *ID) {
  * @dtd:  a pointer to the DtD to search
  * @name:  the element name
  *
- * Search the Dtd for the description of this element
+ * Search the DTD for the description of this element
  *
  * returns the xmlElementPtr if found or NULL
  */
@@ -2196,12 +2344,12 @@ xmlGetDtdElementDesc(xmlDtdPtr dtd, const xmlChar *name) {
  * @name:  the element name
  * @create:  create an empty description if not found
  *
- * Search the Dtd for the description of this element
+ * Search the DTD for the description of this element
  *
  * returns the xmlElementPtr if found or NULL
  */
 
-xmlElementPtr
+static xmlElementPtr
 xmlGetDtdElementDesc2(xmlDtdPtr dtd, const xmlChar *name, int create) {
     xmlElementTablePtr table;
     xmlElementPtr cur;
@@ -2221,7 +2369,7 @@ xmlGetDtdElementDesc2(xmlDtdPtr dtd, const xmlChar *name, int create) {
 	}
 	if (table == NULL) {
 	    xmlGenericError(xmlGenericErrorContext,
-		    "xmlGetDtdElementDesc: Table creation failed!\n");
+		    "xmlGetDtdElementDesc2: Table creation failed!\n");
 	    return(NULL);
 	}
     }
@@ -2235,7 +2383,7 @@ xmlGetDtdElementDesc2(xmlDtdPtr dtd, const xmlChar *name, int create) {
 	cur = (xmlElementPtr) xmlMalloc(sizeof(xmlElement));
 	if (cur == NULL) {
 	    xmlGenericError(xmlGenericErrorContext,
-		    "xmlGetDtdElementDesc: out of memory\n");
+		    "xmlGetDtdElementDesc2: out of memory\n");
 	    return(NULL);
 	}
 	memset(cur, 0, sizeof(xmlElement));
@@ -2261,12 +2409,12 @@ xmlGetDtdElementDesc2(xmlDtdPtr dtd, const xmlChar *name, int create) {
  * @name:  the element name
  * @prefix:  the element namespace prefix
  *
- * Search the Dtd for the description of this element
+ * Search the DTD for the description of this element
  *
  * returns the xmlElementPtr if found or NULL
  */
 
-static xmlElementPtr
+xmlElementPtr
 xmlGetDtdQElementDesc(xmlDtdPtr dtd, const xmlChar *name,
 	              const xmlChar *prefix) {
     xmlElementTablePtr table;
@@ -2284,7 +2432,7 @@ xmlGetDtdQElementDesc(xmlDtdPtr dtd, const xmlChar *name,
  * @elem:  the element name
  * @name:  the attribute name
  *
- * Search the Dtd for the description of this attribute on
+ * Search the DTD for the description of this attribute on
  * this element.
  *
  * returns the xmlAttributePtr if found or NULL
@@ -2321,13 +2469,13 @@ xmlGetDtdAttrDesc(xmlDtdPtr dtd, const xmlChar *elem, const xmlChar *name) {
  * @name:  the attribute name
  * @prefix:  the attribute namespace prefix
  *
- * Search the Dtd for the description of this qualified attribute on
+ * Search the DTD for the description of this qualified attribute on
  * this element.
  *
  * returns the xmlAttributePtr if found or NULL
  */
 
-static xmlAttributePtr
+xmlAttributePtr
 xmlGetDtdQAttrDesc(xmlDtdPtr dtd, const xmlChar *elem, const xmlChar *name,
 	          const xmlChar *prefix) {
     xmlAttributeTablePtr table;
@@ -2344,7 +2492,7 @@ xmlGetDtdQAttrDesc(xmlDtdPtr dtd, const xmlChar *elem, const xmlChar *name,
  * @dtd:  a pointer to the DtD to search
  * @name:  the notation name
  *
- * Search the Dtd for the description of this notation
+ * Search the DTD for the description of this notation
  *
  * returns the xmlNotationPtr if found or NULL
  */
@@ -2366,7 +2514,7 @@ xmlGetDtdNotationDesc(xmlDtdPtr dtd, const xmlChar *name) {
  * @doc:  the document
  * @notationName:  the notation name to check
  *
- * Validate that the given mame match a notation declaration.
+ * Validate that the given name match a notation declaration.
  * - [ VC: Notation Declared ]
  *
  * returns 1 if valid or 0 otherwise
@@ -2440,23 +2588,29 @@ xmlIsMixedElement(xmlDocPtr doc, const xmlChar *name) {
 static int
 xmlValidateNameValue(const xmlChar *value) {
     const xmlChar *cur;
+    int val, len;
 
     if (value == NULL) return(0);
     cur = value;
-    
-    if (!IS_LETTER(*cur) && (*cur != '_') &&
-        (*cur != ':')) {
+    val = xmlStringCurrentChar(NULL, cur, &len);
+    cur += len;
+    if (!IS_LETTER(val) && (val != '_') &&
+        (val != ':')) {
 	return(0);
     }
 
-    while ((IS_LETTER(*cur)) || (IS_DIGIT(*cur)) ||
-           (*cur == '.') || (*cur == '-') ||
-	   (*cur == '_') || (*cur == ':') || 
-	   (IS_COMBINING(*cur)) ||
-	   (IS_EXTENDER(*cur)))
-	   cur++;
+    val = xmlStringCurrentChar(NULL, cur, &len);
+    cur += len;
+    while ((IS_LETTER(val)) || (IS_DIGIT(val)) ||
+           (val == '.') || (val == '-') ||
+	   (val == '_') || (val == ':') || 
+	   (IS_COMBINING(val)) ||
+	   (IS_EXTENDER(val))) {
+	val = xmlStringCurrentChar(NULL, cur, &len);
+	cur += len;
+    }
 
-    if (*cur != 0) return(0);
+    if (val != 0) return(0);
 
     return(1);
 }
@@ -2473,46 +2627,60 @@ xmlValidateNameValue(const xmlChar *value) {
 static int
 xmlValidateNamesValue(const xmlChar *value) {
     const xmlChar *cur;
+    int val, len;
 
     if (value == NULL) return(0);
     cur = value;
+    val = xmlStringCurrentChar(NULL, cur, &len);
+    cur += len;
     
-    if (!IS_LETTER(*cur) && (*cur != '_') &&
-        (*cur != ':')) {
+    if (!IS_LETTER(val) && (val != '_') &&
+        (val != ':')) {
 	return(0);
     }
 
-    while ((IS_LETTER(*cur)) || (IS_DIGIT(*cur)) ||
-           (*cur == '.') || (*cur == '-') ||
-	   (*cur == '_') || (*cur == ':') || 
-	   (IS_COMBINING(*cur)) ||
-	   (IS_EXTENDER(*cur)))
-	   cur++;
-
-    while (IS_BLANK(*cur)) {
-	while (IS_BLANK(*cur)) cur++;
-
-	if (!IS_LETTER(*cur) && (*cur != '_') &&
-	    (*cur != ':')) {
-	    return(0);
-	}
-
-	while ((IS_LETTER(*cur)) || (IS_DIGIT(*cur)) ||
-	       (*cur == '.') || (*cur == '-') ||
-	       (*cur == '_') || (*cur == ':') || 
-	       (IS_COMBINING(*cur)) ||
-	       (IS_EXTENDER(*cur)))
-	       cur++;
+    val = xmlStringCurrentChar(NULL, cur, &len);
+    cur += len;
+    while ((IS_LETTER(val)) || (IS_DIGIT(val)) ||
+           (val == '.') || (val == '-') ||
+	   (val == '_') || (val == ':') || 
+	   (IS_COMBINING(val)) ||
+	   (IS_EXTENDER(val))) {
+	val = xmlStringCurrentChar(NULL, cur, &len);
+	cur += len;
     }
 
-    if (*cur != 0) return(0);
+    while (IS_BLANK(val)) {
+	while (IS_BLANK(val)) {
+	    val = xmlStringCurrentChar(NULL, cur, &len);
+	    cur += len;
+	}
+
+	if (!IS_LETTER(val) && (val != '_') &&
+	    (val != ':')) {
+	    return(0);
+	}
+	val = xmlStringCurrentChar(NULL, cur, &len);
+	cur += len;
+
+	while ((IS_LETTER(val)) || (IS_DIGIT(val)) ||
+	       (val == '.') || (val == '-') ||
+	       (val == '_') || (val == ':') || 
+	       (IS_COMBINING(val)) ||
+	       (IS_EXTENDER(val))) {
+	    val = xmlStringCurrentChar(NULL, cur, &len);
+	    cur += len;
+	}
+    }
+
+    if (val != 0) return(0);
 
     return(1);
 }
 
 /**
  * xmlValidateNmtokenValue:
- * @value:  an Mntoken value
+ * @value:  an Nmtoken value
  *
  * Validate that the given value match Nmtoken production
  *
@@ -2524,32 +2692,37 @@ xmlValidateNamesValue(const xmlChar *value) {
 static int
 xmlValidateNmtokenValue(const xmlChar *value) {
     const xmlChar *cur;
+    int val, len;
 
     if (value == NULL) return(0);
     cur = value;
+    val = xmlStringCurrentChar(NULL, cur, &len);
+    cur += len;
     
-    if (!IS_LETTER(*cur) && !IS_DIGIT(*cur) &&
-        (*cur != '.') && (*cur != '-') &&
-        (*cur != '_') && (*cur != ':') && 
-        (!IS_COMBINING(*cur)) &&
-        (!IS_EXTENDER(*cur)))
+    if (!IS_LETTER(val) && !IS_DIGIT(val) &&
+        (val != '.') && (val != '-') &&
+        (val != '_') && (val != ':') && 
+        (!IS_COMBINING(val)) &&
+        (!IS_EXTENDER(val)))
 	return(0);
 
-    while ((IS_LETTER(*cur)) || (IS_DIGIT(*cur)) ||
-           (*cur == '.') || (*cur == '-') ||
-	   (*cur == '_') || (*cur == ':') || 
-	   (IS_COMBINING(*cur)) ||
-	   (IS_EXTENDER(*cur)))
-	   cur++;
+    while ((IS_LETTER(val)) || (IS_DIGIT(val)) ||
+           (val == '.') || (val == '-') ||
+	   (val == '_') || (val == ':') || 
+	   (IS_COMBINING(val)) ||
+	   (IS_EXTENDER(val))) {
+	val = xmlStringCurrentChar(NULL, cur, &len);
+	cur += len;
+    }
 
-    if (*cur != 0) return(0);
+    if (val != 0) return(0);
 
     return(1);
 }
 
 /**
  * xmlValidateNmtokensValue:
- * @value:  an Mntokens value
+ * @value:  an Nmtokens value
  *
  * Validate that the given value match Nmtokens production
  *
@@ -2561,45 +2734,59 @@ xmlValidateNmtokenValue(const xmlChar *value) {
 static int
 xmlValidateNmtokensValue(const xmlChar *value) {
     const xmlChar *cur;
+    int val, len;
 
     if (value == NULL) return(0);
     cur = value;
+    val = xmlStringCurrentChar(NULL, cur, &len);
+    cur += len;
     
-    while (IS_BLANK(*cur)) cur++;
-    if (!IS_LETTER(*cur) && !IS_DIGIT(*cur) &&
-        (*cur != '.') && (*cur != '-') &&
-        (*cur != '_') && (*cur != ':') && 
-        (!IS_COMBINING(*cur)) &&
-        (!IS_EXTENDER(*cur)))
-	return(0);
-
-    while ((IS_LETTER(*cur)) || (IS_DIGIT(*cur)) ||
-           (*cur == '.') || (*cur == '-') ||
-	   (*cur == '_') || (*cur == ':') || 
-	   (IS_COMBINING(*cur)) ||
-	   (IS_EXTENDER(*cur)))
-	   cur++;
-
-    while (IS_BLANK(*cur)) {
-	while (IS_BLANK(*cur)) cur++;
-	if (*cur == 0) return(1);
-
-	if (!IS_LETTER(*cur) && !IS_DIGIT(*cur) &&
-	    (*cur != '.') && (*cur != '-') &&
-	    (*cur != '_') && (*cur != ':') && 
-	    (!IS_COMBINING(*cur)) &&
-	    (!IS_EXTENDER(*cur)))
-	    return(0);
-
-	while ((IS_LETTER(*cur)) || (IS_DIGIT(*cur)) ||
-	       (*cur == '.') || (*cur == '-') ||
-	       (*cur == '_') || (*cur == ':') || 
-	       (IS_COMBINING(*cur)) ||
-	       (IS_EXTENDER(*cur)))
-	       cur++;
+    while (IS_BLANK(val)) {
+	val = xmlStringCurrentChar(NULL, cur, &len);
+	cur += len;
     }
 
-    if (*cur != 0) return(0);
+    if (!IS_LETTER(val) && !IS_DIGIT(val) &&
+        (val != '.') && (val != '-') &&
+        (val != '_') && (val != ':') && 
+        (!IS_COMBINING(val)) &&
+        (!IS_EXTENDER(val)))
+	return(0);
+
+    while ((IS_LETTER(val)) || (IS_DIGIT(val)) ||
+           (val == '.') || (val == '-') ||
+	   (val == '_') || (val == ':') || 
+	   (IS_COMBINING(val)) ||
+	   (IS_EXTENDER(val))) {
+	val = xmlStringCurrentChar(NULL, cur, &len);
+	cur += len;
+    }
+
+    while (IS_BLANK(val)) {
+	while (IS_BLANK(val)) {
+	    val = xmlStringCurrentChar(NULL, cur, &len);
+	    cur += len;
+	}
+	if (val == 0) return(1);
+
+	if (!IS_LETTER(val) && !IS_DIGIT(val) &&
+	    (val != '.') && (val != '-') &&
+	    (val != '_') && (val != ':') && 
+	    (!IS_COMBINING(val)) &&
+	    (!IS_EXTENDER(val)))
+	    return(0);
+
+	while ((IS_LETTER(val)) || (IS_DIGIT(val)) ||
+	       (val == '.') || (val == '-') ||
+	       (val == '_') || (val == ':') || 
+	       (IS_COMBINING(val)) ||
+	       (IS_EXTENDER(val))) {
+	    val = xmlStringCurrentChar(NULL, cur, &len);
+	    cur += len;
+	}
+    }
+
+    if (val != 0) return(0);
 
     return(1);
 }
@@ -2613,7 +2800,7 @@ xmlValidateNmtokensValue(const xmlChar *value) {
  * Try to validate a single notation definition
  * basically it does the following checks as described by the
  * XML-1.0 recommendation:
- *  - it seems that no validity constraing exist on notation declarations
+ *  - it seems that no validity constraint exists on notation declarations
  * But this function get called anyway ...
  *
  * returns 1 if valid or 0 otherwise
@@ -2720,6 +2907,18 @@ xmlValidateAttributeValue2(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
 	    xmlEntityPtr ent;
 
 	    ent = xmlGetDocEntity(doc, value);
+	    if ((ent == NULL) && (doc->standalone == 1)) {
+		doc->standalone = 0;
+		ent = xmlGetDocEntity(doc, value);
+		if (ent != NULL) {
+		    VERROR(ctxt->userData, 
+"standalone problem: attribute %s reference entity \"%s\" in external subset\n",
+			   name, value);
+		    /* WAIT to get answer from the Core WG on this 
+		    ret = 0;
+		     */
+		}
+	    } 
 	    if (ent == NULL) {
 		VERROR(ctxt->userData, 
    "ENTITY attribute %s reference an unknown entity \"%s\"\n",
@@ -2786,11 +2985,99 @@ xmlValidateAttributeValue2(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
 }
 
 /**
+ * xmlValidCtxtNormalizeAttributeValue:
+ * @ctxt: the validation context
+ * @doc:  the document
+ * @elem:  the parent
+ * @name:  the attribute name
+ * @value:  the attribute value
+ * @ctxt:  the validation context or NULL
+ *
+ * Does the validation related extra step of the normalization of attribute
+ * values:
+ *
+ * If the declared value is not CDATA, then the XML processor must further
+ * process the normalized attribute value by discarding any leading and
+ * trailing space (#x20) characters, and by replacing sequences of space
+ * (#x20) characters by single space (#x20) character.
+ *
+ * Also  check VC: Standalone Document Declaration in P32, and update
+ *  ctxt->valid accordingly
+ *
+ * returns a new normalized string if normalization is needed, NULL otherwise
+ *      the caller must free the returned value.
+ */
+
+xmlChar *
+xmlValidCtxtNormalizeAttributeValue(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
+	     xmlNodePtr elem, const xmlChar *name, const xmlChar *value) {
+    xmlChar *ret, *dst;
+    const xmlChar *src;
+    xmlAttributePtr attrDecl = NULL;
+    int extsubset = 0;
+
+    if (doc == NULL) return(NULL);
+    if (elem == NULL) return(NULL);
+    if (name == NULL) return(NULL);
+    if (value == NULL) return(NULL);
+
+    if ((elem->ns != NULL) && (elem->ns->prefix != NULL)) {
+	xmlChar qname[500];
+	snprintf((char *) qname, sizeof(qname), "%s:%s",
+		 elem->ns->prefix, elem->name);
+        qname[sizeof(qname) - 1] = 0;
+	attrDecl = xmlGetDtdAttrDesc(doc->intSubset, qname, name);
+	if ((attrDecl == NULL) && (doc->extSubset != NULL)) {
+	    attrDecl = xmlGetDtdAttrDesc(doc->extSubset, qname, name);
+	    if (attrDecl != NULL)
+		extsubset = 1;
+	}
+    }
+    if ((attrDecl == NULL) && (doc->intSubset != NULL))
+	attrDecl = xmlGetDtdAttrDesc(doc->intSubset, elem->name, name);
+    if ((attrDecl == NULL) && (doc->extSubset != NULL)) {
+	attrDecl = xmlGetDtdAttrDesc(doc->extSubset, elem->name, name);
+	if (attrDecl != NULL)
+	    extsubset = 1;
+    }
+
+    if (attrDecl == NULL)
+	return(NULL);
+    if (attrDecl->atype == XML_ATTRIBUTE_CDATA)
+	return(NULL);
+
+    ret = xmlStrdup(value);
+    if (ret == NULL)
+	return(NULL);
+    src = value;
+    dst = ret;
+    while (*src == 0x20) src++;
+    while (*src != 0) {
+	if (*src == 0x20) {
+	    while (*src == 0x20) src++;
+	    if (*src != 0)
+		*dst++ = 0x20;
+	} else {
+	    *dst++ = *src++;
+	}
+    }
+    *dst = 0;
+    if ((doc->standalone) && (extsubset == 1) && (!xmlStrEqual(value, ret))) {
+	VERROR(ctxt->userData, 
+"standalone: %s on %s value had to be normalized based on external subset declaration\n",
+	       name, elem->name);
+	ctxt->valid = 0;
+    }
+    return(ret);
+}
+
+/**
  * xmlValidNormalizeAttributeValue:
  * @doc:  the document
  * @elem:  the parent
  * @name:  the attribute name
  * @value:  the attribute value
+ * @ctxt:  the validation context or NULL
  *
  * Does the validation related extra step of the normalization of attribute
  * values:
@@ -2911,7 +3198,7 @@ xmlValidateAttributeDecl(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
     if (attr->atype == XML_ATTRIBUTE_ID) {
         int nbId;
 
-	/* the trick is taht we parse DtD as their own internal subset */
+	/* the trick is that we parse DtD as their own internal subset */
         xmlElementPtr elem = xmlGetDtdElementDesc(doc->intSubset,
 	                                          attr->elem);
 	if (elem != NULL) {
@@ -3034,6 +3321,8 @@ xmlValidateElementDecl(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
     /* VC: Unique Element Type Declaration */
     tst = xmlGetDtdElementDesc(doc->intSubset, elem->name);
     if ((tst != NULL ) && (tst != elem) &&
+	((tst->prefix == elem->prefix) ||
+	 (xmlStrEqual(tst->prefix, elem->prefix))) &&
 	(tst->etype != XML_ELEMENT_TYPE_UNDEFINED)) {
 	VERROR(ctxt->userData, "Redefinition of element %s\n",
 	       elem->name);
@@ -3041,12 +3330,13 @@ xmlValidateElementDecl(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
     }
     tst = xmlGetDtdElementDesc(doc->extSubset, elem->name);
     if ((tst != NULL ) && (tst != elem) &&
+	((tst->prefix == elem->prefix) ||
+	 (xmlStrEqual(tst->prefix, elem->prefix))) &&
 	(tst->etype != XML_ELEMENT_TYPE_UNDEFINED)) {
 	VERROR(ctxt->userData, "Redefinition of element %s\n",
 	       elem->name);
 	ret = 0;
     }
-
     /* One ID per Element Type
      * already done when registering the attribute
     if (xmlScanIDAttributeDecl(ctxt, elem) > 1) {
@@ -3148,7 +3438,7 @@ xmlValidateOneAttribute(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
     if (attrDecl->def == XML_ATTRIBUTE_FIXED) {
 	if (!xmlStrEqual(value, attrDecl->defaultValue)) {
 	    VERROR(ctxt->userData, 
-	   "Value for attribute %s on %s is differnt from default \"%s\"\n",
+	   "Value for attribute %s on %s is different from default \"%s\"\n",
 		   attr->name, elem->name, attrDecl->defaultValue);
 	    ret = 0;
 	}
@@ -3268,14 +3558,15 @@ xmlValidateSkipIgnorable(xmlNodePtr child) {
  *
  * Try to validate the content model of an element internal function
  *
- * returns 1 if valid or 0 ,-1 in case of error, and -2 if an entity
- *           reference is found.
+ * returns 1 if valid or 0 ,-1 in case of error, -2 if an entity
+ *           reference is found and -3 if the validation succeeded but
+ *           the content model is not determinist.
  */
 
 static int
 xmlValidateElementType(xmlValidCtxtPtr ctxt) {
     int ret = -1;
-    int consumed = 1;
+    int determinist = 1;
 
     NODE = xmlValidateSkipIgnorable(NODE);
     if ((NODE == NULL) && (CONT == NULL))
@@ -3286,7 +3577,7 @@ xmlValidateElementType(xmlValidCtxtPtr ctxt) {
 	return(1);
     }
     if (CONT == NULL) return(-1);
-    if (NODE->type == XML_ENTITY_REF_NODE)
+    if ((NODE != NULL) && (NODE->type == XML_ENTITY_REF_NODE))
 	return(-2);
 
     /*
@@ -3299,10 +3590,9 @@ cont:
      * epsilon transition, go directly to the analysis phase
      */
     if (STATE == ROLLBACK_PARENT) {
-	DEBUG_VALID_MSG("restaured parent branch");
+	DEBUG_VALID_MSG("restored parent branch");
 	DEBUG_VALID_STATE(NODE, CONT)
 	ret = 1;
-	consumed = 0;
 	goto analyze;
     }
 
@@ -3311,11 +3601,12 @@ cont:
      * we may have to save a backup state here. This is the equivalent
      * of handling epsilon transition in NFAs.
      */
-    if ((consumed) && (CONT != NULL) &&
-	(CONT->parent != NULL) &&
+    if ((CONT != NULL) &&
+	((CONT->parent == NULL) ||
+	 (CONT->parent->type != XML_ELEMENT_CONTENT_OR)) &&
 	((CONT->ocur == XML_ELEMENT_CONTENT_MULT) ||
 	 (CONT->ocur == XML_ELEMENT_CONTENT_OPT) ||
-	 ((CONT->ocur == XML_ELEMENT_CONTENT_PLUS) && (OCCURENCE)))) {
+	 ((CONT->ocur == XML_ELEMENT_CONTENT_PLUS) && (OCCURRENCE)))) {
 	DEBUG_VALID_MSG("saving parent branch");
 	vstateVPush(ctxt, CONT, NODE, DEPTH, OCCURS, ROLLBACK_PARENT);
     }
@@ -3345,8 +3636,8 @@ cont:
 			return(-2);
 		} while ((NODE != NULL) &&
 			 ((NODE->type != XML_ELEMENT_NODE) &&
-			  (NODE->type != XML_TEXT_NODE)));
-		consumed = 1;
+			  (NODE->type != XML_TEXT_NODE) &&
+			  (NODE->type != XML_CDATA_SECTION_NODE)));
                 ret = 1;
 		break;
 	    } else {
@@ -3361,7 +3652,17 @@ cont:
 		ret = 0;
 		break;
 	    }
-	    ret = (xmlStrEqual(NODE->name, CONT->name));
+	    ret = ((NODE->type == XML_ELEMENT_NODE) &&
+		   (xmlStrEqual(NODE->name, CONT->name)));
+	    if (ret == 1) {
+		if ((NODE->ns == NULL) || (NODE->ns->prefix == NULL)) {
+		    ret = (CONT->prefix == NULL);
+		} else if (CONT->prefix == NULL) {
+		    ret = 0;
+		} else {
+		    ret = xmlStrEqual(NODE->ns->prefix, CONT->prefix);
+		}
+	    }
 	    if (ret == 1) {
 		DEBUG_VALID_MSG("element found, skip to next");
 		/*
@@ -3376,8 +3677,8 @@ cont:
 			return(-2);
 		} while ((NODE != NULL) &&
 			 ((NODE->type != XML_ELEMENT_NODE) &&
-			  (NODE->type != XML_TEXT_NODE)));
-		consumed = 1;
+			  (NODE->type != XML_TEXT_NODE) &&
+			  (NODE->type != XML_CDATA_SECTION_NODE)));
 	    } else {
 		DEBUG_VALID_MSG("element failed");
 		ret = 0;
@@ -3395,18 +3696,56 @@ cont:
 		    CONT = CONT->c2;
 		    goto cont;
 		}
+		if ((NODE->ns == NULL) || (NODE->ns->prefix == NULL)) {
+		    ret = (CONT->c1->prefix == NULL);
+		} else if (CONT->c1->prefix == NULL) {
+		    ret = 0;
+		} else {
+		    ret = xmlStrEqual(NODE->ns->prefix, CONT->c1->prefix);
+		}
+		if (ret == 0) {
+		    DEPTH++;
+		    CONT = CONT->c2;
+		    goto cont;
+		}
 	    }
 
 	    /*
 	     * save the second branch 'or' branch
 	     */
 	    DEBUG_VALID_MSG("saving 'or' branch");
-	    vstateVPush(ctxt, CONT->c2, NODE, DEPTH + 1, OCCURS, ROLLBACK_OR);
+	    vstateVPush(ctxt, CONT->c2, NODE, (unsigned char)(DEPTH + 1),
+		        OCCURS, ROLLBACK_OR);
 
 	    DEPTH++;
 	    CONT = CONT->c1;
 	    goto cont;
 	case XML_ELEMENT_CONTENT_SEQ:
+	    /*
+	     * Small optimization.
+	     */
+	    if ((CONT->c1->type == XML_ELEMENT_CONTENT_ELEMENT) &&
+		((CONT->c1->ocur == XML_ELEMENT_CONTENT_OPT) ||
+		 (CONT->c1->ocur == XML_ELEMENT_CONTENT_MULT))) {
+		if ((NODE == NULL) ||
+		    (!xmlStrEqual(NODE->name, CONT->c1->name))) {
+		    DEPTH++;
+		    CONT = CONT->c2;
+		    goto cont;
+		}
+		if ((NODE->ns == NULL) || (NODE->ns->prefix == NULL)) {
+		    ret = (CONT->c1->prefix == NULL);
+		} else if (CONT->c1->prefix == NULL) {
+		    ret = 0;
+		} else {
+		    ret = xmlStrEqual(NODE->ns->prefix, CONT->c1->prefix);
+		}
+		if (ret == 0) {
+		    DEPTH++;
+		    CONT = CONT->c2;
+		    goto cont;
+		}
+	    }
 	    DEPTH++;
 	    CONT = CONT->c1;
 	    goto cont;
@@ -3422,27 +3761,33 @@ cont:
 analyze:
     while (CONT != NULL) {
 	/*
-	 * First do the analysis depending on the occurence model at
+	 * First do the analysis depending on the occurrence model at
 	 * this level.
 	 */
 	if (ret == 0) {
 	    switch (CONT->ocur) {
+		xmlNodePtr cur;
+
 		case XML_ELEMENT_CONTENT_ONCE:
+		    cur = ctxt->vstate->node;
 		    DEBUG_VALID_MSG("Once branch failed, rollback");
 		    if (vstateVPop(ctxt) < 0 ) {
 			DEBUG_VALID_MSG("exhaustion, failed");
 			return(0);
 		    }
-		    consumed = 0;
+		    if (cur != ctxt->vstate->node)
+			determinist = -3;
 		    goto cont;
 		case XML_ELEMENT_CONTENT_PLUS:
-		    if (OCCURENCE == 0) {
+		    if (OCCURRENCE == 0) {
+			cur = ctxt->vstate->node;
 			DEBUG_VALID_MSG("Plus branch failed, rollback");
 			if (vstateVPop(ctxt) < 0 ) {
 			    DEBUG_VALID_MSG("exhaustion, failed");
 			    return(0);
 			}
-			consumed = 0;
+			if (cur != ctxt->vstate->node)
+			    determinist = -3;
 			goto cont;
 		    }
 		    DEBUG_VALID_MSG("Plus branch found");
@@ -3450,7 +3795,7 @@ analyze:
 		    break;
 		case XML_ELEMENT_CONTENT_MULT:
 #ifdef DEBUG_VALID_ALGO
-		    if (OCCURENCE == 0) {
+		    if (OCCURRENCE == 0) {
 			DEBUG_VALID_MSG("Mult branch failed");
 		    } else {
 			DEBUG_VALID_MSG("Mult branch found");
@@ -3485,7 +3830,7 @@ analyze:
 			break;
 		    }
 		    DEBUG_VALID_MSG("Plus branch succeeded, continuing");
-		    SET_OCCURENCE;
+		    SET_OCCURRENCE;
 		    goto cont;
 		case XML_ELEMENT_CONTENT_MULT:
 		    if (STATE == ROLLBACK_PARENT) {
@@ -3499,7 +3844,7 @@ analyze:
 			break;
 		    }
 		    DEBUG_VALID_MSG("Mult branch succeeded, continuing");
-		    SET_OCCURENCE;
+		    /* SET_OCCURRENCE; */
 		    goto cont;
 	    }
 	}
@@ -3508,7 +3853,7 @@ analyze:
 	/*
 	 * Then act accordingly at the parent level
 	 */
-	RESET_OCCURENCE;
+	RESET_OCCURRENCE;
 	if (CONT->parent == NULL)
 	    break;
 
@@ -3547,29 +3892,38 @@ analyze:
 	}
     }
     if (NODE != NULL) {
+	xmlNodePtr cur;
+
+	cur = ctxt->vstate->node;
 	DEBUG_VALID_MSG("Failed, remaining input, rollback");
 	if (vstateVPop(ctxt) < 0 ) {
 	    DEBUG_VALID_MSG("exhaustion, failed");
 	    return(0);
 	}
-	consumed = 0;
+	if (cur != ctxt->vstate->node)
+	    determinist = -3;
 	goto cont;
     }
     if (ret == 0) {
+	xmlNodePtr cur;
+
+	cur = ctxt->vstate->node;
 	DEBUG_VALID_MSG("Failure, rollback");
 	if (vstateVPop(ctxt) < 0 ) {
 	    DEBUG_VALID_MSG("exhaustion, failed");
 	    return(0);
 	}
-	consumed = 0;
+	if (cur != ctxt->vstate->node)
+	    determinist = -3;
 	goto cont;
     }
-    return(1);
+    return(determinist);
 }
 
 /**
- * xmlSprintfElements:
+ * xmlSnprintfElements:
  * @buf:  an output buffer
+ * @size:  the size of the buffer
  * @content:  An element
  * @glob: 1 if one must print the englobing parenthesis, 0 otherwise
  *
@@ -3577,42 +3931,63 @@ analyze:
  * Intended just for the debug routine
  */
 static void
-xmlSprintfElements(char *buf, xmlNodePtr node, int glob) {
+xmlSnprintfElements(char *buf, int size, xmlNodePtr node, int glob) {
     xmlNodePtr cur;
+    int len;
 
     if (node == NULL) return;
     if (glob) strcat(buf, "(");
     cur = node;
     while (cur != NULL) {
+	len = strlen(buf);
+	if (size - len < 50) {
+	    if ((size - len > 4) && (buf[len - 1] != '.'))
+		strcat(buf, " ...");
+	    return;
+	}
         switch (cur->type) {
             case XML_ELEMENT_NODE:
-	         strcat(buf, (char *) cur->name);
-		 if (cur->next != NULL)
-		     strcat(buf, " ");
-		 break;
+		if ((cur->ns != NULL) && (cur->ns->prefix != NULL)) {
+		    if (size - len < xmlStrlen(cur->ns->prefix) + 10) {
+			if ((size - len > 4) && (buf[len - 1] != '.'))
+			    strcat(buf, " ...");
+			return;
+		    }
+		    strcat(buf, (char *) cur->ns->prefix);
+		    strcat(buf, ":");
+		}
+                if (size - len < xmlStrlen(cur->name) + 10) {
+		    if ((size - len > 4) && (buf[len - 1] != '.'))
+			strcat(buf, " ...");
+		    return;
+		}
+	        strcat(buf, (char *) cur->name);
+		if (cur->next != NULL)
+		    strcat(buf, " ");
+		break;
             case XML_TEXT_NODE:
-		 if (xmlIsBlankNode(cur))
-		     break;
+		if (xmlIsBlankNode(cur))
+		    break;
             case XML_CDATA_SECTION_NODE:
             case XML_ENTITY_REF_NODE:
-	         strcat(buf, "CDATA");
-		 if (cur->next != NULL)
-		     strcat(buf, " ");
-		 break;
+	        strcat(buf, "CDATA");
+		if (cur->next != NULL)
+		    strcat(buf, " ");
+		break;
             case XML_ATTRIBUTE_NODE:
             case XML_DOCUMENT_NODE:
-#ifdef LIBXML_SGML_ENABLED
-	    case XML_SGML_DOCUMENT_NODE:
+#ifdef LIBXML_DOCB_ENABLED
+	    case XML_DOCB_DOCUMENT_NODE:
 #endif
 	    case XML_HTML_DOCUMENT_NODE:
             case XML_DOCUMENT_TYPE_NODE:
             case XML_DOCUMENT_FRAG_NODE:
             case XML_NOTATION_NODE:
 	    case XML_NAMESPACE_DECL:
-	         strcat(buf, "???");
-		 if (cur->next != NULL)
-		     strcat(buf, " ");
-		 break;
+	        strcat(buf, "???");
+		if (cur->next != NULL)
+		    strcat(buf, " ");
+		break;
             case XML_ENTITY_NODE:
             case XML_PI_NODE:
             case XML_DTD_NODE:
@@ -3622,7 +3997,7 @@ xmlSprintfElements(char *buf, xmlNodePtr node, int glob) {
 	    case XML_ENTITY_DECL:
 	    case XML_XINCLUDE_START:
 	    case XML_XINCLUDE_END:
-		 break;
+		break;
 	}
 	cur = cur->next;
     }
@@ -3633,7 +4008,7 @@ xmlSprintfElements(char *buf, xmlNodePtr node, int glob) {
  * xmlValidateElementContent:
  * @ctxt:  the validation context
  * @child:  the child list
- * @cont:  pointer to the content declaration
+ * @elemDecl:  pointer to the element declaration
  * @warn:  emit the error message
  *
  * Try to validate the content model of an element
@@ -3643,9 +4018,16 @@ xmlSprintfElements(char *buf, xmlNodePtr node, int glob) {
 
 static int
 xmlValidateElementContent(xmlValidCtxtPtr ctxt, xmlNodePtr child,
-		   xmlElementContentPtr cont, int warn) {
+       xmlElementPtr elemDecl, int warn) {
     int ret;
     xmlNodePtr repl = NULL, last = NULL, cur, tmp;
+    xmlElementContentPtr cont;
+    const xmlChar *name;
+
+    if (elemDecl == NULL)
+	return(-1);
+    cont = elemDecl->content;
+    name = elemDecl->name;
 
     /*
      * Allocate the stack
@@ -3661,6 +4043,9 @@ xmlValidateElementContent(xmlValidCtxtPtr ctxt, xmlNodePtr child,
     /*
      * The first entry in the stack is reserved to the current state
      */
+    ctxt->nodeMax = 0;
+    ctxt->nodeNr = 0;
+    ctxt->nodeTab = NULL;
     ctxt->vstate = &ctxt->vstateTab[0];
     ctxt->vstateNr = 1;
     CONT = cont;
@@ -3669,7 +4054,10 @@ xmlValidateElementContent(xmlValidCtxtPtr ctxt, xmlNodePtr child,
     OCCURS = 0;
     STATE = 0;
     ret = xmlValidateElementType(ctxt);
-    if (ret == -2) {
+    if ((ret == -3) && (warn)) {
+	VWARNING(ctxt->userData,
+	   "Element %s content model is ambiguous\n", name);
+    } else if (ret == -2) {
 	/*
 	 * An entities reference appeared at this level.
 	 * Buid a minimal representation of this node content
@@ -3690,9 +4078,13 @@ xmlValidateElementContent(xmlValidCtxtPtr ctxt, xmlNodePtr child,
 			cur = cur->children->children;
 			continue;
 		    }
+		    break;
 		case XML_TEXT_NODE:
 		    if (xmlIsBlankNode(cur))
 			break;
+		    /* no break on purpose */
+		case XML_CDATA_SECTION_NODE:
+		    /* no break on purpose */
 		case XML_ELEMENT_NODE:
 		    /*
 		     * Allocate a new node and minimally fills in
@@ -3710,11 +4102,19 @@ xmlValidateElementContent(xmlValidCtxtPtr ctxt, xmlNodePtr child,
 		    tmp->name = cur->name;
 		    tmp->ns = cur->ns;
 		    tmp->next = NULL;
+		    tmp->content = NULL;
 		    if (repl == NULL)
 			repl = last = tmp;
 		    else {
 			last->next = tmp;
 			last = tmp;
+		    }
+		    if (cur->type == XML_CDATA_SECTION_NODE) {
+			/* 
+			 * E59 spaces in CDATA does not match the
+			 * nonterminal S
+			 */
+			tmp->content = xmlStrdup(BAD_CAST "CDATA");
 		    }
 		    break;
 		default:
@@ -3744,29 +4144,42 @@ xmlValidateElementContent(xmlValidCtxtPtr ctxt, xmlNodePtr child,
 	STATE = 0;
 	ret = xmlValidateElementType(ctxt);
     }
-    if ((warn) && (ret != 1)) {
-	char expr[5000];
-	char list[5000];
+    if ((warn) && ((ret != 1) && (ret != -3))) {
+	if ((ctxt != NULL) && (ctxt->warning != NULL)) {
+	    char expr[5000];
+	    char list[5000];
 
-	expr[0] = 0;
-	xmlSprintfElementContent(expr, cont, 1);
-	list[0] = 0;
-	if (repl != NULL)
-	    xmlSprintfElements(list, repl, 1);
-	else
-	    xmlSprintfElements(list, child, 1);
+	    expr[0] = 0;
+	    xmlSnprintfElementContent(expr, 5000, cont, 1);
+	    list[0] = 0;
+	    if (repl != NULL)
+		xmlSnprintfElements(list, 5000, repl, 1);
+	    else
+		xmlSnprintfElements(list, 5000, child, 1);
 
-	if ((child->parent != NULL) && (child->parent->name != NULL)) {
-	    VERROR(ctxt->userData,
-   "Element %s content doesn't follow the Dtd\nExpecting %s, got %s\n",
-	       child->parent->name, expr, list);
+	    if (name != NULL) {
+		VERROR(ctxt->userData,
+	   "Element %s content doesn't follow the DTD\nExpecting %s, got %s\n",
+		       name, expr, list);
+	    } else {
+		VERROR(ctxt->userData,
+	   "Element content doesn't follow the DTD\nExpecting %s, got %s\n",
+		       expr, list);
+	    }
 	} else {
-	    VERROR(ctxt->userData,
-       "Element content doesn't follow the Dtd\nExpecting %s, got %s\n",
-	       expr, list);
+	    if (name != NULL) {
+		VERROR(ctxt->userData,
+		       "Element %s content doesn't follow the DTD\n",
+		       name);
+	    } else {
+		VERROR(ctxt->userData,
+		       "Element content doesn't follow the DTD\n");
+	    }
 	}
 	ret = 0;
     }
+    if (ret == -3)
+	ret = 1;
 
 
 done:
@@ -3784,6 +4197,7 @@ done:
 	ctxt->vstateTab = NULL;
     }
     ctxt->nodeMax = 0;
+    ctxt->nodeNr = 0;
     if (ctxt->nodeTab != NULL) {
 	xmlFree(ctxt->nodeTab);
 	ctxt->nodeTab = NULL;
@@ -3793,67 +4207,70 @@ done:
 }
 
 /**
- * xmlSprintfElementChilds:
- * @buf:  an output buffer
- * @content:  An element
- * @glob: 1 if one must print the englobing parenthesis, 0 otherwise
+ * xmlValidateCdataElement:
+ * @ctxt:  the validation context
+ * @doc:  a document instance
+ * @elem:  an element instance
  *
- * This will dump the list of childs to the buffer
- * Intended just for the debug routine
+ * Check that an element follows #CDATA
+ *
+ * returns 1 if valid or 0 otherwise
  */
-static void
-xmlSprintfElementChilds(char *buf, xmlNodePtr node, int glob) {
-    xmlNodePtr cur;
+static int
+xmlValidateOneCdataElement(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
+                           xmlNodePtr elem) {
+    int ret = 1;
+    xmlNodePtr cur, child;
 
-    if (node == NULL) return;
-    if (glob) strcat(buf, "(");
-    cur = node->children;
+    if ((ctxt == NULL) || (doc == NULL) | (elem == NULL))
+	return(0);
+
+    child = elem->children;
+
+    cur = child;
     while (cur != NULL) {
-        switch (cur->type) {
-            case XML_ELEMENT_NODE:
-	         strcat(buf, (char *) cur->name);
-		 if (cur->next != NULL)
-		     strcat(buf, " ");
-		 break;
-            case XML_TEXT_NODE:
-		 if (xmlIsBlankNode(cur))
-		     break;
-            case XML_CDATA_SECTION_NODE:
-            case XML_ENTITY_REF_NODE:
-	         strcat(buf, "CDATA");
-		 if (cur->next != NULL)
-		     strcat(buf, " ");
-		 break;
-            case XML_ATTRIBUTE_NODE:
-            case XML_DOCUMENT_NODE:
-#ifdef LIBXML_SGML_ENABLED
-	    case XML_SGML_DOCUMENT_NODE:
-#endif
-	    case XML_HTML_DOCUMENT_NODE:
-            case XML_DOCUMENT_TYPE_NODE:
-            case XML_DOCUMENT_FRAG_NODE:
-            case XML_NOTATION_NODE:
-	    case XML_NAMESPACE_DECL:
-	         strcat(buf, "???");
-		 if (cur->next != NULL)
-		     strcat(buf, " ");
-		 break;
-            case XML_ENTITY_NODE:
-            case XML_PI_NODE:
-            case XML_DTD_NODE:
-            case XML_COMMENT_NODE:
-	    case XML_ELEMENT_DECL:
-	    case XML_ATTRIBUTE_DECL:
-	    case XML_ENTITY_DECL:
-	    case XML_XINCLUDE_START:
-	    case XML_XINCLUDE_END:
-		 break;
+	switch (cur->type) {
+	    case XML_ENTITY_REF_NODE:
+		/*
+		 * Push the current node to be able to roll back
+		 * and process within the entity
+		 */
+		if ((cur->children != NULL) &&
+		    (cur->children->children != NULL)) {
+		    nodeVPush(ctxt, cur);
+		    cur = cur->children->children;
+		    continue;
+		}
+		break;
+	    case XML_COMMENT_NODE:
+	    case XML_PI_NODE:
+	    case XML_TEXT_NODE:
+	    case XML_CDATA_SECTION_NODE:
+		break;
+	    default:
+		ret = 0;
+		goto done;
 	}
+	/*
+	 * Switch to next element
+	 */
 	cur = cur->next;
+	while (cur == NULL) {
+	    cur = nodeVPop(ctxt);
+	    if (cur == NULL)
+		break;
+	    cur = cur->next;
+	}
     }
-    if (glob) strcat(buf, ")");
+done:
+    ctxt->nodeMax = 0;
+    ctxt->nodeNr = 0;
+    if (ctxt->nodeTab != NULL) {
+	xmlFree(ctxt->nodeTab);
+	ctxt->nodeTab = NULL;
+    }
+    return(ret);
 }
-
 
 /**
  * xmlValidateOneElement:
@@ -3880,14 +4297,14 @@ xmlValidateOneElement(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
     xmlElementContentPtr cont;
     xmlAttributePtr attr;
     xmlNodePtr child;
-    int ret = 1;
+    int ret = 1, tmp;
     const xmlChar *name;
+    const xmlChar *prefix = NULL;
+    int extsubset = 0;
 
     CHECK_DTD;
 
     if (elem == NULL) return(0);
-    if (elem->type == XML_TEXT_NODE) {
-    }
     switch (elem->type) {
         case XML_ATTRIBUTE_NODE:
 	    VERROR(ctxt->userData, 
@@ -3955,21 +4372,32 @@ xmlValidateOneElement(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
     /*
      * Fetch the declaration for the qualified name
      */
-    if ((elem->ns != NULL) && (elem->ns->prefix != NULL)) {
+    if ((elem->ns != NULL) && (elem->ns->prefix != NULL))
+	prefix = elem->ns->prefix;
+
+    if (prefix != NULL) {
 	elemDecl = xmlGetDtdQElementDesc(doc->intSubset,
-		                         elem->name, elem->ns->prefix);
-	if ((elemDecl == NULL) && (doc->extSubset != NULL))
+		                         elem->name, prefix);
+	if ((elemDecl == NULL) && (doc->extSubset != NULL)) {
 	    elemDecl = xmlGetDtdQElementDesc(doc->extSubset,
-		                             elem->name, elem->ns->prefix);
+		                             elem->name, prefix);
+	    if (elemDecl != NULL)
+		extsubset = 1;
+	}
     }
 
     /*
      * Fetch the declaration for the non qualified name
+     * This is "non-strict" validation should be done on the
+     * full QName but in that case being flexible makes sense.
      */
     if (elemDecl == NULL) {
 	elemDecl = xmlGetDtdElementDesc(doc->intSubset, elem->name);
-	if ((elemDecl == NULL) && (doc->extSubset != NULL))
+	if ((elemDecl == NULL) && (doc->extSubset != NULL)) {
 	    elemDecl = xmlGetDtdElementDesc(doc->extSubset, elem->name);
+	    if (elemDecl != NULL)
+		extsubset = 1;
+	}
     }
     if (elemDecl == NULL) {
 	VERROR(ctxt->userData, "No declaration for element %s\n",
@@ -3977,7 +4405,7 @@ xmlValidateOneElement(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
 	return(0);
     }
 
-    /* Check taht the element content matches the definition */
+    /* Check that the element content matches the definition */
     switch (elemDecl->etype) {
         case XML_ELEMENT_TYPE_UNDEFINED:
 	    VERROR(ctxt->userData, "No declaration for element %s\n",
@@ -3995,8 +4423,20 @@ xmlValidateOneElement(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
 	    /* I don't think anything is required then */
 	    break;
         case XML_ELEMENT_TYPE_MIXED:
-	    /* Hum, this start to get messy */
+
+	    /* simple case of declared as #PCDATA */
+	    if ((elemDecl->content != NULL) &&
+		(elemDecl->content->type == XML_ELEMENT_CONTENT_PCDATA)) {
+		ret = xmlValidateOneCdataElement(ctxt, doc, elem);
+		if (!ret) {
+		    VERROR(ctxt->userData,
+	       "Element %s was declared #PCDATA but contains non text nodes\n",
+			   elem->name);
+		}
+		break;
+	    }
 	    child = elem->children;
+	    /* Hum, this start to get messy */
 	    while (child != NULL) {
 	        if (child->type == XML_ELEMENT_NODE) {
 		    name = child->name;
@@ -4046,7 +4486,7 @@ xmlValidateOneElement(xmlValidCtxtPtr ctxt, xmlDocPtr doc,
 		    }
 		    if (cont == NULL) {
 			VERROR(ctxt->userData,
-	       "Element %s is not declared in %s list of possible childs\n",
+	       "Element %s is not declared in %s list of possible children\n",
 			       name, elem->name);
 			ret = 0;
 		    }
@@ -4056,9 +4496,35 @@ child_ok:
 	    }
 	    break;
         case XML_ELEMENT_TYPE_ELEMENT:
+	    if ((doc->standalone == 1) && (extsubset == 1)) {
+		/*
+		 * VC: Standalone Document Declaration
+		 *     - element types with element content, if white space
+		 *       occurs directly within any instance of those types.
+		 */
+		child = elem->children;
+		while (child != NULL) {
+		    if (child->type == XML_TEXT_NODE) {
+			const xmlChar *content = child->content;
+
+			while (IS_BLANK(*content))
+			    content++;
+			if (*content == 0) {
+			    VERROR(ctxt->userData,
+"standalone: %s declared in the external subset contains white spaces nodes\n",
+				   elem->name);
+			    ret = 0;
+			    break;
+			}
+		    }
+		    child =child->next;
+		}
+	    }
 	    child = elem->children;
 	    cont = elemDecl->content;
-	    ret = xmlValidateElementContent(ctxt, child, cont, 1);
+	    tmp = xmlValidateElementContent(ctxt, child, elemDecl, 1);
+	    if (tmp <= 0)
+		ret = tmp;
 	    break;
     }
 
@@ -4066,42 +4532,64 @@ child_ok:
     attr = elemDecl->attributes;
     while (attr != NULL) {
 	if (attr->def == XML_ATTRIBUTE_REQUIRED) {
-	    xmlAttrPtr attrib;
 	    int qualified = -1;
-	    
-	    attrib = elem->properties;
-	    while (attrib != NULL) {
-		if (xmlStrEqual(attrib->name, attr->name)) {
-		    if (attr->prefix != NULL) {
-		        xmlNsPtr nameSpace = attrib->ns;
 
-			if (nameSpace == NULL)
-			    nameSpace = elem->ns;
-			/*
-			 * qualified names handling is problematic, having a
-			 * different prefix should be possible but DTDs don't
-			 * allow to define the URI instead of the prefix :-(
-			 */
-			if (nameSpace == NULL) {
-			    if (qualified < 0) 
-				qualified = 0;
-	    		} else if (!xmlStrEqual(nameSpace->prefix,
-				                attr->prefix)) {
-			    if (qualified < 1) 
-				qualified = 1;
-			} else
-			    goto found;
-		    } else {
-		        /*
-			 * We should allow applications to define namespaces
-			 * for their application even if the DTD doesn't 
-			 * carry one, otherwise, basically we would always
-			 * break.
-			 */
+	    if ((attr->prefix == NULL) &&
+		(xmlStrEqual(attr->name, BAD_CAST "xmlns"))) {
+		xmlNsPtr ns;
+
+		ns = elem->nsDef;
+		while (ns != NULL) {
+		    if (ns->prefix == NULL)
 			goto found;
-		    }
+		    ns = ns->next;
 		}
-		attrib = attrib->next;
+	    } else if (xmlStrEqual(attr->prefix, BAD_CAST "xmlns")) {
+		xmlNsPtr ns;
+
+		ns = elem->nsDef;
+		while (ns != NULL) {
+		    if (xmlStrEqual(attr->name, ns->prefix))
+			goto found;
+		    ns = ns->next;
+		}
+	    } else {
+		xmlAttrPtr attrib;
+		
+		attrib = elem->properties;
+		while (attrib != NULL) {
+		    if (xmlStrEqual(attrib->name, attr->name)) {
+			if (attr->prefix != NULL) {
+			    xmlNsPtr nameSpace = attrib->ns;
+
+			    if (nameSpace == NULL)
+				nameSpace = elem->ns;
+			    /*
+			     * qualified names handling is problematic, having a
+			     * different prefix should be possible but DTDs don't
+			     * allow to define the URI instead of the prefix :-(
+			     */
+			    if (nameSpace == NULL) {
+				if (qualified < 0) 
+				    qualified = 0;
+			    } else if (!xmlStrEqual(nameSpace->prefix,
+						    attr->prefix)) {
+				if (qualified < 1) 
+				    qualified = 1;
+			    } else
+				goto found;
+			} else {
+			    /*
+			     * We should allow applications to define namespaces
+			     * for their application even if the DTD doesn't 
+			     * carry one, otherwise, basically we would always
+			     * break.
+			     */
+			    goto found;
+			}
+		    }
+		    attrib = attrib->next;
+		}
 	    }
 	    if (qualified == -1) {
 		if (attr->prefix == NULL) {
@@ -4123,6 +4611,46 @@ child_ok:
 		VWARNING(ctxt->userData,
 		   "Element %s required attribute %s:%s has different prefix\n",
 		       elem->name, attr->prefix,attr->name);
+	    }
+	} else if (attr->def == XML_ATTRIBUTE_FIXED) {
+	    /*
+	     * Special tests checking #FIXED namespace declarations
+	     * have the right value since this is not done as an
+	     * attribute checking
+	     */
+	    if ((attr->prefix == NULL) &&
+		(xmlStrEqual(attr->name, BAD_CAST "xmlns"))) {
+		xmlNsPtr ns;
+
+		ns = elem->nsDef;
+		while (ns != NULL) {
+		    if (ns->prefix == NULL) {
+			if (!xmlStrEqual(attr->defaultValue, ns->href)) {
+			    VERROR(ctxt->userData,
+   "Element %s namespace name for default namespace does not match the DTD\n",
+				   elem->name);
+			    ret = 0;
+			}
+			goto found;
+		    }
+		    ns = ns->next;
+		}
+	    } else if (xmlStrEqual(attr->prefix, BAD_CAST "xmlns")) {
+		xmlNsPtr ns;
+
+		ns = elem->nsDef;
+		while (ns != NULL) {
+		    if (xmlStrEqual(attr->name, ns->prefix)) {
+			if (!xmlStrEqual(attr->defaultValue, ns->href)) {
+			    VERROR(ctxt->userData,
+		   "Element %s namespace name for %s doesn't match the DTD\n",
+				   elem->name, ns->prefix);
+			    ret = 0;
+			}
+			goto found;
+		    }
+		    ns = ns->next;
+		}
 	    }
 	}
 found:	    
@@ -4219,6 +4747,13 @@ xmlValidateElement(xmlValidCtxtPtr ctxt, xmlDocPtr doc, xmlNodePtr elem) {
 
     CHECK_DTD;
 
+    /*
+     * Entities references have to be handled separately
+     */
+    if (elem->type == XML_ENTITY_REF_NODE) {
+	return(1);
+    }
+
     ret &= xmlValidateOneElement(ctxt, doc, elem);
     attr = elem->properties;
     while(attr != NULL) {
@@ -4298,7 +4833,7 @@ xmlValidateRef(xmlRefPtr ref, xmlValidCtxtPtr ctxt,
  * @data:  Contents of current link
  * @user:  Value supplied by the user
  *
- * Return 0 to abort the walk or 1 to continue
+ * Returns 0 to abort the walk or 1 to continue
  */
 static int
 xmlWalkValidateList(const void *data, const void *user)
@@ -4413,8 +4948,31 @@ xmlValidateDtd(xmlValidCtxtPtr ctxt, xmlDocPtr doc, xmlDtdPtr dtd) {
 }
 
 static void
+xmlValidateNotationCallback(xmlEntityPtr cur, xmlValidCtxtPtr ctxt,
+	                    const xmlChar *name ATTRIBUTE_UNUSED) {
+    if (cur == NULL)
+	return;
+    if (cur->etype == XML_EXTERNAL_GENERAL_UNPARSED_ENTITY) {
+	xmlChar *notation = cur->content;
+
+	if (notation != NULL) {
+	    int ret;
+
+	    ret = xmlValidateNotationUse(ctxt, cur->doc, notation);
+	    if (ret != 1) {
+		ctxt->valid = 0;
+	    }
+	}
+    }
+}
+
+static void
 xmlValidateAttributeCallback(xmlAttributePtr cur, xmlValidCtxtPtr ctxt,
 	                    const xmlChar *name ATTRIBUTE_UNUSED) {
+    int ret;
+    xmlDocPtr doc;
+    xmlElementPtr elem;
+
     if (cur == NULL)
 	return;
     switch (cur->atype) {
@@ -4430,17 +4988,46 @@ xmlValidateAttributeCallback(xmlAttributePtr cur, xmlValidCtxtPtr ctxt,
 	case XML_ATTRIBUTE_ENTITIES:
 	case XML_ATTRIBUTE_NOTATION:
 	    if (cur->defaultValue != NULL) {
-		ctxt->valid &= xmlValidateAttributeValue2(ctxt, ctxt->doc,
-			    cur->name, cur->atype, cur->defaultValue);
+		
+		ret = xmlValidateAttributeValue2(ctxt, ctxt->doc, cur->name,
+			                         cur->atype, cur->defaultValue);
+		if ((ret == 0) && (ctxt->valid == 1))
+		    ctxt->valid = 0;
 	    }
 	    if (cur->tree != NULL) {
 		xmlEnumerationPtr tree = cur->tree;
 		while (tree != NULL) {
-		    ctxt->valid &= xmlValidateAttributeValue2(ctxt, ctxt->doc,
+		    ret = xmlValidateAttributeValue2(ctxt, ctxt->doc,
 				    cur->name, cur->atype, tree->name);
+		    if ((ret == 0) && (ctxt->valid == 1))
+			ctxt->valid = 0;
 		    tree = tree->next;
 		}
 	    }
+    }
+    if (cur->atype == XML_ATTRIBUTE_NOTATION) {
+	doc = cur->doc;
+	if ((doc == NULL) || (cur->elem == NULL)) {
+	    VERROR(ctxt->userData, 
+		   "xmlValidateAttributeCallback(%s): internal error\n",
+		   cur->name);
+	    return;
+	}
+	elem = xmlGetDtdElementDesc(doc->intSubset, cur->elem);
+	if (elem == NULL)
+	    elem = xmlGetDtdElementDesc(doc->extSubset, cur->elem);
+	if (elem == NULL) {
+	    VERROR(ctxt->userData, 
+		   "attribute %s: could not find decl for element %s\n",
+		   cur->name, cur->elem);
+	    return;
+	}
+	if (elem->etype == XML_ELEMENT_TYPE_EMPTY) {
+	    VERROR(ctxt->userData, 
+		   "NOTATION attribute %s declared on EMPTY element %s\n",
+		   cur->name, cur->elem);
+	    ctxt->valid = 0;
+	}
     }
 }
 
@@ -4458,29 +5045,39 @@ xmlValidateAttributeCallback(xmlAttributePtr cur, xmlValidCtxtPtr ctxt,
  * - check that NOTATION type attributes default or 
  *   possible values matches one of the defined notations.
  *
- * returns 1 if valid or 0 otherwise
+ * returns 1 if valid or 0 if invalid and -1 if not well-formed
  */
 
 int
 xmlValidateDtdFinal(xmlValidCtxtPtr ctxt, xmlDocPtr doc) {
-    int ret = 1;
     xmlDtdPtr dtd;
     xmlAttributeTablePtr table;
+    xmlEntitiesTablePtr entities;
 
     if (doc == NULL) return(0);
     if ((doc->intSubset == NULL) && (doc->extSubset == NULL))
 	return(0);
     ctxt->doc = doc;
-    ctxt->valid = ret;
+    ctxt->valid = 1;
     dtd = doc->intSubset;
     if ((dtd != NULL) && (dtd->attributes != NULL)) {
 	table = (xmlAttributeTablePtr) dtd->attributes;
 	xmlHashScan(table, (xmlHashScanner) xmlValidateAttributeCallback, ctxt);
     }
+    if ((dtd != NULL) && (dtd->entities != NULL)) {
+	entities = (xmlEntitiesTablePtr) dtd->entities;
+	xmlHashScan(entities, (xmlHashScanner) xmlValidateNotationCallback,
+		    ctxt);
+    }
     dtd = doc->extSubset;
     if ((dtd != NULL) && (dtd->attributes != NULL)) {
 	table = (xmlAttributeTablePtr) dtd->attributes;
 	xmlHashScan(table, (xmlHashScanner) xmlValidateAttributeCallback, ctxt);
+    }
+    if ((dtd != NULL) && (dtd->entities != NULL)) {
+	entities = (xmlEntitiesTablePtr) dtd->entities;
+	xmlHashScan(entities, (xmlHashScanner) xmlValidateNotationCallback,
+		    ctxt);
     }
     return(ctxt->valid);
 }
@@ -4621,9 +5218,11 @@ xmlValidGetPotentialChildren(xmlElementContent *ctree, const xmlChar **list,
 int
 xmlValidGetValidElements(xmlNode *prev, xmlNode *next, const xmlChar **list,
                          int max) {
+    xmlValidCtxt vctxt;
     int nb_valid_elements = 0;
     const xmlChar *elements[256];
     int nb_elements = 0, i;
+    const xmlChar *name;
     
     xmlNode *ref_node;
     xmlNode *parent;
@@ -4635,6 +5234,8 @@ xmlValidGetValidElements(xmlNode *prev, xmlNode *next, const xmlChar **list,
     xmlNode *parent_last;
     
     xmlElement *element_desc;
+
+    memset(&vctxt, 0, sizeof (xmlValidCtxt));
 
     if (prev == NULL && next == NULL)
         return(-1);
@@ -4672,6 +5273,7 @@ xmlValidGetValidElements(xmlNode *prev, xmlNode *next, const xmlChar **list,
     test_node->parent = parent;
     test_node->prev = prev;
     test_node->next = next;
+    name = test_node->name;
     
     if (prev) prev->next = test_node;
     else parent->children = test_node;
@@ -4688,7 +5290,7 @@ xmlValidGetValidElements(xmlNode *prev, xmlNode *next, const xmlChar **list,
     
     for (i = 0;i < nb_elements;i++) {
 	test_node->name = elements[i];
-	if (xmlValidateOneElement(NULL, parent->doc, parent)) {
+	if (xmlValidateOneElement(&vctxt, parent->doc, parent)) {
 	    int j;
 
 	    for (j = 0; j < nb_valid_elements;j++)
@@ -4705,6 +5307,12 @@ xmlValidGetValidElements(xmlNode *prev, xmlNode *next, const xmlChar **list,
     if (next) next->prev = next_prev;
     parent->children = parent_childs;
     parent->last = parent_last;
-    
+
+    /*
+     * Free up the dummy node
+     */
+    test_node->name = name;
+    xmlFreeNode(test_node);
+
     return(nb_valid_elements);
 }

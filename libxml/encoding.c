@@ -13,13 +13,17 @@
  * [US-ASCII]     Coded Character Set--7-bit American Standard Code for
  *                Information Interchange, ANSI X3.4-1986.
  *
- * Original code for IsoLatin1 and UTF-16 by "Martin J. Duerst" <duerst@w3.org>
- *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
+ *
+ * UTF8 string routines from:
+ * "William M. Brack" <wbrack@mmm.com.hk>
+ *
+ * Original code for IsoLatin1 and UTF-16 by "Martin J. Duerst" <duerst@w3.org>
  */
 
+#define IN_LIBXML
 #include "libxml.h"
 
 #include <string.h>
@@ -35,15 +39,16 @@
 #include <errno.h>
 #endif
 #endif
-#include <libxml/encoding.h>
 #include <libxml/xmlmemory.h>
+#include <libxml/encoding.h>
 #ifdef LIBXML_HTML_ENABLED
 #include <libxml/HTMLparser.h>
 #endif
+#include <libxml/globals.h>
 #include <libxml/xmlerror.h>
 
-xmlCharEncodingHandlerPtr xmlUTF16LEHandler = NULL;
-xmlCharEncodingHandlerPtr xmlUTF16BEHandler = NULL;
+static xmlCharEncodingHandlerPtr xmlUTF16LEHandler = NULL;
+static xmlCharEncodingHandlerPtr xmlUTF16BEHandler = NULL;
 
 typedef struct _xmlCharEncodingAlias xmlCharEncodingAlias;
 typedef xmlCharEncodingAlias *xmlCharEncodingAliasPtr;
@@ -64,28 +69,32 @@ static int xmlCharEncodingAliasesMax = 0;
 
 static int xmlLittleEndian = 1;
 
-/*
- * From rfc2044: encoding of the Unicode values on UTF-8:
- *
- * UCS-4 range (hex.)           UTF-8 octet sequence (binary)
- * 0000 0000-0000 007F   0xxxxxxx
- * 0000 0080-0000 07FF   110xxxxx 10xxxxxx
- * 0000 0800-0000 FFFF   1110xxxx 10xxxxxx 10xxxxxx 
- *
- * I hope we won't use values > 0xFFFF anytime soon !
- */
+/************************************************************************
+ *									*
+ *			Generic UTF8 handling routines			*
+ *									*
+ * From rfc2044: encoding of the Unicode values on UTF-8:		*
+ *									*
+ * UCS-4 range (hex.)           UTF-8 octet sequence (binary)		*
+ * 0000 0000-0000 007F   0xxxxxxx					*
+ * 0000 0080-0000 07FF   110xxxxx 10xxxxxx				*
+ * 0000 0800-0000 FFFF   1110xxxx 10xxxxxx 10xxxxxx 			*
+ *									*
+ * I hope we won't use values > 0xFFFF anytime soon !			*
+ *									*
+ ************************************************************************/
 
 /**
  * xmlUTF8Strlen:
  * @utf:  a sequence of UTF-8 encoded bytes
  *
- * compute the lenght of an UTF8 string, it doesn't do a full UTF8
+ * compute the length of an UTF8 string, it doesn't do a full UTF8
  * checking of the content of the string.
  *
  * Returns the number of characters in the string or -1 in case of error
  */
 int
-xmlUTF8Strlen(const unsigned char *utf) {
+xmlUTF8Strlen(const xmlChar *utf) {
     int ret = 0;
 
     if (utf == NULL)
@@ -191,7 +200,7 @@ error:
  * null-terminated. This function is not super-strict, as it will
  * allow longer utf-8 sequences than necessary. Note that Java is
  * capable of producing these sequences if provoked. Also note, this
- * routine checks for the 4-byte maxiumum size, but does not check for
+ * routine checks for the 4-byte maximum size, but does not check for
  * 0x10ffff maximum value.
  *
  * Return value: true if @utf is valid.
@@ -228,6 +237,177 @@ xmlCheckUTF8(const unsigned char *utf)
 }
 
 /**
+ * xmlUTF8Strsize:
+ * @utf:  a sequence of UTF-8 encoded bytes
+ * @len:  the number of characters in the array
+ *
+ * storage size of an UTF8 string
+ *
+ * Returns the storage size of
+ * the first 'len' characters of ARRAY
+ *
+ */
+
+int
+xmlUTF8Strsize(const xmlChar *utf, int len) {
+    const xmlChar	*ptr=utf;
+    xmlChar	ch;
+
+    if (len <= 0)
+	return(0);
+
+    while ( len-- > 0) {
+	if ( !*ptr )
+	    break;
+	if ( (ch = *ptr++) & 0x80)
+	    while ( (ch<<=1) & 0x80 )
+		ptr++;
+    }
+    return (ptr - utf);
+}
+
+
+/**
+ * xmlUTF8Strndup:
+ * @utf:  the input UTF8 *
+ * @len:  the len of @utf (in chars)
+ *
+ * a strndup for array of UTF8's
+ *
+ * Returns a new UTF8 * or NULL
+ */
+xmlChar *
+xmlUTF8Strndup(const xmlChar *utf, int len) {
+    xmlChar *ret;
+    int i;
+    
+    if ((utf == NULL) || (len < 0)) return(NULL);
+    i = xmlUTF8Strsize(utf, len);
+    ret = (xmlChar *) xmlMalloc((i + 1) * sizeof(xmlChar));
+    if (ret == NULL) {
+        xmlGenericError(xmlGenericErrorContext,
+		"malloc of %ld byte failed\n",
+	        (len + 1) * (long)sizeof(xmlChar));
+        return(NULL);
+    }
+    memcpy(ret, utf, i * sizeof(xmlChar));
+    ret[i] = 0;
+    return(ret);
+}
+
+/**
+ * xmlUTF8Strpos:
+ * @utf:  the input UTF8 *
+ * @pos:  the position of the desired UTF8 char (in chars)
+ *
+ * a function to provide the equivalent of fetching a
+ * character from a string array
+ *
+ * Returns a pointer to the UTF8 character or NULL
+ */
+xmlChar *
+xmlUTF8Strpos(const xmlChar *utf, int pos) {
+    xmlChar ch;
+
+    if (utf == NULL) return(NULL);
+    if ( (pos < 0) || (pos >= xmlUTF8Strlen(utf)) )
+	return(NULL);
+    while (pos--) {
+	if ((ch=*utf++) == 0) return(NULL);
+	if ( ch & 0x80 ) {
+	    /* if not simple ascii, verify proper format */
+	    if ( (ch & 0xc0) != 0xc0 )
+		return(NULL);
+	    /* then skip over remaining bytes for this char */
+	    while ( (ch <<= 1) & 0x80 )
+		if ( (*utf++ & 0xc0) != 0x80 )
+		    return(NULL);
+	}
+    }
+    return((xmlChar *)utf);
+}
+
+/**
+ * xmlUTF8Strloc:
+ * @utf:  the input UTF8 *
+ * @utfchar:  the UTF8 character to be found
+ *
+ * a function to provide relative location of a UTF8 char
+ *
+ * Returns the relative character position of the desired char
+ * or -1 if not found
+ */
+int
+xmlUTF8Strloc(const xmlChar *utf, const xmlChar *utfchar) {
+    int i, size;
+    xmlChar ch;
+
+    if (utf==NULL || utfchar==NULL) return -1;
+    size = xmlUTF8Strsize(utfchar, 1);
+	for(i=0; (ch=*utf) != 0; i++) {
+	    if (xmlStrncmp(utf, utfchar, size)==0)
+		return(i);
+	    utf++;
+	    if ( ch & 0x80 ) {
+		/* if not simple ascii, verify proper format */
+		if ( (ch & 0xc0) != 0xc0 )
+		    return(-1);
+		/* then skip over remaining bytes for this char */
+		while ( (ch <<= 1) & 0x80 )
+		    if ( (*utf++ & 0xc0) != 0x80 )
+			return(-1);
+	    }
+	}
+
+    return(-1);
+}
+/**
+ * xmlUTF8Strsub:
+ * @utf:  a sequence of UTF-8 encoded bytes
+ * @start: relative pos of first char
+ * @len:   total number to copy
+ *
+ * Note:  positions are given in units of UTF-8 chars
+ *
+ * Returns a pointer to a newly created string
+ * or NULL if any problem
+ */
+
+xmlChar *
+xmlUTF8Strsub(const xmlChar *utf, int start, int len) {
+    int	    i;
+    xmlChar ch;
+
+    if (utf == NULL) return(NULL);
+    if (start < 0) return(NULL);
+    if (len < 0) return(NULL);
+
+    /*
+     * Skip over any leading chars
+     */
+    for (i = 0;i < start;i++) {
+	if ((ch=*utf++) == 0) return(NULL);
+	if ( ch & 0x80 ) {
+	    /* if not simple ascii, verify proper format */
+	    if ( (ch & 0xc0) != 0xc0 )
+		return(NULL);
+	    /* then skip over remaining bytes for this char */
+	    while ( (ch <<= 1) & 0x80 )
+		if ( (*utf++ & 0xc0) != 0x80 )
+		    return(NULL);
+	}
+    }
+
+    return(xmlUTF8Strndup(utf, len));
+}
+
+/************************************************************************
+ *									*
+ *		Conversions To/From UTF8 encoding			*
+ *									*
+ ************************************************************************/
+
+/**
  * asciiToUTF8:
  * @out:  a pointer to an array of bytes to store the result
  * @outlen:  the length of @out
@@ -238,7 +418,7 @@ xmlCheckUTF8(const unsigned char *utf)
  * block of chars out.
  * Returns 0 if success, or -1 otherwise
  * The value of @inlen after return is the number of octets consumed
- *     as the return value is positive, else unpredictiable.
+ *     as the return value is positive, else unpredictable.
  * The value of @outlen after return is the number of ocetes consumed.
  */
 static int
@@ -290,7 +470,7 @@ asciiToUTF8(unsigned char* out, int *outlen,
  *
  * Returns 0 if success, -2 if the transcoding fails, or -1 otherwise
  * The value of @inlen after return is the number of octets consumed
- *     as the return value is positive, else unpredictiable.
+ *     as the return value is positive, else unpredictable.
  * The value of @outlen after return is the number of ocetes consumed.
  */
 static int
@@ -372,7 +552,7 @@ UTF8Toascii(unsigned char* out, int *outlen,
  * block of chars out.
  * Returns 0 if success, or -1 otherwise
  * The value of @inlen after return is the number of octets consumed
- *     as the return value is positive, else unpredictiable.
+ *     as the return value is positive, else unpredictable.
  * The value of @outlen after return is the number of ocetes consumed.
  */
 int
@@ -384,24 +564,29 @@ isolat1ToUTF8(unsigned char* out, int *outlen,
     unsigned char* outend = out + *outlen;
     const unsigned char* inend;
     unsigned int c;
-    int bits;
 
     inend = in + (*inlen);
-    while ((in < inend) && (out - outstart + 5 < *outlen)) {
-	c= *in++;
+    while (in < inend) {
+	c = *in++;
 
-	/* assertion: c is a single UTF-4 value */
         if (out >= outend)
 	    break;
-        if      (c <    0x80) {  *out++=  c;                bits= -6; }
-        else                  {  *out++= ((c >>  6) & 0x1F) | 0xC0;  bits=  0; }
- 
-        for ( ; bits >= 0; bits-= 6) {
-            if (out >= outend)
-	        break;
-            *out++= ((c >> bits) & 0x3F) | 0x80;
+
+        if (c < 0x80) {
+	    *out++ =  c;
+	    processed++;
+	    continue;
+	} else {
+	    /*
+	     * make sure there is 2 chars left in advance
+	     */
+            if (out + 1 >= outend) {
+		break;
+	    }
+	    *out++= ((c >>  6) & 0x1F) | 0xC0;
+            *out++= (c & 0x3F) | 0x80;
+	    processed++;
         }
-	processed = (const unsigned char*) in;
     }
     *outlen = out - outstart;
     *inlen = processed - base;
@@ -420,7 +605,7 @@ isolat1ToUTF8(unsigned char* out, int *outlen,
  *
  * Returns 0 if success, -2 if the transcoding fails, or -1 otherwise
  * The value of @inlen after return is the number of octets consumed
- *     as the return value is positive, else unpredictiable.
+ *     as the return value is positive, else unpredictable.
  * The value of @outlen after return is the number of ocetes consumed.
  */
 int
@@ -504,14 +689,14 @@ UTF8Toisolat1(unsigned char* out, int *outlen,
  * @inlenb:  the length of @in in UTF-16LE chars
  *
  * Take a block of UTF-16LE ushorts in and try to convert it to an UTF-8
- * block of chars out. This function assume the endian properity
+ * block of chars out. This function assume the endian property
  * is the same between the native type of this machine and the
  * inputed one.
  *
  * Returns the number of byte written, or -1 by lack of space, or -2
  *     if the transcoding fails (for *in is not valid utf16 string)
  *     The value of *inlen after return is the number of octets consumed
- *     as the return value is positive, else unpredictiable.
+ *     as the return value is positive, else unpredictable.
  */
 static int
 UTF16LEToUTF8(unsigned char* out, int *outlen,
@@ -711,14 +896,14 @@ UTF8ToUTF16LE(unsigned char* outb, int *outlen,
  * @inlenb:  the length of @in in UTF-16 chars
  *
  * Take a block of UTF-16 ushorts in and try to convert it to an UTF-8
- * block of chars out. This function assume the endian properity
+ * block of chars out. This function assume the endian property
  * is the same between the native type of this machine and the
  * inputed one.
  *
  * Returns the number of byte written, or -1 by lack of space, or -2
  *     if the transcoding fails (for *in is not valid utf16 string)
  * The value of *inlen after return is the number of octets consumed
- *     as the return value is positive, else unpredictiable.
+ *     as the return value is positive, else unpredictable.
  */
 static int
 UTF16BEToUTF8(unsigned char* out, int *outlen,
@@ -911,6 +1096,12 @@ UTF8ToUTF16BE(unsigned char* outb, int *outlen,
     return(0);
 }
 
+/************************************************************************
+ *									*
+ *		Generic encoding handling routines			*
+ *									*
+ ************************************************************************/
+
 /**
  * xmlDetectCharEncoding:
  * @in:  a pointer to the first bytes of the XML entity, must be at least
@@ -945,6 +1136,15 @@ xmlDetectCharEncoding(const unsigned char* in, int len)
 	    (in[2] == 0x78) && (in[3] == 0x6D))
 	    return(XML_CHAR_ENCODING_UTF8);
     }
+    if (len >= 3) {
+	/*
+	 * Errata on XML-1.0 June 20 2001
+	 * We now allow an UTF8 encoded BOM
+	 */
+	if ((in[0] == 0xEF) && (in[1] == 0xBB) &&
+	    (in[2] == 0xBF))
+	    return(XML_CHAR_ENCODING_UTF8);
+    }
     if (len >= 2) {
 	if ((in[0] == 0xFE) && (in[1] == 0xFF))
 	    return(XML_CHAR_ENCODING_UTF16BE);
@@ -975,6 +1175,7 @@ xmlCleanupEncodingAliases(void) {
     xmlCharEncodingAliasesNb = 0;
     xmlCharEncodingAliasesMax = 0;
     xmlFree(xmlCharEncodingAliases);
+    xmlCharEncodingAliases = NULL;
 }
 
 /**
@@ -1109,7 +1310,7 @@ xmlDelEncodingAlias(const char *alias) {
  * xmlParseCharEncoding:
  * @name:  the encoding name as parsed, in UTF-8 format (ASCII actually)
  *
- * Conpare the string to the known encoding schemes already known. Note
+ * Compare the string to the known encoding schemes already known. Note
  * that the comparison is case insensitive accordingly to the section
  * [XML] 4.3.3 Character Encoding in Entities.
  * 
@@ -1255,11 +1456,12 @@ xmlGetCharEncodingName(xmlCharEncoding enc) {
     return(NULL);
 }
 
-/****************************************************************
- *								*
- *		Char encoding handlers				*
- *								*
- ****************************************************************/
+/************************************************************************
+ *									*
+ *			Char encoding handlers				*
+ *									*
+ ************************************************************************/
+
 
 /* the size should be growable, but it's not a big deal ... */
 #define MAX_ENCODING_HANDLERS 50
@@ -1384,6 +1586,7 @@ xmlInitCharEncodingHandlers(void) {
           xmlNewCharEncodingHandler("UTF-16BE", UTF16BEToUTF8, UTF8ToUTF16BE);
     xmlNewCharEncodingHandler("ISO-8859-1", isolat1ToUTF8, UTF8Toisolat1);
     xmlNewCharEncodingHandler("ASCII", asciiToUTF8, UTF8Toascii);
+    xmlNewCharEncodingHandler("US-ASCII", asciiToUTF8, UTF8Toascii);
 #ifdef LIBXML_HTML_ENABLED
     xmlNewCharEncodingHandler("HTML", NULL, UTF8ToHtml);
 #endif
@@ -1419,7 +1622,7 @@ xmlCleanupCharEncodingHandlers(void) {
  * xmlRegisterCharEncodingHandler:
  * @handler:  the xmlCharEncodingHandlerPtr handler block
  *
- * Register the char encoding handler, surprizing, isn't it ?
+ * Register the char encoding handler, surprising, isn't it ?
  */
 void
 xmlRegisterCharEncodingHandler(xmlCharEncodingHandlerPtr handler) {
@@ -1444,7 +1647,7 @@ xmlRegisterCharEncodingHandler(xmlCharEncodingHandlerPtr handler) {
  * xmlGetCharEncodingHandler:
  * @enc:  an xmlCharEncoding value.
  *
- * Search in the registrered set the handler able to read/write that encoding.
+ * Search in the registered set the handler able to read/write that encoding.
  *
  * Returns the handler or NULL if not found
  */
@@ -1571,10 +1774,10 @@ xmlGetCharEncodingHandler(xmlCharEncoding enc) {
 }
 
 /**
- * xmlGetCharEncodingHandler:
- * @enc:  a string describing the char encoding.
+ * xmlFindCharEncodingHandler:
+ * @name:  a string describing the char encoding.
  *
- * Search in the registrered set the handler able to read/write that encoding.
+ * Search in the registered set the handler able to read/write that encoding.
  *
  * Returns the handler or NULL if not found
  */
@@ -1668,6 +1871,12 @@ xmlFindCharEncodingHandler(const char *name) {
     return(NULL);
 }
 
+/************************************************************************
+ *									*
+ *		ICONV based generic conversion functions		*
+ *									*
+ ************************************************************************/
+
 #ifdef LIBXML_ICONV_ENABLED
 /**
  * xmlIconvWrapper:
@@ -1684,50 +1893,56 @@ xmlFindCharEncodingHandler(const char *name) {
  *     -3 if there the last byte can't form a single output char.
  *     
  * The value of @inlen after return is the number of octets consumed
- *     as the return value is positive, else unpredictiable.
+ *     as the return value is positive, else unpredictable.
  * The value of @outlen after return is the number of ocetes consumed.
  */
 static int
 xmlIconvWrapper(iconv_t cd,
-	unsigned char *out, int *outlen,
-	const unsigned char *in, int *inlen) {
+    unsigned char *out, int *outlen,
+    const unsigned char *in, int *inlen) {
 
-	size_t icv_inlen = *inlen, icv_outlen = *outlen;
-	const char *icv_in = (const char *) in;
-	char *icv_out = (char *) out;
-	int ret;
+    size_t icv_inlen = *inlen, icv_outlen = *outlen;
+    const char *icv_in = (const char *) in;
+    char *icv_out = (char *) out;
+    int ret;
 
-	ret = iconv(cd, &icv_in, &icv_inlen, &icv_out, &icv_outlen);
-	if (in != NULL) {
-	    *inlen -= icv_inlen;
-	    *outlen -= icv_outlen;
-	} else {
-	    *inlen = 0;
-	    *outlen = 0;
-	}
-	if ((icv_inlen != 0) || (ret == -1)) {
+    ret = iconv(cd, (char **) &icv_in, &icv_inlen, &icv_out, &icv_outlen);
+    if (in != NULL) {
+        *inlen -= icv_inlen;
+        *outlen -= icv_outlen;
+    } else {
+        *inlen = 0;
+        *outlen = 0;
+    }
+    if ((icv_inlen != 0) || (ret == -1)) {
 #ifdef EILSEQ
-		if (errno == EILSEQ) {
-			return -2;
-		} else
+        if (errno == EILSEQ) {
+            return -2;
+        } else
 #endif
 #ifdef E2BIG
-		if (errno == E2BIG) {
-			return -1;
-		} else
+        if (errno == E2BIG) {
+            return -1;
+        } else
 #endif
 #ifdef EINVAL
-		if (errno == EINVAL) {
-			return -3;
-		} else
+        if (errno == EINVAL) {
+            return -3;
+        } else
 #endif
-		{
-			return -3;
-		}
-	}
-	return 0;
+        {
+            return -3;
+        }
+    }
+    return 0;
 }
 #endif /* LIBXML_ICONV_ENABLED */
+
+/************************************************************************
+ *									*
+ *		The real API used by libxml for on-the-fly conversion	*
+ *									*
+ ************************************************************************/
 
 /**
  * xmlCharEncFirstLine:
@@ -1764,7 +1979,7 @@ xmlCharEncFirstLine(xmlCharEncodingHandler *handler, xmlBufferPtr out,
     /*
      * echo '<?xml version="1.0" encoding="UCS4"?>' | wc -c => 38
      * 45 chars should be sufficient to reach the end of the encoding
-     * decalration without going too far inside the document content.
+     * declaration without going too far inside the document content.
      */
     written = 45;
 
@@ -1807,7 +2022,7 @@ xmlCharEncFirstLine(xmlCharEncodingHandler *handler, xmlBufferPtr out,
 	default:
 	    xmlGenericError(xmlGenericErrorContext,"Unknown input conversion failed %d\n", ret);
     }
-#endif
+#endif /* DEBUG_ENCODING */
     /*
      * Ignore when input buffer is not on a boundary
      */
@@ -1818,7 +2033,7 @@ xmlCharEncFirstLine(xmlCharEncodingHandler *handler, xmlBufferPtr out,
 
 /**
  * xmlCharEncInFunc:
- * @handler:	char enconding transformation data structure
+ * @handler:	char encoding transformation data structure
  * @out:  an xmlBuffer for the output.
  * @in:  an xmlBuffer for the input
  *     
@@ -1830,70 +2045,82 @@ xmlCharEncFirstLine(xmlCharEncodingHandler *handler, xmlBufferPtr out,
  *        the result of transformation can't fit into the encoding we want), or
  */
 int
-xmlCharEncInFunc(xmlCharEncodingHandler *handler, xmlBufferPtr out,
-                 xmlBufferPtr in) {
+xmlCharEncInFunc(xmlCharEncodingHandler * handler, xmlBufferPtr out,
+                 xmlBufferPtr in)
+{
     int ret = -2;
     int written;
     int toconv;
 
-    if (handler == NULL) return(-1);
-    if (out == NULL) return(-1);
-    if (in == NULL) return(-1);
+    if (handler == NULL)
+        return (-1);
+    if (out == NULL)
+        return (-1);
+    if (in == NULL)
+        return (-1);
 
     toconv = in->use;
     if (toconv == 0)
-	return(0);
+        return (0);
     written = out->size - out->use;
     if (toconv * 2 >= written) {
         xmlBufferGrow(out, out->size + toconv * 2);
-	written = out->size - out->use - 1;
+        written = out->size - out->use - 1;
     }
     if (handler->input != NULL) {
-	ret = handler->input(&out->content[out->use], &written,
-	                     in->content, &toconv);
-	xmlBufferShrink(in, toconv);
-	out->use += written;
-	out->content[out->use] = 0;
+        ret = handler->input(&out->content[out->use], &written,
+                             in->content, &toconv);
+        xmlBufferShrink(in, toconv);
+        out->use += written;
+        out->content[out->use] = 0;
     }
 #ifdef LIBXML_ICONV_ENABLED
     else if (handler->iconv_in != NULL) {
-	ret = xmlIconvWrapper(handler->iconv_in, &out->content[out->use],
-	                      &written, in->content, &toconv);
-	xmlBufferShrink(in, toconv);
-	out->use += written;
-	out->content[out->use] = 0;
-	if (ret == -1) ret = -3;
+        ret = xmlIconvWrapper(handler->iconv_in, &out->content[out->use],
+                              &written, in->content, &toconv);
+        xmlBufferShrink(in, toconv);
+        out->use += written;
+        out->content[out->use] = 0;
+        if (ret == -1)
+            ret = -3;
     }
 #endif /* LIBXML_ICONV_ENABLED */
     switch (ret) {
-#ifdef DEBUG_ENCODING
         case 0:
-	    xmlGenericError(xmlGenericErrorContext,
-		    "converted %d bytes to %d bytes of input\n",
-	            toconv, written);
-	    break;
-        case -1:
-	    xmlGenericError(xmlGenericErrorContext,"converted %d bytes to %d bytes of input, %d left\n",
-	            toconv, written, in->use);
-	    break;
-        case -3:
-	    xmlGenericError(xmlGenericErrorContext,"converted %d bytes to %d bytes of input, %d left\n",
-	            toconv, written, in->use);
-	    break;
+#ifdef DEBUG_ENCODING
+            xmlGenericError(xmlGenericErrorContext,
+                            "converted %d bytes to %d bytes of input\n",
+                            toconv, written);
 #endif
+            break;
+        case -1:
+#ifdef DEBUG_ENCODING
+            xmlGenericError(xmlGenericErrorContext,
+                         "converted %d bytes to %d bytes of input, %d left\n",
+                            toconv, written, in->use);
+#endif
+            break;
+        case -3:
+#ifdef DEBUG_ENCODING
+            xmlGenericError(xmlGenericErrorContext,
+                        "converted %d bytes to %d bytes of input, %d left\n",
+                            toconv, written, in->use);
+#endif
+            break;
         case -2:
-	    xmlGenericError(xmlGenericErrorContext,
-		    "input conversion failed due to input error\n");
-	    xmlGenericError(xmlGenericErrorContext,
-		    "Bytes: 0x%02X 0x%02X 0x%02X 0x%02X\n",
-		    in->content[0], in->content[1],
-		    in->content[2], in->content[3]);
+            xmlGenericError(xmlGenericErrorContext,
+                            "input conversion failed due to input error\n");
+            xmlGenericError(xmlGenericErrorContext,
+                            "Bytes: 0x%02X 0x%02X 0x%02X 0x%02X\n",
+                            in->content[0], in->content[1],
+                            in->content[2], in->content[3]);
     }
     /*
      * Ignore when input buffer is not on a boundary
      */
-    if (ret == -3) ret = 0;
-    return(ret);
+    if (ret == -3)
+        ret = 0;
+    return (ret);
 }
 
 /**
@@ -1957,7 +2184,7 @@ retry:
     }
 
     /*
-     * Convertion itself.
+     * Conversion itself.
      */
     toconv = in->use;
     if (toconv == 0)
@@ -2005,17 +2232,19 @@ retry:
      * Attempt to handle error cases
      */
     switch (ret) {
-#ifdef DEBUG_ENCODING
         case 0:
+#ifdef DEBUG_ENCODING
 	    xmlGenericError(xmlGenericErrorContext,
 		    "converted %d bytes to %d bytes of output\n",
 	            toconv, written);
+#endif
 	    break;
         case -1:
+#ifdef DEBUG_ENCODING
 	    xmlGenericError(xmlGenericErrorContext,
 		    "output conversion failed by lack of space\n");
-	    break;
 #endif
+	    break;
         case -3:
 	    xmlGenericError(xmlGenericErrorContext,"converted %d bytes to %d bytes of output %d left\n",
 	            toconv, written, in->use);
@@ -2042,7 +2271,7 @@ retry:
 		 * and continue the transcoding phase, hoping the error
 		 * did not mangle the encoder state.
 		 */
-		sprintf((char *) charref, "&#x%X;", cur);
+		sprintf((char *) charref, "&#%d;", cur);
 		xmlBufferShrink(in, len);
 		xmlBufferAddHead(in, charref, -1);
 
@@ -2066,7 +2295,7 @@ retry:
  * xmlCharEncCloseFunc:
  * @handler:	char enconding transformation data structure
  *     
- * Generic front-end for hencoding handler close function
+ * Generic front-end for encoding handler close function
  *
  * Returns 0 if success, or -1 in case of error
  */
@@ -2077,7 +2306,7 @@ xmlCharEncCloseFunc(xmlCharEncodingHandler *handler) {
     if (handler->name == NULL) return(-1);
 #ifdef LIBXML_ICONV_ENABLED
     /*
-     * Iconv handlers can be oused only once, free the whole block.
+     * Iconv handlers can be used only once, free the whole block.
      * and the associated icon resources.
      */
     if ((handler->iconv_out != NULL) || (handler->iconv_in != NULL)) {
@@ -2104,8 +2333,8 @@ xmlCharEncCloseFunc(xmlCharEncodingHandler *handler) {
     else
         xmlGenericError(xmlGenericErrorContext,
 		"closed the encoding handler\n");
-
 #endif
+
     return(ret);
 }
 

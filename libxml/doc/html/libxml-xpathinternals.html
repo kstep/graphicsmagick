@@ -4,7 +4,8 @@
 >xpathInternals</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
 HREF="book1.html"><LINK
@@ -18,6 +19,7 @@ REL="NEXT"
 TITLE="xpointer"
 HREF="libxml-xpointer.html"></HEAD
 ><BODY
+CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
 LINK="#0000FF"
@@ -121,7 +123,7 @@ NAME="LIBXML-XPATHINTERNALS"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN11514"
+NAME="AEN13047"
 ></A
 ><H2
 >Name</H2
@@ -129,7 +131,7 @@ NAME="AEN11514"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN11517"
+NAME="AEN13050"
 ></A
 ><H2
 >Synopsis</H2
@@ -144,6 +146,126 @@ CELLPADDING="6"
 CLASS="SYNOPSIS"
 >&#13;
 
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHSETERROR"
+>xmlXPathSetError</A
+>                (ctxt, err)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHSETARITYERROR"
+>xmlXPathSetArityError</A
+>           (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHSETTYPEERROR"
+>xmlXPathSetTypeError</A
+>            (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHGETERROR"
+>xmlXPathGetError</A
+>                (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHCHECKERROR"
+>xmlXPathCheckError</A
+>              (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHGETDOCUMENT"
+>xmlXPathGetDocument</A
+>             (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHGETCONTEXTNODE"
+>xmlXPathGetContextNode</A
+>          (ctxt)
+int         <A
+HREF="libxml-xpathinternals.html#XMLXPATHPOPBOOLEAN"
+>xmlXPathPopBoolean</A
+>              (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);
+<GTKDOCLINK
+HREF="DOUBLE"
+>double</GTKDOCLINK
+>      <A
+HREF="libxml-xpathinternals.html#XMLXPATHPOPNUMBER"
+>xmlXPathPopNumber</A
+>               (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);
+<A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+>*    <A
+HREF="libxml-xpathinternals.html#XMLXPATHPOPSTRING"
+>xmlXPathPopString</A
+>               (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHPOPNODESET"
+>xmlXPathPopNodeSet</A
+>            (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);
+void*       <A
+HREF="libxml-xpathinternals.html#XMLXPATHPOPEXTERNAL"
+>xmlXPathPopExternal</A
+>             (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHRETURNBOOLEAN"
+>xmlXPathReturnBoolean</A
+>           (ctxt, val)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHRETURNTRUE"
+>xmlXPathReturnTrue</A
+>              (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHRETURNFALSE"
+>xmlXPathReturnFalse</A
+>             (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHRETURNNUMBER"
+>xmlXPathReturnNumber</A
+>            (ctxt, val)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHRETURNSTRING"
+>xmlXPathReturnString</A
+>            (ctxt, str)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHRETURNEMPTYSTRING"
+>xmlXPathReturnEmptyString</A
+>       (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHRETURNNODESET"
+>xmlXPathReturnNodeSet</A
+>           (ctxt, ns)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHRETURNEMPTYNODESET"
+>xmlXPathReturnEmptyNodeSet</A
+>      (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHRETURNEXTERNAL"
+>xmlXPathReturnExternal</A
+>          (ctxt, val)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHSTACKISNODESET"
+>xmlXPathStackIsNodeSet</A
+>          (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHSTACKISEXTERNAL"
+>xmlXPathStackIsExternal</A
+>         (ctxt)
+#define     <A
+HREF="libxml-xpathinternals.html#XMLXPATHEMPTYNODESET"
+>xmlXPathEmptyNodeSet</A
+>            (ns)
 #define     <A
 HREF="libxml-xpathinternals.html#CHECK-ERROR-CAPS"
 >CHECK_ERROR</A
@@ -165,6 +287,10 @@ HREF="libxml-xpathinternals.html#CHECK-TYPE-CAPS"
 >CHECK_TYPE</A
 >                      (typeval)
 #define     <A
+HREF="libxml-xpathinternals.html#CHECK-TYPE0-CAPS"
+>CHECK_TYPE0</A
+>                     (typeval)
+#define     <A
 HREF="libxml-xpathinternals.html#CHECK-ARITY-CAPS"
 >CHECK_ARITY</A
 >                     (x)
@@ -180,13 +306,22 @@ HREF="libxml-xpathinternals.html#CAST-TO-NUMBER-CAPS"
 HREF="libxml-xpathinternals.html#CAST-TO-BOOLEAN-CAPS"
 >CAST_TO_BOOLEAN</A
 >
-<GTKDOCLINK
-HREF="TYPEDEF"
->typedef</GTKDOCLINK
->     <A
+<A
 HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 >xmlXPathObjectPtr</A
->               ();
+> (<A
+HREF="libxml-xpathinternals.html#XMLXPATHVARIABLELOOKUPFUNC"
+>*xmlXPathVariableLookupFunc</A
+>)
+                                            (void *ctxt,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *ns_uri);
 void        <A
 HREF="libxml-xpathinternals.html#XMLXPATHREGISTERVARIABLELOOKUP"
 >xmlXPathRegisterVariableLookup</A
@@ -194,11 +329,38 @@ HREF="libxml-xpathinternals.html#XMLXPATHREGISTERVARIABLELOOKUP"
 HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 >xmlXPathContextPtr</A
 > ctxt,
-                                             <GTKDOCLINK
-HREF="XMLXPATHVARIABLELOOKUPFUNC"
->xmlXPathVariableLookupFunc</GTKDOCLINK
+                                             <A
+HREF="libxml-xpathinternals.html#XMLXPATHVARIABLELOOKUPFUNC"
+>xmlXPathVariableLookupFunc</A
 > f,
-                                             void *varCtxt);
+                                             void *data);
+<A
+HREF="libxml-xpath.html#XMLXPATHFUNCTION"
+>xmlXPathFunction</A
+> (<A
+HREF="libxml-xpathinternals.html#XMLXPATHFUNCLOOKUPFUNC"
+>*xmlXPathFuncLookupFunc</A
+>)  (void *ctxt,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *ns_uri);
+void        <A
+HREF="libxml-xpathinternals.html#XMLXPATHREGISTERFUNCLOOKUP"
+>xmlXPathRegisterFuncLookup</A
+>      (<A
+HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
+>xmlXPathContextPtr</A
+> ctxt,
+                                             <A
+HREF="libxml-xpathinternals.html#XMLXPATHFUNCLOOKUPFUNC"
+>xmlXPathFuncLookupFunc</A
+> f,
+                                             void *funcCtxt);
 void        <A
 HREF="libxml-xpath.html#XMLXPATHERROR"
 >xmlXPatherror</A
@@ -234,6 +396,188 @@ HREF="libxml-xpath.html#XMLXPATHCOMPEXPRPTR"
 > comp,
                                              int depth);
 int         <A
+HREF="libxml-xpathinternals.html#XMLXPATHNODESETCONTAINS"
+>xmlXPathNodeSetContains</A
+>         (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> cur,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> val);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHDIFFERENCE"
+>xmlXPathDifference</A
+>            (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHINTERSECTION"
+>xmlXPathIntersection</A
+>          (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHDISTINCTSORTED"
+>xmlXPathDistinctSorted</A
+>        (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHDISTINCT"
+>xmlXPathDistinct</A
+>              (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes);
+int         <A
+HREF="libxml-xpathinternals.html#XMLXPATHHASSAMENODES"
+>xmlXPathHasSameNodes</A
+>            (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHNODELEADINGSORTED"
+>xmlXPathNodeLeadingSorted</A
+>     (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> node);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHLEADINGSORTED"
+>xmlXPathLeadingSorted</A
+>         (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHNODELEADING"
+>xmlXPathNodeLeading</A
+>           (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> node);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHLEADING"
+>xmlXPathLeading</A
+>               (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHNODETRAILINGSORTED"
+>xmlXPathNodeTrailingSorted</A
+>    (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> node);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHTRAILINGSORTED"
+>xmlXPathTrailingSorted</A
+>        (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHNODETRAILING"
+>xmlXPathNodeTrailing</A
+>          (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> node);
+<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHTRAILING"
+>xmlXPathTrailing</A
+>              (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);
+int         <A
 HREF="libxml-xpathinternals.html#XMLXPATHREGISTERNS"
 >xmlXPathRegisterNs</A
 >              (<A
@@ -261,7 +605,7 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
                                              const <A
 HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
-> *ns_uri);
+> *prefix);
 void        <A
 HREF="libxml-xpathinternals.html#XMLXPATHREGISTEREDNSCLEANUP"
 >xmlXPathRegisteredNsCleanup</A
@@ -480,6 +824,23 @@ HREF="libxml-xpathinternals.html#XMLXPATHNEWCSTRING"
 HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 >xmlXPathObjectPtr</A
 > <A
+HREF="libxml-xpathinternals.html#XMLXPATHWRAPSTRING"
+>xmlXPathWrapString</A
+>        (<A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *val);
+<A
+HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
+>xmlXPathObjectPtr</A
+> <A
+HREF="libxml-xpathinternals.html#XMLXPATHWRAPCSTRING"
+>xmlXPathWrapCString</A
+>       (char *val);
+<A
+HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
+>xmlXPathObjectPtr</A
+> <A
 HREF="libxml-xpathinternals.html#XMLXPATHNEWFLOAT"
 >xmlXPathNewFloat</A
 >          (<GTKDOCLINK
@@ -543,14 +904,6 @@ HREF="libxml-xpath.html#XMLNODESETPTR"
 >xmlNodeSetPtr</A
 > set);
 void        <A
-HREF="libxml-xpathinternals.html#XMLXPATHIDFUNCTION"
->xmlXPathIdFunction</A
->              (<A
-HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
->xmlXPathParserContextPtr</A
-> ctxt,
-                                             int nargs);
-void        <A
 HREF="libxml-xpathinternals.html#XMLXPATHROOT"
 >xmlXPathRoot</A
 >                    (<A
@@ -606,34 +959,12 @@ HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 >xmlXPathObjectPtr</A
 > res);
 void        <A
-HREF="libxml-xpath.html#XMLXPATHINIT"
->xmlXPathInit</A
->                    (void);
-void        <A
-HREF="libxml-xpathinternals.html#XMLXPATHSTRINGFUNCTION"
->xmlXPathStringFunction</A
->          (<A
-HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
->xmlXPathParserContextPtr</A
-> ctxt,
-                                             int nargs);
-void        <A
 HREF="libxml-xpathinternals.html#XMLXPATHREGISTERALLFUNCTIONS"
 >xmlXPathRegisterAllFunctions</A
 >    (<A
 HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 >xmlXPathContextPtr</A
 > ctxt);
-<A
-HREF="libxml-xpath.html#XMLNODESETPTR"
->xmlNodeSetPtr</A
-> <A
-HREF="libxml-xpath.html#XMLXPATHNODESETCREATE"
->xmlXPathNodeSetCreate</A
->         (<A
-HREF="libxml-tree.html#XMLNODEPTR"
->xmlNodePtr</A
-> val);
 <A
 HREF="libxml-xpath.html#XMLNODESETPTR"
 >xmlNodeSetPtr</A
@@ -667,13 +998,6 @@ HREF="libxml-xpath.html#XMLNODESETPTR"
 >xmlNodeSetPtr</A
 > cur,
                                              int val);
-void        <A
-HREF="libxml-xpath.html#XMLXPATHFREENODESET"
->xmlXPathFreeNodeSet</A
->             (<A
-HREF="libxml-xpath.html#XMLNODESETPTR"
->xmlNodeSetPtr</A
-> obj);
 <A
 HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 >xmlXPathObjectPtr</A
@@ -694,37 +1018,13 @@ HREF="libxml-xpathinternals.html#XMLXPATHWRAPNODESET"
 HREF="libxml-xpath.html#XMLNODESETPTR"
 >xmlNodeSetPtr</A
 > val);
-void        <A
-HREF="libxml-xpath.html#XMLXPATHFREENODESETLIST"
->xmlXPathFreeNodeSetList</A
->         (<A
-HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
->xmlXPathObjectPtr</A
-> obj);
-void        <A
-HREF="libxml-xpath.html#XMLXPATHFREEOBJECT"
->xmlXPathFreeObject</A
->              (<A
-HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
->xmlXPathObjectPtr</A
-> obj);
 <A
-HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
->xmlXPathContextPtr</A
+HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
+>xmlXPathObjectPtr</A
 > <A
-HREF="libxml-xpath.html#XMLXPATHNEWCONTEXT"
->xmlXPathNewContext</A
->       (<A
-HREF="libxml-tree.html#XMLDOCPTR"
->xmlDocPtr</A
-> doc);
-void        <A
-HREF="libxml-xpath.html#XMLXPATHFREECONTEXT"
->xmlXPathFreeContext</A
->             (<A
-HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
->xmlXPathContextPtr</A
-> ctxt);
+HREF="libxml-xpathinternals.html#XMLXPATHWRAPEXTERNAL"
+>xmlXPathWrapExternal</A
+>      (void *val);
 int         <A
 HREF="libxml-xpathinternals.html#XMLXPATHEQUALVALUES"
 >xmlXPathEqualValues</A
@@ -997,6 +1297,14 @@ HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 > ctxt,
                                              int nargs);
 void        <A
+HREF="libxml-xpathinternals.html#XMLXPATHIDFUNCTION"
+>xmlXPathIdFunction</A
+>              (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt,
+                                             int nargs);
+void        <A
 HREF="libxml-xpathinternals.html#XMLXPATHLOCALNAMEFUNCTION"
 >xmlXPathLocalNameFunction</A
 >       (<A
@@ -1008,6 +1316,14 @@ void        <A
 HREF="libxml-xpathinternals.html#XMLXPATHNAMESPACEURIFUNCTION"
 >xmlXPathNamespaceURIFunction</A
 >    (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt,
+                                             int nargs);
+void        <A
+HREF="libxml-xpathinternals.html#XMLXPATHSTRINGFUNCTION"
+>xmlXPathStringFunction</A
+>          (<A
 HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 >xmlXPathParserContextPtr</A
 > ctxt,
@@ -1171,7 +1487,7 @@ HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN11798"
+NAME="AEN13417"
 ></A
 ><H2
 >Description</H2
@@ -1181,14 +1497,1802 @@ NAME="AEN11798"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN11801"
+NAME="AEN13420"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11803"
+NAME="AEN13422"
+></A
+><H3
+><A
+NAME="XMLXPATHSETERROR"
+></A
+>xmlXPathSetError()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathSetError(ctxt, err)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Raises an error.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13428"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an xmlXPathError code</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13441"
+></A
+><H3
+><A
+NAME="XMLXPATHSETARITYERROR"
+></A
+>xmlXPathSetArityError()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathSetArityError(ctxt)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Raises an XPATH_INVALID_ARITY error.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13447"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13456"
+></A
+><H3
+><A
+NAME="XMLXPATHSETTYPEERROR"
+></A
+>xmlXPathSetTypeError()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathSetTypeError(ctxt)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Raises an XPATH_INVALID_TYPE error.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13462"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13471"
+></A
+><H3
+><A
+NAME="XMLXPATHGETERROR"
+></A
+>xmlXPathGetError()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define xmlXPathGetError(ctxt)	  ((ctxt)-&gt;error)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the error code of an XPath context.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13477"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13486"
+></A
+><H3
+><A
+NAME="XMLXPATHCHECKERROR"
+></A
+>xmlXPathCheckError()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define xmlXPathCheckError(ctxt)  ((ctxt)-&gt;error != XPATH_EXPRESSION_OK)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Check if an XPath error was raised.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13492"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13501"
+></A
+><H3
+><A
+NAME="XMLXPATHGETDOCUMENT"
+></A
+>xmlXPathGetDocument()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define xmlXPathGetDocument(ctxt)	((ctxt)-&gt;context-&gt;doc)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the document of an XPath context.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13507"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13516"
+></A
+><H3
+><A
+NAME="XMLXPATHGETCONTEXTNODE"
+></A
+>xmlXPathGetContextNode()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define xmlXPathGetContextNode(ctxt)	((ctxt)-&gt;context-&gt;node)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the context node of an XPath context.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13522"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13531"
+></A
+><H3
+><A
+NAME="XMLXPATHPOPBOOLEAN"
+></A
+>xmlXPathPopBoolean ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlXPathPopBoolean              (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pops a boolean from the stack, handling conversion if needed.
+Check error with <A
+HREF="libxml-xpathinternals.html#XMLXPATHCHECKERROR"
+>xmlXPathCheckError</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13539"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the boolean</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13552"
+></A
+><H3
+><A
+NAME="XMLXPATHPOPNUMBER"
+></A
+>xmlXPathPopNumber ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="DOUBLE"
+>double</GTKDOCLINK
+>      xmlXPathPopNumber               (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pops a number from the stack, handling conversion if needed.
+Check error with <A
+HREF="libxml-xpathinternals.html#XMLXPATHCHECKERROR"
+>xmlXPathCheckError</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13561"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the number</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13574"
+></A
+><H3
+><A
+NAME="XMLXPATHPOPSTRING"
+></A
+>xmlXPathPopString ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+>*    xmlXPathPopString               (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pops a string from the stack, handling conversion if needed.
+Check error with <A
+HREF="libxml-xpathinternals.html#XMLXPATHCHECKERROR"
+>xmlXPathCheckError</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13583"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the string</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13596"
+></A
+><H3
+><A
+NAME="XMLXPATHPOPNODESET"
+></A
+>xmlXPathPopNodeSet ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathPopNodeSet            (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pops a node-set from the stack, handling conversion if needed.
+Check error with <A
+HREF="libxml-xpathinternals.html#XMLXPATHCHECKERROR"
+>xmlXPathCheckError</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13605"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the node-set</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13618"
+></A
+><H3
+><A
+NAME="XMLXPATHPOPEXTERNAL"
+></A
+>xmlXPathPopExternal ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void*       xmlXPathPopExternal             (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pops an external object from the stack, handling conversion if needed.
+Check error with <A
+HREF="libxml-xpathinternals.html#XMLXPATHCHECKERROR"
+>xmlXPathCheckError</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13626"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13635"
+></A
+><H3
+><A
+NAME="XMLXPATHRETURNBOOLEAN"
+></A
+>xmlXPathReturnBoolean()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathReturnBoolean(ctxt, val)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pushes the boolean <TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+> on the context stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13642"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a boolean</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13655"
+></A
+><H3
+><A
+NAME="XMLXPATHRETURNTRUE"
+></A
+>xmlXPathReturnTrue()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define xmlXPathReturnTrue(ctxt)   xmlXPathReturnBoolean((ctxt), 1)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pushes true on the context stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13661"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13670"
+></A
+><H3
+><A
+NAME="XMLXPATHRETURNFALSE"
+></A
+>xmlXPathReturnFalse()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define xmlXPathReturnFalse(ctxt)  xmlXPathReturnBoolean((ctxt), 0)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pushes false on the context stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13676"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13685"
+></A
+><H3
+><A
+NAME="XMLXPATHRETURNNUMBER"
+></A
+>xmlXPathReturnNumber()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathReturnNumber(ctxt, val)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pushes the double <TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+> on the context stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13692"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a double</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13705"
+></A
+><H3
+><A
+NAME="XMLXPATHRETURNSTRING"
+></A
+>xmlXPathReturnString()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathReturnString(ctxt, str)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pushes the string <TT
+CLASS="PARAMETER"
+><I
+>str</I
+></TT
+> on the context stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13712"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>str</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a string</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13725"
+></A
+><H3
+><A
+NAME="XMLXPATHRETURNEMPTYSTRING"
+></A
+>xmlXPathReturnEmptyString()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathReturnEmptyString(ctxt)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pushes an empty string on the stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13731"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13740"
+></A
+><H3
+><A
+NAME="XMLXPATHRETURNNODESET"
+></A
+>xmlXPathReturnNodeSet()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathReturnNodeSet(ctxt, ns)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pushes the node-set <TT
+CLASS="PARAMETER"
+><I
+>ns</I
+></TT
+> on the context stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13747"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ns</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13760"
+></A
+><H3
+><A
+NAME="XMLXPATHRETURNEMPTYNODESET"
+></A
+>xmlXPathReturnEmptyNodeSet()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathReturnEmptyNodeSet(ctxt)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pushes an empty node-set on the context stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13766"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13775"
+></A
+><H3
+><A
+NAME="XMLXPATHRETURNEXTERNAL"
+></A
+>xmlXPathReturnExternal()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathReturnExternal(ctxt, val)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Pushes user data on the context stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13781"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  user data</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13794"
+></A
+><H3
+><A
+NAME="XMLXPATHSTACKISNODESET"
+></A
+>xmlXPathStackIsNodeSet()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathStackIsNodeSet(ctxt)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Check if the current value on the XPath stack is a node set or
+an XSLT value tree.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13800"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13809"
+></A
+><H3
+><A
+NAME="XMLXPATHSTACKISEXTERNAL"
+></A
+>xmlXPathStackIsExternal()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathStackIsExternal(ctxt)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Checks if the current value on the XPath stack is an external
+object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13815"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an XPath parser context</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13824"
+></A
+><H3
+><A
+NAME="XMLXPATHEMPTYNODESET"
+></A
+>xmlXPathEmptyNodeSet()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     xmlXPathEmptyNodeSet(ns)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Empties a node-set.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13830"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ns</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13839"
 ></A
 ><H3
 ><A
@@ -1209,12 +3313,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Macro to return from the function if an XPath error was detected.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11808"
+NAME="AEN13845"
 ></A
 ><H3
 ><A
@@ -1235,12 +3341,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Macro to return 0 from the function if an XPath error was detected.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11813"
+NAME="AEN13851"
 ></A
 ><H3
 ><A
@@ -1261,9 +3369,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Macro to raise an XPath error and return.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN13857"
+></A
 ><P
 ></P
 ><TABLE
@@ -1273,6 +3386,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1283,13 +3397,14 @@ CLASS="PARAMETER"
 ><I
 >X</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>  the error code</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1298,7 +3413,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11827"
+NAME="AEN13866"
 ></A
 ><H3
 ><A
@@ -1319,9 +3434,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Macro to raise an XPath error and return 0.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN13872"
+></A
 ><P
 ></P
 ><TABLE
@@ -1331,6 +3451,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1341,13 +3462,14 @@ CLASS="PARAMETER"
 ><I
 >X</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>  the error code</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1356,7 +3478,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11841"
+NAME="AEN13881"
 ></A
 ><H3
 ><A
@@ -1377,9 +3499,15 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Macro to check that the value on top of the XPath stack is of a given
+type.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN13887"
+></A
 ><P
 ></P
 ><TABLE
@@ -1389,6 +3517,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1399,13 +3528,14 @@ CLASS="PARAMETER"
 ><I
 >typeval</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>  the XPath type</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1414,7 +3544,73 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11855"
+NAME="AEN13896"
+></A
+><H3
+><A
+NAME="CHECK-TYPE0-CAPS"
+></A
+>CHECK_TYPE0()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     CHECK_TYPE0(typeval)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Macro to check that the value on top of the XPath stack is of a given
+type. Return(0) in case of failure</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN13902"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>typeval</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the XPath type</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN13911"
 ></A
 ><H3
 ><A
@@ -1435,9 +3631,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Macro to check that the number of args passed to an XPath function matches.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN13917"
+></A
 ><P
 ></P
 ><TABLE
@@ -1447,6 +3648,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1457,13 +3659,14 @@ CLASS="PARAMETER"
 ><I
 >x</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>  the number of expected args</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1472,7 +3675,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11869"
+NAME="AEN13926"
 ></A
 ><H3
 ><A
@@ -1493,12 +3696,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Macro to try to cast the value on the top of the XPath stack to a string.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11874"
+NAME="AEN13932"
 ></A
 ><H3
 ><A
@@ -1519,12 +3724,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Macro to try to cast the value on the top of the XPath stack to a number.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11879"
+NAME="AEN13938"
 ></A
 ><H3
 ><A
@@ -1545,18 +3752,20 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Macro to try to cast the value on the top of the XPath stack to a boolean.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11884"
+NAME="AEN13944"
 ></A
 ><H3
 ><A
-NAME="XMLXPATHOBJECTPTR"
+NAME="XMLXPATHVARIABLELOOKUPFUNC"
 ></A
->xmlXPathObjectPtr ()</H3
+>xmlXPathVariableLookupFunc ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -1566,17 +3775,32 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><GTKDOCLINK
-HREF="TYPEDEF"
->typedef</GTKDOCLINK
->     xmlXPathObjectPtr               ();</PRE
+><A
+HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
+>xmlXPathObjectPtr</A
+> (*xmlXPathVariableLookupFunc)
+                                            (void *ctxt,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *ns_uri);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
+>Prototype for callbacks used to plug variable lookup in the XPath
+engine.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN13953"
+></A
 ><P
 ></P
 ><TABLE
@@ -1586,6 +3810,58 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  name of the variable</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ns_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the namespace name hosting this variable</TD
+></TR
 ><TR
 ><TD
 WIDTH="20%"
@@ -1599,8 +3875,9 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>the XPath object value or NULL if not found.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1609,7 +3886,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11899"
+NAME="AEN13974"
 ></A
 ><H3
 ><A
@@ -1629,11 +3906,11 @@ CLASS="PROGRAMLISTING"
 HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 >xmlXPathContextPtr</A
 > ctxt,
-                                             <GTKDOCLINK
-HREF="XMLXPATHVARIABLELOOKUPFUNC"
->xmlXPathVariableLookupFunc</GTKDOCLINK
+                                             <A
+HREF="libxml-xpathinternals.html#XMLXPATHVARIABLELOOKUPFUNC"
+>xmlXPathVariableLookupFunc</A
 > f,
-                                             void *varCtxt);</PRE
+                                             void *data);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -1643,6 +3920,9 @@ HREF="XMLXPATHVARIABLELOOKUPFUNC"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN13982"
+></A
 ><P
 ></P
 ><TABLE
@@ -1652,6 +3932,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1662,7 +3943,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1679,7 +3960,7 @@ CLASS="PARAMETER"
 ><I
 >f</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1694,15 +3975,16 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->varCtxt</I
+>data</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>  the lookup data</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1711,7 +3993,240 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11924"
+NAME="AEN13999"
+></A
+><H3
+><A
+NAME="XMLXPATHFUNCLOOKUPFUNC"
+></A
+>xmlXPathFuncLookupFunc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLXPATHFUNCTION"
+>xmlXPathFunction</A
+> (*xmlXPathFuncLookupFunc)  (void *ctxt,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *name,
+                                             const <A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *ns_uri);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Prototype for callbacks used to plug function lookup in the XPath
+engine.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14008"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  an XPath context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  name of the function</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ns_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the namespace name hosting this function</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the XPath function or NULL if not found.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14029"
+></A
+><H3
+><A
+NAME="XMLXPATHREGISTERFUNCLOOKUP"
+></A
+>xmlXPathRegisterFuncLookup ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlXPathRegisterFuncLookup      (<A
+HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
+>xmlXPathContextPtr</A
+> ctxt,
+                                             <A
+HREF="libxml-xpathinternals.html#XMLXPATHFUNCLOOKUPFUNC"
+>xmlXPathFuncLookupFunc</A
+> f,
+                                             void *funcCtxt);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Registers an external mechanism to do function lookup.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14037"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the XPath context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>f</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the lookup function</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>funcCtxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the lookup data</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14054"
 ></A
 ><H3
 ><A
@@ -1738,9 +4253,14 @@ HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 ></TR
 ></TABLE
 ><P
+>Formats an error message.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14061"
+></A
 ><P
 ></P
 ><TABLE
@@ -1750,6 +4270,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1760,12 +4281,12 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the XPath Parser context</TD
 ></TR
 ><TR
 ><TD
@@ -1777,12 +4298,12 @@ CLASS="PARAMETER"
 ><I
 >file</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the file name</TD
 ></TR
 ><TR
 ><TD
@@ -1794,12 +4315,12 @@ CLASS="PARAMETER"
 ><I
 >line</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the line number</TD
 ></TR
 ><TR
 ><TD
@@ -1811,13 +4332,14 @@ CLASS="PARAMETER"
 ><I
 >no</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>  the error number</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1826,7 +4348,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11951"
+NAME="AEN14082"
 ></A
 ><H3
 ><A
@@ -1860,6 +4382,9 @@ HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14090"
+></A
 ><P
 ></P
 ><TABLE
@@ -1869,6 +4394,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1879,7 +4405,7 @@ CLASS="PARAMETER"
 ><I
 >output</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1896,7 +4422,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1913,13 +4439,14 @@ CLASS="PARAMETER"
 ><I
 >depth</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  indentation level</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1928,7 +4455,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN11976"
+NAME="AEN14107"
 ></A
 ><H3
 ><A
@@ -1957,9 +4484,14 @@ HREF="libxml-xpath.html#XMLXPATHCOMPEXPRPTR"
 ></TR
 ></TABLE
 ><P
+>Dumps the tree of the compiled XPath expression.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14115"
+></A
 ><P
 ></P
 ><TABLE
@@ -1969,6 +4501,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1979,12 +4512,12 @@ CLASS="PARAMETER"
 ><I
 >output</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the FILE * for the output</TD
 ></TR
 ><TR
 ><TD
@@ -1996,12 +4529,12 @@ CLASS="PARAMETER"
 ><I
 >comp</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the precompiled XPath expression</TD
 ></TR
 ><TR
 ><TD
@@ -2013,13 +4546,14 @@ CLASS="PARAMETER"
 ><I
 >depth</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>  the indentation level.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -2028,7 +4562,1877 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12000"
+NAME="AEN14132"
+></A
+><H3
+><A
+NAME="XMLXPATHNODESETCONTAINS"
+></A
+>xmlXPathNodeSetContains ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlXPathNodeSetContains         (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> cur,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> val);</PRE
+></TD
+></TR
+></TABLE
+><P
+>checks whether <TT
+CLASS="PARAMETER"
+><I
+>cur</I
+></TT
+> contains <TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14142"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cur</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the node</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>true (1) if <TT
+CLASS="PARAMETER"
+><I
+>cur</I
+></TT
+> contains <TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>, false (0) otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14161"
+></A
+><H3
+><A
+NAME="XMLXPATHDIFFERENCE"
+></A
+>xmlXPathDifference ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathDifference            (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="DIFFERENCE"
+>difference</GTKDOCLINK
+>() function:
+node-set set:difference (node-set, node-set)</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14171"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the difference between the two node sets, or nodes1 if
+nodes2 is empty</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14188"
+></A
+><H3
+><A
+NAME="XMLXPATHINTERSECTION"
+></A
+>xmlXPathIntersection ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathIntersection          (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="INTERSECTION"
+>intersection</GTKDOCLINK
+>() function:
+node-set set:intersection (node-set, node-set)</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14198"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a node set comprising the nodes that are within both the
+node sets passed as arguments</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14215"
+></A
+><H3
+><A
+NAME="XMLXPATHDISTINCTSORTED"
+></A
+>xmlXPathDistinctSorted ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathDistinctSorted        (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="DISTINCT"
+>distinct</GTKDOCLINK
+>() function:
+node-set set:distinct (node-set)</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14224"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set, sorted by document order</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a subset of the nodes contained in <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>, or <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> if
+it is empty</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14239"
+></A
+><H3
+><A
+NAME="XMLXPATHDISTINCT"
+></A
+>xmlXPathDistinct ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathDistinct              (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="DISTINCT"
+>distinct</GTKDOCLINK
+>() function:
+node-set set:distinct (node-set)
+<TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> is sorted by document order, then <GTKDOCLINK
+HREF="EXSLSETSDISTINCTSORTED"
+>exslSetsDistinctSorted</GTKDOCLINK
+>
+is called with the sorted node-set</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14250"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a subset of the nodes contained in <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>, or <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> if
+it is empty</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14265"
+></A
+><H3
+><A
+NAME="XMLXPATHHASSAMENODES"
+></A
+>xmlXPathHasSameNodes ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         xmlXPathHasSameNodes            (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets has-same-nodes function:
+boolean set:has-same-node(node-set, node-set)</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14273"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>true (1) if <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> shares any node with <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>, false (0)
+otherwise</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14292"
+></A
+><H3
+><A
+NAME="XMLXPATHNODELEADINGSORTED"
+></A
+>xmlXPathNodeLeadingSorted ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathNodeLeadingSorted     (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> node);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="LEADING"
+>leading</GTKDOCLINK
+>() function:
+node-set set:leading (node-set, node-set)</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14302"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a node-set, sorted by document order</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a node</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the nodes in <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> that precede <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+> in document order,
+<TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+> is NULL or an empty node-set if <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>
+doesn't contain <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14325"
+></A
+><H3
+><A
+NAME="XMLXPATHLEADINGSORTED"
+></A
+>xmlXPathLeadingSorted ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathLeadingSorted         (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="LEADING"
+>leading</GTKDOCLINK
+>() function:
+node-set set:leading (node-set, node-set)</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14335"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set, sorted by document order</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set, sorted by document order</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the nodes in <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> that precede the first node in <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>
+in document order, <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+> is NULL or empty or
+an empty node-set if <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> doesn't contain <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14358"
+></A
+><H3
+><A
+NAME="XMLXPATHNODELEADING"
+></A
+>xmlXPathNodeLeading ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathNodeLeading           (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> node);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="LEADING"
+>leading</GTKDOCLINK
+>() function:
+node-set set:leading (node-set, node-set)
+<TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> is sorted by document order, then <GTKDOCLINK
+HREF="EXSLSETSNODELEADINGSORTED"
+>exslSetsNodeLeadingSorted</GTKDOCLINK
+>
+is called.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14370"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the nodes in <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> that precede <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+> in document order,
+<TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+> is NULL or an empty node-set if <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>
+doesn't contain <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14393"
+></A
+><H3
+><A
+NAME="XMLXPATHLEADING"
+></A
+>xmlXPathLeading ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathLeading               (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="LEADING"
+>leading</GTKDOCLINK
+>() function:
+node-set set:leading (node-set, node-set)
+<TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+> are sorted by document order, then
+<GTKDOCLINK
+HREF="EXSLSETSLEADINGSORTED"
+>exslSetsLeadingSorted</GTKDOCLINK
+> is called.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14406"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the nodes in <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> that precede the first node in <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>
+in document order, <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+> is NULL or empty or
+an empty node-set if <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> doesn't contain <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14429"
+></A
+><H3
+><A
+NAME="XMLXPATHNODETRAILINGSORTED"
+></A
+>xmlXPathNodeTrailingSorted ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathNodeTrailingSorted    (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> node);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="TRAILING"
+>trailing</GTKDOCLINK
+>() function:
+node-set set:trailing (node-set, node-set)</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14439"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a node-set, sorted by document order</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a node</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the nodes in <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> that follow <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+> in document order,
+<TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+> is NULL or an empty node-set if <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>
+doesn't contain <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14462"
+></A
+><H3
+><A
+NAME="XMLXPATHTRAILINGSORTED"
+></A
+>xmlXPathTrailingSorted ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathTrailingSorted        (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="TRAILING"
+>trailing</GTKDOCLINK
+>() function:
+node-set set:trailing (node-set, node-set)</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14472"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set, sorted by document order</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set, sorted by document order</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the nodes in <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> that follow the first node in <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>
+in document order, <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+> is NULL or empty or
+an empty node-set if <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> doesn't contain <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14495"
+></A
+><H3
+><A
+NAME="XMLXPATHNODETRAILING"
+></A
+>xmlXPathNodeTrailing ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathNodeTrailing          (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes,
+                                             <A
+HREF="libxml-tree.html#XMLNODEPTR"
+>xmlNodePtr</A
+> node);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="TRAILING"
+>trailing</GTKDOCLINK
+>() function:
+node-set set:trailing (node-set, node-set)
+<TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> is sorted by document order, then <A
+HREF="libxml-xpathinternals.html#XMLXPATHNODETRAILINGSORTED"
+>xmlXPathNodeTrailingSorted</A
+>
+is called.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14507"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the nodes in <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> that follow <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+> in document order,
+<TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+> is NULL or an empty node-set if <TT
+CLASS="PARAMETER"
+><I
+>nodes</I
+></TT
+>
+doesn't contain <TT
+CLASS="PARAMETER"
+><I
+>node</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14530"
+></A
+><H3
+><A
+NAME="XMLXPATHTRAILING"
+></A
+>xmlXPathTrailing ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> xmlXPathTrailing              (<A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes1,
+                                             <A
+HREF="libxml-xpath.html#XMLNODESETPTR"
+>xmlNodeSetPtr</A
+> nodes2);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implements the EXSLT - Sets <GTKDOCLINK
+HREF="TRAILING"
+>trailing</GTKDOCLINK
+>() function:
+node-set set:trailing (node-set, node-set)
+<TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+> are sorted by document order, then
+<A
+HREF="libxml-xpathinternals.html#XMLXPATHTRAILINGSORTED"
+>xmlXPathTrailingSorted</A
+> is called.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN14543"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  a node-set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the nodes in <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> that follow the first node in <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+>
+in document order, <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> if <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+> is NULL or empty or
+an empty node-set if <TT
+CLASS="PARAMETER"
+><I
+>nodes1</I
+></TT
+> doesn't contain <TT
+CLASS="PARAMETER"
+><I
+>nodes2</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN14566"
 ></A
 ><H3
 ><A
@@ -2071,6 +6475,9 @@ the namespace</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14576"
+></A
 ><P
 ></P
 ><TABLE
@@ -2080,6 +6487,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -2090,7 +6498,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2107,7 +6515,7 @@ CLASS="PARAMETER"
 ><I
 >prefix</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2124,7 +6532,7 @@ CLASS="PARAMETER"
 ><I
 >ns_uri</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2146,6 +6554,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >0 in case of success, -1 in case of error</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -2154,7 +6563,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12031"
+NAME="AEN14597"
 ></A
 ><H3
 ><A
@@ -2180,7 +6589,7 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
                                              const <A
 HREF="libxml-tree.html#XMLCHAR"
 >xmlChar</A
-> *ns_uri);</PRE
+> *prefix);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -2191,6 +6600,9 @@ namespace name associated to the given prefix</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14606"
+></A
 ><P
 ></P
 ><TABLE
@@ -2200,6 +6612,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -2210,7 +6623,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2225,14 +6638,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->ns_uri</I
+>prefix</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the namespace prefix value</TD
 ></TR
 ><TR
 ><TD
@@ -2249,6 +6662,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the value or NULL if not found</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -2257,7 +6671,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12057"
+NAME="AEN14623"
 ></A
 ><H3
 ><A
@@ -2281,9 +6695,14 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 ></TR
 ></TABLE
 ><P
+>Cleanup the XPath context data associated to registered variables</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14630"
+></A
 ><P
 ></P
 ><TABLE
@@ -2293,6 +6712,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -2303,13 +6723,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>  the XPath context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -2318,7 +6739,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12072"
+NAME="AEN14639"
 ></A
 ><H3
 ><A
@@ -2360,6 +6781,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14649"
+></A
 ><P
 ></P
 ><TABLE
@@ -2369,6 +6793,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -2379,7 +6804,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2396,7 +6821,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2413,7 +6838,7 @@ CLASS="PARAMETER"
 ><I
 >f</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2435,6 +6860,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >0 in case of success, -1 in case of error</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -2443,7 +6869,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12103"
+NAME="AEN14670"
 ></A
 ><H3
 ><A
@@ -2489,6 +6915,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14681"
+></A
 ><P
 ></P
 ><TABLE
@@ -2498,6 +6927,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -2508,7 +6938,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2525,7 +6955,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2542,7 +6972,7 @@ CLASS="PARAMETER"
 ><I
 >ns_uri</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2559,7 +6989,7 @@ CLASS="PARAMETER"
 ><I
 >f</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2581,6 +7011,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >0 in case of success, -1 in case of error</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -2589,7 +7020,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12139"
+NAME="AEN14706"
 ></A
 ><H3
 ><A
@@ -2632,6 +7063,9 @@ the variable</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14716"
+></A
 ><P
 ></P
 ><TABLE
@@ -2641,6 +7075,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -2651,7 +7086,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2668,7 +7103,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2685,7 +7120,7 @@ CLASS="PARAMETER"
 ><I
 >value</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2707,6 +7142,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >0 in case of success, -1 in case of error</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -2715,7 +7151,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12170"
+NAME="AEN14737"
 ></A
 ><H3
 ><A
@@ -2762,6 +7198,9 @@ the variable</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14748"
+></A
 ><P
 ></P
 ><TABLE
@@ -2771,6 +7210,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -2781,7 +7221,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2798,7 +7238,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2815,7 +7255,7 @@ CLASS="PARAMETER"
 ><I
 >ns_uri</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2832,7 +7272,7 @@ CLASS="PARAMETER"
 ><I
 >value</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2854,6 +7294,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >0 in case of success, -1 in case of error</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -2862,7 +7303,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12206"
+NAME="AEN14773"
 ></A
 ><H3
 ><A
@@ -2899,6 +7340,9 @@ function.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14782"
+></A
 ><P
 ></P
 ><TABLE
@@ -2908,6 +7352,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -2918,7 +7363,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2935,7 +7380,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -2957,6 +7402,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the xmlXPathFunction or NULL if not found</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -2965,7 +7411,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12232"
+NAME="AEN14799"
 ></A
 ><H3
 ><A
@@ -3006,6 +7452,9 @@ function.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14809"
+></A
 ><P
 ></P
 ><TABLE
@@ -3015,6 +7464,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3025,7 +7475,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3042,7 +7492,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3059,7 +7509,7 @@ CLASS="PARAMETER"
 ><I
 >ns_uri</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3081,6 +7531,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the xmlXPathFunction or NULL if not found</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3089,7 +7540,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12263"
+NAME="AEN14830"
 ></A
 ><H3
 ><A
@@ -3118,6 +7569,9 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14837"
+></A
 ><P
 ></P
 ><TABLE
@@ -3127,6 +7581,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3137,13 +7592,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3152,7 +7608,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12279"
+NAME="AEN14846"
 ></A
 ><H3
 ><A
@@ -3189,6 +7645,9 @@ variable value.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14855"
+></A
 ><P
 ></P
 ><TABLE
@@ -3198,6 +7657,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3208,7 +7668,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3225,7 +7685,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3245,8 +7705,9 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the value or NULL if not found</TD
+>a copy of the value or NULL if not found</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3255,7 +7716,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12305"
+NAME="AEN14872"
 ></A
 ><H3
 ><A
@@ -3296,6 +7757,9 @@ variable value.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14882"
+></A
 ><P
 ></P
 ><TABLE
@@ -3305,6 +7769,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3315,7 +7780,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3332,7 +7797,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3349,7 +7814,7 @@ CLASS="PARAMETER"
 ><I
 >ns_uri</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3369,8 +7834,9 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->the value or NULL if not found</TD
+>the a copy of the value or NULL if not found</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3379,7 +7845,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12336"
+NAME="AEN14903"
 ></A
 ><H3
 ><A
@@ -3409,6 +7875,9 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14910"
+></A
 ><P
 ></P
 ><TABLE
@@ -3418,6 +7887,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3428,13 +7898,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3443,7 +7914,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12352"
+NAME="AEN14919"
 ></A
 ><H3
 ><A
@@ -3480,6 +7951,9 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14928"
+></A
 ><P
 ></P
 ><TABLE
@@ -3489,6 +7963,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3499,7 +7974,7 @@ CLASS="PARAMETER"
 ><I
 >str</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3516,7 +7991,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3538,6 +8013,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the xmlXPathParserContext just allocated.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3546,7 +8022,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12378"
+NAME="AEN14945"
 ></A
 ><H3
 ><A
@@ -3575,6 +8051,9 @@ HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14952"
+></A
 ><P
 ></P
 ><TABLE
@@ -3584,6 +8063,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3594,13 +8074,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the context to free</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3609,7 +8090,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12394"
+NAME="AEN14961"
 ></A
 ><H3
 ><A
@@ -3636,9 +8117,14 @@ HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 ></TR
 ></TABLE
 ><P
+>Pops the top XPath object from the value stack</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14969"
+></A
 ><P
 ></P
 ><TABLE
@@ -3648,6 +8134,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3658,12 +8145,12 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+> an XPath evaluation context</TD
 ></TR
 ><TR
 ><TD
@@ -3678,8 +8165,9 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>the XPath object just removed</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3688,7 +8176,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12414"
+NAME="AEN14982"
 ></A
 ><H3
 ><A
@@ -3716,9 +8204,14 @@ HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 ></TR
 ></TABLE
 ><P
+>Pushes a new XPath object on top of the value stack</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN14990"
+></A
 ><P
 ></P
 ><TABLE
@@ -3728,6 +8221,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3738,12 +8232,12 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  an XPath evaluation context</TD
 ></TR
 ><TR
 ><TD
@@ -3755,12 +8249,12 @@ CLASS="PARAMETER"
 ><I
 >value</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+>  the XPath object</TD
 ></TR
 ><TR
 ><TD
@@ -3775,8 +8269,9 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>the number of items on the value stack</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3785,7 +8280,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12438"
+NAME="AEN15007"
 ></A
 ><H3
 ><A
@@ -3822,6 +8317,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15016"
+></A
 ><P
 ></P
 ><TABLE
@@ -3831,6 +8329,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3841,7 +8340,7 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3863,6 +8362,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the newly created object.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3871,7 +8371,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12460"
+NAME="AEN15029"
 ></A
 ><H3
 ><A
@@ -3905,6 +8405,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15037"
+></A
 ><P
 ></P
 ><TABLE
@@ -3914,6 +8417,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -3924,7 +8428,7 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -3946,6 +8450,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the newly created object.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -3954,7 +8459,181 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12481"
+NAME="AEN15050"
+></A
+><H3
+><A
+NAME="XMLXPATHWRAPSTRING"
+></A
+>xmlXPathWrapString ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
+>xmlXPathObjectPtr</A
+> xmlXPathWrapString        (<A
+HREF="libxml-tree.html#XMLCHAR"
+>xmlChar</A
+> *val);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Wraps the <TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+> string into an XPath object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15059"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the xmlChar * value</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the newly created object.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15072"
+></A
+><H3
+><A
+NAME="XMLXPATHWRAPCSTRING"
+></A
+>xmlXPathWrapCString ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
+>xmlXPathObjectPtr</A
+> xmlXPathWrapCString       (char *val);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Wraps a string into an XPath object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN15079"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the char * value</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the newly created object.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN15092"
 ></A
 ><H3
 ><A
@@ -3991,6 +8670,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15101"
+></A
 ><P
 ></P
 ><TABLE
@@ -4000,6 +8682,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4010,7 +8693,7 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -4032,6 +8715,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the newly created object.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4040,7 +8724,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12503"
+NAME="AEN15114"
 ></A
 ><H3
 ><A
@@ -4074,6 +8758,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15122"
+></A
 ><P
 ></P
 ><TABLE
@@ -4083,6 +8770,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4093,7 +8781,7 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -4115,6 +8803,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the newly created object.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4123,7 +8812,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12524"
+NAME="AEN15135"
 ></A
 ><H3
 ><A
@@ -4161,6 +8850,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15144"
+></A
 ><P
 ></P
 ><TABLE
@@ -4170,6 +8862,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4180,7 +8873,7 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -4202,6 +8895,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the newly created object.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4210,7 +8904,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12546"
+NAME="AEN15157"
 ></A
 ><H3
 ><A
@@ -4248,6 +8942,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15166"
+></A
 ><P
 ></P
 ><TABLE
@@ -4257,6 +8954,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4267,7 +8965,7 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -4289,6 +8987,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the newly created object.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4297,7 +8996,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12568"
+NAME="AEN15179"
 ></A
 ><H3
 ><A
@@ -4325,11 +9024,14 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ></TR
 ></TABLE
 ><P
->add a new xmlNodePtr ot an existing NodeSet</P
+>add a new xmlNodePtr to an existing NodeSet</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15187"
+></A
 ><P
 ></P
 ><TABLE
@@ -4339,6 +9041,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4349,7 +9052,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -4366,13 +9069,14 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  a new xmlNodePtr</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4381,7 +9085,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12589"
+NAME="AEN15200"
 ></A
 ><H3
 ><A
@@ -4409,12 +9113,15 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ></TR
 ></TABLE
 ><P
->add a new xmlNodePtr ot an existing NodeSet, optimized version
+>add a new xmlNodePtr to an existing NodeSet, optimized version
 when we are sure the node is not already in the set.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15208"
+></A
 ><P
 ></P
 ><TABLE
@@ -4424,6 +9131,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4434,7 +9142,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -4451,13 +9159,14 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  a new xmlNodePtr</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4466,7 +9175,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12610"
+NAME="AEN15221"
 ></A
 ><H3
 ><A
@@ -4495,6 +9204,9 @@ HREF="libxml-xpath.html#XMLNODESETPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15228"
+></A
 ><P
 ></P
 ><TABLE
@@ -4504,6 +9216,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4514,13 +9227,14 @@ CLASS="PARAMETER"
 ><I
 >set</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the node set</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4529,102 +9243,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12626"
-></A
-><H3
-><A
-NAME="XMLXPATHIDFUNCTION"
-></A
->xmlXPathIdFunction ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        xmlXPathIdFunction              (<A
-HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
->xmlXPathParserContextPtr</A
-> ctxt,
-                                             int nargs);</PRE
-></TD
-></TR
-></TABLE
-><P
->Implement the <GTKDOCLINK
-HREF="ID"
->id</GTKDOCLINK
->() XPath function
-node-set id(object)
-The id function selects elements by their unique ID
-(see [5.2.1 Unique IDs]). When the argument to id is of type node-set,
-then the result is the union of the result of applying id to the
-string value of each of the nodes in the argument node-set. When the
-argument to id is of any other type, the argument is converted to a
-string as if by a call to the string function; the string is split
-into a whitespace-separated list of tokens (whitespace is any sequence
-of characters matching the production S); the result is a node-set
-containing the elements in the same document as the context node that
-have a unique ID equal to any of the tokens in the list.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->ctxt</I
-></TT
->:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->  the XPath Parser context</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->nargs</I
-></TT
->:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->  the number of arguments</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN12647"
+NAME="AEN15237"
 ></A
 ><H3
 ><A
@@ -4653,6 +9272,9 @@ HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15244"
+></A
 ><P
 ></P
 ><TABLE
@@ -4662,6 +9284,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4672,13 +9295,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath Parser context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4687,7 +9311,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12663"
+NAME="AEN15253"
 ></A
 ><H3
 ><A
@@ -4717,6 +9341,9 @@ then push the result on the context stack</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15260"
+></A
 ><P
 ></P
 ><TABLE
@@ -4726,6 +9353,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4736,13 +9364,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath Parser context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4751,7 +9380,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12679"
+NAME="AEN15269"
 ></A
 ><H3
 ><A
@@ -4788,6 +9417,9 @@ CombiningChar | Extender</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15279"
+></A
 ><P
 ></P
 ><TABLE
@@ -4797,6 +9429,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4807,7 +9440,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -4829,6 +9462,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the namespace name or NULL</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4837,7 +9471,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12702"
+NAME="AEN15292"
 ></A
 ><H3
 ><A
@@ -4874,6 +9508,9 @@ CombiningChar | Extender</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15302"
+></A
 ><P
 ></P
 ><TABLE
@@ -4883,6 +9520,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4893,7 +9531,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -4915,6 +9553,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the namespace name or NULL</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -4923,7 +9562,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12725"
+NAME="AEN15315"
 ></A
 ><H3
 ><A
@@ -4963,6 +9602,9 @@ negative values : '-' Number.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15325"
+></A
 ><P
 ></P
 ><TABLE
@@ -4972,6 +9614,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -4982,7 +9625,7 @@ CLASS="PARAMETER"
 ><I
 >str</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -5004,6 +9647,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the double value.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -5012,7 +9656,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12748"
+NAME="AEN15338"
 ></A
 ><H3
 ><A
@@ -5047,13 +9691,14 @@ be converted to true if the number is equal to the position of the
 context node in the context node list (as returned by the position
 function) and will be converted to false otherwise; if the result
 is not a number, then the result will be converted as if by a call
-to the boolean function. </P
-><P
->Return 1 if predicate is true, 0 otherwise</P
+to the boolean function.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15346"
+></A
 ><P
 ></P
 ><TABLE
@@ -5063,6 +9708,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -5073,7 +9719,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -5090,7 +9736,7 @@ CLASS="PARAMETER"
 ><I
 >res</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -5110,8 +9756,9 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>1 if predicate is true, 0 otherwise</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -5120,148 +9767,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12774"
-></A
-><H3
-><A
-NAME="XMLXPATHINIT"
-></A
->xmlXPathInit ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        xmlXPathInit                    (void);</PRE
-></TD
-></TR
-></TABLE
-><P
->Initialize the XPath environment</P
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN12780"
-></A
-><H3
-><A
-NAME="XMLXPATHSTRINGFUNCTION"
-></A
->xmlXPathStringFunction ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        xmlXPathStringFunction          (<A
-HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
->xmlXPathParserContextPtr</A
-> ctxt,
-                                             int nargs);</PRE
-></TD
-></TR
-></TABLE
-><P
->Implement the <GTKDOCLINK
-HREF="STRING"
->string</GTKDOCLINK
->() XPath function
-string string(object?)
-he string function converts an object to a string as follows:
-- A node-set is converted to a string by returning the value of
-the node in the node-set that is first in document order.
-If the node-set is empty, an empty string is returned.
-- A number is converted to a string as follows
-+ NaN is converted to the string NaN 
-+ positive zero is converted to the string 0 
-+ negative zero is converted to the string 0 
-+ positive infinity is converted to the string Infinity 
-+ negative infinity is converted to the string -Infinity 
-+ if the number is an integer, the number is represented in
-decimal form as a Number with no decimal point and no leading
-zeros, preceded by a minus sign (-) if the number is negative
-+ otherwise, the number is represented in decimal form as a
-Number including a decimal point with at least one digit
-before the decimal point and at least one digit after the
-decimal point, preceded by a minus sign (-) if the number
-is negative; there must be no leading zeros before the decimal
-point apart possibly from the one required digit immediatelyi
-before the decimal point; beyond the one required digit
-after the decimal point there must be as many, but only as
-many, more digits as are needed to uniquely distinguish the
-number from all other IEEE 754 numeric values.
-- The boolean false value is converted to the string false.
-The boolean true value is converted to the string true.</P
-><P
->If the argument is omitted, it defaults to a node-set with the
-context node as its only member.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->ctxt</I
-></TT
->:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->  the XPath Parser context</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->nargs</I
-></TT
->:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->  the number of arguments</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN12802"
+NAME="AEN15363"
 ></A
 ><H3
 ><A
@@ -5290,6 +9796,9 @@ HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15370"
+></A
 ><P
 ></P
 ><TABLE
@@ -5299,6 +9808,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -5309,13 +9819,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -5324,93 +9835,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12818"
-></A
-><H3
-><A
-NAME="XMLXPATHNODESETCREATE"
-></A
->xmlXPathNodeSetCreate ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
-><A
-HREF="libxml-xpath.html#XMLNODESETPTR"
->xmlNodeSetPtr</A
-> xmlXPathNodeSetCreate         (<A
-HREF="libxml-tree.html#XMLNODEPTR"
->xmlNodePtr</A
-> val);</PRE
-></TD
-></TR
-></TABLE
-><P
->Create a new xmlNodeSetPtr of type double and of value <TT
-CLASS="PARAMETER"
-><I
->val</I
-></TT
-></P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->val</I
-></TT
->:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><I
-CLASS="EMPHASIS"
->Returns</I
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&#13;</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN12840"
+NAME="AEN15379"
 ></A
 ><H3
 ><A
@@ -5467,6 +9892,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15392"
+></A
 ><P
 ></P
 ><TABLE
@@ -5476,6 +9904,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -5486,7 +9915,7 @@ CLASS="PARAMETER"
 ><I
 >val1</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -5503,7 +9932,7 @@ CLASS="PARAMETER"
 ><I
 >val2</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -5523,8 +9952,14 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->val1 once extended or NULL in case of error.</TD
+><TT
+CLASS="PARAMETER"
+><I
+>val1</I
+></TT
+> once extended or NULL in case of error.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -5533,7 +9968,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12870"
+NAME="AEN15410"
 ></A
 ><H3
 ><A
@@ -5566,6 +10001,9 @@ HREF="libxml-tree.html#XMLNODEPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15418"
+></A
 ><P
 ></P
 ><TABLE
@@ -5575,6 +10013,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -5585,7 +10024,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -5602,13 +10041,14 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  an xmlNodePtr</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -5617,7 +10057,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12891"
+NAME="AEN15431"
 ></A
 ><H3
 ><A
@@ -5647,6 +10087,9 @@ HREF="libxml-xpath.html#XMLNODESETPTR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15438"
+></A
 ><P
 ></P
 ><TABLE
@@ -5656,6 +10099,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -5666,7 +10110,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -5683,13 +10127,14 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the index to remove</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -5698,70 +10143,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12911"
-></A
-><H3
-><A
-NAME="XMLXPATHFREENODESET"
-></A
->xmlXPathFreeNodeSet ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        xmlXPathFreeNodeSet             (<A
-HREF="libxml-xpath.html#XMLNODESETPTR"
->xmlNodeSetPtr</A
-> obj);</PRE
-></TD
-></TR
-></TABLE
-><P
->Free the NodeSet compound (not the actual nodes !).</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->obj</I
-></TT
->:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&#13;</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN12927"
+NAME="AEN15451"
 ></A
 ><H3
 ><A
@@ -5799,6 +10181,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15460"
+></A
 ><P
 ></P
 ><TABLE
@@ -5808,6 +10193,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -5818,7 +10204,7 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -5840,6 +10226,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the newly created object.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -5848,7 +10235,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12949"
+NAME="AEN15473"
 ></A
 ><H3
 ><A
@@ -5885,6 +10272,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15482"
+></A
 ><P
 ></P
 ><TABLE
@@ -5894,6 +10284,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -5904,7 +10295,7 @@ CLASS="PARAMETER"
 ><I
 >val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -5926,6 +10317,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the newly created object.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -5934,13 +10326,13 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN12971"
+NAME="AEN15495"
 ></A
 ><H3
 ><A
-NAME="XMLXPATHFREENODESETLIST"
+NAME="XMLXPATHWRAPEXTERNAL"
 ></A
->xmlXPathFreeNodeSetList ()</H3
+>xmlXPathWrapExternal ()</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -5950,28 +10342,27 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void        xmlXPathFreeNodeSetList         (<A
+><A
 HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
 >xmlXPathObjectPtr</A
-> obj);</PRE
+> xmlXPathWrapExternal      (void *val);</PRE
 ></TD
 ></TR
 ></TABLE
 ><P
->Free up the xmlXPathObjectPtr <TT
+>Wraps the <TT
 CLASS="PARAMETER"
 ><I
->obj</I
+>val</I
 ></TT
-> but don't deallocate the objects in
-the list contrary to <A
-HREF="libxml-xpath.html#XMLXPATHFREEOBJECT"
->xmlXPathFreeObject</A
->().</P
+> data into an XPath object.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15503"
+></A
 ><P
 ></P
 ><TABLE
@@ -5981,6 +10372,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -5989,143 +10381,14 @@ VALIGN="TOP"
 ><TT
 CLASS="PARAMETER"
 ><I
->obj</I
+>val</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN12989"
-></A
-><H3
-><A
-NAME="XMLXPATHFREEOBJECT"
-></A
->xmlXPathFreeObject ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        xmlXPathFreeObject              (<A
-HREF="libxml-xpath.html#XMLXPATHOBJECTPTR"
->xmlXPathObjectPtr</A
-> obj);</PRE
-></TD
-></TR
-></TABLE
-><P
->Free up an xmlXPathObjectPtr object.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->obj</I
-></TT
->:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&#13;</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN13005"
-></A
-><H3
-><A
-NAME="XMLXPATHNEWCONTEXT"
-></A
->xmlXPathNewContext ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
-><A
-HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
->xmlXPathContextPtr</A
-> xmlXPathNewContext       (<A
-HREF="libxml-tree.html#XMLDOCPTR"
->xmlDocPtr</A
-> doc);</PRE
-></TD
-></TR
-></TABLE
-><P
->Create a new xmlXPathContext</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->doc</I
-></TT
->:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
+>  the user data</TD
 ></TR
 ><TR
 ><TD
@@ -6140,8 +10403,9 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&#13;</TD
+>the newly created object.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -6150,70 +10414,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13026"
-></A
-><H3
-><A
-NAME="XMLXPATHFREECONTEXT"
-></A
->xmlXPathFreeContext ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        xmlXPathFreeContext             (<A
-HREF="libxml-xpath.html#XMLXPATHCONTEXTPTR"
->xmlXPathContextPtr</A
-> ctxt);</PRE
-></TD
-></TR
-></TABLE
-><P
->Free up an xmlXPathContext</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->ctxt</I
-></TT
->:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&#13;</TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN13042"
+NAME="AEN15516"
 ></A
 ><H3
 ><A
@@ -6252,6 +10453,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15525"
+></A
 ><P
 ></P
 ><TABLE
@@ -6261,6 +10465,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -6271,7 +10476,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -6293,6 +10498,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >0 or 1 depending on the results of the test.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -6301,7 +10507,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13064"
+NAME="AEN15538"
 ></A
 ><H3
 ><A
@@ -6333,7 +10539,7 @@ CLASS="PARAMETER"
 ><I
 >arg1</I
 ></TT
->  <TT
+> &lt; <TT
 CLASS="PARAMETER"
 ><I
 >arg2</I
@@ -6344,7 +10550,7 @@ CLASS="PARAMETER"
 ><I
 >arg1</I
 ></TT
-> = <TT
+> &lt;= <TT
 CLASS="PARAMETER"
 ><I
 >arg2</I
@@ -6355,7 +10561,7 @@ CLASS="PARAMETER"
 ><I
 >arg1</I
 ></TT
->  <TT
+> &gt; <TT
 CLASS="PARAMETER"
 ><I
 >arg2</I
@@ -6366,7 +10572,7 @@ CLASS="PARAMETER"
 ><I
 >arg1</I
 ></TT
-> = <TT
+> &gt;= <TT
 CLASS="PARAMETER"
 ><I
 >arg2</I
@@ -6374,18 +10580,21 @@ CLASS="PARAMETER"
 >   (0, 0, ...</P
 ><P
 >When neither object to be compared is a node-set and the operator is
-=, , =, , then the objects are compared by converted both objects
-to numbers and comparing the numbers according to IEEE 754. The 
+&lt;=, &lt;, &gt;=, &gt;, then the objects are compared by converted both objects
+to numbers and comparing the numbers according to IEEE 754. The &lt;
 comparison will be true if and only if the first number is less than the
-second number. The = comparison will be true if and only if the first
-number is less than or equal to the second number. The  comparison
+second number. The &lt;= comparison will be true if and only if the first
+number is less than or equal to the second number. The &gt; comparison
 will be true if and only if the first number is greater than the second
-number. The = comparison will be true if and only if the first number
+number. The &gt;= comparison will be true if and only if the first number
 is greater than or equal to the second number.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15554"
+></A
 ><P
 ></P
 ><TABLE
@@ -6395,6 +10604,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -6405,7 +10615,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -6422,7 +10632,7 @@ CLASS="PARAMETER"
 ><I
 >inf</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -6439,7 +10649,7 @@ CLASS="PARAMETER"
 ><I
 >strict</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -6459,8 +10669,9 @@ CLASS="EMPHASIS"
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->1 if the comparaison succeeded, 0 if it failed</TD
+>1 if the comparison succeeded, 0 if it failed</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -6469,7 +10680,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13101"
+NAME="AEN15575"
 ></A
 ><H3
 ><A
@@ -6500,6 +10711,9 @@ by calling the number function.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15582"
+></A
 ><P
 ></P
 ><TABLE
@@ -6509,6 +10723,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -6519,13 +10734,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath Parser context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -6534,7 +10750,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13117"
+NAME="AEN15591"
 ></A
 ><H3
 ><A
@@ -6565,6 +10781,9 @@ by calling the number function.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15598"
+></A
 ><P
 ></P
 ><TABLE
@@ -6574,6 +10793,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -6584,13 +10804,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath Parser context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -6599,7 +10820,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13133"
+NAME="AEN15607"
 ></A
 ><H3
 ><A
@@ -6623,13 +10844,16 @@ HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
 ></TR
 ></TABLE
 ><P
->Implement the substraction operation on XPath objects:
+>Implement the subtraction operation on XPath objects:
 The numeric operators convert their operands to numbers as if
 by calling the number function.</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15614"
+></A
 ><P
 ></P
 ><TABLE
@@ -6639,6 +10863,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -6649,13 +10874,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath Parser context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -6664,7 +10890,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13149"
+NAME="AEN15623"
 ></A
 ><H3
 ><A
@@ -6695,6 +10921,9 @@ by calling the number function.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15630"
+></A
 ><P
 ></P
 ><TABLE
@@ -6704,6 +10933,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -6714,13 +10944,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath Parser context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -6729,7 +10960,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13165"
+NAME="AEN15639"
 ></A
 ><H3
 ><A
@@ -6770,6 +11001,9 @@ by calling the number function.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15648"
+></A
 ><P
 ></P
 ><TABLE
@@ -6779,6 +11013,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -6789,13 +11024,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath Parser context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -6804,7 +11040,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13183"
+NAME="AEN15657"
 ></A
 ><H3
 ><A
@@ -6845,6 +11081,9 @@ by calling the number function.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15666"
+></A
 ><P
 ></P
 ><TABLE
@@ -6854,6 +11093,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -6864,13 +11104,14 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the XPath Parser context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -6879,7 +11120,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13201"
+NAME="AEN15675"
 ></A
 ><H3
 ><A
@@ -6913,6 +11154,9 @@ HREF="libxml-tree.html#XMLCHAR"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15683"
+></A
 ><P
 ></P
 ><TABLE
@@ -6922,6 +11166,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -6932,7 +11177,7 @@ CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -6954,6 +11199,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >1 if true 0 otherwise</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -6962,7 +11208,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13222"
+NAME="AEN15696"
 ></A
 ><H3
 ><A
@@ -6999,6 +11245,9 @@ The self axis contains just the context node itself</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15705"
+></A
 ><P
 ></P
 ><TABLE
@@ -7008,6 +11257,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -7018,7 +11268,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7035,7 +11285,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7057,6 +11307,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -7065,7 +11316,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13248"
+NAME="AEN15722"
 ></A
 ><H3
 ><A
@@ -7102,6 +11353,9 @@ The child axis contains the children of the context node in document order.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15731"
+></A
 ><P
 ></P
 ><TABLE
@@ -7111,6 +11365,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -7121,7 +11376,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7138,7 +11393,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7160,6 +11415,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -7168,7 +11424,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13274"
+NAME="AEN15748"
 ></A
 ><H3
 ><A
@@ -7206,6 +11462,9 @@ order; a descendant is a child or a child of a child and so on.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15757"
+></A
 ><P
 ></P
 ><TABLE
@@ -7215,6 +11474,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -7225,7 +11485,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7242,7 +11502,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7264,6 +11524,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -7272,7 +11533,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13300"
+NAME="AEN15774"
 ></A
 ><H3
 ><A
@@ -7312,6 +11573,9 @@ on the axis</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15783"
+></A
 ><P
 ></P
 ><TABLE
@@ -7321,6 +11585,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -7331,7 +11596,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7348,7 +11613,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7370,6 +11635,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -7378,7 +11644,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13326"
+NAME="AEN15800"
 ></A
 ><H3
 ><A
@@ -7415,6 +11681,9 @@ The parent axis contains the parent of the context node, if there is one.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15809"
+></A
 ><P
 ></P
 ><TABLE
@@ -7424,6 +11693,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -7434,7 +11704,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7451,7 +11721,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7473,6 +11743,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -7481,7 +11752,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13352"
+NAME="AEN15826"
 ></A
 ><H3
 ><A
@@ -7521,6 +11792,9 @@ parent here is defined the same as with the parent axis.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15835"
+></A
 ><P
 ></P
 ><TABLE
@@ -7530,6 +11804,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -7540,7 +11815,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7557,7 +11832,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7579,6 +11854,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -7587,7 +11863,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13378"
+NAME="AEN15852"
 ></A
 ><H3
 ><A
@@ -7625,6 +11901,9 @@ node in document order.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15861"
+></A
 ><P
 ></P
 ><TABLE
@@ -7634,6 +11913,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -7644,7 +11924,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7661,7 +11941,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7683,6 +11963,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -7691,7 +11972,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13404"
+NAME="AEN15878"
 ></A
 ><H3
 ><A
@@ -7731,6 +12012,9 @@ are ordered in document order</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15887"
+></A
 ><P
 ></P
 ><TABLE
@@ -7740,6 +12024,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -7750,7 +12035,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7767,7 +12052,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7789,6 +12074,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -7797,7 +12083,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13430"
+NAME="AEN15904"
 ></A
 ><H3
 ><A
@@ -7833,9 +12119,14 @@ the namespace axis contains the namespace nodes of the context node;
 the order of nodes on this axis is implementation-defined; the axis will
 be empty unless the context node is an element</P
 ><P
+>We keep the XML namespace node at the end of the list.</P
+><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15914"
+></A
 ><P
 ></P
 ><TABLE
@@ -7845,6 +12136,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -7855,7 +12147,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7872,7 +12164,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7894,6 +12186,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -7902,7 +12195,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13456"
+NAME="AEN15931"
 ></A
 ><H3
 ><A
@@ -7939,6 +12232,9 @@ TODO: support DTD inherited default attributes</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15940"
+></A
 ><P
 ></P
 ><TABLE
@@ -7948,6 +12244,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -7958,7 +12255,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7975,7 +12272,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -7997,6 +12294,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8005,7 +12303,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13482"
+NAME="AEN15957"
 ></A
 ><H3
 ><A
@@ -8045,6 +12343,9 @@ ordered in reverse document order</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15966"
+></A
 ><P
 ></P
 ><TABLE
@@ -8054,6 +12355,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -8064,7 +12366,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8081,7 +12383,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8103,6 +12405,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8111,7 +12414,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13508"
+NAME="AEN15983"
 ></A
 ><H3
 ><A
@@ -8152,6 +12455,9 @@ node on the axis</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN15992"
+></A
 ><P
 ></P
 ><TABLE
@@ -8161,6 +12467,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -8171,7 +12478,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8188,7 +12495,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8210,6 +12517,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8218,7 +12526,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13534"
+NAME="AEN16009"
 ></A
 ><H3
 ><A
@@ -8257,6 +12565,9 @@ axis; the sibling preceding that node is the second on the axis and so on.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16018"
+></A
 ><P
 ></P
 ><TABLE
@@ -8266,6 +12577,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -8276,7 +12588,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8293,7 +12605,7 @@ CLASS="PARAMETER"
 ><I
 >cur</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8315,6 +12627,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the next element following that axis</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8323,7 +12636,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13560"
+NAME="AEN16035"
 ></A
 ><H3
 ><A
@@ -8361,6 +12674,9 @@ The last function returns the number of nodes in the context node list.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16044"
+></A
 ><P
 ></P
 ><TABLE
@@ -8370,6 +12686,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -8380,7 +12697,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8397,13 +12714,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8412,7 +12730,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13582"
+NAME="AEN16057"
 ></A
 ><H3
 ><A
@@ -8446,7 +12764,7 @@ HREF="POSITION"
 >position</GTKDOCLINK
 >()
 The position function returns the position of the context node in the
-context node list. The first position is 1, and so the last positionr
+context node list. The first position is 1, and so the last position
 will be equal to <GTKDOCLINK
 HREF="LAST"
 >last</GTKDOCLINK
@@ -8455,6 +12773,9 @@ HREF="LAST"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16067"
+></A
 ><P
 ></P
 ><TABLE
@@ -8464,6 +12785,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -8474,7 +12796,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8491,13 +12813,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8506,7 +12829,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13605"
+NAME="AEN16080"
 ></A
 ><H3
 ><A
@@ -8540,6 +12863,9 @@ number count(node-set)</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16088"
+></A
 ><P
 ></P
 ><TABLE
@@ -8549,6 +12875,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -8559,7 +12886,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8576,13 +12903,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8591,7 +12919,107 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13626"
+NAME="AEN16101"
+></A
+><H3
+><A
+NAME="XMLXPATHIDFUNCTION"
+></A
+>xmlXPathIdFunction ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlXPathIdFunction              (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt,
+                                             int nargs);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implement the <GTKDOCLINK
+HREF="ID"
+>id</GTKDOCLINK
+>() XPath function
+node-set id(object)
+The id function selects elements by their unique ID
+(see [5.2.1 Unique IDs]). When the argument to id is of type node-set,
+then the result is the union of the result of applying id to the
+string value of each of the nodes in the argument node-set. When the
+argument to id is of any other type, the argument is converted to a
+string as if by a call to the string function; the string is split
+into a whitespace-separated list of tokens (whitespace is any sequence
+of characters matching the production S); the result is a node-set
+containing the elements in the same document as the context node that
+have a unique ID equal to any of the tokens in the list.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN16109"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the XPath Parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nargs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the number of arguments</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN16122"
 ></A
 ><H3
 ><A
@@ -8630,6 +13058,9 @@ defaults to the context node.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16130"
+></A
 ><P
 ></P
 ><TABLE
@@ -8639,6 +13070,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -8649,7 +13081,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8666,13 +13098,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8681,7 +13114,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13647"
+NAME="AEN16143"
 ></A
 ><H3
 ><A
@@ -8721,6 +13154,9 @@ defaults to the context node.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16151"
+></A
 ><P
 ></P
 ><TABLE
@@ -8730,6 +13166,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -8740,7 +13177,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8757,13 +13194,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8772,7 +13210,125 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13668"
+NAME="AEN16164"
+></A
+><H3
+><A
+NAME="XMLXPATHSTRINGFUNCTION"
+></A
+>xmlXPathStringFunction ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        xmlXPathStringFunction          (<A
+HREF="libxml-xpath.html#XMLXPATHPARSERCONTEXTPTR"
+>xmlXPathParserContextPtr</A
+> ctxt,
+                                             int nargs);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Implement the <GTKDOCLINK
+HREF="STRING"
+>string</GTKDOCLINK
+>() XPath function
+string string(object?)
+he string function converts an object to a string as follows:
+- A node-set is converted to a string by returning the value of
+the node in the node-set that is first in document order.
+If the node-set is empty, an empty string is returned.
+- A number is converted to a string as follows
++ NaN is converted to the string NaN 
++ positive zero is converted to the string 0 
++ negative zero is converted to the string 0 
++ positive infinity is converted to the string Infinity 
++ negative infinity is converted to the string -Infinity 
++ if the number is an integer, the number is represented in
+decimal form as a Number with no decimal point and no leading
+zeros, preceded by a minus sign (-) if the number is negative
++ otherwise, the number is represented in decimal form as a
+Number including a decimal point with at least one digit
+before the decimal point and at least one digit after the
+decimal point, preceded by a minus sign (-) if the number
+is negative; there must be no leading zeros before the decimal
+point apart possibly from the one required digit immediately
+before the decimal point; beyond the one required digit
+after the decimal point there must be as many, but only as
+many, more digits as are needed to uniquely distinguish the
+number from all other IEEE 754 numeric values.
+- The boolean false value is converted to the string false.
+The boolean true value is converted to the string true.</P
+><P
+>If the argument is omitted, it defaults to a node-set with the
+context node as its only member.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN16173"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ctxt</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the XPath Parser context</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>nargs</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the number of arguments</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN16186"
 ></A
 ><H3
 ><A
@@ -8810,6 +13366,9 @@ of the context node.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16194"
+></A
 ><P
 ></P
 ><TABLE
@@ -8819,6 +13378,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -8829,7 +13389,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8846,13 +13406,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8861,7 +13422,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13689"
+NAME="AEN16207"
 ></A
 ><H3
 ><A
@@ -8896,6 +13457,9 @@ The concat function returns the concatenation of its arguments.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16215"
+></A
 ><P
 ></P
 ><TABLE
@@ -8905,6 +13469,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -8915,7 +13480,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -8932,13 +13497,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -8947,7 +13513,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13710"
+NAME="AEN16228"
 ></A
 ><H3
 ><A
@@ -8983,6 +13549,9 @@ contains the second argument string, and otherwise returns false.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16236"
+></A
 ><P
 ></P
 ><TABLE
@@ -8992,6 +13561,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9002,7 +13572,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9019,13 +13589,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9034,7 +13605,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13731"
+NAME="AEN16249"
 ></A
 ><H3
 ><A
@@ -9070,6 +13641,9 @@ starts with the second argument string, and otherwise returns false.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16257"
+></A
 ><P
 ></P
 ><TABLE
@@ -9079,6 +13653,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9089,7 +13664,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9106,13 +13681,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9121,7 +13697,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13752"
+NAME="AEN16270"
 ></A
 ><H3
 ><A
@@ -9175,6 +13751,9 @@ and addition used for the above follow the standard IEEE 754 rules. Thus:
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16278"
+></A
 ><P
 ></P
 ><TABLE
@@ -9184,6 +13763,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9194,7 +13774,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9211,13 +13791,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9226,7 +13807,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13773"
+NAME="AEN16291"
 ></A
 ><H3
 ><A
@@ -9265,6 +13846,9 @@ string. For example, substring-before("1999/04/01","/") returns 1999.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16299"
+></A
 ><P
 ></P
 ><TABLE
@@ -9274,6 +13858,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9284,7 +13869,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9301,13 +13886,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9316,7 +13902,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13794"
+NAME="AEN16312"
 ></A
 ><H3
 ><A
@@ -9356,6 +13942,9 @@ and substring-after("1999/04/01","19") returns 99/04/01.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16320"
+></A
 ><P
 ></P
 ><TABLE
@@ -9365,6 +13954,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9375,7 +13965,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9392,13 +13982,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9407,7 +13998,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13815"
+NAME="AEN16333"
 ></A
 ><H3
 ><A
@@ -9447,6 +14038,9 @@ node converted to a string, in other words the value of the context node.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16341"
+></A
 ><P
 ></P
 ><TABLE
@@ -9456,6 +14050,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9466,7 +14061,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9483,13 +14078,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9498,7 +14094,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13836"
+NAME="AEN16354"
 ></A
 ><H3
 ><A
@@ -9541,6 +14137,9 @@ string are removed. For example, translate("--aaa--","abc-","ABC")</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16362"
+></A
 ><P
 ></P
 ><TABLE
@@ -9550,6 +14149,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9560,7 +14160,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9577,13 +14177,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9592,7 +14193,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13857"
+NAME="AEN16375"
 ></A
 ><H3
 ><A
@@ -9628,6 +14229,9 @@ and false otherwise.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16383"
+></A
 ><P
 ></P
 ><TABLE
@@ -9637,6 +14241,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9647,7 +14252,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9664,13 +14269,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9679,7 +14285,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13878"
+NAME="AEN16396"
 ></A
 ><H3
 ><A
@@ -9716,6 +14322,9 @@ HREF="TRUE"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16405"
+></A
 ><P
 ></P
 ><TABLE
@@ -9725,6 +14334,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9735,7 +14345,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9752,13 +14362,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9767,7 +14378,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13900"
+NAME="AEN16418"
 ></A
 ><H3
 ><A
@@ -9804,6 +14415,9 @@ HREF="FALSE"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16427"
+></A
 ><P
 ></P
 ><TABLE
@@ -9813,6 +14427,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9823,7 +14438,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9840,13 +14455,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9855,7 +14471,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13922"
+NAME="AEN16440"
 ></A
 ><H3
 ><A
@@ -9897,6 +14513,9 @@ has an xml:lang attribute. If there is no such attribute, then lang</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16448"
+></A
 ><P
 ></P
 ><TABLE
@@ -9906,6 +14525,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -9916,7 +14536,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -9933,13 +14553,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -9948,7 +14569,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13943"
+NAME="AEN16461"
 ></A
 ><H3
 ><A
@@ -9982,6 +14603,9 @@ number number(object?)</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16469"
+></A
 ><P
 ></P
 ><TABLE
@@ -9991,6 +14615,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -10001,7 +14626,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -10018,13 +14643,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -10033,7 +14659,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13964"
+NAME="AEN16482"
 ></A
 ><H3
 ><A
@@ -10069,6 +14695,9 @@ the argument node-set.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16490"
+></A
 ><P
 ></P
 ><TABLE
@@ -10078,6 +14707,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -10088,7 +14718,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -10105,13 +14735,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -10120,7 +14751,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN13985"
+NAME="AEN16503"
 ></A
 ><H3
 ><A
@@ -10156,6 +14787,9 @@ number that is not greater than the argument and that is an integer.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16511"
+></A
 ><P
 ></P
 ><TABLE
@@ -10165,6 +14799,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -10175,7 +14810,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -10192,13 +14827,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -10207,7 +14843,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14006"
+NAME="AEN16524"
 ></A
 ><H3
 ><A
@@ -10243,6 +14879,9 @@ number that is not less than the argument and that is an integer.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16532"
+></A
 ><P
 ></P
 ><TABLE
@@ -10252,6 +14891,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -10262,7 +14902,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -10279,13 +14919,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -10294,7 +14935,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14027"
+NAME="AEN16545"
 ></A
 ><H3
 ><A
@@ -10331,6 +14972,9 @@ then the one that is even is returned.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16553"
+></A
 ><P
 ></P
 ><TABLE
@@ -10340,6 +14984,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -10350,7 +14995,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -10367,13 +15012,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -10382,7 +15028,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14048"
+NAME="AEN16566"
 ></A
 ><H3
 ><A
@@ -10421,6 +15067,9 @@ negative zero nor NaN
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN16574"
+></A
 ><P
 ></P
 ><TABLE
@@ -10430,6 +15079,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -10440,7 +15090,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -10457,13 +15107,14 @@ CLASS="PARAMETER"
 ><I
 >nargs</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the number of arguments</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P

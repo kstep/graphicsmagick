@@ -1,11 +1,12 @@
 /*
- * entities.c : implementation for the XML entities handking
+ * entities.c : implementation for the XML entities handling
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
 
+#define IN_LIBXML
 #include "libxml.h"
 
 #include <string.h>
@@ -17,8 +18,7 @@
 #include <libxml/entities.h>
 #include <libxml/parser.h>
 #include <libxml/xmlerror.h>
-
-#define DEBUG_ENT_REF /* debugging of cross entities dependancies */
+#include <libxml/globals.h>
 
 /*
  * The XML predefined entities.
@@ -28,7 +28,7 @@ struct xmlPredefinedEntityValue {
     const char *name;
     const char *value;
 };
-struct xmlPredefinedEntityValue xmlPredefinedEntityValues[] = {
+static struct xmlPredefinedEntityValue xmlPredefinedEntityValues[] = {
     { "lt", "<" },
     { "gt", ">" },
     { "apos", "'" },
@@ -37,10 +37,10 @@ struct xmlPredefinedEntityValue xmlPredefinedEntityValues[] = {
 };
 
 /*
- * TODO: !!!!!!! This is GROSS, allocation of a 256 entry hash for
- *               a fixed number of 4 elements !
+ * TODO: This is GROSS, allocation of a 256 entry hash for
+ *       a fixed number of 4 elements !
  */
-xmlHashTablePtr xmlPredefinedEntities = NULL;
+static xmlHashTablePtr xmlPredefinedEntities = NULL;
 
 /*
  * xmlFreeEntity : clean-up an entity record.
@@ -48,7 +48,8 @@ xmlHashTablePtr xmlPredefinedEntities = NULL;
 static void xmlFreeEntity(xmlEntityPtr entity) {
     if (entity == NULL) return;
 
-    if (entity->children)
+    if ((entity->children) &&
+	(entity == (xmlEntityPtr) entity->children->parent))
 	xmlFreeNodeList(entity->children);
     if (entity->name != NULL)
 	xmlFree((char *) entity->name);
@@ -185,7 +186,7 @@ void xmlCleanupPredefinedEntities(void) {
  *
  * Check whether this name is an predefined entity.
  *
- * Returns NULL if not, othervise the entity
+ * Returns NULL if not, otherwise the entity
  */
 xmlEntityPtr
 xmlGetPredefinedEntity(const xmlChar *name) {
@@ -229,7 +230,7 @@ xmlAddDtdEntity(xmlDocPtr doc, const xmlChar *name, int type,
     if (ret == NULL) return(NULL);
 
     /*
-     * Link it to the Dtd
+     * Link it to the DTD
      */
     ret->parent = dtd;
     ret->doc = dtd->doc;
@@ -270,7 +271,7 @@ xmlAddDocEntity(xmlDocPtr doc, const xmlChar *name, int type,
     }
     if (doc->intSubset == NULL) {
         xmlGenericError(xmlGenericErrorContext,
-	        "xmlAddDtdEntity: document without internal subset !\n");
+	        "xmlAddDocEntity: document without internal subset !\n");
 	return(NULL);
     }
     dtd = doc->intSubset;
@@ -278,7 +279,7 @@ xmlAddDocEntity(xmlDocPtr doc, const xmlChar *name, int type,
     if (ret == NULL) return(NULL);
 
     /*
-     * Link it to the Dtd
+     * Link it to the DTD
      */
     ret->parent = dtd;
     ret->doc = dtd->doc;
@@ -323,6 +324,8 @@ xmlGetParameterEntity(xmlDocPtr doc, const xmlChar *name) {
     xmlEntitiesTablePtr table;
     xmlEntityPtr ret;
 
+    if (doc == NULL)
+	return(NULL);
     if ((doc->intSubset != NULL) && (doc->intSubset->pentities != NULL)) {
 	table = (xmlEntitiesTablePtr) doc->intSubset->pentities;
 	ret = xmlGetEntityFromTable(table, name);
@@ -341,8 +344,9 @@ xmlGetParameterEntity(xmlDocPtr doc, const xmlChar *name) {
  * @doc:  the document referencing the entity
  * @name:  the entity name
  *
- * Do an entity lookup in the Dtd entity hash table and
+ * Do an entity lookup in the DTD entity hash table and
  * returns the corresponding entity, if found.
+ * Note: the first argument is the document node, not the DTD node.
  * 
  * Returns A pointer to the entity structure or NULL if not found.
  */
@@ -350,6 +354,8 @@ xmlEntityPtr
 xmlGetDtdEntity(xmlDocPtr doc, const xmlChar *name) {
     xmlEntitiesTablePtr table;
 
+    if (doc == NULL)
+	return(NULL);
     if ((doc->extSubset != NULL) && (doc->extSubset->entities != NULL)) {
 	table = (xmlEntitiesTablePtr) doc->extSubset->entities;
 	return(xmlGetEntityFromTable(table, name));
@@ -363,7 +369,7 @@ xmlGetDtdEntity(xmlDocPtr doc, const xmlChar *name) {
  * @name:  the entity name
  *
  * Do an entity lookup in the document entity hash table and
- * returns the corrsponding entity, otherwise a lookup is done
+ * returns the corresponding entity, otherwise a lookup is done
  * in the predefined entities too.
  * 
  * Returns A pointer to the entity structure or NULL if not found.
@@ -380,11 +386,14 @@ xmlGetDocEntity(xmlDocPtr doc, const xmlChar *name) {
 	    if (cur != NULL)
 		return(cur);
 	}
-	if ((doc->extSubset != NULL) && (doc->extSubset->entities != NULL)) {
-	    table = (xmlEntitiesTablePtr) doc->extSubset->entities;
-	    cur = xmlGetEntityFromTable(table, name);
-	    if (cur != NULL)
-		return(cur);
+	if (doc->standalone != 1) {
+	    if ((doc->extSubset != NULL) &&
+		(doc->extSubset->entities != NULL)) {
+		table = (xmlEntitiesTablePtr) doc->extSubset->entities;
+		cur = xmlGetEntityFromTable(table, name);
+		if (cur != NULL)
+		    return(cur);
+	    }
 	}
     }
     if (xmlPredefinedEntities == NULL)
@@ -643,7 +652,7 @@ xmlEncodeEntitiesReentrant(xmlDocPtr doc, const xmlChar *input) {
 	     */
 	    *out++ = *cur;
 	} else if (*cur >= 0x80) {
-	    if ((doc->encoding != NULL) || (html)) {
+	    if (((doc != NULL) && (doc->encoding != NULL)) || (html)) {
 		/*
 		 * Bjørn Reese <br@sseusa.com> provided the patch
 	        xmlChar xc;
@@ -664,11 +673,13 @@ xmlEncodeEntitiesReentrant(xmlDocPtr doc, const xmlChar *input) {
 		if (*cur < 0xC0) {
 		    xmlGenericError(xmlGenericErrorContext,
 			    "xmlEncodeEntitiesReentrant : input not UTF-8\n");
-		    doc->encoding = xmlStrdup(BAD_CAST "ISO-8859-1");
+		    if (doc != NULL)
+			doc->encoding = xmlStrdup(BAD_CAST "ISO-8859-1");
 		    snprintf(buf, sizeof(buf), "&#%d;", *cur);
 		    buf[sizeof(buf) - 1] = 0;
 		    ptr = buf;
 		    while (*ptr != 0) *out++ = *ptr++;
+		    cur++;
 		    continue;
 		} else if (*cur < 0xE0) {
                     val = (cur[0]) & 0x1F;
@@ -695,7 +706,8 @@ xmlEncodeEntitiesReentrant(xmlDocPtr doc, const xmlChar *input) {
 		if ((l == 1) || (!IS_CHAR(val))) {
 		    xmlGenericError(xmlGenericErrorContext,
 			"xmlEncodeEntitiesReentrant : char out of range\n");
-		    doc->encoding = xmlStrdup(BAD_CAST "ISO-8859-1");
+		    if (doc != NULL)
+			doc->encoding = xmlStrdup(BAD_CAST "ISO-8859-1");
 		    snprintf(buf, sizeof(buf), "&#%d;", *cur);
 		    buf[sizeof(buf) - 1] = 0;
 		    ptr = buf;
@@ -706,7 +718,10 @@ xmlEncodeEntitiesReentrant(xmlDocPtr doc, const xmlChar *input) {
 		/*
 		 * We could do multiple things here. Just save as a char ref
 		 */
-		snprintf(buf, sizeof(buf), "&#x%X;", val);
+		if (html)
+		    snprintf(buf, sizeof(buf), "&#%d;", val);
+		else
+		    snprintf(buf, sizeof(buf), "&#x%X;", val);
 		buf[sizeof(buf) - 1] = 0;
 		ptr = buf;
 		while (*ptr != 0) *out++ = *ptr++;
@@ -859,7 +874,7 @@ xmlCopyEntity(xmlEntityPtr ent) {
 	return(NULL);
     }
     memset(cur, 0, sizeof(xmlEntity));
-    cur->type = XML_ELEMENT_DECL;
+    cur->type = XML_ENTITY_DECL;
 
     cur->etype = ent->etype;
     if (ent->name != NULL)
@@ -872,6 +887,8 @@ xmlCopyEntity(xmlEntityPtr ent) {
 	cur->content = xmlStrdup(ent->content);
     if (ent->orig != NULL)
 	cur->orig = xmlStrdup(ent->orig);
+    if (ent->URI != NULL)
+	cur->URI = xmlStrdup(ent->URI);
     return(cur);
 }
 
@@ -969,7 +986,7 @@ xmlDumpEntityDecl(xmlBufferPtr buf, xmlEntityPtr ent) {
 	    break;
 	default:
 	    xmlGenericError(xmlGenericErrorContext,
-		"xmlDumpEntitiesTable: internal: unknown type %d\n",
+		"xmlDumpEntitiesDecl: internal: unknown type %d\n",
 		    ent->etype);
     }
 }

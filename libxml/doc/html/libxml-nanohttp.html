@@ -4,7 +4,8 @@
 >nanohttp</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="Gnome XML Library Reference Manual"
 HREF="book1.html"><LINK
@@ -18,6 +19,7 @@ REL="NEXT"
 TITLE="nanoftp"
 HREF="libxml-nanoftp.html"></HEAD
 ><BODY
+CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
 LINK="#0000FF"
@@ -121,7 +123,7 @@ NAME="LIBXML-NANOHTTP"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN14714"
+NAME="AEN17232"
 ></A
 ><H2
 >Name</H2
@@ -129,7 +131,7 @@ NAME="AEN14714"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN14717"
+NAME="AEN17235"
 ></A
 ><H2
 >Synopsis</H2
@@ -169,12 +171,29 @@ HREF="libxml-nanohttp.html#XMLNANOHTTPMETHOD"
                                              const char *method,
                                              const char *input,
                                              char **contentType,
-                                             const char *headers);
+                                             const char *headers,
+                                             int ilen);
+void*       <A
+HREF="libxml-nanohttp.html#XMLNANOHTTPMETHODREDIR"
+>xmlNanoHTTPMethodRedir</A
+>          (const char *URL,
+                                             const char *method,
+                                             const char *input,
+                                             char **contentType,
+                                             char **redir,
+                                             const char *headers,
+                                             int ilen);
 void*       <A
 HREF="libxml-nanohttp.html#XMLNANOHTTPOPEN"
 >xmlNanoHTTPOpen</A
 >                 (const char *URL,
                                              char **contentType);
+void*       <A
+HREF="libxml-nanohttp.html#XMLNANOHTTPOPENREDIR"
+>xmlNanoHTTPOpenRedir</A
+>            (const char *URL,
+                                             char **contentType,
+                                             char **redir);
 int         <A
 HREF="libxml-nanohttp.html#XMLNANOHTTPRETURNCODE"
 >xmlNanoHTTPReturnCode</A
@@ -205,7 +224,7 @@ HREF="libxml-nanohttp.html#XMLNANOHTTPCLOSE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN14731"
+NAME="AEN17251"
 ></A
 ><H2
 >Description</H2
@@ -215,14 +234,14 @@ NAME="AEN14731"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN14734"
+NAME="AEN17254"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14736"
+NAME="AEN17256"
 ></A
 ><H3
 ><A
@@ -251,7 +270,7 @@ Currently it just checks for proxy informations</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14742"
+NAME="AEN17262"
 ></A
 ><H3
 ><A
@@ -272,12 +291,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
+>Cleanup the HTTP protocol layer.</P
+><P
 ></P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14747"
+NAME="AEN17268"
 ></A
 ><H3
 ><A
@@ -306,6 +327,9 @@ A NULL URL cleans up proxy informations.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN17274"
+></A
 ><P
 ></P
 ><TABLE
@@ -315,6 +339,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -325,13 +350,14 @@ CLASS="PARAMETER"
 ><I
 >URL</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  The proxy URL used to initialize the proxy context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -340,7 +366,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14762"
+NAME="AEN17283"
 ></A
 ><H3
 ><A
@@ -369,6 +395,9 @@ and save it's content in the file.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN17289"
+></A
 ><P
 ></P
 ><TABLE
@@ -378,6 +407,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -388,7 +418,7 @@ CLASS="PARAMETER"
 ><I
 >URL</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -405,7 +435,7 @@ CLASS="PARAMETER"
 ><I
 >filename</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -422,7 +452,7 @@ CLASS="PARAMETER"
 ><I
 >contentType</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -446,6 +476,7 @@ VALIGN="TOP"
 >-1 in case of failure, 0 incase of success. The contentType,
 if provided must be freed by the caller</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -454,7 +485,7 @@ if provided must be freed by the caller</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14789"
+NAME="AEN17310"
 ></A
 ><H3
 ><A
@@ -474,7 +505,8 @@ CLASS="PROGRAMLISTING"
                                              const char *method,
                                              const char *input,
                                              char **contentType,
-                                             const char *headers);</PRE
+                                             const char *headers,
+                                             int ilen);</PRE
 ></TD
 ></TR
 ></TABLE
@@ -491,6 +523,9 @@ and the input buffer for the request content.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN17317"
+></A
 ><P
 ></P
 ><TABLE
@@ -500,6 +535,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -510,7 +546,7 @@ CLASS="PARAMETER"
 ><I
 >URL</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -527,7 +563,7 @@ CLASS="PARAMETER"
 ><I
 >method</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -544,7 +580,7 @@ CLASS="PARAMETER"
 ><I
 >input</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -561,7 +597,7 @@ CLASS="PARAMETER"
 ><I
 >contentType</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -578,13 +614,31 @@ CLASS="PARAMETER"
 ><I
 >headers</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the extra headers</TD
 ></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ilen</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  input length</TD
+></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -593,7 +647,187 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14821"
+NAME="AEN17346"
+></A
+><H3
+><A
+NAME="XMLNANOHTTPMETHODREDIR"
+></A
+>xmlNanoHTTPMethodRedir ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void*       xmlNanoHTTPMethodRedir          (const char *URL,
+                                             const char *method,
+                                             const char *input,
+                                             char **contentType,
+                                             char **redir,
+                                             const char *headers,
+                                             int ilen);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function try to open a connection to the indicated resource
+via HTTP using the given <TT
+CLASS="PARAMETER"
+><I
+>method</I
+></TT
+>, adding the given extra headers
+and the input buffer for the request content.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN17353"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>URL</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  The URL to load</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>method</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the HTTP method to use</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>input</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the input string if any</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>contentType</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the Content-Type information IN and OUT</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>redir</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the redirected URL OUT</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>headers</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  the extra headers</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>ilen</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  input length</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN17386"
 ></A
 ><H3
 ><A
@@ -621,6 +855,9 @@ via HTTP GET.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN17392"
+></A
 ><P
 ></P
 ><TABLE
@@ -630,6 +867,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -640,7 +878,7 @@ CLASS="PARAMETER"
 ><I
 >URL</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -657,7 +895,7 @@ CLASS="PARAMETER"
 ><I
 >contentType</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -665,6 +903,7 @@ VALIGN="TOP"
 >  if available the Content-Type information will be
 returned at that location</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -673,7 +912,110 @@ returned at that location</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14840"
+NAME="AEN17405"
+></A
+><H3
+><A
+NAME="XMLNANOHTTPOPENREDIR"
+></A
+>xmlNanoHTTPOpenRedir ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void*       xmlNanoHTTPOpenRedir            (const char *URL,
+                                             char **contentType,
+                                             char **redir);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function try to open a connection to the indicated resource
+via HTTP GET.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN17411"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>URL</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  The URL to load</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>contentType</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>  if available the Content-Type information will be
+returned at that location</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>redir</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> if available the redirected URL will be returned</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN17428"
 ></A
 ><H3
 ><A
@@ -694,11 +1036,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
-></P
+>Get the latest HTTP return code received</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN17434"
+></A
 ><P
 ></P
 ><TABLE
@@ -708,6 +1053,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -718,7 +1064,7 @@ CLASS="PARAMETER"
 ><I
 >ctx</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -740,6 +1086,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >the HTTP return code for the request.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -748,7 +1095,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14859"
+NAME="AEN17447"
 ></A
 ><H3
 ><A
@@ -769,11 +1116,14 @@ CLASS="PROGRAMLISTING"
 ></TR
 ></TABLE
 ><P
-></P
+>Get the authentication header of an HTTP context</P
 ><P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN17453"
+></A
 ><P
 ></P
 ><TABLE
@@ -783,6 +1133,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -793,7 +1144,7 @@ CLASS="PARAMETER"
 ><I
 >ctx</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -816,6 +1167,7 @@ VALIGN="TOP"
 >the stashed value of the WWW-Authenticate or Proxy-Authenticate
 header.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -824,7 +1176,7 @@ header.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14878"
+NAME="AEN17466"
 ></A
 ><H3
 ><A
@@ -863,6 +1215,9 @@ CLASS="PARAMETER"
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN17474"
+></A
 ><P
 ></P
 ><TABLE
@@ -872,6 +1227,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -882,7 +1238,7 @@ CLASS="PARAMETER"
 ><I
 >ctx</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -899,7 +1255,7 @@ CLASS="PARAMETER"
 ><I
 >dest</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -916,7 +1272,7 @@ CLASS="PARAMETER"
 ><I
 >len</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -939,6 +1295,7 @@ VALIGN="TOP"
 >the number of byte read. 0 is an indication of an end of connection.
 -1 indicates a parameter error.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -947,7 +1304,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14907"
+NAME="AEN17495"
 ></A
 ><H3
 ><A
@@ -975,6 +1332,9 @@ It closes and free the context at the end</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN17501"
+></A
 ><P
 ></P
 ><TABLE
@@ -984,6 +1344,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -994,7 +1355,7 @@ CLASS="PARAMETER"
 ><I
 >ctxt</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1011,7 +1372,7 @@ CLASS="PARAMETER"
 ><I
 >filename</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
@@ -1033,6 +1394,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 >-1 in case of failure, 0 incase of success.</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P
@@ -1041,7 +1403,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN14930"
+NAME="AEN17518"
 ></A
 ><H3
 ><A
@@ -1068,6 +1430,9 @@ free all data related to it.</P
 ></P
 ><DIV
 CLASS="INFORMALTABLE"
+><A
+NAME="AEN17524"
+></A
 ><P
 ></P
 ><TABLE
@@ -1077,6 +1442,7 @@ BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
 CLASS="CALSTABLE"
+><TBODY
 ><TR
 ><TD
 WIDTH="20%"
@@ -1087,13 +1453,14 @@ CLASS="PARAMETER"
 ><I
 >ctx</I
 ></TT
->:</TD
+>&nbsp;:</TD
 ><TD
 WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
 >  the HTTP context</TD
 ></TR
+></TBODY
 ></TABLE
 ><P
 ></P

@@ -1,9 +1,9 @@
 /*
- * entities.h : interface for the XML entities handking
+ * entities.h : interface for the XML entities handling
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
 
 #ifndef __XML_ENTITIES_H__
@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 /*
- * The different valid entity types
+ * The different valid entity types.
  */
 typedef enum {
     XML_INTERNAL_GENERAL_ENTITY = 1,
@@ -32,16 +32,12 @@ typedef enum {
  * and the linkind data needed for the linking in the hash table.
  */
 
-typedef struct _xmlEntity xmlEntity;
-typedef xmlEntity *xmlEntityPtr;
 struct _xmlEntity {
-#ifndef XML_WITHOUT_CORBA
-    void           *_private;	        /* for Corba, must be first ! */
-#endif
+    void           *_private;	        /* application data */
     xmlElementType          type;       /* XML_ENTITY_DECL, must be second ! */
-    const xmlChar          *name;	/* Attribute name */
-    struct _xmlNode    *children;	/* NULL */
-    struct _xmlNode        *last;	/* NULL */
+    const xmlChar          *name;	/* Entity name */
+    struct _xmlNode    *children;	/* First child link */
+    struct _xmlNode        *last;	/* Last child link */
     struct _xmlDtd       *parent;	/* -> DTD */
     struct _xmlNode        *next;	/* next sibling link  */
     struct _xmlNode        *prev;	/* previous sibling link  */
@@ -59,15 +55,15 @@ struct _xmlEntity {
 };
 
 /*
- * ALl entities are stored in an hash table
- * there is 2 separate hash tables for global and parmeter entities
+ * All entities are stored in an hash table.
+ * There is 2 separate hash tables for global and parameter entities.
  */
 
 typedef struct _xmlHashTable xmlEntitiesTable;
 typedef xmlEntitiesTable *xmlEntitiesTablePtr;
 
 /*
- * External functions :
+ * External functions:
  */
 
 void		xmlInitializePredefinedEntities	(void);

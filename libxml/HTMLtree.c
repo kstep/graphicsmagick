@@ -1,16 +1,15 @@
 /*
- * HTMLtree.c : implemetation of access function for an HTML tree.
+ * HTMLtree.c : implementation of access function for an HTML tree.
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
 
 
+#define IN_LIBXML
 #include "libxml.h"
 #ifdef LIBXML_HTML_ENABLED
-
-#include <string.h> /* for memset() only ! */
 
 #ifdef HAVE_CTYPE_H
 #include <ctype.h>
@@ -26,6 +25,7 @@
 #include <libxml/valid.h>
 #include <libxml/xmlerror.h>
 #include <libxml/parserInternals.h>
+#include <libxml/globals.h>
 
 /************************************************************************
  *									*
@@ -55,7 +55,7 @@ htmlGetMetaEncoding(htmlDocPtr doc) {
      * Search the html
      */
     while (cur != NULL) {
-	if (cur->name != NULL) {
+	if ((cur->type == XML_ELEMENT_NODE) && (cur->name != NULL)) {
 	    if (xmlStrEqual(cur->name, BAD_CAST"html"))
 		break;
 	    if (xmlStrEqual(cur->name, BAD_CAST"head"))
@@ -73,7 +73,7 @@ htmlGetMetaEncoding(htmlDocPtr doc) {
      * Search the head
      */
     while (cur != NULL) {
-	if (cur->name != NULL) {
+	if ((cur->type == XML_ELEMENT_NODE) && (cur->name != NULL)) {
 	    if (xmlStrEqual(cur->name, BAD_CAST"head"))
 		break;
 	    if (xmlStrEqual(cur->name, BAD_CAST"meta"))
@@ -91,7 +91,7 @@ found_head:
      */
 found_meta:
     while (cur != NULL) {
-	if (cur->name != NULL) {
+	if ((cur->type == XML_ELEMENT_NODE) && (cur->name != NULL)) {
 	    if (xmlStrEqual(cur->name, BAD_CAST"meta")) {
 		xmlAttrPtr attr = cur->properties;
 		int http;
@@ -103,11 +103,7 @@ found_meta:
 		    if ((attr->children != NULL) &&
 		        (attr->children->type == XML_TEXT_NODE) &&
 		        (attr->children->next == NULL)) {
-#ifndef XML_USE_BUFFER_CONTENT
 			value = attr->children->content;
-#else
-			value = xmlBufferContent(attr->children->content);
-#endif
 			if ((!xmlStrcasecmp(attr->name, BAD_CAST"http-equiv"))
 			 && (!xmlStrcasecmp(value, BAD_CAST"Content-Type")))
 			    http = 1;
@@ -181,27 +177,7 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
      * Search the html
      */
     while (cur != NULL) {
-	if (cur->name != NULL) {
-/*
-	    if (xmlStrEqual(cur->name, BAD_CAST"html"))
-		break;
-	    if (xmlStrEqual(cur->name, BAD_CAST"body")) {
-		if (encoding == NULL)
-		    return(0);
-		meta = xmlNewDocNode(doc, NULL, BAD_CAST"head", NULL);
-		xmlAddPrevSibling(cur, meta);
-		cur = meta;
-		meta = xmlNewDocNode(doc, NULL, BAD_CAST"meta", NULL);
-		xmlAddChild(cur, meta);
-		xmlNewProp(meta, BAD_CAST"http-equiv", BAD_CAST"Content-Type");
-		xmlNewProp(meta, BAD_CAST"content", BAD_CAST newcontent);
-		return(0);
-	    }
-	    if (xmlStrEqual(cur->name, BAD_CAST"head"))
-		goto found_head;
-	    if (xmlStrEqual(cur->name, BAD_CAST"meta"))
-		goto found_meta;
-*/
+	if ((cur->type == XML_ELEMENT_NODE) && (cur->name != NULL)) {
 	    if (xmlStrcasecmp(cur->name, BAD_CAST"html") == 0)
 		break;
 	    if (xmlStrcasecmp(cur->name, BAD_CAST"head") == 0)
@@ -219,25 +195,7 @@ htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {
      * Search the head
      */
     while (cur != NULL) {
-	if (cur->name != NULL) {
-/*
-	    if (xmlStrEqual(cur->name, BAD_CAST"head"))
-		break;
-	    if (xmlStrEqual(cur->name, BAD_CAST"body")) {
-		if (encoding == NULL)
-		    return(0);
-		meta = xmlNewDocNode(doc, NULL, BAD_CAST"head", NULL);
-		xmlAddPrevSibling(cur, meta);
-		cur = meta;
-		meta = xmlNewDocNode(doc, NULL, BAD_CAST"meta", NULL);
-		xmlAddChild(cur, meta);
-		xmlNewProp(meta, BAD_CAST"http-equiv", BAD_CAST"Content-Type");
-		xmlNewProp(meta, BAD_CAST"content", BAD_CAST newcontent);
-		return(0);
-	    }
-	    if (xmlStrEqual(cur->name, BAD_CAST"meta"))
-		goto found_meta;
-*/
+	if ((cur->type == XML_ELEMENT_NODE) && (cur->name != NULL)) {
 	    if (xmlStrcasecmp(cur->name, BAD_CAST"head") == 0)
 		break;
 	    if (xmlStrcasecmp(cur->name, BAD_CAST"meta") == 0)
@@ -262,7 +220,7 @@ found_head:
 found_meta:
     if (encoding != NULL) {
 	/*
-	 * Create a new Meta element with the right aatributes
+	 * Create a new Meta element with the right attributes
 	 */
 
 	meta = xmlNewDocNode(doc, NULL, BAD_CAST"meta", NULL);
@@ -276,25 +234,19 @@ found_meta:
      * encoding informations
      */
     while (cur != NULL) {
-	if (cur->name != NULL) {
+	if ((cur->type == XML_ELEMENT_NODE) && (cur->name != NULL)) {
 	    if (xmlStrcasecmp(cur->name, BAD_CAST"meta") == 0) {
 		xmlAttrPtr attr = cur->properties;
 		int http;
 		const xmlChar *value;
-                int same_charset;
 
 		content = NULL;
 		http = 0;
-                same_charset = 0;
 		while (attr != NULL) {
 		    if ((attr->children != NULL) &&
 		        (attr->children->type == XML_TEXT_NODE) &&
 		        (attr->children->next == NULL)) {
-#ifndef XML_USE_BUFFER_CONTENT
 			value = attr->children->content;
-#else
-			value = xmlBufferContent(attr->children->content);
-#endif
 			if ((!xmlStrcasecmp(attr->name, BAD_CAST"http-equiv"))
 			 && (!xmlStrcasecmp(value, BAD_CAST"Content-Type")))
 			    http = 1;
@@ -303,17 +255,13 @@ found_meta:
                            if ((value != NULL) && 
 				(!xmlStrcasecmp(attr->name, BAD_CAST"content")))
 			      content = value;
-			   else 
-			     if ((!xmlStrcasecmp(attr->name, BAD_CAST"charset"))
-			 		&& (!xmlStrcasecmp(value, encoding)))
-			    same_charset = 1;
                         }
-		        if ((http != 0) && (content != NULL) && (same_charset != 0))
+		        if ((http != 0) && (content != NULL))
 			    break;
 		    }
 		    attr = attr->next;
 		}
-		if ((http != 0) && (content != NULL) && (same_charset != 0)) {
+		if ((http != 0) && (content != NULL)) {
 		    meta = cur;
 		    cur = cur->next;
 		    xmlUnlinkNode(meta);
@@ -335,7 +283,10 @@ found_meta:
  ************************************************************************/
 
 static void
-htmlDocContentDump(xmlBufferPtr buf, xmlDocPtr cur);
+htmlDocContentDump(xmlBufferPtr buf, xmlDocPtr cur, int format);
+static void
+htmlNodeDumpFormat(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
+	           int format);
 
 /**
  * htmlDtdDump:
@@ -381,6 +332,12 @@ static void
 htmlAttrDump(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur) {
     xmlChar *value;
 
+    /*
+     * TODO: The html output method should not escape a & character
+     *       occurring in an attribute value immediately followed by
+     *       a { character (see Section B.7.1 of the HTML 4.0 Recommendation).
+     */
+
     if (cur == NULL) {
         xmlGenericError(xmlGenericErrorContext,
 		"htmlAttrDump : property == NULL\n");
@@ -409,21 +366,25 @@ htmlAttrDump(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur) {
  * Dump a list of HTML attributes
  */
 static void
-htmlAttrListDump(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur) {
+htmlAttrListDump(xmlBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur, int format) {
+    int i = 0;
+
     if (cur == NULL) {
         xmlGenericError(xmlGenericErrorContext,
 		"htmlAttrListDump : property == NULL\n");
 	return;
     }
     while (cur != NULL) {
+	i++;
+	if ((format) && (i >= 5)) {
+	    i = 0;
+	    xmlBufferWriteChar(buf, "\n");
+	}
         htmlAttrDump(buf, doc, cur);
 	cur = cur->next;
     }
 }
 
-
-void
-htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur);
 /**
  * htmlNodeListDump:
  * @buf:  the HTML buffer output
@@ -433,33 +394,35 @@ htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur);
  * Dump an HTML node list, recursive behaviour,children are printed too.
  */
 static void
-htmlNodeListDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
+htmlNodeListDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, int format) {
     if (cur == NULL) {
         xmlGenericError(xmlGenericErrorContext,
 		"htmlNodeListDump : node == NULL\n");
 	return;
     }
     while (cur != NULL) {
-        htmlNodeDump(buf, doc, cur);
+        htmlNodeDumpFormat(buf, doc, cur, format);
 	cur = cur->next;
     }
 }
 
 /**
- * htmlNodeDump:
+ * htmlNodeDumpFormat:
  * @buf:  the HTML buffer output
  * @doc:  the document
  * @cur:  the current node
+ * @format:  should formatting spaces been added
  *
  * Dump an HTML node, recursive behaviour,children are printed too.
  */
-void
-htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
-    htmlElemDescPtr info;
+static void
+htmlNodeDumpFormat(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
+	           int format) {
+    const htmlElemDesc * info;
 
     if (cur == NULL) {
         xmlGenericError(xmlGenericErrorContext,
-		"htmlNodeDump : node == NULL\n");
+		"htmlNodeDumpFormat : node == NULL\n");
 	return;
     }
     /*
@@ -468,21 +431,18 @@ htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
     if (cur->type == XML_DTD_NODE)
 	return;
     if (cur->type == XML_HTML_DOCUMENT_NODE) {
-	htmlDocContentDump(buf, (xmlDocPtr) cur);
+	htmlDocContentDump(buf, (xmlDocPtr) cur, format);
 	return;
     }
     if (cur->type == HTML_TEXT_NODE) {
 	if (cur->content != NULL) {
-	    if ((cur->name == xmlStringText) ||
-		(cur->name != xmlStringTextNoenc)) {
+	    if (((cur->name == (const xmlChar *)xmlStringText) ||
+		 (cur->name != (const xmlChar *)xmlStringTextNoenc)) &&
+		((cur->parent == NULL) ||
+		 (!xmlStrEqual(cur->parent->name, BAD_CAST "script")))) {
 		xmlChar *buffer;
 
-#ifndef XML_USE_BUFFER_CONTENT
 		buffer = xmlEncodeEntitiesReentrant(doc, cur->content);
-#else
-		buffer = xmlEncodeEntitiesReentrant(doc, 
-					    xmlBufferContent(cur->content));
-#endif 
 		if (buffer != NULL) {
 		    xmlBufferWriteCHAR(buf, buffer);
 		    xmlFree(buffer);
@@ -496,13 +456,21 @@ htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
     if (cur->type == HTML_COMMENT_NODE) {
 	if (cur->content != NULL) {
 	    xmlBufferWriteChar(buf, "<!--");
-#ifndef XML_USE_BUFFER_CONTENT
 	    xmlBufferWriteCHAR(buf, cur->content);
-#else
-	    xmlBufferWriteCHAR(buf, xmlBufferContent(cur->content));
-#endif
 	    xmlBufferWriteChar(buf, "-->");
 	}
+	return;
+    }
+    if (cur->type == HTML_PI_NODE) {
+	if (cur->name == NULL)
+	    return;
+	xmlBufferWriteChar(buf, "<?");
+	xmlBufferWriteCHAR(buf, cur->name);
+	if (cur->content != NULL) {
+	    xmlBufferWriteChar(buf, " ");
+	    xmlBufferWriteCHAR(buf, cur->content);
+	}
+	xmlBufferWriteChar(buf, ">");
 	return;
     }
     if (cur->type == HTML_ENTITY_REF_NODE) {
@@ -511,35 +479,46 @@ htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
         xmlBufferWriteChar(buf, ";");
 	return;
     }
+    if (cur->type == HTML_PRESERVE_NODE) {
+	if (cur->content != NULL) {
+	    xmlBufferWriteCHAR(buf, cur->content);
+	}
+	return;
+    }
 
     /*
-     * Get specific HTmL info for taht node.
+     * Get specific HTML info for that node.
      */
     info = htmlTagLookup(cur->name);
 
     xmlBufferWriteChar(buf, "<");
     xmlBufferWriteCHAR(buf, cur->name);
     if (cur->properties != NULL)
-        htmlAttrListDump(buf, doc, cur->properties);
+        htmlAttrListDump(buf, doc, cur->properties, format);
 
     if ((info != NULL) && (info->empty)) {
         xmlBufferWriteChar(buf, ">");
-	if (cur->next != NULL) {
+	if ((format) && (info != NULL) && (!info->isinline) &&
+	    (cur->next != NULL)) {
 	    if ((cur->next->type != HTML_TEXT_NODE) &&
 		(cur->next->type != HTML_ENTITY_REF_NODE))
 		xmlBufferWriteChar(buf, "\n");
 	}
 	return;
     }
-    if ((cur->content == NULL) && (cur->children == NULL)) {
-        if ((info != NULL) && (info->endTag != 0))
+    if (((cur->type == XML_ELEMENT_NODE) || (cur->content == NULL)) &&
+	(cur->children == NULL)) {
+        if ((info != NULL) && (info->saveEndTag != 0) &&
+	    (xmlStrcmp(BAD_CAST info->name, BAD_CAST "html")) &&
+	    (xmlStrcmp(BAD_CAST info->name, BAD_CAST "body"))) {
 	    xmlBufferWriteChar(buf, ">");
-	else {
+	} else {
 	    xmlBufferWriteChar(buf, "></");
 	    xmlBufferWriteCHAR(buf, cur->name);
 	    xmlBufferWriteChar(buf, ">");
 	}
-	if (cur->next != NULL) {
+	if ((format) && (info != NULL) && (!info->isinline) &&
+	    (cur->next != NULL)) {
 	    if ((cur->next->type != HTML_TEXT_NODE) &&
 		(cur->next->type != HTML_ENTITY_REF_NODE))
 		xmlBufferWriteChar(buf, "\n");
@@ -547,52 +526,103 @@ htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
 	return;
     }
     xmlBufferWriteChar(buf, ">");
-    if (cur->content != NULL) {
+    if ((cur->type != XML_ELEMENT_NODE) && (cur->content != NULL)) {
 	xmlChar *buffer;
 
-#ifndef XML_USE_BUFFER_CONTENT
-    buffer = xmlEncodeEntitiesReentrant(doc, cur->content);
-#else
-    buffer = xmlEncodeEntitiesReentrant(doc, 
-                                        xmlBufferContent(cur->content));
-#endif
+	buffer = xmlEncodeEntitiesReentrant(doc, cur->content);
 	if (buffer != NULL) {
 	    xmlBufferWriteCHAR(buf, buffer);
 	    xmlFree(buffer);
 	}
     }
     if (cur->children != NULL) {
-        if ((cur->children->type != HTML_TEXT_NODE) &&
+        if ((format) && (info != NULL) && (!info->isinline) &&
+	    (cur->children->type != HTML_TEXT_NODE) &&
 	    (cur->children->type != HTML_ENTITY_REF_NODE) &&
 	    (cur->children != cur->last))
 	    xmlBufferWriteChar(buf, "\n");
-	htmlNodeListDump(buf, doc, cur->children);
-        if ((cur->last->type != HTML_TEXT_NODE) &&
+	htmlNodeListDump(buf, doc, cur->children, format);
+        if ((format) && (info != NULL) && (!info->isinline) &&
+	    (cur->last->type != HTML_TEXT_NODE) &&
 	    (cur->last->type != HTML_ENTITY_REF_NODE) &&
 	    (cur->children != cur->last))
 	    xmlBufferWriteChar(buf, "\n");
     }
-    if (!htmlIsAutoClosed(doc, cur)) {
-	xmlBufferWriteChar(buf, "</");
-	xmlBufferWriteCHAR(buf, cur->name);
-	xmlBufferWriteChar(buf, ">");
-    }
-#if 0
-    if (!htmlIsAutoClosed(doc, cur)) {
-	xmlBufferWriteChar(buf, "</");
-	xmlBufferWriteCHAR(buf, cur->name);
-	xmlBufferWriteChar(buf, ">");
-    }
-#else
     xmlBufferWriteChar(buf, "</");
     xmlBufferWriteCHAR(buf, cur->name);
     xmlBufferWriteChar(buf, ">");
-#endif
-    if (cur->next != NULL) {
+    if ((format) && (info != NULL) && (!info->isinline) &&
+	(cur->next != NULL)) {
         if ((cur->next->type != HTML_TEXT_NODE) &&
 	    (cur->next->type != HTML_ENTITY_REF_NODE))
 	    xmlBufferWriteChar(buf, "\n");
     }
+}
+
+/**
+ * htmlNodeDump:
+ * @buf:  the HTML buffer output
+ * @doc:  the document
+ * @cur:  the current node
+ *
+ * Dump an HTML node, recursive behaviour,children are printed too,
+ * and formatting returns are added.
+ */
+void
+htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
+    htmlNodeDumpFormat(buf, doc, cur, 1);
+}
+
+/**
+ * htmlNodeDumpFileFormat:
+ * @out:  the FILE pointer
+ * @doc:  the document
+ * @cur:  the current node
+ * @encoding: the document encoding
+ * @format:  should formatting spaces been added
+ *
+ * Dump an HTML node, recursive behaviour,children are printed too.
+ *
+ * TODO: if encoding == NULL try to save in the doc encoding
+ *
+ * returns: the number of byte written or -1 in case of failure.
+ */
+int
+htmlNodeDumpFileFormat(FILE *out, xmlDocPtr doc,
+	               xmlNodePtr cur, const char *encoding, int format) {
+    xmlOutputBufferPtr buf;
+    xmlCharEncodingHandlerPtr handler = NULL;
+    int ret;
+
+    if (encoding != NULL) {
+	xmlCharEncoding enc;
+
+	enc = xmlParseCharEncoding(encoding);
+	if (enc != XML_CHAR_ENCODING_UTF8) {
+	    handler = xmlFindCharEncodingHandler(encoding);
+	    if (handler == NULL)
+		return(-1);
+	}
+    }
+
+    /*
+     * Fallback to HTML or ASCII when the encoding is unspecified
+     */
+    if (handler == NULL)
+	handler = xmlFindCharEncodingHandler("HTML");
+    if (handler == NULL)
+	handler = xmlFindCharEncodingHandler("ascii");
+
+    /* 
+     * save the content to a temp buffer.
+     */
+    buf = xmlOutputBufferCreateFile(out, handler);
+    if (buf == NULL) return(0);
+
+    htmlNodeDumpFormatOutput(buf, doc, cur, encoding, format);
+
+    ret = xmlOutputBufferClose(buf);
+    return(ret);
 }
 
 /**
@@ -601,17 +631,12 @@ htmlNodeDump(xmlBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur) {
  * @doc:  the document
  * @cur:  the current node
  *
- * Dump an HTML node, recursive behaviour,children are printed too.
+ * Dump an HTML node, recursive behaviour,children are printed too,
+ * and formatting returns are added.
  */
 void
 htmlNodeDumpFile(FILE *out, xmlDocPtr doc, xmlNodePtr cur) {
-    xmlBufferPtr buf;
-
-    buf = xmlBufferCreate();
-    if (buf == NULL) return;
-    htmlNodeDump(buf, doc, cur);
-    xmlBufferDump(out, buf);
-    xmlBufferFree(buf);
+    htmlNodeDumpFileFormat(out, doc, cur, NULL, 1);
 }
 
 /**
@@ -622,7 +647,7 @@ htmlNodeDumpFile(FILE *out, xmlDocPtr doc, xmlNodePtr cur) {
  * Dump an HTML document.
  */
 static void
-htmlDocContentDump(xmlBufferPtr buf, xmlDocPtr cur) {
+htmlDocContentDump(xmlBufferPtr buf, xmlDocPtr cur, int format) {
     int type;
 
     /*
@@ -633,12 +658,12 @@ htmlDocContentDump(xmlBufferPtr buf, xmlDocPtr cur) {
     if (cur->intSubset != NULL)
         htmlDtdDump(buf, cur);
     else {
-	/* Default to HTML-4.0 transitionnal @@@@ */
+	/* Default to HTML-4.0 transitional @@@@ */
 	xmlBufferWriteChar(buf, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">");
 
     }
     if (cur->children != NULL) {
-        htmlNodeListDump(buf, cur, cur->children);
+        htmlNodeListDump(buf, cur, cur->children, format);
     }
     xmlBufferWriteChar(buf, "\n");
     cur->type = (xmlElementType) type;
@@ -648,34 +673,77 @@ htmlDocContentDump(xmlBufferPtr buf, xmlDocPtr cur) {
  * htmlDocDumpMemory:
  * @cur:  the document
  * @mem:  OUT: the memory pointer
- * @size:  OUT: the memory lenght
+ * @size:  OUT: the memory length
  *
  * Dump an HTML document in memory and return the xmlChar * and it's size.
  * It's up to the caller to free the memory.
  */
 void
 htmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
-    xmlBufferPtr buf;
+    xmlOutputBufferPtr buf;
+    xmlCharEncodingHandlerPtr handler = NULL;
+    const char *encoding;
 
     if (cur == NULL) {
 #ifdef DEBUG_TREE
         xmlGenericError(xmlGenericErrorContext,
-		"htmlxmlDocDumpMemory : document == NULL\n");
+		"htmlDocDumpMemory : document == NULL\n");
 #endif
 	*mem = NULL;
 	*size = 0;
 	return;
     }
-    buf = xmlBufferCreate();
+
+    encoding = (const char *) htmlGetMetaEncoding(cur);
+
+    if (encoding != NULL) {
+	xmlCharEncoding enc;
+
+	enc = xmlParseCharEncoding(encoding);
+	if (enc != cur->charset) {
+	    if (cur->charset != XML_CHAR_ENCODING_UTF8) {
+		/*
+		 * Not supported yet
+		 */
+		*mem = NULL;
+		*size = 0;
+		return;
+	    }
+
+	    handler = xmlFindCharEncodingHandler(encoding);
+	    if (handler == NULL) {
+		*mem = NULL;
+		*size = 0;
+		return;
+	    }
+	}
+    }
+
+    /*
+     * Fallback to HTML or ASCII when the encoding is unspecified
+     */
+    if (handler == NULL)
+	handler = xmlFindCharEncodingHandler("HTML");
+    if (handler == NULL)
+	handler = xmlFindCharEncodingHandler("ascii");
+
+    buf = xmlAllocOutputBuffer(handler);
     if (buf == NULL) {
 	*mem = NULL;
 	*size = 0;
 	return;
     }
-    htmlDocContentDump(buf, cur);
-    *mem = buf->content;
-    *size = buf->use;
-    xmlFree(buf);
+
+    htmlDocContentDumpOutput(buf, cur, NULL);
+    xmlOutputBufferFlush(buf);
+    if (buf->conv != NULL) {
+	*size = buf->conv->use;
+	*mem = xmlStrndup(buf->conv->content, *size);
+    } else {
+	*size = buf->buffer->use;
+	*mem = xmlStrndup(buf->buffer->content, *size);
+    }
+    (void)xmlOutputBufferClose(buf);
 }
 
 
@@ -686,7 +754,7 @@ htmlDocDumpMemory(xmlDocPtr cur, xmlChar**mem, int *size) {
  ************************************************************************/
 
 /**
- * htmlDtdDump:
+ * htmlDtdDumpOutput:
  * @buf:  the HTML buffer output
  * @doc:  the document
  * @encoding:  the encoding string
@@ -702,7 +770,7 @@ htmlDtdDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
 
     if (cur == NULL) {
         xmlGenericError(xmlGenericErrorContext,
-		"htmlDtdDump : no internal subset\n");
+		"htmlDtdDumpOutput : no internal subset\n");
 	return;
     }
     xmlOutputBufferWriteString(buf, "<!DOCTYPE ");
@@ -722,7 +790,7 @@ htmlDtdDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
 }
 
 /**
- * htmlAttrDump:
+ * htmlAttrDumpOutput:
  * @buf:  the HTML buffer output
  * @doc:  the document
  * @cur:  the attribute pointer
@@ -735,9 +803,15 @@ htmlAttrDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur,
 	           const char *encoding ATTRIBUTE_UNUSED) {
     xmlChar *value;
 
+    /*
+     * TODO: The html output method should not escape a & character
+     *       occurring in an attribute value immediately followed by
+     *       a { character (see Section B.7.1 of the HTML 4.0 Recommendation).
+     */
+
     if (cur == NULL) {
         xmlGenericError(xmlGenericErrorContext,
-		"htmlAttrDump : property == NULL\n");
+		"htmlAttrDumpOutput : property == NULL\n");
 	return;
     }
     xmlOutputBufferWriteString(buf, " ");
@@ -755,7 +829,7 @@ htmlAttrDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur,
 }
 
 /**
- * htmlAttrListDump:
+ * htmlAttrListDumpOutput:
  * @buf:  the HTML buffer output
  * @doc:  the document
  * @cur:  the first attribute pointer
@@ -767,7 +841,7 @@ static void
 htmlAttrListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlAttrPtr cur, const char *encoding) {
     if (cur == NULL) {
         xmlGenericError(xmlGenericErrorContext,
-		"htmlAttrListDump : property == NULL\n");
+		"htmlAttrListDumpOutput : property == NULL\n");
 	return;
     }
     while (cur != NULL) {
@@ -781,44 +855,47 @@ void htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
 	                xmlNodePtr cur, const char *encoding);
 
 /**
- * htmlNodeListDump:
+ * htmlNodeListDumpOutput:
  * @buf:  the HTML buffer output
  * @doc:  the document
  * @cur:  the first node
  * @encoding:  the encoding string
+ * @format:  should formatting spaces been added
  *
  * Dump an HTML node list, recursive behaviour,children are printed too.
  */
 static void
-htmlNodeListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur, const char *encoding) {
+htmlNodeListDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
+	               xmlNodePtr cur, const char *encoding, int format) {
     if (cur == NULL) {
         xmlGenericError(xmlGenericErrorContext,
-		"htmlNodeListDump : node == NULL\n");
+		"htmlNodeListDumpOutput : node == NULL\n");
 	return;
     }
     while (cur != NULL) {
-        htmlNodeDumpOutput(buf, doc, cur, encoding);
+        htmlNodeDumpFormatOutput(buf, doc, cur, encoding, format);
 	cur = cur->next;
     }
 }
 
 /**
- * htmlNodeDumpOutput:
+ * htmlNodeDumpFormatOutput:
  * @buf:  the HTML buffer output
  * @doc:  the document
  * @cur:  the current node
  * @encoding:  the encoding string
+ * @format:  should formatting spaces been added
  *
  * Dump an HTML node, recursive behaviour,children are printed too.
  */
 void
-htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
-	           xmlNodePtr cur, const char *encoding) {
-    htmlElemDescPtr info;
+htmlNodeDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
+	                 xmlNodePtr cur, const char *encoding, int format) {
+    const htmlElemDesc * info;
 
     if (cur == NULL) {
         xmlGenericError(xmlGenericErrorContext,
-		"htmlNodeDump : node == NULL\n");
+		"htmlNodeDumpFormatOutput : node == NULL\n");
 	return;
     }
     /*
@@ -832,16 +909,13 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
     }
     if (cur->type == HTML_TEXT_NODE) {
 	if (cur->content != NULL) {
-	    if ((cur->name == xmlStringText) ||
-		(cur->name != xmlStringTextNoenc)) {
+	    if (((cur->name == (const xmlChar *)xmlStringText) ||
+		 (cur->name != (const xmlChar *)xmlStringTextNoenc)) &&
+		((cur->parent == NULL) ||
+		 (!xmlStrEqual(cur->parent->name, BAD_CAST "script")))) {
 		xmlChar *buffer;
 
-#ifndef XML_USE_BUFFER_CONTENT
 		buffer = xmlEncodeEntitiesReentrant(doc, cur->content);
-#else
-		buffer = xmlEncodeEntitiesReentrant(doc, 
-					    xmlBufferContent(cur->content));
-#endif 
 		if (buffer != NULL) {
 		    xmlOutputBufferWriteString(buf, (const char *)buffer);
 		    xmlFree(buffer);
@@ -855,14 +929,21 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
     if (cur->type == HTML_COMMENT_NODE) {
 	if (cur->content != NULL) {
 	    xmlOutputBufferWriteString(buf, "<!--");
-#ifndef XML_USE_BUFFER_CONTENT
 	    xmlOutputBufferWriteString(buf, (const char *)cur->content);
-#else
-	    xmlOutputBufferWriteString(buf, (const char *)
-		                       xmlBufferContent(cur->content));
-#endif
 	    xmlOutputBufferWriteString(buf, "-->");
 	}
+	return;
+    }
+    if (cur->type == HTML_PI_NODE) {
+	if (cur->name == NULL)
+	    return;
+	xmlOutputBufferWriteString(buf, "<?");
+	xmlOutputBufferWriteString(buf, (const char *)cur->name);
+	if (cur->content != NULL) {
+	    xmlOutputBufferWriteString(buf, " ");
+	    xmlOutputBufferWriteString(buf, (const char *)cur->content);
+	}
+	xmlOutputBufferWriteString(buf, ">");
 	return;
     }
     if (cur->type == HTML_ENTITY_REF_NODE) {
@@ -873,18 +954,13 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
     }
     if (cur->type == HTML_PRESERVE_NODE) {
 	if (cur->content != NULL) {
-#ifndef XML_USE_BUFFER_CONTENT
 	    xmlOutputBufferWriteString(buf, (const char *)cur->content);
-#else
-	    xmlOutputBufferWriteString(buf, (const char *)
-		                       xmlBufferContent(cur->content));
-#endif
 	}
 	return;
     }
 
     /*
-     * Get specific HTML info for taht node.
+     * Get specific HTML info for that node.
      */
     info = htmlTagLookup(cur->name);
 
@@ -895,86 +971,102 @@ htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
 
     if ((info != NULL) && (info->empty)) {
         xmlOutputBufferWriteString(buf, ">");
-	if (cur->next != NULL) {
+	if ((format) && (!info->isinline) && (cur->next != NULL)) {
 	    if ((cur->next->type != HTML_TEXT_NODE) &&
-		(cur->next->type != HTML_ENTITY_REF_NODE))
+		(cur->next->type != HTML_ENTITY_REF_NODE) &&
+		(cur->parent != NULL) &&
+		(!xmlStrEqual(cur->parent->name, BAD_CAST "pre")))
 		xmlOutputBufferWriteString(buf, "\n");
 	}
 	return;
     }
-    if ((cur->content == NULL) && (cur->children == NULL)) {
+    if (((cur->type == XML_ELEMENT_NODE) || (cur->content == NULL)) &&
+	(cur->children == NULL)) {
         if ((info != NULL) && (info->saveEndTag != 0) &&
-/*
-	    (xmlStrcasecmp(BAD_CAST info->name, BAD_CAST "html")) && 
-	    (xmlStrcasecmp(BAD_CAST info->name, BAD_CAST "body"))) {
-*/
-	    (strcmp(info->name, "html")) && (strcmp(info->name, "body"))) {
+	    (xmlStrcmp(BAD_CAST info->name, BAD_CAST "html")) &&
+	    (xmlStrcmp(BAD_CAST info->name, BAD_CAST "body"))) {
 	    xmlOutputBufferWriteString(buf, ">");
 	} else {
 	    xmlOutputBufferWriteString(buf, "></");
 	    xmlOutputBufferWriteString(buf, (const char *)cur->name);
 	    xmlOutputBufferWriteString(buf, ">");
 	}
-	if (cur->next != NULL) {
+	if ((format) && (cur->next != NULL) &&
+            (info != NULL) && (!info->isinline)) {
 	    if ((cur->next->type != HTML_TEXT_NODE) &&
-		(cur->next->type != HTML_ENTITY_REF_NODE))
+		(cur->next->type != HTML_ENTITY_REF_NODE) &&
+		(cur->parent != NULL) &&
+		(!xmlStrEqual(cur->parent->name, BAD_CAST "pre")))
 		xmlOutputBufferWriteString(buf, "\n");
 	}
 	return;
     }
     xmlOutputBufferWriteString(buf, ">");
-    if (cur->content != NULL) {
+    if ((cur->type != XML_ELEMENT_NODE) &&
+	(cur->content != NULL)) {
 	    /*
 	     * Uses the OutputBuffer property to automatically convert
 	     * invalids to charrefs
 	     */
 
-#ifndef XML_USE_BUFFER_CONTENT
             xmlOutputBufferWriteString(buf, (const char *) cur->content);
-#else
-            xmlOutputBufferWriteString(buf, 
-		           (const char *) xmlBufferContent(cur->content));
-#endif 
     }
     if (cur->children != NULL) {
-        if ((cur->children->type != HTML_TEXT_NODE) &&
+        if ((format) && (info != NULL) && (!info->isinline) &&
+	    (cur->children->type != HTML_TEXT_NODE) &&
 	    (cur->children->type != HTML_ENTITY_REF_NODE) &&
-	    (cur->children != cur->last))
+	    (cur->children != cur->last) &&
+	    (!xmlStrEqual(cur->name, BAD_CAST "pre")))
 	    xmlOutputBufferWriteString(buf, "\n");
-	htmlNodeListDumpOutput(buf, doc, cur->children, encoding);
-        if ((cur->last->type != HTML_TEXT_NODE) &&
+	htmlNodeListDumpOutput(buf, doc, cur->children, encoding, format);
+        if ((format) && (info != NULL) && (!info->isinline) &&
+	    (cur->last->type != HTML_TEXT_NODE) &&
 	    (cur->last->type != HTML_ENTITY_REF_NODE) &&
-	    (cur->children != cur->last))
+	    (cur->children != cur->last) &&
+	    (!xmlStrEqual(cur->name, BAD_CAST "pre")))
 	    xmlOutputBufferWriteString(buf, "\n");
     }
-#if 0
-    if (!htmlIsAutoClosed(doc, cur)) {
-	xmlOutputBufferWriteString(buf, "</");
-	xmlOutputBufferWriteString(buf, (const char *)cur->name);
-	xmlOutputBufferWriteString(buf, ">");
-    }
-#else
     xmlOutputBufferWriteString(buf, "</");
     xmlOutputBufferWriteString(buf, (const char *)cur->name);
     xmlOutputBufferWriteString(buf, ">");
-#endif
-    if (cur->next != NULL) {
+    if ((format) && (info != NULL) && (!info->isinline) &&
+	(cur->next != NULL)) {
         if ((cur->next->type != HTML_TEXT_NODE) &&
-	    (cur->next->type != HTML_ENTITY_REF_NODE))
+	    (cur->next->type != HTML_ENTITY_REF_NODE) &&
+	    (cur->parent != NULL) &&
+	    (!xmlStrEqual(cur->parent->name, BAD_CAST "pre")))
 	    xmlOutputBufferWriteString(buf, "\n");
     }
 }
 
 /**
- * htmlDocContentDump:
+ * htmlNodeDumpOutput:
+ * @buf:  the HTML buffer output
+ * @doc:  the document
+ * @cur:  the current node
+ * @encoding:  the encoding string
+ *
+ * Dump an HTML node, recursive behaviour,children are printed too,
+ * and formatting returns/spaces are added.
+ */
+void
+htmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc,
+	           xmlNodePtr cur, const char *encoding) {
+    htmlNodeDumpFormatOutput(buf, doc, cur, encoding, 1);
+}
+
+/**
+ * htmlDocContentDumpFormatOutput:
  * @buf:  the HTML buffer output
  * @cur:  the document
  * @encoding:  the encoding string
+ * @format:  should formatting spaces been added
  *
  * Dump an HTML document.
  */
 void
-htmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *encoding) {
+htmlDocContentDumpFormatOutput(xmlOutputBufferPtr buf, xmlDocPtr cur,
+	                       const char *encoding, int format) {
     int type;
 
     /*
@@ -984,19 +1076,26 @@ htmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *enco
     cur->type = XML_HTML_DOCUMENT_NODE;
     if (cur->intSubset != NULL) {
         htmlDtdDumpOutput(buf, cur, NULL);
-#if 0
-    /* Disabled for XSLT output */
-    } else {
-	/* Default to HTML-4.0 transitionnal @@@@ */
-	xmlOutputBufferWriteString(buf, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">\n");
-
-#endif
     }
     if (cur->children != NULL) {
-        htmlNodeListDumpOutput(buf, cur, cur->children, encoding);
+        htmlNodeListDumpOutput(buf, cur, cur->children, encoding, format);
     }
     xmlOutputBufferWriteString(buf, "\n");
     cur->type = (xmlElementType) type;
+}
+
+/**
+ * htmlDocContentDumpOutput:
+ * @buf:  the HTML buffer output
+ * @cur:  the document
+ * @encoding:  the encoding string
+ *
+ * Dump an HTML document. Formating return/spaces are added.
+ */
+void
+htmlDocContentDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr cur,
+	                 const char *encoding) {
+    htmlDocContentDumpFormatOutput(buf, cur, encoding, 1);
 }
 
 /************************************************************************
@@ -1122,16 +1221,19 @@ htmlSaveFile(const char *filename, xmlDocPtr cur) {
 }
 
 /**
- * htmlSaveFileEnc:
+ * htmlSaveFileFormat:
  * @filename:  the filename
  * @cur:  the document
+ * @format:  should formatting spaces been added
+ * @encoding: the document encoding
  *
  * Dump an HTML document to a file using a given encoding.
  * 
  * returns: the number of byte written or -1 in case of failure.
  */
 int
-htmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
+htmlSaveFileFormat(const char *filename, xmlDocPtr cur,
+	           const char *encoding, int format) {
     xmlOutputBufferPtr buf;
     xmlCharEncodingHandlerPtr handler = NULL;
     int ret;
@@ -1171,9 +1273,26 @@ htmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
     buf = xmlOutputBufferCreateFilename(filename, handler, 0);
     if (buf == NULL) return(0);
 
-    htmlDocContentDumpOutput(buf, cur, encoding);
+    htmlDocContentDumpFormatOutput(buf, cur, encoding, format);
 
     ret = xmlOutputBufferClose(buf);
     return(ret);
 }
+
+/**
+ * htmlSaveFileEnc:
+ * @filename:  the filename
+ * @cur:  the document
+ * @encoding: the document encoding
+ *
+ * Dump an HTML document to a file using a given encoding
+ * and formatting returns/spaces are added.
+ * 
+ * returns: the number of byte written or -1 in case of failure.
+ */
+int
+htmlSaveFileEnc(const char *filename, xmlDocPtr cur, const char *encoding) {
+    return(htmlSaveFileFormat(filename, cur, encoding, 1));
+}
+
 #endif /* LIBXML_HTML_ENABLED */

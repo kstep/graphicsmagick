@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,18 +60,23 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+C14N_OBJ = @C14N_OBJ@
+CATALOG_OBJ = @CATALOG_OBJ@
 CC = @CC@
 CFLAGS = @CFLAGS@
-CORBA_CFLAGS = @CORBA_CFLAGS@
 CPP = @CPP@
 DEBUG_OBJ = @DEBUG_OBJ@
 DLLTOOL = @DLLTOOL@
+DOCB_OBJ = @DOCB_OBJ@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 FTP_OBJ = @FTP_OBJ@
 HAVE_ISINF = @HAVE_ISINF@
 HAVE_ISNAN = @HAVE_ISNAN@
 HTML_DIR = @HTML_DIR@
 HTML_OBJ = @HTML_OBJ@
 HTTP_OBJ = @HTTP_OBJ@
+ICONV_LIBS = @ICONV_LIBS@
 LIBTOOL = @LIBTOOL@
 LIBXML_MAJOR_VERSION = @LIBXML_MAJOR_VERSION@
 LIBXML_MICRO_VERSION = @LIBXML_MICRO_VERSION@
@@ -85,19 +90,32 @@ MAKEINFO = @MAKEINFO@
 MV = @MV@
 M_LIBS = @M_LIBS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
+PYTHON = @PYTHON@
+PYTHON_INCLUDES = @PYTHON_INCLUDES@
+PYTHON_SITE_PACKAGES = @PYTHON_SITE_PACKAGES@
+PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 RDL_LIBS = @RDL_LIBS@
 RM = @RM@
+STRIP = @STRIP@
 TAR = @TAR@
+TEST_THREADS = @TEST_THREADS@
+THREAD_CFLAGS = @THREAD_CFLAGS@
+THREAD_LIBS = @THREAD_LIBS@
 U = @U@
 VERSION = @VERSION@
+WITH_C14N = @WITH_C14N@
+WITH_CATALOG = @WITH_CATALOG@
 WITH_DEBUG = @WITH_DEBUG@
+WITH_DOCB = @WITH_DOCB@
 WITH_FTP = @WITH_FTP@
 WITH_HTML = @WITH_HTML@
 WITH_HTTP = @WITH_HTTP@
 WITH_ICONV = @WITH_ICONV@
 WITH_MEM_DEBUG = @WITH_MEM_DEBUG@
+WITH_THREADS = @WITH_THREADS@
 WITH_TRIO = @WITH_TRIO@
 WITH_XINCLUDE = @WITH_XINCLUDE@
 WITH_XPATH = @WITH_XPATH@
@@ -112,15 +130,21 @@ XPTR_OBJ = @XPTR_OBJ@
 Z_CFLAGS = @Z_CFLAGS@
 Z_LIBS = @Z_LIBS@
 
+AUTOMAKE_OPTIONS = no-dependencies
+
 noinst_PROGRAMS = gjobread
 
-INCLUDES =  	-I$(top_builddir) -I$(top_srcdir)		-I@srcdir@
+INCLUDES = \
+	-I$(top_builddir) -I$(top_srcdir)	\
+	-I$(top_builddir)/include		\
+	-I$(top_srcdir)/include -I@srcdir@
 
 
-LDADD = $(top_builddir)/libxml2.la @Z_LIBS@ -lm
+LDADD = $(top_builddir)/libxml2.la @THREAD_LIBS@ @Z_LIBS@ $(ICONV_LIBS) -lm
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+noinst_PROGRAMS =  gjobread$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
@@ -129,7 +153,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 gjobread_SOURCES = gjobread.c
-gjobread_OBJECTS =  gjobread.o
+gjobread_OBJECTS =  gjobread.$(OBJEXT)
 gjobread_LDADD = $(LDADD)
 gjobread_DEPENDENCIES =  $(top_builddir)/libxml2.la
 gjobread_LDFLAGS = 
@@ -144,13 +168,13 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
 SOURCES = gjobread.c
-OBJECTS = gjobread.o
+OBJECTS = gjobread.$(OBJEXT)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps example/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu example/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
@@ -169,6 +193,11 @@ maintainer-clean-noinstPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -177,6 +206,7 @@ maintainer-clean-noinstPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -204,8 +234,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-gjobread: $(gjobread_OBJECTS) $(gjobread_DEPENDENCIES)
-	@rm -f gjobread
+gjobread$(EXEEXT): $(gjobread_OBJECTS) $(gjobread_DEPENDENCIES)
+	@rm -f gjobread$(EXEEXT)
 	$(LINK) $(gjobread_LDFLAGS) $(gjobread_OBJECTS) $(gjobread_LDADD) $(LIBS)
 
 tags: TAGS
@@ -252,10 +282,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gjobread.o: gjobread.c ../libxml/xmlmemory.h ../libxml/xmlversion.h \
-	../libxml/parser.h ../libxml/tree.h ../libxml/valid.h \
-	../libxml/xmlIO.h ../libxml/encoding.h ../libxml/entities.h
-
 info-am:
 info: info-am
 dvi-am:

@@ -4,7 +4,6 @@
  *  Reference: RFC 959
  */
 
-#define INCLUDE_WINSOCK
 #ifdef TESTING
 #define STANDALONE
 #define HAVE_STDLIB_H
@@ -13,17 +12,12 @@
 #define HAVE_NETINET_IN_H
 #define HAVE_NETDB_H
 #define HAVE_SYS_TIME_H
-#include <libxml/xmlversion.h>
-#ifdef WITHOUT_TRIO
-#include <stdio.h>
-#else
-#define TRIO_REPLACE_STDIO
-#include "trio.h"
-#endif
-#else /* STANDALONE */
-#include "libxml.h"
-#endif /* STANDALONE */
+#else /* TESTING */
+#define NEED_SOCKETS
+#endif /* TESTING */
 
+#define IN_LIBXML
+#include "libxml.h"
 
 #ifdef LIBXML_FTP_ENABLED
 #include <string.h>
@@ -63,8 +57,10 @@
 #endif
 
 #include <libxml/xmlmemory.h>
-#include <libxml/nanoftp.h>
+#include <libxml/parser.h>
 #include <libxml/xmlerror.h>
+#include <libxml/nanoftp.h>
+#include <libxml/globals.h>
 
 /* #define DEBUG_FTP 1  */
 #ifdef STANDALONE
@@ -80,8 +76,9 @@
 #define closesocket(s) close(s)
 #define SOCKET int
 #endif
-
-static char hostname[100];
+#if defined(VMS) || defined(__VMS)
+#define SOCKLEN_T unsigned int
+#endif
 
 #define FTP_COMMAND_OK		200
 #define FTP_SYNTAX_ERROR	500
@@ -138,8 +135,6 @@ xmlNanoFTPInit(void) {
 	return;
 #endif
 
-    gethostname(hostname, sizeof(hostname));
-
     proxyPort = 21;
     env = getenv("no_proxy");
     if (env != NULL)
@@ -184,7 +179,6 @@ xmlNanoFTPCleanup(void) {
 	xmlFree(proxyPasswd);
 	proxyPasswd = NULL;
     }
-    hostname[0] = 0;
 #ifdef _WINSOCKAPI_
     if (initialized)
 	WSACleanup();
@@ -268,6 +262,31 @@ xmlNanoFTPScanURL(void *ctx, const char *URL) {
     if (*cur == 0) return;
 
     buf[indx] = 0;
+    /* allow user@ and user:pass@ forms */
+    {
+	const char *p = strchr(cur, '@');
+	if(p) {
+	    while(1) {
+		if(cur[0] == ':' || cur[0] == '@') break;
+		buf[indx++] = *cur++;
+	    }
+	    buf[indx] = 0;
+	    ctxt->user = xmlMemStrdup(buf);
+	    indx = 0;
+	    if(cur[0] == ':') {
+		cur++;
+		while(1) {
+		    if(cur[0] == '@') break;
+		    buf[indx++] = *cur++;
+		}
+		buf[indx] = 0;
+		ctxt->passwd = xmlMemStrdup(buf);
+		indx = 0;
+	    }
+	    cur = p+1;
+	}
+    }
+
     while (1) {
         if (cur[0] == ':') {
 	    buf[indx] = 0;
@@ -487,6 +506,7 @@ xmlNanoFTPNewCtxt(const char *URL) {
     ret->returnValue = 0;
     ret->controlBufIndex = 0;
     ret->controlBufUsed = 0;
+    ret->controlFd = -1;
 
     if (URL != NULL)
 	xmlNanoFTPScanURL(ret, URL);
@@ -610,7 +630,7 @@ xmlNanoFTPGetMore(void *ctx) {
     }
 
     /*
-     * Read the amount left on teh control connection
+     * Read the amount left on the control connection
      */
     if ((len = recv(ctxt->controlFd, &ctxt->controlBuf[ctxt->controlBufIndex],
 		    size, 0)) < 0) {
@@ -749,7 +769,7 @@ xmlNanoFTPCheckResponse(void *ctx) {
 }
 
 /**
- * Send the user authentification
+ * Send the user authentication
  */
 
 static int
@@ -766,7 +786,7 @@ xmlNanoFTPSendUser(void *ctx) {
     buf[sizeof(buf) - 1] = 0;
     len = strlen(buf);
 #ifdef DEBUG_FTP
-    xmlGenericError(xmlGenericErrorContext, buf);
+    xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
     res = send(ctxt->controlFd, buf, len, 0);
     if (res < 0) return(res);
@@ -774,7 +794,7 @@ xmlNanoFTPSendUser(void *ctx) {
 }
 
 /**
- * Send the password authentification
+ * Send the password authentication
  */
 
 static int
@@ -785,13 +805,13 @@ xmlNanoFTPSendPasswd(void *ctx) {
     int res;
 
     if (ctxt->passwd == NULL)
-	snprintf(buf, sizeof(buf), "PASS libxml@%s\r\n", hostname);
+	snprintf(buf, sizeof(buf), "PASS anonymous@\r\n");
     else
 	snprintf(buf, sizeof(buf), "PASS %s\r\n", ctxt->passwd);
     buf[sizeof(buf) - 1] = 0;
     len = strlen(buf);
 #ifdef DEBUG_FTP
-    xmlGenericError(xmlGenericErrorContext, buf);
+    xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
     res = send(ctxt->controlFd, buf, len, 0);
     if (res < 0) return(res);
@@ -818,7 +838,7 @@ xmlNanoFTPQuit(void *ctx) {
     sprintf(buf, "QUIT\r\n");
     len = strlen(buf);
 #ifdef DEBUG_FTP
-    xmlGenericError(xmlGenericErrorContext, buf);
+    xmlGenericError(xmlGenericErrorContext, "%s", buf); /* Just to be consistent, even though we know it can't have a % in it */
 #endif
     res = send(ctxt->controlFd, buf, len, 0);
     return(0);
@@ -940,7 +960,7 @@ xmlNanoFTPConnect(void *ctx) {
             buf[sizeof(buf) - 1] = 0;
             len = strlen(buf);
 #ifdef DEBUG_FTP
-	    xmlGenericError(xmlGenericErrorContext, buf);
+	    xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
 	    res = send(ctxt->controlFd, buf, len, 0);
 	    if (res < 0) {
@@ -957,12 +977,11 @@ xmlNanoFTPConnect(void *ctx) {
 		    if (proxyPasswd != NULL)
 			snprintf(buf, sizeof(buf), "PASS %s\r\n", proxyPasswd);
 		    else
-			snprintf(buf, sizeof(buf), "PASS libxml@%s\r\n",
-			               hostname);
+			snprintf(buf, sizeof(buf), "PASS anonymous@\r\n");
                     buf[sizeof(buf) - 1] = 0;
                     len = strlen(buf);
 #ifdef DEBUG_FTP
-		    xmlGenericError(xmlGenericErrorContext, buf);
+		    xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
 		    res = send(ctxt->controlFd, buf, len, 0);
 		    if (res < 0) {
@@ -995,14 +1014,14 @@ xmlNanoFTPConnect(void *ctx) {
 	 */
 	switch (proxyType) {
 	    case 0:
-		/* we will try in seqence */
+		/* we will try in sequence */
 	    case 1:
 		/* Using SITE command */
 		snprintf(buf, sizeof(buf), "SITE %s\r\n", ctxt->hostname);
                 buf[sizeof(buf) - 1] = 0;
                 len = strlen(buf);
 #ifdef DEBUG_FTP
-		xmlGenericError(xmlGenericErrorContext, buf);
+		xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
 		res = send(ctxt->controlFd, buf, len, 0);
 		if (res < 0) {
@@ -1032,7 +1051,7 @@ xmlNanoFTPConnect(void *ctx) {
                 buf[sizeof(buf) - 1] = 0;
                 len = strlen(buf);
 #ifdef DEBUG_FTP
-		xmlGenericError(xmlGenericErrorContext, buf);
+		xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
 		res = send(ctxt->controlFd, buf, len, 0);
 		if (res < 0) {
@@ -1047,13 +1066,13 @@ xmlNanoFTPConnect(void *ctx) {
 		    return(0);
 		}    
 		if (ctxt->passwd == NULL)
-		    snprintf(buf, sizeof(buf), "PASS libxml@%s\r\n", hostname);
+		    snprintf(buf, sizeof(buf), "PASS anonymous@\r\n");
 		else
 		    snprintf(buf, sizeof(buf), "PASS %s\r\n", ctxt->passwd);
                 buf[sizeof(buf) - 1] = 0;
                 len = strlen(buf);
 #ifdef DEBUG_FTP
-		xmlGenericError(xmlGenericErrorContext, buf);
+		xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
 		res = send(ctxt->controlFd, buf, len, 0);
 		if (res < 0) {
@@ -1191,7 +1210,7 @@ xmlNanoFTPCwd(void *ctx, char *directory) {
     buf[sizeof(buf) - 1] = 0;
     len = strlen(buf);
 #ifdef DEBUG_FTP
-    xmlGenericError(xmlGenericErrorContext, buf);
+    xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
     res = send(ctxt->controlFd, buf, len, 0);
     if (res < 0) return(res);
@@ -1241,7 +1260,7 @@ xmlNanoFTPGetConnection(void *ctx) {
 	sprintf(buf, "PASV\r\n");
         len = strlen(buf);
 #ifdef DEBUG_FTP
-	xmlGenericError(xmlGenericErrorContext, buf);
+	xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
 	res = send(ctxt->controlFd, buf, len, 0);
 	if (res < 0) {
@@ -1307,7 +1326,7 @@ xmlNanoFTPGetConnection(void *ctx) {
         buf[sizeof(buf) - 1] = 0;
         len = strlen(buf);
 #ifdef DEBUG_FTP
-	xmlGenericError(xmlGenericErrorContext, buf);
+	xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
 
 	res = send(ctxt->controlFd, buf, len, 0);
@@ -1380,7 +1399,7 @@ xmlNanoFTPCloseConnection(void *ctx) {
  *
  * Parse at most one entry from the listing. 
  *
- * Returns -1 incase of error, the lenght of data parsed otherwise
+ * Returns -1 incase of error, the length of data parsed otherwise
  */
 
 static int
@@ -1541,7 +1560,7 @@ xmlNanoFTPList(void *ctx, ftpListCallback callback, void *userData,
     buf[sizeof(buf) - 1] = 0;
     len = strlen(buf);
 #ifdef DEBUG_FTP
-    xmlGenericError(xmlGenericErrorContext, buf);
+    xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
     res = send(ctxt->controlFd, buf, len, 0);
     if (res < 0) {
@@ -1635,7 +1654,7 @@ xmlNanoFTPGetSocket(void *ctx, const char *filename) {
     sprintf(buf, "TYPE I\r\n");
     len = strlen(buf);
 #ifdef DEBUG_FTP
-    xmlGenericError(xmlGenericErrorContext, buf);
+    xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
     res = send(ctxt->controlFd, buf, len, 0);
     if (res < 0) {
@@ -1654,7 +1673,7 @@ xmlNanoFTPGetSocket(void *ctx, const char *filename) {
     buf[sizeof(buf) - 1] = 0;
     len = strlen(buf);
 #ifdef DEBUG_FTP
-    xmlGenericError(xmlGenericErrorContext, buf);
+    xmlGenericError(xmlGenericErrorContext, "%s", buf);
 #endif
     res = send(ctxt->controlFd, buf, len, 0);
     if (res < 0) {

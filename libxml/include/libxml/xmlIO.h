@@ -3,7 +3,7 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  *
  * 15 Nov 2000 ht - modified for VMS
  */
@@ -12,6 +12,11 @@
 #define __XML_IO_H__
 
 #include <stdio.h>
+#if defined(WIN32) && defined(_MSC_VER)
+#include <libxml/xmlwin32version.h>
+#else
+#include <libxml/xmlversion.h>
+#endif
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <libxml/encoding.h>
@@ -25,13 +30,46 @@ extern "C" {
  * I/O structures.
  */
 
+/**
+ * xmlInputMatchCallback:
+ * @filename: the filename or URI
+ *
+ * Callback used in the I/O Input API to detect if the current handler 
+ * can provide input fonctionnalities for this resource.
+ *
+ * Returns 1 if yes and 0 if another Input module should be used
+ */
 typedef int (*xmlInputMatchCallback) (char const *filename);
+/**
+ * xmlInputOpenCallback:
+ * @filename: the filename or URI
+ *
+ * Callback used in the I/O Input API to open the resource
+ *
+ * Returns an Input context or NULL in case or error
+ */
 typedef void * (*xmlInputOpenCallback) (char const *filename);
+/**
+ * xmlInputReadCallback:
+ * @context:  an Input context
+ * @buffer:  the buffer to store data read
+ * @len:  the length of the buffer in bytes
+ *
+ * Callback used in the I/O Input API to read the resource
+ *
+ * Returns the number of bytes read or -1 in case of error
+ */
 typedef int (*xmlInputReadCallback) (void * context, char * buffer, int len);
-typedef void (*xmlInputCloseCallback) (void * context);
+/**
+ * xmlInputCloseCallback:
+ * @context:  an Input context
+ *
+ * Callback used in the I/O Input API to close the resource
+ *
+ * Returns 0 or -1 in case of error
+ */
+typedef int (*xmlInputCloseCallback) (void * context);
 
-typedef struct _xmlParserInputBuffer xmlParserInputBuffer;
-typedef xmlParserInputBuffer *xmlParserInputBufferPtr;
 struct _xmlParserInputBuffer {
     void*                  context;
     xmlInputReadCallback   readcallback;
@@ -49,14 +87,47 @@ struct _xmlParserInputBuffer {
  * I/O structures.
  */
 
+/**
+ * xmlOutputMatchCallback:
+ * @filename: the filename or URI
+ *
+ * Callback used in the I/O Output API to detect if the current handler 
+ * can provide output fonctionnalities for this resource.
+ *
+ * Returns 1 if yes and 0 if another Output module should be used
+ */
 typedef int (*xmlOutputMatchCallback) (char const *filename);
+/**
+ * xmlOutputOpenCallback:
+ * @filename: the filename or URI
+ *
+ * Callback used in the I/O Output API to open the resource
+ *
+ * Returns an Output context or NULL in case or error
+ */
 typedef void * (*xmlOutputOpenCallback) (char const *filename);
+/**
+ * xmlOutputWriteCallback:
+ * @context:  an Output context
+ * @buffer:  the buffer of data to write
+ * @len:  the length of the buffer in bytes
+ *
+ * Callback used in the I/O Output API to write to the resource
+ *
+ * Returns the number of bytes written or -1 in case of error
+ */
 typedef int (*xmlOutputWriteCallback) (void * context, const char * buffer,
                                        int len);
-typedef void (*xmlOutputCloseCallback) (void * context);
+/**
+ * xmlOutputCloseCallback:
+ * @context:  an Output context
+ *
+ * Callback used in the I/O Output API to close the resource
+ *
+ * Returns 0 or -1 in case of error
+ */
+typedef int (*xmlOutputCloseCallback) (void * context);
 
-typedef struct _xmlOutputBuffer xmlOutputBuffer;
-typedef xmlOutputBuffer *xmlOutputBufferPtr;
 struct _xmlOutputBuffer {
     void*                   context;
     xmlOutputWriteCallback  writecallback;
@@ -72,6 +143,8 @@ struct _xmlOutputBuffer {
 /*
  * Interfaces for input
  */
+void	xmlCleanupInputCallbacks		(void);
+void	xmlCleanupOutputCallbacks		(void);
 
 void	xmlRegisterDefaultInputCallbacks	(void);
 xmlParserInputBufferPtr
@@ -156,21 +229,20 @@ int     xmlRegisterOutputCallbacks	(xmlOutputMatchCallback matchFunc,
 					 xmlOutputWriteCallback writeFunc,
 					 xmlOutputCloseCallback closeFunc);
 
+/*  This function only exists if HTTP support built into the library  */
+#ifdef LIBXML_HTTP_ENABLED
+void *	xmlIOHTTPOpenW			(const char * post_uri,
+					 int   compression );
+void	xmlRegisterHTTPPostCallbacks	(void );
+#endif
+
 /*
- * This save function are part of tree.h and HTMLtree.h actually
+ * A predefined entity loader disabling network accesses
  */
-int		xmlSaveFileTo		(xmlOutputBuffer *buf,
-					 xmlDocPtr cur,
-					 const char *encoding);
-void		xmlNodeDumpOutput	(xmlOutputBufferPtr buf,
-					 xmlDocPtr doc,
-					 xmlNodePtr cur,
-					 int level,
-					 int format,
-					 const char *encoding);
-void		htmlDocContentDumpOutput(xmlOutputBufferPtr buf,
-					 xmlDocPtr cur,
-					 const char *encoding);
+xmlParserInputPtr xmlNoNetExternalEntityLoader(const char *URL,
+					 const char *ID,
+					 xmlParserCtxtPtr ctxt);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -62,17 +62,22 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+C14N_OBJ = @C14N_OBJ@
+CATALOG_OBJ = @CATALOG_OBJ@
 CC = @CC@
 CFLAGS = @CFLAGS@
-CORBA_CFLAGS = @CORBA_CFLAGS@
 CPP = @CPP@
 DEBUG_OBJ = @DEBUG_OBJ@
 DLLTOOL = @DLLTOOL@
+DOCB_OBJ = @DOCB_OBJ@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 FTP_OBJ = @FTP_OBJ@
 HAVE_ISINF = @HAVE_ISINF@
 HAVE_ISNAN = @HAVE_ISNAN@
 HTML_OBJ = @HTML_OBJ@
 HTTP_OBJ = @HTTP_OBJ@
+ICONV_LIBS = @ICONV_LIBS@
 LIBTOOL = @LIBTOOL@
 LIBXML_MAJOR_VERSION = @LIBXML_MAJOR_VERSION@
 LIBXML_MICRO_VERSION = @LIBXML_MICRO_VERSION@
@@ -86,19 +91,32 @@ MAKEINFO = @MAKEINFO@
 MV = @MV@
 M_LIBS = @M_LIBS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
+PYTHON = @PYTHON@
+PYTHON_INCLUDES = @PYTHON_INCLUDES@
+PYTHON_SITE_PACKAGES = @PYTHON_SITE_PACKAGES@
+PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
 RDL_LIBS = @RDL_LIBS@
 RM = @RM@
+STRIP = @STRIP@
 TAR = @TAR@
+TEST_THREADS = @TEST_THREADS@
+THREAD_CFLAGS = @THREAD_CFLAGS@
+THREAD_LIBS = @THREAD_LIBS@
 U = @U@
 VERSION = @VERSION@
+WITH_C14N = @WITH_C14N@
+WITH_CATALOG = @WITH_CATALOG@
 WITH_DEBUG = @WITH_DEBUG@
+WITH_DOCB = @WITH_DOCB@
 WITH_FTP = @WITH_FTP@
 WITH_HTML = @WITH_HTML@
 WITH_HTTP = @WITH_HTTP@
 WITH_ICONV = @WITH_ICONV@
 WITH_MEM_DEBUG = @WITH_MEM_DEBUG@
+WITH_THREADS = @WITH_THREADS@
 WITH_TRIO = @WITH_TRIO@
 WITH_XINCLUDE = @WITH_XINCLUDE@
 WITH_XPATH = @WITH_XPATH@
@@ -124,9 +142,23 @@ DOC_SOURCE_DIR = ..
 HTML_DIR = @HTML_DIR@
 
 TARGET_DIR = $(HTML_DIR)/$(DOC_MODULE)/html
+PAGES = architecture.html bugs.html contribs.html docs.html DOM.html \
+    downloads.html entities.html example.html help.html index.html \
+    interface.html intro.html library.html namespaces.html news.html \
+    tree.html xmldtd.html XMLinfo.html XSLT.html
+
+APIPAGES = APIconstructors.html APIfiles.html APIfunctions.html \
+    APIsymbols.html APIchunk0.html
+
+
+man_MANS = xmllint.1 xmlcatalog.1
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+man1dir = $(mandir)/man1
+MANS = $(man_MANS)
+
+NROFF = nroff
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -142,6 +174,45 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+
+install-man1:
+	$(mkinstalldirs) $(DESTDIR)$(man1dir)
+	@list='$(man1_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  if test -f $(srcdir)/$$i; then file=$(srcdir)/$$i; \
+	  else file=$$i; fi; \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst"; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst; \
+	done
+
+uninstall-man1:
+	@list='$(man1_MANS)'; \
+	l2='$(man_MANS)'; for i in $$l2; do \
+	  case "$$i" in \
+	    *.1*) list="$$list $$i" ;; \
+	  esac; \
+	done; \
+	for i in $$list; do \
+	  ext=`echo $$i | sed -e 's/^.*\\.//'`; \
+	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
+	  echo " rm -f $(DESTDIR)$(man1dir)/$$inst"; \
+	  rm -f $(DESTDIR)$(man1dir)/$$inst; \
+	done
+install-man: $(MANS)
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-man1
+uninstall-man:
+	@$(NORMAL_UNINSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-man1
 tags: TAGS
 TAGS:
 
@@ -173,19 +244,20 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-data-local
+install-data-am: install-man install-data-local
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am:
+uninstall-am: uninstall-man
 uninstall: uninstall-am
-all-am: Makefile
+all-am: Makefile $(MANS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(mandir)/man1
 
 
 mostlyclean-generic:
@@ -217,22 +289,29 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: tags distdir info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
-install-data-local install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+.PHONY: install-man1 uninstall-man1 install-man uninstall-man tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-am install-exec install-data-local \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
-# htmldir = $(prefix)/html
-# html_DATA = gnome-dev-info.html
+all: $(PAGES)
+
+web: $(PAGES) $(APIPAGES)
+
+$(PAGES): xml.html site.xsl
+	-@(if [ -x $(bindir)/xsltproc ] ; then \
+	  $(bindir)/xsltproc --html $(top_srcdir)/doc/site.xsl $(top_srcdir)/doc/xml.html > index.html ; fi );
+
+$(APIPAGES): libxml2-refs.xml site.xsl api.xsl
+	-@(if [ -x $(bindir)/xsltproc ] ; then \
+	  $(bindir)/xsltproc --html $(top_srcdir)/doc/api.xsl $(top_srcdir)/doc/xml.html ; fi );
 
 scan:
-	@(if [ -L $(DOC_SOURCE_DIR)/libxml ] ; then rm -f $(DOC_SOURCE_DIR)/libxml ; fi)
-	@(if [ -L $(DOC_SOURCE_DIR)/include ] ; then rm -f $(DOC_SOURCE_DIR)/include ; fi)
-	@(if [ -L $(DOC_SOURCE_DIR)/include/libxml ] ; then rm -f $(DOC_SOURCE_DIR)/include/libxml ; fi)
-	gtkdoc-scan --module=libxml --source-dir=$(DOC_SOURCE_DIR) --ignore-headers="acconfig.h config.h"
+	gtkdoc-scan --module=libxml --source-dir=$(DOC_SOURCE_DIR) --ignore-headers="acconfig.h config.h xmlwin32version.h win32config.h trio.h triostr.h triop.h config-mac.h XMLTestPrefix2.h  XMLTestPrefix.h triodef.h trionan.h xlink.h libxml.h libxml2-py.h libxml_wrap.h"
 
 templates: scan
 	gtkdoc-mktmpl --module=libxml
@@ -240,8 +319,20 @@ templates: scan
 sgml:
 	gtkdoc-mkdb --module=libxml --source-dir=$(DOC_SOURCE_DIR)
 
+xml: sgml
+	if test -d xml ; then rm xml/* ; else mkdir xml ; fi
+	-@(for s in sgml/*.sgml ; do name=`basename $$s .sgml` ; \
+	   echo '<!DOCTYPE refentry [ <!ENTITY nbsp   "&#x00A0;"> ]>' > \
+	       xml/"$$name".xml ;\
+	   grep -v "^<colspec" $$s >> xml/"$$name".xml ; done)
+
+libxml2-api.xml libxml2-refs.xml: xml parsedecl.py libxml-decl.txt libxml-decl-list.txt
+	-(./parsedecl.py)
+
+api: libxml2-api.xml libxml2-refs.xml
+
 html:
-	if ! test -d html ; then mkdir html ; fi
+	if test -n -d html ; then mkdir html ; fi
 	-cd html && gtkdoc-mkhtml libxml ../$(DOC_MAIN_SGML_FILE)
 
 clean-local:
@@ -255,17 +346,17 @@ libxml-decl-list.txt : templates
 libxml-sections.txt : scan
 	cp libxml-decl-list.txt libxml-sections.txt
 
-rebuild: libxml-sections.txt templates sgml html
+rebuild: libxml-sections.txt templates sgml html api
 
 install-data-local: 
 	$(mkinstalldirs) $(DESTDIR)$(TARGET_DIR)
-	-@INSTALL@ -m 0644 $(srcdir)/xml.html $(srcdir)/encoding.html $(srcdir)/FAQ.html $(srcdir)/structure.gif $(srcdir)/DOM.gif $(DESTDIR)$(TARGET_DIR)
+	-@INSTALL@ -m 0644 $(srcdir)/xml.html $(srcdir)/encoding.html $(srcdir)/FAQ.html $(srcdir)/structure.gif $(srcdir)/DOM.gif $(srcdir)/smallfootonly.gif $(srcdir)/redhat.gif $(srcdir)/libxml.gif $(srcdir)/w3c.png $(DESTDIR)$(TARGET_DIR)
 	-@INSTALL@ -m 0644 $(srcdir)/html/*.html $(DESTDIR)$(TARGET_DIR)
 	-@INSTALL@ -m 0644 $(srcdir)/html/index.sgml $(DESTDIR)$(TARGET_DIR)
 	-(cd $(DESTDIR); gtkdoc-fixxref --module=libxml --html-dir=$(HTML_DIR))
 
 dist-hook:
-	(cd $(srcdir) ; tar cvf - *.html *.gif html/*.html html/*.sgml) | (cd $(distdir); tar xf -)
+	(cd $(srcdir) ; tar cvf - *.1 site.xsl *.html *.gif w3c.png html/*.html html/*.sgml libxml2-api.xml parsedecl.py) | (cd $(distdir); tar xf -)
 
 .PHONY : html sgml templates scan
 

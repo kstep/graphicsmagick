@@ -1,61 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
   <title>The XML C library for Gnome</title>
-  <meta name="GENERATOR" content="amaya V4.1">
+  <meta name="GENERATOR" content="amaya 5.1">
   <meta http-equiv="Content-Type" content="text/html">
 </head>
 
 <body bgcolor="#ffffff">
-<p><a href="http://www.gnome.org/"><img src="smallfootonly.gif"
-alt="Gnome Logo"></a><a href="http://www.w3.org/Status"><img src="w3c.png"
-alt="W3C Logo"></a></p>
-
 <h1 align="center">The XML C library for Gnome</h1>
 
-<h2 style="text-align: center">libxml, a.k.a. gnome-xml</h2>
+<h1>Note: this is the flat content of the <a href="index.html">web
+site</a></h1>
+
+<h1 style="text-align: center">libxml, a.k.a. gnome-xml</h1>
 
 <p></p>
+
+<p>Libxml is the XML C library developped for the Gnome project.  XML itself
+is a metalanguage to design markup languages, i.e. text language where
+semantic and structure are added to the content using extra "markup"
+information enclosed between angle bracket. HTML is the most well-known
+markup language. Though the library is written in C <a href="python.html">a
+variety of language binding</a> makes it available in other environments.</p>
+
+<p>Libxml2 implements a number of existing standards related to markup
+languages:</p>
 <ul>
-  <li><a href="#Introducti">Introduction</a></li>
-  <li><a href="#Documentat">Documentation</a></li>
-  <li><a href="#Reporting">Reporting bugs and getting help</a></li>
-  <li><a href="#help">how to help</a></li>
-  <li><a href="#Downloads">Downloads</a></li>
-  <li><a href="#News">News</a></li>
-  <li><a href="#XML">XML</a></li>
-  <li><a href="#XSLT">XSLT</a></li>
-  <li><a href="#tree">The tree output</a></li>
-  <li><a href="#interface">The SAX interface</a></li>
-  <li><a href="#library">The XML library interfaces</a>
-    <ul>
-      <li><a href="#Invoking">Invoking the parser: the pull way</a></li>
-      <li><a href="#Invoking">Invoking the parser: the push way</a></li>
-      <li><a href="#Invoking2">Invoking the parser: the SAX interface</a></li>
-      <li><a href="#Building">Building a tree from scratch</a></li>
-      <li><a href="#Traversing">Traversing the tree</a></li>
-      <li><a href="#Modifying">Modifying the tree</a></li>
-      <li><a href="#Saving">Saving the tree</a></li>
-      <li><a href="#Compressio">Compression</a></li>
-    </ul>
-  </li>
-  <li><a href="#Entities">Entities or no entities</a></li>
-  <li><a href="#Namespaces">Namespaces</a></li>
-  <li><a href="#Validation">Validation</a></li>
-  <li><a href="#Principles">DOM principles</a></li>
-  <li><a href="#real">A real example</a></li>
-  <li><a href="#Contributi">Contributions</a></li>
+  <li>the XML standard: <a
+    href="http://www.w3.org/TR/REC-xml">http://www.w3.org/TR/REC-xml</a></li>
+  <li>Namespaces in XML: <a
+    href="http://www.w3.org/TR/REC-xml-names/">http://www.w3.org/TR/REC-xml-names/</a></li>
+  <li>XML Base: <a
+    href="http://www.w3.org/TR/xmlbase/">http://www.w3.org/TR/xmlbase/</a></li>
+  <li><a href="http://www.cis.ohio-state.edu/rfc/rfc2396.txt">RFC 2396</a> :
+    Uniform Resource Identifiers <a
+    href="http://www.ietf.org/rfc/rfc2396.txt">http://www.ietf.org/rfc/rfc2396.txt</a></li>
+  <li>XML Path Language (XPath) 1.0: <a
+    href="http://www.w3.org/TR/xpath">http://www.w3.org/TR/xpath</a></li>
+  <li>HTML4 parser: <a
+    href="http://www.w3.org/TR/html401/">http://www.w3.org/TR/html401/</a></li>
+  <li>most of XML Pointer Language (XPointer) Version 1.0: <a
+    href="http://www.w3.org/TR/xptr">http://www.w3.org/TR/xptr</a></li>
+  <li>XML Inclusions (XInclude) Version 1.0: <a
+    href="http://www.w3.org/TR/xinclude/">http://www.w3.org/TR/xinclude/</a></li>
+  <li>[ISO-8859-1], <a
+    href="http://www.cis.ohio-state.edu/rfc/rfc2044.txt">rfc2044</a> [UTF-8]
+    and <a href="http://www.cis.ohio-state.edu/rfc/rfc2781.txt">rfc2781</a>
+    [UTF-16] core encodings</li>
+  <li>part of SGML Open Technical Resolution TR9401:1997</li>
+  <li>XML Catalogs Working Draft 06 August 2001: <a
+    href="http://www.oasis-open.org/committees/entity/spec-2001-08-06.html">http://www.oasis-open.org/committees/entity/spec-2001-08-06.html</a></li>
+  <li>Canonical XML Version 1.0: <a
+    href="http://www.w3.org/TR/xml-c14n">http://www.w3.org/TR/xml-c14n</a>
+    and the Exclusive XML Canonicalization CR draft <a
+    href="http://www.w3.org/TR/xml-exc-c14n">http://www.w3.org/TR/xml-exc-c14n</a></li>
 </ul>
+
+<p>In most cases libxml tries to implement the specifications in a relatively
+strict way. As of release 2.4.16, libxml2 passes all 1800+ tests from the <a
+href="http://www.oasis-open.org/committees/xml-conformance/">OASIS XML Tests
+Suite</a>.</p>
+
+<p>To some extent libxml2 provide some support for the following other
+specification but don't claim to implement them:</p>
+<ul>
+  <li>Document Object Model (DOM) <a
+    href="http://www.w3.org/TR/DOM-Level-2-Core/">http://www.w3.org/TR/DOM-Level-2-Core/</a>
+    it doesn't implement the API itself, gdome2 does this in top of
+  libxml2</li>
+  <li><a href="http://www.cis.ohio-state.edu/rfc/rfc959.txt">RFC 959</a> :
+    libxml implements a basic FTP client code</li>
+  <li><a href="http://www.cis.ohio-state.edu/rfc/rfc1945.txt">RFC 1945</a> :
+    HTTP/1.0, again a basic HTTP client code</li>
+  <li>SAX: a minimal SAX implementation compatible with early expat
+  versions</li>
+  <li>DocBook SGML v4: libxml2 includes a hackish parser to transition to
+  XML</li>
+</ul>
+
+<p>Libxml2 is known to be very portable, the library should build and work
+without serious troubles on a variety of systems (Linux, Unix, Windows,
+CygWin, MacOs, MacOsX, RISC Os, OS/2, VMS, QNX, MVS, ...)</p>
 
 <p>Separate documents:</p>
 <ul>
-  <li><a href="upgrade.html">upgrade instructions for migrating to
-  libxml2</a></li>
-  <li><a href="encoding.html">libxml Internationalization support</a></li>
-  <li><a href="xmlio.html">libxml Input/Output interfaces</a></li>
-  <li><a href="xmlmem.html">libxml Memory interfaces</a></li>
-  <li><a href="xmldtd.html">a short introduction about DTDs and
-  libxml</a></li>
-  <li><a href="http://xmlsoft.org/XSLT/">the libxslt page</a></li>
+  <li><a href="http://xmlsoft.org/XSLT/">the libxslt page</a> providing an
+    implementation of XSLT 1.0 and common extensions like EXSLT for
+  libxml2</li>
+  <li><a href="http://www.cs.unibo.it/~casarini/gdome2/">the gdome2 page</a>
+    : a standard DOM2 implementation for libxml2</li>
+  <li><a href="http://www.aleksey.com/xmlsec/">the XMLSec page</a>: an
+    implementation of <a href="http://www.w3.org/TR/xmldsig-core/">W3C XML
+    Digital Signature</a> for libxml2</li>
 </ul>
 
 <h2><a name="Introducti">Introduction</a></h2>
@@ -68,13 +105,14 @@ structured documents/data.</p>
 
 <p>Here are some key points about libxml:</p>
 <ul>
-  <li>Libxml exports Push and Pull type parser interfaces for both XML and
-    HTML.</li>
+  <li>Libxml exports Push (progressive) and Pull (blocking) type parser
+    interfaces for both XML and HTML.</li>
   <li>Libxml can do DTD validation at parse time, using a parsed document
     instance, or with an arbitrary DTD.</li>
-  <li>Libxml now includes nearly complete <a
-    href="http://www.w3.org/TR/xpath">XPath</a> and <a
-    href="http://www.w3.org/TR/xptr">XPointer</a> implementations.</li>
+  <li>Libxml includes complete <a
+    href="http://www.w3.org/TR/xpath">XPath</a>, <a
+    href="http://www.w3.org/TR/xptr">XPointer</a> and <a
+    href="http://www.w3.org/TR/xinclude">XInclude</a> implementations.</li>
   <li>It is written in plain C, making as few assumptions as possible, and
     sticking closely to ANSI C/POSIX for easy embedding. Works on
     Linux/Unix/Windows, ported to a number of other platforms.</li>
@@ -86,17 +124,276 @@ structured documents/data.</p>
   <li>Libxml also has a <a href="http://www.megginson.com/SAX/index.html">SAX
     like interface</a>; the interface is designed to be compatible with <a
     href="http://www.jclark.com/xml/expat.html">Expat</a>.</li>
-  <li>This library is released both under the <a
-    href="http://www.w3.org/Consortium/Legal/copyright-software-19980720.html">W3C
-    IPR</a> and the <a href="http://www.gnu.org/copyleft/lesser.html">GNU
-    LGPL</a>. Use either at your convenience, basically this should make
-    everybody happy, if not, drop me a mail.</li>
+  <li>This library is released under the <a
+    href="http://www.opensource.org/licenses/mit-license.html">MIT
+    Licence</a> see the Copyright file in the distribution for the precise
+    wording.</li>
 </ul>
 
 <p>Warning: unless you are forced to because your application links with a
-Gnome library requiring it,  <strong><span
+Gnome-1.X library requiring it,  <strong><span
 style="background-color: #FF0000">Do Not Use libxml1</span></strong>, use
 libxml2</p>
+
+<h2><a name="FAQ">FAQ</a></h2>
+
+<p>Table of Content:</p>
+<ul>
+  <li><a href="FAQ.html#Licence">Licence(s)</a></li>
+  <li><a href="FAQ.html#Installati">Installation</a></li>
+  <li><a href="FAQ.html#Compilatio">Compilation</a></li>
+  <li><a href="FAQ.html#Developer">Developer corner</a></li>
+</ul>
+
+<h3><a name="Licence">Licence</a>(s)</h3>
+<ol>
+  <li><em>Licensing Terms for libxml</em>
+    <p>libxml is released under the <a
+    href="http://www.opensource.org/licenses/mit-license.html">MIT
+    Licence</a>, see the file Copyright in the distribution for the precise
+    wording</p>
+  </li>
+  <li><em>Can I embed libxml in a proprietary application ?</em>
+    <p>Yes. The MIT Licence allows you to also keep proprietary the changes
+    you made to libxml, but it would be graceful to provide back bugfixes and
+    improvements as patches for possible incorporation in the main
+    development tree</p>
+  </li>
+</ol>
+
+<h3><a name="Installati">Installation</a></h3>
+<ol>
+  <li>Unless you are forced to because your application links with a Gnome
+    library requiring it,  <strong><span style="background-color: #FF0000">Do
+    Not Use libxml1</span></strong>, use libxml2</li>
+  <li><em>Where can I get libxml</em> ?
+    <p>The original distribution comes from <a
+    href="ftp://rpmfind.net/pub/libxml/">rpmfind.net</a> or <a
+    href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/">gnome.org</a></p>
+    <p>Most linux and Bsd distribution includes libxml, this is probably the
+    safer way for end-users</p>
+    <p>David Doolin provides precompiled Windows versions at <a
+    href="http://www.ce.berkeley.edu/~doolin/code/libxmlwin32/         ">http://www.ce.berkeley.edu/~doolin/code/libxmlwin32/</a></p>
+  </li>
+  <li><em>I see libxml and libxml2 releases, which one should I install ?</em>
+    <ul>
+      <li>If you are not concerned by any existing backward compatibility
+        with existing application, install libxml2 only</li>
+      <li>If you are not doing development, you can safely install both.
+        usually the packages <a
+        href="http://rpmfind.net/linux/RPM/libxml.html">libxml</a> and <a
+        href="http://rpmfind.net/linux/RPM/libxml2.html">libxml2</a> are
+        compatible (this is not the case for development packages)</li>
+      <li>If you are a developer and your system provides separate packaging
+        for shared libraries and the development components, it is possible
+        to install libxml and libxml2, and also <a
+        href="http://rpmfind.net/linux/RPM/libxml-devel.html">libxml-devel</a>
+        and <a
+        href="http://rpmfind.net/linux/RPM/libxml2-devel.html">libxml2-devel</a>
+        too for libxml2 &gt;= 2.3.0</li>
+      <li>If you are developing a new application, please develop against
+        libxml2(-devel)</li>
+    </ul>
+  </li>
+  <li><em>I can't install the libxml package it conflicts with libxml0</em>
+    <p>You probably have an old libxml0 package used to provide the shared
+    library for libxml.so.0, you can probably safely remove it. Anyway the
+    libxml packages provided on <a
+    href="ftp://rpmfind.net/pub/libxml/">rpmfind.net</a> provides
+    libxml.so.0</p>
+  </li>
+  <li><em>I can't install the libxml(2) RPM package due to failed
+    dependancies</em>
+    <p>The most generic solution is to refetch the latest src.rpm , and
+    rebuild it locally with</p>
+    <p><code>rpm --rebuild libxml(2)-xxx.src.rpm</code></p>
+    <p>if everything goes well it will generate two binary rpm (one providing
+    the shared libs and xmllint, and the other one, the -devel package
+    providing includes, static libraries and scripts needed to build
+    applications with libxml(2)) that you can install locally.</p>
+  </li>
+</ol>
+
+<h3><a name="Compilatio">Compilation</a></h3>
+<ol>
+  <li><em>What is the process to compile libxml ?</em>
+    <p>As most UNIX libraries libxml follows the "standard":</p>
+    <p><code>gunzip -c xxx.tar.gz | tar xvf -</code></p>
+    <p><code>cd libxml-xxxx</code></p>
+    <p><code>./configure --help</code></p>
+    <p>to see the options, then the compilation/installation proper</p>
+    <p><code>./configure [possible options]</code></p>
+    <p><code>make</code></p>
+    <p><code>make install</code></p>
+    <p>At that point you may have to rerun ldconfig or similar utility to
+    update your list of installed shared libs.</p>
+  </li>
+  <li><em>What other libraries are needed to compile/install libxml ?</em>
+    <p>Libxml does not requires any other library, the normal C ANSI API
+    should be sufficient (please report any violation to this rule you may
+    find).</p>
+    <p>However if found at configuration time libxml will detect and use the
+    following libs:</p>
+    <ul>
+      <li><a href="http://www.info-zip.org/pub/infozip/zlib/">libz</a> : a
+        highly portable and available widely compression library</li>
+      <li>iconv: a powerful character encoding conversion library. It's
+        included by default on recent glibc libraries, so it doesn't need to
+        be installed specifically on linux. It seems it's now <a
+        href="http://www.opennc.org/onlinepubs/7908799/xsh/iconv.html">part
+        of the official UNIX</a> specification. Here is one <a
+        href="http://clisp.cons.org/~haible/packages-libiconv.html">implementation
+        of the library</a> which source can be found <a
+        href="ftp://ftp.ilog.fr/pub/Users/haible/gnu/">here</a>.</li>
+    </ul>
+  </li>
+  <li><em>make check fails on some platforms</em>
+    <p>Sometime the regression tests results don't completely match the value
+    produced by the parser, and the makefile uses diff to print the delta. On
+    some platforms the diff return breaks the compilation process, if the
+    diff is small this is probably not a serious problem.</p>
+    <p>Sometimes (especially on Solaris) make checks fails due to limitations
+    in make. Try using GNU-make instead.</p>
+  </li>
+  <li><em>I use the CVS version and there is no configure script</em>
+    <p>The configure (and other Makefiles) are generated. Use the autogen.sh
+    script to regenerate the configure and Makefiles, like:</p>
+    <p><code>./autogen.sh --prefix=/usr --disable-shared</code></p>
+  </li>
+  <li><em>I have troubles when running make tests with gcc-3.0</em>
+    <p>It seems the initial release of gcc-3.0 has a problem with the
+    optimizer which miscompiles the URI module. Please use another
+    compiler</p>
+  </li>
+</ol>
+
+<h3><a name="Developer">Developer</a> corner</h3>
+<ol>
+  <li><em>xmlDocDump() generates output on one line</em>
+    <p>libxml will not <strong>invent</strong> spaces in the content of a
+    document since <strong>all spaces in the content of a document are
+    significant</strong>. If you build a tree from the API and want
+    indentation:</p>
+    <ol>
+      <li>the correct way is to generate those yourself too</li>
+      <li>the dangerous way is to ask libxml to add those blanks to your
+        content <strong>modifying the content of your document in the
+        process</strong>. The result may not be what you expect. There is
+        <strong>NO</strong> way to guarantee that such a modification won't
+        impact other part of the content of your document. See <a
+        href="http://xmlsoft.org/html/libxml-parser.html#XMLKEEPBLANKSDEFAULT">xmlKeepBlanksDefault
+        ()</a> and <a
+        href="http://xmlsoft.org/html/libxml-tree.html#XMLSAVEFORMATFILE">xmlSaveFormatFile
+        ()</a></li>
+    </ol>
+  </li>
+  <li>Extra nodes in the document:
+    <p><em>For a XML file as below:</em></p>
+    <pre>&lt;?xml version="1.0"?&gt;
+&lt;PLAN xmlns="http://www.argus.ca/autotest/1.0/"&gt;
+&lt;NODE CommFlag="0"/&gt;
+&lt;NODE CommFlag="1"/&gt;
+&lt;/PLAN&gt;</pre>
+    <p><em>after parsing it with the function
+    pxmlDoc=xmlParseFile(...);</em></p>
+    <p><em>I want to the get the content of the first node (node with the
+    CommFlag="0")</em></p>
+    <p><em>so I did it as following;</em></p>
+    <pre>xmlNodePtr pode;
+pnode=pxmlDoc-&gt;children-&gt;children;</pre>
+    <p><em>but it does not work. If I change it to</em></p>
+    <pre>pnode=pxmlDoc-&gt;children-&gt;children-&gt;next;</pre>
+    <p><em>then it works.  Can someone explain it to me.</em></p>
+    <p></p>
+    <p>In XML all characters in the content of the document are significant
+    <strong>including blanks and formatting line breaks</strong>.</p>
+    <p>The extra nodes you are wondering about are just that, text nodes with
+    the formatting spaces wich are part of the document but that people tend
+    to forget. There is a function <a
+    href="http://xmlsoft.org/html/libxml-parser.html">xmlKeepBlanksDefault
+    ()</a>  to remove those at parse time, but that's an heuristic, and its
+    use should be limited to case where you are sure there is no
+    mixed-content in the document.</p>
+  </li>
+  <li><em>I get compilation errors of existing code like when accessing
+    <strong>root</strong> or <strong>childs fields</strong> of nodes</em>
+    <p>You are compiling code developed for libxml version 1 and using a
+    libxml2 development environment. Either switch back to libxml v1 devel or
+    even better fix the code to compile with libxml2 (or both) by <a
+    href="upgrade.html">following the instructions</a>.</p>
+  </li>
+  <li><em>I get compilation errors about non existing
+    <strong>xmlRootNode</strong> or <strong>xmlChildrenNode</strong>
+    fields</em>
+    <p>The source code you are using has been <a
+    href="upgrade.html">upgraded</a> to be able to compile with both libxml
+    and libxml2, but you need to install a more recent version:
+    libxml(-devel) &gt;= 1.8.8 or libxml2(-devel) &gt;= 2.1.0</p>
+  </li>
+  <li><em>XPath implementation looks seriously broken</em>
+    <p>XPath implementation prior to 2.3.0 was really incomplete, upgrade to
+    a recent version, there is no known bug in the current version.</p>
+  </li>
+  <li><em>The example provided in the web page does not compile</em>
+    <p>It's hard to maintain the documentation in sync with the code
+    &lt;grin/&gt; ...</p>
+    <p>Check the previous points 1/ and 2/ raised before, and send
+    patches.</p>
+  </li>
+  <li><em>Where can I get more examples and informations than in the web
+    page</em>
+    <p>Ideally a libxml book would be nice. I have no such plan ... But you
+    can:</p>
+    <ul>
+      <li>check more deeply the <a href="html/libxml-lib.html">existing
+        generated doc</a></li>
+      <li>looks for examples of use for libxml function using the Gnome code
+        for example the following will query the full Gnome CVs base for the
+        use of the <strong>xmlAddChild()</strong> function:
+        <p><a
+        href="http://cvs.gnome.org/lxr/search?string=xmlAddChild">http://cvs.gnome.org/lxr/search?string=xmlAddChild</a></p>
+        <p>This may be slow, a large hardware donation to the gnome project
+        could cure this :-)</p>
+      </li>
+      <li><a
+        href="http://cvs.gnome.org/bonsai/rview.cgi?cvsroot=/cvs/gnome&amp;dir=gnome-xml">Browse
+        the libxml source</a> , I try to write code as clean and documented
+        as possible, so looking at it may be helpful. Especially the code of
+        xmllint.c and of the various testXXX.c tests programs should provide
+        good example on how to do things with the library.</li>
+    </ul>
+  </li>
+  <li>What about C++ ?
+    <p>libxml is written in pure C in order to allow easy reuse on a number
+    of platforms, including embedded systems. I don't intend to convert to
+    C++.</p>
+    <p>There is however a C++ wrapper provided by Ari Johnson
+    &lt;ari@btigate.com&gt; which may fullfill your needs:</p>
+    <p>Website: <a
+    href="http://lusis.org/~ari/xml++/">http://lusis.org/~ari/xml++/</a></p>
+    <p>Download: <a
+    href="http://lusis.org/~ari/xml++/libxml++.tar.gz">http://lusis.org/~ari/xml++/libxml++.tar.gz</a></p>
+  </li>
+  <li>How to validate a document a posteriori ?
+    <p>It is possible to validate documents which had not been validated at
+    initial parsing time or documents who have been built from scratch using
+    the API. Use the <a
+    href="http://xmlsoft.org/html/libxml-valid.html#XMLVALIDATEDTD">xmlValidateDtd()</a>
+    function. It is also possible to simply add a Dtd to an existing
+    document:</p>
+    <pre>xmlDocPtr doc; /* your existing document */
+        xmlDtdPtr dtd = xmlParseDTD(NULL, filename_of_dtd); /* parse the DTD */
+        dtd-&gt;name = xmlStrDup((xmlChar*)"root_name"); /* use the given root */
+
+        doc-&gt;intSubset = dtd;
+        if (doc-&gt;children == NULL) xmlAddChild((xmlNodePtr)doc, (xmlNodePtr)dtd);
+        else xmlAddPrevSibling(doc-&gt;children, (xmlNodePtr)dtd);
+          </pre>
+  </li>
+  <li>etc ...</li>
+</ol>
+
+<p></p>
 
 <h2><a name="Documentat">Documentation</a></h2>
 
@@ -109,7 +406,7 @@ libxml2</p>
     doc</a>).</li>
   <li>Look at the documentation about <a href="encoding.html">libxml
     internationalization support</a></li>
-  <li>This page provides a global overview and <a href="#real">some
+  <li>This page provides a global overview and <a href="example.html">some
     examples</a> on how to use libxml.</li>
   <li><a href="mailto:james@daa.com.au">James Henstridge</a> wrote <a
     href="http://www.daa.com.au/~james/gnome/xml-sax/xml-sax.html">some nice
@@ -117,50 +414,61 @@ libxml2</p>
   <li>George Lebl wrote <a
     href="http://www-4.ibm.com/software/developer/library/gnome3/">an article
     for IBM developerWorks</a> about using libxml.</li>
-  <li>It is also a good idea to check to <a href="mailto:raph@levien.com">Raph
-    Levien</a>'s <a href="http://levien.com/gnome/">web site</a> since he is
-    building the <a href="http://levien.com/gnome/gdome.html">DOM interface
-    gdome</a> on top of libxml result tree and an implementation of <a
-    href="http://www.w3.org/Graphics/SVG/">SVG</a> called <a
-    href="http://www.levien.com/svg/">gill</a>. Check his <a
-    href="http://www.levien.com/gnome/domination.html">DOMination
-  paper</a>.</li>
   <li>Check <a href="http://cvs.gnome.org/lxr/source/gnome-xml/TODO">the TODO
     file</a></li>
   <li>Read the <a href="upgrade.html">1.x to 2.x upgrade path</a>. If you are
     starting a new project using libxml you should really use the 2.x
   version.</li>
-  <li>And don't forget to look at the <a href="/messages/">mailing-list
-    archive</a>.</li>
+  <li>And don't forget to look at the <a
+    href="http://mail.gnome.org/archives/xml/">mailing-list archive</a>.</li>
 </ol>
 
 <h2><a name="Reporting">Reporting bugs and getting help</a></h2>
 
-<p>Well, bugs or missing features are always possible, and I will make a point
-of fixing them in a timely fashion. The best way to report a bug is to use the
-<a href="http://bugzilla.gnome.org/buglist.cgi?product=libxml">Gnome bug
-tracking database</a> (make sure to use the "libxml" module name). I look at
-reports there regularly and it's good to have a reminder when a bug is still
-open. Check the <a
-href="http://bugzilla.gnome.org/bugwritinghelp.html">instructions on reporting
-bugs</a> and be sure to specify that the bug is for the package libxml.</p>
+<p>Well, bugs or missing features are always possible, and I will make a
+point of fixing them in a timely fashion. The best way to report a bug is to
+use the <a href="http://bugzilla.gnome.org/buglist.cgi?product=libxml">Gnome
+bug tracking database</a> (make sure to use the "libxml" module name). I look
+at reports there regularly and it's good to have a reminder when a bug is
+still open. Be sure to specify that the bug is for the package libxml.</p>
 
 <p>There is also a mailing-list <a
 href="mailto:xml@gnome.org">xml@gnome.org</a> for libxml, with an  <a
 href="http://mail.gnome.org/archives/xml/">on-line archive</a> (<a
-href="http://xmlsoft.org/messages">old</a>). To subscribe to this list, please
-visit the <a href="http://mail.gnome.org/mailman/listinfo/xml">associated
-Web</a> page and follow the instructions.</p>
+href="http://xmlsoft.org/messages">old</a>). To subscribe to this list,
+please visit the <a
+href="http://mail.gnome.org/mailman/listinfo/xml">associated Web</a> page and
+follow the instructions. <strong>Do not send code, I won't debug it</strong>
+(but patches are really appreciated!).</p>
 
-<p>Alternatively, you can just send the bug to the <a
+<p>Check the following <strong><span style="color: #FF0000">before
+posting</span></strong>:</p>
+<ul>
+  <li>read the <a href="FAQ.html">FAQ</a></li>
+  <li>make sure you are <a href="ftp://xmlsoft.org/">using a recent
+    version</a>, and that the problem still shows up in those</li>
+  <li>check the <a href="http://mail.gnome.org/archives/xml/">list
+    archives</a> to see if the problem was reported already, in this case
+    there is probably a fix available, similary check the <a
+    href="http://bugzilla.gnome.org/buglist.cgi?product=libxml">registered
+    open bugs</a></li>
+  <li>make sure you can reproduce the bug with xmllint or one of the test
+    programs found in source in the distribution</li>
+  <li>Please send the command showing the error as well as the input (as an
+    attachement)</li>
+</ul>
+
+<p>Then send the bug with associated informations to reproduce it to the <a
 href="mailto:xml@gnome.org">xml@gnome.org</a> list; if it's really libxml
-related I will approve it..</p>
+related I will approve it.. Please do not send me mail directly, it makes
+things really harder to track and in some cases I'm not the best person to
+answer a given question, ask the list instead.</p>
 
 <p>Of course, bugs reported with a suggested patch for fixing them will
 probably be processed faster.</p>
 
 <p>If you're looking for help, a quick look at <a
-href="http://xmlsoft.org/messages/#407">the list archive</a> may actually
+href="http://mail.gnome.org/archives/xml/">the list archive</a> may actually
 provide the answer, I usually send source samples when answering libxml usage
 questions. The <a href="http://xmlsoft.org/html/book1.html">auto-generated
 documentantion</a> is not as polished as I would like (i need to learn more
@@ -170,8 +478,8 @@ about Docbook), but it's a good starting point.</p>
 
 <p>You can help the project in various ways, the best thing to do first is to
 subscribe to the mailing-list as explained before, check the <a
-href="http://xmlsoft.org/messages/">archives </a>and the <a
-href="http://bugs.gnome.org/db/pa/lgnome-xml.html">Gnome bug
+href="http://mail.gnome.org/archives/xml/">archives </a>and the <a
+href="http://bugzilla.gnome.org/buglist.cgi?product=libxml">Gnome bug
 database:</a>:</p>
 <ol>
   <li>provide patches when you find problems</li>
@@ -183,15 +491,17 @@ database:</a>:</p>
   <li>provide new documentations pieces (translations, examples, etc ...)</li>
   <li>Check the TODO file and try to close one of the items</li>
   <li>take one of the points raised in the archive or the bug database and
-    provide a fix. <a href="mailto:Daniel.Veillard@imag.fr">Get in touch with
-    me </a>before to avoid synchronization problems and check that the
-    suggested fix will fit in nicely :-)</li>
+    provide a fix. <a href="mailto:daniel@veillard.com">Get in touch with me
+    </a>before to avoid synchronization problems and check that the suggested
+    fix will fit in nicely :-)</li>
 </ol>
 
 <h2><a name="Downloads">Downloads</a></h2>
 
 <p>The latest versions of libxml can be found on <a
-href="ftp://xmlsoft.org/">xmlsoft.org</a> or on the <a
+href="ftp://xmlsoft.org/">xmlsoft.org</a> (<a
+href="ftp://speakeasy.rpmfind.net/pub/libxml/">Seattle</a>, <a
+href="ftp://fr.rpmfind.net/pub/libxml/">France</a>) or on the <a
 href="ftp://ftp.gnome.org/pub/GNOME/MIRRORS.html">Gnome FTP server</a> either
 as a <a href="ftp://ftp.gnome.org/pub/GNOME/stable/sources/libxml/">source
 archive</a> or <a
@@ -199,7 +509,13 @@ href="ftp://ftp.gnome.org/pub/GNOME/stable/redhat/i386/libxml/">RPM
 packages</a>. (NOTE that you need both the <a
 href="http://rpmfind.net/linux/RPM/libxml2.html">libxml(2)</a> and <a
 href="http://rpmfind.net/linux/RPM/libxml2-devel.html">libxml(2)-devel</a>
-packages installed to compile applications using libxml.)</p>
+packages installed to compile applications using libxml.) <a
+href="mailto:izlatkovic@daenet.de">Igor  Zlatkovic</a> is now the maintainer
+of the Windows port, <a
+href="http://www.fh-frankfurt.de/~igor/projects/libxml/index.html">he
+provides binaries</a>. <a href="mailto:Gary.Pennington@sun.com">Gary
+Pennington</a> provides <a href="http://garypennington.net/libxml2/">Solaris
+binaries</a>.</p>
 
 <p><a name="Snapshot">Snapshot:</a></p>
 <ul>
@@ -209,19 +525,20 @@ packages installed to compile applications using libxml.)</p>
     href="ftp://xmlsoft.org/libxml-docs.tar.gz">libxml-docs.tar.gz</a></li>
 </ul>
 
-<p><a name="Contribs">Contribs:</a></p>
+<p><a name="Contribs">Contributions:</a></p>
 
 <p>I do accept external contributions, especially if compiling on another
-platform, get in touch with me to upload the package. I will keep them in the
-<a href="ftp://xmlsoft.org/contribs/">contrib directory</a></p>
+platform,  get in touch with me to upload the package, wrappers for various
+languages have been provided, and can be found in the <a
+href="contribs.html">contrib section</a></p>
 
 <p>Libxml is also available from CVS:</p>
 <ul>
   <li><p>The <a
     href="http://cvs.gnome.org/bonsai/rview.cgi?cvsroot=/cvs/gnome&amp;dir=gnome-xml">Gnome
     CVS base</a>. Check the <a
-    href="http://developer.gnome.org/tools/cvs.html">Gnome CVS Tools</a> page;
-    the CVS module is <b>gnome-xml</b>.</p>
+    href="http://developer.gnome.org/tools/cvs.html">Gnome CVS Tools</a>
+    page; the CVS module is <b>gnome-xml</b>.</p>
   </li>
   <li>The <strong>libxslt</strong> module is also present there</li>
 </ul>
@@ -235,13 +552,301 @@ for a really accurate description</h3>
 <p>Items floating around but not actively worked on, get in touch with me if
 you want to test those</p>
 <ul>
-  <li>Implementing <a href="http://xmlsoft.org/XSLT">XSLT</a>, this is done as
-    a separate C library on top of libxml called libxslt, not released yet but
-    available from CVS</li>
   <li>Finishing up <a href="http://www.w3.org/TR/xptr">XPointer</a> and <a
     href="http://www.w3.org/TR/xinclude">XInclude</a></li>
-  <li>(seeems working but delayed from release) parsing/import of Docbook SGML
-    docs</li>
+</ul>
+
+<h3>2.4.19: Mar 25 2002</h3>
+<ul>
+  <li>bug fixes: half a dozen XPath bugs, Validation, ISO-Latin to UTF8
+    encoder</li>
+  <li>portability fixes in the HTTP code</li>
+  <li>memory allocation checks using valgrind, and profiling tests </li>
+  <li>revamp of the Windows build and Makefiles</li>
+</ul>
+
+<h3>2.4.18: Mar 18 2002</h3>
+<ul>
+  <li>bug fixes: tree, SAX, canonicalization, validation, portability,
+  xpath</li>
+  <li>removed the --with-buffer option it was becoming unmaintainable</li>
+  <li>serious cleanup of the Python makefiles</li>
+  <li>speedup patch to XPath very effective for DocBook stylesheets</li>
+  <li>Fixes for Windows build, cleanup of the documentation</li>
+</ul>
+
+<h3>2.4.17: Mar 8 2002</h3>
+<ul>
+  <li>a lot of bug fixes, including "namespace nodes have no parents in
+  XPath"</li>
+  <li>fixed/improved the Python wrappers, added more examples and more
+    regression tests, XPath extension functions can now return node-sets</li>
+  <li>added the XML Canonalization support from Aleksey Sanin</li>
+</ul>
+
+<h3>2.4.16: Feb 20 2002</h3>
+<ul>
+  <li>a lot of bug fixes, most of them were triggered by the XML Testsuite
+    from OASIS and W3C. Compliance has been significantly improved.</li>
+  <li>a couple of portability fixes too.</li>
+</ul>
+
+<h3>2.4.15: Feb 11 2002</h3>
+<ul>
+  <li>Fixed the Makefiles, especially the python module ones</li>
+  <li>A few bug fixes and cleanup</li>
+  <li>Includes cleanup</li>
+</ul>
+
+<h3>2.4.14: Feb 8 2002</h3>
+<ul>
+  <li>Change of Licence to the <a
+    href="http://www.opensource.org/licenses/mit-license.html">MIT
+    Licence</a> basisally for integration in XFree86 codebase, and removing
+    confusion around the previous dual-licencing</li>
+  <li>added Python bindings, beta software but should already be quite
+    complete</li>
+  <li>a large number of fixes and cleanups, especially for all tree
+    manipulations</li>
+  <li>cleanup of the headers, generation of a reference API definition in
+  XML</li>
+</ul>
+
+<h3>2.4.13: Jan 14 2002</h3>
+<ul>
+  <li>update of the documentation: John Fleck and Charlie Bozeman</li>
+  <li>cleanup of timing code from Justin Fletcher</li>
+  <li>fixes for Windows and initial thread support on Win32: Igor and Serguei
+    Narojnyi</li>
+  <li>Cygwin patch from Robert Collins</li>
+  <li>added xmlSetEntityReferenceFunc() for Keith Isdale work on xsldbg</li>
+</ul>
+
+<h3>2.4.12: Dec 7 2001</h3>
+<ul>
+  <li>a few bug fixes: thread (Gary Pennington), xmllint (Geert Kloosterman),
+    XML parser (Robin Berjon), XPointer (Danny Jamshy), I/O cleanups
+  (robert)</li>
+  <li>Eric Lavigne contributed project files for MacOS</li>
+  <li>some makefiles cleanups</li>
+</ul>
+
+<h3>2.4.11: Nov 26 2001</h3>
+<ul>
+  <li>fixed a couple of errors in the includes, fixed a few bugs, some code
+    cleanups</li>
+  <li>xmllint man pages improvement by Heiko Rupp</li>
+  <li>updated VMS build instructions from John A Fotheringham</li>
+  <li>Windows Makefiles updates from Igor</li>
+</ul>
+
+<h3>2.4.10: Nov 10 2001</h3>
+<ul>
+  <li>URI escaping fix (Joel Young)</li>
+  <li>added xmlGetNodePath() (for paths or XPointers generation)</li>
+  <li>Fixes namespace handling problems when using DTD and validation</li>
+  <li>improvements on xmllint: Morus Walter patches for --format and
+    --encode, Stefan Kost and Heiko Rupp improvements on the --shell</li>
+  <li>fixes for xmlcatalog linking pointed by Weiqi Gao</li>
+  <li>fixes to the HTML parser</li>
+</ul>
+
+<h3>2.4.9: Nov 6 2001</h3>
+<ul>
+  <li>fixes more catalog bugs</li>
+  <li>avoid a compilation problem, improve xmlGetLineNo()</li>
+</ul>
+
+<h3>2.4.8: Nov 4 2001</h3>
+<ul>
+  <li>fixed SGML catalogs broken in previous release, updated xmlcatalog
+  tool</li>
+  <li>fixed a compile errors and some includes troubles.</li>
+</ul>
+
+<h3>2.4.7: Oct 30 2001</h3>
+<ul>
+  <li>exported some debugging interfaces</li>
+  <li>serious rewrite of the catalog code</li>
+  <li>integrated Gary Pennington thread safety patch, added configure option
+    and regression tests</li>
+  <li>removed an HTML parser bug</li>
+  <li>fixed a couple of potentially serious validation bugs</li>
+  <li>integrated the SGML DocBook support in xmllint</li>
+  <li>changed the nanoftp anonymous login passwd</li>
+  <li>some I/O cleanup and a couple of interfaces for Perl wrapper</li>
+  <li>general bug fixes</li>
+  <li>updated xmllint man page by John Fleck</li>
+  <li>some VMS and Windows updates</li>
+</ul>
+
+<h3>2.4.6: Oct 10 2001</h3>
+<ul>
+  <li>added an updated man pages by John Fleck</li>
+  <li>portability and configure fixes</li>
+  <li>an infinite loop on the HTML parser was removed (William)</li>
+  <li>Windows makefile patches from Igor</li>
+  <li>fixed half a dozen bugs reported fof libxml or libxslt</li>
+  <li>updated xmlcatalog to be able to modify SGML super catalogs</li>
+</ul>
+
+<h3>2.4.5: Sep 14 2001</h3>
+<ul>
+  <li>Remove a few annoying bugs in 2.4.4</li>
+  <li>forces the HTML serializer to output decimal charrefs since some
+    version of Netscape can't handle hexadecimal ones</li>
+</ul>
+
+<h3>1.8.16: Sep 14 2001</h3>
+<ul>
+  <li>maintenance release of the old libxml1 branch, couple of bug and
+    portability fixes</li>
+</ul>
+
+<h3>2.4.4: Sep 12 2001</h3>
+<ul>
+  <li>added --convert to xmlcatalog, bug fixes and cleanups of XML
+  Catalog</li>
+  <li>a few bug fixes and some portability changes</li>
+  <li>some documentation cleanups</li>
+</ul>
+
+<h3>2.4.3:  Aug 23 2001</h3>
+<ul>
+  <li>XML Catalog support see the doc</li>
+  <li>New NaN/Infinity floating point code</li>
+  <li>A few bug fixes</li>
+</ul>
+
+<h3>2.4.2:  Aug 15 2001</h3>
+<ul>
+  <li>adds xmlLineNumbersDefault() to control line number generation</li>
+  <li>lot of bug fixes</li>
+  <li>the Microsoft MSC projects files shuld now be up to date</li>
+  <li>inheritance of namespaces from DTD defaulted attributes</li>
+  <li>fixes a serious potential security bug</li>
+  <li>added a --format option to xmllint</li>
+</ul>
+
+<h3>2.4.1:  July 24 2001</h3>
+<ul>
+  <li>possibility to keep line numbers in the tree</li>
+  <li>some computation NaN fixes</li>
+  <li>extension of the XPath API</li>
+  <li>cleanup for alpha and ia64 targets</li>
+  <li>patch to allow saving through HTTP PUT or POST</li>
+</ul>
+
+<h3>2.4.0: July 10 2001</h3>
+<ul>
+  <li>Fixed a few bugs in XPath, validation, and tree handling.</li>
+  <li>Fixed XML Base implementation, added a coupel of examples to the
+    regression tests</li>
+  <li>A bit of cleanup</li>
+</ul>
+
+<h3>2.3.14: July 5 2001</h3>
+<ul>
+  <li>fixed some entities problems and reduce mem requirement when
+    substituing them</li>
+  <li>lots of improvements in the XPath queries interpreter can be
+    substancially faster</li>
+  <li>Makefiles and configure cleanups</li>
+  <li>Fixes to XPath variable eval, and compare on empty node set</li>
+  <li>HTML tag closing bug fixed</li>
+  <li>Fixed an URI reference computating problem when validating</li>
+</ul>
+
+<h3>2.3.13: June 28 2001</h3>
+<ul>
+  <li>2.3.12 configure.in was broken as well as the push mode XML parser</li>
+  <li>a few more fixes for compilation on Windows MSC by Yon Derek</li>
+</ul>
+
+<h3>1.8.14: June 28 2001</h3>
+<ul>
+  <li>Zbigniew Chyla gave a patch to use the old XML parser in push mode</li>
+  <li>Small Makefile fix</li>
+</ul>
+
+<h3>2.3.12: June 26 2001</h3>
+<ul>
+  <li>lots of cleanup</li>
+  <li>a couple of validation fix</li>
+  <li>fixed line number counting</li>
+  <li>fixed serious problems in the XInclude processing</li>
+  <li>added support for UTF8 BOM at beginning of entities</li>
+  <li>fixed a strange gcc optimizer bugs in xpath handling of float, gcc-3.0
+    miscompile uri.c (William), Thomas Leitner provided a fix for the
+    optimizer on Tru64</li>
+  <li>incorporated Yon Derek and Igor Zlatkovic  fixes and improvements for
+    compilation on Windows MSC</li>
+  <li>update of libxml-doc.el (Felix Natter)</li>
+  <li>fixed 2 bugs in URI normalization code</li>
+</ul>
+
+<h3>2.3.11: June 17 2001</h3>
+<ul>
+  <li>updates to trio, Makefiles and configure should fix some portability
+    problems (alpha)</li>
+  <li>fixed some HTML serialization problems (pre, script, and block/inline
+    handling), added encoding aware APIs, cleanup of this code</li>
+  <li>added xmlHasNsProp()</li>
+  <li>implemented a specific PI for encoding support in the DocBook SGML
+    parser</li>
+  <li>some XPath fixes (-Infinity, / as a function parameter and namespaces
+    node selection)</li>
+  <li>fixed a performance problem and an error in the validation code</li>
+  <li>fixed XInclude routine to implement the recursive behaviour</li>
+  <li>fixed xmlFreeNode problem when libxml is included statically twice</li>
+  <li>added --version to xmllint for bug reports</li>
+</ul>
+
+<h3>2.3.10: June 1 2001</h3>
+<ul>
+  <li>fixed the SGML catalog support</li>
+  <li>a number of reported bugs got fixed, in XPath, iconv detection,
+    XInclude processing</li>
+  <li>XPath string function should now handle unicode correctly</li>
+</ul>
+
+<h3>2.3.9: May 19 2001</h3>
+
+<p>Lots of bugfixes, and added a basic SGML catalog support:</p>
+<ul>
+  <li>HTML push bugfix #54891 and another patch from Jonas Borgström</li>
+  <li>some serious speed optimisation again</li>
+  <li>some documentation cleanups</li>
+  <li>trying to get better linking on solaris (-R)</li>
+  <li>XPath API cleanup from Thomas Broyer</li>
+  <li>Validation bug fixed #54631, added a patch from Gary Pennington, fixed
+    xmlValidGetValidElements()</li>
+  <li>Added an INSTALL file</li>
+  <li>Attribute removal added to API: #54433</li>
+  <li>added a basic support for SGML catalogs</li>
+  <li>fixed xmlKeepBlanksDefault(0) API</li>
+  <li>bugfix in xmlNodeGetLang()</li>
+  <li>fixed a small configure portability problem</li>
+  <li>fixed an inversion of SYSTEM and PUBLIC identifier in HTML document</li>
+</ul>
+
+<h3>1.8.13: May 14 2001</h3>
+<ul>
+  <li>bugfixes release of the old libxml1 branch used by Gnome</li>
+</ul>
+
+<h3>2.3.8: May 3 2001</h3>
+<ul>
+  <li>Integrated an SGML DocBook parser for the Gnome project</li>
+  <li>Fixed a few things in the HTML parser</li>
+  <li>Fixed some XPath bugs raised by XSLT use, tried to fix the floating
+    point portability issue</li>
+  <li>Speed improvement (8M/s for SAX, 3M/s for DOM, 1.5M/s for
+    DOM+validation using the XML REC as input and a 700MHz celeron).</li>
+  <li>incorporated more Windows cleanup</li>
+  <li>added xmlSaveFormatFile()</li>
+  <li>fixed problems in copying nodes with entities references (gdome)</li>
+  <li>removed some troubles surrounding the new validation module</li>
 </ul>
 
 <h3>2.3.7: April 22 2001</h3>
@@ -266,9 +871,9 @@ you want to test those</p>
   <li>cleaned up the user of some of the string formatting function. used the
     trio library code to provide the one needed when the platform is missing
     them</li>
-  <li>xpath: removed a memory leak and fixed the predicate evaluation problem,
-    extended the testsuite and cleaned up the result. XPointer seems broken
-    ...</li>
+  <li>xpath: removed a memory leak and fixed the predicate evaluation
+    problem, extended the testsuite and cleaned up the result. XPointer seems
+    broken ...</li>
 </ul>
 
 <h3>2.3.5: Mar 23 2001</h3>
@@ -398,8 +1003,8 @@ you want to test those</p>
   <li>XPointer implementation and testsuite</li>
   <li>Lot of XPath fixes, added variable and functions registration, more
     tests</li>
-  <li>Portability fixes, lots of enhancements toward an easy Windows build and
-    release</li>
+  <li>Portability fixes, lots of enhancements toward an easy Windows build
+    and release</li>
   <li>Late validation fixes</li>
   <li>Integrated a lot of contributed patches</li>
   <li>added memory management docs</li>
@@ -439,8 +1044,8 @@ you want to test those</p>
   <li>a purely bug fixes release</li>
   <li>fixed an encoding support problem when parsing from a memory block</li>
   <li>fixed a DOCTYPE parsing problem</li>
-  <li>removed a bug in the function allowing to override the memory allocation
-    routines</li>
+  <li>removed a bug in the function allowing to override the memory
+    allocation routines</li>
 </ul>
 
 <h3>2.2.0: July 14 2000</h3>
@@ -513,8 +1118,8 @@ you want to test those</p>
     parser context using xmlCreateIOParserCtxt()</li>
   <li>there is a C preprocessor macro LIBXML_VERSION providing the version
     number of the libxml module in use</li>
-  <li>a number of optional features of libxml can now be excluded at configure
-    time (FTP/HTTP/HTML/XPath/Debug)</li>
+  <li>a number of optional features of libxml can now be excluded at
+    configure time (FTP/HTTP/HTML/XPath/Debug)</li>
 </ul>
 
 <h3>2.0.0beta: Mar 14 2000</h3>
@@ -533,8 +1138,8 @@ you want to test those</p>
     <ul>
       <li>fix I18N support. ISO-Latin-x/UTF-8/UTF-16 (nearly) seems correctly
         handled now</li>
-      <li>Better handling of entities, especially well formedness checking and
-        proper PEref extensions in external subsets</li>
+      <li>Better handling of entities, especially well formedness checking
+        and proper PEref extensions in external subsets</li>
       <li>DTD conditional sections</li>
       <li>Validation now correcly handle entities content</li>
       <li><a href="http://rpmfind.net/tools/gdome/messages/0039.html">change
@@ -553,9 +1158,9 @@ you want to test those</p>
   <li>This is a bug fix release:</li>
   <li>It is possible to disable the ignorable blanks heuristic used by
     libxml-1.x, a new function  xmlKeepBlanksDefault(0) will allow this. Note
-    that for adherence to XML spec, this behaviour will be disabled by default
-    in 2.x . The same function will allow to keep compatibility for old
-  code.</li>
+    that for adherence to XML spec, this behaviour will be disabled by
+    default in 2.x . The same function will allow to keep compatibility for
+    old code.</li>
   <li>Blanks in &lt;a&gt;  &lt;/a&gt; constructs are not ignored anymore,
     avoiding heuristic is really the Right Way :-\</li>
   <li>The unchecked use of snprintf which was breaking libxml-1.8.6
@@ -574,8 +1179,8 @@ you want to test those</p>
 <h3>1.8.5: Jan 21 2000</h3>
 <ul>
   <li>adding APIs to parse a well balanced chunk of XML (production <a
-    href="http://www.w3.org/TR/REC-xml#NT-content">[43] content</a> of the XML
-    spec)</li>
+    href="http://www.w3.org/TR/REC-xml#NT-content">[43] content</a> of the
+    XML spec)</li>
   <li>fixed a hideous bug in xmlGetProp pointed by Rune.Djurhuus@fast.no</li>
   <li>Jody Goldberg &lt;jgoldberg@home.com&gt; provided another patch trying
     to solve the zlib checks problems</li>
@@ -659,8 +1264,8 @@ you want to test those</p>
 <ul>
   <li>The basic type for strings manipulated by libxml has been renamed in
     1.7.1 from <strong>CHAR</strong> to <strong>xmlChar</strong>. The reason
-    is that CHAR was conflicting with a predefined type on Windows. However on
-    non WIN32 environment, compatibility is provided by the way of  a
+    is that CHAR was conflicting with a predefined type on Windows. However
+    on non WIN32 environment, compatibility is provided by the way of  a
     <strong>#define </strong>.</li>
   <li>Changed another error : the use of a structure field called errno, and
     leading to troubles on platforms where it's a macro</li>
@@ -702,14 +1307,14 @@ document</a>:</p>
 information about its encoding. Then the document is a text format whose
 structure is specified by tags between brackets. <strong>Each tag opened has
 to be closed</strong>. XML is pedantic about this. However, if a tag is empty
-(no content), a single tag can serve as both the opening and closing tag if it
-ends with <code>/&gt;</code> rather than with <code>&gt;</code>. Note that,
-for example, the image tag has no content (just an attribute) and is closed by
-ending the tag with <code>/&gt;</code>.</p>
+(no content), a single tag can serve as both the opening and closing tag if
+it ends with <code>/&gt;</code> rather than with <code>&gt;</code>. Note
+that, for example, the image tag has no content (just an attribute) and is
+closed by ending the tag with <code>/&gt;</code>.</p>
 
 <p>XML can be applied sucessfully to a wide range of uses, from long term
-structured document maintenance (where it follows the steps of SGML) to simple
-data encoding mechanisms like configuration file formatting (glade),
+structured document maintenance (where it follows the steps of SGML) to
+simple data encoding mechanisms like configuration file formatting (glade),
 spreadsheets (gnumeric), or even shorter lived documents such as WebDAV where
 it is used to encode remote calls between a client and a server.</p>
 
@@ -717,19 +1322,330 @@ it is used to encode remote calls between a client and a server.</p>
 
 <p>Check <a href="http://xmlsoft.org/XSLT">the separate libxslt page</a></p>
 
-<p><a href="http://www.w3.org/TR/xslt">XSL Transformations</a>,  is a language
-for transforming XML documents into other XML documents (or HTML/textual
-output).</p>
+<p><a href="http://www.w3.org/TR/xslt">XSL Transformations</a>,  is a
+language for transforming XML documents into other XML documents (or
+HTML/textual output).</p>
 
 <p>A separate library called libxslt is being built on top of libxml2. This
 module "libxslt" can be found in the Gnome CVS base too.</p>
 
 <p>You can check the <a
-href="http://cvs.gnome.org/lxr/source/libxslt/FEATURES">features</a> supported
-and the progresses on the <a
-href="http://cvs.gnome.org/lxr/source/libxslt/ChangeLog">Changelog</a></p>
+href="http://cvs.gnome.org/lxr/source/libxslt/FEATURES">features</a>
+supported and the progresses on the <a
+href="http://cvs.gnome.org/lxr/source/libxslt/ChangeLog"
+name="Changelog">Changelog</a></p>
 
-<h2>An overview of libxml architecture</h2>
+<h2><a name="Python">Python and bindings</a></h2>
+
+<p>There is a number of language bindings and wrappers available for libxml2,
+the list below is not exhaustive. Please contact the <a
+href="http://mail.gnome.org/mailman/listinfo/xml-bindings">xml-bindings@gnome.org</a>
+(<a href="http://mail.gnome.org/archives/xml-bindings/">archives</a>) in
+order to get updates to this list or to discuss the specific topic of libxml2
+or libxslt wrappers or bindings:</p>
+<ul>
+  <li><a href="mailto:ari@lusis.org">Ari Johnson</a> provides a  C++ wrapper
+    for libxml:<br>
+    Website: <a
+    href="http://lusis.org/~ari/xml++/">http://lusis.org/~ari/xml++/</a><br>
+    Download: <a
+    href="http://lusis.org/~ari/xml++/libxml++.tar.gz">http://lusis.org/~ari/xml++/libxml++.tar.gz</a></li>
+  <li>There is another <a href="http://libgdome-cpp.berlios.de/">C++ wrapper
+    based on the gdome2 </a>bindings maintained by Tobias Peters.</li>
+  <li><a
+    href="http://mail.gnome.org/archives/xml/2001-March/msg00014.html">Matt
+    Sergeant</a> developped <a
+    href="http://axkit.org/download/">XML::LibXSLT</a>, a perl wrapper for
+    libxml2/libxslt as part of the <a href="http://axkit.com/">AxKit XML
+    application server</a></li>
+  <li><a href="mailto:dkuhlman@cutter.rexx.com">Dave Kuhlman</a> provides and
+    earlier version of the libxml/libxslt <a
+    href="http://www.rexx.com/~dkuhlman">wrappers for Python</a></li>
+  <li>Petr Kozelka provides <a
+    href="http://sourceforge.net/projects/libxml2-pas">Pascal units to glue
+    libxml2</a> with Kylix, Delphi and other Pascal compilers</li>
+  <li>Wai-Sun "Squidster" Chia provides <a
+    href="http://www.rubycolor.org/arc/redist/">bindings for Ruby</a>  and
+    libxml2 bindings are also available in Ruby through the <a
+    href="http://libgdome-ruby.berlios.de/">libgdome-ruby</a> module
+    maintained by Tobias Peters.</li>
+  <li>Steve Ball and contributors maintains <a
+    href="http://tclxml.sourceforge.net/">libxml2 and libxslt bindings for
+    Tcl</a></li>
+  <li>There is support for libxml2 in the DOM module of PHP.</li>
+</ul>
+
+<p>The distribution includes a set of Python bindings, which are garanteed to
+be maintained as part of the library in the future, though the Python
+interface have not yet reached the maturity of the C API.</p>
+
+<p>To install the Python bindings there are 2 options:</p>
+<ul>
+  <li>If you use an RPM based distribution, simply install the <a
+    href="http://rpmfind.net/linux/rpm2html/search.php?query=libxml2-python">libxml2-python
+    RPM</a> (and if needed the <a
+    href="http://rpmfind.net/linux/rpm2html/search.php?query=libxslt-python">libxslt-python
+    RPM</a>).</li>
+  <li>Otherwise use the <a href="ftp://xmlsoft.org/python/">libxml2-python
+    module distribution</a> corresponding to your installed version of
+    libxml2 and libxslt. Note that to install it you will need both libxml2
+    and libxslt installed and run "python setup.py build install" in the
+    module tree.</li>
+</ul>
+
+<p>The distribution includes a set of examples and regression tests for the
+python bindings in the <code>python/tests</code> directory. Here are some
+excepts from those tests:</p>
+
+<h3>tst.py:</h3>
+
+<p>This is a basic test of the file interface and DOM navigation:</p>
+<pre>import libxml2
+
+doc = libxml2.parseFile("tst.xml")
+if doc.name != "tst.xml":
+    print "doc.name failed"
+    sys.exit(1)
+root = doc.children
+if root.name != "doc":
+    print "root.name failed"
+    sys.exit(1)
+child = root.children
+if child.name != "foo":
+    print "child.name failed"
+    sys.exit(1)
+doc.freeDoc()</pre>
+
+<p>The Python module is called libxml2, parseFile is the equivalent of
+xmlParseFile (most of the bindings are automatically generated, and the xml
+prefix is removed and the casing convention are kept). All node seen at the
+binding level share the same subset of accesors:</p>
+<ul>
+  <li><code>name</code> : returns the node name</li>
+  <li><code>type</code> : returns a string indicating the node
+    typ<code>e</code></li>
+  <li><code>content</code> : returns the content of the node, it is based on
+    xmlNodeGetContent() and hence is recursive.</li>
+  <li><code>parent</code> , <code>children</code>, <code>last</code>,
+    <code>next</code>, <code>prev</code>, <code>doc</code>,
+    <code>properties</code>: pointing to the associated element in the tree,
+    those may return None in case no such link exists.</li>
+</ul>
+
+<p>Also note the need to explicitely deallocate documents with freeDoc() .
+Reference counting for libxml2 trees would need quite a lot of work to
+function properly, and rather than risk memory leaks if not implemented
+correctly it sounds safer to have an explicit function to free a tree. The
+wrapper python objects like doc, root or child are them automatically garbage
+collected.</p>
+
+<h3>validate.py:</h3>
+
+<p>This test check the validation interfaces and redirection of error
+messages:</p>
+<pre>import libxml2
+
+#desactivate error messages from the validation
+def noerr(ctx, str):
+    pass
+
+libxml2.registerErrorHandler(noerr, None)
+
+ctxt = libxml2.createFileParserCtxt("invalid.xml")
+ctxt.validate(1)
+ctxt.parseDocument()
+doc = ctxt.doc()
+valid = ctxt.isValid()
+doc.freeDoc()
+if valid != 0:
+    print "validity chec failed"</pre>
+
+<p>The first thing to notice is the call to registerErrorHandler(), it
+defines a new error handler global to the library. It is used to avoid seeing
+the error messages when trying to validate the invalid document.</p>
+
+<p>The main interest of that test is the creation of a parser context with
+createFileParserCtxt() and how the behaviour can be changed before calling
+parseDocument() . Similary the informations resulting from the parsing phase
+are also available using context methods.</p>
+
+<p>Contexts like nodes are defined as class and the libxml2 wrappers maps the
+C function interfaces in terms of objects method as much as possible. The
+best to get a complete view of what methods are supported is to look at the
+libxml2.py module containing all the wrappers.</p>
+
+<h3>push.py:</h3>
+
+<p>This test show how to activate the push parser interface:</p>
+<pre>import libxml2
+
+ctxt = libxml2.createPushParser(None, "&lt;foo", 4, "test.xml")
+ctxt.parseChunk("/&gt;", 2, 1)
+doc = ctxt.doc()
+
+doc.freeDoc()</pre>
+
+<p>The context is created with a speciall call based on the
+xmlCreatePushParser() from the C library. The first argument is an optional
+SAX callback object, then the initial set of data, the lenght and the name of
+the resource in case URI-References need to be computed by the parser.</p>
+
+<p>Then the data are pushed using the parseChunk() method, the last call
+setting the thrird argument terminate to 1.</p>
+
+<h3>pushSAX.py:</h3>
+
+<p>this test show the use of the event based parsing interfaces. In this case
+the parser does not build a document, but provides callback information as
+the parser makes progresses analyzing the data being provided:</p>
+<pre>import libxml2
+log = ""
+
+class callback:
+    def startDocument(self):
+        global log
+        log = log + "startDocument:"
+
+    def endDocument(self):
+        global log
+        log = log + "endDocument:"
+
+    def startElement(self, tag, attrs):
+        global log
+        log = log + "startElement %s %s:" % (tag, attrs)
+
+    def endElement(self, tag):
+        global log
+        log = log + "endElement %s:" % (tag)
+
+    def characters(self, data):
+        global log
+        log = log + "characters: %s:" % (data)
+
+    def warning(self, msg):
+        global log
+        log = log + "warning: %s:" % (msg)
+
+    def error(self, msg):
+        global log
+        log = log + "error: %s:" % (msg)
+
+    def fatalError(self, msg):
+        global log
+        log = log + "fatalError: %s:" % (msg)
+
+handler = callback()
+
+ctxt = libxml2.createPushParser(handler, "&lt;foo", 4, "test.xml")
+chunk = " url='tst'&gt;b"
+ctxt.parseChunk(chunk, len(chunk), 0)
+chunk = "ar&lt;/foo&gt;"
+ctxt.parseChunk(chunk, len(chunk), 1)
+
+reference = "startDocument:startElement foo {'url': 'tst'}:" + \ 
+            "characters: bar:endElement foo:endDocument:"
+if log != reference:
+    print "Error got: %s" % log
+    print "Exprected: %s" % reference</pre>
+
+<p>The key object in that test is the handler, it provides a number of entry
+points which can be called by the parser as it makes progresses to indicate
+the information set obtained. The full set of callback is larger than what
+the callback class in that specific example implements (see the SAX
+definition for a complete list). The wrapper will only call those supplied by
+the object when activated. The startElement receives the names of the element
+and a dictionnary containing the attributes carried by this element.</p>
+
+<p>Also note that the reference string generated from the callback shows a
+single character call even though the string "bar" is passed to the parser
+from 2 different call to parseChunk()</p>
+
+<h3>xpath.py:</h3>
+
+<p>This is a basic test of XPath warppers support</p>
+<pre>import libxml2
+
+doc = libxml2.parseFile("tst.xml")
+ctxt = doc.xpathNewContext()
+res = ctxt.xpathEval("//*")
+if len(res) != 2:
+    print "xpath query: wrong node set size"
+    sys.exit(1)
+if res[0].name != "doc" or res[1].name != "foo":
+    print "xpath query: wrong node set value"
+    sys.exit(1)
+doc.freeDoc()
+ctxt.xpathFreeContext()</pre>
+
+<p>This test parses a file, then create an XPath context to evaluate XPath
+expression on it. The xpathEval() method execute an XPath query and returns
+the result mapped in a Python way. String and numbers are natively converted,
+and node sets are returned as a tuple of libxml2 Python nodes wrappers. Like
+the document, the XPath context need to be freed explicitely, also not that
+the result of the XPath query may point back to the document tree and hence
+the document must be freed after the result of the query is used.</p>
+
+<h3>xpathext.py:</h3>
+
+<p>This test shows how to extend the XPath engine with functions written in
+python:</p>
+<pre>import libxml2
+
+def foo(ctx, x):
+    return x + 1
+
+doc = libxml2.parseFile("tst.xml")
+ctxt = doc.xpathNewContext()
+libxml2.registerXPathFunction(ctxt._o, "foo", None, foo)
+res = ctxt.xpathEval("foo(1)")
+if res != 2:
+    print "xpath extension failure"
+doc.freeDoc()
+ctxt.xpathFreeContext()</pre>
+
+<p>Note how the extension function is registered with the context (but that
+part is not yet finalized, ths may change slightly in the future).</p>
+
+<h3>tstxpath.py:</h3>
+
+<p>This test is similar to the previousone but shows how the extension
+function can access the XPath evaluation context:</p>
+<pre>def foo(ctx, x):
+    global called
+
+    #
+    # test that access to the XPath evaluation contexts
+    #
+    pctxt = libxml2.xpathParserContext(_obj=ctx)
+    ctxt = pctxt.context()
+    called = ctxt.function()
+    return x + 1</pre>
+
+<p>All the interfaces around the XPath parser(or rather evaluation) context
+are not finalized, but it should be sufficient to do contextual work at the
+evaluation point.</p>
+
+<h3>Memory debugging:</h3>
+
+<p>last but not least, all tests starts with the following prologue:</p>
+<pre>#memory debug specific
+libxml2.debugMemory(1)</pre>
+
+<p>and ends with the following epilogue:</p>
+<pre>#memory debug specific
+libxml2.cleanupParser()
+if libxml2.debugMemory(1) == 0:
+    print "OK"
+else:
+    print "Memory leak %d bytes" % (libxml2.debugMemory(1))
+    libxml2.dumpMemory()</pre>
+
+<p>Those activate the memory debugging interface of libxml2 where all
+alloacted block in the library are tracked. The prologue then cleans up the
+library state and checks that all allocated memory has been freed. If not it
+calls dumpMemory() which saves that list in a <code>.memdump</code> file.</p>
+
+<h2><a name="architecture">libxml architecture</a></h2>
 
 <p>Libxml is made of multiple components; some of them are optional, and most
 of the block interfaces are public. The main components are:</p>
@@ -814,10 +1730,10 @@ standalone=true
 
 <p>Sometimes the DOM tree output is just too large to fit reasonably into
 memory. In that case (and if you don't expect to save back the XML document
-loaded using libxml), it's better to use the SAX interface of libxml. SAX is a
-<strong>callback-based interface</strong> to the parser. Before parsing, the
-application layer registers a customized set of callbacks which are called by
-the library as it progresses through the XML input.</p>
+loaded using libxml), it's better to use the SAX interface of libxml. SAX is
+a <strong>callback-based interface</strong> to the parser. Before parsing,
+the application layer registers a customized set of callbacks which are
+called by the library as it progresses through the XML input.</p>
 
 <p>To get more detailed step-by-step guidance on using the SAX interface of
 libxml, see the <a
@@ -871,14 +1787,1182 @@ use of the standard DOM tree build. Note that the DOM tree itself is built by
 a set of registered default callbacks, without internal specific
 interface.</p>
 
-<h2><a name="library">The XML library interfaces</a></h2>
+<h2><a name="Validation">Validation &amp; DTDs</a></h2>
+
+<p>Table of Content:</p>
+<ol>
+  <li><a href="#General5">General overview</a></li>
+  <li><a href="#definition">The definition</a></li>
+  <li><a href="#Simple">Simple rules</a>
+    <ol>
+      <li><a href="#reference">How to reference a DTD from a document</a></li>
+      <li><a href="#Declaring">Declaring elements</a></li>
+      <li><a href="#Declaring1">Declaring attributes</a></li>
+    </ol>
+  </li>
+  <li><a href="#Some">Some examples</a></li>
+  <li><a href="#validate">How to validate</a></li>
+  <li><a href="#Other">Other resources</a></li>
+</ol>
+
+<h3><a name="General5">General overview</a></h3>
+
+<p>Well what is validation and what is a DTD ?</p>
+
+<p>DTD is the acronym for Document Type Definition. This is a description of
+the content for a familly of XML files. This is part of the XML 1.0
+specification, and alows to describe and check that a given document instance
+conforms to a set of rules detailing its structure and content.</p>
+
+<p>Validation is the process of checking a document against a DTD (more
+generally against a set of construction rules).</p>
+
+<p>The validation process and building DTDs are the two most difficult parts
+of the XML life cycle. Briefly a DTD defines all the possibles element to be
+found within your document, what is the formal shape of your document tree
+(by defining the allowed content of an element, either text, a regular
+expression for the allowed list of children, or mixed content i.e. both text
+and children). The DTD also defines the allowed attributes for all elements
+and the types of the attributes.</p>
+
+<h3><a name="definition1">The definition</a></h3>
+
+<p>The <a href="http://www.w3.org/TR/REC-xml">W3C XML Recommendation</a> (<a
+href="http://www.xml.com/axml/axml.html">Tim Bray's annotated version of
+Rev1</a>):</p>
+<ul>
+  <li><a href="http://www.w3.org/TR/REC-xml#elemdecls">Declaring
+  elements</a></li>
+  <li><a href="http://www.w3.org/TR/REC-xml#attdecls">Declaring
+  attributes</a></li>
+</ul>
+
+<p>(unfortunately) all this is inherited from the SGML world, the syntax is
+ancient...</p>
+
+<h3><a name="Simple1">Simple rules</a></h3>
+
+<p>Writing DTD can be done in multiple ways, the rules to build them if you
+need something fixed or something which can evolve over time can be radically
+different. Really complex DTD like Docbook ones are flexible but quite harder
+to design. I will just focuse on DTDs for a formats with a fixed simple
+structure. It is just a set of basic rules, and definitely not exhaustive nor
+useable for complex DTD design.</p>
+
+<h4><a name="reference1">How to reference a DTD from a document</a>:</h4>
+
+<p>Assuming the top element of the document is <code>spec</code> and the dtd
+is placed in the file <code>mydtd</code> in the subdirectory
+<code>dtds</code> of the directory from where the document were loaded:</p>
+
+<p><code>&lt;!DOCTYPE spec SYSTEM "dtds/mydtd"&gt;</code></p>
+
+<p>Notes:</p>
+<ul>
+  <li>the system string is actually an URI-Reference (as defined in <a
+    href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>) so you can use a
+    full URL string indicating the location of your DTD on the Web, this is a
+    really good thing to do if you want others to validate your document</li>
+  <li>it is also possible to associate a <code>PUBLIC</code> identifier (a
+    magic string) so that the DTd is looked up in catalogs on the client side
+    without having to locate it on the web</li>
+  <li>a dtd contains a set of elements and attributes declarations, but they
+    don't define what the root of the document should be. This is explicitely
+    told to the parser/validator as the first element of the
+    <code>DOCTYPE</code> declaration.</li>
+</ul>
+
+<h4><a name="Declaring2">Declaring elements</a>:</h4>
+
+<p>The following declares an element <code>spec</code>:</p>
+
+<p><code>&lt;!ELEMENT spec (front, body, back?)&gt;</code></p>
+
+<p>it also expresses that the spec element contains one <code>front</code>,
+one <code>body</code> and one optionnal <code>back</code> children elements
+in this order. The declaration of one element of the structure and its
+content are done in a single declaration. Similary the following declares
+<code>div1</code> elements:</p>
+
+<p><code>&lt;!ELEMENT div1 (head, (p | list | note)*, div2?)&gt;</code></p>
+
+<p>means div1 contains one <code>head</code> then a series of optional
+<code>p</code>, <code>list</code>s and <code>note</code>s and then an
+optional <code>div2</code>. And last but not least an element can contain
+text:</p>
+
+<p><code>&lt;!ELEMENT b (#PCDATA)&gt;</code></p>
+
+<p><code>b</code> contains text or being of mixed content (text and elements
+in no particular order):</p>
+
+<p><code>&lt;!ELEMENT p (#PCDATA|a|ul|b|i|em)*&gt;</code></p>
+
+<p><code>p </code>can contain text or <code>a</code>, <code>ul</code>,
+<code>b</code>, <code>i </code>or <code>em</code> elements in no particular
+order.</p>
+
+<h4><a name="Declaring1">Declaring attributes</a>:</h4>
+
+<p>again the attributes declaration includes their content definition:</p>
+
+<p><code>&lt;!ATTLIST termdef name CDATA #IMPLIED&gt;</code></p>
+
+<p>means that the element <code>termdef</code> can have a <code>name</code>
+attribute containing text (<code>CDATA</code>) and which is optionnal
+(<code>#IMPLIED</code>). The attribute value can also be defined within a
+set:</p>
+
+<p><code>&lt;!ATTLIST list type (bullets|ordered|glossary)
+"ordered"&gt;</code></p>
+
+<p>means <code>list</code> element have a <code>type</code> attribute with 3
+allowed values "bullets", "ordered" or "glossary" and which default to
+"ordered" if the attribute is not explicitely specified.</p>
+
+<p>The content type of an attribute can be text (<code>CDATA</code>),
+anchor/reference/references
+(<code>ID</code>/<code>IDREF</code>/<code>IDREFS</code>), entity(ies)
+(<code>ENTITY</code>/<code>ENTITIES</code>) or name(s)
+(<code>NMTOKEN</code>/<code>NMTOKENS</code>). The following defines that a
+<code>chapter</code> element can have an optional <code>id</code> attribute
+of type <code>ID</code>, usable for reference from attribute of type
+IDREF:</p>
+
+<p><code>&lt;!ATTLIST chapter id ID #IMPLIED&gt;</code></p>
+
+<p>The last value of an attribute definition can be <code>#REQUIRED
+</code>meaning that the attribute has to be given, <code>#IMPLIED</code>
+meaning that it is optional, or the default value (possibly prefixed by
+<code>#FIXED</code> if it is the only allowed).</p>
+
+<p>Notes:</p>
+<ul>
+  <li>usually the attributes pertaining to a given element are declared in a
+    single expression, but it is just a convention adopted by a lot of DTD
+    writers:
+    <pre>&lt;!ATTLIST termdef
+          id      ID      #REQUIRED
+          name    CDATA   #IMPLIED&gt;</pre>
+    <p>The previous construct defines both <code>id</code> and
+    <code>name</code> attributes for the element <code>termdef</code></p>
+  </li>
+</ul>
+
+<h3><a name="Some1">Some examples</a></h3>
+
+<p>The directory <code>test/valid/dtds/</code> in the libxml distribution
+contains some complex DTD examples. The  <code>test/valid/dia.xml</code>
+example shows an XML file where the simple DTD is directly included within
+the document.</p>
+
+<h3><a name="validate1">How to validate</a></h3>
+
+<p>The simplest is to use the xmllint program comming with libxml. The
+<code>--valid</code> option turn on validation of the files given as input,
+for example the following validates a copy of the first revision of the XML
+1.0 specification:</p>
+
+<p><code>xmllint --valid --noout test/valid/REC-xml-19980210.xml</code></p>
+
+<p>the -- noout is used to not output the resulting tree.</p>
+
+<p>The <code>--dtdvalid dtd</code> allows to validate the document(s) against
+a given DTD.</p>
+
+<p>Libxml exports an API to handle DTDs and validation, check the <a
+href="http://xmlsoft.org/html/libxml-valid.html">associated
+description</a>.</p>
+
+<h3><a name="Other1">Other resources</a></h3>
+
+<p>DTDs are as old as SGML. So there may be a number of examples on-line, I
+will just list one for now, others pointers welcome:</p>
+<ul>
+  <li><a href="http://www.xml101.com:8081/dtd/">XML-101 DTD</a></li>
+</ul>
+
+<p>I suggest looking at the examples found under test/valid/dtd and any of
+the large number of books available on XML. The dia example in test/valid
+should be both simple and complete enough to allow you to build your own.</p>
+
+<p></p>
+
+<h2><a name="Memory">Memory Management</a></h2>
+
+<p>Table of Content:</p>
+<ol>
+  <li><a href="#General3">General overview</a></li>
+  <li><a href="#setting">Setting libxml set of memory routines</a></li>
+  <li><a href="#cleanup">Cleaning up after parsing</a></li>
+  <li><a href="#Debugging">Debugging routines</a></li>
+  <li><a href="#General4">General memory requirements</a></li>
+</ol>
+
+<h3><a name="General3">General overview</a></h3>
+
+<p>The module <code><a
+href="http://xmlsoft.org/html/libxml-xmlmemory.html">xmlmemory.h</a></code>
+provides the interfaces to the libxml memory system:</p>
+<ul>
+  <li>libxml does not use the libc memory allocator directly but xmlFree(),
+    xmlMalloc() and xmlRealloc()</li>
+  <li>those routines can be reallocated to a specific set of routine, by
+    default the libc ones i.e. free(), malloc() and realloc()</li>
+  <li>the xmlmemory.c module includes a set of debugging routine</li>
+</ul>
+
+<h3><a name="setting">Setting libxml set of memory routines</a></h3>
+
+<p>It is sometimes useful to not use the default memory allocator, either for
+debugging, analysis or to implement a specific behaviour on memory management
+(like on embedded systems). Two function calls are available to do so:</p>
+<ul>
+  <li><a href="http://xmlsoft.org/html/libxml-xmlmemory.html">xmlMemGet
+    ()</a> which return the current set of functions in use by the parser</li>
+  <li><a
+    href="http://xmlsoft.org/html/libxml-xmlmemory.html">xmlMemSetup()</a>
+    which allow to set up a new set of memory allocation functions</li>
+</ul>
+
+<p>Of course a call to xmlMemSetup() should probably be done before calling
+any other libxml routines (unless you are sure your allocations routines are
+compatibles).</p>
+
+<h3><a name="cleanup">Cleaning up after parsing</a></h3>
+
+<p>Libxml is not stateless, there is a few set of memory structures needing
+allocation before the parser is fully functionnal (some encoding structures
+for example). This also mean that once parsing is finished there is a tiny
+amount of memory (a few hundred bytes) which can be recollected if you don't
+reuse the parser immediately:</p>
+<ul>
+  <li><a href="http://xmlsoft.org/html/libxml-parser.html">xmlCleanupParser
+    ()</a> is a centralized routine to free the parsing states. Note that it
+    won't deallocate any produced tree if any (use the xmlFreeDoc() and
+    related routines for this).</li>
+  <li><a href="http://xmlsoft.org/html/libxml-parser.html">xmlInitParser
+    ()</a> is the dual routine allowing to preallocate the parsing state
+    which can be useful for example to avoid initialization reentrancy
+    problems when using libxml in multithreaded applications</li>
+</ul>
+
+<p>Generally xmlCleanupParser() is safe, if needed the state will be rebuild
+at the next invocation of parser routines, but be careful of the consequences
+in multithreaded applications.</p>
+
+<h3><a name="Debugging">Debugging routines</a></h3>
+
+<p>When configured using --with-mem-debug flag (off by default), libxml uses
+a set of memory allocation debugging routineskeeping track of all allocated
+blocks and the location in the code where the routine was called. A couple of
+other debugging routines allow to dump the memory allocated infos to a file
+or call a specific routine when a given block number is allocated:</p>
+<ul>
+  <li><a
+    href="http://xmlsoft.org/html/libxml-xmlmemory.html">xmlMallocLoc()</a>
+    <a
+    href="http://xmlsoft.org/html/libxml-xmlmemory.html">xmlReallocLoc()</a>
+    and <a
+    href="http://xmlsoft.org/html/libxml-xmlmemory.html">xmlMemStrdupLoc()</a>
+    are the memory debugging replacement allocation routines</li>
+  <li><a href="http://xmlsoft.org/html/libxml-xmlmemory.html">xmlMemoryDump
+    ()</a> dumps all the informations about the allocated memory block lefts
+    in the <code>.memdump</code> file</li>
+</ul>
+
+<p>When developping libxml memory debug is enabled, the tests programs call
+xmlMemoryDump () and the "make test" regression tests will check for any
+memory leak during the full regression test sequence, this helps a lot
+ensuring that libxml  does not leak memory and bullet proof memory
+allocations use (some libc implementations are known to be far too permissive
+resulting in major portability problems!).</p>
+
+<p>If the .memdump reports a leak, it displays the allocation function and
+also tries to give some informations about the content and structure of the
+allocated blocks left. This is sufficient in most cases to find the culprit,
+but not always. Assuming the allocation problem is reproductible, it is
+possible to find more easilly:</p>
+<ol>
+  <li>write down the block number xxxx not allocated</li>
+  <li>export the environement variable XML_MEM_BREAKPOINT=xxxx</li>
+  <li>run the program under a debugger and set a breakpoint on
+    xmlMallocBreakpoint() a specific function called when this precise block
+    is allocated</li>
+  <li>when the breakpoint is reached you can then do a fine analysis of the
+    allocation an step  to see the condition resulting in the missing
+    deallocation.</li>
+</ol>
+
+<p>I used to use a commercial tool to debug libxml memory problems but after
+noticing that it was not detecting memory leaks that simple mechanism was
+used and proved extremely efficient until now.</p>
+
+<h3><a name="General4">General memory requirements</a></h3>
+
+<p>How much libxml memory require ? It's hard to tell in average it depends
+of a number of things:</p>
+<ul>
+  <li>the parser itself should work  in a fixed amout of memory, except for
+    information maintained about the stacks of names and  entities locations.
+    The I/O and encoding handlers will probably account for a few KBytes.
+    This is true for both the XML and HTML parser (though the HTML parser
+    need more state).</li>
+  <li>If you are generating the DOM tree then memory requirements will grow
+    nearly lineary with the size of the data. In general for a balanced
+    textual document the internal memory requirement is about 4 times the
+    size of the UTF8 serialization of this document (exmple the XML-1.0
+    recommendation is a bit more of 150KBytes and takes 650KBytes of main
+    memory when parsed). Validation will add a amount of memory required for
+    maintaining the external Dtd state which should be linear with the
+    complexity of the content model defined by the Dtd</li>
+  <li>If you don't care about the advanced features of libxml like
+    validation, DOM, XPath or XPointer, but really need to work fixed memory
+    requirements, then the SAX interface should be used.</li>
+</ul>
+
+<p></p>
+
+<h2><a name="Encodings">Encodings support</a></h2>
+
+<p>Table of Content:</p>
+<ol>
+  <li><a href="encoding.html#What">What does internationalization support
+    mean ?</a></li>
+  <li><a href="encoding.html#internal">The internal encoding, how and
+  why</a></li>
+  <li><a href="encoding.html#implemente">How is it implemented ?</a></li>
+  <li><a href="encoding.html#Default">Default supported encodings</a></li>
+  <li><a href="encoding.html#extend">How to extend the existing
+  support</a></li>
+</ol>
+
+<h3><a name="What">What does internationalization support mean ?</a></h3>
+
+<p>XML was designed from the start to allow the support of any character set
+by using Unicode. Any conformant XML parser has to support the UTF-8 and
+UTF-16 default encodings which can both express the full unicode ranges. UTF8
+is a variable length encoding whose greatest point are to resuse the same
+emcoding for ASCII and to save space for Western encodings, but it is a bit
+more complex to handle in practice. UTF-16 use 2 bytes per characters (and
+sometimes combines two pairs), it makes implementation easier, but looks a
+bit overkill for Western languages encoding. Moreover the XML specification
+allows document to be encoded in other encodings at the condition that they
+are clearly labelled as such. For example the following is a wellformed XML
+document encoded in ISO-8859 1 and using accentuated letter that we French
+likes for both markup and content:</p>
+<pre>&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;très&gt;là&lt;/très&gt;</pre>
+
+<p>Having internationalization support in libxml means the foolowing:</p>
+<ul>
+  <li>the document is properly parsed</li>
+  <li>informations about it's encoding are saved</li>
+  <li>it can be modified</li>
+  <li>it can be saved in its original encoding</li>
+  <li>it can also be saved in another encoding supported by libxml (for
+    example straight UTF8 or even an ASCII form)</li>
+</ul>
+
+<p>Another very important point is that the whole libxml API, with the
+exception of a few routines to read with a specific encoding or save to a
+specific encoding, is completely agnostic about the original encoding of the
+document.</p>
+
+<p>It should be noted too that the HTML parser embedded in libxml now obbey
+the same rules too, the following document will be (as of 2.2.2) handled  in
+an internationalized fashion by libxml too:</p>
+<pre>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+                      "http://www.w3.org/TR/REC-html40/loose.dtd"&gt;
+&lt;html lang="fr"&gt;
+&lt;head&gt;
+  &lt;META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;W3C crée des standards pour le Web.&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+<h3><a name="internal">The internal encoding, how and why</a></h3>
+
+<p>One of the core decision was to force all documents to be converted to a
+default internal encoding, and that encoding to be UTF-8, here are the
+rationale for those choices:</p>
+<ul>
+  <li>keeping the native encoding in the internal form would force the libxml
+    users (or the code associated) to be fully aware of the encoding of the
+    original document, for examples when adding a text node to a document,
+    the content would have to be provided in the document encoding, i.e. the
+    client code would have to check it before hand, make sure it's conformant
+    to the encoding, etc ... Very hard in practice, though in some specific
+    cases this may make sense.</li>
+  <li>the second decision was which encoding. From the XML spec only UTF8 and
+    UTF16 really makes sense as being the two only encodings for which there
+    is amndatory support. UCS-4 (32 bits fixed size encoding) could be
+    considered an intelligent choice too since it's a direct Unicode mapping
+    support. I selected UTF-8 on the basis of efficiency and compatibility
+    with surrounding software:
+    <ul>
+      <li>UTF-8 while a bit more complex to convert from/to (i.e. slightly
+        more costly to import and export CPU wise) is also far more compact
+        than UTF-16 (and UCS-4) for a majority of the documents I see it used
+        for right now (RPM RDF catalogs, advogato data, various configuration
+        file formats, etc.) and the key point for today's computer
+        architecture is efficient uses of caches. If one nearly double the
+        memory requirement to store the same amount of data, this will trash
+        caches (main memory/external caches/internal caches) and my take is
+        that this harms the system far more than the CPU requirements needed
+        for the conversion to UTF-8</li>
+      <li>Most of libxml version 1 users were using it with straight ASCII
+        most of the time, doing the conversion with an internal encoding
+        requiring all their code to be rewritten was a serious show-stopper
+        for using UTF-16 or UCS-4.</li>
+      <li>UTF-8 is being used as the de-facto internal encoding standard for
+        related code like the <a href="http://www.pango.org/">pango</a>
+        upcoming Gnome text widget, and a lot of Unix code (yep another place
+        where Unix programmer base takes a different approach from Microsoft
+        - they are using UTF-16)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>What does this mean in practice for the libxml user:</p>
+<ul>
+  <li>xmlChar, the libxml data type is a byte, those bytes must be assembled
+    as UTF-8 valid strings. The proper way to terminate an xmlChar * string
+    is simply to append 0 byte, as usual.</li>
+  <li>One just need to make sure that when using chars outside the ASCII set,
+    the values has been properly converted to UTF-8</li>
+</ul>
+
+<h3><a name="implemente">How is it implemented ?</a></h3>
+
+<p>Let's describe how all this works within libxml, basically the I18N
+(internationalization) support get triggered only during I/O operation, i.e.
+when reading a document or saving one. Let's look first at the reading
+sequence:</p>
+<ol>
+  <li>when a document is processed, we usually don't know the encoding, a
+    simple heuristic allows to detect UTF-18 and UCS-4 from whose where the
+    ASCII range (0-0x7F) maps with ASCII</li>
+  <li>the xml declaration if available is parsed, including the encoding
+    declaration. At that point, if the autodetected encoding is different
+    from the one declared a call to xmlSwitchEncoding() is issued.</li>
+  <li>If there is no encoding declaration, then the input has to be in either
+    UTF-8 or UTF-16, if it is not then at some point when processing the
+    input, the converter/checker of UTF-8 form will raise an encoding error.
+    You may end-up with a garbled document, or no document at all ! Example:
+    <pre>~/XML -&gt; ./xmllint err.xml 
+err.xml:1: error: Input is not proper UTF-8, indicate encoding !
+&lt;très&gt;là&lt;/très&gt;
+   ^
+err.xml:1: error: Bytes: 0xE8 0x73 0x3E 0x6C
+&lt;très&gt;là&lt;/très&gt;
+   ^</pre>
+  </li>
+  <li>xmlSwitchEncoding() does an encoding name lookup, canonalize it, and
+    then search the default registered encoding converters for that encoding.
+    If it's not within the default set and iconv() support has been compiled
+    it, it will ask iconv for such an encoder. If this fails then the parser
+    will report an error and stops processing:
+    <pre>~/XML -&gt; ./xmllint err2.xml 
+err2.xml:1: error: Unsupported encoding UnsupportedEnc
+&lt;?xml version="1.0" encoding="UnsupportedEnc"?&gt;
+                                             ^</pre>
+  </li>
+  <li>From that point the encoder process progressingly the input (it is
+    plugged as a front-end to the I/O module) for that entity. It captures
+    and convert on-the-fly the document to be parsed to UTF-8. The parser
+    itself just does UTF-8 checking of this input and process it
+    transparently. The only difference is that the encoding information has
+    been added to the parsing context (more precisely to the input
+    corresponding to this entity).</li>
+  <li>The result (when using DOM) is an internal form completely in UTF-8
+    with just an encoding information on the document node.</li>
+</ol>
+
+<p>Ok then what's happen when saving the document (assuming you
+colllected/built an xmlDoc DOM like structure) ? It depends on the function
+called, xmlSaveFile() will just try to save in the original encoding, while
+xmlSaveFileTo() and xmlSaveFileEnc() can optionally save to a given
+encoding:</p>
+<ol>
+  <li>if no encoding is given, libxml will look for an encoding value
+    associated to the document and if it exists will try to save to that
+    encoding,
+    <p>otherwise everything is written in the internal form, i.e. UTF-8</p>
+  </li>
+  <li>so if an encoding was specified, either at the API level or on the
+    document, libxml will again canonalize the encoding name, lookup for a
+    converter in the registered set or through iconv. If not found the
+    function will return an error code</li>
+  <li>the converter is placed before the I/O buffer layer, as another kind of
+    buffer, then libxml will simply push the UTF-8 serialization to through
+    that buffer, which will then progressively be converted and pushed onto
+    the I/O layer.</li>
+  <li>It is possible that the converter code fails on some input, for example
+    trying to push an UTF-8 encoded chinese character through the UTF-8 to
+    ISO-8859-1 converter won't work. Since the encoders are progressive they
+    will just report the error and the number of bytes converted, at that
+    point libxml will decode the offending character, remove it from the
+    buffer and replace it with the associated charRef encoding &amp;#123; and
+    resume the convertion. This guarante that any document will be saved
+    without losses (except for markup names where this is not legal, this is
+    a problem in the current version, in pactice avoid using non-ascci
+    characters for tags or attributes names  @@). A special "ascii" encoding
+    name is used to save documents to a pure ascii form can be used when
+    portability is really crucial</li>
+</ol>
+
+<p>Here is a few examples based on the same test document:</p>
+<pre>~/XML -&gt; ./xmllint isolat1 
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;très&gt;là&lt;/très&gt;
+~/XML -&gt; ./xmllint --encode UTF-8 isolat1 
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;trÃ¨s&gt;lÃ  &lt;/trÃ¨s&gt;
+~/XML -&gt; </pre>
+
+<p>The same processing is applied (and reuse most of the code) for HTML I18N
+processing. Looking up and modifying the content encoding is a bit more
+difficult since it is located in a &lt;meta&gt; tag under the &lt;head&gt;,
+so a couple of functions htmlGetMetaEncoding() and htmlSetMetaEncoding() have
+been provided. The parser also attempts to switch encoding on the fly when
+detecting such a tag on input. Except for that the processing is the same
+(and again reuses the same code).</p>
+
+<h3><a name="Default">Default supported encodings</a></h3>
+
+<p>libxml has a set of default converters for the following encodings
+(located in encoding.c):</p>
+<ol>
+  <li>UTF-8 is supported by default (null handlers)</li>
+  <li>UTF-16, both little and big endian</li>
+  <li>ISO-Latin-1 (ISO-8859-1) covering most western languages</li>
+  <li>ASCII, useful mostly for saving</li>
+  <li>HTML, a specific handler for the conversion of UTF-8 to ASCII with HTML
+    predefined entities like &amp;copy; for the Copyright sign.</li>
+</ol>
+
+<p>More over when compiled on an Unix platfor with iconv support the full set
+of encodings supported by iconv can be instantly be used by libxml. On a
+linux machine with glibc-2.1 the list of supported encodings and aliases fill
+3 full pages, and include UCS-4, the full set of ISO-Latin encodings, and the
+various Japanese ones.</p>
+
+<h4>Encoding aliases</h4>
+
+<p>From 2.2.3, libxml has support to register encoding names aliases. The
+goal is to be able to parse document whose encoding is supported but where
+the name differs (for example from the default set of names accepted by
+iconv). The following functions allow to register and handle new aliases for
+existing encodings. Once registered libxml will automatically lookup the
+aliases when handling a document:</p>
+<ul>
+  <li>int xmlAddEncodingAlias(const char *name, const char *alias);</li>
+  <li>int xmlDelEncodingAlias(const char *alias);</li>
+  <li>const char * xmlGetEncodingAlias(const char *alias);</li>
+  <li>void xmlCleanupEncodingAliases(void);</li>
+</ul>
+
+<h3><a name="extend">How to extend the existing support</a></h3>
+
+<p>Well adding support for new encoding, or overriding one of the encoders
+(assuming it is buggy) should not be hard, just write an input and output
+conversion routines to/from UTF-8, and register them using
+xmlNewCharEncodingHandler(name, xxxToUTF8, UTF8Toxxx),  and they will be
+called automatically if the parser(s) encounter such an encoding name
+(register it uppercase, this will help). The description of the encoders,
+their arguments and expected return values are described in the encoding.h
+header.</p>
+
+<p>A quick note on the topic of subverting the parser to use a different
+internal encoding than UTF-8, in some case people will absolutely want to
+keep the internal encoding different, I think it's still possible (but the
+encoding must be compliant with ASCII on the same subrange) though I didn't
+tried it. The key is to override the default conversion routines (by
+registering null encoders/decoders for your charsets), and bypass the UTF-8
+checking of the parser by setting the parser context charset
+(ctxt-&gt;charset) to something different than XML_CHAR_ENCODING_UTF8, but
+there is no guarantee taht this will work. You may also have some troubles
+saving back.</p>
+
+<p>Basically proper I18N support is important, this requires at least
+libxml-2.0.0, but a lot of features and corrections are really available only
+starting 2.2.</p>
+
+<h2><a name="IO">I/O Interfaces</a></h2>
+
+<p>Table of Content:</p>
+<ol>
+  <li><a href="#General1">General overview</a></li>
+  <li><a href="#basic">The basic buffer type</a></li>
+  <li><a href="#Input">Input I/O handlers</a></li>
+  <li><a href="#Output">Output I/O handlers</a></li>
+  <li><a href="#entities">The entities loader</a></li>
+  <li><a href="#Example2">Example of customized I/O</a></li>
+</ol>
+
+<h3><a name="General1">General overview</a></h3>
+
+<p>The module <code><a
+href="http://xmlsoft.org/html/libxml-xmlio.html">xmlIO.h</a></code> provides
+the interfaces to the libxml I/O system. This consists of 4 main parts:</p>
+<ul>
+  <li>Entities loader, this is a routine which tries to fetch the entities
+    (files) based on their PUBLIC and SYSTEM identifiers. The default loader
+    don't look at the public identifier since libxml do not maintain a
+    catalog. You can redefine you own entity loader by using
+    <code>xmlGetExternalEntityLoader()</code> and
+    <code>xmlSetExternalEntityLoader()</code>. <a href="#entities">Check the
+    example</a>.</li>
+  <li>Input I/O buffers which are a commodity structure used by the parser(s)
+    input layer to handle fetching the informations to feed the parser. This
+    provides buffering and is also a placeholder where the encoding
+    convertors to UTF8 are piggy-backed.</li>
+  <li>Output I/O buffers are similar to the Input ones and fulfill similar
+    task but when generating a serialization from a tree.</li>
+  <li>A mechanism to register sets of I/O callbacks and associate them with
+    specific naming schemes like the protocol part of the URIs.
+    <p>This affect the default I/O operations and allows to use specific I/O
+    handlers for certain names.</p>
+  </li>
+</ul>
+
+<p>The general mechanism used when loading http://rpmfind.net/xml.html for
+example in the HTML parser is the following:</p>
+<ol>
+  <li>The default entity loader calls <code>xmlNewInputFromFile()</code> with
+    the parsing context and the URI string.</li>
+  <li>the URI string is checked against the existing registered handlers
+    using their match() callback function, if the HTTP module was compiled
+    in, it is registered and its match() function will succeeds</li>
+  <li>the open() function of the handler is called and if successful will
+    return an I/O Input buffer</li>
+  <li>the parser will the start reading from this buffer and progressively
+    fetch information from the resource, calling the read() function of the
+    handler until the resource is exhausted</li>
+  <li>if an encoding change is detected it will be installed on the input
+    buffer, providing buffering and efficient use of the conversion
+  routines</li>
+  <li>once the parser has finished, the close() function of the handler is
+    called once and the Input buffer and associed resources are
+  deallocated.</li>
+</ol>
+
+<p>The user defined callbacks are checked first to allow overriding of the
+default libxml I/O routines.</p>
+
+<h3><a name="basic">The basic buffer type</a></h3>
+
+<p>All the buffer manipulation handling is done using the
+<code>xmlBuffer</code> type define in <code><a
+href="http://xmlsoft.org/html/libxml-tree.html">tree.h</a> </code>which is a
+resizable memory buffer. The buffer allocation strategy can be selected to be
+either best-fit or use an exponential doubling one (CPU vs. memory use
+tradeoff). The values are <code>XML_BUFFER_ALLOC_EXACT</code> and
+<code>XML_BUFFER_ALLOC_DOUBLEIT</code>, and can be set individually or on a
+system wide basis using <code>xmlBufferSetAllocationScheme()</code>. A number
+of functions allows to manipulate buffers with names starting with the
+<code>xmlBuffer...</code> prefix.</p>
+
+<h3><a name="Input">Input I/O handlers</a></h3>
+
+<p>An Input I/O handler is a simple structure
+<code>xmlParserInputBuffer</code> containing a context associated to the
+resource (file descriptor, or pointer to a protocol handler), the read() and
+close() callbacks to use and an xmlBuffer. And extra xmlBuffer and a charset
+encoding handler are also present to support charset conversion when
+needed.</p>
+
+<h3><a name="Output">Output I/O handlers</a></h3>
+
+<p>An Output handler <code>xmlOutputBuffer</code> is completely similar to an
+Input one except the callbacks are write() and close().</p>
+
+<h3><a name="entities">The entities loader</a></h3>
+
+<p>The entity loader resolves requests for new entities and create inputs for
+the parser. Creating an input from a filename or an URI string is done
+through the xmlNewInputFromFile() routine.  The default entity loader do not
+handle the PUBLIC identifier associated with an entity (if any). So it just
+calls xmlNewInputFromFile() with the SYSTEM identifier (which is mandatory in
+XML).</p>
+
+<p>If you want to hook up a catalog mechanism then you simply need to
+override the default entity loader, here is an example:</p>
+<pre>#include &lt;libxml/xmlIO.h&gt;
+
+xmlExternalEntityLoader defaultLoader = NULL;
+
+xmlParserInputPtr
+xmlMyExternalEntityLoader(const char *URL, const char *ID,
+                               xmlParserCtxtPtr ctxt) {
+    xmlParserInputPtr ret;
+    const char *fileID = NULL;
+    /* lookup for the fileID depending on ID */
+
+    ret = xmlNewInputFromFile(ctxt, fileID);
+    if (ret != NULL)
+        return(ret);
+    if (defaultLoader != NULL)
+        ret = defaultLoader(URL, ID, ctxt);
+    return(ret);
+}
+
+int main(..) {
+    ...
+
+    /*
+     * Install our own entity loader
+     */
+    defaultLoader = xmlGetExternalEntityLoader();
+    xmlSetExternalEntityLoader(xmlMyExternalEntityLoader);
+
+    ...
+}</pre>
+
+<h3><a name="Example2">Example of customized I/O</a></h3>
+
+<p>This example come from <a href="http://xmlsoft.org/messages/0708.html">a
+real use case</a>,  xmlDocDump() closes the FILE * passed by the application
+and this was a problem. The <a
+href="http://xmlsoft.org/messages/0711.html">solution</a> was to redefine a
+new output handler with the closing call deactivated:</p>
+<ol>
+  <li>First define a new I/O ouput allocator where the output don't close the
+    file:
+    <pre>xmlOutputBufferPtr
+xmlOutputBufferCreateOwn(FILE *file, xmlCharEncodingHandlerPtr encoder) {
+    xmlOutputBufferPtr ret;
+    
+    if (xmlOutputCallbackInitialized == 0)
+        xmlRegisterDefaultOutputCallbacks();
+
+    if (file == NULL) return(NULL);
+    ret = xmlAllocOutputBuffer(encoder);
+    if (ret != NULL) {
+        ret-&gt;context = file;
+        ret-&gt;writecallback = xmlFileWrite;
+        ret-&gt;closecallback = NULL;  /* No close callback */
+    }
+    return(ret); <br>
+
+
+
+
+} </pre>
+  </li>
+  <li>And then use it to save the document:
+    <pre>FILE *f;
+xmlOutputBufferPtr output;
+xmlDocPtr doc;
+int res;
+
+f = ...
+doc = ....
+
+output = xmlOutputBufferCreateOwn(f, NULL);
+res = xmlSaveFileTo(output, doc, NULL);
+    </pre>
+  </li>
+</ol>
+
+<h2><a name="Catalog">Catalog support</a></h2>
+
+<p>Table of Content:</p>
+<ol>
+  <li><a href="General2">General overview</a></li>
+  <li><a href="#definition">The definition</a></li>
+  <li><a href="#Simple">Using catalogs</a></li>
+  <li><a href="#Some">Some examples</a></li>
+  <li><a href="#reference">How to tune  catalog usage</a></li>
+  <li><a href="#validate">How to debug catalog processing</a></li>
+  <li><a href="#Declaring">How to create and maintain catalogs</a></li>
+  <li><a href="#implemento">The implementor corner quick review of the
+  API</a></li>
+  <li><a href="#Other">Other resources</a></li>
+</ol>
+
+<h3><a name="General2">General overview</a></h3>
+
+<p>What is a catalog? Basically it's a lookup mechanism used when an entity
+(a file or a remote resource) references another entity. The catalog lookup
+is inserted between the moment the reference is recognized by the software
+(XML parser, stylesheet processing, or even images referenced for inclusion
+in a rendering) and the time where loading that resource is actually
+started.</p>
+
+<p>It is basically used for 3 things:</p>
+<ul>
+  <li>mapping from "logical" names, the public identifiers and a more
+    concrete name usable for download (and URI). For example it can associate
+    the logical name
+    <p>"-//OASIS//DTD DocBook XML V4.1.2//EN"</p>
+    <p>of the DocBook 4.1.2 XML DTD with the actual URL where it can be
+    downloaded</p>
+    <p>http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd</p>
+  </li>
+  <li>remapping from a given URL to another one, like an HTTP indirection
+    saying that
+    <p>"http://www.oasis-open.org/committes/tr.xsl"</p>
+    <p>should really be looked at</p>
+    <p>"http://www.oasis-open.org/committes/entity/stylesheets/base/tr.xsl"</p>
+  </li>
+  <li>providing a local cache mechanism allowing to load the entities
+    associated to public identifiers or remote resources, this is a really
+    important feature for any significant deployment of XML or SGML since it
+    allows to avoid the aleas and delays associated to fetching remote
+    resources.</li>
+</ul>
+
+<h3><a name="definition">The definitions</a></h3>
+
+<p>Libxml, as of 2.4.3 implements 2 kind of catalogs:</p>
+<ul>
+  <li>the older SGML catalogs, the official spec is  SGML Open Technical
+    Resolution TR9401:1997, but is better understood by reading <a
+    href="http://www.jclark.com/sp/catalog.htm">the SP Catalog page</a> from
+    James Clark. This is relatively old and not the preferred mode of
+    operation of libxml.</li>
+  <li><a href="http://www.oasis-open.org/committees/entity/spec.html">XML
+    Catalogs</a> is far more flexible, more recent, uses an XML syntax and
+    should scale quite better. This is the default option of libxml.</li>
+</ul>
+
+<p></p>
+
+<h3><a name="Simple">Using catalog</a></h3>
+
+<p>In a normal environment libxml will by default check the presence of a
+catalog in /etc/xml/catalog, and assuming it has been correctly populated,
+the processing is completely transparent to the document user. To take a
+concrete example, suppose you are authoring a DocBook document, this one
+starts with the following DOCTYPE definition:</p>
+<pre>&lt;?xml version='1.0'?&gt;
+&lt;!DOCTYPE book PUBLIC "-//Norman Walsh//DTD DocBk XML V3.1.4//EN"
+          "http://nwalsh.com/docbook/xml/3.1.4/db3xml.dtd"&gt;</pre>
+
+<p>When validating the document with libxml, the catalog will be
+automatically consulted to lookup the public identifier "-//Norman Walsh//DTD
+DocBk XML V3.1.4//EN" and the system identifier
+"http://nwalsh.com/docbook/xml/3.1.4/db3xml.dtd", and if these entities have
+been installed on your system and the catalogs actually point to them, libxml
+will fetch them from the local disk.</p>
+
+<p style="font-size: 10pt"><strong>Note</strong>: Really don't use this
+DOCTYPE example it's a really old version, but is fine as an example.</p>
+
+<p>Libxml will check the catalog each time that it is requested to load an
+entity, this includes DTD, external parsed entities, stylesheets, etc ... If
+your system is correctly configured all the authoring phase and processing
+should use only local files, even if your document stays portable because it
+uses the canonical public and system ID, referencing the remote document.</p>
+
+<h3><a name="Some">Some examples:</a></h3>
+
+<p>Here is a couple of fragments from XML Catalogs used in libxml early
+regression tests in <code>test/catalogs</code> :</p>
+<pre>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE catalog PUBLIC 
+   "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN"
+   "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd"&gt;
+&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"&gt;
+  &lt;public publicId="-//OASIS//DTD DocBook XML V4.1.2//EN"
+   uri="http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"/&gt;
+...</pre>
+
+<p>This is the beginning of a catalog for DocBook 4.1.2, XML Catalogs are
+written in XML,  there is a specific namespace for catalog elements
+"urn:oasis:names:tc:entity:xmlns:xml:catalog". The first entry in this
+catalog is a <code>public</code> mapping it allows to associate a Public
+Identifier with an URI.</p>
+<pre>...
+    &lt;rewriteSystem systemIdStartString="http://www.oasis-open.org/docbook/"
+                   rewritePrefix="file:///usr/share/xml/docbook/"/&gt;
+...</pre>
+
+<p>A <code>rewriteSystem</code> is a very powerful instruction, it says that
+any URI starting with a given prefix should be looked at another  URI
+constructed by replacing the prefix with an new one. In effect this acts like
+a cache system for a full area of the Web. In practice it is extremely useful
+with a file prefix if you have installed a copy of those resources on your
+local system.</p>
+<pre>...
+&lt;delegatePublic publicIdStartString="-//OASIS//DTD XML Catalog //"
+                catalog="file:///usr/share/xml/docbook.xml"/&gt;
+&lt;delegatePublic publicIdStartString="-//OASIS//ENTITIES DocBook XML"
+                catalog="file:///usr/share/xml/docbook.xml"/&gt;
+&lt;delegatePublic publicIdStartString="-//OASIS//DTD DocBook XML"
+                catalog="file:///usr/share/xml/docbook.xml"/&gt;
+&lt;delegateSystem systemIdStartString="http://www.oasis-open.org/docbook/"
+                catalog="file:///usr/share/xml/docbook.xml"/&gt;
+&lt;delegateURI uriStartString="http://www.oasis-open.org/docbook/"
+                catalog="file:///usr/share/xml/docbook.xml"/&gt;
+...</pre>
+
+<p>Delegation is the core features which allows to build a tree of catalogs,
+easier to maintain than a single catalog, based on Public Identifier, System
+Identifier or URI prefixes it instructs the catalog software to look up
+entries in another resource. This feature allow to build hierarchies of
+catalogs, the set of entries presented should be sufficient to redirect the
+resolution of all DocBook references to the specific catalog in
+<code>/usr/share/xml/docbook.xml</code> this one in turn could delegate all
+references for DocBook 4.2.1 to a specific catalog installed at the same time
+as the DocBook resources on the local machine.</p>
+
+<h3><a name="reference">How to tune catalog usage:</a></h3>
+
+<p>The user can change the default catalog behaviour by redirecting queries
+to its own set of catalogs, this can be done by setting the
+<code>XML_CATALOG_FILES</code> environment variable to a list of catalogs, an
+empty one should deactivate loading the default <code>/etc/xml/catalog</code>
+default catalog</p>
+
+<h3><a name="validate">How to debug catalog processing:</a></h3>
+
+<p>Setting up the <code>XML_DEBUG_CATALOG</code> environment variable will
+make libxml output debugging informations for each catalog operations, for
+example:</p>
+<pre>orchis:~/XML -&gt; xmllint --memory --noout test/ent2
+warning: failed to load external entity "title.xml"
+orchis:~/XML -&gt; export XML_DEBUG_CATALOG=
+orchis:~/XML -&gt; xmllint --memory --noout test/ent2
+Failed to parse catalog /etc/xml/catalog
+Failed to parse catalog /etc/xml/catalog
+warning: failed to load external entity "title.xml"
+Catalogs cleanup
+orchis:~/XML -&gt; </pre>
+
+<p>The test/ent2 references an entity, running the parser from memory makes
+the base URI unavailable and the the "title.xml" entity cannot be loaded.
+Setting up the debug environment variable allows to detect that an attempt is
+made to load the <code>/etc/xml/catalog</code> but since it's not present the
+resolution fails.</p>
+
+<p>But the most advanced way to debug XML catalog processing is to use the
+<strong>xmlcatalog</strong> command shipped with libxml2, it allows to load
+catalogs and make resolution queries to see what is going on. This is also
+used for the regression tests:</p>
+<pre>orchis:~/XML -&gt; ./xmlcatalog test/catalogs/docbook.xml \
+                   "-//OASIS//DTD DocBook XML V4.1.2//EN"
+http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd
+orchis:~/XML -&gt; </pre>
+
+<p>For debugging what is going on, adding one -v flags increase the verbosity
+level to indicate the processing done (adding a second flag also indicate
+what elements are recognized at parsing):</p>
+<pre>orchis:~/XML -&gt; ./xmlcatalog -v test/catalogs/docbook.xml \
+                   "-//OASIS//DTD DocBook XML V4.1.2//EN"
+Parsing catalog test/catalogs/docbook.xml's content
+Found public match -//OASIS//DTD DocBook XML V4.1.2//EN
+http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd
+Catalogs cleanup
+orchis:~/XML -&gt; </pre>
+
+<p>A shell interface is also available to debug and process multiple queries
+(and for regression tests):</p>
+<pre>orchis:~/XML -&gt; ./xmlcatalog -shell test/catalogs/docbook.xml \
+                   "-//OASIS//DTD DocBook XML V4.1.2//EN"
+&gt; help   
+Commands available:
+public PublicID: make a PUBLIC identifier lookup
+system SystemID: make a SYSTEM identifier lookup
+resolve PublicID SystemID: do a full resolver lookup
+add 'type' 'orig' 'replace' : add an entry
+del 'values' : remove values
+dump: print the current catalog state
+debug: increase the verbosity level
+quiet: decrease the verbosity level
+exit:  quit the shell
+&gt; public "-//OASIS//DTD DocBook XML V4.1.2//EN"
+http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd
+&gt; quit
+orchis:~/XML -&gt; </pre>
+
+<p>This should be sufficient for most debugging purpose, this was actually
+used heavily to debug the XML Catalog implementation itself.</p>
+
+<h3><a name="Declaring">How to create and maintain</a> catalogs:</h3>
+
+<p>Basically XML Catalogs are XML files, you can either use XML tools to
+manage them or use  <strong>xmlcatalog</strong> for this. The basic step is
+to create a catalog the -create option provide this facility:</p>
+<pre>orchis:~/XML -&gt; ./xmlcatalog --create tst.xml
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN"
+         "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd"&gt;
+&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"/&gt;
+orchis:~/XML -&gt; </pre>
+
+<p>By default xmlcatalog does not overwrite the original catalog and save the
+result on the standard output, this can be overridden using the -noout
+option. The <code>-add</code> command allows to add entries in the
+catalog:</p>
+<pre>orchis:~/XML -&gt; ./xmlcatalog --noout --create --add "public" \
+  "-//OASIS//DTD DocBook XML V4.1.2//EN" \
+  http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd tst.xml
+orchis:~/XML -&gt; cat tst.xml
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN" \
+  "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd"&gt;
+&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"&gt;
+&lt;public publicId="-//OASIS//DTD DocBook XML V4.1.2//EN"
+        uri="http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"/&gt;
+&lt;/catalog&gt;
+orchis:~/XML -&gt; </pre>
+
+<p>The <code>-add</code> option will always take 3 parameters even if some of
+the XML Catalog constructs (like nextCatalog) will have only a single
+argument, just pass a third empty string, it will be ignored.</p>
+
+<p>Similarly the <code>-del</code> option remove matching entries from the
+catalog:</p>
+<pre>orchis:~/XML -&gt; ./xmlcatalog --del \
+  "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" tst.xml
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN"
+    "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd"&gt;
+&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"/&gt;
+orchis:~/XML -&gt; </pre>
+
+<p>The catalog is now empty. Note that the matching of <code>-del</code> is
+exact and would have worked in a similar fashion with the Public ID
+string.</p>
+
+<p>This is rudimentary but should be sufficient to manage a not too complex
+catalog tree of resources.</p>
+
+<h3><a name="implemento">The implementor corner quick review of the
+API:</a></h3>
+
+<p>First, and like for every other module of libxml, there is an
+automatically generated <a href="html/libxml-catalog.html">API page for
+catalog support</a>.</p>
+
+<p>The header for the catalog interfaces should be included as:</p>
+<pre>#include &lt;libxml/catalog.h&gt;</pre>
+
+<p>The API is voluntarily kept very simple. First it is not obvious that
+applications really need access to it since it is the default behaviour of
+libxml (Note: it is possible to completely override libxml default catalog by
+using <a href="html/libxml-parser.html">xmlSetExternalEntityLoader</a> to
+plug an application specific resolver).</p>
+
+<p>Basically libxml support 2 catalog lists:</p>
+<ul>
+  <li>the default one, global shared by all the application</li>
+  <li>a per-document catalog, this one is built if the document uses the
+    <code>oasis-xml-catalog</code> PIs to specify its own catalog list, it is
+    associated to the parser context and destroyed when the parsing context
+    is destroyed.</li>
+</ul>
+
+<p>the document one will be used first if it exists.</p>
+
+<h4>Initialization routines:</h4>
+
+<p>xmlInitializeCatalog(), xmlLoadCatalog() and xmlLoadCatalogs() should be
+used at startup to initialize the catalog, if the catalog should be
+initialized with specific values xmlLoadCatalog()  or xmlLoadCatalogs()
+should be called before xmlInitializeCatalog() which would otherwise do a
+default initialization first.</p>
+
+<p>The xmlCatalogAddLocal() call is used by the parser to grow the document
+own catalog list if needed.</p>
+
+<h4>Preferences setup:</h4>
+
+<p>The XML Catalog spec requires the possibility to select default
+preferences between  public and system delegation,
+xmlCatalogSetDefaultPrefer() allows this, xmlCatalogSetDefaults() and
+xmlCatalogGetDefaults() allow to control  if XML Catalogs resolution should
+be forbidden, allowed for global catalog, for document catalog or both, the
+default is to allow both.</p>
+
+<p>And of course xmlCatalogSetDebug() allows to generate debug messages
+(through the xmlGenericError() mechanism).</p>
+
+<h4>Querying routines:</h4>
+
+<p>xmlCatalogResolve(), xmlCatalogResolveSystem(), xmlCatalogResolvePublic()
+and xmlCatalogResolveURI() are relatively explicit if you read the XML
+Catalog specification they correspond to section 7 algorithms, they should
+also work if you have loaded an SGML catalog with a simplified semantic.</p>
+
+<p>xmlCatalogLocalResolve() and xmlCatalogLocalResolveURI() are the same but
+operate on the document catalog list</p>
+
+<h4>Cleanup and Miscellaneous:</h4>
+
+<p>xmlCatalogCleanup() free-up the global catalog, xmlCatalogFreeLocal() is
+the per-document equivalent.</p>
+
+<p>xmlCatalogAdd() and xmlCatalogRemove() are used to dynamically modify the
+first catalog in the global list, and xmlCatalogDump() allows to dump a
+catalog state, those routines are primarily designed for xmlcatalog, I'm not
+sure that exposing more complex interfaces (like navigation ones) would be
+really useful.</p>
+
+<p>The xmlParseCatalogFile() is a function used to load XML Catalog files,
+it's similar as xmlParseFile() except it bypass all catalog lookups, it's
+provided because this functionality may be useful for client tools.</p>
+
+<h4>threaded environments:</h4>
+
+<p>Since the catalog tree is built progressively, some care has been taken to
+try to avoid troubles in multithreaded environments. The code is now thread
+safe assuming that the libxml library has been compiled with threads
+support.</p>
+
+<p></p>
+
+<h3><a name="Other">Other resources</a></h3>
+
+<p>The XML Catalog specification is relatively recent so there isn't much
+literature to point at:</p>
+<ul>
+  <li>You can find an good rant from Norm Walsh about <a
+    href="http://www.arbortext.com/Think_Tank/XML_Resources/Issue_Three/issue_three.html">the
+    need for catalogs</a>, it provides a lot of context informations even if
+    I don't agree with everything presented.</li>
+  <li>An <a href="http://home.ccil.org/~cowan/XML/XCatalog.html">old XML
+    catalog proposal</a> from John Cowan</li>
+  <li>The <a href="http://www.rddl.org/">Resource Directory Description
+    Language</a> (RDDL) another catalog system but more oriented toward
+    providing metadata for XML namespaces.</li>
+  <li>the page from the OASIS Technical <a
+    href="http://www.oasis-open.org/committees/entity/">Committee on Entity
+    Resolution</a> who maintains XML Catalog, you will find pointers to the
+    specification update, some background and pointers to others tools
+    providing XML Catalog support</li>
+  <li>Here is a <a href="buildDocBookCatalog">shell script</a> to generate
+    XML Catalogs for DocBook 4.1.2 . If it can write to the /etc/xml/
+    directory, it will set-up /etc/xml/catalog and /etc/xml/docbook based on
+    the resources found on the system. Otherwise it will just create
+    ~/xmlcatalog and ~/dbkxmlcatalog and doing:
+    <p><code>export XMLCATALOG=$HOME/xmlcatalog</code></p>
+    <p>should allow to process DocBook documentations without requiring
+    network accesses for the DTd or stylesheets</p>
+  </li>
+  <li>I have uploaded <a href="ftp://xmlsoft.org/test/dbk412catalog.tar.gz">a
+    small tarball</a> containing XML Catalogs for DocBook 4.1.2 which seems
+    to work fine for me too</li>
+  <li>The <a href="http://www.xmlsoft.org/xmlcatalog_man.html">xmlcatalog
+    manual page</a></li>
+</ul>
+
+<p>If you have suggestions for corrections or additions, simply contact
+me:</p>
+
+<h2><a name="library">The parser interfaces</a></h2>
 
 <p>This section is directly intended to help programmers getting bootstrapped
-using the XML library from the C language. It is not intended to be extensive.
-I hope the automatically generated documents will provide the completeness
-required, but as a separate set of documents. The interfaces of the XML
-library are by principle low level, there is nearly zero abstraction. Those
-interested in a higher level API should <a href="#DOM">look at DOM</a>.</p>
+using the XML library from the C language. It is not intended to be
+extensive. I hope the automatically generated documents will provide the
+completeness required, but as a separate set of documents. The interfaces of
+the XML library are by principle low level, there is nearly zero abstraction.
+Those interested in a higher level API should <a href="#DOM">look at
+DOM</a>.</p>
 
 <p>The <a href="html/libxml-parser.html">parser interfaces for XML</a> are
 separated from the <a href="html/libxml-htmlparser.html">HTML parser
@@ -906,8 +2990,8 @@ failure).</p>
 
 <h3 id="Invoking1">Invoking the parser: the push method</h3>
 
-<p>In order for the application to keep the control when the document is being
-fetched (which is common for GUI based programs) libxml provides a push
+<p>In order for the application to keep the control when the document is
+being fetched (which is common for GUI based programs) libxml provides a push
 interface, too, as of version 1.8.3. Here are the interface functions:</p>
 <pre>xmlParserCtxtPtr xmlCreatePushParserCtxt(xmlSAXHandlerPtr sax,
                                          void *user_data,
@@ -958,8 +3042,8 @@ limited to SAX: just use the two first arguments of
 
 <p>The other way to get an XML tree in memory is by building it. Basically
 there is a set of functions dedicated to building new elements. (These are
-also described in &lt;libxml/tree.h&gt;.) For example, here is a piece of code
-that produces the XML document used in the previous examples:</p>
+also described in &lt;libxml/tree.h&gt;.) For example, here is a piece of
+code that produces the XML document used in the previous examples:</p>
 <pre>    #include &lt;libxml/tree.h&gt;
     xmlDocPtr doc;
     xmlNodePtr tree, subtree;
@@ -981,8 +3065,8 @@ that produces the XML document used in the previous examples:</p>
 <h3><a name="Traversing">Traversing the tree</a></h3>
 
 <p>Basically by <a href="html/libxml-tree.html">including "tree.h"</a> your
-code has access to the internal structure of all the elements of the tree. The
-names should be somewhat simple like <strong>parent</strong>,
+code has access to the internal structure of all the elements of the tree.
+The names should be somewhat simple like <strong>parent</strong>,
 <strong>children</strong>, <strong>next</strong>, <strong>prev</strong>,
 <strong>properties</strong>, etc... For example, still with the previous
 example:</p>
@@ -1006,8 +3090,8 @@ is an excerpt from the <a href="html/libxml-tree.html">tree API</a>:</p>
 <dl>
   <dt><code>xmlAttrPtr xmlSetProp(xmlNodePtr node, const xmlChar *name, const
   xmlChar *value);</code></dt>
-    <dd><p>This sets (or changes) an attribute carried by an ELEMENT node. The
-      value can be NULL.</p>
+    <dd><p>This sets (or changes) an attribute carried by an ELEMENT node.
+      The value can be NULL.</p>
     </dd>
 </dl>
 <dl>
@@ -1018,8 +3102,8 @@ is an excerpt from the <a href="html/libxml-tree.html">tree API</a>:</p>
     </dd>
 </dl>
 
-<p>Two functions are provided for reading and writing the text associated with
-elements:</p>
+<p>Two functions are provided for reading and writing the text associated
+with elements:</p>
 <dl>
   <dt><code>xmlNodePtr xmlStringGetNodeList(xmlDocPtr doc, const xmlChar
   *value);</code></dt>
@@ -1119,9 +3203,9 @@ for the character '&gt;',  <strong>&amp;apos;</strong> for the character ''',
 substitute an entity's content so that you can see the replacement text in
 your application. Or you may prefer to keep entity references as such in the
 content to be able to save the document back without losing this usually
-precious information (if the user went through the pain of explicitly defining
-entities, he may have a a rather negative attitude if you blindly susbtitute
-them as saving time). The <a
+precious information (if the user went through the pain of explicitly
+defining entities, he may have a a rather negative attitude if you blindly
+susbtitute them as saving time). The <a
 href="html/libxml-parser.html#XMLSUBSTITUTEENTITIESDEFAULT">xmlSubstituteEntitiesDefault()</a>
 function allows you to check and change the behaviour, which is to not
 substitute entities by default.</p>
@@ -1215,69 +3299,178 @@ so even if you plan to use or currently are using validation I strongly
 suggest adding namespaces to your document. A default namespace scheme
 <code>xmlns="http://...."</code> should not break validity even on less
 flexible parsers. Using namespaces to mix and differentiate content coming
-from multiple DTDs will certainly break current validation schemes. I will try
-to provide ways to do this, but this may not be portable or standardized.</p>
+from multiple DTDs will certainly break current validation schemes. I will
+try to provide ways to do this, but this may not be portable or
+standardized.</p>
 
-<h2><a name="Validation">Validation, or are you afraid of DTDs ?</a></h2>
+<h2><a name="Upgrading">Upgrading 1.x code</a></h2>
 
-<p>Well what is validation and what is a DTD ?</p>
+<p>Incompatible changes:</p>
 
-<p>Validation is the process of checking a document against a set of
-construction rules; a <strong>DTD</strong> (Document Type Definition) is such
-a set of rules.</p>
+<p>Version 2 of libxml is the first version introducing serious backward
+incompatible changes. The main goals were:</p>
+<ul>
+  <li>a general cleanup. A number of mistakes inherited from the very early
+    versions couldn't be changed due to compatibility constraints. Example
+    the "childs" element in the nodes.</li>
+  <li>Uniformization of the various nodes, at least for their header and link
+    parts (doc, parent, children, prev, next), the goal is a simpler
+    programming model and simplifying the task of the DOM implementors.</li>
+  <li>better conformances to the XML specification, for example version 1.x
+    had an heuristic to try to detect ignorable white spaces. As a result the
+    SAX event generated were ignorableWhitespace() while the spec requires
+    character() in that case. This also mean that a number of DOM node
+    containing blank text may populate the DOM tree which were not present
+    before.</li>
+</ul>
 
-<p>The validation process and building DTDs are the two most difficult parts
-of the XML life cycle. Briefly a DTD defines all the possibles element to be
-found within your document, what is the formal shape of your document tree (by
-defining the allowed content of an element, either text, a regular expression
-for the allowed list of children, or mixed content i.e. both text and
-children). The DTD also defines the allowed attributes for all elements and
-the types of the attributes. For more detailed information, I suggest that you
-read the related parts of the XML specification, the examples found under
-gnome-xml/test/valid/dtd and any of the large number of books available on
-XML. The dia example in gnome-xml/test/valid should be both simple and
-complete enough to allow you to build your own.</p>
+<h3>How to fix libxml-1.x code:</h3>
 
-<p>A word of warning, building a good DTD which will fit the needs of your
-application in the long-term is far from trivial; however, the extra level of
-quality it can ensure is well worth the price for some sets of applications or
-if you already have already a DTD defined for your application field.</p>
+<p>So client code of libxml designed to run with version 1.x may have to be
+changed to compile against version 2.x of libxml. Here is a list of changes
+that I have collected, they may not be sufficient, so in case you find other
+change which are required, <a href="mailto:Daniel.Ïeillardw3.org">drop me a
+mail</a>:</p>
+<ol>
+  <li>The package name have changed from libxml to libxml2, the library name
+    is now -lxml2 . There is a new xml2-config script which should be used to
+    select the right parameters libxml2</li>
+  <li>Node <strong>childs</strong> field has been renamed
+    <strong>children</strong> so s/childs/children/g should be  applied
+    (probablility of having "childs" anywere else is close to 0+</li>
+  <li>The document don't have anymore a <strong>root</strong> element it has
+    been replaced by <strong>children</strong> and usually you will get a
+    list of element here. For example a Dtd element for the internal subset
+    and it's declaration may be found in that list, as well as processing
+    instructions or comments found before or after the document root element.
+    Use <strong>xmlDocGetRootElement(doc)</strong> to get the root element of
+    a document. Alternatively if you are sure to not reference Dtds nor have
+    PIs or comments before or after the root element
+    s/-&gt;root/-&gt;children/g will probably do it.</li>
+  <li>The white space issue, this one is more complex, unless special case of
+    validating parsing, the line breaks and spaces usually used for indenting
+    and formatting the document content becomes significant. So they are
+    reported by SAX and if your using the DOM tree, corresponding nodes are
+    generated. Too approach can be taken:
+    <ol>
+      <li>lazy one, use the compatibility call
+        <strong>xmlKeepBlanksDefault(0)</strong> but be aware that you are
+        relying on a special (and possibly broken) set of heuristics of
+        libxml to detect ignorable blanks. Don't complain if it breaks or
+        make your application not 100% clean w.r.t. to it's input.</li>
+      <li>the Right Way: change you code to accept possibly unsignificant
+        blanks characters, or have your tree populated with weird blank text
+        nodes. You can spot them using the comodity function
+        <strong>xmlIsBlankNode(node)</strong> returning 1 for such blank
+        nodes.</li>
+    </ol>
+    <p>Note also that with the new default the output functions don't add any
+    extra indentation when saving a tree in order to be able to round trip
+    (read and save) without inflating the document with extra formatting
+    chars.</p>
+  </li>
+  <li>The include path has changed to $prefix/libxml/ and the includes
+    themselves uses this new prefix in includes instructions... If you are
+    using (as expected) the
+    <pre>xml2-config --cflags</pre>
+    <p>output to generate you compile commands this will probably work out of
+    the box</p>
+  </li>
+  <li>xmlDetectCharEncoding takes an extra argument indicating the lenght in
+    byte of the head of the document available for character detection.</li>
+</ol>
 
-<p>The validation is not completely finished but in a (very IMHO) usable
-state. Until a real validation interface is defined the way to do it is to
-define and set the <strong>xmlDoValidityCheckingDefaultValue</strong> external
-variable to 1, this will of course be changed at some point:</p>
+<h3>Ensuring both libxml-1.x and libxml-2.x compatibility</h3>
 
-<p>extern int xmlDoValidityCheckingDefaultValue;</p>
+<p>Two new version of libxml (1.8.11) and libxml2 (2.3.4) have been released
+to allow smoth upgrade of existing libxml v1code while retaining
+compatibility. They offers the following:</p>
+<ol>
+  <li>similar include naming, one should use
+    <strong>#include&lt;libxml/...&gt;</strong> in both cases.</li>
+  <li>similar identifiers defined via macros for the child and root fields:
+    respectively <strong>xmlChildrenNode</strong> and
+    <strong>xmlRootNode</strong></li>
+  <li>a new macro <strong>LIBXML_TEST_VERSION</strong> which should be
+    inserted once in the client code</li>
+</ol>
 
-<p>...</p>
+<p>So the roadmap to upgrade your existing libxml applications is the
+following:</p>
+<ol>
+  <li>install the  libxml-1.8.8 (and libxml-devel-1.8.8) packages</li>
+  <li>find all occurences where the xmlDoc <strong>root</strong> field is
+    used and change it to <strong>xmlRootNode</strong></li>
+  <li>similary find all occurences where the xmlNode <strong>childs</strong>
+    field is used and change it to <strong>xmlChildrenNode</strong></li>
+  <li>add a <strong>LIBXML_TEST_VERSION</strong> macro somewhere in your
+    <strong>main()</strong> or in the library init entry point</li>
+  <li>Recompile, check compatibility, it should still work</li>
+  <li>Change your configure script to look first for xml2-config and fallback
+    using xml-config . Use the --cflags and --libs ouptut of the command as
+    the Include and Linking parameters needed to use libxml.</li>
+  <li>install libxml2-2.3.x and  libxml2-devel-2.3.x (libxml-1.8.y and
+    libxml-devel-1.8.y can be kept simultaneously)</li>
+  <li>remove your config.cache, relaunch your configuration mechanism, and
+    recompile, if steps 2 and 3 were done right it should compile as-is</li>
+  <li>Test that your application is still running correctly, if not this may
+    be due to extra empty nodes due to formating spaces being kept in libxml2
+    contrary to libxml1, in that case insert xmlKeepBlanksDefault(1) in your
+    code before calling the parser (next to
+    <strong>LIBXML_TEST_VERSION</strong> is a fine place).</li>
+</ol>
 
-<p>xmlDoValidityCheckingDefaultValue = 1;</p>
+<p>Following those steps should work. It worked for some of my own code.</p>
 
-<p></p>
+<p>Let me put some emphasis on the fact that there is far more changes from
+libxml 1.x to 2.x than the ones you may have to patch for. The overall code
+has been considerably cleaned up and the conformance to the XML specification
+has been drastically improved too. Don't take those changes as an excuse to
+not upgrade, it may cost a lot on the long term ...</p>
 
-<p>To handle external entities, use the function
-<strong>xmlSetExternalEntityLoader</strong>(xmlExternalEntityLoader f); to
-link in you HTTP/FTP/Entities database library to the standard libxml
-core.</p>
+<h2><a name="Thread">Thread safety</a></h2>
 
-<p>@@interfaces@@</p>
+<p>Starting with 2.4.7, libxml makes provisions to ensure that concurent
+threads can safely work in parallel parsing different documents. There is
+however a couple of things to do to ensure it:</p>
+<ul>
+  <li>configure the library accordingly using the --with-threads options</li>
+  <li>call xmlInitParser() in the "main" thread before using any of the
+    libxml API (except possibly selecting a different memory allocator)</li>
+</ul>
+
+<p>Note that the thread safety cannot be ensured for multiple threads sharing
+the same document, the locking must be done at the application level, libxml
+exports a basic mutex and reentrant mutexes API in &lt;libxml/threads.h&gt;.
+The parts of the library checked for thread safety are:</p>
+<ul>
+  <li>concurrent loading</li>
+  <li>file access resolution</li>
+  <li>catalog access</li>
+  <li>catalog building</li>
+  <li>entities lookup/accesses</li>
+  <li>validation</li>
+  <li>global variables per-thread override</li>
+  <li>memory handling</li>
+</ul>
+
+<p>XPath is supposed to be thread safe now, but this wasn't tested
+seriously.</p>
 
 <h2><a name="DOM"></a><a name="Principles">DOM Principles</a></h2>
 
-<p><a href="http://www.w3.org/DOM/">DOM</a> stands for the <em>Document Object
-Model</em>; this is an API for accessing XML or HTML structured documents.
-Native support for DOM in Gnome is on the way (module gnome-dom), and will be
-based on gnome-xml. This will be a far cleaner interface to manipulate XML
-files within Gnome since it won't expose the internal structure.</p>
+<p><a href="http://www.w3.org/DOM/">DOM</a> stands for the <em>Document
+Object Model</em>; this is an API for accessing XML or HTML structured
+documents. Native support for DOM in Gnome is on the way (module gnome-dom),
+and will be based on gnome-xml. This will be a far cleaner interface to
+manipulate XML files within Gnome since it won't expose the internal
+structure.</p>
 
 <p>The current DOM implementation on top of libxml is the <a
 href="http://cvs.gnome.org/lxr/source/gdome2/">gdome2 Gnome module</a>, this
 is a full DOM interface, thanks to Paolo Casarini, check the <a
 href="http://www.cs.unibo.it/~casarini/gdome2/">Gdome2 homepage</a> for more
 informations.</p>
-
-<p>The gnome-dom and gdome modules in the Gnome CVS base are obsolete</p>
 
 <h2><a name="Example"></a><a name="real">A real example</a></h2>
 
@@ -1343,13 +3536,13 @@ base</a>:</p>
   &lt;/gjob:Jobs&gt;
 &lt;/gjob:Helping&gt;</pre>
 
-<p>While loading the XML file into an internal DOM tree is a matter of calling
-only a couple of functions, browsing the tree to gather the ata and generate
-the internal structures is harder, and more error prone.</p>
+<p>While loading the XML file into an internal DOM tree is a matter of
+calling only a couple of functions, browsing the tree to gather the ata and
+generate the internal structures is harder, and more error prone.</p>
 
 <p>The suggested principle is to be tolerant with respect to the input
-structure. For example, the ordering of the attributes is not significant, the
-XML specification is clear about it. It's also usually a good idea not to
+structure. For example, the ordering of the attributes is not significant,
+the XML specification is clear about it. It's also usually a good idea not to
 depend on the order of the children of a given node, unless it really makes
 things harder. Here is some code to parse the information for a person:</p>
 <pre>/*
@@ -1400,13 +3593,13 @@ DEBUG("parsePerson\n");
   <li>Usually a recursive parsing style is the more convenient one: XML data
     is by nature subject to repetitive constructs and usually exibits highly
     stuctured patterns.</li>
-  <li>The two arguments of type <em>xmlDocPtr</em> and <em>xmlNsPtr</em>, i.e.
-    the pointer to the global XML document and the namespace reserved to the
-    application. Document wide information are needed for example to decode
-    entities and it's a good coding practice to define a namespace for your
-    application set of data and test that the element and attributes you're
-    analyzing actually pertains to your application space. This is done by a
-    simple equality test (cur-&gt;ns == ns).</li>
+  <li>The two arguments of type <em>xmlDocPtr</em> and <em>xmlNsPtr</em>,
+    i.e. the pointer to the global XML document and the namespace reserved to
+    the application. Document wide information are needed for example to
+    decode entities and it's a good coding practice to define a namespace for
+    your application set of data and test that the element and attributes
+    you're analyzing actually pertains to your application space. This is
+    done by a simple equality test (cur-&gt;ns == ns).</li>
   <li>To retrieve text and attributes value, you can use the function
     <em>xmlNodeListGetString</em> to gather all the text and entity reference
     nodes generated by the DOM output and produce an single text string.</li>
@@ -1467,10 +3660,10 @@ DEBUG("parseJob\n");
 }</pre>
 
 <p>Once you are used to it, writing this kind of code is quite simple, but
-boring. Ultimately, it could be possble to write stubbers taking either C data
-structure definitions, a set of XML examples or an XML DTD and produce the
-code needed to import and export the content between C data and XML storage.
-This is left as an exercise to the reader :-)</p>
+boring. Ultimately, it could be possble to write stubbers taking either C
+data structure definitions, a set of XML examples or an XML DTD and produce
+the code needed to import and export the content between C data and XML
+storage. This is left as an exercise to the reader :-)</p>
 
 <p>Feel free to use <a href="example/gjobread.c">the code for the full C
 parsing example</a> as a template, it is also available with Makefile in the
@@ -1478,36 +3671,49 @@ Gnome CVS base under gnome-xml/example</p>
 
 <h2><a name="Contributi">Contributions</a></h2>
 <ul>
+  <li>Bjorn Reese, William Brack and Thomas Broyer have provided a number of
+    patches, Gary Pennington worked on the validation API, threading support
+    and Solaris port.</li>
+  <li>John Fleck helps maintaining the documentation and man pages.</li>
   <li><a href="mailto:ari@lusis.org">Ari Johnson</a> provides a  C++ wrapper
-    for libxml:
-    <p>Website: <a
-    href="http://lusis.org/~ari/xml++/">http://lusis.org/~ari/xml++/</a></p>
-    <p>Download: <a
-    href="http://lusis.org/~ari/xml++/libxml++.tar.gz">http://lusis.org/~ari/xml++/libxml++.tar.gz</a></p>
-  </li>
-  <li><a href="mailto:doolin@cs.utk.edu">David Doolin</a> provides a
-    precompiled Windows version
-    <p><a
-    href="http://www.ce.berkeley.edu/~doolin/code/libxmlwin32/">http://www.ce.berkeley.edu/~doolin/code/libxmlwin32/</a></p>
-  </li>
+    for libxml:<br>
+    Website: <a
+    href="http://lusis.org/~ari/xml++/">http://lusis.org/~ari/xml++/</a><br>
+    Download: <a
+    href="http://lusis.org/~ari/xml++/libxml++.tar.gz">http://lusis.org/~ari/xml++/libxml++.tar.gz</a></li>
+  <li><a href="mailto:izlatkovic@daenet.de">Igor  Zlatkovic</a> is now the
+    maintainer of the Windows port, <a
+    href="http://www.fh-frankfurt.de/~igor/projects/libxml/index.html">he
+    provides binaries</a></li>
+  <li><a href="mailto:Gary.Pennington@sun.com">Gary Pennington</a> provides
+    <a href="http://garypennington.net/libxml2/">Solaris binaries</a></li>
   <li><a
     href="http://mail.gnome.org/archives/xml/2001-March/msg00014.html">Matt
     Sergeant</a> developped <a
     href="http://axkit.org/download/">XML::LibXSLT</a>, a perl wrapper for
     libxml2/libxslt as part of the <a href="http://axkit.com/">AxKit XML
     application server</a></li>
-  <li><a href="mailto:fnatter@gmx.net">Felix Natter</a> provided <a
-    href="libxml-doc.el">an emacs module</a> to lookup libxml functions
+  <li><a href="mailto:fnatter@gmx.net">Felix Natter</a> and <a
+    href="mailto:geertk@ai.rug.nl">Geert Kloosterman</a> provide <a
+    href="libxml-doc.el">an emacs module</a> to lookup libxml(2) functions
     documentation</li>
   <li><a href="mailto:sherwin@nlm.nih.gov">Ziying Sherwin</a> provided <a
-    href="http://xmlsoft.org/messages/0488.html">man pages</a> (not yet
-    integrated in the distribution)</li>
+    href="http://xmlsoft.org/messages/0488.html">man pages</a></li>
+  <li>there is a module for <a
+    href="http://acs-misc.sourceforge.net/nsxml.html">libxml/libxslt support
+    in OpenNSD/AOLServer</a></li>
+  <li><a href="mailto:dkuhlman@cutter.rexx.com">Dave Kuhlman</a> provided the
+    first version of libxml/libxslt <a
+    href="http://www.rexx.com/~dkuhlman">wrappers for Python</a></li>
+  <li>Petr Kozelka provides <a
+    href="http://sourceforge.net/projects/libxml2-pas">Pascal units to glue
+    libxml2</a> with Kylix and Delphi and other Pascal compilers</li>
+  <li><a href="mailto:aleksey@aleksey.com">Aleksey Sanin</a> implemented the
+    <a href="http://www.w3.org/Signature/">XML Canonicalization and XML
+    Digital Signature</a> <a
+    href="http://www.aleksey.com/xmlsec/">implementations for libxml2</a></li>
 </ul>
 
 <p></p>
-
-<p><a href="mailto:Daniel.Veillard@imag.fr">Daniel Veillard</a></p>
-
-<p>$Id$</p>
 </body>
 </html>

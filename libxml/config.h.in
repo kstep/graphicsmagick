@@ -15,6 +15,8 @@
 #undef HAVE_LIBHISTORY
 #undef HAVE_LIBREADLINE
 #undef SOCKLEN_T
+#undef HAVE_LIBPTHREAD
+#undef HAVE_PTHREAD_H
 
 /* Define if you have the _stat function.  */
 #undef HAVE__STAT
@@ -34,6 +36,12 @@
 /* Define if you have the fprintf function.  */
 #undef HAVE_FPRINTF
 
+/* Define if you have the ftime function.  */
+#undef HAVE_FTIME
+
+/* Define if you have the gettimeofday function.  */
+#undef HAVE_GETTIMEOFDAY
+
 /* Define if you have the isnand function.  */
 #undef HAVE_ISNAND
 
@@ -42,6 +50,9 @@
 
 /* Define if you have the printf function.  */
 #undef HAVE_PRINTF
+
+/* Define if you have the signal function.  */
+#undef HAVE_SIGNAL
 
 /* Define if you have the snprintf function.  */
 #undef HAVE_SNPRINTF
@@ -88,6 +99,9 @@
 /* Define if you have the <dirent.h> header file.  */
 #undef HAVE_DIRENT_H
 
+/* Define if you have the <dlfcn.h> header file.  */
+#undef HAVE_DLFCN_H
+
 /* Define if you have the <errno.h> header file.  */
 #undef HAVE_ERRNO_H
 
@@ -121,6 +135,12 @@
 /* Define if you have the <netinet/in.h> header file.  */
 #undef HAVE_NETINET_IN_H
 
+/* Define if you have the <resolv.h> header file.  */
+#undef HAVE_RESOLV_H
+
+/* Define if you have the <signal.h> header file.  */
+#undef HAVE_SIGNAL_H
+
 /* Define if you have the <stdarg.h> header file.  */
 #undef HAVE_STDARG_H
 
@@ -151,6 +171,9 @@
 /* Define if you have the <sys/time.h> header file.  */
 #undef HAVE_SYS_TIME_H
 
+/* Define if you have the <sys/timeb.h> header file.  */
+#undef HAVE_SYS_TIMEB_H
+
 /* Define if you have the <sys/types.h> header file.  */
 #undef HAVE_SYS_TYPES_H
 
@@ -162,9 +185,6 @@
 
 /* Define if you have the <zlib.h> header file.  */
 #undef HAVE_ZLIB_H
-
-/* Define if you have the iconv library (-liconv).  */
-#undef HAVE_LIBICONV
 
 /* Define if you have the inet library (-linet).  */
 #undef HAVE_LIBINET

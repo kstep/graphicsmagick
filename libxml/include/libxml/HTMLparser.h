@@ -1,9 +1,9 @@
 /*
- * HTMLparser.h : inf=terface for an HTML 4.0 non-verifying parser
+ * HTMLparser.h : interface for an HTML 4.0 non-verifying parser
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
 
 #ifndef __HTML_PARSER_H__
@@ -15,7 +15,7 @@ extern "C" {
 #endif
 
 /*
- * Most of the back-end structures from XML and HTML are shared
+ * Most of the back-end structures from XML and HTML are shared.
  */
 typedef xmlParserCtxt htmlParserCtxt;
 typedef xmlParserCtxtPtr htmlParserCtxtPtr;
@@ -28,23 +28,24 @@ typedef xmlDocPtr htmlDocPtr;
 typedef xmlNodePtr htmlNodePtr;
 
 /*
- * Internal description of an HTML element
+ * Internal description of an HTML element.
  */
 typedef struct _htmlElemDesc htmlElemDesc;
 typedef htmlElemDesc *htmlElemDescPtr;
 struct _htmlElemDesc {
     const char *name;	/* The tag name */
-    char startTag;       /* Whether the start tag can be implied */
-    char endTag;         /* Whether the end tag can be implied */
-    char saveEndTag;     /* Whether the end tag should be saved */
-    char empty;          /* Is this an empty element ? */
-    char depr;           /* Is this a deprecated element ? */
-    char dtd;            /* 1: only in Loose DTD, 2: only Frameset one */
+    char startTag;      /* Whether the start tag can be implied */
+    char endTag;        /* Whether the end tag can be implied */
+    char saveEndTag;    /* Whether the end tag should be saved */
+    char empty;         /* Is this an empty element ? */
+    char depr;          /* Is this a deprecated element ? */
+    char dtd;           /* 1: only in Loose DTD, 2: only Frameset one */
+    char isinline;      /* is this a block 0 or inline 1 element */
     const char *desc;   /* the description */
 };
 
 /*
- * Internal description of an HTML entity
+ * Internal description of an HTML entity.
  */
 typedef struct _htmlEntityDesc htmlEntityDesc;
 typedef htmlEntityDesc *htmlEntityDescPtr;
@@ -57,16 +58,16 @@ struct _htmlEntityDesc {
 /*
  * There is only few public functions.
  */
-htmlElemDescPtr		htmlTagLookup	(const xmlChar *tag);
-htmlEntityDescPtr	htmlEntityLookup(const xmlChar *name);
-htmlEntityDescPtr	htmlEntityValueLookup(unsigned int value);
+const htmlElemDesc * 	htmlTagLookup	(const xmlChar *tag);
+const htmlEntityDesc * 	htmlEntityLookup(const xmlChar *name);
+const htmlEntityDesc * 	htmlEntityValueLookup(unsigned int value);
 
 int			htmlIsAutoClosed(htmlDocPtr doc,
 					 htmlNodePtr elem);
 int			htmlAutoCloseTag(htmlDocPtr doc,
 					 const xmlChar *name,
 					 htmlNodePtr elem);
-htmlEntityDescPtr	htmlParseEntityRef(htmlParserCtxtPtr ctxt,
+const htmlEntityDesc * 	htmlParseEntityRef(htmlParserCtxtPtr ctxt,
 					 xmlChar **str);
 int			htmlParseCharRef(htmlParserCtxtPtr ctxt);
 void			htmlParseElement(htmlParserCtxtPtr ctxt);
@@ -83,19 +84,19 @@ htmlDocPtr		htmlSAXParseFile(const char *filename,
 					 void *userData);
 htmlDocPtr		htmlParseFile	(const char *filename,
 					 const char *encoding);
-int			UTF8ToHtml	(unsigned char* out,
+int			UTF8ToHtml	(unsigned char *out,
 					 int *outlen,
-					 const unsigned char* in,
+					 const unsigned char *in,
 					 int *inlen);
-int			htmlEncodeEntities(unsigned char* out,
+int			htmlEncodeEntities(unsigned char *out,
 					 int *outlen,
-					 const unsigned char* in,
+					 const unsigned char *in,
 					 int *inlen, int quoteChar);
 int			htmlIsScriptAttribute(const xmlChar *name);
 int			htmlHandleOmittedElem(int val);
 
 /**
- * Interfaces for the Push mode
+ * Interfaces for the Push mode.
  */
 void			htmlFreeParserCtxt	(htmlParserCtxtPtr ctxt);
 htmlParserCtxtPtr	htmlCreatePushParserCtxt(htmlSAXHandlerPtr sax,

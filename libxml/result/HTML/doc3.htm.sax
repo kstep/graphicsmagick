@@ -39,7 +39,30 @@ SAX.ignorableWhitespace(
 , 4)
 SAX.startElement(script, language='JavaScript')
 SAX.cdata(
-&lt;!-- Idea by:  Nic Wolfe (, 476)
+, 1)
+SAX.comment( Idea by:  Nic Wolfe (Nic@TimelapseProductions.com) )
+SAX.cdata(
+, 1)
+SAX.comment( Web URL:  http://fineline.xs.mw )
+SAX.cdata(
+
+, 2)
+SAX.comment( This script and many more are available free online at )
+SAX.cdata(
+, 1)
+SAX.comment( The JavaScript Source!! http://javascript.internet.com )
+SAX.cdata(
+
+, 2)
+SAX.comment( Begin
+function popUp(URL) {
+day = new Date();
+id = day.getTime();
+eval("page" + id + " = window.open(URL, '" + id + "', 'toolbars=0, scrollbars=0, location=0, statusbars=0, menubars=0, resizable=0, width=145, height=250');");
+}
+// End )
+SAX.cdata(
+, 1)
 SAX.endElement(script)
 SAX.ignorableWhitespace(
 
@@ -2657,14 +2680,15 @@ SAX.startElement(a, href='http://bp6.gamesquad.net/cgi-bin/news/viewnews.cgi?new
 SAX.characters(News 
             archive, 26)
 SAX.endElement(a)
-SAX.error: Opening and ending tag mismatch: font and form
-SAX.characters( , 1)
 SAX.endElement(form)
-SAX.error: Opening and ending tag mismatch: center and font
-SAX.error: Opening and ending tag mismatch: td and font
-SAX.error: Opening and ending tag mismatch: tr and font
-SAX.error: Opening and ending tag mismatch: tbody and font
-SAX.error: Opening and ending tag mismatch: table and font
+SAX.endElement(font)
+SAX.characters( , 1)
+SAX.error: Unexpected end tag : form
+SAX.endElement(center)
+SAX.endElement(td)
+SAX.endElement(tr)
+SAX.endElement(tbody)
+SAX.endElement(table)
 SAX.comment(				<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="100%" BGCOLOR="silver">
 					<TR>
 						<TD WIDTH="100%">
@@ -2691,25 +2715,44 @@ SAX.characters(
             , 14)
 SAX.startElement(script, language='javascript', type='text/javascript')
 SAX.cdata(
-							&lt;!--
-							if ((, 532)
-SAX.error: Unexpected end tag : iframe
-SAX.cdata(");
-							} else if ((parseI, 463)
-SAX.error: End tag : expected '>'
-SAX.error: Unexpected end tag : sc
-SAX.cdata(");
-							document.write("RI, 361)
-SAX.error: Unexpected end tag : a
-SAX.cdata(");
+							, 9)
+SAX.comment(
+							if ((parseInt(navigator.appVersion) >= 3)
+							&& (navigator.appName != "Netscape")) {
+							document.write("<IFRAME marginheight=0 frameborder=0 ");
+							document.write("marginwidth=0 scrolling=no width=100 height");
+							document.write("=90 ");
+							document.write("SRC=http://www.goto.com/d/ssn/dynconsole/?t");
+							document.write("ype=html&size=100x90&url=http://www.goto.co");
+							document.write("m/d/search/ssn/&target=_blank&Partner=SSN80");
+							document.write("42DF8478957377></IFRAME>");
+							} else if ((parseInt(navigator.appVersion) > 3)
+							&& (navigator.appName == "Netscape")) {
+							document.write("<SCRIPT language=javascript type=text/javas");
+							document.write("cript ");
+							document.write("SRC=http://www.goto.com/d/ssn/dynconsole/?t");
+							document.write("ype=js&size=100x90&url=http://www.goto.com/");
+							document.write("d/search/ssn/&target=_blank&Partner=SSN8042");
+							document.write("DF8478957377></SC");
+							document.write("RIPT>");
+							} else {
+							document.write("<A TARGET=_blank ");
+							document.write("HREF=http://www.goto.com/d/search/ssn/?from");
+							document.write("GIF=true>");
+							document.write("<IMG ismap ");
+							document.write("SRC=http://www.goto.com/d/ssn/dynconsole/?t");
+							document.write("ype=gif&size=100x90></A>");
 							}
-							// --, 37)
+							// )
+SAX.cdata(
+							, 9)
 SAX.endElement(script)
 SAX.characters(
             , 14)
 SAX.startElement(b)
 SAX.startElement(noscript)
-SAX.error: Opening and ending tag mismatch: b and noscript
+SAX.endElement(noscript)
+SAX.endElement(b)
 SAX.startElement(a, href='http://www.goto.com/d/search/ssn/?fromGIF=true', target='_blank')
 SAX.startElement(img, align='bottom', border='0', height='90', ismap, src='doc3_files/100x90.gif', width='100')
 SAX.endElement(img)
@@ -2722,7 +2765,7 @@ SAX.endElement(a)
 SAX.error: Unexpected end tag : a
 SAX.endElement(b)
 SAX.startElement(b)
-SAX.error: Opening and ending tag mismatch: noscript and b
+SAX.error: Unexpected end tag : noscript
 SAX.endElement(b)
 SAX.startElement(b)
 SAX.comment( END GoTo.com Search Box )
@@ -2755,6 +2798,8 @@ SAX.characters(
             , 15)
 SAX.endElement(p)
 SAX.error: Opening and ending tag mismatch: form and center
+SAX.endElement(center)
+SAX.endElement(form)
 SAX.comment( Pricewatch Search Box )
 SAX.startElement(a, href='http://www.puicorp.com/bp6specials.htm', target='_BLANK')
 SAX.startElement(img, src='doc3_files/puibp6.gif')
@@ -2783,11 +2828,11 @@ SAX.endElement(font)
 SAX.endElement(a)
 SAX.characters( , 1)
 SAX.error: Unexpected end tag : p
-SAX.endElement(center)
-SAX.error: Opening and ending tag mismatch: td and form
-SAX.error: Opening and ending tag mismatch: tr and form
-SAX.error: Opening and ending tag mismatch: tbody and form
-SAX.error: Opening and ending tag mismatch: table and form
+SAX.error: Opening and ending tag mismatch: center and td
+SAX.endElement(td)
+SAX.endElement(tr)
+SAX.endElement(tbody)
+SAX.endElement(table)
 SAX.characters(
       , 8)
 SAX.startElement(table, bgcolor='silver', border='0', cellpadding='0', cellspacing='0', height='100%', width='100%')
@@ -2806,24 +2851,25 @@ SAX.endElement(tr)
 SAX.endElement(tbody)
 SAX.endElement(table)
 SAX.error: Unexpected end tag : p
-SAX.error: Opening and ending tag mismatch: center and form
-SAX.error: Opening and ending tag mismatch: tr and form
-SAX.error: Opening and ending tag mismatch: tbody and form
-SAX.error: Opening and ending tag mismatch: table and form
+SAX.endElement(center)
+SAX.endElement(td)
+SAX.endElement(tr)
+SAX.endElement(tbody)
+SAX.endElement(table)
 SAX.comment(	</TABLE>)
 SAX.characters(
 , 2)
 SAX.startElement(center)
 SAX.endElement(center)
-SAX.error: Opening and ending tag mismatch: td and form
-SAX.error: Opening and ending tag mismatch: tr and form
+SAX.error: Unexpected end tag : td
+SAX.error: Unexpected end tag : tr
 SAX.startElement(tr)
 SAX.startElement(td, colspan='3', valign='TOP', height='70')
 SAX.characters(&nbsp;, 2)
 SAX.endElement(td)
 SAX.characters( , 1)
 SAX.endElement(tr)
-SAX.error: Opening and ending tag mismatch: table and form
+SAX.error: Unexpected end tag : table
 SAX.characters(
 , 2)
 SAX.startElement(table, border='0', width='780')
@@ -2858,37 +2904,16 @@ SAX.endElement(tr)
 SAX.comment(	<TR>		<TD WIDTH="780">			<P ALIGN="CENTER"><FONT SIZE="1" COLOR="#999999" FACE="Verdana,arial">Site design by Tim Brinkley</FONT>		</TD>	</TR> )
 SAX.endElement(tbody)
 SAX.endElement(table)
-SAX.error: Opening and ending tag mismatch: div and form
-SAX.characters(
+SAX.endElement(div)
+SAX.ignorableWhitespace(
 , 2)
 SAX.startElement(script)
 SAX.cdata( window.open=NS_ActualOpen; , 28)
 SAX.endElement(script)
-SAX.characters(
-, 2)
-SAX.error: Opening and ending tag mismatch: body and form
-SAX.error: Opening and ending tag mismatch: html and form
 SAX.ignorableWhitespace(
 , 2)
-SAX.endElement(form)
-SAX.endElement(noscript)
-SAX.endElement(b)
-SAX.endElement(td)
-SAX.endElement(tr)
-SAX.endElement(tbody)
-SAX.endElement(table)
-SAX.endElement(font)
-SAX.endElement(center)
-SAX.endElement(td)
-SAX.endElement(tr)
-SAX.endElement(tbody)
-SAX.endElement(table)
-SAX.endElement(center)
-SAX.endElement(td)
-SAX.endElement(tr)
-SAX.endElement(tbody)
-SAX.endElement(table)
-SAX.endElement(div)
 SAX.endElement(body)
 SAX.endElement(html)
+SAX.ignorableWhitespace(
+, 2)
 SAX.endDocument()

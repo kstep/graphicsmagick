@@ -4,10 +4,11 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
 
 
+#define IN_LIBXML
 #include "libxml.h"
 
 #include <string.h> /* for memset() only */
@@ -35,6 +36,7 @@
 #include <libxml/parser.h>
 #include <libxml/valid.h>
 #include <libxml/xlink.h>
+#include <libxml/globals.h>
 
 #define XLINK_NAMESPACE (BAD_CAST "http://www.w3.org/1999/xlink/namespace/")
 #define XHTML_NAMESPACE (BAD_CAST "http://www.w3.org/1999/xhtml/")
@@ -45,8 +47,8 @@
  *								*
  ****************************************************************/
  
-xlinkHandlerPtr xlinkDefaultHandler = NULL;
-xlinkNodeDetectFunc	xlinkDefaultDetect = NULL;
+static xlinkHandlerPtr xlinkDefaultHandler = NULL;
+static xlinkNodeDetectFunc	xlinkDefaultDetect = NULL;
 
 /**
  * xlinkGetDefaultHandler:
@@ -86,7 +88,7 @@ xlinkGetDefaultDetect	(void) {
 
 /**
  * xlinkSetDefaultDetect:
- * @func: pointer to the new detction routine.
+ * @func: pointer to the new detection routine.
  *
  * Set the default xlink detection routine
  */

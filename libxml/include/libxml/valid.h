@@ -3,7 +3,7 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
 
 
@@ -18,18 +18,41 @@ extern "C" {
 #endif
 
 /*
- * Validation state added for non-determinist content model
+ * Validation state added for non-determinist content model.
  */
 typedef struct _xmlValidState xmlValidState;
 typedef xmlValidState *xmlValidStatePtr;
 
 /**
- * an xmlValidCtxt is used for error reporting when validating
+ * xmlValidityErrorFunc:
+ * @ctx:  an xmlValidCtxtPtr validity error context
+ * @msg:  the string to format *printf like vararg
+ * @...:  remaining arguments to the format
+ *
+ * Callback called when a validity error is found. This is a message
+ * oriented function similar to an *printf function.
  */
+typedef void (*xmlValidityErrorFunc) (void *ctx,
+			     const char *msg,
+			     ...);
 
-typedef void (*xmlValidityErrorFunc) (void *ctx, const char *msg, ...);
-typedef void (*xmlValidityWarningFunc) (void *ctx, const char *msg, ...);
+/**
+ * xmlValidityWarningFunc:
+ * @ctx:  an xmlValidCtxtPtr validity error context
+ * @msg:  the string to format *printf like vararg
+ * @...:  remaining arguments to the format
+ *
+ * Callback called when a validity warning is found. This is a message
+ * oriented function similar to an *printf function.
+ */
+typedef void (*xmlValidityWarningFunc) (void *ctx,
+			       const char *msg,
+			       ...);
 
+/**
+ * xmlValidCtxt:
+ * An xmlValidCtxt is used for error reporting when validating.
+ */
 typedef struct _xmlValidCtxt xmlValidCtxt;
 typedef xmlValidCtxt *xmlValidCtxtPtr;
 struct _xmlValidCtxt {
@@ -55,40 +78,40 @@ struct _xmlValidCtxt {
 };
 
 /*
- * ALl notation declarations are stored in a table
- * there is one table per DTD
+ * ALL notation declarations are stored in a table.
+ * There is one table per DTD.
  */
 
 typedef struct _xmlHashTable xmlNotationTable;
 typedef xmlNotationTable *xmlNotationTablePtr;
 
 /*
- * ALl element declarations are stored in a table
- * there is one table per DTD
+ * ALL element declarations are stored in a table.
+ * There is one table per DTD.
  */
 
 typedef struct _xmlHashTable xmlElementTable;
 typedef xmlElementTable *xmlElementTablePtr;
 
 /*
- * ALl attribute declarations are stored in a table
- * there is one table per DTD
+ * ALL attribute declarations are stored in a table.
+ * There is one table per DTD.
  */
 
 typedef struct _xmlHashTable xmlAttributeTable;
 typedef xmlAttributeTable *xmlAttributeTablePtr;
 
 /*
- * ALl IDs attributes are stored in a table
- * there is one table per document
+ * ALL IDs attributes are stored in a table.
+ * There is one table per document.
  */
 
 typedef struct _xmlHashTable xmlIDTable;
 typedef xmlIDTable *xmlIDTablePtr;
 
 /*
- * ALl Refs attributes are stored in a table
- * there is one table per document
+ * ALL Refs attributes are stored in a table.
+ * There is one table per document.
  */
 
 typedef struct _xmlHashTable xmlRefTable;
@@ -116,9 +139,15 @@ xmlElementContentPtr xmlNewElementContent (xmlChar *name,
 					   xmlElementContentType type);
 xmlElementContentPtr xmlCopyElementContent(xmlElementContentPtr content);
 void		     xmlFreeElementContent(xmlElementContentPtr cur);
+void		     xmlSnprintfElementContent(char *buf,
+					   int size,
+	                                   xmlElementContentPtr content,
+					   int glob);
+/* DEPRECATED */
 void		     xmlSprintfElementContent(char *buf,
 	                                   xmlElementContentPtr content,
 					   int glob);
+/* DEPRECATED */
 
 /* Element */
 xmlElementPtr	   xmlAddElementDecl	(xmlValidCtxtPtr ctxt,
@@ -160,7 +189,6 @@ xmlIDPtr	xmlAddID	(xmlValidCtxtPtr ctxt,
 				 xmlDocPtr doc,
 				 const xmlChar *value,
 				 xmlAttrPtr attr);
-xmlIDTablePtr	xmlCopyIDTable	(xmlIDTablePtr table);
 void		xmlFreeIDTable	(xmlIDTablePtr table);
 xmlAttrPtr	xmlGetID	(xmlDocPtr doc,
 				 const xmlChar *ID);
@@ -174,7 +202,6 @@ xmlRefPtr	xmlAddRef	(xmlValidCtxtPtr ctxt,
 				 xmlDocPtr doc,
 				 const xmlChar *value,
 				 xmlAttrPtr attr);
-xmlRefTablePtr	xmlCopyRefTable	(xmlRefTablePtr table);
 void		xmlFreeRefTable	(xmlRefTablePtr table);
 int		xmlIsRef	(xmlDocPtr doc,
 				 xmlNodePtr elem,
@@ -184,7 +211,7 @@ xmlListPtr	xmlGetRefs	(xmlDocPtr doc,
 				 const xmlChar *ID);
 
 /**
- * The public function calls related to validity checking
+ * The public function calls related to validity checking.
  */
 
 int		xmlValidateRoot		(xmlValidCtxtPtr ctxt,
@@ -193,6 +220,11 @@ int		xmlValidateElementDecl	(xmlValidCtxtPtr ctxt,
 					 xmlDocPtr doc,
 		                         xmlElementPtr elem);
 xmlChar *	xmlValidNormalizeAttributeValue(xmlDocPtr doc,
+					 xmlNodePtr elem,
+					 const xmlChar *name,
+					 const xmlChar *value);
+xmlChar *	xmlValidCtxtNormalizeAttributeValue(xmlValidCtxtPtr ctxt,
+					 xmlDocPtr doc,
 					 xmlNodePtr elem,
 					 const xmlChar *name,
 					 const xmlChar *value);
@@ -232,8 +264,15 @@ int		xmlIsMixedElement	(xmlDocPtr doc,
 xmlAttributePtr	xmlGetDtdAttrDesc	(xmlDtdPtr dtd,
 					 const xmlChar *elem,
 					 const xmlChar *name);
+xmlAttributePtr	xmlGetDtdQAttrDesc	(xmlDtdPtr dtd,
+					 const xmlChar *elem,
+					 const xmlChar *name,
+					 const xmlChar *prefix);
 xmlNotationPtr	xmlGetDtdNotationDesc	(xmlDtdPtr dtd,
 					 const xmlChar *name);
+xmlElementPtr	xmlGetDtdQElementDesc	(xmlDtdPtr dtd,
+					 const xmlChar *name,
+					 const xmlChar *prefix);
 xmlElementPtr	xmlGetDtdElementDesc	(xmlDtdPtr dtd,
 					 const xmlChar *name);
 

@@ -3,7 +3,7 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
 
 #include "libxml.h"
@@ -36,6 +36,7 @@
 #include <libxml/parserInternals.h>
 #include <libxml/xpathInternals.h>
 #include <libxml/xmlerror.h>
+#include <libxml/globals.h>
 #if defined(LIBXML_XPTR_ENABLED)
 #include <libxml/xpointer.h>
 static int xptr = 0;
@@ -44,6 +45,7 @@ static int debug = 0;
 static int valid = 0;
 static int expr = 0;
 static int tree = 0;
+static int nocdata = 0;
 static xmlDocPtr document = NULL;
 
 /*
@@ -156,21 +158,31 @@ int main(int argc, char **argv) {
 #if defined(LIBXML_XPTR_ENABLED)
 	if ((!strcmp(argv[i], "-xptr")) || (!strcmp(argv[i], "--xptr")))
 	    xptr++;
+	else 
 #endif
 	if ((!strcmp(argv[i], "-debug")) || (!strcmp(argv[i], "--debug")))
 	    debug++;
-	if ((!strcmp(argv[i], "-valid")) || (!strcmp(argv[i], "--valid")))
+	else if ((!strcmp(argv[i], "-valid")) || (!strcmp(argv[i], "--valid")))
 	    valid++;
-	if ((!strcmp(argv[i], "-expr")) || (!strcmp(argv[i], "--expr")))
+	else if ((!strcmp(argv[i], "-expr")) || (!strcmp(argv[i], "--expr")))
 	    expr++;
-	if ((!strcmp(argv[i], "-tree")) || (!strcmp(argv[i], "--tree")))
+	else if ((!strcmp(argv[i], "-tree")) || (!strcmp(argv[i], "--tree")))
 	    tree++;
-	if ((!strcmp(argv[i], "-i")) || (!strcmp(argv[i], "--input")))
+	else if ((!strcmp(argv[i], "-nocdata")) ||
+		 (!strcmp(argv[i], "--nocdata")))
+	    nocdata++;
+	else if ((!strcmp(argv[i], "-i")) || (!strcmp(argv[i], "--input")))
 	    filename = argv[++i];
-	if ((!strcmp(argv[i], "-f")) || (!strcmp(argv[i], "--file")))
+	else if ((!strcmp(argv[i], "-f")) || (!strcmp(argv[i], "--file")))
 	    usefile++;
     }
     if (valid != 0) xmlDoValidityCheckingDefaultValue = 1;
+    xmlLoadExtDtdDefaultValue |= XML_DETECT_IDS;
+    xmlLoadExtDtdDefaultValue |= XML_COMPLETE_ATTRS;
+    if (nocdata != 0) {
+	xmlDefaultSAXHandlerInit();
+	xmlDefaultSAXHandler.cdataBlock = NULL;
+    }
     if (document == NULL) {
         if (filename == NULL)
 	    document = xmlParseDoc(buffer);
@@ -200,6 +212,7 @@ int main(int argc, char **argv) {
 #endif
 	printf("\t--expr : debug XPath expressions only\n");
 	printf("\t--tree : show the compiled XPath tree\n");
+	printf("\t--nocdata : do not generate CDATA nodes\n");
 	printf("\t--input filename : or\n");
 	printf("\t-i filename      : read the document from filename\n");
 	printf("\t--file : or\n");

@@ -3,16 +3,12 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
 
 #include "libxml.h"
 
 #ifdef LIBXML_HTML_ENABLED
-
-#ifdef WIN32
-#undef LIBXML_DLL_IMPORT
-#endif
 
 #include <string.h>
 #include <stdarg.h>
@@ -39,6 +35,7 @@
 #include <libxml/HTMLtree.h>
 #include <libxml/debugXML.h>
 #include <libxml/xmlerror.h>
+#include <libxml/globals.h>
 
 #ifdef LIBXML_DEBUG_ENABLED
 static int debug = 0;
@@ -77,7 +74,8 @@ xmlSAXHandler emptySAXHandlerStruct = {
     NULL, /* xmlParserError */
     NULL, /* getParameterEntity */
     NULL, /* cdataBlock */
-    NULL  /* externalSubset */
+    NULL, /* externalSubset */
+    1
 };
 
 xmlSAXHandlerPtr emptySAXHandler = &emptySAXHandlerStruct;
@@ -595,7 +593,8 @@ xmlSAXHandler debugSAXHandlerStruct = {
     fatalErrorDebug,
     getParameterEntityDebug,
     cdataDebug,
-    NULL
+    NULL,
+    1
 };
 
 xmlSAXHandlerPtr debugSAXHandler = &debugSAXHandlerStruct;

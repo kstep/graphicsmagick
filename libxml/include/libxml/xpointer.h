@@ -6,7 +6,7 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel.Veillard@w3.org
+ * daniel@veillard.com
  */
 
 #ifndef __XML_XPTR_H__
@@ -31,7 +31,7 @@ struct _xmlLocationSet {
 };
 
 /*
- * Handling of location sets
+ * Handling of location sets.
  */
 
 xmlLocationSetPtr	xmlXPtrLocationSetCreate(xmlXPathObjectPtr val);
@@ -65,7 +65,7 @@ void			xmlXPtrLocationSetRemove(xmlLocationSetPtr cur,
 						 int val);
 
 /*
- * Functions
+ * Functions.
  */
 xmlXPathContextPtr	xmlXPtrNewContext	(xmlDocPtr doc,
 						 xmlNodePtr here,

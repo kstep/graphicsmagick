@@ -3,10 +3,11 @@
  *
  * See Copyright for the status of this software.
  *
- * Daniel Veillard <Daniel.Veillard@w3.org>
+ * Daniel Veillard <daniel@veillard.com>
  */
 
 
+#define IN_LIBXML
 #include "libxml.h"
 #include <stdlib.h>
 #include <string.h>
@@ -21,16 +22,12 @@
 #include <libxml/xmlIO.h>
 #include <libxml/SAX.h>
 #include <libxml/uri.h>
+#include <libxml/valid.h>
 #include <libxml/HTMLtree.h>
+#include <libxml/globals.h>
 
 /* #define DEBUG_SAX */
 /* #define DEBUG_SAX_TREE */
-
-#ifdef __GNUC__
-#ifdef DEBUG_SAX
-#define ATTRIBUTE_UNUSED
-#endif
-#endif
 
 /**
  * getPublicId:
@@ -92,14 +89,6 @@ getColumnNumber(void *ctx)
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
     return(ctxt->input->col);
 }
-
-/*
- * The default SAX Locator.
- */
-
-xmlSAXLocator xmlDefaultSAXLocator = {
-    getPublicId, getSystemId, getLineNumber, getColumnNumber
-};
 
 /**
  * isStandalone:
@@ -201,7 +190,7 @@ externalSubset(void *ctx, const xmlChar *name,
             name, ExternalID, SystemID);
 #endif
     if (((ExternalID != NULL) || (SystemID != NULL)) &&
-        (((ctxt->validate) || (ctxt->loadsubset)) &&
+        (((ctxt->validate) || (ctxt->loadsubset != 0)) &&
 	 (ctxt->wellFormed && ctxt->myDoc))) {
 	/*
 	 * Try to fetch and parse the external subset.
@@ -210,7 +199,6 @@ externalSubset(void *ctx, const xmlChar *name,
 	int oldinputNr;
 	int oldinputMax;
 	xmlParserInputPtr *oldinputTab;
-	int oldwellFormed;
 	xmlParserInputPtr input = NULL;
 	xmlCharEncoding enc;
 	int oldcharset;
@@ -234,7 +222,6 @@ externalSubset(void *ctx, const xmlChar *name,
 	oldinputNr = ctxt->inputNr;
 	oldinputMax = ctxt->inputMax;
 	oldinputTab = ctxt->inputTab;
-	oldwellFormed = ctxt->wellFormed;
 	oldcharset = ctxt->charset;
 
 	ctxt->inputTab = (xmlParserInputPtr *)
@@ -358,18 +345,39 @@ getEntity(void *ctx, const xmlChar *name)
 	    "SAX.getEntity(%s)\n", name);
 #endif
 
-    ret = xmlGetDocEntity(ctxt->myDoc, name);
+    if ((ctxt->myDoc != NULL) && (ctxt->myDoc->standalone == 1)) {
+	if (ctxt->inSubset == 2) {
+	    ctxt->myDoc->standalone = 0;
+	    ret = xmlGetDocEntity(ctxt->myDoc, name);
+	    ctxt->myDoc->standalone = 1;
+	} else {
+	    ret = xmlGetDocEntity(ctxt->myDoc, name);
+	    if (ret == NULL) {
+		ctxt->myDoc->standalone = 0;
+		ret = xmlGetDocEntity(ctxt->myDoc, name);
+		if (ret != NULL) {
+		    if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+			ctxt->sax->error(ctxt, 
+		 "Entity(%s) document marked standalone but require external subset\n",
+					 name);
+		    ctxt->valid = 0;
+		    ctxt->wellFormed = 0;
+		}
+		ctxt->myDoc->standalone = 1;
+	    }
+	}
+    } else {
+	ret = xmlGetDocEntity(ctxt->myDoc, name);
+    }
     if ((ret != NULL) && (ctxt->validate) && (ret->children == NULL) &&
 	(ret->etype == XML_EXTERNAL_GENERAL_PARSED_ENTITY)) {
 	/*
 	 * for validation purposes we really need to fetch and
 	 * parse the external entity
 	 */
-	int parse;
 	xmlNodePtr children;
 
-        parse = xmlParseCtxtExternalEntity(ctxt,
-		  ret->SystemID, ret->ExternalID, &children);
+        xmlParseCtxtExternalEntity(ctxt, ret->URI, ret->ExternalID, &children);
 	xmlAddChildList((xmlNodePtr) ret, children);
     }
     return(ret);
@@ -495,6 +503,7 @@ attributeDecl(void *ctx, const xmlChar *elem, const xmlChar *fullname,
             elem, fullname, type, def, defaultValue);
 #endif
     name = xmlSplitQName(ctxt, fullname, &prefix);
+    ctxt->vctxt.valid = 1;
     if (ctxt->inSubset == 1)
 	attr = xmlAddAttributeDecl(&ctxt->vctxt, ctxt->myDoc->intSubset, elem,
 	       name, prefix, (xmlAttributeType) type,
@@ -509,9 +518,10 @@ attributeDecl(void *ctx, const xmlChar *elem, const xmlChar *fullname,
 	     "SAX.attributeDecl(%s) called while not in subset\n", name);
 	return;
     }
-    if (attr == 0) ctxt->valid = 0;
-    if (ctxt->validate && ctxt->wellFormed &&
-        ctxt->myDoc && ctxt->myDoc->intSubset)
+    if (ctxt->vctxt.valid == 0)
+	ctxt->valid = 0;
+    if ((attr != NULL) && (ctxt->validate) && (ctxt->wellFormed) &&
+        (ctxt->myDoc != NULL) && (ctxt->myDoc->intSubset != NULL))
 	ctxt->valid &= xmlValidateAttributeDecl(&ctxt->vctxt, ctxt->myDoc,
 	                                        attr);
     if (prefix != NULL)
@@ -530,34 +540,36 @@ attributeDecl(void *ctx, const xmlChar *elem, const xmlChar *fullname,
  * An element definition has been parsed
  */
 void
-elementDecl(void *ctx, const xmlChar *name, int type,
-	    xmlElementContentPtr content)
+elementDecl(void *ctx, const xmlChar * name, int type,
+            xmlElementContentPtr content)
 {
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
     xmlElementPtr elem = NULL;
 
 #ifdef DEBUG_SAX
     xmlGenericError(xmlGenericErrorContext,
-	    "SAX.elementDecl(%s, %d, ...)\n",
-            fullname, type);
+                    "SAX.elementDecl(%s, %d, ...)\n", name, type);
 #endif
-    
+
     if (ctxt->inSubset == 1)
-	elem = xmlAddElementDecl(&ctxt->vctxt, ctxt->myDoc->intSubset,
-                             name, (xmlElementTypeVal) type, content);
+        elem = xmlAddElementDecl(&ctxt->vctxt, ctxt->myDoc->intSubset,
+                                 name, (xmlElementTypeVal) type, content);
     else if (ctxt->inSubset == 2)
-	elem = xmlAddElementDecl(&ctxt->vctxt, ctxt->myDoc->extSubset,
-                             name, (xmlElementTypeVal) type, content);
+        elem = xmlAddElementDecl(&ctxt->vctxt, ctxt->myDoc->extSubset,
+                                 name, (xmlElementTypeVal) type, content);
     else {
-	if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
-	    ctxt->sax->error(ctxt, 
-	     "SAX.elementDecl(%s) called while not in subset\n", name);
-	return;
+        if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+            ctxt->sax->error(ctxt,
+                             "SAX.elementDecl(%s) called while not in subset\n",
+                             name);
+        return;
     }
-    if (elem == NULL) ctxt->valid = 0;
+    if (elem == NULL)
+        ctxt->valid = 0;
     if (ctxt->validate && ctxt->wellFormed &&
         ctxt->myDoc && ctxt->myDoc->intSubset)
-	ctxt->valid &= xmlValidateElementDecl(&ctxt->vctxt, ctxt->myDoc, elem);
+        ctxt->valid &=
+            xmlValidateElementDecl(&ctxt->vctxt, ctxt->myDoc, elem);
 }
 
 /**
@@ -581,7 +593,14 @@ notationDecl(void *ctx, const xmlChar *name,
 	    "SAX.notationDecl(%s, %s, %s)\n", name, publicId, systemId);
 #endif
 
-    if (ctxt->inSubset == 1)
+    if ((publicId == NULL) && (systemId == NULL)) {
+	if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+	    ctxt->sax->error(ctxt, 
+	     "SAX.notationDecl(%s) externalID or PublicID missing\n", name);
+	ctxt->valid = 0;
+	ctxt->wellFormed = 0;
+	return;
+    } else if (ctxt->inSubset == 1)
 	nota = xmlAddNotationDecl(&ctxt->vctxt, ctxt->myDoc->intSubset, name,
                               publicId, systemId);
     else if (ctxt->inSubset == 2)
@@ -615,25 +634,66 @@ unparsedEntityDecl(void *ctx, const xmlChar *name,
 		   const xmlChar *publicId, const xmlChar *systemId,
 		   const xmlChar *notationName)
 {
+    xmlEntityPtr ent;
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
 #ifdef DEBUG_SAX
     xmlGenericError(xmlGenericErrorContext,
 	    "SAX.unparsedEntityDecl(%s, %s, %s, %s)\n",
             name, publicId, systemId, notationName);
 #endif
-    if (ctxt->validate && ctxt->wellFormed &&
-        ctxt->myDoc && ctxt->myDoc->extSubset)
-	ctxt->valid &= xmlValidateNotationUse(&ctxt->vctxt, ctxt->myDoc,
+#if 0
+    Done in xmlValidateDtdFinal now.
+    if (ctxt->validate && ctxt->wellFormed && ctxt->myDoc) {
+	int ret;
+	ret = xmlValidateNotationUse(&ctxt->vctxt, ctxt->myDoc,
 	                                      notationName);
-    if (ctxt->inSubset == 1)
-	xmlAddDocEntity(ctxt->myDoc, name,
+	if (ret == 0) {
+	    ctxt->wellFormed = 0;
+	    ctxt->valid = 0;
+	}
+    }
+#endif
+    if (ctxt->inSubset == 1) {
+	ent = xmlAddDocEntity(ctxt->myDoc, name,
 			XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,
 			publicId, systemId, notationName);
-    else if (ctxt->inSubset == 2)
-	xmlAddDtdEntity(ctxt->myDoc, name,
+	if ((ent == NULL) && (ctxt->pedantic) &&
+	    (ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
+	    ctxt->sax->warning(ctxt, 
+	     "Entity(%s) already defined in the internal subset\n", name);
+	if ((ent != NULL) && (ent->URI == NULL) && (systemId != NULL)) {
+	    xmlChar *URI;
+	    const char *base = NULL;
+
+	    if (ctxt->input != NULL)
+		base = ctxt->input->filename;
+	    if (base == NULL)
+		base = ctxt->directory;
+	
+	    URI = xmlBuildURI(systemId, (const xmlChar *) base);
+	    ent->URI = URI;
+	}
+    } else if (ctxt->inSubset == 2) {
+	ent = xmlAddDtdEntity(ctxt->myDoc, name,
 			XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,
 			publicId, systemId, notationName);
-    else {
+	if ((ent == NULL) && (ctxt->pedantic) &&
+	    (ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
+	    ctxt->sax->warning(ctxt, 
+	     "Entity(%s) already defined in the external subset\n", name);
+	if ((ent != NULL) && (ent->URI == NULL) && (systemId != NULL)) {
+	    xmlChar *URI;
+	    const char *base = NULL;
+
+	    if (ctxt->input != NULL)
+		base = ctxt->input->filename;
+	    if (base == NULL)
+		base = ctxt->directory;
+	
+	    URI = xmlBuildURI(systemId, (const xmlChar *) base);
+	    ent->URI = URI;
+	}
+    } else {
 	if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
 	    ctxt->sax->error(ctxt, 
 	     "SAX.unparsedEntityDecl(%s) called while not in subset\n", name);
@@ -771,8 +831,13 @@ attribute(void *ctx, const xmlChar *fullname, const xmlChar *value)
      * Needed for HTML too:
      *   http://www.w3.org/TR/html4/types.html#h-6.2
      */
-    nval = xmlValidNormalizeAttributeValue(ctxt->myDoc, ctxt->node,
+    ctxt->vctxt.valid = 1;
+    nval = xmlValidCtxtNormalizeAttributeValue(&ctxt->vctxt,
+	                                   ctxt->myDoc, ctxt->node,
 					   fullname, value);
+    if (ctxt->vctxt.valid != 1) {
+	ctxt->valid = 0;
+    }
     if (nval != NULL)
 	value = nval;
 
@@ -820,6 +885,11 @@ attribute(void *ctx, const xmlChar *fullname, const xmlChar *value)
 	    ctxt->valid &= xmlValidateOneAttribute(&ctxt->vctxt, ctxt->myDoc,
 					       ctxt->node, ret, value);
 	 */
+	if (value[0] == 0) {
+	    if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+		ctxt->sax->error(ctxt->userData, 
+		     "Empty namespace name for prefix %s\n", name);
+	}
 	/* a standard namespace definition */
 	xmlNewNs(ctxt->node, value, name);
 	xmlFree(ns);
@@ -873,10 +943,25 @@ attribute(void *ctx, const xmlChar *fullname, const xmlChar *value)
 	    val = xmlStringDecodeEntities(ctxt, value, XML_SUBSTITUTE_REF,
 		                          0,0,0);
 	    ctxt->depth--;
+	    
 	    if (val == NULL)
 		ctxt->valid &= xmlValidateOneAttribute(&ctxt->vctxt,
 				ctxt->myDoc, ctxt->node, ret, value);
 	    else {
+		xmlChar *nvalnorm;
+
+		/*
+		 * Do the last stage of the attribute normalization
+		 * It need to be done twice ... it's an extra burden related
+		 * to the ability to keep references in attributes
+		 */
+		nvalnorm = xmlValidNormalizeAttributeValue(ctxt->myDoc,
+					    ctxt->node, fullname, val);
+		if (nvalnorm != NULL) {
+		    xmlFree(val);
+		    val = nvalnorm;
+		}
+
 		ctxt->valid &= xmlValidateOneAttribute(&ctxt->vctxt,
 			        ctxt->myDoc, ctxt->node, ret, val);
                 xmlFree(val);
@@ -885,7 +970,8 @@ attribute(void *ctx, const xmlChar *fullname, const xmlChar *value)
 	    ctxt->valid &= xmlValidateOneAttribute(&ctxt->vctxt, ctxt->myDoc,
 					       ctxt->node, ret, value);
 	}
-    } else if (ctxt->external != 2){
+    } else if (((ctxt->replaceEntities == 0) && (ctxt->external != 2)) ||
+	       ((ctxt->replaceEntities != 0) && (ctxt->inSubset == 0))) {
         /*
 	 * when validating, the ID registration is done at the attribute
 	 * validation level. Otherwise we have to do specific handling here.
@@ -902,6 +988,154 @@ attribute(void *ctx, const xmlChar *fullname, const xmlChar *value)
 	xmlFree(name);
     if (ns != NULL) 
 	xmlFree(ns);
+}
+
+/*
+ * xmlCheckDefaultedAttributes:
+ *
+ * Check defaulted attributes from the DTD
+ */
+static void
+xmlCheckDefaultedAttributes(xmlParserCtxtPtr ctxt, const xmlChar *name,
+	const xmlChar *prefix, const xmlChar **atts) {
+    xmlElementPtr elemDecl;
+    const xmlChar *att;
+    int internal = 1;
+    int i;
+
+    elemDecl = xmlGetDtdQElementDesc(ctxt->myDoc->intSubset, name, prefix);
+    if (elemDecl == NULL) {
+	elemDecl = xmlGetDtdQElementDesc(ctxt->myDoc->extSubset, name, prefix);
+	internal = 0;
+    }
+
+process_external_subset:
+
+    if (elemDecl != NULL) {
+	xmlAttributePtr attr = elemDecl->attributes;
+	/*
+	 * Check against defaulted attributes from the external subset
+	 * if the document is stamped as standalone
+	 */
+	if ((ctxt->myDoc->standalone == 1) &&
+	    (ctxt->myDoc->extSubset != NULL) &&
+	    (ctxt->validate)) {
+	    while (attr != NULL) {
+		if ((attr->defaultValue != NULL) &&
+		    (xmlGetDtdQAttrDesc(ctxt->myDoc->extSubset,
+					attr->elem, attr->name,
+					attr->prefix) == attr) &&
+		    (xmlGetDtdQAttrDesc(ctxt->myDoc->intSubset,
+					attr->elem, attr->name,
+					attr->prefix) == NULL)) {
+		    xmlChar *fulln;
+
+		    if (attr->prefix != NULL) {
+			fulln = xmlStrdup(attr->prefix);
+			fulln = xmlStrcat(fulln, BAD_CAST ":");
+			fulln = xmlStrcat(fulln, attr->name);
+		    } else {
+			fulln = xmlStrdup(attr->name);
+		    }
+
+		    /*
+		     * Check that the attribute is not declared in the
+		     * serialization
+		     */
+		    att = NULL;
+		    if (atts != NULL) {
+			i = 0;
+			att = atts[i];
+			while (att != NULL) {
+			    if (xmlStrEqual(att, fulln))
+				break;
+			    i += 2;
+			    att = atts[i];
+			}
+		    }
+		    if (att == NULL) {
+			if (ctxt->vctxt.error != NULL)
+			    ctxt->vctxt.error(ctxt->vctxt.userData,
+      "standalone: attribute %s on %s defaulted from external subset\n",
+					      fulln, attr->elem);
+			ctxt->valid = 0;
+		    }
+		}
+		attr = attr->nexth;
+	    }
+	}
+
+	/*
+	 * Actually insert defaulted values when needed
+	 */
+	attr = elemDecl->attributes;
+	while (attr != NULL) {
+	    /*
+	     * Make sure that attributes redefinition occuring in the
+	     * internal subset are not overriden by definitions in the
+	     * external subset.
+	     */
+	    if (attr->defaultValue != NULL) {
+		/*
+		 * the element should be instantiated in the tree if:
+		 *  - this is a namespace prefix
+		 *  - the user required for completion in the tree
+		 *    like XSLT
+		 *  - there isn't already an attribute definition 
+		 *    in the internal subset overriding it.
+		 */
+		if (((attr->prefix != NULL) &&
+		     (xmlStrEqual(attr->prefix, BAD_CAST "xmlns"))) ||
+		    ((attr->prefix == NULL) &&
+		     (xmlStrEqual(attr->name, BAD_CAST "xmlns"))) ||
+		    (ctxt->loadsubset & XML_COMPLETE_ATTRS)) {
+		    xmlAttributePtr tst;
+
+		    tst = xmlGetDtdQAttrDesc(ctxt->myDoc->intSubset,
+					     attr->elem, attr->name,
+					     attr->prefix);
+		    if ((tst == attr) || (tst == NULL)) {
+			xmlChar *fulln;
+
+			if (attr->prefix != NULL) {
+			    fulln = xmlStrdup(attr->prefix);
+			    fulln = xmlStrcat(fulln, BAD_CAST ":");
+			    fulln = xmlStrcat(fulln, attr->name);
+			} else {
+			    fulln = xmlStrdup(attr->name);
+			}
+
+			/*
+			 * Check that the attribute is not declared in the
+			 * serialization
+			 */
+			att = NULL;
+			if (atts != NULL) {
+			    i = 0;
+			    att = atts[i];
+			    while (att != NULL) {
+				if (xmlStrEqual(att, fulln))
+				    break;
+				i += 2;
+				att = atts[i];
+			    }
+			}
+			if (att == NULL) {
+			    attribute(ctxt, fulln, attr->defaultValue);
+			}
+			xmlFree(fulln);
+		    }
+		}
+	    }
+	    attr = attr->nexth;
+	}
+	if (internal == 1) {
+	    elemDecl = xmlGetDtdQElementDesc(ctxt->myDoc->extSubset,
+		                             name, prefix);
+	    internal = 0;
+	    goto process_external_subset;
+	}
+    }
 }
 
 /**
@@ -944,6 +1178,8 @@ startElement(void *ctx, const xmlChar *fullname, const xmlChar **atts)
 	      "Validation failed: no DTD found !\n");
 	}
 	ctxt->validate = 0;
+	ctxt->valid = 0;
+	ctxt->errNo = XML_ERR_NO_DTD;
     }
        
 
@@ -969,6 +1205,10 @@ startElement(void *ctx, const xmlChar *fullname, const xmlChar **atts)
         parent = ctxt->myDoc->children;
     }
     ctxt->nodemem = -1;
+    if (ctxt->linenumbers) {
+	if (ctxt->input != NULL)
+	    ret->content = (void *) (long) ctxt->input->line;
+    }
 
     /*
      * We are parsing a new node.
@@ -999,7 +1239,16 @@ startElement(void *ctx, const xmlChar *fullname, const xmlChar **atts)
     }
 
     /*
-     * process all the attributes whose name start with "xml"
+     * Insert all the defaulted attributes from the DTD especially namespaces
+     */
+    if ((!ctxt->html) &&
+	((ctxt->myDoc->intSubset != NULL) ||
+	 (ctxt->myDoc->extSubset != NULL))) {
+	xmlCheckDefaultedAttributes(ctxt, name, prefix, atts);
+    }
+
+    /*
+     * process all the attributes whose name start with "xmlns"
      */
     if (atts != NULL) {
         i = 0;
@@ -1007,7 +1256,8 @@ startElement(void *ctx, const xmlChar *fullname, const xmlChar **atts)
 	value = atts[i++];
 	if (!ctxt->html) {
 	    while ((att != NULL) && (value != NULL)) {
-		if ((att[0] == 'x') && (att[1] == 'm') && (att[2] == 'l'))
+		if ((att[0] == 'x') && (att[1] == 'm') && (att[2] == 'l') &&
+		    (att[3] == 'n') && (att[4] == 's'))
 		    attribute(ctxt, att, value);
 
 		att = atts[i++];
@@ -1029,7 +1279,14 @@ startElement(void *ctx, const xmlChar *fullname, const xmlChar **atts)
 	    ctxt->sax->warning(ctxt->userData, 
 		 "Namespace prefix %s is not defined\n", prefix);
     }
-    xmlSetNs(ret, ns);
+
+    /*
+     * set the namespace node, making sure that if the default namspace
+     * is unbound on a parent we simply kee it NULL
+     */
+    if ((ns != NULL) && (ns->href != NULL) &&
+	((ns->href[0] != 0) || (ns->prefix != NULL)))
+	xmlSetNs(ret, ns);
 
     /*
      * process all the other attributes
@@ -1046,7 +1303,8 @@ startElement(void *ctx, const xmlChar *fullname, const xmlChar **atts)
 	    }
 	} else {
 	    while ((att != NULL) && (value != NULL)) {
-		if ((att[0] != 'x') || (att[1] != 'm') || (att[2] != 'l'))
+		if ((att[0] != 'x') || (att[1] != 'm') || (att[2] != 'l') ||
+		    (att[3] != 'n') || (att[4] != 's'))
 		    attribute(ctxt, att, value);
 
 		/*
@@ -1059,11 +1317,17 @@ startElement(void *ctx, const xmlChar *fullname, const xmlChar **atts)
     }
 
     /*
-     * If it's the Document root, finish the Dtd validation and
+     * If it's the Document root, finish the DTD validation and
      * check the document root element for validity
      */
     if ((ctxt->validate) && (ctxt->vctxt.finishDtd == 0)) {
-	ctxt->valid &= xmlValidateDtdFinal(&ctxt->vctxt, ctxt->myDoc);
+	int chk;
+
+	chk = xmlValidateDtdFinal(&ctxt->vctxt, ctxt->myDoc);
+	if (chk <= 0)
+	    ctxt->valid = 0;
+	if (chk < 0)
+	    ctxt->wellFormed = 0;
 	ctxt->valid &= xmlValidateRoot(&ctxt->vctxt, ctxt->myDoc);
 	ctxt->vctxt.finishDtd = 1;
     }
@@ -1155,7 +1419,6 @@ reference(void *ctx, const xmlChar *name)
  * @len: the number of xmlChar
  *
  * receiving some chars from the parser.
- * Question: how much at a time ???
  */
 void
 characters(void *ctx, const xmlChar *ch, int len)
@@ -1193,22 +1456,21 @@ characters(void *ctx, const xmlChar *ch, int len)
     if (lastChild == NULL) {
 	/* first node, first time */
 	xmlNodeAddContentLen(ctxt->node, ch, len);
-#ifndef XML_USE_BUFFER_CONTENT
 	if (ctxt->node->children != NULL) {
 	    ctxt->nodelen = len;
 	    ctxt->nodemem = len + 1;
 	}
-#endif
     } else {
-	int isText = xmlNodeIsText(lastChild);
-	if ((isText) && (ctxt->nodemem != 0)) {
-#ifndef XML_USE_BUFFER_CONTENT
+	int coalesceText = (lastChild != NULL) &&
+	    (lastChild->type == XML_TEXT_NODE) &&
+	    (lastChild->name == xmlStringText);
+	if ((coalesceText) && (ctxt->nodemem != 0)) {
 	    /*
 	     * The whole point of maintaining nodelen and nodemem,
-	     * xmlTextConcat is too costly, i.e. compute lenght,
+	     * xmlTextConcat is too costly, i.e. compute length,
 	     * reallocate a new buffer, move data, append ch. Here
 	     * We try to minimaze realloc() uses and avoid copying
-	     * and recomputing lenght over and over.
+	     * and recomputing length over and over.
 	     */
 	    if (ctxt->nodelen + len >= ctxt->nodemem) {
 		xmlChar *newbuf;
@@ -1229,10 +1491,7 @@ characters(void *ctx, const xmlChar *ch, int len)
 	    memcpy(&lastChild->content[ctxt->nodelen], ch, len);
 	    ctxt->nodelen += len;
 	    lastChild->content[ctxt->nodelen] = 0;
-#else
-	    xmlTextConcat(lastChild, ch, len);
-#endif
-	} else if (isText) {
+	} else if (coalesceText) {
 	    xmlTextConcat(lastChild, ch, len);
 	    if (ctxt->node->children != NULL) {
 		ctxt->nodelen = xmlStrlen(lastChild->content);
@@ -1242,12 +1501,10 @@ characters(void *ctx, const xmlChar *ch, int len)
 	    /* Mixed content, first time */
 	    lastChild = xmlNewTextLen(ch, len);
 	    xmlAddChild(ctxt->node, lastChild);
-#ifndef XML_USE_BUFFER_CONTENT
 	    if (ctxt->node->children != NULL) {
 		ctxt->nodelen = len;
 		ctxt->nodemem = len + 1;
 	    }
-#endif
 	}
     }
 }
@@ -1259,7 +1516,7 @@ characters(void *ctx, const xmlChar *ch, int len)
  * @len: the number of xmlChar
  *
  * receiving some ignorable whitespaces from the parser.
- * Question: how much at a time ???
+ * UNUSED: by default the DOM building will use characters
  */
 void
 ignorableWhitespace(void *ctx ATTRIBUTE_UNUSED, const xmlChar *ch ATTRIBUTE_UNUSED, int len ATTRIBUTE_UNUSED)
@@ -1555,38 +1812,53 @@ cdataBlock(void *ctx, const xmlChar *value, int len)
     }
 }
 
-/*
- * Default handler for XML, builds the DOM tree
+/**
+ * initxmlDefaultSAXHandler:
+ * @hdlr:  the SAX handler
+ * @warning:  flag if non-zero sets the handler warning procedure
+ *
+ * Initialize the default XML SAX handler
  */
-xmlSAXHandler xmlDefaultSAXHandler = {
-    internalSubset,
-    isStandalone,
-    hasInternalSubset,
-    hasExternalSubset,
-    resolveEntity,
-    getEntity,
-    entityDecl,
-    notationDecl,
-    attributeDecl,
-    elementDecl,
-    unparsedEntityDecl,
-    setDocumentLocator,
-    startDocument,
-    endDocument,
-    startElement,
-    endElement,
-    reference,
-    characters,
-    ignorableWhitespace,
-    processingInstruction,
-    comment,
-    xmlParserWarning,
-    xmlParserError,
-    xmlParserError,
-    getParameterEntity,
-    cdataBlock,
-    externalSubset,
-};
+void
+initxmlDefaultSAXHandler(xmlSAXHandler *hdlr, int warning)
+{
+    if(hdlr->initialized == 1)
+	return;
+
+    hdlr->internalSubset = internalSubset;
+    hdlr->externalSubset = externalSubset;
+    hdlr->isStandalone = isStandalone;
+    hdlr->hasInternalSubset = hasInternalSubset;
+    hdlr->hasExternalSubset = hasExternalSubset;
+    hdlr->resolveEntity = resolveEntity;
+    hdlr->getEntity = getEntity;
+    hdlr->getParameterEntity = getParameterEntity;
+    hdlr->entityDecl = entityDecl;
+    hdlr->attributeDecl = attributeDecl;
+    hdlr->elementDecl = elementDecl;
+    hdlr->notationDecl = notationDecl;
+    hdlr->unparsedEntityDecl = unparsedEntityDecl;
+    hdlr->setDocumentLocator = setDocumentLocator;
+    hdlr->startDocument = startDocument;
+    hdlr->endDocument = endDocument;
+    hdlr->startElement = startElement;
+    hdlr->endElement = endElement;
+    hdlr->reference = reference;
+    hdlr->characters = characters;
+    hdlr->cdataBlock = cdataBlock;
+    hdlr->ignorableWhitespace = characters;
+    hdlr->processingInstruction = processingInstruction;
+    hdlr->comment = comment;
+    /* if (xmlGetWarningsDefaultValue == 0) */
+    if (warning == 0)
+	hdlr->warning = NULL;
+    else
+	hdlr->warning = xmlParserWarning;
+    hdlr->error = xmlParserError;
+    hdlr->fatalError = xmlParserError;
+
+    hdlr->initialized = 1;
+}
 
 /**
  * xmlDefaultSAXHandlerInit:
@@ -1596,70 +1868,53 @@ xmlSAXHandler xmlDefaultSAXHandler = {
 void
 xmlDefaultSAXHandlerInit(void)
 {
-    xmlDefaultSAXHandler.internalSubset = internalSubset;
-    xmlDefaultSAXHandler.externalSubset = externalSubset;
-    xmlDefaultSAXHandler.isStandalone = isStandalone;
-    xmlDefaultSAXHandler.hasInternalSubset = hasInternalSubset;
-    xmlDefaultSAXHandler.hasExternalSubset = hasExternalSubset;
-    xmlDefaultSAXHandler.resolveEntity = resolveEntity;
-    xmlDefaultSAXHandler.getEntity = getEntity;
-    xmlDefaultSAXHandler.getParameterEntity = getParameterEntity;
-    xmlDefaultSAXHandler.entityDecl = entityDecl;
-    xmlDefaultSAXHandler.attributeDecl = attributeDecl;
-    xmlDefaultSAXHandler.elementDecl = elementDecl;
-    xmlDefaultSAXHandler.notationDecl = notationDecl;
-    xmlDefaultSAXHandler.unparsedEntityDecl = unparsedEntityDecl;
-    xmlDefaultSAXHandler.setDocumentLocator = setDocumentLocator;
-    xmlDefaultSAXHandler.startDocument = startDocument;
-    xmlDefaultSAXHandler.endDocument = endDocument;
-    xmlDefaultSAXHandler.startElement = startElement;
-    xmlDefaultSAXHandler.endElement = endElement;
-    xmlDefaultSAXHandler.reference = reference;
-    xmlDefaultSAXHandler.characters = characters;
-    xmlDefaultSAXHandler.cdataBlock = cdataBlock;
-    xmlDefaultSAXHandler.ignorableWhitespace = ignorableWhitespace;
-    xmlDefaultSAXHandler.processingInstruction = processingInstruction;
-    xmlDefaultSAXHandler.comment = comment;
-    if (xmlGetWarningsDefaultValue == 0)
-	xmlDefaultSAXHandler.warning = NULL;
-    else
-	xmlDefaultSAXHandler.warning = xmlParserWarning;
-    xmlDefaultSAXHandler.error = xmlParserError;
-    xmlDefaultSAXHandler.fatalError = xmlParserError;
+    initxmlDefaultSAXHandler(&xmlDefaultSAXHandler, xmlGetWarningsDefaultValue);
 }
 
-/*
- * Default handler for HTML, builds the DOM tree
+#ifdef LIBXML_HTML_ENABLED
+
+/**
+ * inithtmlDefaultSAXHandler:
+ * @hdlr:  the SAX handler
+ *
+ * Initialize the default HTML SAX handler
  */
-xmlSAXHandler htmlDefaultSAXHandler = {
-    internalSubset,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    getEntity,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    setDocumentLocator,
-    startDocument,
-    endDocument,
-    startElement,
-    endElement,
-    NULL,
-    characters,
-    ignorableWhitespace,
-    NULL,
-    comment,
-    xmlParserWarning,
-    xmlParserError,
-    xmlParserError,
-    getParameterEntity,
-    cdataBlock,
-    NULL,
-};
+void
+inithtmlDefaultSAXHandler(xmlSAXHandler *hdlr)
+{
+    if(hdlr->initialized == 1)
+	return;
+
+    hdlr->internalSubset = internalSubset;
+    hdlr->externalSubset = NULL;
+    hdlr->isStandalone = NULL;
+    hdlr->hasInternalSubset = NULL;
+    hdlr->hasExternalSubset = NULL;
+    hdlr->resolveEntity = NULL;
+    hdlr->getEntity = getEntity;
+    hdlr->getParameterEntity = NULL;
+    hdlr->entityDecl = NULL;
+    hdlr->attributeDecl = NULL;
+    hdlr->elementDecl = NULL;
+    hdlr->notationDecl = NULL;
+    hdlr->unparsedEntityDecl = NULL;
+    hdlr->setDocumentLocator = setDocumentLocator;
+    hdlr->startDocument = startDocument;
+    hdlr->endDocument = endDocument;
+    hdlr->startElement = startElement;
+    hdlr->endElement = endElement;
+    hdlr->reference = NULL;
+    hdlr->characters = characters;
+    hdlr->cdataBlock = cdataBlock;
+    hdlr->ignorableWhitespace = ignorableWhitespace;
+    hdlr->processingInstruction = NULL;
+    hdlr->comment = comment;
+    hdlr->warning = xmlParserWarning;
+    hdlr->error = xmlParserError;
+    hdlr->fatalError = xmlParserError;
+
+    hdlr->initialized = 1;
+}
 
 /**
  * htmlDefaultSAXHandlerInit:
@@ -1669,101 +1924,65 @@ xmlSAXHandler htmlDefaultSAXHandler = {
 void
 htmlDefaultSAXHandlerInit(void)
 {
-    htmlDefaultSAXHandler.internalSubset = internalSubset;
-    htmlDefaultSAXHandler.externalSubset = NULL;
-    htmlDefaultSAXHandler.isStandalone = NULL;
-    htmlDefaultSAXHandler.hasInternalSubset = NULL;
-    htmlDefaultSAXHandler.hasExternalSubset = NULL;
-    htmlDefaultSAXHandler.resolveEntity = NULL;
-    htmlDefaultSAXHandler.getEntity = getEntity;
-    htmlDefaultSAXHandler.getParameterEntity = NULL;
-    htmlDefaultSAXHandler.entityDecl = NULL;
-    htmlDefaultSAXHandler.attributeDecl = NULL;
-    htmlDefaultSAXHandler.elementDecl = NULL;
-    htmlDefaultSAXHandler.notationDecl = NULL;
-    htmlDefaultSAXHandler.unparsedEntityDecl = NULL;
-    htmlDefaultSAXHandler.setDocumentLocator = setDocumentLocator;
-    htmlDefaultSAXHandler.startDocument = startDocument;
-    htmlDefaultSAXHandler.endDocument = endDocument;
-    htmlDefaultSAXHandler.startElement = startElement;
-    htmlDefaultSAXHandler.endElement = endElement;
-    htmlDefaultSAXHandler.reference = NULL;
-    htmlDefaultSAXHandler.characters = characters;
-    htmlDefaultSAXHandler.cdataBlock = cdataBlock;
-    htmlDefaultSAXHandler.ignorableWhitespace = ignorableWhitespace;
-    htmlDefaultSAXHandler.processingInstruction = NULL;
-    htmlDefaultSAXHandler.comment = comment;
-    htmlDefaultSAXHandler.warning = xmlParserWarning;
-    htmlDefaultSAXHandler.error = xmlParserError;
-    htmlDefaultSAXHandler.fatalError = xmlParserError;
+	inithtmlDefaultSAXHandler(&htmlDefaultSAXHandler);
 }
 
-/*
- * Default handler for HTML, builds the DOM tree
- */
-xmlSAXHandler sgmlDefaultSAXHandler = {
-    internalSubset,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    getEntity,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    setDocumentLocator,
-    startDocument,
-    endDocument,
-    startElement,
-    endElement,
-    NULL,
-    characters,
-    ignorableWhitespace,
-    NULL,
-    comment,
-    xmlParserWarning,
-    xmlParserError,
-    xmlParserError,
-    getParameterEntity,
-    NULL,
-    NULL,
-};
+#endif /* LIBXML_HTML_ENABLED */
+
+#ifdef LIBXML_DOCB_ENABLED
 
 /**
- * sgmlDefaultSAXHandlerInit:
+ * initdocbDefaultSAXHandler:
+ * @hdlr:  the SAX handler
+ *
+ * Initialize the default DocBook SAX handler
+ */
+void
+initdocbDefaultSAXHandler(xmlSAXHandler *hdlr)
+{
+    if(hdlr->initialized == 1)
+	return;
+
+    hdlr->internalSubset = internalSubset;
+    hdlr->externalSubset = NULL;
+    hdlr->isStandalone = isStandalone;
+    hdlr->hasInternalSubset = hasInternalSubset;
+    hdlr->hasExternalSubset = hasExternalSubset;
+    hdlr->resolveEntity = resolveEntity;
+    hdlr->getEntity = getEntity;
+    hdlr->getParameterEntity = NULL;
+    hdlr->entityDecl = entityDecl;
+    hdlr->attributeDecl = NULL;
+    hdlr->elementDecl = NULL;
+    hdlr->notationDecl = NULL;
+    hdlr->unparsedEntityDecl = NULL;
+    hdlr->setDocumentLocator = setDocumentLocator;
+    hdlr->startDocument = startDocument;
+    hdlr->endDocument = endDocument;
+    hdlr->startElement = startElement;
+    hdlr->endElement = endElement;
+    hdlr->reference = reference;
+    hdlr->characters = characters;
+    hdlr->cdataBlock = NULL;
+    hdlr->ignorableWhitespace = ignorableWhitespace;
+    hdlr->processingInstruction = NULL;
+    hdlr->comment = comment;
+    hdlr->warning = xmlParserWarning;
+    hdlr->error = xmlParserError;
+    hdlr->fatalError = xmlParserError;
+
+    hdlr->initialized = 1;
+}
+
+/**
+ * docbDefaultSAXHandlerInit:
  *
  * Initialize the default SAX handler
  */
 void
-sgmlDefaultSAXHandlerInit(void)
+docbDefaultSAXHandlerInit(void)
 {
-    sgmlDefaultSAXHandler.internalSubset = internalSubset;
-    sgmlDefaultSAXHandler.externalSubset = NULL;
-    sgmlDefaultSAXHandler.isStandalone = NULL;
-    sgmlDefaultSAXHandler.hasInternalSubset = NULL;
-    sgmlDefaultSAXHandler.hasExternalSubset = NULL;
-    sgmlDefaultSAXHandler.resolveEntity = NULL;
-    sgmlDefaultSAXHandler.getEntity = getEntity;
-    sgmlDefaultSAXHandler.getParameterEntity = NULL;
-    sgmlDefaultSAXHandler.entityDecl = NULL;
-    sgmlDefaultSAXHandler.attributeDecl = NULL;
-    sgmlDefaultSAXHandler.elementDecl = NULL;
-    sgmlDefaultSAXHandler.notationDecl = NULL;
-    sgmlDefaultSAXHandler.unparsedEntityDecl = NULL;
-    sgmlDefaultSAXHandler.setDocumentLocator = setDocumentLocator;
-    sgmlDefaultSAXHandler.startDocument = startDocument;
-    sgmlDefaultSAXHandler.endDocument = endDocument;
-    sgmlDefaultSAXHandler.startElement = startElement;
-    sgmlDefaultSAXHandler.endElement = endElement;
-    sgmlDefaultSAXHandler.reference = NULL;
-    sgmlDefaultSAXHandler.characters = characters;
-    sgmlDefaultSAXHandler.cdataBlock = NULL;
-    sgmlDefaultSAXHandler.ignorableWhitespace = ignorableWhitespace;
-    sgmlDefaultSAXHandler.processingInstruction = NULL;
-    sgmlDefaultSAXHandler.comment = comment;
-    sgmlDefaultSAXHandler.warning = xmlParserWarning;
-    sgmlDefaultSAXHandler.error = xmlParserError;
-    sgmlDefaultSAXHandler.fatalError = xmlParserError;
+    initdocbDefaultSAXHandler(&docbDefaultSAXHandler);
 }
+
+#endif /* LIBXML_DOCB_ENABLED */
