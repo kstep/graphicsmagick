@@ -437,7 +437,7 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
   struct PackageInfo
     *cloned_info;
 
-  cloned_info=(struct PackageInfo *) safemalloc(sizeof(struct PackageInfo));
+  cloned_info=(struct PackageInfo *) AllocateMemory(sizeof(struct PackageInfo));
   if (!info)
     {
       (void) SetClientName(client_name);
@@ -601,7 +601,7 @@ static void DestroyPackageInfo(struct PackageInfo *info)
 {
   DestroyImageInfo(info->image_info);
   DestroyQuantizeInfo(info->quantize_info);
-  safefree((char *) info);
+  FreeMemory((void **) &info);
 }
 
 /*
@@ -768,11 +768,11 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
             {
               *last+=256;
               if (*reference_vector)
-                *reference_vector=(SV **) saferealloc((char *)
-                  *reference_vector,*last*sizeof(*reference_vector));
+                *reference_vector=(SV **) ReallocateMemory(*reference_vector,
+                  *last*sizeof(*reference_vector));
               else
                 *reference_vector=(SV **)
-                  safemalloc(*last*sizeof(*reference_vector));
+                  AllocateMemory(*last*sizeof(*reference_vector));
             }
         (*reference_vector)[*current]=reference;
         (*reference_vector)[++(*current)]=NULL;
@@ -2136,8 +2136,8 @@ BlobToImage(ref,...)
     number_images=0;
     error_list=newSVpv("",0);
     ac=(items < 2) ? 1 : items-1;
-    list=(char **) safemalloc((ac+1)*sizeof(*list));
-    length=(STRLEN *) safemalloc((ac+1)*sizeof(length));
+    list=(char **) AllocateMemory((ac+1)*sizeof(*list));
+    length=(STRLEN *) AllocateMemory((ac+1)*sizeof(length));
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
@@ -2195,12 +2195,12 @@ BlobToImage(ref,...)
         for (p=keep; list[i] != *p++; )
           if (*p == NULL)
             {
-              free(list[i]);
+              FreeMemory((void **) &list[i]);
               break;
             }
 
   ReturnIt:
-    safefree((char *) list);
+    FreeMemory((void **) &list);
     sv_setiv(error_list,(IV) number_images);
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -4735,13 +4735,13 @@ Mogrify(ref,...)
             break;
           av=(AV*) argument_list[0].array_reference;
           order=sqrt(av_len(av)+1);
-          kernel=(double *) safemalloc(order*order*sizeof(double));
+          kernel=(double *) AllocateMemory(order*order*sizeof(double));
           for (j=0; j < (av_len(av)+1); j++)
             kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
           for ( ; j < (order*order); j++)
             kernel[j]=0.0;
           image=ConvolveImage(image,order,kernel,&exception);
-          safefree(kernel);
+          FreeMemory((void **) &kernel);
           break;
         }
       }
@@ -4783,7 +4783,7 @@ Mogrify(ref,...)
 
   ReturnIt:
     if (reference_vector)
-      safefree((char *) reference_vector);
+      FreeMemory((void **) &reference_vector);
     sv_setiv(error_list,(IV) number_images);
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -5612,7 +5612,7 @@ Read(ref,...)
     number_images=0;
     error_list=newSVpv("",0);
     ac=(items < 2) ? 1 : items-1;
-    list=(char **) safemalloc((ac+1)*sizeof(*list));
+    list=(char **) AllocateMemory((ac+1)*sizeof(*list));
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
@@ -5678,12 +5678,12 @@ Read(ref,...)
         for (p=keep; list[i] != *p++; )
           if (*p == NULL)
             {
-              free(list[i]);
+              FreeMemory((void **) &list[i]);
               break;
             }
 
   ReturnIt:
-    safefree((char *) list);
+    FreeMemory((void **) &list);
     sv_setiv(error_list,(IV) number_images);
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
