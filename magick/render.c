@@ -5402,6 +5402,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     dot_product,
     mid,
     miterlimit;
+
   LineSegment
     dx,
     dy,

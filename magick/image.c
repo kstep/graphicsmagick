@@ -2654,14 +2654,16 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   double
     distance,
     maximum_error_per_pixel,
-    normalize,
-    total_error;
+    normalize;
 
   DoublePixelPacket
     pixel;
 
   long
     y;
+
+  long double
+    total_error;
 
   register const PixelPacket
     *p,

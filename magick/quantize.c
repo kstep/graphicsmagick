@@ -210,7 +210,9 @@ typedef struct _NodeInfo
     *child[8];
 
   double
-    number_unique,
+    number_unique;
+
+  long double
     total_red,
     total_green,
     total_blue,
@@ -1361,8 +1363,7 @@ MagickExport unsigned int GetImageQuantizeError(Image *image)
   double
     distance,
     maximum_error_per_pixel,
-    normalize,
-    total_error;
+    normalize;
 
   DoublePixelPacket
     pixel;
@@ -1372,6 +1373,9 @@ MagickExport unsigned int GetImageQuantizeError(Image *image)
 
   long
     y;
+
+  long double
+    total_error;
 
   register const PixelPacket
     *p;
