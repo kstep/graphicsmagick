@@ -2787,6 +2787,31 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
         q+=Extent(clone_info->zero);
         break;
       }
+      case '[':
+      {
+        char
+          c,
+          *attr;
+
+        attr=strchr(p,']');
+        if (attr)
+          {
+            ImageAttribute
+              *attribute;
+
+            c=*attr;
+            *attr='\0';
+            attribute=GetImageAttribute(image,&p[1]);
+            if (attribute != (ImageAttribute *) NULL)
+              {
+                (void) strcpy(q,attribute->value);
+                q+=Extent(attribute->value);
+              }
+            *attr=c;
+            p=attr;
+          }
+        break;
+      }
       case '%':
       {
         *q++=(*p);
