@@ -236,18 +236,26 @@ static unsigned long TypeScore(const TypeInfo *type_info,const StyleType style,
     score;
 
   score=0;
-  if (type_info->style == style)
+  if ((style == AnyStyle) || (type_info->style == style))
     score=32;
   else
     if (((style == ItalicStyle) || (style == ObliqueStyle)) &&
         ((type_info->style == ItalicStyle) ||
          (type_info->style == ObliqueStyle)))
       score=25;
-  score+=(16*(800-((long) Max(Min(weight,900),type_info->weight)-
-    (long) Min(Min(weight,900),type_info->weight))))/800;
-  range=(long) UltraExpandedStretch-(long) NormalStretch;
-  score+=(8*(range-((long) Max(stretch,type_info->stretch)-
-    (long) Min(stretch,type_info->stretch))))/range;
+  if(weight == 0)
+    score+=16;
+  else
+    score+=(16*(800-((long) Max(Min(weight,900),type_info->weight)-
+		     (long) Min(Min(weight,900),type_info->weight))))/800;
+  if(stretch == AnyStretch)
+    score+=8;
+  else
+  {
+    range=(long) UltraExpandedStretch-(long) NormalStretch;
+    score+=(8*(range-((long) Max(stretch,type_info->stretch)-
+		      (long) Min(stretch,type_info->stretch))))/range;
+  }
   return(score);
 }
 
@@ -269,6 +277,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     fontmap[] =
     {
       { "arial", "helvetica" }, { "fixed", "courier" },
+      { "helvetica","arial"},
       { "modern","courier" }, { "monotype corsiva", "courier" },
       { "news gothic", "helvetica" }, { "system", "courier" },
       { "terminal", "courier" }, { "wingdings", "symbol" },
@@ -292,8 +301,10 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
   {
     if ((p->family == (char *) NULL) ||
-        ((LocaleCompare(p->family,family) != 0)) || (p->style != style) ||
-        (p->stretch != stretch) || (p->weight != weight))
+        ((LocaleCompare(p->family,family) != 0)) ||
+        ((style != AnyStyle) && (p->style != style)) ||
+        ((stretch != AnyStretch) && (p->stretch != stretch)) ||
+        ((weight != 0) && (p->weight != weight)))
       continue;
     return(p);
   }
