@@ -427,7 +427,7 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
   */
   image->depth=QuantumDepth;
   packet_size=image->depth > 8 ? 6 : 3;
-  if (image->matte)
+  if (image->matte || (Latin1Compare(image_info->magick,"RGBA") == 0))
     packet_size=image->depth > 8 ? 8 : 4;
   pixels=(unsigned char *)
     AllocateMemory(packet_size*image->columns*sizeof(PixelPacket));
@@ -467,12 +467,12 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           if (Latin1Compare(image_info->magick,"RGBA") != 0)
             {
               WritePixelCache(image,RGBQuantum,pixels);
-              (void) WriteBlob(image,3*image->columns,pixels);
+              (void) WriteBlob(image,packet_size*image->columns,pixels);
             }
           else
             {
               WritePixelCache(image,RGBAQuantum,pixels);
-              (void) WriteBlob(image,4*image->columns,pixels);
+              (void) WriteBlob(image,packet_size*image->columns,pixels);
             }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))

@@ -530,13 +530,11 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register unsigned char
-    *q;
-
   unsigned char
     *pixels;
 
   unsigned int
+    packet_size,
     status;
 
   /*
@@ -549,9 +547,10 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate image memory.
   */
+  packet_size=image->depth > 8 ? 2 : 1;
   fits_header=(char *) AllocateMemory(2880*sizeof(unsigned char));
   pixels=(unsigned char *)
-    AllocateMemory(image->columns*sizeof(PixelPacket));
+    AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
   if ((fits_header == (char *) NULL) || (pixels == (unsigned char *) NULL))
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -561,7 +560,7 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     fits_header[i]=' ';
   (void) strcpy(buffer,"SIMPLE  =                    T");
   (void) strncpy(fits_header+0,buffer,Extent(buffer));
-  (void) strcpy(buffer,"BITPIX  =                    8");
+  FormatString(buffer,"BITPIX  =                    %d",image->depth);
   (void) strncpy(fits_header+80,buffer,Extent(buffer));
   (void) strcpy(buffer,"NAXIS   =                    2");
   (void) strncpy(fits_header+160,buffer,Extent(buffer));
@@ -587,13 +586,8 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     p=GetPixelCache(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    q=pixels;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      *q++=DownScale(Intensity(*p));
-      p++;
-    }
-    (void) WriteBlob(image,q-pixels,pixels);
+    WritePixelCache(image,GrayQuantum,pixels);
+    (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
   }

@@ -954,47 +954,7 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         *q++=image->indexes[x] >> 8;
-        *q++=image->indexes[x] & 0xff;
-      }
-      break;
-    }
-    case GrayQuantum:
-    {
-      if (image->depth <= 8)
-        {
-          if (destination == (unsigned char *) NULL)
-            {
-              for (x=0; x < (int) image->columns; x++)
-              {
-                (void) WriteByte(image,Intensity(*p));
-                p++;
-              }
-              break;
-            }
-          for (x=0; x < (int) image->columns; x++)
-          {
-            *q++=Intensity(*p);
-            p++;
-          }
-          break;
-        }
-      if (destination == (unsigned char *) NULL)
-        {
-          for (x=0; x < (int) image->columns; x++)
-          {
-            if ((QuantumDepth-image->depth) > 0)
-              MSBFirstWriteShort(image,257*Intensity(*p));
-            else
-              MSBFirstWriteShort(image,Intensity(*p));
-            p++;
-          }
-          break;
-        }
-      for (x=0; x < (int) image->columns; x++)
-      {
-        *q++=Intensity(*p) >> 8;
-        *q++=Intensity(*p) & 0xff;
-        p++;
+        *q++=image->indexes[x];
       }
       break;
     }
@@ -1039,9 +999,49 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         *q++=image->indexes[x] >> 8;
-        *q++=image->indexes[x] & 0xff;
+        *q++=image->indexes[x];
         *q++=p->opacity >> 8;
-        *q++=p->opacity & 0xff;
+        *q++=p->opacity;
+        p++;
+      }
+      break;
+    }
+    case GrayQuantum:
+    {
+      if (image->depth <= 8)
+        {
+          if (destination == (unsigned char *) NULL)
+            {
+              for (x=0; x < (int) image->columns; x++)
+              {
+                (void) WriteByte(image,Intensity(*p));
+                p++;
+              }
+              break;
+            }
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q++=Intensity(*p);
+            p++;
+          }
+          break;
+        }
+      if (destination == (unsigned char *) NULL)
+        {
+          for (x=0; x < (int) image->columns; x++)
+          {
+            if ((QuantumDepth-image->depth) > 0)
+              MSBFirstWriteShort(image,257*Intensity(*p));
+            else
+              MSBFirstWriteShort(image,Intensity(*p));
+            p++;
+          }
+          break;
+        }
+      for (x=0; x < (int) image->columns; x++)
+      {
+        *q++=Intensity(*p) >> 8;
+        *q++=Intensity(*p);
         p++;
       }
       break;
@@ -1087,9 +1087,9 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         *q++=Intensity(*p) >> 8;
-        *q++=Intensity(*p) & 0xff;
+        *q++=Intensity(*p);
         *q++=p->opacity >> 8;
-        *q++=p->opacity & 0xff;
+        *q++=p->opacity;
         p++;
       }
       break;
@@ -1130,7 +1130,7 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         *q++=p->red >> 8;
-        *q++=p->red & 0xff;
+        *q++=p->red;
         p++;
       }
       break;
@@ -1171,7 +1171,7 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         *q++=p->green >> 8;
-        *q++=p->green & 0xff;
+        *q++=p->green;
         p++;
       }
       break;
@@ -1212,7 +1212,7 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         *q++=p->blue >> 8;
-        *q++=p->blue & 0xff;
+        *q++=p->blue;
         p++;
       }
       break;
@@ -1253,7 +1253,7 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         *q++=p->opacity >> 8;
-        *q++=p->opacity & 0xff;
+        *q++=p->opacity;
         p++;
       }
       break;
@@ -1306,11 +1306,11 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         *q++=p->red >> 8;
-        *q++=p->red & 0xff;
+        *q++=p->red;
         *q++=p->green >> 8;
-        *q++=p->green & 0xff;
+        *q++=p->green;
         *q++=p->blue >> 8;
-        *q++=p->blue & 0xff;
+        *q++=p->blue;
         p++;
       }
       break;
@@ -1367,13 +1367,13 @@ void WritePixelCache(Image *image,QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         *q++=p->red >> 8;
-        *q++=p->red & 0xff;
+        *q++=p->red;
         *q++=p->green >> 8;
-        *q++=p->green & 0xff;
+        *q++=p->green;
         *q++=p->blue >> 8;
-        *q++=p->blue & 0xff;
+        *q++=p->blue;
         *q++=p->opacity >> 8;
-        *q++=p->opacity & 0xff;
+        *q++=p->opacity;
         p++;
       }
       break;

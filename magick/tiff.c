@@ -507,7 +507,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     if (samples_per_pixel > 1)
       {
         method=2;
-        if ((samples_per_pixel >= 3) && (photometric == PHOTOMETRIC_RGB) &&
+        if ((samples_per_pixel == 3) && (photometric == PHOTOMETRIC_RGB) &&
             (interlace == PLANARCONFIG_CONTIG))
           method=1;
         if (image->colorspace == CMYKColorspace)
@@ -769,39 +769,10 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
                 p--;
               }
             }
-          p=scanline;
-          if (image->depth <= 8)
-            for (x=0; x < (int) image->columns; x++)
-            {
-              q->red=(*p++);
-              q->green=(*p++);
-              q->blue=(*p++);
-              if (samples_per_pixel > 3)
-                q->opacity=(*p++);
-              for (i=4; i < samples_per_pixel; i++)
-                sans=(*p++);
-              q++;
-            }
+          if (!image->matte)
+            ReadPixelCache(image,RGBQuantum,scanline);
           else
-            {
-              q->red=(*p++ << 8);
-              q->red|=(*p++);
-              q->green=(*p++ << 8);
-              q->green|=(*p++);
-              q->blue=(*p++ << 8);
-              q->blue|=(*p++);
-              if (samples_per_pixel > 3)
-                {
-                  q->opacity=(*p++ << 8);
-                  q->opacity|=(*p++);
-                }
-              for (i=4; i < samples_per_pixel; i++)
-                {
-                  sans=(*p++ << 8);
-                  sans|=(*p++);
-                }
-              q++;
-            }
+            ReadPixelCache(image,RGBAQuantum,scanline);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -1213,8 +1184,6 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
     TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
     TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
-    if (image->depth > 8)
-      TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
     compress_tag=COMPRESSION_NONE;
     if ((image_info->compression == FaxCompression) ||
         (image_info->compression == Group4Compression))
@@ -1255,6 +1224,8 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
          (image_info->colorspace == CMYKColorspace))
       {
         photometric=PHOTOMETRIC_SEPARATED;
+        if (image->depth > 8)
+          TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
         TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,4);
         TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
       }
@@ -1268,6 +1239,8 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           */
           TransformRGBImage(image,RGBColorspace);
           photometric=PHOTOMETRIC_RGB;
+          if (image->depth > 8)
+            TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
           TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,(image->matte ? 4 : 3));
           if (image->matte)
             {
@@ -1290,6 +1263,8 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             Colormapped TIFF raster.
           */
           TransformRGBImage(image,RGBColorspace);
+          if (image->colors > 256)
+            TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
           TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
           photometric=PHOTOMETRIC_PALETTE;
           if (image->colors <= 2)
