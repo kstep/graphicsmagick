@@ -14,8 +14,13 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                     Bob Friesenhahn & Francis J. Franklin                   %
-%                            Dec 2000 - Oct 2001                              %
+%                              Bob Friesenhahn                                %
+%                            Dec 2000 - May 2001                              %
+%                            Oct 2001 - Dec 2001                              %
+%                                                                             %
+%                           Port to libwmf 0.2 API                            %
+%                            Francis J. Franklin                              %
+%                            May 2001 - Oct 2001                              %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
