@@ -2174,6 +2174,20 @@ void Magick::Image::density ( const Geometry &density_ )
 }
 Magick::Geometry Magick::Image::density ( void ) const
 {
+  if (isValid())
+    {
+      unsigned int x_resolution=72;
+      unsigned int y_resolution=72;
+
+      if (constImage()->x_resolution > 0.0)
+        x_resolution=static_cast<unsigned int>(constImage()->x_resolution + 0.5);
+
+      if (constImage()->y_resolution > 0.0)
+        y_resolution=static_cast<unsigned int>(constImage()->y_resolution + 0.5);
+
+      return Geometry(x_resolution,y_resolution);
+    }
+
   return constOptions()->density( );
 }
 

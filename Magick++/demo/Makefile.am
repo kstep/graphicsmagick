@@ -44,6 +44,6 @@ check:
 	-env SRCDIR=$(SRCDIR) ./shapes
 	-for filter in $(ZOOM_FILTERS) ; do  \
 	  echo "$$filter ..." ; \
-	  env SRCDIR=$(SRCDIR) ./zoom $$filter $(ZOOM_GEOMETRY) '$(srcdir)/model.miff' zoom_$${filter}_out.miff ; \
+	  env SRCDIR=$(SRCDIR) ./zoom -filter $$filter -geometry $(ZOOM_GEOMETRY) '$(srcdir)/model.miff' zoom_$${filter}_out.miff ; \
 	done
 

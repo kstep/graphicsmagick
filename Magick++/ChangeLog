@@ -1,3 +1,11 @@
+2003-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* demo/zoom.cpp: Added a command-line parser for dash
+	arguments as well as an image "resample" capability.
+
+	* lib/Image.cpp (density): Obtain density from Image
+	rather than ImageInfo if the Image is valid.
+
 2003-03-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Makefile.am : Added rules to install GraphicsMagick++.pc.

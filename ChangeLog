@@ -1,3 +1,8 @@
+2003-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Magick++/demo/zoom.cpp: Added dashed option support, including
+	a -resample option for image resampling.
+
 2003-03-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am (DIST_SUBDIRS): Filters subdirectory needs to
