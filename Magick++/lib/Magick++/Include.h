@@ -326,6 +326,26 @@ namespace Magick
   using MagickLib::FloatPixel;
   using MagickLib::DoublePixel;
 
+  // StretchType type
+  using MagickLib::StretchType;
+  using MagickLib::NormalStretch;
+  using MagickLib::UltraCondensedStretch;
+  using MagickLib::ExtraCondensedStretch;
+  using MagickLib::CondensedStretch;
+  using MagickLib::SemiCondensedStretch;
+  using MagickLib::SemiExpandedStretch;
+  using MagickLib::ExpandedStretch;
+  using MagickLib::ExtraExpandedStretch;
+  using MagickLib::UltraExpandedStretch;
+  using MagickLib::AnyStretch;
+
+  // StyleType type
+  using MagickLib::StyleType;
+  using MagickLib::NormalStyle;
+  using MagickLib::ItalicStyle;
+  using MagickLib::ObliqueStyle;
+  using MagickLib::AnyStyle;
+
   // Decoration types
   using MagickLib::DecorationType;
   using MagickLib::NoDecoration;

@@ -1,3 +1,9 @@
+2002-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableFont): Support specifying a font via
+ 	font-family, font-style, font-weight, and font-stretch. Wildcard
+ 	matches are supported.
+
 2002-02-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (charcoal): Replace Magick++'s charcoal effect

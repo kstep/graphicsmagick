@@ -245,15 +245,87 @@ void Magick::DrawableFillOpacity::print (std::ostream& stream_) const
 // Specify text font
 void Magick::DrawableFont::print (std::ostream& stream_) const
 {
-  stream_ << "font '";
-
-  for ( unsigned int i = 0; i < _font.length(); ++i )
+  // font
+  if(_font.length())
     {
-      if ( _font[i] == '\'' )
-	stream_ << "\\";
-      stream_ << _font[i];
+      stream_ << "font '";
+      for ( unsigned int i = 0; i < _font.length(); ++i )
+        {
+          if ( _font[i] == '\'' )
+            stream_ << "\\";
+          stream_ << _font[i];
+        }
+      stream_  << "'";
     }
-  stream_  << "'";
+
+  // font-family
+  if(_family.length())
+    {
+      stream_ << "font-family '";
+      for ( unsigned int i = 0; i < _family.length(); ++i )
+        {
+          if ( _family[i] == '\'' )
+            stream_ << "\\";
+          stream_ << _family[i];
+        }
+      stream_  << "'" << endl;
+
+      // font-style
+      stream_ << "font-style '";
+      switch(_style)
+        {
+        case NormalStyle:
+          stream_ << "normal";
+        case ItalicStyle:
+          stream_ <<  "italic";
+        case ObliqueStyle:
+          stream_ <<  "oblique";
+        case AnyStyle:
+        default:
+          {
+            stream_ << "all";
+          }
+        }
+      stream_ << "'" << endl;
+
+      // font-weight
+      stream_ << "font-weight '";
+      if(_weight)
+        stream_ << _weight;
+      else
+        stream_ << "all";
+      stream_ << "'" << endl;
+
+      // font-stretch
+      stream_ << "font-stretch '";
+      switch(_stretch)
+        {
+        case NormalStretch:
+          stream_ << "normal";
+        case UltraCondensedStretch:
+          stream_ << "ultra-condensed";
+        case ExtraCondensedStretch:
+          stream_ << "extra-condensed";
+        case CondensedStretch:
+          stream_ << "condensed";
+        case SemiCondensedStretch:
+          stream_ << "semi-condensed";
+        case SemiExpandedStretch:
+          stream_ << "semi-expanded";
+        case ExpandedStretch:
+          stream_ << "expanded";
+        case ExtraExpandedStretch:
+          stream_ << "extra-expanded";
+        case UltraExpandedStretch:
+          stream_ << "ultra-expanded";
+        case AnyStretch:
+        default:
+          {
+            stream_ << "all";
+          }
+        }
+      stream_ << "'";
+    }
 }
 
 // Specify text positioning gravity

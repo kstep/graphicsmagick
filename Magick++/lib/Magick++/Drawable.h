@@ -872,6 +872,17 @@ public:
     : _font(font_)
     {
     }
+  DrawableFont ( const std::string &family_,
+                 StyleType style_,
+                 const unsigned long weight_,
+                 StretchType stretch_ )
+    : _font(),
+      _family(family_),
+      _style(style_),
+      _weight(weight_),
+      _stretch(stretch_)
+    {
+    }
 
   // Support a polymorphic print-to-stream operator
   /*virtual*/ void print (std::ostream& stream_) const;
@@ -893,7 +904,11 @@ public:
     }
 
 private:
-  std::string _font;
+  std::string   _font;
+  std::string   _family;
+  StyleType     _style;
+  unsigned long _weight;
+  StretchType   _stretch;
 };
 
 // Specify text positioning gravity

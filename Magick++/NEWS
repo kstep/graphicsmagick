@@ -4,6 +4,9 @@ Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
 (5.4.3)
+  * Support selecting fonts via font-family, font-style, font-weight,
+    and font-stretch via the DrawableFont class.
+  * CoderInfo API change.  MatchType is scoped to CoderInfo class.
   * Bugfix for Magick::Exception memory leak.
   * Bugfix for DrawableGravity class (had stopped working).
   * Bugfix for Image antiAlias() method (wasn't working).

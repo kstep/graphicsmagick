@@ -301,7 +301,8 @@ const Image &amp;image_</font></td>
 
 <tr NOSAVE>
 <td><font size=-1>double x_, double y_, double width_, double height_,
-const std::string &amp;filename_, CompositeOperator composition_</font></td>
+const std::string &amp;filename_, <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
+composition_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Composite current image with contents
 of specified image, rendered with specified width and height, using specified
@@ -316,7 +317,8 @@ composited at its natural size, without enlargement or reduction.</font></td>
 
 <tr>
 <td><font size=-1>double x_, double y_, double width_, double height_,
-const Image &amp;image_, CompositeOperator composition_</font></td>
+const Image &amp;image_, <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
+composition_</font></td>
 </tr>
 
 <tr>
@@ -324,9 +326,10 @@ const Image &amp;image_, CompositeOperator composition_</font></td>
 <center><a NAME="DrawableTextDecoration"></a><font size=-1>DrawableTextDecoration</font></center>
 </td>
 
-<td><font size=-1>DecorationType decoration_</font></td>
+<td><font size=-1><a href="Enumerations.html#DecorationType">DecorationType</a>
+decoration_</font></td>
 
-<td><font size=-1>Set decoration to apply to text.</font></td>
+<td><font size=-1>Specify decoration to apply to text.</font></td>
 </tr>
 
 <tr>
@@ -376,9 +379,9 @@ is filled.</font></td>
 <center><a NAME="DrawableFillColor"></a><font size=-1>DrawableFillColor</font></center>
 </td>
 
-<td><font size=-1>const Magick::Color &amp;color_</font></td>
+<td><font size=-1>const <a href="Color.html">Color</a> &amp;color_</font></td>
 
-<td><font size=-1>Set drawing object fill color.</font></td>
+<td><font size=-1>Specify drawing object fill color.</font></td>
 </tr>
 
 <tr>
@@ -401,17 +404,32 @@ property for usage details.</font></td>
 
 <td><font size=-1>double opacity_</font></td>
 
-<td><font size=-1>Set opacity to use when drawing using fill color.</font></td>
+<td><font size=-1>Specify opacity to use when drawing using fill color.</font></td>
 </tr>
 
-<tr>
-<td>
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="DrawableFont"></a><font size=-1>DrawableFont</font></center>
 </td>
 
 <td><font size=-1>const std::string &amp;font_</font></td>
 
-<td><font size=-1>Set font to use when drawing text.</font></td>
+<td><font size=-1>Specify font name to use when drawing text.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::string &amp;family_,</font>
+<br><font size=-1><a href="Enumerations.html#StyleType">StyleType</a> style_,</font>
+<br><font size=-1>unsigned long weight_,</font>
+<br><font size=-1><a href="Enumerations.html#StretchType">StretchType</a>
+stretch_</font></td>
+
+<td><font size=-1>Specify font family, style, weight (one of the set {
+100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 } with 400 being the
+normal size), and stretch to be used to select the font used when drawing
+text. Wildcard matches may be applied to style via the AnyStyle enumeration,
+applied to weight if weight is zero, and applied to stretch via the AnyStretch
+enumeration.</font></td>
 </tr>
 
 <tr>
@@ -419,9 +437,10 @@ property for usage details.</font></td>
 <center><a NAME="DrawableGravity"></a><font size=-1>DrawableGravity</font></center>
 </td>
 
-<td><font size=-1>GravityType gravity_</font></td>
+<td><font size=-1><a href="Enumerations.html#GravityType">GravityType</a>
+gravity_</font></td>
 
-<td><font size=-1>Set text positioning gravity.</font></td>
+<td><font size=-1>Specify text positioning gravity.</font></td>
 </tr>
 
 <tr>
@@ -661,7 +680,7 @@ specified, then the object is filled.</font></td>
 <center><a NAME="DrawableStrokeColor"></a><font size=-1>DrawableStrokeColor</font></center>
 </td>
 
-<td><font size=-1>const Color &amp;color_</font></td>
+<td><font size=-1>const <a href="Color.html">Color</a> &amp;color_</font></td>
 
 <td><font size=-1>Set color to use when drawing lines or object outlines.</font></td>
 </tr>
@@ -671,7 +690,7 @@ specified, then the object is filled.</font></td>
 <center><a NAME="DrawableStrokeLineCap"></a><font size=-1>DrawableStrokeLineCap</font></center>
 </td>
 
-<td><font size=-1>LineCap linecap_</font></td>
+<td><font size=-1><a href="Enumerations.html#LineCap">LineCap</a> linecap_</font></td>
 
 <td><font size=-1>Specify the shape to be used at the end of open subpaths
 when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap,
@@ -683,7 +702,7 @@ and SquareCap.</font></td>
 <center><a NAME="DrawableStrokeLineJoin"></a><font size=-1>DrawableStrokeLineJoin</font></center>
 </td>
 
-<td><font size=-1>Linejoin linejoin_</font></td>
+<td><font size=-1><a href="Enumerations.html#LineJoin">LineJoin</a> linejoin_</font></td>
 
 <td><font size=-1>Specify the shape to be used at the corners of paths
 (or other vector shapes) when they are stroked. Values of LineJoin are
@@ -795,13 +814,13 @@ the first command) represent the start of a new subpath:
 <td><font size=-1>const Magick::Coordinate &amp;coordinate_</font></td>
 
 <td ROWSPAN="4"><font size=-1>Start a new sub-path at the given coordinate.
-
-<i>PathMovetoAbs</i> indicates that absolute coordinates will follow;
-<i>PathMovetoRel</i> indicates that relative coordinates will follow. If
-a relative moveto appears as the first element of the path, then it is
-treated as a pair of absolute coordinates. If a moveto is followed by multiple
-pairs of coordinates, the subsequent pairs are treated as implicit lineto
-commands.</font></td>
+<i>PathMovetoAbs</i>
+indicates that absolute coordinates will follow;
+<i>PathMovetoRel</i> indicates
+that relative coordinates will follow. If a relative moveto appears as
+the first element of the path, then it is treated as a pair of absolute
+coordinates. If a moveto is followed by multiple pairs of coordinates,
+the subsequent pairs are treated as implicit lineto commands.</font></td>
 </tr>
 
 <tr>
