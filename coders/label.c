@@ -140,7 +140,7 @@ static char *EscapeParenthesis(const char *text)
 }
 
 #if defined(HasTTF)
-#if FREETYPE_MAJOR == 1
+#if !defined(FREETYPE_MAJOR)
 static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   Image *image)
 {
