@@ -1,3 +1,8 @@
+2002-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp, Magick++/Include.h: Use DestroyImageList() rather
+ 	than DestroyImages().
+
 2002-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Options.h (antiAlias): Bugfix, set

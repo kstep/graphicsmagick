@@ -376,7 +376,7 @@ namespace Magick
   using MagickLib::DestroyDrawInfo;
   using MagickLib::DestroyImage;
   using MagickLib::DestroyImageInfo;
-  using MagickLib::DestroyImages;
+  using MagickLib::DestroyImageList;
   using MagickLib::DestroyMagick;
   using MagickLib::DestroyQuantizeInfo;
   using MagickLib::DispatchImage;

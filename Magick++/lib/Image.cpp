@@ -1151,7 +1151,7 @@ void Magick::Image::read ( const std::string &imageSpec_ )
             FlattenImages( image, &exceptionInfo );
           if ( flattened_image )
             {
-              DestroyImages( image );
+              DestroyImageList( image );
               image = flattened_image;
             }
         }
@@ -1163,7 +1163,7 @@ void Magick::Image::read ( const std::string &imageSpec_ )
           image->next = 0;
           image->orphan = true;
           next->previous = 0;
-          DestroyImages( next );
+          DestroyImageList( next );
         }
     }
   replaceImage( image );
@@ -3195,7 +3195,7 @@ MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
     {
       // We own the image, just replace it
       if ( _imgRef->_image )
-        DestroyImages( _imgRef->_image );
+        DestroyImageList( _imgRef->_image );
       if( replacement_ )
         _imgRef->image(replacement_);
       else
@@ -3352,7 +3352,7 @@ Magick::ImageRef::~ImageRef( void )
   // Deallocate image
   if ( _image )
     {
-      DestroyImages( _image );
+      DestroyImageList( _image );
       _image = 0;
     }
 
