@@ -366,17 +366,18 @@ MagickExport long GetImageIndexInList(const Image *images)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e L i s t S i z e                                           %
+%   G e t I m a g e L i s t L e n g t h                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageListSize() returns the number of images in the list.
+%  GetImageListLength() returns the length of the list (the number of images in
+%  the list).
 %
-%  The format of the GetImageListSize method is:
+%  The format of the GetImageListLength method is:
 %
-%      unsigned long GetImageListSize(const Image *images)
+%      unsigned long GetImageListLength(const Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -384,7 +385,7 @@ MagickExport long GetImageIndexInList(const Image *images)
 %
 %
 */
-MagickExport unsigned long GetImageListSize(const Image *images)
+MagickExport unsigned long GetImageListLength(const Image *images)
 {
   register long
     i;
@@ -511,14 +512,14 @@ MagickExport Image **ImageListToArray(const Image *images,
   if (images == (Image *) NULL)
     return((Image **) NULL);
   assert(images->signature == MagickSignature);
-  group=(Image **) AcquireMemory(GetImageListSize(images)*sizeof(Image *));
+  group=(Image **) AcquireMemory(GetImageListLength(images)*sizeof(Image *));
   if (group == (Image **) NULL)
     {
       ThrowException(exception,ResourceLimitError,"Memory allocation failed",
         "UnableToCreateImageGroup");
       return((Image **) NULL);
     }
-  for (i=0; i < (long) GetImageListSize(images); i++)
+  for (i=0; i < (long) GetImageListLength(images); i++)
     group[i]=GetImageFromList(images,i,exception);
   return(group);
 }
@@ -621,7 +622,7 @@ MagickExport Image *NewImageList(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PrependImageToList() adds the image to the beginning of the list.
+%  PrependImageToList() prepends the image to the beginning of the list.
 %
 %  The format of the PrependImageToList method is:
 %
@@ -672,17 +673,17 @@ MagickExport unsigned int PrependImageToList(Image **images,const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e m o v e I m a g e F r o m L i s t                                     %
+%   R e m o v e F i r s t I m a g e F r o m L i s t                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RemoveImageFromList() removes an image from the beginning of the list.
+%  RemoveFirstImageFromList() removes an image from the beginning of the list.
 %
-%  The format of the RemoveImageFromList method is:
+%  The format of the RemoveFirstImageFromList method is:
 %
-%      Image *RemoveImageFromList(Image **images)
+%      Image *RemoveFirstImageFromList(Image **images)
 %
 %  A description of each parameter follows:
 %
@@ -690,7 +691,7 @@ MagickExport unsigned int PrependImageToList(Image **images,const Image *image,
 %
 %
 */
-MagickExport Image *RemoveImageFromList(Image **images)
+MagickExport Image *RemoveFirstImageFromList(Image **images)
 {
   Image
     *image;

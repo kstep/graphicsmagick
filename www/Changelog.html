@@ -23,6 +23,17 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-11-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Modified IMdisplay so that Magick++ Images are stored by value rather
+    than via pointer.
+  * IMdisplay now uses minify(), magnify(), and zoom() methods where
+    appropriate.
+
+2002-11-04  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Quantizing a DirectClass image with less than 256 unique colors is
+    no longer lossy.
+  * Transparent TGA images had incorrect opacity values.
+
 2002-10-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Added configure test for compiler __func__ support (HAS___func__).
   * Added configure test for ftime().
@@ -75,7 +86,7 @@ ImageMagick Changes</font></font></font></b></td>
   * Updated to Automake 1.7.1.
 
 2002-10-18  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-  * PingBlob() improperly set the length memory of BlobInfo to zero.
+  * PingBlob() improperly set the length of BlobInfo to zero.
   * Fixed Ping() memory leak in PerlMagick.
   * Fixed -map problem in convert/mogrify utilities.
   * Fixed -remote problem with display utility (returns correct error

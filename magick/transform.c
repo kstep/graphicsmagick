@@ -531,7 +531,7 @@ MagickExport Image *DeconstructImages(const Image *image,
     Allocate memory.
   */
   bounds=(RectangleInfo *)
-    AcquireMemory(GetImageListSize(image)*sizeof(RectangleInfo));
+    AcquireMemory(GetImageListLength(image)*sizeof(RectangleInfo));
   if (bounds == (RectangleInfo *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToDeconstructImageSequence");
@@ -973,7 +973,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   {
     (void) CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
       next->page.y);
-    status=MagickMonitor(MosaicImageText,scene++,GetImageListSize(image),
+    status=MagickMonitor(MosaicImageText,scene++,GetImageListLength(image),
       exception);
     if (status == False)
       break;

@@ -30,7 +30,7 @@
 		<li><a href="#insertimageinlist">InsertImageInList</a></li>
 		<li><a href="#newimagelist">NewImageList</a></li>
 		<li><a href="#prependimagetolist">PrependImageToList</a></li>
-		<li><a href="#removeimagefromlist">RemoveImageFromList</a></li>
+		<li><a href="#removefirstimagefromlist">RemoveFirstImageFromList</a></li>
 		<li><a href="#removelastimagefromlist">RemoveLastImageFromList</a></li>
 		<li><a href="#reverseimagelist">ReverseImageList</a></li>
 		<li><a href="#spliceimageintolist">SpliceImageIntoList</a></li>
@@ -54,14 +54,13 @@
 <p>void  <strong>DestroyImageList</strong>( Image *image );</p>
 <p>Image * <strong>GetImageFromList</strong>( const Image *images, const long offset, ExceptionInfo *exception );</p>
 <p>long  <strong>GetImageIndexInList</strong>( const Image *images );</p>
-<p>unsigned long  <strong>GetImageListSize</strong>( const Image *images );</p>
 <p>Image * <strong>GetNextImageInList</strong>( const Image *images );</p>
 <p>Image * <strong>GetPreviousImageInList</strong>( const Image *images );</p>
 <p>Image **  <strong>ImageListToArray</strong>( const Image *images, ExceptionInfo *exception );</p>
 <p>unsigned int  <strong>InsertImageInList</strong>( Image *images, const Image *image, const long offset, ExceptionInfo *exception );</p>
 <p>Image * <strong>NewImageList</strong>( void );</p>
 <p>unsigned int  <strong>PrependImageToList</strong>( Image *images, const Image *image, ExceptionInfo *exception );</p>
-<p>Image * <strong>RemoveImageFromList</strong>( Image ** images );</p>
+<p>Image * <strong>RemoveFirstImageFromList</strong>( Image ** images );</p>
 <p>Image * <strong>RemoveLastImageFromList</strong>( Image ** images );</p>
 <p>Image * <strong>ReverseImageList</strong>( const Image *images, ExceptionInfo *exception );</p>
 <p>Image * <strong>SpliceImageIntoList</strong>( Image *images, const long offset, const unsigned long length, const Image *splices, ExceptionInfo *exception );</p>
@@ -180,8 +179,11 @@ The image list.
 <p>
 </p>
 <h2><a name="getimagelistsize">GetImageListSize</a></h2>
-<blockquote>GetImageListSize() returns the number of images in the list. </blockquote><p>The format of the GetImageListSize method is:</p>
-<blockquote>unsigned long GetImageListSize ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><p>A description of each parameter follows:</p>
+<p><code>GetImageListLength()</code> returns the number of images in the list.</p>
+<p>The format of the GetImageListLength method is:</p>
+<pre>
+    unsigned long GetImageListLength(const Image *images)</pre>
+<p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>
@@ -291,9 +293,9 @@ Return any errors or warnings in this structure.
 <p></p></dl>
 <p>
 </p>
-<h2><a name="removeimagefromlist">RemoveImageFromList</a></h2>
-<blockquote>RemoveImageFromList() removes an image from the beginning of the list. </blockquote><p>The format of the RemoveImageFromList method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *RemoveImageFromList ( <A HREF="types/Image.html">Image</A> **images ); </blockquote><p>A description of each parameter follows:</p>
+<h2><a name="removefirstimagefromlist">RemoveFirstImageFromList</a></h2>
+<blockquote>RemoveFirstImageFromList() removes an image from the beginning of the list. </blockquote><p>The format of the RemoveFirstImageFromList method is:</p>
+<blockquote><A HREF="types/Image.html">Image</A> *RemoveFirstImageFromList ( <A HREF="types/Image.html">Image</A> **images ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>

@@ -4113,7 +4113,7 @@ ImageToBlob(ref,...)
       next->scene=scene++;
     }
     SetImageInfo(package_info->image_info,True,&image->exception);
-    EXTEND(sp,(long) GetImageListSize(image));
+    EXTEND(sp,(long) GetImageListLength(image));
     GetExceptionInfo(&exception);
     for ( ; image; image=image->next)
     {
@@ -6811,7 +6811,7 @@ Ping(ref,...)
       image=PingImage(package_info->image_info,&exception);
       if (exception.severity != UndefinedException)
         CatchException(&exception);
-      count+=GetImageListSize(image);
+      count+=GetImageListLength(image);
       EXTEND(sp,4*count);
       for (next=image; next; next=next->next)
       {

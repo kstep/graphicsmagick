@@ -3855,7 +3855,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'n':
       {
-        FormatString(q,"%lu",(unsigned long) GetImageListSize(image));
+        FormatString(q,"%lu",(unsigned long) GetImageListLength(image));
         while (*q != '\0')
           q++;
         break;
