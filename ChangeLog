@@ -1,6 +1,6 @@
 2002-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * coders/vid.c: Modified to be 10X faster for large images
-    and to take advantage of JPEG size optimizations.
+  * coders/vid.c: Modified to be 10X faster for large images and to take
+    advantage of JPEG size optimizations.
 
 2002-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * magick/xwindow.c: Optimize loading of TrueColor images with
