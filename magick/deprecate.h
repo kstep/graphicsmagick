@@ -34,6 +34,7 @@ extern MagickExport int
     unsigned long *);
 
 extern MagickExport unsigned int
+  DeleteImageList(Image *,const long offset),
   GetNumberScenes(const Image *),
   PushImageList(Image **,const Image *,ExceptionInfo *),
   SetImageList(Image **,const Image *,const long,ExceptionInfo *),
