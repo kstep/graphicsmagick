@@ -603,7 +603,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].image->file=image->file;
         for (j=0; j < layer_info[i].channels; j++)
         {
-          if (layer_info[i].channel_info[j].size < 8)
+          if (layer_info[i].channel_info[j].size <=
+              (2*layer_info[i].image->rows))
             {
               long
                 k;
@@ -611,7 +612,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 A layer without data.
               */
-              SetImage(layer_info[i].image,OpaqueOpacity);
               for (k=0; k < (long) layer_info[i].channel_info[j].size; k++)
                 (void) ReadBlobByte(layer_info[i].image);
               continue;
@@ -663,16 +663,16 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 case 0:
                 {
                   q->red=pixel;
-                  if (image->storage_class == PseudoClass)
+                  if (layer_info[i].image->storage_class == PseudoClass)
                     {
                       indexes[x]=(IndexPacket) DownScale(pixel);
-                      *q=image->colormap[indexes[x]];
+                      *q=layer_info[i].image->colormap[indexes[x]];
                     }
                   break;
                 }
                 case 1:
                 {
-                  if (image->storage_class == PseudoClass)
+                  if (layer_info[i].image->storage_class == PseudoClass)
                     q->opacity=pixel;
                   else
                     q->green=pixel;
