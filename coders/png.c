@@ -86,9 +86,9 @@
 */
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
-#define MNG_INSERT_LAYERS
+#define MNG_INSERT_LAYERS /* identify crashes in 5.4.4 */
 #define PNG_BUILD_PALETTE /* This works as of 5.4.3 */
-#define PNG_SORT_PALETTE /* This works as of 5.4.0 */
+#define PNG_SORT_PALETTE  /* This works as of 5.4.0 */
 
 /*
   This is temporary until I set up malloc'ed object attributes array.
@@ -1687,7 +1687,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((simplicity != 0) && ((simplicity | 9) == 9))
               mng_type=3; /* VLC */
 #ifdef MNG_INSERT_LAYERS
-            if (mng_type != 3)
+            if (mng_type != 3 && !image_info->ping)
               insert_layers=True;
 #endif
             if (GetPixels(image) != (PixelPacket *) NULL)
@@ -3054,6 +3054,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image scanlines.
     */
+    if (image->delay != 0)
+      scenes_found++;
+    if (image_info->ping && (image_info->subrange != 0) &&
+        scenes_found > image_info->subimage+image_info->subrange)
+      {
+        png_destroy_read_struct(&ping,&ping_info,&end_info);
+        break;
+      }
     png_pixels=(unsigned char *)
       AcquireMemory(ping_info->rowbytes*image->rows*sizeof(Quantum));
     scanlines=(unsigned char **)
@@ -3067,15 +3075,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     png_read_image(ping,scanlines);
     png_read_end(ping,ping_info);
 
-    if (image_info->ping && (image_info->subrange != 0))
-      {
-        png_destroy_read_struct(&ping,&ping_info,&end_info);
-        LiberateMemory((void **) &png_pixels);
-        LiberateMemory((void **) &scanlines);
-        break;
-      }
-    if (image->delay != 0)
-      scenes_found++;
     if (image_info->subrange != 0 && scenes_found-1 < image_info->subimage)
       {
         png_destroy_read_struct(&ping,&ping_info,&end_info);
@@ -4091,20 +4090,26 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->exception.description);
       DestroyImageList(image);
       image=next_image;
-
       for(next=image; next != (Image *) NULL; next=next_image)
       {
-         next_image=next->next;
+         next->page.width=mng_width;
          next->page.height=mng_height;
-         next->page.width=mng_height;
+         next->page.x=0;
+         next->page.y=0;
          next->scene=scene++;
+         next_image=next->next;
+         if (next_image == (Image *) NULL)
+           break;
          if (next->delay == 0)
            {
-             next_image->previous=next->previous;
              scene--;
-
+             next_image->previous=next->previous;
              if (next->previous == (Image *) NULL)
-               image=next_image;
+               {
+                 image=next_image;
+                 image->file=next->file;
+                 image->blob->mapped=next->blob->mapped;
+               }
              else
                next->previous->next=next_image;
              next->orphan=True;
