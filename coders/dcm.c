@@ -2860,7 +2860,6 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         else
           if ((strcmp(implicit_vr,"UL") == 0) ||
-              (strcmp(implicit_vr,"FD") == 0) ||
               (strcmp(implicit_vr,"SL") == 0))
             quantum=4;
           else
@@ -2877,11 +2876,14 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (strcmp(explicit_vr,"US") == 0))
                 quantum=2;
               else
-                {
-                  quantum=2;
-                  datum=datum/2;
-                  length=(size_t) datum;
-                }
+                if (strcmp(implicit_vr,"FD") == 0)
+                  quantum=8;
+                else
+                  {
+                    quantum=2;
+                    datum=datum/2;
+                    length=(size_t) datum;
+                  }
       }
     if (image_info->verbose)
       {
