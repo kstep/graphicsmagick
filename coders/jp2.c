@@ -13,7 +13,8 @@
 %                    Read/Write ImageMagick Image Format.                     %
 %                                                                             %
 %                                                                             %
-%                               Nathan Brown                                  %
+%                                John Cristy                                  %
+%                                Nathan Brown                                 %
 %                                 June 2001                                   %
 %                                                                             %
 %                                                                             %
@@ -53,8 +54,8 @@
 */
 #include "magick.h"
 #include "defines.h"
+#define HasJP2
 #if defined(HasJP2)
-#define HAVE_STDINT_H 1
 #define uchar unsigned int
 #include "jasper/jasper.h"
 #endif
@@ -178,116 +179,26 @@ static unsigned int IsJPC(const unsigned char *magick,const unsigned int length)
 */
 
 #if defined(HasJP2)
-static int
-  JP2CloseBlob(jas_stream_obj_t *),
-  JP2ReadBlob(jas_stream_obj_t *,char *,int),
-  JP2WriteBlob(jas_stream_obj_t *,char *,int);
-
-static long
-  JP2SeekBlob(jas_stream_obj_t *,long,int);
-
-static jas_stream_ops_t
-  JP2StreamModules =
-  {
-    JP2ReadBlob,
-    JP2WriteBlob,
-    JP2SeekBlob,
-    JP2CloseBlob
-  };
-
-typedef struct _SourceManager
-{
-  jas_stream_t
-    *stream;
-
-  Image
-    *image;
-
-  unsigned char
-    *buffer;
-
-  unsigned char
-    start_of_blob;
-} SourceManager;
-
-static int JP2CloseBlob(jas_stream_obj_t *object)
-{
-  CloseBlob(((SourceManager *) object)->image);
-  return(0);
-}
-
-static int JP2ReadBlob(jas_stream_obj_t *object,char *buffer,int count)
-{
-  return(ReadBlob(((SourceManager *) object)->image,count,(void *) buffer));
-}
-
-static long JP2SeekBlob(jas_stream_obj_t *object,long offset,int origin)
-{
-  return(SeekBlob(((SourceManager *) object)->image,offset,origin));
-}
-
-static void JP2SourceManager(jas_stream_t *stream,Image *image)
-{
-  SourceManager
-    *source;
-
-  if (stream->obj_ == (jas_stream_obj_t *) NULL)
-    {
-      stream->obj_=(jas_stream_obj_t *) AcquireMemory(sizeof(SourceManager));
-      if (stream->obj_ == (jas_stream_obj_t *) NULL)
-        MagickError(ResourceLimitError,"Unable to allocate source manager",
-          "Memory allocation failed");
-    }
-  source=(SourceManager *) stream->obj_;
-  source->buffer=(unsigned char *) NULL;
-  source->image=image;
-  stream->openmode_=0;
-  stream->bufmode_=0;
-  stream->flags_=0;
-  stream->bufbase_=0;
-  stream->bufstart_=0;
-  stream->bufsize_=0;
-  stream->ptr_=0;
-  stream->cnt_=0;
-  stream->ops_=0;
-  stream->rwcnt_=0;
-  stream->rwlimit_=(-1);
-  stream->ops_=(&JP2StreamModules);
-  stream->openmode_=JAS_STREAM_READ | JAS_STREAM_WRITE | JAS_STREAM_BINARY;
-  stream->bufbase_=stream->tinybuf_;
-  stream->bufsize_=1;
-  stream->bufstart_=(&stream->bufbase_[JAS_STREAM_MAXPUTBACK]);
-  stream->ptr_=stream->bufstart_;
-  stream->cnt_=0;
-  stream->bufmode_|=JAS_STREAM_UNBUF & JAS_STREAM_BUFMODEMASK;
-}
-
-static int JP2WriteBlob(jas_stream_obj_t *object,char *buffer,int count)
-{
-  return(WriteBlob(((SourceManager *) object)->image,count,(void *) buffer));
-}
-#endif
-
-#if defined(HasJP2)
 static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  char
-    magic_number[MaxTextExtent];
+  FILE
+    *file;
 
   Image
     *image;
 
   int
+    c,
     y;
 
   jas_image_t
     *jp2_image;
 
   jas_matrix_t
-    *components[4];
+    *pixels;
 
   jas_stream_t
-    jp2_stream;
+    *jp2_stream;
 
   register int
     i,
@@ -296,132 +207,132 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  uint_fast16_t
-    depth,
-    number_components;
-
-  uint_fast32_t
-    height,
-    width;
+  static SemaphoreInfo
+    *jp2_semaphore = (SemaphoreInfo *) NULL;
 
   unsigned int
-    status;
+    depth,
+    height,
+    number_components,
+    status,
+    width;
 
   /*
     Open image file.
   */
+  AcquireSemaphore(&jp2_semaphore);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  jp2_stream.obj_=(jas_stream_obj_t *) NULL;
-  JP2SourceManager(&jp2_stream,image);
-  if (LocaleCompare(image_info->magick,"JP2") == 0)
     {
-      /*
-        Verify JP2 signature.
-      */
-      (void) ReadBlob(image,12,magic_number);
-      if (memcmp(magic_number+4,"\152\120\040\040\015",5) != 0)
-        ThrowReaderException(CorruptImageWarning,"Not a JP2 image file",image);
-      SeekBlob(image,0,SEEK_SET);
-      jp2_image=image_load_jp2(&jp2_stream,"");
+      LiberateSemaphore(&jp2_semaphore);
+      ThrowWriterException(FileOpenWarning,"Unable to open file",image);
     }
-  else
-    if (LocaleCompare(image_info->magick,"JPC") == 0)
-      {
-        /*
-          Verify JPC signature.
-        */
-        (void) ReadBlob(image,2,magic_number);
-        if (memcmp(magic_number,"\xff\x4f",2) != 0)
-          ThrowReaderException(CorruptImageWarning,"Not a JPC image file",
-            image);
-        SeekBlob(image, 0, SEEK_SET);
-        jp2_image=image_load_jpc(&jp2_stream,"");
-      }
-  if (jp2_image->number_components_ == 0)
-    ThrowReaderException(CorruptImageWarning,"Not image data",image);
-  number_components=image_number_components(jp2_image);
-  width=image_cmptwidth(jp2_image, 0);
-  height=image_cmptheight(jp2_image, 0);
-  depth=image_cmptprec(jp2_image, 0);
+  /*
+    Copy image to temporary file.
+  */
+  TemporaryFilename((char *) image_info->filename);
+  file=fopen(image_info->filename,WriteBinaryType);
+  if (file == (FILE *) NULL)
+    {
+      LiberateSemaphore(&jp2_semaphore);
+      ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+    }
+  c=ReadBlobByte(image);
+  while (c != EOF)
+  {
+    (void) fputc(c,file);
+    c=ReadBlobByte(image);
+  }
+  (void) fclose(file);
+  jas_init();
+  (void) strcpy(image->filename,image_info->filename);
+  jp2_stream=jas_stream_fopen(image->filename,ReadBinaryType);
+  if (jp2_stream == (jas_stream_t *) NULL)
+    {
+      LiberateSemaphore(&jp2_semaphore);
+      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+    }
+  jp2_image=jas_image_decode(jp2_stream,-1,0);
+  if (jp2_image == (jas_image_t *) NULL)
+    {
+      LiberateSemaphore(&jp2_semaphore);
+      ThrowReaderException(FileOpenWarning,"Unable to decode image file",image);
+    }
+  (void) jas_stream_close(jp2_stream);
+  (void) remove(image->filename);
+  number_components=jas_image_numcmpts(jp2_image);
   for (i=0; i < number_components; i++)
   {
-    if ((image_cmptwidth(jp2_image,i) != width) ||
-        (image_cmptheight(jp2_image, i) != height) ||
-        (image_cmptprec(jp2_image, i) != depth) ||
-        (image_componentsgnd(jp2_image, i) != False) ||
-        (image_cmpttlx(jp2_image, i) != 0) ||
-        (image_cmpttly(jp2_image, i) != 0))
-      ThrowReaderException(CorruptImageWarning,
-        "Unable to represent an image with this geometry.",image);
+    width=jas_image_cmptwidth(jp2_image,i);
+    if (width > image->columns)
+      image->columns=width;
+    height=jas_image_cmptheight(jp2_image,i);
+    if (height > image->rows)
+      image->rows=height;
+    depth=jas_image_cmptprec(jp2_image,i);
+    if (depth <= 8)
+      image->depth=8;
   }
-  if ((depth != 1) && (depth != 4) && (depth != 8))
-    ThrowReaderException(CorruptImageWarning,
-      "The component depths must be 1, 4, or 8.",image);
-  /*
-    Initialize image.
-  */
-  image->columns=width;
-  image->rows=height;
-  image->depth=depth;
-  image->colorspace=(image_colormodel(jp2_image) == JAS_IMAGE_CM_GRAY) ?
-    GRAYColorspace : RGBColorspace;
-  if (image_info->ping)
-    {
-      CloseBlob(image);
-      return(image);
-    }
-  for (i = 0; i < number_components; i++)
-    components[i]=0;
-  for (i = 0; i < number_components; i++)
+  for (i=0; i < number_components; i++)
   {
-    components[i]=matrix_create(1,image->columns);
-    if (components[i] == NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
-  }
-  /*
-    Convert JP2 pixels to pixel packets.
-  */
-  for (y=0; y < (int) image->rows; y++)
-  {
-    for (i = 0; i < number_components && i < 4; ++i)
-    {
-      if (image_readcmpt(jp2_image,i,0,y,image->columns,1,components[i]))
+    width=jas_image_cmptwidth(jp2_image,i);
+    height=jas_image_cmptheight(jp2_image,i);
+    pixels=jas_matrix_create(height,width);
+    if (pixels == (jas_matrix_t *) NULL)
+      break;
+    status=jas_image_readcmpt(jp2_image,i,0,0,width,height,pixels);
+    if (status)
+      {
+        jas_matrix_destroy(pixels);
         break;
-      q=SetImagePixels(image,0,y,image->columns,1);
+      }
+    for (y=0; y < (int) height; y++)
+    {
+      q=GetImagePixels(image,0,y,width,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (int) width; x++)
       {
-        if (image->colorspace == GRAYColorspace)
+        switch (i)
+        {
+          case 0:
           {
-            q->red=(Quantum) UpScale(matrix_getv(components[0],x));
+            q->red=UpScale(jas_matrix_get(pixels,y,x));
             q->green=q->red;
             q->blue=q->red;
+            break;
           }
-        else
+          case 1:
           {
-            q->red=(Quantum) UpScale(matrix_getv(components[0],x));
-            q->green=(Quantum) UpScale(matrix_getv(components[1],x));
-            q->blue=(Quantum) UpScale(matrix_getv(components[2],x));
-            if (image->colorspace == CMYKColorspace)
-              q->opacity=(Quantum) UpScale(matrix_getv(components[3],x));
+            q->green=UpScale(jas_matrix_get(pixels,y,x));
+            break;
           }
+          case 2:
+          {
+            q->blue=UpScale(jas_matrix_get(pixels,y,x));
+            break;
+          }
+          case 3:
+          {
+            q->opacity=UpScale(jas_matrix_get(pixels,y,x));
+            break;
+          }
+          default:
+            break;
+        }
         q++;
       }
       if (!SyncImagePixels(image))
         break;
-      if (QuantumTick(y,image->rows))
-        MagickMonitor(LoadImageText,y,image->rows);
     }
-    for (i=0; i < number_components; i++)
-      if (components[i] != NULL)
-        matrix_destroy(components[i]);
+    jas_matrix_destroy(pixels);
+    if (image->previous == (Image *) NULL)
+      MagickMonitor(LoadImageText,i,number_components);
   }
+  jas_image_destroy(jp2_image);
   CloseBlob(image);
+  LiberateSemaphore(&jp2_semaphore);
   return(image);
 }
 #else
@@ -465,6 +376,7 @@ ModuleExport void RegisterJP2Image(void)
   entry->decoder=ReadJP2Image;
   entry->encoder=WriteJP2Image;
   entry->magick=IsJP2;
+  entry->adjoin=False;
   entry->description=AllocateString("JPEG 2000 Image and Metadata");
   entry->module=AllocateString("JP2");
   RegisterMagickInfo(entry);
@@ -537,24 +449,24 @@ ModuleExport void UnregisterJP2Image(void)
 #if defined(HasJP2)
 static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
-  double
-    x_resolution,
-    y_resolution;
+  char
+    filename[MaxTextExtent];
 
   int
+    format,
     y;
 
   jas_image_cmptparm_t
-    *parameters;
+    component_info[4];
 
   jas_image_t
     *jp2_image;
 
   jas_matrix_t
-    *components[4];
+    *pixels;
 
   jas_stream_t
-    jp2_stream;
+    *jp2_stream;
 
   register int
     i,
@@ -563,11 +475,9 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  uint_fast16_t
-    number_components;
-
   unsigned int
-     status;
+    number_components,
+    status;
 
   /*
     Open image file.
@@ -575,78 +485,112 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  if (IsGrayImage(image) || (image->colorspace != RGBColorspace))
-    TransformRGBImage(image,RGBColorspace);
-  jp2_stream.obj_=(jas_stream_obj_t *) NULL;
-  JP2SourceManager(&jp2_stream,image);
-  number_components=IsGrayImage(image) ? 1 : 3;
-  parameters=(jas_image_cmptparm_t *)
-    AcquireMemory(number_components*sizeof(jas_image_cmptparm_t));
-  parameters->tlx=0;
-  parameters->tly=0;
-  parameters->prec=image->depth;
-  parameters->sgnd=False;
-  parameters->height=image->rows;
-  parameters->width=image->columns;
-  x_resolution=72;
-  y_resolution=72;
-  if (image_info->density != (char *) NULL)
-    {
-      int
-        count;
-
-      count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
-      if (count != 2)
-        y_resolution=x_resolution;
-    }
-  parameters->vstep=1;
-  parameters->hstep=1;
+  (void) strcpy(filename,image->filename);
+  if ((image->file == stdout) || image->pipet ||
+      (image->blob.data != (unsigned char *) NULL))
+    TemporaryFilename(filename);
+  else
+    CloseBlob(image);
+  TransformRGBImage(image,RGBColorspace);
+  jas_init();
+  jp2_stream=jas_stream_fopen(image->filename,WriteBinaryType);
+  if (jp2_stream == (jas_stream_t *) NULL)
+    return(False);
+  number_components=image->matte ? 4 : 3;
+  if (IsGrayImage(image))
+    number_components=1;
+  for (i=0; i < number_components; i++)
+  {
+    component_info[i].tlx=0;
+    component_info[i].tly=0;
+    component_info[i].hstep=1;
+    component_info[i].vstep=1;
+    component_info[i].width=image->columns;
+    component_info[i].height=image->rows;
+    component_info[i].prec=image->depth;
+    component_info[i].sgnd=False;
+  }
+  jp2_image=jas_image_create(number_components,component_info,
+    number_components == 1 ? JAS_IMAGE_CM_GRAY : JAS_IMAGE_CM_RGB);
+  if (jp2_image == (jas_image_t *) NULL)
+    return(False);
   /*
-    Initialize image structure.
+    Convert pixels.
   */
-  memcpy(parameters+1,parameters,sizeof(image_cmptparm_t));
-  memcpy(parameters+2,parameters,sizeof(image_cmptparm_t));
-  jp2_image=image_create(number_components,parameters,
-    (IsGrayImage(image) ? JAS_IMAGE_CM_GRAY : JAS_IMAGE_CM_RGB));
-  if (!jp2_image)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
-  for (i = 0; i < number_components; ++i)
-    components[i]=0;
-  for (i = 0; i < number_components; ++i)
+  for (i=0; i < number_components; i++)
   {
-    components[i]=matrix_create(1,image->columns);
-    if (components[i] == NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
-  }
-  for (y=0; y < (int) image->rows; y++)
-  {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    pixels=jas_matrix_create(image->rows,image->columns);
+    if (pixels == (jas_matrix_t *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      matrix_setv(components[0],x,DownScale(p->red));
-      matrix_setv(components[1],x,DownScale(p->green));
-      matrix_setv(components[2],x,DownScale(p->blue));
-      p++;
-    }
-    if (QuantumTick(y,image->rows))
-      MagickMonitor(SaveImageText,y,image->rows);
-    for (i=0; i < (number_components && (i < 3)); i++)
-    {
-      if (image_writecmpt(jp2_image,i,0,y,image->columns,1,components[i]))
+      p=GetImagePixels(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
         break;
+      for (x=0; x < (int) image->columns; x++)
+      {
+        switch (i)
+        {
+          case 0:
+          {
+            jas_matrix_set(pixels,y,x,DownScale(p->red));
+            break;
+          }
+          case 1:
+          {
+            jas_matrix_set(pixels,y,x,DownScale(p->green));
+            break;
+          }
+          case 2:
+          {
+            jas_matrix_set(pixels,y,x,DownScale(p->blue));
+            break;
+          }
+          case 3:
+          {
+            jas_matrix_set(pixels,y,x,DownScale(p->opacity));
+            break;
+          }
+          default:
+            break;
+        }
+        p++;
+      }
     }
+    status=jas_image_writecmpt(jp2_image,i,0,0,image->columns,image->rows,pixels);
+    jas_matrix_destroy(pixels);
+    if (status)
+      break;
+    if (image->previous == (Image *) NULL)
+      MagickMonitor(SaveImageText,i,number_components);
   }
-  if (LocaleCompare(image_info->magick,"JP2") == 0)
-    image_save_jp2(jp2_image,&jp2_stream,"");
-  else if (LocaleCompare(image_info->magick,"JPC") == 0)
-    image_save_jpc(jp2_image, &jp2_stream,"");
-  for (i = 0; i < number_components; i++)
-    if (components[i] != NULL)
-      matrix_destroy(components[i]);
-  CloseBlob(image);
+  format=jas_image_strtofmt(image->magick);
+  status=jas_image_encode(jp2_image,jp2_stream,format,0);
+  if (status)
+    ThrowWriterException(FileOpenWarning,"Unable to encode image file",image);
+  (void) jas_stream_close(jp2_stream);
+  jas_image_destroy(jp2_image);
+  if ((image->file == stdout) || image->pipet ||
+      (image->blob.data != (unsigned char *) NULL))
+    {
+      FILE
+        *file;
+
+      int
+        c;
+
+      /*
+        Copy temporary file to image blob.
+      */
+      file=fopen(filename,ReadBinaryType);
+      if (file == (FILE *) NULL)
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+      for (c=fgetc(file); c != EOF; c=fgetc(file))
+        (void) WriteBlobByte(image,c);
+      (void) fclose(file);
+      (void) remove(filename);
+      CloseBlob(image);
+    }
   return(True);
 }
 
