@@ -135,7 +135,6 @@ extern "C" {
     (double) (alpha)*(MaxRGB-(beta))*(q)->blue/MaxRGB)/MaxRGB+0.5); \
   (q)->opacity=(Quantum) (((double) (MaxRGB-(alpha))+ \
     (double) (alpha)*(MaxRGB-(beta))/MaxRGB)/MaxRGB+0.5)
-#define CloseImage(image)  CloseBlob(image)
 #define ColorMatch(color,target,distance) \
   (((distance) == 0) ? \
    (((color).red == (target).red) && \
