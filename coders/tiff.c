@@ -1370,7 +1370,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
         if (image_info->type != TrueColorType)
           {
-            if (IsGrayImage(image,&image->exception))
+            if ((image_info->type != PaletteType) &&
+                IsGrayImage(image,&image->exception))
               {
                (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                 photometric=PHOTOMETRIC_MINISBLACK;
@@ -1709,8 +1710,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           bit,
           byte,
           polarity;
-
-        if (!IsMonochromeImage(image,&image->exception))
+ 
+        if ((image_info->type == PaletteType) ||
+            !IsMonochromeImage(image,&image->exception))
           {
             /*
               Convert PseudoClass packets to contiguous grayscale scanlines.
