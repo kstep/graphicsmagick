@@ -482,6 +482,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (QuantumTick(y,image->rows))
               MagickMonitor(LoadImageText,y,image->rows);
         }
+        if (EOFBlob(image))
+          ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",
+            image);
         break;
       }
       case '5':
@@ -525,6 +528,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               MagickMonitor(LoadImageText,y,image->rows);
         }
         LiberateMemory((void **) &pixels);
+        if (EOFBlob(image))
+          ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",
+            image);
         break;
       }
       case '6':
@@ -584,6 +590,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         LiberateMemory((void **) &pixels);
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
+        if (EOFBlob(image))
+          ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",
+            image);
         break;
       }
       default:
@@ -591,8 +600,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (scale != (Quantum *) NULL)
       LiberateMemory((void **) &scale);
-    if (EOFBlob(image))
-      ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
     /*
       Proceed to next image.
     */
