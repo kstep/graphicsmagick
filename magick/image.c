@@ -6395,6 +6395,8 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
     (void) strcpy(image_info->magick,"RAD");
   if (strncmp(magick,"\122\314",2) == 0)
     (void) strcpy(image_info->magick,"RLE");
+  if (strncmp(magick+80,"CT",2) == 0)
+    (void) strcpy(image_info->magick,"SCT");
   if (strncmp(magick,"SFW94",5) == 0)
     (void) strcpy(image_info->magick,"SFW");
   if (strncmp(magick,"\001\332",2) == 0)

@@ -50,6 +50,8 @@
 
 #include "magick.h"
 #include "defines.h"
+
+#if defined(HasX11)
 #include "xwindows.h"
 
 #if defined(PRE_R6_ICCCM)
@@ -353,4 +355,6 @@ int XWMGeometry(Display *display,int screen,char *user_geometry,
   *gravity=NorthWestGravity;
   return(status);
 }
+#endif
+
 #endif

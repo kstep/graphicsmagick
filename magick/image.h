@@ -627,6 +627,7 @@ extern Export Image
   *ReadRGBImage(const ImageInfo *image_info),
   *ReadRLAImage(const ImageInfo *image_info),
   *ReadRLEImage(const ImageInfo *image_info),
+  *ReadSCTImage(const ImageInfo *image_info),
   *ReadSFWImage(const ImageInfo *image_info),
   *ReadSGIImage(const ImageInfo *image_info),
   *ReadSTEGANOImage(const ImageInfo *image_info),

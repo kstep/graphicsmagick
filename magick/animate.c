@@ -1878,14 +1878,35 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
             /*
               Display image named by the Drag-and-Drop selection.
             */
-            if ((int) (*event.xclient.data.l) != 2)
+            if (((int) (*event.xclient.data.l) != 2) &&
+                ((int) (*event.xclient.data.l) != 128))
               break;
             selection=XInternAtom(display,"DndSelection",False);
             status=XGetWindowProperty(display,root_window,selection,0L,2047L,
               False,(Atom) AnyPropertyType,&type,&format,&length,&after,&data);
             if ((status != Success) || (length == 0))
               break;
-            (void) strcpy(resource_info->image_info->filename,(char *) data);
+            if ((int) (*event.xclient.data.l) == 2)
+              {
+                /*
+                  Offix DND.
+                */
+                (void) strcpy(resource_info->image_info->filename,
+                  (char *) data);
+              }
+            else
+              {
+                /*
+                  XDND.
+                */
+                if (strncmp((char *) data, "file:", 5) != 0)
+                  {
+                    XFree((void *) data);
+                    break;
+                  }
+                (void) strcpy(resource_info->image_info->filename,
+                  ((char *) data)+5);
+              }
             loaded_image=ReadImage(resource_info->image_info);
             if (loaded_image != (Image *) NULL)
               state|=ExitState;

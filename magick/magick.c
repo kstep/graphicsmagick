@@ -215,6 +215,8 @@ static const MagickInfo
       False, "Alias/Wavefront image file" },
     { "RLE", ReadRLEImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
       False, "Utah Run length encoded image file" },
+    { "SCT", ReadSCTImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "Scitex HandShake" },
     { "SFW", ReadSFWImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
       False, "Seattle Film Works" },
     { "SGI", ReadSGIImage, WriteSGIImage, True, "Irix RGB image file" },
