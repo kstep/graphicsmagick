@@ -61,12 +61,12 @@
 */
 const char
   *AppendBinaryType = "ab",
-  *BackgroundColor = "#000000ff",
+  *BackgroundColor = "#000000ff",  /* black */
   *BorderColor = "#dfdfdf",  /* gray */
   *DefaultTileFrame = "15x15+3+3",
   *DefaultTileGeometry = "120x120+4+3>",
   *DefaultTileLabel = "%f\n%wx%h\n%b",
-  *ForegroundColor = "#000000",  /* black */
+  *ForegroundColor = "#ffffff",  /* white */
   *LoadImageText = "  Loading image...  ",
   *LoadImagesText = "  Loading images...  ",
   *MatteColor = "#bdbdbd",  /* gray */
@@ -2911,7 +2911,7 @@ MagickExport unsigned int GradientImage(Image *image,
   register long
     x;
 
-  register const PixelPacket
+  register PixelPacket
     *q;
 
   unsigned long
@@ -2937,8 +2937,8 @@ MagickExport unsigned int GradientImage(Image *image,
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    q=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-    if (q == (const PixelPacket *) NULL)
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
