@@ -1,3 +1,12 @@
+2003-06-02  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* png.c: Merge bugfixes from 1.1 branch:
+	* MNG encoder failed to set the JNG bit in the simplicity profile.
+	* MNG encoder failed to write FRAM chunks when all images were JNG.
+	* JNG encoder wrote the wrong alpha_sample_depth for opaque images. 
+	* coders/png.c: png.c would dump core when writing a grayscale
+	image in png24 or png32 format.
+
 2003-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS: Updated to incorporate changes since the 1.0 release.
