@@ -31,7 +31,7 @@ std::ostream& Magick::operator<<( std::ostream& stream_,
 std::ostream& Magick::operator<< (std::ostream& stream_,
                                   const Magick::DrawableBase& drawable_)
 {
-  drawable_.print (stream_);
+  const_cast<const Magick::DrawableBase&>(drawable_).print (stream_);
   return stream_;
 }
 
@@ -49,7 +49,7 @@ std::ostream& Magick::operator<< (std::ostream& stream_,
 std::ostream& Magick::operator<< (std::ostream& stream_,
                                   const Magick::VPathBase& drawable_)
 {
-  drawable_.print (stream_);
+  const_cast<const Magick::VPathBase&>(drawable_).print (stream_);
   return stream_;
 }
 

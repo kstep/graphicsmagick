@@ -79,6 +79,8 @@ namespace Magick
 
     // Return polymorphic copy of object
     virtual DrawableBase* copy() const = 0;
+
+  private:
   };
 
 
