@@ -670,83 +670,87 @@ static void ModuleToTag(const char *filename,const char *format,char *module)
 MagickExport unsigned int OpenModule(const char *module,
   ExceptionInfo *exception)
 {
-  char
-    message[MaxTextExtent],
-    *module_file,
-    module_name[MaxTextExtent],
-    name[MaxTextExtent],
-    path[MaxTextExtent];
+#if defined(HasMODULES)
+  {
+    char
+      message[MaxTextExtent],
+      *module_file,
+      module_name[MaxTextExtent],
+      name[MaxTextExtent],
+      path[MaxTextExtent];
 
-  CoderInfo
-    *coder_info;
+    CoderInfo
+      *coder_info;
 
-  ModuleHandle
-    handle;
+    ModuleHandle
+      handle;
 
-  register ModuleInfo
-    *p;
+    register ModuleInfo
+      *p;
 
-  void
-    (*method)(void);
+    void
+      (*method)(void);
 
-  /*
-    Assign module name from alias.
-  */
-  assert(module != (const char *) NULL);
-  (void) strncpy(module_name,module,MaxTextExtent-1);
-  if (module_list != (ModuleInfo *) NULL)
-    for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
-      if (LocaleCompare(p->magick,module) == 0)
-        {
-          (void) strncpy(module_name,p->name,MaxTextExtent-1);
-          break;
-        }
-  /*
-    Load module file.
-  */
-  handle=(ModuleHandle) NULL;
-  module_file=TagToModule(module_name);
-  *path='\0';
-  if ((module_list != (ModuleInfo *) NULL) &&
-      (module_list->path != (char *) NULL))
-    GetPathComponent(module_list->path,HeadPath,path);
-  (void) strcat(path,DirectorySeparator);
-  (void) strncat(path,module_file,MaxTextExtent-strlen(path)-1);
-  handle=lt_dlopen(path);
-  if (handle == (ModuleHandle) NULL)
-    {
-      FormatString(message,"\"%.1024s: %.1024s\"",path,lt_dlerror());
-      ThrowException(exception,ModuleError,"UnableToLoadModule",message);
-    }
-  LiberateMemory((void **) &module_file);
-  if (handle == (ModuleHandle) NULL)
-    return(False);
-  /*
-    Add module to module list.
-  */
-  coder_info=SetCoderInfo(module_name);
-  if (coder_info == (CoderInfo*) NULL)
-    {
-      (void) lt_dlclose(handle);
+    /*
+      Assign module name from alias.
+    */
+    assert(module != (const char *) NULL);
+    (void) strncpy(module_name,module,MaxTextExtent-1);
+    if (module_list != (ModuleInfo *) NULL)
+      for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
+        if (LocaleCompare(p->magick,module) == 0)
+          {
+            (void) strncpy(module_name,p->name,MaxTextExtent-1);
+            break;
+          }
+    /*
+      Load module file.
+    */
+    handle=(ModuleHandle) NULL;
+    module_file=TagToModule(module_name);
+    *path='\0';
+    if ((module_list != (ModuleInfo *) NULL) &&
+        (module_list->path != (char *) NULL))
+      GetPathComponent(module_list->path,HeadPath,path);
+    (void) strcat(path,DirectorySeparator);
+    (void) strncat(path,module_file,MaxTextExtent-strlen(path)-1);
+    handle=lt_dlopen(path);
+    if (handle == (ModuleHandle) NULL)
+      {
+        FormatString(message,"\"%.1024s: %.1024s\"",path,lt_dlerror());
+        ThrowException(exception,ModuleError,"UnableToLoadModule",message);
+      }
+    LiberateMemory((void **) &module_file);
+    if (handle == (ModuleHandle) NULL)
       return(False);
-    }
-  coder_info->handle=handle;
-  (void) time(&coder_info->load_time);
-  if (!RegisterModule(coder_info,exception))
-    return(False);
-  /*
-    Locate and execute RegisterFORMATImage function
-  */
-  ModuleToTag(module_name,"Register%sImage",name);
-  method=(void (*)(void)) lt_dlsym(handle,name);
-  if (method == (void (*)(void)) NULL)
-    {
-      FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
-      ThrowException(exception,ModuleError,"UnableToRegisterImageFormat",
-        message);
+    /*
+      Add module to module list.
+    */
+    coder_info=SetCoderInfo(module_name);
+    if (coder_info == (CoderInfo*) NULL)
+      {
+        (void) lt_dlclose(handle);
+        return(False);
+      }
+    coder_info->handle=handle;
+    (void) time(&coder_info->load_time);
+    if (!RegisterModule(coder_info,exception))
       return(False);
-    }
-  method();
+    /*
+      Locate and execute RegisterFORMATImage function
+    */
+    ModuleToTag(module_name,"Register%sImage",name);
+    method=(void (*)(void)) lt_dlsym(handle,name);
+    if (method == (void (*)(void)) NULL)
+      {
+        FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
+        ThrowException(exception,ModuleError,"UnableToRegisterImageFormat",
+          message);
+        return(False);
+      }
+    method();
+  }
+#endif
   return(True);
 }
 
