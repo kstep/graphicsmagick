@@ -373,6 +373,8 @@ MagickExport Image *GetNextImage(Image *images)
   if (images->next == (Image *) NULL)
     return((Image *) NULL);
   images->next->file=images->file;
+  DestroyBlobInfo(images->next->blob);
+  images->next->blob=ReferenceBlob(images->blob);
   return(images->next);
 }
 

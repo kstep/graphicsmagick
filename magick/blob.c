@@ -1018,7 +1018,6 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       return(True);
     }
   DetachBlob(image->blob);
-  image->exempt=False;
   if (image_info->fifo !=
       (int (*)(const Image *,const void *,const size_t)) NULL)
     {
