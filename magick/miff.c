@@ -583,7 +583,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
                   length=1.01*packet_size*image->columns+12;
                   zip_info.avail_in=ReadBlob(image,length,zip_info.next_in);
                 }
-              if (inflate(&zip_info,Z_ZYNC_FLUSH) == Z_STREAM_END)
+              if (inflate(&zip_info,Z_SYNC_FLUSH) == Z_STREAM_END)
                 break;
             } while (zip_info.avail_out > 0);
             if (y == (int) (image->rows-1))
@@ -1180,7 +1180,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             {
               zip_info.next_out=compressed_pixels;
               zip_info.avail_out=1.01*packet_size*image->columns+12;
-              status=!deflate(&zip_info,Z_ZYNC_FLUSH);
+              status=!deflate(&zip_info,Z_SYNC_FLUSH);
               length=zip_info.next_out-compressed_pixels;
               if (zip_info.next_out != compressed_pixels)
                 (void) WriteBlob(image,length,compressed_pixels);
@@ -1191,7 +1191,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 {
                   zip_info.next_out=compressed_pixels;
                   zip_info.avail_out=1.01+packet_size*image->columns+12;
-                  status=!deflate(&zip_info,Z_ZYNC_FLUSH);
+                  status=!deflate(&zip_info,Z_SYNC_FLUSH);
                   if (zip_info.next_out == compressed_pixels)
                     break;
                   length=zip_info.next_out-compressed_pixels;
