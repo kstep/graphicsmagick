@@ -747,10 +747,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         LogMagickEvent(CoderEvent,"  Interlace: nonprogressive");
       LogMagickEvent(CoderEvent,"  Data precision: %d",
         (int) jpeg_info.data_precision);
-      LogMagickEvent(CoderEvent,"  Output_width: %d",
-        (int) jpeg_info.output_width);
-      LogMagickEvent(CoderEvent,"  Output_height: %d",
-        (int) jpeg_info.output_height);
+      LogMagickEvent(CoderEvent,"  Geometry: %dx%d",
+        (int) jpeg_info.output_width,(int) jpeg_info.output_height);
 #ifdef D_LOSSLESS_SUPPORTED
       if (image->compression==LosslessJPEGCompression)
         LogMagickEvent(CoderEvent,"  Quality: 100 (lossless)");
@@ -898,7 +896,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           LogMagickEvent(CoderEvent,"  Colorspace: RGB");
           LogMagickEvent(CoderEvent,
-            "   Sampling factors: (%d,%d),(%d,%d),(%d,%d)",
+            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -912,7 +910,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           LogMagickEvent(CoderEvent,"  Colorspace: %d",
             jpeg_info.out_color_space);
           LogMagickEvent(CoderEvent,
-            "   Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -1564,7 +1562,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         {
           LogMagickEvent(CoderEvent,"  Colorspace: CMYK");
           LogMagickEvent(CoderEvent,
-            "   Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+            "  Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
