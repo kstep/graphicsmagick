@@ -277,21 +277,21 @@ extern MagickExport WarningHandler
 
 #if defined(MAGICK_IMPLEMENTATION)
 #if defined(MAGICK_IDBASED_MESSAGES)
-#define MagickMsg(severity_,msg_) GetLocaleMessageFromID(##severity_##msg_)
+#define MagickMsg(severity_,msg_) GetLocaleMessageFromID(MGK_##severity_##msg_)
 
 #define ThrowException(exception_,severity_,reason_,description_) \
-  (ThrowLoggedException(exception_,severity_,GetLocaleMessageFromID(##severity_##reason_),description_,GetMagickModule()))
+  (ThrowLoggedException(exception_,severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),description_,GetMagickModule()))
 #define ThrowException2(exception_,severity_,reason_,description_) \
   (ThrowLoggedException(exception_,severity_,reason_,description_,GetMagickModule()))
 #define ThrowException3(exception_,severity_,reason_,description_) \
-  (ThrowLoggedException(exception_,severity_,GetLocaleMessageFromID(##severity_##reason_),GetLocaleMessageFromID(##severity_##description_),GetMagickModule()))
+  (ThrowLoggedException(exception_,severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),GetLocaleMessageFromID(MGK_##severity_##description_),GetMagickModule()))
 
 #define MagickError(severity_,reason_,description_) \
-  (_MagickError(severity_,GetLocaleMessageFromID(##severity_##reason_),description_))
+  (_MagickError(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),description_))
 #define MagickFatalError(severity_,reason_,description_) \
-  (_MagickFatalError(severity_,GetLocaleMessageFromID(##severity_##reason_),description_))
+  (_MagickFatalError(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),description_))
 #define MagickWarning(severity_,reason_,description_) \
-  (_MagickWarning(severity_,GetLocaleMessageFromID(##severity_##reason_),description_))
+  (_MagickWarning(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),description_))
 
 #define MagickError2(severity_,reason_,description_) \
   (_MagickError(severity_,reason_,description_))
@@ -301,11 +301,11 @@ extern MagickExport WarningHandler
   (_MagickWarning(severity_,reason_,description_))
 
 #define MagickError3(severity_,reason_,description_) \
-  (_MagickError(severity_,GetLocaleMessageFromID(##severity_##reason_),GetLocaleMessageFromID(##severity_##description_)))
+  (_MagickError(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),GetLocaleMessageFromID(MGK_##severity_##description_)))
 #define MagickFatalError3(severity_,reason_,description_) \
-  (_MagickFatalError(severity_,GetLocaleMessageFromID(##severity_##reason_),GetLocaleMessageFromID(##severity_##description_)))
+  (_MagickFatalError(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),GetLocaleMessageFromID(MGK_##severity_##description_)))
 #define MagickWarning3(severity_,reason_,description_) \
-  (_MagickWarning(severity_,GetLocaleMessageFromID(##severity_##reason_),GetLocaleMessageFromID(##severity_##description_)))
+  (_MagickWarning(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),GetLocaleMessageFromID(MGK_##severity_##description_)))
 #else
 #define MagickMsg(severity_,msg_) GetLocaleExceptionMessage(severity_,#msg_)
 

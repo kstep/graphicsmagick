@@ -34,9 +34,9 @@
 */ 
 #include "studio.h" 
 #include "utility.h" 
-#define _INCLUDE_TAGMAP_TABLE_
-#define _INCLUDE_SEVERITYMAP_TABLE_
 #define _INCLUDE_CATEGORYMAP_TABLE_
+#define _INCLUDE_SEVERITYMAP_TABLE_
+#define _INCLUDE_TAGMAP_TABLE_
 #if !defined(WIN32)
 #define _INCLUDE_MESSAGE_TABLE_
 #endif
