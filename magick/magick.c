@@ -394,7 +394,7 @@ MagickExport void InitializeMagick(const char *path)
     }
 #if defined(WIN32)
     InitializeTracingCriticalSection();
-    if (getenv("MAGICK_DEBUG"))
+#if defined(_DEBUG)
       {
         int
           debug;
@@ -406,6 +406,7 @@ MagickExport void InitializeMagick(const char *path)
         // debug=_CrtSetDbgFlag(debug);
         // _ASSERTE(_CrtCheckMemory());
       }
+#endif
 #endif
 }
 
