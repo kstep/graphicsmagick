@@ -1453,14 +1453,14 @@ Export void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
   icon_width=icon_size->min_width;
   while ((int) icon_width < icon_size->max_width)
   {
-    if ((int) icon_width >= (DownShift(width*scale_factor)))
+    if (icon_width >= (DownShift(width*scale_factor)))
       break;
     icon_width+=icon_size->width_inc;
   }
   icon_height=icon_size->min_height;
   while ((int) icon_height < icon_size->max_height)
   {
-    if ((int) icon_height >= (DownShift(height*scale_factor)))
+    if (icon_height >= (DownShift(height*scale_factor)))
       break;
     icon_height+=icon_size->height_inc;
   }
@@ -7866,7 +7866,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
         if (!image->matte && !resource_info->color_recovery &&
             resource_info->quantize_info->dither &&
-            (number_colors < MaxColormapSize))
+            ((int) number_colors < MaxColormapSize))
           {
             Image
               *map_image;

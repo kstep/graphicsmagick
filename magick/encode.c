@@ -2241,10 +2241,10 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     c=0x00;
     if (interlace != NoInterlace)
       c|=0x40;  /* pixel data is interlaced */
-    for (j=0; j < (int) 3*colors; j++)
+    for (j=0; j < (int) (3*colors); j++)
       if (colormap[j] != global_colormap[j])
         break;
-    if (j == (int) 3*colors)
+    if (j == (int) (3*colors))
       (void) fputc((char) c,image->file);
     else
       {
@@ -6925,7 +6925,7 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 %  Method WritePNGImage writes an image in the Portable Network Graphics
 %  encoded image format.
 %
-%  MNG support written by Glenn Randers-Pehrson, glennrp@netgsi.com.
+%  MNG support written by Glenn Randers-Pehrson, randeg@alum.rpi.edu
 %
 %  The format of the WritePNGImage routine is:
 %
@@ -6944,11 +6944,12 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 %
 */
 
-/* To do (as of version 4.2.3, 25 April 1999 -- glennrp):
+/* To do (as of version 4.2.4, 06 May 1999 -- glennrp):
  *
  *   Figure out what to do with "dispose=<restore-to-previous>"
  *   This will be complicated if we limit ourselves to generating
- *   MNG-LC files.
+ *   MNG-LC files.  For now we ignore the disposal method and
+ *   simply overlay the next image on it.
  *
  *   Check for identical PLTE's and use a global MNG PLTE when
  *   appropriate.
@@ -7021,6 +7022,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     have_global_chrm,
     need_defi,
     need_fram,
+    need_iterations,
     need_matte;
 
   register int
@@ -7083,14 +7085,14 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       page_info.x=0;
       page_info.y=0;
       next_image=image;
-      have_global_srgb=0;
-      have_global_plte=0;
-      have_global_gamma=0;
-      have_global_chrm=0;
-      need_geom=1;
-      need_defi=0;
-      need_fram=0;
-      need_matte=0;
+      have_global_srgb=False;
+      have_global_plte=False;
+      have_global_gamma= False;
+      have_global_chrm=False;
+      need_geom=True;
+      need_defi=False;
+      need_fram=False;
+      need_matte=False;
       framing_mode=1;
       old_framing_mode=1;
 
@@ -7099,12 +7101,13 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          /* Get specified global "page" geometry.  */
           (void) XParseGeometry(image_info->page,&page_info.x,&page_info.y,
             &page_info.width,&page_info.height);
-          need_geom=0;
+          need_geom=False;
         }
 
       /* check all the scenes */
 
       initial_delay = image->delay;
+      need_iterations=False;
 
       for (next_image=image; next_image != (Image *) NULL; )
         {
@@ -7127,39 +7130,43 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 page_info.height=next_image->rows+page_info.y;
             }
           if (page_info.x || page_info.y)
-            {
-               need_defi=1;
-            }
+               need_defi=True;
           if (next_image->matte)
-            {
-               need_matte=1;
-            }
+               need_matte=True;
           if (next_image->dispose == 2)
-            {
-               need_fram=1;
-            }
+               need_fram=True;
+          if (next_image->iterations)
+               need_iterations = True;
           final_delay = next_image->delay;
           if(final_delay != initial_delay) need_fram=1;
           next_image=next_image->next;
+
        }
 
-       if(need_fram == 0)
+       if(!need_fram)
         {
           /*  Only certain framing rates 100/n are exactly representable without
            *  the FRAM chunk but we'll allow some slop in VLC files */
 
-          if(final_delay == 0)ticks_per_second=0;
+          if(final_delay == 0)
+            {
+              if(need_iterations)
+                /* it's probably a GIF with loop; don't run it *too* fast */
+                final_delay=10;
+              else
+                ticks_per_second=0;
+            }
           if(final_delay > 0)ticks_per_second = 100/final_delay;
           if(final_delay > 50) ticks_per_second = 2;
           if(final_delay > 75) ticks_per_second = 1;
-          if(final_delay > 125) need_fram=1;
+          if(final_delay > 125) need_fram=True;
 
-          if(need_defi == 1 && final_delay > 2 && final_delay != 4 &&
+          if(need_defi && final_delay > 2 && final_delay != 4 &&
              final_delay != 5 && final_delay != 10 && final_delay != 20 &&
              final_delay != 25 && final_delay != 50 && final_delay != 100)
-                need_fram=1;  /* make it exact since we cannot have VLC anyway */
+                need_fram=True;  /* make it exact; we cannot have VLC anyway */
         }
-       if(need_fram > 0)
+       if(need_fram)
           ticks_per_second = 100;
  
       /* If pseudocolor, we should also check to see if all the
@@ -7207,7 +7214,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           (void) strcpy((char *) chunk,"TERM");
           chunk[4]=3;  /* repeat animation */
           chunk[5]=0;  /* show last frame when done */
-          PNGLong(chunk+6, (png_uint_32)((final_delay+1)*ticks_per_second)/100);
+          PNGLong(chunk+6, (png_uint_32)(0L));
           PNGLong(chunk+10, (png_uint_32)image->iterations);
           (void) fwrite(chunk,1,14,image->file);
           MSBFirstWriteLong(crc32(0,chunk,14),image->file);
@@ -7218,7 +7225,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   delay=0;
   do
   {
-    if(need_defi == 1)
+    if(need_defi)
       {
         int
           previous_x,
@@ -7954,7 +7961,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        (void) fprintf(image->file,"%ld\n",MaxRGB);
+        (void) fprintf(image->file,"%d\n",MaxRGB);
         for (i=0; i < (int) image->packets; i++)
         {
           index=DownScale(Intensity(*p));
@@ -7980,7 +7987,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        (void) fprintf(image->file,"%ld\n",MaxRGB);
+        (void) fprintf(image->file,"%d\n",MaxRGB);
         for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
@@ -8056,7 +8063,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        (void) fprintf(image->file,"%u\n",DownScale(MaxRGB));
+        (void) fprintf(image->file,"%lu\n",DownScale(MaxRGB));
         for (i=0; i < (int) image->packets; i++)
         {
           index=DownScale(Intensity(*p));
@@ -8087,7 +8094,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        (void) fprintf(image->file,"%u\n",DownScale(MaxRGB));
+        (void) fprintf(image->file,"%lu\n",DownScale(MaxRGB));
         q=pixels;
         for (i=0; i < (int) image->packets; i++)
         {
@@ -8193,7 +8200,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a P7 image.
         */
         (void) fprintf(image->file,"#END_OF_COMMENTS\n");
-        (void) fprintf(image->file,"%u %u %ld\n",image->columns,image->rows,
+        (void) fprintf(image->file,"%u %u %d\n",image->columns,image->rows,
           MaxRGB);
         i=0;
         j=0;
@@ -9309,9 +9316,9 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   (void) fprintf(image->file,"ffffff%02x",(unsigned int)
                     Min(length,0xff));
                 else
-                  (void) fprintf(image->file,"%02x%02x%02x%02x",
+                  (void) fprintf(image->file,"%02lx%02lx%02lx%02lx",
                     DownScale(p->red),DownScale(p->green),DownScale(p->blue),
-                    (unsigned int) Min(length,0xff));
+                    (unsigned long) Min(length,0xff));
                 x++;
                 if (x == 9)
                   {
@@ -9338,8 +9345,8 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 if (image->matte && (p->index == Transparent))
                   (void) fprintf(image->file,"ffffff");
                 else
-                  (void) fprintf(image->file,"%02x%02x%02x",DownScale(p->red),
-                    DownScale(p->green),DownScale(p->blue));
+                  (void) fprintf(image->file,"%02lx%02lx%02lx",
+                    DownScale(p->red),DownScale(p->green),DownScale(p->blue));
                 x++;
                 if (x == 12)
                   {
@@ -9371,7 +9378,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               {
                 for (j=0; j <= ((int) p->length); j++)
                 {
-                  (void) fprintf(image->file,"%02x",DownScale(p->red));
+                  (void) fprintf(image->file,"%02lx",DownScale(p->red));
                   x++;
                   if (x == 36)
                     {
@@ -9466,7 +9473,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           */
           (void) fprintf(image->file,"%u\n",image->colors);
           for (i=0; i < (int) image->colors; i++)
-            (void) fprintf(image->file,"%02x%02x%02x\n",
+            (void) fprintf(image->file,"%02lx%02lx%02lx\n",
               DownScale(image->colormap[i].red),
               DownScale(image->colormap[i].green),
               DownScale(image->colormap[i].blue));
@@ -10172,7 +10179,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if (IsFaxImage(image))
+      if (IsFaxImage(image) && (compression != LZWCompression))
         {
           register unsigned char
             bit,
@@ -10248,7 +10255,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           */
           (void) fprintf(image->file,"%u\n",image->colors);
           for (i=0; i < (int) image->colors; i++)
-            (void) fprintf(image->file,"%02x%02x%02x\n",
+            (void) fprintf(image->file,"%02lx%02lx%02lx\n",
               DownScale(image->colormap[i].red),
               DownScale(image->colormap[i].green),
               DownScale(image->colormap[i].blue));

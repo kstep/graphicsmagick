@@ -2713,7 +2713,7 @@ Export unsigned char* PICTDecodeImage(const Image *image,int bytes_per_line,
   if (pixels == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   scanline=(unsigned char *)
-    AllocateMemory((bytes_per_line+100)*sizeof(unsigned char));
+    AllocateMemory((bytes_per_line+65535)*sizeof(unsigned char));
   if (scanline == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   if (bytes_per_line < 8)

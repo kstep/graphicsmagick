@@ -1617,8 +1617,8 @@ Export void CoalesceImages(Image *image)
           "Memory allocation failed");
         return;
       }
-    p->columns=bounding_box.x2-bounding_box.x1;
-    p->rows=bounding_box.y2-bounding_box.y1;
+    p->columns=(unsigned int) (bounding_box.x2-bounding_box.x1);
+    p->rows=(unsigned int) (bounding_box.y2-bounding_box.y1);
     p->packets=p->columns*p->rows;
     p->pixels=(RunlengthPacket *) ReallocateMemory((char *)
       p->pixels,p->packets*sizeof(RunlengthPacket));
@@ -1639,10 +1639,10 @@ Export void CoalesceImages(Image *image)
       }
     matte=p->matte;
     SetImage(p);
-    CompositeImage(p,ReplaceCompositeOp,p->previous,previous_box.x1-
-      bounding_box.x1,previous_box.y1-bounding_box.y1);
+    CompositeImage(p,ReplaceCompositeOp,p->previous,(int) (previous_box.x1-
+      bounding_box.x1),(int) (previous_box.y1-bounding_box.y1));
     CompositeImage(p,cloned_image->matte ? OverCompositeOp : ReplaceCompositeOp,
-      cloned_image,x-bounding_box.x1,y-bounding_box.y1);
+      cloned_image,(int) (x-bounding_box.x1),(int) (y-bounding_box.y1));
     DestroyImage(cloned_image);
     p->matte=matte;
     CondenseImage(p);
@@ -12973,9 +12973,9 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
     density=0.0;
     n=0;
     center=(double) x/x_factor;
-    start=center-support+0.5;
-    end=center+support+0.5;
-    for (i=Max(start,0); i < Min(end,source->columns); i++)
+    start=(int) (center-support+0.5);
+    end=(int) (center+support+0.5);
+    for (i=Max(start,0); i < Min(end,(int) source->columns); i++)
     {
       contribution_info[n].pixel=i;
       contribution_info[n].weight=
@@ -13072,9 +13072,9 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
     density=0.0;
     n=0;
     center=(double) y/y_factor;
-    start=center-support+0.5;
-    end=center+support+0.5;
-    for (i=Max(start,0); i < Min(end,source->rows); i++)
+    start=(int) (center-support+0.5);
+    end=(int) (center+support+0.5);
+    for (i=Max(start,0); i < Min(end,(int) source->rows); i++)
     {
       contribution_info[n].pixel=i;
       contribution_info[n].weight=

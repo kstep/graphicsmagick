@@ -8059,7 +8059,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
         /*
           Check boundary conditions.
         */
-        if (pan_info.x < (pan_info.width >> 1))
+        if (pan_info.x < (int) (pan_info.width >> 1))
           pan_info.x=0;
         else
           pan_info.x=DownShift((pan_info.x-(pan_info.width >> 1))*x_factor);
@@ -8069,7 +8069,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
           if ((int) (pan_info.x+windows->image.width) >
               windows->image.ximage->width)
             pan_info.x=windows->image.ximage->width-windows->image.width;
-        if (pan_info.y < (pan_info.height >> 1))
+        if (pan_info.y < (int) (pan_info.height >> 1))
           pan_info.y=0;
         else
           pan_info.y=DownShift((pan_info.y-(pan_info.height >> 1))*y_factor);

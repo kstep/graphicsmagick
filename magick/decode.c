@@ -2759,7 +2759,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    if (scene < (int) (fits_header.number_scenes-1))
+    if (scene < (fits_header.number_scenes-1))
       {
         /*
           Allocate next image structure.
@@ -9646,7 +9646,7 @@ Export Image *ReadPLASMAImage(const ImageInfo *image_info)
 %  returns it.  It allocates the memory necessary for the new Image structure
 %  and returns a pointer to the new image.
 %
-%  MNG support written by Glenn Randers-Pehrson, glennrp@netgsi.com.
+%  MNG support written by Glenn Randers-Pehrson, randeg@alum.rpi.edu
 %
 %  The format of the ReadPNGImage routine is:
 %
@@ -9663,8 +9663,8 @@ Export Image *ReadPLASMAImage(const ImageInfo *image_info)
 %
 */
 
-/* To do, more or less in chronological order (as of version 4.2.3,
- *   03 May 1999 -- glennrp):
+/* To do, more or less in chronological order (as of version 4.2.4,
+ *   06 May 1999 -- glennrp):
  *
  *   (At this point, decode is supposed to be in full MNG-LC compliance)
  *
@@ -9767,6 +9767,33 @@ static void PNGWarning(png_struct *ping,png_const_charp message)
 }
 #endif
 
+typedef struct _Mng
+{
+#define MAX_MNG_OBJECTS 256
+  /* This is temporary until I set up malloc'ed object buffer.
+     Recompile with MAX_MNG_OBJECTS = 65536 to avoid this limit.
+     For now we are only dealing with MNG-LC, so the max could
+     actually be one. */
+
+  long
+    object_left_clip[MAX_MNG_OBJECTS],
+    object_right_clip[MAX_MNG_OBJECTS],
+    object_top_clip[MAX_MNG_OBJECTS],
+    object_bottom_clip[MAX_MNG_OBJECTS],
+    x_off[MAX_MNG_OBJECTS],
+    y_off[MAX_MNG_OBJECTS];
+
+  unsigned char
+
+    /* These flags could be combined into one byte */
+    exists[MAX_MNG_OBJECTS],
+    frozen[MAX_MNG_OBJECTS],
+    noshow[MAX_MNG_OBJECTS];
+
+  /* put buffer pointer array here.  Buffers can probably be of type Image */
+
+} Mng;
+
 Export Image *ReadPNGImage(const ImageInfo *image_info)
 {
   ColorPacket
@@ -9779,11 +9806,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     page_geometry[MaxTextExtent];
 
   int
-    first_mng_object,
-    have_page,
-    noshow,
-    object_id,
-    skip_to_iend,
     y;
 
   register int
@@ -9806,46 +9828,30 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   png_struct
     *ping;
 
+  Mng
+    *m;
+
   unsigned char
     *png_pixels,
     **scanlines;
 
-  long
-    default_left_fb, default_right_fb, default_top_fb, default_bottom_fb,
-    left_fb, right_fb, top_fb, bottom_fb,
-    previous_left_fb, previous_right_fb, previous_top_fb, previous_bottom_fb,
-    left_clip, right_clip, top_clip, bottom_clip;
-
-#define MAX_MNG_OBJECTS 2
-  /* This is temporary until I set up malloc'ed object buffer.
-     Recompile with MAX_MNG_OBJECTS = 65536 to avoid this limit.
-     For now we are only dealing with MNG-LC, so the max could
-     actually be one. */
-  long
-    object_left_clip[MAX_MNG_OBJECTS],
-    object_right_clip[MAX_MNG_OBJECTS],
-    object_top_clip[MAX_MNG_OBJECTS],
-    object_bottom_clip[MAX_MNG_OBJECTS];
-
   unsigned int
-    framing_mode,
-    mandatory_back, red_back, green_back, blue_back,
-    mng_type,   /* 0: PNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
-    simplicity,
     status;
 
   unsigned long
-    length,
-    delay, default_frame_delay, final_delay, frame_delay,
-    frame_timeout, default_frame_timeout,
-    image_width, image_height,
-    subframe_width, subframe_height,
     max_packets,
-    ticks_per_second;
+    length;
 
   unsigned short
     index,
     value;
+
+  unsigned long
+    delay, default_frame_delay, final_delay, frame_delay,
+    frame_timeout, default_frame_timeout,
+    image_width, image_height,
+    subframe_width, subframe_height,
+    ticks_per_second;
 
   int
     have_global_chromaticity,
@@ -9872,6 +9878,26 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   ColorPacket
     mng_background_color;
 
+  unsigned int
+    framing_mode,
+    mandatory_back, red_back, green_back, blue_back,
+    mng_type,   /* 0: PNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
+    simplicity;
+
+  int
+    first_mng_object,
+    image_found,
+    have_page,
+    object_id,
+    term_chunk_found,
+    skip_to_iend;
+
+  long
+    default_left_fb, default_right_fb, default_top_fb, default_bottom_fb,
+    left_fb, right_fb, top_fb, bottom_fb,
+    previous_left_fb, previous_right_fb, previous_top_fb, previous_bottom_fb,
+    left_clip, right_clip, top_clip, bottom_clip;
+
   /*
     Allocate image structure.
   */
@@ -9884,6 +9910,25 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   OpenImage(image_info,image,ReadBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
+
+  /*
+    Allocate a Mng structure.
+  */
+  m=(Mng *)AllocateMemory(sizeof(Mng));
+  for (i=0; i<MAX_MNG_OBJECTS; i++)
+    {
+      m->exists[i]=False;
+      m->noshow[i]=False;
+      m->frozen[i]=False;
+      m->x_off[i]=0;
+      m->y_off[i]=0;
+      m->object_left_clip[i]=0;
+      m->object_top_clip[i]=0;
+      /* MNG spec allows 2G, but X-lib only 65535 */
+      m->object_right_clip[i]=65535;
+      m->object_bottom_clip[i]=65535;
+    }
+
   first_mng_object=0;
   if (Latin1Compare(image_info->magick,"MNG") == 0)
     {
@@ -9895,7 +9940,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       */
       (void) ReadData(magic_number,1,8,image->file);
       if (strncmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
-        PrematureExit(CorruptImageWarning,"Not a MNG image file",image);
+        {
+          FreeMemory((char *) m);
+          PrematureExit(CorruptImageWarning,"Not a MNG image file",image);
+        }
 
       first_mng_object=1;
     }
@@ -9906,8 +9954,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   ticks_per_second=100;
   have_page=0;
   object_id=0;
-  noshow = False;
+  m->noshow[0] = False;
   skip_to_iend = False;
+  term_chunk_found = False;
+  image_found = False;
   framing_mode=1;
   mandatory_back=0;
   have_global_gamma=0;
@@ -9961,11 +10011,16 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             p+=4;
             ticks_per_second=(unsigned long)
               (p[0] << 24)+(p[1] << 16)+(p[2] << 8)+p[3];
-            if(ticks_per_second == 0)default_frame_delay=100000;
+            if(ticks_per_second == 0)default_frame_delay=0;
             else default_frame_delay=100/ticks_per_second;
+            if(length > 16)
+              {
             p+=16;
             simplicity=(unsigned long)
               (p[0] << 24)+(p[1] << 16)+(p[2] << 8)+p[3];
+              }
+            else
+              simplicity = 0;
             mng_type=1;    /* Full MNG */
             if(simplicity != 0 && (simplicity | 11) == 11)
                mng_type=2; /* LC */
@@ -9980,23 +10035,31 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 if (image->next == (Image *) NULL)
                   {
                     DestroyImages(image);
+                    FreeMemory((char *) m);
                     return((Image *) NULL);
                   }
                 image=image->next;
               }
+
+            if(mng_width > 65535 || mng_height > 65535)
+              MagickWarning(DelegateWarning,
+                "Image dimensions are too large.", (char *) NULL);
+
             FormatString(page_geometry,"%lux%lu+%ld+%ld",mng_width,
                mng_height, 0, 0);
 
             left_clip = default_left_fb   = previous_left_fb   = 0;
-            right_clip = default_right_fb  = previous_right_fb  = mng_width;
+            right_clip = default_right_fb  = previous_right_fb
+               = mng_width;
             top_clip = default_top_fb    = previous_top_fb    = 0;
-            bottom_clip = default_bottom_fb = previous_bottom_fb = mng_height;
+            bottom_clip = default_bottom_fb = previous_bottom_fb
+               = mng_height;
             for (i=0; i<MAX_MNG_OBJECTS; i++)
               {
-                object_left_clip[i]=left_clip;
-                object_right_clip[i]=right_clip;
-                object_top_clip[i]=top_clip;
-                object_bottom_clip[i]=bottom_clip;
+                m->object_left_clip[i]=left_clip;
+                m->object_right_clip[i]=right_clip;
+                m->object_top_clip[i]=top_clip;
+                m->object_bottom_clip[i]=bottom_clip;
               }
 
             FreeMemory((char *) chunk);
@@ -10021,6 +10084,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     (p[8] << 8)|p[9]);
                 if (image_info->iterations == (char *) NULL)
                     image->iterations=iterations;
+                term_chunk_found = True;
               }
             FreeMemory((char *) chunk);
             continue;
@@ -10028,8 +10092,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
         if (strncmp(type,"DEFI",4) == 0)
           {
-            int
-              x_off, y_off;
             if(mng_type == 3)
               MagickWarning(DelegateWarning,
                  "DEFI chunk found in MNG-VLC datastream",(char *) NULL);
@@ -10040,24 +10102,37 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
             if(object_id > MAX_MNG_OBJECTS)
               {
+              /* Instead of issuing a warning we should allocate a larger
+                 Mng structure and continue. */
               MagickWarning(DelegateWarning,
                  "object_id too large",(char *) NULL);
               object_id = MAX_MNG_OBJECTS;
               }
 
+            if(m->exists[object_id])
+              {
+              if(m->frozen[object_id])
+                 /* This is an error */
+                 ;
+              /* free the old one */
+              }
+            m->exists[object_id] = True;
+
             if (length>2)
-                  noshow=p[2];
+                  m->noshow[object_id]=p[2];
+            else
+                  m->noshow[object_id]=False;
             /*
               Extract object offset info.
             */
             if (length>11)
               {
-                x_off=(int)((p[4] << 24)|(p[5] << 16)|
+                m->x_off[object_id]=(int)((p[4] << 24)|(p[5] << 16)|
                   (p[6] << 8)|p[7]);
-                y_off=(int)((p[8] << 24)|(p[9] << 16)|
+                m->y_off[object_id]=(int)((p[8] << 24)|(p[9] << 16)|
                   (p[10] << 8)|p[11]);
-                FormatString(page_geometry,"%lux%lu+%ld+%ld",mng_width,mng_height,
-                  x_off, y_off);
+                FormatString(page_geometry,"%lux%lu+%ld+%ld",mng_width,
+                  mng_height,m->x_off[object_id], m->y_off[object_id]);
                 have_page=1;
               }
             /*
@@ -10065,14 +10140,14 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             */
             if (length>27)
               {
-                object_left_clip[object_id]=(int)((p[12] << 24)|(p[13] << 16)|
-                  (p[14] << 8)|p[15]);
-                object_right_clip[object_id]=(int)((p[16] << 24)|(p[17] << 16)|
-                  (p[18] << 8)|p[19]);
-                object_top_clip[object_id]=(int)((p[20] << 24)|(p[21] << 16)|
-                  (p[22] << 8)|p[23]);
-                object_bottom_clip[object_id]=(int)((p[24] << 24)|(p[25] << 16)|
-                  (p[26] << 8)|p[27]);
+                m->object_left_clip[object_id]=(int)((p[12] << 24)|
+                  (p[13] << 16)| (p[14] << 8)|p[15]);
+                m->object_right_clip[object_id]=(int)((p[16] << 24)|
+                  (p[17] << 16)| (p[18] << 8)|p[19]);
+                m->object_top_clip[object_id]=(int)((p[20] << 24)|
+                  (p[21] << 16)| (p[22] << 8)|p[23]);
+                m->object_bottom_clip[object_id]=(int)((p[24] << 24)|
+                  (p[25] << 16)| (p[26] << 8)|p[27]);
               }
             FreeMemory((char *) chunk);
             continue;
@@ -10111,10 +10186,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 }
             for (   ; i<256; i++)
               {
-                global_plte[i].red=0;
-                global_plte[i].green=0;
-                global_plte[i].blue=0;
+                global_plte[i].red=i;
+                global_plte[i].green=i;
+                global_plte[i].blue=i;
               }
+
+            have_global_plte = True;
 
             FreeMemory((char *) chunk);
             continue;
@@ -10141,7 +10218,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             int igamma = (int)((p[0] << 24)|(p[1] << 16)| (p[2] << 8)|p[3]);
 
             global_gamma = ((float)igamma+0.5)*0.00001;
-            have_global_gamma = 1;
+            have_global_gamma = True;
 
             FreeMemory((char *) chunk);
             continue;
@@ -10297,9 +10374,15 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               if (image->next == (Image *) NULL)
                 {
                   DestroyImages(image);
+                  FreeMemory((char *) m);
                   return((Image *) NULL);
                 }
               image=image->next;
+              if(term_chunk_found)
+                {
+                  image->restart_animation_here = True;
+                  term_chunk_found=False;
+                }
 
               image->columns=subframe_width;
               image->rows=subframe_height;
@@ -10313,6 +10396,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 {
                   MagickWarning(ResourceLimitWarning,
                     "Memory allocation failed", (char *) NULL);
+                  FreeMemory((char *) m);
                   return((Image *) NULL);
                 }
               image->background_color = mng_background_color;
@@ -10340,12 +10424,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         if (strncmp(type,"IHDR",4) != 0)
           continue;
 
-        if(noshow)
+        if(m->noshow[object_id])
           {
             /* DEFI "noshow" flag only persists for one embedded object
                when object_id is zero.  For other object_id's, it remains
                in effect until reset by another DEFI chunk. */  
-            if (!object_id)noshow=0;
+            if (object_id == 0)m->noshow[object_id]=False;
             skip_to_iend = True;
             continue;
           }
@@ -10372,9 +10456,15 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 if (image->next == (Image *) NULL)
                   {
                     DestroyImages(image);
+                    FreeMemory((char *) m);
                     return((Image *) NULL);
                   }
                 image=image->next;
+                if(term_chunk_found)
+                  {
+                    image->restart_animation_here = True;
+                    term_chunk_found=False;
+                  }
 
                 image->delay=0;
                 image->columns=subframe_width;
@@ -10390,6 +10480,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   {
                     MagickWarning(ResourceLimitWarning,"Memory allocation failed",
                       (char *) NULL);
+                    FreeMemory((char *) m);
                     return((Image *) NULL);
                   }
                 image->background_color = mng_background_color;
@@ -10418,8 +10509,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 image->delay=0;
                 image->columns=mng_width;
                 image->rows=mng_height;
-                FormatString(background_page_geometry,"%lux%lu+%ld+%ld",mng_width,
-                  mng_height, 0, 0);
+                FormatString(background_page_geometry,"%lux%lu+%ld+%ld",
+                  mng_width, mng_height, 0, 0);
                 image->page=PostscriptGeometry(background_page_geometry);
                 image->packets=image->columns*image->rows;
                 image->pixels=(RunlengthPacket *)
@@ -10428,6 +10519,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   {
                     MagickWarning(ResourceLimitWarning,"Memory allocation failed",
                       (char *) NULL);
+                    FreeMemory((char *) m);
                     return((Image *) NULL);
                   }
                 image->background_color = mng_background_color;
@@ -10451,9 +10543,15 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             if (image->next == (Image *) NULL)
               {
                 DestroyImages(image);
+                FreeMemory((char *) m);
                 return((Image *) NULL);
               }
             image=image->next;
+              if(term_chunk_found)
+                {
+                  image->restart_animation_here = True;
+                  term_chunk_found=False;
+                }
             ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
               (unsigned int) image->filesize);
           }
@@ -10509,13 +10607,16 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         if ((image->columns == 0) || (image->rows == 0))
           {
             DestroyImage(image);
+            FreeMemory((char *) m);
             return((Image *) NULL);
           }
+        FreeMemory((char *) m);
         return(image);
       }
     /*
       Prepare PNG for reading.
     */
+    image_found = True;
     png_init_io(ping,image->file);
     if (Latin1Compare(image_info->magick,"MNG") == 0)
       png_set_sig_bytes(ping,8);
@@ -10588,8 +10689,20 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         png_get_PLTE(ping, ping_info, &palette, &num_palette);
         if(num_palette == 0)
           {
-           png_set_PLTE(ping, ping_info, global_plte, 768);
+            if(!have_global_plte)
+              {
+                /* make a grayscale PLTE */
+                for (i=0; i<256; i++)
+                  {
+                    global_plte[i].red=i;
+                    global_plte[i].green=i;
+                    global_plte[i].blue=i;
+                  }
+                have_global_plte = True;
+              }
+            png_set_PLTE(ping, ping_info, global_plte, 256);
            if (!(ping_info->valid & PNG_INFO_tRNS))
+              if(have_global_trns)
               png_set_tRNS(ping, ping_info, global_trns, 256, NULL);
           }
       }
@@ -10617,9 +10730,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     */
     if(mng_type == 0)
       {
-        object_left_clip[0] = object_top_clip[0] = left_clip = top_clip = 0;
-        object_right_clip[0] = right_clip = ping_info->width;
-        object_bottom_clip[0] = bottom_clip = ping_info->height;
+        m->object_left_clip[0] = m->object_top_clip[0] = left_clip
+          = top_clip = 0;
+        m->object_right_clip[0] = right_clip = ping_info->width;
+        m->object_bottom_clip[0] = bottom_clip = ping_info->height;
       }
     image->compression=ZipCompression;
     image->columns=(unsigned int) ping_info->width;
@@ -10636,6 +10750,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       {
         png_destroy_read_struct(&ping,&ping_info,&end_info);
         CloseImage(image);
+        FreeMemory((char *) m);
         return(image);
       }
     packets=0;
@@ -10967,21 +11082,19 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         int
           right_image_clip,
           bottom_image_clip;
-
         /*
            frame clipping (from DEFI, FRAM and MHDR)
          */
-
-        crop_info.x = (int)object_left_clip[object_id];
+        crop_info.x = (int)m->object_left_clip[object_id];
         if(left_clip  > crop_info.x)
            crop_info.x = left_clip;
-        crop_info.y = (int)object_top_clip[object_id];
+        crop_info.y = (int)m->object_top_clip[object_id];
         if(top_clip  > crop_info.y)
            crop_info.y = top_clip;
-        right_image_clip = (int)object_right_clip[object_id];
+        right_image_clip = (int)m->object_right_clip[object_id];
         if(right_clip  < right_image_clip)
            right_image_clip = right_clip;
-        bottom_image_clip = (int)object_bottom_clip[object_id];
+        bottom_image_clip = (int)m->object_bottom_clip[object_id];
         if(bottom_clip  < bottom_image_clip)
            bottom_image_clip = bottom_clip;
         crop_info.width = (unsigned int)(right_image_clip - crop_info.x);
@@ -10990,14 +11103,25 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         MNGCrop(image, &crop_info);
         MNGCoalesce(image);
       }
-
   } while (Latin1Compare(image_info->magick,"MNG") == 0);
 
-  image->delay=100*final_delay/ticks_per_second;
-
+  if(ticks_per_second)
+     image->delay+=100*final_delay/ticks_per_second;
+  else
+     image->delay=final_delay;
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseImage(image);
+  if (!image_found)
+    {
+      MagickWarning(DelegateWarning,
+        "No visible images in file",image_info->filename);
+      if (image != (Image *) NULL)
+        DestroyImage(image);
+      FreeMemory((char *) m);
+      return((Image *) NULL);
+    }
+  FreeMemory((char *) m);
   return(image);
 }
 #else
@@ -11812,7 +11936,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
     /*
       Set Postscript render geometry.
     */
-    FormatString(translate_geometry,"%g %g translate\n",-bounding_box.x1,
+    FormatString(translate_geometry,"%f %f translate\n",-bounding_box.x1,
       -bounding_box.y1);
     width=(unsigned int) (bounding_box.x2-bounding_box.x1+1);
     if ((float) ((int) bounding_box.x2) != bounding_box.x2)
@@ -12011,9 +12135,6 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
   Image
     *image;
 
-  int
-    number_layers;
-
   LayerInfo
     *layer_info;
 
@@ -12032,6 +12153,9 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
 
   register RunlengthPacket
     *q;
+
+  short int
+    number_layers;
 
   unsigned int
     status;

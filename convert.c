@@ -539,7 +539,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing box color",option);
-                  (void) CloneString(&image_info.border_color,argv[i]);
+                  (void) CloneString(&image_info.box,argv[i]);
                 }
               break;
             }

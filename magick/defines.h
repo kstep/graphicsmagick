@@ -43,7 +43,7 @@ extern "C" {
 #define DirectorySeparator  ""
 #define DirectoryListSeparator  ';'
 #define EditorOptions  ""
-#define Exit(errno)  errno ? exit(-1) : exit(0)
+#define Exit  exit
 #define IsBasenameSeparator(c)  ((c) == ']')
 #define IsGlob(text) \
   ((strchr(text,'*') != (char *) NULL) || \
@@ -124,7 +124,8 @@ extern "C" {
     (((int) (color).green-(int) (target).green)* \
      ((int) (color).green-(int) (target).green))+ \
     (((int) (color).blue-(int) (target).blue)* \
-     ((int) (color).blue-(int) (target).blue))) <= (distance*distance))
+     ((int) (color).blue-(int) (target).blue))) <= \
+     (unsigned long) (distance*distance))
 #define DownShift(x) (((unsigned long) ((x)+(1L << 13))) >> 14)
 #define Extent(string)  ((int) strlen(string))
 #define False  0
