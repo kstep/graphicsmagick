@@ -1785,9 +1785,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   assert(image_info->filename != (char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   GetExceptionInfo(exception);
+  if (*image_info->filename == '@')
+    return(ReadImages(image_info,exception));
   clone_info=CloneImageInfo(image_info);
-  if (*clone_info->filename == '@')
-    return(ReadImages(clone_info,exception));
   SetImageInfo(clone_info,False,exception);
   (void) strcpy(filename,clone_info->filename);
   /*
@@ -1830,8 +1830,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         }
       (void) strcpy(image->filename,clone_info->filename);
       TemporaryFilename(clone_info->filename);
-      status=
-        InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
+      status=InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
       ThrowException(exception,image->exception.severity,
         image->exception.reason,image->exception.description);
       DestroyImages(image);
