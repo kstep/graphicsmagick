@@ -492,11 +492,7 @@ static void XShearImage(Image *image,const double degrees,
 
   double
     alpha,
-    blue,
-    displacement,
-    green,
-    opacity,
-    red;
+    displacement;
 
   enum {LEFT, RIGHT}
     direction;
@@ -612,44 +608,17 @@ static void XShearImage(Image *image,const double degrees,
               q++;
               continue;
             }
-          red=(double) (pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
-          green=(double) (pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
-          blue=(double) (pixel.blue*(MaxRGB-alpha)+p->blue*alpha)/MaxRGB;
-          opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-            p->opacity*alpha)/MaxRGB;
-          q->red=(Quantum)
-            ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-          q->green=(Quantum)
-            ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-          q->blue=(Quantum)
-            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-          q->opacity=(Quantum)
-            ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+          *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
           pixel=(*p);
           p++;
           q++;
         }
-        /*
-          Set old row to background color.
-        */
-        red=(double) (pixel.red*(MaxRGB-alpha)+
-          image->background_color.red*alpha)/MaxRGB;
-        green=(double) (pixel.green*(MaxRGB-alpha)+
-          image->background_color.green*alpha)/MaxRGB;
-        blue=(double) (pixel.blue*(MaxRGB-alpha)+
-          image->background_color.blue*alpha)/MaxRGB;
-        opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-          image->background_color.opacity*alpha)/MaxRGB;
-        q->red=(Quantum)
-          ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-        q->green=(Quantum)
-          ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-        q->blue=(Quantum)
-          ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-        q->opacity=(Quantum)
-          ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
-        for (i=0; i < (step-1); i++)
-          *++q=image->background_color;
+        for (i=0; i < step; i++)
+        {
+          *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+            image->background_color.opacity);
+          q++;
+        }
         break;
       }
       case RIGHT:
@@ -668,43 +637,15 @@ static void XShearImage(Image *image,const double degrees,
           q--;
           if ((x_offset+width+step-i) >= image->columns)
             continue;
-          red=(double) (pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
-          green=(double) (pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
-          blue=(double) (pixel.blue*(MaxRGB-alpha)+p->blue*alpha)/MaxRGB;
-          opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-            p->opacity*alpha)/MaxRGB;
-          q->red=(Quantum)
-            ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-          q->green=(Quantum)
-            ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-          q->blue=(Quantum)
-            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-          q->opacity=(Quantum)
-            ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+          *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
           pixel=(*p);
         }
-        /*
-          Set old row to background color.
-        */
-        q--;
-        red=(double) (pixel.red*(MaxRGB-alpha)+
-          image->background_color.red*alpha)/MaxRGB;
-        green=(double) (pixel.green*(MaxRGB-alpha)+
-          image->background_color.green*alpha)/MaxRGB;
-        blue=(double) (pixel.blue*(MaxRGB-alpha)+
-          image->background_color.blue*alpha)/MaxRGB;
-        opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-          image->background_color.opacity*alpha)/MaxRGB;
-        q->red=(Quantum)
-          ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-        q->green=(Quantum)
-          ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-        q->blue=(Quantum)
-          ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-        q->opacity=(Quantum)
-          ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
-        for (i=0; i < (step-1); i++)
-          *--q=image->background_color;
+        for (i=0; i < step; i++)
+        {
+          q--;
+          *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+            image->background_color.opacity);
+        }
         break;
       }
     }
@@ -757,11 +698,7 @@ static void YShearImage(Image *image,const double degrees,
 
   double
     alpha,
-    blue,
-    displacement,
-    green,
-    opacity,
-    red;
+    displacement;
 
   enum {UP, DOWN}
     direction;
@@ -870,44 +807,17 @@ static void YShearImage(Image *image,const double degrees,
         q=p-step;
         for (i=0; i < (long) height; i++)
         {
-          red=(double) (pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
-          green=(double) (pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
-          blue=(double) (pixel.blue*(MaxRGB-alpha)+p->blue*alpha)/MaxRGB;
-          opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-            p->opacity*alpha)/MaxRGB;
-          q->red=(Quantum)
-            ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-          q->green=(Quantum)
-            ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-          q->blue=(Quantum)
-            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-          q->opacity=(Quantum)
-            ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+          *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
           pixel=(*p);
           p++;
           q++;
         }
-        /*
-          Set old column to background color.
-        */
-        red=(double) (pixel.red*(MaxRGB-alpha)+
-          image->background_color.red*alpha)/MaxRGB;
-        green=(double) (pixel.green*(MaxRGB-alpha)+
-          image->background_color.green*alpha)/MaxRGB;
-        blue=(double) (pixel.blue*(MaxRGB-alpha)+
-          image->background_color.blue*alpha)/MaxRGB;
-        opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-          image->background_color.opacity*alpha)/MaxRGB;
-        q->red=(Quantum)
-          ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-        q->green=(Quantum)
-          ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-        q->blue=(Quantum)
-          ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-        q->opacity=(Quantum)
-          ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
-        for (i=0; i < (step-1); i++)
-          *++q=image->background_color;
+        for (i=0; i < step; i++)
+        {
+          *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+            image->background_color.opacity);
+          q++;
+        }
         break;
       }
       case DOWN:
@@ -926,43 +836,15 @@ static void YShearImage(Image *image,const double degrees,
           q--;
           if ((y_offset+height+step-i) >= image->rows)
             continue;
-          red=(double) (pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
-          green=(double) (pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
-          blue=(double) (pixel.blue*(MaxRGB-alpha)+p->blue*alpha)/MaxRGB;
-          opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-            p->opacity*alpha)/MaxRGB;
-          q->red=(Quantum)
-            ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-          q->green=(Quantum)
-            ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-          q->blue=(Quantum)
-            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-          q->opacity=(Quantum)
-            ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+          *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
           pixel=(*p);
         }
-        /*
-          Set old column to background color.
-        */
-        q--;
-        red=(double) (pixel.red*(MaxRGB-alpha)+
-          image->background_color.red*alpha)/MaxRGB;
-        green=(double) (pixel.green*(MaxRGB-alpha)+
-          image->background_color.green*alpha)/MaxRGB;
-        blue=(double) (pixel.blue*(MaxRGB-alpha)+
-          image->background_color.blue*alpha)/MaxRGB;
-        opacity=(double) (pixel.opacity*(MaxRGB-alpha)+
-          image->background_color.opacity*alpha)/MaxRGB;
-        q->red=(Quantum)
-          ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-        q->green=(Quantum)
-          ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-        q->blue=(Quantum)
-          ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-        q->opacity=(Quantum)
-          ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
-        for (i=0; i < (step-1); i++)
-          *--q=image->background_color;
+        for (i=0; i < step; i++)
+        {
+          q--;
+          *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+            image->background_color.opacity);
+        }
         break;
       }
     }

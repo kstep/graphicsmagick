@@ -88,6 +88,7 @@ typedef enum
 }
 PathMode;
 
+
 struct _DrawContext
 {
   /* Support structures */
