@@ -1391,11 +1391,12 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 MagickExport unsigned int QueryColorDatabase(const char *name,
   PixelPacket *color,ExceptionInfo *exception)
 {
-  int
+  double
     blue,
     green,
     opacity,
-    red;
+    red,
+    scale;
 
   register const ColorInfo
     *p;
@@ -1421,9 +1422,12 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       long
         n;
 
-      green=0;
-      blue=0;
-      opacity=(-1);
+      LongPixelPacket
+        pixel;
+
+      pixel.green=0;
+      pixel.blue=0;
+      pixel.opacity=(-1);
       name++;
       for (n=0; isxdigit((int) name[n]); n++);
       if ((n == 3) || (n == 6) || (n == 9) || (n == 12))
@@ -1434,21 +1438,21 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
           n/=3;
           do
           {
-            red=green;
-            green=blue;
-            blue=0;
+            pixel.red=pixel.green;
+            pixel.green=pixel.blue;
+            pixel.blue=0;
             for (i=n-1; i >= 0; i--)
             {
               c=(*name++);
-              blue<<=4;
+              pixel.blue<<=4;
               if ((c >= '0') && (c <= '9'))
-                blue|=c-'0';
+                pixel.blue|=c-'0';
               else
                 if ((c >= 'A') && (c <= 'F'))
-                  blue|=c-('A'-10);
+                  pixel.blue|=c-('A'-10);
                 else
                   if ((c >= 'a') && (c <= 'f'))
-                    blue|=c-('a'-10);
+                    pixel.blue|=c-('a'-10);
                   else
                     return(False);
             }
@@ -1465,45 +1469,38 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
             n/=4;
             do
             {
-              red=green;
-              green=blue;
-              blue=opacity;
+              pixel.red=pixel.green;
+              pixel.green=pixel.blue;
+              pixel.blue=pixel.opacity;
               opacity=0;
               for (i=n-1; i >= 0; i--)
               {
                 c=(*name++);
-                opacity<<=4;
+                pixel.opacity<<=4;
                 if ((c >= '0') && (c <= '9'))
-                  opacity|=c-'0';
+                  pixel.opacity|=c-'0';
                 else
                   if ((c >= 'A') && (c <= 'F'))
-                    opacity|=c-('A'-10);
+                    pixel.opacity|=c-('A'-10);
                   else
                     if ((c >= 'a') && (c <= 'f'))
-                      opacity|=c-('a'-10);
+                      pixel.opacity|=c-('a'-10);
                     else
                       return(False);
               }
             } while (isxdigit((int) *name));
           }
       n<<=2;
-      color->red=(Quantum) ((unsigned long) (MaxRGB*red)/((1 << n)-1));
-      color->green=(Quantum) ((unsigned long) (MaxRGB*green)/((1 << n)-1));
-      color->blue=(Quantum) ((unsigned long) (MaxRGB*blue)/((1 << n)-1));
+      color->red=(Quantum) (((double) MaxRGB*pixel.red)/((1 << n)-1));
+      color->green=(Quantum) (((double) MaxRGB*pixel.green)/((1 << n)-1));
+      color->blue=(Quantum) (((double) MaxRGB*pixel.blue)/((1 << n)-1));
       color->opacity=OpaqueOpacity;
-      if (opacity >= 0)
-        color->opacity=(Quantum)
-          ((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
+      if (pixel.opacity >= 0)
+        color->opacity=(Quantum) (((double) MaxRGB*pixel.opacity)/((1 << n)-1));
       return(True);
     }
   if (LocaleNCompare(name,"rgb(",4) == 0)
     {
-      double
-        blue,
-        green,
-        red,
-        scale;
-
       scale=strchr(name,'%') == (char *) NULL ? 1.0 :
         ScaleQuantumToChar(MaxRGB)/100.0;
       (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf",&red,&green,&blue);
@@ -1515,13 +1512,6 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
     }
   if (LocaleNCompare(name,"rgba(",5) == 0)
     {
-      double
-        blue,
-        green,
-        opacity,
-        red,
-        scale;
-
       scale=strchr(name,'%') == (char *) NULL ? 1.0 :
         ScaleQuantumToChar(MaxRGB)/100.0;
       (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf",&red,&green,
