@@ -1348,19 +1348,20 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) x/x_factor;
-    start=center-support;
-    end=center+support;
+    start=center-support+0.5;
+    end=center+support+0.5;
     for (i=Max(start,0); i < (int) Min(end,source->columns); i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function((i-center)/scale_factor);
+      contribution[n].weight=
+        filter_info->function((i-center+0.5)/scale_factor);
       contribution[n].weight/=scale_factor;
       density+=contribution[n].weight;
       n++;
     }
-    if ((density != 0.0) && (density != 1.0))
-      for (i=0; i < n; i++)
-        contribution[i].weight/=density;  /* normalize */
+    density=density == 0.0 ? 1.0 : 1.0/density;
+    for (i=0; i < n; i++)
+      contribution[i].weight*=density;  /* normalize */
     p=GetImagePixels(source,contribution[0].pixel,0,
       contribution[n-1].pixel-contribution[0].pixel+1,source->rows);
     q=SetImagePixels(destination,x,0,1,destination->rows);
@@ -1485,19 +1486,20 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) y/y_factor;
-    start=center-support;
-    end=center+support;
+    start=center-support+0.5;
+    end=center+support+0.5;
     for (i=Max(start,0); i < (int) Min(end,source->rows); i++)
     {
       contribution[n].pixel=i;
-      contribution[n].weight=filter_info->function((i-center)/scale_factor);
+      contribution[n].weight=
+        filter_info->function((i-center+0.5)/scale_factor);
       contribution[n].weight/=scale_factor;
       density+=contribution[n].weight;
       n++;
     }
-    if ((density != 0.0) && (density != 1.0))
-      for (i=0; i < n; i++)
-        contribution[i].weight/=density;  /* normalize */
+    density=density == 0.0 ? 1.0 : 1.0/density;
+    for (i=0; i < n; i++)
+      contribution[i].weight*=density;  /* normalize */
     p=GetImagePixels(source,0,contribution[0].pixel,source->columns,
       contribution[n-1].pixel-contribution[0].pixel+1);
     q=SetImagePixels(destination,0,y,destination->columns,1);
