@@ -927,7 +927,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
                   value[n]='\0';
                   for (a=0; a < n; a++)
                   {
-                    if (isprint(pval[a]) || (pval[a] == '\0'))
+                    if (isprint((int) pval[a]) || (pval[a] == '\0'))
                       value[a]=pval[a];
                     else
                       value[a]='.';
