@@ -1656,6 +1656,7 @@ MagickExport Image *XAnimateImages(Display *display,
     event.xexpose.width=images[scene]->columns;
     event.xexpose.height=images[scene]->rows;
     XRefreshWindow(display,&windows->image,&event);
+    XDelay(display,(unsigned long) resource_info->delay*10*Max(image->delay,1));
   }
   if (windows->command.mapped)
     XMapRaised(display,windows->command.id);
