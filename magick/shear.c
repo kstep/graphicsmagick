@@ -144,7 +144,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
           for (x=0; x < (int) image->columns; x++)
             rotate_image->indexes[x]=image->indexes[x];
         if (!SyncPixelCache(rotate_image))
-          return((Image *) NULL);
+          break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
@@ -167,7 +167,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
           for (x=0; x < (int) image->columns; x++)
             rotate_image->indexes[x]=image->indexes[x];
         if (!SyncPixelCache(rotate_image))
-          return((Image *) NULL);
+          break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
@@ -182,7 +182,6 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
       {
         p=GetPixelCache(image,0,y,image->columns,1);
         q=SetPixelCache(rotate_image,0,image->rows-y-1,image->columns,1);
-          return((Image *) NULL);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
@@ -192,7 +191,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
           for (x=0; x < (int) image->columns; x++)
             rotate_image->indexes[image->columns-x-1]=image->indexes[x];
         if (!SyncPixelCache(rotate_image))
-          return((Image *) NULL);
+          break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
@@ -216,7 +215,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
           for (x=0; x < (int) image->columns; x++)
             rotate_image->indexes[image->columns-x-1]=image->indexes[x];
         if (!SyncPixelCache(rotate_image))
-          return((Image *) NULL);
+          break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
@@ -351,7 +350,8 @@ static void XShearImage(Image *image,const double degrees,
             break;
           }
         }
-        (void) SyncPixelCache(image);
+        if (!SyncPixelCache(image))
+          break;
         continue;
       }
     /*
@@ -449,7 +449,8 @@ static void XShearImage(Image *image,const double degrees,
         break;
       }
     }
-    (void) SyncPixelCache(image);
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,height))
       ProgressMonitor(XShearImageText,y,height);
   }
@@ -581,7 +582,8 @@ static void YShearImage(Image *image,const double degrees,
             break;
           }
         }
-        (void) SyncPixelCache(image);
+        if (!SyncPixelCache(image))
+          break;
         continue;
       }
     /*
@@ -673,7 +675,8 @@ static void YShearImage(Image *image,const double degrees,
         break;
       }
     }
-    (void) SyncPixelCache(image);
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,width))
       ProgressMonitor(YShearImageText,y,width);
   }
@@ -765,8 +768,6 @@ Export Image *RotateImage(Image *image,const double degrees)
   /*
     Calculate shear equations.
   */
-  shear.x=(-tan(DegreesToRadians(angle)/2.0));
-  shear.y=sin(DegreesToRadians(angle));
   integral_image=IntegralRotateImage(image,rotations);
   if (integral_image == (Image *) NULL)
     {
@@ -774,6 +775,8 @@ Export Image *RotateImage(Image *image,const double degrees)
         "Memory allocation failed");
       return((Image *) NULL);
     }
+  shear.x=(-tan(DegreesToRadians(angle)/2.0));
+  shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
   /*
@@ -804,9 +807,9 @@ Export Image *RotateImage(Image *image,const double degrees)
       width=image->rows;
       height=image->columns;
     }
-  y_width=(unsigned int) (width+ceil(height*fabs(shear.x)));
-  x_offset=(int) ((width+2.0*ceil(height*fabs(shear.y))-width+1)/2.0);
-  y_offset=(int) ((height+ceil(y_width*fabs(shear.y))-height+1)/2.0);
+  y_width=width+ceil(height*fabs(shear.x));
+  x_offset=width+2.0*ceil(height*fabs(shear.y))-width;
+  y_offset=height+ceil(y_width*fabs(shear.y))-height;
   /*
     Surround image with a border.
   */
@@ -915,8 +918,6 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
   /*
     Initialize shear angle.
   */
-  shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
-  shear.y=sin(DegreesToRadians(y_shear));
   integral_image=IntegralRotateImage(image,0);
   if (integral_image == (Image *) NULL)
     {
@@ -924,6 +925,8 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
         "Memory allocation failed");
       return((Image *) NULL);
     }
+  shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
+  shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
   /*
@@ -946,10 +949,9 @@ Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
   /*
     Compute image size.
   */
-  y_width=(unsigned int) (image->columns+ceil(image->rows*fabs(shear.x)));
-  x_offset=(int)
-    ((image->columns+2.0*ceil(image->rows*fabs(shear.y))-image->columns+1)/2.0);
-  y_offset=(int) ((image->rows+ceil(y_width*fabs(shear.y))-image->rows+1)/2.0);
+  y_width=image->columns+ceil(image->rows*fabs(shear.x));
+  x_offset=image->columns+ceil(2*image->rows*fabs(shear.y))-image->columns;
+  y_offset=image->rows+ceil(y_width*fabs(shear.y))-image->rows;
   /*
     Surround image with border.
   */

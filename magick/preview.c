@@ -190,8 +190,6 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
         FormatString(label,"rotate %.1024s",factor);
         commands[argc++]="-rotate";
         commands[argc++]=factor;
-        commands[argc++]="-crop";
-        commands[argc++]="0x0";
         break;
       }
       case ShearPreview:
@@ -201,8 +199,6 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
         FormatString(label,"shear %.1024s",factor);
         commands[argc++]="-shear";
         commands[argc++]=factor;
-        commands[argc++]="-crop";
-        commands[argc++]="0x0";
         break;
       }
       case RollPreview:
@@ -364,8 +360,8 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       {
         if (i == 0)
           {
-            (void) strcpy(factor,"30.0x30.0");
-            (void) FormatString(label,"+shade %.1024s",factor);
+            FormatString(factor,"30.0x30.0");
+            FormatString(label,"+shade %.1024s",factor);
             commands[argc++]="+shade";
             commands[argc++]=factor;
             break;
