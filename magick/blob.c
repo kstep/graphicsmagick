@@ -924,13 +924,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   image->exempt=False;
   if (image_info->fifo !=
       (int (*)(const Image *,const void *,const size_t)) NULL)
-    {
-      /*
-        Use stream fifo.
-      */
-      image->fifo=image_info->fifo;
-      image->exempt=True;
-    }
+    image->fifo=image_info->fifo;  /* image stream */
   if (image_info->file != (FILE *) NULL)
     {
       /*

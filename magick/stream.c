@@ -187,8 +187,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
     }
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  if ((image->storage_class != GetCacheClass(image->cache)) ||
-      (image->colorspace != GetCacheColorspace(image->cache)))
+  if (stream_info->type == UndefinedCache)
     {
       ThrowException(exception,CacheWarning,"Pixel cache is not open",
         image->filename);
@@ -481,11 +480,10 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   for (p=image; p != (Image *) NULL; p=p->next)
-  {
     DestroyPixelStream(p);
-    GetCacheInfo(&p->cache);
-  }
   ResetPixelCacheMethods();
+  for (p=image; p != (Image *) NULL; p=p->next)
+    GetCacheInfo(&p->cache);
   return(image);
 }
 
