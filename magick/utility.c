@@ -1759,7 +1759,7 @@ MagickExport int ParseGeometry(const char *geometry,long *x,long *y,
         }
     }
   if (*p != '\0')
-    return(0);
+    return(NoValue);
   if (mask & XValue)
     *x=bounds.x;
   if (mask & YValue)

@@ -2982,9 +2982,6 @@ MagickExport unsigned int GradientImage(Image *image,
 */
 MagickExport unsigned int IsGeometry(const char *geometry)
 {
-  double
-    value;
-
   long
     x,
     y;
@@ -2998,8 +2995,8 @@ MagickExport unsigned int IsGeometry(const char *geometry)
 
   if (geometry == (const char *) NULL)
     return(False);
-  flags=ParseGeometry((char *) geometry,&x,&y,&width,&height);
-  return((flags != NoValue) || (sscanf(geometry,"%lf",&value) > 0));
+  flags=GetGeometry((char *) geometry,&x,&y,&width,&height);
+  return(flags != NoValue);
 }
 
 /*

@@ -338,26 +338,28 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   } PSDImageType;
 
 /*
-	enum {
-		layerNormal		= 'norm',
-		layerDarken		= 'dark',
-		layerLighten	= 'lite',
-		layerHue		= 'hue ',
-		layerSaturation	= 'sat ',
-		layerColor		= 'colr',
-		layerLuminosity	= 'lum ',
-		layerMultiply	= 'mul ',
-		layerScreen		= 'scrn',
-		layerDissolve	= 'diss',
-		layerOverlay	= 'over',
-		layerHardLight	= 'hLit',
-		layerSoftLight	= 'sLit',
-		layerDifference	= 'diff',
-		layerExclusion	= 'smud',
-		layerDodge		= 'div ',
-		layerBurn		= 'idiv'
-	};
+  enum
+  {
+    layerNormal    = 'norm',
+    layerDarken    = 'dark',
+    layerLighten  = 'lite',
+    layerHue    = 'hue ',
+    layerSaturation  = 'sat ',
+    layerColor    = 'colr',
+    layerLuminosity  = 'lum ',
+    layerMultiply  = 'mul ',
+    layerScreen    = 'scrn',
+    layerDissolve  = 'diss',
+    layerOverlay  = 'over',
+    layerHardLight  = 'hLit',
+    layerSoftLight  = 'sLit',
+    layerDifference  = 'diff',
+    layerExclusion  = 'smud',
+    layerDodge    = 'div ',
+    layerBurn    = 'idiv'
+  };
 */
+
   typedef struct _ChannelInfo
   {
     short int
@@ -458,8 +460,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int
     packet_size,
-    status,
-	skip_first_alpha = 0;
+    skip_first_alpha = 0,
+    status;
 
   unsigned short
     compression,
@@ -512,10 +514,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image);
       image->matte=psd_info.channels >= 2;
     }
-
   /*
-    Read PSD raster colormap
-		only present for indexed and duotone images
+    Read PSD raster colormap only present for indexed and duotone images.
   */
   length=ReadBlobMSBLong(image);
   if (length != 0)
@@ -523,8 +523,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (psd_info.mode == DuotoneMode)
         {
           /*
-            Duotone image data.
-            	the actual format of this data is undocumented :(
+            Duotone image data;  the format of this data is undocumented.
           */
           data=(unsigned char *) AcquireMemory(length);
           if (data == (unsigned char *) NULL)
@@ -551,10 +550,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   /*
-    Image resources.
-		Currently we simply load this up into the IPTC block for
-		access by other methods.  In the future, we may need to access
-		parts of it ourselves to support newer features of PSD.
+    Image resources.  Currently we simply load this up into the IPTC
+    block for access by other methods.  In the future, we may need to
+    access parts of it ourselves to support newer features of PSD.
   */
   length=ReadBlobMSBLong(image);
   if (length != 0)
@@ -569,16 +567,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->iptc_profile.info=data;
       image->iptc_profile.length=length;
     }
-
   /*
-	If we are only "pinging" the image, then we're done - so return.
+    If we are only "pinging" the image, then we're done - so return.
   */
   if (image_info->ping)
     {
       CloseBlob(image);
       return(image);
     }
-
   /*
     Layer and mask block.
   */
@@ -594,10 +590,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       size=ReadBlobMSBLong(image);
       number_layers=(short) ReadBlobMSBShort(image);
-	  if ( number_layers < 0 ) {	/* weird hack in PSD format to ignore first alpha channel */
-		skip_first_alpha = 1;
-		number_layers=AbsoluteValue(number_layers);
-	  }
+      if (number_layers < 0)
+        {
+          /*
+            Weird hack in PSD format to ignore first alpha channel.
+          */
+          skip_first_alpha=1;
+          number_layers=AbsoluteValue(number_layers);
+        }
       layer_info=(LayerInfo *) AcquireMemory(number_layers*sizeof(LayerInfo));
       if (layer_info == (LayerInfo *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -640,24 +640,20 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (ReadBlobMSBLong(image)-layer_info[i].mask.y);
                 layer_info[i].mask.width=
                   (ReadBlobMSBLong(image)-layer_info[i].mask.x);
-
-				/* 
-					BOGUS
-					Skip over the rest of the layer mask information!
-
-					NOTE: for adjustment layers, the width and/or height
-						  can be zero!!
-				*/
+                /* 
+                  BOGUS Skip over the rest of the layer mask information!
+                  NOTE: for adjustment layers, the width and/or height
+                  can be zero!!
+                */
                 for (j=0; j < (long) (length-16); j++)
                   (void) ReadBlobByte(image);
               }
 
-			/* 
-				BOGUS
-				Skip the rest of the variable data until we support it.
-				this is where layer name, layer blending ranges,
-							  adjustment layers, layer effects, 
-							  text layers, etc. are found!
+            /* 
+              BOGUS Skip the rest of the variable data until we
+              support it.  this is where layer name, layer blending
+              ranges, adjustment layers, layer effects, text layers,
+              etc. are found!
             */
             for (j=0; j < (long) (size-length-4); j++)
               (void) ReadBlobByte(image);
@@ -742,12 +738,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pixel=XUpscale(ReadBlobMSBShort(layer_info[i].image));
               switch (layer_info[i].channel_info[j].type)
               {
-                case -1:	/* transparency mask */
+                case -1:  /* transparency mask */
                 {
                   q->opacity=(Quantum) (MaxRGB-pixel);
                   break;
                 }
-                case 0:		/* first component (Red, Cyan, Gray or Index) */
+                case 0:  /* first component (Red, Cyan, Gray or Index) */
                 {
                   q->red=pixel;
                   if (layer_info[i].image->storage_class == PseudoClass)
@@ -757,7 +753,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     }
                   break;
                 }
-                case 1:		/* second component (Green, Magenta, or opacity) */
+                case 1:  /* second component (Green, Magenta, or opacity) */
                 {
                   if (layer_info[i].image->storage_class == PseudoClass)
                     q->opacity=pixel;
@@ -765,17 +761,17 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     q->green=pixel;
                   break;
                 }
-                case 2:		/* third component (Blue or Yellow) */
+                case 2:  /* third component (Blue or Yellow) */
                 {
                   q->blue=pixel;
                   break;
                 }
-                case 3:		/* fourth component (Opacity or Black) */
+                case 3:  /* fourth component (Opacity or Black) */
                 {
                   q->opacity=pixel;
                   break;
                 }
-                case 4:		/* fifth component (opacity) */
+                case 4:  /* fifth component (opacity) */
                 {
                   if (image->colorspace == CMYKColorspace)
                     indexes[x]=pixel;
