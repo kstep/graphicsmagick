@@ -1,5 +1,7 @@
 2005-04-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/pdf.c (WritePDFImage): Integrate fixes for Ghoscript 8.50
+	warning from the 1.1 branch.
 	* magick/tempfile.c (DestroyTemporaryFiles): Back port memory leak
 	fix from version 1.1.
 
