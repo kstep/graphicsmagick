@@ -6,12 +6,11 @@
     <PROJECT value="GM_ttf.dll"/>
     <OBJFILES value="GM_ttf.obj src\base\ftsystem.obj src\base\ftdebug.obj 
       src\base\ftinit.obj src\base\ftbase.obj src\base\ftglyph.obj 
-      src\base\ftmm.obj src\base\ftbdf.obj src\base\fttype1.obj 
-      src\base\ftxf86.obj src\base\ftpfr.obj src\base\ftstroker.obj 
+      src\base\ftmm.obj src\base\ftbdf.obj src\base\ftpfr.obj  
       src\base\ftwinfnt.obj src\base\ftbbox.obj src\autohint\autohint.obj 
       src\bdf\bdf.obj src\cache\ftcache.obj src\cff\cff.obj src\cid\type1cid.obj 
       src\gzip\ftgzip.obj src\pcf\pcf.obj src\pfr\pfr.obj src\psaux\psaux.obj 
-      src\pshinter\pshinter.obj src\psnames\psmodule.obj src\raster\raster.obj 
+      objs\pshinter.obj src\psnames\psmodule.obj src\raster\raster.obj 
       src\sfnt\sfnt.obj src\smooth\smooth.obj src\truetype\truetype.obj 
       src\type1\type1.obj src\type42\type42.obj src\winfonts\winfnt.obj"/>
     <RESFILES value="GM_ttf.res"/>
@@ -33,7 +32,7 @@
     <MAINSOURCE value="GM_ttf.c"/>
     <INCLUDEPATH value="include;src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;..\..\..\ttf;$(BCB)\lib\obj;$(BCB)\lib"/>
-    <WARNINGS value="-w-par -w-aus"/>
+    <WARNINGS value="-w-par -w-aus -w-csu"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
@@ -60,10 +59,7 @@
       <FILE FILENAME="src\base\ftglyph.c" FORMNAME="" UNITNAME="ftglyph.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\base\ftmm.c" FORMNAME="" UNITNAME="ftmm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\base\ftbdf.c" FORMNAME="" UNITNAME="ftbdf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="src\base\fttype1.c" FORMNAME="" UNITNAME="fttype1.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="src\base\ftxf86.c" FORMNAME="" UNITNAME="ftxf86.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\base\ftpfr.c" FORMNAME="" UNITNAME="ftpfr.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="src\base\ftstroker.c" FORMNAME="" UNITNAME="ftstroker.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\base\ftwinfnt.c" FORMNAME="" UNITNAME="ftwinfnt.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\base\ftbbox.c" FORMNAME="" UNITNAME="ftbbox.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\autohint\autohint.c" FORMNAME="" UNITNAME="autohint" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

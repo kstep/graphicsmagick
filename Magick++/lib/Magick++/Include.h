@@ -55,7 +55,8 @@ namespace MagickLib
 }
 
 //
-// Provide appropriate DLL imports/exports for Visual C++ and MinGW builds
+// Provide appropriate DLL imports/exports for Visual C++,
+// Borland C++Builder and MinGW builds
 //
 #if defined(WIN32) && !defined(__CYGWIN__)
 # define MagickWIN32
@@ -71,8 +72,14 @@ namespace MagickLib
 #        pragma message( "Magick++ lib DLL import" )
 #      endif
 #    else
-#      define MagickDLLDecl __declspec(dllexport)
-#      define MagickDLLDeclExtern extern __declspec(dllexport)
+#      if defined(__BORLANDC__)
+#        define MagickDLLDecl __declspec(dllexport)
+#        define MagickDLLDeclExtern __declspec(dllexport)
+#        pragma message( "BCBMagick++ lib DLL export" )
+#      else
+#        define MagickDLLDecl __declspec(dllexport)
+#        define MagickDLLDeclExtern extern __declspec(dllexport)
+#      endif
 #      if defined(_VISUALC_)
 #        pragma message( "Magick++ lib DLL export" )
 #      endif
@@ -88,6 +95,7 @@ namespace MagickLib
 #  define MagickDLLDecl
 #  define MagickDLLDeclExtern
 #endif
+
 
 //
 // Import GraphicsMagick symbols and types which are used as part of the

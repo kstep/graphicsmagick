@@ -23,7 +23,7 @@ jpeglib.lib: ..\..\jpeg\jpeglib.bpr
   $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-lcms.lib: ..\..\lcms\Projects\BCB6\lcms.bpr
+lcms.lib: ..\..\lcms\BCB6\lcms.bpr
   $(ROOT)\bin\bpr2mak -t$(ROOT)\bin\deflib.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

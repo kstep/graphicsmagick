@@ -10,7 +10,7 @@
       deprecate.obj display.obj draw.obj effect.obj enhance.obj error.obj fx.obj 
       gem.obj image.obj list.obj locale.obj log.obj magic.obj magick.obj map.obj 
       memory.obj module.obj monitor.obj montage.obj nt_base.obj nt_feature.obj 
-      paint.obj PreRvIcccm.obj quantize.obj registry.obj render.obj resize.obj 
+      paint.obj PreRvIcccm.obj profile.obj quantize.obj registry.obj render.obj resize.obj 
       resource.obj segment.obj semaphore.obj shear.obj signature.obj static.obj 
       stream.obj tempfile.obj timer.obj transform.obj type.obj utility.obj 
       version.obj widget.obj xwindow.obj ..\coders\art.obj ..\coders\avi.obj 
@@ -118,6 +118,7 @@
       <FILE FILENAME="nt_feature.c" FORMNAME="" UNITNAME="nt_feature.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="paint.c" FORMNAME="" UNITNAME="paint.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="PreRvIcccm.c" FORMNAME="" UNITNAME="PreRvIcccm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="profile.c" FORMNAME="" UNITNAME="profile.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="quantize.c" FORMNAME="" UNITNAME="quantize.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="registry.c" FORMNAME="" UNITNAME="registry.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="render.c" FORMNAME="" UNITNAME="render.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -234,7 +235,7 @@
       <FILE FILENAME="..\coders\yuv.c" FORMNAME="" UNITNAME="yuv.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\bzlib\GM_bzlib.lib" FORMNAME="" UNITNAME="GM_bzlib.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\jpeg\GM_jpeg.lib" FORMNAME="" UNITNAME="GM_jpeg.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\lcms\Projects\BCB6\GM_lcms.lib" FORMNAME="" UNITNAME="GM_lcms.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\lcms\BCB6\GM_lcms.lib" FORMNAME="" UNITNAME="GM_lcms.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\tiff\libtiff\GM_tiff.lib" FORMNAME="" UNITNAME="GM_tiff.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\ttf\GM_ttf.lib" FORMNAME="" UNITNAME="GM_ttf.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\zlib\contrib\BCB6\GM_zlib.lib" FORMNAME="" UNITNAME="GM_zlib.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>

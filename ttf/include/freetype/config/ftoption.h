@@ -176,38 +176,52 @@ FT_BEGIN_HEADER
 #undef FT_EXPORT
 #undef FT_EXPORT_DEF
 
-#if defined(_VISUALC_)
-#ifndef  FT_EXPORT_DEF
-#       if defined(_MT) && defined(_DLL) && !defined(_TTFDLL_) && !defined(_LIB)
-#               define _TTFDLL_
-#       endif
-#       if defined(_TTFDLL_)
-#               pragma warning( disable: 4273 ) /* Disable the stupid dll linkage warnings */
-#               if !defined(_TTFLIB_)
-#     define FT_EXPORT_DEF( x ) __declspec(dllimport) x
-#     define FT_EXPORT( x ) __declspec(dllimport) x
-#               else
-#     define FT_EXPORT_DEF( x ) __declspec(dllexport) x
-#     define FT_EXPORT( x ) __declspec(dllexport) x
-#               endif
-#       else
-#   define FT_EXPORT_DEF( x ) extern x
-#   define FT_EXPORT( x ) extern x
-#       endif
 
-#pragma warning(disable : 4018)
-#pragma warning(disable : 4244)
-#pragma warning(disable : 4142)
+/**
+ ** Borland C++ Builder defines
+ **/
+
+#ifndef  FT_EXPORT_DEF 
+
+#  if defined(__BORLANDC__)
+#    if defined(_DLL)
+#      define _TTFDLL_
+#      define _TTFLIB_
+#    else
+#      undef _TTFDLL_
+#    endif   
+#  endif
+
+#  if defined(_MT) && defined(_DLL) && !defined(_TTFDLL_) && !defined(_LIB)
+#    define _TTFDLL_
+#  endif
+
+#  if defined(_TTFDLL_)
+#    if defined(_VISUALC_)
+#      pragma warning( disable : 4273 ) /* Disable the stupid dll linkage warnings */
+#      pragma warning( disable : 4018 )
+#      pragma warning( disable : 4244 )
+#      pragma warning( disable : 4142 )
+#    endif
+#    if !defined(_TTFLIB_)
+#      define FT_EXPORT_DEF( x ) __declspec(dllimport) x
+#      define FT_EXPORT( x ) __declspec(dllimport) x
+#    else
+#      define FT_EXPORT_DEF( x ) __declspec(dllexport) x
+#      define FT_EXPORT( x ) __declspec(dllexport) x
+#    endif
+#  else
+#    define FT_EXPORT_DEF( x ) extern x
+#    define FT_EXPORT( x ) extern x
+#  endif
 #endif
 
-#else
 #ifndef  FT_EXPORT_DEF
 #define  FT_EXPORT_DEF( x )   extern  x
 #endif
 
 #ifndef  FT_EXPORT_FUNC
 #define  FT_EXPORT_FUNC( x )  extern  x
-#endif
 
 #endif
 

@@ -24,7 +24,7 @@ GM_jpeg.dll: ..\..\jpeg\GM_jpeg.bpr
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-GM_lcms.dll: ..\..\lcms\Projects\BCB6\GM_lcms.bpr
+GM_lcms.dll: ..\..\lcms\BCB6\GM_lcms.bpr
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

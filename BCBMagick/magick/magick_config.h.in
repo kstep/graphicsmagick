@@ -105,6 +105,16 @@
 
 /////////////
 //
+// PREFIX_MAGICK_SYMBOLS
+//
+// Define if the symbols in the GraphicsMagick library should all be
+// prefixed with "Gm" to ensure that there are no conflicts at the
+// library level. Symbol renaming is done using the C preprocessor so
+// there is still risk of conflict at the source level.
+#undef PREFIX_MAGICK_SYMBOLS
+
+/////////////
+//
 // Optional packages
 //
 // All packages except autotrace are included by default in the build.

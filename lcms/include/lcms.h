@@ -272,16 +272,16 @@ extern "C" {
 #else
 # ifdef LCMS_DLL
 #   ifdef __BORLANDC__
-#      define LCMSEXPORT __stdcall _export
-#      define LCMSAPI
+#       define LCMSEXPORT
 #   else
        // VC++
 #       define LCMSEXPORT  _stdcall
-#       ifdef LCMS_DLL_BUILD
-#           define LCMSAPI     __declspec(dllexport)
-#       else
-#           define LCMSAPI     __declspec(dllimport)
-#       endif
+#   endif
+ 
+#   ifdef LCMS_DLL_BUILD
+#       define LCMSAPI     __declspec(dllexport)
+#   else
+#       define LCMSAPI     __declspec(dllimport)
 #   endif
 # else
 #       define LCMSEXPORT cdecl

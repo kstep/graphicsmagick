@@ -1,3 +1,15 @@
+2004-01-16  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick: updated to recent Windows delegate libraries.
+	* BCBMagick: modified build procedure. Removed all unused directories
+	and include files.
+	* lcms/include/lcms.h: Modified to achieve BCBMagick compilation.
+	* tiff/libtiff/tiffio.h: Modified to achieve BCBMagick compilation
+	* ttf/include/freetype/config/ftoption.h: Modified to achieve
+	BCBMagick compilation
+	* Magick++/lib/Magick++/Include.h: Modified to achieve BCBMagick compilation.
+	
+	
 2004-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/wpg.c: Applied patch from Jaroslav Fojtik to support

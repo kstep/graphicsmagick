@@ -1,6 +1,6 @@
 # 
 # ***************************************************************
-# **  GraphicsMagick library - v.1.1 - 03 November 2003        **
+# **  GraphicsMagick library - v.1.1 - 15 January 2004         **
 # **                                                           **
 # **  Porting for compilation with Borland C++Builder 6.0      **
 # **-----------------------------------------------------------**
@@ -54,17 +54,15 @@ copy-all:
   copy $(GMBCB)\jpeg\jpeglib.h $(GMDIR)\jpeg
 
 # lcms		<<<<<<<<<<<<<<<<<<<<
-  @if not exist $(GMDIR)\lcms\Projects\BCB6 mkdir $(GMDIR)\lcms\Projects\BCB6
+  @if not exist $(GMDIR)\lcms\BCB6 mkdir $(GMDIR)\lcms\BCB6
     
-  copy $(GMBCB)\lcms\Projects\BCB6\lcms.bpg $(GMDIR)\lcms\Projects\BCB6
-  copy $(GMBCB)\lcms\Projects\BCB6\lcms.bpr $(GMDIR)\lcms\Projects\BCB6
-  copy $(GMBCB)\lcms\Projects\BCB6\lcms.cpp $(GMDIR)\lcms\Projects\BCB6
-  copy $(GMBCB)\lcms\Projects\BCB6\GM_lcms.bpr $(GMDIR)\lcms\Projects\BCB6
-  copy $(GMBCB)\lcms\Projects\BCB6\GM_lcms.cpp $(GMDIR)\lcms\Projects\BCB6
-  copy $(GMBCB)\lcms\Projects\BCB6\testcms.bpr $(GMDIR)\lcms\Projects\BCB6
-  copy $(GMBCB)\lcms\Projects\BCB6\testcms.cpp $(GMDIR)\lcms\Projects\BCB6
-  copy $(GMBCB)\lcms\include\lcms.h $(GMDIR)\lcms\include\lcms.h
-
+  copy $(GMBCB)\lcms\BCB6\lcms.bpg $(GMDIR)\lcms\BCB6
+  copy $(GMBCB)\lcms\BCB6\lcms.bpr $(GMDIR)\lcms\BCB6
+  copy $(GMBCB)\lcms\BCB6\lcms.cpp $(GMDIR)\lcms\BCB6
+  copy $(GMBCB)\lcms\BCB6\GM_lcms.bpr $(GMDIR)\lcms\BCB6
+  copy $(GMBCB)\lcms\BCB6\GM_lcms.cpp $(GMDIR)\lcms\BCB6
+  copy $(GMBCB)\lcms\BCB6\testcms.bpr $(GMDIR)\lcms\BCB6
+  copy $(GMBCB)\lcms\BCB6\testcms.cpp $(GMDIR)\lcms\BCB6
 
 # magick	<<<<<<<<<<<<<<<<<<<<
   copy $(GMBCB)\magick\libMagick.bpr $(GMDIR)\magick
@@ -79,7 +77,6 @@ copy-all:
   xcopy /Y $(GMBCB)\Magickpp\lib\libMagick.bpf $(GMDIR)\Magick++\lib
   xcopy /Y $(GMBCB)\Magickpp\lib\GM_Magickpp.bpr $(GMDIR)\Magick++\lib
   xcopy /Y $(GMBCB)\Magickpp\lib\GM_Magickpp.cpp $(GMDIR)\Magick++\lib
-  xcopy /Y $(GMBCB)\Magickpp\lib\Magickpp\Include.h $(GMDIR)\Magick++\lib\Magick++
   
 # tiff		<<<<<<<<<<<<<<<<<<<<
   copy $(GMBCB)\tiff\libtiff.bpg $(GMDIR)\tiff
@@ -87,7 +84,6 @@ copy-all:
   copy $(GMBCB)\tiff\libtiff\libtiff.bpf $(GMDIR)\tiff\libtiff
   copy $(GMBCB)\tiff\libtiff\GM_tiff.bpr $(GMDIR)\tiff\libtiff
   copy $(GMBCB)\tiff\libtiff\GM_tiff.c $(GMDIR)\tiff\libtiff
-  copy $(GMBCB)\tiff\libtiff\tiffio.h $(GMDIR)\tiff\libtiff\tiffio.h
   copy $(GMBCB)\tiff\libtiff\tiffconf.h.in $(GMDIR)\tiff\libtiff\tiffconf.h
   
   copy $(GMBCB)\tiff\tools\fax2ps.bpr $(GMDIR)\tiff\tools
@@ -116,7 +112,6 @@ copy-all:
   copy $(GMBCB)\ttf\libttf.bpf $(GMDIR)\ttf
   copy $(GMBCB)\ttf\GM_ttf.bpr $(GMDIR)\ttf
   copy $(GMBCB)\ttf\GM_ttf.c $(GMDIR)\ttf
-  copy $(GMBCB)\ttf\include\freetype\config\ftoption.h $(GMDIR)\ttf\include\freetype\config
   
 # zlib		<<<<<<<<<<<<<<<<<<<<
 
@@ -129,8 +124,6 @@ copy-all:
   copy $(GMBCB)\zlib\contrib\BCB6\d_zlib.cpp $(GMDIR)\zlib\contrib\BCB6
   copy $(GMBCB)\zlib\contrib\BCB6\GM_zlib.bpr $(GMDIR)\zlib\contrib\BCB6
   copy $(GMBCB)\zlib\contrib\BCB6\GM_zlib.cpp $(GMDIR)\zlib\contrib\BCB6
-  copy $(GMBCB)\zlib\zconf.h $(GMDIR)\zlib\zconf.h
-  
 
 # utilities	<<<<<<<<<<<<<<<<<<<<
   copy $(GMBCB)\utilities\gm_lib.bpr $(GMDIR)\utilities
@@ -147,7 +140,7 @@ get-libs:
   
   copy $(GMDIR)\bzlib\libbz2.lib $(GMBCB)\lib
   copy $(GMDIR)\coders\libCoders.lib $(GMBCB)\lib
-  copy $(GMDIR)\lcms\Projects\BCB6\lcms.lib $(GMBCB)\lib
+  copy $(GMDIR)\lcms\BCB6\lcms.lib $(GMBCB)\lib
   copy $(GMDIR)\jpeg\jpeglib.lib $(GMBCB)\lib
   copy $(GMDIR)\magick\libMagick.lib $(GMBCB)\lib
   xcopy /Y $(GMDIR)\Magick++\lib\libMagickpp.lib $(GMBCB)\lib
@@ -167,8 +160,8 @@ get-dlls:
   
   copy $(GMDIR)\bzlib\GM_bzlib.lib $(GMBCB)\dll
   copy $(GMDIR)\bzlib\GM_bzlib.dll $(GMBCB)\dll
-  copy $(GMDIR)\lcms\Projects\BCB6\GM_lcms.lib $(GMBCB)\dll
-  copy $(GMDIR)\lcms\Projects\BCB6\GM_lcms.dll $(GMBCB)\dll
+  copy $(GMDIR)\lcms\BCB6\GM_lcms.lib $(GMBCB)\dll
+  copy $(GMDIR)\lcms\BCB6\GM_lcms.dll $(GMBCB)\dll
   copy $(GMDIR)\jpeg\GM_jpeg.lib $(GMBCB)\dll
   copy $(GMDIR)\jpeg\GM_jpeg.dll $(GMBCB)\dll
   copy $(GMDIR)\magick\GM_magick.lib $(GMBCB)\dll

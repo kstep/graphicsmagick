@@ -5,9 +5,8 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="GM_zlib.dll"/>
     <OBJFILES value="GM_zlib.obj ..\..\adler32.obj ..\..\compress.obj ..\..\crc32.obj 
-      ..\..\deflate.obj ..\..\gzio.obj ..\..\infblock.obj ..\..\infcodes.obj 
-      ..\..\inffast.obj ..\..\inflate.obj ..\..\inftrees.obj ..\..\infutil.obj 
-      ..\..\trees.obj ..\..\uncompr.obj ..\..\zutil.obj"/>
+      ..\..\deflate.obj ..\..\gzio.obj ..\..\inffast.obj ..\..\inflate.obj 
+      ..\..\inftrees.obj ..\..\trees.obj ..\..\uncompr.obj ..\..\zutil.obj"/>
     <RESFILES value="GM_zlib.res"/>
     <IDLFILES value=""/>
     <DEFFILE value=""/>
@@ -28,7 +27,7 @@
     <MAINSOURCE value="GM_zlib.cpp"/>
     <INCLUDEPATH value="..\..;$(BCB)\include"/>
     <LIBPATH value="..\..;$(BCB)\lib"/>
-    <WARNINGS value="-w-par -w-csu -w-aus"/>
+    <WARNINGS value="-w-rch -w-par -w-csu -w-ccc -w-aus"/>
     <WARNOPTSTR value=""/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -57,12 +56,9 @@
       <FILE FILENAME="..\..\crc32.c" FORMNAME="" UNITNAME="crc32" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\deflate.c" FORMNAME="" UNITNAME="deflate" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\gzio.c" FORMNAME="" UNITNAME="gzio" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\infblock.c" FORMNAME="" UNITNAME="infblock" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\infcodes.c" FORMNAME="" UNITNAME="infcodes" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\inffast.c" FORMNAME="" UNITNAME="inffast" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\inflate.c" FORMNAME="" UNITNAME="inflate" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\inftrees.c" FORMNAME="" UNITNAME="inftrees" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\infutil.c" FORMNAME="" UNITNAME="infutil" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\trees.c" FORMNAME="" UNITNAME="trees" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\uncompr.c" FORMNAME="" UNITNAME="uncompr" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\zutil.c" FORMNAME="" UNITNAME="zutil" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

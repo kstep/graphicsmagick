@@ -5,11 +5,10 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="libttf.lib"/>
     <OBJFILES value="objs\ftsystem.obj objs\ftdebug.obj objs\ftinit.obj objs\ftbase.obj 
-      objs\ftglyph.obj objs\ftmm.obj objs\ftbdf.obj objs\fttype1.obj 
-      objs\ftxf86.obj objs\ftpfr.obj objs\ftstroker.obj objs\ftwinfnt.obj 
+      objs\ftglyph.obj objs\ftmm.obj objs\ftbdf.obj objs\ftpfr.obj objs\ftwinfnt.obj 
       objs\ftbbox.obj objs\autohint.obj objs\bdf.obj objs\ftcache.obj 
-      objs\cff.obj objs\type1cid.obj objs\ftgzip.obj objs\pcf.obj objs\pfr.obj 
-      objs\psaux.obj objs\pshinter.obj objs\psmodule.obj objs\raster.obj 
+      objs\cff.obj objs\type1cid.obj src\gzip\ftgzip.obj objs\pcf.obj objs\pfr.obj objs\psaux.obj 
+      objs\pshinter.obj objs\psmodule.obj src\raster\raster.obj 
       objs\sfnt.obj objs\smooth.obj objs\truetype.obj objs\type1.obj 
       objs\type42.obj objs\winfnt.obj"/>
     <RESFILES value=""/>
@@ -53,10 +52,7 @@
       <FILE FILENAME="src\base\ftglyph.c" FORMNAME="" UNITNAME="ftglyph.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\base\ftmm.c" FORMNAME="" UNITNAME="ftmm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\base\ftbdf.c" FORMNAME="" UNITNAME="ftbdf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="src\base\fttype1.c" FORMNAME="" UNITNAME="fttype1.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="src\base\ftxf86.c" FORMNAME="" UNITNAME="ftxf86.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\base\ftpfr.c" FORMNAME="" UNITNAME="ftpfr.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="src\base\ftstroker.c" FORMNAME="" UNITNAME="ftstroker.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\base\ftwinfnt.c" FORMNAME="" UNITNAME="ftwinfnt.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\base\ftbbox.c" FORMNAME="" UNITNAME="ftbbox.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="src\autohint\autohint.c" FORMNAME="" UNITNAME="autohint" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
