@@ -829,8 +829,8 @@ static void Histogram(CubeInfo *cube_info,const NodeInfo *node_info,FILE *file)
       p=node_info->list;
       for (i=0; i < (int) node_info->number_unique; i++)
       {
-        (void) fprintf(file,"%10llu: (%5d,%5d,%5d)  #%04x%04x%04x",
-          p->count,p->red,p->green,p->blue,(unsigned int) p->red,
+        (void) fprintf(file,"%10d: (%5d,%5d,%5d)  #%04x%04x%04x",
+          (int) p->count,p->red,p->green,p->blue,(unsigned int) p->red,
           (unsigned int) p->green,(unsigned int) p->blue);
         (void) fprintf(file,"  ");
         color.red=p->red;
