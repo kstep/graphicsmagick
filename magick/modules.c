@@ -3,6 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%               M   M   OOO   DDDD   U   U  L      EEEEE  SSSSS               %
+%               MM MM  O   O  D   D  U   U  L      E      SS                  %
+%               M M M  O      D   D  U   U  L      EEE     SSS                %
+%               M   M  O   O  D   D  U   U  L      E         SS               %
+%               M   M   OOO   DDDD    UUU   LLLLL  EEEEE  SSSSS               %
 %                                                                             %
 %                                                                             %
 %                        ImageMagick Module Methods                           %
