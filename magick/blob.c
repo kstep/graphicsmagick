@@ -724,6 +724,52 @@ MagickExport void CloseBlob(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y B l o b                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyBlob() deallocates memory associated with a blob.
+%
+%  The format of the DestroyBlob method is:
+%
+%      void DestroyBlob(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport void DestroyBlob(Image *image)
+{
+  assert(image != (Image *) NULL);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->signature == MagickSignature);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &image->blob->semaphore);
+  image->blob->reference_count--;
+  if (image->blob->reference_count > 0)
+    {
+      LiberateSemaphoreInfo((SemaphoreInfo **) &image->blob->semaphore);
+      return;
+    }
+  LiberateSemaphoreInfo((SemaphoreInfo **) &image->blob->semaphore);
+  if (image->blob->type != UndefinedStream)
+    CloseBlob(image);
+  if (image->blob->mapped)
+    (void) UnmapBlob(image->blob->data,image->blob->length);
+  if (image->blob->semaphore != (SemaphoreInfo **) NULL)
+    DestroySemaphoreInfo((SemaphoreInfo **) &image->blob->semaphore);
+  memset((void *) image->blob,0xbf,sizeof(BlobInfo));
+  MagickFreeMemory(image->blob);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y B l o b I n f o                                             %
 %                                                                             %
 %                                                                             %
@@ -731,6 +777,7 @@ MagickExport void CloseBlob(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DestroyBlobInfo() deallocates memory associated with an BlobInfo structure.
+%  Use of DestroyBlob is preferred over this function.
 %
 %  The format of the DestroyBlobInfo method is:
 %

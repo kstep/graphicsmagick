@@ -447,7 +447,7 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(image->next->filename,image->filename,MaxTextExtent-1);
   if (image_info != (ImageInfo *) NULL)
     (void) strncpy(image->next->filename,image_info->filename,MaxTextExtent-1);
-  DestroyBlobInfo(image->next->blob);
+  DestroyBlob(image->next);
   image->next->blob=ReferenceBlob(image->blob);
   image->next->scene=image->scene+1;
   image->next->previous=image;
@@ -2303,7 +2303,7 @@ MagickExport void DestroyImage(Image *image)
   DestroyExceptionInfo(&image->exception);
   if (image->ascii85 != (Ascii85Info *) NULL)
     MagickFreeMemory(image->ascii85);
-  DestroyBlobInfo(image->blob);
+  DestroyBlob(image);
   if (image->semaphore)
     DestroySemaphoreInfo((SemaphoreInfo **) &image->semaphore);
   memset((void *)image,0xbf,sizeof(Image));

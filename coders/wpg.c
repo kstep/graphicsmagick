@@ -696,7 +696,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   strncpy(image2->magick_filename,image->magick_filename,MaxTextExtent-1);
   strncpy(image2->magick,image->magick,MaxTextExtent-1);
   image2->depth=image->depth;
-  DestroyBlobInfo(image2->blob);
+  DestroyBlob(image2);
   image2->blob=ReferenceBlob(image->blob);
 
   if ((image->rows == 0) || (image->columns == 0))

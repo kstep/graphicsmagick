@@ -938,7 +938,7 @@ MagickExport Image *SyncNextImageInList(const Image *images)
     return((Image *) NULL);
   if (images->blob != images->next->blob)
     {
-      DestroyBlobInfo(images->next->blob);
+      DestroyBlob(images->next);
       images->next->blob=ReferenceBlob(images->blob);
     }
   return(images->next);

@@ -124,6 +124,7 @@ extern MagickExport void
   SetBlobClosable(Image *image, unsigned int closable),
   SetBlobTemporary(Image *image, unsigned int isTemporary),
   CloseBlob(Image *image),
+  DestroyBlob(Image *image),
   DestroyBlobInfo(BlobInfo *blob),
   DetachBlob(BlobInfo *blob),
   *FileToBlob(const char *filename,size_t *length,ExceptionInfo *exception),

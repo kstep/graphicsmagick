@@ -1,3 +1,15 @@
+2004-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/png.c (WriteOneJNGImage): Use DestroyBlob.
+	* magick/list.c (SyncNextImageInList): Use DestroyBlob.
+	* magick/image.c (AllocateNextImage): Use DestroyBlob.
+	(DestroyImage): DestroyBlob.
+	* coders/wpg.c (ExtractPostscript): Use DestroyBlob.
+	* magick/blob.c (DestroyBlob): New function. Similar to
+	DestroyBlobInfo except that it requires an Image * argument and
+	zeros the blob pointer. This one is preferred for use over
+	DestroyBlobInfo.
+
 2004-01-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c: Add DestroyBlobInfo() calls to stop memory leak when
