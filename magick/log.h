@@ -46,6 +46,7 @@ typedef enum
   ResourceEventMask = 0x0800,
   TemporaryFileEventMask = 0x01000,
   ExceptionEventMask = 0x02000,
+  OptionEventMask = 0x04000,
   AllEventsMask = 0x7FFFFFFF
 } LogEventType;
 

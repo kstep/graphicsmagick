@@ -65,7 +65,7 @@ typedef enum
 typedef struct _OutputInfo
 {
   char *name;
-  LogOutputType type;
+  LogOutputType mask;
 } OutputInfo;
 
 typedef struct _LogInfo
@@ -99,7 +99,8 @@ typedef struct _LogInfo
 typedef struct _EventInfo
 {
   char *name;
-  LogEventType type;
+  LogEventType mask;
+  ExceptionType type;
 } EventInfo;
 
 /*
@@ -123,22 +124,23 @@ static const char
 
 static const EventInfo eventmask_map[] =
   {
-    { "none", NoEventsMask },
-    { "configure", ConfigureEventMask },
-    { "annotate", AnnotateEventMask },
-    { "render", RenderEventMask },
-    { "transform", TransformEventMask },
-    { "locale", LocaleEventMask },
-    { "coder", CoderEventMask },
-    { "x11", X11EventMask },
-    { "cache", CacheEventMask },
-    { "blob", BlobEventMask },
-    { "deprecate", DeprecateEventMask },
-    { "user", UserEventMask },
-    { "resource", ResourceEventMask },
-    { "temporaryfile", TemporaryFileEventMask },
-    { "exception", ExceptionEventMask },
-    { "all", AllEventsMask },
+    { "none", NoEventsMask, 0 },
+    { "configure", ConfigureEventMask, ConfigureBase },
+    { "annotate", AnnotateEventMask, AnnotateBase },
+    { "render", RenderEventMask, RenderBase },
+    { "transform", TransformEventMask, TransformBase },
+    { "locale", LocaleEventMask, LocaleBase },
+    { "coder", CoderEventMask, CoderBase },
+    { "x11", X11EventMask, X11Base },
+    { "cache", CacheEventMask, CacheBase },
+    { "blob", BlobEventMask, BlobBase },
+    { "deprecate", DeprecateEventMask, DeprecateBase },
+    { "user", UserEventMask, UserBase },
+    { "resource", ResourceEventMask, ResourceBase },
+    { "temporaryfile", TemporaryFileEventMask, TemporaryFileBase },
+    { "exception", ExceptionEventMask, ExceptionBase },
+    { "option", OptionEventMask, OptionBase },
+    { "all", AllEventsMask, 0 },
     { 0, 0 }
   };
 
@@ -199,7 +201,7 @@ static unsigned long ParseEvents(const char *event_string)
         {
           if (LocaleNCompare(p,eventmask_map[i].name,strlen(eventmask_map[i].name)) == 0)
             {
-              events|=eventmask_map[i].type;
+              events|=eventmask_map[i].mask;
               break;
             }
         }
@@ -360,7 +362,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);
 #endif
-      if (IsAccessible(path))
+      if (IsAccessibleNoLogging(path))
         return(LogToBlob(path,length,exception));
     }
 
@@ -371,7 +373,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
     {
       FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
         *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (IsAccessible(path))
+      if (IsAccessibleNoLogging(path))
         return(LogToBlob(path,length,exception));
     }
 
@@ -391,14 +393,14 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
         DirectorySeparator,filename);
 #endif
-      if (IsAccessible(path))
+      if (IsAccessibleNoLogging(path))
         return(LogToBlob(path,length,exception));
     }
   /*
     Search current directory.
   */
   (void) strncpy(path,filename,MaxTextExtent-1);
-  if (IsAccessible(path))
+  if (IsAccessibleNoLogging(path))
     return(LogToBlob(path,length,exception));
 #if defined(WIN32)
   {
@@ -668,8 +670,23 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
 
   if (!IsEventLogging())
     return(False);
-  if (!(log_info->events & type))
-    return(True);
+
+  if (log_info->events != AllEventsMask)
+    {
+      int
+        i;
+
+      /* first translate the base type of the event to a mask */
+      for (i=0; eventmask_map[i].name != 0; i++)
+        {
+          if ((type % 100) == eventmask_map[i].type)
+            {
+              if (!(log_info->events & eventmask_map[i].mask))
+                return(True);
+              break;
+            }
+        }
+    }
 
   /* fixup module info to just include the filename - and not the
      whole path to the file. This makes the log huge for no good
@@ -1169,7 +1186,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                      because they are still mutually exclusive implementations. Asking for
                      XML and TXT format files each use the file handle field and others to
                      do their work, so they can not be used together */
-                  log_info->output_type=output_map[i].type;
+                  log_info->output_type=output_map[i].mask;
                   break;
                 }
             }

@@ -1,5 +1,10 @@
 2003-08-07  William Radcliffe  <billr@corbis.com>
 
+	* magick/log.c, log.h: Translation of event codes to mask vals
+	was not working. Code was left out of last update. It is now in.
+
+2003-08-07  William Radcliffe  <billr@corbis.com>
+
 	* magick/error.c: Protect against NULL string passed into the
 	message lookup function.
 
