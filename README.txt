@@ -16,7 +16,7 @@ AUTHOR
     Landenberg, PA  19350
     USA
 
-  I'm also interested in receiving coins or stamps from around the
+  I'm also interested in receiving currency or stamps from around the
   world for my collection.
 
 
