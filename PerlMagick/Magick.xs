@@ -4676,13 +4676,13 @@ Mogrify(ref,...)
               PrimitiveTypes[argument_list[0].int_reference]);
           if (attribute_flag[1])
             {
-              (void) strcat(draw_info->primitive," ");
+              (void) ConcatenateString(&draw_info->primitive," ");
               if (!IsGeometry(argument_list[1].string_reference))
                 (void) strcat(draw_info->primitive,"'");
-              (void) strcat(draw_info->primitive,
+              ConcatenateString(&draw_info->primitive,
                 argument_list[1].string_reference);
               if (!IsGeometry(argument_list[1].string_reference))
-                (void) strcat(draw_info->primitive,"'");
+                (void) ConcatenateString(&draw_info->primitive,"'");
             }
           if (attribute_flag[2])
             {
