@@ -840,7 +840,6 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         blue+=contribution[i].weight*(p+j)->blue;
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
-      if (destination->storage_class == PseudoClass)
       if (indexes != (IndexPacket *) NULL)
         indexes[y]=(GetIndexes(source))[j];
       q->red=(Quantum)
@@ -1168,9 +1167,6 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
   Image
     *sample_image;
 
-  IndexPacket
-    *index;
-
   int
     j,
     y;
@@ -1207,11 +1203,10 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     Allocate scan line buffer and column offset buffers.
   */
   pixels=(PixelPacket *) AcquireMemory(image->columns*sizeof(PixelPacket));
-  index=(IndexPacket *) AcquireMemory(image->columns*sizeof(IndexPacket));
   x_offset=(double *) AcquireMemory(sample_image->columns*sizeof(double));
   y_offset=(double *) AcquireMemory(sample_image->rows*sizeof(double));
-  if ((pixels == (PixelPacket *) NULL) || (index == (IndexPacket *) NULL) ||
-      (x_offset == (double *) NULL) || (y_offset == (double *) NULL))
+  if ((pixels == (PixelPacket *) NULL) || (x_offset == (double *) NULL) ||
+      (y_offset == (double *) NULL))
     {
       DestroyImage(sample_image);
       ThrowImageException(ResourceLimitWarning,"Unable to sample image",
@@ -1251,11 +1246,8 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
       *q++=pixels[(int) x_offset[x]];
     indexes=GetIndexes(sample_image);
     if (indexes != (IndexPacket *) NULL)
-      {
-        memcpy(index,GetIndexes(image),image->columns*sizeof(IndexPacket));
-        for (x=0; x < (int) sample_image->columns; x++)
-          indexes[x]=index[(int) x_offset[x]];
-      }
+      for (x=0; x < (int) sample_image->columns; x++)
+        indexes[x]=(GetIndexes(image))[(int) x_offset[x]];
     if (!SyncImagePixels(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))
@@ -1263,7 +1255,6 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
   }
   LiberateMemory((void **) &y_offset);
   LiberateMemory((void **) &x_offset);
-  LiberateMemory((void **) &index);
   LiberateMemory((void **) &pixels);
   return(sample_image);
 }

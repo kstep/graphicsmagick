@@ -341,12 +341,11 @@ static void DestroyCacheInfo(Cache cache)
     case DiskCache:
     {
       CloseCache(cache);
-      if (!cache_info->persist)
-        {
-          (void) remove(cache_info->cache_filename);
-          (void) strcat(cache_info->cache_filename,".gz");
-          (void) remove(cache_info->cache_filename);
-        }
+      if (cache_info->persist)
+        break;
+      (void) remove(cache_info->cache_filename);
+      (void) strcat(cache_info->cache_filename,".gz");
+      (void) remove(cache_info->cache_filename);
       break;
     }
     default:
