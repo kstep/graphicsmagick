@@ -1266,7 +1266,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   tiff=TIFFOpen(filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);
-  image->status=False;
   scene=0;
   do
   {
@@ -1748,6 +1747,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
+  image->status=False;
   if ((image->file == stdout) || image->pipet ||
       (image->blob->data != (unsigned char *) NULL))
     {
