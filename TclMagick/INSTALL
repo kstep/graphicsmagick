@@ -3,8 +3,16 @@
 
 TclMagick install instructions.
 
+===============
+Unix platforms:
+===============
+
 Installing TclMagick in a separate directory from ImageMagick or
 GraphicsMagick.
+
+0) If there is no configure script (you are fetching from CVS, for
+   instance), try running automake, aclocal, and autoconf in order to
+   generate the configure script.
 
 1) Run the ./configure script.  The following arguments are
    recommended:
@@ -16,8 +24,49 @@ GraphicsMagick.
 
 Others that might very well be helpful are --enable-shared.
 
---with-tcl tells it where to find Tcl, and --with-tk the Tk toolkit.
-The --with-magick option is necessary to tell the configure script where
-to get information about the GraphicsMagick or ImageMagick install.
+--with-tcl tells it where to find Tcl - or more accurately, the
+tclConfig.sh file that configure uses to find important information
+about how to compile Tcl.  The directory where tkConfig.sh resides is
+indicated with --with-tk.  The --with-magick option is necessary to
+tell the configure script where to get information about the
+GraphicsMagick or ImageMagick install.
 
 2) Run make - this should build the libraries.
+
+
+=================
+Windows platform:
+=================
+
+* ImageMagick(IM) or GraphicsMagick(GM) should be installed on your system:
+  - Check the "Install development headers and library ..." option.
+  - After installation the computer needs a restart to update the PATH environment.
+  - Windows also needs Ghostscript installed for fond rendering.
+
+* Unzip the TclMagick sources
+
+* Compile TclMagick using MS Visual C++ 6.0
+  - Open the VC++ workspace in the TclMagick\win directory
+  - Change the include path and library path to your IM/GM directory:
+  	Project settings - All configurations - C/C++ - preprocessor
+  	Project settings - All configurations - Linker - input
+  - Compile the project, the compiled DLL's are in
+  	Debug\TclMagick.dll
+  	Release\TclMagick.dll
+  
+* Run the test-suite
+  - Change to the TclMagick\tests directory
+  - By default the debug version is used: Debug\TclMagick.dll
+  - Run the three test-*.tcl scripts
+    Resulting images are written to the TclMagick\tmp directory
+
+* Use TclMagick 
+  As a library package:
+      - Copy the pkgIndex.tcl and TclMagick.dll files to your Tcl-library    
+      - Load the library with
+      		package require TclMagick
+  By directly loadind the DLL:
+      - Copy the TclMagick.dll to your desired destination
+      - Load the library with
+      		load TclMagick.dll
+ 

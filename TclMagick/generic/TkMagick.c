@@ -39,6 +39,7 @@ static int MagickToPhoto(
     Tk_PhotoImageBlock magickblock;
     char *magickname = NULL;
     char *photoname = NULL;
+    char *map = NULL;
 
     if( objc != 3 ) {
         Tcl_WrongNumArgs( interp, 1, objv, "magickwand image" );
@@ -47,11 +48,10 @@ static int MagickToPhoto(
 
     magickname = Tcl_GetStringFromObj(objv[1], NULL);
     tclmagick = findMagickObj(interp, TM_TYPE_WAND, magickname);
-    wand = tclmagick->wandPtr;
     if (tclmagick == NULL) {
-	Tcl_AddErrorInfo(interp, "Not a magick wand.");
 	return TCL_ERROR;
     }
+    wand = tclmagick->wandPtr;
 
     photoname = Tcl_GetStringFromObj(objv[2], NULL);
     photohandle = Tk_FindPhoto(interp, photoname);
@@ -74,9 +74,15 @@ static int MagickToPhoto(
     magickblock.offset[3] = 3;
 
     /* RGB corresponds to pixelSize above. */
+    if (strcmp(MagickPackageName, "ImageMagick") == 0) {
+	map = "RGBA";
+    } else {
+	map = "RGBO";
+    }
+
     if (MagickGetImagePixels (
 	    wand, 0, 0, (unsigned)magickblock.width, (unsigned)magickblock.height,
-	    "RGBO", CharPixel, magickblock.pixelPtr) == False) {
+	    map, CharPixel, magickblock.pixelPtr) == False) {
 	return myMagickError(interp, wand);
     }
 
@@ -121,10 +127,10 @@ static int PhotoToMagick(
     char *magickname = NULL;
     char *photoname = NULL;
     int result = 0;
-    char map[4];
+    char map[5] = { 0x0, 0x0, 0x0, 0x0, 0x0 };
 
     if( objc != 3 ) {
-        Tcl_WrongNumArgs( interp, 1, objv, "magickwand image" );
+        Tcl_WrongNumArgs( interp, 1, objv, "image magickwand" );
         return TCL_ERROR;
     }
 
@@ -139,11 +145,10 @@ static int PhotoToMagick(
 
     magickname = Tcl_GetStringFromObj(objv[2], NULL);
     tclmagick = findMagickObj(interp, TM_TYPE_WAND, magickname);
-    wand = tclmagick->wandPtr;
     if (tclmagick == NULL) {
-	Tcl_AddErrorInfo(interp, "Not a magick wand.");
 	return TCL_ERROR;
     }
+    wand = tclmagick->wandPtr;
     MagickSetSize (wand, (unsigned)photoblock.width, (unsigned)photoblock.height);
     result = MagickReadImage(wand, "xc:white");
     if (!result) {
@@ -162,7 +167,11 @@ static int PhotoToMagick(
 	map[photoblock.offset[0]] = 'R';
 	map[photoblock.offset[1]] = 'G';
 	map[photoblock.offset[2]] = 'B';
-	map[photoblock.offset[3]] = 'A';
+	if (strcmp(MagickPackageName, "ImageMagick") == 0) {
+	    map[photoblock.offset[3]] = 'O';
+	} else {
+	    map[photoblock.offset[3]] = 'A';
+	}
 	break;
     default:
 	Tcl_AddErrorInfo(interp, "Unsupported pixelSize in Tk image.");
@@ -199,6 +208,9 @@ static int PhotoToMagick(
 EXPORT(int, Tkmagick_Init)(Tcl_Interp *interp)
 {
     if (Tcl_InitStubs(interp, "8", 0) == NULL) {
+	return TCL_ERROR;
+    }
+    if (Tk_InitStubs(interp, "8", 0) == NULL) {
 	return TCL_ERROR;
     }
 

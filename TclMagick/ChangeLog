@@ -1,3 +1,48 @@
+2004-11-06  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TkMagick.c: phototomagick's error message had the photo
+	and wand arguments backwards.  Thanks to Sheila Miguez for
+	catching this.  Also, make sure we have a wand before attempting
+	to use it.
+
+2004-09-20  David N. Welton  <davidw@dedasys.com>
+
+	* doc/index.html: Update outdated information on
+	graphics/imagemagick requirements.
+
+	* configure.ac: New version: 0.42.
+
+	* Makefile.am: Fiddled to get pkgIndex.tcl installed right.
+
+	* tests/tkmagick.tcl (saveimage): Add image save proc and binding
+	to test transformation of Tk images to magick want images.
+
+	* generic/TkMagick.c (MagickToPhoto): Change map depending on
+	Graphics or ImageMagick.
+	(PhotoToMagick): Make sure map is null terminated, switch type
+	depending on Graphics or ImageMagick.
+
+	* INSTALL: Added hint to try auto* stuff if configure is not
+	present.
+
+2004-06-28  Rolf Schroedter <rolf.schroedter@dlr.de>
+	* INSTALL: Added windows compilation instructions
+
+2004-06-28  Rolf Schroedter <rolf.schroedter@dlr.de>
+	* tests/test-wand.tcl: Fixed FxImage, FxImageChannel tests
+
+2004-06-27  Rolf Schroedter <rolf.schroedter@dlr.de>
+	* TclMagick.dsp: Fixed Windows VC++ project file,
+	moved CORE_RL_*.lib from file panel to library bindings
+
+2004-05-20  David N. Welton  <davidw@dedasys.com>
+
+	* Makefile.am (EXTRA_DIST): Add license file, tests and images
+	dirs to distribution file.
+
+	* configure.ac: Bumped version number to 0.41 because of auto*
+	changes.
+
 2004-04-02  David N. Welton  <davidw@dedasys.com>
 
 	* pkgIndex.tcl: Fixed pkgIndex.tcl, thanks to Arjen Markus.

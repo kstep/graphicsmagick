@@ -7,10 +7,18 @@ Project: "TclMagick"=.\TclMagick.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
-    begin source code control
-    TclMagick
-    .
-    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "TkMagick"=.\TkMagick.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
 }}}
 
 Package=<4>
