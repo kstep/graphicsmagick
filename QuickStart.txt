@@ -9,6 +9,7 @@ Configuration Files:
       <client path>/
       $HOME/.magick/
       $MAGICK_HOME/
+      $MAGICK_FONT_PATH
       MagickLibPath
       MagickModulesPath
       MagickSharePath
