@@ -197,6 +197,7 @@ Export void CloseBlob(Image *image)
     Close image file.
   */
   assert(image != (Image *) NULL);
+  image->tainted=False;
   ClosePixelCache(&image->cache_info);
   if (image->blob_info.data != (char *) NULL)
     {
@@ -211,7 +212,6 @@ Export void CloseBlob(Image *image)
   (void) SeekBlob(image,0L,SEEK_END);
   image->filesize=TellBlob(image);
   errno=0;
-  image->tainted=False;
   if (image->exempt)
     return;
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)

@@ -5849,9 +5849,10 @@ Export Image *ReadImage(ImageInfo *image_info)
   if (image->status)
     MagickWarning(CorruptImageWarning,"An error has occurred reading file",
       image->filename);
+  DestroyBlobInfo(&image->blob_info);
   for (next_image=image; next_image; next_image=next_image->next)
   {
-    DestroyBlobInfo(&image->blob_info);
+    GetBlobInfo(&next_image->blob_info);
     next_image->tainted=False;
     (void) strcpy(next_image->magick_filename,image_info->filename);
     if (image->temporary)
