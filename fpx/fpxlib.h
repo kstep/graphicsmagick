@@ -104,6 +104,7 @@ typedef struct {
               CLSID         	  * ptr;
 } FPXClsIDArray;
 
+#if defined(_UNIX) || defined(macintosh)
 #ifndef _FILETIME_
 #define _FILETIME_
 typedef struct FARSTRUCT tagFILETIME
@@ -119,6 +120,7 @@ typedef struct FARSTRUCT tagFILETIME
 
 #ifndef FALSE
 #define FALSE 0
+#endif
 #endif
 
 typedef FILETIME FPXfiletime;                  	   /* cf. OLE FILETIME in compobj.h */
