@@ -874,6 +874,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   /*
     Clone the image.
   */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image == (Image *) NULL)
@@ -883,10 +885,16 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
   *clone_image=(*image);
-  clone_image->semaphore=(SemaphoreInfo *) NULL;
-  clone_image->reference_count=1;
-  clone_image->montage=(char *) NULL;
-  clone_image->directory=(char *) NULL;
+  if (orphan)
+    {
+      clone_image->exempt=True;
+      clone_image->previous=(Image *) NULL;
+      clone_image->next=(Image *) NULL;
+    }
+  if (clone_image->previous != (Image *) NULL)
+    clone_image->previous->next=clone_image;
+  if (clone_image->next != (Image *) NULL)
+    clone_image->next->previous=clone_image;
   if (image->colormap != (PixelPacket *) NULL)
     {
       /*
@@ -960,42 +968,31 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   attribute=GetImageAttribute(image,(char *) NULL);
   for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
     (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
+  clone_image->montage=(char *) NULL;
+  clone_image->directory=(char *) NULL;
+  clone_image->semaphore=(SemaphoreInfo *) NULL;
+  clone_image->clip_mask=(Image *) NULL;
   GetExceptionInfo(&clone_image->exception);
-  if ((columns != 0) || (rows != 0))
-    {
-      clone_image->page.width=columns;
-      clone_image->page.height=rows;
-      clone_image->page.x*=(int) ((double) columns/clone_image->columns);
-      clone_image->page.y*=(int) ((double) rows/clone_image->rows);
-      clone_image->clip_mask=(Image *) NULL;
-      GetCacheInfo(&clone_image->cache);
-      clone_image->columns=columns;
-      clone_image->rows=rows;
-    }
-  else
+  clone_image->reference_count=1;
+  GetCacheInfo(&clone_image->cache);
+  clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+  if ((columns == 0) || (rows == 0))
     {
       if (image->montage != (char *) NULL)
         (void) CloneString(&clone_image->montage,image->montage);
       if (image->directory != (char *) NULL)
         (void) CloneString(&clone_image->directory,image->directory);
-      if (clone_image->clip_mask != (Image *) NULL)
+      if (image->clip_mask != (Image *) NULL)
         clone_image->clip_mask=CloneImage(image->clip_mask,0,0,True,exception);
       clone_image->cache=ReferenceCache(image->cache);
+      return(clone_image);
     }
-  clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
-  if (orphan)
-    {
-      clone_image->exempt=True;
-      clone_image->previous=(Image *) NULL;
-      clone_image->next=(Image *) NULL;
-    }
-  /*
-    Link image into image list.
-  */
-  if (clone_image->previous != (Image *) NULL)
-    clone_image->previous->next=clone_image;
-  if (clone_image->next != (Image *) NULL)
-    clone_image->next->previous=clone_image;
+  clone_image->page.width=columns;
+  clone_image->page.height=rows;
+  clone_image->page.x*=(int) ((double) columns/clone_image->columns);
+  clone_image->page.y*=(int) ((double) rows/clone_image->rows);
+  clone_image->columns=columns;
+  clone_image->rows=rows;
   return(clone_image);
 }
 
