@@ -551,7 +551,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %
 */
 static unsigned int ReadConfigureFile(const char *basename,
-  const unsigned int master,ExceptionInfo *exception)
+  const unsigned long depth,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
