@@ -24,7 +24,7 @@ are numbers) for specifying the size and placement location for an object.
 <p>The <i>width</i> and <i>height</i> parts of the geometry specification
 are measured in pixels. The <i>xoffset</i> and <i>yoffset</i> parts are
 also measured in pixels and are used to specify the distance of the placement
-coordinate from the left or right and top and bottom edges of the image,
+coordinate from the left and top and edges of the image,
 respectively. Both types of offsets are measured from the indicated edge
 of the object to the corresponding edge of the image. The X offset may
 be specified in the following ways:
@@ -40,8 +40,9 @@ in from the <b>left edge </b>of the image.</td>
 <tr>
 <td>-<i>xoffset</i></td>
 
-<td>The right edge of the object is to be placed <i>xoffset</i>
-pixels in from the <b>right edge </b>of the image.</td>
+<td>The left edge of the object is to be placed outside the image,
+<i>xoffset</i>
+pixels out from the <b>left edge </b>of the image.</td>
 </tr>
 </table>
 
@@ -58,40 +59,13 @@ the <b>top edge </b>of the image.</td>
 <tr>
 <td>-<i>yoffset</i></td>
 
-<td>The bottom edge of the object is to be <i>yoffset</i> pixels <b>above</b>
-the <b>bottom edge</b> of the image.</td>
+<td>The top edge of the object is to be <i>yoffset</i> pixels <b>above</b>
+the <b>top edge</b> of the image.</td>
 </tr>
 </table>
 
 <p>Offsets must be given as pairs; in other words, in order to specify
-either <i>xoffset</i> or <i>yoffset</i> both must be present. Objects can
-be placed in the four corners of the image using the following specifications:
-<br>&nbsp;
-<table BORDER WIDTH="100%" >
-<tr>
-<td>+0+0</td>
-
-<td>upper left hand corner.</td>
-</tr>
-
-<tr>
-<td>-0+0</td>
-
-<td>upper right hand corner.</td>
-</tr>
-
-<tr>
-<td>-0-0</td>
-
-<td>lower right hand corner.</td>
-</tr>
-
-<tr>
-<td>+0-0</td>
-
-<td>lower left hand corner.</td>
-</tr>
-</table>
+either <i>xoffset</i> or <i>yoffset</i> both must be present.
 
 <h3>
 <a NAME="ExtendedX11GeometrySpecifications"></a>ImageMagick Extensions
