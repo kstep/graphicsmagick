@@ -470,7 +470,7 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
 
 MagickExport int GetOptimalKernelWidth(const double radius,const double sigma)
 {
-  return GetOptimalKernelWidth1D(radius,sigma);
+  return(GetOptimalKernelWidth1D(radius,sigma));
 }
 
 /*

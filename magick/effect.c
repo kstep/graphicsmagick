@@ -2382,18 +2382,18 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   center=width*width/2;
   for (y=0; y < (long) noise_image->rows; y++)
   {
-    i=Min(Max(y-width/2,0),(long) image->rows-width);
-    p=AcquireImagePixels(image,0,i,image->columns,width,exception);
+    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns,width,
+      exception);
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     for (x=0; x < (long) noise_image->columns; x++)
     {
+      r=p;
       w=window;
-      r=p+Min(Max(x-width/2,0),(long) image->columns-width);
-      for (v=0; v < width; v++)
+      for (v=(-width/2); v <= (width/2); v++)
       {
-        for (u=0; u < width; u++)
+        for (u=(-width/2); u <= (width/2); u++)
           *w++=r[u];
         r+=image->columns;
       }
@@ -2469,6 +2469,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
             pixel=window[i];
           }
       q->opacity=pixel.opacity;
+      p++;
       q++;
     }
     if (!SyncImagePixels(noise_image))
