@@ -92,6 +92,7 @@ Magick::Image::Image( const Geometry &size_,
 
 // Construct Image from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_ )
+  : _imgRef(new ImageRef)
 {
   // Ensure that error collection object is instantiated
   LastError::instance();
@@ -102,6 +103,7 @@ Magick::Image::Image ( const Blob &blob_ )
 
 // Construct Image of specified size from in-memory BLOB
 Magick::Image::Image ( const Geometry &size_, const Blob &blob_ )
+  : _imgRef(new ImageRef)
 {
   // Ensure that error collection object is instantiated
   LastError::instance();
@@ -119,6 +121,7 @@ Magick::Image::Image( void )
 }
 
 // Destructor
+/* virtual */
 Magick::Image::~Image()
 {
   if ( --_imgRef->_refCount == 0 )
@@ -1592,12 +1595,12 @@ std::string Magick::Image::font ( void ) const
   return constOptions()->font( );
 }
 
-void Magick::Image::fontPointsize ( unsigned int pointSize_ )
+void Magick::Image::fontPointsize ( double pointSize_ )
 {
   modifyImage();
   options()->fontPointsize( pointSize_ );
 }
-unsigned int Magick::Image::fontPointsize ( void ) const
+double Magick::Image::fontPointsize ( void ) const
 {
   return constOptions()->fontPointsize( );
 }

@@ -91,8 +91,8 @@ namespace Magick
     void            font ( const std::string &font_ );
     std::string     font ( void ) const;
     
-    void            fontPointsize ( unsigned int pointSize_ );
-    unsigned int    fontPointsize ( void ) const;
+    void            fontPointsize ( double pointSize_ );
+    double          fontPointsize ( void ) const;
     
     std::string     format ( void ) const;
     
@@ -243,11 +243,11 @@ inline unsigned int Magick::Options::depth ( void ) const
   return _imageInfo->depth;
 }
 
-inline void Magick::Options::fontPointsize ( unsigned int pointSize_ )
+inline void Magick::Options::fontPointsize ( double pointSize_ )
 {
   _imageInfo->pointsize = pointSize_;
 }
-inline unsigned int Magick::Options::fontPointsize ( void ) const
+inline double Magick::Options::fontPointsize ( void ) const
 {
   return _imageInfo->pointsize;
 }

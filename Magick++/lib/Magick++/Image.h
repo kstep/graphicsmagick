@@ -491,8 +491,8 @@ namespace Magick
     std::string     font ( void ) const;
 
     // Font point size
-    void            fontPointsize ( unsigned int pointSize_ );
-    unsigned int    fontPointsize ( void ) const;
+    void            fontPointsize ( double pointSize_ );
+    double          fontPointsize ( void ) const;
 
     // Long image format description
     std::string     format ( void ) const;

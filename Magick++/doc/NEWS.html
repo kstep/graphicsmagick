@@ -1,11 +1,35 @@
 <HTML>
 <HEAD>
-<TITLE>Magick++ News</TITLE>
 </HEAD>
 <BODY text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
 <p>
 This file records noteworthy changes.
 
+<p>
+(0.9)<BR>
+<UL>
+  <LI> Ported to ImageMagick 5.0.
+  <LI> BLOB sizes are now specified using size_t type.
+  <LI> Rotate() no longer accepts sharpen or crop options.
+  <LI> Shear() No longer accepts a crop option.
+  <LI> The condense, uncondense, and condensed methods have been removed
+    since ImageMagick 5.0 no longer uses run-length encoding.
+
+</UL>
+<p>
+(0.8.9)<BR>
+<UL>
+  <LI> Blob reference counting was totally broken, leading to a memory
+    leak if it was used.  Fixed by starting reference count from one
+    rather than zero.
+
+</UL>
+<p>
+(0.8.8)<BR>
+<UL>
+  <LI> Fixed a Image constructor bug when constructing from a Blob
+
+</UL>
 <p>
 (0.8.7)<BR>
 <UL>

@@ -100,7 +100,7 @@ Magick::BlobRef::BlobRef ( const void* data_,
 			   size_t length_ )
   : _data(0),
     _length(length_),
-    _refCount(0)
+    _refCount(1)
 {
   if ( data_ != 0 )
     {
