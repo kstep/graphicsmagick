@@ -806,18 +806,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == False)
     ThrowReaderException(CacheWarning,"Unable to open peristent cache",image);
   CloseBlob(image);
-  if (LocaleCompare(image_info->magick,"MPROC") != 0)
-    {
-      Image
-        *clone_image;
-
-      clone_image=CloneImageList(image,exception);
-      if (clone_image != (Image *) NULL)
-        {
-          DestroyImage(image);
-          image=clone_image;
-        }
-    }
+  (void) ReferenceCache(image->cache);
   return(image);
 }
 

@@ -1540,6 +1540,7 @@ static unsigned int ModifyCache(Image *image)
       LiberateSemaphoreInfo(&cache_info->semaphore);
       return(True);
    }
+  cache_info->reference_count--;
   clone_image=(Image *) AcquireMemory(sizeof(Image));
   if (clone_image == (Image *) NULL)
     MagickError(ResourceLimitError,"Unable to clone image",
@@ -1566,7 +1567,6 @@ static unsigned int ModifyCache(Image *image)
   if (y < (long) image->rows)
     ThrowBinaryException(CacheWarning,"Unable to clone cache",
       image->filename);
-  DestroyCacheInfo(cache_info);
   return(True);
 }
 

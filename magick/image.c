@@ -4826,7 +4826,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             Image
               *fill_pattern;
 
-            (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
+            i++;
+            if (IsGeometry(argv[i]))
+              continue;
+            (void) strncpy(clone_info->filename,argv[i],MaxTextExtent-1);
             fill_pattern=ReadImage(clone_info,&(*image)->exception);
             if (fill_pattern == (Image *) NULL)
               continue;

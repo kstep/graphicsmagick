@@ -37,7 +37,6 @@
   <module magick="MNG" name="PNG" />
   <module magick="MPG" name="MPEG" />
   <module magick="MPRI" name="MPR" />
-  <module magick="MPROC" name="MPC" />
   <module magick="NETSCAPE" name="LOGO" />
   <module magick="O" name="GRAY" />
   <module magick="P7" name="PNM" />
