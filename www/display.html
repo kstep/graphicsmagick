@@ -1423,12 +1423,25 @@ the <strong>-gravity</strong> option has no effect.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-scene">-scene</a> <i>&lt;value&gt;</i>
+    <a name="-scenes">-scenes</a> <i>&lt;value-value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set scene number</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>range of image scene numbers to read</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This option sets the scene number of an image or the first image in
-an image sequence.</font></td></tr></table>
+Each image in the range is read
+with the filename followed by a period (<strong>.</strong>) and the decimal scene
+number.  You
+can change this behavior by embedding a <strong>%0Nd, %0No, or %0Nx printf</strong>
+format specification in the file name. For example,
+<pre>
+    montage -scenes 5-7 image.miff
+</pre>
+<p>
+makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and&lt;//p&gt; 
+<pre>
+    animate -scenes 0-12 image%02d.miff
+</pre>
+<p>
+animates files image00.miff, image01.miff, through image12.miff.&lt;//p&gt; 
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

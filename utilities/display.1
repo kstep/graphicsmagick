@@ -844,11 +844,22 @@ is present.  Offsets, if present in the geometry string, are ignored, and
 the \fB-gravity\fP option has no effect.
 
 .TP
-.B "-scene \fI<value>"\fP
-\fRset scene number
+.B "-scenes \fI<value-value>"\fP
+\fRrange of image scene numbers to read
 
-This option sets the scene number of an image or the first image in
-an image sequence.
+Each image in the range is read
+with the filename followed by a period (\fB.\fP) and the decimal scene
+number.  You
+can change this behavior by embedding a \fB%0Nd, %0No, or %0Nx printf\fP
+format specification in the file name. For example,
+
+    montage -scenes 5-7 image.miff
+
+makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and<//p> 
+
+    animate -scenes 0-12 image%02d.miff
+
+animates files image00.miff, image01.miff, through image12.miff.<//p> 
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
