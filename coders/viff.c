@@ -415,8 +415,10 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         */
         (void) ReadBlob(image,bytes_per_pixel*
           image->colors*viff_header.map_rows,(char *) viff_colormap);
-        if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
-            (viff_header.machine_dependency == VFF_DEP_NSORDER))
+        lsb_first=1;
+        if (*(char *) &lsb_first &&
+            ((viff_header.machine_dependency != VFF_DEP_DECORDER) &&
+             (viff_header.machine_dependency != VFF_DEP_NSORDER)))
           switch (viff_header.map_storage_type)
           {
             case VFF_MAPTYP_2_BYTE:
@@ -555,11 +557,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             }
           else
             scale_factor=(double) MaxRGB/(max_value-min_value);
-        if ((max_value-min_value) > 1.0)
-          {
-            min_value=0.0;
-            scale_factor=1.0;
-          }
       }
     /*
       Convert pixels to Quantum size.
