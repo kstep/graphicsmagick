@@ -1,7 +1,7 @@
 /*
  *  Header file for the portable free JBIG compression library
  *
- *  Markus Kuhn -- mkuhn@acm.org
+ *  Markus Kuhn -- http://www.cl.cam.ac.uk/~mgk25/
  *
  *  $Id$
  */
@@ -15,7 +15,7 @@
  * JBIG-KIT version number
  */
 
-#define JBG_VERSION    "1.4"
+#define JBG_VERSION    "1.5"
 
 /*
  * Buffer block for SDEs which are temporarily stored by encoder
@@ -34,7 +34,7 @@ struct jbg_buf {
 };
 
 /*
- * Maximum number of allowed ATMOVEs per stripe
+ * Maximum number of ATMOVEs per stripe that decoder can handle
  */
 
 #define JBG_ATMOVES_MAX  64
@@ -139,6 +139,8 @@ int arith_decode(struct jbg_ardec_state *s, int cx);
 struct jbg_enc_state {
   int d;                            /* resolution layer of the input image */
   unsigned long xd, yd;    /* size of the input image (resolution layer d) */
+  unsigned long yd1;    /* BIH announced height of image, use yd1 != yd to
+                        emulate T.85-style NEWLEN height updates for tests */
   int planes;                         /* number of different bitmap planes */
   int dl;                       /* lowest resolution layer in the next BIE */
   int dh;                      /* highest resolution layer in the next BIE */
@@ -285,5 +287,6 @@ extern JBIGEXPORT void jbg_split_planes(unsigned long x, unsigned long y, int ha
 		      int encode_planes,
 		      const unsigned char *src, unsigned char **dest,
 		      int use_graycode);
+int jbg_newlen(unsigned char *bie, size_t len);
 
 #endif /* JBG_H */
