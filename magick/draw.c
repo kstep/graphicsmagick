@@ -1396,7 +1396,8 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         register char
           *r;
 
-        if ((pixel->x != (int) (p->pixel.x+0.5)) && (pixel->y != (int) (p->pixel.y+0.5)))
+        if ((pixel->x != (int) (p->pixel.x+0.5)) &&
+            (pixel->y != (int) (p->pixel.y+0.5)))
           break;
         if (p->text == (char *) NULL)
           break;
@@ -1422,7 +1423,8 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
                 break;
         (void) strncpy(annotate_info->text,p->text,r-p->text);
         annotate_info->text[r-p->text]='\0';
-        FormatString(annotate_info->geometry,"%+d%+d",(int) p->pixel.x,(int) p->pixel.y);
+        FormatString(annotate_info->geometry,"%+d%+d",(int) p->pixel.x,
+          (int) p->pixel.y);
         AnnotateImage(image,annotate_info);
         break;
       }

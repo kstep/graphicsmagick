@@ -2331,7 +2331,7 @@ Export void TemporaryFilename(char *filename)
     if (p != (char *) NULL)
       {
         (void) strcpy(filename,p);
-        free((char *) p);
+        FreeMemory(p);
       }
   }
 #else
@@ -2480,6 +2480,12 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
       {
         *q++='\n';
         p++;
+        continue;
+      }
+    if (*p == '\\')
+      {
+        p++;
+        *q++=(*p);
         continue;
       }
     if (*p != '%')
