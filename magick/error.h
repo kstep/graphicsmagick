@@ -29,6 +29,7 @@ extern "C" {
   else \
     { \
       ThrowException(exception,code,reason,(image)->filename); \
+      CloseBlob(image); \
       DestroyImages(image); \
     } \
   return((Image *) NULL); \

@@ -546,16 +546,64 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
       0x48, 0x31, 0x07, 0x25, 0xb5, 0x58, 0x73, 0x4f, 0x04, 0x00, 0x3b,
     };
 
+#define MaxCixels  92
+
+  static const char
+    Cixel[MaxCixels+1] = " .XoO+@#$%&*=-;:>,<1234567890qwertyuipasdfghjk"
+                         "lzxcvbnmMNBVCZASDFGHJKLPIUYTREWQ!~^/()_`'][{}|";
+
+  char
+    buffer[MaxTextExtent],
+    basename[MaxTextExtent],
+    name[MaxTextExtent],
+    symbol[MaxTextExtent];
+
   Image
     *picon,
     *map;
 
+  int
+    j;
+
+  long
+    k,
+    y;
+
   RectangleInfo
     geometry;
 
-  unsigned int
-    status;
+  register const PixelPacket
+    *p;
 
+  register IndexPacket
+    *indexes;
+
+  register long
+    i,
+    x;
+
+  register PixelPacket
+    *q;
+
+  unsigned int
+    status,
+    transparent;
+
+  unsigned long
+    characters_per_pixel,
+    colors;
+
+  /*
+    Open output image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+  if (status == False)
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
+  (void) TransformRGBImage(image,RGBColorspace);
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(PiconGeometry,&geometry.x,&geometry.y,
     &geometry.width,&geometry.height);
@@ -569,10 +617,141 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
     return(False);
   status=MapImage(picon,map,image_info->dither);
   DestroyImage(map);
-  picon->blob=ReferenceBlob(image->blob);
-  status|=WriteXPMImage(image_info,picon);
+  transparent=False;
+  if (picon->storage_class == PseudoClass)
+    {
+      CompressColormap(picon);
+      if (picon->matte)
+        transparent=True;
+    }
+  else
+    {
+      /*
+        Convert DirectClass to PseudoClass picon.
+      */
+      if (picon->matte)
+        {
+          /*
+            Map all the transparent pixels.
+          */
+          for (y=0; y < (long) picon->rows; y++)
+          {
+            q=GetImagePixels(picon,0,y,picon->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (long) picon->columns; x++)
+            {
+              if (q->opacity == TransparentOpacity)
+                transparent=True;
+              else
+                q->opacity=OpaqueOpacity;
+              q++;
+            }
+            if (!SyncImagePixels(picon))
+              break;
+          }
+        }
+      SetImageType(picon,PaletteType);
+    }
+  colors=picon->colors;
+  if (transparent)
+    {
+      colors++;
+      ReacquireMemory((void **) &picon->colormap,colors*sizeof(PixelPacket));
+      for (y=0; y < (long) picon->rows; y++)
+      {
+        q=GetImagePixels(picon,0,y,picon->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(picon);
+        for (x=0; x < (long) picon->columns; x++)
+        {
+          if (q->opacity == TransparentOpacity)
+            indexes[x]=(IndexPacket) picon->colors;
+          q++;
+        }
+        if (!SyncImagePixels(picon))
+          break;
+      }
+    }
+  /*
+    Compute the character per pixel.
+  */
+  characters_per_pixel=1;
+  for (k=MaxCixels; (long) colors > k; k*=MaxCixels)
+    characters_per_pixel++;
+  /*
+    XPM header.
+  */
+  (void) WriteBlobString(image,"/* XPM */\n");
+  GetPathComponent(picon->filename,BasePath,basename);
+  (void) FormatString(buffer,"static char *%.1024s[] = {\n",basename);
+  (void) WriteBlobString(image,buffer);
+  (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
+  FormatString(buffer,"\"%lu %lu %lu %ld\",\n",picon->columns,
+    picon->rows,colors,characters_per_pixel);
+  (void) WriteBlobString(image,buffer);
+  for (i=0; i < (long) colors; i++)
+  {
+    /*
+      Define XPM color.
+    */
+    picon->colormap[i].opacity=OpaqueOpacity;
+    (void) QueryColorname(picon,picon->colormap+i,X11Compliance,name,
+      &picon->exception);
+    if (transparent)
+      {
+        if (i == (long) (colors-1))
+          (void) strcpy(name,"grey75");
+      }
+    /*
+      Write XPM color.
+    */
+    k=i % MaxCixels;
+    symbol[0]=Cixel[k];
+    for (j=1; j < (long) characters_per_pixel; j++)
+    {
+      k=((i-k)/MaxCixels) % MaxCixels;
+      symbol[j]=Cixel[k];
+    }
+    symbol[j]='\0';
+    FormatString(buffer,"\"%.1024s c %.1024s\",\n",symbol,name);
+    (void) WriteBlobString(image,buffer);
+  }
+  /*
+    Define XPM pixels.
+  */
+  (void) WriteBlobString(image,"/* pixels */\n");
+  for (y=0; y < (long) picon->rows; y++)
+  {
+    p=AcquireImagePixels(picon,0,y,picon->columns,1,&picon->exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetIndexes(picon);
+    (void) WriteBlobString(image,"\"");
+    for (x=0; x < (long) picon->columns; x++)
+    {
+      k=indexes[x] % MaxCixels;
+      symbol[0]=Cixel[k];
+      for (j=1; j < (long) characters_per_pixel; j++)
+      {
+        k=(((int) indexes[x]-k)/MaxCixels) % MaxCixels;
+        symbol[j]=Cixel[k];
+      }
+      symbol[j]='\0';
+      FormatString(buffer,"%.1024s",symbol);
+      (void) WriteBlobString(image,buffer);
+    }
+    FormatString(buffer,"\"%.1024s\n",
+      (y == (long) (picon->rows-1) ? "" : ","));
+    (void) WriteBlobString(image,buffer);
+    if (QuantumTick(y,picon->rows))
+      MagickMonitor(SaveImageText,y,picon->rows);
+  }
   DestroyImage(picon);
-  return(status);
+  (void) WriteBlobString(image,"};\n");
+  CloseBlob(picon);
+  return(True);
 }
 
 /*
@@ -662,7 +841,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     {
       CompressColormap(image);
       if (image->matte)
-         transparent=True;
+        transparent=True;
     }
   else
     {
@@ -742,12 +921,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     if (transparent)
       {
         if (i == (long) (colors-1))
-          {
-            if (LocaleCompare(image_info->magick,"PICON") == 0)
-              (void) strcpy(name,"grey75");
-            else
-              (void) strcpy(name,"None");
-          }
+          (void) strcpy(name,"None");
       }
     /*
       Write XPM color.
