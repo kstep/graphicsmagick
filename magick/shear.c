@@ -111,7 +111,7 @@ MagickExport Image *AffineTransformImage(const Image *image,
     x;
 
   /*
-    Initialize affine image attributes.
+    Determine bounding box.
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -146,6 +146,9 @@ MagickExport Image *AffineTransformImage(const Image *image,
     if (max.y < extent[i].y)
       max.y=extent[i].y;
   }
+  /*
+    Affine transform image.
+  */
   affine_image=CloneImage(image,(unsigned long) floor(max.x-min.x+0.5),
     (unsigned long) floor(max.y-min.y+0.5),True,exception);
   if (affine_image == (Image *) NULL)
