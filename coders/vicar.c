@@ -278,7 +278,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
   /*
-    Convert VICAR pixels to pixel packets.
+    Read VICAR pixels.
   */
   for (y=0; y < (int) image->rows; y++)
   {
