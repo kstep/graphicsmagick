@@ -31,6 +31,8 @@
 	exiting.
 	* magick/Makefile.am (noinst_HEADERS): integral_types.h had to be
 	listed *somewhere* in order to make it into the distribution.
+	* Magick++/lib/Magick++/Image.h: InitializeMagick must be DLL
+	exported.
 
 2003-05-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

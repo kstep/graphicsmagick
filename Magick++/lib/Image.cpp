@@ -3464,7 +3464,7 @@ void Magick::MagickPlusPlusDestroyMagick(void)
 }
 
 // C library initialization routine
-void Magick::InitializeMagick(const char *path_)
+void MagickDLLDecl Magick::InitializeMagick(const char *path_)
 {
   MagickLib::InitializeMagick(path_);
   if (!magick_initialized)

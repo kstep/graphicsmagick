@@ -45,7 +45,7 @@ namespace Magick
                                   const Magick::Image& right_ );
 
   // C library initialization routine
-  void InitializeMagick(const char *path_);
+  void MagickDLLDecl InitializeMagick(const char *path_);
 
   //
   // Image is the representation of an image.  In reality, it actually
