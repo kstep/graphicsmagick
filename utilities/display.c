@@ -283,9 +283,6 @@ int main(int argc,char **argv)
   XrmDatabase
     resource_database;
 
-  /*
-    Initialize command line arguments.
-  */
   ReadCommandlLine(argc,&argv);
   InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);

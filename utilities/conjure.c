@@ -151,9 +151,6 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
-  /*
-    Set defaults.
-  */
   ReadCommandlLine(argc,&argv);
   InitializeMagick(*argv);
   status=ExpandFilenames(&argc,&argv);

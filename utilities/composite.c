@@ -179,9 +179,6 @@ int main(int argc,char **argv)
   unsigned int
     status;
 
-  /*
-    Initialize command line arguments.
-  */
   ReadCommandlLine(argc,&argv);
   for (i=1; i < argc; i++)
   {
