@@ -1207,11 +1207,11 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
       if (LocaleNCompare("size",key,2) == 0)
         {
           if ((GetBlobSize(image)/1024) >= 1024)
-            FormatString(attribute,"%.1gmb",
+            FormatString(attribute,"%.1fmb",
               (double) GetBlobSize(image)/1024.0/1024.0);
           else
             if (GetBlobSize(image) >= 1024)
-              FormatString(attribute,"%.1gkb",
+              FormatString(attribute,"%.1fkb",
                 (double) GetBlobSize(image)/1024.0);
             else
               FormatString(attribute,"%lu",(unsigned long) GetBlobSize(image));

@@ -1359,11 +1359,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           if (image->total_colors != 0)
             {
               if ((image->total_colors/1024) >= 1024)
-                (void) fprintf(file,"%.1gmc ",
+                (void) fprintf(file,"%.1fmc ",
                   (double) image->total_colors/1024.0/1024.0);
               else
                 if (image->total_colors >= 1024)
-                  (void) fprintf(file,"%.1gkc ",
+                  (void) fprintf(file,"%.1fkc ",
                     (double) image->total_colors/1024.0);
                 else
                   (void) fprintf(file,"%luc ",image->total_colors);
@@ -1385,11 +1385,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       if (GetBlobSize(image) != 0)
         {
           if ((GetBlobSize(image)/1024) >= 1024)
-            (void) fprintf(file,"%.1gmb ",
+            (void) fprintf(file,"%.1fmb ",
               (double) GetBlobSize(image)/1024.0/1024.0);
           else
             if (GetBlobSize(image) >= 1024)
-              (void) fprintf(file,"%.1gkb ",(double) GetBlobSize(image)/1024.0);
+              (void) fprintf(file,"%.1fkb ",(double) GetBlobSize(image)/1024.0);
             else
               (void) fprintf(file,"%lub ",(unsigned long) GetBlobSize(image));
         }
@@ -1695,11 +1695,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             (void) fprintf(file,"\n");
     }
   if ((GetBlobSize(image)/1024) >= 1024)
-    (void) fprintf(file,"  Filesize: %.1gmb\n",
+    (void) fprintf(file,"  Filesize: %.1fmb\n",
       (double) GetBlobSize(image)/1024.0/1024.0);
   else
     if (GetBlobSize(image) >= 1024)
-      (void) fprintf(file,"  Filesize: %.1gkb\n",
+      (void) fprintf(file,"  Filesize: %.1fkb\n",
         (double) GetBlobSize(image)/1024.0);
     else
       (void) fprintf(file,"  Filesize: %lub\n",(unsigned long)

@@ -3702,11 +3702,11 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       case 'b':
       {
         if ((GetBlobSize(image)/1024) >= 1024)
-          FormatString(q,"%.1gmb ",
+          FormatString(q,"%.1fmb ",
             (double) GetBlobSize(image)/1024.0/1024.0);
         else
           if (GetBlobSize(image) >= 1024)
-            FormatString(q,"%.1gkb ",(double) GetBlobSize(image)/1024.0);
+            FormatString(q,"%.1fkb ",(double) GetBlobSize(image)/1024.0);
           else
             FormatString(q,"%lub ",(unsigned long) GetBlobSize(image));
         while (*q != '\0')
