@@ -1978,6 +1978,70 @@ private:
   bool _flag;
 };
 
+// Set the size of the viewbox
+class DrawableViewbox : public DrawableBase
+{
+public:
+  DrawableViewbox(unsigned long x1_, unsigned long y1_,
+                        unsigned long x2_, unsigned long y2_)
+    : _x1(x1_),
+      _y1(y1_),
+      _x2(x2_),
+      _y2(y2_) { }
+
+  // Support a polymorphic print-to-stream operator
+  /*virtual*/ void print (std::ostream& stream_) const;
+
+  // Return polymorphic copy of object
+  /*virtual*/
+  DrawableBase* copy() const
+    {
+      return new DrawableViewbox(*this);
+    }
+
+  void x1( unsigned long x1_ )
+    {
+      _x1 = x1_;
+    }
+  unsigned long x1( void )
+    {
+      return _x1;
+    }
+
+  void y1( unsigned long y1_ )
+    {
+      _y1 = y1_;
+    }
+  unsigned long y1( void )
+    {
+      return _y1;
+    }
+
+  void x2( unsigned long x2_ )
+    {
+      _x2 = x2_;
+    }
+  unsigned long x2( void )
+    {
+      return _x2;
+    }
+
+  void y2( unsigned long y2_ )
+    {
+      _y2 = y2_;
+    }
+  unsigned long y2( void )
+    {
+      return _y2;
+    }
+
+private:
+  unsigned long _x1;
+  unsigned long _y1;
+  unsigned long _x2;
+  unsigned long _y2;
+};
+
 //
 // Path Element Classes To Support DrawablePath
 //

@@ -879,6 +879,15 @@ void Magick::DrawableTextAntialias::print (std::ostream& stream_) const
     stream_ << "0";
 }
 
+// Set the size of the viewbox
+void Magick::DrawableViewbox::print (std::ostream& stream_) const
+{
+  stream_ << "viewbox "
+          << Coordinate( _x1, _y1 )
+          << " "
+          << Coordinate( _x2, _y2 );
+}
+
 //
 // Path Classes
 //
