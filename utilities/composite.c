@@ -193,7 +193,6 @@ static unsigned int CompositeImages(ImageInfo *image_info,
     (*image)=(*image)->previous;
   status=MogrifyImages(image_info,argc-1,argv,image);
   CatchImageException(*image);
-  /* we may be called with a NULL image here if -replace or -copy was used */
   if (composite_image != (Image *) NULL)
     {
       assert(composite_image->signature == MagickSignature);
@@ -1395,19 +1394,8 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  /* NOTE: composite_image may be NULL here due to -replace or -copy */
   status=CompositeImages(image_info,&option_info,argc-j+1,argv+j-1,
     composite_image,mask_image,&image);
-  if (composite_image != (Image *) NULL)
-    {
-      DestroyImages(composite_image);
-      composite_image=(Image *) NULL;
-    }
-  if (mask_image != (Image *) NULL)
-    {
-      DestroyImages(mask_image);
-      mask_image=(Image *) NULL;
-    }
   if (option_info.displace_geometry != (char *) NULL)
     LiberateMemory((void **) &option_info.displace_geometry);
   if (option_info.geometry != (char *) NULL)
@@ -1416,6 +1404,10 @@ int main(int argc,char **argv)
     LiberateMemory((void **) &option_info.unsharp_geometry);
   if (option_info.watermark_geometry != (char *) NULL)
     LiberateMemory((void **) &option_info.watermark_geometry);
+  if (composite_image != (Image *) NULL)
+    DestroyImages(composite_image);
+  if (mask_image != (Image *) NULL)
+    DestroyImages(mask_image);
   DestroyImageList(image);
   DestroyImageInfo(image_info);
   if (LocaleCompare("-composite",argv[0]) == 0)
