@@ -133,7 +133,7 @@ static int TypeInfoCompare(const void *x,const void *y)
 }
 MagickExport TypeInfo* NTGetTypeList( void )
 {
-  TypeInfo
+  volatile TypeInfo
     *type_list;
 
   HKEY
@@ -160,7 +160,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
                          0, KEY_READ | KEY_ENUMERATE_SUB_KEYS, &reg_key);
 
   if (res != ERROR_SUCCESS)
-    return type_list;
+    return (TypeInfo *) type_list;
 
   *font_root='\0';
   if ( getenv("SystemRoot") != (char *) NULL)
@@ -392,7 +392,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
 
   /* Sort entries */
   {
-    TypeInfo
+    volatile TypeInfo
       **type_array;
 
     int
@@ -423,7 +423,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
     LiberateMemory((void**) &type_array);
   }
 
-  return type_list;
+  return (TypeInfo *) type_list;
 }
 
 /*
