@@ -89,6 +89,9 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   int
     y;
 
@@ -111,9 +114,6 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
     height,
     length,
     width;
-
-  unsigned short
-    index;
 
   /*
     Allocate image structure.
@@ -177,6 +177,7 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
     red=0;
     green=0;
     blue=0;
+    index=0;
     length=0;
     for (y=0; y < (int) image->rows; y++)
     {

@@ -27,7 +27,7 @@ typedef unsigned short Quantum;
 */
 #define DownScale(quantum)  ((unsigned long) (quantum))
 #define HexColorFormat "#%02x%02x%02x"
-#define MaxRGB  255
+#define MaxRGB  255L
 #define QuantumDepth  8
 #define UpScale(quantum)  ((unsigned long) (quantum))
 #define XDownScale(color)  (((unsigned long) (color)) >> 8)

@@ -805,7 +805,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        (void) sprintf(buffer,"%d\n",MaxRGB);
+        (void) sprintf(buffer,"%ld\n",MaxRGB);
         (void) WriteBlob(image,strlen(buffer),buffer);
         i=0;
         for (y=0; y < (int) image->rows; y++)
@@ -837,7 +837,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        (void) sprintf(buffer,"%d\n",MaxRGB);
+        (void) sprintf(buffer,"%ld\n",MaxRGB);
         (void) WriteBlob(image,strlen(buffer),buffer);
         i=0;
         for (y=0; y < (int) image->rows; y++)

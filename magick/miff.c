@@ -544,7 +544,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
     if (image->matte || (image->colorspace == CMYKColorspace))
       packet_size+=image->depth > 8 ? 2 : 1;
     if (image->compression == RunlengthEncodedCompression)
-      packet_size++;
+      packet_size+=image->depth > 8 ? 2 : 1;
     pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
     compressed_pixels=(unsigned char *) AllocateMemory((unsigned int)
@@ -840,7 +840,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (image->matte || (image->colorspace == CMYKColorspace))
       packet_size+=image->depth > 8 ? 2 : 1;
     if (compression == RunlengthEncodedCompression)
-      packet_size++;
+      packet_size+=image->depth > 8 ? 2 : 1;
     pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
     compressed_pixels=(unsigned char *) AllocateMemory((unsigned int)

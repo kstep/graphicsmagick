@@ -1467,6 +1467,7 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       red=scanline;
       green=scanline+image->columns;
       blue=scanline+2*image->columns;
+      opacity=scanline+3*image->columns;
       for (y=0; y < (int) image->rows; y++)
       {
         p=GetPixelCache(image,0,y,image->columns,1);
