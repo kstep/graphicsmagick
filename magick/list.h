@@ -20,9 +20,6 @@ extern MagickExport Image
   *SpliceImageList(Image *,const unsigned long,const unsigned long,
     const Image *,ExceptionInfo *);
 
-extern MagickExport size_t
-  GetImageListSize(const Image *);
-
 extern MagickExport unsigned int
   DeleteImageList(Image *,const unsigned long),
   PushImageList(Image **,const Image *,ExceptionInfo *),
@@ -30,7 +27,8 @@ extern MagickExport unsigned int
   UnshiftImageList(Image **,const Image *,ExceptionInfo *);
 
 extern MagickExport unsigned long
-  GetImageListIndex(const Image *);
+  GetImageListIndex(const Image *),
+  GetImageListSize(const Image *);
 
 extern MagickExport void
   DestroyImageList(Image *);

@@ -312,7 +312,7 @@ MagickExport unsigned long GetImageListIndex(const Image *images)
 %
 %  The format of the GetImageListSize method is:
 %
-%      size_t GetImageListSize(const Image *images)
+%      unsigned long GetImageListSize(const Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -326,9 +326,9 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
   return(GetImageListSize(image));
 }
 
-MagickExport size_t GetImageListSize(const Image *images)
+MagickExport unsigned long GetImageListSize(const Image *images)
 {
-  register size_t
+  register long
     i;
 
   if (images == (Image *) NULL)
