@@ -135,7 +135,7 @@ then
     DLLDFLAGS=-export-dynamic
     AC_SUBST(DLLDFLAGS)
   fi
-   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/coders/"
+   eval "eval im_cv_x_coder_modules=${libdir}${dirsep}ImageMagick${dirsep}modules${dirsep}coders${dirsep}"
   AC_DEFINE_UNQUOTED(MagickModulesPath,"$im_cv_x_coder_modules",Location of coder modules)
 fi
 
@@ -1502,15 +1502,15 @@ AC_SUBST(LIB_WMF_DEPS)
 
 # Directory where configured ImageMagick/delegates.mgk lives
 # (default /usr/local/lib/ImageMagick).
-eval MagickLibPath="${LIB_DIR}/ImageMagick/"
+eval MagickLibPath="${LIB_DIR}${dirsep}ImageMagick${dirsep}"
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-dependent files live.)
 
 # Directory where magic.mgk lives. (default /usr/local/share/ImageMagick)
 AC_ARG_WITH(share-path,
 [  --with-share-path=DIR   Alternate path to share directory
                           (default share/ImageMagick)],
- MagickSharePath="${with_share_path}/",
- eval MagickSharePath="${DATA_DIR}/ImageMagick/")
+ MagickSharePath="${with_share_path}${dirsep}",
+ eval MagickSharePath="${DATA_DIR}${dirsep}ImageMagick${dirsep}")
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePath",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
 
@@ -1591,7 +1591,7 @@ AC_MSG_CHECKING(for windows font directory)
 windows_font_dir=''
 if test "$with_windows_font_dir" != "yes" && test -n "$with_windows_font_dir"
 then
-   windows_font_dir="$with_windows_font_dir"
+   windows_font_dir="${with_windows_font_dir}${dirsep}"
 else
   case $host_os in
     cygwin* )
@@ -1639,6 +1639,7 @@ else
   if test "$PSDelegate" != 'gs'
   then
     ghostscript_font_dir=`echo "$PSDelegate" | sed -e 's:/bin/gs:/share/ghostscript/fonts:'`
+    ghostscript_font_dir="${ghostscript_font_dir}${dirsep}"
   fi
 fi
 type_include_files="$type_include_files "'file="type-ghostscript.mgk"'
