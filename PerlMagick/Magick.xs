@@ -4646,8 +4646,6 @@ Mogrify(ref,...)
 
           draw_info=CloneDrawInfo(info ? info->image_info :
             (ImageInfo *) NULL,(DrawInfo *) NULL);
-          draw_info->fill=info->image_info->pen;
-          (void) QueryColorDatabase("#000000ff",&draw_info->stroke);
           if (attribute_flag[1])
             (void) CloneString(&draw_info->font,
               argument_list[1].string_reference);

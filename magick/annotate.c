@@ -252,6 +252,9 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     (void) GetGeometry(draw_info->geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  if ((annotate->fill.opacity == TransparentOpacity) &&
+      (annotate->stroke.opacity == TransparentOpacity))
+    annotate->fill.opacity=OpaqueOpacity;
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   matte=image->matte;
   status=True;
