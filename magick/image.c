@@ -2702,7 +2702,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
         p++;
         q++;
       }
-		else
+    else
       for (x=0; x < (long) image->columns; x++)
       {
         pixel.red=p->red-(double) q->red;
