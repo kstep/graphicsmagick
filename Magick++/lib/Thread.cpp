@@ -24,7 +24,8 @@ Magick::MutexLock::MutexLock(void)
         ::pthread_mutexattr_destroy( &attr );
         return;
       }
-  throwExceptionExplicit( OptionError, "mutex initialization failed" );
+  throwExceptionExplicit( OptionError, "mutex initialization failed",
+                          strerror(sysError) );
 }
 #else
 #if defined(_VISUALC_) && defined(_MT)
