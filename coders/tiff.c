@@ -279,6 +279,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   char
     *text;
 
+  FILE
+    *file;
+
   float
     *chromaticity,
     x_resolution,
@@ -288,6 +291,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     *image;
 
   int
+    c,
     range,
     y;
 
@@ -346,34 +350,24 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       LiberateSemaphore(&tiff_semaphore);
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);
     }
-  if ((image->file == stdin) || image->pipet)
+  /*
+    Copy image to temporary file.
+  */
+  TemporaryFilename((char *) image_info->filename);
+  file=fopen(image_info->filename,WriteBinaryType);
+  if (file == (FILE *) NULL)
     {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy standard input or pipe to temporary file.
-      */
-      TemporaryFilename((char *) image_info->filename);
-      file=fopen(image_info->filename,WriteBinaryType);
-      if (file == (FILE *) NULL)
-        {
-          LiberateSemaphore(&tiff_semaphore);
-          ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-        }
-      c=ReadBlobByte(image);
-      while (c != EOF)
-      {
-        (void) fputc(c,file);
-        c=ReadBlobByte(image);
-      }
-      (void) fclose(file);
-      (void) strcpy(image->filename,image_info->filename);
-      image->temporary=True;
+      LiberateSemaphore(&tiff_semaphore);
+      ThrowReaderException(FileOpenWarning,"Unable to write file",image);
     }
+  c=ReadBlobByte(image);
+  while (c != EOF)
+  {
+    (void) fputc(c,file);
+    c=ReadBlobByte(image);
+  }
+  (void) fclose(file);
+  (void) strcpy(image->filename,image_info->filename);
   tiff_exception=exception;
   TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
@@ -904,11 +898,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
   } while (status == True);
   TIFFClose(tiff);
-  if (image->temporary)
-    {
-      (void) remove(image->filename);
-      image->temporary=False;
-    }
+  (void) remove(image->filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -957,14 +947,12 @@ ModuleExport void RegisterTIFFImage(void)
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
   entry->adjoin=False;
-  entry->blob_support=False;
   entry->description=AllocateString("Pyramid encoded TIFF");
   entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIF");
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
-  entry->blob_support=False;
   entry->description=AllocateString("Tagged Image File Format");
   entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
@@ -972,7 +960,6 @@ ModuleExport void RegisterTIFFImage(void)
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
   entry->magick=IsTIFF;
-  entry->blob_support=False;
   entry->description=AllocateString("Tagged Image File Format");
   entry->module=AllocateString("TIFF");
   RegisterMagickInfo(entry);
@@ -1756,19 +1743,20 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
+  if (LocaleCompare(image_info->magick,"PTIF") == 0)
+    DestroyImages(image);
   /*
-    Copy temporary file to standard output or pipe.
+    Copy temporary file to image blob.
   */
+  image=reference_image;
   file=fopen(filename,ReadBinaryType);
   if (file == (FILE *) NULL)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   for (c=fgetc(file); c != EOF; c=fgetc(file))
-    (void) WriteBlobByte(reference_image,c);
+    (void) WriteBlobByte(image,c);
   (void) fclose(file);
   (void) remove(filename);
-  CloseBlob(reference_image);
-  if (LocaleCompare(image_info->magick,"PTIF") == 0)
-    DestroyImages(image);
+  CloseBlob(image);
   return(True);
 }
 #else

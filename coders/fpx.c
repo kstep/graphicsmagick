@@ -102,6 +102,9 @@ static unsigned int
 */
 static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+  FILE
+    *file;
+
   FPXColorspace
     colorspace;
 
@@ -130,6 +133,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     index;
 
   int
+    c,
     y;
 
   register IndexPacket
@@ -169,31 +173,21 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  if ((image->file == stdin) || image->pipet)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy standard input or pipe to temporary file.
-      */
-      TemporaryFilename((char *) image_info->filename);
-      file=fopen(image_info->filename,WriteBinaryType);
-      if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-      c=ReadBlobByte(image);
-      while (c != EOF)
-      {
-        (void) fputc(c,file);
-        c=ReadBlobByte(image);
-      }
-      (void) fclose(file);
-      (void) strcpy(image->filename,image_info->filename);
-      image->temporary=True;
-    }
+  /*
+    Copy image to temporary file.
+  */
+  TemporaryFilename((char *) image_info->filename);
+  file=fopen(image_info->filename,WriteBinaryType);
+  if (file == (FILE *) NULL)
+    ThrowReaderException(FileOpenWarning,"Unable to write file",image);
+  c=ReadBlobByte(image);
+  while (c != EOF)
+  {
+    (void) fputc(c,file);
+    c=ReadBlobByte(image);
+  }
+  (void) fclose(file);
+  (void) strcpy(image->filename,image_info->filename);
   CloseBlob(image);
   /*
     Initialize FPX toolkit.
@@ -448,11 +442,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void **) &scanline);
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
-  if (image->temporary)
-    {
-      (void) remove(image->filename);
-      image->temporary=False;
-    }
+  (void) remove(image->filename);
   return(image);
 }
 #else
@@ -496,7 +486,6 @@ ModuleExport void RegisterFPXImage(void)
   entry->decoder=ReadFPXImage;
   entry->encoder=WriteFPXImage;
   entry->adjoin=False;
-  entry->blob_support=False;
   entry->description=AllocateString("FlashPix Format");
   entry->module=AllocateString("FPX");
   RegisterMagickInfo(entry);
@@ -1093,7 +1082,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   FPX_ClearSystem();
   LiberateMemory((void **) &pixels);
   /*
-    Copy temporary file to standard output or pipe.
+    Copy temporary file to image blob.
   */
   file=fopen(filename,ReadBinaryType);
   if (file == (FILE *) NULL)
