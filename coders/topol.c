@@ -39,7 +39,6 @@
 #include "magick/error.h"
 #include "magick/list.h"
 #include "magick/magick.h"
-#include "magick/static.h"
 #include "magick/utility.h"
 
 #if !defined(SWORD)

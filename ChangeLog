@@ -1,5 +1,7 @@
 2003-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/static.c (RegisterStaticModules): Invoke
+	RegisterTOPOLImage.
 	* magick/magick.h (MagickInfo): Add member usage comments.
 	* magick/error.c (CatchException): Restore saved errno from
 	exception->error_number.

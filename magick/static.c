@@ -177,6 +177,7 @@ MagickExport void RegisterStaticModules(void)
   RegisterTIFFImage();
   RegisterTILEImage();
   RegisterTIMImage();
+  RegisterTOPOLImage();
   RegisterTTFImage();
   RegisterTXTImage();
   RegisterUILImage();

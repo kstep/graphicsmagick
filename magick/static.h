@@ -122,6 +122,7 @@ extern ModuleExport void
   RegisterTIFFImage(void),
   RegisterTILEImage(void),
   RegisterTIMImage(void),
+  RegisterTOPOLImage(void),
   RegisterTTFImage(void),
   RegisterTXTImage(void),
   RegisterUILImage(void),
