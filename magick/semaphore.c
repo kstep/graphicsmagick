@@ -67,13 +67,11 @@ struct SemaphoreInfo
 {
 #if defined(HasPTHREADS)
   pthread_mutex_t
-    id;
 #endif
-
 #if defined(WIN32)
   CRITICAL_SECTION
-    critical_section;
 #endif
+    mutex;
 
   unsigned long
     signature;
@@ -89,10 +87,10 @@ static pthread_mutex_t
 
 #if defined(WIN32)
 static CRITICAL_SECTION
-  critical_section;
+  semaphore_mutex;
 
 static unsigned int
-  active_critical_section = False;
+  active_semaphore = False;
 #endif
 
 /*
@@ -125,10 +123,10 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (!active_critical_section)
-    InitializeCriticalSection(&critical_section);
-  active_critical_section=True;
-  EnterCriticalSection(&critical_section);
+  if (!active_semaphore)
+    InitializeCriticalSection(&semaphore_mutex);
+  active_semaphore=True;
+  EnterCriticalSection(&semaphore_mutex);
 #endif
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     *semaphore_info=AllocateSemaphoreInfo();
@@ -136,7 +134,7 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  LeaveCriticalSection(&critical_section);
+  LeaveCriticalSection(&semaphore_mutex);
 #endif
   (void) LockSemaphoreInfo(*semaphore_info);
 }
@@ -186,7 +184,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     int
       status;
 
-    status=pthread_mutex_init(&semaphore_info->id,
+    status=pthread_mutex_init(&semaphore_info->mutex,
       (const pthread_mutexattr_t *) NULL);
     if (status != 0)
       {
@@ -196,7 +194,7 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   }
 #endif
 #if defined(WIN32)
-  InitializeCriticalSection(&semaphore_info->critical_section);
+  InitializeCriticalSection(&semaphore_info->mutex);
 #endif
   semaphore_info->signature=MagickSignature;
   return(semaphore_info);
@@ -227,9 +225,9 @@ MagickExport void DestroySemaphore(void)
   (void) pthread_mutex_destroy(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (active_critical_section)
-    DeleteCriticalSection(&critical_section);
-  active_critical_section=False;
+  if (active_semaphore)
+    DeleteCriticalSection(&semaphore_mutex);
+  active_semaphore=False;
 #endif
 }
 
@@ -267,23 +265,23 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  if (!active_critical_section)
-    InitializeCriticalSection(&critical_section);
-  active_critical_section=True;
-  EnterCriticalSection(&critical_section);
+  if (!active_semaphore)
+    InitializeCriticalSection(&semaphore_mutex);
+  active_semaphore=True;
+  EnterCriticalSection(&semaphore_mutex);
 #endif
 #if defined(HasPTHREADS)
-  (void) pthread_mutex_destroy(&(*semaphore_info)->id);
+  (void) pthread_mutex_destroy(&(*semaphore_info)->mutex);
 #endif
 #if defined(WIN32)
-  DeleteCriticalSection(&(*semaphore_info)->critical_section);
+  DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
   LiberateMemory((void **) &(*semaphore_info));
 #if defined(HasPTHREADS)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
-  LeaveCriticalSection(&critical_section);
+  LeaveCriticalSection(&semaphore_mutex);
 #endif
 }
 
@@ -313,8 +311,8 @@ MagickExport void InitializeSemaphore(void)
     (const pthread_mutexattr_t *) NULL);
 #endif
 #if defined(WIN32)
-  InitializeCriticalSection(&critical_section);
-  active_critical_section=True;
+  InitializeCriticalSection(&semaphore_mutex);
+  active_semaphore=True;
 #endif
 }
 
@@ -381,11 +379,11 @@ MagickExport unsigned int LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
 #if defined(HasPTHREADS)
-  if (pthread_mutex_lock(&semaphore_info->id))
+  if (pthread_mutex_lock(&semaphore_info->mutex))
     return(False);
 #endif
 #if defined(WIN32)
-  EnterCriticalSection(&semaphore_info->critical_section);
+  EnterCriticalSection(&semaphore_info->mutex);
 #endif
   return(True);
 }
@@ -421,11 +419,11 @@ MagickExport unsigned int UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
   assert(semaphore_info != (SemaphoreInfo *) NULL);
   assert(semaphore_info->signature == MagickSignature);
 #if defined(HasPTHREADS)
-  if (pthread_mutex_unlock(&semaphore_info->id))
+  if (pthread_mutex_unlock(&semaphore_info->mutex))
     return(False);
 #endif
 #if defined(WIN32)
-  LeaveCriticalSection(&semaphore_info->critical_section);
+  LeaveCriticalSection(&semaphore_info->mutex);
 #endif
   return(True);
 }
