@@ -56,6 +56,9 @@
 /*
   Static declarations.
 */
+static const char
+  Base64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
 static unsigned char
   AsciiMap[] =
   {
@@ -258,10 +261,6 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
 %    o length: The number of bytes decoded.
 %
 */
-
-static const char
-  Base64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
 MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
 {
   int
@@ -458,7 +457,7 @@ MagickExport char *Base64Encode(const unsigned char *blob,
   remainder=blob_length % 3;
   if (remainder != 0)
     {
-      int
+      long
         j;
 
       unsigned char
@@ -467,7 +466,7 @@ MagickExport char *Base64Encode(const unsigned char *blob,
       code[0]='\0';
       code[1]='\0';
       code[2]='\0';
-      for (j=0; j < remainder; j++)
+      for (j=0; j < (long) remainder; j++)
         code[j]=(*p++);
       encode[i++]=Base64[code[0] >> 2];
       encode[i++]=Base64[((code[0] & 0x03) << 4)+(code[1] >> 4)];

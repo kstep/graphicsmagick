@@ -482,7 +482,7 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
     r,
     v;
 
-  register int
+  register long
     i;
 
   /*
@@ -499,7 +499,7 @@ MagickExport void HWBTransform(const double hue,const double whiteness,
       *blue=(Quantum) (MaxRGB*v+0.5);
       return;
     }
-  i=floor(hue);
+  i=(long) floor(hue);
   f=hue-i;
   if (i & 0x01)
     f=1.0-f;
