@@ -428,26 +428,28 @@ int main(int argc,char **argv)
     mosaic,
     global_colormap,
     scene,
-    sendmode,
     status;
 
   void
     *param1,
     *param2;
 
+  TransmitType
+    sendmode;
+
   /*
     Initialize command line arguments.
   */
   if (LocaleCompare("-convert",argv[0]) == 0)
     {
-      sendmode=1; /* set mode to - called as a subroutine */
+      sendmode=FileTransmitType; /* set mode to - called as a subroutine */
       client_name=SetClientName((char *) NULL);
       if (argc < 3)
         return(False);
     }
   else
     {
-      sendmode=0; /* set mode to - called as normal executable */
+      sendmode=UndefinedTransmitType; /* set mode to - called as normal executable */
       ReadCommandlLine(argc,&argv);
       MagickIncarnate(*argv);
       client_name=SetClientName((char *) NULL);
@@ -1765,7 +1767,7 @@ int main(int argc,char **argv)
                 MagickError(OptionError,"Missing blob buffer",option);
               param1=(void *)argv[i];
               argv[i]=AllocateString("");
-              sendmode=2;
+              sendmode=BlobTransmitType;
               break;
             }
           if (LocaleCompare("xblen",option+1) == 0)
@@ -1775,7 +1777,7 @@ int main(int argc,char **argv)
                 MagickError(OptionError,"Missing blob length",option);
               param2=(void *)argv[i];
               argv[i]=AllocateString("");
-              sendmode=2;
+              sendmode=BlobTransmitType;
               break;
             }
           if (LocaleCompare("xfunc",option+1) == 0)
@@ -1785,7 +1787,7 @@ int main(int argc,char **argv)
                 MagickError(OptionError,"Missing stream func",option);
               param1=(void *)argv[i];
               argv[i]=AllocateString("");
-              sendmode=3;
+              sendmode=StreamTransmitType;
               break;
             }
           if (LocaleCompare("xctxt",option+1) == 0)
@@ -1795,7 +1797,27 @@ int main(int argc,char **argv)
                 MagickError(OptionError,"Missing stream context",option);
               param2=(void *)argv[i];
               argv[i]=AllocateString("");
-              sendmode=3;
+              sendmode=StreamTransmitType;
+              break;
+            }
+          if (LocaleCompare("xinfo",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) && (sendmode>0))
+                MagickError(OptionError,"Missing image info ptr",option);
+              param1=(void *)argv[i];
+              argv[i]=AllocateString("");
+              sendmode=ImageTransmitType;
+              break;
+            }
+          if (LocaleCompare("ximag",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) && (sendmode>0))
+                MagickError(OptionError,"Missing image ptr",option);
+              param2=(void *)argv[i];
+              argv[i]=AllocateString("");
+              sendmode=ImageTransmitType;
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -1930,46 +1952,7 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    status=True;
-    switch (sendmode)
-    {
-      case 2:
-      {
-        char
-          **blob_data;
-
-        ExceptionInfo
-          exception;
-
-        size_t
-          *blob_length;
-
-        blob_data=(char **) param1;
-        blob_length=(size_t *) param2;
-        (void) strcpy(p->magick,image_info->magick);
-        if (*blob_length == 0)
-          *blob_length=8192;
-        *blob_data=ImageToBlob(image_info,p,blob_length,&exception);
-        if (*blob_data == NULL)
-          status=False;
-        break;
-      }
-      case 3:
-      {
-        int
-          (*fifo)(const Image *,const void *,const size_t);
-
-        fifo=(int (*)(const Image *,const void *,const size_t)) param1;
-        p->client_data=param2;
-        status=WriteStream(image_info,p,fifo);
-        break;
-      }
-      default:
-      {
-        status=WriteImage(image_info,p);
-        break;
-      }
-    }
+    status=TransmitImage(p,image_info,sendmode,param1,param2);
     if (status == False)
       CatchImageException(p);
     if (image_info->adjoin)
@@ -1977,6 +1960,8 @@ int main(int argc,char **argv)
   }
   if (image_info->verbose)
     DescribeImage(image,stderr,False);
+  if (sendmode==ImageTransmitType)
+    return(True);
   DestroyImages(image);
   DestroyImageInfo(image_info);
   if (sendmode)

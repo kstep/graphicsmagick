@@ -217,7 +217,6 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
-    sendmode,
     status,
     stegano,
     stereo,
@@ -227,19 +226,22 @@ int main(int argc,char **argv)
     *param1,
     *param2;
 
+  TransmitType
+    sendmode;
+
   /*
     Initialize command line arguments.
   */
   if (LocaleCompare("-combine",argv[0]) == 0)
     {
-      sendmode=1; /* set mode to - called as a subroutine */
+      sendmode=FileTransmitType; /* set mode to - called as a subroutine */
       client_name=SetClientName((char *) NULL);
       if (argc < 4)
         return(False);
     }
   else
     {
-      sendmode=0; /* set mode to - called as normal executable */
+      sendmode=UndefinedTransmitType; /* set mode to - called as normal executable */
       ReadCommandlLine(argc,&argv);
       MagickIncarnate(*argv);
       client_name=SetClientName((char *) NULL);
@@ -854,6 +856,26 @@ int main(int argc,char **argv)
               sendmode=3;
               break;
             }
+          if (LocaleCompare("xinfo",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) && (sendmode>0))
+                MagickError(OptionError,"Missing image info ptr",option);
+              param1=(void *)argv[i];
+              argv[i]=AllocateString("");
+              sendmode=ImageTransmitType;
+              break;
+            }
+          if (LocaleCompare("ximag",option+1) == 0)
+            {
+              i++;
+              if ((i == argc) && (sendmode>0))
+                MagickError(OptionError,"Missing image ptr",option);
+              param2=(void *)argv[i];
+              argv[i]=AllocateString("");
+              sendmode=ImageTransmitType;
+              break;
+            }
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
@@ -892,7 +914,7 @@ int main(int argc,char **argv)
       /*
         Create mattes for blending.
       */
-      opacity=(TransparentOpacity*blend)/100;
+      opacity=OpaqueOpacity-(OpaqueOpacity*blend)/100;
       image->storage_class=DirectClass;
       image->matte=True;
       for (y=0; y < (int) image->rows; y++)
@@ -917,7 +939,7 @@ int main(int argc,char **argv)
           break;
         for (x=0; x < (int) composite_image->columns; x++)
         {
-          q->opacity=TransparentOpacity-opacity;
+          q->opacity=OpaqueOpacity-opacity;
           q++;
         }
         if (!SyncImagePixels(composite_image))
@@ -1049,49 +1071,13 @@ int main(int argc,char **argv)
   (void) strcpy(combined_image->filename,write_filename);
   SetImageInfo(image_info,True);
   status=True;
-  switch (sendmode)
-  {
-    case 2:
-    {
-      char
-        **blob_data;
-      ExceptionInfo
-        exception;
-
-      size_t
-        *blob_length;
-
-      blob_data=(char **)param1;
-      blob_length=(size_t *)param2;
-      (void) strcpy(combined_image->magick,image_info->magick);
-      if (*blob_length == 0)
-        *blob_length=8192;
-      *blob_data=ImageToBlob(image_info,combined_image,blob_length,
-        &exception);
-      if (*blob_data == NULL)
-        status=False;
-      break;
-    }
-    case 3:
-    {
-      int
-        (*fifo)(const Image *,const void *,const size_t);
-
-      fifo=(int (*)(const Image *,const void *,const size_t)) param1;
-      combined_image->client_data=param2;
-      status=WriteStream(image_info,combined_image,fifo);
-      break;
-    }
-  default:
-    {
-      status=WriteImage(image_info,combined_image);
-      break;
-    }
-  }
+  status=TransmitImage(combined_image,image_info,sendmode,param1,param2);
   if (status == False)
     CatchImageException(combined_image);
   if (image_info->verbose)
     DescribeImage(combined_image,stderr,False);
+  if (sendmode==ImageTransmitType)
+    return(True);
   DestroyImages(combined_image);
   DestroyImageInfo(image_info);
   if (sendmode)
