@@ -657,44 +657,44 @@ static unsigned int ReadConfigurationFile(const char *basename)
       if ((p-keyword) < (MaxTextExtent-1))
         *p++=c;
       c=fgetc(file);
-    } while ((c == '<') || isalnum(c));
+    } while ((c == '<') || isalnum(c) || (c == '!'));
     *p='\0';
-    if (LocaleCompare(keyword,"<delegate") == 0)
-      {
-        DelegateInfo
-          *delegate_info;
-
-        /*
-          Allocate memory for the delegate list.
-        */
-        delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
-        if (delegate_info == (DelegateInfo *) NULL)
-          MagickError(ResourceLimitError,"Unable to allocate delegates",
-            "Memory allocation failed");
-        memset(delegate_info,0,sizeof(DelegateInfo));
-        if (delegate_list == (DelegateInfo *) NULL)
-          {
-            delegate_info->filename=AllocateString(filename);
-            delegate_list=delegate_info;
-          }
-        else
-          {
-            delegate_list->next=delegate_info;
-            delegate_info->previous=delegate_list;
-            delegate_list=delegate_list->next;
-          }
-      }
     if (*keyword == '<')
-      continue;
+      {
+        if (LocaleCompare(keyword,"<!") == 0)
+          for (c=fgetc(file); (c != '>') && (c != EOF); c=fgetc(file));
+        if (LocaleCompare(keyword,"<delegate") == 0)
+          {
+            DelegateInfo
+              *delegate_info;
+
+            /*
+              Allocate memory for the delegate list.
+            */
+            delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
+            if (delegate_info == (DelegateInfo *) NULL)
+              MagickError(ResourceLimitError,"Unable to allocate delegates",
+                "Memory allocation failed");
+            memset(delegate_info,0,sizeof(DelegateInfo));
+            if (delegate_list == (DelegateInfo *) NULL)
+              {
+                delegate_info->filename=AllocateString(filename);
+                delegate_list=delegate_info;
+              }
+            else
+              {
+                delegate_list->next=delegate_info;
+                delegate_info->previous=delegate_list;
+                delegate_list=delegate_list->next;
+              }
+          }
+        continue;
+      }
     while (isspace(c))
       c=fgetc(file);
     if (c != '=')
       continue;
-    do
-    {
-      c=fgetc(file);
-    }
-    while (isspace(c));
+    for (c=fgetc(file); isspace(c); c=fgetc(file));
     if ((c != '"') && (c != '\''))
       continue;
     /*

@@ -325,44 +325,44 @@ static unsigned int ReadConfigurationFile(const char *basename)
       if ((p-keyword) < (MaxTextExtent-1))
         *p++=c;
       c=fgetc(file);
-    } while ((c == '<') || isalnum(c));
+    } while ((c == '<') || isalnum(c) || (c == '!'));
     *p='\0';
-    if (LocaleCompare(keyword,"<font") == 0)
-      {
-        FontInfo
-          *font_info;
-
-        /*
-          Allocate memory for the font list.
-        */
-        font_info=(FontInfo *) AcquireMemory(sizeof(FontInfo));
-        if (font_info == (FontInfo *) NULL)
-          MagickError(ResourceLimitError,"Unable to allocate fonts",
-            "Memory allocation failed");
-        memset(font_info,0,sizeof(FontInfo));
-        if (font_list == (FontInfo *) NULL)
-          {
-            font_info->filename=AllocateString(filename);
-            font_list=font_info;
-          }
-        else
-          {
-            font_list->next=font_info;
-            font_info->previous=font_list;
-            font_list=font_list->next;
-          }
-      }
     if (*keyword == '<')
-      continue;
+      {
+        if (LocaleCompare(keyword,"<!") == 0)
+          for (c=fgetc(file); (c != '>') && (c != EOF); c=fgetc(file));
+        if (LocaleCompare(keyword,"<font") == 0)
+          {
+            FontInfo
+              *font_info;
+
+            /*
+              Allocate memory for the font list.
+            */
+            font_info=(FontInfo *) AcquireMemory(sizeof(FontInfo));
+            if (font_info == (FontInfo *) NULL)
+              MagickError(ResourceLimitError,"Unable to allocate fonts",
+                "Memory allocation failed");
+            memset(font_info,0,sizeof(FontInfo));
+            if (font_list == (FontInfo *) NULL)
+              {
+                font_info->filename=AllocateString(filename);
+                font_list=font_info;
+              }
+            else
+              {
+                font_list->next=font_info;
+                font_info->previous=font_list;
+                font_list=font_list->next;
+              }
+          }
+        continue;
+      }
     while (isspace(c))
       c=fgetc(file);
     if (c != '=')
       continue;
-    do
-    {
-      c=fgetc(file);
-    }
-    while (isspace(c));
+    for (c=fgetc(file); isspace(c); c=fgetc(file));
     if ((c != '"') && (c != '\''))
       continue;
     /*

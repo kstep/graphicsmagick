@@ -1475,44 +1475,44 @@ static unsigned int ReadConfigurationFile(const char *basename)
       if ((p-keyword) < (MaxTextExtent-1))
         *p++=c;
       c=fgetc(file);
-    } while ((c == '<') || isalnum(c));
+    } while ((c == '<') || isalnum(c) || (c == '!'));
     *p='\0';
-    if (LocaleCompare(keyword,"<color") == 0)
-      {
-        ColorInfo
-          *color_info;
-
-        /*
-          Allocate memory for the color list.
-        */
-        color_info=(ColorInfo *) AcquireMemory(sizeof(ColorInfo));
-        if (color_info == (ColorInfo *) NULL)
-          MagickError(ResourceLimitError,"Unable to allocate color list",
-            "Memory allocation failed");
-        memset(color_info,0,sizeof(ColorInfo));
-        if (color_list == (ColorInfo *) NULL)
-          {
-            color_info->filename=AllocateString(filename);
-            color_list=color_info;
-          }
-        else
-          {
-            color_list->next=color_info;
-            color_info->previous=color_list;
-            color_list=color_list->next;
-          }
-      }
     if (*keyword == '<')
-      continue;
+      {
+        if (LocaleCompare(keyword,"<!") == 0)
+          for (c=fgetc(file); (c != '>') && (c != EOF); c=fgetc(file));
+        if (LocaleCompare(keyword,"<color") == 0)
+          {
+            ColorInfo
+              *color_info;
+
+            /*
+              Allocate memory for the color list.
+            */
+            color_info=(ColorInfo *) AcquireMemory(sizeof(ColorInfo));
+            if (color_info == (ColorInfo *) NULL)
+              MagickError(ResourceLimitError,"Unable to allocate color list",
+                "Memory allocation failed");
+            memset(color_info,0,sizeof(ColorInfo));
+            if (color_list == (ColorInfo *) NULL)
+              {
+                color_info->filename=AllocateString(filename);
+                color_list=color_info;
+              }
+            else
+              {
+                color_list->next=color_info;
+                color_info->previous=color_list;
+                color_list=color_list->next;
+              }
+          }
+        continue;
+      }
     while (isspace(c))
       c=fgetc(file);
     if (c != '=')
       continue;
-    do
-    {
-      c=fgetc(file);
-    }
-    while (isspace(c));
+    for (c=fgetc(file); isspace(c); c=fgetc(file));
     if ((c != '"') && (c != '\''))
       continue;
     /*
