@@ -173,7 +173,7 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode_tag,
   if (delegates == (DelegateInfo *) NULL)
     {
       /*
-        Read delegate configuration file.
+        Read delegates.
       */
       (void) ReadDelegates();
       atexit(DestroyDelegateInfo);
@@ -590,7 +590,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
 %  A description of each parameter follows:
 %
 %    o status: Method ReadDelegates returns True if at least one delegate
-%      can be read otherwise False.
+%      is defined otherwise False.
 %
 %
 */
@@ -609,13 +609,9 @@ static unsigned int ReadDelegates(void)
   register char
     *p;
 
-  unsigned int
-    number_delegates;
-
   /*
     Read delegate file.
   */
-  number_delegates=0;
   path=GetMagickConfigurePath(DelegateFilename);
   if (path == (char *) NULL)
     return(False);
@@ -687,12 +683,11 @@ static unsigned int ReadDelegates(void)
         */
         Strip(delegate_info.commands);
         (void) SetDelegateInfo(&delegate_info);
-        number_delegates++;
         LiberateMemory((void **) &delegate_info.commands);
       }
   }
   (void) fclose(file);
-  return(number_delegates != 0);
+  return(delegates != (DelegateInfo *) NULL);
 }
 
 /*

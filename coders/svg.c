@@ -62,11 +62,7 @@
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parserInternals.h>
-#if defined(HAVE_LIBXML_XML_ERROR_H)
-#include <libxml/xml-error.h>
-#elif defined(HAVE_LIBXML_XMLERROR_H)
 #include <libxml/xmlerror.h>
-#endif
 #endif
 
 #if defined(HasAUTOTRACE)

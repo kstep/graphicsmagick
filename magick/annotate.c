@@ -69,18 +69,14 @@
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parserInternals.h>
-#if defined(HAVE_LIBXML_XML_ERROR_H)
-#include <libxml/xml-error.h>
-#elif defined(HAVE_LIBXML_XMLERROR_H)
 #include <libxml/xmlerror.h>
-#endif
 #endif
 
 /*
   Constant declaractions.
 */
 const char
-  *FontmapFilename = "fonts.mgk";
+  *FontFilename = "fonts.mgk";
 
 /*
   Static declarations.
@@ -95,6 +91,7 @@ static SemaphoreInfo *
   Forward declarations.
 */
 static unsigned int
+  ReadFonts(void),
   RenderFont(Image *,const DrawInfo *,const PointInfo *,
     const unsigned int,FontMetric *),
   RenderPostscript(Image *,const DrawInfo *,const PointInfo *,
@@ -394,8 +391,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyFontInfo deallocates memory associated with the font_info
-%  list.
+%  Method DestroyFontInfo deallocates memory associated with the fonts list.
 %
 %  The format of the DestroyFontInfo method is:
 %
@@ -451,13 +447,13 @@ MagickExport void DestroyFontInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t F o n t I n f o                                                     %
++   G e t F o n t I n f o                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetFontInfo searches the font map for the specified name and if
+%  Method GetFontInfo searches the font list for the specified name and if
 %  found returns attributes for that font.
 %
 %  The format of the GetFontInfo method is:
@@ -466,16 +462,123 @@ MagickExport void DestroyFontInfo(void)
 %
 %  A description of each parameter follows:
 %
-%    o font_info: Method GetFontInfo searches the font map for the specified
+%    o font_info: Method GetFontInfo searches the font list for the specified
 %      name and if found returns attributes for that font.
 %
 %    o name: The font name.
 %
 %
 */
+MagickExport FontInfo *GetFontInfo(char *name)
+{
+  register FontInfo
+    *p;
 
+  AcquireSemaphore(&font_semaphore);
+  if (fonts == (FontInfo *) NULL)
+    {
+      /*
+        Read fonts.
+      */
+      (void) ReadFonts();
+      atexit(DestroyFontInfo);
+    }
+  LiberateSemaphore(&font_semaphore);
+  /*
+    Search for requested font.
+  */
+  for (p=fonts; p != (FontInfo *) NULL; p=p->next)
+    if ((p->name != (char *) NULL) && (LocaleCompare(p->name,name) == 0))
+      break;
+  return(p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t F o n t M e t r i c s                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetFontMetrics returns the following information for the specified
+%  font and text:
+%
+%    o character width, expressed in integer pixels
+%    o character height, expressed in integer pixels
+%    o ascent, expressed in 26.6 fixed point pixels
+%    o descent, expressed in 26.6 fixed point pixels
+%    o text width, expressed in 26.6 fixed point pixels
+%    o text height, expressed in 26.6 fixed point pixels
+%    o maximum horizontal advance, expressed in 26.6 fixed point pixels
+%
+%  The format of the GetFontMetrics method is:
+%
+%      unsigned int GetFontMetrics(Image *image,
+%        const DrawInfo *draw_info,FontMetric metrics)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method GetFontMetrics returns True if the metrics are
+%      available otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o draw_info: Specifies a pointer to a DrawInfo structure.
+%
+%    o metrics: Method GetFontMetrics returns the font metrics.
+%
+%
+*/
+MagickExport unsigned int GetFontMetrics(Image *image,
+  const DrawInfo *draw_info,FontMetric *metrics)
+{
+  PointInfo
+    offset;
+
+  unsigned int
+    status;
+
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->text != (char *) NULL);
+  assert(draw_info->signature == MagickSignature);
+  offset.x=0.0;
+  offset.y=0.0;
+  status=RenderFont(image,draw_info,&offset,False,metrics);
+  return(status);
+}
+
 #if defined(HasXML)
-static void ParseFontmap(void *context,const xmlChar *name,
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e a d F o n t s                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadFonts reads the fonts configuration file which maps font names
+%  with Type1 or TrueType glyph files on disk.
+%
+%  The format of the ReadFonts method is:
+%
+%      unsigned int ReadFonts(void)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ReadFonts returns True if at least one font is defined
+%      otherwise False.
+%
+%
+*/
+
+static void ParseFonts(void *context,const xmlChar *name,
   const xmlChar **attributes)
 {
   const char
@@ -594,165 +697,93 @@ static void ParseFontmap(void *context,const xmlChar *name,
   p->next=font_info;
   font_info->previous=p;
 }
-#endif
 
-MagickExport FontInfo *GetFontInfo(char *name)
+static unsigned int ReadFonts(void)
 {
-  register FontInfo
-    *p;
-
-#if defined(HasXML)
-  AcquireSemaphore(&font_semaphore);
-  if (fonts == (FontInfo *) NULL)
+  xmlSAXHandler
+    SAXHandlerStruct =
     {
-      xmlSAXHandler
-        SAXHandlerStruct =
-        {
-          NULL, /* internalSubset */
-          NULL, /* isStandalone */
-          NULL, /* hasInternalSubset */
-          NULL, /* hasExternalSubset */
-          NULL, /* resolveEntity */
-          NULL, /* getEntity */
-          NULL, /* entityDecl */
-          NULL, /* notationDecl */
-          NULL, /* attributeDecl */
-          NULL, /* elementDecl */
-          NULL, /* unparsedEntityDecl */
-          NULL, /* setDocumentLocator */
-          NULL, /* startDocument */
-          NULL, /* endDocument */
-          ParseFontmap, /* startElement */
-          NULL, /* endElement */
-          NULL, /* reference */
-          NULL, /* characters */
-          NULL, /* ignorableWhitespace */
-          NULL, /* processingInstruction */
-          NULL, /* comment */
-          NULL, /* xmlParserWarning */
-          NULL, /* xmlParserError */
-          NULL, /* xmlParserError */
-          NULL, /* getParameterEntity */
-          NULL, /* cdataBlock; */
-        };
+      NULL, /* internalSubset */
+      NULL, /* isStandalone */
+      NULL, /* hasInternalSubset */
+      NULL, /* hasExternalSubset */
+      NULL, /* resolveEntity */
+      NULL, /* getEntity */
+      NULL, /* entityDecl */
+      NULL, /* notationDecl */
+      NULL, /* attributeDecl */
+      NULL, /* elementDecl */
+      NULL, /* unparsedEntityDecl */
+      NULL, /* setDocumentLocator */
+      NULL, /* startDocument */
+      NULL, /* endDocument */
+      ParseFonts, /* startElement */
+      NULL, /* endElement */
+      NULL, /* reference */
+      NULL, /* characters */
+      NULL, /* ignorableWhitespace */
+      NULL, /* processingInstruction */
+      NULL, /* comment */
+      NULL, /* xmlParserWarning */
+      NULL, /* xmlParserError */
+      NULL, /* xmlParserError */
+      NULL, /* getParameterEntity */
+      NULL, /* cdataBlock; */
+    };
 
-      char
-        buffer[MaxTextExtent],
-        *path;
+  char
+    buffer[MaxTextExtent],
+    *path;
 
-      FILE
-        *file;
+  FILE
+    *file;
 
-      int
-        n;
-
-      unsigned int
-        status;
-
-      xmlParserCtxtPtr
-        parser;
-
-      xmlSAXHandlerPtr
-        SAXHandler;
-
-      /*
-        Initialize fonts.
-      */
-      path=GetMagickConfigurePath(FontmapFilename);
-      if (path == (char *) NULL)
-        return(fonts);
-      file=fopen(FontmapFilename,"r");
-      LiberateMemory((void **) &path);
-      if (file == (FILE *) NULL)
-        return(fonts);
-      xmlSubstituteEntitiesDefault(1);
-      SAXHandler=(&SAXHandlerStruct);
-      parser=xmlCreatePushParserCtxt(SAXHandler,NULL,(char *) NULL,0,
-        FontmapFilename);
-      while (fgets(buffer,MaxTextExtent,file) != (char *) NULL)
-      {
-        n=Extent(buffer);
-        if (n == 0)
-          continue;
-        status=xmlParseChunk(parser,buffer,n,False);
-        if (status != 0)
-          break;
-        (void) xmlParseChunk(parser," ",1,False);
-      }
-      (void) xmlParseChunk(parser," ",1,True);
-      xmlFreeParserCtxt(parser);
-      xmlCleanupParser();
-      (void) fclose(file);
-      atexit(DestroyFontInfo);
-    }
-  LiberateSemaphore(&font_semaphore);
-#endif
-  /*
-    Search fonts.
-  */
-  for (p=fonts; p != (FontInfo *) NULL; p=p->next)
-    if ((p->name != (char *) NULL) && (LocaleCompare(p->name,name) == 0))
-      break;
-  return(p);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t F o n t M e t r i c s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetFontMetrics returns the following information for the specified
-%  font and text:
-%
-%    o character width, expressed in integer pixels
-%    o character height, expressed in integer pixels
-%    o ascent, expressed in 26.6 fixed point pixels
-%    o descent, expressed in 26.6 fixed point pixels
-%    o text width, expressed in 26.6 fixed point pixels
-%    o text height, expressed in 26.6 fixed point pixels
-%    o maximum horizontal advance, expressed in 26.6 fixed point pixels
-%
-%  The format of the GetFontMetrics method is:
-%
-%      unsigned int GetFontMetrics(Image *image,
-%        const DrawInfo *draw_info,FontMetric metrics)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method GetFontMetrics returns True if the metrics are
-%      available otherwise False.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o draw_info: Specifies a pointer to a DrawInfo structure.
-%
-%    o metrics: Method GetFontMetrics returns the font metrics.
-%
-%
-*/
-MagickExport unsigned int GetFontMetrics(Image *image,
-  const DrawInfo *draw_info,FontMetric *metrics)
-{
-  PointInfo
-    offset;
+  int
+    n;
 
   unsigned int
     status;
 
-  assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->text != (char *) NULL);
-  assert(draw_info->signature == MagickSignature);
-  offset.x=0.0;
-  offset.y=0.0;
-  status=RenderFont(image,draw_info,&offset,False,metrics);
-  return(status);
+  xmlParserCtxtPtr
+    parser;
+
+  xmlSAXHandlerPtr
+    SAXHandler;
+
+  path=GetMagickConfigurePath(FontFilename);
+  if (path == (char *) NULL)
+    return(False);
+  file=fopen(path,"r");
+  LiberateMemory((void **) &path);
+  if (file == (FILE *) NULL)
+    return(False);
+  /*
+    Initialize fonts.
+  */
+  SAXHandler=(&SAXHandlerStruct);
+  parser=xmlCreatePushParserCtxt(SAXHandler,NULL,(char *) NULL,0,FontFilename);
+  while (fgets(buffer,MaxTextExtent,file) != (char *) NULL)
+  {
+    n=Extent(buffer);
+    if (n == 0)
+      continue;
+    status=xmlParseChunk(parser,buffer,n,False);
+    if (status != 0)
+      break;
+    (void) xmlParseChunk(parser," ",1,False);
+  }
+  (void) xmlParseChunk(parser," ",1,True);
+  xmlFreeParserCtxt(parser);
+  xmlCleanupParser();
+  (void) fclose(file);
+  return(fonts == (FontInfo *) NULL);
 }
+#else
+static unsigned int ReadFonts(void)
+{
+  return(False);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
