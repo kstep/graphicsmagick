@@ -810,21 +810,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
           InitializeBitStream(&stream,scanline);
 
-          if (image->matte)
+          for (x = (long) width; x > 0 ; x--)
             {
-              /*
-                Extract index and matte values
-              */
-              for (x = (long) width; x > 0 ; x--)
-                {
-                  /* index */
-                  quantum=ReadBitStream(&stream,bits_per_sample);
+              /* index */
+              quantum=ReadBitStream(&stream,bits_per_sample);
 #if QuantumDepth < 16
-                  if (bits_per_sample > QuantumDepth)
-                    quantum /= index_scale;
+              if (bits_per_sample > QuantumDepth)
+                quantum /= index_scale;
 #endif
-                  *indexes++ = quantum;
-                  *q = image->colormap[quantum];
+              *indexes++ = quantum;
+              *q = image->colormap[quantum];
+              if (image->matte)
+                {
                   /* matte */
                   quantum = ReadBitStream(&stream,bits_per_sample);
                   if (QuantumDepth > bits_per_sample)
@@ -832,25 +829,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                   else
                     quantum >>= (bits_per_sample - QuantumDepth);
                   q->opacity = (Quantum) (MaxRGB - quantum);
-                  q++;
                 }
-            }
-          else
-            {
-              /*
-                Extract index value
-              */
-              for (x = (long) width; x > 0 ; x--)
-                {
-                  quantum=ReadBitStream(&stream,bits_per_sample);
-#if QuantumDepth < 16
-                  if (bits_per_sample > QuantumDepth)
-                    quantum /= index_scale;
-#endif
-                  *indexes++ = quantum;
-                  *q = image->colormap[quantum];
-                  q++;
-                }
+              q++;
             }
 
           if (!SyncImagePixels(image))
