@@ -76,16 +76,11 @@
 #if !defined(ulonglong)
 #define ulonglong  unsigned long long
 #endif
-#if !defined(JAS_IMAGE_CS_GRAY)
-#define JAS_IMAGE_CS_GRAY  1
-#endif
-#if !defined(JAS_IMAGE_CS_RGB)
-#define JAS_IMAGE_CS_RGB  2
-#endif
+
 #ifdef __VMS
-#define JAS_VERSION 1.600.0
+#define JAS_VERSION 1.700.0
 #define PACKAGE jasper
-#define VERSION 1.600.0
+#define VERSION 1.700.0
 #endif
 #include "jasper/jasper.h"
 #endif
@@ -489,8 +484,8 @@ ModuleExport void RegisterJP2Image(void)
   entry->seekable_stream=True;
   entry->thread_support=False;
 #if defined(HasJP2)
+  /* Don't set an encoder since PGX is not a standard format */
   entry->decoder=(DecoderHandler) ReadJP2Image;
-  entry->encoder=(EncoderHandler) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
 }
@@ -518,6 +513,7 @@ ModuleExport void UnregisterJP2Image(void)
 {
   (void) UnregisterMagickInfo("JP2");
   (void) UnregisterMagickInfo("JPC");
+  (void) UnregisterMagickInfo("PGX");
 }
 
 #if defined(HasJP2)
@@ -620,20 +616,29 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     component_info[i].height=(unsigned int) image->rows;
     component_info[i].prec=(unsigned int) image->depth <= 8 ? 8 : 16;
   }
+#if defined(JAS_CLRSPC_UNKNOWN)
+  /* Jasper 1.7 */
   jp2_image=jas_image_create((short) number_components,component_info,
                              JAS_CLRSPC_UNKNOWN);
+#else
+  /* Jasper 1.6 */
+  jp2_image=jas_image_create((short) number_components,component_info,
+                             JAS_IMAGE_CS_UNKNOWN);
+#endif
   if (jp2_image == (jas_image_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToCreateImage",image);
 
   if (number_components == 1)
     {
 #if defined(JAS_CLRSPC_SGRAY)
+      /* Jasper 1.7 */
       /* FIXME: If image has an attached ICC profile, then the profile
          should be transferred and the image colorspace set to
          JAS_CLRSPC_GENGRAY */
       /* sRGB Grayscale */
       jas_image_setclrspc(jp2_image, JAS_CLRSPC_SGRAY);
 #else
+      /* Jasper 1.6 */
       jas_image_setcolorspace(jp2_image, JAS_IMAGE_CS_GRAY);
 #endif
       jas_image_setcmpttype(jp2_image, 0,
@@ -647,8 +652,10 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 
       /* sRGB */
 #if defined(JAS_CLRSPC_SRGB)
+      /* Jasper 1.7 */
       jas_image_setclrspc(jp2_image, JAS_CLRSPC_SRGB);
 #else
+      /* Jasper 1.6 */
       jas_image_setcolorspace(jp2_image, JAS_IMAGE_CS_RGB);
 #endif
       jas_image_setcmpttype(jp2_image, 0,
