@@ -15,7 +15,8 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                 July 1992                                   %
+%                            Glenn Randers-Pehrson                            %
+%                               December 2001                                 %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
@@ -56,6 +57,27 @@
 #include "define.h"
 
 /*
+  Macro definitions (from Windows wingdi.h).
+*/
+#define BI_RGB  0
+#define BI_RLE8  1
+#define BI_RLE4  2
+#define BI_BITFIELDS  3
+#define BI_JPEG  4
+#define BI_PNG  5
+
+#define LCS_CALIBRATED_RBG  0
+#define LCS_sRGB  1
+#define LCS_WINDOWS_COLOR_SPACE  2
+#define PROFILE_LINKED  3
+#define PROFILE_EMBEDDED  4
+
+#define LCS_GM_BUSINESS  1  /* Saturation */
+#define LCS_GM_GRAPHICS  2  /* Relative */
+#define LCS_GM_IMAGES  4  /* Perceptual */
+#define LCS_GM_ABS_COLORIMETRIC  8  /* Absolute */
+
+/*
   Typedef declarations.
 */
 typedef struct _BMPInfo
@@ -87,7 +109,6 @@ typedef struct _BMPInfo
     colors_important;
 
   long
-    intent,
     colorspace;
 
   PointInfo
@@ -173,7 +194,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
         byte=ReadBlobByte(image);
         for (i=0; i < count; i++)
         {
-          if (compression == 1)
+          if (compression == BI_RLE8)
             *q++=(unsigned char) byte;
           else
             *q++=(unsigned char)
@@ -218,7 +239,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
             */
             for (i=0; i < count; i++)
             {
-              if (compression == 1)
+              if (compression == BI_RLE8)
                 *q++=ReadBlobByte(image);
               else
                 {
@@ -232,7 +253,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
             /*
               Read pad byte.
             */
-            if (compression == 1)
+            if (compression == BI_RLE8)
               {
                 if (count & 0x01)
                   (void) ReadBlobByte(image);
@@ -403,8 +424,7 @@ static unsigned int IsBMP(const unsigned char *magick,const size_t length)
 %  Method ReadBMPImage reads a Microsoft Windows bitmap image file, Version
 %  2, 3 (for Windows or NT), or 4, and  returns it.  It allocates the memory
 %  necessary for the new Image structure and returns a pointer to the new
-%  image.  It currently only handles masks RGB555, RGB565, RGB8880, and
-%  RGBA8888.
+%  image.
 %
 %  The format of the ReadBMPImage method is:
 %
@@ -499,6 +519,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       quantum_bits,
       shift;
 
+    unsigned long
+      profile_data,
+      profile_size;
+
     /*
       Verify BMP identifier.
     */
@@ -531,7 +555,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.x_pixels=0;
         bmp_info.y_pixels=0;
         bmp_info.number_colors=0;
-        bmp_info.compression=0;
+        bmp_info.compression=BI_RGB;
         bmp_info.image_size=0;
         bmp_info.alpha_mask=0;
       }
@@ -550,9 +574,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.y_pixels=ReadBlobLSBLong(image);
         bmp_info.number_colors=ReadBlobLSBLong(image);
         bmp_info.colors_important=ReadBlobLSBLong(image);
+        profile_data=0;
+        profile_size=0;
         for (i=0; i < (long) (bmp_info.size-40); i++)
           (void) ReadBlobByte(image);
-        if ((bmp_info.compression == 3) && ((bmp_info.bits_per_pixel == 16) ||
+        if ((bmp_info.compression == BI_BITFIELDS) &&
+            ((bmp_info.bits_per_pixel == 16) ||
             (bmp_info.bits_per_pixel == 32)))
           {
             bmp_info.red_mask=ReadBlobLSBLong(image);
@@ -565,10 +592,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 */
                 bmp_info.alpha_mask=ReadBlobLSBLong(image);
                 bmp_info.colorspace=(long) ReadBlobLSBLong(image);
-                bmp_info.red_primary.x=ReadBlobLSBLong(image);
                 /*
-                  The primaries are formatted in 2^30 fixed point.
+                  Decode 2^30 fixed point formatted CIE primaries.
                 */
+                bmp_info.red_primary.x=(double)
+                  ReadBlobLSBLong(image)/0x3ffffff;
                 bmp_info.red_primary.y=(double)
                   ReadBlobLSBLong(image)/0x3ffffff;
                 bmp_info.red_primary.z=(double)
@@ -585,21 +613,62 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   ReadBlobLSBLong(image)/0x3ffffff;
                 bmp_info.blue_primary.z=(double)
                   ReadBlobLSBLong(image)/0x3ffffff;
+                image->chromaticity.red_primary=bmp_info.red_primary;
+                image->chromaticity.green_primary=bmp_info.green_primary;
+                image->chromaticity.blue_primary=bmp_info.blue_primary;
                 /*
-                  The gamma_scales are formatted in 16^16 fixed point.
+                  Decode 16^16 fixed point formatted gamma_scales.
                 */
                 bmp_info.gamma_scale.x=(double) ReadBlobLSBLong(image)/0xffff;
                 bmp_info.gamma_scale.y=(double) ReadBlobLSBLong(image)/0xffff;
                 bmp_info.gamma_scale.z=(double) ReadBlobLSBLong(image)/0xffff;
+                /*
+                  Compute a single gamma from the BMP 3-channel gamma.
+                  Geometric mean (cube_root(x*y*z)) might be preferable
+                  to the arithmetic mean used here.  We should also
+                  create an ICC profile describing the three gammas,
+                  if an ICC profile isn't already present.
+                */
+                image->gamma=(bmp_info.gamma_scale.x+bmp_info.gamma_scale.y+
+                  bmp_info.gamma_scale.z)/3.0;
               }
             if (bmp_info.size > 108)
               {
+                unsigned long
+                  intent;
+
                 /*
-                  Skip BMP Version 5 color management information.
+                  Read BMP Version 5 color management information.
                 */
-                for (i=0; i < 4; i++)
-                  ReadBlobLSBLong(image);
-                (void) ReadBlobByte(image);
+                intent=ReadBlobLSBLong(image);
+                switch ((int) intent)
+                {
+                  case LCS_GM_BUSINESS:
+                  {
+                    image->rendering_intent=SaturationIntent;
+                    break;
+                  }
+                  case LCS_GM_GRAPHICS:
+                  {
+                    image->rendering_intent=RelativeIntent;
+                    break;
+                  }
+                  case LCS_GM_IMAGES:
+                  {
+                    image->rendering_intent=PerceptualIntent;
+                    break;
+                  }
+                  case LCS_GM_ABS_COLORIMETRIC:
+                  {
+                    image->rendering_intent=AbsoluteIntent;
+                    break;
+                  }
+                }
+                profile_data=ReadBlobLSBLong(image);
+                profile_data=profile_data;
+                profile_size=ReadBlobLSBLong(image);
+                profile_size=profile_size;
+                ReadBlobLSBLong(image); /* Reserved byte */
               }
             if (bmp_info.size > 124)
               {
@@ -613,15 +682,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     switch (bmp_info.compression)
     {
-      case 0:
-      case 1:
-      case 2:
-      case 3:
+      case BI_RGB:
+      case BI_RLE8:
+      case BI_RLE4:
+      case BI_BITFIELDS:
         break;
-      case 4:
+      case BI_JPEG:
         ThrowReaderException(CorruptImageWarning,
           "JPEG compression not supported",image);
-      case 5:
+      case BI_PNG:
         ThrowReaderException(CorruptImageWarning,
           "PNG compression not supported",image);
       default:
@@ -680,7 +749,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read image data.
     */
     (void) SeekBlob(image,start_position+bmp_info.offset_bits,SEEK_SET);
-    if (bmp_info.compression == 2)
+    if (bmp_info.compression == BI_RLE4)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=bytes_per_line*image->rows;
@@ -688,7 +757,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    if ((bmp_info.compression == 0) || (bmp_info.compression == 3))
+    if ((bmp_info.compression == BI_RGB) ||
+        (bmp_info.compression == BI_BITFIELDS))
       (void) ReadBlob(image,length,(char *) pixels);
     else
       {
@@ -709,7 +779,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert BMP raster image to pixel packets.
     */
-    if (bmp_info.compression == 0)
+    if (bmp_info.compression == BI_RGB)
       {
         bmp_info.alpha_mask=0;
         bmp_info.red_mask=0x00ff0000L;
@@ -845,7 +915,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PseudoColor scanline.
         */
-        if ((bmp_info.compression == 1) || (bmp_info.compression == 2))
+        if ((bmp_info.compression == BI_RLE8) ||
+            (bmp_info.compression == BI_RLE4))
           bytes_per_line=image->columns;
         for (y=(long) image->rows-1; y >= 0; y--)
         {
@@ -878,7 +949,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert bitfield encoded 16-bit PseudoColor scanline.
         */
-        if (bmp_info.compression != 0 && bmp_info.compression != 3)
+        if (bmp_info.compression != BI_RGB &&
+            bmp_info.compression != BI_BITFIELDS)
           ThrowReaderException(CorruptImageWarning,
             "Compression mode != 0 or 3 in 16-bit BMP image file",image)
         bytes_per_line=2*(image->columns+image->columns%2);
@@ -962,7 +1034,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert bitfield encoded DirectColor scanline.
         */
-        if (bmp_info.compression != 0 && bmp_info.compression != 3)
+        if (bmp_info.compression != BI_RGB &&
+            bmp_info.compression != BI_BITFIELDS)
           ThrowReaderException(CorruptImageWarning,
             "Compression mode != 0 or 3 in 32-bit BMP image file",image)
         bytes_per_line=4*(image->columns);
@@ -1183,6 +1256,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
+    have_color_info,
     scene,
     status;
 
@@ -1208,7 +1282,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     (void) TransformRGBImage(image,RGBColorspace);
     bmp_info.file_size=14+40;
     bmp_info.offset_bits=14+40;
-    bmp_info.compression=0;
+    bmp_info.compression=BI_RGB;
     if (image->storage_class != DirectClass)
       {
         /*
@@ -1236,17 +1310,29 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         bmp_info.number_colors=0;
         bmp_info.bits_per_pixel=image->matte ? 32 : 24;
-        bmp_info.compression=image->matte ? 3 : 0;
+        bmp_info.compression=image->matte ? BI_BITFIELDS : BI_RGB;
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
-    if (!image->matte)
+    have_color_info=(int) (image->rendering_intent != UndefinedIntent) ||
+      (image->color_profile.length != 0) || (image->gamma != 0.0);
+    if (!image->matte && !have_color_info)
       bmp_info.size=40;
     else
       {
+        int
+          extra_size;
+
         bmp_info.size=108;
-        bmp_info.file_size+=68;
-        bmp_info.offset_bits+=68;
+        extra_size=68;
+        if ((image->rendering_intent != UndefinedIntent) ||
+            (image->color_profile.length != 0))
+          {
+            bmp_info.size=124;
+            extra_size+=16;
+          }
+        bmp_info.file_size+=extra_size;
+        bmp_info.offset_bits+=extra_size;
       }
     bmp_info.width=(long) image->columns;
     bmp_info.height=(long) image->rows;
@@ -1393,7 +1479,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.file_size+=bmp_info.image_size;
           LiberateMemory((void **) &pixels);
           pixels=bmp_data;
-          bmp_info.compression=1;
+          bmp_info.compression=BI_RLE8;
         }
     /*
       Write BMP Version 3 for Windows 3.x 14-byte header.
@@ -1416,23 +1502,76 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobLSBLong(image,bmp_info.y_pixels);
     (void) WriteBlobLSBLong(image,bmp_info.number_colors);
     (void) WriteBlobLSBLong(image,bmp_info.colors_important);
-    if (image->matte)
+    if (image->matte || have_color_info)
       {
-        int
-          j;
-
         /*
-          Write the rest of the 108-byte BMP Version 4 header
+          Write the rest of the 108-byte BMP Version 4 header.
         */
         (void) WriteBlobLSBLong(image,0x00ff0000L);  /* Red mask */
         (void) WriteBlobLSBLong(image,0x0000ff00L);  /* Green mask */
         (void) WriteBlobLSBLong(image,0x000000ffL);  /* Blue mask */
         (void) WriteBlobLSBLong(image,0xff000000L);  /* Alpha mask */
-        (void) WriteBlobLSBLong(image,0x00000001L);  /* CSType==RGB */
-        for (j=0; j < 9; j++)
-          (void) WriteBlobLSBLong(image,0x00000000L);  /* Unused RedX etc. */
-        for (j=0; j < 3; j++)
-          (void) WriteBlobLSBLong(image,0x00000000L);  /* 3 comp. gamma scale */
+        (void) WriteBlobLSBLong(image,0x00000001L);  /* CSType==Calib. RGB */
+        (void) WriteBlobLSBLong(image,
+           (long) image->chromaticity.red_primary.x*0x3ffffff);
+        (void) WriteBlobLSBLong(image,
+           (long) image->chromaticity.red_primary.y*0x3ffffff);
+        (void) WriteBlobLSBLong(image,
+           (long) image->chromaticity.red_primary.z*0x3ffffff);
+        (void) WriteBlobLSBLong(image,
+           (long) image->chromaticity.green_primary.x*0x3ffffff);
+        (void) WriteBlobLSBLong(image,
+           (long) image->chromaticity.green_primary.y*0x3ffffff);
+        (void) WriteBlobLSBLong(image,
+           (long) image->chromaticity.green_primary.z*0x3ffffff);
+        (void) WriteBlobLSBLong(image,
+           (long) image->chromaticity.blue_primary.x*0x3ffffff);
+        (void) WriteBlobLSBLong(image,
+           (long) image->chromaticity.blue_primary.y*0x3ffffff);
+        (void) WriteBlobLSBLong(image,
+           (long) image->chromaticity.blue_primary.z*0x3ffffff);
+        (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.x*0xffff);
+        (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.y*0xffff);
+        (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.z*0xffff);
+      }
+    if ((image->rendering_intent != UndefinedIntent) ||
+       (image->color_profile.length != 0))
+      {
+        long
+          intent;
+
+        switch ((int) image->rendering_intent)
+        {
+          case SaturationIntent:
+          {
+            intent=LCS_GM_BUSINESS;
+            break;
+          }
+          case RelativeIntent:
+          {
+            intent=LCS_GM_GRAPHICS;
+            break;
+          }
+          case PerceptualIntent:
+          {
+            intent=LCS_GM_IMAGES;
+            break;
+          }
+          case AbsoluteIntent:
+          {
+            intent=LCS_GM_ABS_COLORIMETRIC;
+            break;
+          }
+          default:
+          {
+            intent=0;
+            break;
+          }
+        }
+        (void) WriteBlobLSBLong(image,intent);
+        (void) WriteBlobLSBLong(image,0x0f);  /* dummy profile data */
+        (void) WriteBlobLSBLong(image,0x0f);  /* dummy profile length */
+        (void) WriteBlobLSBLong(image,0x0f);  /* reserved */
       }
     if (image->storage_class == PseudoClass)
       {
