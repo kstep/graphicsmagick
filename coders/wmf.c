@@ -190,7 +190,7 @@ static float magick_font_stringwidth(wmfAPI* API, wmfFont* font, char* str);
 
 static const Image* magick_get_registry(wmfAPI * API, const long id, ExceptionInfo *exception);
 static double       magick_font_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height);
-static double       magick_font_weight( const char* font );
+static int          magick_font_weight( const char* font );
 static int          magick_mvg_printf(wmfAPI * API, char *format, ...);
 static int          wmf_magick_read(void* context);
 static int          wmf_magick_seek(void* context,long position);
@@ -1828,9 +1828,9 @@ static double magick_font_pointsize( wmfAPI* API, wmfFont* font, char* str, doub
 }
 
 /* Estimate weight based on font name */
-static double magick_font_weight( const char* font )
+static int magick_font_weight( const char* font )
 {
-  double
+  int
     weight;
 
   weight = 400;
