@@ -123,6 +123,8 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
             break;
           }
         }
+        if (registry_info == registry_list)
+          registry_list=registry_info->next;
         if (registry_info->previous != (RegistryInfo *) NULL)
           registry_info->previous->next=registry_info->next;
         if (registry_info->next != (RegistryInfo *) NULL)
