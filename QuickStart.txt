@@ -16,7 +16,7 @@ Configuration Files:
   Where MagickSharePath, MagickLibPath, and MagickModulesPath are
   defined by the configure program on Unix, and default to
   /usr/local/share/ImageMagick/, /usr/local/lib/ImageMagick/ and
-  /usr/local/lib/ImageMagick/module/coder/ respectively.
+  /usr/local/lib/ImageMagick/modules/coders/ respectively.
 
   MagickLibPath and MagickModulesPath, and are defined under Win32, VMS, and
   Macintosh as c:\ImageMagick\, sys$login, and the current directory
@@ -57,7 +57,7 @@ Unix/Linux/Cygwin Install:
       gunzip -c ImageMagick-*.tar.gz | tar xvf -
       /bin/mv share/ImageMagick/* /opt/ImageMagick
       /bin/mv lib/ImageMagick/* /opt/ImageMagick
-      /bin/mv lib/ImageMagick/module/coder/* /opt/ImageMagick
+      /bin/mv lib/ImageMagick/modules/coders/* /opt/ImageMagick
       /bin/mv lib/libMagick* /opt/ImageMagick
       /bin/mv bin/* /opt/ImageMagick
       setenv LD_LIBRARY_PATH /opt/ImageMagick 
