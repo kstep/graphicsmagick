@@ -401,7 +401,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"depth") == 0)
                   {
-                    image->depth=atol(values) <= 8 ? 8 : 16;
+                    image->depth=atol(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"dispose") == 0)
@@ -758,13 +758,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 for (i=0; i < (long) image->colors; i++)
                 {
                   pixel=(*p << 8) | *(p+1);
-                  image->colormap[i].red=ScaleShortToQuantum(pixel);
+                  image->colormap[i].red=pixel;
                   p+=2;
                   pixel=(*p << 8) | *(p+1);
-                  image->colormap[i].green=ScaleShortToQuantum(pixel);
+                  image->colormap[i].green=pixel;
                   p+=2;
                   pixel=(*p << 8) | *(p+1);
-                  image->colormap[i].blue=ScaleCharToQuantum(pixel);
+                  image->colormap[i].blue=pixel;
                   p+=2;
                 }
               else
@@ -926,6 +926,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                     index=ReadBlobByte(image);
                     if (image->depth > 8)
                       index=(index << 8)+ReadBlobByte(image);
+                    if (image->depth > 16)
+                      {
+                        index=(index << 8)+ReadBlobByte(image);
+                        index=(index << 8)+ReadBlobByte(image);
+											}
                     if (index >= image->colors)
                       {
                         ThrowException(&image->exception,CorruptImageError,
@@ -952,26 +957,48 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                             pixel.opacity=ScaleCharToQuantum(ReadBlobByte(image));
                       }
                     else
-                      {
-                        pixel.red=ReadBlobMSBShort(image) >>
-                          (image->depth-QuantumDepth);
-                        pixel.green=ReadBlobMSBShort(image) >>
-                          (image->depth-QuantumDepth);
-                        pixel.blue=ReadBlobMSBShort(image) >>
-                          (image->depth-QuantumDepth);
-                        if (image->colorspace == CMYKColorspace)
-                          {
-                            pixel.opacity=(ReadBlobMSBShort(image) >>
-                              (image->depth-QuantumDepth));
-                            if (image->matte)
-                              index=(ReadBlobMSBShort(image) >>
+                      if (image->depth <= 16)
+                        {
+                          pixel.red=ReadBlobMSBShort(image) >>
+                            (image->depth-QuantumDepth);
+                          pixel.green=ReadBlobMSBShort(image) >>
+                            (image->depth-QuantumDepth);
+                          pixel.blue=ReadBlobMSBShort(image) >>
+                            (image->depth-QuantumDepth);
+                          if (image->colorspace == CMYKColorspace)
+                            {
+                              pixel.opacity=(ReadBlobMSBShort(image) >>
                                 (image->depth-QuantumDepth));
-                          }
-                        else
-                          if (image->matte)
-                            pixel.opacity=(ReadBlobMSBShort(image) >>
-                              (image->depth-QuantumDepth));
-                      }
+                              if (image->matte)
+                                index=(ReadBlobMSBShort(image) >>
+                                  (image->depth-QuantumDepth));
+                            }
+                          else
+                            if (image->matte)
+                              pixel.opacity=(ReadBlobMSBShort(image) >>
+                                (image->depth-QuantumDepth));
+                        }
+											else
+                        {
+                          pixel.red=ReadBlobMSBLong(image) >>
+                            (image->depth-QuantumDepth);
+                          pixel.green=ReadBlobMSBLong(image) >>
+                            (image->depth-QuantumDepth);
+                          pixel.blue=ReadBlobMSBLong(image) >>
+                            (image->depth-QuantumDepth);
+                          if (image->colorspace == CMYKColorspace)
+                            {
+                              pixel.opacity=(ReadBlobMSBLong(image) >>
+                                (image->depth-QuantumDepth));
+                              if (image->matte)
+                                index=(ReadBlobMSBLong(image) >>
+                                  (image->depth-QuantumDepth));
+                            }
+                          else
+                            if (image->matte)
+                              pixel.opacity=(ReadBlobMSBLong(image) >>
+                                (image->depth-QuantumDepth));
+                        }
                   }
                 length=ReadBlobByte(image)+1;
               }
@@ -1141,6 +1168,11 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     { \
       if (image->depth > 8) \
         *q++=index >> 8; \
+      if (image->depth > 16) \
+        { \
+          *q++=index >> 8; \
+          *q++=index >> 8; \
+        } \
       *q++=index; \
     } \
   else \
@@ -1161,48 +1193,104 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               *q++=ScaleQuantumToChar(pixel.opacity); \
         } \
       else \
-        { \
-          value=pixel.red; \
-          if ((QuantumDepth-image->depth) != 0) \
-            value*=257; \
-          *q++=value >> 8; \
-          *q++=value & 0xff; \
-          value=pixel.green; \
-          if ((QuantumDepth-image->depth) != 0) \
-            value*=257; \
-          *q++=value >> 8; \
-          *q++=value & 0xff; \
-          value=pixel.blue; \
-          if ((QuantumDepth-image->depth) != 0) \
-            value*=257; \
-          *q++=value >> 8; \
-          *q++=value & 0xff; \
-          if (image->colorspace == CMYKColorspace) \
-            { \
-              value=pixel.opacity; \
-              if ((QuantumDepth-image->depth) != 0) \
-                value*=257; \
-              *q++=value >> 8; \
-              *q++=value & 0xff; \
-              if (image->matte) \
-                { \
-                  value=index; \
-                  if ((QuantumDepth-image->depth) != 0) \
-                    value*=257; \
-                  *q++=value >> 8; \
-                  *q++=value & 0xff; \
-                } \
-            } \
-          else \
-            if (image->matte) \
+        if (image->depth <= 16) \
+          { \
+            value=pixel.red; \
+            if ((QuantumDepth-image->depth) != 0) \
+              value*=257; \
+            *q++=value >> 8; \
+            *q++=value; \
+            value=pixel.green; \
+            if ((QuantumDepth-image->depth) != 0) \
+              value*=257; \
+            *q++=value >> 8; \
+            *q++=value; \
+            value=pixel.blue; \
+            if ((QuantumDepth-image->depth) != 0) \
+              value*=257; \
+            *q++=value >> 8; \
+            *q++=value; \
+            if (image->colorspace == CMYKColorspace) \
               { \
                 value=pixel.opacity; \
                 if ((QuantumDepth-image->depth) != 0) \
                   value*=257; \
                 *q++=value >> 8; \
-                *q++=value & 0xff; \
+                *q++=value; \
+                if (image->matte) \
+                  { \
+                    value=index; \
+                    if ((QuantumDepth-image->depth) != 0) \
+                      value*=257; \
+                    *q++=value >> 8; \
+                    *q++=value; \
+                  } \
               } \
-        } \
+            else \
+              if (image->matte) \
+                { \
+                  value=pixel.opacity; \
+                  if ((QuantumDepth-image->depth) != 0) \
+                    value*=257; \
+                  *q++=value >> 8; \
+                  *q++=value; \
+                } \
+          } \
+				else \
+          { \
+            value=pixel.red; \
+            if ((QuantumDepth-image->depth) != 0) \
+              value*=65537; \
+            *q++=value >> 24; \
+            *q++=value >> 16; \
+            *q++=value >> 8; \
+            *q++=value; \
+            value=pixel.green; \
+            if ((QuantumDepth-image->depth) != 0) \
+              value*=65537; \
+            *q++=value >> 24; \
+            *q++=value >> 16; \
+            *q++=value >> 8; \
+            *q++=value; \
+            value=pixel.blue; \
+            if ((QuantumDepth-image->depth) != 0) \
+              value*=65537; \
+            *q++=value >> 24; \
+            *q++=value >> 16; \
+            *q++=value >> 8; \
+            *q++=value; \
+            if (image->colorspace == CMYKColorspace) \
+              { \
+                value=pixel.opacity; \
+                if ((QuantumDepth-image->depth) != 0) \
+                  value*=65537; \
+                *q++=value >> 24; \
+                *q++=value >> 16; \
+                *q++=value >> 8; \
+                *q++=value; \
+                if (image->matte) \
+                  { \
+                    value=index; \
+                    if ((QuantumDepth-image->depth) != 0) \
+                      value*=65537; \
+                    *q++=value >> 24; \
+                    *q++=value >> 16; \
+                    *q++=value >> 8; \
+                    *q++=value; \
+                  } \
+              } \
+            else \
+              if (image->matte) \
+                { \
+                  value=pixel.opacity; \
+                  if ((QuantumDepth-image->depth) != 0) \
+                    value*=65537; \
+                  *q++=value >> 24; \
+                  *q++=value >> 16; \
+                  *q++=value >> 8; \
+                  *q++=value; \
+                } \
+          } \
     } \
   *q++=(unsigned char) length; \
 }
