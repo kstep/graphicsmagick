@@ -214,7 +214,7 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
           }
         else
           {
-            for ( i=count; i != 0; --i )
+            for ( i=0; i < count; i++ )
               {
                 *q++=(unsigned char)
                   ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
@@ -257,18 +257,17 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
             /*
               Absolute mode.
             */
-            for (i=0; i < count; i++)
-            {
-              if (compression == BI_RLE8)
+            if (compression == BI_RLE8)
+              for (i=count; i != 0; --i)
                 *q++=ReadBlobByte(image);
-              else
-                {
-                  if ((i & 0x01) == 0)
-                    byte=ReadBlobByte(image);
-                  *q++=(unsigned char)
-                    ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
-                }
-            }
+            else
+              for (i=0; i < count; i++)
+              {
+                if ((i & 0x01) == 0)
+                  byte=ReadBlobByte(image);
+                *q++=(unsigned char)
+                  ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
+              }
             x+=count;
             /*
               Read pad byte.
