@@ -219,7 +219,6 @@ extern MagickExport unsigned int
   AnnotateImage(Image *,const DrawInfo *),
   ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const long,
     const long,const PaintMethod),
-  ColorMatch(const PixelPacket *,const PixelPacket *,const double),
   DrawImage(Image *,DrawInfo *),
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
   ListTypeInfo(FILE *,ExceptionInfo *),

@@ -431,7 +431,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (long) image->columns; x++)
           {
             index=
-              ValidateColormapIndex(image,XGetPixel(ximage,(int) x,(int) y));
+              ConstrainColormapIndex(image,XGetPixel(ximage,(int) x,(int) y));
             indexes[x]=index;
             *q++=image->colormap[index];
           }

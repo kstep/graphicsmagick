@@ -1598,7 +1598,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
 %
 */
 
-static inline IndexPacket ConstrainColormapIndex(Image *image,
+static inline IndexPacket PushColormapIndex(Image *image,
   const unsigned long index)
 {
   assert(image != (Image *) NULL);
@@ -1642,7 +1642,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            index=ConstrainColormapIndex(image,*p);
+            index=PushColormapIndex(image,*p);
             *indexes++=index;
             *q++=image->colormap[index];
             p++;
@@ -1651,7 +1651,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (long) image->columns; x++)
       {
-        index=ConstrainColormapIndex(image,(*p << 8) | *(p+1));
+        index=PushColormapIndex(image,(*p << 8) | *(p+1));
         *indexes++=index;
         *q++=image->colormap[index];
         p+=2;
@@ -1664,7 +1664,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            index=ConstrainColormapIndex(image,*p);
+            index=PushColormapIndex(image,*p);
             *indexes++=index;
             *q=image->colormap[index];
             p++;
@@ -1676,7 +1676,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (long) image->columns; x++)
       {
-        index=ConstrainColormapIndex(image,
+        index=PushColormapIndex(image,
           (Downscale(*p) << 8) | Downscale(*(p+1)));
         *indexes++=index;
         *q=image->colormap[index];
@@ -1693,7 +1693,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            index=ConstrainColormapIndex(image,*p);
+            index=PushColormapIndex(image,*p);
             *indexes++=index;
             *q++=image->colormap[index];
             p++;
@@ -1702,7 +1702,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (long) image->columns; x++)
       {
-        index=ConstrainColormapIndex(image,(*p << 8) | *(p+1));
+        index=PushColormapIndex(image,(*p << 8) | *(p+1));
         *indexes++=index;
         *q++=image->colormap[index];
         p+=2;
@@ -1715,7 +1715,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            index=ConstrainColormapIndex(image,*p);
+            index=PushColormapIndex(image,*p);
             *indexes++=index;
             *q=image->colormap[index];
             p++;
@@ -1727,7 +1727,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         }
       for (x=0; x < (long) image->columns; x++)
       {
-        index=ConstrainColormapIndex(image,(*p << 8) | *(p+1));
+        index=PushColormapIndex(image,(*p << 8) | *(p+1));
         *indexes++=index;
         *q=image->colormap[index];
         p+=2;

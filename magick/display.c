@@ -2031,7 +2031,7 @@ static unsigned int XColorEditImage(Display *display,
                     break;
                   for (x=0; x < (int) (*image)->columns; x++)
                   {
-                    if (ColorMatch(q,&target,(*image)->fuzz))
+                    if (FuzzyColorMatch(q,&target,(*image)->fuzz))
                       {
                         q->red=XDownscale(color.red);
                         q->green=XDownscale(color.green);
@@ -2046,7 +2046,7 @@ static unsigned int XColorEditImage(Display *display,
             else
               {
                 for (i=0; i < (int) (*image)->colors; i++)
-                  if (ColorMatch((*image)->colormap+i,&target,(*image)->fuzz))
+                  if (FuzzyColorMatch((*image)->colormap+i,&target,(*image)->fuzz))
                     {
                       (*image)->colormap[i].red=XDownscale(color.red);
                       (*image)->colormap[i].green=XDownscale(color.green);
@@ -7772,7 +7772,7 @@ static unsigned int XMatteEditImage(Display *display,
                 break;
               for (x=0; x < (int) (*image)->columns; x++)
               {
-                if (ColorMatch(q,&target,(*image)->fuzz))
+                if (FuzzyColorMatch(q,&target,(*image)->fuzz))
                   q->opacity=(Quantum) atol(matte);
                 q++;
               }

@@ -163,55 +163,41 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C o l o r M a t c h                                                       %
++   C o n s t r a i n C o l o r m a p I n d e x                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ColorMatch() returns true if two pixels are identical in color.
+%  ConstrainColormapIndex() validates the colormap index.  If the index does
+%  not range from 0 to the number of colors in the colormap an exception
+%  is issued and 0 is returned.
 %
-%  The format of the ColorMatch method is:
+%  The format of the ConstrainColormapIndex method is:
 %
-%      void ColorMatch(const PixelPacket *p,const PixelPacket *q,
-%        const double fuzz)
+%      IndexPacket ConstrainColormapIndex(Image *image,const unsigned int index)
 %
 %  A description of each parameter follows:
 %
-%    o p: Pixel p.
+%    o index: Method ConstrainColormapIndex returns colormap index if it is
+%      valid other an exception is issued and 0 is returned.
 %
-%    o q: Pixel q.
+%    o image: The image.
 %
-%    o distance:  Define how much tolerance is acceptable to consider
-%      two colors as the same.
+%    o index: This integer is the colormap index.
 %
 %
 */
-MagickExport unsigned int ColorMatch(const PixelPacket *p,const PixelPacket *q,
-  const double fuzz)
+MagickExport IndexPacket ConstrainColormapIndex(Image *image,
+  const unsigned long index)
 {
-  register double
-    blue,
-    distance,
-    green,
-    red;
-
-  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
-      (p->blue == q->blue))
-    return(True);
-  red=(double) (p->red-q->red);
-  distance=red*red;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  green=(double) (p->green-q->green);
-  distance+=green*green;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  blue=(double) (p->blue-q->blue);
-  distance+=blue*blue;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  return(True);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (index < image->colors)
+    return((IndexPacket) index);
+  ThrowException(&image->exception,CorruptImageWarning,
+    "invalid colormap index",image->filename);
+  return(0);
 }
 
 /*
@@ -335,6 +321,62 @@ static void DestroyColorList(const NodeInfo *node_info)
       DestroyColorList(node_info->child[id]);
   if (node_info->list != (ColorPacket *) NULL)
     LiberateMemory((void **) &node_info->list);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   F u z z y C o l o r M a t c h                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  FuzzyColorMatch() returns true if two pixels are identical in color.
+%
+%  The format of the FuzzyColorMatch method is:
+%
+%      void FuzzyColorMatch(const PixelPacket *p,const PixelPacket *q,
+%        const double fuzz)
+%
+%  A description of each parameter follows:
+%
+%    o p: Pixel p.
+%
+%    o q: Pixel q.
+%
+%    o distance:  Define how much tolerance is acceptable to consider
+%      two colors as the same.
+%
+%
+*/
+MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,const PixelPacket *q,
+  const double fuzz)
+{
+  register double
+    blue,
+    distance,
+    green,
+    red;
+
+  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
+      (p->blue == q->blue))
+    return(True);
+  red=(double) (p->red-q->red);
+  distance=red*red;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  green=(double) (p->green-q->green);
+  distance+=green*green;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  blue=(double) (p->blue-q->blue);
+  distance+=blue*blue;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  return(True);
 }
 
 /*
@@ -615,7 +657,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 */
 
-static unsigned int XColorMatch(const PixelPacket *color,
+static unsigned int XFuzzyColorMatch(const PixelPacket *color,
   const ColorPacket *target,const double distance)
 {
   double
@@ -721,7 +763,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
         if (level != MaxTreeDepth)
           continue;
         for (i=0; i < (long) node_info->number_unique; i++)
-           if (XColorMatch(p,node_info->list+i,0))
+           if (XFuzzyColorMatch(p,node_info->list+i,0))
              break;
         if (i < (long) node_info->number_unique)
           {
@@ -1154,7 +1196,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
         index--;
       }
       for (i=0; i < (long) node_info->number_unique; i++)
-        if (XColorMatch(p,node_info->list+i,0))
+        if (XFuzzyColorMatch(p,node_info->list+i,0))
           break;
       if (i == (long) node_info->number_unique)
         {
@@ -1746,46 +1788,4 @@ static unsigned int ReadConfigurationFile(const char *basename,
   while (color_list->previous != (ColorInfo *) NULL)
     color_list=color_list->previous;
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   V a l i d a t e C o l o r m a p I n d e x                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ValidateColormapIndex() validates the colormap index.  If the index does
-%  not range from 0 to the number of colors in the colormap an exception
-%  is issued and 0 is returned.
-%
-%  The format of the ValidateColormapIndex method is:
-%
-%      IndexPacket ValidateColormapIndex(Image *image,const unsigned int index)
-%
-%  A description of each parameter follows:
-%
-%    o index: Method ValidateColormapIndex returns colormap index if it is
-%      valid other an exception is issued and 0 is returned.
-%
-%    o image: The image.
-%
-%    o index: This integer is the colormap index.
-%
-%
-*/
-MagickExport IndexPacket ValidateColormapIndex(Image *image,
-  const unsigned long index)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (index < image->colors)
-    return((IndexPacket) index);
-  ThrowException(&image->exception,CorruptImageWarning,
-    "invalid colormap index",image->filename);
-  return(0);
 }

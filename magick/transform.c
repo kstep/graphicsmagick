@@ -538,7 +538,7 @@ MagickExport Image *DeconstructImages(const Image *image,
         break;
       for (y=0; y < (long) next->rows; y++)
       {
-        if (!ColorMatch(p,q,next->fuzz))
+        if (!FuzzyColorMatch(p,q,next->fuzz))
           break;
         p++;
         q++;
@@ -555,7 +555,7 @@ MagickExport Image *DeconstructImages(const Image *image,
         break;
       for (x=0; x < (long) next->columns; x++)
       {
-        if (!ColorMatch(p,q,next->fuzz))
+        if (!FuzzyColorMatch(p,q,next->fuzz))
           break;
         p++;
         q++;
@@ -572,7 +572,7 @@ MagickExport Image *DeconstructImages(const Image *image,
         break;
       for (y=0; y < (long) next->rows; y++)
       {
-        if (!ColorMatch(p,q,next->fuzz))
+        if (!FuzzyColorMatch(p,q,next->fuzz))
           break;
         p++;
         q++;
@@ -589,7 +589,7 @@ MagickExport Image *DeconstructImages(const Image *image,
         break;
       for (x=0; x < (long) next->columns; x++)
       {
-        if (!ColorMatch(p,q,next->fuzz))
+        if (!FuzzyColorMatch(p,q,next->fuzz))
           break;
         p++;
         q++;

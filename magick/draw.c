@@ -65,7 +65,7 @@
 */
 #define BezierQuantum  200
 #define MatteMatch(color,target,delta) \
-  (ColorMatch(color,target,delta) && ((color)->opacity == (target)->opacity))
+  (FuzzyColorMatch(color,target,delta) && ((color)->opacity == (target)->opacity))
 #define MaxStacksize  (1 << 15)
 #define Push(up,left,right,delta) \
   if ((s < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
@@ -391,7 +391,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   /*
     Set floodfill color.
   */
-  if (ColorMatch(&draw_info->fill,&target,image->fuzz))
+  if (FuzzyColorMatch(&draw_info->fill,&target,image->fuzz))
     return(False);
   floodplane=(unsigned char *) AcquireMemory(image->columns*image->rows);
   segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
@@ -431,12 +431,12 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     {
       if (method == FloodfillMethod)
         {
-          if (!ColorMatch(q,&target,image->fuzz))
+          if (!FuzzyColorMatch(q,&target,image->fuzz))
             break;
         }
       else
-        if (ColorMatch(q,&target,image->fuzz) ||
-            ColorMatch(q,&draw_info->fill,image->fuzz))
+        if (FuzzyColorMatch(q,&target,image->fuzz) ||
+            FuzzyColorMatch(q,&draw_info->fill,image->fuzz))
           break;
       floodplane[y*image->columns+x]=True;
       *q=draw_info->fill;
@@ -465,12 +465,12 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
               {
                 if (method == FloodfillMethod)
                   {
-                    if (!ColorMatch(q,&target,image->fuzz))
+                    if (!FuzzyColorMatch(q,&target,image->fuzz))
                       break;
                   }
                 else
-                  if (ColorMatch(q,&target,image->fuzz) ||
-                      ColorMatch(q,&draw_info->fill,image->fuzz))
+                  if (FuzzyColorMatch(q,&target,image->fuzz) ||
+                      FuzzyColorMatch(q,&draw_info->fill,image->fuzz))
                     break;
                 floodplane[y*image->columns+x]=True;
                 *q=draw_info->fill;
@@ -494,12 +494,12 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
           {
             if (method == FloodfillMethod)
               {
-                if (ColorMatch(q,&target,image->fuzz))
+                if (FuzzyColorMatch(q,&target,image->fuzz))
                   break;
               }
             else
-              if (!ColorMatch(q,&target,image->fuzz) &&
-                  !ColorMatch(q,&draw_info->fill,image->fuzz))
+              if (!FuzzyColorMatch(q,&target,image->fuzz) &&
+                  !FuzzyColorMatch(q,&draw_info->fill,image->fuzz))
                 break;
             q++;
           }
@@ -3686,7 +3686,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              if (!ColorMatch(q,&target,image->fuzz))
+              if (!FuzzyColorMatch(q,&target,image->fuzz))
                 {
                   q++;
                   continue;
@@ -4397,7 +4397,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
           break;
         for (x=0; x < (long) image->columns; x++)
         {
-          if (ColorMatch(q,&target,image->fuzz))
+          if (FuzzyColorMatch(q,&target,image->fuzz))
             *q=fill;
           q++;
         }
@@ -4415,7 +4415,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
       */
       for (i=0; i < (long) image->colors; i++)
       {
-        if (ColorMatch(&image->colormap[i],&target,image->fuzz))
+        if (FuzzyColorMatch(&image->colormap[i],&target,image->fuzz))
           image->colormap[i]=fill;
         if (QuantumTick(i,image->colors))
           MagickMonitor(OpaqueImageText,i,image->colors);
@@ -5669,7 +5669,7 @@ MagickExport unsigned int TransparentImage(Image *image,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      if (ColorMatch(q,&target,image->fuzz))
+      if (FuzzyColorMatch(q,&target,image->fuzz))
         q->opacity=opacity;
       q++;
     }

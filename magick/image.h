@@ -714,8 +714,8 @@ extern MagickExport ImageType
   GetImageType(const Image *,ExceptionInfo *);
 
 extern MagickExport IndexPacket
-  *GetIndexes(const Image *),
-  ValidateColormapIndex(Image *,const unsigned long);
+  ConstrainColormapIndex(Image *,const unsigned long),
+  *GetIndexes(const Image *);
 
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
@@ -752,6 +752,7 @@ extern MagickExport unsigned int
     const unsigned long,const char *,const StorageType,void *,ExceptionInfo *),
   DisplayImages(const ImageInfo *image_info,Image *image),
   EqualizeImage(Image *),
+	FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double),
   GammaImage(Image *,const char *),
   GetNumberScenes(const Image *),
   GradientImage(Image *,const PixelPacket *,const PixelPacket *),

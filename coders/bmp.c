@@ -892,17 +892,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < ((long) image->columns-1); x+=2)
           {
-            index=ValidateColormapIndex(image,(*p >> 4) & 0xf);
+            index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
             indexes[x]=index;
             *q++=image->colormap[index];
-            index=ValidateColormapIndex(image,*p & 0xf);
+            index=ConstrainColormapIndex(image,*p & 0xf);
             indexes[x+1]=index;
             *q++=image->colormap[index];
             p++;
           }
           if ((image->columns % 2) != 0)
             {
-              index=ValidateColormapIndex(image,(*p >> 4) & 0xf);
+              index=ConstrainColormapIndex(image,(*p >> 4) & 0xf);
               indexes[x]=index;
               *q++=image->colormap[index];
               p++;
@@ -932,7 +932,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            index=ValidateColormapIndex(image,*p);
+            index=ConstrainColormapIndex(image,*p);
             indexes[x]=index;
             *q=image->colormap[index];
             p++;

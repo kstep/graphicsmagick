@@ -97,7 +97,7 @@ register IndexPacket *indexes;
 
            for (x=0; x < (long) image->columns; x++)
                 {
-                index=ValidateColormapIndex(image,*p);
+                index=ConstrainColormapIndex(image,*p);
                 indexes[x]=index;
                 *q++=image->colormap[index];
                 p++;
