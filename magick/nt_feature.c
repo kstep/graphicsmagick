@@ -471,6 +471,10 @@ MagickExport void *ImageToHBITMAP(Image* image)
   HANDLE
     theBitsH;
 
+  RGBQUAD
+    *pDestPixel,
+    *theBits;
+
   nPixels = image->columns * image->rows;
 
   bitmap.bmType         = 0;
@@ -487,13 +491,13 @@ MagickExport void *ImageToHBITMAP(Image* image)
   if (theBitsH == NULL)
     return( NULL ); 
   
-  (void) TransformRGBImage(image,image->colorspace);
-  RGBQUAD * theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
-  RGBQUAD *pDestPixel = theBits;
+  theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
+  pDestPixel = theBits;
 
   if ( bitmap.bmBits == NULL )
     bitmap.bmBits = theBits;
 
+  (void) TransformRGBImage(image,image->colorspace);
   for( row = 0 ; row < image->rows ; row++ )
     {
       pPixels = AcquireImagePixels(image,0,row,image->columns,1,

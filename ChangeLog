@@ -1,3 +1,8 @@
+2003-01-08 William Radcliffe <billr@corbis.com>
+	* magick/nt_feature.c
+	Make ImageToHBITMAP function in nt_feature.c compile under Visual
+	C++ again.
+
 2003-01-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* coders/delegates.mgk.in: Fix cgm entry.  How did it become so
 	terribly broken?
