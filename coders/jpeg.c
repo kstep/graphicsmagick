@@ -102,6 +102,12 @@ static unsigned int IsJPEG(const unsigned char *magick,const size_t length)
 #if defined(__MINGW32__)
 # define XMD_H 1  /* Avoid conflicting typedef for INT32 */
 #endif
+/*
+  The JPEG headers have the annoying problem that they define
+  HAVE_STDLIB_H and we do too.  The define isn't actually used
+  so just undef it.
+*/
+#undef HAVE_STDLIB_H
 #include <setjmp.h>
 #include "jpeglib.h"
 #include "jerror.h"

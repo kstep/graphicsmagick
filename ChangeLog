@@ -1,3 +1,8 @@
+2003-09-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c: Undef HAVE_STDLIB_H before including the
+	jpeg headers or else we get an already defined error/warning.
+
 2003-09-04  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* BCBMagick : Updated whole directory tree to achieve correct
