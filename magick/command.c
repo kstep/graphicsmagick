@@ -2270,7 +2270,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           {
             ConvertUsage();
             ThrowConvertException(OptionError,"UsageError",NULL);
-            continue;
           }
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
       }
@@ -3271,7 +3270,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         {
           ConvertUsage();
           ThrowConvertException(OptionError,"UsageError",NULL);
-          continue;
         }
       default:
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
@@ -5168,7 +5166,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             Image
               *resample_image;
 
-            unsigned char
+            char
               resample_density[MaxTextExtent];
 
             unsigned long

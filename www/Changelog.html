@@ -52,11 +52,14 @@
 <b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.2 ChangeLog</font></font></font></b></td>
 </tr>
 </table>
+
 <p>
-2003-06-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+2003-06-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> GraphicsMagick 1.0.2 released.
+  <LI> magick/command.c (ConvertImageCommand): Eliminate warnings
+        noticed with Sun compiler.<BR>
   <LI> acinclude.m4: Add '#undef inline' in front of C++ tests.
   <LI> coders/x.c (RegisterXImage): Only register the X coder if HasX11
         is defined.<BR>

@@ -1,6 +1,9 @@
-2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+2003-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick 1.0.2 released.
+	* magick/command.c (ConvertImageCommand): Eliminate warnings
+	noticed with Sun compiler.	
 	* acinclude.m4: Add '#undef inline' in front of C++ tests.
 	* coders/x.c (RegisterXImage): Only register the X coder if HasX11
 	is defined.
