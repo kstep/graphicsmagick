@@ -431,6 +431,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                     (void) strcpy(id,values);
                     break;
                   }
+                if (LocaleCompare(keyword,"IPTC-profile") == 0)
+                  {
+                    image->iptc_profile.length=(unsigned int) atoi(values);
+                    break;
+                  }
                 if (LocaleCompare(keyword,"Iterations") == 0)
                   {
                     if (image_info->iterations == (char *) NULL)
@@ -634,6 +639,19 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             "Unable to read color profile",image);
         (void) ReadBlob(image,image->color_profile.length,
           image->color_profile.info);
+      }
+    if (image->iptc_profile.length > 0)
+      {
+        /*
+          IPTC profile.
+        */
+        image->iptc_profile.info=(unsigned char *)
+          AllocateMemory(image->iptc_profile.length);
+        if (image->iptc_profile.info == (unsigned char *) NULL)
+          ThrowReaderException(CorruptImageWarning,
+            "Unable to read IPTC profile",image);
+        (void) ReadBlob(image,image->iptc_profile.length,
+          image->iptc_profile.info);
       }
     if (image->class == PseudoClass)
       {
@@ -1219,6 +1237,11 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         FormatString(buffer,"Color-profile=%u\n",image->color_profile.length);
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
+    if (image->iptc_profile.length > 0)
+      {
+        FormatString(buffer,"IPTC-profile=%u\n",image->iptc_profile.length);
+        (void) WriteBlob(image,strlen(buffer),buffer);
+      }
     if (image->montage != (char *) NULL)
       {
         FormatString(buffer,"Montage=%.1024s\n",image->montage);
@@ -1255,6 +1278,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (image->color_profile.length > 0)
       (void) WriteBlob(image,(int) image->color_profile.length,
         (char *) image->color_profile.info);
+    if (image->iptc_profile.length > 0)
+      (void) WriteBlob(image,(int) image->iptc_profile.length,
+        (char *) image->iptc_profile.info);
     if (image->class == PseudoClass)
       {
         register unsigned char
