@@ -1221,13 +1221,15 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
   attribute=GetImageAttribute(image,clip_path);
   if (attribute == (ImageAttribute *) NULL)
     return(False);
+  clip_mask=CloneImage(image,0,0,True,&image->exception);
+  if (clip_mask == (Image *) NULL)
+    return(False);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("black",&clone_info->fill);
   clone_info->clip_path=(char *) NULL;
   if (draw_info->debug)
     (void) fprintf(stdout,"\nbegin clip-path %.1024s\n",draw_info->clip_path);
-  clip_mask=CloneImage(image,0,0,True,&image->exception);
   SetImage(clip_mask,TransparentOpacity);
   status=DrawImage(clip_mask,clone_info);
   if (draw_info->debug)
