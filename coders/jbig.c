@@ -241,14 +241,6 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   CloseBlob(image);
   return(image);
 }
-#else
-static Image *ReadJBIGImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateError,
-    "JBIG library is not available",image_info->filename);
-  return((Image *) NULL);
-}
 #endif
 
 /*
@@ -289,8 +281,10 @@ ModuleExport void RegisterJBIGImage(void)
   (void) strncpy(version,JBG_VERSION,MaxTextExtent-1);
 #endif
   entry=SetMagickInfo("BIE");
+#if defined(HasJBIG)
   entry->decoder=ReadJBIGImage;
   entry->encoder=WriteJBIGImage;
+#endif
   entry->adjoin=False;
   entry->description=AcquireString(JBIGDescription);
   if (*version != '\0')
@@ -298,16 +292,20 @@ ModuleExport void RegisterJBIGImage(void)
   entry->module=AcquireString("JBIG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JBG");
+#if defined(HasJBIG)
   entry->decoder=ReadJBIGImage;
   entry->encoder=WriteJBIGImage;
+#endif
   entry->description=AcquireString(JBIGDescription);
   if (*version != '\0')
     entry->version=AcquireString(version);
   entry->module=AcquireString("JBIG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JBIG");
+#if defined(HasJBIG)
   entry->decoder=ReadJBIGImage;
   entry->encoder=WriteJBIGImage;
+#endif
   entry->description=AcquireString(JBIGDescription);
   if (*version != '\0')
     entry->version=AcquireString(version);
@@ -514,11 +512,5 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
       image=image->previous;
   CloseBlob(image);
   return(True);
-}
-#else
-static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,"JBIG library is not available",
-    image->filename)
 }
 #endif
