@@ -1,4 +1,8 @@
 2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/command.c: Warnings reduction
+	* magick/list.c: Warnings reduction
+
+2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Updated PerlMagick tests for Emboss, Equalize, Gamma,
 	Normalize, OilPaint, and Gradient so that they pass at Q:8
 	under Windows.

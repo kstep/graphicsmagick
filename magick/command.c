@@ -54,6 +54,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "attribute.h"
 #include "cache.h"
 #include "command.h"
 #include "delegate.h"

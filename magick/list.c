@@ -282,9 +282,6 @@ MagickExport Image *GetFirstImageInList(const Image *images)
   register const Image
     *p;
 
-  register long
-    i;
-
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
@@ -438,9 +435,6 @@ MagickExport Image *GetLastImageInList(const Image *images)
 {
   register const Image
     *p;
-
-  register long
-    i;
 
   if (images == (Image *) NULL)
     return((Image *) NULL);
