@@ -607,7 +607,7 @@ static double Sinc(const double x,const double support)
 {
   if (x == 0.0)
     return(0.0);
-  return(Blackman(support*x,support)*sin(MagickPI*x)/(MagickPI*x));
+  return(Blackman(x/support,support)*sin(MagickPI*x)/(MagickPI*x));
 }
 
 static double Box(const double x,const double support)
@@ -622,8 +622,8 @@ static double Box(const double x,const double support)
 static double Bessel(const double x,const double support)
 {
   if (x == 0.0)
-    return(Blackman(support*x,support)*MagickPI/4.0);
-  return(Blackman(support*x,support)*BesselOrderOne(MagickPI*x)/(2.0*x));
+    return(Blackman(x/support,support)*MagickPI/4.0);
+  return(Blackman(x/support,support)*BesselOrderOne(MagickPI*x)/(2.0*x));
 }
 
 static double Catrom(const double x,const double support)
@@ -807,7 +807,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     {
       contribution[n].pixel=start+n;
       contribution[n].weight=
-        filter_info->function(scale*(start+n-center+0.5),1.0/support);
+        filter_info->function(scale*(start+n-center+0.5),filter_info->support);
       density+=contribution[n].weight;
     }
     if ((density != 0.0) && (density != 1.0))
@@ -932,7 +932,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     {
       contribution[n].pixel=start+n;
       contribution[n].weight=
-        filter_info->function(scale*(start+n-center+0.5),1.0/support);
+        filter_info->function(scale*(start+n-center+0.5),filter_info->support);
       density+=contribution[n].weight;
     }
     if ((density != 0.0) && (density != 1.0))
