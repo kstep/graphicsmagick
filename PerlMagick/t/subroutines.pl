@@ -94,7 +94,7 @@ sub testReadBlob {
     return;
   }
   binmode( FILE );
-  $blob_length = read( FILE, $blob, 100000 );
+  $blob_length = read( FILE, $blob, 10000000 );
   if( !defined($blob) )
     {
       print("Failed to read \"$infile\": $!\n");
