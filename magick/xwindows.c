@@ -3561,7 +3561,7 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
   FormatString(name,"#%04x%04x%04x",color.red,color.green,color.blue);
   FormatString(filename,"%s%s%s",SetClientPath((char *) NULL),
     DirectorySeparator,"rgb.txt");
-  database=fopen(path,"r");
+  database=fopen(filename,"r");
   if (database == (FILE *) NULL)
     database=fopen(RGBColorDatabase,"r");
   if (database != (FILE *) NULL)
