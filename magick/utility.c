@@ -2923,7 +2923,7 @@ MagickExport void Strip(char *message)
 %
 %  The format of the SubstituteString method is:
 %
-%      void SubstituteString(char **buffer, const char* search,
+%      void SubstituteString(char **buffer,const char* search,
 %        const char *replace)
 %
 %  A description of each parameter follows:
@@ -2940,7 +2940,7 @@ MagickExport int SubstituteString(char **buffer,const char *search,
   const char *replace)
 {
   char
-    *dest,
+    *destination,
     *result;
 
   const char
@@ -2969,7 +2969,7 @@ MagickExport int SubstituteString(char **buffer,const char *search,
       "Memory allocation failed");
   *result='\0';
   result_length=0;
-  dest=result;
+  destination=result;
   replace_length=strlen(replace);
   search_length=strlen(search);
   while (match != (char*) NULL)
@@ -2989,9 +2989,9 @@ MagickExport int SubstituteString(char **buffer,const char *search,
               MagickFatalError(ResourceLimitFatalError,
                 "Unable to reallocate string","Memory allocation failed");
           }
-        (void) strncpy(dest,source,copy_length);
-        dest+=copy_length;
-        *dest='\0';
+        (void) strncpy(destination,source,copy_length);
+        destination+=copy_length;
+        *destination='\0';
       }
       /*
         Copy replacement.
@@ -3005,8 +3005,8 @@ MagickExport int SubstituteString(char **buffer,const char *search,
             MagickFatalError(ResourceLimitFatalError,
               "Unable to reallocate string","Memory allocation failed");
         }
-      (void) strcat(dest,replace);
-      dest+=replace_length;
+      (void) strcat(destination,replace);
+      destination+=replace_length;
       /*
         Find next match.
       */
@@ -3027,7 +3027,7 @@ MagickExport int SubstituteString(char **buffer,const char *search,
         MagickFatalError(ResourceLimitFatalError,"Unable to reallocate string",
           "Memory allocation failed");
     }
-  (void) strcat(dest,source);
+  (void) strcat(destination,source);
   LiberateMemory((void **)buffer);
   *buffer=result;
   return True;

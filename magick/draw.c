@@ -502,7 +502,7 @@ static void MvgAppendColor(DrawContext context, const PixelPacket *color)
       char
         tuple[MaxTextExtent];
 
-      GetColorTuple(context->image,&color,True,tuple);
+      GetColorTuple(context->image,color,True,tuple);
       MvgPrintf(context,"%.1024s",tuple);
     }
 }
