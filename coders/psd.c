@@ -428,6 +428,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *scanline;
 
   unsigned int
+    bail,
     packet_size,
     status;
 
@@ -764,7 +765,16 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       for (i=0; i < 4; i++)
         (void) ReadBlobByte(image);
+      for (i=0; i < number_layers; i++)
+      {
+        if (i > 0)
+          layer_info[i].image->previous=layer_info[i-1].image;
+        if (i < (number_layers-1))
+          layer_info[i].image->next=layer_info[i+1].image;
+        layer_info[i].image->page=layer_info[i].page;
+      }
     }
+  bail=False;
   compression=ReadBlobMSBShort(image);
   if (compression == 1)
     {
@@ -856,8 +866,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
       }
-      if (count == 0)
-        SetImageOpacity(image,TransparentOpacity);
+      bail=count == 0;
       LiberateMemory((void **) &scanline);
     }
   if (image->colorspace == CMYKColorspace)
@@ -882,20 +891,15 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
     }
-  if (number_layers != 0)
+  CloseBlob(image);
+  if (number_layers > 0)
     {
       image->next=layer_info[0].image;
-      for (i=0; i < number_layers; i++)
-      {
-        if (i > 0)
-          layer_info[i].image->previous=layer_info[i-1].image;
-        if (i < (number_layers-1))
-          layer_info[i].image->next=layer_info[i+1].image;
-        layer_info[i].image->page=layer_info[i].page;
-      }
+      if (bail)
+        DestroyImage(image);
+      image=layer_info[0].image;
       LiberateMemory((void **) &layer_info);
     }
-  CloseBlob(image);
   return(image);
 }
 
