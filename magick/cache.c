@@ -315,33 +315,27 @@ static void DestroyCacheInfo(Cache cache)
   register int
     id;
 
+  size_t
+    length;
+
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   number_pixels=cache_info->columns*cache_info->rows;
+  length=number_pixels*sizeof(PixelPacket);
+  if ((cache_info->storage_class == PseudoClass) ||
+      (cache_info->colorspace == CMYKColorspace))
+    length+=number_pixels*sizeof(IndexPacket);
   switch (cache_info->type)
   {
     case MemoryCache:
     {
       LiberateMemory((void **) &cache_info->pixels);
-      (void) GetCacheMemory(number_pixels*sizeof(PixelPacket));
-      if ((cache_info->storage_class == PseudoClass) ||
-          (cache_info->colorspace == CMYKColorspace))
-        (void) GetCacheMemory(number_pixels*sizeof(IndexPacket));
+      (void) GetCacheMemory(length);
       break;
     }
     case MemoryMappedCache:
     {
-      size_t
-        length;
-
-      /*
-        Unmap memory-mapped pixels and indexes.
-      */
-      length=number_pixels*sizeof(PixelPacket);
-      if ((cache_info->storage_class == PseudoClass) ||
-          (cache_info->colorspace == CMYKColorspace))
-        length+=number_pixels*sizeof(IndexPacket);
       (void) UnmapBlob(cache_info->pixels,length);
     }
     case DiskCache:
@@ -1005,10 +999,10 @@ MagickExport unsigned int OpenCache(Image *image)
     null = 0;
 
   off_t
-    length,
     number_pixels;
 
   size_t
+    length,
     offset;
 
   void
@@ -1049,7 +1043,7 @@ MagickExport unsigned int OpenCache(Image *image)
       if (cache_info->type == MemoryCache)
         (void) GetCacheMemory(length);
       if (cache_info->type == MemoryMappedCache)
-        (void) UnmapBlob(cache_info->pixels,(size_t) length);
+        (void) UnmapBlob(cache_info->pixels,length);
     }
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
@@ -1102,7 +1096,7 @@ MagickExport unsigned int OpenCache(Image *image)
           /*
             Create in-memory pixel cache.
           */
-          (void) GetCacheMemory(-length);
+          (void) GetCacheMemory((off_t) -length);
           cache_info->storage_class=image->storage_class;
           cache_info->colorspace=image->colorspace;
           cache_info->type=MemoryCache;
@@ -1438,11 +1432,13 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
     *cache_info;
 
   off_t
-    length,
     number_pixels;
 
   register NexusInfo
     *nexus;
+
+  size_t
+    length;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
