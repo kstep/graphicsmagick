@@ -244,13 +244,13 @@ UNIX/Cygwin COMPILATION
 
     o --disable-16bit-pixel: By default ImageMagick represents images
       internally using a sixteen-bit pixel quantum (the size of the red,
-      green, blue, and alpha pixel components). The definition QuantumMagick
-      is applied when ImageMagick is built, allowing RGBA values to range
-      from 0 to 255 rather than 0 to 65535. Use of sixteen-bit pixel
-      quantums typically causes ImageMagick to run about 30% slower then
-      when it is built to support eight-bit pixel quantums. Those who favor
-      performance over output quality may prefer to specify
-      --disable-16bit-pixel.
+      green, blue, and alpha pixel components). The definition
+      QuantumDepth=8 is applied when ImageMagick is built, allowing RGBA
+      values to range from 0 to 255 rather than 0 to 65535. Use of
+      sixteen-bit pixel quantums typically causes ImageMagick to run
+      about 30% slower then when it is built to support eight-bit pixel
+      quantums. Those who favor performance over output quality may
+      prefer to specify --disable-16bit-pixel.
       
     o --without-magick-plus-plus: Disable building Magick++, the C++
       application programming interface to ImageMagick.  A suitable C++
