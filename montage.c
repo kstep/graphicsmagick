@@ -88,6 +88,7 @@
 %
 %  Where options include:
 %    -adjoin             join images into a single multi-image file
+%    -blur factor        apply a filter to blur the image
 %    -colors value       preferred number of colors in the image
 %    -colorspace type    alternate image colorspace
 %    -comment string     annotate image with comment
@@ -116,6 +117,7 @@
 %    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        image scene number
 %    -shadow             add a shadow beneath a tile to simulate depth
+%    -sharpen factor     apply a filter to sharpen the image
 %    -size geometry      width and height of image
 %    -texture filename   name of texture to tile onto the image background
 %    -tile geometry      number of tiles per row and column
@@ -173,6 +175,7 @@ static void Usage(const char *client_name)
     *options[]=
     {
       "-adjoin             join images into a single multi-image file",
+      "-blur factor        apply a filter to blur the image",
       "-colors value       preferred number of colors in the image",
       "-colorspace type    alternate image colorsapce",
       "-comment string     annotate image with comment",
@@ -337,6 +340,16 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing color",option);
                   (void) CloneString(&image_info.background_color,argv[i]);
                   (void) CloneString(&montage_info.background_color,argv[i]);
+                }
+              break;
+            }
+          if (strncmp("blur",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing factor",option);
                 }
               break;
             }
@@ -961,6 +974,16 @@ int main(int argc,char **argv)
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
                   (void) CloneString(&image_info.size,argv[i]);
+                }
+              break;
+            }
+          if (strncmp("sharpen",option+1,5) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing factor",option);
                 }
               break;
             }

@@ -1094,7 +1094,7 @@ Export Image *RotateImage(const Image *image,const double degrees,
       /*
         Sharpen image.
       */
-      sharpened_image=SharpenImage(rotated_image,SharpenFactor);
+      sharpened_image=SharpenImage(rotated_image,60.0);
       if (sharpened_image != (Image *) NULL)
         {
           DestroyImage(rotated_image);
@@ -1245,7 +1245,7 @@ Export Image *ShearImage(const Image *image,const double x_shear,
   /*
     Sharpen image.
   */
-  sharpened_image=SharpenImage(sheared_image,SharpenFactor);
+  sharpened_image=SharpenImage(sheared_image,60.0);
   if (sharpened_image != (Image *) NULL)
     {
       DestroyImage(sheared_image);

@@ -81,9 +81,6 @@ const char
   *DefaultImageQuality = "75",
   *DefaultPointSize = "12";
 
-const double
-  SharpenFactor = 60.0;
-
 const InterlaceType
   DefaultInterlace = NoInterlace;
 
@@ -7102,10 +7099,22 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-blur",option,4) == 0)
       {
+        double
+          factor;
+
+        Image
+          *blurred_image;
+
         /*
-          Blur factoe.
+          Blur an image.
         */
-        (*image)->blur=1.0+atof(argv[++i])/100.0;
+        factor=atof(argv[++i]);
+        blurred_image=BlurImage(*image,factor);
+        if (blurred_image != (Image *) NULL)
+          {
+            DestroyImage(*image);
+            *image=blurred_image;
+          }
         continue;
       }
     if (Latin1Compare("-border",option) == 0)
@@ -7955,10 +7964,22 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-sharpen",option,5) == 0)
       {
+        double
+          factor;
+
+        Image
+          *sharpened_image;
+
         /*
-          Sharpen factor.
+          Sharpen an image.
         */
-        (*image)->blur=1.0-atof(argv[++i])/100.0;
+        factor=atof(argv[++i]);
+        sharpened_image=SharpenImage(*image,factor);
+        if (sharpened_image != (Image *) NULL)
+          {
+            DestroyImage(*image);
+            *image=sharpened_image;
+          }
         continue;
       }
     if (strncmp("-shear",option,4) == 0)
@@ -8356,7 +8377,6 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     max_height,
     number_images,
     number_lines,
-    sharpen,
     tile,
     tiles,
     tiles_per_column,
@@ -8390,8 +8410,6 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     x=0;
     y=0;
     (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
-    sharpen=((width*height) << 1) <
-      (image_list[tile]->columns*image_list[tile]->rows);
     image_list[tile]->orphan=True;
     tiled_image=ZoomImage(image_list[tile],width,height);
     image_list[tile]->orphan=False;
@@ -8403,21 +8421,6 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
         return((Image *) NULL);
       }
     image_list[tile]=tiled_image;
-    if (sharpen)
-      if ((tiled_image->columns > 3) && (tiled_image->rows > 3))
-        {
-          Image
-            *sharpened_image;
-
-          image_list[tile]->orphan=True;
-          sharpened_image=SharpenImage(image_list[tile],SharpenFactor);
-          image_list[tile]->orphan=False;
-          if (sharpened_image != (Image *) NULL)
-            {
-              DestroyImage(image_list[tile]);
-              image_list[tile]=sharpened_image;
-            }
-        }
     (void) SetMonitorHandler(handler);
     ProgressMonitor(TileImageText,tile,number_images);
   }
@@ -12909,19 +12912,16 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
   /*
     Apply filter to zoom horizontally from source to destination.
   */
-  support=filter_info->support;
-  scale_factor=1.0;
-  if (x_factor < 1.0)
-    {
-      support/=x_factor;
-      scale_factor/=x_factor;
-    }
-  scale_factor*=source->blur;
+  scale_factor=source->blur*Max(1.0/x_factor,1.0);
+  support=Max(scale_factor*filter_info->support,0.5);
   destination->class=source->class;
   if (support > 0.5)
     destination->class=DirectClass;
   else
     {
+      /*
+        Reduce to point sampling.
+      */
       support=0.5;
       scale_factor=1.0;
     }
@@ -13012,19 +13012,16 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
   /*
     Apply filter to zoom vertically from source to destination.
   */
-  support=filter_info->support;
-  scale_factor=1.0;
-  if (y_factor < 1.0)
-    {
-      support/=y_factor;
-      scale_factor/=y_factor;
-    }
-  scale_factor*=source->blur;
+  scale_factor=source->blur*Max(1.0/y_factor,1.0);
+  support=Max(scale_factor*filter_info->support,0.5);
   destination->class=source->class;
   if (support > 0.5)
     destination->class=DirectClass;
   else
     {
+      /*
+        Reduce to point sampling.
+      */
       support=0.5;
       scale_factor=1.0;
     }

@@ -471,9 +471,6 @@ extern const char
   *ReadBinaryType,
   *ReadBinaryUnbufferedType,
   *WriteBinaryType;
-
-extern const double
-  SharpenFactor;
 
 /*
   Image utilities methods.
