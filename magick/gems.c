@@ -469,18 +469,17 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
 {
   double
     alpha,
-    beta,
-    x,
-    y;
+    beta;
 
   PixelPacket
-    interpolated_pixel;
-
-  register PixelPacket
     p,
     q,
     r,
     s;
+
+  register double
+    x,
+    y;
 
   assert(image != (Image *) NULL);
   x=x_offset;
@@ -507,25 +506,22 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
     }
   else
     {
-      if ((x >= 0) && (y >= 0) && (x < image->columns) && (y < image->rows))
+      if ((x >= 0) && (y >= 0))
         {
           if (GetPixelCache(image,x,y,1,1))
             p=(*image->pixels);
         }
-      if (((x+1) >= 0) && (y >= 0) && ((x+1) < image->columns) &&
-          (y < image->rows))
+      if ((y >= 0) && ((x+1) < image->columns))
         {
           if (GetPixelCache(image,x+1,y,1,1))
             q=(*image->pixels);
         }
-      if ((x >= 0) && ((y+1) >= 0) && (x < image->columns) &&
-         ((y+1) < image->rows))
+      if ((x >= 0) && ((y+1) < image->rows))
         {
           if (GetPixelCache(image,x,y+1,1,1))
             r=(*image->pixels);
         }
-      if (((x+1) >= 0) && ((y+1) >= 0) && ((x+1) < image->columns) &&
-          ((y+1) < image->rows))
+      if (((x+1) < image->columns) && ((y+1) < image->rows))
         {
           if (GetPixelCache(image,x+1,y+1,1,1))
             s=(*image->pixels);
@@ -535,14 +531,12 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
   y-=floor(y);
   alpha=1.0-x;
   beta=1.0-y;
-  interpolated_pixel.red=(beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red));
-  interpolated_pixel.green=
-    (beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green));
-  interpolated_pixel.blue=
-    (beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue));
-  interpolated_pixel.opacity=
+  p.red=(beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red));
+  p.green=(beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green));
+  p.blue=(beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue));
+  p.opacity=
     (beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity));
-  return(interpolated_pixel);
+  return(p);
 }
 
 /*
