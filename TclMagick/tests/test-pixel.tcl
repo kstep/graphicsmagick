@@ -47,6 +47,8 @@ proc ShowPixel {pix {all 1}} {
         $pix color
         $pix get -quant red green blue opacity
         $pix get red green blue opacity
+        $pix get -quant cyan magenta yellow black
+        $pix get cyan magenta yellow black
         $pix GetQuantumColor
     } else {
         $pix GetColorAsString
@@ -85,6 +87,12 @@ proc TestPixel {} {
     $pix set -quant red 10000 green 20000 blue 30000 opacity 40000
     ShowPixel $pix
 
+    $pix set cyan 0.1 magenta 0.2 yellow 0.3 black 0.4
+    ShowPixel $pix
+
+    $pix set -quant cyan 10000 magenta 20000 yellow 30000 black 40000
+    ShowPixel $pix
+
     $pix SetRed 0.9
     $pix SetGreen 0.8
     $pix SetBlue 0.7
@@ -95,6 +103,18 @@ proc TestPixel {} {
     $pix SetGreenQuantum 23456
     $pix SetBlueQuantum 34567
     $pix SetOpacityQuantum 45678
+    ShowPixel $pix
+
+    $pix SetCyan 0.9
+    $pix SetMagenta 0.8
+    $pix SetYellow 0.7
+    $pix SetBlack 0.6
+    ShowPixel $pix
+    
+    $pix SetCyanQuantum 12345
+    $pix SetMagentaQuantum 23456
+    $pix SetYellowQuantum 34567
+    $pix SetBlackQuantum 45678
     ShowPixel $pix
 
     $pix SetQuantumColor {100 150 200 250}

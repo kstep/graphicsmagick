@@ -1,3 +1,13 @@
+2003-12-30  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* PixelWand: Added support for colors cyan,magenta,yellow,black
+	incl. test-pixel.tcl
+
+	* struct PointInfo (DrawBezier/Polygon/Polyline)
+	may in future contain Z-component, initialize it properly
+	
+	* Updated docs of Set(Get)Fill(Stroke,TextUnder)Color subcommands
+	
 2003-12-29  David N. Welton  <davidw@dedasys.com>
 
 	* Redid directory trees.  Hopefully for the last time this

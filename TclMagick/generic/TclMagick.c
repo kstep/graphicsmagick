@@ -5120,25 +5120,36 @@ static int pixelObjCmd(
 {
     static CONST char *subCmds[] = {
         "set",             "get",             "color",
-        "SetBlue",         "GetBlue",         "SetBlueQuantum",   "GetBlueQuantum",
-        "SetGreen",        "GetGreen",        "SetGreenQuantum",  "GetGreenQuantum",
-        "SetRed",          "GetRed",          "SetRedQuantum",    "GetRedQuantum",
-        "SetOpacity",      "GetOpacity",      "SetOpacityQuantum","GetOpacityQuantum",
+        "SetBlack",        "GetBlack",        "SetBlackQuantum",   "GetBlackQuantum",
+        "SetBlue",         "GetBlue",         "SetBlueQuantum",    "GetBlueQuantum",
+        "SetCyan",         "GetCyan",         "SetCyanQuantum",    "GetCyanQuantum",
+        "SetGreen",        "GetGreen",        "SetGreenQuantum",   "GetGreenQuantum",
+        "SetMagenta",      "GetMagenta",      "SetMagentaQuantum", "GetMagentaQuantum",
+        "SetOpacity",      "GetOpacity",      "SetOpacityQuantum", "GetOpacityQuantum",
+        "SetRed",          "GetRed",          "SetRedQuantum",     "GetRedQuantum",
+        "SetYellow",       "GetYellow",       "SetYellowQuantum",  "GetYellowQuantum",
         "SetColor",        "GetColor",        "GetColorAsString",
         "SetQuantumColor", "GetQuantumColor", "quantumcolor",
         (char *) NULL
     };
     enum subIndex {
         TM_SET,         TM_GET,         TM_COLOR,
+        TM_SET_BLACK,   TM_GET_BLACK,   TM_SET_BLACK_QUANTUM,   TM_GET_BLACK_QUANTUM,
         TM_SET_BLUE,    TM_GET_BLUE,    TM_SET_BLUE_QUANTUM,    TM_GET_BLUE_QUANTUM,
+        TM_SET_CYAN,    TM_GET_CYAN,    TM_SET_CYAN_QUANTUM,    TM_GET_CYAN_QUANTUM,
         TM_SET_GREEN,   TM_GET_GREEN,   TM_SET_GREEN_QUANTUM,   TM_GET_GREEN_QUANTUM,
-        TM_SET_RED,     TM_GET_RED,     TM_SET_RED_QUANTUM,     TM_GET_RED_QUANTUM,
+        TM_SET_MAGENTA, TM_GET_MAGENTA, TM_SET_MAGENTA_QUANTUM, TM_GET_MAGENTA_QUANTUM,
         TM_SET_OPACITY, TM_GET_OPACITY, TM_SET_OPACITY_QUANTUM, TM_GET_OPACITY_QUANTUM,
+        TM_SET_RED,     TM_GET_RED,     TM_SET_RED_QUANTUM,     TM_GET_RED_QUANTUM,
+        TM_SET_YELLOW,  TM_GET_YELLOW,  TM_SET_YELLOW_QUANTUM,  TM_GET_YELLOW_QUANTUM,
         TM_SET_COLOR,   TM_GET_COLOR,   TM_GET_COLOR_AS_STRING,
         TM_SET_QUANTUM, TM_GET_QUANTUM, TM_QUANTUM,
         TM_END_OF_TABLE
     };
-    static CONST char  *colors[]  = {"blue", "green", "red", "opacity", (char *) NULL};
+    static CONST char  *colors[]  = {
+        "black",   "blue",    "cyan", "green",
+        "magenta", "opacity", "red",  "yellow",
+        (char *) NULL };
 
     int          index, stat, result, quantFlag=0;
     int          quantVal;
@@ -5182,7 +5193,6 @@ static int pixelObjCmd(
 	    objv += 2, objc -= 2;
 	}
 	while( objc > 0 ) {
-	    /* char *str = Tcl_GetString(objv[0]); */
 	    if (Tcl_GetIndexFromObj(interp, objv[0], colors, "color", 0, &color) != TCL_OK) {
 		return TCL_ERROR;
 	    }
@@ -5195,20 +5205,28 @@ static int pixelObjCmd(
 		    return stat;
 		}
 		switch(color) {
-		case 0:  PixelSetBlueQuantum(wandPtr,    (Quantum)quantVal); break;
-		case 1:  PixelSetGreenQuantum(wandPtr,   (Quantum)quantVal); break;
-		case 2:  PixelSetRedQuantum(wandPtr,     (Quantum)quantVal); break;
-		default: PixelSetOpacityQuantum(wandPtr, (Quantum)quantVal); break;
+		case 0:  PixelSetBlackQuantum(wandPtr,    (Quantum)quantVal); break;
+		case 1:  PixelSetBlueQuantum(wandPtr,     (Quantum)quantVal); break;
+		case 2:  PixelSetCyanQuantum(wandPtr,     (Quantum)quantVal); break;
+		case 3:  PixelSetGreenQuantum(wandPtr,    (Quantum)quantVal); break;
+		case 4:  PixelSetMagentaQuantum(wandPtr,  (Quantum)quantVal); break;
+		case 5:  PixelSetOpacityQuantum(wandPtr,  (Quantum)quantVal); break;
+		case 6:  PixelSetRedQuantum(wandPtr,      (Quantum)quantVal); break;
+		case 7:  PixelSetYellowQuantum(wandPtr,   (Quantum)quantVal); break;
 		}
 	    } else {
 		if( (stat = Tcl_GetDoubleFromObj(interp, objv[1], &normVal)) != TCL_OK ) {
 		    return stat;
 		}
 		switch(color) {
-		case 0:  PixelSetBlue(wandPtr,    normVal); break;
-		case 1:  PixelSetGreen(wandPtr,   normVal); break;
-		case 2:  PixelSetRed(wandPtr,     normVal); break;
-		default: PixelSetOpacity(wandPtr, normVal); break;
+		case 0:  PixelSetBlack(wandPtr,    normVal); break;
+		case 1:  PixelSetBlue(wandPtr,     normVal); break;
+		case 2:  PixelSetCyan(wandPtr,     normVal); break;
+		case 3:  PixelSetGreen(wandPtr,    normVal); break;
+		case 4:  PixelSetMagenta(wandPtr,  normVal); break;
+		case 5:  PixelSetOpacity(wandPtr,  normVal); break;
+		case 6:  PixelSetRed(wandPtr,      normVal); break;
+		case 7:  PixelSetYellow(wandPtr,   normVal); break;
 		}
 	    }
 	    objv += 2, objc -= 2;
@@ -5239,18 +5257,26 @@ static int pixelObjCmd(
 	    }
 	    if( quantFlag ) {
 		switch(color) {
-		case 0:  quantVal = PixelGetBlueQuantum(wandPtr);    break;
-		case 1:  quantVal = PixelGetGreenQuantum(wandPtr);   break;
-		case 2:  quantVal = PixelGetRedQuantum(wandPtr);     break;
-		default: quantVal = PixelGetOpacityQuantum(wandPtr); break;
+		case 0:  quantVal = PixelGetBlackQuantum(wandPtr);    break;
+		case 1:  quantVal = PixelGetBlueQuantum(wandPtr);     break;
+		case 2:  quantVal = PixelGetCyanQuantum(wandPtr);     break;
+		case 3:  quantVal = PixelGetGreenQuantum(wandPtr);    break;
+		case 4:  quantVal = PixelGetMagentaQuantum(wandPtr);  break;
+		case 5:  quantVal = PixelGetOpacityQuantum(wandPtr);  break;
+		case 6:  quantVal = PixelGetRedQuantum(wandPtr);      break;
+		case 7:  quantVal = PixelGetYellowQuantum(wandPtr);   break;
 		}
 		Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewIntObj(quantVal));
 	    } else {
 		switch(color) {
-		case 0:  normVal = PixelGetBlue(wandPtr);    break;
-		case 1:  normVal = PixelGetGreen(wandPtr);   break;
-		case 2:  normVal = PixelGetRed(wandPtr);     break;
-		default: normVal = PixelGetOpacity(wandPtr); break;
+		case 0:  normVal = PixelGetBlack(wandPtr);    break;
+		case 1:  normVal = PixelGetBlue(wandPtr);     break;
+		case 2:  normVal = PixelGetCyan(wandPtr);     break;
+		case 3:  normVal = PixelGetGreen(wandPtr);    break;
+		case 4:  normVal = PixelGetMagenta(wandPtr);  break;
+		case 5:  normVal = PixelGetOpacity(wandPtr);  break;
+		case 6:  normVal = PixelGetRed(wandPtr);      break;
+		case 7:  normVal = PixelGetYellow(wandPtr);   break;
 		}
 		Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewDoubleObj(normVal));
 	    }
@@ -5297,6 +5323,30 @@ static int pixelObjCmd(
 	break;
     }
 
+    case TM_SET_BLACK_QUANTUM:
+    {
+	quantFlag = 1; /* and continue ... */
+    }
+    case TM_SET_BLACK:
+    {
+	if( objc != 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "value");
+	    return TCL_ERROR;
+	}
+	if( quantFlag ) {
+	    if( (stat = Tcl_GetIntFromObj(interp, objv[2], &quantVal)) != TCL_OK ) {
+		return stat;
+	    }
+	    PixelSetBlackQuantum(wandPtr, (Quantum)quantVal);
+	} else {
+	    if( (stat = Tcl_GetDoubleFromObj(interp, objv[2], &normVal)) != TCL_OK ) {
+		return stat;
+	    }
+	    PixelSetBlack(wandPtr, normVal);
+	}
+	break;
+    }
+
     case TM_SET_BLUE_QUANTUM:
     {
 	quantFlag = 1; /* and continue ... */
@@ -5317,6 +5367,30 @@ static int pixelObjCmd(
 		return stat;
 	    }
 	    PixelSetBlue(wandPtr, normVal);
+	}
+	break;
+    }
+
+    case TM_SET_CYAN_QUANTUM:
+    {
+	quantFlag = 1; /* and continue ... */
+    }
+    case TM_SET_CYAN:
+    {
+	if( objc != 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "value");
+	    return TCL_ERROR;
+	}
+	if( quantFlag ) {
+	    if( (stat = Tcl_GetIntFromObj(interp, objv[2], &quantVal)) != TCL_OK ) {
+		return stat;
+	    }
+	    PixelSetCyanQuantum(wandPtr, (Quantum)quantVal);
+	} else {
+	    if( (stat = Tcl_GetDoubleFromObj(interp, objv[2], &normVal)) != TCL_OK ) {
+		return stat;
+	    }
+	    PixelSetCyan(wandPtr, normVal);
 	}
 	break;
     }
@@ -5345,11 +5419,11 @@ static int pixelObjCmd(
 	break;
     }
 
-    case TM_SET_RED_QUANTUM:
+    case TM_SET_MAGENTA_QUANTUM:
     {
 	quantFlag = 1; /* and continue ... */
     }
-    case TM_SET_RED:
+    case TM_SET_MAGENTA:
     {
 	if( objc != 3 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "value");
@@ -5359,12 +5433,12 @@ static int pixelObjCmd(
 	    if( (stat = Tcl_GetIntFromObj(interp, objv[2], &quantVal)) != TCL_OK ) {
 		return stat;
 	    }
-	    PixelSetRedQuantum(wandPtr, (Quantum)quantVal);
+	    PixelSetMagentaQuantum(wandPtr, (Quantum)quantVal);
 	} else {
 	    if( (stat = Tcl_GetDoubleFromObj(interp, objv[2], &normVal)) != TCL_OK ) {
 		return stat;
 	    }
-	    PixelSetRed(wandPtr, normVal);
+	    PixelSetMagenta(wandPtr, normVal);
 	}
 	break;
     }
@@ -5393,6 +5467,74 @@ static int pixelObjCmd(
 	break;
     }
 
+    case TM_SET_RED_QUANTUM:
+    {
+	quantFlag = 1; /* and continue ... */
+    }
+    case TM_SET_RED:
+    {
+	if( objc != 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "value");
+	    return TCL_ERROR;
+	}
+	if( quantFlag ) {
+	    if( (stat = Tcl_GetIntFromObj(interp, objv[2], &quantVal)) != TCL_OK ) {
+		return stat;
+	    }
+	    PixelSetRedQuantum(wandPtr, (Quantum)quantVal);
+	} else {
+	    if( (stat = Tcl_GetDoubleFromObj(interp, objv[2], &normVal)) != TCL_OK ) {
+		return stat;
+	    }
+	    PixelSetRed(wandPtr, normVal);
+	}
+	break;
+    }
+
+    case TM_SET_YELLOW_QUANTUM:
+    {
+	quantFlag = 1; /* and continue ... */
+    }
+    case TM_SET_YELLOW:
+    {
+	if( objc != 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "value");
+	    return TCL_ERROR;
+	}
+	if( quantFlag ) {
+	    if( (stat = Tcl_GetIntFromObj(interp, objv[2], &quantVal)) != TCL_OK ) {
+		return stat;
+	    }
+	    PixelSetYellowQuantum(wandPtr, (Quantum)quantVal);
+	} else {
+	    if( (stat = Tcl_GetDoubleFromObj(interp, objv[2], &normVal)) != TCL_OK ) {
+		return stat;
+	    }
+	    PixelSetYellow(wandPtr, normVal);
+	}
+	break;
+    }
+
+    case TM_GET_BLACK_QUANTUM:
+    {
+	quantFlag = 1; /* and continue ... */
+    }
+    case TM_GET_BLACK:
+    {
+	if( objc != 2 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
+	    return TCL_ERROR;
+	}
+	if( quantFlag ) {
+	    quantVal = PixelGetBlackQuantum(wandPtr);
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj(quantVal));
+	} else {
+	    normVal = PixelGetBlack(wandPtr);
+	    Tcl_SetObjResult(interp, Tcl_NewDoubleObj(normVal));
+	}
+	break;
+    }
+
     case TM_GET_BLUE_QUANTUM:
     {
 	quantFlag = 1; /* and continue ... */
@@ -5408,6 +5550,26 @@ static int pixelObjCmd(
 	    Tcl_SetObjResult(interp, Tcl_NewIntObj(quantVal));
 	} else {
 	    normVal = PixelGetBlue(wandPtr);
+	    Tcl_SetObjResult(interp, Tcl_NewDoubleObj(normVal));
+	}
+	break;
+    }
+
+    case TM_GET_CYAN_QUANTUM:
+    {
+	quantFlag = 1; /* and continue ... */
+    }
+    case TM_GET_CYAN:
+    {
+	if( objc != 2 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
+	    return TCL_ERROR;
+	}
+	if( quantFlag ) {
+	    quantVal = PixelGetCyanQuantum(wandPtr);
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj(quantVal));
+	} else {
+	    normVal = PixelGetCyan(wandPtr);
 	    Tcl_SetObjResult(interp, Tcl_NewDoubleObj(normVal));
 	}
 	break;
@@ -5433,21 +5595,21 @@ static int pixelObjCmd(
 	break;
     }
 
-    case TM_GET_RED_QUANTUM:
+    case TM_GET_MAGENTA_QUANTUM:
     {
 	quantFlag = 1; /* and continue ... */
     }
-    case TM_GET_RED:
+    case TM_GET_MAGENTA:
     {
 	if( objc != 2 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
 	    return TCL_ERROR;
 	}
 	if( quantFlag ) {
-	    quantVal = PixelGetRedQuantum(wandPtr);
+	    quantVal = PixelGetMagentaQuantum(wandPtr);
 	    Tcl_SetObjResult(interp, Tcl_NewIntObj(quantVal));
 	} else {
-	    normVal = PixelGetRed(wandPtr);
+	    normVal = PixelGetMagenta(wandPtr);
 	    Tcl_SetObjResult(interp, Tcl_NewDoubleObj(normVal));
 	}
 	break;
@@ -5468,6 +5630,46 @@ static int pixelObjCmd(
 	    Tcl_SetObjResult(interp, Tcl_NewIntObj(quantVal));
 	} else {
 	    normVal = PixelGetOpacity(wandPtr);
+	    Tcl_SetObjResult(interp, Tcl_NewDoubleObj(normVal));
+	}
+	break;
+    }
+
+    case TM_GET_RED_QUANTUM:
+    {
+	quantFlag = 1; /* and continue ... */
+    }
+    case TM_GET_RED:
+    {
+	if( objc != 2 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
+	    return TCL_ERROR;
+	}
+	if( quantFlag ) {
+	    quantVal = PixelGetRedQuantum(wandPtr);
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj(quantVal));
+	} else {
+	    normVal = PixelGetRed(wandPtr);
+	    Tcl_SetObjResult(interp, Tcl_NewDoubleObj(normVal));
+	}
+	break;
+    }
+
+    case TM_GET_YELLOW_QUANTUM:
+    {
+	quantFlag = 1; /* and continue ... */
+    }
+    case TM_GET_YELLOW:
+    {
+	if( objc != 2 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
+	    return TCL_ERROR;
+	}
+	if( quantFlag ) {
+	    quantVal = PixelGetYellowQuantum(wandPtr);
+	    Tcl_SetObjResult(interp, Tcl_NewIntObj(quantVal));
+	} else {
+	    normVal = PixelGetYellow(wandPtr);
 	    Tcl_SetObjResult(interp, Tcl_NewDoubleObj(normVal));
 	}
 	break;
@@ -5817,6 +6019,7 @@ static int drawObjCmd(
 	    Tcl_AppendResult(interp, "TclMagick: out of memory", NULL);
 	    return TCL_ERROR;
 	}
+        memset( coordinates, 0, num*sizeof(coordinates[0]) );
 
 	objc -= 2, objv += 2;
 	for( i=0; i<num; i++) {
@@ -5830,11 +6033,14 @@ static int drawObjCmd(
 	}
 	switch ((enum subIndex)index) {
 	case TM_BEZIER:   case TM_BBEZIER:
-	    DrawBezier(wandPtr, num, coordinates); break;
+	    DrawBezier(wandPtr, num, coordinates);
+            break;
 	case TM_POLYGON:  case TM_PPOLYGON:
-	    DrawPolygon(wandPtr, num, coordinates); break;
+	    DrawPolygon(wandPtr, num, coordinates);
+            break;
 	case TM_POLYLINE: case TM_PPOLYLINE:
-	    DrawPolyline(wandPtr, num, coordinates); break;
+	    DrawPolyline(wandPtr, num, coordinates);
+            break;
 	}
 
 	ckfree((char *)coordinates);
