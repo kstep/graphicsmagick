@@ -839,7 +839,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
               break;
             }
           if (pattern != 1)
-            ThrowReaderException(CorruptImageWarning,"Unknown pattern type",image);
+            ThrowReaderException(CorruptImageWarning,"Unknown pattern type",
+              image);
           length=MSBFirstReadShort(image);
           ReadRectangle(frame);
           ReadPixmap(pixmap);
@@ -964,8 +965,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
               if (tile_image->colormap == (PixelPacket *) NULL)
                 {
                   DestroyImage(tile_image);
-                  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-                    image);
+                  ThrowReaderException(ResourceLimitWarning,
+                    "Memory allocation failed",image);
                 }
               for (i=0; i < (int) tile_image->colors; i++)
               {
@@ -1010,7 +1011,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
           if (pixels == (unsigned char *) NULL)
             {
               DestroyImage(tile_image);
-              ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+              ThrowReaderException(ResourceLimitWarning,
+                "Memory allocation failed",image);
             }
           /*
             Convert PICT tile image to pixel packets.

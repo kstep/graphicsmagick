@@ -215,11 +215,11 @@ static unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
-  if (image->color_profile.length == 0)
-    ThrowWriterException(FileOpenWarning,"No color profile available",image);
   /*
     Open image file.
   */
+  if (image->color_profile.length == 0)
+    ThrowWriterException(FileOpenWarning,"No color profile available",image);
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);

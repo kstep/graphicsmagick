@@ -601,7 +601,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       image->colormap=(PixelPacket *)
         AllocateMemory(image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
       for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=

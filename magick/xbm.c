@@ -249,8 +249,8 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   if ((image->columns == 0) || (image->rows == 0) || EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"XBM file is not in the correct format",
-      image);
+    ThrowReaderException(CorruptImageWarning,
+      "XBM file is not in the correct format",image);
   /*
     Initialize image structure.
   */

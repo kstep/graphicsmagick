@@ -263,7 +263,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageWarning,"Not a DCX image file",image);
       page_table=(unsigned long *) AllocateMemory(1024*sizeof(unsigned long));
       if (page_table == (unsigned long *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
       for (id=0; id < 1024; id++)
       {
         page_table[id]=LSBFirstReadLong(image);
@@ -304,7 +305,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->colors=16;
     pcx_colormap=(unsigned char *) AllocateMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
     pcx_header.reserved=ReadByte(image);
     pcx_header.planes=ReadByte(image);
@@ -324,7 +326,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     image->colormap=(PixelPacket *) AllocateMemory(256*sizeof(PixelPacket));
     if (image->colormap == (PixelPacket *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     p=pcx_colormap;
     for (i=0; i < (int) image->colors; i++)
     {
@@ -352,7 +355,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     scanline=(unsigned char *) AllocateMemory(image->columns*pcx_header.planes);
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     /*
       Uncompress image data.
     */
@@ -384,8 +388,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             Initialize image colormap.
           */
           if (image->colors > 256)
-            ThrowReaderException(CorruptImageWarning,"PCX colormap exceeded 256 colors",
-              image);
+            ThrowReaderException(CorruptImageWarning,
+              "PCX colormap exceeded 256 colors",image);
           if ((pcx_header.bits_per_pixel*pcx_header.planes) == 1)
             {
               /*
@@ -752,7 +756,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       LSBFirstWriteLong(image,0x3ADE68B1L);
       page_table=(unsigned long *) AllocateMemory(1024*sizeof(unsigned long));
       if (page_table == (unsigned long *) NULL)
-        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+          image);
       for (scene=0; scene < 1024; scene++)
         LSBFirstWriteLong(image,0x00000000L);
     }
@@ -815,7 +820,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     */
     pcx_colormap=(unsigned char *) AllocateMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     for (i=0; i < (3*256); i++)
       pcx_colormap[i]=0;
     q=pcx_colormap;
@@ -836,7 +842,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     packets=image->rows*pcx_header.bytes_per_line*pcx_header.planes;
     pcx_pixels=(unsigned char *) AllocateMemory(packets);
     if (pcx_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     q=pcx_pixels;
     if (image->class == DirectClass)
       {

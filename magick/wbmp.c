@@ -143,7 +143,8 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,ExceptionInfo *exception
   if (!ReadBlob(image,2,(char *) &header)) 
     ThrowReaderException(CorruptImageWarning,"Not a WBMP image file",image);
   if (header)
-    ThrowReaderException(CorruptImageWarning,"Only WBMP level 0 files supported",image);
+    ThrowReaderException(CorruptImageWarning,
+      "Only WBMP level 0 files supported",image);
   /*
     Determine width and height
   */
@@ -183,7 +184,8 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,ExceptionInfo *exception
         {
           byte=ReadByte(image);
           if (byte == EOF)
-            ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",image);
+            ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",
+              image);
         }
       image->indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
       bit++;

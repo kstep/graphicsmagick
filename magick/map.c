@@ -185,7 +185,8 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->colors > 256)
         index=(index << 8)+(*p++);
       if (index >= image->colors)
-        ThrowReaderException(CorruptImageWarning,"invalid colormap index",image);
+        ThrowReaderException(CorruptImageWarning,"invalid colormap index",
+          image);
       image->indexes[x]=index;
       *q++=image->colormap[index];
     }

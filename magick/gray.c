@@ -151,7 +151,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,ExceptionInfo *exception
     image->colormap=(PixelPacket *)
       AllocateMemory(image->colors*sizeof(PixelPacket));
     if (image->colormap == (PixelPacket *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     for (i=0; i < (int) image->colors; i++)
     {
       image->colormap[i].red=image->depth == QuantumDepth ? i : UpScale(i);
@@ -309,7 +310,8 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     packet_size=image->depth > 8 ? 2: 1;
     pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     /*
       Convert MIFF to GRAY raster pixels.
     */

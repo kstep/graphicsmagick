@@ -612,7 +612,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             image->columns*image->rows;
           pixels=(unsigned char *) AllocateMemory(number_packets);
           if (pixels == (unsigned char *) NULL)
-            ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowWriterException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           /*
             Dump Packbit encoded pixels.
           */
@@ -800,8 +801,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               number_packets=image->columns*image->rows;
               pixels=(unsigned char *) AllocateMemory(number_packets);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-                  image);
+                ThrowWriterException(ResourceLimitWarning,
+                  "Memory allocation failed",image);
               /*
                 Dump Runlength encoded pixels.
               */

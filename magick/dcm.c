@@ -2899,8 +2899,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               data=(unsigned char *) AllocateMemory(quantum*(length+1));
               if (data == (unsigned char *) NULL)
-                ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-                  image);
+                ThrowReaderException(ResourceLimitWarning,
+                  "Memory allocation failed",image);
               (void) ReadBlob(image,quantum*length,(char *) data);
               data[length*quantum]=0;
             }
@@ -2920,8 +2920,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ThrowReaderException(CorruptImageWarning,
                 "big endian byte order not supported",image);
             if (strcmp(transfer_syntax,"1.2.840.10008.1.2.5") == 0)
-              ThrowReaderException(CorruptImageWarning,"RLE compression not supported",
-                image);
+              ThrowReaderException(CorruptImageWarning,
+                "RLE compression not supported",image);
             break;
           }
           default:
@@ -3156,7 +3156,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       scale=(Quantum *) AllocateMemory((max_value+1)*sizeof(Quantum));
       if (scale == (Quantum *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
       for (i=0; i <= (int) max_value; i++)
         scale[i]=((unsigned long) (MaxRGB*i)/max_value);
     }
@@ -3177,7 +3178,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=((unsigned long) (MaxRGB*i)/(image->colors-1));

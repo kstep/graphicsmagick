@@ -321,7 +321,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->colormap == (PixelPacket *) NULL)
         {
           FPX_ClearSystem();
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         }
       for (i=0; i < (int) image->colors; i++)
       {
@@ -345,7 +346,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       FPX_ClearSystem();
       (void) FPX_CloseImage(flashpix);
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     }
   /*
     Initialize FlashPix image description.
@@ -398,7 +400,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             FreeMemory(scanline);
             (void) FPX_CloseImage(flashpix);
             FPX_ClearSystem();
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           }
       }
     /*
@@ -781,7 +784,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)
-    ThrowWriterException(ResourceLimitWarning,"Unable to initialize FPX library",image);
+    ThrowWriterException(ResourceLimitWarning,
+      "Unable to initialize FPX library",image);
   tile_width=64;
   tile_height=64;
   colorspace.numberOfComponents=3;

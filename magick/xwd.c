@@ -216,8 +216,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) SetImageAttribute(image,"Comment",comment);
   FreeMemory(comment);
   if (status == False)
-    ThrowReaderException(CorruptImageWarning,"Unable to read window name from dump file",
-      image);
+    ThrowReaderException(CorruptImageWarning,
+      "Unable to read window name from dump file",image);
   /*
     Initialize the X image.
   */
@@ -254,7 +254,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       colors=(XColor *)
         AllocateMemory((unsigned int) header.ncolors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
       for (i=0; i < (int) header.ncolors; i++)
       {
         status=ReadBlob(image,sz_XWDColor,(char *) &color);
@@ -290,7 +291,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,length,ximage->data);
   if (status == False)
-    ThrowReaderException(CorruptImageWarning,"Unable to read dump pixmap",image);
+    ThrowReaderException(CorruptImageWarning,"Unable to read dump pixmap",
+      image);
   /*
     Convert image to MIFF format.
   */
@@ -406,7 +408,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap=(PixelPacket *)
         AllocateMemory(image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
       for (i=0; i < (int) image->colors; i++)
       {
         image->colormap[i].red=XDownScale(colors[i].red);
@@ -423,7 +426,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           index=XGetPixel(ximage,x,y);
           image->indexes[x]=index;
           if (index >= image->colors)
-            ThrowReaderException(CorruptImageWarning,"invalid colormap index",image);
+            ThrowReaderException(CorruptImageWarning,"invalid colormap index",
+              image);
           *q++=image->colormap[index];
         }
         if (!SyncPixelCache(image))
@@ -615,7 +619,8 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       */
       colors=(XColor *) AllocateMemory(image->colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+          image);
       for (i=0; i < (int) image->colors; i++)
       {
         colors[i].pixel=i;

@@ -572,7 +572,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
                 AppendImageFormat("K",image->filename);
                 status=OpenBlob(image_info,image,WriteBinaryType);
                 if (status == False)
-                  ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+                  ThrowWriterException(FileOpenWarning,"Unable to open file",
+                    image);
               }
             for (y=0; y < (int) image->rows; y++)
             {

@@ -215,7 +215,8 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     hdf_pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     if (image->class == PseudoClass)
       {
         unsigned char
@@ -229,7 +230,8 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if ((hdf_palette == (unsigned char *) NULL) ||
             (image->colormap == (PixelPacket *) NULL))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         (void) DFR8getimage(image->filename,hdf_pixels,(int) image->columns,
           (int) image->rows,hdf_palette);
         reference=DFR8lastref();
@@ -496,7 +498,8 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     hdf_pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
         /*
@@ -649,7 +652,8 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 
             hdf_palette=(unsigned char *) AllocateMemory(768);
             if (hdf_palette == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+              ThrowWriterException(ResourceLimitWarning,
+                "Memory allocation failed",image);
             q=hdf_palette;
             for (i=0; i < (int) image->colors; i++)
             {

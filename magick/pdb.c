@@ -329,7 +329,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       record_type=ReadByte(image);
       if (((record_type != 0x00) && (record_type != 0x01)) ||
           (memcmp(tag,"\x40\x6f\x80",3) != 0))
-        ThrowReaderException(CorruptImageWarning,"Corrupt PDB image file",image);
+        ThrowReaderException(CorruptImageWarning,"Corrupt PDB image file",
+          image);
       if ((offset-TellBlob(image)) == 6)
         {
           (void) ReadByte(image);
@@ -518,7 +519,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *(p+1)='\0';
         }
       if (comment == (char *) NULL)
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
       (void) SetImageAttribute(image,"Comment",comment);
       FreeMemory(comment);
     }

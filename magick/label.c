@@ -346,7 +346,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       */
       status=TT_Init_FreeType(&engine);
       if (status)
-        ThrowReaderException(DelegateWarning,"Cannot initialize TTF engine",image);
+        ThrowReaderException(DelegateWarning,"Cannot initialize TTF engine",
+          image);
       /*
         Search for Truetype font filename.
       */
@@ -425,7 +426,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
       status|=
         TT_Set_Instance_CharSize(instance,(int) (64.0*clone_info->pointsize));
       if (status)
-        ThrowReaderException(DelegateWarning,"Cannot initialize TTF instance",image);
+        ThrowReaderException(DelegateWarning,"Cannot initialize TTF instance",
+          image);
       for (code=0; (int) code < (int) face_properties.num_CharMaps; code++)
       {
         TT_Get_CharMap_ID(face,code,&platform,&encoding);
@@ -468,7 +470,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         status|=TT_Load_Glyph(instance,glyphs[unicode[i]],code,
           TTLOAD_SCALE_GLYPH | TTLOAD_HINT_GLYPH);
         if (status)
-          ThrowReaderException(DelegateWarning,"Cannot initialize TTF glyph",image);
+          ThrowReaderException(DelegateWarning,"Cannot initialize TTF glyph",
+            image);
       }
       TT_Get_Face_Properties(face,&face_properties);
       TT_Get_Instance_Metrics(instance,&instance_metrics);
@@ -642,14 +645,15 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
               resource_info.foreground_color=AllocateString("white");
               map_info=XAllocStandardColormap();
               if (map_info == (XStandardColormap *) NULL)
-                ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-                  image);
+                ThrowReaderException(ResourceLimitWarning,
+                  "Memory allocation failed",image);
               /*
                 Initialize visual info.
               */
               visual_info=XBestVisualInfo(display,map_info,&resource_info);
               if (visual_info == (XVisualInfo *) NULL)
-                ThrowReaderException(XServerWarning,"Unable to get visual",image);
+                ThrowReaderException(XServerWarning,"Unable to get visual",
+                  image);
               map_info->colormap=(Colormap) NULL;
               pixel.pixels=(unsigned long *) NULL;
               pixel.gamma_map=(XColor *) NULL;
@@ -667,7 +671,8 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
               */
               font_info=XBestFont(display,&resource_info,False);
               if (font_info == (XFontStruct *) NULL)
-                ThrowReaderException(XServerWarning,"Unable to load font",image);
+                ThrowReaderException(XServerWarning,"Unable to load font",
+                  image);
               if ((map_info == (XStandardColormap *) NULL) ||
                   (visual_info == (XVisualInfo *) NULL) ||
                   (font_info == (XFontStruct *) NULL))

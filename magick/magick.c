@@ -139,17 +139,17 @@ Export MagickInfo *GetMagickInfo(const char *tag)
     {
 #if defined(HasLTDL)
       char
-	**file_list,
-	*coder_dir,
-	*func_name,
-	*base_name;
+        **file_list,
+        *coder_dir,
+        *func_name,
+        *base_name;
 
       int
-	i,
-	number_files;
+        i,
+        number_files;
 
       lt_dlhandle
-	handle;
+        handle;
 
       number_files = 256;
 
@@ -159,11 +159,11 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 
       /* Initialize ltdl */
       if( lt_dlinit() != 0 )
-	{
-	  const char *dlerror = lt_dlerror();
-	  printf("ERROR: failed to initialise ltdl: %s\n", dlerror);
-	  exit(1);
-	}
+        {
+          const char *dlerror = lt_dlerror();
+          printf("ERROR: failed to initialise ltdl: %s\n", dlerror);
+          exit(1);
+        }
 
       coder_dir=AllocateMemory(MaxTextExtent-1);
       strcpy(coder_dir, CoderModuleDirectory);
@@ -173,51 +173,51 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 
       /* List module files */
       file_list=ListFiles(coder_dir,
-		      "*.la", &number_files);
+        	      "*.la", &number_files);
       if (file_list == (char **) NULL)
-	{
-	  FreeMemory(coder_dir);
-	  return (MagickInfo *)NULL;
-	}
+        {
+          FreeMemory(coder_dir);
+          return (MagickInfo *)NULL;
+        }
 
       func_name=AllocateMemory(MaxTextExtent-1);
       for ( i = 0; i < number_files; ++i )
-	{
-	  void (*func)(void);
+        {
+          void (*func)(void);
 
-	  /* Load module */
-	  printf("Loading %s\n", file_list[i]);
-	  if( ( handle=lt_dlopen(file_list[i]) ) == 0)
-	    {
-	      printf("ERROR: failed to load module %s: %s\n", file_list[i], lt_dlerror());
-	      continue;
-	      /*exit(1);*/
-	    }
+          /* Load module */
+          printf("Loading %s\n", file_list[i]);
+          if( ( handle=lt_dlopen(file_list[i]) ) == 0)
+            {
+              printf("ERROR: failed to load module %s: %s\n", file_list[i], lt_dlerror());
+              continue;
+              /*exit(1);*/
+            }
 
-	  /* Locate and execute RegisterFORMATImage function */
-	  strcpy(func_name, "Register");
-	  base_name = BaseFilename( file_list[i] );
-	  Latin1Upper(base_name);
+          /* Locate and execute RegisterFORMATImage function */
+          strcpy(func_name, "Register");
+          base_name = BaseFilename( file_list[i] );
+          Latin1Upper(base_name);
 
-	  /* Hack due to 8BIM vs bim.c naming difference */
-	  if(!strcmp("BIM", base_name))
-	     strcat(func_name,"8");
+          /* Hack due to 8BIM vs bim.c naming difference */
+          if(!strcmp("BIM", base_name))
+             strcat(func_name,"8");
 
-	  strcat(func_name,base_name);
-	  FreeMemory(base_name);
-	  strcat(func_name, "Image");
+          strcat(func_name,base_name);
+          FreeMemory(base_name);
+          strcat(func_name, "Image");
 
-	  func=(void (*)(void))lt_dlsym(handle, func_name);
-	  if (func == NULL)
-	    {
-	      printf("ERROR: failed to find symbol : %s\n", lt_dlerror());
-	      continue;
-	    }
-	  func();
+          func=(void (*)(void))lt_dlsym(handle, func_name);
+          if (func == NULL)
+            {
+              printf("ERROR: failed to find symbol : %s\n", lt_dlerror());
+              continue;
+            }
+          func();
 
-	  /*ListMagickInfo(stdout);*/
+          /*ListMagickInfo(stdout);*/
 
-	}
+        }
       FreeMemory(func_name);
       FreeMemory(coder_dir);
 
@@ -389,8 +389,8 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
 #if defined(HasLTDL)
   p=entry;
   (void) printf("%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
-		p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',p->encoder ? 'w' : '-',
-		p->encoder && p->adjoin ? '+' : '-',p->description ? p->description : "");
+    p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',p->encoder ? 'w' : '-',
+    p->encoder && p->adjoin ? '+' : '-',p->description ? p->description : "");
 #endif /* HasLTDL */
 
   /*

@@ -261,7 +261,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     iris_pixels=(unsigned char *)
       AllocateMemory(4*iris_header.columns*iris_header.rows);
     if (iris_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     if (iris_header.storage != 0x01)
       {
         unsigned char
@@ -272,7 +273,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         scanline=(unsigned char *) AllocateMemory(iris_header.columns);
         if (scanline == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         for (z=0; z < (int) iris_header.depth; z++)
         {
           p=iris_pixels+z;
@@ -312,7 +314,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if ((offsets == (unsigned long *) NULL) ||
             (max_packets == (unsigned char *) NULL) ||
             (runlength == (unsigned long *) NULL))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         for (i=0; i < (int) (iris_header.rows*iris_header.depth); i++)
           offsets[i]=MSBFirstReadLong(image);
         for (i=0; i < (int) (iris_header.rows*iris_header.depth); i++)
@@ -421,7 +424,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].red=(Quantum) UpScale(i);
@@ -698,7 +702,8 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     */
     iris_pixels=(unsigned char *) AllocateMemory(4*image->columns*image->rows);
     if (iris_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     /*
       Convert image pixels to uncompressed SGI pixels.
     */
@@ -730,7 +735,8 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         */
         scanline=(unsigned char *) AllocateMemory(iris_header.columns);
         if (scanline == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         for (z=0; z < (int) iris_header.depth; z++)
         {
           q=iris_pixels+z;
@@ -767,7 +773,8 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         if ((offsets == (unsigned long *) NULL) ||
             (packets == (unsigned char *) NULL) ||
             (runlength == (unsigned long *) NULL))
-          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         offset=512+4*((iris_header.rows*iris_header.depth) << 1);
         number_packets=0;
         q=iris_pixels;

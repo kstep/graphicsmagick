@@ -323,7 +323,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 AppendImageFormat("A",image->filename);
                 status=OpenBlob(image_info,image,ReadBinaryType);
                 if (status == False)
-                  ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+                  ThrowReaderException(FileOpenWarning,"Unable to open file",
+                    image);
               }
             for (y=0; y < image->tile_info.y; y++)
               (void) ReadBlob(image,packet_size*image->tile_info.width,
@@ -608,7 +609,8 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
                 AppendImageFormat("A",image->filename);
                 status=OpenBlob(image_info,image,WriteBinaryType);
                 if (status == False)
-                  ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+                  ThrowWriterException(FileOpenWarning,"Unable to open file",
+                    image);
               }
             for (y=0; y < (int) image->rows; y++)
             {

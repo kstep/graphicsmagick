@@ -515,7 +515,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image->scene++;
       status=TIFFReadDirectory(tiff);
       if (status == False)
-        ThrowReaderException(CorruptImageWarning,"Unable to read subimage",image);
+        ThrowReaderException(CorruptImageWarning,"Unable to read subimage",
+          image);
     }
   do
   {
@@ -609,7 +610,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (image->colormap == (PixelPacket *) NULL)
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           }
       }
     if (image_info->ping)
@@ -670,7 +672,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           }
         /*
           Create colormap.
@@ -852,7 +855,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           }
         TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
           &sample_info);
@@ -927,14 +931,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           }
         status=TIFFReadRGBAImage(tiff,image->columns,image->rows,pixels,0);
         if (status == False)
           {
             FreeMemory(pixels);
             TIFFClose(tiff);
-            ThrowReaderException(CorruptImageWarning,"Unable to read image",image);
+            ThrowReaderException(CorruptImageWarning,"Unable to read image",
+              image);
           }
         /*
           Convert image to DirectClass pixel packets.
@@ -1564,7 +1570,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     */
     scanline=(unsigned char *) AllocateMemory(2*TIFFScanlineSize(tiff)+4);
     if (scanline == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     switch (photometric)
     {
       case PHOTOMETRIC_RGB:
@@ -1680,7 +1687,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
-          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         /*
           Initialize TIFF colormap.
         */

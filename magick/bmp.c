@@ -1067,7 +1067,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     */
     pixels=(unsigned char *) AllocateMemory(bmp_header.image_size);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     switch (bmp_header.bit_count)
     {
       case 1:
@@ -1179,7 +1180,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           if (pixels == (unsigned char *) NULL)
             {
               FreeMemory(pixels);
-              ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+              ThrowWriterException(ResourceLimitWarning,
+                "Memory allocation failed",image);
             }
           bmp_header.file_size-=bmp_header.image_size;
           bmp_header.image_size=
@@ -1219,7 +1221,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         bmp_colormap=(unsigned char *)
           AllocateMemory(4*(1 << bmp_header.bit_count));
         if (bmp_colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         q=bmp_colormap;
         for (i=0; i < (int) image->colors; i++)
         {

@@ -299,7 +299,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   */
   status=ReadBlob(image,image->columns*image->rows,(char *) vicar_pixels);
   if (status == False)
-    ThrowReaderException(CorruptImageWarning,"Insufficient image data in file",image);
+    ThrowReaderException(CorruptImageWarning,"Insufficient image data in file",
+      image);
   /*
     Convert VICAR pixels to pixel packets.
   */

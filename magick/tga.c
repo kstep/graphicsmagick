@@ -217,7 +217,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         comment=(char *) AllocateMemory(tga_header.id_length+1);
         if (comment == (char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         (void) ReadBlob(image,tga_header.id_length,comment);
         comment[tga_header.id_length]='\0';
         (void) SetImageAttribute(image,"Comment",comment);
@@ -232,7 +233,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         for (i=0; i < (int) image->colors; i++)
         {
           switch (tga_header.colormap_size)
@@ -310,8 +312,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 status=ReadBlob(image,1,(char *) &runlength);
                 if (status == False)
-                  ThrowReaderException(CorruptImageWarning,"Unable to read image data",
-                    image);
+                  ThrowReaderException(CorruptImageWarning,
+                    "Unable to read image data",image);
                 flag=runlength & 0x80;
                 if (flag != 0)
                   runlength-=128;
@@ -368,7 +370,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         if (status == False)
-          ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
+          ThrowReaderException(CorruptImageWarning,"Unable to read image data",
+            image);
         if (image->class == PseudoClass)
           image->indexes[x]=index;
         *q++=pixel;
@@ -640,7 +643,8 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         targa_colormap=(unsigned char *)
           AllocateMemory(3*targa_header.colormap_length);
         if (targa_colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         q=targa_colormap;
         for (i=0; i < (int) image->colors; i++)
         {
@@ -658,7 +662,8 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     count=(unsigned int) (targa_header.bits_per_pixel*targa_header.width) >> 3;
     targa_pixels=(unsigned char *) AllocateMemory(count);
     if (targa_pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     for (y=(int) (image->rows-1); y >= 0; y--)
     {
       p=GetPixelCache(image,0,y,image->columns,1);

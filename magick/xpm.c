@@ -556,7 +556,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; textlist[i] != (char *) NULL; i++)
         FreeMemory(textlist[i]);
       FreeMemory(textlist);
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     }
   /*
     Read image colormap.
@@ -575,7 +576,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           FreeMemory(textlist[i]);
         FreeMemory(textlist);
         FreeMemory(keys);
-        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+          image);
       }
     keys[x][width]='\0';
     (void) strncpy(keys[x],p,width);

@@ -596,7 +596,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       xref=(unsigned long *)
         ReallocateMemory((char *) xref,(count+2048)*sizeof(unsigned long));
       if (xref == (unsigned long *) NULL)
-        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+        ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+          image);
     }
   (void) strcpy(buffer,"]\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
@@ -893,7 +894,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             image->columns*image->rows;
           pixels=(unsigned char *) AllocateMemory(number_packets);
           if (pixels == (unsigned char *) NULL)
-            ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+            ThrowWriterException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           /*
             Dump runlength encoded pixels.
           */
@@ -1066,8 +1068,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               number_packets=image->columns*image->rows;
               pixels=(unsigned char *) AllocateMemory(number_packets);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-                  image);
+                ThrowWriterException(ResourceLimitWarning,
+                  "Memory allocation failed",image);
               /*
                 Dump Runlength encoded pixels.
               */
@@ -1232,7 +1234,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           if (pixels == (unsigned char *) NULL)
             {
               DestroyImage(tile_image);
-              ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+              ThrowWriterException(ResourceLimitWarning,
+                "Memory allocation failed",image);
             }
           /*
             Dump runlength encoded pixels.
@@ -1337,8 +1340,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
-                  ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-                    image);
+                  ThrowWriterException(ResourceLimitWarning,
+                    "Memory allocation failed",image);
                 }
               /*
                 Dump Runlength encoded pixels.
@@ -1441,8 +1444,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
-                  ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-                    image);
+                  ThrowWriterException(ResourceLimitWarning,
+                    "Memory allocation failed",image);
                 }
               /*
                 Dump Runlength encoded pixels.

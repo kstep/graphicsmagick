@@ -1063,7 +1063,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
   picture_handle=(PicHandle)
     NewHandle(Max(image->filesize-PICTHeaderSize,PICTHeaderSize));
   if (picture_handle == nil)
-    ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",image);
+    ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+      image);
   HLock((Handle) picture_handle);
   (void) ReadBlob(image,PICTHeaderSize,*(char **) picture_handle);
   status=
@@ -1071,7 +1072,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
   if (status == False)
     {
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
+      ThrowReaderException(CorruptImageWarning,"Unable to read image data",
+        image);
     }
   GetGWorld(&port,&device);
   theErr=NewGWorld(&graphic_world,0,&(**picture_handle).picFrame,nil,nil,
@@ -1079,7 +1081,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
   if (theErr != noErr && graphic_world == nil)
     {
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",image);
+      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+        image);
     }
   HUnlock((Handle) picture_handle);
   SetGWorld(graphic_world,nil);
@@ -1088,7 +1091,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
     {
       DisposeGWorld(graphic_world);
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
+      ThrowReaderException(CorruptImageWarning,"Unable to read image data",
+        image);
     }
   BottleneckTest(picture_handle,&codec,&depth,&colormap_id);
   switch (codec)
@@ -1135,7 +1139,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,ExceptionInfo *exception
             DisposeHandle((Handle) picture_info.theColorTable);
           DisposeGWorld(graphic_world);
           DisposeHandle((Handle) picture_handle);
-          ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",image);
+          ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
+            image);
         }
       for (x=0; x < image->colors; x++)
       {

@@ -219,7 +219,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
     image->colormap=(PixelPacket *)
       AllocateMemory(image->colors*sizeof(PixelPacket));
     if (image->colormap == (PixelPacket *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     if (image_info->ping)
       {
         CloseBlob(image);
@@ -230,7 +231,8 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
     */
     icon_colormap=(unsigned char *) AllocateMemory(4*image->colors);
     if (icon_colormap == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     (void) ReadBlob(image,4*image->colors,(char *) icon_colormap);
     p=icon_colormap;
     for (x=0; x < (int) image->colors; x++)

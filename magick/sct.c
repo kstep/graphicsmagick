@@ -168,8 +168,8 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (strncmp((char *) magick,"BM",2) == 0) ||
       (strncmp((char *) magick,"PG",2) == 0) ||
       (strncmp((char *) magick,"TX",2) == 0))
-    ThrowReaderException(CorruptImageWarning,"only Continuous Tone Picture supported",
-      image);
+    ThrowReaderException(CorruptImageWarning,
+      "only Continuous Tone Picture supported",image);
   (void) ReadBlob(image,174,(char *) buffer);
   (void) ReadBlob(image,768,(char *) buffer);
   /*

@@ -185,7 +185,8 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (c == EOF)
       break;
     if (strncmp((char *) (magick+12),"SFW94A",6) != 0)
-      ThrowReaderException(CorruptImageWarning,"Not a PWP image file",pwp_image);
+      ThrowReaderException(CorruptImageWarning,"Not a PWP image file",
+        pwp_image);
     /*
       Dump SFW image to a temporary file.
     */

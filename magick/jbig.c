@@ -189,7 +189,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception
   if (image->colormap == (PixelPacket *) NULL)
     {
       FreeMemory(buffer);
-      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     }
   image->colormap[0].red=0;
   image->colormap[0].green=0;
@@ -236,7 +237,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception
   return(image);
 }
 #else
-static Image *ReadJBIGImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadJBIGImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   ThrowException(exception,MissingDelegateWarning,
     "JBIG library is not available",image_info->filename);
@@ -379,7 +381,8 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     number_packets=((image->columns+7) >> 3)*image->rows;
     pixels=(unsigned char *) AllocateMemory(number_packets);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
     /*
       Convert Runlength encoded pixels to a bitmap.
     */

@@ -184,7 +184,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         tim_colormap=(unsigned char *) AllocateMemory(image->colors*2);
         if ((image->colormap == (PixelPacket *) NULL) ||
             (tim_colormap == (unsigned char *) NULL))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+            image);
         (void) ReadBlob(image,2*image->colors,(char *) tim_colormap);
         p=tim_colormap;
         for (i=0; i < (int) image->colors; i++)
@@ -210,7 +211,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     width=(width*16)/bits_per_pixel;
     tim_data=(unsigned char *) AllocateMemory(image_size);
     if (tim_data == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",image);
+      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",            image);
     (void) ReadBlob(image,image_size,(char *) tim_data);
     tim_pixels=tim_data;
     /*
