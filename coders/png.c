@@ -4082,8 +4082,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Free PNG resources.
     */
-    if (palette)
-        FreeMemory((void **) &palette);
+    if (ping_info->valid & PNG_INFO_PLTE)
+      {
+        FreeMemory((void **) &ping_info->palette);
+        ping_info->valid &= (~PNG_INFO_PLTE);
+      }
     png_destroy_write_struct(&ping,&ping_info);
     FreeMemory((void **) &scanlines);
     FreeMemory((void **) &png_pixels);
