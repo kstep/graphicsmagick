@@ -97,7 +97,7 @@ UNIX/Cygwin COMPILATION
   The configure variables you should be aware of are:
 
       CC          Name of C compiler (e.g. 'cc -Xa') to use
-      CXX         Name of C++ compiler to use
+      CXX         Name of C++ compiler to use (e.g. 'CC')
       CFLAGS      Compiler flags (e.g. '-g -O2') to compile C code
       CXXFLAGS    Compiler flags (e.g. '-g -O2') to compile C++ code
       CPPFLAGS    Include paths (-I/somedir) to look for header files
@@ -127,22 +127,32 @@ UNIX/Cygwin COMPILATION
   equivalent to --with-something=no.  The configure options are as
   follows (execute 'configure --help' to see all options).
 
-    --enable-shared[=PKGS]  build shared libraries [default=no]
-    --enable-static[=PKGS]  build static libraries [default=yes]
+   Optional Features:
+    --enable-prof           enable prof source profiling support (default is no)
+    --enable-gprof          enable gprof source profiling support (default is no)
+    --enable-gcov           enable gcov source profiling support (default is no)
     --enable-lzw            enable LZW support (default is no)
     --enable-16bit-pixel    enable 16 bit/quantum pixels (default is no)
+
+   Optional Packages:
+    --with-modules          enable support for dynamically loadable modules
+    --with-cache            set pixel cache threshhold (default 2047MB)
     --with-threads          enable threads support
-    --with-cache            set pixel cache threshhold (default 80MB)
-    --with-magick_plus_plus enable build/install of Magick++
     --without-frozenpaths   disable frozen delegate paths
     --without-largefiles    disable support for large (64 bit) file offsets
+    --without-magick-plus-plus disable build/install of Magick++
     --without-perl          disable build/install of PerlMagick
+         or
+    --with-perl=PERL        use specified Perl binary to configure PerlMagick
+    --with-perl-options=OPTIONS  options to pass on command-line when
+                            generating PerlMagick's Makefile from Makefile.PL
     --without-bzlib         disable BZLIB support
     --without-dps           disable Display Postscript support
     --without-fpx           disable FlashPIX support
     --without-hdf           disable HDF support
     --without-jbig          disable JBIG support
     --without-jpeg          disable JPEG support
+    --without-lcms          disable LCMS support
     --without-png           disable PNG support
     --without-tiff          disable TIFF support
     --without-ttf           disable TrueType support
@@ -150,6 +160,7 @@ UNIX/Cygwin COMPILATION
     --without-xml           disable XML support
     --without-zlib          disable ZLIB support
     --with-x                use the X Window System
+    --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
 
   ImageMagick options represent either features to be enabled,
   disabled, or packages to be included in the build.  When a feature is
@@ -166,11 +177,15 @@ UNIX/Cygwin COMPILATION
   Several configure options require special note:
 
     o --enable-shared: the shared libraries are built. Shared
-      libraries are valuable because they are *shared* across more than
-      one invocation of an ImageMagick or PerlMagick client. In
-      addition, the clients take much less disk space and shared
-      libraries are required in order for PERL to dynamically load the
-      PerlMagick extension.
+      libraries are preferred because they allow programs to share
+      common code, making the individual programs much smaller. In
+      addition shared libraries are required in order for PerlMagick
+      to be dynamically loaded by an installed PERL (otherwise an
+      additional PERL (PerlMagick) must be installed.  This option
+      is not the default because it is usually the case that all
+      libraries used by ImageMagick also be dynamic libraries if
+      ImageMagick itself is to be dynamically loaded (such as for
+      PerlMagick).
 
       ImageMagick built with delegates (see MAGICK PLUG-INS below) can
       pose additional challenges.  You can build all the delegates
@@ -180,7 +195,8 @@ UNIX/Cygwin COMPILATION
       installed as shared libraries).  Shared libraries compilation
       flags differ from vendor to vendor (gcc's is -fPIC).  However,
       you must compile all shared library source with the same flag
-      (for gcc use -fPIC rather than -fpic).
+      (for gcc use -fPIC rather than -fpic).  Accomplishing this
+      often requires hand-editing Makefiles.
 
     o --disable-static: static archive libraries (with extension .a)
       are not built.  If you are building shared libraries, there is
@@ -217,11 +233,12 @@ UNIX/Cygwin COMPILATION
       values to range from 0 to 65535 rather than 0 to 255.  Enabling
       this option will cause ImageMagick to run about 30% slower.
 
-    o --with-magick_plus_plus: Enable building Magick++, the C++
+    o --without-magick-plus-plus: Disable building Magick++, the C++
       application programming interface to ImageMagick.  A suitable C++
       compiler is required. Specify the CXX configure variable to
-      select the C++ compiler to use, and CXXFLAGS to select the
-      desired compiler opimization and debug flags.
+      select the C++ compiler to use (default "g++"), and CXXFLAGS to
+      select the desired compiler opimization and debug flags
+      (default "-g -O2").
 
     o --without-frozenpaths: By default, the configure script will
       determine the location of all delegates (external programs) and
@@ -249,9 +266,8 @@ UNIX/Cygwin COMPILATION
       image pixel data in memory than the cache threshold setting,
       additional images are cached on disk. Since memory is much faster
       than disk, it is usually better to use memory rather than disk
-      for the pixel cache. On large memory machines, the cache
-      threshold may be increased to a larger size than the default of
-      80MB. Small memory machines may want to decrease the threshold.
+      for the pixel cache. The default cache threshold is 2047MB.
+      Small memory machines may want to decrease the threshold.
 
     o --without-largefiles: By default, ImageMagick is compiled with
       support for large (> 2GB on a 32-bit CPU) files if the operating
@@ -874,14 +890,22 @@ MACINTOSH COMPILATION
 
 Magick++
 
-  Magick++ provides a C++ language API to ImageMagick. When configuring
-  for Unix, supply the option --with-magick_plus_plus to the configure
-  script in order to generate Makefiles which build and install the
-  Magick++ headers and library. Magick++ is built by default in the
-  Windows build environment. Magick++ is currently supported using the
-  egcs 1.1.2 version of GNU g++ (or later) under Unix and Microsoft
-  Visual C++ 6.0 under Windows Win2K or Windows 95/98/2000.
+  Magick++ provides a straightforward C++ language API to ImageMagick.
+  Magick++ is built by default under the Unix, Windows, and Mac build
+  environments. To disable building Magick++ under Unix, specify
+  --without-magick-plus-plus as an argument to the configure script.
 
+  Magick++ is currently supported using the following C++ compilers:
+
+    egcs 1.1.2 (or later)
+    gcc 2.95.2 (or later)
+    Visual C++ 6.0 (Windows)
+    IRIX C++ 7.3.1.1m
+    Sun Workshop 5.0 C++ (tests/demos require work-around to build)
+    Sun Forte 6.0 C++
+    CodeWarrior Professional Release 5 (Macintosh)
+
+  and may compile under other modern C++ compilers as well.
 
 COPYRIGHT
 
