@@ -33,8 +33,8 @@ sub lsys_init
     ']' => sub{ $turtle->setstate(@{pop(@statestack)}); },  # End branch
     '{' => sub{ @poly = (); $changes=\%polychanges; },  # Begin polygon
     '}' => sub{ # End polygon
-                $im->Draw (primitive=>'FillPolygon', points=>join(' ',@poly),
-                           pen=>'light green');
+                $im->Draw (primitive=>'Polygon', points=>join(' ',@poly),
+                           pen=>'light green', fill=>'True');
                 $changes = \%stemchanges;
               },
     'f' => sub{ flower($pink_flower); },  # Flower
