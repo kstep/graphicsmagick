@@ -159,57 +159,6 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   A l p h a C o m p o s i t e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AlphaComposite() composites pixel p "over" pixel q.
-%
-%  The format of the AlphaComposite method is:
-%
-%      PixelPacket AlphaComposite(const PixelPacket *p,const double alpha,
-%        const PixelPacket *q,const double beta)
-%
-%  A description of each parameter follows:
-%
-%    o p: Pixel p.
-%
-%    o alpha: The opacity value associated with pixel p.
-%
-%    o q: Pixel q.
-%
-%    o beta: The opacity value associated with pixel q.
-%
-%
-*/
-MagickExport inline PixelPacket AlphaComposite(const PixelPacket *p,
-  const double alpha,const PixelPacket *q,const double beta)
-{
-  register double
-    scale;
-
-  PixelPacket
-    composite;
-
-  scale=1.0/MaxRGB;
-  composite.red=(Quantum)
-    (scale*((MaxRGB-alpha)*p->red+scale*alpha*(MaxRGB-beta)*q->red)+0.5);
-  composite.green=(Quantum)
-    (scale*((MaxRGB-alpha)*p->green+scale*alpha*(MaxRGB-beta)*q->green)+0.5);
-  composite.blue=(Quantum)
-    (scale*((MaxRGB-alpha)*p->blue+scale*alpha*(MaxRGB-beta)*q->blue)+0.5);
-  composite.opacity=(Quantum)
-    (MaxRGB-((MaxRGB-alpha)+scale*alpha*(MaxRGB-beta))+0.5);
-  return(composite);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   C l o n e D r a w I n f o                                                 %
 %                                                                             %
 %                                                                             %
