@@ -1,3 +1,9 @@
+2004-01-07  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* Added API's
+		SetFillPatternURL url
+		SetStrokePatternURL url
+
 2004-01-06  Rolf Schroedter <rolf.schroedter@dlr.de>
 
 	* Added missing tests for new API's

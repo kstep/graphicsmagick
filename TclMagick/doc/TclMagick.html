@@ -2709,10 +2709,17 @@ wandName ScaleImage x y</div></td>
   </tr>
   <tr>
     <td><div align="left">pixelName color <br>
-      pixelName color string
+      pixelName color string <br>
+      pixelName GetColor <br>
+	  pixelName SetColor string <br>
+      pixelName GetColorAsString
     </div></td>
     <td><div align="left">PixelGetColorAsString<br>
-      PixelSetColor</div></td>
+      PixelSetColor <br>
+      PixelGetColorAsString<br>
+	  PixelSetColor<br>
+      PixelGetColorAsString
+    </div></td>
   </tr>
   <tr>
     <td><div align="left">
@@ -3131,6 +3138,18 @@ wandName ScaleImage x y</div></td>
         </ul>
     </div></td>
     <td><div align="left"></div></td>
+  </tr>
+  <tr>
+    <td>drawName fillpatternurl url <br>
+drawName SetFillPatternURL url </td>
+    <td>DrawSetFillPatternURL<br>
+DrawSetFillPatternURL</td>
+  </tr>
+  <tr>
+    <td><ul>
+      <li>string url (e.g. &quot;#pattern_id&quot; from [push pattern]) </li>
+    </ul></td>
+    <td>&nbsp;</td>
   </tr>
   <tr>
     <td><div align="left">
@@ -3760,6 +3779,18 @@ DrawRoundRectangle<br>
     <td><div align="left"></div></td>
   </tr>
   <tr>
+    <td>drawName strokepatternurl url <br>
+    drawName SetStrokePatternURL url </td>
+    <td>DrawSetStrokePatternURL<br>
+    DrawSetStrokePatternURL</td>
+  </tr>
+  <tr>
+    <td><ul>
+        <li>string url (e.g. &quot;#pattern_id&quot; from [push pattern]) </li>
+    </ul></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
     <td><div align="left">
         <p>drawName strokewidth <br>
           drawName strokewidth val <br>
@@ -3919,10 +3950,6 @@ DrawSetTextUnderColor</div></td>
   <tr>
     <td><div align="left">DrawComposite</div></td>
     <td><div align="left">For legacy application only, outside Wand-API </div></td>
-  </tr>
-  <tr>
-    <td><div align="left">DrawSetFillColorURL</div></td>
-    <td><div align="left">???</div></td>
   </tr>
   <tr>
     <td><div align="left">DrawSetStopColor</div></td>

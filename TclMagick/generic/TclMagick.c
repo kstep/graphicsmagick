@@ -5319,7 +5319,7 @@ static int pixelObjCmd(
     }
 
     case TM_COLOR:                  /* color ?string? */
-    case TM_SET_COLOR:              /* SetColor */
+    case TM_SET_COLOR:              /* SetColor string */
     case TM_GET_COLOR:              /* GetColor */
     case TM_GET_COLOR_AS_STRING:    /* GetColorAsString */
     {
@@ -5802,6 +5802,7 @@ static int drawObjCmd(
         "ellipse",          "Ellipse",
         "fillcolor",        "GetFillColor",     "SetFillColor",
         "fillopacity",      "GetFillOpacity",   "SetFillOpacity",
+        "fillpatternurl",   			"SetFillPatternURL",
         "fillrule",         "GetFillRule",      "SetFillRule",
         "font",             "GetFont",          "SetFont",
         "fontfamily",       "GetFontFamily",    "SetFontFamily",
@@ -5836,6 +5837,7 @@ static int drawObjCmd(
         "strokelinejoin",   "GetStrokeLineJoin",    "SetStrokeLineJoin",
         "strokemiterlimit", "GetStrokeMiterLimit",  "SetStrokeMiterLimit",
         "strokeopacity",    "GetStrokeOpacity",     "SetStrokeOpacity",
+        "strokepatternurl",   			    "SetStrokePatternURL",
         "strokewidth",      "GetStrokeWidth",       "SetStrokeWidth",
         "textantialias",    "GetTextAntialias",     "SetTextAntialias",
         "textdecoration",   "GetTextDecoration",    "SetTextDecoration",
@@ -5859,6 +5861,7 @@ static int drawObjCmd(
         TM_ELLIPSE,         TM_EELLIPSE,
         TM_FILLCOLOR,       TM_GET_FILLCOLOR,       TM_SET_FILLCOLOR,
         TM_FILLOPACITY,     TM_GET_FILLOPACITY,     TM_SET_FILLOPACITY,
+        TM_FILLPATTERNURL,                          TM_SET_FILLPATTERNURL,
         TM_FILLRULE,        TM_GET_FILLRULE,        TM_SET_FILLRULE,
         TM_FONT,            TM_GET_FONT,            TM_SET_FONT,
         TM_FONTFAMILY,      TM_GET_FONTFAMILY,      TM_SET_FONTFAMILY,
@@ -5893,6 +5896,7 @@ static int drawObjCmd(
         TM_STROKE_LINEJOIN, TM_GET_STROKE_LINEJOIN,     TM_SET_STROKE_LINEJOIN,
         TM_STROKE_MITERLIM, TM_GET_STROKE_MITERLIM,     TM_SET_STROKE_MITERLIM,
         TM_STROKE_OPACITY,  TM_GET_STROKE_OPACITY,      TM_SET_STROKE_OPACITY,
+        TM_STROKE_PATTERNURL,                           TM_SET_STROKE_PATTERNURL,
         TM_STROKE_WIDTH,    TM_GET_STROKE_WIDTH,        TM_SET_STROKE_WIDTH,
         TM_TEXT_ANTIALIAS,  TM_GET_TEXT_ANTIALIAS,      TM_SET_TEXT_ANTIALIAS,
         TM_TEXT_DECORATION, TM_GET_TEXT_DECORATION,     TM_SET_TEXT_DECORATION,
@@ -6394,6 +6398,20 @@ static int drawObjCmd(
 	    value = DrawGetFillOpacity(wandPtr);
 	    Tcl_SetObjResult(interp, Tcl_NewDoubleObj(value));
 	}
+	break;
+    }
+
+    case TM_FILLPATTERNURL:      /* fillpatternurl url */
+    case TM_SET_FILLPATTERNURL:  /* SetFillPatternURL url */
+    {
+	char *url;
+
+	if( objc != 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "url");
+	    return TCL_ERROR;
+	}
+	url = Tcl_GetString(objv[2]);
+	DrawSetFillPatternURL(wandPtr, url);
 	break;
     }
 
@@ -7124,6 +7142,20 @@ static int drawObjCmd(
 	    val = DrawGetStrokeOpacity(wandPtr);
 	    Tcl_SetObjResult(interp, Tcl_NewDoubleObj(val));
 	}
+	break;
+    }
+
+    case TM_STROKE_PATTERNURL:      /* strokepatternurl url */
+    case TM_SET_STROKE_PATTERNURL:  /* SetStrokePatternURL url */
+    {
+	char *url;
+
+	if( objc != 3 ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "url");
+	    return TCL_ERROR;
+	}
+	url = Tcl_GetString(objv[2]);
+	DrawSetStrokePatternURL(wandPtr, url);
 	break;
     }
 
