@@ -1753,9 +1753,9 @@ MagickExport int NTSystemComman(const char *command)
     return(-1);
   if (background_process)
     return(status == 0);
-  status=MsgWaitForMultipleObjects(1, &process_info.hProcess, TRUE, INFINITE,
-                                   QS_ALLEVENTS);
-  if (status != WAIT_OBJECT_0)
+  status=MsgWaitForMultipleObjects(1, &process_info.hProcess, FALSE, INFINITE,
+                                  QS_ALLEVENTS);
+  if ((status - WAIT_OBJECT_0) != 0)
     return(status);
   status=GetExitCodeProcess(process_info.hProcess,&child_status);
   if (status == 0)
