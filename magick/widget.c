@@ -100,7 +100,7 @@ static XWidgetInfo
 /*
   Constant declarations.
 */
-const unsigned int
+static const unsigned int
   BorderOffset = 4,
   DoubleClick = 250;
 

@@ -533,7 +533,7 @@ static void SVGEntityDeclaration(void *context,const xmlChar *name,int type,
         content);
 }
 
-void SVGAttributeDeclaration(void *context,const xmlChar *element,
+static void SVGAttributeDeclaration(void *context,const xmlChar *element,
   const xmlChar *name,int type,int value,const xmlChar *default_value,
   xmlEnumerationPtr tree)
 {
