@@ -2765,6 +2765,8 @@ draw_info->clip_units=ObjectBoundingBox;
           }
         GetToken(q,&q,token);
         primitive_info[j].text=AllocateString(token);
+        primitive_info[j+1].point.x-=current.tx;
+        primitive_info[j+1].point.y-=current.ty;
         break;
       }
     }
@@ -3653,8 +3655,15 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       if (primitive_info->text == (char *) NULL)
         break;
       clone_info=CloneImageInfo((ImageInfo *) NULL);
-      (void) strncpy(clone_info->filename,primitive_info->text,MaxTextExtent-1);
-      composite_image=ReadImage(clone_info,&image->exception);
+      if (LocaleCompare(primitive_info->text,"data:") != 0)
+        composite_image=ReadInlineImage(clone_info,primitive_info->text,
+          &image->exception);
+      else
+        {
+          (void) strncpy(clone_info->filename,primitive_info->text,
+            MaxTextExtent-1);
+          composite_image=ReadImage(clone_info,&image->exception);
+        }
       if (image->exception.severity != UndefinedException)
         MagickWarning(image->exception.severity,image->exception.reason,
           image->exception.description);

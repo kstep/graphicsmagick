@@ -2289,6 +2289,120 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e a d I n l i n e I m a g e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadInlineImage() reads a Base64-encoded inline image or image sequence.
+%  The method returns a NULL if there is a memory shortage or if the image
+%  cannot be read.  On failure, a NULL image is returned and exception
+%  describes the reason for the failure.
+%
+%  The format of the ReadInlineImage method is:
+%
+%      Image *ReadInlineImage(const ImageInfo *image_info,const char *content,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o content: The image encoded in Base64.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
+	const char *content,ExceptionInfo *exception)
+{
+  Image
+    *image;
+
+  int
+    c;
+
+  register int
+    i;
+
+  register const char
+    *p;
+
+  register unsigned char
+    *q;
+
+  size_t
+    length;
+
+  unsigned char
+    buffer[4],
+    decode[4],
+    *blob,
+    map[256];
+
+  for (p=content; (*p != ',') && (*p != '\0'); p++);
+  if (*p == '\0')
+    return((Image *) NULL);
+  p++;
+  blob=(unsigned char *) AcquireMemory(strlen(content));
+  if (blob == (unsigned char *) NULL)
+    return((Image *) NULL);
+  memset(map,0x80,sizeof(map));
+  for(i='A'; i <= 'I'; i++)
+    map[i]=0+(i-'A');
+  for (i='J'; i <= 'R'; i++)
+    map[i]=9+(i-'J');
+  for(i='S'; i <= 'Z';i++)
+    map[i]=18+(i-'S');
+  for(i='a'; i <='i'; i++)
+    map[i]=26+(i-'a');
+  for (i='j'; i <= 'r'; i++)
+    map[i]=35+(i-'j');
+  for(i='s';i <= 'z'; i++)
+    map[i]=44+(i-'s');
+  for(i='0'; i <= '9'; i++)
+    map[i]=52+(i-'0');
+  map['+']=62;
+  map['/']=63;
+  map['=']=0;
+  for (q=blob; ; )
+  {
+    for (i=0; i < 4; i++)
+    {
+      c=(*p++);
+      if (c == 0)
+        break;
+      if (map[c] & 0x80)
+        {
+          i--;
+          continue;
+        }
+      buffer[i]=(unsigned char) c;
+      decode[i]=map[c];
+    }
+    for (i=0; i < (buffer[2] == '=' ? 1 : (buffer[3] == '=' ? 2 : 3)); i++)
+      switch (i)
+      {
+        case 0: *q++=(decode[0] << 2) | (decode[1] >> 4); break;
+        case 1: *q++=(decode[1] << 4) | (decode[2] >> 2); break;
+        case 2: *q++=(decode[2] << 6) | decode[3]; break;
+        default: break;
+      }
+    if (i < 3)
+      break;
+  }
+  length=q-blob;
+  image=BlobToImage(image_info,blob,q-blob,exception);
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e I m a g e                                                       %
 %                                                                             %
 %                                                                             %
