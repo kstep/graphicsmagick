@@ -61,9 +61,6 @@
 */
 #define _X_H
 #define _WIDGET_H
-#include "magick.h"
-#include "defines.h"
-#include "mac.h"
 #include <AppleEvents.h>
 #include <AERegistry.h>
 #include <AEObjects.h>
@@ -77,6 +74,12 @@
 #include <Files.h>
 #include <Gestalt.h>
 #include <TextUtils.h>
+#define ColorInfo  KolorInfo
+#define FontInfo  PhontInfo
+#define GetFontInfo  GetPhontInfo
+#include "magick.h"
+#include "defines.h"
+#include "mac.h"
 
 /*
   Global declaractions.
