@@ -401,10 +401,7 @@ namespace Magick
   class DrawableBezier : public DrawableBase
   {
   public:
-    DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_)
-      {
-      }
+    DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ );
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
@@ -1212,9 +1209,7 @@ namespace Magick
   class DrawablePolygon : public DrawableBase
   {
   public:
-    DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_)
-      { }
+    DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ );
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
@@ -1237,9 +1232,7 @@ namespace Magick
   class DrawablePolyline : public DrawableBase
   {
   public:
-    DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_)
-      { }
+    DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ );
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;

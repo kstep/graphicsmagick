@@ -148,6 +148,10 @@ void Magick::DrawableArc::operator()( MagickLib::DrawContext context_ ) const
 }
 
 // Bezier curve (Coordinate list must contain at least three members)
+Magick::DrawableBezier::DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
 void Magick::DrawableBezier::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -855,6 +859,10 @@ void Magick::DrawablePointSize::operator()( MagickLib::DrawContext context_ ) co
 }
 
 // Polygon (Coordinate list must contain at least three members)
+Magick::DrawablePolygon::DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
 void Magick::DrawablePolygon::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -888,6 +896,10 @@ void Magick::DrawablePolygon::operator()( MagickLib::DrawContext context_ ) cons
 }
 
 // Polyline (Coordinate list must contain at least three members)
+Magick::DrawablePolyline::DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
 void Magick::DrawablePolyline::print (std::ostream& stream_) const
 {
   std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
