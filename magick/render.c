@@ -124,7 +124,8 @@ static void
 #if FUNCTION_UNUSED
   DestroyGradientInfo(GradientInfo *),
 #endif
-  TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
+  TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
+  TraceArcPath(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
   TraceBezier(PrimitiveInfo *,const unsigned long),
   TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
@@ -2801,7 +2802,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         TraceArc(primitive_info+j,primitive_info[j].point,
-          primitive_info[j+1].point,primitive_info[j+2].point,0,True,False);
+          primitive_info[j+1].point,primitive_info[j+2].point);
         i=(long) (j+primitive_info[j].coordinates);
         break;
       }
@@ -4165,6 +4166,20 @@ static inline double Permutate(const long n,const long k)
 */
 
 static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
+  const PointInfo end,const PointInfo arc)
+{
+  PointInfo
+    center,
+    radius;
+
+  center.x=0.5*(end.x+start.x);
+  center.y=0.5*(end.y+start.y);
+  radius.x=fabs(center.x-start.x);
+  radius.y=fabs(center.y-start.y);
+  TraceEllipse(primitive_info,center,radius,arc);
+}
+
+static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end,const PointInfo arc,const double angle,
   const unsigned int large_arc,const unsigned int sweep)
 {
@@ -4552,7 +4567,7 @@ static unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
         y=atof(token);
         end.x=attribute == 'A' ? x : point.x+x;
         end.y=attribute == 'A' ? y : point.y+y;
-        TraceArc(q,point,end,arc,angle,large_arc,sweep);
+        TraceArcPath(q,point,end,arc,angle,large_arc,sweep);
         q+=q->coordinates;
         point=end;
         break;
