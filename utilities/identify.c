@@ -204,6 +204,7 @@ int main(int argc,char **argv)
         switch(*(option+1))
         {
           case 'f':
+          {
             if (LocaleNCompare("format",option+1,2) == 0)
               {
                 if (*option == '-')
@@ -216,6 +217,7 @@ int main(int argc,char **argv)
               }
             MagickError(OptionError,"Unrecognized option",option);
             break;
+          }
           case 'c':
           {
             if (LocaleNCompare("cache",option+1,3) == 0)
