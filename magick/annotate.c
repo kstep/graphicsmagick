@@ -422,9 +422,9 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %
 */
 
-static long GetOneCharacter(const unsigned char *text,size_t *length)
+static int GetOneCharacter(const unsigned char *text,size_t *length)
 {
-  unsigned long
+  unsigned int
     c;
 
   if (*length < 1)
@@ -433,7 +433,7 @@ static long GetOneCharacter(const unsigned char *text,size_t *length)
   if (!(c & 0x80))
     {
       *length=1;
-      return((long) c);
+      return((int) c);
     }
   if (*length < 2)
     {
@@ -441,9 +441,9 @@ static long GetOneCharacter(const unsigned char *text,size_t *length)
       return(-1);
     }
   *length=2;
-  c=((long) (text[0]) << 8);
+  c=((int) (text[0]) << 8);
   c|=text[1];
-  return((long) c);
+  return((int) c);
 }
 
 static unsigned short *EncodeSJIS(const char *text,size_t *count)
