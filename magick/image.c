@@ -1764,7 +1764,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             if (image->filesize >= (1 << 14))
               (void) fprintf(file,"%dkb ",(int) (image->filesize/1024));
             else
-              (void) fprintf(file,"%db ",(int) image->filesize));
+              (void) fprintf(file,"%db ",(int) image->filesize);
         }
       (void) fprintf(file,"%.1fu %d:%02d\n",user_time,(int) (elapsed_time/60.0),
         (int) ceil(fmod(elapsed_time,60.0)));
