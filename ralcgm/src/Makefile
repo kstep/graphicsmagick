@@ -1,0 +1,333 @@
+#  RAL-CGM Interpreter source Makefile: @(#) Makebase  version 3.4
+#
+#  Name of executable module (usually ../bin/ralcgm)
+#
+MODULE = /c/home/bfriesen/GraphicsMagick/ralcgm/bin/ralcgm
+#
+#  Name of callable library (Optional) (usually ../bin/libcgm.a)
+#
+LIB = /c/home/bfriesen/GraphicsMagick/ralcgm/bin/libcgm.a
+#
+#  Include file directory (usually ../include)
+#
+INCLUDE = /c/home/bfriesen/GraphicsMagick/ralcgm/include
+#
+#  Data files directory (usually ../data)
+#
+DATADIR = /c/home/bfriesen/GraphicsMagick/ralcgm/data
+#
+#  Main Interpreter object file (usually cgmmain.o)
+#
+MAIN = cgmmain.o
+#
+#
+#
+MAKEFILE = Makefile
+#
+#  CGM input encoding - Object files
+#                       Include here files for each encoding that
+#                       may need to be processed; usually
+#                       cgmichar.o cgmitext.o cgmibin.o
+#
+INPUT = cgmichar.o cgmitext.o cgmibin.o
+#
+#  CGM output encoding - Object files
+#                        Include here files for each encoding that
+#                        may be generated; usually
+#                        cgmochar.o cgmotext.o cgmobin.o
+#
+OUTPUT = cgmochar.o cgmotext.o cgmobin.o
+#
+#  User callable Library (comment out if not required)
+#
+CGMLIB = cgmlib.o
+#
+#  Optional Drivers
+#
+#     IGL - Iris Graphics Library
+#     PS  - PostScript
+#     XW  - X-Windows
+#     VID - Topaz Library
+#
+IGL = cgmoigl.o
+PS = cgmops.o
+XW = cgmoxw.o
+VID = cgmotpz.o
+TEK = cgmotek.o
+HPGL = cgmohpgl.o
+#
+#  List of driver files to be used in generating the $(MODULE).
+#
+#  The possible candidates are:
+#
+#     $(OUTPUT)       list of CGM output encodings defined above
+#     $(IGL)          Iris graphics library
+#     $(XW)           X-Windows
+#     $(PS)           PostScript
+#     $(HPGL)         HPGL
+#     $(TEK)          Tektronix 4200
+#     $(VID)          Video system
+#
+DRIVERS =  $(PS)
+#
+#  Input utilities Object files
+#                These provides random access input and convenient
+#                handling of input attributes
+#
+ERRUTILS = cgmerr.o
+ERRINCLUDES = $(INCLUDE)/cgmerr.h
+
+FILEUTILS = cgmfile.o
+FILEINCLUDES = $(INCLUDE)/cgmfile.h
+
+GENUTILS = $(FILEUTILS) $(ERRUTILS)
+GENINCS  = $(FILEINCLUDES) \
+	   $(ERRINCLUDES)
+
+RANUTILS = cgmrand.o cgmprof.o
+INPUTILS = cgminput.o
+#
+#  Output utility Object files (only needed with output drivers)
+#                 These provide emulation of GDPs, filled areas
+#                 and other graphical operations. Not needed by all drivers
+#                 currently cgmgdp.o is used by XW, IGL & VID
+#                           cgmfill.o & cgmgraph.o are used by IGL only
+#
+ATTUTILS = cgmatt.o
+GDPUTILS = cgmgdp.o
+FILUTILS = cgmpoly.o cgmtrap.o cgmfill.o cgmgraph.o
+COLRUTILS = cgmcolr.o
+CELLUTILS = cgmcell.o
+PTSUTILS = cgmpts.o
+#
+OUTUTILS =    
+#
+#  Text utility Object files
+#                 These provide software emulation of text and
+#                 generally useful text facilities.
+#
+#                 cgmtext.o  - general text utility - PS & XW
+#                 cgmfont.o  - general font utility - PS & XW
+#                 cgmbez.o   - Bezier text - if wanted
+#                 cgmher.o   - Hershey text - if wanted
+#
+FNTUTILS = cgmfont.o
+FNTINCLUDES = $(INCLUDE)/cgmfont.h
+TEXTUTILS = cgmtext.o
+TEXTINCLUDES = $(INCLUDE)/cgmtext.h
+#
+BEZIER = genbez
+BEZUTILS = cgmbez.o
+BEZLINK = $(BEZIER).o
+BEZDATA = $(DATADIR)/*.bfs
+BEZINCLUDES = $(INCLUDE)/cgmbez.h
+#
+HERSHEY = genher
+HERUTILS = cgmher.o
+HERLINK = $(HERSHEY).o
+HERDATA = $(DATADIR)/*.hfs
+HERINCLUDES = $(INCLUDE)/cgmher.h
+#
+#    TXTSYS settings, supported text systems are:
+#
+#             $(HERSHEY)
+#             $(BEZIER)
+#
+TXTSYS = $(BEZIER) $(HERSHEY)
+#
+#    TXTUTILS settings, supported text utilities are:
+#
+#             $(HERUTILS)
+#             $(BEZUTILS)
+#   List of utility modules required;
+#
+TXTUTILS =  $(BEZUTILS) $(HERUTILS)
+#
+#
+CGMUTILS = $(RANUTILS)\
+           $(INPUTILS)\
+           $(GENUTILS)\
+           $(OUTUTILS)\
+           $(TXTUTILS)\
+           $(TEXTUTILS)\
+           $(FNTUTILS) \
+	   $(ATTUTILS) \
+	   $(PTSUTILS) \
+	   $(FILUTILS)
+#
+#  Set up names for the modules that make up `ralcgm' and `cgmlib'.
+#
+RALCGM = $(INPUT)\
+         $(OUTPUT)\
+         $(DRIVERS)\
+         $(CGMUTILS)
+
+LIBCGM = $(CGMLIB)\
+         $(OUTPUT)\
+         $(DRIVERS)\
+         $(INPUTILS)\
+         $(GENUTILS)\
+         $(OUTUTILS)\
+         $(TXTUTILS)\
+         $(TEXTUTILS)\
+         $(FNTUTILS)
+#
+#  Local flags for Compiler (system dependent)
+#
+#      Examples:   (Iris 3130)         -Zf           -g      -p
+#                  (Iris 4D)           -O
+#                  (GNU C on Topaz)    -O -m68881    -g
+#                  (Sun 3)             -O -fswitch
+#                  (Sun 4)             -O
+#                  (Unicos)            -O            -g
+#
+CFLAGS = -c -O -DPOSTSCRIPT="" -DBEZIER="" -DHERSHEY=""
+#
+#  Local flags for Linker (system dependent)
+#  For X-windows, add some extra libraries (comment out otherwise)
+#
+#      Examples:   (Iris 3130)         -Zg -lm
+#                  (Iris 4D)           -lm -lgl_s -lX11_s -lc_s
+#                  (Topaz)             -lE -lmalloc -lm
+#                  (Sun 3 or 4)        -lm -lX11 -lc
+#                  (Unicos)            -lm -lX11 -lnet -lc
+#                  (Unicos - scc)      -lm -lX11 -lnet -lsc
+#
+LFLAGS = -lm
+#
+#  Common include files
+#
+GENINCLUDES = $(INCLUDE)/cgmmach.h $(INCLUDE)/mach.h \
+	$(INCLUDE)/cgmtypes.h \
+	$(INCLUDE)/cgmstruc.h \
+       	$(INCLUDE)/cgmelem.h \
+       	$(INCLUDE)/cgmpar.h \
+       	$(INCLUDE)/cgmtran.h \
+       	$(INCLUDE)/cgmatt.h
+#
+#  List of includes for the text system; must match the text utility
+#  .o files given above.
+#
+INCLUDES = $(GENINCLUDES) $(TXTINCLUDES) $(FNTINCLUDES) \
+           $(BEZINCLUDES) $(HERINCLUDES) $(GENINCS)
+#
+#  Define various commands in just one place.
+#
+#         for Unicos   LINK = segldr
+#                      AR   = bld rv
+#         all others   LINK = cc $(LFLAGS)
+#                      AR = ar rv
+#
+COMPILE = gcc
+LINK = gcc
+AR = ar rv
+#
+#   Main dependencies (should not need altering)
+
+ralcgm:	$(MODULE) $(TXTSYS)
+	@echo "$(MODULE) is now made"
+
+cgmlib:	$(LIB) $(TXTSYS)
+	@echo "$(LIB) is now made"
+
+iutils: $(INPUTILS) $(GENUTILS)
+
+outils: $(OUTUTILS)
+
+tutils: $(TXTUTILS)
+
+clean:
+	rm -f *.o core a.out $(TXTSYS)
+
+$(MODULE):	$(MAIN) $(RALCGM)
+	$(LINK) $(MAIN) $(RALCGM) $(LFLAGS) -o $(MODULE)
+
+$(LIB):	$(LIBCGM)
+	$(AR) $(LIB) $(LIBCGM)
+
+#  include file dependencies
+
+$(MAIN):	$(INCLUDE)/cgminit.h $(GENINCLUDES) $(MAKEFILE)
+
+$(CGMLIB):	$(INCLUDE)/cgmlib.h $(INCLUDE)/cgminit.h $(INCLUDE)/cgmin.h \
+                $(GENINCLUDES) $(MAKEFILE)
+
+$(INPUT) $(INPUTILS) $(RANUTILS):	$(INCLUDE)/cgmin.h $(GENINCLUDES) $(MAKEFILE)
+
+$(GENUTILS):	$(GENINCLUDES)
+
+$(OUTPUT) $(OUTUTILS):	$(GENINCLUDES) $(MAKEFILE)
+
+$(DRIVERS):	$(INCLUDE)/cgmout.h \
+                $(INCLUDES) \
+                $(MAKEFILE)
+
+$(FNTUTILS):	$(FNTINCLUDES) \
+		$(INCLUDE)/cgmufont.h \
+                $(TXTINCLUDES) \
+                $(MAKEFILE)
+
+$(TEXTUTILS):	$(TEXTINCLUDES) \
+		$(FNTINCLUDES) \
+                $(MAKEFILE)
+
+$(ERRUTILS):	$(ERRINCLUDES) \
+		$(GENINCLUDES) \
+		$(MAKEFILE)
+
+$(BEZUTILS):	$(BEZINCLUDES) \
+		$(INCLUDE)/cgmubez.h \
+		$(GENINCLUDES) \
+		$(MAKEFILE)
+
+$(BEZIER):	$(BEZLINK) \
+                $(GENINCS) \
+		$(INCLUDE)/cgmubez.h \
+		$(BEZDATA) \
+		$(MAKEFILE)
+	$(LINK) $(BEZLINK) $(GENUTILS) $(LFLAGS) -o $(BEZIER)
+	./$(BEZIER)
+
+$(HERUTILS):	$(HERINCLUDES) \
+		$(INCLUDE)/cgmuher.h \
+		$(GENINCLUDES) \
+		$(MAKEFILE)
+
+$(HERSHEY):	$(HERLINK) \
+		$(GENINCS) \
+		$(INCLUDE)/cgmuher.h \
+		$(HERDATA) \
+		$(MAKEFILE)
+	$(LINK) $(HERLINK) $(GENUTILS) $(LFLAGS) -o $(HERSHEY)
+	./$(HERSHEY)
+	chmod 644 $(DATADIR)/*.hfb $(DATADIR)/fontdir.her
+
+$(IGL):	$(INCLUDE)/cgmigl.h \
+        $(INCLUDE)/cgmgdp.h \
+        $(INCLUDE)/cgmfill.h \
+        $(INCLUDE)/cgmgraph.h \
+	$(INCLUDE)/cgmpoly.h \
+        $(INCLUDE)/cgmtrap.h
+
+$(PS):	$(INCLUDE)/cgmps.h \
+        $(INCLUDE)/cgmgdp.h \
+	$(INCLUDE)/cgmpoly.h \
+        $(INCLUDE)/cgmtrap.h
+
+$(XW):	$(INCLUDE)/cgmxw.h \
+	$(INCLUDE)/cgmgdp.h
+
+$(HPGL):	$(INCLUDE)/cgmhpgl.h \
+	$(INCLUDE)/cgmgdp.h \
+	$(INCLUDE)/cgmcolr.h
+
+$(TEK):	$(INCLUDE)/cgmtek.h \
+        $(INCLUDE)/cgmgdp.h \
+        $(INCLUDE)/cgmcolr.h \
+        $(INCLUDE)/cgmcell.h \
+        $(INCLUDE)/cgmpts.h
+
+.c.o:
+	$(COMPILE) $(CFLAGS) -I$(INCLUDE) $<
+
+.SUFFIXES: .c .o
