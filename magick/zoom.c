@@ -1052,7 +1052,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
           blue+=x_span*s->blue;
           opacity+=x_span*s->opacity;
         }
-      if (!next_column)
+      if (!next_column && ((t-scale_scanline) < scale_image->columns))
         {
           t->red=red > MaxRGB ? MaxRGB : red;
           t->green=green > MaxRGB ? MaxRGB : green;
