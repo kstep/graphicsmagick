@@ -741,7 +741,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->rows=jpeg_info.output_height;
   if (logging)
     {
-      if (image->interlace == jpeg_info.progressive_mode)
+      if (image->interlace == PlaneInterlace)
         LogMagickEvent(CoderEvent,"   Reading progressive JPEG");
       else
         LogMagickEvent(CoderEvent,"   Reading nonprogressive JPEG");
