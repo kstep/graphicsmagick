@@ -54,9 +54,10 @@
 #if defined(__MINGW32__)
 #  undef interface  /* Remove interface define */
 #endif
-#include "freetype/freetype.h"
-#include "freetype/ftglyph.h"
-#include "freetype/ftoutln.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
+#include FT_OUTLINE_H
 #endif
 
 /*

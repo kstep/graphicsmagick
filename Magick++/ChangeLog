@@ -1,3 +1,9 @@
+2004-03-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Thread.cpp (lock): Have not been successful with using
+	MsgWaitForMultipleObjects() reliably, so back out usage of it for
+	now.
+
 2004-03-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (interlaceType): Return Image interlace rather
