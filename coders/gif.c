@@ -58,7 +58,7 @@
 /*
   Forward declarations.
 */
-static MagickExport size_t
+static size_t
   ReadBlobBlock(Image *,unsigned char *);
 
 static unsigned int
