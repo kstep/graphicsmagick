@@ -69,13 +69,13 @@ typedef __uint64 QuantumPrecision;
 #define MaxColormapSize  65536
 #define OpaqueOpacity  0
 #define PixelIntensity(pixel) ((unsigned long) \
-  (( 9798UL*((QuantumPrecision) (pixel)->red)+ \
-    19235UL*((QuantumPrecision) (pixel)->green)+ \
-     3735UL*((QuantumPrecision) (pixel)->blue))/32768UL))
+  ((299UL*((QuantumPrecision) (pixel)->red)+ \
+    587UL*((QuantumPrecision) (pixel)->green)+ \
+    114UL*((QuantumPrecision) (pixel)->blue)+500)/1000UL))
 #define PixelIntensityToQuantum(pixel) ((Quantum) \
-  (( 9798UL*((QuantumPrecision) (pixel)->red)+ \
-    19235UL*((QuantumPrecision) (pixel)->green)+ \
-     3735UL*((QuantumPrecision) (pixel)->blue))/32768UL))
+  ((299UL*((QuantumPrecision) (pixel)->red)+ \
+    587UL*((QuantumPrecision) (pixel)->green)+ \
+    114UL*((QuantumPrecision) (pixel)->blue)+500)/1000UL))
 #define TransparentOpacity  MaxRGB
 /*
   Deprecated defines.
