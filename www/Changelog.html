@@ -24,6 +24,14 @@
 2005-03-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/constitute.h (enum QuantumType): Added CIEYQuantum and
+        CIEXYZQuantum quantum import options.
+  <LI> coders/tiff.c (ReadTIFFImage): Import LogLuv image data within
+        GraphicsMagick (rather than libtiff) so that color resolution is
+        not lost.  Results in a small speedup as well.
+  <LI> magick/constitute.c (ImportImagePixelArea): Add a speed-up for
+        importing bi-level images.  Add support for importing pixels in
+        CIE XYZ and CIE Y colorspaces.<BR>
   <LI> coders/tiff.c (ReadTIFFImage): Support reading TIFF images which
         fail to properly scale the samples to the sample size (e.g. 12
         bits in a 16-bit sample).<BR>

@@ -3212,14 +3212,43 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     if (QuantumDepth >=  sample_bits)
                       {
                         /* Scale up */
-                        for (x = number_pixels; x > 0; --x)
+                        if (quantum_size == 1)
                           {
-                            unsigned_value=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
-                            if (grayscale_miniswhite)
-                              unsigned_value = MaxRGB-unsigned_value;
-                            q->red=q->green=q->blue=unsigned_value;
-                            q->opacity=0U;
-                            q++;
+                            /*
+                              Special fast support for bi-level gray.
+                            */
+                            register int
+                              bit = 8;
+
+                            for (x = number_pixels ; x > 0 ; --x )
+                              {
+                                --bit;
+                                unsigned_value=(*p >> bit) & 0x01;
+                                if (grayscale_miniswhite)
+                                  unsigned_value ^= 0x01;
+                                if (unsigned_value)
+                                  unsigned_value=MaxRGB;
+                                q->red=q->green=q->blue=unsigned_value;
+                                q->opacity=0U;
+                                q++;
+                                if (bit == 0)
+                                  {
+                                    bit=8;
+                                    p++;
+                                  }
+                              }
+                          }
+                        else
+                          {
+                            for (x = number_pixels; x > 0; --x)
+                              {
+                                unsigned_value=BitStreamMSBRead(&stream,quantum_size)*unsigned_scale;
+                                if (grayscale_miniswhite)
+                                  unsigned_value = MaxRGB-unsigned_value;
+                                q->red=q->green=q->blue=unsigned_value;
+                                q->opacity=0U;
+                                q++;
+                              }
                           }
                       }
                     else
@@ -4824,6 +4853,90 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 break;
               default:
                 break;
+              }
+          }
+        break;
+      }
+    case CIEXYZQuantum:
+      {
+        if (sample_type == FloatQuantumSampleType)
+          {
+            double
+              red,
+              green,
+              blue,
+              x_sample,
+              y_sample,
+              z_sample;
+
+            for (x = number_pixels; x > 0; --x)
+              {
+                switch (quantum_size)
+                  {
+                  default:
+                  case 32:
+                    {
+                      ImportFloatQuantum(float_value,p);
+                      x_sample=(double) float_value;
+                      ImportFloatQuantum(float_value,p);
+                      y_sample=(double) float_value;
+                      ImportFloatQuantum(float_value,p);
+                      z_sample=(double) float_value;
+                      break;
+                    }
+                  case 64:
+                    {
+                      ImportDoubleQuantum(x_sample,p);
+                      ImportDoubleQuantum(y_sample,p);
+                      ImportDoubleQuantum(z_sample,p);
+                      break;
+                    }
+                  }
+
+                /* Assume CCIR-709 primaries */
+                red   = 2.690*x_sample  + -1.276*y_sample + -0.414*z_sample;
+                green = -1.022*x_sample +  1.978*y_sample +  0.044*z_sample;
+                blue  = 0.061*x_sample  + -0.224*y_sample +  1.163*z_sample;
+
+                /* assume 2.0 gamma for speed */
+                q->red   = (Quantum) ((red <= 0.0) ? 0.0 : (red >= 1.0) ? MaxRGB :
+                                      ((MaxRGB * sqrt(red))+0.5));
+                q->green = (Quantum) ((green <= 0.0) ? 0.0 : (green >= 1.0) ? MaxRGB :
+                                      ((MaxRGB * sqrt(green))+0.5));
+                q->blue  = (Quantum) ((blue <= 0.0) ? 0.0 : (blue >= 1.0) ? MaxRGB :
+                                      ((MaxRGB * sqrt(blue))+0.5));
+                q++;
+              }
+          }
+        break;
+      }
+    case CIEYQuantum:
+      {
+        if (sample_type == FloatQuantumSampleType)
+          {
+            for (x = number_pixels; x > 0; --x)
+              {
+                switch (quantum_size)
+                  {
+                  default:
+                  case 32:
+                    {
+                      ImportFloatQuantum(float_value,p);
+                      double_value=(double) float_value;
+                      break;
+                    }
+                    case 64:
+                    {
+                      ImportDoubleQuantum(double_value,p);
+                      break;
+                    }
+                  }
+                /* assume 2.0 gamma for speed */
+                q->red=q->green=q->blue=
+                  (Quantum) ((double_value <= 0.0) ? 0.0 :
+                             (double_value >= 1.0) ? MaxRGB :
+                             ((MaxRGB * sqrt(double_value))+0.5));
+                q++;
               }
           }
         break;

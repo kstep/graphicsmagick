@@ -38,7 +38,9 @@ typedef enum
   RGBQuantum,        /* Red, green, and blue values */
   RGBAQuantum,       /* Red, green, blue, and transparency values */
   CMYKQuantum,       /* Cyan, magenta, yellow, and black values */
-  CMYKAQuantum       /* Cyan, magenta, yellow, black, and transparency values */
+  CMYKAQuantum,      /* Cyan, magenta, yellow, black, and transparency values */
+  CIEYQuantum,       /* CIE Y values, based on CCIR-709 primaries */
+  CIEXYZQuantum      /* CIE XYZ values, based on CCIR-709 primaries */
 } QuantumType;
 
 /*

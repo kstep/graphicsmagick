@@ -654,6 +654,18 @@ static MagickPassFail QuantumTransferMode(const Image *image,
     {
       switch (photometric)
         {
+        case PHOTOMETRIC_LOGL:
+          {
+            *quantum_type=CIEYQuantum;
+            *quantum_samples=1;
+            break;
+          }
+        case PHOTOMETRIC_LOGLUV:
+          {
+            *quantum_type=CIEXYZQuantum;
+            *quantum_samples=3;
+            break;
+          }
         case PHOTOMETRIC_MINISBLACK:
         case PHOTOMETRIC_MINISWHITE:
           {
@@ -1036,6 +1048,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     {
       if (image_info->verbose)
         TIFFPrintDirectory(tiff,stdout,False);
+      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
+      if ((photometric == PHOTOMETRIC_LOGL) || (photometric == PHOTOMETRIC_LOGLUV))
+        (void) TIFFSetField(tiff,TIFFTAG_SGILOGDATAFMT,SGILOGDATAFMT_FLOAT);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag);
       (void) TIFFGetField(tiff,TIFFTAG_IMAGEWIDTH,&width);
       (void) TIFFGetField(tiff,TIFFTAG_IMAGELENGTH,&height);
@@ -1045,7 +1060,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLEFORMAT,&sample_format);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MINSAMPLEVALUE,&min_sample_value);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_MAXSAMPLEVALUE,&max_sample_value);
-      (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_ROWSPERSTRIP,&rows_per_strip);
       (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fill_order);
       if (logging)
@@ -2293,6 +2307,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         }
       if (image->depth > QuantumDepth)
         image->depth=QuantumDepth;
+      if ((photometric == PHOTOMETRIC_LOGL) ||
+          (photometric == PHOTOMETRIC_MINISBLACK) ||
+          (photometric == PHOTOMETRIC_MINISWHITE))
+        image->is_grayscale=MagickTrue;
+      if ((image->is_grayscale == MagickTrue) && (bits_per_sample == 1))
+        image->is_monochrome=MagickTrue;
       /*
         Proceed to next image.
       */
