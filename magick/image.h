@@ -646,7 +646,7 @@ extern Export Image
   *DeconstructImages(Image *,ExceptionInfo *),
   *DespeckleImage(Image *,ExceptionInfo *),
   *EdgeImage(Image *,const unsigned int,ExceptionInfo *),
-  *EmbossImage(Image *,unsigned int,ExceptionInfo *),
+  *EmbossImage(Image *,const unsigned int,ExceptionInfo *),
   *EnhanceImage(Image *,ExceptionInfo *),
   *FlipImage(Image *,ExceptionInfo *),
   *FlopImage(Image *,ExceptionInfo *),
