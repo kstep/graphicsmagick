@@ -21,12 +21,13 @@ require AutoLoader;
       Success Transparent Opaque MaxRGB WarningException
       ResourceLimitWarning TypeWarning OptionWarning DelegateWarning
       MissingDelegateWarning CorruptImageWarning FileOpenWarning
-      BlobWarning StreamWarning CacheWarning XServerWarning
-      RegistryWarning ConfigureWarning ErrorException
-      ResourceLimitError TypeError OptionError DelegateError
-      MissingDelegateError CorruptImageError FileOpenError BlobError
-      StreamError CacheError XServerError RegistryError ConfigureError
-      FatalErrorException
+      BlobWarning StreamWarning CacheWarning CoderWarning ModuleWarning
+      DrawWarning ImageWarning XServerWarning RegistryWarning
+      ConfigureWarning ErrorException ResourceLimitError TypeError
+      OptionError DelegateError MissingDelegateError CorruptImageError
+      FileOpenError BlobError StreamError CacheError CoderError
+      ModuleError DrawError ImageError XServerError RegistryError
+      ConfigureError FatalErrorException
     );
 
 $VERSION = '5.52';

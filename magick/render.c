@@ -373,7 +373,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   if ((floodplane== (unsigned char *) NULL) ||
       (segment_stack == (SegmentInfo *) NULL))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to floodfill image");
+      "unable to floodfill image");
   (void) memset(floodplane,False,image->columns*image->rows);
   /*
     Push initial segment on stack.
@@ -1830,7 +1830,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     {
       LiberateMemory((void **) &primitive);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to draw image")
+        "unable to draw image")
     }
   number_points=2047;
   primitive_info=(PrimitiveInfo *)
@@ -1842,7 +1842,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         DestroyDrawInfo(graphic_context[n]);
       LiberateMemory((void **) &graphic_context);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to draw image")
+        "unable to draw image")
     }
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   token=AllocateString(primitive);
@@ -2400,8 +2400,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               {
                 if (n == 0)
                   {
-                    ThrowException(&image->exception,CorruptImageError,
-                      "unbalanced graphic context push/pop",token);
+                    ThrowException(&image->exception,DrawError,
+                      "UnbalancedGraphicContextPushPop",token);
                     break;
                   }
                 if (graphic_context[n]->clip_path != (char *) NULL)
@@ -2570,7 +2570,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 if (graphic_context == (DrawInfo **) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitError,
-											"MemoryAllocationFailed","Unable to draw image");
+											"MemoryAllocationFailed","unable to draw image");
                     break;
                   }
                 graphic_context[n]=
@@ -2694,7 +2694,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 if (graphic_context[n]->dash_pattern == (double *) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitError,
-											"MemoryAllocationFailed","Unable to draw image");
+											"MemoryAllocationFailed","unable to draw image");
                     break;
                   }
                 for (j=0; j < x; j++)
@@ -2921,7 +2921,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
           ThrowException(&image->exception,ResourceLimitError,
-						"MemoryAllocationFailed","Unable to draw image");
+						"MemoryAllocationFailed","unable to draw image");
           break;
         }
     }
@@ -2960,7 +2960,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (primitive_info == (PrimitiveInfo *) NULL)
           {
             ThrowException(&image->exception,ResourceLimitError,
-							"MemoryAllocationFailed","Unable to draw image");
+							"MemoryAllocationFailed","unable to draw image");
             break;
           }
       }
@@ -3110,7 +3110,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
                 ThrowException(&image->exception,ResourceLimitError,
-									"MemoryAllocationFailed","Unable to draw path");
+									"MemoryAllocationFailed","unable to draw path");
                 break;
               }
           }
@@ -3219,8 +3219,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     DestroyDrawInfo(graphic_context[n]);
   LiberateMemory((void **) &graphic_context);
   if (status == False)
-    ThrowBinaryException(OptionError,
-      "Non-conforming drawing primitive definition",keyword);
+    ThrowBinaryException(DrawError,"NonconformingDrawingPrimitiveDefinition",
+      keyword);
   return(status);
 }
 
@@ -4405,7 +4405,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to floodfill image");
+      "unable to floodfill image");
   /*
     Push initial segment on stack.
   */

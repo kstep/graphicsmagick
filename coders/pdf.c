@@ -166,7 +166,8 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
-      ThrowBinaryException(FileOpenError,"UnableToOpenFile",image_info->filename)
+      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
+        image_info->filename)
     }
   /*
     Allocate raw strip buffer.
@@ -205,8 +206,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,"TIFF library is not available",
-    image->filename);
+  ThrowBinaryException(CoderError,"TIFFLibraryIsNotAvailable",image->filename);
 }
 #endif
 
@@ -438,8 +438,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (ferror(file))
     {
       (void) fclose(file);
-      ThrowReaderException(FileOpenError,
-        "An error has occurred writing to file",image)
+      ThrowReaderException(CorruptImageError,"AnErrorHasOccurredWritingToFile",
+        image)
     }
   (void) fclose(file);
   CloseBlob(image);
@@ -476,8 +476,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
-    ThrowReaderException(CorruptImageError,"Portable Document delegate failed",
-      image);
+    ThrowReaderException(DelegateError,"DelegateFailed",image);
   do
   {
     (void) strcpy(image->magick,"PDF");
@@ -748,7 +747,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     {
       compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
-        "JPEG compression is not available",image->filename);
+        "JPEGLibraryIsNotAvailable",image->filename);
       break;
     }
 #endif
@@ -757,7 +756,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     {
       compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
-        "LZW compression is not available",image->filename);
+        "LZWEncodingNotEnabled",image->filename);
       break;
     }
 #endif
@@ -766,7 +765,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     {
       compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
-        "ZLIB compression is not available",image->filename);
+        "ZipLibraryIsNotAvailable",image->filename);
       break;
     }
 #endif
@@ -1099,7 +1098,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             */
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateError,"Unable to clone image",image);
+              ThrowWriterException(CoderError,image->exception.reason,image);
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
@@ -1115,8 +1114,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             length=number_pixels;
             pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitError,
-                "MemoryAllocationFailed",image);
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                image);
             /*
               Dump Runlength encoded pixels.
             */
@@ -1201,7 +1200,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             */
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateError,"Unable to clone image",image);
+              ThrowWriterException(CoderError,image->exception.reason,image);
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
@@ -1217,8 +1216,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             length=(image->colorspace == CMYKColorspace ? 4 : 3)*number_pixels;
             pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitError,
-                "MemoryAllocationFailed",image);
+              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+                image);
             /*
               Dump runoffset encoded pixels.
             */
@@ -1422,7 +1421,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     tile_image=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,
       1.0,&image->exception);
     if (tile_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitError,"Unable to scale image",image);
+      ThrowWriterException(ResourceLimitError,image->exception.reason,image);
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
@@ -1498,7 +1497,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             */
             jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateError,"Unable to clone image",image);
+              ThrowWriterException(CoderError,image->exception.reason,image);
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
@@ -1516,8 +1515,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-                  image)
+                ThrowWriterException(ResourceLimitError,
+                  "MemoryAllocationFailed",image)
               }
             /*
               Dump Runlength encoded pixels.
@@ -1595,7 +1594,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             */
             jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateError,"Unable to clone image",image);
+              ThrowWriterException(CoderError,image->exception.reason,image);
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
@@ -1614,8 +1613,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-                  image)
+                ThrowWriterException(ResourceLimitError,
+                  "MemoryAllocationFailed",image)
               }
             /*
               Dump runoffset encoded pixels.
@@ -1971,8 +1970,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
       compressed_packets=stream.total_out;
     }
   if (status)
-    ThrowBinaryException(DelegateError,"Unable to Zip compress image",
-      (char *) NULL)
+    ThrowBinaryException(CoderError,"UnableToZipCompressImage",(char *) NULL)
   else
     for (i=0; i < (long) compressed_packets; i++)
       (void) WriteBlobByte(image,compressed_pixels[i]);
@@ -1985,7 +1983,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,"ZLIB library is not available",
+  ThrowBinaryException(MissingDelegateError,"ZipLibraryIsNotAvailable",
     image->filename);
   return(False);
 }

@@ -2397,7 +2397,7 @@ static void SVGError(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  ThrowException(svg_info->exception,DelegateError,reason,(char *) NULL);
+  ThrowException(svg_info->exception,CoderError,reason,(char *) NULL);
   va_end(operands);
 }
 
@@ -2983,7 +2983,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   attribute=GetImageAttribute(image,"[MVG]");
   if ((attribute == (ImageAttribute *) NULL) ||
       (attribute->value == (char *) NULL))
-    ThrowWriterException(DelegateError,"no image vector graphics",image);
+    ThrowWriterException(CoderError,"no image vector graphics",image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);

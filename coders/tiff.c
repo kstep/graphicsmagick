@@ -273,7 +273,7 @@ static unsigned int TIFFErrors(const char *module,const char *format,
 
   (void) vsprintf(message,format,warning);
   (void) strcat(message,".");
-  ThrowException(tiff_exception,DelegateError,message,module);
+  ThrowException(tiff_exception,CoderError,message,module);
   return(True);
 }
 
@@ -1022,7 +1022,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateError,"TIFF library is not available",
+  ThrowException(exception,CoderError,"TIFFLibraryIsNotAvailable",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -1192,7 +1192,7 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateError,"TIFF library is not available",
+  ThrowBinaryException(CoderError,"TIFFLibraryIsNotAvailable",
     image->filename);
 }
 #endif
@@ -2027,7 +2027,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateError,"TIFF library is not available",
+  ThrowBinaryException(CoderError,"TIFFLibraryIsNotAvailable",
     image->filename);
 }
 #endif

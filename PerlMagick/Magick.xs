@@ -585,6 +585,10 @@ static double constant(char *name,int sans)
         return(CacheError);
       if (strEQ(name,"CacheWarning"))
         return(CacheWarning);
+      if (strEQ(name,"CoderError"))
+        return(CoderError);
+      if (strEQ(name,"CoderWarning"))
+        return(CoderWarning);
       if (strEQ(name,"ConfigureError"))
         return(ConfigureError);
       if (strEQ(name,"ConfigureWarning"))
@@ -601,6 +605,10 @@ static double constant(char *name,int sans)
         return(DelegateError);
       if (strEQ(name,"DelegateWarning"))
         return(DelegateWarning);
+      if (strEQ(name,"DrawError"))
+        return(DrawError);
+      if (strEQ(name,"DrawWarning"))
+        return(DrawWarning);
       break;
     }
     case 'E':
@@ -619,6 +627,14 @@ static double constant(char *name,int sans)
         return(FileOpenWarning);
       break;
     }
+    case 'I':
+    {
+      if (strEQ(name,"ImageError"))
+        return(ImageError);
+      if (strEQ(name,"ImageWarning"))
+        return(ImageWarning);
+      break;
+    }
     case 'M':
     {
       if (strEQ(name,"MaxRGB"))
@@ -627,6 +643,10 @@ static double constant(char *name,int sans)
         return(MissingDelegateError);
       if (strEQ(name,"MissingDelegateWarning"))
         return(MissingDelegateWarning);
+      if (strEQ(name,"ModuleError"))
+        return(ModuleError);
+      if (strEQ(name,"ModuleWarning"))
+        return(ModuleWarning);
       break;
     }
     case 'O':

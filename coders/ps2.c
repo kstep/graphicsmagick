@@ -164,7 +164,8 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
-      ThrowBinaryException(FileOpenError,"UnableToOpenFile",image_info->filename)
+      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
+        image_info->filename)
     }
   /*
     Allocate raw strip buffer.
@@ -207,8 +208,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,"TIFF library is not available",
-    image->filename);
+  ThrowBinaryException(CoderError,"TIFFLibraryIsNotAvailable",image->filename);
 }
 #endif
 
@@ -553,7 +553,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     {
       compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
-        "JPEG compression is not available",image->filename);
+        "JPEGLibraryIsNotAvailable",image->filename);
       break;
     }
 #endif
@@ -562,7 +562,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     {
       compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
-        "LZW compression is not available",image->filename);
+        "LZWEncodingNotEnabled",image->filename);
       break;
     }
 #endif
@@ -571,7 +571,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     {
       compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
-        "ZLIB compression is not available",image->filename);
+        "ZipLibraryIsNotAvailable",image->filename);
       break;
     }
 #endif
@@ -795,7 +795,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             */
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateError,"Unable to clone image",image);
+              ThrowWriterException(CoderError,image->exception.reason,image);
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
@@ -900,8 +900,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               */
               jpeg_image=CloneImage(image,0,0,True,&image->exception);
               if (jpeg_image == (Image *) NULL)
-                ThrowWriterException(DelegateError,"Unable to clone image",
-                  image);
+                ThrowWriterException(CoderError,image->exception.reason,image);
               blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
               (void) WriteBlob(image,length,blob);
               DestroyImage(jpeg_image);
@@ -921,8 +920,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 number_pixels;
               pixels=(unsigned char *) AcquireMemory(length);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-                  image);
+                ThrowWriterException(ResourceLimitError,
+                  "MemoryAllocationFailed",image);
               /*
                 Dump Packbit encoded pixels.
               */
@@ -1054,8 +1053,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               length=number_pixels;
               pixels=(unsigned char *) AcquireMemory(length);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-                  image);
+                ThrowWriterException(ResourceLimitError,
+                  "MemoryAllocationFailed",image);
               /*
                 Dump Runlength encoded pixels.
               */

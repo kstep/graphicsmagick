@@ -1303,7 +1303,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
 static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char *encoding,const PointInfo *offset,TypeMetric *metrics)
 {
-  ThrowBinaryException(MissingDelegateError,"FreeTypeLibraryIsNotAvailable",
+  ThrowBinaryException(DelegateError,"FreeTypeLibraryIsNotAvailable",
     draw_info->font)
 }
 #endif
@@ -1774,7 +1774,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
 static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,TypeMetric *metrics)
 {
-  ThrowBinaryException(MissingDelegateError,"XWindowLibraryIsNotAvailable",
+  ThrowBinaryException(DelegateError,"XWindowLibraryIsNotAvailable",
     draw_info->font);
 }
 #endif

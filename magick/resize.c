@@ -330,7 +330,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     {
       DestroyImage(magnify_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to magnify image")
+        "unable to magnify image")
     }
   /*
     Initialize magnify image pixels.
@@ -1086,7 +1086,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     {
       DestroyImage(resize_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to resize image")
+        "unable to resize image")
     }
   /*
     Resize image.
@@ -1131,8 +1131,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   if (status == False)
     {
       DestroyImage(resize_image);
-      ThrowImageException(ResourceLimitError,"Unable to resize image",
-        (char *) NULL)
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+        "Unable to resize image");
     }
   return(resize_image);
 }
@@ -1394,7 +1394,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
     {
       DestroyImage(scale_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to scale image")
+        "unable to scale image")
     }
   /*
     Scale image.

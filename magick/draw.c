@@ -379,7 +379,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       if( context->mvg == (char*) NULL )
         {
           ThrowException(&context->image->exception,ResourceLimitError,
-             "MemoryAllocationFailed","Unable to draw image");
+             "MemoryAllocationFailed","unable to draw image");
           return -1;
         }
 
@@ -388,7 +388,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       if (context->mvg == 0)
         {
           ThrowException(&context->image->exception,ResourceLimitError,
-            "MemoryAllocationFailed","Unable to draw image");
+            "MemoryAllocationFailed","unable to draw image");
           return -1;
         }
     }
@@ -402,7 +402,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       if (context->mvg == NULL)
         {
           ThrowException(&context->image->exception,ResourceLimitError,
-            "MemoryAllocationFailed","Unable to draw image");
+            "MemoryAllocationFailed","unable to draw image");
           return -1;
         }
       context->mvg_alloc = realloc_size;
@@ -706,14 +706,14 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
   if(context->graphic_context == (DrawInfo **) NULL)
     {
       ThrowException(&context->image->exception,ResourceLimitError,
-        "MemoryAllocationFailed","Unable to draw image");
+        "MemoryAllocationFailed","unable to draw image");
       return (DrawContext) NULL;
     }
   CurrentContext=CloneDrawInfo((ImageInfo*)NULL,draw_info);
   if(CurrentContext == (DrawInfo*) NULL)
     {
       ThrowException(&context->image->exception,ResourceLimitError,
-        "MemoryAllocationFailed","Unable to draw image");
+        "MemoryAllocationFailed","unable to draw image");
       return (DrawContext) NULL;
     }
 
@@ -931,7 +931,7 @@ MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
       CloneString(&CurrentContext->clip_path,clip_path);
       if(CurrentContext->clip_path == (char*)NULL)
         ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-          "Unable to draw image");
+          "unable to draw image");
 
 #if DRAW_BINARY_IMPLEMENTATION
       (void) DrawClipPath(context->image,CurrentContext,CurrentContext->clip_path);
@@ -1499,13 +1499,13 @@ MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_ur
   assert(fill_url != NULL);
 
   if(fill_url[0] != '#')
-    ThrowDrawException(OptionWarning, "Not relative URL", fill_url);
+    ThrowDrawException(OptionWarning,"Not relative URL", fill_url);
 
   FormatString(pattern,"[%.1024s]",fill_url+1);
 
   if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(OptionWarning, "URL not found", fill_url)
+      ThrowDrawException(OptionWarning,"URL not found", fill_url)
     }
   else
     {
@@ -1751,7 +1751,7 @@ MagickExport void DrawSetFont(DrawContext context, const char *font_name)
       (void) CloneString(&CurrentContext->font,font_name);
       if(CurrentContext->font == (char*)NULL)
         ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-          "Unable to draw image");
+          "unable to draw image");
       MvgPrintf(context, "font '%s'\n", font_name);
     }
 }
@@ -1826,7 +1826,7 @@ MagickExport void DrawSetFontFamily(DrawContext context,
       (void) CloneString(&CurrentContext->family,font_family);
       if(CurrentContext->family == (char*)NULL)
         ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-          "Unable to draw image");
+          "unable to draw image");
       MvgPrintf(context, "font-family '%s'\n", font_family);
     }
 }
@@ -2361,7 +2361,7 @@ MagickExport void DrawComposite(DrawContext context,
   image_info = CloneImageInfo((ImageInfo*)NULL);
   if(!image_info)
     ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to draw image");
+      "unable to draw image");
   handler=SetMonitorHandler((MonitorHandler) NULL);
   blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length,
                                       &context->image->exception );
@@ -2379,7 +2379,7 @@ MagickExport void DrawComposite(DrawContext context,
         buffer[MaxTextExtent];
 
       FormatString(buffer,"%ld bytes", (4L*blob_length/3L+4L));
-      ThrowDrawException(ResourceLimitWarning, "allocating Base64 memory",buffer)
+      ThrowDrawException(ResourceLimitWarning,"UnableToAllocateMemory",buffer)
     }
 
   mode = "copy";

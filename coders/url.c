@@ -205,7 +205,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateError,
+  ThrowException(exception,CoderError,
     "ImageMagick must be linked with XML library to support URLs",
     image_info->filename);
   return((Image *) NULL);

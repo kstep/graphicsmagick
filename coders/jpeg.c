@@ -221,7 +221,7 @@ static unsigned int EmitMessage(j_common_ptr jpeg_info,int level)
     }
   else
     if (jpeg_info->err->trace_level >= level)
-      ThrowBinaryException(DelegateError,(char *) message,image->filename);
+      ThrowBinaryException(CoderError,(char *) message,image->filename);
   return(True);
 }
 
@@ -1198,12 +1198,12 @@ static unsigned int JPEGWarningHandler(j_common_ptr jpeg_info,int level)
     {
       if ((jpeg_info->err->num_warnings == 0) ||
           (jpeg_info->err->trace_level >= 3))
-        ThrowBinaryException(DelegateError,(char *) message,image->filename);
+        ThrowBinaryException(CoderError,(char *) message,image->filename);
       jpeg_info->err->num_warnings++;
     }
   else
     if (jpeg_info->err->trace_level >= level)
-      ThrowBinaryException(DelegateError,(char *) message,image->filename);
+      ThrowBinaryException(CoderError,(char *) message,image->filename);
   return(True);
 }
 

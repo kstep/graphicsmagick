@@ -101,7 +101,7 @@ static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateError,"X11 library is not available",
+  ThrowException(exception,MissingDelegateError,"XWindowLibraryIsNotAvailable",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -244,7 +244,7 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateError,"X11 library is not available",
+  ThrowBinaryException(MissingDelegateError,"XWindowLibraryIsNotAvailable",
     image->filename);
 }
 #endif

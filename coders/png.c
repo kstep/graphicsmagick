@@ -1191,7 +1191,7 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
   (void) printf("libpng-%.1024s error: %.1024s\n", PNG_LIBPNG_VER_STRING,
       message);
 #endif
-  ThrowException(&image->exception,(ExceptionType) DelegateError,message,
+  ThrowException(&image->exception,(ExceptionType) CoderError,message,
      image->filename);
   longjmp(ping->jmpbuf,1);
 }
@@ -1284,7 +1284,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
    /* allocate space */
    if (length == 0)
    {
-     ThrowException(&image->exception,(ExceptionType) DelegateError,
+     ThrowException(&image->exception,(ExceptionType) CoderError,
         "Unable to copy profile", "invalid profile length");
      return (False);
    }
@@ -1304,7 +1304,7 @@ png_read_raw_profile(Image *image, const ImageInfo *image_info,
      {
        if (*sp == '\0')
          {
-           ThrowException(&image->exception,(ExceptionType) DelegateError,
+           ThrowException(&image->exception,(ExceptionType) CoderError,
               "Unable to copy profile", "Ran out of data");
            LiberateMemory((void **) &info);
            return (False);
@@ -1651,7 +1651,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             skip_to_iend=True;
             if (!mng_info->jhdr_warning)
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "JNG is not implemented yet",image->filename);
             mng_info->jhdr_warning++;
           }
@@ -1659,7 +1659,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             skip_to_iend=True;
             if (!mng_info->dhdr_warning)
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "Delta-PNG is not implemented yet",image->filename);
             mng_info->dhdr_warning++;
           }
@@ -1738,7 +1738,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               LogMagickEvent(CoderEvent,
                 "   MNG width=%lu, height: %lu",mng_width,mng_height);
             if ((mng_width > 65535L) || (mng_height > 65535L))
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "image dimensions are too large.",image->filename);
             FormatString(page_geometry,"%lux%lu+0+0",mng_width,mng_height);
             frame.left=0;
@@ -1775,11 +1775,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_DEFI,4))
           {
             if (mng_type == 3)
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "DEFI chunk found in MNG-VLC datastream",(char *) NULL);
             object_id=(p[0] << 8) | p[1];
             if (mng_type == 2 && object_id != 0)
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "Nonzero object_id in MNG-LC datastream",(char *) NULL);
             if (object_id > MNG_MAX_OBJECTS)
               {
@@ -1787,7 +1787,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   Instead of issuing a warning we should allocate a larger
                   MngInfo structure and continue.
                 */
-                ThrowException(&image->exception,(ExceptionType) DelegateError,
+                ThrowException(&image->exception,(ExceptionType) CoderError,
                   "object id too large",(char *) NULL);
                 object_id=MNG_MAX_OBJECTS;
               }
@@ -1795,7 +1795,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (mng_info->frozen[object_id])
                 {
                   LiberateMemory((void **) &chunk);
-                  ThrowException(&image->exception,(ExceptionType) DelegateError,
+                  ThrowException(&image->exception,(ExceptionType) CoderError,
                     "DEFI cannot redefine a frozen MNG object",(char *) NULL);
                   continue;
                 }
@@ -1975,7 +1975,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_FRAM,4))
           {
             if (mng_type == 3)
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "FRAM chunk found in MNG-VLC datastream",(char *) NULL);
             if ((framing_mode == 2) || (framing_mode == 4))
               image->delay=frame_delay;
@@ -2252,7 +2252,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_CLON,4))
           {
             if (!mng_info->clon_warning)
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "CLON is not implemented yet",image->filename);
             mng_info->clon_warning++;
           }
@@ -2282,7 +2282,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (magn_first || magn_last)
               if (!mng_info->magn_warning)
                 {
-                  ThrowException(&image->exception,(ExceptionType) DelegateError,
+                  ThrowException(&image->exception,(ExceptionType) CoderError,
                      "MAGN is not implemented yet for nonzero objects",
                      image->filename);
                    mng_info->magn_warning++;
@@ -2343,7 +2343,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (magn_methx > 5 || magn_methy > 5)
               if (!mng_info->magn_warning)
                 {
-                  ThrowException(&image->exception,(ExceptionType) DelegateError,
+                  ThrowException(&image->exception,(ExceptionType) CoderError,
                      "Unknown MAGN method in MNG datastream",image->filename);
                    mng_info->magn_warning++;
                 }
@@ -2366,14 +2366,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_PAST,4))
           {
             if (!mng_info->past_warning)
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "PAST is not implemented yet",image->filename);
             mng_info->past_warning++;
           }
         if (!memcmp(type,mng_SHOW,4))
           {
             if (!mng_info->show_warning)
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "SHOW is not implemented yet",image->filename);
             mng_info->show_warning++;
           }
@@ -2409,7 +2409,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!memcmp(type,mng_pHYg,4))
           {
             if (!mng_info->phyg_warning)
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "pHYg is not implemented.",image->filename);
             mng_info->phyg_warning++;
           }
@@ -2421,7 +2421,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
             skip_to_iend=True;
             if (!mng_info->basi_warning)
-              ThrowException(&image->exception,(ExceptionType) DelegateError,
+              ThrowException(&image->exception,(ExceptionType) CoderError,
                 "BASI is not implemented yet",image->filename);
             mng_info->basi_warning++;
 #ifdef MNG_BASI_SUPPORTED
@@ -2932,7 +2932,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     {
                       if (global_trns_length > global_plte_length)
                         ThrowException(&image->exception,(ExceptionType)
-                          DelegateError,
+                          CoderError,
                           "global tRNS has more entries than global PLTE",
                           image_info->filename);
                       png_set_tRNS(ping,ping_info,mng_info->global_trns,
@@ -2965,7 +2965,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
                   }
                 else
-                  ThrowException(&image->exception,(ExceptionType) DelegateError,
+                  ThrowException(&image->exception,(ExceptionType) CoderError,
                     "No global PLTE in file",image_info->filename);
               }
           }
@@ -4212,23 +4212,23 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_count++;
     if (image_count > 10*image_found)
       {
-        ThrowException(&image->exception,(ExceptionType) DelegateError,
+        ThrowException(&image->exception,(ExceptionType) CoderError,
           "Linked list is corrupted, beginning of list not found",
           image_info->filename);
         return((Image *) NULL);
       }
     image=image->previous;
     if (image->next == (Image *) NULL)
-      ThrowException(&image->exception,(ExceptionType) DelegateError,
+      ThrowException(&image->exception,(ExceptionType) CoderError,
        "Linked list is corrupted; next_image is NULL",image_info->filename);
   }
   if (ticks_per_second && image_found > 1 && image->next == (Image *) NULL)
-    ThrowException(&image->exception,(ExceptionType) DelegateError,
+    ThrowException(&image->exception,(ExceptionType) CoderError,
      "image->next for first image is NULL but shouldn't be.",
      image_info->filename);
   if (!image_found)
     {
-      ThrowException(&image->exception,(ExceptionType) DelegateError,
+      ThrowException(&image->exception,(ExceptionType) CoderError,
         "No visible images in file",image_info->filename);
       if (image != (Image *) NULL)
         DestroyImageList(image);
@@ -4289,7 +4289,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   printf("Your PNG library is too old: You have libpng-%s\n",
      PNG_LIBPNG_VER_STRING);
-  ThrowException(exception,(ExceptionType) MissingDelegateError,
+  ThrowException(exception,(ExceptionType) CoderError,
     "PNG library is too old", image_info->filename);
   return (Image *) NULL;
 }
@@ -4982,7 +4982,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                  */
                  final_delay=10;
                  ThrowException(&image->exception,(ExceptionType)
-                   DelegateError,
+                   CoderError,
                    "input has zero delay between all frames; assuming 10 cs",
                    (char *) NULL);
                }
@@ -6272,7 +6272,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           framing_mode=3;
       }
     if (write_mng && !need_fram && ((int) image->dispose == 3))
-       ThrowException(&image->exception,(ExceptionType) DelegateError,
+       ThrowException(&image->exception,(ExceptionType) CoderError,
          "Cannot convert GIF with disposal method 3 to MNG-LC",(char *) NULL);
     image->depth=save_image_depth;
     /*
@@ -6326,7 +6326,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   printf("Your PNG library is too old: You have libpng-%s\n",
      PNG_LIBPNG_VER_STRING);
-  ThrowBinaryException((ExceptionType) MissingDelegateError,
+  ThrowBinaryException((ExceptionType) CoderError,
     "PNG library is too old", image->filename);
 }
 #endif /* PNG_LIBPNG_VER > 95 */

@@ -3973,7 +3973,7 @@ static void MSLWarning(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  ThrowException(msl_info->exception,DelegateError,reason,(char *) NULL);
+  ThrowException(msl_info->exception,CoderError,reason,(char *) NULL);
   va_end(operands);
 }
 
@@ -4239,8 +4239,8 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
 static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateError,
-    "XML library is not available",image_info->filename);
+  ThrowException(exception,CoderError,
+    "XMLLibraryIsNotAvailable",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -4348,7 +4348,7 @@ static unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(MissingDelegateError,"XML library is not available",
+  ThrowBinaryException(MissingDelegateError,"XMLLibraryIsNotAvailable",
     image->filename);
 }
 #endif

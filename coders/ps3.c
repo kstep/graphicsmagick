@@ -165,7 +165,8 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       (void) remove(filename);
-      ThrowBinaryException(FileOpenError,"UnableToOpenFile",image_info->filename)
+      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
+        image_info->filename)
     }
   /*
     Allocate raw strip buffer.
@@ -208,8 +209,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,"TIFF library is not available",
-    image->filename)
+  ThrowBinaryException(CoderError,"TIFFLibraryIsNotAvailable",image->filename)
 }
 #endif
 
@@ -387,7 +387,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     {
       compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
-        "JPEG compression is not available",image->filename);
+        "JPEGLibraryIsNotAvailable",image->filename);
       break;
     }
 #endif
@@ -396,7 +396,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     {
       compression=RLECompression;
       ThrowException(&image->exception,MissingDelegateError,
-        "LZW compression is not available",image->filename);
+        "LZWEncodingNotEnabled",image->filename);
       break;
     }
 #endif
@@ -404,8 +404,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     case ZipCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,
-        "ZLIB compression is not available",image->filename);
+      ThrowException(&image->exception,CoderError,
+        "ZipLibraryIsNotAvailable",image->filename);
       break;
     }
 #endif
@@ -568,7 +568,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         */
         jpeg_image=CloneImage(image,0,0,True,&image->exception);
         if (jpeg_image == (Image *) NULL)
-          ThrowWriterException(DelegateError,"Unable to clone image",image);
+          ThrowWriterException(CoderError,image->exception.reason,image);
         blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
         (void) WriteBlob(image,length,blob);
         DestroyImage(jpeg_image);
@@ -837,8 +837,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
       compressed_packets=stream.total_out;
     }
   if (status)
-    ThrowBinaryException(DelegateError,"Unable to Zip compress image",
-      (char *) NULL)
+    ThrowBinaryException(CoderError,"UnableToZipCompressImage",(char *) NULL)
   else
     for (i=0; i < (long) compressed_packets; i++)
       (void) WriteBlobByte(image,compressed_pixels[i]);
@@ -851,8 +850,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,"ZLIB library is not available",
-    image->filename);
+  ThrowBinaryException(CoderError,"ZipLibraryIsNotAvailable",image->filename);
   return(False);
 }
 #endif

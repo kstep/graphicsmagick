@@ -50,6 +50,13 @@
       </Message>
     </Error>
   </Cache>
+  <Coder>
+    <Error>
+      <Message name="UnableToZipCompressImage">
+        Unable to zip-compress image
+      </Message>
+    </Error>
+  </Coder>
   <Configure>
     <Error>
       <Message name="IncludeElementNestedTooDeeply">
@@ -113,6 +120,16 @@
       </Message>
     </Error>
   </Delegate>
+  <Draw>
+    <Error>
+      <Message name="NonconformingDrawingPrimitiveDefinition">
+        Non-conforming drawing primitive definition
+      </Message>
+      <Message name="UnbalancedGraphicContextPushPop">
+        unbalanced graphic context push/pop
+      </Message>
+    </Draw>
+  </Delegate>
   <File>
     <Open>
       <Error>
@@ -145,13 +162,25 @@
       <Message name="UnableToCreateStereoImage">
         Unable to create stereo image
       </Message>
+      <Message name="UnableToSegmentImage">
+        Unable to segemtn image
+      </Message>
+      <Message name="UnableToSetImageClipMask">
+        Unable to set image clip mask
+      </Message>
     </Error>
   </Image>
   <Missing>
     <Delegate>
       <Error>
+        <Message name="FPXLibraryIsNotAvailable">
+          FPX library is not available
+        </Message>
         <Message name="FreeTypeLibraryIsNotAvailable">
           FreeType library is not available
+        </Message>
+        <Message name="JPEGLibraryIsNotAvailable">
+          JPEG compression library is not available
         </Message>
         <Message name="LZWEncodingNotEnabled">
           LZW encoding not enabled
@@ -162,12 +191,34 @@
         <Message name="NoEncodeDelegateForThisImageFormat">
           No encode delegate for this image format
         </Message>
+        <Message name="TIFFLibraryIsNotAvailable">
+          TIFF library is not available
+        </Message>
+        <Message name="XMLLibraryIsNotAvailable">
+          XML library is not available
+        </Message>
         <Message name="XWindowLibraryIsNotAvailable">
           X Window library is not available
+        </Message>
+        <Message name="ZipLibraryIsNotAvailable">
+          ZLIB compression library is not available
         </Message>
       </Error>
     </Delegate>
   </Missing>
+  <Module>
+    <Error>
+      <Message name="UnableToLoadModule">
+        Unable to load module
+      </Message>
+      <Message name="UnableToRegisterImageFormat">
+        Unable to register image format
+      </Message>
+      <Message name="UnrecognizedModule">
+        Unrecognized module
+      </Message>
+    </Error>
+  </Module>
   <Option>
     <Error>
       <Message name="GeometryDimensionsAreZero">

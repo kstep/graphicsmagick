@@ -316,7 +316,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   width=(long) order;
   if ((width % 2) == 0)
     ThrowImageException(OptionError,"UnableToConvolveImage",
-      "kernel width must be an odd number");
+      "Kernel width must be an odd number");
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionError,"UnableToConvolveImage",
       "image smaller than kernel width");
@@ -769,7 +769,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     {
       DestroyImage(paint_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to oil paint")
+        "unable to oil paint")
     }
   /*
     Paint each row of the image.
@@ -1337,7 +1337,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     {
       DestroyImage(wave_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to wave image")
+        "unable to wave image")
     }
   for (x=0; x < (long) wave_image->columns; x++)
     sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);

@@ -280,10 +280,9 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
           char
             message[MaxTextExtent];
 
-          FormatString(message,"failed to load module \"%.1024s\"",
-            module_name);
-          ThrowException(&(*image)->exception,MissingDelegateError,message,
-            lt_dlerror());
+          FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
+          ThrowException(&(*image)->exception,ModuleError,
+            "UnableToLoadModule",message);
           LiberateMemory((void **) &module_name);
           return(status);
         }
@@ -348,7 +347,7 @@ MagickExport const CoderInfo *GetCoderInfo(const char *tag,
     if (LocaleCompare(p->tag,tag) == 0)
       break;
   if (p == (CoderInfo *) NULL)
-    ThrowException(exception,OptionWarning,"Unrecognized module",tag);
+    ThrowException(exception,ModuleError,"UnrecognizedModule",tag);
   else
     if (p != coder_list)
       {
@@ -716,8 +715,8 @@ MagickExport unsigned int OpenModule(const char *module,
   handle=lt_dlopen(path);
   if (handle == (ModuleHandle) NULL)
     {
-      FormatString(message,"failed to load module \"%.1024s\"",path);
-      ThrowException(exception,MissingDelegateError,message,lt_dlerror());
+      FormatString(message,"\"%.1024s: %.1024s\"",path,lt_dlerror());
+      ThrowException(exception,ModuleError,"UnableToLoadModule",message);
     }
   LiberateMemory((void **) &module_file);
   if (handle == (ModuleHandle) NULL)
@@ -742,8 +741,9 @@ MagickExport unsigned int OpenModule(const char *module,
   method=(void (*)(void)) lt_dlsym(handle,name);
   if (method == (void (*)(void)) NULL)
     {
-      ThrowException(exception,MissingDelegateError,"failed to find symbol",
-        lt_dlerror());
+      FormatString(message,"\"%.1024s: %.1024s\"",module_name,lt_dlerror());
+      ThrowException(exception,ModuleError,"UnableToRegisterImageFormat",
+        message);
       return(False);
     }
   method();
@@ -1266,7 +1266,7 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
   ModuleToTag(coder_info->tag,"Unregister%sImage",name);
   method=(void (*)(void)) lt_dlsym((ModuleHandle) coder_info->handle,name);
   if (method == (void (*)(void)) NULL)
-    MagickError(DelegateError,"failed to find symbol",lt_dlerror());
+    MagickError(ModuleError,"Failedto find symbol",lt_dlerror());
   else
     method();
   (void) lt_dlclose((ModuleHandle) coder_info->handle);

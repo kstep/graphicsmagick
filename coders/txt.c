@@ -193,7 +193,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
-    ThrowReaderException(DelegateError,"Unable to get type metrics",image);
+    ThrowReaderException(CoderError,"Unable to get type metrics",image);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   if (draw_info->text != '\0')
     *draw_info->text='\0';

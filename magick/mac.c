@@ -1104,7 +1104,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"Unable to open file",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
   picture_handle=(PicHandle)
     NewHandle(Max(GetBlobSize(image)-PICTHeaderSize,PICTHeaderSize));
   if (picture_handle == nil)
@@ -1116,7 +1116,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   if (status == False)
     {
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(CorruptImageError,"Unable to read image data",image);
+      ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
     }
   GetGWorld(&port,&device);
   theErr=NewGWorld(&graphic_world,0,&(**picture_handle).picFrame,nil,nil,
@@ -1133,7 +1133,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     {
       DisposeGWorld(graphic_world);
       DisposeHandle((Handle) picture_handle);
-      ThrowReaderException(CorruptImageError,"Unable to read image data",image);
+      ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
     }
   BottleneckTest(picture_handle,&codec,&depth,&colormap_id);
   switch (codec)

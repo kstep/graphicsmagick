@@ -458,8 +458,7 @@ static unsigned int Classify(Image *image,short **extrema,
       (void) fprintf(stdout,"\n");
     }
   if (number_clusters > 256)
-    ThrowBinaryException(ResourceLimitError,"Unable to segment image",
-      "too many clusters");
+    ThrowBinaryException(ImageError,"UnableToSegmentImage","too many clusters");
   /*
     Speed up distance calculations.
   */

@@ -2337,7 +2337,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
     {
       if (API)
         wmf_api_destroy(API);
-      ThrowReaderException(DelegateError, "Failed to intialize libwmf", image);
+      ThrowReaderException(CoderError, "Failed to intialize libwmf", image);
     }
 
   /* Register progress monitor */

@@ -2630,7 +2630,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (delegate_info == (const DelegateInfo *) NULL)
         {
           if (IsAccessible(clone_info->filename))
-            ThrowException(exception,MissingDelegateError,
+            ThrowException(exception,DelegateError,
               "NoDecodeDelegateForThisImageFormat",clone_info->filename);
           else
             ThrowException(exception,FileOpenError,"UnableToOpenFile",
@@ -2662,7 +2662,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           (magick_info->decoder == NULL))
         {
           if (IsAccessible(clone_info->filename))
-            ThrowException(exception,MissingDelegateError,
+            ThrowException(exception,DelegateError,
               "NoDecodeDelegateForThisImageFormat",clone_info->filename);
           else
             ThrowException(exception,FileOpenError,"UnableToOpenFile",
@@ -3061,7 +3061,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           (magick_info->encoder == NULL))
         {
           DestroyImageInfo(clone_info);
-          ThrowBinaryException(MissingDelegateError,
+          ThrowBinaryException(DelegateError,
             "NoEncodeDelegateForThisImageFormat",image->filename)
         }
       if (!magick_info->thread_support)

@@ -655,7 +655,7 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
   if (count == 1)
     if (!AllocateImageColormap(image,2))
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to threshold image");
+        "unable to threshold image");
   if (strchr(threshold,'%') != (char *) NULL)
     {
       pixel.red*=MaxRGB/100.0;
@@ -778,7 +778,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     {
       DestroyImage(despeckle_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to despeckle image")
+        "unable to despeckle image")
     }
   /*
     Reduce speckle in the image.
@@ -906,7 +906,7 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to edge image");
+      "unable to edge image");
   for (i=0; i < (width*width); i++)
     kernel[i]=(-1.0);
   kernel[i/2]=width*width-1.0;
@@ -975,7 +975,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to emboss image");
+      "unable to emboss image");
   i=0;
   j=width/2;
   for (v=(-width/2); v <= (width/2); v++)
@@ -1214,7 +1214,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to blur image");
+      "unable to blur image");
   i=0;
   for (v=(-width/2); v <= (width/2); v++)
   {
