@@ -961,7 +961,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
       length=image->colors*sizeof(PixelPacket);
-      (void) CloneMemory(clone_image->colormap,image->colormap,length);
+      (void) memcpy(clone_image->colormap,image->colormap,length);
     }
   clone_image->color_profile.name=AllocateString(image->color_profile.name);
   if (image->color_profile.length != 0)
@@ -974,7 +974,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      (void) CloneMemory(clone_image->color_profile.info,
+      (void) memcpy(clone_image->color_profile.info,
         image->color_profile.info,length);
     }
   clone_image->iptc_profile.name=AllocateString(image->iptc_profile.name);
@@ -988,7 +988,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      (void) CloneMemory(clone_image->iptc_profile.info,
+      (void) memcpy(clone_image->iptc_profile.info,
         image->iptc_profile.info,length);
     }
   if (image->generic_profiles != 0)
@@ -1002,7 +1002,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
       length=image->generic_profiles*sizeof(ProfileInfo);
-      (void) CloneMemory(clone_image->generic_profile,image->generic_profile,
+      (void) memcpy(clone_image->generic_profile,image->generic_profile,
         length);
       for (i=0; i < (long) image->generic_profiles; i++)
       {
@@ -1016,7 +1016,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         if (clone_image->generic_profile[i].info == (unsigned char *) NULL)
           ThrowImageException(ResourceLimitWarning,"Unable to clone image",
             "Memory allocation failed");
-        (void) CloneMemory(clone_image->generic_profile[i].info,
+        (void) memcpy(clone_image->generic_profile[i].info,
           image->generic_profile[i].info,length);
       }
     }

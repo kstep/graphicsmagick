@@ -474,7 +474,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
         number_pixels=bytes_per_line;
         (void) ReadBlob(blob,number_pixels,(char *) scanline);
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
-        (void) CloneMemory(q,p,number_pixels);
+        (void) memcpy(q,p,number_pixels);
       }
       LiberateMemory((void **) &scanline);
       return(pixels);
@@ -502,7 +502,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
           length=(scanline[j] & 0xff)+1;
           number_pixels=length*bytes_per_pixel;
           p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
-          (void) CloneMemory(q,p,number_pixels);
+          (void) memcpy(q,p,number_pixels);
           q+=number_pixels;
           j+=length*bytes_per_pixel+1;
         }
@@ -513,7 +513,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
           p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
           for (i=0; i < (long) length; i++)
           {
-            (void) CloneMemory(q,p,number_pixels);
+            (void) memcpy(q,p,number_pixels);
             q+=number_pixels;
           }
           j+=bytes_per_pixel+1;
@@ -1166,7 +1166,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   ThrowReaderException(ResourceLimitWarning,
                     "Memory allocation failed",image);
                 image->color_profile.length=length;
-                (void) CloneMemory(image->color_profile.info,info,length);
+                (void) memcpy(image->color_profile.info,info,length);
                 break;
               }
               case 0x1f2:
@@ -1177,7 +1177,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   ThrowReaderException(ResourceLimitWarning,
                     "Memory allocation failed",image);
                 image->iptc_profile.length=length;
-                (void) CloneMemory(image->iptc_profile.info,info,length);
+                (void) memcpy(image->iptc_profile.info,info,length);
                 break;
               }
               default:
