@@ -24,9 +24,13 @@ for details):
 
   o General:
 
+    - A ChangeLog is now included with the source distribution.
+
     - Palm pixmap support contributed by Christopher R. Hawks.
 
     - Bug fixes to AVI, BMP, DIB, MPC, PGM, PPM, PSD, WMF, & XCF coders.
+
+    - SVG now supports inline images.
 
     - ASCII Postscript Type 1 (PFA) fonts rendered via FreeType.
 
@@ -37,13 +41,21 @@ for details):
     - Font specification files provided for Ghostscript, Solaris DPS,
       and Microsoft Windows fonts.
 
-    - Font search path (TT_FONT_PATH) no longer supported.
+    - The -geometry and -page options now work consistently (but
+      differently).
 
-    - A ChangeLog is now included with the source distribution.
+    - Font search path (TT_FONT_PATH) no longer supported.
       
   o Utilities enhancements/changes:
 
+    - Command line options now stay in effect for any image in command
+      line order until a another option is encountered or if -new is
+      specified.
+
     - Use -trim to trim the edges of an image.
+
+    - Added -mask to the convert/mogrify programs to add clips masks to
+      an image.
 
   o C API enhancements:
 
@@ -52,6 +64,10 @@ for details):
   o C++ API enhancements:
 
     - Various bugfixes (see Magick++/NEWS and Magick++/ChangeLog).
+
+    - Added support (via DrawableFont) for selecting a font by
+      font-family, font-style, font-weight, and font-stretch. Wildcard
+      matches are supported.
 
 The ImageMagick WWW page is
 
