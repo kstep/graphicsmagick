@@ -85,8 +85,7 @@
 %
 %
 */
-MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
-  const size_t length)
+static void AttachBlob(BlobInfo *blob_info,const void *blob,const size_t length)
 {
   assert(blob_info != (BlobInfo *) NULL);
   blob_info->data=(unsigned char *) blob;

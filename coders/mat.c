@@ -247,8 +247,8 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file",i
    if(size!=2) goto MATLAB_KO;
    (void) ReadBlob(image,4,&size);        /*data size*/
 
-   image->columns=MATLAB_HDR.SizeX;
-   image->rows=MATLAB_HDR.SizeY;
+   image->columns=(unsigned int) MATLAB_HDR.SizeX;
+   image->rows=(unsigned int) MATLAB_HDR.SizeY;
    image->depth=8;
    image->colors=1l >> 8;
    if(image->columns==0 || image->rows==0) goto MATLAB_KO;

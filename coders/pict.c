@@ -566,7 +566,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   register const unsigned char
     *p;
 
-  register int
+  register long
     i;
 
   register unsigned char
