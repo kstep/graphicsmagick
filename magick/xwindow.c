@@ -5143,6 +5143,7 @@ MagickExport unsigned int XMakeImage(Display *display,
         &window->segment_info[1],width,height);
       window->segment_info[1].shmid=shmget(IPC_PRIVATE,(int)
         (ximage->bytes_per_line*ximage->height),IPC_CREAT | 0777);
+printf("%x: %d\n",window->segment_info[1].shmid,ximage->bytes_per_line*ximage->height);
       window->shared_memory=window->segment_info[1].shmid >= 0;
       if (window->shared_memory)
         window->segment_info[1].shmaddr=(char *)
@@ -5182,9 +5183,10 @@ MagickExport unsigned int XMakeImage(Display *display,
 #if defined(HasSharedMemory)
   if (window->shared_memory)
     {
-      xerror_alert=False;
       ximage->data=window->segment_info[1].shmaddr;
       window->segment_info[1].readOnly=False;
+      XSync(display,False);
+      xerror_alert=False;
       XShmAttach(display,&window->segment_info[1]);
       XSync(display,False);
       if (xerror_alert)
@@ -5192,6 +5194,7 @@ MagickExport unsigned int XMakeImage(Display *display,
           window->shared_memory=False;
           if (window->ximage != (XImage *) NULL)
             {
+              XSync(display,False);
               XShmDetach(display,&window->segment_info[1]);
               XSync(display,False);
               (void) shmdt(window->segment_info[1].shmaddr);
@@ -5228,6 +5231,7 @@ MagickExport unsigned int XMakeImage(Display *display,
 #if defined(HasSharedMemory)
       if (window->segment_info[0].shmid >= 0)
         {
+          XSync(display,False);
           XShmDetach(display,&window->segment_info[0]);
           XSync(display,False);
           (void) shmdt(window->segment_info[0].shmaddr);
