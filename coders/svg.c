@@ -993,8 +993,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"font-size") == 0)
             {
               svg_info->pointsize=GetUserSpaceCoordinateValue(svg_info,value);
-              (void) fprintf(svg_info->file,"font-size %g\n",
-                svg_info->pointsize);
+              (void) fprintf(svg_info->file,"font-size %g\n",svg_info->pointsize);
               break;
             }
           if (LocaleCompare(keyword,"font-weight") == 0)
@@ -1007,13 +1006,23 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           break;
         }
+        case 'G':
+        case 'g':
+        {
+          if (LocaleCompare(keyword,"gradientUnits") == 0)
+            {
+              CloneString(&units,value);
+              (void) fprintf(svg_info->file,"gradient-units %s\n",value);
+              break;
+            }
+          break;
+        }
         case 'H':
         case 'h':
         {
           if (LocaleCompare(keyword,"height") == 0)
             {
-              svg_info->bounds.height=
-                GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->bounds.height=GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           if (LocaleCompare(keyword,"href") == 0)
@@ -1028,14 +1037,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"major") == 0)
             {
-              svg_info->element.major=
-                GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.major=GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           if (LocaleCompare(keyword,"minor") == 0)
             {
-              svg_info->element.minor=
-                GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.minor=GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           break;
@@ -1045,8 +1052,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"offset") == 0)
             {
-              (void) fprintf(svg_info->file,"offset %g\n",
-                GetUserSpaceCoordinateValue(svg_info,value));
+              (void) fprintf(svg_info->file,"offset %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"opacity") == 0)
@@ -1076,10 +1082,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"r") == 0)
             {
-              svg_info->element.major=
-                GetUserSpaceCoordinateValue(svg_info,value);
-              svg_info->element.minor=
-                GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.major=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.minor=GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           if (LocaleCompare(keyword,"rx") == 0)
@@ -1593,8 +1597,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"width") == 0)
             {
-              svg_info->bounds.width=
-                GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->bounds.width=GetUserSpaceCoordinateValue(svg_info,value);
               break;
             }
           break;
@@ -1835,6 +1838,9 @@ static void SVGEndElement(void *context,const xmlChar *name)
         }
       if (LocaleCompare((char *) name,"linearGradient") == 0)
         {
+          (void) fprintf(svg_info->file,"gradient %g,%g %g,%g\n",
+            svg_info->segment.x1,svg_info->segment.y1,svg_info->segment.x2,
+            svg_info->segment.y2);
           (void) fprintf(svg_info->file,"pop linear-gradient\n");
           break;
         }

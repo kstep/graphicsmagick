@@ -1763,6 +1763,20 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       case 'g':
       case 'G':
       {
+        if (LocaleCompare("gradient",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
+            break;
+          }
         if (LocaleCompare("gradient-units",keyword) == 0)
           {
             GetToken(q,&q,token);
@@ -2289,8 +2303,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("viewbox",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (*token == ',')
-              GetToken(q,&q,token);
             GetToken(q,&q,token);
             if (*token == ',')
               GetToken(q,&q,token);
@@ -2298,6 +2310,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             if (*token == ',')
               GetToken(q,&q,token);
             GetToken(q,&q,token);
+            if (*token == ',')
+              GetToken(q,&q,token);
             break;
           }
         status=False;
