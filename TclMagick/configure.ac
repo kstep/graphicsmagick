@@ -51,7 +51,10 @@ TEA_PROG_TCLSH
 TEA_PROG_WISH
 
 AC_MSG_CHECKING(pre-processor flags)
-# If -DHAVE_CONFIG_H is not specified, then QuantumLeap doesn't work.
+
+dnl Here we fetch information from GraphicsMagickWand-config, which
+dnl means that it needs to be in the PATH.
+
 GM_CPPFLAGS=`GraphicsMagickWand-config --cppflags`
 AC_SUBST(GM_CPPFLAGS)
 AC_MSG_RESULT("$GM_CPPFLAGS")
@@ -66,7 +69,6 @@ GM_LIBS=`GraphicsMagickWand-config --libs`
 AC_SUBST(GM_LIBS)
 AC_MSG_RESULT("$GM_LIBS")
 
-#AC_CONFIG_FILES([Makefile generic/Makefile])
 AC_OUTPUT([
 Makefile
 generic/Makefile

@@ -1,13 +1,13 @@
 # Makefile for creating libTclMagick and libTkMagick
 
-# David N. Welton <davidw@dedasys.com>, 2004, with many thanks to Bob
-# Friesenhahn for all the help.
-
-# $(TCL_CFLAGS_OPTIMIZE) $(TCL_CFLAGS_WARNING) $(TCL_EXTRA_CFLAGS) 
+# Copyright David N. Welton <davidw@dedasys.com>, 2004, with many
+# thanks to Bob Friesenhahn for all the help.
 
 AM_CFLAGS = @TCL_INCLUDES@ @GM_CPPFLAGS@
 
 lib_LTLIBRARIES = libTclMagick.la libTkMagick.la
+libTclMagick_la_LDFLAGS = -no-undefined -module
+libTkMagick_la_LDFLAGS = -no-undefined -module
 
 libTclMagick_la_LIBADD = @TCL_LIBS@
 libTclMagick_la_SOURCES = TclMagick.c
