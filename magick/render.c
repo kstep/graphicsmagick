@@ -187,8 +187,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   GetDrawInfo(image_info,clone_info);
   if (draw_info == (DrawInfo *) NULL)
     return(clone_info);
-  if (draw_info->primitive != (char *) NULL)
-    clone_info->primitive=AllocateString(draw_info->primitive);
+  clone_info->primitive=(char *) NULL;
   if (draw_info->geometry != (char *) NULL)
     clone_info->geometry=AllocateString(draw_info->geometry);
   clone_info->affine=draw_info->affine;
@@ -254,6 +253,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->clip_units=draw_info->clip_units;
   clone_info->render=draw_info->render;
   clone_info->opacity=draw_info->opacity;
+  clone_info->element_reference=draw_info->element_reference;
   return(clone_info);
 }
 
@@ -1585,23 +1585,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     return(False);
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),"begin draw-image");
   if (*draw_info->primitive != '@')
-    primitive=TranslateText((ImageInfo *) NULL,image,draw_info->primitive);
+    primitive=AllocateString(draw_info->primitive);
   else
-    {
-      char
-        *text;
-
-      /*
-        Read text from a file.
-      */
-      text=(char *)
-        FileToBlob(draw_info->primitive+1,&length,&image->exception);
-      if (text == (char *) NULL)
-        return(False);
-      primitive=TranslateText((ImageInfo *) NULL,image,text);
-      LiberateMemory((void **) &text);
-    }
-
+    primitive=(char *)
+      FileToBlob(draw_info->primitive+1,&length,&image->exception);
+  if (primitive == (char *) NULL)
+    return(False);
   primitive_extent=strlen(primitive);
   (void) SetImageAttribute(image,"[MVG]",primitive);
   n=0;
@@ -2986,8 +2975,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
-    status=MagickMonitor(RenderImageText,q-primitive,primitive_extent,
-      &image->exception);
+    status=MagickMonitor(RenderImageText,q-primitive,
+      (ExtendedSignedIntegralType) primitive_extent,&image->exception);
     if (status == False)
       break;
   }
