@@ -1099,7 +1099,7 @@ MagickExport unsigned int PopImagePixels(Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        *q++=(unsigned char) (Intensity(*p)/257);
+        *q++=(unsigned char) (Intensity(*p) >> 8);
         *q++=(unsigned char) Intensity(*p);
         p++;
       }
@@ -1119,7 +1119,7 @@ MagickExport unsigned int PopImagePixels(Image *image,
         }
       for (x=0; x < (int) image->columns; x++)
       {
-        *q++=(unsigned char) (Intensity(*p)/257);
+        *q++=(unsigned char) (Intensity(*p) >> 8);
         *q++=(unsigned char) Intensity(*p);
         *q++=(MaxRGB-p->opacity) >> 8;
         *q++=MaxRGB-p->opacity;
