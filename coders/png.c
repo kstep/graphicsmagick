@@ -3083,7 +3083,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                 LogPNGChunk(logging,mng_IHDR,13L);
                 PNGLong(data+4,jng_width);
                 PNGLong(data+8,jng_height);
-                data[12]=8; /* bit_depth 8 */
+                data[12]=jng_alpha_sample_depth;
                 data[13]=0; /* color_type gray */
                 data[14]=0; /* compression method 0 */
                 data[15]=0; /* filter_method 0 */
@@ -7337,6 +7337,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       else
         jpeg_image_info->quality=jng_quality;
       jpeg_image_info->type=GrayscaleType;
+      jpeg_image->depth=8;
       SetImageType(jpeg_image,GrayscaleType);
     }
 
@@ -7554,6 +7555,12 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
           (void) strncpy(jpeg_image->magick,"PNG",MaxTextExtent-1);
           jpeg_image_info->interlace=NoInterlace;
 
+          jpeg_image_info->depth=8;
+          jpeg_image->depth=8;
+
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "  Calling ImageToBlob.");
           blob=(char *) ImageToBlob(jpeg_image_info,jpeg_image,&length,
               &image->exception);
 

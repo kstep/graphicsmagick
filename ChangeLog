@@ -1,3 +1,7 @@
+2003-02-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* JNG alpha sample depth was sometimes inconsistent.
+
 2003-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/tiff/read.t: Added test for reading tiled TIFF.
