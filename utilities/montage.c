@@ -97,6 +97,7 @@
 %    -compose operator   composite operator
 %    -compress type      type of image compression
 %    -crop geometry      preferred size and location of the cropped image
+%    -debug              display copious debugging information
 %    -density geometry   vertical and horizontal density of the image
 %    -depth value        depth of the image
 %    -display server     query fonts from this X server
@@ -110,6 +111,7 @@
 %    -geometry geometry  preferred tile and border sizes
 %    -gravity direction  which direction to gravitate towards
 %    -interlace type     None, Line, Plane, or Partition
+%    -help               print program options
 %    -label name         assign a label to an image
 %    -matte              store matte channel if the image has one
 %    -mode type          Frame, Unframe, or Concatenate
@@ -185,6 +187,7 @@ static void Usage(void)
       "-compose operator   composite operator",
       "-compress type      type of image compression",
       "-crop geometry      preferred size and location of the cropped image",
+      "-debug              display copious debugging information",
       "-density geometry   vertical and horizontal density of the image",
       "-depth value        depth of the image",
       "-display server     query font from this X server",
@@ -198,6 +201,7 @@ static void Usage(void)
       "-geometry geometry  preferred tile and border sizes",
       "-gravity direction  which direction to gravitate towards",
       "-interlace type     None, Line, Plane, or Partition",
+      "-help               print program options",
       "-label name         assign a label to an image",
       "-matte              store matte channel if the image has one",
       "-mode type          Frame, Unframe, or Concatenate",

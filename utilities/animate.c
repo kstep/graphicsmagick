@@ -71,6 +71,7 @@
 %    -colors value        preferred number of colors in the image
 %    -colorspace type     alternate image colorspace
 %    -crop geometry       preferred size and location of the cropped image
+%    -debug               display copious debugging information
 %    -delay value         display the next image after pausing
 %    -density geometry    vertical and horizontal density of the image
 %    -depth value         depth of the image
@@ -78,6 +79,7 @@
 %    -dither              apply Floyd/Steinberg error diffusion to image
 %    -gamma value         level of gamma correction
 %    -geometry geometry   preferred size and location of the Image window
+%    -help                print program options
 %    -interlace type      None, Line, Plane, or Partition
 %    -map type            display image using this Standard Colormap
 %    -matte               store matte channel if the image has one
@@ -156,6 +158,7 @@ static void Usage(void)
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-crop geometry       preferred size and location of the cropped image",
+      "-debug               display copious debugging information",
       "-delay value         display the next image after pausing",
       "-density geometry    vertical and horizontal density of the image",
       "-depth value         depth of the image",
@@ -163,6 +166,7 @@ static void Usage(void)
       "-dither              apply Floyd/Steinberg error diffusion to image",
       "-gamma value         level of gamma correction",
       "-geometry geometry   preferred size and location of the Image window",
+      "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
       "-matte               store matte channel if the image has one",
       "-map type            display image using this Standard Colormap",

@@ -68,6 +68,7 @@
 %    -comment string     annotate image with comment
 %    -compress type      type of image compression
 %    -crop geometry      preferred size and location of the cropped image
+%    -debug              display copious debugging information
 %    -delay value        pause before selecting target window
 %    -density geometry   vertical and horizontal density of the image
 %    -depth value        depth of the image
@@ -78,6 +79,7 @@
 %    -frame              include window manager frame
 %    -geometry geometry  perferred size or location of the image
 %    -interlace type     None, Line, Plane, or Partition
+%    -help               print program options
 %    -label name         assign a label to an image
 %    -monochrome         transform image to black and white
 %    -negate             replace every pixel with its complementary color
@@ -145,6 +147,7 @@ static void Usage(void)
       "-comment string     annotate image with comment",
       "-compress type      type of image compression",
       "-crop geometry      preferred size and location of the cropped image",
+      "-debug              display copious debugging information",
       "-delay value        display the next image after pausing",
       "-density geometry   vertical and horizontal density of the image",
       "-depth value        depth of the image",
@@ -155,6 +158,7 @@ static void Usage(void)
       "-frame              include window manager frame",
       "-geometry geometry  perferred size or location of the image",
       "-interlace type     None, Line, Plane, or Partition",
+      "-help               print program options",
       "-label name         assign a label to an image",
       "-monochrome         transform image to black and white",
       "-negate             replace every pixel with its complementary color ",

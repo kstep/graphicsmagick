@@ -58,6 +58,7 @@
 %    -colorspace type    alternate image colorspace
 %    -comment string     annotate image with comment
 %    -compress type      type of image compression
+%    -debug              display copious debugging information
 %    -density geometry   vertical and horizontal density of the image
 %    -depth value        depth of the image
 %    -displace geometry  shift image pixels as defined by a displacement map
@@ -69,6 +70,7 @@
 %    -font name          font for rendering text
 %    -geometry geometry  location of the composite image
 %    -gravity type       which direction to gravitate towards
+%    -help               print program options
 %    -interlace type     None, Line, Plane, or Partition
 %    -label name         assign a label to an image
 %    -matte              store matte channel if the image has one
@@ -421,6 +423,7 @@ static void Usage(void)
       "-comment string     annotate image with comment",
       "-compose operator   composite operator",
       "-compress type      type of image compression",
+      "-debug              display copious debugging information",
       "-density geometry   vertical and horizontal density of the image",
       "-depth value        depth of the image",
       "-displace geometry  shift image pixels as defined by a displacement map",
@@ -432,6 +435,7 @@ static void Usage(void)
       "-font name          font for rendering text",
       "-geometry geometry  location of the composite image",
       "-gravity type       which direction to gravitate towards",
+      "-help               print program options",
       "-interlace type     None, Line, Plane, or Partition",
       "-label name         ssign a label to an image",
       "-matte              store matte channel if the image has one",

@@ -49,7 +49,17 @@
 %
 %  The conjure program syntax is:
 %
-%    Usage: conjure [ -option value ... ] file [ [ -option value ... ] file ... ]
+%  Usage: conjure [ -option value ... ] file [ [ -option value ... ] file ... ]
+%
+%  Where options include:
+%    -debug    display copious debugging information
+%    -help     print program options
+%    -verbose  print detailed information about the image
+%  
+%  In additiion, define any key value pairs required by your script.  For
+%  example,
+%  
+%      conjure -size 100x100 -color blue -foo bar script.msl
 %
 %
 */
@@ -83,9 +93,9 @@ static void Usage(void)
   static const char
     *options[]=
     {
-      "Define any key value pairs required by your script, for example:",
-      "",
-      "    conjure -dimensions 100x100 -color blue -foo bar script.msl",
+      "-debug    display copious debugging information",
+      "-help     print program options",
+      "-verbose  print detailed information about the image",
       (char *) NULL
     };
 
@@ -102,6 +112,9 @@ static void Usage(void)
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
+  (void) printf("\nIn additiion, define any key value pairs required by "
+	  "your script.  For\nexample,\n\n");
+  (void) printf("    conjure -size 100x100 -color blue -foo bar script.msl\n");
   Exit(0);
 }
 

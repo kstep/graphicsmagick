@@ -56,9 +56,11 @@
 %
 %  Where options include:
 %    -cache threshold  megabytes of memory available to the pixel cache
+%    -debug            display copious debugging information
 %    -density geometry vertical and horizontal density of the image
 %    -depth value      depth of the image
 %    -format "string"  output formatted image characteristics
+%    -help             print program options
 %    -size geometry    width and height of image
 %    -verbose          print detailed information about the image
 %
@@ -99,9 +101,11 @@ static void Usage(void)
     *options[]=
     {
       "-cache threshold   megabytes of memory available to the pixel cache",
+      "-debug             display copious debugging information",
       "-density geometry  vertical and horizontal density of the image",
       "-depth value       depth of the image",
       "-format \"string\"   output formatted image characteristics",
+      "-help              print program options",
       "-size geometry     width and height of image",
       "-verbose           print detailed information about the image",
       (char *) NULL

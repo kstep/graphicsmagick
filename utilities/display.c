@@ -76,6 +76,7 @@
 %    -compress type     type of image compression
 %    -contrast          enhance or reduce the image contrast
 %    -crop geometry     preferred size and location of the cropped image
+%    -debug             display copious debugging information
 %    -delay value       display the next image after pausing
 %    -density geometry  vertical and horizontal density of the image
 %    -depth value       depth of the image
@@ -91,6 +92,7 @@
 %    -frame geometry    surround image with an ornamental border
 %    -gamma value       level of gamma correction
 %    -geometry geometry preferred size and location of the Image window
+%    -help              print program options
 %    -immutable         displayed image cannot be modified
 %    -interlace type    None, Line, Plane, or Partition
 %    -label name        assign a label to an image
@@ -190,6 +192,7 @@ static void Usage(void)
       "-compress type     type of image compression",
       "-contrast          enhance or reduce the image contrast",
       "-crop geometry     preferred size and location of the cropped image",
+      "-debug             display copious debugging information",
       "-delay value       display the next image after pausing",
       "-density geometry  vertical and horizontal density of the image",
       "-depth value       depth of the image",
@@ -205,6 +208,7 @@ static void Usage(void)
       "-frame geometry    surround image with an ornamental border",
       "-gamma value       level of gamma correction",
       "-geometry geometry preferred size and location of the Image window",
+      "-help              print program options",
       "-immutable         displayed image cannot be modified",
       "-interlace type    None, Line, Plane, or Partition",
       "-label name        assign a label to an image",

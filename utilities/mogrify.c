@@ -74,6 +74,7 @@
 %    -contrast            enhance or reduce the image contrast
 %    -crop geometry       preferred size and location of the cropped image
 %    -cycle amount        cycle the image colormap
+%    -debug               display copious debugging information
 %    -delay value         display the next image after pausing
 %    -density geometry    vertical and horizontal density of the image
 %    -depth value         depth of the image
@@ -97,6 +98,7 @@
 %    -gamma value         level of gamma correction
 %    -gaussian geometry   blur an image
 %    -geometry geometry   perferred size or location of the image
+%    -help                print program options
 %    -implode amount      implode image pixels about the center
 %    -interlace type      None, Line, Plane, or Partition
 %    -label name          assign a label to an image
@@ -205,6 +207,7 @@ static void Usage(void)
       "-contrast            enhance or reduce the image contrast",
       "-crop geometry       preferred size and location of the cropped image",
       "-cycle amount        cycle the image colormap",
+      "-debug               display copious debugging information",
       "-delay value         display the next image after pausing",
       "-density geometry    vertical and horizontal density of the image",
       "-depth value         depth of the image",
@@ -230,6 +233,7 @@ static void Usage(void)
       "-geometry geometry   perferred size or location of the image",
       "-implode amount      implode image pixels about the center",
       "-interlace type      None, Line, Plane, or Partition",
+      "-help                print program options",
       "-label name          assign a label to an image",
       "-level value         adjust the level of image contrast",
       "-list type           Color, Delegate, Format, Magic, Module, or Type",

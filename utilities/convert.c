@@ -76,6 +76,7 @@
 %    -contrast            enhance or reduce the image contrast
 %    -crop geometry       preferred size and location of the cropped image
 %    -cycle amount        cycle the image colormap
+%    -debug               display copious debugging information
 %    -deconstruct         break down an image sequence into constituent parts
 %    -delay value         display the next image after pausing
 %    -density geometry    vertical and horizontal density of the image
@@ -101,6 +102,7 @@
 %    -gaussian geometry   blur the image
 %    -geometry geometry   perferred size or location of the image
 %    -gravity type        vertical and horizontal text placement
+%    -help                print program options
 %    -implode amount      implode image pixels about the center
 %    -intent type         Absolute, Perceptual, Relative, or Saturation
 %    -interlace type      None, Line, Plane, or Partition
@@ -486,6 +488,7 @@ static void Usage(void)
       "-contrast            enhance or reduce the image contrast",
       "-crop geometry       preferred size and location of the cropped image",
       "-cycle amount        cycle the image colormap",
+      "-debug               display copious debugging information",
       "-deconstruct         break down an image sequence into constituent parts",
       "-delay value         display the next image after pausing",
       "-density geometry    vertical and horizontal density of the image",
@@ -511,6 +514,7 @@ static void Usage(void)
       "-gaussian geometry   gaussian blur an image",
       "-geometry geometry   perferred size or location of the image",
       "-gravity type        vertical and horizontal text placement",
+      "-help                print program options",
       "-implode amount      implode image pixels about the center",
       "-intent type         Absolute, Perceptual, Relative, or Saturation",
       "-interlace type      None, Line, Plane, or Partition",
