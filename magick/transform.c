@@ -1533,12 +1533,7 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
       /*
         Zoom image.
       */
-      if (transform_image->storage_class == PseudoClass)
-        resize_image=SampleImage(transform_image,width,height,
-          &(*image)->exception);
-      else
-        resize_image=ZoomImage(transform_image,width,height,
-          &(*image)->exception);
+      resize_image=ZoomImage(transform_image,width,height,&(*image)->exception);
       if (resize_image != (Image *) NULL)
         {
           DestroyImage(transform_image);
