@@ -157,7 +157,7 @@ static html_code html_codes[] = {
   { 6,"&apos;",'\''}
 };
 
-int stringnicmp(const char *p,const char *q,size_t n)
+static int stringnicmp(const char *p,const char *q,size_t n)
 {
   register int
     i,
@@ -234,7 +234,7 @@ static int convertHTMLcodes(char *s, int len)
   return 0;
 }
 
-char *super_fgets(char **b, int *blen, Image *file)
+static char *super_fgets(char **b, int *blen, Image *file)
 {
   int
     c,
@@ -282,7 +282,7 @@ char *super_fgets(char **b, int *blen, Image *file)
 #define IPTC_ID 1028
 #define THUMBNAIL_ID 1033
 
-long parse8BIM(Image *ifile, Image *ofile)
+static long parse8BIM(Image *ifile, Image *ofile)
 {
   char
     brkused,
@@ -649,7 +649,7 @@ static int jpeg_skip_till_marker(Image *ifile, int marker)
 static char psheader[] = "\xFF\xED\0\0Photoshop 3.0\08BIM\x04\x04\0\0\0\0";
 
 /* Embed binary IPTC data into a JPEG image. */
-int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
+static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
 {
   unsigned int marker;
   unsigned int done = 0;
@@ -725,7 +725,7 @@ int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
 // jpeg_embed(ifile, ofile, xfile);
 
 /* handle stripping the APP13 data out of a JPEG */
-void jpeg_strip(Image *ifile, Image *ofile)
+static void jpeg_strip(Image *ifile, Image *ofile)
 {
   unsigned int marker;
 
@@ -739,7 +739,7 @@ void jpeg_strip(Image *ifile, Image *ofile)
 }
 
 /* Extract any APP13 binary data into a file. */
-int jpeg_extract(Image *ifile, Image *ofile)
+static int jpeg_extract(Image *ifile, Image *ofile)
 {
   unsigned int marker;
   unsigned int done = 0;
@@ -1364,7 +1364,7 @@ static tag_spec tags[] = {
   { 219, (char *) "Custom Field 20" }
 };
 
-int formatIPTC(Image *ifile, Image *ofile)
+static int formatIPTC(Image *ifile, Image *ofile)
 {
   char
     temp[MaxTextExtent];
@@ -1475,7 +1475,7 @@ int formatIPTC(Image *ifile, Image *ofile)
   return tagsfound;
 }
 
-int readWordFromBuffer(char **s, long *len)
+static int readWordFromBuffer(char **s, long *len)
 {
   unsigned char
     buffer[2];
@@ -1494,7 +1494,7 @@ int readWordFromBuffer(char **s, long *len)
          (((int) buffer[ 1 ]));
 }
 
-int formatIPTCfromBuffer(Image *ofile, char *s, long len)
+static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
 {
   char
     temp[MaxTextExtent];
@@ -1599,7 +1599,7 @@ int formatIPTCfromBuffer(Image *ofile, char *s, long len)
   return tagsfound;
 }
 
-int format8BIM(Image *ifile, Image *ofile)
+static int format8BIM(Image *ifile, Image *ofile)
 {
   char
     temp[MaxTextExtent];
