@@ -473,8 +473,6 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
        Rd_WP_DWORD(image,&Rec.RecordLength);
        if(EOFBlob(image)) break;
 
-    //printf("[--Type:%d;%lX----]",(int)Rec.RecType,Rec.RecordLength);fflush(stdout);
-
        Header.DataOffset=TellBlob(image)+Rec.RecordLength;
 
        switch(Rec.RecType)
@@ -639,9 +637,7 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	     for(i=0;i<image->rows;i++)
 		{
 		ReadBlob(image,ldblk,(char *)BImgBuff);
-//		if(fread(BImgBuff,ldblk,1,f)!=1) {goto KONEC;}
 		InsertRow(BImgBuff,i,image);
-	//	AlineProc(i,p);
 		}
 	     if(BImgBuff) free(BImgBuff);
 	     

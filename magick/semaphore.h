@@ -11,14 +11,14 @@ extern "C" {
 /*
   Define declarations.
 */
-#define EngageSemaphore(semaphore_info)	\
+#define AcquireSemaphore(semaphore_info)	\
 { \
   if (semaphore_info == (SemaphoreInfo *) NULL) \
     semaphore_info=AllocateSemaphoreInfo(); \
   (void) LockSemaphore(semaphore_info); \
 }
 
-#define DisengageSemaphore(semaphore_info) \
+#define LiberateSemaphore(semaphore_info) \
 { \
   if (semaphore_info == (SemaphoreInfo *) NULL) \
     semaphore_info=AllocateSemaphoreInfo(); \
