@@ -47,7 +47,7 @@ int main( int /*argc*/, char ** argv)
     string textColor = "red";
 
     // Font to use for text
-    string textFont = string("@") + srcdir + "Generic.ttf";
+    string textFont = srcdir + "Generic.ttf";
 
     // Font point size
     int textFontPointSize = 16;

@@ -29,7 +29,7 @@ int main( int /*argc*/, char ** argv)
     srcdir = getenv("srcdir") + string("/");
 
   // Common font to use.
-  string font = string("@") + srcdir + "Generic.ttf";
+  string font = srcdir + "Generic.ttf";
 
   try {
 
