@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <fontmap>
   <font
-    name="Magick"
-    familyname="Magick"
-    alias="Magick"
-    fullname="Magick"
+    name="Helvetica"
+    familyname="Helvetica"
+    alias="Helvetica"
+    fullname="Helvetica"
     format="type1"
     weight="Medium"
-    glyphs="/usr/local/share/fonts/magick.pfb"
-    metrics="/usr/local/share/fonts/magick.afm"
+    glyphs="Helvetica"
+    metrics="Helvetica"
     version="0.1"
   />
 </fontmap>
