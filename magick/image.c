@@ -2172,6 +2172,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     case FaxCompression: (void) fprintf(file,"Fax\n"); break;
     case Group4Compression: (void) fprintf(file,"Group 4\n"); break;
     case JPEGCompression: (void) fprintf(file,"JPEG\n"); break;
+    case LosslessJPEGCompression: (void) fprintf(file,"Lossless JPEG\n");
+         break;
     case LZWCompression: (void) fprintf(file,"LZW\n"); break;
     case RunlengthEncodedCompression:
       (void) fprintf(file,"Runlength Encoded\n"); break;
@@ -2659,8 +2661,8 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
   }
   if ((bounds.width != 0) || (bounds.height != 0))
     {
-      bounds.width-=bounds.x-1;
-      bounds.height-=bounds.y-1;
+      bounds.width-=(bounds.x-1);
+      bounds.height-=(bounds.y-1);
     }
   if (bounds.x < 0)
     bounds.x=0;
@@ -3589,6 +3591,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   compression=Group4Compression;
                 if (LocaleCompare("JPEG",option) == 0)
                   compression=JPEGCompression;
+                if (LocaleCompare("Lossless",option) == 0)
+                  compression=LosslessJPEGCompression;
                 if (LocaleCompare("LZW",option) == 0)
                   compression=LZWCompression;
                 if (LocaleCompare("RunlengthEncoded",option) == 0)

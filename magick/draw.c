@@ -1441,11 +1441,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("text",keyword) == 0)
           {
             primitive_type=TextPrimitive;
-            if (graphic_context[n]->stroke.opacity == TransparentOpacity)
-              {
-                (void) QueryColorDatabase("black",&graphic_context[n]->fill);
-                graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
-              }
             break;
           }
         if (LocaleCompare("text-antialias",keyword) == 0)

@@ -70,6 +70,16 @@
 #endif
 
 #if defined(HasAUTOTRACE)
+#include "types.h"
+#include "image-header.h"
+#include "fit.h"
+#include "output.h"
+#include "pxl-outline.h"
+#include "atquantize.h"
+#include "thin-image.h"
+
+char
+  *version_string = "AutoTrace version 0.24a";
 /*
   Forward declarations.
 */
@@ -2181,16 +2191,6 @@ ModuleExport void UnregisterSVGImage(void)
 }
 
 #if defined(HasAUTOTRACE)
-/* autotrace -- convert bitmaps to splines. */
-#include "types.h"
-#include "image-header.h"
-#include "fit.h"
-#include "output.h"
-#include "pxl-outline.h"
-#include "atquantize.h"
-#include "thin-image.h" 
-
-char *version_string = "AutoTrace version 0.24a";
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -2226,26 +2226,23 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   FILE
     *output_file;
 
-  bool
-    thin;
-
-  fitting_opts_type
-    fitting_opts;
+  fit_info_type
+    fit_info;
 
   image_header_type
     image_header;
-
-  pixel_outline_list_type
-    pixels;
-
-  spline_list_array_type
-    splines;
 
   bitmap_type
     bitmap;
 
   ImageType
     image_type;
+
+  int
+    j;
+
+  pixel_outline_list_type
+    pixels;
 
   PixelPacket
     p;
@@ -2254,70 +2251,72 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     *pixel;
 
   QuantizeObj
-    *myQuant;
+    *quantize_info;
+
+  spline_list_array_type
+    splines;
 
   output_write
     output_writer;
 
+  register int
+    i;
+
   unsigned int
-    i,
-    j,
+    number_planes,
     point,
-    np;
+    thin;
 
-  thin = false;
-  myQuant = NULL;
-  pixel=&p;
-
-  fitting_opts = new_fitting_opts ();
-
-  output_writer = output_get_handler("svg");
+  thin=False;
+  quantize_info=(QuantizeObj *) NULL;
+  pixel=(&p);
+  fit_info=new_fit_info();
+  output_writer=output_get_handler("svg");
   if (output_writer == NULL)
     ThrowWriterException(FileOpenWarning,"Unable to write svg format",image);
-
   image_type=GetImageType(image);
-  if(image_type == BilevelType || image_type == GrayscaleType)
-    np=1;
-  else
-    np=3;
-
-  bitmap.np=np;
+  number_planes=3;
+  if ((image_type == BilevelType) || (image_type == GrayscaleType))
+    number_planes=1;
+  bitmap.np=number_planes;
   bitmap.dimensions.width=image->columns;
   bitmap.dimensions.height=image->rows;
-  bitmap.bitmap=(unsigned char*)AcquireMemory(np*image->columns*image->rows);
-  for(j=0,point=0;j<image->rows;j++)
+  bitmap.bitmap=(unsigned char *)
+    AcquireMemory(number_planes*image->columns*image->rows);
+  if (bitmap.bitmap == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      image);
+  point=0;
+  for(j=0; j < image->rows; j++)
   {
-    for(i=0;i<image->columns;i++)
+    for(i=0; i < image->columns; i++)
     {
       p=GetOnePixel(image,i,j);
-      bitmap.bitmap[point++]=pixel->red; /* if gray: red=green=blue */
-      if (np==3)
-      {
-        bitmap.bitmap[point++]=pixel->green;
-        bitmap.bitmap[point++]=pixel->blue;
-      }
+      bitmap.bitmap[point++]=pixel->red;
+      if (number_planes == 3)
+        {
+          bitmap.bitmap[point++]=pixel->green;
+          bitmap.bitmap[point++]=pixel->blue;
+        }
     }
   }
-  image_header.width = DIMENSIONS_WIDTH (bitmap.dimensions);
-  image_header.height = DIMENSIONS_HEIGHT (bitmap.dimensions);
-
-  if (fitting_opts.color_count > 0 && BITMAP_PLANES(bitmap)== 3)
-    quantize (bitmap.bitmap, bitmap.bitmap, DIMENSIONS_WIDTH (bitmap.dimensions),
-      DIMENSIONS_HEIGHT (bitmap.dimensions), fitting_opts.color_count,
-      fitting_opts.bgColor, &myQuant);
+  image_header.width=DIMENSIONS_WIDTH(bitmap.dimensions);
+  image_header.height=DIMENSIONS_HEIGHT(bitmap.dimensions);
+  if ((fit_info.color_count > 0) && (BITMAP_PLANES(bitmap) == 3))
+    quantize(bitmap.bitmap,bitmap.bitmap,DIMENSIONS_WIDTH(bitmap.dimensions),
+      DIMENSIONS_HEIGHT(bitmap.dimensions),fit_info.color_count,
+      fit_info.bgColor,&quantize_info);
   if (thin)
-    thin_image (&bitmap); 
- 
-  pixels = find_outline_pixels (bitmap);
+    thin_image(&bitmap);
+  pixels=find_outline_pixels (bitmap);
   LiberateMemory((void **) &(bitmap.bitmap));
-  splines = fitted_splines (pixels, &fitting_opts);
-
-  output_file = fopen(image->filename, "w");
+  splines=fitted_splines(pixels,&fit_info);
+  output_file=fopen(image->filename,"w");
   if (output_file == (FILE *) NULL)
-    ThrowWriterException(FileOpenWarning,"Unable to open the output file",image);
-  output_writer (output_file, image->filename,
-		0, 0, image_header.width, image_header.height, splines);
-  
+    ThrowWriterException(FileOpenWarning,"Unable to open the output file",
+      image);
+  output_writer(output_file,image->filename,0,0,image_header.width,
+    image_header.height,splines);
   return(True);
 }
 #endif

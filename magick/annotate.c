@@ -120,7 +120,8 @@ MagickExport unsigned int AnnotateImage(Image *image,
     y;
 
   PointInfo
-    offset;
+    offset,
+    resolution;
 
   register int
     i;
@@ -189,8 +190,23 @@ MagickExport unsigned int AnnotateImage(Image *image,
       if ((flags & HeightValue) == 0)
         height-=2*y > height ? height : 2*y;
     }
+  resolution.x=72.0;
+  resolution.y=72.0;
+  if (annotate_info->density != (char *) NULL)
+    {
+      int
+        count;
+
+      count=sscanf(annotate_info->density,"%lfx%lf",&resolution.x,
+        &resolution.y);
+      if (count != 2)
+        resolution.y=resolution.x;
+    }
   clone_info=CloneAnnotateInfo((ImageInfo *) NULL,annotate_info);
-  font_height=ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
+  if (clone_info->fill.opacity == TransparentOpacity)
+    clone_info->fill.opacity=OpaqueOpacity;
+  font_height=(unsigned int) ceil((resolution.y/72.0)*
+    ExpandAffine(&annotate_info->affine)*annotate_info->pointsize-0.5);
   matte=image->matte;
   status=True;
   for (i=0; textlist[i] != (char *) NULL; i++)
@@ -856,7 +872,7 @@ static unsigned int RenderTruetype(Image *image,
     if ((bitmap->bitmap.width == 0) || (bitmap->bitmap.rows == 0))
       continue;
     point.x=offset->x+bitmap->left-bounds->x1;
-    point.y=offset->y+bounds->y2-bitmap->top-3.0*
+    point.y=offset->y+bounds->y2-bitmap->top-3.0*(resolution.y/72.0)*
       ExpandAffine(&annotate_info->affine)*annotate_info->pointsize/4.0+1.5;
     p=bitmap->bitmap.buffer;
     for (y=0; y < bitmap->bitmap.rows; y++)
@@ -944,7 +960,9 @@ static unsigned int RenderPostscript(Image *image,
 
   PointInfo
     extent,
-    point;
+    point,
+    resolution;
+
 
   register int
     i,
@@ -1013,6 +1031,8 @@ static unsigned int RenderPostscript(Image *image,
   clone_info=CloneImageInfo((ImageInfo *) NULL);
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,geometry);
+  if (annotate_info->density != (char *) NULL)
+    (void) CloneString(&clone_info->density,annotate_info->density);
   GetExceptionInfo(&exception);
   annotate_image=ReadImage(clone_info,&exception);
   DestroyImageInfo(clone_info);
@@ -1020,6 +1040,18 @@ static unsigned int RenderPostscript(Image *image,
   (void) remove(filename);
   if (annotate_image == (Image *) NULL)
     return(False);
+  resolution.x=72.0;
+  resolution.y=72.0;
+  if (annotate_info->density != (char *) NULL)
+    {
+      int
+        count;
+
+      count=sscanf(annotate_info->density,"%lfx%lf",&resolution.x,
+        &resolution.y);
+      if (count != 2)
+        resolution.y=resolution.x;
+    }
   if (!identity)
     TransformImage(&annotate_image,"0x0",(char *) NULL);
   else
@@ -1028,18 +1060,19 @@ static unsigned int RenderPostscript(Image *image,
         crop_info;
 
       crop_info=GetImageBoundingBox(annotate_image);
-      crop_info.height=(unsigned int) ceil(
+      crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
         ExpandAffine(&annotate_info->affine)*annotate_info->pointsize-0.5);
-      crop_info.y=(int) ceil(extent.y/8.0-0.5);
+      crop_info.y=(int) ceil((resolution.y/72.0)*extent.y/8.0+0.5);
       (void) FormatString(geometry,"%ux%u%+d%+d",crop_info.width,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
     }
-  font_height=ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
-  bounds->x1=0.0;
-  bounds->y1=(font_height/-4.0)+1.5;
+  font_height=(resolution.y/72.0)*
+    ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
+  bounds->y1=ceil(-font_height/4.8-0.5);
+  bounds->x1=ceil(-bounds->y1/4.0-0.5);
   bounds->x2=annotate_image->columns;
-  bounds->y2=(3.0*font_height/4.0)-1.5;
+  bounds->y2=floor(3.0*font_height/4.0-0.5);
   if (!render)
     {
       DestroyImage(annotate_image);

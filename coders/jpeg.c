@@ -652,12 +652,20 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 #ifdef D_LOSSLESS_SUPPORTED
   image->interlace=
     jpeg_info.process == JPROC_PROGRESSIVE ? PlaneInterlace : NoInterlace;
-# else
+  image->compression=jpeg_info.process == JPROC_LOSSLESS ?
+    LosslessJPEGCompression : JPEGCompression;
+  if (jpeg_info.data_precision > QuantumDepth)
+    MagickWarning(OptionWarning,
+      "12-bit JPEG not supported. Reducing pixel data to 8 bits",(char *) NULL);
+#else
   image->interlace=jpeg_info.progressive_mode ? PlaneInterlace : NoInterlace;
-# endif
+  image->compression=JPEGCompression;
+#endif
+#else
+  image->compression=JPEGCompression;
+  image->interlace=PlaneInterlace;
 #endif
   jpeg_start_decompress(&jpeg_info);
-  image->compression=JPEGCompression;
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
   image->depth=jpeg_info.data_precision <= 8 ? 8 : QuantumDepth;
@@ -1185,27 +1193,29 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       jpeg_info.comp_info[i].h_samp_factor=1;
       jpeg_info.comp_info[i].v_samp_factor=1;
     }
-  jpeg_set_quality(&jpeg_info,image_info->quality,True);
   jpeg_info.optimize_coding=True;
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
   if (image_info->interlace != NoInterlace)
     jpeg_simple_progression(&jpeg_info);
 #endif
-  if (image_info->quality > 100)
+  if ((image->compression == LosslessJPEGCompression) ||
+      (image_info->quality > 100))
 #if defined(C_LOSSLESS_SUPPORTED)
-    {
-      int
-	point_transform,
-	predictor;
+    if (image_info->quality < 100)
+       MagickWarning(OptionWarning,
+         "Lossless JPEG is being converted to lossy JPEG",(char *) NULL);
+    else
+      {
+        int
+          point_transform,
+          predictor;
 
-      predictor=image_info->quality/1000;  /* range 1-7 */
-      point_transform=image_info->quality % 100;  /* range 0-15 */
-      jpeg_simple_lossless(&jpeg_info,predictor,point_transform);
-    }
-#else
-    ThrowBinaryException(DelegateWarning,
-      "Lossless JPEG not supported, using quality 100",image->filename);
+        predictor=image_info->quality/100;  /* range 1-7 */
+        point_transform=image_info->quality % 20;  /* range 0-15 */
+        jpeg_simple_lossless(&jpeg_info,predictor,point_transform);
+      }
 #endif
+  jpeg_set_quality(&jpeg_info,image_info->quality,True);
   jpeg_start_compress(&jpeg_info,True);
   /*
     Write JPEG profiles.
