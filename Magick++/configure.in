@@ -59,6 +59,15 @@ AC_PROG_LN_S
 AC_PROG_RANLIB
 
 #
+# Configure libtool
+#
+AM_ENABLE_SHARED(no)
+AM_ENABLE_STATIC(yes)
+# AC_PROG_LIBTOOL must appear before AC_LIBTOOL_CXX
+AC_PROG_LIBTOOL
+AC_LIBTOOL_CXX
+
+#
 # Obtain ImageMagick compilation options from installed Magick-config script.
 #
 AC_MSG_CHECKING(pre-processor flags)
@@ -75,14 +84,6 @@ AC_MSG_RESULT("$LDFLAGS")
 #AC_MSG_RESULT("$LIBS")
 LIBS="$LIBS -lMagick"
 
-#
-# Configure libtool
-#
-AM_ENABLE_SHARED(no)
-AM_ENABLE_STATIC(yes)
-# AC_PROG_LIBTOOL must appear before AC_LIBTOOL_CXX
-AC_PROG_LIBTOOL
-AC_LIBTOOL_CXX
 
 # Add configure option --enable-maintainer-mode which enables dependency
 # checking and generation useful to package maintainers.  This is made an
