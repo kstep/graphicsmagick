@@ -1,3 +1,11 @@
+2001-12-20  Bob Friesenhahn  <bfriesen@sun1107.ssd.usa.alcatel.com>
+
+	* lib/TypeMetric.cpp (characterWidth): Eliminate method.
+	(characterHeight): Eliminate method.
+	(all remaining methods): Change return type to 'double'.  Fix
+ 	documentation in source files to reflect that units are in pixels
+ 	rather than points.
+
 2001-11-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (Magick): Invoke DestroyMagick() to clean up

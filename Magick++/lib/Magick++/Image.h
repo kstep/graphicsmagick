@@ -676,7 +676,8 @@ namespace Magick
     void            fontPointsize ( double pointSize_ );
     double          fontPointsize ( void ) const;
 
-    // Font type metrics
+    // Obtain font metrics for text string given current font,
+    // pointsize, and density settings.
     void            fontTypeMetrics( const std::string &text_,
                                      TypeMetric *metrics );
 

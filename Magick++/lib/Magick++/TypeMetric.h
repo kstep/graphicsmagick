@@ -22,33 +22,23 @@ namespace Magick
     TypeMetric ( void );
     ~TypeMetric ( void );
 
-    // Character width, expressed in integer pixels
-    unsigned int  characterWidth ( void );
+    // Ascent, the distance in pixels from the text baseline to the
+    // highest/upper grid coordinate used to place an outline point.
+    double         ascent ( void );
 
-    // Character height, expressed in integer pixels
-    unsigned int  characterHeight ( void );
-
-    // Ascent, the distance from the baseline to the highest/upper
+    // Descent, the distance in pixels from the baseline to the lowest
     // grid coordinate used to place an outline point. Always a
-    // positive value.  Expressed in 26.6 fixed point pixels
-    int           ascent ( void );
+    // negative value.
+    double         decent ( void );
 
-    // Descent, the distance from the baseline to the lowest grid
-    // coordinate used to place an outline point. Always a negative
-    // value.  Expressed in 26.6 format (i.e. in 1/64ths of a pixel)
-    int           decent ( void );
+    // Text width in pixels.
+    double         textWidth ( void );
 
-    // Text width. Expressed in 26.6 format (i.e. in 1/64ths of a
-    // pixel).
-    unsigned int  textWidth ( void );
+    // Text height in pixels.
+    double         textHeight ( void );
 
-    // Text height. Expressed in 26.6 format (i.e. in 1/64ths of a
-    // pixel).
-    unsigned int  textHeight ( void );
-
-    // Maximum horizontal advance. Expressed in 26.6 format (i.e. in
-    // 1/64ths of a pixel).
-    unsigned int  maxHorizontalAdvance ( void );
+    // Maximum horizontal advance in pixels.
+    double         maxHorizontalAdvance ( void );
 
     //
     // Public methods below this point are for Magick++ use only.
