@@ -30,13 +30,13 @@ while test $# -gt 0; do
       echo '@CFLAGS@'
       ;;
     --cppflags)
-      echo "@CPPFLAGS@"
+      echo "-I@INCLUDE_DIR@ @CPPFLAGS@"
       ;;
     --ldflags)
-      echo '@LDFLAGS@'
+      echo '-L@LIB_DIR@ @LDFLAGS@'
       ;;
     --libs)
-      LIBS="@MAGICKLIB@ @MAGICK_DEP_LIBS@"
+      LIBS="-lMagick @MAGICK_DEP_LIBS@"
       echo "$LIBS"
       ;;
     *)

@@ -6001,7 +6001,7 @@ EOF
       # If the export-symbols file already is a .def file (1st line
       # is EXPORTS), use it as is.
       # If DATA tags from a recent dlltool are present, honour them!
-      archive_expsym_cmds='if test "x`head -1 $export_symbols`" = xEXPORTS; then
+      archive_expsym_cmds='if test "x`sed 1q $export_symbols`" = xEXPORTS; then
 	  cp $export_symbols $output_objdir/$soname-def;
 	else
 	  echo EXPORTS > $output_objdir/$soname-def;
@@ -12006,7 +12006,7 @@ EOF
       # If the export-symbols file already is a .def file (1st line
       # is EXPORTS), use it as is.
       # If DATA tags from a recent dlltool are present, honour them!
-      archive_expsym_cmds_GCJ='if test "x`head -1 $export_symbols`" = xEXPORTS; then
+      archive_expsym_cmds_GCJ='if test "x`sed 1q $export_symbols`" = xEXPORTS; then
 	  cp $export_symbols $output_objdir/$soname-def;
 	else
 	  echo EXPORTS > $output_objdir/$soname-def;
@@ -27356,9 +27356,53 @@ _ACEOF
 
 
 
-# Locate delegates
-# Extract the first word of "autotrace", so it can be a program name with args.
-set dummy autotrace; ac_word=$2
+# Default delegate definitions
+AutotraceDecodeDelegateDefault='autotrace'
+BZIPDelegateDefault='bzip2'
+BrowseDelegateDefault='netscape'
+CGMDecodeDelegateDefault='ralcgm'
+CatDelegateDefault='cat'
+ConvertDelegateDefault='convert'
+DOTDecodeDelegateDefault='dot'
+DVIDecodeDelegateDefault='dvips'
+EchoDelegateDefault='echo'
+EditorDelegateDefault='xterm'
+FIGDecodeDelegateDefault='fig2dev'
+GnuplotDecodeDelegateDefault='gnuplot'
+HPGLDecodeDelegateDefault='hp2xx'
+HTMLDecodeDelegateDefault='html2ps'
+ILBMDecodeDelegateDefault='ilbmtoppm'
+ILBMEncodeDelegateDefault='ppmtoilbm'
+LPDelegateDefault='lp'
+LPRDelegateDefault='lpr'
+LZWDecodeDelegateDefault='uncompress'
+LZWEncodeDelegateDefault='compress'
+LaunchDelegateDefault='gimp'
+MANDelegateDefault='groff'
+MPEGDecodeDelegateDefault='mpeg2decode'
+MPEGEncodeDelegateDefault='mpeg2encode'
+MVDelegateDefault='mv'
+MogrifyDelegateDefault='mogrify'
+PGPDecodeDelegateDefault='pgpv'
+POVDelegateDefault='povray'
+if test "$native_win32_build" = 'yes' ; then
+  PSDelegateDefault='gswin32c'
+else
+  PSDelegateDefault='gs'
+fi
+RADDecodeDelegateDefault='ra_ppm'
+RLEEncodeDelegateDefault='rawtorle'
+RMDelegateDefault='rm'
+SCANDecodeDelegateDefault='scanimage'
+ShowImageDelegateDefault='display'
+TXTDelegateDefault='enscript'
+WMFDecodeDelegateDefault='wmf2eps'
+WWWDecodeDelegateDefault='wget'
+ZipDelegateDefault='gzip'
+
+# Search for delegates
+# Extract the first word of ""$AutotraceDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$AutotraceDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_AutotraceDecodeDelegate+set}" = set; then
@@ -27383,7 +27427,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_AutotraceDecodeDelegate" && ac_cv_path_AutotraceDecodeDelegate="autotrace"
+  test -z "$ac_cv_path_AutotraceDecodeDelegate" && ac_cv_path_AutotraceDecodeDelegate=""$AutotraceDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -27397,8 +27441,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "bzip2", so it can be a program name with args.
-set dummy bzip2; ac_word=$2
+# Extract the first word of ""$BZIPDelegateDefault"", so it can be a program name with args.
+set dummy "$BZIPDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_BZIPDelegate+set}" = set; then
@@ -27423,7 +27467,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_BZIPDelegate" && ac_cv_path_BZIPDelegate="bzip2"
+  test -z "$ac_cv_path_BZIPDelegate" && ac_cv_path_BZIPDelegate=""$BZIPDelegateDefault""
   ;;
 esac
 fi
@@ -27437,8 +27481,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "netscape", so it can be a program name with args.
-set dummy netscape; ac_word=$2
+# Extract the first word of ""$BrowseDelegateDefault"", so it can be a program name with args.
+set dummy "$BrowseDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_BrowseDelegate+set}" = set; then
@@ -27463,7 +27507,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_BrowseDelegate" && ac_cv_path_BrowseDelegate="netscape"
+  test -z "$ac_cv_path_BrowseDelegate" && ac_cv_path_BrowseDelegate=""$BrowseDelegateDefault""
   ;;
 esac
 fi
@@ -27477,8 +27521,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "ralcgm", so it can be a program name with args.
-set dummy ralcgm; ac_word=$2
+# Extract the first word of ""$CGMDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$CGMDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_CGMDecodeDelegate+set}" = set; then
@@ -27503,7 +27547,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_CGMDecodeDelegate" && ac_cv_path_CGMDecodeDelegate="ralcgm"
+  test -z "$ac_cv_path_CGMDecodeDelegate" && ac_cv_path_CGMDecodeDelegate=""$CGMDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -27517,8 +27561,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "cat", so it can be a program name with args.
-set dummy cat; ac_word=$2
+# Extract the first word of ""$CatDelegateDefault"", so it can be a program name with args.
+set dummy "$CatDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_CatDelegate+set}" = set; then
@@ -27543,7 +27587,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_CatDelegate" && ac_cv_path_CatDelegate="cat"
+  test -z "$ac_cv_path_CatDelegate" && ac_cv_path_CatDelegate=""$CatDelegateDefault""
   ;;
 esac
 fi
@@ -27557,8 +27601,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "dot", so it can be a program name with args.
-set dummy dot; ac_word=$2
+# Extract the first word of ""$DOTDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$DOTDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_DOTDecodeDelegate+set}" = set; then
@@ -27583,7 +27627,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_DOTDecodeDelegate" && ac_cv_path_DOTDecodeDelegate="dot"
+  test -z "$ac_cv_path_DOTDecodeDelegate" && ac_cv_path_DOTDecodeDelegate=""$DOTDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -27597,8 +27641,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "dvips", so it can be a program name with args.
-set dummy dvips; ac_word=$2
+# Extract the first word of ""$DVIDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$DVIDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_DVIDecodeDelegate+set}" = set; then
@@ -27623,7 +27667,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_DVIDecodeDelegate" && ac_cv_path_DVIDecodeDelegate="dvips"
+  test -z "$ac_cv_path_DVIDecodeDelegate" && ac_cv_path_DVIDecodeDelegate=""$DVIDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -27637,8 +27681,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "echo", so it can be a program name with args.
-set dummy echo; ac_word=$2
+# Extract the first word of ""$EchoDelegateDefault"", so it can be a program name with args.
+set dummy "$EchoDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_EchoDelegate+set}" = set; then
@@ -27663,7 +27707,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_EchoDelegate" && ac_cv_path_EchoDelegate="echo"
+  test -z "$ac_cv_path_EchoDelegate" && ac_cv_path_EchoDelegate=""$EchoDelegateDefault""
   ;;
 esac
 fi
@@ -27677,8 +27721,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "xterm", so it can be a program name with args.
-set dummy xterm; ac_word=$2
+# Extract the first word of ""$EditorDelegateDefault"", so it can be a program name with args.
+set dummy "$EditorDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_EditorDelegate+set}" = set; then
@@ -27703,7 +27747,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_EditorDelegate" && ac_cv_path_EditorDelegate="xterm"
+  test -z "$ac_cv_path_EditorDelegate" && ac_cv_path_EditorDelegate=""$EditorDelegateDefault""
   ;;
 esac
 fi
@@ -27717,8 +27761,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "fig2dev", so it can be a program name with args.
-set dummy fig2dev; ac_word=$2
+# Extract the first word of ""$FIGDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$FIGDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_FIGDecodeDelegate+set}" = set; then
@@ -27743,7 +27787,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_FIGDecodeDelegate" && ac_cv_path_FIGDecodeDelegate="fig2dev"
+  test -z "$ac_cv_path_FIGDecodeDelegate" && ac_cv_path_FIGDecodeDelegate=""$FIGDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -27757,8 +27801,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "gnuplot", so it can be a program name with args.
-set dummy gnuplot; ac_word=$2
+# Extract the first word of ""$GnuplotDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$GnuplotDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_GnuplotDecodeDelegate+set}" = set; then
@@ -27783,7 +27827,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_GnuplotDecodeDelegate" && ac_cv_path_GnuplotDecodeDelegate="gnuplot"
+  test -z "$ac_cv_path_GnuplotDecodeDelegate" && ac_cv_path_GnuplotDecodeDelegate=""$GnuplotDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -27797,8 +27841,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "hp2xx", so it can be a program name with args.
-set dummy hp2xx; ac_word=$2
+# Extract the first word of ""$HPGLDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$HPGLDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_HPGLDecodeDelegate+set}" = set; then
@@ -27823,7 +27867,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_HPGLDecodeDelegate" && ac_cv_path_HPGLDecodeDelegate="hp2xx"
+  test -z "$ac_cv_path_HPGLDecodeDelegate" && ac_cv_path_HPGLDecodeDelegate=""$HPGLDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -27837,8 +27881,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "html2ps", so it can be a program name with args.
-set dummy html2ps; ac_word=$2
+# Extract the first word of ""$HTMLDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$HTMLDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_HTMLDecodeDelegate+set}" = set; then
@@ -27863,7 +27907,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_HTMLDecodeDelegate" && ac_cv_path_HTMLDecodeDelegate="html2ps"
+  test -z "$ac_cv_path_HTMLDecodeDelegate" && ac_cv_path_HTMLDecodeDelegate=""$HTMLDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -27877,8 +27921,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "ilbmtoppm", so it can be a program name with args.
-set dummy ilbmtoppm; ac_word=$2
+# Extract the first word of ""$ILBMDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$ILBMDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_ILBMDecodeDelegate+set}" = set; then
@@ -27903,7 +27947,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_ILBMDecodeDelegate" && ac_cv_path_ILBMDecodeDelegate="ilbmtoppm"
+  test -z "$ac_cv_path_ILBMDecodeDelegate" && ac_cv_path_ILBMDecodeDelegate=""$ILBMDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -27917,8 +27961,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "ppmtoilbm", so it can be a program name with args.
-set dummy ppmtoilbm; ac_word=$2
+# Extract the first word of ""$ILBMEncodeDelegateDefault"", so it can be a program name with args.
+set dummy "$ILBMEncodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_ILBMEncodeDelegate+set}" = set; then
@@ -27943,7 +27987,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_ILBMEncodeDelegate" && ac_cv_path_ILBMEncodeDelegate="ppmtoilbm"
+  test -z "$ac_cv_path_ILBMEncodeDelegate" && ac_cv_path_ILBMEncodeDelegate=""$ILBMEncodeDelegateDefault""
   ;;
 esac
 fi
@@ -27957,8 +28001,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "lp", so it can be a program name with args.
-set dummy lp; ac_word=$2
+# Extract the first word of ""$LPDelegateDefault"", so it can be a program name with args.
+set dummy "$LPDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_LPDelegate+set}" = set; then
@@ -27997,8 +28041,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "lpr", so it can be a program name with args.
-set dummy lpr; ac_word=$2
+# Extract the first word of ""$LPRDelegateDefault"", so it can be a program name with args.
+set dummy "$LPRDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_LPRDelegate+set}" = set; then
@@ -28037,8 +28081,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "uncompress", so it can be a program name with args.
-set dummy uncompress; ac_word=$2
+# Extract the first word of ""$LZWDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$LZWDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_LZWDecodeDelegate+set}" = set; then
@@ -28063,7 +28107,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_LZWDecodeDelegate" && ac_cv_path_LZWDecodeDelegate="uncompress"
+  test -z "$ac_cv_path_LZWDecodeDelegate" && ac_cv_path_LZWDecodeDelegate=""$LZWDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -28077,8 +28121,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "compress", so it can be a program name with args.
-set dummy compress; ac_word=$2
+# Extract the first word of ""$LZWEncodeDelegateDefault"", so it can be a program name with args.
+set dummy "$LZWEncodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_LZWEncodeDelegate+set}" = set; then
@@ -28103,7 +28147,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_LZWEncodeDelegate" && ac_cv_path_LZWEncodeDelegate="compress"
+  test -z "$ac_cv_path_LZWEncodeDelegate" && ac_cv_path_LZWEncodeDelegate=""$LZWEncodeDelegateDefault""
   ;;
 esac
 fi
@@ -28117,8 +28161,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "gimp", so it can be a program name with args.
-set dummy gimp; ac_word=$2
+# Extract the first word of ""$LaunchDelegateDefault"", so it can be a program name with args.
+set dummy "$LaunchDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_LaunchDelegate+set}" = set; then
@@ -28143,7 +28187,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_LaunchDelegate" && ac_cv_path_LaunchDelegate="gimp"
+  test -z "$ac_cv_path_LaunchDelegate" && ac_cv_path_LaunchDelegate=""$LaunchDelegateDefault""
   ;;
 esac
 fi
@@ -28157,8 +28201,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "groff", so it can be a program name with args.
-set dummy groff; ac_word=$2
+# Extract the first word of ""$MANDelegateDefault"", so it can be a program name with args.
+set dummy "$MANDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_MANDelegate+set}" = set; then
@@ -28183,7 +28227,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_MANDelegate" && ac_cv_path_MANDelegate="groff"
+  test -z "$ac_cv_path_MANDelegate" && ac_cv_path_MANDelegate=""$MANDelegateDefault""
   ;;
 esac
 fi
@@ -28197,8 +28241,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "mpeg2decode", so it can be a program name with args.
-set dummy mpeg2decode; ac_word=$2
+# Extract the first word of ""$MPEGDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$MPEGDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_MPEGDecodeDelegate+set}" = set; then
@@ -28223,7 +28267,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_MPEGDecodeDelegate" && ac_cv_path_MPEGDecodeDelegate="mpeg2decode"
+  test -z "$ac_cv_path_MPEGDecodeDelegate" && ac_cv_path_MPEGDecodeDelegate=""$MPEGDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -28237,8 +28281,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "mpeg2encode", so it can be a program name with args.
-set dummy mpeg2encode; ac_word=$2
+# Extract the first word of ""$MPEGEncodeDelegateDefault"", so it can be a program name with args.
+set dummy "$MPEGEncodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_MPEGEncodeDelegate+set}" = set; then
@@ -28263,7 +28307,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_MPEGEncodeDelegate" && ac_cv_path_MPEGEncodeDelegate="mpeg2encode"
+  test -z "$ac_cv_path_MPEGEncodeDelegate" && ac_cv_path_MPEGEncodeDelegate=""$MPEGEncodeDelegateDefault""
   ;;
 esac
 fi
@@ -28277,8 +28321,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "mv", so it can be a program name with args.
-set dummy mv; ac_word=$2
+# Extract the first word of ""$MVDelegateDefault"", so it can be a program name with args.
+set dummy "$MVDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_MVDelegate+set}" = set; then
@@ -28303,7 +28347,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_MVDelegate" && ac_cv_path_MVDelegate="mv"
+  test -z "$ac_cv_path_MVDelegate" && ac_cv_path_MVDelegate=""$MVDelegateDefault""
   ;;
 esac
 fi
@@ -28317,8 +28361,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "pgpv", so it can be a program name with args.
-set dummy pgpv; ac_word=$2
+# Extract the first word of ""$PGPDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$PGPDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_PGPDecodeDelegate+set}" = set; then
@@ -28343,7 +28387,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_PGPDecodeDelegate" && ac_cv_path_PGPDecodeDelegate="pgpv"
+  test -z "$ac_cv_path_PGPDecodeDelegate" && ac_cv_path_PGPDecodeDelegate=""$PGPDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -28357,8 +28401,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "povray", so it can be a program name with args.
-set dummy povray; ac_word=$2
+# Extract the first word of ""$POVDelegateDefault"", so it can be a program name with args.
+set dummy "$POVDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_POVDelegate+set}" = set; then
@@ -28383,7 +28427,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_POVDelegate" && ac_cv_path_POVDelegate="povray"
+  test -z "$ac_cv_path_POVDelegate" && ac_cv_path_POVDelegate=""$POVDelegateDefault""
   ;;
 esac
 fi
@@ -28397,10 +28441,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-if test "$native_win32_build" = 'yes'
-then
-  # Extract the first word of "gswin32c", so it can be a program name with args.
-set dummy gswin32c; ac_word=$2
+# Extract the first word of ""$PSDelegateDefault"", so it can be a program name with args.
+set dummy "$PSDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_PSDelegate+set}" = set; then
@@ -28425,7 +28467,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_PSDelegate" && ac_cv_path_PSDelegate="gswin32c"
+  test -z "$ac_cv_path_PSDelegate" && ac_cv_path_PSDelegate=""$PSDelegateDefault""
   ;;
 esac
 fi
@@ -28439,50 +28481,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-else
-  # Extract the first word of "gs", so it can be a program name with args.
-set dummy gs; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_path_PSDelegate+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  case $PSDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_PSDelegate="$PSDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_PSDelegate="$as_dir/$ac_word$ac_exec_ext"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
-  test -z "$ac_cv_path_PSDelegate" && ac_cv_path_PSDelegate="gs"
-  ;;
-esac
-fi
-PSDelegate=$ac_cv_path_PSDelegate
-
-if test -n "$PSDelegate"; then
-  echo "$as_me:$LINENO: result: $PSDelegate" >&5
-echo "${ECHO_T}$PSDelegate" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-fi
-# Extract the first word of "ra_ppm", so it can be a program name with args.
-set dummy ra_ppm; ac_word=$2
+# Extract the first word of ""$RADDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$RADDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_RADDecodeDelegate+set}" = set; then
@@ -28507,7 +28507,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_RADDecodeDelegate" && ac_cv_path_RADDecodeDelegate="ra_ppm"
+  test -z "$ac_cv_path_RADDecodeDelegate" && ac_cv_path_RADDecodeDelegate=""$RADDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -28521,8 +28521,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "rawtorle", so it can be a program name with args.
-set dummy rawtorle; ac_word=$2
+# Extract the first word of ""$RLEEncodeDelegateDefault"", so it can be a program name with args.
+set dummy "$RLEEncodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_RLEEncodeDelegate+set}" = set; then
@@ -28547,7 +28547,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_RLEEncodeDelegate" && ac_cv_path_RLEEncodeDelegate="rawtorle"
+  test -z "$ac_cv_path_RLEEncodeDelegate" && ac_cv_path_RLEEncodeDelegate=""$RLEEncodeDelegateDefault""
   ;;
 esac
 fi
@@ -28561,8 +28561,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "rm", so it can be a program name with args.
-set dummy rm; ac_word=$2
+# Extract the first word of ""$RMDelegateDefault"", so it can be a program name with args.
+set dummy "$RMDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_RMDelegate+set}" = set; then
@@ -28587,7 +28587,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_RMDelegate" && ac_cv_path_RMDelegate="rm"
+  test -z "$ac_cv_path_RMDelegate" && ac_cv_path_RMDelegate=""$RMDelegateDefault""
   ;;
 esac
 fi
@@ -28601,8 +28601,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "scanimage", so it can be a program name with args.
-set dummy scanimage; ac_word=$2
+# Extract the first word of ""$SCANDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$SCANDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_SCANDecodeDelegate+set}" = set; then
@@ -28627,7 +28627,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_SCANDecodeDelegate" && ac_cv_path_SCANDecodeDelegate="scanimage"
+  test -z "$ac_cv_path_SCANDecodeDelegate" && ac_cv_path_SCANDecodeDelegate=""$SCANDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -28641,8 +28641,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "enscript", so it can be a program name with args.
-set dummy enscript; ac_word=$2
+# Extract the first word of ""$TXTDelegateDefault"", so it can be a program name with args.
+set dummy "$TXTDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_TXTDelegate+set}" = set; then
@@ -28667,7 +28667,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_TXTDelegate" && ac_cv_path_TXTDelegate="enscript"
+  test -z "$ac_cv_path_TXTDelegate" && ac_cv_path_TXTDelegate=""$TXTDelegateDefault""
   ;;
 esac
 fi
@@ -28681,8 +28681,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "wmf2eps", so it can be a program name with args.
-set dummy wmf2eps; ac_word=$2
+# Extract the first word of ""$WMFDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$WMFDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_WMFDecodeDelegate+set}" = set; then
@@ -28707,7 +28707,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_WMFDecodeDelegate" && ac_cv_path_WMFDecodeDelegate="wmf2eps"
+  test -z "$ac_cv_path_WMFDecodeDelegate" && ac_cv_path_WMFDecodeDelegate=""$WMFDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -28721,8 +28721,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "wget", so it can be a program name with args.
-set dummy wget; ac_word=$2
+# Extract the first word of ""$WWWDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$WWWDecodeDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_WWWDecodeDelegate+set}" = set; then
@@ -28747,7 +28747,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_WWWDecodeDelegate" && ac_cv_path_WWWDecodeDelegate="wget"
+  test -z "$ac_cv_path_WWWDecodeDelegate" && ac_cv_path_WWWDecodeDelegate=""$WWWDecodeDelegateDefault""
   ;;
 esac
 fi
@@ -28761,8 +28761,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "gzip", so it can be a program name with args.
-set dummy gzip; ac_word=$2
+# Extract the first word of ""$ZipDelegateDefault"", so it can be a program name with args.
+set dummy "$ZipDelegateDefault"; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_ZipDelegate+set}" = set; then
@@ -28787,7 +28787,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_ZipDelegate" && ac_cv_path_ZipDelegate="gzip"
+  test -z "$ac_cv_path_ZipDelegate" && ac_cv_path_ZipDelegate=""$ZipDelegateDefault""
   ;;
 esac
 fi
@@ -28817,15 +28817,15 @@ ShowImageDelegate=$BIN_DIR/display
 MogrifyDelegate=$BIN_DIR/mogrify
 
 # Set delegate booleans
-have_fig2dev='no' ; if test "$FIGDecodeDelegate" != 'fig2dev' ; then have_fig2dev='yes' ; fi
-have_gs='no'      ; if test "$PSDelegate" != 'gs' -a "$PSDelegate" != 'gswin32c' ; then have_gs='yes' ; fi
-have_hp2xx='no'   ; if test "$HPGLDecodeDelegate" != 'hp2xx' ; then have_hp2xx='yes' ; fi
-have_ilbmtoppm='no' ; if test "$ILBMDecodeDelegate" != 'ilbmtoppm' ; then have_ilbmtoppm='yes' ; fi
-have_ppmtoilbm='no' ; if test "$ILBMEncodeDelegate" != 'ppmtoilbm' ; then have_ppmtoilbm='yes' ; fi
-have_mpeg2decode='no' ; if test "$MPEGDecodeDelegate" != 'mpeg2decode' ; then have_mpeg2decode='yes' ; fi
-have_mpeg2encode='no' ; if test "$MPEGEncodeDelegate" != 'mpeg2encode' ; then have_mpeg2encode='yes' ; fi
-have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != 'ra_ppm' ; then have_ra_ppm='yes' ; fi
-have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != 'ralcgm' ; then have_ralcgm='yes' ; fi
+have_fig2dev='no' ; if test "$FIGDecodeDelegate" != "$FIGDecodeDelegateDefault" ; then have_fig2dev='yes' ; fi
+have_gs='no'      ; if test "$PSDelegate" != "$PSDelegateDefault"; then have_gs='yes' ; fi
+have_hp2xx='no'   ; if test "$HPGLDecodeDelegate" !=  "$HPGLDecodeDelegateDefault" ; then have_hp2xx='yes' ; fi
+have_ilbmtoppm='no' ; if test "$ILBMDecodeDelegate" != "$ILBMDecodeDelegateDefault" ; then have_ilbmtoppm='yes' ; fi
+have_ppmtoilbm='no' ; if test "$ILBMEncodeDelegate" != "$ILBMEncodeDelegateDefault" ; then have_ppmtoilbm='yes' ; fi
+have_mpeg2decode='no' ; if test "$MPEGDecodeDelegate" != "$MPEGDecodeDelegateDefault" ; then have_mpeg2decode='yes' ; fi
+have_mpeg2encode='no' ; if test "$MPEGEncodeDelegate" != "$MPEGEncodeDelegateDefault" ; then have_mpeg2encode='yes' ; fi
+have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != "$RADDecodeDelegateDefault" ; then have_ra_ppm='yes' ; fi
+have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != "$CGMDecodeDelegateDefault" ; then have_ralcgm='yes' ; fi
 
 # Test for optional txt2html utility and define automake conditional HasTXT2HTML if found.
 # Extract the first word of "txt2html", so it can be a program name with args.
@@ -28967,50 +28967,47 @@ fi
 if test "$with_frozenpaths" != 'yes'
 then
   # Re-set delegate definitions to default (no paths)
-  BZIPDelegate='bzip2'
-  BrowseDelegate='netscape'
-  CGMDecodeDelegate='ralcgm'
-  CatDelegate='cat'
-  ConvertDelegate='convert'
-  DOTDecodeDelegate='dot'
-  DVIDecodeDelegate='dvips'
-  EchoDelegate='echo'
-  EditorDelegate='xterm'
-  FIGDecodeDelegate='fig2dev'
-  GnuplotDecodeDelegate='gnuplot'
-  HPGLDecodeDelegate='hp2xx'
-  HTMLDecodeDelegate='html2ps'
-  ILBMDecodeDelegate='ilbmtoppm'
-  ILBMEncodeDelegate='ppmtoilbm'
-  LPDelegate='lp'
-  LZWDecodeDelegate='uncompress'
-  LZWEncodeDelegate='compress'
-  LaunchDelegate='gimp'
-  MANDelegate='groff'
-  MPEGDecodeDelegate='mpeg2decode'
-  MPEGEncodeDelegate='mpeg2encode'
-  MVDelegate='mv'
-  MogrifyDelegate='mogrify'
-  PGPDecodeDelegate='pgpv'
-  POVDelegate='povray'
-if test "$native_win32_build" = 'yes'
-then
-  PSDelegate='gswin32c'
-else
-  PSDelegate='gs'
-fi
-  RADDecodeDelegate='ra_ppm'
-  RLEEncodeDelegate='rawtorle'
-  RMDelegate='rm'
-  SCANDecodeDelegate='scanimage'
-  ShowImageDelegate='display'
-  TXTDelegate='enscript'
-  WMFDecodeDelegate='wmf2magick'
-  WWWDecodeDelegate='wget'
-  ZipDelegate='gzip'
+  AutotraceDecodeDelegate="$AutotraceDecodeDelegateDefault"
+  BZIPDelegate="$BZIPDelegateDefault"
+  BrowseDelegate="$BrowseDelegateDefault"
+  CGMDecodeDelegate="$CGMDecodeDelegateDefault"
+  CatDelegate="$CatDelegateDefault"
+  ConvertDelegate="$ConvertDelegateDefault"
+  DOTDecodeDelegate="$DOTDecodeDelegateDefault"
+  DVIDecodeDelegate="$DVIDecodeDelegateDefault"
+  EchoDelegate="$EchoDelegateDefault"
+  EditorDelegate="$EditorDelegateDefault"
+  FIGDecodeDelegate="$FIGDecodeDelegateDefault"
+  GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
+  HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
+  HTMLDecodeDelegate="$HTMLDecodeDelegatDefault"
+  ILBMDecodeDelegate="$ILBMDecodeDelegateDefault"
+  ILBMEncodeDelegate="$ILBMEncodeDelegateDefault"
+  LPDelegate="$LPDelegateDefault"
+  LZWDecodeDelegate="$LZWDecodeDelegateDefault"
+  LZWEncodeDelegate="$LZWEncodeDelegateDefault"
+  LaunchDelegate="$LaunchDelegateDefault"
+  MANDelegate="$MANDelegateDefault"
+  MPEGDecodeDelegate="$MPEGDecodeDelegateDefault"
+  MPEGEncodeDelegate="$MPEGEncodeDelegateDefault"
+  MVDelegate="$MVDelegateDefault"
+  MogrifyDelegate="$MogrifyDelegateDefault"
+  PGPDecodeDelegate="$PGPDecodeDelegateDefault"
+  POVDelegate="$POVDelegateDefault"
+  PSDelegate="$PSDelegateDefault"
+  RADDecodeDelegate="$RADDecodeDelegateDefault"
+  RLEEncodeDelegate="$RLEEncodeDelegateDefault"
+  RMDelegate="$RMDelegateDefault"
+  SCANDecodeDelegate="$SCANDecodeDelegateDefault"
+  ShowImageDelegate="$ShowImageDelegateDefault"
+  TXTDelegate="$TXTDelegateDefault"
+  WMFDecodeDelegate="$WMFDecodeDelegateDefault"
+  WWWDecodeDelegate="$WWWDecodeDelegateDefault"
+  ZipDelegate="$ZipDelegateDefault"
 fi
 
 # Delegate substitutions
+
 
 
 

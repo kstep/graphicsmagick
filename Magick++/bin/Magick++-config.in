@@ -30,16 +30,16 @@ while test $# -gt 0; do
       echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
       ;;
     --cppflags)
-      echo "@CPPFLAGS@"
+      echo "-I@INCLUDE_DIR@ @CPPFLAGS@"
       ;;
     --cxxflags)
       echo '@CXXFLAGS@'
       ;;
     --ldflags)
-      echo '@LDFLAGS@'
+      echo '-L@LIB_DIR@ @LDFLAGS@'
       ;;
     --libs)
-      LIBS="-lMagick++ @MAGICKLIB@ @MAGICK_DEP_LIBS@"
+      LIBS="-lMagick++ -lMagick @MAGICK_DEP_LIBS@"
       echo "$LIBS"
       ;;
     *)

@@ -1569,47 +1569,86 @@ AC_ARG_WITH(share-path,
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePathDefine",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
 
-# Locate delegates
-AC_PATH_PROG(AutotraceDecodeDelegate, autotrace, autotrace)
-AC_PATH_PROG(BZIPDelegate, bzip2, bzip2)
-AC_PATH_PROG(BrowseDelegate, netscape, netscape)
-AC_PATH_PROG(CGMDecodeDelegate, ralcgm, ralcgm)
-AC_PATH_PROG(CatDelegate, cat, cat)
-AC_PATH_PROG(DOTDecodeDelegate, dot, dot)
-AC_PATH_PROG(DVIDecodeDelegate, dvips, dvips)
-AC_PATH_PROG(EchoDelegate, echo, echo)
-AC_PATH_PROG(EditorDelegate, xterm, xterm)
-AC_PATH_PROG(FIGDecodeDelegate, fig2dev, fig2dev)
-AC_PATH_PROG(GnuplotDecodeDelegate, gnuplot, gnuplot)
-AC_PATH_PROG(HPGLDecodeDelegate, hp2xx, hp2xx)
-AC_PATH_PROG(HTMLDecodeDelegate, html2ps, html2ps)
-AC_PATH_PROG(ILBMDecodeDelegate, ilbmtoppm, ilbmtoppm)
-AC_PATH_PROG(ILBMEncodeDelegate, ppmtoilbm, ppmtoilbm)
-AC_PATH_PROG(LPDelegate, lp, no)
-AC_PATH_PROG(LPRDelegate, lpr, no)
-AC_PATH_PROG(LZWDecodeDelegate, uncompress, uncompress)
-AC_PATH_PROG(LZWEncodeDelegate, compress, compress)
-AC_PATH_PROG(LaunchDelegate, gimp, gimp)
-AC_PATH_PROG(MANDelegate, groff, groff)
-AC_PATH_PROG(MPEGDecodeDelegate, mpeg2decode, mpeg2decode)
-AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode, mpeg2encode)
-AC_PATH_PROG(MVDelegate, mv, mv)
-AC_PATH_PROG(PGPDecodeDelegate, pgpv, pgpv)
-AC_PATH_PROG(POVDelegate, povray, povray)
-if test "$native_win32_build" = 'yes'
-then
-  AC_PATH_PROG(PSDelegate, gswin32c, gswin32c)
+# Default delegate definitions
+AutotraceDecodeDelegateDefault='autotrace'
+BZIPDelegateDefault='bzip2'
+BrowseDelegateDefault='netscape'
+CGMDecodeDelegateDefault='ralcgm'
+CatDelegateDefault='cat'
+ConvertDelegateDefault='convert'
+DOTDecodeDelegateDefault='dot'
+DVIDecodeDelegateDefault='dvips'
+EchoDelegateDefault='echo'
+EditorDelegateDefault='xterm'
+FIGDecodeDelegateDefault='fig2dev'
+GnuplotDecodeDelegateDefault='gnuplot'
+HPGLDecodeDelegateDefault='hp2xx'
+HTMLDecodeDelegateDefault='html2ps'
+ILBMDecodeDelegateDefault='ilbmtoppm'
+ILBMEncodeDelegateDefault='ppmtoilbm'
+LPDelegateDefault='lp'
+LPRDelegateDefault='lpr'
+LZWDecodeDelegateDefault='uncompress'
+LZWEncodeDelegateDefault='compress'
+LaunchDelegateDefault='gimp'
+MANDelegateDefault='groff'
+MPEGDecodeDelegateDefault='mpeg2decode'
+MPEGEncodeDelegateDefault='mpeg2encode'
+MVDelegateDefault='mv'
+MogrifyDelegateDefault='mogrify'
+PGPDecodeDelegateDefault='pgpv'
+POVDelegateDefault='povray'
+if test "$native_win32_build" = 'yes' ; then
+  PSDelegateDefault='gswin32c'
 else
-  AC_PATH_PROG(PSDelegate, gs, gs)
+  PSDelegateDefault='gs'
 fi
-AC_PATH_PROG(RADDecodeDelegate, ra_ppm, ra_ppm)
-AC_PATH_PROG(RLEEncodeDelegate, rawtorle, rawtorle)
-AC_PATH_PROG(RMDelegate, rm, rm)
-AC_PATH_PROG(SCANDecodeDelegate, scanimage, scanimage)
-AC_PATH_PROG(TXTDelegate, enscript, enscript)
-AC_PATH_PROG(WMFDecodeDelegate, wmf2eps, wmf2eps)
-AC_PATH_PROG(WWWDecodeDelegate, wget, wget)
-AC_PATH_PROG(ZipDelegate, gzip, gzip)
+RADDecodeDelegateDefault='ra_ppm'
+RLEEncodeDelegateDefault='rawtorle'
+RMDelegateDefault='rm'
+SCANDecodeDelegateDefault='scanimage'
+ShowImageDelegateDefault='display'
+TXTDelegateDefault='enscript'
+WMFDecodeDelegateDefault='wmf2eps'
+WWWDecodeDelegateDefault='wget'
+ZipDelegateDefault='gzip'
+
+# Search for delegates
+AC_PATH_PROG(AutotraceDecodeDelegate, "$AutotraceDecodeDelegateDefault", "$AutotraceDecodeDelegateDefault")
+AC_PATH_PROG(BZIPDelegate, "$BZIPDelegateDefault", "$BZIPDelegateDefault")
+AC_PATH_PROG(BrowseDelegate, "$BrowseDelegateDefault", "$BrowseDelegateDefault")
+AC_PATH_PROG(CGMDecodeDelegate, "$CGMDecodeDelegateDefault", "$CGMDecodeDelegateDefault")
+AC_PATH_PROG(CatDelegate, "$CatDelegateDefault", "$CatDelegateDefault")
+AC_PATH_PROG(DOTDecodeDelegate, "$DOTDecodeDelegateDefault", "$DOTDecodeDelegateDefault")
+AC_PATH_PROG(DVIDecodeDelegate, "$DVIDecodeDelegateDefault", "$DVIDecodeDelegateDefault")
+AC_PATH_PROG(EchoDelegate, "$EchoDelegateDefault", "$EchoDelegateDefault")
+AC_PATH_PROG(EditorDelegate, "$EditorDelegateDefault", "$EditorDelegateDefault")
+AC_PATH_PROG(FIGDecodeDelegate, "$FIGDecodeDelegateDefault", "$FIGDecodeDelegateDefault")
+AC_PATH_PROG(GnuplotDecodeDelegate, "$GnuplotDecodeDelegateDefault", "$GnuplotDecodeDelegateDefault")
+AC_PATH_PROG(HPGLDecodeDelegate, "$HPGLDecodeDelegateDefault", "$HPGLDecodeDelegateDefault")
+AC_PATH_PROG(HTMLDecodeDelegate, "$HTMLDecodeDelegateDefault", "$HTMLDecodeDelegateDefault")
+AC_PATH_PROG(ILBMDecodeDelegate, "$ILBMDecodeDelegateDefault", "$ILBMDecodeDelegateDefault")
+AC_PATH_PROG(ILBMEncodeDelegate, "$ILBMEncodeDelegateDefault", "$ILBMEncodeDelegateDefault")
+AC_PATH_PROG(LPDelegate, "$LPDelegateDefault", no)
+AC_PATH_PROG(LPRDelegate, "$LPRDelegateDefault", no)
+AC_PATH_PROG(LZWDecodeDelegate, "$LZWDecodeDelegateDefault", "$LZWDecodeDelegateDefault")
+AC_PATH_PROG(LZWEncodeDelegate, "$LZWEncodeDelegateDefault", "$LZWEncodeDelegateDefault")
+AC_PATH_PROG(LaunchDelegate, "$LaunchDelegateDefault", "$LaunchDelegateDefault")
+AC_PATH_PROG(MANDelegate, "$MANDelegateDefault", "$MANDelegateDefault")
+AC_PATH_PROG(MPEGDecodeDelegate, "$MPEGDecodeDelegateDefault", "$MPEGDecodeDelegateDefault")
+AC_PATH_PROG(MPEGEncodeDelegate, "$MPEGEncodeDelegateDefault", "$MPEGEncodeDelegateDefault")
+AC_PATH_PROG(MVDelegate, "$MVDelegateDefault", "$MVDelegateDefault")
+AC_PATH_PROG(PGPDecodeDelegate, "$PGPDecodeDelegateDefault", "$PGPDecodeDelegateDefault")
+AC_PATH_PROG(POVDelegate, "$POVDelegateDefault", "$POVDelegateDefault")
+AC_PATH_PROG(PSDelegate, "$PSDelegateDefault", "$PSDelegateDefault")
+AC_PATH_PROG(RADDecodeDelegate, "$RADDecodeDelegateDefault", "$RADDecodeDelegateDefault")
+AC_PATH_PROG(RLEEncodeDelegate, "$RLEEncodeDelegateDefault", "$RLEEncodeDelegateDefault")
+AC_PATH_PROG(RMDelegate, "$RMDelegateDefault", "$RMDelegateDefault")
+AC_PATH_PROG(SCANDecodeDelegate, "$SCANDecodeDelegateDefault", "$SCANDecodeDelegateDefault")
+AC_PATH_PROG(TXTDelegate, "$TXTDelegateDefault", "$TXTDelegateDefault")
+AC_PATH_PROG(WMFDecodeDelegate, "$WMFDecodeDelegateDefault", "$WMFDecodeDelegateDefault")
+AC_PATH_PROG(WWWDecodeDelegate, "$WWWDecodeDelegateDefault", "$WWWDecodeDelegateDefault")
+AC_PATH_PROG(ZipDelegate, "$ZipDelegateDefault", "$ZipDelegateDefault")
 
 # Prefer lpr to lp; lp needs options tacked on.
 if test "$LPRDelegate" != no
@@ -1626,15 +1665,15 @@ ShowImageDelegate=$BIN_DIR/display
 MogrifyDelegate=$BIN_DIR/mogrify
 
 # Set delegate booleans
-have_fig2dev='no' ; if test "$FIGDecodeDelegate" != 'fig2dev' ; then have_fig2dev='yes' ; fi
-have_gs='no'      ; if test "$PSDelegate" != 'gs' -a "$PSDelegate" != 'gswin32c' ; then have_gs='yes' ; fi
-have_hp2xx='no'   ; if test "$HPGLDecodeDelegate" != 'hp2xx' ; then have_hp2xx='yes' ; fi
-have_ilbmtoppm='no' ; if test "$ILBMDecodeDelegate" != 'ilbmtoppm' ; then have_ilbmtoppm='yes' ; fi
-have_ppmtoilbm='no' ; if test "$ILBMEncodeDelegate" != 'ppmtoilbm' ; then have_ppmtoilbm='yes' ; fi
-have_mpeg2decode='no' ; if test "$MPEGDecodeDelegate" != 'mpeg2decode' ; then have_mpeg2decode='yes' ; fi
-have_mpeg2encode='no' ; if test "$MPEGEncodeDelegate" != 'mpeg2encode' ; then have_mpeg2encode='yes' ; fi
-have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != 'ra_ppm' ; then have_ra_ppm='yes' ; fi
-have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != 'ralcgm' ; then have_ralcgm='yes' ; fi
+have_fig2dev='no' ; if test "$FIGDecodeDelegate" != "$FIGDecodeDelegateDefault" ; then have_fig2dev='yes' ; fi
+have_gs='no'      ; if test "$PSDelegate" != "$PSDelegateDefault"; then have_gs='yes' ; fi
+have_hp2xx='no'   ; if test "$HPGLDecodeDelegate" !=  "$HPGLDecodeDelegateDefault" ; then have_hp2xx='yes' ; fi
+have_ilbmtoppm='no' ; if test "$ILBMDecodeDelegate" != "$ILBMDecodeDelegateDefault" ; then have_ilbmtoppm='yes' ; fi
+have_ppmtoilbm='no' ; if test "$ILBMEncodeDelegate" != "$ILBMEncodeDelegateDefault" ; then have_ppmtoilbm='yes' ; fi
+have_mpeg2decode='no' ; if test "$MPEGDecodeDelegate" != "$MPEGDecodeDelegateDefault" ; then have_mpeg2decode='yes' ; fi
+have_mpeg2encode='no' ; if test "$MPEGEncodeDelegate" != "$MPEGEncodeDelegateDefault" ; then have_mpeg2encode='yes' ; fi
+have_ra_ppm='no'  ; if test "$RADDecodeDelegate" != "$RADDecodeDelegateDefault" ; then have_ra_ppm='yes' ; fi
+have_ralcgm='no'  ; if test "$CGMDecodeDelegate" != "$CGMDecodeDelegateDefault" ; then have_ralcgm='yes' ; fi
 
 # Test for optional txt2html utility and define automake conditional HasTXT2HTML if found.
 AC_PATH_PROG(TXT2HTML, txt2html, txt2html)
@@ -1726,50 +1765,47 @@ AC_SUBST(type_include_files)
 if test "$with_frozenpaths" != 'yes'
 then
   # Re-set delegate definitions to default (no paths)
-  BZIPDelegate='bzip2'
-  BrowseDelegate='netscape'
-  CGMDecodeDelegate='ralcgm'
-  CatDelegate='cat'
-  ConvertDelegate='convert'
-  DOTDecodeDelegate='dot'
-  DVIDecodeDelegate='dvips'
-  EchoDelegate='echo'
-  EditorDelegate='xterm'
-  FIGDecodeDelegate='fig2dev'
-  GnuplotDecodeDelegate='gnuplot'
-  HPGLDecodeDelegate='hp2xx'
-  HTMLDecodeDelegate='html2ps'
-  ILBMDecodeDelegate='ilbmtoppm'
-  ILBMEncodeDelegate='ppmtoilbm'
-  LPDelegate='lp'
-  LZWDecodeDelegate='uncompress'
-  LZWEncodeDelegate='compress'
-  LaunchDelegate='gimp'
-  MANDelegate='groff'
-  MPEGDecodeDelegate='mpeg2decode'
-  MPEGEncodeDelegate='mpeg2encode'
-  MVDelegate='mv'
-  MogrifyDelegate='mogrify'
-  PGPDecodeDelegate='pgpv'
-  POVDelegate='povray'
-if test "$native_win32_build" = 'yes'
-then
-  PSDelegate='gswin32c'
-else
-  PSDelegate='gs'
-fi
-  RADDecodeDelegate='ra_ppm'
-  RLEEncodeDelegate='rawtorle'
-  RMDelegate='rm'
-  SCANDecodeDelegate='scanimage'
-  ShowImageDelegate='display'
-  TXTDelegate='enscript'
-  WMFDecodeDelegate='wmf2magick'
-  WWWDecodeDelegate='wget'
-  ZipDelegate='gzip'
+  AutotraceDecodeDelegate="$AutotraceDecodeDelegateDefault"
+  BZIPDelegate="$BZIPDelegateDefault"
+  BrowseDelegate="$BrowseDelegateDefault"
+  CGMDecodeDelegate="$CGMDecodeDelegateDefault"
+  CatDelegate="$CatDelegateDefault"
+  ConvertDelegate="$ConvertDelegateDefault"
+  DOTDecodeDelegate="$DOTDecodeDelegateDefault"
+  DVIDecodeDelegate="$DVIDecodeDelegateDefault"
+  EchoDelegate="$EchoDelegateDefault"
+  EditorDelegate="$EditorDelegateDefault"
+  FIGDecodeDelegate="$FIGDecodeDelegateDefault"
+  GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
+  HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
+  HTMLDecodeDelegate="$HTMLDecodeDelegatDefault"
+  ILBMDecodeDelegate="$ILBMDecodeDelegateDefault"
+  ILBMEncodeDelegate="$ILBMEncodeDelegateDefault"
+  LPDelegate="$LPDelegateDefault"
+  LZWDecodeDelegate="$LZWDecodeDelegateDefault"
+  LZWEncodeDelegate="$LZWEncodeDelegateDefault"
+  LaunchDelegate="$LaunchDelegateDefault"
+  MANDelegate="$MANDelegateDefault"
+  MPEGDecodeDelegate="$MPEGDecodeDelegateDefault"
+  MPEGEncodeDelegate="$MPEGEncodeDelegateDefault"
+  MVDelegate="$MVDelegateDefault"
+  MogrifyDelegate="$MogrifyDelegateDefault"
+  PGPDecodeDelegate="$PGPDecodeDelegateDefault"
+  POVDelegate="$POVDelegateDefault"
+  PSDelegate="$PSDelegateDefault"
+  RADDecodeDelegate="$RADDecodeDelegateDefault"
+  RLEEncodeDelegate="$RLEEncodeDelegateDefault"
+  RMDelegate="$RMDelegateDefault"
+  SCANDecodeDelegate="$SCANDecodeDelegateDefault"
+  ShowImageDelegate="$ShowImageDelegateDefault"
+  TXTDelegate="$TXTDelegateDefault"
+  WMFDecodeDelegate="$WMFDecodeDelegateDefault"
+  WWWDecodeDelegate="$WWWDecodeDelegateDefault"
+  ZipDelegate="$ZipDelegateDefault"
 fi
 
 # Delegate substitutions
+AC_SUBST(AutotraceDecodeDelegate)
 AC_SUBST(BZIPDelegate)
 AC_SUBST(BrowseDelegate)
 AC_SUBST(CGMDecodeDelegate)
