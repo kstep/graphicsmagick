@@ -1,9 +1,10 @@
 This file was last updated on November 13, 2004.
 
-Significant changes associated with GraphicsMagick 1.1.4 (released November ??, 2004)
+Significant changes associated with GraphicsMagick 1.1.4 (released November 13, 2004)
 
   Security Fixes:
     * Security fixes for AVI, BMP, DIB, and TIFF formats.
+    * LZW security fix (updated Windows sources to use zlib 1.2.2).
 
   Bugs fixed:
     * Properly detect and handle errors from libtiff APIs while writing
@@ -25,6 +26,7 @@ Significant changes associated with GraphicsMagick 1.1.4 (released November ??, 
     'display' Commmands widget.
     * TclMagick updated to latest version.
     * Use latest Automake (1.9.3).
+    * Libpng updated. Updated Windows sources to use libpng version 1.2.7.
 
 Significant changes associated with GraphicsMagick 1.1.3 (released August 7, 2004)
 
