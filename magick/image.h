@@ -27,8 +27,10 @@ extern "C" {
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
 #define MaxRGB  255UL
+#define ScaleCharToMap(value)      ((unsigned char) (value))
 #define ScaleCharToQuantum(value)  ((Quantum) (value))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)/16843009UL))
+#define ScaleMapToChar(value)     ((unsigned char) (value))
 #define ScaleMapToQuantum(value)  ((Quantum) (value))
 #define ScaleQuantum(quantum)  ((unsigned long) (quantum))
 #define ScaleQuantumToChar(quantum)  ((unsigned char) (quantum))
@@ -43,8 +45,10 @@ typedef unsigned char Quantum;
 #define MaxColormapSize  65536UL
 #define MaxMap 65535UL
 #define MaxRGB  65535UL
+#define ScaleCharToMap(value)      ((unsigned short) (257UL*(value)))
 #define ScaleCharToQuantum(value)  ((Quantum) (257UL*(value)))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)/65537UL))
+#define ScaleMapToChar(value)      ((unsigned char) ((value)/257UL))
 #define ScaleMapToQuantum(value)  ((Quantum) (value))
 #define ScaleQuantum(quantum)  ((unsigned long) ((quantum)/257UL))
 #define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/257UL))
@@ -59,8 +63,10 @@ typedef unsigned short Quantum;
 #define MaxColormapSize  65536UL
 #define MaxMap 65535UL
 #define MaxRGB  4294967295UL
+#define ScaleCharToMap(value)      ((unsigned short) (257UL*(value)))
 #define ScaleCharToQuantum(value)  ((Quantum) (16843009UL*(value)))
 #define ScaleLongToQuantum(value)  ((Quantum) ((value)))
+#define ScaleMapToChar(value)      ((unsigned char) ((value)/257UL))
 #define ScaleMapToQuantum(value)  ((Quantum) (65537UL*(value)))
 #define ScaleQuantum(quantum)  ((unsigned long) ((quantum)/16843009UL))
 #define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/16843009UL))
