@@ -76,7 +76,6 @@
 #undef MNG_BASI_SUPPORTED
 #define PNG_SORT_PALETTE
 
-#define PNG_NO_REDUCTIONS
 
 /*
   This is temporary until I set up malloc'ed object attributes array.
@@ -349,7 +348,7 @@ typedef struct _MngInfo
 static unsigned int
   WritePNGImage(const ImageInfo *,Image *);
 
-#ifdef PNG_SORT_PALETTE
+#if defined(PNG_SORT_PALETTE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1328,6 +1327,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     have_mng_structure,
     num_text,
     object_id,
+#if (QuantumDepth == 16)
+    optimize,
+#endif
     term_chunk_found,
     skip_to_iend;
 
@@ -1417,6 +1419,25 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     png_textp
       text;
+
+  /*
+    Set image_info->type=OptimizeType (new in version 5.4.0) to get the
+    following optimizations:
+
+    o  16-bit depth is reduced to 8 if all pixels contain samples whose
+       high byte and low byte are identical.
+    o  Opaque matte channel is removed.
+    o  If matte channel is present but only one transparent color is
+       present, RGB+tRNS is written instead of RGBA
+    o  Grayscale images are reduced to 1, 2, or 4 bit depth if
+       this can be done without loss.
+    o  Palette is sorted to remove unused entries and to put a
+       transparent color first, if PNG_SORT_PALETTE is also defined.
+   */
+
+#if (QuantumDepth == 16)
+    optimize=image_info->type==OptimizeType;
+#endif
 
   /*
     Open image file.
@@ -3804,7 +3825,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
      * multiplication and division by 257 instead of shifting, so
      * might be slower.
      */
-    if (image->depth == 16)
+    if (optimize && image->depth == 16)
       {
         int
           ok_to_reduce;
@@ -4315,6 +4336,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   unsigned int
     adjoin,
     matte,
+    optimize,
     scene,
     status;
 
@@ -4325,6 +4347,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     save_image_depth,
     ticks_per_second=0;
 
+    optimize=image_info->type==OptimizeType;
   /*
     Open image file.
   */
@@ -4917,22 +4940,20 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Select the color type.
     */
-#ifdef PNG_NO_REDUCTIONS
-    if (image->storage_class == PseudoClass)
-#endif
-    if (ImageIsMonochrome(image))
+    if (optimize || image->storage_class == PseudoClass ||
+        image_info->type==BilevelType)
       {
-        if (!image->matte)
-          ping_info->bit_depth=1;
+        if (ImageIsMonochrome(image))
+          {
+            if (!image->matte)
+              ping_info->bit_depth=1;
+          }
       }
     ping_info->color_type=PNG_COLOR_TYPE_RGB;
     matte=image->matte;
-#ifdef PNG_NO_REDUCTIONS
-    if (matte)
+    if (!optimize && matte)
       ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA;
-    if (image->storage_class == PseudoClass)
-#endif
-    if (matte)
+    if (matte && (optimize || image->storage_class == PseudoClass))
       {
         ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
         for (y=0; y < (long) image->rows; y++)
@@ -5041,12 +5062,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte=image->matte;
     if (ping_info->valid & PNG_INFO_tRNS)
       image->matte=False;
-#ifdef PNG_NO_REDUCTIONS
-    if (image->storage_class == PseudoClass &&
+    if ((optimize || image->storage_class == PseudoClass) &&
         ImageIsGray(image) && (!image->matte || image->depth >= 8))
-#else
-    if (ImageIsGray(image) && (!image->matte || image->depth >= 8))
-#endif
       {
         if (image->matte)
             ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
@@ -5070,7 +5087,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 while ((int) (1 << ping_info->bit_depth) < (long) image->colors)
                   ping_info->bit_depth<<=1;
               }
-            else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY &&
+            else if (optimize && ping_info->color_type == PNG_COLOR_TYPE_GRAY &&
                 image->colors < 17 && image->storage_class==PseudoClass)
               {
 
@@ -5122,14 +5139,17 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               png_set_PLTE(ping,ping_info,NULL,0);
             else
               {
-#ifdef PNG_SORT_PALETTE
+#if defined(PNG_SORT_PALETTE)
                 unsigned long
                    save_number_colors;
 
-                save_number_colors=image->colors;
-                (void) CompressColormapTransFirst(image);
-                number_colors=image->colors;
-                image->colors=save_number_colors;
+                if (optimize)
+                  {
+                    save_number_colors=image->colors;
+                    (void) CompressColormapTransFirst(image);
+                    number_colors=image->colors;
+                    image->colors=save_number_colors;
+                  }
 #endif
                 palette=(png_color *)
                   AcquireMemory(number_colors*sizeof(png_color));
