@@ -426,6 +426,7 @@ static unsigned int ReadConfigurationFile(const char *filename)
                   p++;
                   q++;
                   magic_list->length++;
+                  continue;
                 }
               *q++=(*p++);
               magic_list->length++;

@@ -4280,7 +4280,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   framing_mode=1;
   old_framing_mode=1;
 
-  if (image_info->adjoin && (image->next != (Image *) NULL))
+  if (image_info->adjoin)
     {
       unsigned int
         need_geom;
