@@ -425,6 +425,7 @@ static int GetBlurKernel(int width,const double sigma,double **kernel)
 #define KernelRank 3
 
   double
+    alpha,
     normalize;
 
   int
@@ -447,8 +448,10 @@ static int GetBlurKernel(int width,const double sigma,double **kernel)
     (*kernel)[i]=0.0;
   bias=KernelRank*width/2;
   for (i=(-bias); i <= bias; i++)
-    (*kernel)[(i+bias)/KernelRank]+=
-      exp(-((double) i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
+  {
+    alpha=exp(-((double) i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
+    (*kernel)[(i+bias)/KernelRank]+=alpha/(MagickSQ2PI*sigma);
+  }
   normalize=0;
   for (i=0; i < width; i++)
     normalize+=(*kernel)[i];
@@ -539,7 +542,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     {
       DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to blur image");
+        "Unable to blur image")
     }
   /*
     Blur the image rows.
@@ -775,7 +778,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     {
       DestroyImage(despeckle_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to despeckle image");
+        "Unable to despeckle image")
     }
   /*
     Reduce speckle in the image.
@@ -949,6 +952,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   double
+    alpha,
     *kernel;
 
   Image
@@ -978,8 +982,9 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
+      alpha=exp(-((double) u*u+v*v)/(2.0*sigma*sigma));
       kernel[i]=((u < 0) || (v < 0) ? -8.0 : 8.0)*
-        exp(-((double) u*u+v*v)/(2.0*sigma*sigma));
+        alpha/(2.0*MagickPI*sigma*sigma);
       if (u == j)
         kernel[i]=v == j ? 1.0 : 0.0;
       i++;
@@ -1184,6 +1189,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   double
+    alpha,
     *kernel;
 
   Image
@@ -1214,7 +1220,8 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
-      kernel[i]=exp(-((double) u*u+v*v)/(2.0*sigma*sigma));
+      alpha=exp(-((double) u*u+v*v)/(2.0*sigma*sigma));
+      kernel[i]=alpha/(2.0*MagickPI*sigma*sigma);
       i++;
     }
   }
@@ -1505,7 +1512,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
     {
       DestroyImage(median_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to median filter image");
+        "Unable to median filter image")
     }
   /*
     Median filter each image row.
@@ -1585,6 +1592,7 @@ static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
 #define KernelRank 3
 
   double
+    alpha,
     normalize;
 
   int
@@ -1607,8 +1615,10 @@ static int GetMotionBlurKernel(int width,const double sigma,double **kernel)
     (*kernel)[i]=0.0;
   bias=KernelRank*width;
   for (i=0; i < bias; i++)
-    (*kernel)[i/KernelRank]+=
-      exp(-((double) i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
+  {
+    alpha=exp(-((double) i*i)/(2.0*KernelRank*KernelRank*sigma*sigma));
+    (*kernel)[i/KernelRank]+=alpha/(MagickSQ2PI*sigma);
+  }
   normalize=0;
   for (i=0; i < width; i++)
     normalize+=(*kernel)[i];
@@ -1875,7 +1885,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
     {
       DestroyImage(noise_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to noise filter image");
+        "Unable to noise filter image")
     }
   /*
     Median filter each image row.
@@ -2099,6 +2109,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   double
+    alpha,
     *kernel,
     normalize;
 
@@ -2131,7 +2142,8 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
-      kernel[i]=exp(-((double) u*u+v*v)/(2.0*sigma*sigma));
+      alpha=exp(-((double) u*u+v*v)/(2.0*sigma*sigma));
+      kernel[i]=alpha/(2.0*MagickPI*sigma*sigma);
       normalize+=kernel[i];
       i++;
     }

@@ -1830,7 +1830,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     {
       LiberateMemory((void **) &primitive);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to draw image");
+        "Unable to draw image")
     }
   number_points=2047;
   primitive_info=(PrimitiveInfo *)
@@ -1842,7 +1842,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         DestroyDrawInfo(graphic_context[n]);
       LiberateMemory((void **) &graphic_context);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to draw image");
+        "Unable to draw image")
     }
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   token=AllocateString(primitive);

@@ -4119,7 +4119,7 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
   if (context->graphic_context == (DrawInfo **) NULL)
     {
       ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-        "Unable to draw image");
+        "Unable to draw image")
     }
   CurrentContext=
     CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
@@ -4957,7 +4957,7 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
           else
             {
               ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-                "Unable to draw image");
+                "Unable to draw image")
             }
         }
 
