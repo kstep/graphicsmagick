@@ -1032,14 +1032,14 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>enable debug printout</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The <tt>event-mask</tt> specifies which events are to be logged.  It
-can be either <tt>NoEvents</tt>, <tt>AllEvents</tt>, or a mask constructed
-by the union of one or more of <tt>ConfigureEvent</tt>, <tt>AnnotateEvent</tt>,
-<tt>RenderEvent</tt>, <tt>LocaleEvent</tt>, <tt>CoderEvent</tt>,
-<tt>X11Event</tt>, <tt>CacheEvent</tt>, or <tt>BlobEvent</tt>, using quotation
+can be either <tt>None</tt>, <tt>All</tt>, or a mask consisting of
+the union of one or more of <tt>Configure</tt>, <tt>Annotate</tt>,
+<tt>Render</tt>, <tt>Locale</tt>, <tt>Coder</tt>,
+<tt>X11</tt>, <tt>Cache</tt>, or <tt>Blob</tt>, using quotation
 marks to hide the OR symbol.  For example, to log cache and blob events,
 use</font></td></tr></table>
 <pre>
-    convert -debug "CacheEvent|BlobEvent" rose: rose.png
+    convert -debug "Cache|Blob" rose: rose.png
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>

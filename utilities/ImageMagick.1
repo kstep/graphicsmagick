@@ -895,14 +895,14 @@ shifted.
 \fRenable debug printout
 
 The event-mask specifies which events are to be logged.  It
-can be either NoEvents, AllEvents, or a mask constructed
-by the union of one or more of ConfigureEvent, AnnotateEvent,
-RenderEvent, LocaleEvent, CoderEvent,
-X11Event, CacheEvent, or BlobEvent, using quotation
+can be either None, All, or a mask consisting of
+the union of one or more of Configure, Annotate,
+Render, Locale, Coder,
+X11, Cache, or Blob, using quotation
 marks to hide the OR symbol.  For example, to log cache and blob events,
 use
 
-    convert -debug "CacheEvent|BlobEvent" rose: rose.png
+    convert -debug "Cache|Blob" rose: rose.png
 .TP
 .B "-deconstruct"
 \fRbreak down an image sequence into constituent parts
