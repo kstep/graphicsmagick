@@ -11,11 +11,11 @@
 
 #include <errno.h>
 
+#include "Magick++/Thread.h"
 #include "Magick++/Include.h"
 
 using namespace std;
 
-#include "Magick++/Thread.h"
 #include "Magick++/LastError.h"
 #include "Magick++/Exception.h"
 
