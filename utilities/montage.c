@@ -297,8 +297,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   Image
     *image,
     *montage_image,
-    *next_image,
-    *p;
+    *next_image;
 
   ImageInfo
     *image_info;
@@ -315,6 +314,9 @@ static unsigned int MontageUtility(int argc,char **argv)
 
   QuantizeInfo
     quantize_info;
+
+  register Image
+	  *p;
 
   register long
     i;

@@ -178,6 +178,25 @@
 #include "magick/magick.h"
 #include "magick/define.h"
 
+/*
+  Typedef declarations.
+*/
+typedef struct _ConvertOptions
+{
+  int
+    append;
+
+  long
+    morph;
+
+  unsigned int
+    average,
+    coalesce,
+    deconstruct,
+    global_colormap,
+    flatten,
+    mosaic;
+} ConvertOptions;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -259,13 +278,16 @@ static void ConcatenateImages(int argc,char **argv)
 %  The format of the ConvertImageList method is:
 %
 %      unsigned int ConvertImageList(const ImageInfo *image_info,Image **image,
-%        const int argc,char **argv,ExceptionInfo *exception)
+%        ConvertOptions *option_info,const int argc,char **argv,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: The image info.
 %
 %    o images: The image.
+%
+%    o option_info: The option info.
 %
 %    o argc: The number of elements in the argument vector.
 %
@@ -276,7 +298,8 @@ static void ConcatenateImages(int argc,char **argv)
 %
 */
 static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
-  const int argc,char **argv,ExceptionInfo *exception)
+  ConvertOptions *option_info,const int argc,char **argv,
+  ExceptionInfo *exception)
 {
   register Image
     *p;
@@ -295,6 +318,113 @@ static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
     (*image)=(*image)->previous;
   status=MogrifyImages(image_info,argc-1,argv,image);
   (void) CatchImageException(*image);
+  if (option_info->append != 0)
+    {
+      Image
+        *append_image;
+
+      /*
+        Append an image sequence.
+      */
+      append_image=AppendImages(*image,option_info->append > 0,exception);
+      if (append_image != (Image *) NULL)
+        {
+          DestroyImageList(*image);
+          *image=append_image;
+        }
+    }
+  if (option_info->average)
+    {
+      Image
+        *average_image;
+
+      /*
+        Average an image sequence.
+      */
+      average_image=AverageImages(*image,exception);
+      if (average_image != (Image *) NULL)
+        {
+          DestroyImageList(*image);
+          *image=average_image;
+        }
+    }
+  if (option_info->coalesce)
+    {
+      Image
+        *coalesce_image;
+
+      /*
+        Coalesce an image sequence.
+      */
+      coalesce_image=CoalesceImages(*image,exception);
+      if (coalesce_image != (Image *) NULL)
+        {
+          DestroyImageList(*image);
+          *image=coalesce_image;
+        }
+    }
+  if (option_info->deconstruct)
+    {
+      Image
+        *deconstruct_image;
+
+      /*
+        Deconstruct an image sequence.
+      */
+      deconstruct_image=DeconstructImages(*image,exception);
+      if (deconstruct_image != (Image *) NULL)
+        {
+          DestroyImageList(*image);
+          *image=deconstruct_image;
+        }
+    }
+  if (option_info->flatten && ((*image)->next != (Image *) NULL))
+    {
+      Image
+        *flatten_image;
+
+      /*
+        Flatten an image sequence.
+      */
+      flatten_image=FlattenImages(*image,exception);
+      if (flatten_image != (Image *) NULL)
+        {
+          DestroyImageList(*image);
+          *image=flatten_image;
+        }
+    }
+  if (option_info->morph != 0)
+    {
+      Image
+        *morph_image;
+
+      /*
+        Morph an image sequence.
+      */
+      morph_image=MorphImages(*image,option_info->morph,exception);
+      if (morph_image != (Image *) NULL)
+        {
+          DestroyImageList(*image);
+          *image=morph_image;
+        }
+    }
+  if (option_info->mosaic)
+    {
+      Image
+        *mosaic_image;
+
+      /*
+        Create an image mosaic.
+      */
+      mosaic_image=MosaicImages(*image,exception);
+      if (mosaic_image != (Image *) NULL)
+        {
+          DestroyImageList(*image);
+          *image=mosaic_image;
+        }
+    }
+  if (option_info->global_colormap)
+    (void) MapImages(*image,(Image *) NULL,image_info->dither);
   /*
     Write converted images.
   */
@@ -509,6 +639,9 @@ static unsigned int ConvertUtility(int argc,char **argv)
     *filename,
     *option;
 
+  ConvertOptions
+    option_info;
+
   double
     sans;
 
@@ -547,6 +680,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
   (void) SetImageInfo(image_info,True,&exception);
   ping=False;
   option=(char *) NULL;
+  memset(&option_info,0,sizeof(ConvertOptions));
   status=True;
   /*
     Parse command-line arguments.
@@ -615,9 +749,15 @@ static unsigned int ConvertUtility(int argc,char **argv)
               break;
             }
           if (LocaleCompare("append",option+1) == 0)
-            break;
+            {
+              option_info.append=(*option) == '-' ? 1 : -1;
+              break;
+            }
           if (LocaleCompare("average",option+1) == 0)
-            break;
+            {
+              option_info.average=(*option == '-');
+              break;
+            }
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
@@ -748,7 +888,10 @@ static unsigned int ConvertUtility(int argc,char **argv)
           if (LocaleCompare("clip",option+1) == 0)
             break;
           if (LocaleCompare("coalesce",option+1) == 0)
-            break;
+            {
+              option_info.coalesce=(*option == '-');
+              break;
+            }
           if (LocaleCompare("colorize",option+1) == 0)
             {
               if (*option == '-')
@@ -884,8 +1027,8 @@ static unsigned int ConvertUtility(int argc,char **argv)
                   if (clone_image == (Image *) NULL)
                     MagickError(OptionError,"Missing an image file name",
                       (char *) NULL);
-                  status&=ConvertImageList(clone_info,&clone_image,i-j+2,
-                    argv+j-1,&exception);
+                  status&=ConvertImageList(clone_info,&clone_image,&option_info,
+                    i-j+2,argv+j-1,&exception);
                   if (*option == '-')
                     DestroyImageList(clone_image);
                   else
@@ -914,7 +1057,10 @@ static unsigned int ConvertUtility(int argc,char **argv)
         case 'd':
         {
           if (LocaleCompare("deconstruct",option+1) == 0)
-            break;
+            {
+              option_info.deconstruct=(*option == '-');
+              break;
+            }
           if (LocaleCompare("debug",option+1) == 0)
             {
               image_info->debug=(*option == '-');
@@ -1087,7 +1233,10 @@ static unsigned int ConvertUtility(int argc,char **argv)
               break;
             }
           if (LocaleCompare("flatten",option+1) == 0)
-            break;
+            {
+              option_info.flatten=(*option == '-');
+              break;
+            }
           if (LocaleCompare("flip",option+1) == 0)
             break;
           if (LocaleCompare("flop",option+1) == 0)
@@ -1385,6 +1534,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
         {
           if (LocaleCompare("map",option+1) == 0)
             {
+              option_info.global_colormap=(*option == '+');
               if (*option == '-')
                 {
                   i++;
@@ -1443,16 +1593,21 @@ static unsigned int ConvertUtility(int argc,char **argv)
             }
           if (LocaleCompare("morph",option+1) == 0)
             {
+              option_info.morph=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing frames",option);
+                  option_info.morph=atol(argv[i]);
                 }
               break;
             }
           if (LocaleCompare("mosaic",option+1) == 0)
-            break;
+            {
+              option_info.mosaic=(*option == '-');
+              break;
+            }
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
@@ -1709,8 +1864,8 @@ static unsigned int ConvertUtility(int argc,char **argv)
                   if (image == (Image *) NULL)
                     MagickError(OptionError,"Missing source image",
                       (char *) NULL);
-                  status&=ConvertImageList(image_info,&image,i-j+2,argv+j-1,
-                    &exception);
+                  status&=ConvertImageList(image_info,&image,&option_info,i-j+2,
+                    argv+j-1,&exception);
                   j=i+1;
                 }
               break;
@@ -2054,7 +2209,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status&=ConvertImageList(image_info,&image,argc-j+1,argv+j-1,
+  status&=ConvertImageList(image_info,&image,&option_info,argc-j+1,argv+j-1,
     &exception);
   DestroyImageList(image);
   DestroyImageInfo(image_info);
