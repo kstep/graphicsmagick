@@ -71,11 +71,11 @@ typedef struct _SignatureInfo
     low_count,
     high_count;
 
+  off_t
+    offset;
+
   unsigned char
     data[SignatureSize];
-
-  size_t
-    local;
 } SignatureInfo;
 
 /*
@@ -177,7 +177,7 @@ static void GetSignatureInfo(SignatureInfo *signature_info)
   signature_info->digest[7]=0x5be0cd19L;
   signature_info->low_count=0L;
   signature_info->high_count=0L;
-  signature_info->local=0;
+  signature_info->offset=0;
   memset(signature_info->data,0,SignatureSize);
 }
 
@@ -381,16 +381,16 @@ static void UpdateSignature(SignatureInfo *signature_info,
     signature_info->high_count++;
   signature_info->low_count=count;
   signature_info->high_count+=(unsigned char) length >> 29;
-  if (signature_info->local)
+  if (signature_info->offset)
     {
-      i=SignatureSize-signature_info->local;
+      i=SignatureSize-signature_info->offset;
       if (i > length)
         i=length;
-      memcpy(signature_info->data+signature_info->local,message,i);
+      memcpy(signature_info->data+signature_info->offset,message,i);
       length-=i;
       message+=i;
-      signature_info->local+=i;
-      if (signature_info->local != SignatureSize)
+      signature_info->offset+=i;
+      if (signature_info->offset != SignatureSize)
         return;
       TransformSignature(signature_info);
     }
@@ -402,7 +402,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
     TransformSignature(signature_info);
   }
   memcpy(signature_info->data,message,length);
-  signature_info->local=length;
+  signature_info->offset=length;
 }
 
 /*
