@@ -580,6 +580,5 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(buffer,"};\n");
   (void) WriteBlob(image,Extent(buffer),buffer);
   CloseBlob(image);
-  LiberateMemory((void **) &basename);
   return(True);
 }
