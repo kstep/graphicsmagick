@@ -16,12 +16,13 @@ extern "C" {
 #endif
 
 #if defined __STDC_VERSION__ && (__STDC_VERSION__ >= 199901L)
-# define __MagickMethod  __func__
+# define GetMagickModule(severity)  severity,__FILE__,__func__,__LINE__
 #else
 # if defined(__cplusplus) ? GNUC_Prerequiste(2,6) : GNUC_Prerequiste(2,4)
-#  define __MagickMethod  __PRETTY_FUNCTION__
+#  define GetMagickModule(severity)  \
+     severity,__FILE,__PRETTY_FUNCTION__,__LINE__
 # else
-#  define __MagickMethod  __FILE__
+#  define GetMagickModule(severity)  severity,__FILE__,"unknown",__LINE__
 # endif
 #endif
 
@@ -47,10 +48,11 @@ typedef enum
 extern MagickExport unsigned int
   IsEventLogging(void),
 #if defined(__GNUC__)
-  LogMagickEvent(const LogEventType,const char *,const char *,...)
-    __attribute__((format (printf,3,4)));
+  LogMagickEvent(const LogEventType,const char *,const char *,
+    const unsigned long,const char *,...) __attribute__((format (printf,5,6)));
 #else
-  LogMagickEvent(const LogEventType,const char *,const char *,...);
+  LogMagickEvent(const LogEventType,const char *,const char *,
+    const unsigned long,const char *,...);
 #endif
 
 extern MagickExport unsigned long

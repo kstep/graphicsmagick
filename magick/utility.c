@@ -580,7 +580,7 @@ MagickExport unsigned int ConcatenateString(char **destination,
     strlen(*destination)+strlen(source)+MaxTextExtent);
   if (*destination == (char *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to concatenate string");
+			"unable to concatenate string");
   (void) strcat(*destination,source);
   return(True);
 }
@@ -2094,7 +2094,7 @@ MagickExport unsigned int IsAccessible(const char *filename)
   status=stat(filename,&file_info);
   if (status != 0)
     return(False);
-  (void) LogMagickEvent(ConfigureEvent,__MagickMethod,"%.1024s [%.1024s]",
+  (void) LogMagickEvent(GetMagickModule(ConfigureEvent),"%.1024s [%.1024s]",
     filename,strerror(errno));
   return(S_ISREG(file_info.st_mode));
 }
@@ -2786,7 +2786,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   argv=(char **) AcquireMemory((*argc+1)*sizeof(char *));
   if (argv == (char **) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "unable to convert string to argv");
+			"unable to convert string to argv");
   /*
     Convert string to an ASCII list.
   */
