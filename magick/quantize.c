@@ -444,7 +444,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
       if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
-        ProgressMonitor(AssignImageText,y,image->rows);
+        MagickMonitor(AssignImageText,y,image->rows);
     }
   if ((cube_info->quantize_info->number_colors == 2) &&
       (cube_info->quantize_info->colorspace == GRAYColorspace))
@@ -639,7 +639,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
       p++;
     }
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(ClassifyImageText,y,image->rows);
+      MagickMonitor(ClassifyImageText,y,image->rows);
   }
   return(True);
 }
@@ -1717,7 +1717,7 @@ static unsigned int OrderedDitherImage(Image *image)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(DitherImageText,y,image->rows);
+      MagickMonitor(DitherImageText,y,image->rows);
   }
   return(True);
 }
@@ -2160,7 +2160,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
       break;
     image=image->next;
     (void) SetMonitorHandler(handler);
-    ProgressMonitor(ClassifyImageText,i,number_images);
+    MagickMonitor(ClassifyImageText,i,number_images);
   }
   if (status != False)
     {
@@ -2179,7 +2179,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
           TransformRGBImage(image,quantize_info->colorspace);
         image=image->next;
         (void) SetMonitorHandler(handler);
-        ProgressMonitor(AssignImageText,i,number_images);
+        MagickMonitor(AssignImageText,i,number_images);
       }
     }
   DestroyCubeInfo(&cube_info);
@@ -2311,7 +2311,7 @@ static void Reduction(CubeInfo *cube_info,const unsigned int number_colors)
     cube_info->next_pruning_threshold=cube_info->root->quantization_error;
     cube_info->colors=0;
     Reduce(cube_info,cube_info->root);
-    ProgressMonitor(ReduceImageText,span-cube_info->colors,
+    MagickMonitor(ReduceImageText,span-cube_info->colors,
       span-number_colors+1);
   }
 }

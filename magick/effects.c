@@ -140,7 +140,7 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
     if (!SyncImagePixels(noise_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(AddNoiseImageText,y,image->rows);
+      MagickMonitor(AddNoiseImageText,y,image->rows);
   }
   return(noise_image);
 }
@@ -225,66 +225,6 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %
 %
 */
-
-static int GetKernelWidth(const double radius,const double sigma)
-{
-  double
-    normalize,
-    value;
-
-  int
-    width;
-
-  if (radius > 0.0)
-    return((int) (2.0*ceil(radius)+1.0));
-  /*
-    Determine optimal kernel radius.
-  */
-  normalize=0.0;
-  for (width=0; ; width++)
-  {
-    value=exp((double) (-width*width)/(sigma*sigma));
-    normalize+=value;
-    if ((value/normalize) < (1.0/MaxRGB))
-      break;
-  }
-  width--;
-  return(2*width+1);
-}
-
-static int GetOptimalKernelWidth1D(const double radius,const double sigma)
-{
-  double
-    normalize,
-    value;
-
-  int
-    u,
-    width;
-
-  if (radius > 0.0)
-    return((int) (2.0*ceil(radius)+1.0));
-
-  /*
-    Determine optimal kernel radius. Start with the minimum value
-    of 3 pixels and walk out until we drop below the threshold of
-    one pixel numerical accuracy,
-  */
-  for (width=3; ;)
-  {
-    normalize=0.0;
-    for (u=(-width/2); u <= (width/2); u++)
-      normalize+=exp((double) -(u*u)/(sigma*sigma));
-    u=width/2;
-    value=exp((double) -(u*u)/(sigma*sigma))/normalize;
-    if ((int)(value*MaxRGB) > 0)
-      width+=2;
-    else
-      break;
-  }
-  return(width-2);
-}
-
 MagickExport Image *BlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
@@ -403,7 +343,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
     if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(y,blur_image->rows+blur_image->columns))
-      ProgressMonitor(BlurImageText,y,blur_image->rows+
+      MagickMonitor(BlurImageText,y,blur_image->rows+
         blur_image->columns);
   }
   /*
@@ -458,7 +398,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
     if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(blur_image->rows+x,blur_image->rows+blur_image->columns))
-      ProgressMonitor(BlurImageText,blur_image->rows+x,blur_image->rows+
+      MagickMonitor(BlurImageText,blur_image->rows+x,blur_image->rows+
         blur_image->columns);
   }
   /*
@@ -574,7 +514,7 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
     if (!SyncImagePixels(colorize_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(ColorizeImageText,y,image->rows);
+      MagickMonitor(ColorizeImageText,y,image->rows);
   }
   return(colorize_image);
 }
@@ -744,7 +684,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
     if (!SyncImagePixels(convolve_image))
       break;
     if (QuantumTick(y,convolve_image->rows))
-      ProgressMonitor(ConvolveImageText,y,convolve_image->rows);
+      MagickMonitor(ConvolveImageText,y,convolve_image->rows);
   }
   return(convolve_image);
 }
@@ -882,7 +822,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   */
   for (i=0; i < 4; i++)
   {
-    ProgressMonitor(DespeckleImageText,i,12);
+    MagickMonitor(DespeckleImageText,i,12);
     Hull(X[i],Y[i],1,image->columns,image->rows,red,buffer);
     Hull(-X[i],-Y[i],1,image->columns,image->rows,red,buffer);
     Hull(-X[i],-Y[i],-1,image->columns,image->rows,red,buffer);
@@ -895,7 +835,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     buffer[i]=0;
   for (i=0; i < 4; i++)
   {
-    ProgressMonitor(DespeckleImageText,i+4,12);
+    MagickMonitor(DespeckleImageText,i+4,12);
     Hull(X[i],Y[i],1,image->columns,image->rows,green,buffer);
     Hull(-X[i],-Y[i],1,image->columns,image->rows,green,buffer);
     Hull(-X[i],-Y[i],-1,image->columns,image->rows,green,buffer);
@@ -908,7 +848,7 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     buffer[i]=0;
   for (i=0; i < 4; i++)
   {
-    ProgressMonitor(DespeckleImageText,i+8,12);
+    MagickMonitor(DespeckleImageText,i+8,12);
     Hull(X[i],Y[i],1,image->columns,image->rows,blue,buffer);
     Hull(-X[i],-Y[i],1,image->columns,image->rows,blue,buffer);
     Hull(-X[i],-Y[i],-1,image->columns,image->rows,blue,buffer);
@@ -1001,7 +941,7 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetKernelWidth(radius,0.5);
+  width=GetOptimalKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to edgeen image",
       "image is smaller than radius");
@@ -1075,7 +1015,7 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetKernelWidth(radius,0.5);
+  width=GetOptimalKernelWidth(radius,0.5);
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to emboss image",
@@ -1262,7 +1202,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(enhance_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(EnhanceImageText,y,image->rows-2);
+      MagickMonitor(EnhanceImageText,y,image->rows-2);
   }
   return(enhance_image);
 }
@@ -1301,42 +1241,6 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %
 %
 */
-static int GetOptimalKernelWidth2D(const double radius,const double sigma)
-{
-  double
-    normalize,
-    value;
-
-  int
-    u,
-    v,
-    width;
-
-  if (radius > 0.0)
-    return((int) (2.0*ceil(radius)+1.0));
-  /*
-    Determine optimal kernel radius. Start with the minimum value
-    of 3 pixels and walk out until we drop below the threshold of
-    one pixel numerical accuracy,
-  */
-  for (width=3; ;)
-  {
-    normalize=0.0;
-    for (v=(-width/2); v <= (width/2); v++)
-    {
-      for (u=(-width/2); u <= (width/2); u++)
-        normalize+=exp((double) -(u*u+v*v)/(sigma*sigma));
-    }
-    v=width/2;
-    value=exp((double) -(v*v)/(sigma*sigma))/normalize;
-    if ((int)(value*MaxRGB) > 0)
-      width+=2;
-    else
-      break;
-  }
-  return(width-2);
-}
-
 MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
@@ -1378,11 +1282,6 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
       i++;
     }
   }
-#ifdef NORMALIZE_KERNEL
-  /* Should not be needed - ConvolveImage does its own normalize */
-  for (i=0; i < (width*width); i++)
-    kernel[i]/=normalize;
-#endif
   blur_image=ConvolveImage(image,width,kernel,exception);
   LiberateMemory((void **) &kernel);
   return(blur_image);
@@ -1521,7 +1420,7 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
     if (!SyncImagePixels(implode_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(ImplodeImageText,y,image->rows);
+      MagickMonitor(ImplodeImageText,y,image->rows);
   }
   return(implode_image);
 }
@@ -1639,7 +1538,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetKernelWidth(radius,0.5);
+  width=GetOptimalKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to median filter image",
       "image smaller than kernel radius");
@@ -1695,7 +1594,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
     if (!SyncImagePixels(median_image))
       break;
     if (QuantumTick(y,median_image->rows))
-      ProgressMonitor(MedianFilterImageText,y,median_image->rows);
+      MagickMonitor(MedianFilterImageText,y,median_image->rows);
   }
   return(median_image);
 }
@@ -1845,7 +1744,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
     morph_images->next->previous=morph_images;
     morph_images=morph_images->next;
     (void) SetMonitorHandler(handler);
-    ProgressMonitor(MorphImageText,scene,GetNumberScenes(image));
+    MagickMonitor(MorphImageText,scene,GetNumberScenes(image));
     scene++;
   }
   while (morph_images->previous != (Image *) NULL)
@@ -1926,7 +1825,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetKernelWidth(radius,0.5);
+  width=GetOptimalKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to oil paint",
       "image smaller than radius");
@@ -2009,7 +1908,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
     if (!SyncImagePixels(paint_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(OilPaintImageText,y,image->rows);
+      MagickMonitor(OilPaintImageText,y,image->rows);
   }
   LiberateMemory((void **) &histogram);
   return(paint_image);
@@ -2288,7 +2187,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetKernelWidth(radius,0.5);
+  width=GetOptimalKernelWidth(radius,0.5);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to noise filter image",
       "image smaller than kernel radius");
@@ -2408,7 +2307,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
     if (!SyncImagePixels(noise_image))
       break;
     if (QuantumTick(y,noise_image->rows))
-      ProgressMonitor(ReduceNoiseImageText,y,noise_image->rows);
+      MagickMonitor(ReduceNoiseImageText,y,noise_image->rows);
   }
   return(noise_image);
 }
@@ -2565,7 +2464,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
     if (!SyncImagePixels(shade_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(ShadeImageText,y,image->rows);
+      MagickMonitor(ShadeImageText,y,image->rows);
   }
   return(shade_image);
 }
@@ -2625,7 +2524,7 @@ MagickExport Image *SharpenImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetKernelWidth(radius,sigma);
+  width=GetOptimalKernelWidth(radius,sigma);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to sharpen image",
       "image is smaller than radius");
@@ -2719,7 +2618,7 @@ MagickExport void SolarizeImage(Image *image,const double factor)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(SolarizeImageText,y,image->rows);
+          MagickMonitor(SolarizeImageText,y,image->rows);
       }
       break;
     }
@@ -2833,7 +2732,7 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
     if (!SyncImagePixels(spread_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(SpreadImageText,y,image->rows);
+      MagickMonitor(SpreadImageText,y,image->rows);
   }
   return(spread_image);
 }
@@ -2988,7 +2887,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     if (shift < 0)
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(SteganoImageText,y,image->rows);
+      MagickMonitor(SteganoImageText,y,image->rows);
   }
   if (stegano_image->storage_class == PseudoClass)
     SyncImage(stegano_image);
@@ -3091,7 +2990,7 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
     if (!SyncImagePixels(stereo_image))
       break;
     if (QuantumTick(y,stereo_image->rows))
-      ProgressMonitor(StereoImageText,y,stereo_image->rows);
+      MagickMonitor(StereoImageText,y,stereo_image->rows);
   }
   return(stereo_image);
 }
@@ -3223,7 +3122,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
     if (!SyncImagePixels(swirl_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(SwirlImageText,y,image->rows);
+      MagickMonitor(SwirlImageText,y,image->rows);
   }
   return(swirl_image);
 }
@@ -3295,7 +3194,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(ThresholdImageText,y,image->rows);
+      MagickMonitor(ThresholdImageText,y,image->rows);
   }
   return(True);
 }
@@ -3399,7 +3298,7 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
     if (!SyncImagePixels(sharp_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(SharpenImageText,y,image->rows);
+      MagickMonitor(SharpenImageText,y,image->rows);
   }
   return(sharp_image);
 }
@@ -3500,7 +3399,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
     if (!SyncImagePixels(wave_image))
       break;
     if (QuantumTick(y,wave_image->rows))
-      ProgressMonitor(WaveImageText,y,wave_image->rows);
+      MagickMonitor(WaveImageText,y,wave_image->rows);
   }
   LiberateMemory((void **) &sine_map);
   return(wave_image);

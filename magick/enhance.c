@@ -125,9 +125,9 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
         if (QuantumTick(y,image->rows))
           {
             if (sharpen)
-              ProgressMonitor(SharpenContrastImageText,y,image->rows);
+              MagickMonitor(SharpenContrastImageText,y,image->rows);
             else
-              ProgressMonitor(DullContrastImageText,y,image->rows);
+              MagickMonitor(DullContrastImageText,y,image->rows);
           }
       }
       break;
@@ -287,7 +287,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(EqualizeImageText,y,image->rows);
+          MagickMonitor(EqualizeImageText,y,image->rows);
       }
       break;
     }
@@ -434,7 +434,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(GammaImageText,y,image->rows);
+          MagickMonitor(GammaImageText,y,image->rows);
       }
       break;
     }
@@ -542,7 +542,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(ModulateImageText,y,image->rows);
+          MagickMonitor(ModulateImageText,y,image->rows);
       }
       break;
     }
@@ -645,7 +645,7 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(NegateImageText,y,image->rows);
+          MagickMonitor(NegateImageText,y,image->rows);
       }
       break;
     }
@@ -826,7 +826,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(NormalizeImageText,y,image->rows);
+          MagickMonitor(NormalizeImageText,y,image->rows);
       }
       break;
     }

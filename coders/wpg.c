@@ -154,7 +154,7 @@ register IndexPacket *indexes;
                  break;
 /*            if (image->previous == (Image *) NULL)
                  if (QuantumTick(y,image->rows))
-                   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+                   MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
             break;
             }
       case 2:  /* Convert PseudoColor scanline. */
@@ -204,7 +204,7 @@ register IndexPacket *indexes;
                  break;
 /*         if (image->previous == (Image *) NULL)
                  if (QuantumTick(y,image->rows))
-                   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+                   MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
            break;
            }
 	    
@@ -235,7 +235,7 @@ register IndexPacket *indexes;
                  break;
 /*         if (image->previous == (Image *) NULL)
                  if (QuantumTick(y,image->rows))
-                   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+                   MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
            break;
            }
       case 8: /* Convert PseudoColor scanline. */
@@ -254,7 +254,7 @@ register IndexPacket *indexes;
                  break;
 /*           if (image->previous == (Image *) NULL)
                  if (QuantumTick(y,image->rows))
-                   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+                   MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
            }
            break;
 	   
@@ -273,7 +273,7 @@ register IndexPacket *indexes;
             break;
 /*          if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);*/
+              MagickMonitor(LoadImageText,image->rows-y-1,image->rows);*/
           break;	   
        }
 }

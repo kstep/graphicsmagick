@@ -119,7 +119,7 @@ static pascal void
 %
 %  The format of the BottleneckTest method is:
 %
-%      int ImageFormatConflict(const char *magick)
+%      int BottleneckTest(const char *magick)
 %
 %  A description of each parameter follows:
 %
@@ -1191,7 +1191,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(LoadImageText,y,image->rows);
+      MagickMonitor(LoadImageText,y,image->rows);
   }
   UnlockPixels(graphic_world->portPixMap);
   SetGWorld(port,device);

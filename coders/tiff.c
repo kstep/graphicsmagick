@@ -741,7 +741,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
         LiberateMemory((void **) &scanline);
         LiberateMemory((void **) &quantum_scanline);
@@ -809,7 +809,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
         LiberateMemory((void **) &scanline);
         break;
@@ -873,7 +873,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
         LiberateMemory((void **) &pixels);
         break;
@@ -898,7 +898,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImageText,image->scene-1,image->scene);
+        MagickMonitor(LoadImageText,image->scene-1,image->scene);
       }
   } while (status == True);
   TIFFClose(tiff);
@@ -1564,7 +1564,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
+                  MagickMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -1582,7 +1582,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
             }
-            ProgressMonitor(SaveImageText,100,400);
+            MagickMonitor(SaveImageText,100,400);
             for (y=0; y < (int) image->rows; y++)
             {
               if (!GetImagePixels(image,0,y,image->columns,1))
@@ -1591,7 +1591,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
                 break;
             }
-            ProgressMonitor(SaveImageText,200,400);
+            MagickMonitor(SaveImageText,200,400);
             for (y=0; y < (int) image->rows; y++)
             {
               if (!GetImagePixels(image,0,y,image->columns,1))
@@ -1600,7 +1600,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
                 break;
             }
-            ProgressMonitor(SaveImageText,300,400);
+            MagickMonitor(SaveImageText,300,400);
             if (image->matte)
               for (y=0; y < (int) image->rows; y++)
               {
@@ -1610,7 +1610,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
                   break;
               }
-            ProgressMonitor(SaveImageText,400,400);
+            MagickMonitor(SaveImageText,400,400);
             break;
           }
         }
@@ -1632,7 +1632,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
+              MagickMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -1701,7 +1701,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
+                  MagickMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -1747,7 +1747,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
+              MagickMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -1759,7 +1759,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   while (image->previous != (Image *) NULL)
     image=image->previous;

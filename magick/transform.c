@@ -184,7 +184,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     if (!SyncImagePixels(chop_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(ChopImageText,y,image->rows);
+      MagickMonitor(ChopImageText,y,image->rows);
   }
   /*
     Extract chop image.
@@ -212,7 +212,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     if (!SyncImagePixels(chop_image))
       break;
     if (QuantumTick(i,image->rows))
-      ProgressMonitor(ChopImageText,i,image->rows);
+      MagickMonitor(ChopImageText,i,image->rows);
   }
   return(chop_image);
 }
@@ -500,7 +500,7 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     if (!SyncImagePixels(crop_image))
       break;
     if (QuantumTick(y,crop_image->rows))
-      ProgressMonitor(CropImageText,y,crop_image->rows-1);
+      MagickMonitor(CropImageText,y,crop_image->rows-1);
   }
   if (y < (int) crop_image->rows)
     {
@@ -782,7 +782,7 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
     if (status == False)
       break;
     if (QuantumTick(y,flip_image->rows))
-      ProgressMonitor(FlipImageText,y,flip_image->rows);
+      MagickMonitor(FlipImageText,y,flip_image->rows);
   }
   return(flip_image);
 }
@@ -876,7 +876,7 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
     if (status == False)
       break;
     if (QuantumTick(y,flop_image->rows))
-      ProgressMonitor(FlopImageText,y,flop_image->rows);
+      MagickMonitor(FlopImageText,y,flop_image->rows);
   }
   return(flop_image);
 }
@@ -1182,7 +1182,7 @@ MagickExport Image *RollImage(Image *image,const int x_offset,
         break;
     }
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(RollImageText,y,image->rows);
+      MagickMonitor(RollImageText,y,image->rows);
   }
   return(roll_image);
 }

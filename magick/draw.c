@@ -1357,7 +1357,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
-        ProgressMonitor(DrawImageText,y,image->rows);
+        MagickMonitor(DrawImageText,y,image->rows);
     }
   }
   /*
@@ -2806,7 +2806,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(OpaqueImageText,y,image->rows);
+          MagickMonitor(OpaqueImageText,y,image->rows);
       }
       break;
     }
@@ -2820,7 +2820,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
         if (ColorMatch(image->colormap[i],target,image->fuzz))
           image->colormap[i]=pen_color;
         if (QuantumTick(i,image->colors))
-          ProgressMonitor(OpaqueImageText,i,image->colors);
+          MagickMonitor(OpaqueImageText,i,image->colors);
       }
       SyncImage(image);
       break;
@@ -2891,7 +2891,7 @@ MagickExport unsigned int TransparentImage(Image *image,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(TransparentImageText,y,image->rows);
+      MagickMonitor(TransparentImageText,y,image->rows);
   }
   return(True);
 }

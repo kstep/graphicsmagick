@@ -314,7 +314,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(LoadImageText,y,image->rows);
+      MagickMonitor(LoadImageText,y,image->rows);
   }
   LiberateMemory((void **) &vicar_pixels);
   CloseBlob(image);
@@ -500,7 +500,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,q-pixels,(char *) pixels);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        ProgressMonitor(SaveImageText,y,image->rows);
+        MagickMonitor(SaveImageText,y,image->rows);
   }
   LiberateMemory((void **) &pixels);
   CloseBlob(image);

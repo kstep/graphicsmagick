@@ -2082,7 +2082,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->next->blob=image->blob;
             image=image->next;
             mng_info->image=image;
-            ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+            MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
           }
         if (term_chunk_found)
           {
@@ -2516,7 +2516,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
       }
     else
@@ -2655,7 +2655,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
         LiberateMemory((void **) &quantum_scanline);
       }
@@ -4190,7 +4190,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
+              MagickMonitor(SaveImageText,y,image->rows);
         }
       }
     else
@@ -4207,7 +4207,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               (void) PopImagePixels(image,GrayOpacityQuantum,scanlines[y]);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
+                MagickMonitor(SaveImageText,y,image->rows);
           }
         }
       else
@@ -4229,7 +4229,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     (void) PopImagePixels(image,RGBAQuantum,scanlines[y]);
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
+                  MagickMonitor(SaveImageText,y,image->rows);
             }
         else
           for (y=0; y < (int) image->rows; y++)
@@ -4242,7 +4242,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               (void) PopImagePixels(image,IndexQuantum,scanlines[y]);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
+                MagickMonitor(SaveImageText,y,image->rows);
           }
        }
     }
@@ -4344,7 +4344,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

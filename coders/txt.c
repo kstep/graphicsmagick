@@ -203,7 +203,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=height;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(page.y+offset,image->rows))
-        ProgressMonitor(LoadImageText,page.y+offset,image->rows);
+        MagickMonitor(LoadImageText,page.y+offset,image->rows);
     if (((2*page.y)+offset+height) < image->rows)
       continue;
     /*
@@ -223,7 +223,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->next->previous=image;
     (void) IsPseudoClass(image);
     image=image->next;
-    ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+    MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
     /*
       Initialize text image to background color.
     */
@@ -400,7 +400,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
         (void) WriteByte(image,'\n');
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            ProgressMonitor(SaveImageText,y,image->rows);
+            MagickMonitor(SaveImageText,y,image->rows);
         p++;
       }
     }
@@ -408,7 +408,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
       break;
     image->next->file=image->file;
     image=image->next;
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

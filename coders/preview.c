@@ -542,7 +542,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     commands[argc++]=label;
     MogrifyImage(clone_info,argc,commands,&images[i]);
     (void) SetMonitorHandler(handler);
-    ProgressMonitor(PreviewImageText,i,NumberTiles);
+    MagickMonitor(PreviewImageText,i,NumberTiles);
   }
   DestroyImageInfo(clone_info);
   DestroyImage(preview_image);

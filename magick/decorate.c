@@ -321,7 +321,7 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
     if (!SyncImagePixels(frame_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(FrameImageText,y,image->rows);
+      MagickMonitor(FrameImageText,y,image->rows);
   }
   /*
     Draw bottom of ornamental border.
@@ -493,7 +493,7 @@ MagickExport unsigned int RaiseImage(Image *image,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(i,image->rows))
-      ProgressMonitor(RaiseImageText,i,image->rows);
+      MagickMonitor(RaiseImageText,i,image->rows);
   }
   height=image->rows-(raise_info->height << 1);
   for (y=0; y < (int) height; y++)
@@ -526,7 +526,7 @@ MagickExport unsigned int RaiseImage(Image *image,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(i,image->rows))
-      ProgressMonitor(RaiseImageText,i,image->rows);
+      MagickMonitor(RaiseImageText,i,image->rows);
   }
   for (y=0; y < (int) raise_info->height; y++)
   {
@@ -566,7 +566,7 @@ MagickExport unsigned int RaiseImage(Image *image,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(i,image->rows))
-      ProgressMonitor(RaiseImageText,i,image->rows);
+      MagickMonitor(RaiseImageText,i,image->rows);
   }
   return(True);
 }

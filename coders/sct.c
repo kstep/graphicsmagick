@@ -236,7 +236,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(LoadImageText,y,image->rows);
+      MagickMonitor(LoadImageText,y,image->rows);
   }
   return(image);
 }

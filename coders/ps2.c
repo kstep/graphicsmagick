@@ -679,7 +679,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
+                MagickMonitor(SaveImageText,y,image->rows);
           }
           if (compression == ZipCompression)
             status=
@@ -734,7 +734,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
+                MagickMonitor(SaveImageText,y,image->rows);
           }
           Ascii85Flush(image);
           break;
@@ -797,7 +797,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(image,byte << (8-bit));
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
+                    MagickMonitor(SaveImageText,y,image->rows);
               }
               Ascii85Flush(image);
               break;
@@ -852,7 +852,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
+                    MagickMonitor(SaveImageText,y,image->rows);
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,number_packets,image_info->quality,
@@ -886,7 +886,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(image,indexes[x]);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
+                    MagickMonitor(SaveImageText,y,image->rows);
               }
               Ascii85Flush(image);
               break;
@@ -906,7 +906,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

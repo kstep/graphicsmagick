@@ -157,7 +157,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(LoadImageText,y,image->rows);
+      MagickMonitor(LoadImageText,y,image->rows);
   }
   TransformRGBImage(image,YCbCrColorspace);
   CloseBlob(image);
@@ -327,7 +327,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
       p++;
     }
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(SaveImageText,y,image->rows);
+      MagickMonitor(SaveImageText,y,image->rows);
   }
   TransformRGBImage(image,YCbCrColorspace);
   CloseBlob(image);

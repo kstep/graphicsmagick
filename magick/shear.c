@@ -153,7 +153,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(RotateImageText,y,image->rows);
+          MagickMonitor(RotateImageText,y,image->rows);
       }
       break;
     }
@@ -176,7 +176,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(RotateImageText,y,image->rows);
+          MagickMonitor(RotateImageText,y,image->rows);
       }
       Swap(page.width,page.height);
       Swap(page.x,page.y);
@@ -205,7 +205,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(RotateImageText,y,image->rows);
+          MagickMonitor(RotateImageText,y,image->rows);
       }
       page.x=page.width-rotate_image->columns-page.x;
       page.y=page.height-rotate_image->rows-page.y;
@@ -233,7 +233,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(RotateImageText,y,image->rows);
+          MagickMonitor(RotateImageText,y,image->rows);
       }
       Swap(page.width,page.height);
       Swap(page.x,page.y);
@@ -500,7 +500,7 @@ static void XShearImage(Image *image,const double degrees,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,height))
-      ProgressMonitor(XShearImageText,y,height);
+      MagickMonitor(XShearImageText,y,height);
   }
 }
 
@@ -754,7 +754,7 @@ static void YShearImage(Image *image,const double degrees,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,width))
-      ProgressMonitor(YShearImageText,y,width);
+      MagickMonitor(YShearImageText,y,width);
   }
 }
 

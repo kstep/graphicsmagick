@@ -366,7 +366,7 @@ static unsigned int Classify(Image *image,short **extrema,
       p++;
     }
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(SegmentImageText,y,image->rows << 1);
+      MagickMonitor(SegmentImageText,y,image->rows << 1);
   }
   /*
     Remove clusters that do not meet minimum cluster threshold.
@@ -551,7 +551,7 @@ static unsigned int Classify(Image *image,short **extrema,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(SegmentImageText,y+image->rows,image->rows << 1);
+      MagickMonitor(SegmentImageText,y+image->rows,image->rows << 1);
   }
   SyncImage(image);
   /*

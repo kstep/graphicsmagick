@@ -241,6 +241,115 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t O p t i m a l K e r n e l W i d t h                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetOptimalKernelWidth computes the optimal kernel radius for a
+%  convolution filter.  Start with the minimum value of 3 pixels and walk out
+%  until we drop below the threshold of one pixel numerical accuracy,
+%
+%  The format of the GetOptimalKernelWidth method is:
+%
+%      int GetOptimalKernelWidth(const double radius,const double sigma)
+%
+%  A description of each parameter follows:
+%
+%    o width: Method GetOptimalKernelWidth returns the optimal width of
+%      a convolution kernel.
+%
+%    o radius: The radius of the Gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: The standard deviation of the Gaussian, in pixels.
+%
+%
+*/
+
+MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
+{
+  double
+    normalize,
+    value;
+
+  register int
+    u,
+    width;
+
+  if (radius > 0.0)
+    return((int) (2.0*ceil(radius)+1.0));
+  for (width=3; ;)
+  {
+    normalize=0.0;
+    for (u=(-width/2); u <= (width/2); u++)
+      normalize+=exp((double) -(u*u)/(sigma*sigma));
+    value=exp((double) (-width*width/4)/(sigma*sigma))/normalize;
+    if ((int) (value*MaxRGB) <= 0)
+      break;
+    width+=2;
+  }
+  return(width-2);
+}
+
+MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
+{
+  double
+    normalize,
+    value;
+
+  register int
+    u,
+    v,
+    width;
+
+  if (radius > 0.0)
+    return((int) (2.0*ceil(radius)+1.0));
+  for (width=3; ;)
+  {
+    normalize=0.0;
+    for (v=(-width/2); v <= (width/2); v++)
+    {
+      for (u=(-width/2); u <= (width/2); u++)
+        normalize+=exp((double) -(u*u+v*v)/(sigma*sigma));
+    }
+    value=exp((double) (-width*width/4)/(sigma*sigma))/normalize;
+    if ((int) (value*MaxRGB) <= 0)
+      break;
+    width+=2;
+  }
+  return(width-2);
+}
+
+MagickExport int GetOptimalKernelWidth(const double radius,const double sigma)
+{
+  double
+    normalize,
+    value;
+
+  register int
+    width;
+
+  if (radius > 0.0)
+    return((int) (2.0*ceil(radius)+1.0));
+  normalize=0.0;
+  for (width=0; ; width++)
+  {
+    value=exp((double) (-width*width)/(sigma*sigma));
+    normalize+=value;
+    if ((value/normalize) < (1.0/MaxRGB))
+      break;
+  }
+  width--;
+  return(2*width+1);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   H S L T r a n s f o r m                                                   %
 %                                                                             %
 %                                                                             %

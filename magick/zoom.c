@@ -430,7 +430,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(magnify_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(MagnifyImageText,y,image->rows);
+      MagickMonitor(MagnifyImageText,y,image->rows);
   }
   p=GetImagePixels(magnify_image,0,2*image->rows-2,magnify_image->columns,1);
   if (p != (PixelPacket *) NULL)
@@ -570,7 +570,7 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(minify_image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(MinifyImageText,y,image->rows-1);
+      MagickMonitor(MinifyImageText,y,image->rows-1);
   }
   return(minify_image);
 }
@@ -821,7 +821,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         if (!SyncImagePixels(destination))
           break;
         if (QuantumTick(*quantum,span))
-          ProgressMonitor(ResizeImageText,*quantum,span);
+          MagickMonitor(ResizeImageText,*quantum,span);
         (*quantum)++;
       }
       return(y == (int) destination->rows);
@@ -900,7 +900,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     if (!SyncImagePixels(destination))
       break;
     if (QuantumTick(*quantum,span))
-      ProgressMonitor(ResizeImageText,*quantum,span);
+      MagickMonitor(ResizeImageText,*quantum,span);
     (*quantum)++;
   }
   return(x == (int) destination->columns);
@@ -964,7 +964,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         if (!SyncImagePixels(destination))
           break;
         if (QuantumTick(*quantum,span))
-          ProgressMonitor(ResizeImageText,*quantum,span);
+          MagickMonitor(ResizeImageText,*quantum,span);
         (*quantum)++;
       }
       return(y == (int) destination->rows);
@@ -1042,7 +1042,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     if (!SyncImagePixels(destination))
       break;
     if (QuantumTick(*quantum,span))
-      ProgressMonitor(ResizeImageText,*quantum,span);
+      MagickMonitor(ResizeImageText,*quantum,span);
     (*quantum)++;
   }
   return(y == (int) destination->rows);
@@ -1315,7 +1315,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     if (!SyncImagePixels(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))
-      ProgressMonitor(SampleImageText,y,sample_image->rows);
+      MagickMonitor(SampleImageText,y,sample_image->rows);
   }
   LiberateMemory((void **) &y_offset);
   LiberateMemory((void **) &x_offset);
@@ -1676,7 +1676,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
     if (!SyncImagePixels(scale_image))
       break;
     if (QuantumTick(y,scale_image->rows))
-      ProgressMonitor(ScaleImageText,y,scale_image->rows);
+      MagickMonitor(ScaleImageText,y,scale_image->rows);
   }
   /*
     Free allocated memory.

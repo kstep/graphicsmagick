@@ -7825,12 +7825,12 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XProgressMonitor displays the progress a task is making in
+%  Method XMagickMonitor displays the progress a task is making in
 %  completing a task.
 %
-%  The format of the XProgressMonitor method is:
+%  The format of the XMagickMonitor method is:
 %
-%      void XProgressMonitor(const char *task,const off_t quantum,
+%      void XMagickMonitor(const char *task,const off_t quantum,
 %        const off_t span)
 %
 %  A description of each parameter follows:
@@ -7844,7 +7844,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
 %
 %
 */
-MagickExport void XProgressMonitor(const char *task,const off_t quantum,
+MagickExport void XMagickMonitor(const char *task,const off_t quantum,
   const off_t span)
 {
   XWindows

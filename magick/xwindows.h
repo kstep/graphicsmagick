@@ -557,7 +557,7 @@ extern MagickExport void
     XStandardColormap *,XPixelInfo *),
   XMakeWindow(Display *,Window,char **,int,XClassHint *,XWMHints *,
     XWindowInfo *),
-  XProgressMonitor(const char *,const off_t,const off_t),
+  XMagickMonitor(const char *,const off_t,const off_t),
   XQueryPosition(Display *,const Window,int *,int *),
   XRefreshWindow(Display *,const XWindowInfo *,const XEvent *),
   XRemoteCommand(Display *,const char *,const char *),

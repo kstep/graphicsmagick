@@ -67,19 +67,18 @@ static MonitorHandler
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P r o g r e s s M o n i t o r                                             %
+%   M a g i c k M o n i t o r                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ProgressMonitor calls the monitor handler methods with a text
+%  Method MagickMonitor calls the monitor handler methods with a text
 %  string that describes the task and a measure of completion.
 %
-%  The format of the ProgressMonitor method is:
+%  The format of the MagickMonitor method is:
 %
-%      void ProgressMonitor(const char *text,const off_t quantum,
-%        const off_t span)
+%      void MagickMonitor(const char *text,const off_t quantum,const off_t span)
 %
 %  A description of each parameter follows:
 %
@@ -90,7 +89,7 @@ static MonitorHandler
 %
 %
 */
-MagickExport void ProgressMonitor(const char *text,const off_t quantum,
+MagickExport void MagickMonitor(const char *text,const off_t quantum,
   const off_t span)
 {
   assert(text != (const char *) NULL);

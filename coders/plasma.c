@@ -174,7 +174,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
     i>>=1;
   for (depth=1; ; depth++)
   {
-    ProgressMonitor(PlasmaImageText,depth,max_depth);
+    MagickMonitor(PlasmaImageText,depth,max_depth);
     if (PlasmaImage(image,&segment_info,0,depth))
       break;
   }

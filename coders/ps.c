@@ -344,7 +344,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FormatString(command,delegate_info.commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
-  ProgressMonitor(RenderPostscriptText,0,8);
+  MagickMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);
   if (!IsAccessible(image_info->filename))
     {
@@ -359,7 +359,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=SystemCommand(image_info->verbose,command);
     }
   (void) remove(postscript_filename);
-  ProgressMonitor(RenderPostscriptText,7,8);
+  MagickMonitor(RenderPostscriptText,7,8);
   if (status)
     {
       /*
@@ -942,17 +942,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,strlen(buffer),buffer);
         if (LocaleCompare(image_info->magick,"PS") != 0)
           {
-            (void) strcpy(buffer,"%%Pages: 0\n");
+            (void) strcpy(buffer,"%%Pages: 1\n");
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         else
           {
-            Image
-              *next_image;
-
-            unsigned int
-              pages;
-
             /*
               Compute the number of pages.
             */
@@ -960,14 +954,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlob(image,strlen(buffer),buffer);
             (void) strcpy(buffer,"%%PageOrder: Ascend\n");
             (void) WriteBlob(image,strlen(buffer),buffer);
-            pages=1;
-            if (image_info->adjoin)
-              for (next_image=image->next; next_image != (Image *) NULL; )
-              {
-                next_image=next_image->next;
-                pages++;
-              }
-            FormatString(buffer,"%%%%Pages: %u\n",pages);
+            FormatString(buffer,"%%%%Pages: %u\n",
+              image_info->adjoin ? GetNumberScenes(image) : 1);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         (void) strcpy(buffer,"%%EndComments\n");
@@ -1128,7 +1116,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"userdict begin\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
-    (void) strcpy(buffer,"%%BeginData:\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"DisplayImage\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
@@ -1210,7 +1197,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
+                  MagickMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -1243,7 +1230,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
+                  MagickMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -1281,7 +1268,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
+                    MagickMonitor(SaveImageText,y,image->rows);
               }
             }
           else
@@ -1340,7 +1327,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   };
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
+                    MagickMonitor(SaveImageText,y,image->rows);
               }
             }
           if (count != 0)
@@ -1409,7 +1396,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
+                    MagickMonitor(SaveImageText,y,image->rows);
               }
               break;
             }
@@ -1439,14 +1426,13 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
+                    MagickMonitor(SaveImageText,y,image->rows);
               }
               break;
             }
           }
           (void) WriteByte(image,'\n');
         }
-    (void) strcpy(buffer,"%%EndData\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (LocaleCompare(image_info->magick,"PS") != 0)
       {
@@ -1458,14 +1444,14 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
   (void) strcpy(buffer,"%%Trailer\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  if (page > 1)
+  if (page > 2)
     {
       FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
         bounds.x1,bounds.y1,bounds.x2,bounds.y2);

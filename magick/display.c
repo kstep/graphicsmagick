@@ -11248,7 +11248,7 @@ static Image *XVisualDirectoryImage(Display *display,
           }
       }
     (void) SetMonitorHandler(handler);
-    ProgressMonitor(LoadImageText,i,number_files);
+    MagickMonitor(LoadImageText,i,number_files);
   }
   DestroyImageInfo(clone_info);
   LiberateMemory((void **) &filelist);
@@ -12014,7 +12014,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if (windows != (XWindows *) NULL)
     {
       (void) chdir(working_directory);
-      monitor_handler=SetMonitorHandler(XProgressMonitor);
+      monitor_handler=SetMonitorHandler(XMagickMonitor);
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
       (void) signal(SIGINT,XSignalHandler);
@@ -12509,7 +12509,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Set our progress monitor and warning handlers.
   */
   if (monitor_handler == (MonitorHandler) NULL)
-    monitor_handler=SetMonitorHandler(XProgressMonitor);
+    monitor_handler=SetMonitorHandler(XMagickMonitor);
   if (warning_handler == (WarningHandler) NULL)
     warning_handler=resource_info->display_warnings ?
       SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);

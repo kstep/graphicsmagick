@@ -1014,8 +1014,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               for (i=0; i < (length-2); i++)
                 (void) ReadByte(image);
             }
-printf("%d\n",image->columns);
-image->columns=814;
           if ((code != 0x9a) && (bytes_per_line & 0x8000) == 0)
             pixels=DecodeImage(image_info,image,bytes_per_line,1);
           else

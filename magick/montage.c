@@ -402,7 +402,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       }
     next_list[tile]=tiled_next;
     (void) SetMonitorHandler(handler);
-    ProgressMonitor(TileImageText,tile,number_images);
+    MagickMonitor(TileImageText,tile,number_images);
   }
   /*
     Sort next_list by increasing tile number.
@@ -841,7 +841,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       if (next != next_list[tile])
         DestroyImage(next);
       (void) SetMonitorHandler(handler);
-      ProgressMonitor(MontageImageText,tiles,total_tiles);
+      MagickMonitor(MontageImageText,tiles,total_tiles);
       tiles++;
     }
     if ((i+1) < (int) image_per_page)

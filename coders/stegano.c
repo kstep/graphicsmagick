@@ -186,7 +186,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     if (shift < 0)
       break;
     if (QuantumTick(y,stegano_image->rows))
-      ProgressMonitor(LoadImageText,y,stegano_image->rows);
+      MagickMonitor(LoadImageText,y,stegano_image->rows);
   }
   SyncImage(image);
   DestroyImage(stegano_image);

@@ -637,7 +637,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
       }
     else
@@ -654,7 +654,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
       else
         {
@@ -690,7 +690,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(LoadImageText,y,image->rows);
+                MagickMonitor(LoadImageText,y,image->rows);
           }
         }
     LiberateMemory((void **) &viff_pixels);
@@ -715,7 +715,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while ((status == True) && (viff_info.identifier == 0xab));
   while (image->previous != (Image *) NULL)
@@ -1060,7 +1060,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
+              MagickMonitor(SaveImageText,y,image->rows);
         }
       }
     else
@@ -1099,7 +1099,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
               *q++=indexes[x];
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
+                MagickMonitor(SaveImageText,y,image->rows);
           }
         }
       else
@@ -1146,7 +1146,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                 *q++=byte >> (8-bit);
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
+                  MagickMonitor(SaveImageText,y,image->rows);
             }
           }
         else
@@ -1166,7 +1166,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
+                  MagickMonitor(SaveImageText,y,image->rows);
             }
           }
     (void) WriteBlob(image,packets,(char *) viff_pixels);
@@ -1174,7 +1174,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

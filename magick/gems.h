@@ -14,6 +14,11 @@ extern "C" {
 extern MagickExport double
   Permutate(int,int);
 
+extern MagickExport int
+  GetOptimalKernelWidth(const double,const double),
+  GetOptimalKernelWidth1D(const double,const double),
+  GetOptimalKernelWidth2D(const double,const double);
+
 extern MagickExport PixelPacket
   InterpolateColor(Image *,const double,const double);
 

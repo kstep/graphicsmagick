@@ -591,7 +591,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(LoadImageText,y,image->rows);
+      MagickMonitor(LoadImageText,y,image->rows);
     y++;
   }
   image->rows=Max(y-3,1);
@@ -819,7 +819,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     q=scanline;
     if (huffman_image->previous == (Image *) NULL)
       if (QuantumTick(y,huffman_image->rows))
-        ProgressMonitor(SaveImageText,y,huffman_image->rows);
+        MagickMonitor(SaveImageText,y,huffman_image->rows);
   }
   /*
     End of page.

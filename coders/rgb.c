@@ -179,7 +179,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -215,7 +215,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -254,7 +254,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
-              ProgressMonitor(LoadImageText,i,span);
+              MagickMonitor(LoadImageText,i,span);
           i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -280,7 +280,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
-              ProgressMonitor(LoadImageText,i,span);
+              MagickMonitor(LoadImageText,i,span);
           i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -306,7 +306,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
-              ProgressMonitor(LoadImageText,i,span);
+              MagickMonitor(LoadImageText,i,span);
           i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -340,7 +340,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(i,span))
-                  ProgressMonitor(LoadImageText,i,span);
+                  MagickMonitor(LoadImageText,i,span);
               i++;
             }
             count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -372,7 +372,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (count > 0);
   LiberateMemory((void **) &scanline);
@@ -546,7 +546,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
+              MagickMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -571,7 +571,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
               (void) WriteBlob(image,image->columns,pixels);
             }
           if (QuantumTick(y,image->rows))
-            ProgressMonitor(SaveImageText,y,image->rows);
+            MagickMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -603,7 +603,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             if (status == False)
               ThrowWriterException(FileOpenWarning,"Unable to open file",image);
           }
-        ProgressMonitor(SaveImageText,100,400);
+        MagickMonitor(SaveImageText,100,400);
         for (y=0; y < (int) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
@@ -619,7 +619,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             if (status == False)
               ThrowWriterException(FileOpenWarning,"Unable to open file",image);
           }
-        ProgressMonitor(SaveImageText,200,400);
+        MagickMonitor(SaveImageText,200,400);
         for (y=0; y < (int) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
@@ -629,7 +629,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         }
         if (image->matte)
           {
-            ProgressMonitor(SaveImageText,300,400);
+            MagickMonitor(SaveImageText,300,400);
             if (image_info->interlace == PartitionInterlace)
               {
                 CloseBlob(image);
@@ -649,14 +649,14 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           }
         if (image_info->interlace == PartitionInterlace)
           (void) strcpy(image->filename,image_info->filename);
-        ProgressMonitor(SaveImageText,400,400);
+        MagickMonitor(SaveImageText,400,400);
         break;
       }
     }
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   LiberateMemory((void **) &pixels);
   if (image_info->adjoin)

@@ -467,7 +467,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(LoadImageText,y,image->rows);
+                  MagickMonitor(LoadImageText,y,image->rows);
             }
           }
         else
@@ -490,7 +490,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(LoadImageText,y,image->rows);
+                MagickMonitor(LoadImageText,y,image->rows);
           }
       }
     else
@@ -524,7 +524,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(LoadImageText,y,image->rows);
+                  MagickMonitor(LoadImageText,y,image->rows);
             }
           }
         else
@@ -545,7 +545,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(LoadImageText,y,image->rows);
+                MagickMonitor(LoadImageText,y,image->rows);
           }
         SyncImage(image);
       }
@@ -569,7 +569,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (iris_info.magic == 0x01DA);
   while (image->previous != (Image *) NULL)
@@ -821,7 +821,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       }
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(SaveImageText,y,image->rows);
+          MagickMonitor(SaveImageText,y,image->rows);
     }
     if (image_info->compression == NoCompression)
       {
@@ -908,7 +908,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

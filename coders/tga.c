@@ -396,7 +396,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(LoadImageText,y,image->rows);
+          MagickMonitor(LoadImageText,y,image->rows);
     }
     (void) IsGrayImage(image);
     /*
@@ -421,7 +421,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (status == True);
   while (image->previous != (Image *) NULL)
@@ -727,13 +727,13 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       status=WriteBlob(image,q-targa_pixels,(char *) targa_pixels);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(SaveImageText,y,image->rows);
+          MagickMonitor(SaveImageText,y,image->rows);
     }
     LiberateMemory((void **) &targa_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

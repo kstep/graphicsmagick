@@ -194,7 +194,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(LoadImageText,y,image->rows);
+      MagickMonitor(LoadImageText,y,image->rows);
   }
   SyncImage(image);
   CloseBlob(image);
@@ -398,7 +398,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
     if (bit != 0)
       (void) WriteByte(image,byte);
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(SaveImageText,y,image->rows);
+      MagickMonitor(SaveImageText,y,image->rows);
   }
   CloseBlob(image);
   return(True);

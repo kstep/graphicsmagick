@@ -205,7 +205,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         if (number_files <= 5)
           continue;
         (void) SetMonitorHandler(handler);
-        ProgressMonitor(LoadImageText,i,number_files);
+        MagickMonitor(LoadImageText,i,number_files);
       }
       DestroyImageInfo(clone_info);
       if (image == (Image *) NULL)
@@ -1078,7 +1078,7 @@ MagickExport Image *XAnimateImages(Display *display,
   if (windows != (XWindows *) NULL)
     {
       (void) chdir(working_directory);
-      monitor_handler=SetMonitorHandler(XProgressMonitor);
+      monitor_handler=SetMonitorHandler(XMagickMonitor);
       warning_handler=resource_info->display_warnings ?
         SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
       (void) signal(SIGINT,XSignalHandler);
@@ -1571,7 +1571,7 @@ MagickExport Image *XAnimateImages(Display *display,
     Set out progress and warning handlers.
   */
   if (monitor_handler == (MonitorHandler) NULL)
-    monitor_handler=SetMonitorHandler(XProgressMonitor);
+    monitor_handler=SetMonitorHandler(XMagickMonitor);
   if (warning_handler == (WarningHandler) NULL)
     warning_handler=resource_info->display_warnings ?
       SetWarningHandler(XWarning) : SetWarningHandler((WarningHandler) NULL);
