@@ -50,5 +50,5 @@ open up a command prompt.
    4b) Test install when requested, or by clicking on green triangle in
        Inno Setup Compiler 3.X versions.
    4c) Distribution package is available as
-       VisualMagick\bin\ImageMagick-5.4.8-win2k.exe
+       VisualMagick\bin\ImageMagick-5.5.2-win2k.exe
 
