@@ -1,5 +1,7 @@
 2003-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/formats.html: Added description of images available via
+	"IMAGE:" format tag, as well as providing a tiled preview.
 	* coders/logo.c: Renamed "transparent" image to "checkerboard"
 	since it is a better description.  Added a set of tiny bilevel
 	images (accessed via IMAGE:) for use when tiling, filling, or for

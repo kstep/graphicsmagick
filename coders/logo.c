@@ -127,6 +127,7 @@ static const unsigned char
 */
 
 #define GraniteImageExtent  7037
+
 static const unsigned char
   GraniteImage[]=
   {
@@ -872,7 +873,12 @@ static const unsigned char
     0x00, 0x04, 0x00, 0x00, 0x08, 0x00, 0xFF, 0xFF, 0xFF, 
   };
 
+/*
+  GraphicsMagick Logo image
+*/
+
 #define LogoImageExtent  33639
+
 static const unsigned char
   LogoImage[]={
     0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x80, 0x02, 0xE0, 0x01, 0xF7, 0xFC, 
@@ -4557,7 +4563,11 @@ static const unsigned char
     0x02, 0x00, 0x00, 0x01, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 
   };
 
+/*
+  Image of a Rose
+*/
 #define RoseImageExtent  9673
+
 static const unsigned char
   RoseImage[]=
   {
