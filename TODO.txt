@@ -23,6 +23,8 @@ Library
 
 Coders
 
+  * Support the DjVu (http://www.djvu.com/products/djvu.html) library.
+
   * Add support for Exif extensions to the JPEG and TIFF coders.
 
   * Support reading and writing the CALS raster format (military
