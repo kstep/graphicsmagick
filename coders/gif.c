@@ -439,6 +439,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     *indexes;
 
   register int
+    i,
     x;
 
   register PixelPacket
