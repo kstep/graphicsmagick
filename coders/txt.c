@@ -238,7 +238,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     image->next->columns=image->columns;
     image->next->rows=image->rows;
-    image=image->next;
+    image=GetNextImageInList(image);
     (void) strncpy(image->filename,filename,MaxTextExtent-1);
     SetImage(image,OpaqueOpacity);
     if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
@@ -429,7 +429,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     }
     if (image->next == (Image *) NULL)
       break;
-    image=image->next;
+    image=GetNextImageInList(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

@@ -521,7 +521,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=image->next;
+        image=GetNextImageInList(image);
         if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
           break;
       }
@@ -878,7 +878,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         }
     if (image->next == (Image *) NULL)
       break;
-    image=image->next;
+    image=GetNextImageInList(image);
     if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
       break;
   } while (image_info->adjoin);

@@ -1004,7 +1004,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=image->next;
+        image=GetNextImageInList(image);
         if (!MagickMonitor(LoadImageText,image->scene-1,image->scene,&image->exception))
           break;
       }
@@ -1990,7 +1990,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     (void) TIFFWriteDirectory(tiff);
     if (image->next == (Image *) NULL)
       break;
-    image=image->next;
+    image=GetNextImageInList(image);
     if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
       break;
   } while (image_info->adjoin);

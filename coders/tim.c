@@ -385,7 +385,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             DestroyImageList(image);
             return((Image *) NULL);
           }
-        image=image->next;
+        image=GetNextImageInList(image);
         status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
           exception);
         if (status == False)
