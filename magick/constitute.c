@@ -1080,6 +1080,8 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   assert((options == (const ExportPixelAreaOptions *) NULL) ||
          (options->signature == MagickSignature));
 
+  /* printf("quantum_type=%d  quantum_size=%u\n",(int) quantum_type, quantum_size); */
+
   if (QuantumDepth == quantum_size)
     {
     }
@@ -2466,7 +2468,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(source != (const unsigned char *) NULL);
-  assert((options == (const ExportPixelAreaOptions *) NULL) ||
+  assert((options == (const ImportPixelAreaOptions *) NULL) ||
          (options->signature == MagickSignature));
 
   /* Maximum value which may be represented by a sample */

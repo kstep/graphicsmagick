@@ -1,3 +1,12 @@
+2005-02-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Read grayscale TIFFs as
+	DirectClass rather than promoting to PseudoClass.  Fix improper
+	multiple repeated "disassociate" operations when reading planar
+	images which contain an alpha channel.
+	(WriteTIFFImage): Fix improper multiple repeated "associate"
+	operations when writing planar images with an alpha channel.
+
 2005-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* win2k/IMDisplay/IMDisplayView.cpp (DoDisplayImage): Use

@@ -805,10 +805,6 @@ typedef struct _Image
   /*
     Only private members appear past this point
   */
-
-  AlphaType
-    alpha_type;         /* Alpha channel handling */
-
   ProfileInfo
     color_profile,      /* ICC color profile */
     iptc_profile,       /* IPTC newsphoto profile */

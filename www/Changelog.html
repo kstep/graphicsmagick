@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2005-02-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): Read grayscale TIFFs as
+        DirectClass rather than promoting to PseudoClass.  Fix improper
+        multiple repeated "disassociate" operations when reading planar
+        images which contain an alpha channel.
+        (WriteTIFFImage): Fix improper multiple repeated "associate"
+        operations when writing planar images with an alpha channel.
+
+</UL>
+<p>
 2005-02-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

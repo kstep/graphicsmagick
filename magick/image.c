@@ -1070,7 +1070,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->matte_color=image->matte_color;
   clone_image->gamma=image->gamma;
   clone_image->chromaticity=image->chromaticity;
-  clone_image->alpha_type=image->alpha_type;
   if (image->color_profile.length != 0)
     {
       /*
@@ -6044,7 +6043,8 @@ MagickExport MagickPassFail TextureImage(Image *image,const Image *texture)
             {
               for (z=(long) width; z != 0; z--)
                 {
-                  *q=AlphaComposite(q,q->opacity,p,p->opacity);
+                  *q=AlphaComposite(q,q->opacity,p,texture->matte != MagickFalse ?
+                                    p->opacity : OpaqueOpacity);
                   p++;
                   q++;
                 }

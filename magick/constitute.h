@@ -74,9 +74,6 @@ typedef struct _ExportPixelAreaOptions
 */
 typedef struct _ImportPixelAreaOptions
 {
-  AlphaType
-    alpha_type;         /* Alpha channel handling */
-
   MagickBool
     grayscale_inverted; /* Grayscale is inverted (minimum value is white) */
 

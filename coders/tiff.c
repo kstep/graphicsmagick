@@ -653,33 +653,11 @@ static MagickPassFail QuantumTransferMode(const Image *image,
               }
             else
               {
-                if (image->storage_class == PseudoClass)
-                  *quantum_type=IndexQuantum;
-                else
-                  *quantum_type=GrayQuantum;
+                *quantum_type=GrayQuantum;
                 *quantum_samples=1;
               }
             break;
           }
-#if 0
-        case PHOTOMETRIC_MINISWHITE:
-          {
-            if (image->matte)
-              {
-                *quantum_type=GrayInvertedAlphaQuantum;
-                *quantum_samples=2;
-              }
-            else
-              {
-                if (image->storage_class == PseudoClass)
-                  *quantum_type=IndexQuantum;
-                else
-                  *quantum_type=GrayInvertedQuantum;
-                *quantum_samples=1;
-              }
-            break;
-          }
-#endif
         case PHOTOMETRIC_PALETTE:
           {
             if (image->matte)
@@ -968,6 +946,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   ImportPixelAreaOptions
     import_options;
 
+  AlphaType
+    alpha_type=UnspecifiedAlpha;
+
   unsigned int
     filename_is_temporary=False,
     logging,
@@ -1221,32 +1202,30 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           int
             sample_index;
 
-          
           if (extra_samples > 0)
             {
               const char *
                 value;
 
-              image->alpha_type=AssociatedAlpha;
+              alpha_type=AssociatedAlpha;
               image->matte=True;
 
               if ((value=AccessDefinition(image_info,"tiff","alpha")))
                 {
                   if (LocaleCompare(value,"unspecified") == 0)
-                    image->alpha_type=UnspecifiedAlpha;
+                    alpha_type=UnspecifiedAlpha;
                   else if (LocaleCompare(value,"associated") == 0)
-                    image->alpha_type=AssociatedAlpha;
+                    alpha_type=AssociatedAlpha;
                   else if (LocaleCompare(value,"unassociated") == 0)
-                    image->alpha_type=UnassociatedAlpha;
+                    alpha_type=UnassociatedAlpha;
                 }
               else if (sample_info[0] == EXTRASAMPLE_UNSPECIFIED)
-                image->alpha_type=UnspecifiedAlpha;
+                alpha_type=UnspecifiedAlpha;
               else if (sample_info[0] == EXTRASAMPLE_UNASSALPHA)
-                image->alpha_type=UnassociatedAlpha;
+                alpha_type=UnassociatedAlpha;
               else if (sample_info[0] == EXTRASAMPLE_ASSOCALPHA)
-                image->alpha_type=AssociatedAlpha;
+                alpha_type=AssociatedAlpha;
             }
-
           for (sample_index=0 ; sample_index < extra_samples; sample_index++)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -1256,7 +1235,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                                      "UNSPECIFIED"));
             }
         }
-
       /*
         Handle RGBA images which are improperly marked.
       */
@@ -1264,13 +1242,33 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if ((photometric == PHOTOMETRIC_RGB) && (samples_per_pixel == 4))
           {
             extra_samples=1;
-            image->alpha_type=AssociatedAlpha;
+            alpha_type=AssociatedAlpha;
             image->matte=MagickTrue;
           }
 
       if (image->matte)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                              "Image has a matte channel.");
+        {
+          char
+            alpha_string[MaxTextExtent];
+
+          switch(alpha_type)
+            {
+            default:
+            case UnspecifiedAlpha:
+              strlcpy(alpha_string,"Unspecified",MaxTextExtent);
+              break;
+            case UnassociatedAlpha:
+              strlcpy(alpha_string,"Unassociated",MaxTextExtent);
+              break;
+            case AssociatedAlpha:
+              strlcpy(alpha_string,"Associated",MaxTextExtent);
+              break;
+            }
+          (void) SetImageAttribute(image,"alpha",alpha_string);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Image has a matte channel of type: %s",
+                                alpha_string);
+        }
 
       if (units == RESUNIT_INCH)
         image->units=PixelsPerInchResolution;
@@ -1326,14 +1324,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (image->scene >= (image_info->subimage+image_info->subrange-1))
           break;
 
-      if ((photometric == PHOTOMETRIC_MINISBLACK) ||
-          (photometric == PHOTOMETRIC_MINISWHITE) ||
-          (photometric == PHOTOMETRIC_PALETTE))
+      if (photometric == PHOTOMETRIC_PALETTE)
         {
           /*
-            Palette or grayscale image
+            Palette image
           */
-
           if (MaxColormapSize > MaxValueGivenBits(bits_per_sample))
             {
               (void) InitializeImageColormap(image,tiff);
@@ -1500,7 +1495,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 /*
                   Disassociate alpha from pixels if necessary.
                 */
-                if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                if ((image->matte) && (alpha_type == AssociatedAlpha))
                   DisassociateAlphaRegion(image);
                 /*
                   Save our updates.
@@ -1652,7 +1647,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     /*
                       Disassociate alpha from pixels if necessary.
                     */
-                    if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                    if ((image->matte) && (alpha_type == AssociatedAlpha)
+                        && (sample == (max_sample-1)))
                       DisassociateAlphaRegion(image);
                     /*
                       Save our updates.
@@ -1857,7 +1853,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                             /*
                               Disassociate alpha from pixels if necessary.
                             */
-                            if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                            if ((image->matte) && (alpha_type == AssociatedAlpha)
+                                && (sample == (max_sample-1)))
                               DisassociateAlphaRegion(image);
                             /*
                               Save our updates.
@@ -1960,7 +1957,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 /*
                   Disassociate alpha from pixels if necessary.
                 */
-                if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                if ((image->matte) && (alpha_type == AssociatedAlpha))
                   DisassociateAlphaRegion(image);                
                 if (!SyncImagePixels(image))
                   {
@@ -2116,7 +2113,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 /*
                   Disassociate alpha from pixels if necessary.
                 */
-                if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                if ((image->matte) && (alpha_type == AssociatedAlpha))
                   DisassociateAlphaRegion(image);                
                 if (!SyncImagePixels(image))
                   {
@@ -2209,7 +2206,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 /*
                   Disassociate alpha from pixels if necessary.
                 */
-                if ((image->matte) && (image->alpha_type == AssociatedAlpha))
+                if ((image->matte) && (alpha_type == AssociatedAlpha))
                   DisassociateAlphaRegion(image);
                 if (!SyncImagePixels(image))
                   {
@@ -2837,7 +2834,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                               "Image depth %lu bits",depth);
 
-      alpha_type=image->alpha_type;
+      alpha_type=UnspecifiedAlpha;
       if (image->matte)
         {
           /*
@@ -2850,6 +2847,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           const char *
             value;
 
+          const ImageAttribute
+            *attribute;
+
           if ((value=AccessDefinition(image_info,"tiff","alpha")))
             {
               if (LocaleCompare(value,"unspecified") == 0)
@@ -2859,6 +2859,16 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
               else if (LocaleCompare(value,"unassociated") == 0)
                 alpha_type=UnassociatedAlpha;
             }
+          else if ((attribute=GetImageAttribute(image,"alpha")))
+            {
+              if (LocaleCompare(attribute->value,"unspecified") == 0)
+                alpha_type=UnspecifiedAlpha;
+              else if (LocaleCompare(attribute->value,"associated") == 0)
+                alpha_type=AssociatedAlpha;
+              else if (LocaleCompare(attribute->value,"unassociated") == 0)
+                alpha_type=UnassociatedAlpha;
+            }
+          export_options.alpha_type=alpha_type;
 
           samples_per_pixel += 1;
           extra_samples=1;
@@ -3285,7 +3295,10 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   }
                 for (y=0; y < image->rows; y++)
                   {
-                    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+                    if ((image->matte) && (alpha_type == AssociatedAlpha))
+                      p=GetImagePixels(image,0,y,image->columns,1);
+                    else
+                      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
                     if (p == (const PixelPacket *) NULL)
                       {
                         status=MagickFail;
@@ -3294,7 +3307,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     /*
                       Convert to associated alpha if necessary.
                     */
-                    if ((image->matte) && (alpha_type == AssociatedAlpha))
+                    if ((sample == 0) && (image->matte) &&
+                        (alpha_type == AssociatedAlpha))
                       AssociateAlphaRegion(image);
                     /*
                       Export pixels to scanline.
@@ -3502,7 +3516,10 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                             /*
                               Obtain pixel region corresponding to tile row.
                             */
-                            p=AcquireImagePixels(image,x,yy,tile_set_columns,1,&image->exception);
+                            if ((image->matte) && (alpha_type == AssociatedAlpha))
+                              p=GetImagePixels(image,x,yy,tile_set_columns,1);
+                            else
+                              p=AcquireImagePixels(image,x,yy,tile_set_columns,1,&image->exception);
                             if (p == (const PixelPacket *) NULL)
                               {
                                 status=MagickFail;
@@ -3511,7 +3528,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                             /*
                               Convert to associated alpha if necessary.
                             */
-                            if ((image->matte) && (alpha_type == AssociatedAlpha))
+                            if ((sample == 0) && (image->matte) &&
+                                (alpha_type == AssociatedAlpha))
                               AssociateAlphaRegion(image);
                             /*
                               Export tile row

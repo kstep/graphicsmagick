@@ -821,25 +821,17 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
         }
 
         //
-        // If image is non-opaque, create overlay the image on top of
-        // a pattern background so non-opaque regions become evident.
+        // If image is non-opaque, apply a pattern background so
+        // non-opaque regions become evident.
         //
 
         Magick::Image image=inImage;
         if (inImage.matte())
         {
-#if 1
           Magick::Image texture;
           texture.read("image:checkerboard");
           image.texture(texture);
           image.matte(false);
-#else
-          Magick::Image matteImage;
-          matteImage.size(Magick::Geometry(inImage.columns(), inImage.rows()));
-          matteImage.read("tile:image:checkerboard");
-          matteImage.composite(inImage,0,0,AtopCompositeOp);
-          image=matteImage;
-#endif
         }
 
         //

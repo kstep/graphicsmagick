@@ -5457,7 +5457,7 @@ MagickExport unsigned int XMakeImage(Display *display,
               window->destroy=MagickTrue;
             }
         }
-#if 1
+#if 0
       if ((window->immutable == MagickFalse) &&
           (window->image->matte != MagickFalse) &&
           (window->pixel_info->colors == 0))
