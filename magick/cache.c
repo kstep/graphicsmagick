@@ -181,8 +181,7 @@ static void ClosePixelCache(Image *image)
   assert(image->signature == MagickSignature);
   if (image->cache == (void *) NULL)
     return;
-  if (cache_threshold == 0)
-    CompressCache(image->cache);
+  CompressCache(image->cache);
   CloseCache(image->cache);
 }
 
