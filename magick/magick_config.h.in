@@ -311,6 +311,12 @@
 /* Define to 1 if you have the <tiffconf.h> header file. */
 #undef HAVE_TIFFCONF_H
 
+/* Define to 1 if you have the `TIFFMergeFieldInfo' function. */
+#undef HAVE_TIFFMERGEFIELDINFO
+
+/* Define to 1 if you have the `TIFFSetTagExtender' function. */
+#undef HAVE_TIFFSETTAGEXTENDER
+
 /* Define to 1 if you have the `times' function. */
 #undef HAVE_TIMES
 

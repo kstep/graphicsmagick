@@ -161,6 +161,56 @@ static unsigned int IsTIFF(const unsigned char *magick,const size_t length)
 %
 %
 */
+#if defined(HAVE_TIFFMERGEFIELDINFO) && (HAVE_TIFFSETTAGEXTENDER)
+#  define EXTEND_TIFF_TAGS 1
+#  define TIFFTAG_EXIF_IFD 34665
+static const TIFFFieldInfo
+  ExtensionTiffFieldInfo[] =
+  {
+    { TIFFTAG_EXIF_IFD, -1, -1, TIFF_LONG, FIELD_CUSTOM,
+      MagickFalse, MagickTrue, "EXIF SubIFD Offset"
+    }
+  };
+
+/*
+  Merge in our new fields and then call the next extender if there is
+  one in effect.
+*/
+static TIFFExtendProc _ParentExtender = NULL;
+static void
+ExtensionTagsDefaultDirectory(TIFF *tif)
+{
+  /* Install the extended Tag field info */
+  TIFFMergeFieldInfo(tif, ExtensionTiffFieldInfo,
+                     sizeof(ExtensionTiffFieldInfo)/
+                     sizeof(ExtensionTiffFieldInfo[0]));
+
+  /* Since an XTIFF client module may have overridden
+   * the default directory method, we call it now to
+   * allow it to set up the rest of its own methods.
+   */
+  if (_ParentExtender) 
+    (*_ParentExtender)(tif);
+}
+
+/*
+  Obtain the current handler at the front of the chain, and register
+  ourselves as the new first handler.
+*/
+static
+void ExtensionTagsInitialize(void)
+{
+  static int
+    first_time=1;
+	
+  if (! first_time) return; /* Been there. Done that. */
+  first_time = 0;
+	
+  /* Grab the inherited method and install */
+  _ParentExtender = TIFFSetTagExtender(ExtensionTagsDefaultDirectory);
+}
+
+#endif /* defined(HAVE_TIFFMERGEFIELDINFO) && (HAVE_TIFFSETTAGEXTENDER) */
 
 static const char *CompressionTagToString(unsigned int compress_tag)
 {
@@ -2415,6 +2465,14 @@ ModuleExport void RegisterTIFFImage(void)
     entry->version=AcquireString(version);
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
+
+#if defined(EXTEND_TIFF_TAGS)
+  /*
+    Add our own TIFF tag extensions.
+  */
+  ExtensionTagsInitialize();
+#endif /* defined(EXTEND_TIFF_TAGS) */
+
 #endif
 }
 

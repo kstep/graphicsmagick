@@ -1,3 +1,15 @@
+2005-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c: Added some code to support extending libtiff's
+	knowledge of private tags.
+
+2005-03-09  Alexander Yaworsky  <yaworsky@users.sourceforge.net>
+
+	* coders/jbig.c (WriteJBIGImage): JBIG was writing an empty output
+	file. Apparently libjbig parameters have changed. Setting l0
+	parameter of jbg_enc_options to zero instead of -1 (like in
+	jbigkit's pbmtools) solved the problem.
+
 2005-03-07  Mike Chiarappa  <mikechiarappa@libero.it>
 
 	* BCBMagick\magick\GM_magick.bpr: Updated to reflect changes since last update.

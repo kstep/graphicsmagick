@@ -6,6 +6,14 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
+  o Fix/improve PSD reader.
+
+  o Check applicability of ImageMagick advisory at
+    http://secunia.com/advisories/12995/.
+
+  o Look into problem reported by Rick Mabry, "Shear produces artifacts for
+    a 0 y-shear (e.g. 60x0)."
+
   o Fix "gm convert logo: logo%n.png" --> Segmentation fault
 
   o Fix PerlMagick BLOB reading (disable header magic checking if already
@@ -18,8 +26,6 @@ For 1.2 Branch
 
   o Re-write metadata handling to use accessor functions rather
     than accessing Image members directly (50% complete).
-
-  o Optimize lcms interface (0% complete).
 
   o Update Windows libpng to version 1.2.8.
 

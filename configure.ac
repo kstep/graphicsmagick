@@ -8,6 +8,8 @@
 #
 # GraphicsMagick Configure Script
 #
+# Written by Bob Friesenhahn <bfriesen@GraphicsMagick.org>
+#
  
 AC_PREREQ(2.59)
 AC_INIT(magick/magick.h)
@@ -1857,20 +1859,21 @@ then
     AC_MSG_CHECKING(if TIFF package is complete)
     if test $passed -gt 0
     then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-	have_tiff='no (failed tests)'
+        if test $failed -gt 0
+        then
+	    AC_MSG_RESULT(no -- some components failed test)
+	    have_tiff='no (failed tests)'
+        else
+	    LIB_TIFF='-ltiff'
+	    LIBS="$LIB_TIFF $LIBS"
+	    AC_DEFINE(HasTIFF,1,Define if you have TIFF library)
+	    AC_MSG_RESULT(yes)
+	    have_tiff='yes'
+	    AC_CHECK_HEADERS(tiffconf.h)
+            AC_CHECK_FUNCS([TIFFMergeFieldInfo TIFFSetTagExtender])
+        fi
     else
-	LIB_TIFF='-ltiff'
-	LIBS="$LIB_TIFF $LIBS"
-	AC_DEFINE(HasTIFF,1,Define if you have TIFF library)
-	AC_MSG_RESULT(yes)
-	have_tiff='yes'
-	AC_CHECK_HEADERS(tiffconf.h)
-    fi
-    else
-    AC_MSG_RESULT(no)
+        AC_MSG_RESULT(no)
     fi
 fi
 AM_CONDITIONAL(HasTIFF, test "$have_tiff" = 'yes')

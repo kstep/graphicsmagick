@@ -526,12 +526,16 @@ typedef struct _DoublePixelPacket
     opacity;
 } DoublePixelPacket;
 
+/*
+  ErrorInfo is used to record statistical difference (error)
+  information based on computed Euclidean distance in RGB space.
+*/
 typedef struct _ErrorInfo
 {
   double
-    mean_error_per_pixel,
-    normalized_mean_error,
-    normalized_maximum_error;
+    mean_error_per_pixel,     /* Average error per pixel (absolute range) */
+    normalized_mean_error,    /* Average error per pixel (normalized to 1.0) */
+    normalized_maximum_error; /* Maximum error encountered (normalized to 1.0) */
 } ErrorInfo;
 
 typedef struct _FrameInfo

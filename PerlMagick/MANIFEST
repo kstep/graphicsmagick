@@ -1,15 +1,12 @@
 Changelog
-demo/18.ras
 demo/annotate.pl
 demo/button.pl
 demo/composite.pl
-demo/demo.jpg
 demo/demo.pl
 demo/Generic.ttf
 demo/lsys.pl
 demo/Makefile
 demo/model.gif
-demo/model.gif-out
 demo/model.miff
 demo/piddle.pl
 demo/pink_flower.gif
@@ -325,7 +322,6 @@ t/tiff/write.t
 t/ttf/input.ttf
 t/ttf/read.t
 t/wmf/clock.wmf
-t/wmf/fjftest.mvg
 t/wmf/fjftest.wmf
 t/wmf/read.t
 t/wmf/ski.wmf
