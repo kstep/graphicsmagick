@@ -515,7 +515,7 @@ MagickExport Image **ImageListToArray(const Image *images,
   group=(Image **) AcquireMemory(GetImageListLength(images)*sizeof(Image *));
   if (group == (Image **) NULL)
     {
-      ThrowException(exception,ResourceLimitError,"Memory allocation failed",
+      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
         "UnableToCreateImageGroup");
       return((Image **) NULL);
     }
@@ -782,22 +782,48 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
 %    o exception: Return any errors or warnings in this structure.
 %
 */
-MagickExport unsigned int ReplaceImageInList(Image **images,const Image *image,
+MagickExport unsigned int ReplaceImageInList(Image **images,Image *image,
   const long offset,ExceptionInfo *exception)
 {
-  unsigned int
-    status;
+  Image
+    *next;
+
+	register int
+    i;
 
   assert(images != (Image **) NULL);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     return(False);
-  status=DeleteImageFromList(images,offset);
-  if (status == False)
-    return(status);
-  status=InsertImageInList(images,image,offset,exception);
-  return(status);
+  assert((*images)->signature == MagickSignature);
+  for (next=(*images); next->next != (Image *) NULL; next=next->next);
+  for (i=0; next != (Image *) NULL; next=next->next)
+    if (i++ == offset)
+      break;
+  if (next == (Image *) NULL)
+    return(False);
+  if ((next->previous != (Image *) NULL) && (next->next != (Image *) NULL))
+    *images=image;
+  else
+    {
+      if (next->previous != (Image *) NULL)
+        {
+          next->previous->next=image;
+          while (image->previous != (Image *) NULL)
+            image=image->previous;
+          image->previous=next->previous;
+        }
+      if (next->next != (Image *) NULL)
+        {
+          while (image->next != (Image *) NULL)
+            image=image->next;
+          image->next=next->next;
+          next->next->previous=image;
+        }
+    }
+  DestroyImage(next);
+  return(True);
 }
 
 /*
@@ -898,19 +924,56 @@ MagickExport Image *ReverseImageList(const Image *images,
 MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
   const unsigned long length,const Image *splices,ExceptionInfo *exception)
 {
+  Image
+    *splice;
+
   register long
     i;
 
-  unsigned int
-    status;
+  register Image
+    *p,
+    *q;
 
-  status=True;
-  for (i=0; (i < (long) length) && (status == True); i++)
-    status|=DeleteImageFromList(images,offset+i);
-  for (i=0; (splices != (Image *) NULL) && (status == True); i++)
-  {
-    status|=InsertImageInList(images,splices,offset+i,exception);
-    splices=splices->next;
-  }
-  return(status);
+  assert(images != (Image **) NULL);
+  assert(splices != (Image *) NULL);
+  assert(splices->signature == MagickSignature);
+  if ((*images) == (Image *) NULL)
+    return(False);
+  assert((*images)->signature == MagickSignature);
+  while ((*images)->previous != (Image *) NULL)
+    (*images)=(*images)->previous;
+  for (i=0; (*images) != (Image *) NULL; (*images)=(*images)->next)
+    if (i++ == offset)
+      break;
+  if ((*images) == (Image *) NULL)
+    return(False);
+  p=(*images);
+  for (i=1; (*images) != (Image *) NULL; (*images)=(*images)->next)
+    if (i++ == (long) length)
+      break;
+  if ((*images) == (Image *) NULL)
+    return(False);
+  q=(*images);
+  splice=CloneImageList(splices,exception);
+  if (splice == (Image *) NULL)
+    return(False);
+  if (p->previous != (Image *) NULL)
+    {
+      p->previous->next=splice;
+      splice->previous=p->previous;
+    }
+  p->previous=(Image *) NULL;
+  if (q->next != (Image *) NULL)
+    {
+      q->next->previous=splice;
+      if (splice != (Image *) NULL)
+        {
+          while (splice->next != (Image *) NULL)
+            splice=splice->next;
+          splice->next=q->next;
+        }
+    }
+  q->next=(Image *) NULL;
+  *images=p;
+  return(True);
 }

@@ -27,7 +27,7 @@ extern MagickExport unsigned int
   DeleteImageFromList(Image **,const long),
   InsertImageInList(Image **,const Image *,const long,ExceptionInfo *),
   PrependImageToList(Image **,const Image *,ExceptionInfo *),
-  ReplaceImageInList(Image **,const Image *,const long,ExceptionInfo *),
+  ReplaceImageInList(Image **,Image *,const long,ExceptionInfo *),
   SpliceImageIntoList(Image **,const long,const unsigned long,const Image *,
     ExceptionInfo *);
 
