@@ -236,6 +236,16 @@ static char
   *ResolutionTypes[] =
   {
     "Undefined", "PixelsPerInch", "PixelsPerCentimeter", (char *) NULL
+  },
+  *StretchTypes[] =
+  {
+    "Normal", "ultra-condensed", "extra-condensed", "condensed",
+    "semi-condensed", "semi-expanded", "expanded", "extra-expanded",
+    "ultra-expanded", "any", (char *) NULL
+  },
+  *StyleTypes[] =
+  {
+    "Normal", "Italic", "Oblique", "Any", (char *) NULL
   };
 
 typedef struct _Arguments
@@ -319,8 +329,8 @@ static struct
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
       {"skewY", DoubleReference}, {"strokewidth", IntegerReference},
       {"antialias", BooleanTypes}, {"family", StringReference},
-      {"style", StringReference}, {"stretch", StringReference},
-      {"weight", StringReference} } },
+      {"style", StyleTypes}, {"stretch", StretchTypes},
+      {"weight", IntegerReference} } },
     { "ColorFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
       {"fill", StringReference}, {"bordercolor", StringReference},
@@ -4694,14 +4704,11 @@ Mogrify(ref,...)
             (void) CloneString(&draw_info->family,
               argument_list[19].string_reference);
           if (attribute_flag[20])
-            (void) CloneString(&draw_info->style,
-              argument_list[20].string_reference);
+            draw_info->style=(StyleType) argument_list[20].int_reference;
           if (attribute_flag[21])
-            (void) CloneString(&draw_info->stretch,
-              argument_list[21].string_reference);
+            draw_info->stretch=(StretchType) argument_list[21].int_reference;
           if (attribute_flag[22])
-            (void) CloneString(&draw_info->weight,
-              argument_list[22].string_reference);
+            draw_info->weight=argument_list[22].int_reference;
           AnnotateImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;
@@ -6389,7 +6396,8 @@ QueryFont(ref,...)
   PPCODE:
   {
     char
-      *name;
+      *name,
+			message[MaxTextExtent];
 
     const TypeInfo
       *type_info;
@@ -6440,10 +6448,10 @@ QueryFont(ref,...)
           PUSHs(&sv_undef);
           continue;
         }
-      if (type_info->family == (char *) NULL)
+      if (type_info->name == (char *) NULL)
         PUSHs(&sv_undef);
       else
-        PUSHs(sv_2mortal(newSVpv(type_info->family,0)));
+        PUSHs(sv_2mortal(newSVpv(type_info->name,0)));
       if (type_info->alias == (char *) NULL)
         PUSHs(&sv_undef);
       else
@@ -6452,22 +6460,34 @@ QueryFont(ref,...)
         PUSHs(&sv_undef);
       else
         PUSHs(sv_2mortal(newSVpv(type_info->description,0)));
+      if (type_info->family == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(type_info->family,0)));
+      PUSHs(sv_2mortal(newSVpv(StyleTypes[(int) type_info->style],0)));
+      PUSHs(sv_2mortal(newSVpv(StretchTypes[(int) type_info->stretch],0)));
+      FormatString(message,"%lu",type_info->weight);
+      PUSHs(sv_2mortal(newSVpv(message,0)));
+      if (type_info->encoding == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(type_info->encoding,0)));
+      if (type_info->foundry == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(type_info->foundry,0)));
       if (type_info->format == (char *) NULL)
         PUSHs(&sv_undef);
       else
         PUSHs(sv_2mortal(newSVpv(type_info->format,0)));
-      if (type_info->weight == (char *) NULL)
-        PUSHs(&sv_undef);
-      else
-        PUSHs(sv_2mortal(newSVpv(type_info->weight,0)));
-      if (type_info->glyphs == (char *) NULL)
-        PUSHs(&sv_undef);
-      else
-        PUSHs(sv_2mortal(newSVpv(type_info->glyphs,0)));
       if (type_info->metrics == (char *) NULL)
         PUSHs(&sv_undef);
       else
         PUSHs(sv_2mortal(newSVpv(type_info->metrics,0)));
+      if (type_info->glyphs == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(type_info->glyphs,0)));
       if (type_info->version == (char *) NULL)
         PUSHs(&sv_undef);
       else
