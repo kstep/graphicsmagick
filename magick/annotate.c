@@ -116,6 +116,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   unsigned int
     height,
     length,
+    matte,
     number_lines,
     width;
 
@@ -183,6 +184,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   /*
     Annotate image.
   */
+  matte=image->matte;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
     if (*textlist[i] == '\0')
@@ -316,6 +318,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       local_info->bounds.x,local_info->bounds.y);
     DestroyImage(annotate_image);
   }
+  image->matte=matte;
   DestroyAnnotateInfo(local_info);
   FreeMemory(text);
   for ( ; textlist[i] != (char *) NULL; i++)
