@@ -1,3 +1,8 @@
+2003-05-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/png.c: stifled compiler warnings about uninitialized
+	chunk and blob variables.
+
 2003-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh (CHANGE_DATE): Update to reliable awk-based technique
