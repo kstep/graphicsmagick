@@ -232,6 +232,8 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       (void) strncpy(clone_info->filename,image_info->filename,MaxTextExtent-1);
       (void) strncpy(clone_info->magick,image_info->magick,MaxTextExtent-1);
       image=ReadImage(clone_info,exception);
+      if (image != (Image *) NULL)
+        DetachBlob(image->blob);
       DestroyImageInfo(clone_info);
       return(image);
     }
@@ -1015,6 +1017,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       AttachBlob(image->blob,image_info->blob,image_info->length);
       return(True);
     }
+  DetachBlob(image->blob);
   image->exempt=False;
   if (image_info->fifo !=
       (int (*)(const Image *,const void *,const size_t)) NULL)
@@ -1287,7 +1290,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
     }
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) blob;
-	clone_info->length=0;
+  clone_info->length=0;
   clone_info->ping=True;
   if (clone_info->size == (char *) NULL)
     clone_info->size=AllocateString(DefaultTileGeometry);
