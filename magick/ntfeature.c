@@ -60,14 +60,6 @@
 #include <windows.h>
 
 /*
-  Static declarations.
-*/
-
-/*
-  External declarations.
-*/
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

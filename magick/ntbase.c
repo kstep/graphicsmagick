@@ -1433,6 +1433,8 @@ MagickExport char *NTRegistryKeyLookup(const char *key)
         res = RegOpenKeyExA (reg_key, "Q:8", 0, KEY_READ, &reg_key);
 #elif QuantumDepth == 16
         res = RegOpenKeyExA (reg_key, "Q:16", 0, KEY_READ, &reg_key);
+#elif QuantumDepth == 32
+        res = RegOpenKeyExA (reg_key, "Q:32", 0, KEY_READ, &reg_key);
 #else
 # error "Specified value of QuantumDepth is not supported"
 #endif
