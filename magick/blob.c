@@ -56,6 +56,11 @@
 #include "studio.h"
 
 /*
+  Define declarations.
+*/
+#define DefaultBlobQuantum  65540
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -90,6 +95,7 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
   blob_info->data=(unsigned char *) blob;
   blob_info->length=length;
   blob_info->extent=length;
+  blob_info->quantum=DefaultBlobQuantum;
   blob_info->offset=0;
 }
 
@@ -440,11 +446,11 @@ MagickExport void DetachBlob(BlobInfo *blob_info)
   assert(blob_info != (BlobInfo *) NULL);
   if (blob_info->mapped)
     (void) UnmapBlob(blob_info->data,blob_info->length);
-  blob_info->eof=False;
   blob_info->mapped=False;
+  blob_info->data=(unsigned char *) NULL;
   blob_info->length=0;
   blob_info->offset=0;
-  blob_info->data=(unsigned char *) NULL;
+  blob_info->eof=False;
   blob_info->exempt=False;
 }
 
@@ -625,7 +631,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 {
   assert(blob_info != (BlobInfo *) NULL);
   (void) memset(blob_info,0,sizeof(BlobInfo));
-  blob_info->quantum=65536;
+  blob_info->quantum=DefaultBlobQuantum;
   blob_info->reference_count=1;
   blob_info->signature=MagickSignature;
 }
