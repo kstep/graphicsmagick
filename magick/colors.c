@@ -1612,9 +1612,6 @@ MagickExport unsigned int QueryColorName(const PixelPacket *color,char *name)
   min_distance=0;
   for (p=Colorlist; p->name != (char *) NULL; p++)
   {
-    /* Users prefer to see white rather than gray100 */
-    if(*p->name == 'g' && strcmp("gray100",p->name) == 0)
-      continue;
     distance=color->red-(int) p->red;
     distance_squared=distance*distance;
     distance=color->green-(int) p->green;
@@ -1629,6 +1626,8 @@ MagickExport unsigned int QueryColorName(const PixelPacket *color,char *name)
         (void) strcpy(name,p->name);
       }
   }
+  if (LocaleCompare(name,"gray100") == 0)
+    (void) strcpy(name,"white");
   if (min_distance != 0.0)
     FormatString(name,HexColorFormat,(unsigned int) color->red,
       (unsigned int) color->green,(unsigned int) color->blue,
