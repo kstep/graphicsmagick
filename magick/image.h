@@ -120,6 +120,8 @@ typedef double QuantumSumType;
 #define PixelIntensityToDouble(pixel) ((double)PixelIntensity(pixel))
 #define OpaqueOpacity  0UL
 #define TransparentOpacity  MaxRGB
+#define RoundSignedToQuantum(value) ((Quantum) (value < 0 ? 0 : \
+  (value > MaxRGB) ? MaxRGB : value + 0.5))
 /*
   Deprecated defines.
 */

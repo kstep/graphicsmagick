@@ -208,10 +208,6 @@
             (((ScaleQuantumToChar(red) >> index) & 0x01) << 2 | \
              ((ScaleQuantumToChar(green) >> index) & 0x01) << 1 | \
              ((ScaleQuantumToChar(blue) >> index) & 0x01)))
-
-/* Convert signed type to Quantum */
-#define RoundSignedToQuantum(value) ((Quantum) (value < 0 ? 0 : \
-            (value > MaxRGB) ? MaxRGB : value + 0.5))
 
 /*
   Typedef declarations.

@@ -647,18 +647,21 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
 {
 #define ThresholdImageText  "  Threshold the image...  "
 
-  DoublePixelPacket
-    pixel;
+  double
+    red_threshold,
+    green_threshold,
+    blue_threshold,
+    opacity_threshold;
 
-  IndexPacket
-    index;
+  register Quantum
+    red_threshold_quantum,
+    green_threshold_quantum,
+    blue_threshold_quantum,
+    opacity_threshold_quantum;
 
   long
     count,
     y;
-
-  register IndexPacket
-    *indexes;
 
   register long
     x;
@@ -673,49 +676,42 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
   assert(image->signature == MagickSignature);
   if (threshold == (const char *) NULL)
     return(True);
-  if (image->is_monochrome)
-    return(True);
-  SetImageType(image,TrueColorType);
-  pixel.red=MaxRGB;
-  pixel.green=MaxRGB;
-  pixel.blue=MaxRGB;
-  pixel.opacity=MaxRGB;
+  red_threshold=MaxRGB;
+  green_threshold=MaxRGB;
+  blue_threshold=MaxRGB;
+  opacity_threshold=MaxRGB;
   count=sscanf(threshold,"%lf%*[/,%%]%lf%*[/,%%]%lf%*[/,%%]%lf",
-    &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
-  if (count == 1)
-    if (!AllocateImageColormap(image,2))
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToThresholdImage");
+    &red_threshold,&green_threshold,&blue_threshold,&opacity_threshold);
+
   if (strchr(threshold,'%') != (char *) NULL)
     {
-      pixel.red*=MaxRGB/100.0;
-      pixel.green*=MaxRGB/100.0;
-      pixel.blue*=MaxRGB/100.0;
-      pixel.opacity*=MaxRGB/100.0;
+      red_threshold*=MaxRGB/100.0;
+      green_threshold*=MaxRGB/100.0;
+      blue_threshold*=MaxRGB/100.0;
+      opacity_threshold*=MaxRGB/100.0;
     }
+
+  if (count == 1)
+    return ThresholdImage(image,red_threshold);
+
+  red_threshold_quantum=RoundSignedToQuantum(red_threshold);
+  green_threshold_quantum=RoundSignedToQuantum(green_threshold);
+  blue_threshold_quantum=RoundSignedToQuantum(blue_threshold);
+  opacity_threshold_quantum=RoundSignedToQuantum(opacity_threshold);
+
+  SetImageType(image,TrueColorType);
+
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
-    if (count == 1)
-      for (x=0; x < (long) image->columns; x++)
+    for (x=(long) image->columns; x > 0; x--)
       {
-        index=PixelIntensityToQuantum(q) <= pixel.red ? 0 : 1;
-        indexes[x]=index;
-        q->red=image->colormap[index].red;
-        q->green=image->colormap[index].green;
-        q->blue=image->colormap[index].blue;
-        q++;
-      }
-    else
-      for (x=0; x < (long) image->columns; x++)
-      {
-        q->red=q->red <= pixel.red ? 0 : MaxRGB;
-        q->green=q->green <= pixel.green ? 0 : MaxRGB;
-        q->blue=q->blue <= pixel.blue ? 0 : MaxRGB;
-        q->opacity=q->opacity <= pixel.opacity ? 0 : MaxRGB;
+        q->red=q->red <= red_threshold_quantum ? 0 : MaxRGB;
+        q->green=q->green <= green_threshold_quantum ? 0 : MaxRGB;
+        q->blue=q->blue <= blue_threshold_quantum ? 0 : MaxRGB;
+        q->opacity=q->opacity <= opacity_threshold_quantum ? 0 : MaxRGB;
         q++;
       }
     if (!SyncImagePixels(image))
@@ -724,8 +720,13 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
       if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
         break;
   }
-  image->is_monochrome=True;
-  image->is_grayscale=True;
+
+  if ((red_threshold_quantum == green_threshold_quantum) &&
+      (green_threshold_quantum == blue_threshold_quantum))
+    {
+      image->is_monochrome=True;
+      image->is_grayscale=True;
+    }
   return(True);
 }
 
@@ -2505,6 +2506,9 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   register IndexPacket
     *indexes;
 
+  register unsigned long
+    quantum_threshold;
+
   register long
     x;
 
@@ -2516,22 +2520,44 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->is_monochrome)
-    return(True);
+
   if (!AllocateImageColormap(image,2))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToThresholdImage");
+
+  quantum_threshold=RoundSignedToQuantum(threshold);
+
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    if (image->is_grayscale)
+    if (quantum_threshold == MaxRGB)
+      {
+        /* All pixels thresholded to black */
+        for (x=(long) image->columns; x > 0; x--)
+          {
+            *indexes++=q->red=q->green=q->blue=0;
+            q++;
+          }
+      }
+    else if (quantum_threshold == 0)
+      {
+        /* All pixels thresholded to white */
+        for (x=(long) image->columns; x > 0; x--)
+          {
+            *indexes++=1;
+            q->red=q->green=q->blue=MaxRGB;
+            q++;
+          }
+      }
+    else if (image->is_grayscale)
       {
         for (x=(long) image->columns; x > 0; x--)
           {
-            index=q->red <= threshold ? 0 : 1;
+            /* Image is grayscale so q->red contains intensity */
+            index=q->red <= quantum_threshold ? 0 : 1;
             *indexes++=index;
             q->red=q->green=q->blue=image->colormap[index].red;
             q++;
@@ -2541,7 +2567,8 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
       {
         for (x=(long) image->columns; x > 0; x--)
           {
-            index=PixelIntensityToQuantum(q) <= threshold ? 0 : 1;
+            /* Compute itensity value of RGB pixel */
+            index=PixelIntensityToQuantum(q) <= quantum_threshold ? 0 : 1;
             *indexes++=index;
             q->red=q->green=q->blue=image->colormap[index].red;
             q++;

@@ -62,6 +62,8 @@ Major changes associated with GraphicsMagick 1.0.0
     BMPs (not restricted to monochrome).
     * TIFF decoder now includes optimized support for tiled and stripped
     TIFF.
+    * The -random-threshold option (RandomThresholdImage()) is added to
+    threshold an image to bilevel using random thresholding.
 
   Major bug fixes:
     * When dithering is disabled, don't dither when converting to a

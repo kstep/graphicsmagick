@@ -1,3 +1,14 @@
+2003-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.h (RoundSignedToQuantum): Added handy
+	RoundSignedToQuantum macro for munging doubles into Quantums.
+	* magick/effect.c (ThresholdImage): Added optimizations for
+	thresholding all pixels to white or black. Threshold using an
+	integral value rather than a double so compares are faster.
+	(ChannelThresholdImage): Threshold against integral values since
+	compares are faster. Invoke ThresholdImage for simple thresholding
+	across all channels since it is faster.
+
 2003-03-19  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/meta.c: #ifdef'ed out some dead code.
