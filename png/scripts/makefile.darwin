@@ -23,7 +23,7 @@ LDFLAGS=-L. -L$(ZLIBLIB) -lpng12 -lz
 RANLIB=ranlib
 
 PNGMAJ = 0
-PNGMIN = 1.2.6rc1
+PNGMIN = 1.2.7
 PNGVER = $(PNGMAJ).$(PNGMIN)
 LIBNAME = libpng12
 
@@ -124,6 +124,7 @@ install-shared: install-headers $(LIBNAME).dylib libpng.pc \
 	libpng.3.$(PNGMIN).dylib
 	-@if [ ! -d $(DL) ]; then mkdir $(DL); fi
 	-@/bin/rm -f $(DL)/$(LIBNAME).$(PNGVER)*.dylib
+	-@/bin/rm -f $(DL)/$(LIBNAME).$(PNGMAJ)*.dylib
 	-@/bin/rm -f $(DL)/$(LIBNAME).dylib
 	-@/bin/rm -f $(DL)/libpng.dylib
 	-@/bin/rm -f $(DL)/libpng.3.dylib
@@ -166,7 +167,17 @@ install-config: libpng-config
 install: install-static install-shared install-man install-config
 
 # If you installed in $(DESTDIR), test-installed won't work until you
-# move the library to its final location.
+# move the library to its final location.  Use test-dd to test it
+# before then.
+
+test-dd:
+	echo
+	echo Testing installed dynamic shared library in $(DL).
+	$(CC) -I$(DI) -I$(ZLIBINC) \
+	   `$(BINPATH)/libpng12-config --cflags` pngtest.c \
+	   -L$(DL) -L$(ZLIBLIB) \
+	   -o pngtestd `$(BINPATH)/libpng12-config --ldflags`
+	./pngtestd pngtest.png
 
 test-installed:
 	$(CC) $(CFLAGS) \
