@@ -621,6 +621,13 @@ static unsigned int SyncPixelStream(Image *image)
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
+  if (image->blob->fifo ==
+       (int (*)(const Image *,const void *,const size_t)) NULL)
+    {
+      ThrowException(&image->exception,StreamError,
+        "Unable to sync pixel stream","no fifo is defined");
+      return(False);
+    }
   return(image->blob->fifo(image,stream_info->pixels,stream_info->columns));
 }
 
