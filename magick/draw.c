@@ -139,6 +139,7 @@ static unsigned int
 
 static void
   DrawBoundingRectangles(Image *,const DrawInfo *,const PolygonInfo *),
+  DrawRoundLinecap(Image *,const DrawInfo *,const PrimitiveInfo *),
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
   TraceBezier(PrimitiveInfo *,const unsigned int),
@@ -3426,6 +3427,12 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           status=DrawPolygonPrimitive(image,clone_info,primitive_info);
           DestroyDrawInfo(clone_info);
           status|=DrawStrokePolygon(image,draw_info,primitive_info);
+          if ((draw_info->linecap == RoundCap) && !closed_path)
+            {
+              status|=DrawRoundLinecap(image,draw_info,primitive_info);
+              for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
+              status|=DrawRoundLinecap(image,draw_info,primitive_info+i-1);
+            }
           break;
         }
       DrawPolygonPrimitive(image,draw_info,primitive_info);
@@ -3434,6 +3441,58 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
   }
   if (draw_info->debug)
     (void) fprintf(stdout,"  end draw-primitive (%.2fu)\n",GetUserTime(&timer));
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D r a w R o u n d L i n e c a p                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DrawRoundLinecap draws a round linecap on a stroked polygon.
+%
+%  The format of the DrawRoundLinecap method is:
+%
+%      unsigned int DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
+%        const PrimitiveInfo *primitive_info)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o draw_info: The draw info.
+%
+%    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
+%
+%
+*/
+static void DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
+  const PrimitiveInfo *primitive_info)
+{
+  PrimitiveInfo
+    linecap[5];
+
+  register int
+    i;
+
+  unsigned int
+    status;
+
+  for (i=0; i < 4; i++)
+    linecap[i]=(*primitive_info);
+  linecap[0].coordinates=4;
+  linecap[1].point.x+=10.0*MagickEpsilon;
+  linecap[2].point.x+=10.0*MagickEpsilon;
+  linecap[2].point.y+=10.0*MagickEpsilon;
+  linecap[3].point.y+=10.0*MagickEpsilon;
+  linecap[4].primitive=UndefinedPrimitive;
+  status=DrawPolygonPrimitive(image,draw_info,linecap);
   return(status);
 }
 
@@ -3466,27 +3525,6 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
 %
 %
 */
-
-static void DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
-  const PrimitiveInfo *primitive_info)
-{
-  PrimitiveInfo
-    linecap[5];
-
-  register int
-    i;
-
-  for (i=0; i < 4; i++)
-    linecap[i]=(*primitive_info);
-  linecap[0].coordinates=4;
-  linecap[1].point.x+=10.0*MagickEpsilon;
-  linecap[2].point.x+=10.0*MagickEpsilon;
-  linecap[2].point.y+=10.0*MagickEpsilon;
-  linecap[3].point.y+=10.0*MagickEpsilon;
-  linecap[4].primitive=UndefinedPrimitive;
-  DrawPolygonPrimitive(image,draw_info,linecap);
-}
-
 static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info)
 {
@@ -3923,11 +3961,6 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   status=DrawPolygonPrimitive(image,clone_info,stroke_polygon);
   LiberateMemory((void **) &stroke_polygon);
   DestroyDrawInfo(clone_info);
-  if ((draw_info->linecap == RoundCap) && !closed_path)
-    {
-      DrawRoundLinecap(image,draw_info,&polygon_primitive[0]);
-      DrawRoundLinecap(image,draw_info,&polygon_primitive[number_vertices-1]);
-    }
   LiberateMemory((void **) &polygon_primitive);
   if (draw_info->debug)
     (void) fprintf(stdout,"    end draw-stroke-polygon (%.2fu)\n",
