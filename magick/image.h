@@ -421,6 +421,9 @@ typedef struct _Image
   void
     *client_data;
 
+  int
+    reference_count;
+
   unsigned int
     orphan;
 
@@ -658,6 +661,7 @@ extern MagickExport Image
   *PingImage(const ImageInfo *,ExceptionInfo *),
   *ReadImage(const ImageInfo *,ExceptionInfo *),
   *ReduceNoiseImage(Image *,const double,ExceptionInfo *),
+  *ReferenceImage(Image *),
   *ResizeImage(Image *,const unsigned int,const unsigned int,const FilterTypes,
     const double,ExceptionInfo *),
   *RollImage(Image *,const int,const int,ExceptionInfo *),
@@ -786,6 +790,7 @@ extern MagickExport void
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),
   InitializeMagick(const char *),
+  ModifyImage(Image**, ExceptionInfo *),
   Register8BIMImage(void),
   RegisterARTImage(void),
   RegisterAVIImage(void),

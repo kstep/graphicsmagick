@@ -1894,9 +1894,9 @@ void Magick::Image::clipMask ( const Magick::Image & clipMask_ )
       GetExceptionInfo( &exceptionInfo );
       MagickLib::Image* clip_mask =
 	CloneImage( const_cast<MagickLib::Image *>(clipMask_.constImage()) ,
-                    0,
-                    0,
-                    static_cast<int>(true),
+                    0, // columns
+                    0, // rows
+                    1, // orphan
                     &exceptionInfo);
       SetImageClipMask( image(), clip_mask );
     }
@@ -1912,9 +1912,9 @@ Magick::Image Magick::Image::clipMask ( void  ) const
       GetExceptionInfo( &exceptionInfo );
       MagickLib::Image* image =
 	CloneImage( constImage()->clip_mask,
-                    0,
-                    0,
-                    static_cast<int>(true),
+                    0, // columns
+                    0, // rows
+                    1, // orphan
                     &exceptionInfo);
 
       return Magick::Image( image, new Magick::Options());
@@ -2491,10 +2491,10 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
       GetExceptionInfo( &exceptionInfo );
       MagickLib::Image* image =
 	CloneImage( const_cast<MagickLib::Image *>(tmpTexture),
-			       0,
-			       0,
-			       static_cast<int>(true),
-			       &exceptionInfo);
+                    0, // columns
+                    0, // rows
+                    1, // orphan
+                    &exceptionInfo);
       texture.replaceImage( image );
       throwException( exceptionInfo );
     }
@@ -3075,9 +3075,9 @@ void Magick::Image::modifyImage( void )
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     CloneImage( image,
-		0,
-		0,
-		true,
+                0, // columns
+                0, // rows
+                1, // orphan
 		&exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );

@@ -140,6 +140,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   GetExceptionInfo(&allocate_image->exception);
   GetTimerInfo(&allocate_image->timer);
   GetCacheInfo(&allocate_image->cache);
+  allocate_image->reference_count=1;
   allocate_image->signature=MagickSignature;
   if (image_info == (ImageInfo *) NULL)
     return(allocate_image);
@@ -868,6 +869,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
     Clone the image.
   */
   *clone_image=(*image);
+  clone_image->reference_count=1;
   clone_image->montage=(char *) NULL;
   clone_image->directory=(char *) NULL;
   if (image->colormap != (PixelPacket *) NULL)
@@ -2211,7 +2213,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImage() deallocates memory associated with an image.
+%  DestroyImage() dereferences an image, deallocating memory associated with
+%  the image if the reference count becomes zero.
 %
 %  The format of the DestroyImage method is:
 %
@@ -2227,6 +2230,16 @@ MagickExport void DestroyImage(Image *image)
 {
   register int
     i;
+
+  int
+    destroy_image=False;
+
+  /* Lock here */
+  if(--image->reference_count==0)
+      destroy_image=True;
+  /* Unlock here */
+  if(destroy_image==False)
+    return;
 
   /*
     Close image.
@@ -3162,6 +3175,55 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
     next=next->next;
   }
   return(images);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M o d i f y I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ModifyImage() ensures that there is only a single reference to the image
+%  to be modified, updating the provided image pointer to point to a clone of
+%  the original image if necessary.
+%
+%  The format of the ModifyImage method is:
+%
+%      Image * ReferenceImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport void ModifyImage(Image** image, ExceptionInfo *exception)
+{
+  int
+    copy_image=False;
+
+  Image
+    *original_image;
+
+  /* Lock here */
+  if((*image)->reference_count>1)
+    copy_image=True;
+  /* Unlock here */
+
+  if(copy_image==False)
+    return;
+
+  original_image=*image;
+  *image=CloneImage(original_image,0,0,True,exception);
+
+  /* Lock here */
+  --original_image->reference_count;
+  /* Unlock here */
 }
 
 /*
@@ -5055,6 +5117,38 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
         }
     }
   return(flags);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e f e r e n c e I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReferenceImage() increments the reference count associated with an image
+%  returning a pointer to the image.
+%
+%  The format of the ReferenceImage method is:
+%
+%      Image * ReferenceImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport Image * ReferenceImage(Image *image)
+{
+  /* Lock here */
+  ++image->reference_count;
+  /* Unlock here */
+  return image;
 }
 
 /*
