@@ -1258,6 +1258,280 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D r a w P o l y g o n P r i m i t i v e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DrawPolygonPrimitive draws a polygon on the image.
+%
+%  Rick Mabry provided the algorithms for anti-aliased polygons.
+%
+%  The format of the DrawPolygonPrimitive method is:
+%
+%      DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
+%        const DrawInfo *draw_info,const SegmentInfo *bounds,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
+%
+%    o draw_info: Specifies a pointer to a DrawInfo structure.
+%
+%    o bounds: Specifies the bounding box of the polygon interected with
+%      the image.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+
+static inline double DistanceToLine(const PointInfo *point,const PointInfo *p,
+  const PointInfo *q)
+{
+  double
+    dot_product,
+    gamma,
+    phi;
+
+  register double
+    alpha,
+    beta;
+
+  alpha=point->x-p->x;
+  beta=point->y-p->y;
+  dot_product=alpha*(q->x-p->x)+beta*(q->y-p->y);
+  if (dot_product <= 0)
+    return(alpha*alpha+beta*beta);
+  phi=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
+  gamma=dot_product*dot_product/phi;
+  if (gamma <= phi)
+    return(alpha*alpha+beta*beta-gamma+MagickEpsilon);
+  alpha=point->x-q->x;
+  beta=point->y-q->y;
+  return(alpha*alpha+beta*beta);
+}
+
+static inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
+  const PointInfo *q,const double mid,const double opacity,double *distance)
+{
+  register double
+    alpha;
+
+  *distance=DistanceToLine(point,p,q);
+  if ((mid == 0.0) || (opacity == 1.0))
+    return(opacity);
+  if ((p->x == q->x) && (p->y == q->y))
+    return((point->x == p->x) && (point->y == p->y) ? 1.0 : opacity);
+  alpha=mid-0.5;
+  if (*distance <= (alpha*alpha))
+    return(1.0);
+  alpha=mid+0.5;
+  if (*distance <= (alpha*alpha))
+    {
+      alpha=sqrt(*distance)-mid-0.5;
+      return(Max(opacity,alpha*alpha));
+    }
+  return(opacity);
+}
+
+MagickExport void DrawPolygonPrimitive(PrimitiveInfo *primitive_info,
+  const DrawInfo *draw_info,SegmentInfo *bounds,Image *image)
+{
+  double
+    alpha,
+    beta,
+    distance,
+    fill_opacity,
+    mid,
+    minimum_distance,
+    stroke_opacity,
+    subpath_opacity;
+
+  int
+    crossing,
+    crossings,
+    y;
+
+  PixelPacket
+    color;
+
+  PointInfo
+    point;
+
+  register int
+    x;
+
+  register PixelPacket
+    *q;
+
+  register PrimitiveInfo
+    *p;
+
+  assert(primitive_info != (PrimitiveInfo *) NULL);
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
+  assert(bounds != (SegmentInfo *) NULL);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  mid=draw_info->affine[0]*draw_info->linewidth/2.0;
+  for (y=(int) ceil(bounds->y1-0.5); y <= (int) floor(bounds->y2-0.5); y++)
+  {
+    point.y=y;
+    x=(int) ceil(bounds->x1-0.5);
+    q=GetImagePixels(image,x,y,(int) floor(bounds->x2-0.5)-x+1,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for ( ; x <= (int) floor(bounds->x2-0.5); x++)
+    {
+      /*
+        Compute the stroke and fill opacity values.
+      */
+      p=primitive_info;
+      point.x=x;
+      fill_opacity=0.0;
+      stroke_opacity=0.0;
+      switch (primitive_info->coordinates)
+      {
+        case 0:
+          break;
+        case 1:
+        {
+          if ((point.x == (int) ceil(p->point.x-0.5)) &&
+              (point.y == (int) ceil(p->point.y-0.5)))
+            stroke_opacity=1.0;
+          break;
+        }
+        case 2:
+        {
+          stroke_opacity=PixelOnLine(&point,&p->point,&(p+1)->point,mid,0.0,
+            &distance);
+          break;
+        }
+        default:
+        {
+          while (p->primitive != UndefinedPrimitive)
+          {
+            register PrimitiveInfo
+              *q;
+
+            q=p+p->coordinates-1;
+            subpath_opacity=PixelOnLine(&point,&p->point,&q->point,1.0,0.0,
+              &minimum_distance);
+            crossings=0;
+            if ((point.y < q->point.y) != (point.y < p->point.y))
+              {
+                crossing=point.x < q->point.x;
+                if (crossing != (point.x < p->point.x))
+                  crossings+=point.x < (q->point.x-(q->point.y-point.y)*
+                    (p->point.x-q->point.x)/(p->point.y-q->point.y));
+                else
+                  if (crossing)
+                    crossings++;
+              }
+            for (p++; (p <= q); p++)
+            {
+              stroke_opacity=PixelOnLine(&point,&(p-1)->point,&p->point,mid,
+                stroke_opacity,&distance);
+              if (distance < minimum_distance)
+                minimum_distance=distance;
+              if ((primitive_info->method == FillToBorderMethod) &&
+                  (fill_opacity != 0.0) && (subpath_opacity != 1.0))
+                subpath_opacity=PixelOnLine(&point,&(p-1)->point,&p->point,1.0,
+                  subpath_opacity,&distance);
+              if (point.y < (p-1)->point.y)
+                {
+                  if (point.y < p->point.y)
+                    continue;
+                  crossing=point.x < (p-1)->point.x;
+                  if (crossing != (point.x < p->point.x))
+                    crossings+=x < ((p-1)->point.x-((p-1)->point.y-point.y)*
+                      (p->point.x-(p-1)->point.x)/(p->point.y-(p-1)->point.y));
+                  else
+                    if (crossing)
+                      crossings++;
+                  continue;
+                }
+              if (point.y >= p->point.y)
+                continue;
+              crossing=point.x < (p-1)->point.x;
+              if (crossing != (point.x < p->point.x))
+                crossings+=point.x < ((p-1)->point.x-((p-1)->point.y-point.y)*
+                  (p->point.x-(p-1)->point.x)/(p->point.y-(p-1)->point.y));
+              else
+                if (crossing)
+                  crossings++;
+            }
+            if ((primitive_info->method == FillToBorderMethod) &&
+                (fill_opacity != 0.0))
+              if ((crossings & 0x01)|| (minimum_distance <= (0.5*0.5)))
+                {
+                  fill_opacity=subpath_opacity;
+                  continue;
+                }
+            if (!draw_info->stroke_antialias || (minimum_distance > (0.5*0.5)))
+              {
+                if (crossings & 0x01)
+                  fill_opacity=1.0;
+                continue;
+              }
+            alpha=0.5+(crossings & 0x01 ? 1.0 : -1.0)*sqrt(minimum_distance);
+            beta=alpha*alpha;
+            if (beta > fill_opacity)
+              fill_opacity=beta;
+          }
+          break;
+        }
+      }
+      alpha=1.0/MaxRGB;
+      color=draw_info->fill;
+      if (draw_info->tile != (Image *) NULL)
+        color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
+          y % draw_info->tile->rows);
+      if ((fill_opacity != 0.0) && (color.opacity != TransparentOpacity))
+        {
+          /*
+            Fill.
+          */
+          fill_opacity=MaxRGB-fill_opacity*(MaxRGB-color.opacity);
+          q->red=(Quantum) (alpha*(color.red*(MaxRGB-fill_opacity)+
+            q->red*fill_opacity));
+          q->green=(Quantum) (alpha*(color.green*(MaxRGB-fill_opacity)+
+            q->green*fill_opacity));
+          q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-fill_opacity)+
+            q->blue*fill_opacity));
+          q->opacity=(Quantum) (alpha*(color.opacity*(MaxRGB-fill_opacity)+
+            q->opacity*fill_opacity));
+        }
+      color=draw_info->stroke;
+      if ((stroke_opacity != 0.0) && (color.opacity != TransparentOpacity))
+        {
+          /*
+            Stroke.
+          */
+          stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-color.opacity);
+          q->red=(Quantum) (alpha*(color.red*(MaxRGB-stroke_opacity)+
+            q->red*stroke_opacity));
+          q->green=(Quantum) (alpha*(color.green*(MaxRGB-stroke_opacity)+
+            q->green*stroke_opacity));
+          q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-stroke_opacity)+
+            q->blue*stroke_opacity));
+          q->opacity=(Quantum) (alpha*(stroke_opacity*(MaxRGB-stroke_opacity)+
+            q->opacity*stroke_opacity));
+        }
+      q++;
+    }
+    if (!SyncImagePixels(image))
+      break;
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w P r i m i t i v e                                                 %
 %                                                                             %
 %                                                                             %
@@ -1542,16 +1816,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
     default:
     {
       double
-        alpha,
-        fill_opacity,
-        mid,
-        stroke_opacity;
-
-      int
-        n;
-
-      PixelPacket
-        color;
+        mid;
 
       PointInfo
         point;
@@ -1591,63 +1856,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
       bounds.y2+=mid;
       if (bounds.y2 >= image->rows)
         bounds.y2=image->rows-1.0;
-      alpha=1.0/MaxRGB;
-      for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
-      {
-        /*
-          Fill the primitive on the image.
-        */
-        x=(int) ceil(bounds.x1-0.5);
-        n=(int) floor(bounds.x2-0.5)-x;
-        q=GetImagePixels(image,x,y,n+1,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        point.y=y;
-        for ( ; x <= (int) floor(bounds.x2-0.5); x++)
-        {
-          point.x=x;
-          stroke_opacity=IntersectPrimitive(primitive_info,draw_info,image,
-            &point,&fill_opacity);
-          color=draw_info->fill;
-          if (draw_info->tile != (Image *) NULL)
-            color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
-              y % draw_info->tile->rows);
-          if ((fill_opacity != 0.0) && (color.opacity != TransparentOpacity))
-            {
-              /*
-                Fill.
-              */
-              fill_opacity=MaxRGB-fill_opacity*(MaxRGB-color.opacity);
-              q->red=(Quantum) (alpha*(color.red*(MaxRGB-fill_opacity)+
-                q->red*fill_opacity));
-              q->green=(Quantum) (alpha*(color.green*(MaxRGB-fill_opacity)+
-                q->green*fill_opacity));
-              q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-fill_opacity)+
-                q->blue*fill_opacity));
-              q->opacity=(Quantum) (alpha*(color.opacity*(MaxRGB-fill_opacity)+
-                q->opacity*fill_opacity));
-            }
-          color=draw_info->stroke;
-          if ((stroke_opacity != 0.0) && (color.opacity != TransparentOpacity))
-            {
-              /*
-                Stroke.
-              */
-              stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-color.opacity);
-              q->red=(Quantum) (alpha*(color.red*(MaxRGB-stroke_opacity)+
-                q->red*stroke_opacity));
-              q->green=(Quantum) (alpha*(color.green*(MaxRGB-stroke_opacity)+
-                q->green*stroke_opacity));
-              q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-stroke_opacity)+
-                q->blue*stroke_opacity));
-              q->opacity=(Quantum) (alpha*(stroke_opacity*
-                (MaxRGB-stroke_opacity)+q->opacity*stroke_opacity));
-            }
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
+      DrawPolygonPrimitive(primitive_info,draw_info,&bounds,image);
       break;
     }
   }
