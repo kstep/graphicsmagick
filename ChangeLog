@@ -1,3 +1,6 @@
+2002-03-06  Cristy  <cristy@mystic.es.dupont.com>
+  * Inlined AlphaComposite() and ValidateColormapIndex().
+
 2002-03-05  Cristy  <cristy@mystic.es.dupont.com>
   * Memory overrun when drawing large circles.
 
