@@ -643,8 +643,10 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
     }
 
   // Retrieve single pixel at co-ordinate from pixel cache
-  if ( (pixel = GetPixelCache( image(), x_, y_, 1, 1 )) == 0 )
+  ViewInfo* view = OpenCacheView( image() );
+  if ( (pixel = GetCacheView( view, x_, y_, 1, 1 )) == 0 )
     {
+      CloseCacheView(view);
       throwImageException();
     }
 
@@ -653,6 +655,7 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
   ColorFloodfillImage ( image(), &pixelValue,
 			const_cast<Image &>(texture_).image(),
 			x_, y_, FloodfillMethod );
+  CloseCacheView(view);
   throwImageException();
 }
 void Magick::Image::floodFillTexture( const Magick::Geometry &point_,
@@ -1356,7 +1359,7 @@ void Magick::Image::write ( Blob *blob_ )
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = MagickLib::ImageToBlob( imageInfo(),
+  void* data = ImageToBlob( imageInfo(),
 			    image(),
 			    &length,
 			    &exceptionInfo);
@@ -1371,7 +1374,7 @@ void Magick::Image::write ( Blob *blob_,
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = MagickLib::ImageToBlob( imageInfo(),
+  void* data = ImageToBlob( imageInfo(),
 			    image(),
 			    &length,
 			    &exceptionInfo);
@@ -1388,7 +1391,7 @@ void Magick::Image::write ( Blob *blob_,
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = MagickLib::ImageToBlob( imageInfo(),
+  void* data = ImageToBlob( imageInfo(),
 			    image(),
 			    &length,
 			    &exceptionInfo);
@@ -2243,9 +2246,11 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
       classType( DirectClass );
 
       // Retrieve single pixel at co-ordinate from pixel cache
+      ViewInfo* view = OpenCacheView( image() );
       PixelPacket *pixel;
-      if ( !( pixel=GetPixelCache( image(), x_, y_, 1, 1 ) ) )
+      if ( !( pixel=GetCacheView( view, x_, y_, 1, 1 ) ) )
 	{
+	  CloseCacheView(view);
 	  throwImageException();
 	  return;  // Shouldn't get here if GetPixelCache reports error
 	}
@@ -2254,7 +2259,8 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
       *pixel = color_;
 
       // Tell ImageMagick that pixels have been updated
-      SyncPixelCache( image() );
+      SyncCacheView( view );
+      CloseCacheView(view);
 
       return;
     }
@@ -2275,12 +2281,14 @@ Magick::Color Magick::Image::pixelColor ( unsigned int x_,
     }
 
   // Retrieve single pixel at co-ordinate from pixel cache
-  if ( (pixel = GetPixelCache( image(), x_, y_, 1, 1 )) == 0 )
+  ViewInfo* view = OpenCacheView( image() );
+  if ( (pixel = GetCacheView( view, x_, y_, 1, 1 )) == 0 )
   {
+    CloseCacheView(view);
     throwImageException();
     return Color();  // Shouldn't get here if GetPixelCache reports error
   }
-
+  CloseCacheView(view);
   return Color ( *pixel );
 
 }
@@ -2548,6 +2556,7 @@ Magick::Image Magick::Image::operator=( const Magick::Image &image_ )
 //
 //////////////////////////////////////////////////////////////////////
 
+#if 0
 // Transfers pixels from the image to the pixel cache as defined
 // by the specified region. Modified pixels may be subsequently
 // transferred back to the image via syncPixels.
@@ -2603,6 +2612,7 @@ void Magick::Image::writePixels ( Magick::QuantumTypes quantum_,
   WritePixelCache( image(), quantum_, destination_ );
 }
 
+#endif
 /////////////////////////////////////////////////////////////////////
 //
 // No end-user methods beyond this point
@@ -2630,7 +2640,7 @@ MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
 	{
 	  // We own the image.  Destroy existing image.
 	  if ( _imgRef->_image )
-	    MagickLib::DestroyImages( _imgRef->_image );
+	    DestroyImages( _imgRef->_image );
 	  
 	  // Set reference image pointer to new image
 	  _imgRef->image(replacement_);
@@ -2737,7 +2747,7 @@ Magick::ImageRef::~ImageRef( void )
 {
   if ( _image )
     {
-      MagickLib::DestroyImages( _image );
+      DestroyImages( _image );
       _image = (MagickLib::Image *)NULL;
     }
 

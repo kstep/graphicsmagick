@@ -59,22 +59,9 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
 
-# Configure libtool
-AM_ENABLE_SHARED(no)
-AM_ENABLE_STATIC(yes)
-AC_PROG_LIBTOOL
-AC_LIBTOOL_CXX
-
-# Add configure option --enable-maintainer-mode which enables dependency
-# checking and generation useful to package maintainers.  This is made an
-# option to avoid confusing end users.
-AM_MAINTAINER_MODE
-AC_CANONICAL_HOST
-
 #
 # Obtain ImageMagick compilation options from installed Magick-config script.
 #
-
 AC_MSG_CHECKING(pre-processor flags)
 # If -DHAVE_CONFIG_H is not specified, then QuantumLeap doesn't work.
 CPPFLAGS="$CPPFLAGS -DHAVE_CONFIG_H "`Magick-config --cppflags`
@@ -88,5 +75,20 @@ AC_MSG_RESULT("$LDFLAGS")
 #LIBS="$LIBS "`Magick-config --libs`
 #AC_MSG_RESULT("$LIBS")
 LIBS="$LIBS -lMagick"
+
+#
+# Configure libtool
+#
+AM_ENABLE_SHARED(no)
+AM_ENABLE_STATIC(yes)
+AC_PROG_LIBTOOL
+AC_LIBTOOL_CXX
+
+# Add configure option --enable-maintainer-mode which enables dependency
+# checking and generation useful to package maintainers.  This is made an
+# option to avoid confusing end users.
+AM_MAINTAINER_MODE
+AC_CANONICAL_HOST
+
 
 AC_OUTPUT(Makefile lib/Makefile lib/Magick++/Makefile demo/Makefile tests/Makefile)

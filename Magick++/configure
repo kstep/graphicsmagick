@@ -1999,7 +1999,28 @@ else
 fi
 
 
+#
+# Obtain ImageMagick compilation options from installed Magick-config script.
+#
+echo $ac_n "checking pre-processor flags... $ac_c" 1>&6
+echo "configure:2007: checking pre-processor flags" 1>&5
+# If -DHAVE_CONFIG_H is not specified, then QuantumLeap doesn't work.
+CPPFLAGS="$CPPFLAGS -DHAVE_CONFIG_H "`Magick-config --cppflags`
+echo "$ac_t"""$CPPFLAGS"" 1>&6
+
+echo $ac_n "checking linker flags... $ac_c" 1>&6
+echo "configure:2013: checking linker flags" 1>&5
+LDFLAGS="$LDFLAGS "`Magick-config --ldflags`
+echo "$ac_t"""$LDFLAGS"" 1>&6
+
+#AC_MSG_CHECKING(libraries)
+#LIBS="$LIBS "`Magick-config --libs`
+#AC_MSG_RESULT("$LIBS")
+LIBS="$LIBS -lMagick"
+
+#
 # Configure libtool
+#
 # Check whether --enable-shared or --disable-shared was given.
 if test "${enable_shared+set}" = set; then
   enableval="$enable_shared"
@@ -2047,12 +2068,12 @@ else
 fi
 
 echo $ac_n "checking for Cygwin environment... $ac_c" 1>&6
-echo "configure:2051: checking for Cygwin environment" 1>&5
+echo "configure:2072: checking for Cygwin environment" 1>&5
 if test "${ac_cv_cygwin+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat >conftest.$ac_ext <<EOF
-#line 2056 "configure"
+#line 2077 "configure"
 #include "confdefs.h"
 
 int
@@ -2066,7 +2087,7 @@ return __CYGWIN__;
   return 0;
 }
 EOF
-if { (eval echo configure:2070: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2091: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_cygwin=yes
 else
@@ -2081,12 +2102,12 @@ echo "$ac_t""$ac_cv_cygwin" 1>&6
 CYGWIN=
 test "$ac_cv_cygwin" = yes && CYGWIN=yes
 echo $ac_n "checking for mingw32 environment... $ac_c" 1>&6
-echo "configure:2085: checking for mingw32 environment" 1>&5
+echo "configure:2106: checking for mingw32 environment" 1>&5
 if test "${ac_cv_mingw32+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat >conftest.$ac_ext <<EOF
-#line 2090 "configure"
+#line 2111 "configure"
 #include "confdefs.h"
 
 int
@@ -2097,7 +2118,7 @@ return __MINGW32__;
   return 0;
 }
 EOF
-if { (eval echo configure:2101: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2122: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_mingw32=yes
 else
@@ -2112,12 +2133,12 @@ echo "$ac_t""$ac_cv_mingw32" 1>&6
 MINGW32=
 test "$ac_cv_mingw32" = yes && MINGW32=yes
 echo $ac_n "checking for EMX OS/2 environment... $ac_c" 1>&6
-echo "configure:2116: checking for EMX OS/2 environment" 1>&5
+echo "configure:2137: checking for EMX OS/2 environment" 1>&5
 if test "${ac_cv_emxos2+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat >conftest.$ac_ext <<EOF
-#line 2121 "configure"
+#line 2142 "configure"
 #include "confdefs.h"
 
 int
@@ -2128,7 +2149,7 @@ return __EMX__;
   return 0;
 }
 EOF
-if { (eval echo configure:2132: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2153: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_emxos2=yes
 else
@@ -2177,7 +2198,7 @@ ac_prog=ld
 if test "$ac_cv_prog_gcc" = yes; then
   # Check if gcc -print-prog-name=ld gives a path.
   echo $ac_n "checking for ld used by GCC... $ac_c" 1>&6
-echo "configure:2181: checking for ld used by GCC" 1>&5
+echo "configure:2202: checking for ld used by GCC" 1>&5
   case $lt_target in
   *-*-mingw*)
     # gcc leaves a trailing carriage return which upsets mingw
@@ -2207,10 +2228,10 @@ echo "configure:2181: checking for ld used by GCC" 1>&5
   esac
 elif test "$with_gnu_ld" = yes; then
   echo $ac_n "checking for GNU ld... $ac_c" 1>&6
-echo "configure:2211: checking for GNU ld" 1>&5
+echo "configure:2232: checking for GNU ld" 1>&5
 else
   echo $ac_n "checking for non-GNU ld... $ac_c" 1>&6
-echo "configure:2214: checking for non-GNU ld" 1>&5
+echo "configure:2235: checking for non-GNU ld" 1>&5
 fi
 if test "${ac_cv_path_LD+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -2245,7 +2266,7 @@ else
 fi
 test -z "$LD" && { echo "configure: error: no acceptable ld found in \$PATH" 1>&2; exit 1; }
 echo $ac_n "checking if the linker ($LD) is GNU ld... $ac_c" 1>&6
-echo "configure:2249: checking if the linker ($LD) is GNU ld" 1>&5
+echo "configure:2270: checking if the linker ($LD) is GNU ld" 1>&5
 if test "${ac_cv_prog_gnu_ld+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2261,7 +2282,7 @@ with_gnu_ld=$ac_cv_prog_gnu_ld
 
 
 echo $ac_n "checking for $LD option to reload object files... $ac_c" 1>&6
-echo "configure:2265: checking for $LD option to reload object files" 1>&5
+echo "configure:2286: checking for $LD option to reload object files" 1>&5
 if test "${lt_cv_ld_reload_flag+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2272,7 +2293,7 @@ reload_flag=$lt_cv_ld_reload_flag
 test -n "$reload_flag" && reload_flag=" $reload_flag"
 
 echo $ac_n "checking for BSD-compatible nm... $ac_c" 1>&6
-echo "configure:2276: checking for BSD-compatible nm" 1>&5
+echo "configure:2297: checking for BSD-compatible nm" 1>&5
 if test "${ac_cv_path_NM+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2308,7 +2329,7 @@ NM="$ac_cv_path_NM"
 echo "$ac_t""$NM" 1>&6
 
 echo $ac_n "checking how to recognise dependant libraries... $ac_c" 1>&6
-echo "configure:2312: checking how to recognise dependant libraries" 1>&5
+echo "configure:2333: checking how to recognise dependant libraries" 1>&5
 if test "${lt_cv_deplibs_check_method+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2421,13 +2442,13 @@ file_magic_cmd=$lt_cv_file_magic_cmd
 deplibs_check_method=$lt_cv_deplibs_check_method
 
 echo $ac_n "checking for object suffix... $ac_c" 1>&6
-echo "configure:2425: checking for object suffix" 1>&5
+echo "configure:2446: checking for object suffix" 1>&5
 if test "${ac_cv_objext+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   rm -f conftest*
 echo 'int i = 1;' >conftest.$ac_ext
-if { (eval echo configure:2431: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2452: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   for ac_file in conftest.*; do
     case $ac_file in
     *.c) ;;
@@ -2445,7 +2466,7 @@ OBJEXT=$ac_cv_objext
 ac_objext=$ac_cv_objext
 
 echo $ac_n "checking for executable suffix... $ac_c" 1>&6
-echo "configure:2449: checking for executable suffix" 1>&5
+echo "configure:2470: checking for executable suffix" 1>&5
 if test "${ac_cv_exeext+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2455,7 +2476,7 @@ else
   rm -f conftest*
   echo 'int main () { return 0; }' >conftest.$ac_ext
   ac_cv_exeext=
-  if { (eval echo configure:2459: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
+  if { (eval echo configure:2480: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
     for ac_file in conftest.*; do
       case $ac_file in
       *.c | *.C | *.o | *.obj | *.xcoff) ;;
@@ -2488,7 +2509,7 @@ case "$deplibs_check_method" in
 file_magic*)
   if test "$file_magic_cmd" = '${MAGIC}'; then
     echo $ac_n "checking for ${ac_tool_prefix}file... $ac_c" 1>&6
-echo "configure:2492: checking for ${ac_tool_prefix}file" 1>&5
+echo "configure:2513: checking for ${ac_tool_prefix}file" 1>&5
 if test "${lt_cv_path_MAGIC+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2550,7 +2571,7 @@ fi
 if test -z "$lt_cv_path_MAGIC"; then
   if test -n "$ac_tool_prefix"; then
     echo $ac_n "checking for file... $ac_c" 1>&6
-echo "configure:2554: checking for file" 1>&5
+echo "configure:2575: checking for file" 1>&5
 if test "${lt_cv_path_MAGIC+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2626,7 +2647,7 @@ esac
 # Extract the first word of "${ac_tool_prefix}ranlib", so it can be a program name with args.
 set dummy ${ac_tool_prefix}ranlib; ac_word=$2
 echo $ac_n "checking for $ac_word... $ac_c" 1>&6
-echo "configure:2630: checking for $ac_word" 1>&5
+echo "configure:2651: checking for $ac_word" 1>&5
 if test "${ac_cv_prog_RANLIB+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2658,7 +2679,7 @@ if test -z "$ac_cv_prog_RANLIB"; then
     # Extract the first word of "ranlib", so it can be a program name with args.
 set dummy ranlib; ac_word=$2
 echo $ac_n "checking for $ac_word... $ac_c" 1>&6
-echo "configure:2662: checking for $ac_word" 1>&5
+echo "configure:2683: checking for $ac_word" 1>&5
 if test "${ac_cv_prog_RANLIB+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2693,7 +2714,7 @@ fi
 # Extract the first word of "${ac_tool_prefix}strip", so it can be a program name with args.
 set dummy ${ac_tool_prefix}strip; ac_word=$2
 echo $ac_n "checking for $ac_word... $ac_c" 1>&6
-echo "configure:2697: checking for $ac_word" 1>&5
+echo "configure:2718: checking for $ac_word" 1>&5
 if test "${ac_cv_prog_STRIP+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2725,7 +2746,7 @@ if test -z "$ac_cv_prog_STRIP"; then
     # Extract the first word of "strip", so it can be a program name with args.
 set dummy strip; ac_word=$2
 echo $ac_n "checking for $ac_word... $ac_c" 1>&6
-echo "configure:2729: checking for $ac_word" 1>&5
+echo "configure:2750: checking for $ac_word" 1>&5
 if test "${ac_cv_prog_STRIP+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2792,8 +2813,8 @@ test x"$pic_mode" = xno && libtool_flags="$libtool_flags --prefer-non-pic"
 case "$lt_target" in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 2796 "configure"' > conftest.$ac_ext
-  if { (eval echo configure:2797: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  echo '#line 2817 "configure"' > conftest.$ac_ext
+  if { (eval echo configure:2818: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
     case "`/usr/bin/file conftest.o`" in
     *32-bit*)
       LD="${LD-ld} -32"
@@ -2814,7 +2835,7 @@ case "$lt_target" in
   SAVE_CFLAGS="$CFLAGS"
   CFLAGS="$CFLAGS -belf"
   echo $ac_n "checking whether the C compiler needs -belf... $ac_c" 1>&6
-echo "configure:2818: checking whether the C compiler needs -belf" 1>&5
+echo "configure:2839: checking whether the C compiler needs -belf" 1>&5
 if test "${lt_cv_cc_needs_belf+set}" = set; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2827,7 +2848,7 @@ ac_link='${CC-cc} -o conftest${ac_exeext} $CFLAGS $CPPFLAGS $LDFLAGS conftest.$a
 cross_compiling=$ac_cv_prog_cc_cross
 
      cat >conftest.$ac_ext <<EOF
-#line 2831 "configure"
+#line 2852 "configure"
 #include "confdefs.h"
 
 int
@@ -2838,7 +2859,7 @@ main()
   return 0;
 }
 EOF
-if { (eval echo configure:2842: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:2863: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   lt_cv_cc_needs_belf=yes
 else
@@ -2969,7 +2990,7 @@ CFLAGS="$lt_save_CFLAGS"
 # checking and generation useful to package maintainers.  This is made an
 # option to avoid confusing end users.
 echo $ac_n "checking whether to enable maintainer-specific portions of Makefiles... $ac_c" 1>&6
-echo "configure:2973: checking whether to enable maintainer-specific portions of Makefiles" 1>&5
+echo "configure:2994: checking whether to enable maintainer-specific portions of Makefiles" 1>&5
     # Check whether --enable-maintainer-mode or --disable-maintainer-mode was given.
 if test "${enable_maintainer_mode+set}" = set; then
   enableval="$enable_maintainer_mode"
@@ -2992,7 +3013,7 @@ fi
   
 
 echo $ac_n "checking host system type... $ac_c" 1>&6
-echo "configure:2996: checking host system type" 1>&5
+echo "configure:3017: checking host system type" 1>&5
 if test "x$ac_cv_host" = "x" || (test "x$host" != "xNONE" && test "x$host" != "x$ac_cv_host_alias"); then
 
   # Make sure we can run config.sub.
@@ -3028,25 +3049,6 @@ host_vendor=$ac_cv_host_vendor
 host_os=$ac_cv_host_os
 
 
-#
-# Obtain ImageMagick compilation options from installed Magick-config script.
-#
-
-echo $ac_n "checking pre-processor flags... $ac_c" 1>&6
-echo "configure:3037: checking pre-processor flags" 1>&5
-# If -DHAVE_CONFIG_H is not specified, then QuantumLeap doesn't work.
-CPPFLAGS="$CPPFLAGS -DHAVE_CONFIG_H "`Magick-config --cppflags`
-echo "$ac_t"""$CPPFLAGS"" 1>&6
-
-echo $ac_n "checking linker flags... $ac_c" 1>&6
-echo "configure:3043: checking linker flags" 1>&5
-LDFLAGS="$LDFLAGS "`Magick-config --ldflags`
-echo "$ac_t"""$LDFLAGS"" 1>&6
-
-#AC_MSG_CHECKING(libraries)
-#LIBS="$LIBS "`Magick-config --libs`
-#AC_MSG_RESULT("$LIBS")
-LIBS="$LIBS -lMagick"
 
 trap '' 1 2 15
 cat >confcache <<\EOF

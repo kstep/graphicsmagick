@@ -30,7 +30,7 @@ Items large and small which remain to be done before Magick++ 1.0
 * Support building working dynamic library under Unix.
 
   Note: This is supported by the libtool multi-language-branch development
-        branch so it should not be long.
+        branch so it should not be long.  Currently works under Solaris!
 
 * Support building working DLL under Win32.
 

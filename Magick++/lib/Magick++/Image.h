@@ -713,6 +713,7 @@ namespace Magick
     //
     //////////////////////////////////////////////////////////////////////
 
+#if 0
     // Transfers pixels from the image to the pixel cache as defined
     // by the specified region. Modified pixels may be subsequently
     // transferred back to the image via syncPixels.
@@ -739,7 +740,7 @@ namespace Magick
     // Used to support image encoders.
     void writePixels ( QuantumTypes quantum_,
 		       unsigned char *destination_ );
-
+#endif
     //////////////////////////////////////////////////////////////////////    
     //
     // No user-serviceable parts beyond this point

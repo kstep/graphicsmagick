@@ -629,14 +629,16 @@ int main( int /*argc*/, char ** /*argv*/)
     // fileName
     //
     // Test default
-    if ( image.fileName() != string(canvasColor) )
+    if ( image.fileName() != string("xc:") + string(canvasColor) )
       {
 	++failures;
 	cout << "Line: "
 	     << __LINE__
 	     << ", fileName ("
 	     << image.fileName()
-	     << ") is not canvas color as expected" << endl;
+	     << ") is not canvas color ("
+	     << string(canvasColor)
+	     <<") as expected" << endl;
       }
 
     // Set/get value
