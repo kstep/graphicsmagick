@@ -95,9 +95,6 @@ static unsigned int
 static unsigned int ReadConfigureFile(Image *image,const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
-  const ImageAttribute
-    *attribute;
-
   char
     keyword[MaxTextExtent],
     path[MaxTextExtent],
@@ -113,14 +110,21 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
   */
   (void) strcpy(path,basename);
   if (depth != 0)
-    xml=(char *) FileToBlob(basename,&length,exception);
+    {
+      xml=(char *) FileToBlob(basename,&length,exception);
+      (void) SetImageAttribute(image,"[Locale]",xml);
+    }
   else
     {
+      const ImageAttribute
+        *attribute;
+
       attribute=GetImageAttribute(image,basename);
       if (attribute == (const ImageAttribute *) NULL)
-        ThrowBinaryException(ConfigureError,"No required image attribute",
+        ThrowBinaryException(ConfigureError,"No [Locale] image attribute",
           basename);
-      xml=attribute->value;
+      xml=AllocateString(attribute->value);
+      (void) SetImageAttribute(image,"[Locale]",(char *) NULL);
     }
   if (xml == (char *) NULL)
     return(False);
@@ -178,59 +182,11 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
         }
         continue;
       }
-    if (LocaleCompare(keyword,"<color") == 0)
-      {
-        continue;
-      }
     GetToken(q,(char **) NULL,token);
     if (*token != '=')
       continue;
     GetToken(q,&q,token);
     GetToken(q,&q,token);
-    switch (*keyword)
-    {
-      case 'B':
-      case 'b':
-      {
-        break;
-      }
-      case 'C':
-      case 'c':
-      {
-        if (LocaleCompare((char *) keyword,"compliance") == 0)
-          {
-            break;
-          }
-        break;
-      }
-      case 'G':
-      case 'g':
-      {
-        break;
-      }
-      case 'N':
-      case 'n':
-      {
-        break;
-      }
-      case 'O':
-      case 'o':
-      {
-        break;
-      }
-      case 'R':
-      case 'r':
-      {
-        break;
-      }
-      case 'S':
-      case 's':
-      {
-        break;
-      }
-      default:
-        break;
-    }
   }
   LiberateMemory((void **) &token);
   if (depth != 0)
@@ -271,7 +227,8 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
 %
 %
 */
-static Image *ReadLOCALEImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadLOCALEImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -281,7 +238,7 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,ExceptionInfo *excepti
     length;
 
   unsigned char
-    *blob;
+    *xml;
 
   unsigned int
     status;
@@ -296,25 +253,26 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,ExceptionInfo *excepti
     ThrowReaderException(FileOpenError,"Unable to open file",image);
   image->columns=1;
   image->rows=1;
+  SetImage(image,OpaqueOpacity);
   length=GetBlobSize(image);
-  blob=(unsigned char *) AcquireMemory(length+1);
-  if (blob == (unsigned char *) NULL)
+  xml=(unsigned char *) AcquireMemory(length+1);
+  if (xml == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
-  count=ReadBlob(image,length,blob);
+  count=ReadBlob(image,length,xml);
   if (count != length)
     {
-      LiberateMemory((void **) &blob);
+      LiberateMemory((void **) &xml);
       ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
     }
-  blob[length]='\0';
-  if (LocaleNCompare((const char *) blob,"<?xml",5) != 0)
+  xml[length]='\0';
+  if (LocaleNCompare((const char *) xml,"<?xml",5) != 0)
     {
-      LiberateMemory((void **) &blob);
+      LiberateMemory((void **) &xml);
       ThrowReaderException(CorruptImageError,"Not a LOCALE file",image);
     }
-  (void) ReadConfigureFile(image,"[Locale]",0,&image->exception);
-  if (SetImageAttribute(image,"[Locale]",blob) == False)
+  if (SetImageAttribute(image,"[Locale]",xml) == False)
     ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+  (void) ReadConfigureFile(image,"[Locale]",0,&image->exception);
   return(image);
 }
 
@@ -411,6 +369,9 @@ ModuleExport void UnregisterLOCALEImage(void)
 */
 static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
 {
+  const ImageAttribute
+    *attribute;
+
   unsigned int
     status;
 
@@ -422,6 +383,10 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
   (void) WriteBlobString(image,"Not implemented yet!\n");
+  attribute=GetImageAttribute(image,"[Locale]");
+  if (attribute == (const ImageAttribute *) NULL)
+    ThrowWriterException(FileOpenError,"No [LOCALE] image attribute",image);
+puts(attribute->value);
   CloseBlob(image);
   return(False);
 }
