@@ -204,7 +204,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   ThrowBinaryException(MissingDelegateError,"TIFF library is not available",
-    image->filename);
+    image->filename)
 }
 #endif
 
