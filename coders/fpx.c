@@ -253,23 +253,22 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         char
           *label;
+
         /*
           Note image label.
         */
         label=(char *) AllocateMemory(summary_info.title.length+1);
         if (label == (char *) NULL)
           {
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-              image)
+            FPX_ClearSystem();
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           }
-        else
-          {
-            (void) strncpy(label,(char *) summary_info.title.ptr,
-              summary_info.title.length);
-            label[summary_info.title.length]='\0';
-            (void) SetImageAttribute(image,"Label",label);
-            FreeMemory((void **) &label);
-          }
+        (void) strncpy(label,(char *) summary_info.title.ptr,
+          summary_info.title.length);
+        label[summary_info.title.length]='\0';
+        (void) SetImageAttribute(image,"Label",label);
+        FreeMemory((void **) &label);
       }
   if (summary_info.comments_valid)
     if ((summary_info.comments.length != 0) &&
@@ -277,23 +276,22 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         char
           *comments;
+
         /*
           Note image comment.
         */
         comments=(char *) AllocateMemory(summary_info.comments.length+1);
         if (comments == (char *) NULL)
           {
-            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-              image)
+            FPX_ClearSystem();
+            ThrowReaderException(ResourceLimitWarning,
+              "Memory allocation failed",image);
           }
-        else
-          {
-            (void) strncpy(comments,(char *) summary_info.comments.ptr,
-              summary_info.comments.length);
-            comments[summary_info.comments.length]='\0';
-            (void) SetImageAttribute(image,"Comment",comments);
-            FreeMemory((void **) &comments);
-          }
+        (void) strncpy(comments,(char *) summary_info.comments.ptr,
+          summary_info.comments.length);
+        comments[summary_info.comments.length]='\0';
+        (void) SetImageAttribute(image,"Comment",comments);
+        FreeMemory((void **) &comments);
       }
   /*
     Determine resolution by subimage specification.
@@ -1029,10 +1027,10 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       sharpen_valid=False;
       aspect_ratio=(double) image->columns/image->rows;
       aspect_ratio_valid=False;
-      view_rect.left=(float)0.1;
+      view_rect.left=(float) 0.1;
       view_rect.width=aspect_ratio-0.2;
-      view_rect.top=(float)0.1;
-      view_rect.height=(float)0.8; /* 1.0-0.2 */
+      view_rect.top=(float) 0.1;
+      view_rect.height=(float) 0.8; /* 1.0-0.2 */
       view_rect_valid=False;
       affine.a11=1.0;
       affine.a12=0.0;
