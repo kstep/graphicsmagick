@@ -108,7 +108,7 @@ static CoderInfo
   *SetCoderInfo(const char *);
 
 static unsigned int
-  ReadConfigurationFile(const char *,ExceptionInfo *),
+  ReadConfigureFile(const char *,const unsigned int,ExceptionInfo *),
   UnloadModule(const CoderInfo *,ExceptionInfo *),
   UnregisterModule(const char *,ExceptionInfo *);
 
@@ -499,7 +499,7 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
         MagickFatalError(DelegateFatalError,
           "Unable to initialize module loader",lt_dlerror());
       OpenStaticModules();
-      (void) ReadConfigurationFile(ModuleFilename,exception);
+      (void) ReadConfigureFile(ModuleFilename,True,exception);
     }
   LiberateSemaphoreInfo(&module_semaphore);
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
@@ -805,33 +805,35 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d C o n f i g u r a t i o n F i l e                                 %
++   R e a d C o n f i g u r e F i l e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigurationFile reads the color configuration file which maps
+%  Method ReadConfigureFile reads the color configuration file which maps
 %  color strings with a particular image format.
 %
-%  The format of the ReadConfigurationFile method is:
+%  The format of the ReadConfigureFile method is:
 %
-%      unsigned int ReadConfigurationFile(const char *basename,
-%        ExceptionInfo *exception)
+%      unsigned int ReadConfigureFile(const char *basename,
+%        const unsigned int master,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: ReadConfigurationFile() returns True if at least one color is
+%    o status: ReadConfigureFile() returns True if at least one color is
 %      defined otherwise False.
 %
 %    o basename:  The color configuration filename.
+%
+%    o master: This is the master configure file if a value other than 0.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-static unsigned int ReadConfigurationFile(const char *basename,
-  ExceptionInfo *exception)
+static unsigned int ReadConfigureFile(const char *basename,
+  const unsigned int master,ExceptionInfo *exception)
 {
 #if defined(HasMODULES)
   char
@@ -847,7 +849,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the module configure file.
   */
-  xml=(char *) GetModuleBlob(basename,path,&length,exception);
+  (void) strcpy(path,basename);
+  if (master)
+    xml=(char *) GetModuleBlob(basename,path,&length,exception);
+  else
+    xml=(char *) FileToBlob(basename,&length,exception);
   if (xml == (char *) NULL)
     xml=AllocateString(ModuleMap);
   token=AllocateString(xml);
@@ -883,7 +889,13 @@ static unsigned int ReadConfigurationFile(const char *basename,
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
-              (void) ReadConfigurationFile(token,exception);
+              char
+                filename[MaxTextExtent];
+
+              GetPathComponent(path,HeadPath,filename);
+              (void) strcat(filename,DirectorySeparator);
+              (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
+              (void) ReadConfigureFile(filename,False,exception);
               while (module_list->next != (ModuleInfo *) NULL)
                 module_list=module_list->next;
             }

@@ -82,7 +82,7 @@ static TypeInfo
   Forward declarations.
 */
 static unsigned int
-  ReadConfigurationFile(const char *,ExceptionInfo *);
+  ReadConfigureFile(const char *,const unsigned int,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -178,7 +178,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
   AcquireSemaphoreInfo(&type_semaphore);
   if (type_list == (TypeInfo *) NULL)
     {
-      (void) ReadConfigurationFile(TypeFilename,exception);
+      (void) ReadConfigureFile(TypeFilename,True,exception);
 #if defined(WIN32) || defined(__CYGWIN__)
       {
         TypeInfo
@@ -523,33 +523,35 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d C o n f i g u r a t i o n F i l e                                 %
++   R e a d C o n f i g u r e F i l e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadConfigurationFile() reads the type configuration file which provides
+%  ReadConfigureFile() reads the type configuration file which provides
 %  a mapping between type attributes and font files.
 %
-%  The format of the ReadConfigurationFile method is:
+%  The format of the ReadConfigureFile method is:
 %
-%      unsigned int ReadConfigurationFile(const char *basename,
-%        ExceptionInfo *exception)
+%      unsigned int ReadConfigureFile(const char *basename,
+%        const unsigned int master,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: ReadConfigurationFile() returns True if at least one entry
+%    o status: ReadConfigureFile() returns True if at least one entry
 %      is read, otherwise False is returned.
 %
 %    o basename:  The type configuration filename.
+%
+%    o master: This is the master configure file if a value other than 0.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-static unsigned int ReadConfigurationFile(const char *basename,
-  ExceptionInfo *exception)
+static unsigned int ReadConfigureFile(const char *basename,
+  const unsigned int master,ExceptionInfo *exception)
 {
   char
     keyword[MaxTextExtent],
@@ -564,7 +566,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the type configure file.
   */
-  xml=(char *) GetFontBlob(basename,path,&length,exception);
+  (void) strcpy(path,basename);
+  if (master)
+    xml=(char *) GetFontBlob(basename,path,&length,exception);
+  else
+    xml=(char *) FileToBlob(basename,&length,exception);
   if (xml == (char *) NULL)
     xml=AllocateString(TypeMap);
   token=AllocateString(xml);
@@ -600,7 +606,13 @@ static unsigned int ReadConfigurationFile(const char *basename,
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"file") == 0)
             {
-              (void) ReadConfigurationFile(token,exception);
+              char
+                filename[MaxTextExtent];
+
+              GetPathComponent(path,HeadPath,filename);
+              (void) strcat(filename,DirectorySeparator);
+              (void) strncat(filename,token,MaxTextExtent-strlen(filename)-1);
+              (void) ReadConfigureFile(filename,False,exception);
               while (type_list->next != (TypeInfo *) NULL)
                 type_list=type_list->next;
             }
