@@ -1294,13 +1294,9 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
   const unsigned int span,unsigned int *quantum)
 {
   double
-    blue,
     center,
     density,
     end,
-    green,
-    opacity,
-    red,
     scale_factor,
     start,
     support;
@@ -1379,33 +1375,49 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     q=SetImagePixels(destination,x,0,1,destination->rows);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (y=0; y < (int) destination->rows; y++)
+    switch (destination->storage_class)
     {
-      blue=0.0;
-      green=0.0;
-      red=0.0;
-      opacity=0.0;
-      for (i=0; i < n; i++)
+      case DirectClass:
       {
-        j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-          (contribution[i].pixel-contribution[0].pixel);
-        red+=contribution[i].weight*(p+j)->red;
-        green+=contribution[i].weight*(p+j)->green;
-        blue+=contribution[i].weight*(p+j)->blue;
-        opacity+=contribution[i].weight*(p+j)->opacity;
+        double
+          blue,
+          green,
+          opacity,
+          red;
+
+        for (y=0; y < (int) destination->rows; y++)
+        {
+          blue=0.0;
+          green=0.0;
+          red=0.0;
+          opacity=0.0;
+          for (i=0; i < n; i++)
+          {
+            j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+              (contribution[i].pixel-contribution[0].pixel);
+            red+=contribution[i].weight*(p+j)->red;
+            green+=contribution[i].weight*(p+j)->green;
+            blue+=contribution[i].weight*(p+j)->blue;
+            opacity+=contribution[i].weight*(p+j)->opacity;
+          }
+          q->red=(Quantum)
+            ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+          q->green=(Quantum) 
+            ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+          q->blue=(Quantum) 
+            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+          q->opacity=(Quantum) 
+            ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+          q++;
+        }
+        break;
       }
-      q->red=(Quantum)
-        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-      q->green=(Quantum) 
-        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum) 
-        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      q->opacity=(Quantum) 
-        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
-      q++;
-    }
-    if (destination->storage_class == PseudoClass)
+      case PseudoClass:
+      default:
       {
+        IndexPacket
+          index;
+
         register IndexPacket
           *destination_indexes,
           *source_indexes;
@@ -1419,9 +1431,13 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         {
           j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
             (contribution[n-1].pixel-contribution[0].pixel);
-          destination_indexes[y]=source_indexes[j];
+          index=source_indexes[j];
+          destination_indexes[y]=index;
+          *q++=destination->colormap[index];
         }
+        break;
       }
+    }
     if (!SyncImagePixels(destination))
       break;
     if (QuantumTick(*quantum,span))
@@ -1436,13 +1452,9 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
   const unsigned int span,unsigned int *quantum)
 {
   double
-    blue,
     center,
     density,
     end,
-    green,
-    opacity,
-    red,
     scale_factor,
     start,
     support;
@@ -1521,32 +1533,48 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     q=SetImagePixels(destination,0,y,destination->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (int) destination->columns; x++)
+    switch (destination->storage_class)
     {
-      blue=0.0;
-      green=0.0;
-      red=0.0;
-      opacity=0.0;
-      for (i=0; i < n; i++)
+      case DirectClass:
       {
-        j=(contribution[i].pixel-contribution[0].pixel)*source->columns+x;
-        red+=contribution[i].weight*(p+j)->red;
-        green+=contribution[i].weight*(p+j)->green;
-        blue+=contribution[i].weight*(p+j)->blue;
-        opacity+=contribution[i].weight*(p+j)->opacity;
+        double
+          blue,
+          green,
+          opacity,
+          red;
+
+        for (x=0; x < (int) destination->columns; x++)
+        {
+          blue=0.0;
+          green=0.0;
+          red=0.0;
+          opacity=0.0;
+          for (i=0; i < n; i++)
+          {
+            j=(contribution[i].pixel-contribution[0].pixel)*source->columns+x;
+            red+=contribution[i].weight*(p+j)->red;
+            green+=contribution[i].weight*(p+j)->green;
+            blue+=contribution[i].weight*(p+j)->blue;
+            opacity+=contribution[i].weight*(p+j)->opacity;
+          }
+          q->red=(Quantum)
+            ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+          q->green=(Quantum)
+            ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+          q->blue=(Quantum)
+            ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+          q->opacity=(Quantum)
+            ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+          q++;
+        }
+        break;
       }
-      q->red=(Quantum)
-        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-      q->green=(Quantum)
-        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum)
-        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      q->opacity=(Quantum)
-        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
-      q++;
-    }
-    if (destination->storage_class == PseudoClass)
+      case PseudoClass:
+      default:
       {
+        IndexPacket
+          index;
+
         register IndexPacket
           *destination_indexes,
           *source_indexes;
@@ -1559,9 +1587,13 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         for (x=0; x < (int) destination->columns; x++)
         {
           j=(contribution[n-1].pixel-contribution[0].pixel)*source->columns+x;
-          destination_indexes[x]=source_indexes[j];
+          index=source_indexes[j];
+          destination_indexes[x]=index;
+          *q++=destination->colormap[index];
         }
+        break;
       }
+    }
     if (!SyncImagePixels(destination))
       break;
     if (QuantumTick(*quantum,span))
