@@ -564,10 +564,10 @@ static double constant(char *name,int sans)
         return(CacheError);
       if (strEQ(name,"CacheWarning"))
         return(CacheWarning);
-      if (strEQ(name,"ConfigurationError"))
-        return(ConfigurationError);
-      if (strEQ(name,"ConfigurationWarning"))
-        return(ConfigurationWarning);
+      if (strEQ(name,"ConfigureError"))
+        return(ConfigureError);
+      if (strEQ(name,"ConfigureWarning"))
+        return(ConfigureWarning);
       if (strEQ(name,"CorruptImageError"))
         return(CorruptImageError);
       if (strEQ(name,"CorruptImageWarning"))

@@ -153,9 +153,21 @@ ModuleExport void UnregisterCImage(void)
 */
 static unsigned int WriteCImage(const ImageInfo *image_info,Image *image)
 {
+  const ImageAttribute
+		*attribute;
+
+  unsigned int
+    status;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  attribute=GetImageAttribute(image,"[mgk]");
+  if (attribute == (const ImageAttribute *) NULL)
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  if (status == False)
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
   return(False);
 }

@@ -170,7 +170,7 @@ typedef enum
   CacheWarning = 345,
   XServerWarning = 385,
   RegistryWarning = 390,
-  ConfigurationWarning = 395,
+  ConfigureWarning = 395,
   ErrorException = 400,
   ResourceLimitError = 400,
   TypeError = 405,
@@ -184,7 +184,7 @@ typedef enum
   CacheError = 445,
   XServerError = 485,
   RegistryError = 490,
-  ConfigurationError = 495,
+  ConfigureError = 495,
   FatalErrorException = 700,
   ResourceLimitFatalError = 700,
   TypeFatalError = 705,
@@ -198,7 +198,7 @@ typedef enum
   CacheFatalError = 745,
   XServerFatalError = 785,
   RegistryFatalError = 790,
-  ConfigurationFatalError = 795
+  ConfigureFatalError = 795
 } ExceptionType;
 
 typedef enum

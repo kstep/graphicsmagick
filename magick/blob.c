@@ -791,7 +791,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
           filename);
         if (!IsConfigureFileAccessible(path,debug))
-          ThrowException(exception,ConfigurationError,
+          ThrowException(exception,ConfigureError,
             "Unable to access configure file",path);
         return(FileToBlob(path,length,exception));
       }
@@ -803,7 +803,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   */
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (!IsConfigureFileAccessible(path,debug))
-    ThrowException(exception,ConfigurationError,
+    ThrowException(exception,ConfigureError,
       "Unable to access configure file",path);
   return(FileToBlob(path,length,exception));
 #endif
@@ -861,7 +861,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   return(NTResourceToBlob(filename));
 #endif
 #endif
-  ThrowException(exception,ConfigurationError,"Unable to access configure file",
+  ThrowException(exception,ConfigureError,"Unable to access configure file",
     filename);
   return((void *) NULL);
 }
@@ -940,7 +940,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
           filename);
         if (!IsConfigureFileAccessible(path,debug))
-          ThrowException(exception,ConfigurationError,
+          ThrowException(exception,ConfigureError,
             "Unable to access font file",path);
         return(FileToBlob(path,length,exception));
       }
@@ -952,7 +952,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
   */
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (!IsConfigureFileAccessible(path,debug))
-    ThrowException(exception,ConfigurationError,"Unable to access font file",
+    ThrowException(exception,ConfigureError,"Unable to access font file",
       path);
   return(FileToBlob(path,length,exception));
 #endif
@@ -980,7 +980,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
   return(NTResourceToBlob(filename));
 #endif
 #endif
-  ThrowException(exception,ConfigurationError,"Unable to access font file",
+  ThrowException(exception,ConfigureError,"Unable to access font file",
     filename);
   return((void *) NULL);
 }
@@ -1044,7 +1044,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
           filename);
         if (!IsConfigureFileAccessible(path,debug))
-          ThrowException(exception,ConfigurationError,
+          ThrowException(exception,ConfigureError,
             "Unable to access module file",path);
         return(FileToBlob(path,length,exception));
       }
@@ -1057,7 +1057,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   */
   FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
   if (!IsConfigureFileAccessible(path,debug))
-    ThrowException(exception,ConfigurationError,"Unable to access module file",
+    ThrowException(exception,ConfigureError,"Unable to access module file",
       path);
   return(FileToBlob(path,length,exception));
 #endif
@@ -1117,7 +1117,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   return(NTResourceToBlob(path));
 #endif
 #endif
-  ThrowException(exception,ConfigurationError,"Unable to access module file",
+  ThrowException(exception,ConfigureError,"Unable to access module file",
     filename);
   return((void *) NULL);
 }

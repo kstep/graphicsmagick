@@ -22,10 +22,10 @@ require AutoLoader;
       ResourceLimitWarning TypeWarning OptionWarning DelegateWarning
       MissingDelegateWarning CorruptImageWarning FileOpenWarning
       BlobWarning StreamWarning CacheWarning XServerWarning
-      RegistryWarning ConfigurationWarning ErrorException
+      RegistryWarning ConfigureWarning ErrorException
       ResourceLimitError TypeError OptionError DelegateError
       MissingDelegateError CorruptImageError FileOpenError BlobError
-      StreamError CacheError XServerError RegistryError ConfigurationError
+      StreamError CacheError XServerError RegistryError ConfigureError
       FatalErrorException
     );
 

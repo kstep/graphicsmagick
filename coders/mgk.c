@@ -90,11 +90,45 @@
 static Image *ReadMGKImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  Image
+    *image;
+
+  size_t
+    count,
+    length;
+
+  unsigned char
+    *blob;
+
+  unsigned int
+    status;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  return((Image *) NULL);
+  image=AllocateImage(image_info);
+  status=OpenBlob(image_info,image,ReadBlobMode,exception);
+  if (status == False)
+    ThrowReaderException(FileOpenError,"Unable to open file",image);
+  length=GetBlobSize(image);
+  blob=(unsigned char *) AcquireMemory(length+1);
+  if (blob == (unsigned char *) NULL)
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
+  count=ReadBlob(image,length,blob);
+  if (count != length)
+    {
+      LiberateMemory((void **) &blob);
+      ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
+    }
+  blob[length]='\0';
+  if (LocaleCompare((const char *) blob,"<?xml") != 0)
+    {
+      LiberateMemory((void **) &blob);
+      ThrowReaderException(CorruptImageError,"Not a MGK file",image);
+  }
+  (void) SetImageAttribute(image,"[mgk]",blob);
+  return(image);
 }
 
 /*
