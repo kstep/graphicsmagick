@@ -347,7 +347,8 @@ static struct
     { "Composite", { {"image", ImageReference}, {"compos", CompositeTypes},
       {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"grav", GravityTypes},
-      {"opacity", DoubleReference}, {"tile", BooleanTypes} } },
+      {"opacity", DoubleReference}, {"tile", BooleanTypes},
+      {"rotate", DoubleReference} } },
     { "Contrast", { {"sharp", BooleanTypes} } },
     { "CycleColormap", { {"amount", IntegerReference} } },
     { "Draw", { {"prim", PrimitiveTypes}, {"points", StringReference},
@@ -4608,6 +4609,9 @@ Mogrify(ref,...)
                 }
               break;
             }
+          /*
+            Respect gravity.
+          */
           width=image->columns;
           height=image->rows;
           x=0;
@@ -4709,8 +4713,29 @@ Mogrify(ref,...)
                   break;
               }
             }
+          /*
+            Composite image.
+          */
           matte=image->matte;
-          CompositeImage(image,compose,composite_image,x,y);
+          if (!attribute_flag[8])
+            CompositeImage(image,compose,composite_image,x,y);
+          else
+            {
+              Image
+                *rotate_image;
+
+              /*
+                Rotate image.
+              */
+              rotate_image=RotateImage(composite_image,
+                argument_list[8].double_reference,&image->exception);
+              if (rotate_image == (Image *) NULL)
+                break;
+              x-=(int) (rotate_image->columns-composite_image->columns)/2;
+              y-=(int) (rotate_image->rows-composite_image->rows)/2;
+              CompositeImage(image,compose,rotate_image,x,y);
+              DestroyImage(rotate_image);
+            }
           image->matte=matte;
           break;
         }
