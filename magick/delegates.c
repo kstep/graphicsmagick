@@ -638,7 +638,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=DelegateMap;
+    xml=AllocateString(DelegateMap);
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -763,8 +763,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   }
   LiberateMemory((void **) &token);
-  if (xml != DelegateMap)
-    LiberateMemory((void **) &xml);
+  LiberateMemory((void **) &xml);
   if (delegate_list == (DelegateInfo *) NULL)
     return(False);
   while (delegate_list->previous != (DelegateInfo *) NULL)

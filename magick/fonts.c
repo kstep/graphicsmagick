@@ -302,7 +302,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=FontMap;
+    xml=AllocateString(FontMap);
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -435,8 +435,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   }
   LiberateMemory((void **) &token);
-  if (xml != FontMap)
-    LiberateMemory((void **) &xml);
+  LiberateMemory((void **) &xml);
   if (font_list == (FontInfo *) NULL)
     return(False);
   while (font_list->previous != (FontInfo *) NULL)

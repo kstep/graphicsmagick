@@ -1457,7 +1457,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=ColorMap;
+    xml=AllocateString(ColorMap);
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -1581,8 +1581,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   }
   LiberateMemory((void **) &token);
-  if (xml != ColorMap)
-    LiberateMemory((void **) &xml);
+  LiberateMemory((void **) &xml);
   if (color_list == (ColorInfo *) NULL)
     return(False);
   while (color_list->previous != (ColorInfo *) NULL)

@@ -821,7 +821,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
-    xml=ModuleMap;
+    xml=AllocateString(ModuleMap);
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -899,8 +899,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     }
   }
   LiberateMemory((void **) &token);
-  if (xml != ModuleMap)
-    LiberateMemory((void **) &xml);
+  LiberateMemory((void **) &xml);
   if (module_aliases == (ModuleAlias *) NULL)
     return(False);
   while (module_aliases->previous != (ModuleAlias *) NULL)
