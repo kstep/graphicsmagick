@@ -1,3 +1,12 @@
+2003-12-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/composite.t: Update Minus and Xor reference images.
+	* magick/composite.c (CompositeImage): Incorporated fixes from
+	ImageMagick for XorCompositeOp, PlusCompositeOp, and
+	MinusCompositeOp.  Thanks to John Cristy for bringing the need for
+	these fixes to our attention.
+	* magick/image.h (RoundToQuantum): Added missing parenthesis.
+
 2003-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/environment.imdoc: Document MAGICK_CODER_MODULE_PATH and

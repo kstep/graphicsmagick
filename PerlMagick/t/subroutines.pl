@@ -68,8 +68,6 @@ sub testCompositeCompare {
   $errorinfo='';
   $status='';
 
-  #print( $filter, " ...\n" );
-
   # Create images
   $background=Graphics::Magick->new;
   $composite=Graphics::Magick->new;
@@ -119,9 +117,9 @@ sub testCompositeCompare {
     }
 
   $background->set(depth=>8);
-#  if ("$filter" eq "Atop") {
+#  if ("$composite_options" =~ /Xor/) {
 #    $background->write(filename=>"$refimage_name", compression=>'None');
-#  $background->Display();
+#    $background->Display();
 #  }
 
   $status=$refimage->ReadImage("$refimage_name");
@@ -159,7 +157,7 @@ sub testCompositeCompare {
     {
       print("  mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
-      #$background->Display();
+      # $background->Display();
       undef $background;
       undef $composite;
       undef $refimage;
