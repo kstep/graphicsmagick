@@ -1481,7 +1481,7 @@ static inline unsigned int IsNexusInCore(const Cache cache,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M o d i f y C a c h e                                                     %
++   M o d i f y C a c h e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2149,7 +2149,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e f e r e n c e C a c h e                                               %
++   R e f e r e n c e C a c h e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
