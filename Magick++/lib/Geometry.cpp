@@ -13,6 +13,7 @@
 using namespace std;
 
 #include "Magick++/Geometry.h"
+#include "Magick++/Exception.h"
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 
@@ -267,6 +268,11 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
 // Return geometry string
 Magick::Geometry::operator std::string() const
 {
+  if (!isValid())
+    {
+      throwExceptionExplicit( OptionError, "Invalid geometry argument" );
+    }
+
   string geometry;
   char buffer[32];
 

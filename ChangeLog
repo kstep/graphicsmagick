@@ -10,6 +10,8 @@
 	there are options to set.
 	* magick/utility.c (GetGeometry): Validate that the geometry
 	string only contains valid characters.
+	* Magick++: Updates to cause exceptions to be thrown if a bad
+	geometry specification is supplied.
 
 2003-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
