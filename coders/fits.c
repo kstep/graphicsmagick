@@ -380,7 +380,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           if (pixel > 32767)
             pixel-=65536;
         if (fits_info.bits_per_pixel == -32)
-          pixel=(double) (*((float *) &quantum));
+          pixel=(double) (*((float *) &long_quantum));
         if (fits_info.bits_per_pixel == -64)
           pixel=(double) (*((double *) long_quantum));
         fits_info.min_data=pixel*fits_info.scale-fits_info.zero;
@@ -399,7 +399,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             if (pixel > 32767)
               pixel-=65536;
           if (fits_info.bits_per_pixel == -32)
-            pixel=(double) (*((float *) &quantum));
+            pixel=(double) (*((float *) &long_quantum));
           if (fits_info.bits_per_pixel == -64)
             pixel=(double) (*((double *) long_quantum));
           scaled_pixel=pixel*fits_info.scale-fits_info.zero;
@@ -437,7 +437,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           if (pixel > 32767)
             pixel-=65536;
         if (fits_info.bits_per_pixel == -32)
-          pixel=(double) (*((float *) &quantum));
+          pixel=(double) (*((float *) &long_quantum));
         if (fits_info.bits_per_pixel == -64)
           pixel=(double) (*((double *) long_quantum));
         scaled_pixel=scale*
