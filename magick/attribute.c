@@ -411,7 +411,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
       continue;
     count=ReadByte((char **) &info,&length);
     string=(char *) NULL;
-    if ((count > 0) && (count <= length))
+    if ((count != 0) && (count <= length))
       {
         string=(char *) AcquireMemory(count+MaxTextExtent);
         if (string != (char *) NULL)

@@ -1124,7 +1124,7 @@ MagickExport Image *XAnimateImages(Display *display,
       magick_windows[number_windows++]=(&windows->command);
       magick_windows[number_windows++]=(&windows->widget);
       magick_windows[number_windows++]=(&windows->popup);
-      for (i=0; i < (int) number_windows; i++)
+      for (i=0; i < number_windows; i++)
         magick_windows[i]->id=(Window) NULL;
     }
   /*
@@ -2418,7 +2418,7 @@ MagickExport Image *XAnimateImages(Display *display,
       if (windows->image.mapped)
         XWithdrawWindow(display,windows->image.id,windows->image.screen);
       XDelay(display,SuspendTime);
-      for (i=0; i < (int) number_windows; i++)
+      for (i=0; i < number_windows; i++)
       {
         if (magick_windows[i]->id != (Window) NULL)
           {
