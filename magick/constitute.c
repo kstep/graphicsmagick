@@ -2710,6 +2710,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             if (clone_image == (Image *) NULL)
               break;
             PushImageList(&subimages,clone_image,exception);
+            DestroyImage(clone_image);
             i++;
           }
         }
