@@ -78,8 +78,6 @@ namespace Magick
   typedef class std::list<Magick::Coordinate> CoordinateList;
 
 #if defined(MagickDLLBuild)
-  MagickDrawableExtern template class MagickDLLDecl
-    std::allocator<Magick::Coordinate>;
 
   MagickDrawableExtern template class MagickDLLDecl
     std::list<Magick::Coordinate>;
