@@ -3277,10 +3277,7 @@ MagickExport void TemporaryFilename(char *filename)
 #else
   (void) tmpnam(filename);
 #endif
-  if ((strlen(filename) > 3) &&
-      ((LocaleCompare(filename+strlen(filename)-3,".gz") == 0) ||
-       (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)))
-    TemporaryFilename(filename);
+  AppendImageFormat(filename,".tmp");
 }
 
 /*
