@@ -543,6 +543,7 @@
     weight="Regular"
     style="Regular"
     glyphs="@windows_font_dir@/symbol.ttf"
+    encoding="AppleRoman"
     version="0.1" />
   <type
     name="Tahoma"
@@ -633,12 +634,13 @@
     glyphs="@windows_font_dir@/verdanai.ttf"
     version="0.1" />
   <type
-    name="WingDings"
-    fullname="WingDings"
-    familyname="WingDings"
+    name="Wingdings"
+    fullname="Wingdings"
+    familyname="Wingdings"
     weight="Regular"
     style="Regular"
     glyphs="@windows_font_dir@/wingding.ttf"
+    encoding="AppleRoman"
     version="0.1" />
   <type
     name="Wingdings-2"
@@ -647,6 +649,7 @@
     weight="Regular"
     style="Regular"
     glyphs="@windows_font_dir@/wingdng2.ttf"
+    encoding="AppleRoman"
     version="0.1" />
   <type
     name="Wingdings-3"
@@ -655,6 +658,7 @@
     weight="Regular"
     style="Regular"
     glyphs="@windows_font_dir@/wingdng3.ttf"
+    encoding="AppleRoman"
     version="0.1" />
 </typemap>
 
