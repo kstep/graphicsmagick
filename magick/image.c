@@ -2705,7 +2705,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->quality=DefaultCompressionQuality;
   image_info->antialias=True;
   image_info->pointsize=12;
-  (void) QueryColorDatabase("#000000ff",&image_info->pen);
+  (void) QueryColorDatabase("Black",&image_info->pen);
   (void) QueryColorDatabase(BackgroundColor,&image_info->background_color);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
