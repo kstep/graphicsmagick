@@ -343,7 +343,7 @@ MagickExport unsigned int IsEventLogging(void)
           DestroyExceptionInfo(&exception);
         }
       LiberateSemaphoreInfo(&log_semaphore);
-		}
+    }
   if (log_info == (LogInfo *) NULL)
     return(False);
   status=log_info->events != NoEvents;

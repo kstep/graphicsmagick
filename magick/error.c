@@ -618,7 +618,7 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   char
     tag[MaxTextExtent];
 
-	size_t
+  size_t
     length;
 
   assert(exception != (ExceptionInfo *) NULL);
@@ -626,8 +626,16 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   exception->severity=(ExceptionType) severity;
   switch (severity)
   {
-    CacheError: (void) strcpy(tag,"Cache/Error/"); break;
-    default: *tag='\0'; break;
+    case CacheError:
+    {
+      (void) strcpy(tag,"Cache/Error/");
+      break;
+    }
+    default:
+    {
+      *tag='\0';
+      break;
+    }
   }
   length=strlen(tag);
   (void) strncpy(tag+length,reason,MaxTextExtent-length-1);

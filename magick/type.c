@@ -445,14 +445,14 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_types)
   char
     **typelist;
 
-  register const volatile TypeInfo
-    *p;
-
   ExceptionInfo
     exception;
 
   register long
     i;
+
+  register volatile const TypeInfo
+    *p;
 
   /*
     Allocate type list.
@@ -473,12 +473,12 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_types)
     return((char **) NULL);
   i=0;
   for (p=type_list; p != (const TypeInfo *) NULL; p=p->next)
-	{
-	  if (p->stealth)
-	    continue;
+  {
+    if (p->stealth)
+      continue;
     if (GlobExpression(p->name,pattern))
       typelist[i++]=AllocateString(p->name);
-	}
+  }
   *number_types=i;
   return(typelist);
 }

@@ -511,14 +511,14 @@ MagickExport char **GetColorList(const char *pattern,
   char
     **colorlist;
 
-  register const volatile ColorInfo
-    *p;
-
   ExceptionInfo
     exception;
 
   register long
     i;
+
+  register volatile const ColorInfo
+    *p;
 
   /*
     Allocate color list.
@@ -539,12 +539,12 @@ MagickExport char **GetColorList(const char *pattern,
     return((char **) NULL);
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
-	{
-	  if (p->stealth)
-	    continue;
+  {
+    if (p->stealth)
+      continue;
     if (GlobExpression(p->name,pattern))
       colorlist[i++]=AllocateString(p->name);
-	}
+  }
   *number_colors=i;
   return(colorlist);
 }
@@ -1324,11 +1324,11 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
 */
 MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 {
-  register const volatile ColorInfo
-    *p;
-
   register long
     i;
+
+  register volatile const ColorInfo
+    *p;
 
   if (file == (const FILE *) NULL)
     file=stdout;

@@ -1349,7 +1349,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           LogMagickEvent(CoderEvent,"   image_info->colorspace=YCbCr");
           break;
         }
-				default:
+        default:
           break;
       }
       switch (image->colorspace)
