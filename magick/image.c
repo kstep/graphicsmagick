@@ -1847,9 +1847,14 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
     case ReplaceRedCompositeOp:
     case ReplaceGreenCompositeOp:
     case ReplaceBlueCompositeOp:
+    {
+      image->class=DirectClass;
+      break;
+    }
     case ReplaceMatteCompositeOp:
     {
       image->class=DirectClass;
+      image->matte=True;
       break;
     }
     case DisplaceCompositeOp:

@@ -591,9 +591,6 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
           register double
             distance_squared;
 
-          register int
-            i;
-
           /*
             Approximate the quantization error represented by this node.
           */

@@ -1328,7 +1328,8 @@ Export Image *ImplodeImage(Image *image,double factor)
     x_scale,
     y_center,
     y_distance,
-    y_scale;
+    y_scale,
+    y_squared;
 
   Image
     *imploded_image;
@@ -1381,14 +1382,15 @@ Export Image *ImplodeImage(Image *image,double factor)
   q=imploded_image->pixels;
   for (y=0; y < image->rows; y++)
   {
+    y_distance=y_scale*((double) y-y_center);
+    y_squared=y_distance*y_distance;
     for (x=0; x < image->columns; x++)
     {
       /*
         Determine if the pixel is within an ellipse.
       */
       x_distance=x_scale*((double) x-x_center);
-      y_distance=y_scale*((double) y-y_center);
-      distance=x_distance*x_distance+y_distance*y_distance;
+      distance=x_distance*x_distance+y_squared;
       if (distance >= radius*radius)
         *q=(*p);
       else
@@ -1398,7 +1400,7 @@ Export Image *ImplodeImage(Image *image,double factor)
           */
           factor=1.0;
           if (distance > 0.0)
-            factor=pow(sin(M_PI*0.5*sqrt(distance)/radius),-amount);
+            factor=pow(sin(0.5*M_PI*sqrt(distance)/radius),-amount);
           interpolated_color=InterpolateColor(image,
             factor*x_distance/x_scale+x_center,
             factor*y_distance/y_scale+y_center);
@@ -2833,7 +2835,8 @@ Export Image *SwirlImage(Image *image,double degrees)
     x_scale,
     y_center,
     y_distance,
-    y_scale;
+    y_scale,
+    y_squared;
 
   Image
     *swirled_image;
@@ -2881,14 +2884,15 @@ Export Image *SwirlImage(Image *image,double degrees)
   q=swirled_image->pixels;
   for (y=0; y < image->rows; y++)
   {
+    y_distance=y_scale*((double) y-y_center);
+    y_squared=y_distance*y_distance;
     for (x=0; x < image->columns; x++)
     {
       /*
         Determine if the pixel is within an ellipse.
       */
       x_distance=x_scale*((double) x-x_center);
-      y_distance=y_scale*((double) y-y_center);
-      distance=x_distance*x_distance+y_distance*y_distance;
+      distance=x_distance*x_distance+y_squared;
       if (distance >= (radius*radius))
         *q=(*p);
       else
@@ -2897,9 +2901,9 @@ Export Image *SwirlImage(Image *image,double degrees)
             Swirl the pixel.
           */
           factor=1.0-sqrt(distance)/radius;
-          factor*=factor;
-          sine=sin(degrees*factor);
-          cosine=cos(degrees*factor);
+          factor*=degrees*factor;
+          sine=sin(factor);
+          cosine=cos(factor);
           interpolated_color=InterpolateColor(image,
             (cosine*x_distance-sine*y_distance)/x_scale+x_center,
             (sine*x_distance+cosine*y_distance)/y_scale+y_center);

@@ -895,7 +895,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
 %
 %
 */
-Export ColorPacket InterpolateColor(Image *image,double x, double y)
+Export ColorPacket InterpolateColor(Image *image,double x,double y)
 {
   ColorPacket
     interpolated_pixel;
@@ -932,7 +932,7 @@ Export ColorPacket InterpolateColor(Image *image,double x, double y)
       r=p+image->columns;
       if ((y+1) >= image->rows)
         r=(&background_pixel);
-      s=p+1+image->columns;
+      s=p+image->columns+1;
       if (((x+1) >= image->columns) || ((y+1) >= image->rows))
         s=(&background_pixel);
     }

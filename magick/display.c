@@ -11901,8 +11901,9 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   displayed_image->signature=(char *) NULL;
   if (resource_info->debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",displayed_image->filename,
-        displayed_image->scene,displayed_image->columns,displayed_image->rows);
+      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",
+        displayed_image->filename,displayed_image->scene,
+        displayed_image->columns,displayed_image->rows);
       if (displayed_image->colors != 0)
         (void) fprintf(stderr,"%uc ",displayed_image->colors);
       (void) fprintf(stderr,"%.1024s\n",displayed_image->magick);
@@ -12369,6 +12370,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     if ((windows->image.width < windows->image.ximage->width) ||
         (windows->image.height < windows->image.ximage->height))
       XMapRaised(display,windows->pan.id);
+  XWithdrawWindow(display,windows->info.id,windows->info.screen);
   XSync(display,False);
   /*
     Respond to events.
