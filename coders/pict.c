@@ -485,7 +485,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
   for (y=0; y < (long) image->rows; y++)
   {
     q=pixels+y*width;
-    if ((bytes_per_line > 250) && (bits_per_pixel > 8))
+    if (bytes_per_line > 200)
       scanline_length=ReadBlobMSBShort(blob);
     else
       scanline_length=ReadBlobByte(blob);
@@ -665,7 +665,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
     Write the number of and the packed length.
   */
   length=(q-pixels);
-  if (bytes_per_line > 250)
+  if (bytes_per_line > 200)
     {
       (void) WriteBlobMSBShort(image,length);
       length+=2;
@@ -898,7 +898,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               }
             else
               for (j=0; j < (int) height; j++)
-                if (length > 250)
+                if (length > 200)
                   for (j=0; j < ReadBlobMSBShort(image); j++)
                     (void) ReadBlobByte(image);
                 else
