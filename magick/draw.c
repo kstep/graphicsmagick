@@ -1265,7 +1265,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (point.y > bounds.y2)
         bounds.y2=point.y;
     }
-    mid=ceil(radius+draw_info->affine[0]*clone_info->linewidth/2.0);
+    mid=ceil(radius+clone_info->affine[0]*clone_info->linewidth/2.0);
     bounds.x1-=mid;
     if (bounds.x1 < 0.0)
       bounds.x1=0.0;
