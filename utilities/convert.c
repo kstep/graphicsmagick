@@ -427,6 +427,7 @@ int main(int argc,char **argv)
     average,
     coalesce,
     deconstruct,
+    doexit,
     flatten,
     morph,
     mosaic,
@@ -434,27 +435,23 @@ int main(int argc,char **argv)
     scene,
     status;
 
-  void
-    *param1,
-    *param2;
-
-  TransmitType
-    sendmode;
+  ImageAttribute
+    *attribute;
 
   /*
     Initialize command line arguments.
   */
   if (LocaleCompare("-convert",argv[0]) == 0)
     {
-      sendmode=FileTransmitType;
+      doexit=False;
       if (argc < 3)
         return(False);
     }
   else
     {
-      sendmode=UndefinedTransmitType;
+      doexit=True;
       ReadCommandlLine(argc,&argv);
-      if (LocaleCompare("convert",argv[0]) == 0)
+      if (LocaleNCompare("convert",argv[0],7) == 0)
         MagickIncarnate(GetExecutionPath(argv[0]));
       else
         MagickIncarnate(*argv);
@@ -481,8 +478,6 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,argv[argc-1]);
-  param1=(void *) NULL;
-  param2=(void *) NULL;
   SetImageInfo(image_info,True,&exception);
   option=(char *) NULL;
   scene=0;
@@ -1306,6 +1301,8 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleNCompare("noop",option+1,4) == 0)
+            break;
           if (LocaleNCompare("normalize",option+1,3) == 0)
             break;
           MagickError(OptionError,"Unrecognized option",option);
@@ -1830,83 +1827,6 @@ int main(int argc,char **argv)
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
-        case 'x':
-        {
-          if (LocaleCompare("xbdat",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing blob buffer",option);
-              param1=(void *) argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=BlobTransmitType;
-              break;
-            }
-          if (LocaleCompare("xblen",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing blob length",option);
-              param2=(void *) argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=BlobTransmitType;
-              break;
-            }
-          if (LocaleCompare("xfunc",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing stream method",option);
-              param1=(void *) argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=StreamTransmitType;
-              break;
-            }
-          if (LocaleCompare("xctxt",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing stream context",option);
-              param2=(void *) argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=StreamTransmitType;
-              break;
-            }
-          if (LocaleCompare("xinfo",option+1) == 0)
-            {
-              ImageInfo
-                **image_info_ptr;
-
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing image info",option);
-              param1=(void *) argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=ImageTransmitType;
-              image_info_ptr=(ImageInfo **) param1;
-              if (*image_info_ptr != (ImageInfo *)NULL)
-                image_info=*image_info_ptr;
-              break;
-            }
-          if (LocaleCompare("ximag",option+1) == 0)
-            {
-              Image
-                **image_ptr;
-
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing image",option);
-              param2=(void *) argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=ImageTransmitType;
-              image_ptr=(Image **) param2;
-              if (*image_ptr != (Image *)NULL)
-                image=*image_ptr;
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
         case '?':
         {
           Usage();
@@ -2051,7 +1971,7 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True,&image->exception);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
-    status=TransmitImage(p,image_info,sendmode,param1,param2);
+    status=WriteImage(image_info,image);
     if (status == False)
       CatchImageException(p);
     if (image_info->adjoin)
@@ -2059,11 +1979,26 @@ int main(int argc,char **argv)
   }
   if (image_info->verbose)
     DescribeImage(image,stderr,False);
-  if (sendmode == ImageTransmitType)
-    return(True);
+
+  attribute=GetImageAttribute(image,"ReceiveMode");
+  if ((attribute != (ImageAttribute *) NULL) &&
+      (LocaleCompare("XTRNIMAGE",attribute->value) == 0))
+    {
+      DestroyImageInfo(image_info);
+      return(True);
+    }
+  attribute=GetImageAttribute(image,"TransmitMode");
+  if ((attribute != (ImageAttribute *) NULL) &&
+      (LocaleCompare("XTRNIMAGE",attribute->value) == 0))
+    {
+      DestroyImageInfo(image_info);
+      return(True);
+    }
+
   DestroyImages(image);
   DestroyImageInfo(image_info);
-  if (sendmode != UndefinedTransmitType)
+
+  if (doexit == False)
     return(True);
   LiberateMemory((void **) &argv);
   Exit(0);

@@ -223,31 +223,28 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
+    doexit,
     matte,
     status,
     stegano,
     stereo,
     tile;
 
-  void
-    *param1,
-    *param2;
-
-  TransmitType
-    sendmode;
+  ImageAttribute
+    *attribute;
 
   /*
     Initialize command line arguments.
   */
   if (LocaleCompare("-composite",argv[0]) == 0)
     {
-      sendmode=FileTransmitType;
+      doexit=False;
       if (argc < 4)
         return(False);
     }
   else
     {
-      sendmode=UndefinedTransmitType;
+      doexit=True;
       ReadCommandlLine(argc,&argv);
       if (LocaleCompare("composite",argv[0]) == 0)
         MagickIncarnate(GetExecutionPath(argv[0]));
@@ -275,8 +272,6 @@ int main(int argc,char **argv)
   (void) strcpy(image_info->filename,argv[argc-1]);
   SetImageInfo(image_info,True,&exception);
   mask_image=(Image *) NULL;
-  param1=(void *) NULL;
-  param2=(void *) NULL;
   stegano=0;
   stereo=False;
   tile=False;
@@ -911,71 +906,6 @@ int main(int argc,char **argv)
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
-        case 'x':
-        {
-          if (LocaleCompare("xbdat",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing blob buffer",option);
-              param1=(void *) argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=BlobTransmitType;
-              break;
-            }
-          if (LocaleCompare("xblen",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing blob length",option);
-              param2=(void *) argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=BlobTransmitType;
-              break;
-            }
-          if (LocaleCompare("xfunc",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing stream method",option);
-              param1=(void *) argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=StreamTransmitType;
-              break;
-            }
-          if (LocaleCompare("xctxt",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing stream context",option);
-              param2=(void *) argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=StreamTransmitType;
-              break;
-            }
-          if (LocaleCompare("xinfo",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing image info ptr",option);
-              param1=(void *)argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=ImageTransmitType;
-              break;
-            }
-          if (LocaleCompare("ximag",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) && (sendmode != UndefinedTransmitType))
-                MagickError(OptionError,"Missing image ptr",option);
-              param2=(void *)argv[i];
-              argv[i]=AllocateString((char *) NULL);
-              sendmode=ImageTransmitType;
-              break;
-            }
-          MagickError(OptionError,"Unrecognized option",option);
-          break;
-        }
         case '?':
         {
           Usage();
@@ -1156,17 +1086,28 @@ int main(int argc,char **argv)
   */
   (void) strcpy(combine_image->filename,write_filename);
   SetImageInfo(image_info,True,&combine_image->exception);
-  status=True;
-  status=TransmitImage(combine_image,image_info,sendmode,param1,param2);
+  status=WriteImage(image_info,image);
   if (status == False)
     CatchImageException(combine_image);
   if (image_info->verbose)
     DescribeImage(combine_image,stderr,False);
-  if (sendmode == ImageTransmitType)
-    return(True);
+  attribute=GetImageAttribute(image,"ReceiveMode");
+  if ((attribute != (ImageAttribute *) NULL) &&
+      (LocaleCompare("XTRNIMAGE",attribute->value) == 0))
+    {
+      DestroyImageInfo(image_info);
+      return(True);
+    }
+  attribute=GetImageAttribute(image,"TransmitMode");
+  if ((attribute != (ImageAttribute *) NULL) &&
+      (LocaleCompare("XTRNIMAGE",attribute->value) == 0))
+    {
+      DestroyImageInfo(image_info);
+      return(True);
+    }
   DestroyImages(combine_image);
   DestroyImageInfo(image_info);
-  if (sendmode != UndefinedTransmitType)
+  if (doexit == False)
     return(True);
   LiberateMemory((void **) &argv);
   Exit(0);
