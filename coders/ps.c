@@ -1018,7 +1018,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         attribute=GetImageAttribute(image,"label");
         if (attribute != (const ImageAttribute *) NULL)
           (void) WriteBlobString(image,
-            "%%%%DocumentNeededResources: font Times-Roman\n");
+            "%%DocumentNeededResources: font Times-Roman\n");
         (void) WriteBlobString(image,"%%DocumentData: Clean7Bit\n");
         (void) WriteBlobString(image,"%%LanguageLevel: 1\n");
         if (LocaleCompare(image_info->magick,"PS") != 0)

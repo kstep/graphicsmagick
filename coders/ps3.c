@@ -491,7 +491,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         attribute=GetImageAttribute(image,"label");
         if (attribute != (const ImageAttribute *) NULL)
           (void) WriteBlobString(image,
-            "%%%%DocumentNeededResources: font Helvetica\n");
+            "%%DocumentNeededResources: font Helvetica\n");
         (void) WriteBlobString(image,"%%LanguageLevel: 3\n");
         if (LocaleCompare(image_info->magick,"PS3") != 0)
           (void) WriteBlobString(image,"%%%%Pages: 1\n");

@@ -661,7 +661,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         attribute=GetImageAttribute(image,"label");
         if (attribute != (const ImageAttribute *) NULL)
           (void) WriteBlobString(image,
-            "%%%%DocumentNeededResources: font Helvetica\n");
+            "%%DocumentNeededResources: font Helvetica\n");
         (void) WriteBlobString(image,"%%LanguageLevel: 2\n");
         if (LocaleCompare(image_info->magick,"PS2") != 0)
           (void) WriteBlobString(image,"%%Pages: 1\n");
