@@ -12550,6 +12550,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   windows->image.x=0;
   windows->image.y=0;
+  windows->magnify.shape=False;
   status=XMakeImage(display,resource_info,&windows->image,display_image,
     (unsigned int) display_image->columns,(unsigned int) display_image->rows);
   if (status == False)

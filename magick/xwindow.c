@@ -5085,8 +5085,8 @@ MagickExport unsigned int XMakeImage(Display *display,
           crop_info.height=window->image->rows;
           crop_info.x=0;
           crop_info.y=0;
-          (void) ParseGeometry(window->crop_geometry,&crop_info.x,
-            &crop_info.y,&crop_info.width,&crop_info.height);
+          (void) ParseGeometry(window->crop_geometry,&crop_info.x,&crop_info.y,
+            &crop_info.width,&crop_info.height);
           window->image->orphan=True;
           crop_image=CropImage(window->image,&crop_info,&image->exception);
           if (crop_image != (Image *) NULL)
