@@ -1672,7 +1672,7 @@ MagickExport unsigned int MapImage(Image *image,const Image *map_image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MapImages replaces the colors of a sequence of images with the closest
+%  MapImages() replaces the colors of a sequence of images with the closest
 %  color from a reference image.
 %
 %  The format of the MapImage method is:
@@ -1709,14 +1709,6 @@ MagickExport unsigned int MapImages(Image *images,const Image *map_image,
 
   assert(images != (Image *) NULL);
   assert(images->signature == MagickSignature);
-  if (images->next == (Image *) NULL)
-    {
-      /*
-        Handle a single image with MapImage.
-      */
-      status=MapImage(images,map_image,dither);
-      return(status);
-    }
   GetQuantizeInfo(&quantize_info);
   quantize_info.dither=dither;
   image=images;
