@@ -60,6 +60,11 @@ if test "${CC}" != "gcc" ; then
                CFLAGS="${CFLAGS} -Wp,-H30000 -Ae"
                ;;
     esac
+    case "${host}" in
+          *-*-solaris* )
+               CFLAGS="${CFLAGS} -D_VA_LIST"
+               ;;
+    esac
 fi
 
 #
