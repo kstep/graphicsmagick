@@ -929,6 +929,21 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
   (void) strncpy(path,filename,MaxTextExtent-1);
   if (debug)
     (void) fprintf(stdout,"Searching for configure file \"%s\" ...\n",filename);
+  if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
+    {
+      /*
+        Search MAGICK_FONT_PATH.
+      */
+      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
+        DirectorySeparator,filename);
+      if (CheckFileAccessability(path,debug))
+        return(FileToBlob(path,length,exception));
+    }
+  /*
+    Search current directory.
+  */
+  if (CheckFileAccessability(path,debug))
+    return(FileToBlob(path,length,exception));
 #if defined(UseInstalledImageMagick)
 #  if defined(WIN32)
   {
@@ -988,21 +1003,6 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
       if (CheckFileAccessability(path,debug))
         return(FileToBlob(path,length,exception));
     }
-  if (getenv("MAGIC_FONT_PATH") != (char *) NULL)
-    {
-      /*
-        Search MAGIC_FONT_PATH.
-      */
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
-        DirectorySeparator,filename);
-      if (CheckFileAccessability(path,debug))
-        return(FileToBlob(path,length,exception));
-    }
-  /*
-    Search current directory.
-  */
-  if (CheckFileAccessability(path,debug))
-    return(FileToBlob(path,length,exception));
 #  if defined(WIN32)
   {
     /*
