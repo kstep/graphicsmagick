@@ -4189,7 +4189,8 @@ Mogrify(ref,...)
           ImageInfo
             *image_info;
 
-          image_info=CloneImageInfo(info->image_info);
+          image_info=
+            CloneImageInfo(info ? info->image_info : (ImageInfo *) NULL);
           if (attribute_flag[1])
             (void) CloneString(&image_info->font,
               argument_list[1].string_reference);
@@ -4512,7 +4513,8 @@ Mogrify(ref,...)
           ImageInfo
             *image_info;
 
-          image_info=CloneImageInfo(info->image_info);
+          image_info=
+            CloneImageInfo(info ? info->image_info : (ImageInfo *) NULL);
           if (attribute_flag[6])
             (void) CloneString(&image_info->server_name,
               argument_list[6].string_reference);
