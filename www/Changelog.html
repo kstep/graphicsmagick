@@ -53,8 +53,26 @@
 </tr>
 </table>
 <p>
-2003-08-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+2003-08-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
+<UL>
+  <LI> magick/command.c (ImportImageCommand): Since
+        DestroyExceptionInfo() now sets the destroyed exception signature
+        to an invalid value, GetExceptionInfo(exception) must be invoked
+        when the intention is to simply purge the exception.  This fix
+        resolves an abort when executing 'gm import'.
+
+</UL>
+<p>
+2003-08-18  William Radcliffe  &lt;billr@corbis.com&gt;
+<UL>
+  <LI> magick\gm_messages.bin locale_c.h transform.c: Updates that
+        add latest enhancments by Lars to color management code in
+        ProfileImage.
+
+</UL>
+<p>
+2003-08-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 <UL>
   <LI> coders/wpg.c: Incorporated patch from Fojtik Jaroslav to support
         rendering embedded WMFs.
@@ -62,7 +80,6 @@
 </UL>
 <p>
 2003-08-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-
 <UL>
   <LI> magick/image.c (SetImageChannelDepth): New function to transform
         the specified channel so it fits the specified modulus depth.
@@ -71,8 +88,14 @@
 
 </UL>
 <p>
-2003-08-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+2003-08-18  William Radcliffe  &lt;billr@corbis.com&gt;
+<UL>
+  <LI> PerlMagick/Magick.xs: Some fixes to get PerlMagick compiling
+        again due to new ID based error macros.
 
+</UL>
+<p>
+2003-08-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 <UL>
   <LI> magick/error.h (enum): Remove spurious comma.
 

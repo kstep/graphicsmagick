@@ -13643,7 +13643,11 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
       }
     }
   }
+  /*
+    Erase existing exception.
+  */
   DestroyExceptionInfo(exception);
+  GetExceptionInfo(exception);
   if (filename == (char *) NULL)
     filename=(char *) "magick.miff";
   /*

@@ -1,3 +1,11 @@
+2003-08-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ImportImageCommand): Since
+	DestroyExceptionInfo() now sets the destroyed exception signature
+	to an invalid value, GetExceptionInfo(exception) must be invoked
+	when the intention is to simply purge the exception.  This fix
+	resolves an abort when executing 'gm import'.
+
 2003-08-18  William Radcliffe  <billr@corbis.com>
 	* magick\gm_messages.bin locale_c.h transform.c: Updates that
 	add latest enhancments by Lars to color management code in
