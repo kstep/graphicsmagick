@@ -41,7 +41,7 @@ extern Export void
   GetCacheInfo(Cache *),
   *GetCacheStash(Cache,unsigned int),
   SetCacheClassType(Cache,const ClassType),
-  SetCacheThreshold(off_t);
+  SetCacheThreshold(const off_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -1663,13 +1663,8 @@ Export unsigned int IsPseudoClass(Image *image)
 */
 Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
 {
-  char
-    colorname[MaxTextExtent],
-    text[MaxTextExtent];
-
   int
     blue,
-    count,
     green,
     left,
     mid,
