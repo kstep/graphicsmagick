@@ -150,11 +150,12 @@ extern "C" {
 #define False  0
 #define DegreesToRadians(x) (M_PI*(x)/180.0)
 #define Intensity(color)  \
-  ((0.299*(color).red+0.587*(color).green+0.1140000000000001*(color).blue))
+  ((0.299*(color).red+0.587*(color).green+(0.114+MagickEpsilon)*(color).blue))
 #define IsFaxImage(color) \
   (IsMonochromeImage(image) && ((image)->columns <= 2560))
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).green == (color).blue))
+#define MagickEpsilon  0.00000000001
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define MaxApplicationProfiles  16
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
