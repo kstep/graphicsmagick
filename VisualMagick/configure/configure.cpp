@@ -512,6 +512,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 	includes_list.push_back("..\\..\\zlib");
 	includes_list.push_back("..\\..\\tiff\\libtiff");
 	includes_list.push_back("..\\..\\lcms\\source");
+	includes_list.push_back("..\\..\\ttf\\include");
 
   std::string libpath;
   libpath = "..\\";
@@ -589,6 +590,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 	        add_project_dependency(dsw, "LIBR_ZLIB");
 	        add_project_dependency(dsw, "LIBR_TIFF");
 	        add_project_dependency(dsw, "CORE_lcms");
+	        add_project_dependency(dsw, "CORE_ttf");
         }
         if (name.compare("Magick++") == 0)
         {
@@ -863,6 +865,7 @@ void CConfigureApp::process_module(ofstream &dsw,
   {
 		includes_list.push_back("..\\..\\zlib");
   }
+#ifdef OLD_FREETYPE_SUPPORT
   if (name.compare("label") == 0)
   {
     if (doesDirExist("..\\..\\freetype"))
@@ -875,6 +878,7 @@ void CConfigureApp::process_module(ofstream &dsw,
 		  includes_list.push_back("..\\..\\ttf\\lib");
     }
   }
+#endif
   if (name.compare("miff") == 0)
   {
 		includes_list.push_back("..\\..\\zlib");
@@ -1006,10 +1010,12 @@ void CConfigureApp::process_module(ofstream &dsw,
 	        add_project_dependency(dsw, dependency.c_str());
         if (name.compare("label") == 0)
         {
+#ifdef OLD_FREETYPE_SUPPORT
           if (doesDirExist("..\\..\\freetype"))
 		        add_project_dependency(dsw, "CORE_freetype");
           else
 		        add_project_dependency(dsw, "LIBR_ttf");
+#endif
           if (useX11Stubs)
 		        add_project_dependency(dsw, "CORE_xlib");
         }
