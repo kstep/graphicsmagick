@@ -930,6 +930,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
 
   char
     buffer[MaxTextExtent],
+    basename[MaxTextExtent],
     cache_filename[MaxTextExtent];
 
   const ImageAttribute
@@ -975,9 +976,8 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
       Write persistent cache meta-information.
     */
     (void) WriteBlobString(image,"id=MagickCache\n");
-    (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
-    FormatString(buffer,"mpc-%lu",scene);
-    AppendImageFormat(buffer,cache_filename);
+    GetPathComponent(image->filename,BasePath,basename);
+    (void) FormatString(cache_filename,"%.1024s-%lu.mpc",basename,scene);
     FormatString(buffer,"cache=%.1024s  quantum-depth=%d\n",cache_filename,
       QuantumDepth);
     (void) WriteBlobString(image,buffer);
@@ -1292,8 +1292,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
       indexes=GetIndexes(image);
       if ((clone_indexes != (IndexPacket *) NULL) &&
           (indexes != (IndexPacket *) NULL))
-        (void) memcpy(clone_indexes,indexes,
-          image->columns*sizeof(IndexPacket));
+        (void) memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
       if (!SyncImagePixels(clone_image))
         break;
     }
@@ -1306,8 +1305,8 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
-	  while (image->previous != (Image *) NULL)
-			image=image->previous;
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseBlob(image);
   return(status);
 }
