@@ -1,5 +1,10 @@
 2004-08-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/widget.c (XCommandWidget): Replace ImageMagick logo in
+	display command menu with GraphicsMagick logo.
+
+2004-08-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* version.sh: Released 1.1.3.
 
 2004-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
