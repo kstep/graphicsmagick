@@ -345,7 +345,7 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 %
 %  The format of the AcquireOnePixel() method is:
 %
-%      PixelPacket *AcquireOnePixel(const Image image,const long x,
+%      PixelPacket AcquireOnePixel(const Image image,const long x,
 %        const long y,ExceptionInfo exception)
 %
 %  A description of each parameter follows:
@@ -385,8 +385,8 @@ MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
 %
 %  The format of the AcquireOnePixelFromCache() method is:
 %
-%      const PixelPacket *AcquireOnePixelFromCache(const Image image,
-%        const long x,const long y,ExceptionInfo *exception)
+%      PixelPacket *AcquireOnePixelFromCache(const Image image,const long x,
+%        const long y,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1359,7 +1359,7 @@ MagickExport PixelPacket GetOnePixel(Image *image,const long x,const long y)
 %
 %  The format of the GetOnePixelFromCache() method is:
 %
-%      PixelPacket *GetOnePixelFromCache(const Image image,const long x,
+%      PixelPacket GetOnePixelFromCache(const Image image,const long x,
 %        const long y)
 %
 %  A description of each parameter follows:

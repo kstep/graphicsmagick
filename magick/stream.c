@@ -95,8 +95,8 @@ static unsigned int
 %
 %  The format of the AcquireOnePixelFromStream() method is:
 %
-%      const PixelPacket *AcquireOnePixelFromStream(const Image image,
-%        const long x,const long y,ExceptionInfo *exception)
+%      PixelPacket *AcquireOnePixelFromStream(const Image image,const long x,
+%        const long y,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
