@@ -968,10 +968,8 @@ MagickExport void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 static unsigned int Dither(CubeInfo *cube_info,Image *image,
   const unsigned int direction)
 {
-  double
-    blue_error,
-    green_error,
-    red_error;
+  DoublePixelPacket
+    error;
 
   IndexPacket
     index;
@@ -1002,21 +1000,21 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       if (q == (PixelPacket *) NULL)
         return(False);
       indexes=GetIndexes(image);
-      red_error=q->red;
-      green_error=q->green;
-      blue_error=q->blue;
+      error.red=q->red;
+      error.green=q->green;
+      error.blue=q->blue;
       for (i=0; i < ExceptionQueueLength; i++)
       {
-        red_error+=p->error[i].red*p->weights[i];
-        green_error+=p->error[i].green*p->weights[i];
-        blue_error+=p->error[i].blue*p->weights[i];
+        error.red+=p->error[i].red*p->weights[i];
+        error.green+=p->error[i].green*p->weights[i];
+        error.blue+=p->error[i].blue*p->weights[i];
       }
-      pixel.red=(Quantum) ((red_error < 0) ? 0 :
-        (red_error > MaxRGB) ? MaxRGB : red_error+0.5);
-      pixel.green=(Quantum) ((green_error < 0) ? 0 :
-        (green_error > MaxRGB) ? MaxRGB : green_error+0.5);
-      pixel.blue=(Quantum) ((blue_error < 0) ? 0 :
-        (blue_error > MaxRGB) ? MaxRGB : blue_error+0.5);
+      pixel.red=(Quantum) ((error.red < 0) ? 0 :
+        (error.red > MaxRGB) ? MaxRGB : error.red+0.5);
+      pixel.green=(Quantum) ((error.green < 0) ? 0 :
+        (error.green > MaxRGB) ? MaxRGB : error.green+0.5);
+      pixel.blue=(Quantum) ((error.blue < 0) ? 0 :
+        (error.blue > MaxRGB) ? MaxRGB : error.blue+0.5);
       i=(pixel.blue >> CacheShift) << 12 | (pixel.green >> CacheShift) << 6 |
         (pixel.red >> CacheShift);
       if (p->cache[i] < 0)

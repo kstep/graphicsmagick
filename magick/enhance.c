@@ -339,24 +339,22 @@ MagickExport unsigned int EqualizeImage(Image *image)
 %
 %  The format of the GammaImage method is:
 %
-%      unsigned int GammaImage(Image *image,const char *gamma)
+%      unsigned int GammaImage(Image *image,const char *level)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o gamma: Define the level of gamma correction.
+%    o level: Define the level of gamma correction.
 %
 %
 */
-MagickExport unsigned int GammaImage(Image *image,const char *gamma)
+MagickExport unsigned int GammaImage(Image *image,const char *level)
 {
 #define GammaImageText  "  Gamma correcting the image...  "
 
-  double
-    blue_gamma,
-    green_gamma,
-    red_gamma;
+  DoublePixelPacket
+    gamma;
 
   long
     count,
@@ -374,19 +372,19 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (gamma == (char *) NULL)
+  if (level == (char *) NULL)
     return(False);
-  red_gamma=1.0;
-  green_gamma=1.0;
-  blue_gamma=1.0;
-  count=sscanf(gamma,"%lf%*[,/]%lf%*[,/]%lf",&red_gamma,&green_gamma,
-    &blue_gamma);
+  gamma.red=1.0;
+  gamma.green=1.0;
+  gamma.blue=1.0;
+  count=sscanf(level,"%lf%*[,/]%lf%*[,/]%lf",&gamma.red,&gamma.green,
+    &gamma.blue);
   if (count == 1)
     {
-      if (red_gamma == 1.0)
+      if (gamma.red == 1.0)
         return(False);
-      green_gamma=red_gamma;
-      blue_gamma=red_gamma;
+      gamma.green=gamma.red;
+      gamma.blue=gamma.red;
     }
   /*
     Allocate and initialize gamma maps.
@@ -398,15 +396,15 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   (void) memset(gamma_map,0,65536*sizeof(LongPixelPacket));
   for (i=0; i <= 65535; i++)
   {
-    if (red_gamma != 0.0)
+    if (gamma.red != 0.0)
       gamma_map[i].red=
-        ScaleShortToQuantum((65535*pow((double) i/65535,1.0/red_gamma)));
-    if (green_gamma != 0.0)
+        ScaleShortToQuantum((65535*pow((double) i/65535,1.0/gamma.red)));
+    if (gamma.green != 0.0)
       gamma_map[i].green=
-        ScaleShortToQuantum((65535*pow((double) i/65535,1.0/green_gamma)));
-    if (blue_gamma != 0.0)
+        ScaleShortToQuantum((65535*pow((double) i/65535,1.0/gamma.green)));
+    if (gamma.blue != 0.0)
       gamma_map[i].blue=
-        ScaleShortToQuantum((65535*pow((double) i/65535,1.0/blue_gamma)));
+        ScaleShortToQuantum((65535*pow((double) i/65535,1.0/gamma.blue)));
   }
   switch (image->storage_class)
   {
@@ -454,7 +452,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
     }
   }
   if (image->gamma != 0.0)
-    image->gamma*=(red_gamma+green_gamma+blue_gamma)/3.0;
+    image->gamma*=(gamma.red+gamma.green+gamma.blue)/3.0;
   LiberateMemory((void **) &gamma_map);
   return(True);
 }
