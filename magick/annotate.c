@@ -688,7 +688,7 @@ static unsigned int RenderTruetype(Image *image,
           i=strlen(filename);
           if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
             (void) strcat(filename,DirectorySeparator);
-          (void) strcat(filename,annotate_info->font+1);
+          (void) strcat(filename,annotate_info->font);
           status=FT_New_Face(library,filename,0,&face);
           if (!status || (q == (char *) NULL) || (*q == '\0'))
             break;
@@ -714,7 +714,7 @@ static unsigned int RenderTruetype(Image *image,
             i=strlen(filename);
             if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
               (void) strcat(filename,DirectorySeparator);
-            (void) strcat(filename,annotate_info->font+1);
+            (void) strcat(filename,annotate_info->font);
             status=FT_New_Face(library,filename,0,&face);
             if (!status || (q == (char *) NULL) || (*q == '\0'))
               break;
@@ -723,7 +723,7 @@ static unsigned int RenderTruetype(Image *image,
         }
 #endif
       if (status)
-        status=FT_New_Face(library,annotate_info->font+1,0,&face);
+        status=FT_New_Face(library,annotate_info->font,0,&face);
     }
   if (status)
     {
@@ -1213,11 +1213,41 @@ static unsigned int RenderX11(Image *image,const AnnotateInfo *annotate_info,
 static unsigned int RenderFont(Image *image,const AnnotateInfo *annotate_info,
   const PointInfo *offset,SegmentInfo *bounds)
 {
+  AnnotateInfo
+    *clone_info;
+
+  ImageInfo
+    *image_info;
+
+  unsigned int
+    status;
+
   if (annotate_info->font == (char *) NULL)
     return(RenderPostscript(image,annotate_info,offset,bounds));
-  if (*annotate_info->font == '@')
-    return(RenderTruetype(image,annotate_info,offset,bounds));
-  if (*annotate_info->font == '-')
-    return(RenderX11(image,annotate_info,offset,bounds));
-  return(RenderPostscript(image,annotate_info,offset,bounds));
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  (void) strcpy(image_info->filename,annotate_info->font);
+  (void) strcpy(image_info->magick,"PS");
+  if (*image_info->filename == '@')
+    (void) strcpy(image_info->magick,"TTF");
+  if (*image_info->filename == '-')
+    (void) strcpy(image_info->magick,"X");
+  (void) SetImageInfo(image_info,False);
+  clone_info=CloneAnnotateInfo(image_info,annotate_info);
+  if (*image_info->filename != '@')
+    CloneString(&clone_info->font,image_info->filename);
+  else
+    CloneString(&clone_info->font,image_info->filename+1);
+  if (LocaleCompare(image_info->magick,"ps") == 0)
+    status=RenderPostscript(image,clone_info,offset,bounds);
+  else
+    if (LocaleCompare(image_info->magick,"ttf") == 0)
+      status=RenderTruetype(image,clone_info,offset,bounds);
+    else
+      if (LocaleCompare(image_info->magick,"x") == 0)
+        status=RenderX11(image,clone_info,offset,bounds);
+      else
+        status=RenderPostscript(image,clone_info,offset,bounds);
+  DestroyAnnotateInfo(clone_info);
+  DestroyImageInfo(image_info);
+  return(status);
 }

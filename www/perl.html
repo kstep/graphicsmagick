@@ -267,7 +267,7 @@ Or suppose you want to convert your color image to grayscale:
 <pre>&nbsp;&nbsp;&nbsp; $image->Quantize(colorspace=>'gray');</pre>
 Here we annotate an image with a Taipai TrueType font:
 <pre>&nbsp;&nbsp;&nbsp; $text = '\0x17ef\0x30ec\0x25ec\0x23ef\0x17ec';
-&nbsp;&nbsp;&nbsp; $image->Annotate(font=>'@kai.ttf', pointsize=>40, stroke=>'green', text=>$text);</pre>
+&nbsp;&nbsp;&nbsp; $image->Annotate(font=>'kai.ttf', pointsize=>40, stroke=>'green', text=>$text);</pre>
 Other clever things you can do with a <b>PerlMagick</b> objects include
 <pre>&nbsp;&nbsp;&nbsp; $i = $#$p"+1";&nbsp;&nbsp; # return the number of images associated with object p
 &nbsp;&nbsp;&nbsp; push(@$q, @$p);&nbsp; # push the images from object p onto object q
@@ -422,7 +422,7 @@ translate=><i>float, float</i>, scale=><i>float, float</i>,
 rotate=><i>float</i>.  skewX=><i>float</i>, skewY=><i>float</i>
 </td>
 
-<td>annotate an image with text. See <a href="#misc">GetFontMetrics</a> to get
+<td>annotate an image with text. See <a href="#misc">QueryFontMetrics</a> to get
 font metrics without rendering any text.</td>
 </tr>
 
@@ -1997,11 +1997,11 @@ first image in a multi-frame image file is returned.
 <p>To have full control over text positioning you will need font metric
 information.  Use
 
-<pre>&nbsp;&nbsp;&nbsp; ($x1, $y1, $x2, $y2) = split(', ', $image->QueryFontMetrics(<i>parameters</i>);</pre>
+<pre>&nbsp;&nbsp;&nbsp; ($x1, $y1, $x2, $y2, $size) = split(', ', $image->QueryFontMetrics(<i>parameters</i>);</pre>
 
 Where <i>parameters</i> is any parameter of the <a href="#mani">Annotate</a>
-method.  The return values represent the bounding box of text string relative
-to the specified font, pointsize, and affine transformations.
+method.  The return values represent the bounding box and height of the text
+string relative to the specified font, pointsize, and affine transformations.
 
 <p>For convenience, method <tt>QueryColor</tt> accepts one or
 more color names or hex value and returns their respective red, green,
