@@ -793,7 +793,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
     (void) PopImagePixels(image,GrayQuantum,scanline);
     for (x=0; x < pdb_image.width; x++)
     {
-      if (x < image->columns)
+      if (x < (long) image->columns)
         buffer[literal+repeat]|=(0xff-scanline[x*packet_size]) >>
           (8-bits_per_pixel) << bits*bits_per_pixel;
       bits--;

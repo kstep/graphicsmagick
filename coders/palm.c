@@ -423,6 +423,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     *indexes;
 
   register long
+    i,
     x;
 
   register PixelPacket
@@ -435,7 +436,6 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
 
   unsigned int
     status,
-    i,
     bytes_per_row,
     flags,
     bpp,
@@ -471,7 +471,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   /*
     Initialize image colormap.
   */
-  if (!AllocateImageColormap(image,1 << bpp))
+  if (!AllocateImageColormap(image,1L << bpp))
     ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
 
   if(bpp < 8 && flags & PALM_IS_COMPRESSED_FLAG)    /* compressed size */
@@ -488,7 +488,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     if(flags & PALM_HAS_COLORMAP_FLAG)
       {
       count = ReadBlobMSBShort(image);
-      for(i = 0; i < count; i++)
+      for(i = 0; i < (long) count; i++)
         {
         ReadBlobByte(image);
         image->colormap[255 - i].red = ScaleCharToQuantum(ReadBlobByte(image));
@@ -496,7 +496,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         image->colormap[255 - i].blue = ScaleCharToQuantum(ReadBlobByte(image));
         }
       }
-    for(; i < (long) (1 << bpp); i++)
+    for(; i < (long) (1L << bpp); i++)
       {
       image->colormap[255 - i].red = ScaleCharToQuantum(PalmPalette[i][0]);
       image->colormap[255 - i].green = ScaleCharToQuantum(PalmPalette[i][1]);
@@ -513,14 +513,14 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   if (compressionType == PALM_COMPRESSION_SCANLINE)
     lastrow = (unsigned char *) AcquireMemory(bytes_per_row);
 
-  mask = (1 << bpp) - 1;
+  mask = (1l << bpp) - 1;
 
   for(y = 0; y < (long) image->rows; y++)
     {
     if (compressionType == PALM_COMPRESSION_RLE)
       {
       image->compression = RunlengthEncodedCompression;
-      for (i = 0; i < bytes_per_row; )
+      for (i = 0; i < (long) bytes_per_row; )
         {
         count = ReadBlobByte(image);
         byte = ReadBlobByte(image);
@@ -532,7 +532,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     if (compressionType == PALM_COMPRESSION_SCANLINE)
       {
       image->compression = FaxCompression;
-      for (i = 0; i < bytes_per_row; i += 8)
+      for (i = 0; i < (long) bytes_per_row; i += 8)
         {
         count = ReadBlobByte(image);
         byte = Min(bytes_per_row - i, 8);

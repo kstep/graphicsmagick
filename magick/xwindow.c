@@ -1745,7 +1745,7 @@ static void XDitherImage(Image *image,XImage *ximage)
   register unsigned long
     pixel;
 
-  unsigned short
+  unsigned char
     *blue_map[2][16],
     *green_map[2][16],
     *red_map[2][16];
@@ -1756,15 +1756,13 @@ static void XDitherImage(Image *image,XImage *ximage)
   for (i=0; i < 2; i++)
     for (j=0; j < 16; j++)
     {
-      red_map[i][j]=(unsigned short *)
-        AcquireMemory(256*sizeof(unsigned short));
-      green_map[i][j]=(unsigned short *)
-        AcquireMemory(256*sizeof(unsigned short));
-      blue_map[i][j]=(unsigned short *)
-        AcquireMemory(256*sizeof(unsigned short));
-      if ((red_map[i][j] == (unsigned short *) NULL) ||
-          (green_map[i][j] == (unsigned short *) NULL) ||
-          (blue_map[i][j] == (unsigned short *) NULL))
+      red_map[i][j]=(unsigned char *) AcquireMemory(256*sizeof(unsigned char));
+      green_map[i][j]=(unsigned char *)
+        AcquireMemory(256*sizeof(unsigned char));
+      blue_map[i][j]=(unsigned char *) AcquireMemory(256*sizeof(unsigned char));
+      if ((red_map[i][j] == (unsigned char *) NULL) ||
+          (green_map[i][j] == (unsigned char *) NULL) ||
+          (blue_map[i][j] == (unsigned char *) NULL))
         {
           MagickError(ResourceLimitError,"Unable to dither image",
             "Memory allocation failed");
@@ -1782,20 +1780,20 @@ static void XDitherImage(Image *image,XImage *ximage)
         if (x < 48)
           value=x/2+8;
         value+=dither_red[i][j];
-        red_map[i][j][x]=(unsigned short)
-          ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
+        red_map[i][j][x]=(unsigned char)
+          ((value < 0) ? 0 : (value > 255) ? 255 : value);
         value=x-16;
         if (x < 48)
           value=x/2+8;
         value+=dither_green[i][j];
-        green_map[i][j][x]=(unsigned short)
-          ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
+        green_map[i][j][x]=(unsigned char)
+          ((value < 0) ? 0 : (value > 255) ? 255 : value);
         value=x-32;
         if (x < 112)
           value=x/2+24;
         value+=(dither_blue[i][j] << 1);
-        blue_map[i][j][x]=(unsigned short)
-          ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
+        blue_map[i][j][x]=(unsigned char)
+          ((value < 0) ? 0 : (value > 255) ? 255 : value);
       }
   /*
     Dither image.
@@ -1812,9 +1810,9 @@ static void XDitherImage(Image *image,XImage *ximage)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      color.red=red_map[i][j][p->red];
-      color.green=green_map[i][j][p->green];
-      color.blue=blue_map[i][j][p->blue];
+      color.red=red_map[i][j][ScaleQuantumToChar(p->red)] << 8;
+      color.green=green_map[i][j][ScaleQuantumToChar(p->green)] << 8;
+      color.blue=blue_map[i][j][ScaleQuantumToChar(p->blue)] << 8;
       pixel=(unsigned long) ((color.red & 0xe0) |
         ((unsigned long) (color.green & 0xe0) >> 3) |
         ((unsigned long) (color.blue & 0xc0) >> 6));

@@ -1273,8 +1273,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         vertical_factor=horizontal_factor;
       for (i=0; i < MAX_COMPONENTS; i++)
       {
-        jpeg_info.comp_info[i].h_samp_factor=horizontal_factor;
-        jpeg_info.comp_info[i].v_samp_factor=vertical_factor;
+        jpeg_info.comp_info[i].h_samp_factor=(int) horizontal_factor;
+        jpeg_info.comp_info[i].v_samp_factor=(int) vertical_factor;
       }
     }
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
