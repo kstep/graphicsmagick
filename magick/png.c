@@ -15,10 +15,10 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                 July 1998                                   %
+%                               November 1997                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright 1998, 1999 E. I. du Pont de Nemours and Company                  %
+%  Copyright 1997, 1998, 1999 E. I. du Pont de Nemours and Company            %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
 %  copy of this software and associated documentation files ("ImageMagick"),  %
@@ -2451,6 +2451,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             m->ob[object_id]->width=width;
             m->ob[object_id]->height=height;
             m->ob[object_id]->color_type=color_type;
+            m->ob[object_id]->sample_depth=bit_depth;
             m->ob[object_id]->interlace_method=interlace_method;
             m->ob[object_id]->compression_method=compression_method;
             m->ob[object_id]->filter_method=filter_method;
@@ -2880,6 +2881,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     need_local_plte,
     need_matte,
     old_framing_mode,
+    save_image_depth,
     use_global_plte,
     x,
     y;
@@ -3462,9 +3464,47 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #endif
     ping_info->width=image->columns;
     ping_info->height=image->rows;
-    ping_info->bit_depth=image->depth;
+    save_image_depth=image->depth;
+    ping_info->bit_depth=save_image_depth;
     if (IsMonochromeImage(image))
       ping_info->bit_depth=1;
+    if (ping_info->bit_depth == 16)
+      {
+        /*
+          Determine if bit depth can be reduced from 16 to 8.
+        */
+
+        int
+          ok_to_reduce;
+
+        p=image->pixels;
+        for (i=0; i < (int) (image->packets-1); i++)
+        {
+            ok_to_reduce=(((p->red >> 8) == (p->red & 0xff)) &&
+              ((p->green >> 8) == (p->green & 0xff)) &&
+              ((p->blue >> 8) == (p->blue & 0xff)) &&
+              ((p->index >> 8) == (p->index & 0xff)));
+            if (!ok_to_reduce)
+              {
+                if (image_info->verbose)
+                  {
+                    printf("Cannot reduce 16-bit samples to 8-bit because.\n");
+                    printf("packet %d has ",i);
+                    printf("  red=%x %x, ",p->red>>8, p->red&0xff);
+                    printf("green=%x %x, ",p->green>>8, p->green&0xff);
+                    printf(" blue=%x %x, ",p->blue>>8, p->blue&0xff);
+                    printf("alpha=%x %x.\n",p->index>>8, p->index&0xff);
+                  }
+                break;
+              }
+            p++;
+          }
+        if (ok_to_reduce)
+          {
+            ping_info->bit_depth=8;
+            image->depth=8;
+          }
+      }
     ping_info->color_type=PNG_COLOR_TYPE_RGB;
     if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
         (!image_info->adjoin || !equal_physs))
@@ -3490,7 +3530,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               (100.0*image->y_resolution);
           }
       }
-    if (!image_info->adjoin || (!equal_backgrounds))
+    if (!image_info->adjoin || !equal_backgrounds)
       {
         ping_info->valid|=PNG_INFO_bKGD;
         ping_info->background.red=
@@ -3553,7 +3593,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             */
             p=image->pixels;
             for (i=0; i < (int) image->packets; i++)
-          {
+            {
               if (p->index != Opaque)
                 {
                   if (!ColorMatch(ping_info->trans_values,*p,0))
@@ -3588,6 +3628,15 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           {
             matte=False;
             ping_info->color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
+            if (save_image_depth == 16 && image->depth == 8)
+              {
+                if(image_info->verbose)
+                  printf("reducing trans_values to 8-bit\n");
+                ping_info->trans_values.red&=0xff;
+                ping_info->trans_values.green&=0xff;
+                ping_info->trans_values.blue&=0xff;
+                ping_info->trans_values.gray&=0xff;
+              }
           }
       }
     if (image_info->verbose)
@@ -3597,7 +3646,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     matte=image->matte;
     if (ping_info->valid & PNG_INFO_tRNS)
-        image->matte=False;
+      image->matte=False;
     if (IsGrayImage(image))
       ping_info->color_type=PNG_COLOR_TYPE_GRAY;
     else
@@ -3639,6 +3688,15 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->bit_depth<<=1;
           if (ping_info->valid & PNG_INFO_tRNS)
             {
+              if (save_image_depth == 16 && image->depth == 8)
+                {
+                  if(image_info->verbose)
+                    printf("re-expanding trans_values to 16-bit\n");
+                  ping_info->trans_values.red*=0x0101;
+                  ping_info->trans_values.green*=0x0101;
+                  ping_info->trans_values.blue*=0x0101;
+                  ping_info->trans_values.gray*=0x0101;
+                }
               /*
                 Identify which colormap entry is transparent.
               */
@@ -3730,8 +3788,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       if ((image_info->quality % 10) != 5)
         png_set_filter(ping,PNG_FILTER_TYPE_BASE,image_info->quality % 10);
       else
-        if ((ping_info->valid & PNG_INFO_tRNS) ||
-            (ping_info->color_type == PNG_COLOR_TYPE_GRAY) ||
+        if ((ping_info->color_type == PNG_COLOR_TYPE_GRAY) ||
             (ping_info->color_type == PNG_COLOR_TYPE_PALETTE) ||
             (image_info->quality < 50))
           png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
@@ -3981,6 +4038,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (need_fram && (image->dispose == 3))
        MagickWarning(DelegateWarning,
          "Cannot convert GIF with disposal method 3 to MNG-LC",(char *) NULL);
+    image->depth=save_image_depth;
     /*
       Free PNG resources.
     */
