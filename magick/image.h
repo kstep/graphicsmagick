@@ -59,8 +59,8 @@ typedef unsigned int Quantum;
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
 #define Upscale(value)  ScaleByteToQuantum(value)
-#define XDownscale(quantum)  ScaleShortToQuantum(quantum)
-#define XUpscale(value)  ScaleQuantumToShort(value)
+#define XDownscale(value)  ScaleShortToQuantum(value)
+#define XUpscale(quantum)  ScaleQuantumToShort(quantum)
 
 /*
   Typedef declarations.
