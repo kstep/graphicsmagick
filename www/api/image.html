@@ -158,9 +158,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="appendimages">AppendImages</A></H2>
-<P>The <CODE>Append()</CODE> method takes a set of images and appends them to each other.  Each image in the set must have the same width or height (or both) (or both). <CODE>Append()</CODE> returns a single image where each image in the original set is side-by-side if all the heights are the same or stacked on top of each other if all widths are the same.  On failure, a 
-<FONT SIZE=-1>NULL</FONT> image is returned and exception describes the reason for the failure.</P>
-<P>The format of the AppendImage method is:</P>
+<blockquote>The AppendImages ( ) method takes a set of images and appends them to eachother. Each image in the set must have the same width or height ( or both ) ( or both ) . Append ( ) returns a single image where each image in theoriginal set is side-by-side if all the heights are the same or stackedon top of each other if all widths are the same. On failure, a NULLimage is returned and exception describes the reason for the failure.; </blockquote><P>The format of the AppendImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *AppendImages ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int stack, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

@@ -145,9 +145,10 @@ static SyncPixelHandler
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireCacheNexus() acquires pixels from the in-memory or disk pixel
-%  cache as defined by the geometry parameters.   A pointer to the pixels is
-%  returned if the pixels are transferred, otherwise a NULL is returned.
+%  Method AcquireCacheNexus() acquires pixels from the in-memory or disk
+%  pixel cache as defined by the geometry parameters.   A pointer to the
+%  pixels isreturned if the pixels are transferred, otherwise a NULL is
+%  returned.
 %
 %  The format of the AcquireCacheNexus() method is:
 %
@@ -157,8 +158,8 @@ static SyncPixelHandler
 %
 %  A description of each parameter follows:
 %
-%    o status: Method GetCacheNexus() returns a pointer to the pixels if they
-%      are transferred, otherwise a NULL is returned.
+%    o status: Method GetCacheNexus() returns a pointer to the pixels if
+%      they are transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -248,9 +249,10 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireImagePixels() acquires pixels from the in-memory or disk pixel
-%  cache as defined by the geometry parameters.   A pointer to the pixels is
-%  returned if the pixels are transferred, otherwise a NULL is returned.
+%  Method AcquireImagePixels() acquires pixels from the in-memory or disk
+%  pixel cache as defined by the geometry parameters.   A pointer to the
+%  pixels is returned if the pixels are transferred, otherwise a NULL is
+%  returned. If you plan to change the pixels, use GetImagePixels() instead.
 %
 %  The format of the AcquireImagePixels() method is:
 %
@@ -260,8 +262,8 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method AcquireImagePixels() returns a pointer to the pixels if
-%      they are transferred, otherwise a NULL is returned.
+%    o status: Method AcquireImagePixels() returns a pointer to the pixels
+%      if they are transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -333,6 +335,7 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 %
 %  Method AcquireOnePixel() returns a single pixel at the specified (x,y)
 %  location.  The image background color is returned if an error occurs.
+%  If you plan to change the pixel, use GetOnePixel() instead.
 %
 %  The format of the AcquireOnePixel() method is:
 %
@@ -341,8 +344,8 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method AcquireOnePixel() returns a pixel at the specified (x,y)
-%      location.
+%    o pixels: Method AcquireOnePixel() returns a pixel at the
+%      specified (x,y) location.
 %
 %    o image: The image.
 %
@@ -381,8 +384,8 @@ MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method AcquireOnePixelFromCache returns a pixel at the specified
-%      (x,y) location.
+%    o pixels: Method AcquireOnePixelFromCache returns a pixel at the
+%      specified (x,y) location.
 %
 %    o image: The image.
 %
@@ -442,7 +445,8 @@ MagickExport void DestroyCache(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyCacheInfo() deallocates memory associated with the pixel cache.
+%  Method DestroyCacheInfo() deallocates memory associated with the pixel
+%  cache.
 %
 %  The format of the DestroyCacheInfo() method is:
 %
@@ -765,8 +769,8 @@ MagickExport void GetCacheInfo(Cache *cache)
 %
 %  A description of each parameter follows:
 %
-%    o memory: Specifies how much memory to acquire from, or return to, the
-%      cache memory pool.
+%    o memory: Specifies how much memory to acquire from, or return to,
+%      the cache memory pool.
 %
 %
 */
@@ -1712,8 +1716,8 @@ static unsigned int ReadCacheIndexes(const Cache cache,const unsigned long id)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadCachePixels() reads pixels from the specified region of the pixel
-%  cache.
+%  Method ReadCachePixels() reads pixels from the specified region of the
+%  pixel cache.
 %
 %  The format of the ReadCachePixels() method is:
 %
