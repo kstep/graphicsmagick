@@ -552,10 +552,10 @@ Export Image *MinifyImage(Image *image)
       Minify(7); Minify(15); Minify(15); Minify(7);
       s=p+3*image->columns;
       Minify(3); Minify(7);  Minify(7);  Minify(3);
-      q->red=(Quantum) ((total_red+63) >> 7);
-      q->green=(Quantum) ((total_green+63) >> 7);
-      q->blue=(Quantum) ((total_blue+63) >> 7);
-      q->opacity=(Quantum) ((total_opacity+63) >> 7);
+      q->red=((total_red+63) >> 7);
+      q->green=((total_green+63) >> 7);
+      q->blue=((total_blue+63) >> 7);
+      q->opacity=((total_opacity+63) >> 7);
       p+=2;
       q++;
     }
@@ -810,12 +810,19 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
 
   typedef struct ScaledPacket
   {
-    long
+    double
       red,
       green,
       blue,
       opacity;
   } ScaledPacket;
+
+  double
+    blue,
+    green,
+    red,
+    x_scale,
+    x_span;
 
   Image
     *scale_image;
@@ -823,10 +830,6 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   int
     next_row,
     number_rows;
-
-  long
-    x_scale,
-    x_span;
 
   register int
     i,
@@ -846,16 +849,11 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   ScaledPacket
     *scaled_scanline,
     *scanline,
-    *y_vector,
-    *x_vector;
+    *x_vector,
+    *y_vector;
 
   unsigned int
     y;
-
-  unsigned long
-    blue,
-    green,
-    red;
 
   assert(image != (Image *) NULL);
   if ((columns == 0) || (rows == 0))
@@ -898,8 +896,8 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   opacity=0;
   number_rows=0;
   next_row=True;
-  x_scale=UpShift(scale_image->rows)/image->rows;
-  x_span=UpShift(1);
+  x_span=1.0;
+  x_scale=(double) scale_image->rows/image->rows;
   for (x=0; x < (int) image->columns; x++)
   {
     y_vector[x].red=0;
@@ -908,7 +906,6 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
     y_vector[x].opacity=0;
   }
   i=0;
-  q=scale_image->pixels;
   for (y=0; y < scale_image->rows; y++)
   {
     q=SetPixelCache(scale_image,0,y,scale_image->columns,1);
@@ -964,7 +961,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
             y_vector[x].opacity+=x_scale*x_vector[x].opacity;
           }
           x_span-=x_scale;
-          x_scale=UpShift(scale_image->rows)/image->rows;
+          x_scale=(double) scale_image->rows/image->rows;
           next_row=True;
         }
         if (next_row && (number_rows < (int) image->rows))
@@ -989,15 +986,15 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         s=scanline;
         for (x=0; x < (int) image->columns; x++)
         {
-          red=DownShift(y_vector[x].red+x_span*x_vector[x].red);
-          green=DownShift(y_vector[x].green+x_span*x_vector[x].green);
-          blue=DownShift(y_vector[x].blue+x_span*x_vector[x].blue);
-          opacity=DownShift(y_vector[x].opacity+x_span*x_vector[x].opacity);
-          s->red=(Quantum) (red > MaxRGB ? MaxRGB : red);
-          s->green=(Quantum) (green > MaxRGB ? MaxRGB : green);
-          s->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-          s->opacity=(Quantum)
-            (opacity > MaxColormapSize ? MaxColormapSize : opacity);
+          red=y_vector[x].red+x_span*x_vector[x].red;
+          green=y_vector[x].green+x_span*x_vector[x].green;
+          blue=y_vector[x].blue+x_span*x_vector[x].blue;
+          opacity=y_vector[x].opacity+x_span*x_vector[x].opacity;
+          s->red=red > MaxRGB ? MaxRGB : red;
+          s->green=green > MaxRGB ? MaxRGB : green;
+          s->blue=blue > MaxRGB ? MaxRGB : blue;
+          s->opacity=
+            opacity > MaxColormapSize ? MaxColormapSize : opacity;
           s++;
           y_vector[x].red=0;
           y_vector[x].green=0;
@@ -1007,10 +1004,10 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         x_scale-=x_span;
         if (x_scale == 0)
           {
-            x_scale=UpShift(scale_image->rows)/image->rows;
+            x_scale=(double) scale_image->rows/image->rows;
             next_row=True;
           }
-        x_span=UpShift(1);
+        x_span=1.0;
       }
     if (scale_image->columns == image->columns)
       {
@@ -1020,22 +1017,22 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         s=scanline;
         for (x=0; x < (int) scale_image->columns; x++)
         {
-          q->red=(Quantum) s->red;
-          q->green=(Quantum) s->green;
-          q->blue=(Quantum) s->blue;
-          q->opacity=(Quantum) s->opacity;
+          q->red=s->red;
+          q->green=s->green;
+          q->blue=s->blue;
+          q->opacity=s->opacity;
           q++;
           s++;
         }
       }
     else
       {
-        int
-          next_column;
-
-        long
+        double
           y_scale,
           y_span;
+
+        int
+          next_column;
 
         /*
           Scale X direction.
@@ -1044,12 +1041,12 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         green=0;
         blue=0;
         next_column=False;
-        y_span=UpShift(1);
+        y_span=1.0;
         s=scanline;
         t=scaled_scanline;
         for (x=0; x < (int) image->columns; x++)
         {
-          y_scale=UpShift(scale_image->columns)/image->columns;
+          y_scale=(double) scale_image->columns/image->columns;
           while (y_scale >= y_span)
           {
             if (next_column)
@@ -1060,17 +1057,17 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
                 opacity=0;
                 t++;
               }
-            red=DownShift(red+y_span*s->red);
-            green=DownShift(green+y_span*s->green);
-            blue=DownShift(blue+y_span*s->blue);
-            opacity=DownShift(opacity+y_span*s->opacity);
-            t->red=(Quantum) (red > MaxRGB ? MaxRGB : red);
-            t->green=(Quantum) (green > MaxRGB ? MaxRGB : green);
-            t->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-            t->opacity=(Quantum)
-              (opacity > MaxColormapSize ? MaxColormapSize : opacity);
+            red=red+y_span*s->red;
+            green=green+y_span*s->green;
+            blue=blue+y_span*s->blue;
+            opacity=opacity+y_span*s->opacity;
+            t->red=red > MaxRGB ? MaxRGB : red;
+            t->green=green > MaxRGB ? MaxRGB : green;
+            t->blue=blue > MaxRGB ? MaxRGB : blue;
+            t->opacity=
+              opacity > MaxColormapSize ? MaxColormapSize : opacity;
             y_scale-=y_span;
-            y_span=UpShift(1);
+            y_span=1.0;
             next_column=True;
           }
         if (y_scale > 0)
@@ -1102,14 +1099,10 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         }
       if (!next_column)
         {
-          red=DownShift(red);
-          green=DownShift(green);
-          blue=DownShift(blue);
-          opacity=DownShift(opacity);
-          t->red=(Quantum) (red > MaxRGB ? MaxRGB : red);
-          t->green=(Quantum) (green > MaxRGB ? MaxRGB : green);
-          t->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-          t->opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity);
+          t->red=red > MaxRGB ? MaxRGB : red;
+          t->green=green > MaxRGB ? MaxRGB : green;
+          t->blue=blue > MaxRGB ? MaxRGB : blue;
+          t->opacity=opacity > MaxRGB ? MaxRGB : opacity;
         }
       /*
         Transfer scanline to scaled image.
@@ -1117,10 +1110,10 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
       t=scaled_scanline;
       for (x=0; x < (int) scale_image->columns; x++)
       {
-        q->red=(Quantum) t->red;
-        q->green=(Quantum) t->green;
-        q->blue=(Quantum) t->blue;
-        q->opacity=(Quantum) t->opacity;
+        q->red=t->red;
+        q->green=t->green;
+        q->blue=t->blue;
+        q->opacity=t->opacity;
         q++;
         t++;
       }
@@ -1630,7 +1623,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   for (i=0; i <= MaxRGB; i++)
   {
     range_table[i]=0;
-    range_table[i+(MaxRGB+1)]=(Quantum) i;
+    range_table[i+(MaxRGB+1)]=i;
     range_table[i+(MaxRGB+1)*2]=MaxRGB;
   }
   range_limit=range_table+(MaxRGB+1);
