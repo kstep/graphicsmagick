@@ -8,8 +8,8 @@
 %                                                                             %
 %                                                                             %
 %                             Software Design                                 %
-%                               John Cristy                                   %
-%                              December 1992                                  %
+%                               Bill Corbis                                   %
+%                              December 1998                                  %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %

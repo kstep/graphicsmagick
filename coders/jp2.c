@@ -73,10 +73,16 @@
 #if !defined(ulonglong)
 #define ulonglong  unsigned long long
 #endif
+#if !defined(JAS_IMAGE_CS_GRAY)
+#define JAS_IMAGE_CS_GRAY  1
+#endif
+#if !defined(JAS_IMAGE_CS_RGB)
+#define JAS_IMAGE_CS_RGB  2
+#endif
 #ifdef __VMS
-#define JAS_VERSION 1.500.4
+#define JAS_VERSION 1.600.0
 #define PACKAGE jasper
-#define VERSION 1.500.4
+#define VERSION 1.600.0
 #endif
 #include "jasper/jasper.h"
 #endif
