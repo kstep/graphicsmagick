@@ -426,7 +426,7 @@ display image using this type.</abs>
 <abs>apply a mathematical or bitwise operator to an image channel</abs>
 </utils>
 <utils apps=composite,convert,display,import,mogrify,montage>
-<lopt>-ordered-dither <channeltype> <NxN>
+<lopt>-ordered-dither <channeltype> <NxN></opt>
 <abs>ordered dither the image</abs>
 <utils apps=composite,convert,display,import,mogrify,montage>
 <lopt>-page <width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}</opt>
@@ -477,7 +477,7 @@ display image using this type.</abs>
 <abs>lighten or darken image edges</abs>
 </utils>
 <utils apps=composite,convert,display,import,mogrify,montage>
-<lopt>-random-threshold <channeltype> <LOWxHIGH>
+<lopt>-random-threshold <channeltype> <LOWxHIGH></opt>
 <abs>random threshold the image</abs>
 <utils apps=composite,convert,mogrify,montage>
 <lopt>-red-primary <x>,<y></opt>

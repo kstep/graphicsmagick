@@ -84,6 +84,8 @@ static const unsigned char
 */
 static int
   IsDirectory(const char *);
+static int
+MagickStrToD(const char *start,char **end,double *value);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1279,7 +1281,11 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
     *q;
 
   int
+    count,
     flags;
+
+  double
+    double_val;
 
   RectangleInfo
     bounds;
@@ -1367,6 +1373,10 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
   /*
     Parse width/height/x/y.
   */
+  bounds.width=0;
+  bounds.height=0;
+  bounds.x=0;
+  bounds.y=0;
   p=geometry;
   while (isspace((int)(unsigned char) *p))
     p++;
@@ -1380,16 +1390,24 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
         Parse width.
       */
       q=p;
-      bounds.width=(unsigned long) floor(strtol(p,&q,10)+0.5);
-      if (p != q)
-        flags|=WidthValue;
+
+      count=MagickStrToD(p,&q,&double_val);
+      if (count)
+        {
+          bounds.width=(unsigned long) floor(double_val+0.5);
+          flags|=WidthValue;
+        }
       if ((*q == 'x') || (*q == 'X'))
         p=q;
       else
         {
-          bounds.width=(unsigned long) floor(strtod(p,&p)+0.5);
-          bounds.height=bounds.width;
-          flags|=HeightValue;
+          count=MagickStrToD(p,&p,&double_val);
+          if (count)
+            {
+              bounds.width=(unsigned long) floor(double_val+0.5);
+              bounds.height=bounds.width;
+              flags|=HeightValue;
+            }
         }
     }
   if ((*p == 'x') || (*p == 'X'))
@@ -1399,9 +1417,12 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
       */
       p++;
       q=p;
-      bounds.height=(unsigned long) floor(strtod(p,&p)+0.5);
-      if (p != q)
-        flags|=HeightValue;
+      count=MagickStrToD(p,&p,&double_val);
+      if (count)
+        {
+          bounds.height=(unsigned long) floor(double_val+0.5);
+          flags|=HeightValue;
+        }
     }
   if ((*p == '+') || (*p == '-'))
     {
@@ -1412,17 +1433,21 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
         {
           p++;
           q=p;
-          bounds.x=(long) ceil(strtod(p,&p)-0.5);
+          count=MagickStrToD(p,&p,&double_val);
+          bounds.x=(long) ceil(double_val-0.5);
         }
       else
         {
           p++;
           q=p;
-          bounds.x=(long) ceil(-strtod(p,&p)-0.5);
-          if (p != q)
-            flags|=XNegative;
+          count=MagickStrToD(p,&p,&double_val);
+          if (count)
+            {
+              bounds.x=(long) ceil(-double_val-0.5);
+              flags|=XNegative;
+            }
         }
-      if (p != q)
+      if (count)
         flags|=XValue;
       if ((*p == '+') || (*p == '-'))
         {
@@ -1433,17 +1458,21 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
             {
               p++;
               q=p;
-              bounds.y=(long) ceil(strtod(p,&p)-0.5);
+              count=MagickStrToD(p,&p,&double_val);
+              bounds.y=(long) ceil(double_val-0.5);
             }
           else
             {
               p++;
               q=p;
-              bounds.y=(long) ceil(-strtod(p,&p)-0.5);
-              if (p != q)
-                flags|=YNegative;
+              count=MagickStrToD(p,&p,&double_val);
+              if (count)
+                {
+                  bounds.y=(long) ceil(-double_val-0.5);
+                  flags|=YNegative;
+                }
             }
-          if (p != q)
+          if (count)
             flags|=YValue;
         }
     }
@@ -1491,7 +1520,7 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %    o height: Second double value
 %
 */
-static int SlurpDouble(const char *start,const char **end,double *value)
+static int MagickStrToD(const char *start,char **end,double *value)
 {
   const char
     *p;
@@ -1513,7 +1542,7 @@ static int SlurpDouble(const char *start,const char **end,double *value)
   *value=strtod(buff,&endptr);
   if ((errno == 0) && (buff != endptr))
     n++;
-  *end=p;
+  *end=(char *) start+(endptr-buff);
 
   return (n);
 }
@@ -1526,10 +1555,10 @@ MagickExport int GetMagickDimension(const char *str,double *width,
   const char
     *start=str;
 
-  const char
+  char
     *end;
 
-  n=SlurpDouble(start,&end,width);
+  n=MagickStrToD(start,&end,width);
   if (n == 0)
     return n;
   start=end;
@@ -1538,7 +1567,7 @@ MagickExport int GetMagickDimension(const char *str,double *width,
   if ((*start != 'x') && (*start != 'X'))
     return n;
   start++;
-  n += SlurpDouble(start,&end,height);
+  n += MagickStrToD(start,&end,height);
   return (n);
 }
 
@@ -3461,7 +3490,8 @@ MagickExport double StringToDouble(const char *text,const double interval)
   double
     value;
 
-  value=strtod(text,&q);
+  if(MagickStrToD(text,&q,&value) == 0)
+    return 0.0;
   if (strchr(q,'%') != (char *) NULL)
     value*=interval/100.0;
   return(value);
