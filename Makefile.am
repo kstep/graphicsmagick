@@ -51,7 +51,7 @@ endif # WITH_MODULES
 # Additional files to distribute
 EXTRA_DIST = Manifest.ps ImageMagick.html Magickshr.opt Make.com README.txt \
 	Copyright.txt acconfig.h QuickStart.txt lndir.sh ltcf-c.sh ltcf-cxx.sh \
-	ltcf-gcj.sh
+	ltcf-gcj.sh ltconfig
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = images scenes scripts www PerlMagick
