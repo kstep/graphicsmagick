@@ -32,6 +32,7 @@
 	Applied Cristy fix for bug that offset images to the top and left.
 	* magick/resize.c (ScaleImage): Fixed bug that caused intensity
 	levels to be one unit too high.
+	* coders/png.c: make JNG support depend on HasJPEG. Remove temp files.
 
 2003-03-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
