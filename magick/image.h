@@ -623,8 +623,8 @@ extern MagickExport char
   *GetMagickConfigurePath(const char *),
   *GetMagickVersion(unsigned int *);
 
-extern MagickExport size_t
-  GetNumberColors(Image *,FILE *);
+extern MagickExport ColorInfo
+  GetColorInfo(const char *,ExceptionInfo *);
 
 extern MagickExport Image
   *AddNoiseImage(Image *,const NoiseType,ExceptionInfo *),
@@ -718,6 +718,9 @@ extern MagickExport PixelPacket
 
 extern MagickExport RectangleInfo
   GetImageBoundingBox(Image *);
+
+extern MagickExport size_t
+  GetNumberColors(Image *,FILE *);
 
 extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned int),
