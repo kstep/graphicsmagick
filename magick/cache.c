@@ -1574,6 +1574,9 @@ static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
   CacheInfo
     *cache_info;
 
+  ClassType
+    storage_class;
+
   Image
     *clone_image;
 
@@ -1604,6 +1607,8 @@ static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
   /*
     Clone pixel cache.
   */
+  storage_class=image->class;
+  image->storage_class=GetCacheClass(image->cache);
   clone_image=AllocateImage((ImageInfo *) NULL);
   *clone_image=(*image);
   GetCacheInfo(&clone_image->cache);
@@ -1622,6 +1627,7 @@ static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
       break;
   }
   image->cache=clone_image->cache;
+  image->storage_class=storage_class;
   LiberateMemory((void **) &clone_image);
   if (y < (long) image->rows)
     {
