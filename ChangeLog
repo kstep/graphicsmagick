@@ -4,12 +4,12 @@
 2002-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * configure.ac (libtool_build_static_libs): Added
     --enable-delegate-build option to suuport building ImageMagick
-    using delegate libraries in subdirectories of the ImageMagick
-    source directory.
+    using delegate libraries in subdirectories of the ImageMagick source
+    directory.
 
 2002-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * WMF now supplies bitmaps as inline images rather than via
-    a mpri reference.
+  * WMF now supplies bitmaps as inline images rather than via a mpri
+    reference.
 
 2002-04-15  Cristy  <cristy@mystic.es.dupont.com>
   * Fixed DrawImage() to properly handle affine image transforms.
