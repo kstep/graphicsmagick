@@ -352,7 +352,7 @@ static struct
       {"geometry", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"gravity", GravityTypes},
       {"opacity", DoubleReference}, {"tile", BooleanTypes},
-      {"rotate", DoubleReference} } },
+      {"rotate", DoubleReference}, {"color", StringReference} } },
     { "Contrast", { {"sharp", BooleanTypes} } },
     { "CycleColormap", { {"display", IntegerReference} } },
     { "Draw", { {"primitive", PrimitiveTypes}, {"points", StringReference},
@@ -4565,8 +4565,8 @@ Mogrify(ref,...)
           if (!attribute_flag[0])
             argument_list[0].double_reference=90.0;
           if (attribute_flag[1])
-             QueryColorDatabase(argument_list[1].string_reference,
-               &image->background_color);
+            QueryColorDatabase(argument_list[1].string_reference,
+              &image->background_color);
           image=RotateImage(image,argument_list[0].double_reference,exception);
           break;
         }
@@ -4901,6 +4901,9 @@ Mogrify(ref,...)
                   break;
               }
             }
+          if (attribute_flag[9])
+            QueryColorDatabase(argument_list[9].string_reference,
+              &composite_image->background_color);
           rotate_image=(Image *) NULL;
           if (attribute_flag[8])
             {
