@@ -95,7 +95,7 @@ static unsigned int IsFAX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LatinNCompare((char *) magick,"DFAX",4) == 0)
+  if (LocaleNCompare((char *) magick,"DFAX",4) == 0)
     return(True);
   return(False);
 }

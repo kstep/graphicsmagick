@@ -87,9 +87,7 @@ Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
   double
     brightness,
     hue,
-    saturation,
-    scale,
-    theta;
+    saturation;
 
   /*
     Enhance contrast: dark color become darker, light color become lighter.
@@ -98,13 +96,11 @@ Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  theta=(brightness-0.5)*M_PI;
-  scale=0.5000000000000001;
-  brightness+=scale*(((scale*((sin(theta)+1.0)))-brightness)*sign);
+  brightness+=0.5*sign*(0.5*(sin(M_PI*(brightness-0.5))+1.0)-brightness);
   if (brightness > 1.0)
     brightness=1.0;
   else
-    if (brightness < 0)
+    if (brightness < 0.0)
       brightness=0.0;
   HSLTransform(hue,saturation,brightness,red,green,blue);
 }
@@ -286,27 +282,27 @@ Export void HSLTransform(const double hue,const double saturation,
     (luminosity+saturation-luminosity*saturation);
   if ((saturation == 0.0) || (hue == -1.0))
     {
-      *red=(Quantum) floor((luminosity*(double) MaxRGB)+0.5);
-      *green=(Quantum) floor((luminosity*(double) MaxRGB)+0.5);
-      *blue=(Quantum) floor((luminosity*(double) MaxRGB)+0.5);
+      *red=MaxRGB*luminosity+0.5;
+      *green=MaxRGB*luminosity+0.5;
+      *blue=MaxRGB*luminosity+0.5;
       return;
     }
-  y=2*luminosity-v;
-  x=y+(v-y)*(6.0*hue-(int) (6.0*hue));
-  z=v-(v-y)*(6.0*hue-(int) (6.0*hue));
+  y=2.0*luminosity-v;
+  x=y+(v-y)*(6.0*hue-floor(6.0*hue));
+  z=v-(v-y)*(6.0*hue-floor(6.0*hue));
   switch ((int) (6.0*hue))
   {
-    default: r=v; g=x; b=y; break;
     case 0: r=v; g=x; b=y; break;
     case 1: r=z; g=v; b=y; break;
     case 2: r=y; g=v; b=x; break;
     case 3: r=y; g=z; b=v; break;
     case 4: r=x; g=y; b=v; break;
     case 5: r=v; g=y; b=z; break;
+    default: r=v; g=x; b=y; break;
   }
-  *red=(Quantum) floor((r*(double) MaxRGB)+0.5);
-  *green=(Quantum) floor((g*(double) MaxRGB)+0.5);
-  *blue=(Quantum) floor((b*(double) MaxRGB)+0.5);
+  *red=MaxRGB*r+0.5;
+  *green=MaxRGB*g+0.5;
+  *blue=MaxRGB*b+0.5;
 }
 
 /*
@@ -564,8 +560,7 @@ Export void Modulate(double percent_hue,double percent_saturation,
   double
     brightness,
     hue,
-    saturation,
-    scale;
+    saturation;
 
   /*
     Increase or decrease color brightness, saturation, or hue.
@@ -574,14 +569,13 @@ Export void Modulate(double percent_hue,double percent_saturation,
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  scale=0.0100000000000001;
-  brightness+=scale*percent_brightness;
+  brightness+=0.01*percent_brightness;
   if (brightness < 0.0)
     brightness=0.0;
   else
     if (brightness > 1.0)
       brightness=1.0;
-  saturation+=scale*percent_saturation;
+  saturation+=0.01*percent_saturation;
   if (saturation < 0.0)
     saturation=0.0;
   else
@@ -589,7 +583,7 @@ Export void Modulate(double percent_hue,double percent_saturation,
       saturation=1.0;
   if (hue != -1.0)
     {
-      hue+=scale*percent_hue;
+      hue+=0.01*percent_hue;
       if (hue < 0.0)
         hue+=1.0;
       else
@@ -686,9 +680,9 @@ Export void TransformHSL(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   assert(saturation != (double *) NULL);
   assert(luminosity != (double *) NULL);
-  r=(double) red/(double) MaxRGB;
-  g=(double) green/(double) MaxRGB;
-  b=(double) blue/(double) MaxRGB;
+  r=(double) red/MaxRGB;
+  g=(double) green/MaxRGB;
+  b=(double) blue/MaxRGB;
   max=Max(r,Max(g,b));
   min=Min(r,Min(g,b));
   *hue=(-1.0);

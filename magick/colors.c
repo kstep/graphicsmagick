@@ -2003,7 +2003,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
         color->opacity=((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
       return(True);
     }
-  if (LatinNCompare(target,"rgb",3) == 0)
+  if (LocaleNCompare(target,"rgb",3) == 0)
     {
       (void) sscanf(target,"%*[^(](%d,%d,%d",&red,&green,&blue);
       color->red=UpScale(red);
@@ -2019,7 +2019,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
   right=NumberXColors-2;
   for (mid=(right+left)/2 ; right != left; mid=(right+left)/2)
   {
-    i=Latin1Compare(target,XColorlist[mid].name);
+    i=LocaleCompare(target,XColorlist[mid].name);
     if (i < 0)
       {
         if (right == mid)
@@ -2083,7 +2083,7 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
           count=sscanf(text,"%d %d %d %[^\n]\n",&red,&green,&blue,colorname);
           if (count != 4)
             continue;
-          if (Latin1Compare(colorname,target) == 0)
+          if (LocaleCompare(colorname,target) == 0)
             {
               color->red=UpScale(red);
               color->green=UpScale(green);

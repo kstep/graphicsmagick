@@ -248,7 +248,7 @@ static unsigned int IsTIFF(const unsigned char *magick,
   if ((magick[0] == 0x4D) && (magick[1] == 0x4D))
     if ((magick[2] == 0x00) && (magick[3] == 0x2A))
       return(True);
-  if (LatinNCompare((char *) magick,"\111\111\052\000",4) == 0)
+  if (LocaleNCompare((char *) magick,"\111\111\052\000",4) == 0)
     return(True);
   return(False);
 }
@@ -350,9 +350,9 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   while (length > 0)
   {
 #if defined(GET_ONLY_IPTC_DATA)
-    if (LatinNCompare((char *) p,"8BIM44",6) == 0)
+    if (LocaleNCompare((char *) p,"8BIM44",6) == 0)
 #else
-    if (LatinNCompare((char *) p,"8BIM",4) == 0)
+    if (LocaleNCompare((char *) p,"8BIM",4) == 0)
 #endif
       break;
     length-=2;
@@ -1330,7 +1330,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   unsigned long
     strip_size;
 
-  if (Latin1Compare(image_info->magick,"PTIF") == 0)
+  if (LocaleCompare(image_info->magick,"PTIF") == 0)
     {
       Image
         *next_image,
@@ -1408,7 +1408,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize TIFF fields.
     */
-    if (Latin1Compare(image_info->magick,"PTIF") == 0)
+    if (LocaleCompare(image_info->magick,"PTIF") == 0)
       if (image->previous != (Image *) NULL)
         TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
     TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
@@ -1460,7 +1460,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
       }
     else
-      if ((Latin1Compare(image_info->magick,"TIFF24") == 0) ||
+      if ((LocaleCompare(image_info->magick,"TIFF24") == 0) ||
           (compress_tag == COMPRESSION_JPEG) ||
           (!IsPseudoClass(image) && !IsGrayImage(image)))
         {
@@ -1857,7 +1857,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       image->temporary=False;
       CloseBlob(&encode_image);
     }
-  if (Latin1Compare(image_info->magick,"PTIF") == 0)
+  if (LocaleCompare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);
   return(True);
 }

@@ -1116,7 +1116,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   if (*filename != '|')
     {
       if ((Extent(filename) > 4) &&
-          (Latin1Compare(filename+Extent(filename)-4,".pgp") == 0))
+          (LocaleCompare(filename+Extent(filename)-4,".pgp") == 0))
         {
           /*
             Decrypt image file with PGP encryption utilities.
@@ -1126,7 +1126,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         }
       else
         if ((Extent(filename) > 4) &&
-            (Latin1Compare(filename+Extent(filename)-4,".bz2") == 0))
+            (LocaleCompare(filename+Extent(filename)-4,".bz2") == 0))
           {
             /*
               Uncompress/compress image file with BZIP compress utilities.
@@ -1138,7 +1138,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
           }
         else
           if ((Extent(filename) > 3) &&
-              (Latin1Compare(filename+Extent(filename)-3,".gz") == 0))
+              (LocaleCompare(filename+Extent(filename)-3,".gz") == 0))
             {
               /*
                 Uncompress/compress image file with GNU compress utilities.
@@ -1150,7 +1150,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             }
           else
             if ((Extent(filename) > 2) &&
-                (Latin1Compare(filename+Extent(filename)-2,".Z") == 0))
+                (LocaleCompare(filename+Extent(filename)-2,".Z") == 0))
               {
                 /*
                   Uncompress/compress image file with UNIX compress utilities.
@@ -1176,7 +1176,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
     Open image file.
   */
   image->pipe=False;
-  if (Latin1Compare(filename,"-") == 0)
+  if (LocaleCompare(filename,"-") == 0)
     {
       image->file=(*type == 'r') ? stdin : stdout;
 #if defined(_VISUALC_)
@@ -1216,7 +1216,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               if ((image->previous != (Image *) NULL) ||
                   (image->next != (Image *) NULL))
                 {
-                  if ((Latin1Compare(filename,image->filename) == 0) ||
+                  if ((LocaleCompare(filename,image->filename) == 0) ||
                       (strchr(filename,'%') != (char *) NULL))
                     FormatString(filename,"%.1024s.%u",image->filename,
                       image->scene);

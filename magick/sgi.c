@@ -95,7 +95,7 @@ static unsigned int IsSGI(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
-  if (LatinNCompare((char *) magick,"\001\332",2) == 0)
+  if (LocaleNCompare((char *) magick,"\001\332",2) == 0)
     return(True);
   return(False);
 }

@@ -130,7 +130,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Allocate memory for a scanline.
   */
   packet_size=image->depth > 8 ? 6 : 3;
-  if (Latin1Compare(image_info->magick,"RGBA") == 0)
+  if (LocaleCompare(image_info->magick,"RGBA") == 0)
     {
       image->matte=True;
       packet_size=image->depth > 8 ? 8 : 4;
@@ -498,7 +498,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     Allocate memory for pixels.
   */
   packet_size=image->depth > 8 ? 6 : 3;
-  if (image->matte || (Latin1Compare(image_info->magick,"RGBA") == 0))
+  if (image->matte || (LocaleCompare(image_info->magick,"RGBA") == 0))
     packet_size=image->depth > 8 ? 8 : 4;
   pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
   if (pixels == (unsigned char *) NULL)
@@ -519,7 +519,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
       Convert MIFF to RGB raster pixels.
     */
     TransformRGBImage(image,RGBColorspace);
-    if (Latin1Compare(image_info->magick,"RGBA") == 0)
+    if (LocaleCompare(image_info->magick,"RGBA") == 0)
       if (!image->matte)
         MatteImage(image,Opaque);
     switch (image_info->interlace)
@@ -534,7 +534,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          if (Latin1Compare(image_info->magick,"RGBA") != 0)
+          if (LocaleCompare(image_info->magick,"RGBA") != 0)
             {
               (void) PopImagePixels(image,RGBQuantum,pixels);
               (void) WriteBlob(image,packet_size*image->columns,pixels);

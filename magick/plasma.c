@@ -151,7 +151,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,ExceptionInfo *excepti
   segment_info.x2=image->columns-1;
   segment_info.y2=image->rows-1;
   srand(time(0));
-  if (Latin1Compare(image_info->filename,"fractal") == 0)
+  if (LocaleCompare(image_info->filename,"fractal") == 0)
     {
       /*
         Seed pixels before recursion.

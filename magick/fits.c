@@ -96,9 +96,9 @@ static unsigned int IsFITS(const unsigned char *magick,
 {
   if (length < 6)
     return(False);
-  if (LatinNCompare((char *) magick,"IT0",3) == 0)
+  if (LocaleNCompare((char *) magick,"IT0",3) == 0)
     return(True);
-  if (LatinNCompare((char *) magick,"SIMPLE",6) == 0)
+  if (LocaleNCompare((char *) magick,"SIMPLE",6) == 0)
     return(True);
   return(False);
 }
@@ -261,7 +261,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           count++;
         } while (isalnum(c) || (c == '_'));
         *p='\0';
-        if (Latin1Compare(keyword,"END") == 0)
+        if (LocaleCompare(keyword,"END") == 0)
           break;
         value_expected=False;
         while (isspace(c) || (c == '='))
@@ -285,25 +285,25 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         /*
           Assign a value to the specified keyword.
         */
-        if (Latin1Compare(keyword,"SIMPLE") == 0)
+        if (LocaleCompare(keyword,"SIMPLE") == 0)
           fits_header.simple=(*value == 'T') || (*value == 't');
-        if (Latin1Compare(keyword,"BITPIX") == 0)
+        if (LocaleCompare(keyword,"BITPIX") == 0)
           fits_header.bits_per_pixel=(unsigned int) atoi(value);
-        if (Latin1Compare(keyword,"NAXIS") == 0)
+        if (LocaleCompare(keyword,"NAXIS") == 0)
           fits_header.number_axes=(unsigned int) atoi(value);
-        if (Latin1Compare(keyword,"NAXIS1") == 0)
+        if (LocaleCompare(keyword,"NAXIS1") == 0)
           fits_header.columns=(unsigned int) atoi(value);
-        if (Latin1Compare(keyword,"NAXIS2") == 0)
+        if (LocaleCompare(keyword,"NAXIS2") == 0)
           fits_header.rows=(unsigned int) atoi(value);
-        if (Latin1Compare(keyword,"NAXIS3") == 0)
+        if (LocaleCompare(keyword,"NAXIS3") == 0)
           fits_header.number_scenes=(unsigned int) atoi(value);
-        if (Latin1Compare(keyword,"DATAMAX") == 0)
+        if (LocaleCompare(keyword,"DATAMAX") == 0)
           fits_header.max_data=atof(value);
-        if (Latin1Compare(keyword,"DATAMIN") == 0)
+        if (LocaleCompare(keyword,"DATAMIN") == 0)
           fits_header.min_data=atof(value);
-        if (Latin1Compare(keyword,"BZERO") == 0)
+        if (LocaleCompare(keyword,"BZERO") == 0)
           fits_header.zero=atof(value);
-        if (Latin1Compare(keyword,"BSCALE") == 0)
+        if (LocaleCompare(keyword,"BSCALE") == 0)
           fits_header.scale=atof(value);
       }
     while (isspace(c))

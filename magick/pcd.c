@@ -342,7 +342,7 @@ static unsigned int IsPCD(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LatinNCompare((char *) magick,"PCD_",4) == 0)
+  if (LocaleNCompare((char *) magick,"PCD_",4) == 0)
     return(True);
   return(False);
 }
@@ -471,9 +471,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (header == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,3*0x800,(char *) header);
-  overview=LatinNCompare((char *) header,"PCD_OPA",7) == 0;
+  overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
   if ((status == False) ||
-      ((LatinNCompare((char *) header+0x800,"PCD",3) != 0) && !overview))
+      ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && !overview))
     ThrowReaderException(CorruptImageWarning,"Not a PCD image file",image);
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
@@ -607,7 +607,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
         }
-        if (Latin1Compare(image_info->magick,"PCDS") == 0)
+        if (LocaleCompare(image_info->magick,"PCDS") == 0)
           TransformRGBImage(image,sRGBColorspace);
         else
           TransformRGBImage(image,YCCColorspace);
@@ -716,7 +716,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FreeMemory((void **) &chroma2);
   FreeMemory((void **) &chroma1);
   FreeMemory((void **) &luma);
-  if (Latin1Compare(image_info->magick,"PCDS") == 0)
+  if (LocaleCompare(image_info->magick,"PCDS") == 0)
     TransformRGBImage(image,sRGBColorspace);
   else
     TransformRGBImage(image,YCCColorspace);

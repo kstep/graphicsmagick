@@ -639,7 +639,7 @@ static unsigned int IsGIF(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LatinNCompare((char *) magick,"GIF8",4) == 0)
+  if (LocaleNCompare((char *) magick,"GIF8",4) == 0)
     return(True);
   return(False);
 }
@@ -722,8 +722,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine if this is a GIF file.
   */
   status=ReadBlob(image,6,(char *) magick);
-  if ((status == False) || ((LatinNCompare((char *) magick,"GIF87",5) != 0) &&
-      (LatinNCompare((char *) magick,"GIF89",5) != 0)))
+  if ((status == False) || ((LocaleNCompare((char *) magick,"GIF87",5) != 0) &&
+      (LocaleNCompare((char *) magick,"GIF89",5) != 0)))
     ThrowReaderException(CorruptImageWarning,"Not a GIF image file",image);
   global_colors=0;
   global_colormap=(unsigned char *) NULL;
@@ -829,7 +829,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             loop=False;
             if (ReadBlobBlock(image,(char *) header) > 0)
-              loop=!LatinNCompare((char *) header,"NETSCAPE2.0",11);
+              loop=!LocaleNCompare((char *) header,"NETSCAPE2.0",11);
             while (ReadBlobBlock(image,(char *) header) > 0)
             if (loop)
               iterations=(header[2] << 8) | header[1];
@@ -1152,7 +1152,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       !image_info->adjoin && !image->matte)
     (void) WriteBlob(image,6,"GIF87a");
   else
-    if (Latin1Compare(image_info->magick,"GIF87") == 0)
+    if (LocaleCompare(image_info->magick,"GIF87") == 0)
       (void) WriteBlob(image,6,"GIF87a");
     else
       (void) WriteBlob(image,6,"GIF89a");
@@ -1274,7 +1274,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         for (j=0; j < 768; j++)
           global_colormap[j]=colormap[j];
       }
-    if (Latin1Compare(image_info->magick,"GIF87") != 0)
+    if (LocaleCompare(image_info->magick,"GIF87") != 0)
       {
         /*
           Write Graphics Control extension.

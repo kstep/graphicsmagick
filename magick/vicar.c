@@ -96,9 +96,9 @@ static unsigned int IsVICAR(const unsigned char *magick,
 {
   if (length < 7)
     return(False);
-  if (LatinNCompare((char *) magick,"LBLSIZE",7) == 0)
+  if (LocaleNCompare((char *) magick,"LBLSIZE",7) == 0)
     return(True);
-  if (LatinNCompare((char *) magick,"NJPL1I",6) == 0)
+  if (LocaleNCompare((char *) magick,"NJPL1I",6) == 0)
     return(True);
   return(False);
 }
@@ -238,17 +238,17 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         /*
           Assign a value to the specified keyword.
         */
-        if (Latin1Compare(keyword,"Label_RECORDS") == 0)
+        if (LocaleCompare(keyword,"Label_RECORDS") == 0)
           header_length=(unsigned int) atoi(value);
-        if (Latin1Compare(keyword,"LBLSIZE") == 0)
+        if (LocaleCompare(keyword,"LBLSIZE") == 0)
           header_length=(unsigned int) atoi(value);
-        if (Latin1Compare(keyword,"RECORD_BYTES") == 0)
+        if (LocaleCompare(keyword,"RECORD_BYTES") == 0)
           image->columns=(unsigned int) atoi(value);
-        if (Latin1Compare(keyword,"NS") == 0)
+        if (LocaleCompare(keyword,"NS") == 0)
           image->columns=(unsigned int) atoi(value);
-        if (Latin1Compare(keyword,"LINES") == 0)
+        if (LocaleCompare(keyword,"LINES") == 0)
           image->rows=(unsigned int) atoi(value);
-        if (Latin1Compare(keyword,"NL") == 0)
+        if (LocaleCompare(keyword,"NL") == 0)
           image->rows=(unsigned int) atoi(value);
       }
     while (isspace(c))

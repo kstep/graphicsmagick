@@ -95,7 +95,7 @@ static unsigned int Is8BIM(const unsigned char *magick,
 {
   if (length < 4)
     return(False);
-  if (LatinNCompare((char *) (magick),"8BIM",4) == 0)
+  if (LocaleNCompare((char *) (magick),"8BIM",4) == 0)
     return(True);
   return(False);
 }

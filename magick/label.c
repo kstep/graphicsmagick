@@ -769,7 +769,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   (void) fprintf(file,
     "  dict begin { 1 index /FID ne {def} {pop pop} ifelse } forall\n");
   (void) fprintf(file,
-    "  /Encoding ISOLatin1Encoding def currentdict end definefont pop\n");
+    "  /Encoding ISOLocaleEncoding def currentdict end definefont pop\n");
   (void) fprintf(file,"} bind def\n");
   (void) fprintf(file,
     "/%.1024s-ISO dup /%.1024s ReencodeFont findfont %f scalefont setfont\n",

@@ -96,7 +96,7 @@ static unsigned int IsHTML(const unsigned char *magick,
 {
   if (length < 5)
     return(False);
-  if (LatinNCompare((char *) magick,"<html",5) == 0)
+  if (LocaleNCompare((char *) magick,"<html",5) == 0)
     return(True);
   return(False);
 }
@@ -241,8 +241,8 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   CloseBlob(image);
   TransformRGBImage(image,RGBColorspace);
   *url='\0';
-  if ((Latin1Compare(image_info->magick,"FTP") == 0) ||
-      (Latin1Compare(image_info->magick,"HTTP") == 0))
+  if ((LocaleCompare(image_info->magick,"FTP") == 0) ||
+      (LocaleCompare(image_info->magick,"HTTP") == 0))
     {
       /*
         Extract URL base from filename.
@@ -273,7 +273,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenWarning,"Unable to allocate memory",image);
   clone_info->adjoin=True;
   status=True;
-  if (Latin1Compare(image_info->magick,"SHTML") != 0)
+  if (LocaleCompare(image_info->magick,"SHTML") != 0)
     {
       ImageAttribute
         *attribute;

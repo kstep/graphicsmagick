@@ -97,7 +97,7 @@ static unsigned int IsCACHE(const unsigned char *magick,
 {
   if (length < 14)
     return(False);
-  if (LatinNCompare((char *) magick,"id=MagickCache",14) == 0)
+  if (LocaleNCompare((char *) magick,"id=MagickCache",14) == 0)
     return(True);
   return(False);
 }
@@ -281,15 +281,15 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
             /*
               Assign a value to the specified keyword.
             */
-            if (Latin1Compare(keyword,"Background-color") == 0)
+            if (LocaleCompare(keyword,"Background-color") == 0)
               (void) QueryColorDatabase(values,&image->background_color);
-            if (Latin1Compare(keyword,"Blue-primary") == 0)
+            if (LocaleCompare(keyword,"Blue-primary") == 0)
               (void) sscanf(values,"%lf,%lf",
                 &image->chromaticity.blue_primary.x,
                 &image->chromaticity.blue_primary.y);
-            if (Latin1Compare(keyword,"Border-color") == 0)
+            if (LocaleCompare(keyword,"Border-color") == 0)
               (void) QueryColorDatabase(values,&image->border_color);
-            if (Latin1Compare(keyword,"Cache") == 0)
+            if (LocaleCompare(keyword,"Cache") == 0)
               {
                 (void) strcpy(cache_info->filename,values);
                 cache_info->file=
@@ -298,117 +298,117 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                   ThrowReaderException(CacheWarning,
                     "failed to open persistent cache",image);
               }
-            if (Latin1Compare(keyword,"Class") == 0)
+            if (LocaleCompare(keyword,"Class") == 0)
               {
-                if (Latin1Compare(values,"PseudoClass") == 0)
+                if (LocaleCompare(values,"PseudoClass") == 0)
                   image->class=PseudoClass;
                 else
-                  if (Latin1Compare(values,"DirectClass") == 0)
+                  if (LocaleCompare(values,"DirectClass") == 0)
                     image->class=DirectClass;
                   else
                     image->class=UndefinedClass;
               }
-            if (Latin1Compare(keyword,"Colors") == 0)
+            if (LocaleCompare(keyword,"Colors") == 0)
               image->colors=(unsigned int) atoi(values);
-            if (Latin1Compare(keyword,"Color-profile") == 0)
+            if (LocaleCompare(keyword,"Color-profile") == 0)
               image->color_profile.length=(unsigned int) atoi(values);
-            if (Latin1Compare(keyword,"Colorspace") == 0)
+            if (LocaleCompare(keyword,"Colorspace") == 0)
               {
-                if (Latin1Compare(values,"CMYK") == 0)
+                if (LocaleCompare(values,"CMYK") == 0)
                   image->colorspace=CMYKColorspace;
                 else
-                  if (Latin1Compare(values,"RGB") == 0)
+                  if (LocaleCompare(values,"RGB") == 0)
                     image->colorspace=RGBColorspace;
               }
-            if (Latin1Compare(keyword,"Compression") == 0)
+            if (LocaleCompare(keyword,"Compression") == 0)
               {
-                if (Latin1Compare(values,"Zip") == 0)
+                if (LocaleCompare(values,"Zip") == 0)
                   image->compression=ZipCompression;
                 else
-                  if (Latin1Compare(values,"BZip") == 0)
+                  if (LocaleCompare(values,"BZip") == 0)
                     image->compression=BZipCompression;
                   else
-                    if (Latin1Compare(values,"RunlengthEncoded") == 0)
+                    if (LocaleCompare(values,"RunlengthEncoded") == 0)
                       image->compression=RunlengthEncodedCompression;
                     else
                       image->compression=UndefinedCompression;
               }
-            if (Latin1Compare(keyword,"Columns") == 0)
+            if (LocaleCompare(keyword,"Columns") == 0)
               image->columns=(unsigned int) atoi(values);
-            if (Latin1Compare(keyword,"Delay") == 0)
+            if (LocaleCompare(keyword,"Delay") == 0)
               {
                 if (image_info->delay == (char *) NULL)
                   image->delay=atoi(values);
               }
-            if (Latin1Compare(keyword,"Depth") == 0)
+            if (LocaleCompare(keyword,"Depth") == 0)
               image->depth=atoi(values) <= 8 ? 8 : 16;
-            if (Latin1Compare(keyword,"Dispose") == 0)
+            if (LocaleCompare(keyword,"Dispose") == 0)
               {
                 if (image_info->dispose == (char *) NULL)
                   image->dispose=atoi(values);
               }
-            if (Latin1Compare(keyword,"Gamma") == 0)
+            if (LocaleCompare(keyword,"Gamma") == 0)
               image->gamma=atof(values);
-            if (Latin1Compare(keyword,"Green-primary") == 0)
+            if (LocaleCompare(keyword,"Green-primary") == 0)
               (void) sscanf(values,"%lf,%lf",
                 &image->chromaticity.green_primary.x,
                 &image->chromaticity.green_primary.y);
-            if (Latin1Compare(keyword,"Id") == 0)
+            if (LocaleCompare(keyword,"Id") == 0)
               (void) strcpy(id,values);
-            if (Latin1Compare(keyword,"Iterations") == 0)
+            if (LocaleCompare(keyword,"Iterations") == 0)
               {
                 if (image_info->iterations == (char *) NULL)
                   image->iterations=atoi(values);
               }
-            if (Latin1Compare(keyword,"Matte") == 0)
-              image->matte=(Latin1Compare(values,"True") == 0) ||
-                (Latin1Compare(values,"true") == 0);
-            if (Latin1Compare(keyword,"Matte-color") == 0)
+            if (LocaleCompare(keyword,"Matte") == 0)
+              image->matte=(LocaleCompare(values,"True") == 0) ||
+                (LocaleCompare(values,"true") == 0);
+            if (LocaleCompare(keyword,"Matte-color") == 0)
               (void) QueryColorDatabase(values,&image->matte_color);
-            if (Latin1Compare(keyword,"Montage") == 0)
+            if (LocaleCompare(keyword,"Montage") == 0)
               (void) CloneString(&image->montage,values);
-            if (Latin1Compare(keyword,"Page") == 0)
+            if (LocaleCompare(keyword,"Page") == 0)
               ParseImageGeometry(PostscriptGeometry(values),
                 &image->page.x,&image->page.y,
                 &image->page.width,&image->page.height);
-            if (Latin1Compare(keyword,"Red-primary") == 0)
+            if (LocaleCompare(keyword,"Red-primary") == 0)
               (void) sscanf(values,"%lf,%lf",&image->chromaticity.red_primary.x,
                 &image->chromaticity.red_primary.y);
-            if (Latin1Compare(keyword,"Rendering-intent") == 0)
+            if (LocaleCompare(keyword,"Rendering-intent") == 0)
               {
-                if (Latin1Compare(values,"Saturation") == 0)
+                if (LocaleCompare(values,"Saturation") == 0)
                   image->rendering_intent=SaturationIntent;
                 else
-                  if (Latin1Compare(values,"perceptual") == 0)
+                  if (LocaleCompare(values,"perceptual") == 0)
                     image->rendering_intent=PerceptualIntent;
                   else
-                    if (Latin1Compare(values,"absolute") == 0)
+                    if (LocaleCompare(values,"absolute") == 0)
                       image->rendering_intent=AbsoluteIntent;
                     else
-                      if (Latin1Compare(values,"relative") == 0)
+                      if (LocaleCompare(values,"relative") == 0)
                         image->rendering_intent=RelativeIntent;
                       else
                         image->rendering_intent=UndefinedIntent;
               }
-            if (Latin1Compare(keyword,"Resolution") == 0)
+            if (LocaleCompare(keyword,"Resolution") == 0)
               (void) sscanf(values,"%lfx%lf",&image->x_resolution,
                 &image->y_resolution);
-            if (Latin1Compare(keyword,"Rows") == 0)
+            if (LocaleCompare(keyword,"Rows") == 0)
               image->rows=(unsigned int) atoi(values);
-            if (Latin1Compare(keyword,"Scene") == 0)
+            if (LocaleCompare(keyword,"Scene") == 0)
               image->scene=(unsigned int) atoi(values);
-            if (Latin1Compare(keyword,"Units") == 0)
+            if (LocaleCompare(keyword,"Units") == 0)
               {
-                if (Latin1Compare(values,"undefined") == 0)
+                if (LocaleCompare(values,"undefined") == 0)
                   image->units=UndefinedResolution;
                 else
-                  if (Latin1Compare(values,"pixels-per-inch") == 0)
+                  if (LocaleCompare(values,"pixels-per-inch") == 0)
                     image->units=PixelsPerInchResolution;
                   else
-                    if (Latin1Compare(values,"pixels-per-centimeter") == 0)
+                    if (LocaleCompare(values,"pixels-per-centimeter") == 0)
                       image->units=PixelsPerCentimeterResolution;
               }
-            if (Latin1Compare(keyword,"White-point") == 0)
+            if (LocaleCompare(keyword,"White-point") == 0)
               (void) sscanf(values,"%lf,%lf",&image->chromaticity.white_point.x,
                 &image->chromaticity.white_point.y);
             if (*values == '{')

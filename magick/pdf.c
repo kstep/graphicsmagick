@@ -100,7 +100,7 @@ static unsigned int IsPDF(const unsigned char *magick,const unsigned int length)
 {
   if (length < 5)
     return(False);
-  if (LatinNCompare((char *) magick,"%PDF-",5) == 0)
+  if (LocaleNCompare((char *) magick,"%PDF-",5) == 0)
     return(True);
   return(False);
 }
@@ -251,9 +251,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Continue unless this is a MediaBox statement.
     */
-    if (LatinNCompare(command,"/Rotate 90",10) == 0)
+    if (LocaleNCompare(command,"/Rotate 90",10) == 0)
       portrait=False;
-    if (LatinNCompare(MediaBox,command,Extent(MediaBox)) != 0)
+    if (LocaleNCompare(MediaBox,command,Extent(MediaBox)) != 0)
       continue;
     count=sscanf(command,"/MediaBox [ %lf %lf %lf %lf",&bounding_box.x1,
       &bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
@@ -659,7 +659,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
           image->page.height,image->page.x,image->page.y);
       else
-        if (Latin1Compare(image_info->magick,"PDF") == 0)
+        if (LocaleCompare(image_info->magick,"PDF") == 0)
           (void) strcpy(geometry,PSPageGeometry);
     (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
     (void) GetGeometry(geometry,&media_info.x,&media_info.y,
@@ -1039,7 +1039,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             case RunlengthEncodedCompression:
             default:
             {
-              if (Latin1Compare(CCITTParam,"0") == 0)
+              if (LocaleCompare(CCITTParam,"0") == 0)
                 (void) HuffmanEncodeImage((ImageInfo *) image_info,image);
               else
                 (void) Huffman2DEncodeImage((ImageInfo *) image_info,image);

@@ -254,7 +254,7 @@ static unsigned int IsPSD(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LatinNCompare((char *) magick,"8BPS",4) == 0)
+  if (LocaleNCompare((char *) magick,"8BPS",4) == 0)
     return(True);
   return(False);
 }
@@ -408,7 +408,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=ReadBlob(image,4,(char *) psd_header.signature);
   psd_header.version=MSBFirstReadShort(image);
   if ((status == False) ||
-      (LatinNCompare(psd_header.signature,"8BPS",4) != 0) ||
+      (LocaleNCompare(psd_header.signature,"8BPS",4) != 0) ||
       (psd_header.version != 1))
     ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
   (void) ReadBlob(image,6,(char *) psd_header.reserved);
@@ -472,7 +472,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitWarning,
           "8BIM resource memory allocation failed",image);
       status=ReadBlob(image,length,(char *) data);
-      if ((status == False) || (LatinNCompare((char *) data,"8BIM",4) != 0))
+      if ((status == False) || (LocaleNCompare((char *) data,"8BIM",4) != 0))
         ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
       image->iptc_profile.info=data;
       image->iptc_profile.length=length;
@@ -513,7 +513,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           layer_info[i].channel_info[j].size=MSBFirstReadLong(image);
         }
         status=ReadBlob(image,4,(char *) type);
-        if ((status == False) || (LatinNCompare(type,"8BIM",4) != 0))
+        if ((status == False) || (LocaleNCompare(type,"8BIM",4) != 0))
           ThrowReaderException(CorruptImageWarning,"Not a PSD image file",
             image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);

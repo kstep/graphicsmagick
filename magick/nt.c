@@ -683,7 +683,7 @@ Export int NTTemporaryFilename(char *filename)
     status=GetTempFileName(path,"magick",0,filename);
   (void) remove(filename);
   if (strlen(filename) > 4)
-    if (Latin1Compare(filename+strlen(filename)-4,".tmp") == 0)
+    if (LocaleCompare(filename+strlen(filename)-4,".tmp") == 0)
       filename[strlen(filename)-4]='\0';
   return(status);
 }

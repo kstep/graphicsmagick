@@ -214,7 +214,7 @@ Export ModuleInfo *GetModuleInfo(const char *tag)
   if (tag == (char *) NULL)
     return(module_info_list);
   for (p=module_info_list; p != (ModuleInfo *) NULL; p=p->next)
-    if (Latin1Compare(p->tag,tag) == 0)
+    if (LocaleCompare(p->tag,tag) == 0)
       return(p);
   return((ModuleInfo *) NULL);
 }
@@ -277,7 +277,7 @@ static void InitializeModuleAliases(void)
                       for(entry=module_aliases;entry!=(ModuleAliases*)NULL;
                           entry=entry->next)
                         {
-                          if(Latin1Compare(entry->alias,alias) == 0)
+                          if(LocaleCompare(entry->alias,alias) == 0)
                             {
                               match=True;
                               break;
@@ -663,7 +663,7 @@ Export int LoadDynamicModule(const char* module)
   if(module_aliases != (ModuleAliases*)NULL)
     {
       for(p=module_aliases; p->next != (ModuleAliases*)NULL; p=p->next)
-        if(Latin1Compare(p->alias,module) == 0)
+        if(LocaleCompare(p->alias,module) == 0)
           {
             strcpy(module_name,p->module);
             break;
@@ -779,9 +779,9 @@ Export ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
     {
       for (p=module_info_list; p->next != (ModuleInfo *) NULL; p=p->next)
         {
-          if (Latin1Compare(p->tag,entry->tag) >= 0)
+          if (LocaleCompare(p->tag,entry->tag) >= 0)
             {
-              if (Latin1Compare(p->tag,entry->tag) == 0)
+              if (LocaleCompare(p->tag,entry->tag) == 0)
                 {
                   p=p->previous;
                   UnregisterModuleInfo(entry->tag);
@@ -957,7 +957,7 @@ Export int UnregisterModuleInfo(const char *tag)
 
   for (p=module_info_list; p != (ModuleInfo *) NULL; p=p->next)
   {
-    if (Latin1Compare(p->tag,tag) == 0)
+    if (LocaleCompare(p->tag,tag) == 0)
       {
         FreeMemory((void **) &p->tag);
         if (p->previous != (ModuleInfo *) NULL)

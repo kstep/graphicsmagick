@@ -759,7 +759,7 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
           x=0;
           y=0;
         }
-      if (Latin1Compare(next->magick,"NULL") != 0)
+      if (LocaleCompare(next->magick,"NULL") != 0)
         {
           /*
             Composite background next with tile next.

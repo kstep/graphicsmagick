@@ -96,7 +96,7 @@ static unsigned int IsVIFF(const unsigned char *magick,
 {
   if (length < 2)
     return(False);
-  if (LatinNCompare((char *) magick,"\253\1",2) == 0)
+  if (LocaleNCompare((char *) magick,"\253\1",2) == 0)
     return(True);
   return(False);
 }

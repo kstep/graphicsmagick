@@ -424,7 +424,7 @@ Export int ImageFormatConflict(const char *magick)
     status=GetVInfo(index,p,&volume,&number_bytes);
     if (status)
       return(False);
-    if (Latin1Compare(p2cstr(p),magick) == 0)
+    if (LocaleCompare(p2cstr(p),magick) == 0)
       return(True);
   }
   return(False);

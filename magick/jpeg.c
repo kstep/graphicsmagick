@@ -145,7 +145,7 @@ static unsigned int IsJPEG(const unsigned char *magick,
 {
   if (length < 3)
     return(False);
-  if (LatinNCompare((char *) magick,"\377\330\377",3) == 0)
+  if (LocaleNCompare((char *) magick,"\377\330\377",3) == 0)
     return(True);
   return(False);
 }
@@ -269,7 +269,7 @@ static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
   length-=2;
   for (i=0; i < 12; i++)
     magick[i]=GetCharacter(jpeg_info);
-  if (Latin1Compare(magick,"ICC_PROFILE") != 0)
+  if (LocaleCompare(magick,"ICC_PROFILE") != 0)
     {
       /*
         Not a ICC profile, return.
@@ -360,9 +360,8 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
   length-=2;
 #ifdef GET_ONLY_IPTC_DATA
   /*
-    The following tries to find the beginning of
-    the IPTC portion of the binary data
-   */
+    Find the beginning of the IPTC portion of the binary data.
+  */
   for (*tag='\0'; length > 0; )
   {
     *tag=GetCharacter(jpeg_info);
@@ -374,14 +373,13 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
   taglen=2;
 #else
   /*
-    The following validates that this was written
-    as a Photoshop resource format slug
-   */
+    Validate that this was written as a Photoshop resource format slug.
+  */
   for (i=0; i < 10; i++)
     magick[i]=GetCharacter(jpeg_info);
   magick[10]='\0';
   length-=10;
-  if (Latin1Compare(magick,"Photoshop ") != 0)
+  if (LocaleCompare(magick,"Photoshop ") != 0)
     {
       /*
         Not a ICC profile, return.
@@ -413,9 +411,8 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
   /*
-    Read the payload of this binary data, decoding
-    is left as a excercise for the application.
-   */
+    Read the payload of this binary data.
+  */
   p=image->iptc_profile.info;
   image->iptc_profile.length=length+taglen;
 #ifdef GET_ONLY_IPTC_DATA
@@ -525,21 +522,17 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_pixels=(JSAMPLE *) NULL;
   if (setjmp(error_recovery))
     {
-      /*
-        JPEG image is corrupt.
-      */
       if (jpeg_pixels != (JSAMPLE *) NULL)
         FreeMemory((void **) &jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
-      DestroyImage(image);
-      return((Image *) NULL);
+      ThrowReaderException(CorruptImageWarning,"Corrupt JPEG image",image);
     }
   jpeg_create_decompress(&jpeg_info);
   JPEGSourceManager(&jpeg_info,image);
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
   jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadColorProfile);
   jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,ReadNewsProfile);
-  (void) jpeg_read_header(&jpeg_info,True);
+  i=jpeg_read_header(&jpeg_info,True);
   if (jpeg_info.out_color_space == JCS_CMYK)
     image->colorspace=CMYKColorspace;
   if (jpeg_info.saw_JFIF_marker)
@@ -1044,7 +1037,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.input_components=3;
   jpeg_info.data_precision=image->depth <= 8 ? 8 : 12;
   jpeg_info.in_color_space=JCS_RGB;
-  if (Latin1Compare(image_info->magick,"JPEG24") != 0)
+  if (LocaleCompare(image_info->magick,"JPEG24") != 0)
     if (IsGrayImage(image))
       {
         jpeg_info.input_components=1;

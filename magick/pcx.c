@@ -95,7 +95,7 @@ static unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LatinNCompare((char *) magick,"\261\150\336\72",4) == 0)
+  if (LocaleNCompare((char *) magick,"\261\150\336\72",4) == 0)
     return(True);
   return(False);
 }
@@ -134,9 +134,9 @@ static unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
-  if (LatinNCompare((char *) magick,"\12\2",2) == 0)
+  if (LocaleNCompare((char *) magick,"\12\2",2) == 0)
     return(True);
-  if (LatinNCompare((char *) magick,"\12\5",2) == 0)
+  if (LocaleNCompare((char *) magick,"\12\5",2) == 0)
     return(True);
   return(False);
 }
@@ -253,7 +253,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine if this is a PCX file.
   */
   page_table=(unsigned long *) NULL;
-  if (Latin1Compare(image_info->magick,"DCX") == 0)
+  if (LocaleCompare(image_info->magick,"DCX") == 0)
     {
       unsigned long
         magic;

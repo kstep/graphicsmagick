@@ -1918,9 +1918,9 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,
         */
         list_info.id=(~0);
         for (i=0; i < colors; i++)
-          if (Latin1Compare(colorlist[i],reply) >= 0)
+          if (LocaleCompare(colorlist[i],reply) >= 0)
             {
-              list_info.id=Latin1Compare(colorlist[i],reply) == 0 ? i : ~0;
+              list_info.id=LocaleCompare(colorlist[i],reply) == 0 ? i : ~0;
               break;
             }
         if ((i < slider_info.id) ||
@@ -3234,14 +3234,14 @@ Export int XConfirmWidget(Display *display,XWindows *windows,
         cancel_info.y=windows->widget.height-(cancel_info.height << 1);
         dismiss_info=cancel_info;
         dismiss_info.text=DismissButtonText;
-        if (Latin1Compare(qualifier,"Do you want to save it") == 0)
+        if (LocaleCompare(qualifier,"Do you want to save it") == 0)
           dismiss_info.text="Don't Save";
         dismiss_info.width=QuantumMargin+
           XTextWidth(font_info,dismiss_info.text,Extent(dismiss_info.text));
         dismiss_info.x=(windows->widget.width >> 1)-(dismiss_info.width >> 1);
         yes_info=cancel_info;
         yes_info.text=YesButtonText;
-        if (Latin1Compare(qualifier,"Do you want to save it") == 0)
+        if (LocaleCompare(qualifier,"Do you want to save it") == 0)
           yes_info.text="Save";
         yes_info.width=QuantumMargin+
           XTextWidth(font_info,yes_info.text,Extent(yes_info.text));
@@ -3623,12 +3623,12 @@ Export int XDialogWidget(Display *display,XWindows *windows,const char *action,
   /*
     Respond to X events.
   */
-  anomaly=(Latin1Compare(action,"Background") == 0) ||
-    (Latin1Compare(action,"New") == 0) ||
-    (Latin1Compare(action,"Quantize") == 0) ||
-    (Latin1Compare(action,"Resize") == 0) ||
-    (Latin1Compare(action,"Save") == 0) ||
-    (Latin1Compare(action,"Shade") == 0);
+  anomaly=(LocaleCompare(action,"Background") == 0) ||
+    (LocaleCompare(action,"New") == 0) ||
+    (LocaleCompare(action,"Quantize") == 0) ||
+    (LocaleCompare(action,"Resize") == 0) ||
+    (LocaleCompare(action,"Save") == 0) ||
+    (LocaleCompare(action,"Shade") == 0);
   state=UpdateConfigurationState;
   XSetCursorState(display,windows,True);
   do
@@ -3671,15 +3671,15 @@ Export int XDialogWidget(Display *display,XWindows *windows,const char *action,
         special_info.height=QuantumMargin >> 1;
         special_info.x=reply_info.x;
         special_info.y=action_info.y+action_info.height-special_info.height;
-        if (Latin1Compare(action,"Background") == 0)
+        if (LocaleCompare(action,"Background") == 0)
           special_info.text="Backdrop";
-        if (Latin1Compare(action,"New") == 0)
+        if (LocaleCompare(action,"New") == 0)
           special_info.text="Gradation";
-        if (Latin1Compare(action,"Resize") == 0)
+        if (LocaleCompare(action,"Resize") == 0)
           special_info.text="Constrain ratio";
-        if (Latin1Compare(action,"Save") == 0)
+        if (LocaleCompare(action,"Save") == 0)
           special_info.text="Non-progressive";
-        if (Latin1Compare(action,"Shade") == 0)
+        if (LocaleCompare(action,"Shade") == 0)
           special_info.text="Color shading";
         /*
           Initialize text information.
@@ -4317,8 +4317,8 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,
   XGetWidgetInfo((char *) NULL,&north_info);
   XGetWidgetInfo((char *) NULL,&south_info);
   visible_files=0;
-  anomaly=(Latin1Compare(action,"Composite") == 0) ||
-    (Latin1Compare(action,"Open") == 0) || (Latin1Compare(action,"Map") == 0);
+  anomaly=(LocaleCompare(action,"Composite") == 0) ||
+    (LocaleCompare(action,"Open") == 0) || (LocaleCompare(action,"Map") == 0);
   delay=SuspendTime << 2;
   state=UpdateConfigurationState;
   do
@@ -4550,9 +4550,9 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,
         */
         list_info.id=(~0);
         for (i=0; i < files; i++)
-          if (Latin1Compare(filelist[i],reply) >= 0)
+          if (LocaleCompare(filelist[i],reply) >= 0)
             {
-              list_info.id=Latin1Compare(filelist[i],reply) == 0 ? i : ~0;
+              list_info.id=LocaleCompare(filelist[i],reply) == 0 ? i : ~0;
               break;
             }
         if ((i < slider_info.id) || (i >= (int) (slider_info.id+visible_files)))
@@ -5761,9 +5761,9 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,
         */
         list_info.id=(~0);
         for (i=0; i < fonts; i++)
-          if (Latin1Compare(fontlist[i],reply) >= 0)
+          if (LocaleCompare(fontlist[i],reply) >= 0)
             {
-              list_info.id=Latin1Compare(fontlist[i],reply) == 0 ? i : ~0;
+              list_info.id=LocaleCompare(fontlist[i],reply) == 0 ? i : ~0;
               break;
             }
         if ((i < slider_info.id) || (i >= (int) (slider_info.id+visible_fonts)))
@@ -6808,7 +6808,7 @@ Export void XListBrowserWidget(Display *display,XWindows *windows,
         list_info.y=scroll_info.y;
         if (!window_info->mapped)
           for (i=0; i < entries; i++)
-            if (Latin1Compare(list[i],reply) == 0)
+            if (LocaleCompare(list[i],reply) == 0)
               {
                 list_info.id=i;
                 slider_info.id=i-(visible_entries >> 1);

@@ -486,7 +486,7 @@ Export void XAnimateBackgroundImage(Display *display,
   resources=(*resource_info);
   window_info.id=(Window) NULL;
   root_window=XRootWindow(display,XDefaultScreen(display));
-  if (Latin1Compare(resources.window_id,"root") == 0)
+  if (LocaleCompare(resources.window_id,"root") == 0)
     window_info.id=root_window;
   else
     {
@@ -1932,7 +1932,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
                 /*
                   XDND.
                 */
-                if (LatinNCompare((char *) data,"file:",5) != 0)
+                if (LocaleNCompare((char *) data,"file:",5) != 0)
                   {
                     XFree((void *) data);
                     break;
@@ -2187,9 +2187,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
           {
             if (windows->backdrop.id != (Window) NULL)
               XInstallColormap(display,map_info->colormap);
-            if (Latin1Compare(images[0]->magick,"LOGO") == 0)
+            if (LocaleCompare(images[0]->magick,"LOGO") == 0)
               {
-                if (Latin1Compare(displayed_image->filename,"Untitled") == 0)
+                if (LocaleCompare(displayed_image->filename,"Untitled") == 0)
                   loaded_image=XMagickCommand(display,resource_info,windows,
                     OpenCommand,&image,&state);
                 else

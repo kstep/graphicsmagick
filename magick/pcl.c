@@ -95,9 +95,9 @@ static unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LatinNCompare((char *) magick,"\033E\033&",4) == 0)
+  if (LocaleNCompare((char *) magick,"\033E\033&",4) == 0)
     return(False);
-  if (LatinNCompare((char *) magick,"\033E\033",3) == 0)
+  if (LocaleNCompare((char *) magick,"\033E\033",3) == 0)
     return(True);
   return(False);
 }
@@ -298,7 +298,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
         image->page.height,image->page.x,image->page.y);
     else
-      if (Latin1Compare(image_info->magick,"PCL") == 0)
+      if (LocaleCompare(image_info->magick,"PCL") == 0)
         (void) strcpy(geometry,PSPageGeometry);
   (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
   (void) GetGeometry(geometry,&media_info.x,&media_info.y,

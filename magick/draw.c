@@ -936,31 +936,31 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     while (isspace((int) (*p)) && (*p != '\0'))
       p++;
     n=0;
-    if (Latin1Compare("antialias",keyword) == 0)
+    if (LocaleCompare("antialias",keyword) == 0)
       {
         (void) sscanf(p,"%u%n",&clone_info->antialias,&n);
         p+=n;
         continue;
       }
-    if (Latin1Compare("fill",keyword) == 0)
+    if (LocaleCompare("fill",keyword) == 0)
       {
         (void) sscanf(p,"%u%n",&clone_info->fill,&n);
         p+=n;
         continue;
       }
-    if (Latin1Compare("linewidth",keyword) == 0)
+    if (LocaleCompare("linewidth",keyword) == 0)
       {
         (void) sscanf(p,"%lf%n",&clone_info->linewidth,&n);
         p+=n;
         continue;
       }
-    if (Latin1Compare("opacity",keyword) == 0)
+    if (LocaleCompare("opacity",keyword) == 0)
       {
         (void) sscanf(p,"%u%n",&clone_info->opacity,&n);
         p+=n;
         continue;
       }
-    if (Latin1Compare("pen",keyword) == 0)
+    if (LocaleCompare("pen",keyword) == 0)
       {
         for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
           keyword[x]=(*p++);
@@ -971,19 +971,19 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         SetImage(clone_info->tile,(Quantum) (Opaque*clone_info->opacity/100.0));
         continue;
       }
-    if (Latin1Compare("pointsize",keyword) == 0)
+    if (LocaleCompare("pointsize",keyword) == 0)
       {
         (void) sscanf(p,"%lf%n",&clone_info->pointsize,&n);
         p+=n;
         continue;
       }
-    if (Latin1Compare("rotate",keyword) == 0)
+    if (LocaleCompare("rotate",keyword) == 0)
       {
         (void) sscanf(p,"%lf%n",&clone_info->rotate,&n);
         p+=n;
         continue;
       }
-    if (Latin1Compare("translate",keyword) == 0)
+    if (LocaleCompare("translate",keyword) == 0)
       {
         (void) sscanf(p,"%lf%lf%n",&clone_info->translate.x,
           &clone_info->translate.y,&n);
@@ -993,38 +993,38 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         p+=n;
         continue;
       }
-    if (LatinNCompare("fill",keyword,4) == 0)
+    if (LocaleNCompare("fill",keyword,4) == 0)
       {
         (void) strcpy(keyword,keyword+4);
         clone_info->fill=True;
       }
-    if (Latin1Compare("Point",keyword) == 0)
+    if (LocaleCompare("Point",keyword) == 0)
       primitive_type=PointPrimitive;
-    if (Latin1Compare("Line",keyword) == 0)
+    if (LocaleCompare("Line",keyword) == 0)
       primitive_type=LinePrimitive;
-    if (Latin1Compare("Rectangle",keyword) == 0)
+    if (LocaleCompare("Rectangle",keyword) == 0)
       primitive_type=RectanglePrimitive;
-    if (Latin1Compare("RoundRectangle",keyword) == 0)
+    if (LocaleCompare("RoundRectangle",keyword) == 0)
       primitive_type=RoundRectanglePrimitive;
-    if (Latin1Compare("Arc",keyword) == 0)
+    if (LocaleCompare("Arc",keyword) == 0)
       primitive_type=ArcPrimitive;
-    if (Latin1Compare("Ellipse",keyword) == 0)
+    if (LocaleCompare("Ellipse",keyword) == 0)
       primitive_type=EllipsePrimitive;
-    if (Latin1Compare("Circle",keyword) == 0)
+    if (LocaleCompare("Circle",keyword) == 0)
       primitive_type=CirclePrimitive;
-    if (Latin1Compare("Polyline",keyword) == 0)
+    if (LocaleCompare("Polyline",keyword) == 0)
       primitive_type=PolylinePrimitive;
-    if (Latin1Compare("Polygon",keyword) == 0)
+    if (LocaleCompare("Polygon",keyword) == 0)
       primitive_type=PolygonPrimitive;
-    if (Latin1Compare("Bezier",keyword) == 0)
+    if (LocaleCompare("Bezier",keyword) == 0)
       primitive_type=BezierPrimitive;
-    if (Latin1Compare("Color",keyword) == 0)
+    if (LocaleCompare("Color",keyword) == 0)
       primitive_type=ColorPrimitive;
-    if (Latin1Compare("Matte",keyword) == 0)
+    if (LocaleCompare("Matte",keyword) == 0)
       primitive_type=MattePrimitive;
-    if (Latin1Compare("Text",keyword) == 0)
+    if (LocaleCompare("Text",keyword) == 0)
       primitive_type=TextPrimitive;
-    if (Latin1Compare("Image",keyword) == 0)
+    if (LocaleCompare("Image",keyword) == 0)
       primitive_type=ImagePrimitive;
     if (primitive_type == UndefinedPrimitive)
       break;
@@ -1227,19 +1227,19 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         keyword[x]='\0';
         if (*keyword == '\0')
           break;
-        if (Latin1Compare("point",keyword) == 0)
+        if (LocaleCompare("point",keyword) == 0)
           primitive_info[j].method=PointMethod;
         else
-          if (Latin1Compare("replace",keyword) == 0)
+          if (LocaleCompare("replace",keyword) == 0)
             primitive_info[j].method=ReplaceMethod;
           else
-            if (Latin1Compare("floodfill",keyword) == 0)
+            if (LocaleCompare("floodfill",keyword) == 0)
               primitive_info[j].method=FloodfillMethod;
             else
-              if (Latin1Compare("filltoborder",keyword) == 0)
+              if (LocaleCompare("filltoborder",keyword) == 0)
                 primitive_info[j].method=FillToBorderMethod;
               else
-                if (Latin1Compare("reset",keyword) == 0)
+                if (LocaleCompare("reset",keyword) == 0)
                   primitive_info[j].method=ResetMethod;
                 else
                   primitive_type=UndefinedPrimitive;

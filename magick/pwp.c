@@ -89,7 +89,7 @@ static unsigned int IsPWP(const unsigned char *magick,const unsigned int length)
 {
   if (length < 5)
     return(False);
-  if (LatinNCompare((char *) magick,"SFW95",5) == 0)
+  if (LocaleNCompare((char *) magick,"SFW95",5) == 0)
     return(True);
   return(False);
 }
@@ -167,7 +167,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (pwp_image->file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",pwp_image);
   status=ReadBlob(pwp_image,5,(char *) magick);
-  if ((status == False) || (LatinNCompare((char *) magick,"SFW95",5) != 0))
+  if ((status == False) || (LocaleNCompare((char *) magick,"SFW95",5) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a PWP image file",pwp_image);
   clone_info=CloneImageInfo(image_info);
   TemporaryFilename(clone_info->filename);
@@ -179,12 +179,12 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < 17; i++)
         magick[i]=magick[i+1];
       magick[17]=c;
-      if (LatinNCompare((char *) (magick+12),"SFW94A",6) == 0)
+      if (LocaleNCompare((char *) (magick+12),"SFW94A",6) == 0)
         break;
     }
     if (c == EOF)
       break;
-    if (LatinNCompare((char *) (magick+12),"SFW94A",6) != 0)
+    if (LocaleNCompare((char *) (magick+12),"SFW94A",6) != 0)
       ThrowReaderException(CorruptImageWarning,"Not a PWP image file",
         pwp_image);
     /*

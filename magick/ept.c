@@ -95,7 +95,7 @@ static unsigned int IsEPT(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LatinNCompare((char *) magick,"\305\320\323\306",4) == 0)
+  if (LocaleNCompare((char *) magick,"\305\320\323\306",4) == 0)
     return(True);
   return(False);
 }
@@ -212,7 +212,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     tiff_length;
 
   ps_file=(FILE *) NULL;
-  if (Latin1Compare(image_info->magick,"PS") == 0)
+  if (LocaleCompare(image_info->magick,"PS") == 0)
     ps_file=fopen(image->magick_filename,ReadBinaryType);
   if (ps_file != (FILE *) NULL)
     {

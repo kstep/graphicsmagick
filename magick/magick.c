@@ -223,13 +223,13 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   if (tag == (char *) NULL)
     return(magick_info_list);
   for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
-    if (Latin1Compare(p->tag,tag) == 0)
+    if (LocaleCompare(p->tag,tag) == 0)
       return(p);
 #if 0
   /* Try loading format module */
   if(LoadModule(tag))
     for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
-      if (Latin1Compare(p->tag,tag) == 0)
+      if (LocaleCompare(p->tag,tag) == 0)
         return(p);
 #endif
   return((MagickInfo *) NULL);
@@ -328,9 +328,9 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
     {
       for (p=magick_info_list; p->next != (MagickInfo *) NULL; p=p->next)
       {
-        if (Latin1Compare(p->tag,entry->tag) >= 0)
+        if (LocaleCompare(p->tag,entry->tag) >= 0)
           {
-            if (Latin1Compare(p->tag,entry->tag) == 0)
+            if (LocaleCompare(p->tag,entry->tag) == 0)
               {
                 p=p->previous;
                 UnregisterMagickInfo(entry->tag);
@@ -440,7 +440,7 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
 
   for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
     {
-      if (Latin1Compare(p->tag,tag) == 0)
+      if (LocaleCompare(p->tag,tag) == 0)
         {
           FreeMemory((void **) &p->tag);
           FreeMemory((void **) &p->description);

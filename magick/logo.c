@@ -3834,10 +3834,10 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
   Image
     *image;
 
-  if (Latin1Compare(image_info->magick,"GRANITE") == 0)
+  if (LocaleCompare(image_info->magick,"GRANITE") == 0)
     image=BlobToImage(image_info,GraniteImage,GraniteImageExtent,exception);
   else
-    if (Latin1Compare(image_info->magick,"NETSCAPE") == 0)
+    if (LocaleCompare(image_info->magick,"NETSCAPE") == 0)
       image=BlobToImage(image_info,NetscapeImage,NetscapeImageExtent,exception);
     else
       image=BlobToImage(image_info,LogoImage,LogoImageExtent,exception);

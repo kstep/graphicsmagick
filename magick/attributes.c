@@ -142,7 +142,7 @@ Export ImageAttribute *GetImageAttribute(const Image *image,const char *key)
   if (key == (char *) NULL)
     return(image->attributes);
   for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
-    if (Latin1Compare(key,p->key) == 0)
+    if (LocaleCompare(key,p->key) == 0)
       break;
   return(p);
 }
@@ -202,7 +202,7 @@ Export unsigned int SetImageAttribute(Image *image,const char *key,
         Delete attribute from the image attributes list.
       */
       for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
-        if (Latin1Compare(key,p->key) == 0)
+        if (LocaleCompare(key,p->key) == 0)
           break;
       if (p == (ImageAttribute *) NULL)
         return(False);
@@ -226,9 +226,9 @@ Export unsigned int SetImageAttribute(Image *image,const char *key,
     }
   if (*value == '\0')
     return(False);
-  if (Latin1Compare(key,"Label") == 0)
+  if (LocaleCompare(key,"Label") == 0)
     while (SetImageAttribute(image,"Label",(char *) NULL) != False);
-  if (Latin1Compare(key,"Signature") == 0)
+  if (LocaleCompare(key,"Signature") == 0)
     while (SetImageAttribute(image,"Signature",(char *) NULL) != False);
   attribute=(ImageAttribute *) AllocateMemory(sizeof(ImageAttribute));
   if (attribute == (ImageAttribute *) NULL)
@@ -245,7 +245,7 @@ Export unsigned int SetImageAttribute(Image *image,const char *key,
     }
   for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
   {
-    if (Latin1Compare(attribute->key,p->key) == 0)
+    if (LocaleCompare(attribute->key,p->key) == 0)
       break;
     if (p->next == (ImageAttribute *) NULL)
       break;

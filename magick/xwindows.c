@@ -116,13 +116,13 @@ Export unsigned int IsTrue(const char *message)
 {
   if (message == (char *) NULL)
     return(False);
-  if (Latin1Compare(message,"true") == 0)
+  if (LocaleCompare(message,"true") == 0)
     return(True);
-  if (Latin1Compare(message,"on") == 0)
+  if (LocaleCompare(message,"on") == 0)
     return(True);
-  if (Latin1Compare(message,"yes") == 0)
+  if (LocaleCompare(message,"yes") == 0)
     return(True);
-  if (Latin1Compare(message,"1") == 0)
+  if (LocaleCompare(message,"1") == 0)
     return(True);
   return(False);
 }
@@ -888,43 +888,43 @@ Export XVisualInfo *XBestVisualInfo(Display *display,
       /*
         Restrict visual search by class or visual id.
       */
-      if (Latin1Compare("staticgray",visual_type) == 0)
+      if (LocaleCompare("staticgray",visual_type) == 0)
         {
           visual_mask|=VisualClassMask;
           visual_template.class=StaticGray;
         }
       else
-        if (Latin1Compare("grayscale",visual_type) == 0)
+        if (LocaleCompare("grayscale",visual_type) == 0)
           {
             visual_mask|=VisualClassMask;
             visual_template.class=GrayScale;
           }
         else
-          if (Latin1Compare("staticcolor",visual_type) == 0)
+          if (LocaleCompare("staticcolor",visual_type) == 0)
             {
               visual_mask|=VisualClassMask;
               visual_template.class=StaticColor;
             }
           else
-            if (Latin1Compare("pseudocolor",visual_type) == 0)
+            if (LocaleCompare("pseudocolor",visual_type) == 0)
               {
                 visual_mask|=VisualClassMask;
                 visual_template.class=PseudoColor;
               }
             else
-              if (Latin1Compare("truecolor",visual_type) == 0)
+              if (LocaleCompare("truecolor",visual_type) == 0)
                 {
                   visual_mask|=VisualClassMask;
                   visual_template.class=TrueColor;
                 }
               else
-                if (Latin1Compare("directcolor",visual_type) == 0)
+                if (LocaleCompare("directcolor",visual_type) == 0)
                   {
                     visual_mask|=VisualClassMask;
                     visual_template.class=DirectColor;
                   }
                 else
-                  if (Latin1Compare("default",visual_type) == 0)
+                  if (LocaleCompare("default",visual_type) == 0)
                     {
                       visual_mask|=VisualIDMask;
                       visual_template.visualid=XVisualIDFromVisual(
@@ -988,13 +988,13 @@ Export XVisualInfo *XBestVisualInfo(Display *display,
       */
       root_window=XRootWindow(display,XDefaultScreen(display));
       status=0;
-      if (Latin1Compare(map_type,"list") != 0)
+      if (LocaleCompare(map_type,"list") != 0)
         {
           /*
             User specified Standard Colormap.
           */
           FormatString((char *) map_name,"RGB_%.1024s_MAP",map_type);
-          Latin1Upper(map_name);
+          LocaleUpper(map_name);
           map_property=XInternAtom(display,(char *) map_name,True);
           if (map_property != (Atom) NULL)
             status=XGetRGBColormaps(display,root_window,&map_list,&number_maps,
@@ -3110,9 +3110,9 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
   resource_info->border_width=atoi(resource_value);
   resource_value=XGetResourceClass(database,client_name,"colormap","shared");
   resource_info->colormap=UndefinedColormap;
-  if (Latin1Compare("private",resource_value) == 0)
+  if (LocaleCompare("private",resource_value) == 0)
     resource_info->colormap=PrivateColormap;
-  if (Latin1Compare("shared",resource_value) == 0)
+  if (LocaleCompare("shared",resource_value) == 0)
     resource_info->colormap=SharedColormap;
   if (resource_info->colormap == UndefinedColormap)
     MagickWarning(OptionWarning,"Unrecognized colormap type",resource_value);
@@ -3164,27 +3164,27 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
     "geometry",(char *) NULL);
   resource_value=XGetResourceClass(database,client_name,"gravity","Center");
   resource_info->gravity=(-1);
-  if (Latin1Compare("Forget",resource_value) == 0)
+  if (LocaleCompare("Forget",resource_value) == 0)
     resource_info->gravity=ForgetGravity;
-  if (Latin1Compare("NorthWest",resource_value) == 0)
+  if (LocaleCompare("NorthWest",resource_value) == 0)
     resource_info->gravity=NorthWestGravity;
-  if (Latin1Compare("North",resource_value) == 0)
+  if (LocaleCompare("North",resource_value) == 0)
     resource_info->gravity=NorthGravity;
-  if (Latin1Compare("NorthEast",resource_value) == 0)
+  if (LocaleCompare("NorthEast",resource_value) == 0)
     resource_info->gravity=NorthEastGravity;
-  if (Latin1Compare("West",resource_value) == 0)
+  if (LocaleCompare("West",resource_value) == 0)
     resource_info->gravity=WestGravity;
-  if (Latin1Compare("Center",resource_value) == 0)
+  if (LocaleCompare("Center",resource_value) == 0)
     resource_info->gravity=CenterGravity;
-  if (Latin1Compare("East",resource_value) == 0)
+  if (LocaleCompare("East",resource_value) == 0)
     resource_info->gravity=EastGravity;
-  if (Latin1Compare("SouthWest",resource_value) == 0)
+  if (LocaleCompare("SouthWest",resource_value) == 0)
     resource_info->gravity=SouthWestGravity;
-  if (Latin1Compare("South",resource_value) == 0)
+  if (LocaleCompare("South",resource_value) == 0)
     resource_info->gravity=SouthGravity;
-  if (Latin1Compare("SouthEast",resource_value) == 0)
+  if (LocaleCompare("SouthEast",resource_value) == 0)
     resource_info->gravity=SouthEastGravity;
-  if (Latin1Compare("Static",resource_value) == 0)
+  if (LocaleCompare("Static",resource_value) == 0)
     resource_info->gravity=StaticGravity;
   if (resource_info->gravity == (-1))
     {
@@ -3197,7 +3197,7 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
   resource_value=XGetResourceClass(database,client_name,"iconic","False");
   resource_info->iconic=IsTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"immutable",
-    Latin1Compare(client_name,"PerlMagick") == 0 ? "True" : "False");
+    LocaleCompare(client_name,"PerlMagick") == 0 ? "True" : "False");
   resource_info->immutable=IsTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"magnify","3");
   resource_info->magnify=atoi(resource_value);
@@ -4538,7 +4538,7 @@ Export Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
   if ((image_info->filename != (char *) NULL) &&
       (*image_info->filename != '\0'))
     {
-      if (Latin1Compare(image_info->filename,"root") == 0)
+      if (LocaleCompare(image_info->filename,"root") == 0)
         target=root;
       else
         {
@@ -8831,7 +8831,7 @@ Export Window XWindowByName(Display *display,const Window root_window,
   assert(root_window != (Window) NULL);
   assert(name != (char *) NULL);
   if (XGetWMName(display,root_window,&window_name) != 0)
-    if (Latin1Compare((char *) window_name.value,name) == 0)
+    if (LocaleCompare((char *) window_name.value,name) == 0)
       return(root_window);
   if (!XQueryTree(display,root_window,&child,&child,&children,&number_children))
     return((Window) NULL);

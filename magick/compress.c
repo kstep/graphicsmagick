@@ -652,7 +652,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
   bit>>=1;  \
   if ((bit & 0xff) == 0)   \
     {  \
-      if (Latin1Compare(image_info->magick,"FAX") == 0) \
+      if (LocaleCompare(image_info->magick,"FAX") == 0) \
         (void) WriteByte(image,byte);  \
       else \
         Ascii85Encode(image,(unsigned int) byte); \
@@ -703,7 +703,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
   */
   assert(image != (Image *) NULL);
   width=image->columns;
-  if (Latin1Compare(image_info->magick,"FAX") == 0)
+  if (LocaleCompare(image_info->magick,"FAX") == 0)
     width=Max(image->columns,1728);
   scanline=(unsigned char *) AllocateMemory(width+1);
   if (scanline == (unsigned char *) NULL)
@@ -730,7 +730,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
     }
   byte=0;
   bit=0x80;
-  if (Latin1Compare(image_info->magick,"FAX") != 0)
+  if (LocaleCompare(image_info->magick,"FAX") != 0)
     Ascii85Initialize();
   else
     {
@@ -834,12 +834,12 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
   */
   if (bit != 0x80)
     {
-      if (Latin1Compare(image_info->magick,"FAX") == 0)
+      if (LocaleCompare(image_info->magick,"FAX") == 0)
         (void) WriteByte(image,byte);
       else
         Ascii85Encode(image,(unsigned int) byte);
     }
-  if (Latin1Compare(image_info->magick,"FAX") != 0)
+  if (LocaleCompare(image_info->magick,"FAX") != 0)
     Ascii85Flush(image);
   if (huffman_image != image)
     DestroyImage(huffman_image);

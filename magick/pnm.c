@@ -190,7 +190,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         if (comment == (char *) NULL)
           return(0);
         q=comment+offset;
-        if (Latin1Compare(q,P7Comment) == 0)
+        if (LocaleCompare(q,P7Comment) == 0)
           *q='\0';
         (void) SetImageAttribute(image,"Comment",comment);
         FreeMemory((void **) &comment);
@@ -797,18 +797,18 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     (void) IsPseudoClass(image);
-    if (Latin1Compare(image_info->magick,"PPM") == 0)
+    if (LocaleCompare(image_info->magick,"PPM") == 0)
       image->class=DirectClass;
     magick=(char *) image_info->magick;
-    if (((Latin1Compare(magick,"PGM") == 0) && !IsGrayImage(image)) ||
-        ((Latin1Compare(magick,"PBM") == 0) && !IsMonochromeImage(image)))
+    if (((LocaleCompare(magick,"PGM") == 0) && !IsGrayImage(image)) ||
+        ((LocaleCompare(magick,"PBM") == 0) && !IsMonochromeImage(image)))
       {
         QuantizeInfo
           quantize_info;
 
         GetQuantizeInfo(&quantize_info);
         quantize_info.number_colors=MaxRGB+1;
-        if (Latin1Compare(image_info->magick,"PBM") == 0)
+        if (LocaleCompare(image_info->magick,"PBM") == 0)
           quantize_info.number_colors=2;
         quantize_info.dither=image_info->dither;
         quantize_info.colorspace=GRAYColorspace;
@@ -834,7 +834,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         format='6';
         if ((image_info->compression == NoCompression) || (image->depth > 8))
           format='3';
-        if ((Latin1Compare(magick,"PPM") != 0) && IsGrayImage(image))
+        if ((LocaleCompare(magick,"PPM") != 0) && IsGrayImage(image))
           {
             /*
               Grayscale PNM image.
@@ -843,7 +843,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if ((image_info->compression == NoCompression) ||
                 (image->depth > 8))
               format='2';
-            if (Latin1Compare(magick,"PGM") != 0)
+            if (LocaleCompare(magick,"PGM") != 0)
               if (image->colors == 2)
                 {
                   format='4';
@@ -852,7 +852,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 }
           }
       }
-    if (Latin1Compare(magick,"P7") == 0)
+    if (LocaleCompare(magick,"P7") == 0)
       {
         format='7';
         (void) strcpy(buffer,"P7 332\n");

@@ -346,15 +346,15 @@ static unsigned int IsBMP(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
-  if (LatinNCompare((char *) magick,"BM",2) == 0)
+  if (LocaleNCompare((char *) magick,"BM",2) == 0)
     return(True);
-  if (LatinNCompare((char *) magick,"IC",2) == 0)
+  if (LocaleNCompare((char *) magick,"IC",2) == 0)
     return(True);
-  if (LatinNCompare((char *) magick,"PI",2) == 0)
+  if (LocaleNCompare((char *) magick,"PI",2) == 0)
     return(True);
-  if (LatinNCompare((char *) magick,"CI",2) == 0)
+  if (LocaleNCompare((char *) magick,"CI",2) == 0)
     return(True);
-  if (LatinNCompare((char *) magick,"CP",2) == 0)
+  if (LocaleNCompare((char *) magick,"CP",2) == 0)
     return(True);
   return(False);
 }
@@ -491,7 +491,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify BMP identifier.
     */
     start_position=TellBlob(image)-2;
-    if ((status == False) || (LatinNCompare((char *) magick,"BM",2) != 0))
+    if ((status == False) || (LocaleNCompare((char *) magick,"BM",2) != 0))
       ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     bmp_header.file_size=LSBFirstReadLong(image);
     bmp_header.reserved[0]=LSBFirstReadShort(image);
@@ -853,7 +853,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     *magick='\0';
     (void) ReadBlob(image,2,(char *) magick);
-    if (LatinNCompare((char *) magick,"BM",2) == 0)
+    if (LocaleNCompare((char *) magick,"BM",2) == 0)
       {
         /*
           Allocate next image structure.
@@ -867,7 +867,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=image->next;
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
-  } while (LatinNCompare((char *) magick,"BM",2) == 0);
+  } while (LocaleNCompare((char *) magick,"BM",2) == 0);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -1051,7 +1051,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     TransformRGBImage(image,RGBColorspace);
     bmp_header.file_size=14+40;
     bmp_header.offset_bits=14+40;
-    if ((Latin1Compare(image_info->magick,"BMP24") == 0) ||
+    if ((LocaleCompare(image_info->magick,"BMP24") == 0) ||
         (!IsPseudoClass(image) && !IsGrayImage(image)))
       {
         /*

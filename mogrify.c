@@ -485,29 +485,29 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   image_info->colorspace=UndefinedColorspace;
-                  if (Latin1Compare("cmyk",option) == 0)
+                  if (LocaleCompare("cmyk",option) == 0)
                     image_info->colorspace=CMYKColorspace;
-                  if (Latin1Compare("gray",option) == 0)
+                  if (LocaleCompare("gray",option) == 0)
                     image_info->colorspace=GRAYColorspace;
-                  if (Latin1Compare("ohta",option) == 0)
+                  if (LocaleCompare("ohta",option) == 0)
                     image_info->colorspace=OHTAColorspace;
-                  if (Latin1Compare("rgb",option) == 0)
+                  if (LocaleCompare("rgb",option) == 0)
                     image_info->colorspace=RGBColorspace;
-                  if (Latin1Compare("srgb",option) == 0)
+                  if (LocaleCompare("srgb",option) == 0)
                     image_info->colorspace=sRGBColorspace;
-                  if (Latin1Compare("transparent",option) == 0)
+                  if (LocaleCompare("transparent",option) == 0)
                     image_info->colorspace=TransparentColorspace;
-                  if (Latin1Compare("xyz",option) == 0)
+                  if (LocaleCompare("xyz",option) == 0)
                     image_info->colorspace=XYZColorspace;
-                  if (Latin1Compare("ycbcr",option) == 0)
+                  if (LocaleCompare("ycbcr",option) == 0)
                     image_info->colorspace=YCbCrColorspace;
-                  if (Latin1Compare("ycc",option) == 0)
+                  if (LocaleCompare("ycc",option) == 0)
                     image_info->colorspace=YCCColorspace;
-                  if (Latin1Compare("yiq",option) == 0)
+                  if (LocaleCompare("yiq",option) == 0)
                     image_info->colorspace=YIQColorspace;
-                  if (Latin1Compare("ypbpr",option) == 0)
+                  if (LocaleCompare("ypbpr",option) == 0)
                     image_info->colorspace=YPbPrColorspace;
-                  if (Latin1Compare("yuv",option) == 0)
+                  if (LocaleCompare("yuv",option) == 0)
                     image_info->colorspace=YUVColorspace;
                   if (image_info->colorspace == UndefinedColorspace)
                     MagickError(OptionError,"Invalid colorspace type",option);
@@ -534,21 +534,21 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   image_info->compression=UndefinedCompression;
-                  if (Latin1Compare("None",option) == 0)
+                  if (LocaleCompare("None",option) == 0)
                     image_info->compression=NoCompression;
-                  if (Latin1Compare("BZip",option) == 0)
+                  if (LocaleCompare("BZip",option) == 0)
                     image_info->compression=BZipCompression;
-                  if (Latin1Compare("Fax",option) == 0)
+                  if (LocaleCompare("Fax",option) == 0)
                     image_info->compression=FaxCompression;
-                  if (Latin1Compare("Group4",option) == 0)
+                  if (LocaleCompare("Group4",option) == 0)
                     image_info->compression=Group4Compression;
-                  if (Latin1Compare("JPEG",option) == 0)
+                  if (LocaleCompare("JPEG",option) == 0)
                     image_info->compression=JPEGCompression;
-                  if (Latin1Compare("LZW",option) == 0)
+                  if (LocaleCompare("LZW",option) == 0)
                     image_info->compression=LZWCompression;
-                  if (Latin1Compare("RunlengthEncoded",option) == 0)
+                  if (LocaleCompare("RunlengthEncoded",option) == 0)
                     image_info->compression=RunlengthEncodedCompression;
-                  if (Latin1Compare("Zip",option) == 0)
+                  if (LocaleCompare("Zip",option) == 0)
                     image_info->compression=ZipCompression;
                   if (image_info->compression == UndefinedCompression)
                     MagickError(OptionError,"Invalid compression type",option);
@@ -620,7 +620,7 @@ int main(int argc,char **argv)
             }
           if (strncmp("despeckle",option+1,3) == 0)
             break;
-          if (Latin1Compare("display",option+1) == 0)
+          if (LocaleCompare("display",option+1) == 0)
             {
               image_info->server_name=(char *) NULL;
               if (*option == '-')
@@ -707,35 +707,35 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   filter=UndefinedFilter;
-                  if (Latin1Compare("Point",option) == 0)
+                  if (LocaleCompare("Point",option) == 0)
                     filter=PointFilter;
-                  if (Latin1Compare("Box",option) == 0)
+                  if (LocaleCompare("Box",option) == 0)
                     filter=BoxFilter;
-                  if (Latin1Compare("Triangle",option) == 0)
+                  if (LocaleCompare("Triangle",option) == 0)
                     filter=TriangleFilter;
-                  if (Latin1Compare("Hermite",option) == 0)
+                  if (LocaleCompare("Hermite",option) == 0)
                     filter=HermiteFilter;
-                  if (Latin1Compare("Hanning",option) == 0)
+                  if (LocaleCompare("Hanning",option) == 0)
                     filter=HanningFilter;
-                  if (Latin1Compare("Hamming",option) == 0)
+                  if (LocaleCompare("Hamming",option) == 0)
                     filter=HammingFilter;
-                  if (Latin1Compare("Blackman",option) == 0)
+                  if (LocaleCompare("Blackman",option) == 0)
                     filter=BlackmanFilter;
-                  if (Latin1Compare("Gaussian",option) == 0)
+                  if (LocaleCompare("Gaussian",option) == 0)
                     filter=GaussianFilter;
-                  if (Latin1Compare("Quadratic",option) == 0)
+                  if (LocaleCompare("Quadratic",option) == 0)
                     filter=QuadraticFilter;
-                  if (Latin1Compare("Cubic",option) == 0)
+                  if (LocaleCompare("Cubic",option) == 0)
                     filter=CubicFilter;
-                  if (Latin1Compare("Catrom",option) == 0)
+                  if (LocaleCompare("Catrom",option) == 0)
                     filter=CatromFilter;
-                  if (Latin1Compare("Mitchell",option) == 0)
+                  if (LocaleCompare("Mitchell",option) == 0)
                     filter=MitchellFilter;
-                  if (Latin1Compare("Lanczos",option) == 0)
+                  if (LocaleCompare("Lanczos",option) == 0)
                     filter=LanczosFilter;
-                  if (Latin1Compare("Bessel",option) == 0)
+                  if (LocaleCompare("Bessel",option) == 0)
                     filter=BesselFilter;
-                  if (Latin1Compare("Sinc",option) == 0)
+                  if (LocaleCompare("Sinc",option) == 0)
                     filter=SincFilter;
                   if (filter == UndefinedFilter)
                     MagickError(OptionError,"Invalid filter type",option);
@@ -809,7 +809,7 @@ int main(int argc,char **argv)
                 MagickError(OptionError,"Missing value",option);
               break;
             }
-          if (Latin1Compare("gaussian",option+1) == 0)
+          if (LocaleCompare("gaussian",option+1) == 0)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%d",&x))
@@ -838,23 +838,23 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  if (Latin1Compare("NorthWest",option) == 0)
+                  if (LocaleCompare("NorthWest",option) == 0)
                     gravity=NorthWestGravity;
-                  if (Latin1Compare("North",option) == 0)
+                  if (LocaleCompare("North",option) == 0)
                     gravity=NorthGravity;
-                  if (Latin1Compare("NorthEast",option) == 0)
+                  if (LocaleCompare("NorthEast",option) == 0)
                     gravity=NorthEastGravity;
-                  if (Latin1Compare("West",option) == 0)
+                  if (LocaleCompare("West",option) == 0)
                     gravity=WestGravity;
-                  if (Latin1Compare("Center",option) == 0)
+                  if (LocaleCompare("Center",option) == 0)
                     gravity=CenterGravity;
-                  if (Latin1Compare("East",option) == 0)
+                  if (LocaleCompare("East",option) == 0)
                     gravity=EastGravity;
-                  if (Latin1Compare("SouthWest",option) == 0)
+                  if (LocaleCompare("SouthWest",option) == 0)
                     gravity=SouthWestGravity;
-                  if (Latin1Compare("South",option) == 0)
+                  if (LocaleCompare("South",option) == 0)
                     gravity=SouthGravity;
-                  if (Latin1Compare("SouthEast",option) == 0)
+                  if (LocaleCompare("SouthEast",option) == 0)
                     gravity=SouthEastGravity;
                   if (gravity == ForgetGravity)
                     MagickError(OptionError,"Invalid gravity type",option);
@@ -896,13 +896,13 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   image_info->interlace=UndefinedInterlace;
-                  if (Latin1Compare("None",option) == 0)
+                  if (LocaleCompare("None",option) == 0)
                     image_info->interlace=NoInterlace;
-                  if (Latin1Compare("Line",option) == 0)
+                  if (LocaleCompare("Line",option) == 0)
                     image_info->interlace=LineInterlace;
-                  if (Latin1Compare("Plane",option) == 0)
+                  if (LocaleCompare("Plane",option) == 0)
                     image_info->interlace=PlaneInterlace;
-                  if (Latin1Compare("Partition",option) == 0)
+                  if (LocaleCompare("Partition",option) == 0)
                     image_info->interlace=PartitionInterlace;
                   if (image_info->interlace == UndefinedInterlace)
                     MagickError(OptionError,"Invalid interlace type",option);
@@ -936,13 +936,13 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   layer=UndefinedLayer;
-                  if (Latin1Compare("Red",option) == 0)
+                  if (LocaleCompare("Red",option) == 0)
                     layer=RedLayer;
-                  if (Latin1Compare("Green",option) == 0)
+                  if (LocaleCompare("Green",option) == 0)
                     layer=GreenLayer;
-                  if (Latin1Compare("Blue",option) == 0)
+                  if (LocaleCompare("Blue",option) == 0)
                     layer=BlueLayer;
-                  if (Latin1Compare("Matte",option) == 0)
+                  if (LocaleCompare("Matte",option) == 0)
                     layer=MatteLayer;
                   if (layer == UndefinedLayer)
                     MagickError(OptionError,"Invalid layer type",option);
@@ -987,7 +987,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (Latin1Compare("matte",option+1) == 0)
+          if (LocaleCompare("matte",option+1) == 0)
             break;
           if (strncmp("mattecolor",option+1,6) == 0)
             {
@@ -1036,12 +1036,12 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  if ((Latin1Compare("Uniform",option) != 0) &&
-                      (Latin1Compare("Gaussian",option) != 0) &&
-                      (Latin1Compare("Multiplicative",option) != 0) &&
-                      (Latin1Compare("Impulse",option) != 0) &&
-                      (Latin1Compare("Laplacian",option) != 0) &&
-                      (Latin1Compare("Poisson",option) != 0))
+                  if ((LocaleCompare("Uniform",option) != 0) &&
+                      (LocaleCompare("Gaussian",option) != 0) &&
+                      (LocaleCompare("Multiplicative",option) != 0) &&
+                      (LocaleCompare("Impulse",option) != 0) &&
+                      (LocaleCompare("Laplacian",option) != 0) &&
+                      (LocaleCompare("Poisson",option) != 0))
                     MagickError(OptionError,"Invalid noise type",option);
                 }
               break;
@@ -1362,9 +1362,9 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   image_info->units=UndefinedResolution;
-                  if (Latin1Compare("PixelsPerInch",option) == 0)
+                  if (LocaleCompare("PixelsPerInch",option) == 0)
                     image_info->units=PixelsPerInchResolution;
-                  if (Latin1Compare("PixelsPerCentimeter",option) == 0)
+                  if (LocaleCompare("PixelsPerCentimeter",option) == 0)
                     image_info->units=PixelsPerCentimeterResolution;
                 }
               break;
@@ -1396,7 +1396,7 @@ int main(int argc,char **argv)
         }
         case 'w':
         {
-          if (Latin1Compare("wave",option+1) == 0)
+          if (LocaleCompare("wave",option+1) == 0)
             {
               i++;
               if ((i == argc) || !sscanf(argv[i],"%d",&x))
@@ -1440,7 +1440,7 @@ int main(int argc,char **argv)
             while ((*p != '.') && (p > (image->filename+1)))
               p--;
             p++;
-            if (Latin1Compare(p,image->magick) == 0)
+            if (LocaleCompare(p,image->magick) == 0)
               (void) strcpy(p,format);
             else
               {
@@ -1487,7 +1487,7 @@ int main(int argc,char **argv)
         if (image_info->verbose)
           DescribeImage(image,stderr,False);
         if ((format == (char *) NULL) && (status != False))
-          if (Latin1Compare(image_info->filename,"-") != 0)
+          if (LocaleCompare(image_info->filename,"-") != 0)
             {
               (void) remove(filename);
               (void) rename(image->filename,filename);

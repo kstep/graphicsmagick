@@ -3191,7 +3191,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           crop_info.y=windows->image.y+event.xbutton.y;
           XSetCursorState(display,windows,False);
           state|=ExitState;
-          if (Latin1Compare(windows->command.name,"Rectify") == 0)
+          if (LocaleCompare(windows->command.name,"Rectify") == 0)
             break;
           windows->command.name="Rectify";
           windows->command.data=0;
@@ -6796,7 +6796,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (*preview_type == '\0')
         break;
       for (i=0; PreviewTypes[i] != (char *) NULL; i++)
-        if (Latin1Compare(PreviewTypes[i],preview_type) == 0)
+        if (LocaleCompare(PreviewTypes[i],preview_type) == 0)
           break;
       if (PreviewTypes[i] == (char *) NULL)
         {
@@ -7922,7 +7922,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   image_info=CloneImageInfo(resource_info->image_info);
   (void) strcpy(image_info->filename,filename);
   SetImageInfo(image_info,False);
-  if (Latin1Compare(image_info->magick,"X") == 0)
+  if (LocaleCompare(image_info->magick,"X") == 0)
     {
       char
         seconds[MaxTextExtent];
@@ -7937,17 +7937,17 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         return((Image *) NULL);
       XDelay(display,1000*atoi(seconds));
     }
-  if ((Latin1Compare(image_info->magick,"CMYK") == 0) ||
-      (Latin1Compare(image_info->magick,"GRAY") == 0) ||
-      (Latin1Compare(image_info->magick,"MAP") == 0) ||
-      (Latin1Compare(image_info->magick,"Matte") == 0) ||
-      (Latin1Compare(image_info->magick,"RGB") == 0) ||
-      (Latin1Compare(image_info->magick,"RGBA") == 0) ||
-      (Latin1Compare(image_info->magick,"TEXT") == 0) ||
-      (Latin1Compare(image_info->magick,"TILE") == 0) ||
-      (Latin1Compare(image_info->magick,"UYVY") == 0) ||
-      (Latin1Compare(image_info->magick,"XC") == 0) ||
-      (Latin1Compare(image_info->magick,"YUV") == 0))
+  if ((LocaleCompare(image_info->magick,"CMYK") == 0) ||
+      (LocaleCompare(image_info->magick,"GRAY") == 0) ||
+      (LocaleCompare(image_info->magick,"MAP") == 0) ||
+      (LocaleCompare(image_info->magick,"Matte") == 0) ||
+      (LocaleCompare(image_info->magick,"RGB") == 0) ||
+      (LocaleCompare(image_info->magick,"RGBA") == 0) ||
+      (LocaleCompare(image_info->magick,"TEXT") == 0) ||
+      (LocaleCompare(image_info->magick,"TILE") == 0) ||
+      (LocaleCompare(image_info->magick,"UYVY") == 0) ||
+      (LocaleCompare(image_info->magick,"XC") == 0) ||
+      (LocaleCompare(image_info->magick,"YUV") == 0))
     {
       char
         geometry[MaxTextExtent];
@@ -7969,10 +7969,10 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   XCheckRefreshWindows(display,windows);
   (void) strcpy(image_info->filename,filename);
   handler=(MonitorHandler) NULL;
-  if (Latin1Compare(image_info->magick,"X") == 0)
+  if (LocaleCompare(image_info->magick,"X") == 0)
     handler=SetMonitorHandler((MonitorHandler) NULL);
   loaded_image=ReadImage(image_info,&exception);
-  if (Latin1Compare(image_info->magick,"X") == 0)
+  if (LocaleCompare(image_info->magick,"X") == 0)
     (void) SetMonitorHandler(handler);
   XSetCursorState(display,windows,False);
   if (loaded_image != (Image *) NULL)
@@ -9189,7 +9189,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           roi_info.y=windows->image.y+event.xbutton.y;
           XSetCursorState(display,windows,False);
           state|=ExitState;
-          if (Latin1Compare(windows->command.name,"Apply") == 0)
+          if (LocaleCompare(windows->command.name,"Apply") == 0)
             break;
           windows->command.name="Apply";
           windows->command.data=ApplyMenus;
@@ -10147,8 +10147,8 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   image_info=CloneImageInfo(resource_info->image_info);
   (void) strcpy(image_info->filename,filename);
   SetImageInfo(image_info,False);
-  if ((Latin1Compare(image_info->magick,"JPEG") == 0) ||
-      (Latin1Compare(image_info->magick,"JPG") == 0))
+  if ((LocaleCompare(image_info->magick,"JPEG") == 0) ||
+      (LocaleCompare(image_info->magick,"JPG") == 0))
     {
       char
         quality[MaxTextExtent];
@@ -10164,10 +10164,10 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       image_info->quality=atoi(quality);
       image_info->interlace=status ? NoInterlace : PlaneInterlace;
     }
-  if ((Latin1Compare(image_info->magick,"EPS") == 0) ||
-      (Latin1Compare(image_info->magick,"PDF") == 0) ||
-      (Latin1Compare(image_info->magick,"PS") == 0) ||
-      (Latin1Compare(image_info->magick,"PS2") == 0))
+  if ((LocaleCompare(image_info->magick,"EPS") == 0) ||
+      (LocaleCompare(image_info->magick,"PDF") == 0) ||
+      (LocaleCompare(image_info->magick,"PS") == 0) ||
+      (LocaleCompare(image_info->magick,"PS2") == 0))
     {
       char
         geometry[MaxTextExtent];
@@ -10176,7 +10176,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
         Request page geometry from user.
       */
       FormatString(geometry,PSPageGeometry);
-      if (Latin1Compare(image_info->magick,"PDF") == 0)
+      if (LocaleCompare(image_info->magick,"PDF") == 0)
         FormatString(geometry,PSPageGeometry);
       if (image_info->page != (char *) NULL)
         (void) strcpy(geometry,image_info->page);
@@ -11390,7 +11390,7 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
   resources=(*resource_info);
   window_info.id=(Window) NULL;
   root_window=XRootWindow(display,XDefaultScreen(display));
-  if (Latin1Compare(resources.window_id,"root") == 0)
+  if (LocaleCompare(resources.window_id,"root") == 0)
     window_info.id=root_window;
   else
     {
@@ -13298,9 +13298,9 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           {
             if (windows->backdrop.id != (Window) NULL)
               XInstallColormap(display,map_info->colormap);
-            if (Latin1Compare(displayed_image->magick,"LOGO") == 0)
+            if (LocaleCompare(displayed_image->magick,"LOGO") == 0)
               {
-                if (Latin1Compare(displayed_image->filename,"Untitled") == 0)
+                if (LocaleCompare(displayed_image->filename,"Untitled") == 0)
                   loaded_image=XOpenImage(display,resource_info,windows,False);
                 else
                   *state|=NextImageState | ExitState;

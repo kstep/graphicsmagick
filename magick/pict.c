@@ -447,7 +447,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
   if (bytes_per_line == 0)
     bytes_per_line=width;
   row_bytes=image->columns | 0x8000;
-  if ((Latin1Compare(image_info->magick,"PICT24") == 0) ||
+  if ((LocaleCompare(image_info->magick,"PICT24") == 0) ||
       (image->class == DirectClass))
     row_bytes=(4*image->columns) | 0x8000;
   /*
@@ -1403,7 +1403,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   pixmap.reserved=0;
   transfer_mode=0;
   if (!IsPseudoClass(image) ||
-      (Latin1Compare(image_info->magick,"PICT24") == 0))
+      (LocaleCompare(image_info->magick,"PICT24") == 0))
     {
       pixmap.component_count=image->matte ? 4 : 3;
       pixmap.pixel_type=16;
@@ -1417,7 +1417,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   */
   bytes_per_line=image->columns;
   if ((image->class == DirectClass) ||
-      (Latin1Compare(image_info->magick,"PICT24") == 0))
+      (LocaleCompare(image_info->magick,"PICT24") == 0))
     bytes_per_line*=image->matte ? 4 : 3;
   buffer=(unsigned char *) AllocateMemory(PictHeaderSize);
   packed_scanline=(unsigned char *) AllocateMemory(row_bytes+MaxCount);
@@ -1463,7 +1463,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   /*
     Write picture opcode, row bytes, and picture bounding box, and version.
   */
-  if ((Latin1Compare(image_info->magick,"PICT24") != 0) &&
+  if ((LocaleCompare(image_info->magick,"PICT24") != 0) &&
       (image->class == PseudoClass))
     MSBFirstWriteShort(image,PictPICTOp);
   else
@@ -1494,7 +1494,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   MSBFirstWriteLong(image,(unsigned long) pixmap.plane_bytes);
   MSBFirstWriteLong(image,(unsigned long) pixmap.table);
   MSBFirstWriteLong(image,(unsigned long) pixmap.reserved);
-  if ((Latin1Compare(image_info->magick,"PICT24") != 0) &&
+  if ((LocaleCompare(image_info->magick,"PICT24") != 0) &&
       (image->class == PseudoClass))
     {
       unsigned short
@@ -1535,7 +1535,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     Write picture data.
   */
   count=0;
-  if ((Latin1Compare(image_info->magick,"PICT24") != 0) &&
+  if ((LocaleCompare(image_info->magick,"PICT24") != 0) &&
       (image->class == PseudoClass))
     for (y=0; y < (int) image->rows; y++)
     {

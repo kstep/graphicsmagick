@@ -311,7 +311,7 @@ int main(int argc,char **argv)
     option=argv[i];
     if ((Extent(option) == 1) || ((*option != '-') && (*option != '+')))
       continue;
-    if (Latin1Compare("display",option+1) == 0)
+    if (LocaleCompare("display",option+1) == 0)
       {
         /*
           User specified server name.
@@ -352,13 +352,13 @@ int main(int argc,char **argv)
   resource_value=
     XGetResourceInstance(resource_database,client_name,"interlace","none");
   image_info->interlace=UndefinedInterlace;
-  if (Latin1Compare("None",resource_value) == 0)
+  if (LocaleCompare("None",resource_value) == 0)
     image_info->interlace=NoInterlace;
-  if (Latin1Compare("Line",resource_value) == 0)
+  if (LocaleCompare("Line",resource_value) == 0)
     image_info->interlace=LineInterlace;
-  if (Latin1Compare("Plane",resource_value) == 0)
+  if (LocaleCompare("Plane",resource_value) == 0)
     image_info->interlace=PlaneInterlace;
-  if (Latin1Compare("Partition",resource_value) == 0)
+  if (LocaleCompare("Partition",resource_value) == 0)
     image_info->interlace=PartitionInterlace;
   if (image_info->interlace == UndefinedInterlace)
     MagickWarning(OptionWarning,"Unrecognized interlace type",resource_value);
@@ -456,9 +456,9 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   resource_info.colormap=UndefinedColormap;
-                  if (Latin1Compare("private",option) == 0)
+                  if (LocaleCompare("private",option) == 0)
                     resource_info.colormap=PrivateColormap;
-                  if (Latin1Compare("shared",option) == 0)
+                  if (LocaleCompare("shared",option) == 0)
                     resource_info.colormap=SharedColormap;
                   if (resource_info.colormap == UndefinedColormap)
                     MagickError(OptionError,"Invalid colormap type",option);
@@ -487,33 +487,33 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   quantize_info->colorspace=UndefinedColorspace;
-                  if (Latin1Compare("cmyk",option) == 0)
+                  if (LocaleCompare("cmyk",option) == 0)
                     quantize_info->colorspace=CMYKColorspace;
-                  if (Latin1Compare("gray",option) == 0)
+                  if (LocaleCompare("gray",option) == 0)
                     {
                       quantize_info->colorspace=GRAYColorspace;
                       quantize_info->number_colors=256;
                       quantize_info->tree_depth=8;
                     }
-                  if (Latin1Compare("ohta",option) == 0)
+                  if (LocaleCompare("ohta",option) == 0)
                     quantize_info->colorspace=OHTAColorspace;
-                  if (Latin1Compare("rgb",option) == 0)
+                  if (LocaleCompare("rgb",option) == 0)
                     quantize_info->colorspace=RGBColorspace;
-                  if (Latin1Compare("srgb",option) == 0)
+                  if (LocaleCompare("srgb",option) == 0)
                     quantize_info->colorspace=sRGBColorspace;
-                  if (Latin1Compare("transparent",option) == 0)
+                  if (LocaleCompare("transparent",option) == 0)
                     quantize_info->colorspace=TransparentColorspace;
-                  if (Latin1Compare("xyz",option) == 0)
+                  if (LocaleCompare("xyz",option) == 0)
                     quantize_info->colorspace=XYZColorspace;
-                  if (Latin1Compare("ycbcr",option) == 0)
+                  if (LocaleCompare("ycbcr",option) == 0)
                     quantize_info->colorspace=YCbCrColorspace;
-                  if (Latin1Compare("ycc",option) == 0)
+                  if (LocaleCompare("ycc",option) == 0)
                     quantize_info->colorspace=YCCColorspace;
-                  if (Latin1Compare("yiq",option) == 0)
+                  if (LocaleCompare("yiq",option) == 0)
                     quantize_info->colorspace=YIQColorspace;
-                  if (Latin1Compare("ypbpr",option) == 0)
+                  if (LocaleCompare("ypbpr",option) == 0)
                     quantize_info->colorspace=YPbPrColorspace;
-                  if (Latin1Compare("yuv",option) == 0)
+                  if (LocaleCompare("yuv",option) == 0)
                     quantize_info->colorspace=YUVColorspace;
                   if (quantize_info->colorspace == UndefinedColorspace)
                     MagickError(OptionError,"Invalid colorspace type",option);
@@ -566,7 +566,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (Latin1Compare("display",option+1) == 0)
+          if (LocaleCompare("display",option+1) == 0)
             {
               image_info->server_name=(char *) NULL;
               if (*option == '-')
@@ -679,13 +679,13 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   image_info->interlace=UndefinedInterlace;
-                  if (Latin1Compare("None",option) == 0)
+                  if (LocaleCompare("None",option) == 0)
                     image_info->interlace=NoInterlace;
-                  if (Latin1Compare("Line",option) == 0)
+                  if (LocaleCompare("Line",option) == 0)
                     image_info->interlace=LineInterlace;
-                  if (Latin1Compare("Plane",option) == 0)
+                  if (LocaleCompare("Plane",option) == 0)
                     image_info->interlace=PlaneInterlace;
-                  if (Latin1Compare("Partition",option) == 0)
+                  if (LocaleCompare("Partition",option) == 0)
                     image_info->interlace=PartitionInterlace;
                   if (image_info->interlace == UndefinedInterlace)
                     MagickError(OptionError,"Invalid interlace type",option);
@@ -711,7 +711,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (Latin1Compare("matte",option+1) == 0)
+          if (LocaleCompare("matte",option+1) == 0)
             break;
           if (strncmp("mattecolor",option+1,6) == 0)
             {
@@ -923,7 +923,7 @@ int main(int argc,char **argv)
                 Form filename for multi-part images.
               */
               FormatString(filename,image_info->filename,scene);
-              if (Latin1Compare(filename,image_info->filename) == 0)
+              if (LocaleCompare(filename,image_info->filename) == 0)
                 FormatString(filename,"%.1024s[%u]",image_info->filename,scene);
               (void) strcpy(image_info->filename,filename);
             }

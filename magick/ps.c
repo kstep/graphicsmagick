@@ -95,9 +95,9 @@ static unsigned int IsPS(const unsigned char *magick,const unsigned int length)
 {
   if (length < 3)
     return(False);
-  if (LatinNCompare((char *) magick,"\004%!",3) == 0)
+  if (LocaleNCompare((char *) magick,"\004%!",3) == 0)
     return(True);
-  if (LatinNCompare((char *) magick,"%!",2) == 0)
+  if (LocaleNCompare((char *) magick,"%!",2) == 0)
     return(True);
   return(False);
 }
@@ -241,7 +241,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine page geometry from the Postscript bounding box.
   */
   filesize=0;
-  if (Latin1Compare(image_info->magick,"EPT") == 0)
+  if (LocaleCompare(image_info->magick,"EPT") == 0)
     {
       /*
         Dos binary file header.
@@ -260,7 +260,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   level=0;
   eps_level=0;
   p=command;
-  for (i=0; (Latin1Compare(image_info->magick,"EPT") != 0) || i < filesize; i++)
+  for (i=0; (LocaleCompare(image_info->magick,"EPT") != 0) || i < filesize; i++)
   {
     c=ReadByte(image);
     if (c == EOF)
@@ -271,21 +271,21 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       continue;
     *p='\0';
     p=command;
-    if (LatinNCompare(PostscriptLevel,command,Extent(PostscriptLevel)) == 0)
+    if (LocaleNCompare(PostscriptLevel,command,Extent(PostscriptLevel)) == 0)
       (void) sscanf(command,"%%!PS-Adobe-%d.0 EPSF-%d.0",&level,&eps_level);
-    if (LatinNCompare(ShowPage,command,Extent(ShowPage)) == 0)
+    if (LocaleNCompare(ShowPage,command,Extent(ShowPage)) == 0)
       eps_level=0;
     /*
       Parse a bounding box statement.
     */
     count=0;
-    if (LatinNCompare(BoundingBox,command,Extent(BoundingBox)) == 0)
+    if (LocaleNCompare(BoundingBox,command,Extent(BoundingBox)) == 0)
       count=sscanf(command,"%%%%BoundingBox: %lf %lf %lf %lf",&bounding_box.x1,
         &bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
-    if (LatinNCompare(DocumentMedia,command,Extent(DocumentMedia)) == 0)
+    if (LocaleNCompare(DocumentMedia,command,Extent(DocumentMedia)) == 0)
       count=sscanf(command,"%%%%DocumentMedia: %*s %lf %lf",&bounding_box.x2,
         &bounding_box.y2)+2;
-    if (LatinNCompare(PageBoundingBox,command,Extent(PageBoundingBox)) == 0)
+    if (LocaleNCompare(PageBoundingBox,command,Extent(PageBoundingBox)) == 0)
       count=sscanf(command,"%%%%PageBoundingBox: %lf %lf %lf %lf",
         &bounding_box.x1,&bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
     if (count != 4)
@@ -874,7 +874,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
           image->page.height,image->page.x,image->page.y);
       else
-        if (Latin1Compare(image_info->magick,"PS") == 0)
+        if (LocaleCompare(image_info->magick,"PS") == 0)
           (void) strcpy(geometry,PSPageGeometry);
     (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
     /*
@@ -902,7 +902,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         /*
           Output Postscript header.
         */
-        if (Latin1Compare(image_info->magick,"PS") == 0)
+        if (LocaleCompare(image_info->magick,"PS") == 0)
           (void) strcpy(buffer,"%!PS-Adobe-3.0\n");
         else
           (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n");
@@ -938,7 +938,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"%%LanguageLevel: 1\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
-        if (Latin1Compare(image_info->magick,"PS") != 0)
+        if (LocaleCompare(image_info->magick,"PS") != 0)
           {
             (void) strcpy(buffer,"%%Pages: 0\n");
             (void) WriteBlob(image,strlen(buffer),buffer);
@@ -976,9 +976,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,strlen(buffer),buffer);
         (void) strcpy(buffer,"%%EndDefaults\n\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
-        if ((Latin1Compare(image_info->magick,"EPI") == 0) ||
-            (Latin1Compare(image_info->magick,"EPT") == 0) ||
-            (Latin1Compare(image_info->magick,"EPSI") == 0))
+        if ((LocaleCompare(image_info->magick,"EPI") == 0) ||
+            (LocaleCompare(image_info->magick,"EPT") == 0) ||
+            (LocaleCompare(image_info->magick,"EPSI") == 0))
           {
             Image
               *preview_image;
@@ -1092,7 +1092,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           FormatString(buffer,"%.255s\n",*q);
           (void) WriteBlob(image,strlen(buffer),buffer);
         }
-        if (Latin1Compare(image_info->magick,"PS") == 0)
+        if (LocaleCompare(image_info->magick,"PS") == 0)
           {
             (void) strcpy(buffer,"  showpage\n");
             (void) WriteBlob(image,strlen(buffer),buffer);
@@ -1121,7 +1121,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"%%%%PageResources: font Helvetica\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
-    if (Latin1Compare(image_info->magick,"PS") != 0)
+    if (LocaleCompare(image_info->magick,"PS") != 0)
       {
         (void) strcpy(buffer,"userdict begin\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
@@ -1459,7 +1459,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         }
     (void) strcpy(buffer,"%%EndData\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    if (Latin1Compare(image_info->magick,"PS") != 0)
+    if (LocaleCompare(image_info->magick,"PS") != 0)
       {
         (void) strcpy(buffer,"end\n");
         (void) WriteBlob(image,strlen(buffer),buffer);

@@ -321,7 +321,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       symbol[j]=Cixel[k];
     }
     symbol[j]='\0';
-    if (Latin1Compare(name,"None") == 0)
+    if (LocaleCompare(name,"None") == 0)
       FormatString(buffer,"    background color = '%.1024s'",symbol);
     else
       FormatString(buffer,"    color('%.1024s',%.1024s) = '%.1024s'",

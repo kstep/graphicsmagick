@@ -96,7 +96,7 @@ static unsigned int IsXPM(const unsigned char *magick,const unsigned int length)
 {
   if (length < 9)
     return(False);
-  if (LatinNCompare((char *) magick,"/* XPM */",9) == 0)
+  if (LocaleNCompare((char *) magick,"/* XPM */",9) == 0)
     return(True);
   return(False);
 }
@@ -357,7 +357,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           *q='\0';
       }
     Strip(target);
-    if (Latin1Compare(target,"none") == 0)
+    if (LocaleCompare(target,"none") == 0)
       {
         image->class=DirectClass;
         image->matte=True;

@@ -160,7 +160,7 @@ static void DestroyPixelStream(Image *image)
   assert(image != (Image *) NULL);
   if (image->cache == (void *) NULL)
     return;
-  stream_info=image->cache;
+  stream_info=(StreamInfo *) image->cache;
   FreeMemory((void **) &stream_info->stash);
   FreeMemory((void **) &stream_info);
 }
@@ -199,7 +199,7 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
     *stream_info;
 
   assert(image != (Image *) NULL);
-  stream_info=image->cache;
+  stream_info=(StreamInfo *) image->cache;
   return(stream_info->indexes);
 }
 
@@ -316,7 +316,7 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
     *stream_info;
 
   assert(image != (Image *) NULL);
-  stream_info=image->cache;
+  stream_info=(StreamInfo *) image->cache;
   return(stream_info->pixels);
 }
 
@@ -392,7 +392,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
-  stream_info=image->cache;
+  stream_info=(StreamInfo *) image->cache;
   number_pixels=stream_info->columns*stream_info->rows;
   length=number_pixels*sizeof(PixelPacket);
   if (image->class == PseudoClass)

@@ -137,7 +137,7 @@ Export void AppendImageFormat(const char *format,char *filename)
   assert(filename != (char *) NULL);
   if ((*format == '\0') || (*filename == '\0'))
     return;
-  if (Latin1Compare(filename,"-") == 0)
+  if (LocaleCompare(filename,"-") == 0)
     {
       FormatString(staging,"%.1024s:%.1024s",format,filename);
       (void) strcpy(filename,staging);
@@ -407,7 +407,7 @@ Export unsigned short *ConvertTextToUnicode(const char *text,int *count)
   while (*p != '\0')
   {
     *q=(unsigned char) (*p);
-    if (LatinNCompare(p,"\\0x",3) == 0)
+    if (LocaleNCompare(p,"\\0x",3) == 0)
       {
         p+=3;
         value=InterpretUnicode(p,4);
@@ -847,7 +847,7 @@ Export int GlobExpression(const char *expression,const char *pattern)
     return(True);
   if (Extent(pattern) == 0)
     return(True);
-  if (Latin1Compare(pattern,"*") == 0)
+  if (LocaleCompare(pattern,"*") == 0)
     return(True);
   if (strchr(pattern,'['))
     {
@@ -860,9 +860,9 @@ Export int GlobExpression(const char *expression,const char *pattern)
       image_info=CloneImageInfo((ImageInfo *) NULL);
       (void) strcpy(image_info->filename,pattern);
       SetImageInfo(image_info,True);
-      exempt=(Latin1Compare(image_info->magick,"VID") == 0) ||
+      exempt=(LocaleCompare(image_info->magick,"VID") == 0) ||
         (image_info->subimage &&
-         (Latin1Compare(expression,image_info->filename) == 0));
+         (LocaleCompare(expression,image_info->filename) == 0));
       DestroyImageInfo(image_info);
       if (exempt)
         return(False);
@@ -1156,37 +1156,96 @@ Export unsigned int IsDirectory(const char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L a t i n N C o m p a r e                                                 %
+%   L o c a l e C o m p a r e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method LatinNCompare compares two strings byte-by-byte, according to
-%  the ordering of the ISO 8859-1 encoding. LatinNCompare returns an
+%  Method LocaleCompare compares two strings byte-by-byte, according to
+%  the ordering of the current locale encoding. LocaleCompare returns an
 %  integer greater than, equal to, or less than 0, if the string pointed
 %  to by p is greater than, equal to, or less than the string pointed to
 %  by q respectively.  The sign of a non-zero return value is determined
 %  by the sign of the difference between the values of the first pair of
-%  bytes that differ in the strings being compared.  The LatinNCompare
-%  method makes the same comparison as Latin1Compare but looks at a
-%  maximum of n bytes.  Bytes following a null byte are not compared.
+%  bytes that differ in the strings being compared.
 %
-%  The format of the LatinNCompare method is:
+%  The format of the LocaleCompare method is:
 %
-%      int LatinNCompare(const char *p,const char *q,size_t n)
+%      int LocaleCompare(const char *p,const char *q)
 %
 %  A description of each parameter follows:
 %
-%    o p: A pointer to the string to convert to Latin1 string.
+%    o p: A pointer to the string to convert to Locale string.
 %
-%    o q: A pointer to the string to convert to Latin1 string.
-%
-%    o n: A pointer to the string to convert to Latin1 string.
+%    o q: A pointer to the string to convert to Locale string.
 %
 %
 */
-Export int LatinNCompare(const char *p,const char *q,size_t n)
+Export int LocaleCompare(const char *p,const char *q)
+{
+  register int
+    i,
+    j;
+
+  if (p == q)
+    return(0);
+  if (p == (char *) NULL)
+    return(-1);
+  if (q == (char *) NULL)
+    return(1);
+  while ((*p != '\0') && (*q != '\0'))
+  {
+    i=(*p);
+    if (islower(i))
+      i=toupper(i);
+    j=(*q);
+    if (islower(j))
+      j=toupper(j);
+    if (i != j)
+      break;
+    p++;
+    q++;
+  }
+  return(*p-(*q));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   L o c a l e N C o m p a r e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LocaleNCompare compares two strings byte-by-byte, according to
+%  the ordering of the currnet locale encoding. LocaleNCompare returns an
+%  integer greater than, equal to, or less than 0, if the string pointed
+%  to by p is greater than, equal to, or less than the string pointed to
+%  by q respectively.  The sign of a non-zero return value is determined
+%  by the sign of the difference between the values of the first pair of
+%  bytes that differ in the strings being compared.  The LocaleNCompare
+%  method makes the same comparison as LocaleCompare but looks at a
+%  maximum of n bytes.  Bytes following a null byte are not compared.
+%
+%  The format of the LocaleNCompare method is:
+%
+%      int LocaleNCompare(const char *p,const char *q,size_t n)
+%
+%  A description of each parameter follows:
+%
+%    o p: A pointer to the string to convert to Locale string.
+%
+%    o q: A pointer to the string to convert to Locale string.
+%
+%    o n: A pointer to the string to convert to Locale string.
+%
+%
+*/
+Export int LocaleNCompare(const char *p,const char *q,size_t n)
 {
   register int
     i,
@@ -1224,86 +1283,27 @@ Export int LatinNCompare(const char *p,const char *q,size_t n)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L a t i n 1 C o m p a r e                                                 %
+%   L o c a l e U p p e r                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Latin1Compare compares two strings byte-by-byte, according to
-%  the ordering of the ISO 8859-1 encoding. Latin1Compare returns an
-%  integer greater than, equal to, or less than 0, if the string pointed
-%  to by p is greater than, equal to, or less than the string pointed to
-%  by q respectively.  The sign of a non-zero return value is determined
-%  by the sign of the difference between the values of the first pair of
-%  bytes that differ in the strings being compared.
+%  Method LocaleUpper copies a null terminated string from source to
+%  destination (including the null), changing all lowercase letters to
+%  uppercase.
 %
-%  The format of the Latin1Compare method is:
+%  The format of the LocaleUpper method is:
 %
-%      int Latin1Compare(const char *p,const char *q)
+%      void LocaleUpper(char *string)
 %
 %  A description of each parameter follows:
 %
-%    o p: A pointer to the string to convert to Latin1 string.
-%
-%    o q: A pointer to the string to convert to Latin1 string.
+%    o string: A pointer to the string to convert to upper-case Locale.
 %
 %
 */
-Export int Latin1Compare(const char *p,const char *q)
-{
-  register int
-    i,
-    j;
-
-  if (p == q)
-    return(0);
-  if (p == (char *) NULL)
-    return(-1);
-  if (q == (char *) NULL)
-    return(1);
-  while ((*p != '\0') && (*q != '\0'))
-  {
-    i=(*p);
-    if (islower(i))
-      i=toupper(i);
-    j=(*q);
-    if (islower(j))
-      j=toupper(j);
-    if (i != j)
-      break;
-    p++;
-    q++;
-  }
-  return(*p-(*q));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   L a t i n 1 U p p e r                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method Latin1Upper copies a null terminated string from source to
-%  destination (including the null), changing all Latin-1 lowercase letters
-%  to uppercase.  The string is assumed to be encoded using ISO 8859-1.
-%
-%  The format of the Latin1Upper method is:
-%
-%      void Latin1Upper(char *string)
-%
-%  A description of each parameter follows:
-%
-%    o string: A pointer to the string to convert to upper-case Latin1.
-%
-%
-*/
-Export void Latin1Upper(char *string)
+Export void LocaleUpper(char *string)
 {
   register int
     c;
@@ -1358,7 +1358,7 @@ static int ColorCompare(const void *x,const void *y)
 
   p=(char **) x;
   q=(char **) y;
-  return(Latin1Compare(*p,*q));
+  return(LocaleCompare(*p,*q));
 }
 
 Export char **ListColors(const char *pattern,int *number_colors)
@@ -1493,7 +1493,7 @@ static int FileCompare(const void *x,const void *y)
 
   p=(char **) x;
   q=(char **) y;
-  return(Latin1Compare(*p,*q));
+  return(LocaleCompare(*p,*q));
 }
 
 Export char **ListFiles(const char *directory,const char *pattern,
@@ -1576,7 +1576,7 @@ Export char **ListFiles(const char *directory,const char *pattern,
           if (p)
             *p='\0';
           if (*number_entries > 0)
-            if (Latin1Compare(entry->d_name,filelist[*number_entries-1]) == 0)
+            if (LocaleCompare(entry->d_name,filelist[*number_entries-1]) == 0)
               {
                 entry=readdir(current_directory);
                 continue;
@@ -2009,7 +2009,7 @@ Export char *PostscriptGeometry(const char *page)
     Comparison is case insensitive.
   */
   for (i=0; *PageSizes[i] != (char *) NULL; i++)
-    if (LatinNCompare(PageSizes[i][0],geometry,Extent(PageSizes[i][0])) == 0)
+    if (LocaleNCompare(PageSizes[i][0],geometry,Extent(PageSizes[i][0])) == 0)
       {
         /*
           Replace mneumonic with the equivalent size in dots-per-inch.
@@ -2441,7 +2441,9 @@ Export void TemporaryFilename(char *filename)
       *name;
 
     name=(char *) tempnam((char *) NULL,TemporaryTemplate);
-    if (name != (char *) NULL)
+    if (name == (char *) NULL)
+      (void) tmpnam(filename);
+    else
       {
         (void) strcpy(filename,name);
         FreeMemory((void **) &name);

@@ -59,8 +59,8 @@ extern Export char
 extern Export int
   GetGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   GlobExpression(const char *,const char *),
-  LatinNCompare(const char *,const char *,size_t),
-  Latin1Compare(const char *,const char *),
+  LocaleNCompare(const char *,const char *,size_t),
+  LocaleCompare(const char *,const char *),
   MultilineCensus(const char *),
   SystemCommand(const unsigned int,const char *);
 
@@ -79,7 +79,7 @@ extern Export void
   DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),
   FormatString(char *,const char *,...),
-  Latin1Upper(char *),
+  LocaleUpper(char *),
   LocaleFilename(char *),
   Strip(char *),
   TemporaryFilename(char *);

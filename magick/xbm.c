@@ -95,7 +95,7 @@ static unsigned int IsXBM(const unsigned char *magick,const unsigned int length)
 {
   if (length < 7)
     return(False);
-  if (LatinNCompare((char *) magick,"#define",7) == 0)
+  if (LocaleNCompare((char *) magick,"#define",7) == 0)
     return(True);
   return(False);
 }
@@ -215,12 +215,12 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   while (GetStringBlob(image,buffer) != (char *) NULL)
     if (sscanf(buffer,"#define %s %u",name,&image->columns) == 2)
       if ((strlen(name) >= 6) &&
-          (Latin1Compare(name+strlen(name)-6,"_width") == 0))
+          (LocaleCompare(name+strlen(name)-6,"_width") == 0))
           break;
   while (GetStringBlob(image,buffer) != (char *) NULL)
     if (sscanf(buffer,"#define %s %u",name,&image->rows) == 2)
       if ((strlen(name) >= 7) &&
-          (Latin1Compare(name+strlen(name)-7,"_height") == 0))
+          (LocaleCompare(name+strlen(name)-7,"_height") == 0))
           break;
   image->depth=8;
   image->class=PseudoClass;
@@ -251,7 +251,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       p=(unsigned char *) name;
     else
       p++;
-    if (Latin1Compare("bits[]",(char *) p) == 0)
+    if (LocaleCompare("bits[]",(char *) p) == 0)
       break;
   }
   if ((image->columns == 0) || (image->rows == 0) || EOFBlob(image))

@@ -344,7 +344,7 @@ static unsigned int IsMNG(const unsigned char *magick,const unsigned int length)
 {
   if (length < 8)
     return(False);
-  if (LatinNCompare((char *) magick,"\212MNG\r\n\032\n",8) == 0)
+  if (LocaleNCompare((char *) magick,"\212MNG\r\n\032\n",8) == 0)
     return(True);
   return(False);
 }
@@ -383,7 +383,7 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 {
   if (length < 8)
     return(False);
-  if (LatinNCompare((char *) magick,"\211PNG\r\n\032\n",8) == 0)
+  if (LocaleNCompare((char *) magick,"\211PNG\r\n\032\n",8) == 0)
     return(True);
   return(False);
 }
@@ -925,7 +925,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   first_mng_object=0;
   skipping_loop=(-1);
   have_mng_structure=False;
-  if (Latin1Compare(image_info->magick,"MNG") == 0)
+  if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
       char
         magic_number[MaxTextExtent];
@@ -934,7 +934,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Verify MNG signature.
       */
       (void) ReadBlob(image,8,magic_number);
-      if (LatinNCompare(magic_number,"\212MNG\r\n\032\n",8) != 0)
+      if (LocaleNCompare(magic_number,"\212MNG\r\n\032\n",8) != 0)
         ThrowReaderException(CorruptImageWarning,"Not a MNG image file",image);
       first_mng_object=1;
       /*
@@ -1007,7 +1007,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   mng_background_color=image->background_color;
   do
   {
-    if (Latin1Compare(image_info->magick,"MNG") == 0)
+    if (LocaleCompare(image_info->magick,"MNG") == 0)
       {
         char
           type[MaxTextExtent];
@@ -1909,7 +1909,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Prepare PNG for reading.
     */
     image_found++;
-    if (Latin1Compare(image_info->magick,"MNG") == 0)
+    if (LocaleCompare(image_info->magick,"MNG") == 0)
       {
         png_set_sig_bytes(ping,8);
 #ifdef PNG_READ_EMPTY_PLTE_SUPPORTED
@@ -2665,7 +2665,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=mng_info->image;
 #endif
       }
-  } while (Latin1Compare(image_info->magick,"MNG") == 0);
+  } while (LocaleCompare(image_info->magick,"MNG") == 0);
   if (image_info->insert_backdrops && !image_found && (mng_width > 0) &&
       (mng_height > 0))
     {

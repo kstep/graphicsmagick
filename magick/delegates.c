@@ -188,24 +188,24 @@ Export unsigned int GetDelegateInfo(const char *decode_tag,
     *delegate_info=(*delegates);
     if (delegates->direction > 0)
       {
-        if (Latin1Compare(delegates->decode_tag,decode_tag) == 0)
+        if (LocaleCompare(delegates->decode_tag,decode_tag) == 0)
           return(True);
         continue;
       }
     if (delegates->direction < 0)
       {
-        if (Latin1Compare(delegates->encode_tag,encode_tag) == 0)
+        if (LocaleCompare(delegates->encode_tag,encode_tag) == 0)
           return(True);
         continue;
       }
-    if (Latin1Compare(decode_tag,delegates->decode_tag) == 0)
-      if (Latin1Compare(encode_tag,delegates->encode_tag) == 0)
+    if (LocaleCompare(decode_tag,delegates->decode_tag) == 0)
+      if (LocaleCompare(encode_tag,delegates->encode_tag) == 0)
         return(True);
-    if (Latin1Compare(decode_tag,"*") == 0)
-      if (Latin1Compare(encode_tag,delegates->encode_tag) == 0)
+    if (LocaleCompare(decode_tag,"*") == 0)
+      if (LocaleCompare(encode_tag,delegates->encode_tag) == 0)
         return(True);
-    if (Latin1Compare(decode_tag,delegates->decode_tag) == 0)
-      if (Latin1Compare(encode_tag,"*") == 0)
+    if (LocaleCompare(decode_tag,delegates->decode_tag) == 0)
+      if (LocaleCompare(encode_tag,"*") == 0)
         return(True);
   }
   return(False);
@@ -335,9 +335,9 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
   if (!GetDelegateInfo(decode_tag,encode_tag,&delegate_info))
     ThrowBinaryException(MissingDelegateWarning,"no tag found",
       decode_tag ? decode_tag : encode_tag);
-  if (Latin1Compare(delegate_info.decode_tag,"YUV") == 0)
-    if ((Latin1Compare(delegate_info.encode_tag,"M2V") == 0) ||
-        (Latin1Compare(delegate_info.encode_tag,"MPG") == 0))
+  if (LocaleCompare(delegate_info.decode_tag,"YUV") == 0)
+    if ((LocaleCompare(delegate_info.encode_tag,"M2V") == 0) ||
+        (LocaleCompare(delegate_info.encode_tag,"MPG") == 0))
       {
         FILE
           *file;
@@ -349,7 +349,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
           Write parameter file (see mpeg2encode documentation for details).
         */
         CoalesceImages(image,&image->exception);
-        mpeg=Latin1Compare(delegate_info.encode_tag,"M2V") != 0;
+        mpeg=LocaleCompare(delegate_info.encode_tag,"M2V") != 0;
         file=fopen(image_info->unique,"w");
         if (file == (FILE *) NULL)
           ThrowBinaryException(DelegateWarning,"delegate failed",
@@ -438,7 +438,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
         if (magick == (char *) NULL)
           ThrowBinaryException(DelegateWarning,"delegate failed",
             decode_tag ? decode_tag : encode_tag);
-        Latin1Upper(magick);
+        LocaleUpper(magick);
         (void) strcpy((char *) image_info->magick,magick);
         (void) strcpy(image->magick,magick);
         FreeMemory((void **) &magick);
@@ -789,8 +789,8 @@ Export DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
     }
   for (p=delegates; p != (DelegateInfo *) NULL; p=p->next)
   {
-    if ((Latin1Compare(p->decode_tag,delegate_info->decode_tag) == 0) &&
-        (Latin1Compare(p->encode_tag,delegate_info->encode_tag) == 0) &&
+    if ((LocaleCompare(p->decode_tag,delegate_info->decode_tag) == 0) &&
+        (LocaleCompare(p->encode_tag,delegate_info->encode_tag) == 0) &&
         (p->direction == delegate_info->direction))
       {
         /*

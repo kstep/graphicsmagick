@@ -97,7 +97,7 @@ static unsigned int IsSVG(const unsigned char *magick,
 {
   if (length < 5)
     return(False);
-  if (LatinNCompare((char *) magick,"<?xml",5) == 0)
+  if (LocaleNCompare((char *) magick,"<?xml",5) == 0)
     return(True);
   return(False);
 }
@@ -451,11 +451,11 @@ static double UnitOfMeasure(const char *value)
   assert(value != (const char *) NULL);
   if (Extent(value) < 3)
     return(1.0);
-  if (Latin1Compare(value+strlen(value)-2,"cm") == 0)
+  if (LocaleCompare(value+strlen(value)-2,"cm") == 0)
     return(72.0/2.54);
-  if (Latin1Compare(value+strlen(value)-2,"in") == 0)
+  if (LocaleCompare(value+strlen(value)-2,"in") == 0)
     return(72.0);
-  if (Latin1Compare(value+strlen(value)-2,"pt") == 0)
+  if (LocaleCompare(value+strlen(value)-2,"pt") == 0)
     return(1.0);
   return(1.0);
 }
@@ -613,11 +613,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) CloneString(&keyword,token);
         continue;
       }
-    if (Latin1Compare(token,"=") == 0)
+    if (LocaleCompare(token,"=") == 0)
       (void) GetToken(image,&value,&c,exception);
-    if (((Latin1Compare(keyword,">") == 0) ||
-         (Latin1Compare(keyword,"text>") == 0)) &&
-        (Latin1Compare(primitive,"none") != 0))
+    if (((LocaleCompare(keyword,">") == 0) ||
+         (LocaleCompare(keyword,"text>") == 0)) &&
+        (LocaleCompare(primitive,"none") != 0))
       {
         char
           *command,
@@ -629,7 +629,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Render graphic primitive.
         */
-        if ((Latin1Compare(primitive,"rectangle") == 0) &&
+        if ((LocaleCompare(primitive,"rectangle") == 0) &&
             (element.major != 0.0))
           CloneString(&primitive,"roundRectangle");
         length=strlen(primitive)+MaxTextExtent;
@@ -641,49 +641,49 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         (void) strcpy(command,primitive);
         (void) strcat(command," ");
-        if (Latin1Compare(primitive,"circle") == 0)
+        if (LocaleCompare(primitive,"circle") == 0)
           {
             FormatString(points,"%g,%g %g,%g",element.cx,element.cy,
               element.cx,element.cy+element.minor);
             (void) strcat(command,points);
           }
-        if (Latin1Compare(primitive,"ellipse") == 0)
+        if (LocaleCompare(primitive,"ellipse") == 0)
           {
             FormatString(points,"%g,%g %g,%g 0,360",element.cx,element.cy,
               element.major,element.minor);
             (void) strcat(command,points);
           }
-        if (Latin1Compare(primitive,"line") == 0)
+        if (LocaleCompare(primitive,"line") == 0)
           {
             FormatString(points,"%g,%g %g,%g",segment.x1,segment.y1,
               segment.x2,segment.y2);
             (void) strcat(command,points);
           }
-        if (Latin1Compare(primitive,"polyline") == 0)
+        if (LocaleCompare(primitive,"polyline") == 0)
           (void) strcat(command,vertices);
-        if (Latin1Compare(primitive,"polygon") == 0)
+        if (LocaleCompare(primitive,"polygon") == 0)
           (void) strcat(command,vertices);
-        if (Latin1Compare(primitive,"rectangle") == 0)
+        if (LocaleCompare(primitive,"rectangle") == 0)
           {
             FormatString(points,"%d,%d %d,%d",page.x,page.y,
               page.x+page.width,page.y+page.height);
             (void) strcat(command,points);
           }
-        if (Latin1Compare(primitive,"roundRectangle") == 0)
+        if (LocaleCompare(primitive,"roundRectangle") == 0)
           {
             FormatString(points,"%g,%g %d,%d %g,%g",page.x+page.width/2.0,
               page.y+page.height/2.0,page.width,page.height,
               element.major/2.0,element.minor/2.0);
             (void) strcat(command,points);
           }
-        if (Latin1Compare(primitive,"image") == 0)
+        if (LocaleCompare(primitive,"image") == 0)
           {
             FormatString(points,"%d,%d",page.x,page.y);
             (void) strcat(command,points);
             (void) strcat(command," ");
             (void) strcat(command,url);
           }
-        if (Latin1Compare(primitive,"text") == 0)
+        if (LocaleCompare(primitive,"text") == 0)
           {
             FormatString(points,"%d,%g",page.x,page.y-
               graphic_context[n].pointsize/2.0);
@@ -699,13 +699,13 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) fprintf(file,"translate %g,%g\n",translate.x,translate.y);
         (void) fprintf(file,"rotate %g\n",element.angle);
         (void) fprintf(file,"opacity %g\n",graphic_context[n].opacity);
-        if (Latin1Compare(graphic_context[n].fill,"none") != 0)
+        if (LocaleCompare(graphic_context[n].fill,"none") != 0)
           {
             (void) fprintf(file,"pen %s\n",graphic_context[n].fill);
             (void) fprintf(file,"fill 1\n");
             (void) fprintf(file,"%s\n",command);
           }
-        if (Latin1Compare(graphic_context[n].stroke,"none") != 0)
+        if (LocaleCompare(graphic_context[n].stroke,"none") != 0)
           (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
         (void) fprintf(file,"fill 0\n");
         (void) fprintf(file,"%s\n",command);
@@ -728,7 +728,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) CloneString(&keyword,token);
         continue;
       }
-    if (Latin1Compare(keyword,"d") == 0)
+    if (LocaleCompare(keyword,"d") == 0)
       {
         char
           *path;
@@ -744,13 +744,13 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) fprintf(file,"translate %g,%g\n",translate.x,translate.y);
         (void) fprintf(file,"rotate %g\n",element.angle);
         (void) fprintf(file,"opacity %g\n",graphic_context[n].opacity);
-        if (Latin1Compare(graphic_context[n].fill,"none") != 0)
+        if (LocaleCompare(graphic_context[n].fill,"none") != 0)
           {
             (void) fprintf(file,"pen %s\n",graphic_context[n].fill);
             (void) fprintf(file,"fill 1\n");
             (void) fprintf(file,"polyline %s\n",path);
           }
-        if (Latin1Compare(graphic_context[n].stroke,"none") != 0)
+        if (LocaleCompare(graphic_context[n].stroke,"none") != 0)
           (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
         (void) fprintf(file,"fill 0\n");
         (void) fprintf(file,"polyline %s\n",path);
@@ -758,136 +758,136 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) CloneString(&keyword,token);
         continue;
       }
-    if (Latin1Compare(keyword,">") == 0)
+    if (LocaleCompare(keyword,">") == 0)
       CloneString(&primitive,"none");
-    if (Latin1Compare(keyword,"angle") == 0)
+    if (LocaleCompare(keyword,"angle") == 0)
       (void) sscanf(value,"%lf",&element.angle);
-    if (Latin1Compare(keyword,"circle") == 0)
+    if (LocaleCompare(keyword,"circle") == 0)
       CloneString(&primitive,"circle");
-    if (Latin1Compare(keyword,"cx") == 0)
+    if (LocaleCompare(keyword,"cx") == 0)
       {
         (void) sscanf(value,"%lf",&element.cx);
         element.cx*=UnitOfMeasure(value);
       }
-    if (Latin1Compare(keyword,"cy") == 0)
+    if (LocaleCompare(keyword,"cy") == 0)
       {
         (void) sscanf(value,"%lf",&element.cy);
         element.cy*=UnitOfMeasure(value);
       }
-    if (Latin1Compare(keyword,"ellipse") == 0)
+    if (LocaleCompare(keyword,"ellipse") == 0)
       CloneString(&primitive,"ellipse");
-    if (Latin1Compare(keyword,"g") == 0)
+    if (LocaleCompare(keyword,"g") == 0)
       {
         if (*token == '>')
           n=Max(n-1,0);
         else
           n=Min(n+1,MaxContexts-1);
       }
-    if (Latin1Compare(keyword,"height") == 0)
+    if (LocaleCompare(keyword,"height") == 0)
       {
         (void) sscanf(value,"%u",&page.height);
         page.height*=UnitOfMeasure(value);
         if (height < page.height)
           height=page.height;
       }
-    if (Latin1Compare(keyword,"href") == 0)
+    if (LocaleCompare(keyword,"href") == 0)
       (void) CloneString(&url,value);
-    if (Latin1Compare(keyword,"line") == 0)
+    if (LocaleCompare(keyword,"line") == 0)
       CloneString(&primitive,"line");
-    if (Latin1Compare(keyword,"image") == 0)
+    if (LocaleCompare(keyword,"image") == 0)
       CloneString(&primitive,"image");
-    if (Latin1Compare(keyword,"major") == 0)
+    if (LocaleCompare(keyword,"major") == 0)
       (void) sscanf(value,"%lf",&element.major);
-    if (Latin1Compare(keyword,"minor") == 0)
+    if (LocaleCompare(keyword,"minor") == 0)
       (void) sscanf(value,"%lf",&element.minor);
-    if (Latin1Compare(keyword,"polygon") == 0)
+    if (LocaleCompare(keyword,"polygon") == 0)
       CloneString(&primitive,"polygon");
-    if (Latin1Compare(keyword,"polyline") == 0)
+    if (LocaleCompare(keyword,"polyline") == 0)
       CloneString(&primitive,"polyline");
-    if (Latin1Compare(keyword,"points") == 0)
+    if (LocaleCompare(keyword,"points") == 0)
       (void) CloneString(&vertices,value);
-    if (Latin1Compare(keyword,"r") == 0)
+    if (LocaleCompare(keyword,"r") == 0)
       {
         (void) sscanf(value,"%lf",&element.major);
         element.major*=UnitOfMeasure(value);
         element.minor=element.major;
       }
-    if (Latin1Compare(keyword,"rect") == 0)
+    if (LocaleCompare(keyword,"rect") == 0)
       CloneString(&primitive,"rectangle");
-    if (Latin1Compare(keyword,"rx") == 0)
+    if (LocaleCompare(keyword,"rx") == 0)
       {
         (void) sscanf(value,"%lf",&element.major);
         element.major*=2.0;
         element.minor=element.major;
       }
-    if (Latin1Compare(keyword,"ry") == 0)
+    if (LocaleCompare(keyword,"ry") == 0)
       {
         (void) sscanf(value,"%lf",&element.minor);
         element.minor*=2.0;
       }
-    if (Latin1Compare(keyword,"style") == 0)
+    if (LocaleCompare(keyword,"style") == 0)
       {
         tokens=StringToTokens(value,&number_tokens);
         for (i=0; i < (number_tokens-1); i++)
         {
-          if (Latin1Compare(tokens[i],"fill:") == 0)
+          if (LocaleCompare(tokens[i],"fill:") == 0)
             {
               (void) CloneString(&value,tokens[++i]);
-              if (Latin1Compare(value+Extent(value)-1,";") == 0)
+              if (LocaleCompare(value+Extent(value)-1,";") == 0)
                 value[Extent(value)-1]='\0';
               (void) CloneString(&graphic_context[n].fill,value);
             }
-          if (Latin1Compare(tokens[i],"fill-opacity:") == 0)
+          if (LocaleCompare(tokens[i],"fill-opacity:") == 0)
             {
               (void) sscanf(tokens[++i],"%lf",&graphic_context[n].opacity);
               if (strchr(tokens[i],'%') == (char *) NULL)
                 graphic_context[n].opacity*=100.0;
             }
-          if (Latin1Compare(tokens[i],"font-size:") == 0)
+          if (LocaleCompare(tokens[i],"font-size:") == 0)
             {
               (void) sscanf(tokens[++i],"%lf",&graphic_context[n].pointsize);
               graphic_context[n].linewidth*=UnitOfMeasure(tokens[i]);
             }
-          if (Latin1Compare(tokens[i],"stroke:") == 0)
+          if (LocaleCompare(tokens[i],"stroke:") == 0)
             {
               (void) CloneString(&value,tokens[++i]);
-              if (Latin1Compare(value+Extent(value)-1,";") == 0)
+              if (LocaleCompare(value+Extent(value)-1,";") == 0)
                 value[Extent(value)-1]='\0';
               (void) CloneString(&graphic_context[n].stroke,value);
             }
-          if (Latin1Compare(tokens[i],"stroke-antialiasing:") == 0)
-            graphic_context[n].antialias=Latin1Compare(tokens[++i],"true");
-          if (Latin1Compare(tokens[i],"stroke-opacity:") == 0)
+          if (LocaleCompare(tokens[i],"stroke-antialiasing:") == 0)
+            graphic_context[n].antialias=LocaleCompare(tokens[++i],"true");
+          if (LocaleCompare(tokens[i],"stroke-opacity:") == 0)
             (void) sscanf(tokens[++i],"%lf",&graphic_context[n].opacity);
-          if (Latin1Compare(tokens[i],"stroke-width:") == 0)
+          if (LocaleCompare(tokens[i],"stroke-width:") == 0)
             {
               (void) sscanf(tokens[++i],"%lf",&graphic_context[n].linewidth);
               graphic_context[n].linewidth*=UnitOfMeasure(tokens[i]);
             }
-          if (Latin1Compare(tokens[i],"text-antialiasing:") == 0)
-            graphic_context[n].antialias=Latin1Compare(tokens[++i],"true");
+          if (LocaleCompare(tokens[i],"text-antialiasing:") == 0)
+            graphic_context[n].antialias=LocaleCompare(tokens[++i],"true");
           FreeMemory((void **) &tokens[i]);
         }
         FreeMemory((void **) &tokens);
       }
-    if (Latin1Compare(keyword,"text") == 0)
+    if (LocaleCompare(keyword,"text") == 0)
       CloneString(&primitive,"text");
-    if (Latin1Compare(keyword,"transform") == 0)
+    if (LocaleCompare(keyword,"transform") == 0)
       {
         tokens=StringToTokens(value,&number_tokens);
         for (i=0; i < (number_tokens-1); i++)
         {
-          if (Latin1Compare(tokens[i],"translate") == 0)
+          if (LocaleCompare(tokens[i],"translate") == 0)
             (void) sscanf(tokens[++i]+1,"%lf %lf",&translate.x,&translate.y);
-          if (Latin1Compare(tokens[i],"rotate") == 0)
+          if (LocaleCompare(tokens[i],"rotate") == 0)
             (void) sscanf(tokens[++i]+1,"%lf",&element.angle);
           FreeMemory((void **) &tokens[i]);
         }
         FreeMemory((void **) &tokens);
       }
-    if (Latin1Compare(keyword,"verts") == 0)
+    if (LocaleCompare(keyword,"verts") == 0)
       (void) CloneString(&vertices,value);
-    if (Latin1Compare(keyword,"viewBox") == 0)
+    if (LocaleCompare(keyword,"viewBox") == 0)
       {
         (void) sscanf(value,"%d %d %u %u",&page.x,&page.y,
           &page.width,&page.height);
@@ -896,30 +896,30 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (width < page.width)
           width=page.width;
       }
-    if (Latin1Compare(keyword,"width") == 0)
+    if (LocaleCompare(keyword,"width") == 0)
       {
         (void) sscanf(value,"%u",&page.width);
         page.width*=UnitOfMeasure(value);
         if (width < page.width)
           width=page.width;
       }
-    if (Latin1Compare(keyword,"x") == 0)
+    if (LocaleCompare(keyword,"x") == 0)
       {
         (void) sscanf(value,"%d",&page.x);
         page.x*=UnitOfMeasure(value);
       }
-    if (Latin1Compare(keyword,"x1") == 0)
+    if (LocaleCompare(keyword,"x1") == 0)
       (void) sscanf(value,"%lf",&segment.x1);
-    if (Latin1Compare(keyword,"x2") == 0)
+    if (LocaleCompare(keyword,"x2") == 0)
       (void) sscanf(value,"%lf",&segment.x2);
-    if (Latin1Compare(keyword,"y") == 0)
+    if (LocaleCompare(keyword,"y") == 0)
       {
         (void) sscanf(value,"%d",&page.y);
         page.y*=UnitOfMeasure(value);
       }
-    if (Latin1Compare(keyword,"y1") == 0)
+    if (LocaleCompare(keyword,"y1") == 0)
       (void) sscanf(value,"%lf",&segment.y1);
-    if (Latin1Compare(keyword,"y2") == 0)
+    if (LocaleCompare(keyword,"y2") == 0)
       (void) sscanf(value,"%lf",&segment.y2);
     (void) CloneString(&keyword,token);
   }

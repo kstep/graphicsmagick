@@ -406,7 +406,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
           image->page.height,image->page.x,image->page.y);
       else
-        if (Latin1Compare(image_info->magick,"PS2") == 0)
+        if (LocaleCompare(image_info->magick,"PS2") == 0)
           (void) strcpy(geometry,PSPageGeometry);
     (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
     /*
@@ -434,7 +434,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         /*
           Output Postscript header.
         */
-        if (Latin1Compare(image_info->magick,"PS2") == 0)
+        if (LocaleCompare(image_info->magick,"PS2") == 0)
           (void) strcpy(buffer,"%!PS-Adobe-3.0\n");
         else
           (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n");
@@ -468,7 +468,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           }
         (void) strcpy(buffer,"%%LanguageLevel: 2\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
-        if (Latin1Compare(image_info->magick,"PS2") != 0)
+        if (LocaleCompare(image_info->magick,"PS2") != 0)
           {
             FormatString(buffer,"%%%%Pages: 0\n");
             (void) WriteBlob(image,strlen(buffer),buffer);
@@ -525,7 +525,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             FormatString(buffer,"%.255s\n",*q);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
-        if (Latin1Compare(image_info->magick,"PS2") == 0)
+        if (LocaleCompare(image_info->magick,"PS2") == 0)
           {
             (void) strcpy(buffer,"  showpage\n");
             (void) WriteBlob(image,strlen(buffer),buffer);
@@ -554,7 +554,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"%%PageResources: font Helvetica\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
-    if (Latin1Compare(image_info->magick,"PS2") != 0)
+    if (LocaleCompare(image_info->magick,"PS2") != 0)
       {
         (void) strcpy(buffer,"userdict begin\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
@@ -758,7 +758,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             case RunlengthEncodedCompression:
             default:
             {
-              if (Latin1Compare(CCITTParam,"0") == 0)
+              if (LocaleCompare(CCITTParam,"0") == 0)
                 (void) HuffmanEncodeImage((ImageInfo *) image_info,image);
               else
                 (void) Huffman2DEncodeImage((ImageInfo *) image_info,image);
@@ -895,7 +895,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     (void) WriteByte(image,'\n');
     (void) strcpy(buffer,"%%EndData\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    if (Latin1Compare(image_info->magick,"PS2") != 0)
+    if (LocaleCompare(image_info->magick,"PS2") != 0)
       {
         (void) strcpy(buffer,"end\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
