@@ -61,8 +61,10 @@
 /*
   Forward declarations.
 */
+#if defined(HasJBIG)
 static unsigned int
   WriteJBIGImage(const ImageInfo *,Image *);
+#endif
 
 #if defined(HasJBIG)
 #include "jbig.h"
