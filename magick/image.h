@@ -721,7 +721,7 @@ extern MagickExport unsigned int
   IsMonochromeImage(Image *),
   IsPseudoClass(Image *),
   IsSubimage(const char *,const unsigned int),
-  IsTainted(const Image *),
+  IsImageTainted(const Image *),
   LayerImage(Image *,const LayerType),
   ModulateImage(Image *,const char *),
   MogrifyImage(const ImageInfo *,const int,char **,Image **),

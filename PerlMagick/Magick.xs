@@ -2717,28 +2717,28 @@ Get(ref,...)
               s=newSVpv(color,0);
               break;
             }
-          if ((strEQcase(attribute,"base-column") ||
-              (strEQcase(attribute,"base_column"))
+          if (strEQcase(attribute,"base-column") ||
+              strEQcase(attribute,"base_column"))
             {
               if (image)
                 s=newSViv(image->magick_columns);
               break;
             }
-          if ((strEQcase(attribute,"base-filename") ||
-              (strEQcase(attribute,"base_filename"))
+          if (strEQcase(attribute,"base-filename") ||
+              strEQcase(attribute,"base_filename"))
             {
               if (image)
                 s=newSVpv(image->magick_filename,0);
               break;
             }
-          if ((strEQcase(attribute,"base-row") ||
-              (strEQcase(attribute,"base_row"))
+          if (strEQcase(attribute,"base-row") ||
+              strEQcase(attribute,"base_row"))
             {
               if (image)
                 s=newSViv(image->magick_rows);
               break;
             }
-          if ((strEQcase(attribute,"blue-") || (strEQcase(attribute,"blue_"))
+          if (strEQcase(attribute,"blue-") || strEQcase(attribute,"blue_"))
             {
               if (!image)
                 break;
@@ -2981,7 +2981,7 @@ Get(ref,...)
                 s=newSVpv(image->geometry,0);
               break;
             }
-          if ((strEQcase(attribute,"green-") || (strEQcase(attribute,"green_"))
+          if (strEQcase(attribute,"green-") || strEQcase(attribute,"green_"))
             {
               if (!image)
                 break;
@@ -3232,7 +3232,7 @@ Get(ref,...)
                 }
               break;
             }
-          if ((strEQcase(attribute,"red-") || (strEQcase(attribute,"red_"))
+          if (strEQcase(attribute,"red-") || strEQcase(attribute,"red_"))
             {
               if (!image)
                 break;
@@ -3379,7 +3379,7 @@ Get(ref,...)
         case 'W':
         case 'w':
         {
-          if ((strEQcase(attribute,"white-") || (strEQcase(attribute,"white_"))
+          if (strEQcase(attribute,"white-") || strEQcase(attribute,"white_"))
             {
               if (!image)
                 break;

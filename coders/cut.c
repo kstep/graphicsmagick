@@ -50,8 +50,30 @@
 */
 #include "magick.h"
 #include "defines.h"
-
 
+typedef struct
+	{
+	unsigned Width;
+	unsigned Height;
+	unsigned Reserved;
+	}CUTHeader;			/*Dr Hallo*/
+typedef struct
+	{
+	char FileId[2];
+	unsigned Version;
+	unsigned Size;
+	char FileType;
+	char SubType;
+	unsigned BoardID;
+	unsigned GraphicsMode;
+	unsigned MaxIndex;
+	unsigned MaxRed;
+	unsigned MaxGreen;
+	unsigned MaxBlue;
+	char PaletteId[20];
+	}CUTPalHeader;
+
+
 static void InsertRow(unsigned char *p,int y,Image *image)
 {
 int bit,x;
@@ -209,14 +231,13 @@ register IndexPacket *indexes;
        }
 }
 
-
-/*This procedure computes number of colors in Grayed R[i]=G[i]=B[i] image*/
-int GetCutColors(Image *image)
+static int GetCutColors(Image *image)
 {
 int MaxColor,x,y;
 PixelPacket *q;
 int UpScale16;
 
+/*This procedure computes number of colors in Grayed R[i]=G[i]=B[i] image*/
 UpScale16=UpScale(16);
 MaxColor=0;
  for (y=0; y < (int)image->rows; y++)  
@@ -229,36 +250,11 @@ MaxColor=0;
 	     q++;	
 	     }	
 	}
-	
 if(MaxColor<UpScale(2)) MaxColor=2;		
 else if(MaxColor<UpScale(16)) MaxColor=16;		
 return(MaxColor);
 }
-
-
-typedef struct
-	{
-	unsigned Width;
-	unsigned Height;
-	unsigned Reserved;
-	}CUTHeader;			/*Dr Hallo*/
-typedef struct
-	{
-	char FileId[2];
-	unsigned Version;
-	unsigned Size;
-	char FileType;
-	char SubType;
-	unsigned BoardID;
-	unsigned GraphicsMode;
-	unsigned MaxIndex;
-	unsigned MaxRed;
-	unsigned MaxGreen;
-	unsigned MaxBlue;
-	char PaletteId[20];
-	}CUTPalHeader;
-
-
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -565,8 +561,6 @@ Finish:
  if(clone_info!=NULL) DestroyImageInfo(clone_info);
  return(image);       
 }
-
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

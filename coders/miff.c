@@ -403,18 +403,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   *values == '{' ? values+1 : values);
                 break;
               }
-              case 'e':
-              case 'E':
-              {
-                if (LocaleCompare(keyword,"error") == 0)
-                  {
-                    image->mean_error_per_pixel=atoi(values);
-                    break;
-                  }
-                (void) SetImageAttribute(image,keyword,
-                  *values == '{' ? values+1 : values);
-                break;
-              }
               case 'g':
               case 'G':
               {
@@ -463,16 +451,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (LocaleCompare(keyword,"matte-color") == 0)
                   {
                     (void) QueryColorDatabase(values,&image->matte_color);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"maximum-error") == 0)
-                  {
-                    image->normalized_maximum_error=atof(values);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"mean-error") == 0)
-                  {
-                    image->normalized_mean_error=atof(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"montage") == 0)
@@ -1306,13 +1284,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             FormatString(buffer,"dispose=%u\n",image->dispose);
             (void) WriteBlobString(image,buffer);
           }
-      }
-    if (image->mean_error_per_pixel != 0)
-      {
-        FormatString(buffer,"error=%u  mean-error=%g  maximum-error=%g\n",
-          image->mean_error_per_pixel,image->normalized_mean_error,
-          image->normalized_maximum_error);
-        (void) WriteBlobString(image,buffer);
       }
     if (image->rendering_intent != UndefinedIntent)
       {

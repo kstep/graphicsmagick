@@ -2504,26 +2504,21 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 */
 
-static double DistanceToLine(const PointInfo *p,const double x,const double y)
+static inline double DistanceToEdge(const PointInfo *p,const double x,
+  const double y)
 {
   double
     alpha,
     beta,
-    dot_product;
-
-  register const PointInfo
-    *q;
-
-  register double
+    dot_product,
     dx,
     dy;
 
   /*
-    Determine distance between a point and a specific edge.
+    Determine distance between a point and an edge.
   */
-  q=p+1;
-  dx=q->x-p->x,
-  dy=q->y-p->y;
+  dx=(p+1)->x-p->x,
+  dy=(p+1)->y-p->y;
   dot_product=dx*(x-p->x)+dy*(y-p->y);
   if (dot_product < 0.0)
     {
@@ -2534,31 +2529,30 @@ static double DistanceToLine(const PointInfo *p,const double x,const double y)
   alpha=dx*dx+dy*dy;
   if (dot_product > alpha)
     {
-      dx=x-q->x;
-      dy=y-q->y;
+      dx=x-(p+1)->x;
+      dy=y-(p+1)->y;
       return(dx*dx+dy*dy);
     }
   beta=dx*(y-p->y)-dy*(x-p->x);
   return(beta*beta/alpha+MagickEpsilon);
 }
 
-static int GetWindingNumber(const PolygonInfo *polygon_info,const double x,
-  const double y)
+static inline int GetWindingNumber(const PolygonInfo *polygon_info,
+  const double x,const double y)
 {
+  double
+    dx,
+    dy;
+
   int
     j,
     winding_number;
-
-  register double
-    dx,
-    dy;
 
   register int
     i;
 
   register PointInfo
-    *p,
-    *q;
+    *p;
 
   winding_number=0;
   for (i=0; i < polygon_info->number_edges; i++)
@@ -2574,19 +2568,16 @@ static int GetWindingNumber(const PolygonInfo *polygon_info,const double x,
       }
     if (polygon_info->edges[i].bounds.x1 > x)
       continue;
-    j=1;
-    if (polygon_info->edges[i].highwater > 0)
-      j=polygon_info->edges[i].highwater;
+    j=polygon_info->edges[i].highwater > 0 ?
+      polygon_info->edges[i].highwater: 1;
     for ( ; j < polygon_info->edges[i].number_points; j++)
       if (polygon_info->edges[i].points[j].y > y)
         break;
     p=polygon_info->edges[i].points+j-1;
-    q=p+1;
-    dx=q->x-p->x;
-    dy=q->y-p->y;
-    if ((dy*(x-p->x)) <= (dx*(y-p->y)))
-      continue;
-    winding_number+=polygon_info->edges[i].direction ? 1 : -1;
+    dx=(p+1)->x-p->x;
+    dy=(p+1)->y-p->y;
+    if ((dy*(x-p->x)) > (dx*(y-p->y)))
+      winding_number+=polygon_info->edges[i].direction ? 1 : -1;
   }
   return(winding_number);
 }
@@ -2720,7 +2711,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                   p->scanline=y;
                   p->highwater=j;
                 }
-              distance=DistanceToLine(p->points+j-1,x,y);
+              distance=DistanceToEdge(p->points+j-1,x,y);
               beta=0.0;
               if (!p->ghostline)
                 {
@@ -3389,8 +3380,8 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
   if (polygon_primitive == (PrimitiveInfo *) NULL)
     MagickError(ResourceLimitWarning,"Unable to draw image",
       "Memory allocation failed");
-  memcpy(polygon_primitive,primitive_info,
-    number_vertices*sizeof(PrimitiveInfo));
+  memcpy(polygon_primitive,primitive_info,number_vertices*
+    sizeof(PrimitiveInfo));
   /*
     Compute the slope for the first line segment, p.
   */

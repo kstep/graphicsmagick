@@ -2250,7 +2250,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     (void) xmlParseChunk(svg_info.parser," ",1,False);
   }
-  /* (void) xmlParseChunk(svg_info.parser," ",1,True); */
+  (void) xmlParseChunk(svg_info.parser," ",1,True);
   xmlFreeParserCtxt(svg_info.parser);
   if (svg_info.verbose)
     (void) fprintf(stdout,"end SAX\n");

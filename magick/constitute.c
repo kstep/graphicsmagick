@@ -2044,7 +2044,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
   SetImageInfo(clone_info,True);
   (void) strcpy(image->filename,clone_info->filename);
   if ((image->next == (Image *) NULL) || clone_info->adjoin)
-    if ((image->previous == (Image *) NULL) && !IsTainted(image))
+    if ((image->previous == (Image *) NULL) && !IsImageTainted(image))
       if (IsAccessible(image->magick_filename))
         if (GetDelegateInfo(image->magick,clone_info->magick,&delegate_info))
           if (clone_info->page == (char *) NULL)          

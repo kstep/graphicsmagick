@@ -1470,11 +1470,14 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
       Let the X server define the color for us.
     */
     status=XQueryColorDatabase(target,&xcolor);
-    color->red=XDownScale(xcolor.red);
-    color->green=XDownScale(xcolor.green);
-    color->blue=XDownScale(xcolor.blue);
-    color->opacity=OpaqueOpacity;
-    return(status);
+    if (status != False)
+      {
+        color->red=XDownScale(xcolor.red);
+        color->green=XDownScale(xcolor.green);
+        color->blue=XDownScale(xcolor.blue);
+        color->opacity=OpaqueOpacity;
+        return(status);
+      }
   }
 #endif
   /*

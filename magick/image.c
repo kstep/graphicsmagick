@@ -2660,30 +2660,30 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     I s T a i n t e d                                                       %
+%     I s I m a g e T a i n t e d                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsTainted returns True if the image has been altered since it
+%  Method IsImageTainted returns True if the image has been altered since it
 %  was first read or if any image in the sequence has a difference magic or
 %  filename.
 %
-%  The format of the IsTainted method is:
+%  The format of the IsImageTainted method is:
 %
-%      unsigned int IsTainted(const Image *image)
+%      unsigned int IsImageTainted(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method IsTainted returns True if the image has been altered
+%    o status: Method IsImageTainted returns True if the image has been altered
 %      since it was first read.
 %
 %    o image: The address of a structure of type Image.
 %
 %
 */
-MagickExport unsigned int IsTainted(const Image *image)
+MagickExport unsigned int IsImageTainted(const Image *image)
 {
   char
     magick[MaxTextExtent],
