@@ -283,7 +283,7 @@ static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
 
 static toff_t TIFFSizeBlob(thandle_t image)
 {
-  return(SizeBlob((Image *) image));
+  return((toff_t) SizeBlob((Image *) image));
 }
 
 static void TIFFUnmapBlob(thandle_t image,tdata_t base,toff_t size)
