@@ -168,6 +168,8 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",image);
   if (WBMPReadInteger(image,&image->rows) == False) 
     ThrowReaderException(CorruptImageWarning,"Corrupt WBMP image",image);
+  if ((image->columns == 0) || (image->rows == 0))
+    ThrowReaderException(CorruptImageWarning,"Not a WBMP image file",image);
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   if (!AllocateImageColormap(image,2))

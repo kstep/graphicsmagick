@@ -158,6 +158,8 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlobByte(image);
   image->columns=ReadBlobByte(image);
   image->rows=ReadBlobByte(image);
+  if ((image->columns == 0) || (image->rows == 0))
+    ThrowReaderException(CorruptImageWarning,"Not a OTB image file",image);
   depth=ReadBlobByte(image);
   if (depth != 1)
     ThrowReaderException(CorruptImageWarning,"Only OTB level 0 files supported",
