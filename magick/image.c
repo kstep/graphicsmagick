@@ -2649,7 +2649,6 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
     pixel;
 
   long
-    count,
     y;
 
   register const PixelPacket
@@ -2680,7 +2679,6 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   /*
     For each pixel, collect error statistics.
   */
-  count=1;
   maximum_error_per_pixel=0;
   total_error=0;
   pixel.opacity=0;
@@ -2690,25 +2688,35 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
     q=AcquireImagePixels(reference,0,y,reference->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x+=count)
-    {
-      pixel.red=p->red-(double) q->red;
-      pixel.green=p->green-(double) q->green;
-      pixel.blue=p->blue-(double) q->blue;
-      if (image->matte)
+    if (!image->matte)
+      for (x=0; x < (long) image->columns; x++)
+      {
+        pixel.red=p->red-(double) q->red;
+        pixel.green=p->green-(double) q->green;
+        pixel.blue=p->blue-(double) q->blue;
+        distance=pixel.red*pixel.red+pixel.green*pixel.green+
+          pixel.blue*pixel.blue;
+        total_error+=distance;
+        if (distance > maximum_error_per_pixel)
+          maximum_error_per_pixel=distance;
+        p++;
+        q++;
+      }
+		else
+      for (x=0; x < (long) image->columns; x++)
+      {
+        pixel.red=p->red-(double) q->red;
+        pixel.green=p->green-(double) q->green;
+        pixel.blue=p->blue-(double) q->blue;
         pixel.opacity=p->opacity-(double) q->opacity;
-      else
-        for (count=1; (x+count) < (long) image->columns; count++)
-          if (!ColorMatch(p,p+count) || !ColorMatch(q,q+count))
-            break;
-      distance=count*pixel.red*pixel.red+count*pixel.green*pixel.green+
-        count*pixel.blue*pixel.blue+pixel.opacity*pixel.opacity;
-      total_error+=distance;
-      if (distance > maximum_error_per_pixel)
-        maximum_error_per_pixel=distance;
-      p+=count;
-      q+=count;
-    }
+        distance=pixel.red*pixel.red+pixel.green*pixel.green+
+          pixel.blue*pixel.blue+pixel.opacity*pixel.opacity;
+        total_error+=distance;
+        if (distance > maximum_error_per_pixel)
+          maximum_error_per_pixel=distance;
+        p++;
+        q++;
+      }
   }
   /*
     Compute final error statistics.

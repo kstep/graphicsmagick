@@ -1368,7 +1368,6 @@ MagickExport unsigned int GetImageQuantizeError(Image *image)
     index;
 
   long
-    count,
     y;
 
   register const PixelPacket
@@ -1400,21 +1399,18 @@ MagickExport unsigned int GetImageQuantizeError(Image *image)
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x+=count)
+    for (x=0; x < (long) image->columns; x++)
     {
       index=indexes[x];
       pixel.red=p->red-(double) image->colormap[index].red;
       pixel.green=p->green-(double) image->colormap[index].green;
       pixel.blue=p->blue-(double) image->colormap[index].blue;
-      for (count=1; (x+count) < (long) image->columns; count++)
-        if (!ColorMatch(p,p+count))
-          break;
-      distance=count*pixel.red*pixel.red+count*pixel.green*pixel.green+
-        count*pixel.blue*pixel.blue;
+      distance=pixel.red*pixel.red+pixel.green*pixel.green+
+        pixel.blue*pixel.blue;
       total_error+=distance;
       if (distance > maximum_error_per_pixel)
         maximum_error_per_pixel=distance;
-      p+=count;
+      p++;
     }
   }
   /*
