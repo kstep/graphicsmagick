@@ -53,6 +53,25 @@
 </tr>
 </table>
 <p>
+2004-04-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (IsAccessible): Use access() rather than stat().
+        (IsAccessibleNoLogging): Use access() rather than stat().
+        (IsDirectory): Implemented return status according to existing API
+        documentation.<BR>
+        (GetExecutionPathUsingName): Complete re-write in order to minimize
+        path computation logic and fix failure with partial paths.
+
+</UL>
+<p>
+2004-03-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> doc/options.imdoc: Add "Color" to the arguments available for -list.
+
+</UL>
+<p>
 2004-03-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

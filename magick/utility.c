@@ -1164,8 +1164,10 @@ MagickExport unsigned int GetExecutionPath(char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetExecutionPathUsingName() returns the pathname of the executable that
-%  started the process.  On success True is returned, otherwise False.
+%  GetExecutionPathUsingName() returns the directory path containing the
+%  executable that started the process. Decisions are made based on a path
+%  which may be user provided, or the value of main()'s argv[0].  On success
+%  True is returned, otherwise False.
 %
 %  The format of the GetExecutionPathUsingName method is:
 %
@@ -1173,32 +1175,58 @@ MagickExport unsigned int GetExecutionPath(char *path)
 %
 %  A description of each parameter follows:
 %
-%    o name: The name of the executable that started the process.
+%    o path: The path (partial or complete) to the executable.
 %
 */
-MagickExport unsigned int GetExecutionPathUsingName(char *name)
+MagickExport unsigned int GetExecutionPathUsingName(char *path)
 {
-  char
-    filename[MaxTextExtent],
-    execution_path[MaxTextExtent];
-
-  *execution_path='\0';
-  (void) getcwd(execution_path,MaxTextExtent-2);
-  (void) strcat(execution_path,DirectorySeparator);
-  /* we do some extra work to cleanup the name - just in case */
-  GetPathComponent(filename,BasePath,name);
-  (void) strncat(execution_path,filename,MaxTextExtent-
-    strlen(execution_path)-1);
-  /* test to see if this is a real path and pitch it if it fails
-      the simple accesability test
-   */
-  if (!IsAccessible(execution_path))
+  if (IsAccessibleNoLogging(path))
     {
-      *name='\0';
-      return(False);
+      char
+        current_directory[MaxTextExtent];
+
+      current_directory[0]='\0';
+  
+      if ((getcwd(current_directory,sizeof(current_directory)-1)))
+        {
+          char
+            execution_path[MaxTextExtent];
+
+          execution_path[0]='\0';
+
+          if (chdir(path) == 0)
+            {
+              (void) getcwd(execution_path,sizeof(execution_path)-2);
+            }
+          else
+            {
+              char
+                *p;
+
+              (void) strncpy(execution_path,path,sizeof(execution_path)-1);
+              p=strrchr(execution_path,DirectorySeparator[0]);
+              if (p)
+                *p='\0';
+              if (chdir(execution_path) == 0)
+                {
+                  (void) getcwd(execution_path,sizeof(execution_path)-2);
+                }
+            }
+          (void) chdir(current_directory);
+          if (execution_path[0] != '\0')
+            {
+              (void) strcat(execution_path,DirectorySeparator);
+              strcpy(path,execution_path);
+              (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                                    "Path \"%.1024s\" is usable.",path);
+              errno=0;
+              return (True);
+            }
+        }
     }
-  (void) strncpy(name,execution_path,MaxTextExtent-1);
-  return(True);
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                        "Path \"%.1024s\" is not valid.",path);
+  return(False);
 }
 
 /*
@@ -2362,51 +2390,36 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsAccessible() returns True if the file as defined by filename exists
-%  and is a regular file.
+%  IsAccessible() returns True if the file as defined by path exists
+%  and is readable by the user.
 %
 %  The format of the IsAccessible method is:
 %
-%      unsigned int IsAccessible(const char *filename)
+%      unsigned int IsAccessible(const char *path)
 %
 %  A description of each parameter follows.
 %
 %    o status:  Method IsAccessible returns True if the file as defined by
-%      filename exists and is a regular file, otherwise False is returned.
+%      path exists and is readable by the user, otherwise False is returned.
 %
-%    o filename:  A pointer to an array of characters containing the filename.
+%    o path:  A pointer to an array of characters containing the path.
 %
 %
 */
-MagickExport unsigned int IsAccessible(const char *filename)
+MagickExport unsigned int IsAccessible(const char *path)
 {
-  int
-    status;
-
-  struct stat
-    file_info;
-
-  if ((filename == (const char *) NULL) || (*filename == '\0'))
+  if ((path == (const char *) NULL) || (*path == '\0'))
     return(False);
-  status=stat(filename,&file_info);
-  if ((status != 0))
+
+  if ((access(path,R_OK)) != 0)
     {
-      /* Stat failed, log with errno */
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-        "Tried: %.1024s [%.1024s]",filename,strerror(errno));
+        "Tried: %.1024s [%.1024s]",path,strerror(errno));
       return(False);
     }
-
-  /* Stat succeeded, log without errno and return access flags */
-  /* FIXME: This rejects named pipes, which are valid for I/O. */
-  if (S_ISREG(file_info.st_mode))
-    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-      "Found: %.1024s",filename);
-  else
-    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-      "Tried: %.1024s [not a regular file]",filename);
-
-  return(S_ISREG(file_info.st_mode));
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                        "Found: %.1024s",path);
+  return (True);
 }
 
 /*
@@ -2420,37 +2433,31 @@ MagickExport unsigned int IsAccessible(const char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsAccessibleNoLogging() returns True if the file as defined by filename
-%  exists and is a regular file. This version is used internally to avoid
-%  using the error logging of the normal version.
+%  IsAccessibleNoLogging() returns True if the file as defined by path
+%  exists and is accessable by the user. This version is used internally to
+%  avoid using the error logging of the normal version.
 %
 %  The format of the IsAccessibleNoLogging method is:
 %
-%      unsigned int IsAccessibleNoLogging(const char *filename)
+%      unsigned int IsAccessibleNoLogging(const char *path)
 %
 %  A description of each parameter follows.
 %
 %    o status:  Method IsAccessibleNoLogging returns True if the file as defined by
-%      filename exists and is a regular file, otherwise False is returned.
+%      path exists and is a regular file, otherwise False is returned.
 %
-%    o filename:  A pointer to an array of characters containing the filename.
+%    o path:  A pointer to an array of characters containing the path.
 %
 %
 */
 MagickExport unsigned int IsAccessibleNoLogging(const char *path)
 {
-  int
-    status;
-
-  struct stat
-    file_info;
-
   if ((path == (const char *) NULL) || (*path == '\0'))
     return(False);
-  status=stat(path,&file_info);
-  if ((status != 0))
+
+  if ((access(path,R_OK)) != 0)
     return(False);
-  return(S_ISREG(file_info.st_mode));
+  return (True);
 }
 
 /*
@@ -2464,24 +2471,24 @@ MagickExport unsigned int IsAccessibleNoLogging(const char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsAccessibleAndNotEmpty() returns True if the file as defined by filename
+%  IsAccessibleAndNotEmpty() returns True if the file as defined by path
 %  exists, is a regular file, and contains at least one byte of data.
 %
 %  The format of the IsAccessibleAndNotEmpty method is:
 %
-%      unsigned int IsAccessibleAndNotEmpty(const char *filename)
+%      unsigned int IsAccessibleAndNotEmpty(const char *path)
 %
 %  A description of each parameter follows.
 %
 %    o status:  Method IsAccessibleAndNotEmpty returns True if the file as
-%      defined by filename exists, is a regular file, and contains content,
+%      defined by path exists, is a regular file, and contains content,
 %      otherwise False is returned.
 %
-%    o filename:  A pointer to an array of characters containing the filename.
+%    o path:  A pointer to an array of characters containing the path.
 %
 %
 */
-MagickExport unsigned int IsAccessibleAndNotEmpty(const char *filename)
+MagickExport unsigned int IsAccessibleAndNotEmpty(const char *path)
 {
   int
     status;
@@ -2489,9 +2496,9 @@ MagickExport unsigned int IsAccessibleAndNotEmpty(const char *filename)
   struct stat
     file_info;
 
-  if ((filename == (const char *) NULL) || (*filename == '\0'))
+  if ((path == (const char *) NULL) || (*path == '\0'))
     return(False);
-  status=stat(filename,&file_info);
+  status=stat(path,&file_info);
 
   if ((status == 0) && S_ISREG(file_info.st_mode) && (file_info.st_size > 0))
     return (True);
@@ -2510,38 +2517,39 @@ MagickExport unsigned int IsAccessibleAndNotEmpty(const char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IsDirectory() returns -1 if the directory does not exist, 0 if the
-%  directory represents a file, and 1 if the filename represents a directory.
+%  IsDirectory() returns -1 if the path does not exist, 0 if the
+%  path represents a file, and 1 if the path represents a directory.
 %
 %  The format of the IsAccessible method is:
 %
-%      int IsDirectory(const char *directory)
+%      int IsDirectory(const char *path)
 %
 %  A description of each parameter follows.
 %
-%   o  status:  Method IsDirectory returns -1 if the filename does not exist,
-%      0 if the filename represents a file, and 1 if the filename represents
+%   o  status:  Method IsDirectory returns -1 if the path does not exist,
+%      0 if the path represents a file, and 1 if the path represents
 %      a directory.
 %
-%   o  directory:  Specifies a pointer to an array of characters.  The unique
-%      file name is returned in this array.
+%   o  path:  Path to file or directory.
 %
 %
 */
-static int IsDirectory(const char *directory)
+static int IsDirectory(const char *path)
 {
-  int
-    status;
-
   struct stat
     file_info;
 
-  if ((directory == (const char *) NULL) || (*directory == '\0'))
+  if ((path == (const char *) NULL) || (*path == '\0'))
     return(False);
-  status=stat(directory,&file_info);
-  if (status != 0)
-    return(-1);
-  return(S_ISDIR(file_info.st_mode));
+
+  if ((stat(path,&file_info)) == 0)
+    {
+      if (S_ISREG(file_info.st_mode))
+        return 0;
+      if (S_ISDIR(file_info.st_mode))
+        return 1;
+    }
+  return -1;
 }
 
 /*

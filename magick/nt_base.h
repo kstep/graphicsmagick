@@ -86,10 +86,16 @@ extern "C" {
 */
 #define HAVE_POPEN 1
 #define HAVE__POPEN 1
-#define popen  _popen
+#define popen(command,mode)  _popen(command,mode)
 #define HAVE_PCLOSE 1
 #define HAVE__PCLOSE 1
-#define pclose  _pclose
+#define pclose(stream)  _pclose(stream)
+
+/*
+  Windows provides Unix-style access() via _access()
+ */
+#define HAVE_ACCESS 1
+#define access(path,mode) _access(path,mode)
 /*
   Typedef declarations.
 */
