@@ -218,7 +218,6 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     }
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  clone_info->primitive=AllocateString(primitive);
   matte=image->matte;
   status=True;
   for (i=0; textlist[i] != (char *) NULL; i++)
