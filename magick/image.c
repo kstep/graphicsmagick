@@ -1633,14 +1633,14 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case BumpmapCompositeOp:
         {
-          destination.red=(Quantum)
-            ((double) ((ScaleIntensityToQuantum(&source)*destination.red)/MaxRGB));
-          destination.green=(Quantum)
-            ((double) ((ScaleIntensityToQuantum(&source)*destination.green)/MaxRGB));
-          destination.blue=(Quantum)
-            ((double) ((ScaleIntensityToQuantum(&source)*destination.blue)/MaxRGB));
-          destination.opacity=(Quantum)
-            ((double) (ScaleIntensityToQuantum(&source)*destination.opacity/MaxRGB));
+          destination.red=(Quantum) ((double)
+            ((ScaleIntensityToQuantum(&source)*destination.red)/MaxRGB));
+          destination.green=(Quantum) ((double)
+            ((ScaleIntensityToQuantum(&source)*destination.green)/MaxRGB));
+          destination.blue=(Quantum) ((double)
+            ((ScaleIntensityToQuantum(&source)*destination.blue)/MaxRGB));
+          destination.opacity=(Quantum) ((double)
+            ((ScaleIntensityToQuantum(&source)*destination.opacity)/MaxRGB));
           break;
         }
         case CopyCompositeOp:
