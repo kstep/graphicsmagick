@@ -273,7 +273,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
       }
     else
@@ -302,7 +302,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
       }
     length=DFANgetlablen(image->filename,DFTAG_RIG,reference);
@@ -369,7 +369,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (status != -1);
   while (image->previous != (Image *) NULL)
@@ -563,7 +563,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
+                  MagickMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -600,7 +600,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 p++;
               }
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
+                MagickMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -622,7 +622,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 p++;
               }
             }
-            ProgressMonitor(SaveImageText,100,400);
+            MagickMonitor(SaveImageText,100,400);
             for (y=0; y < (int) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
@@ -634,7 +634,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 p++;
               }
             }
-            ProgressMonitor(SaveImageText,250,400);
+            MagickMonitor(SaveImageText,250,400);
             for (y=0; y < (int) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
@@ -646,7 +646,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 p++;
               }
             }
-            ProgressMonitor(SaveImageText,400,400);
+            MagickMonitor(SaveImageText,400,400);
             break;
           }
         }
@@ -677,7 +677,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
+                MagickMonitor(SaveImageText,y,image->rows);
           }
         else
           {
@@ -711,7 +711,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
+                  MagickMonitor(SaveImageText,y,image->rows);
             }
           }
         compression=image_info->compression == NoCompression ? 0 : DFTAG_RLE;
@@ -734,7 +734,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

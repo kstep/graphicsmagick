@@ -1014,6 +1014,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               for (i=0; i < (length-2); i++)
                 (void) ReadByte(image);
             }
+printf("%d\n",image->columns);
+image->columns=814;
           if ((code != 0x9a) && (bytes_per_line & 0x8000) == 0)
             pixels=DecodeImage(image_info,image,bytes_per_line,1);
           else
@@ -1080,7 +1082,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               p+=(pixmap.component_count-1)*tile_image->columns;
             if (destination.bottom == (int) image->rows)
               if (QuantumTick(y,tile_image->rows))
-                ProgressMonitor(LoadImageText,y,tile_image->rows);
+                MagickMonitor(LoadImageText,y,tile_image->rows);
           }
           (void) LiberateMemory((void **) &pixels);
           if (tile_image != image)
@@ -1090,7 +1092,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               DestroyImage(tile_image);
             }
           if (destination.bottom != (int) image->rows)
-            ProgressMonitor(LoadImageText,destination.bottom,image->rows);
+            MagickMonitor(LoadImageText,destination.bottom,image->rows);
           break;
         }
         case 0xa1:
@@ -1560,7 +1562,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
         scanline[x]=indexes[x];
       count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
       if (QuantumTick(y,image->rows))
-        ProgressMonitor(SaveImageText,y,image->rows);
+        MagickMonitor(SaveImageText,y,image->rows);
     }
   else
     {
@@ -1600,7 +1602,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
         }
         count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(SaveImageText,y,image->rows);
+          MagickMonitor(SaveImageText,y,image->rows);
       }
     }
   if (count & 0x1)

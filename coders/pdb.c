@@ -406,7 +406,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(LoadImageText,y,image->rows);
+          MagickMonitor(LoadImageText,y,image->rows);
       }
       break;
     }
@@ -440,7 +440,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(LoadImageText,y,image->rows);
+          MagickMonitor(LoadImageText,y,image->rows);
       }
       break;
     }
@@ -468,7 +468,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(LoadImageText,y,image->rows);
+          MagickMonitor(LoadImageText,y,image->rows);
       }
       break;
     }

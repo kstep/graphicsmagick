@@ -173,7 +173,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(LoadImageText,y,image->rows);
+          MagickMonitor(LoadImageText,y,image->rows);
     }
     count=image->tile_info.height-image->rows-image->tile_info.y;
     for (y=0; y < count; y++)
@@ -200,7 +200,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (count > 0);
   LiberateMemory((void **) &scanline);
@@ -346,13 +346,13 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,packet_size*image->columns,pixels);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(SaveImageText,y,image->rows);
+          MagickMonitor(SaveImageText,y,image->rows);
     }
     LiberateMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

@@ -287,7 +287,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+              MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -317,7 +317,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+              MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -341,7 +341,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+              MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -367,7 +367,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+              MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -395,7 +395,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+              MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -431,7 +431,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+          MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
     }
     /*
       Proceed to next image.
@@ -451,7 +451,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   }
   while (image->previous != (Image *) NULL)

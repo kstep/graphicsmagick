@@ -5,11 +5,11 @@ Configuration Files:
   ImageMagick searches in the following order, and will use the first
   configuration file found:
 
+      MagickModulesPath/coders
       $HOME/.magick/
-      $MAGIC_HOME/
+      $MAGICK_HOME/
       <program execution path>/
       MagickConfigurePath
-      MagickModulesPath/coders
       X11ConfigurePath
 
   Where MagickConfigurePath and MagickModulesPath are defined by the

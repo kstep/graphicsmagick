@@ -950,7 +950,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (c != EOF);
   while (image->previous != (Image *) NULL)
@@ -1575,14 +1575,14 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             status=WriteBlob(image,packet_size*image->columns,pixels);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(SaveImageText,y,image->rows);
+          MagickMonitor(SaveImageText,y,image->rows);
     }
     LiberateMemory((void **) &pixels);
     LiberateMemory((void **) &compressed_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

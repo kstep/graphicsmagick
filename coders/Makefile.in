@@ -934,7 +934,7 @@ $(DEPDIR)/txt.Plo $(DEPDIR)/uil.Plo $(DEPDIR)/uyvy.Plo \
 $(DEPDIR)/vicar.Plo $(DEPDIR)/vid.Plo $(DEPDIR)/viff.Plo \
 $(DEPDIR)/wbmp.Plo $(DEPDIR)/wpg.Plo $(DEPDIR)/x.Plo $(DEPDIR)/xbm.Plo \
 $(DEPDIR)/xc.Plo $(DEPDIR)/xpm.Plo $(DEPDIR)/xwd.Plo $(DEPDIR)/yuv.Plo
-DIST_COMMON =  $(noinst_HEADERS) Makefile.am Makefile.in
+DIST_COMMON =  $(noinst_HEADERS) Makefile.am Makefile.in depcomp
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)

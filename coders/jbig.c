@@ -228,7 +228,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(LoadImageText,y,image->rows);
+      MagickMonitor(LoadImageText,y,image->rows);
   }
   /*
     Free scale resource.
@@ -460,7 +460,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
       if (bit != 0)
         *q++=byte << (8-bit);
       if (QuantumTick(y,image->rows))
-        ProgressMonitor(SaveImageText,y,image->rows);
+        MagickMonitor(SaveImageText,y,image->rows);
     }
     /*
       Initialize JBIG info structure.
@@ -494,7 +494,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

@@ -451,7 +451,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
-        ProgressMonitor(LoadImageText,y,image->rows);
+        MagickMonitor(LoadImageText,y,image->rows);
     }
     LiberateMemory((void **) &fits_pixels);
     /*
@@ -474,7 +474,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   }
   while (image->previous != (Image *) NULL)
@@ -648,7 +648,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     (void) PopImagePixels(image,GrayQuantum,pixels);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
-      ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
+      MagickMonitor(SaveImageText,image->rows-y-1,image->rows);
   }
   LiberateMemory((void **) &pixels);
   CloseBlob(image);

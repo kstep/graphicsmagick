@@ -164,7 +164,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(LoadImageText,y,image->rows);
+      MagickMonitor(LoadImageText,y,image->rows);
   }
   return(image);
 }

@@ -721,7 +721,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      ProgressMonitor(LoadImageText,y,image->rows);
+      MagickMonitor(LoadImageText,y,image->rows);
   }
   if (image->colorspace == CMYKColorspace)
     {
@@ -1201,7 +1201,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           if (QuantumTick(y,image->rows))
-            ProgressMonitor(SaveImageText,y,image->rows);
+            MagickMonitor(SaveImageText,y,image->rows);
         }
       else
         if (jpeg_info.in_color_space == JCS_RGB)
@@ -1220,7 +1220,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
+              MagickMonitor(SaveImageText,y,image->rows);
           }
         else
           for (y=0; y < (int) image->rows; y++)
@@ -1242,7 +1242,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
+              MagickMonitor(SaveImageText,y,image->rows);
           }
     }
   else
@@ -1260,7 +1260,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(SaveImageText,y,image->rows);
+          MagickMonitor(SaveImageText,y,image->rows);
       }
     else
       if (jpeg_info.in_color_space == JCS_RGB)
@@ -1279,7 +1279,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           if (QuantumTick(y,image->rows))
-            ProgressMonitor(SaveImageText,y,image->rows);
+            MagickMonitor(SaveImageText,y,image->rows);
         }
       else
         for (y=0; y < (int) image->rows; y++)
@@ -1301,7 +1301,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           if (QuantumTick(y,image->rows))
-            ProgressMonitor(SaveImageText,y,image->rows);
+            MagickMonitor(SaveImageText,y,image->rows);
         }
   jpeg_finish_compress(&jpeg_info);
   /*

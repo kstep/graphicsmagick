@@ -3210,7 +3210,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(LoadImageText,y,image->rows);
+                MagickMonitor(LoadImageText,y,image->rows);
           }
         }
       }
@@ -3312,7 +3312,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,y,image->rows);
+              MagickMonitor(LoadImageText,y,image->rows);
         }
         if (image->storage_class == PseudoClass)
           {
@@ -3340,7 +3340,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   }
   /*

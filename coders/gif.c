@@ -330,7 +330,7 @@ static unsigned int DecodeImage(Image *image,const int opacity,
       break;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        ProgressMonitor(LoadImageText,y,image->rows);
+        MagickMonitor(LoadImageText,y,image->rows);
   }
   LiberateMemory((void **) &pixel_stack);
   LiberateMemory((void **) &suffix);
@@ -608,7 +608,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
       }
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        ProgressMonitor(SaveImageText,y,image->rows);
+        MagickMonitor(SaveImageText,y,image->rows);
   }
   /*
     Flush out the buffered code.
@@ -894,7 +894,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
     image_count++;
     /*
@@ -1414,7 +1414,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   (void) WriteByte(image,';'); /* terminator */
   LiberateMemory((void **) &global_colormap);

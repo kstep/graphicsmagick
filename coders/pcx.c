@@ -564,7 +564,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(LoadImageText,y,image->rows);
+          MagickMonitor(LoadImageText,y,image->rows);
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
@@ -594,7 +594,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   }
   if (page_table != (unsigned long *) NULL)
@@ -889,7 +889,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             }
           }
           if (QuantumTick(y,image->rows))
-            ProgressMonitor(SaveImageText,y,image->rows);
+            MagickMonitor(SaveImageText,y,image->rows);
         }
       }
     else
@@ -905,7 +905,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             *q++=indexes[x];
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
+              MagickMonitor(SaveImageText,y,image->rows);
         }
       else
         {
@@ -948,7 +948,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
               *q++=byte << (8-bit);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
+                MagickMonitor(SaveImageText,y,image->rows);
           }
         }
     /*
@@ -985,7 +985,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           }
         (void) WriteByte(image,previous);
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(SaveImageText,y,image->rows);
+          MagickMonitor(SaveImageText,y,image->rows);
       }
     }
     (void) WriteByte(image,pcx_info.colormap_signature);
@@ -995,7 +995,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
     if (scene >= 1023)
       break;
   } while (image_info->adjoin);

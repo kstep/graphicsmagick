@@ -304,9 +304,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FormatString(command,delegate_info.commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
-  ProgressMonitor(RenderPostscriptText,0,8);
+  MagickMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);
-  ProgressMonitor(RenderPostscriptText,7,8);
+  MagickMonitor(RenderPostscriptText,7,8);
   if (status)
     {
       (void) remove(postscript_filename);
@@ -961,7 +961,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
+                MagickMonitor(SaveImageText,y,image->rows);
           }
           if (compression == ZipCompression)
             status=
@@ -1016,7 +1016,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
+                MagickMonitor(SaveImageText,y,image->rows);
           }
           Ascii85Flush(image);
           break;
@@ -1077,7 +1077,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(image,byte << (8-bit));
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
+                    MagickMonitor(SaveImageText,y,image->rows);
               }
               Ascii85Flush(image);
               break;
@@ -1119,7 +1119,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
+                    MagickMonitor(SaveImageText,y,image->rows);
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,number_packets,image_info->quality,
@@ -1156,7 +1156,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
+                    MagickMonitor(SaveImageText,y,image->rows);
               }
               Ascii85Flush(image);
               break;
@@ -1409,7 +1409,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   *q++=byte << (8-bit);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,tile_image->rows))
-                    ProgressMonitor(SaveImageText,y,tile_image->rows);
+                    MagickMonitor(SaveImageText,y,tile_image->rows);
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,number_packets,image_info->quality,
@@ -1459,7 +1459,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(image,byte << (8-bit));
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,tile_image->rows))
-                    ProgressMonitor(SaveImageText,y,tile_image->rows);
+                    MagickMonitor(SaveImageText,y,tile_image->rows);
               }
               Ascii85Flush(image);
               break;
@@ -1609,7 +1609,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
+    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
