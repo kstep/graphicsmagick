@@ -275,11 +275,12 @@ pkg_DATA = modules.mgk
 @WITH_MODULES_TRUE@@HasJPEG_TRUE@JPEG_LA = @WITH_MODULES_TRUE@@HasJPEG_TRUE@jpeg.la
 @WITH_MODULES_TRUE@@HasPNG_TRUE@PNG_LA = @WITH_MODULES_TRUE@@HasPNG_TRUE@png.la
 @WITH_MODULES_TRUE@@HasTIFF_TRUE@TIFF_LA = @WITH_MODULES_TRUE@@HasTIFF_TRUE@tiff.la
+@WITH_MODULES_TRUE@@HasTIFF_TRUE@FAX_LA = @WITH_MODULES_TRUE@@HasTIFF_TRUE@fax.la
 @WITH_MODULES_TRUE@@HasTTF_TRUE@TTF_LA = @WITH_MODULES_TRUE@@HasTTF_TRUE@ttf.la
 @WITH_MODULES_TRUE@@HasX11_TRUE@X_LA = @WITH_MODULES_TRUE@@HasX11_TRUE@x.la
 @WITH_MODULES_TRUE@@HasX11_TRUE@XWD_LA = @WITH_MODULES_TRUE@@HasX11_TRUE@xwd.la
 @WITH_MODULES_TRUE@pkg_LTLIBRARIES = @WITH_MODULES_TRUE@8bim.la avs.la bmp.la cache.la cmyk.la dcm.la \
-@WITH_MODULES_TRUE@  $(DSP_LA) ept.la fax.la $(FPX_LA) fits.la gif.la gray.la gradation.la \
+@WITH_MODULES_TRUE@  $(DSP_LA) ept.la $(FAX_LA) $(FPX_LA) fits.la gif.la gray.la gradation.la \
 @WITH_MODULES_TRUE@  $(HDF_LA) histogram.la html.la icc.la icon.la iptc.la $(JBIG_LA) \
 @WITH_MODULES_TRUE@  $(JPEG_LA) label.la logo.la map.la matte.la miff.la mono.la mtv.la \
 @WITH_MODULES_TRUE@  pcd.la pcl.la pcx.la pdb.la pdf.la pict.la $(PNG_LA) pix.la plasma.la \

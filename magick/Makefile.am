@@ -122,6 +122,7 @@ PNG_LA=png.la
 endif # HasPNG
 if HasTIFF
 TIFF_LA=tiff.la
+FAX_LA=fax.la
 endif # HasTIFF
 if HasTTF
 TTF_LA=ttf.la
@@ -131,7 +132,7 @@ X_LA=x.la
 XWD_LA=xwd.la
 endif # HasX11
 pkg_LTLIBRARIES   = 8bim.la avs.la bmp.la cache.la cmyk.la dcm.la \
-  $(DSP_LA) ept.la fax.la $(FPX_LA) fits.la gif.la gray.la gradation.la \
+  $(DSP_LA) ept.la $(FAX_LA) $(FPX_LA) fits.la gif.la gray.la gradation.la \
   $(HDF_LA) histogram.la html.la icc.la icon.la iptc.la $(JBIG_LA) \
   $(JPEG_LA) label.la logo.la map.la matte.la miff.la mono.la mtv.la \
   pcd.la pcl.la pcx.la pdb.la pdf.la pict.la $(PNG_LA) pix.la plasma.la \
