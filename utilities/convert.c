@@ -278,6 +278,7 @@ int main(int argc,char **argv)
           GetMagickVersion((unsigned long *) NULL));
         (void) fprintf(stdout,"Copyright: %.1024s\n\n",
           GetMagickCopyright());
+        Exit(0);
       }
     if (LocaleCompare("?",option+1) == 0)
       ConvertUsage();
