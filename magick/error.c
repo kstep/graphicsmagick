@@ -110,7 +110,9 @@ Export void CatchImageException(Image *image)
   ExceptionInfo
     exception;
 
-  assert(image != (Image *) NULL);
+  if (image == (Image *) NULL)
+    return;
+  GetExceptionInfo(&exception);
   GetImageException(image,&exception);
   if (exception.severity == UndefinedException)
     return;
@@ -211,7 +213,7 @@ static void DefaultWarningHandler(const ExceptionType warning,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t E r r o r I n f o                                                   %
+%   G e t E x c e p t i o n I n f o                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
