@@ -80,13 +80,11 @@ typedef struct _BMPInfo
     x_pixels,
     y_pixels,
     number_colors,
-    colors_important;
-
-  unsigned short
     red_mask,
     green_mask,
     blue_mask,
-    alpha_mask;
+    alpha_mask,
+    colors_important;
 
   long
     colorspace;
@@ -399,9 +397,10 @@ static unsigned int IsBMP(const unsigned char *magick,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadBMPImage reads a Microsoft Windows bitmap image file and
-%  returns it.  It allocates the memory necessary for the new Image structure
-%  and returns a pointer to the new image.
+%  Method ReadBMPImage reads a Microsoft Windows bitmap image file, Version
+%  2, 3 (for Windows or NT), or 4, and  returns it.  It allocates the memory
+%  necessary for the new Image structure and returns a pointer to the new
+%  image.  It currently only handles masks RGB8880 and RGBA8888.
 %
 %  The format of the ReadBMPImage method is:
 %
@@ -539,18 +538,20 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.colors_important=ReadBlobLSBLong(image);
         for (i=0; i < (long) (bmp_info.size-40); i++)
           (void) ReadBlobByte(image);
+        image->matte=False;
         if ((bmp_info.compression == 3) && ((bmp_info.bits_per_pixel == 16) ||
             (bmp_info.bits_per_pixel == 32)))
           {
-            bmp_info.red_mask=ReadBlobLSBShort(image);
-            bmp_info.green_mask=ReadBlobLSBShort(image);
-            bmp_info.blue_mask=ReadBlobLSBShort(image);
+            bmp_info.red_mask=ReadBlobLSBLong(image);
+            bmp_info.green_mask=ReadBlobLSBLong(image);
+            bmp_info.blue_mask=ReadBlobLSBLong(image);
             if (bmp_info.size > 40)
               {
                 /*
                   Read color management information.
                 */
                 bmp_info.alpha_mask=(unsigned short) ReadBlobLSBShort(image);
+                image->matte=bmp_info.alpha_mask != 0;
                 bmp_info.colorspace=(long) ReadBlobLSBLong(image);
                 bmp_info.red_primary.x=ReadBlobLSBLong(image);
                 bmp_info.red_primary.y=ReadBlobLSBLong(image);
@@ -567,7 +568,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
           }
       }
-    image->matte=bmp_info.bits_per_pixel == 32;
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
     image->depth=8;
@@ -817,7 +817,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->green=Upscale(*p++);
             q->red=Upscale(*p++);
             if (image->matte)
-              q->opacity=Upscale(*p++);
+              q->opacity=Upscale(*p);
+            if (bmp_info.bits_per_pixel == 32)
+              p++;
             q++;
           }
           if (!SyncImagePixels(image))
@@ -956,7 +958,8 @@ ModuleExport void UnregisterBMPImage(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method WriteBMPImage writes an image in Microsoft Windows bitmap encoded
-%  image format.
+%  image format, version 3 for Windows or (if the image has a matte channel)
+%  version 4.
 %
 %  The format of the WriteBMPImage method is:
 %
@@ -1034,13 +1037,16 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         if (IsMonochromeImage(image,&image->exception))
           bmp_info.bits_per_pixel=1;
         bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
-        if (bmp_info.number_colors < image->colors)
-          SetImageType(image,image->matte ? TrueColorMatteType : TrueColorType);
+        if (image->matte)
+          SetImageType(image,TrueColorMatteType);
         else
-          {
-            bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
-            bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
-          }
+          if (bmp_info.number_colors < image->colors)
+            SetImageType(image,TrueColorType);
+          else
+            {
+              bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
+              bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
+            }
       }
     if (image->storage_class == DirectClass)
       {
@@ -1052,7 +1058,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
-    bmp_info.size=40;
+    bmp_info.size=image->matte ? 108 : 40;
     bmp_info.width=(long) image->columns;
     bmp_info.height=(long) image->rows;
     bmp_info.planes=1;
@@ -1153,7 +1159,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       case 32:
       {
         /*
-          Convert DirectClass packet to BMP RGB pixel.
+          Convert DirectClass packet to BMP RGB888 or RGBA8888 pixel.
         */
         for (y=0; y < (long) image->rows; y++)
         {
@@ -1166,7 +1172,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             *q++=Downscale(p->blue);
             *q++=Downscale(p->green);
             *q++=Downscale(p->red);
-            if (image->matte)
+            if (bmp_info.bits_per_pixel == 32)
               *q++=Downscale(p->opacity);
             p++;
           }
@@ -1202,12 +1208,15 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.compression=1;
         }
     /*
-      Write BMP header.
+      Write BMP Version 3 for Windows 3.x 14-byte header.
     */
     (void) WriteBlob(image,2,"BM");
     (void) WriteBlobLSBLong(image,bmp_info.file_size);
     (void) WriteBlobLSBLong(image,bmp_info.ba_offset);
     (void) WriteBlobLSBLong(image,bmp_info.offset_bits);
+    /*
+      Write 40-byte bitmap header.
+    */
     (void) WriteBlobLSBLong(image,bmp_info.size);
     (void) WriteBlobLSBLong(image,bmp_info.width);
     (void) WriteBlobLSBLong(image,bmp_info.height);
@@ -1219,6 +1228,24 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobLSBLong(image,bmp_info.y_pixels);
     (void) WriteBlobLSBLong(image,bmp_info.number_colors);
     (void) WriteBlobLSBLong(image,bmp_info.colors_important);
+    if (image->matte)
+      {
+        int
+          j;
+
+        /*
+          Write the rest of the 108-byte BMP Version 4 header
+        */
+        (void) WriteBlobLSBLong(image,0x00ff0000L); /* Red mask */
+        (void) WriteBlobLSBLong(image,0x0000ff00L); /* Green mask */
+        (void) WriteBlobLSBLong(image,0x000000ffL); /* Blue mask */
+        (void) WriteBlobLSBLong(image,0xff000000L); /* Alpha mask */
+        (void) WriteBlobLSBLong(image,0x00000001L); /* CSType==RGB */
+        for (j=0; j<9; j++)
+          (void) WriteBlobLSBLong(image,0x00000000L); /* Unused RedX etc. */
+        for (j=0; j<3; j++)
+          (void) WriteBlobLSBLong(image,0x00000000L); /* 3 comp. gamma scale */
+      }
     if (image->storage_class == PseudoClass)
       {
         unsigned char
