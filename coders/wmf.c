@@ -90,10 +90,13 @@
 #define ERR(API)  ((API)->err != wmf_E_None)
 #define DIAG(API) ((API)->flags & WMF_OPT_DIAGNOSTICS)
 
-#define TWIPS_INCH 1440
-#define CENTIMETERS_INCH 2.54
-#define POINTS_PER_CENTIMETER 28.3
-#define CENTIMETER_PER_POINT .03527778
+/* Unit conversions */
+#define TWIPS_PER_INCH        1440
+#define CENTIMETERS_PER_INCH  2.54
+#define POINTS_PER_CENTIMETER 28.34646
+#define CENTIMETERS_PER_POINT 0.03527778
+#define POINTS_PER_INCH       72
+#define INCHES_PER_POINT      0.01388889
 
 #include "libwmf/fund.h"
 #include "libwmf/types.h"
@@ -117,8 +120,11 @@ struct _wmf_magick_t
   double
     scale_x,
     scale_y,
+    resolution_x,
+    resolution_y,
     translate_x,
-    translate_y;
+    translate_y,
+    units_per_inch;
 
   /* Output stream */
   wmfStream
@@ -512,12 +518,12 @@ static void wmf_magick_device_begin (wmfAPI* API)
 #else
   ddata->temp_images = (char**)AcquireMemory(ddata->max_temp_file_index*sizeof(char *));
 #endif /* WMF_USE_NATIVE_READ */
-  
+
   wmf_stream_printf (API,out,"viewbox 0 0 %u %u\n",ddata->image->columns,ddata->image->rows);
   /* Scale width and height to image */
   ddata->scale_x = ((double)ddata->image->columns)/(ddata->bbox.BR.x - ddata->bbox.TL.x);
   ddata->scale_y = ((double)ddata->image->rows)/(ddata->bbox.BR.y - ddata->bbox.TL.y);
-/* printf("Scale = %.10g,%.10g\n", ddata->scale_x, ddata->scale_y ); */
+ /*  printf("Scale = %.10g,%.10g\n", ddata->scale_x, ddata->scale_y ); */
   wmf_stream_printf (API,out,"scale %.10g,%.10g\n",
                      ddata->scale_x,
                      ddata->scale_y);
@@ -529,6 +535,7 @@ static void wmf_magick_device_begin (wmfAPI* API)
                      ddata->translate_x,
                      ddata->translate_y);
   wmf_stream_printf (API,out,"fill none\n");
+  wmf_stream_printf (API,out,"stroke none\n");
 }
 
 /*
@@ -564,7 +571,7 @@ static void wmf_magick_flood_interior (wmfAPI* API,wmfFlood_t* flood)
   wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
                      (int)rgb->r,(int)rgb->g,(int)rgb->b);
 
-  wmf_stream_printf (API,out,"color %f,%f filltoborder\n",
+  wmf_stream_printf (API,out,"color %.10g,%.10g filltoborder\n",
                      flood->pt.x,flood->pt.y);
 
   /* Restore graphic context */
@@ -590,9 +597,9 @@ static void wmf_magick_flood_exterior (wmfAPI* API,wmfFlood_t* flood)
                      (int)rgb->r,(int)rgb->g,(int)rgb->b);
 
   if (flood->type == FLOODFILLSURFACE)
-    wmf_stream_printf (API,out,"color %f,%f floodfill\n",flood->pt.x,flood->pt.y);
+    wmf_stream_printf (API,out,"color %.10g,%.10g floodfill\n",flood->pt.x,flood->pt.y);
   else
-    wmf_stream_printf (API,out,"color %f,%f filltoborder\n",flood->pt.x,flood->pt.y);
+    wmf_stream_printf (API,out,"color %.10g,%.10g filltoborder\n",flood->pt.x,flood->pt.y);
 
   /* Restore graphic context */
   wmf_stream_printf (API,out,"pop graphic-context\n");
@@ -620,7 +627,7 @@ static void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
   wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
                      (int)rgb->r,(int)rgb->g,(int)rgb->b);
 
-  wmf_stream_printf (API,out,"rectangle %f,%f %f,%f\n",
+  wmf_stream_printf (API,out,"rectangle %.10g,%.10g %.10g,%.10g\n",
                      draw_pixel->pt.x,draw_pixel->pt.y,
                      draw_pixel->pt.x+draw_pixel->pixel_width,
                      draw_pixel->pt.y+draw_pixel->pixel_height);
@@ -749,20 +756,20 @@ static void magick_draw_arc (wmfAPI* API,
       magick_pen (API,draw_arc->dc);
 
       if (finish == magick_arc_ellipse)
-	wmf_stream_printf (API,out,"ellipse %f,%f %f,%f 0,360\n",
+	wmf_stream_printf (API,out,"ellipse %.10g,%.10g %.10g,%.10g 0,360\n",
                            O.x,O.y,Rx,Ry);
       else if (finish == magick_arc_pie)
-	wmf_stream_printf (API,out,"ellipse %f,%f %f,%f %f,%f\n",
+	wmf_stream_printf (API,out,"ellipse %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
                            O.x,O.y,Rx,Ry,phi_s,phi_e);
       else if (finish == magick_arc_chord)
         {
-          wmf_stream_printf (API,out,"arc %f,%f %f,%f %f,%f\n",
+          wmf_stream_printf (API,out,"arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
                              O.x,O.y,Rx,Ry,phi_s,phi_e);
-          wmf_stream_printf (API,out,"line %f,%f %f,%f\n",
+          wmf_stream_printf (API,out,"line %.10g,%.10g %.10g,%.10g\n",
                              start.x,start.y,end.x,end.y);
         }
       else /* if (finish == magick_arc_open) */
-        wmf_stream_printf (API,out,"arc %f,%f %f,%f %f,%f\n",
+        wmf_stream_printf (API,out,"arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
                            O.x,O.y,Rx,Ry,phi_s,phi_e);
     }
 
@@ -787,7 +794,7 @@ static void wmf_magick_draw_line (wmfAPI* API,
   if (TO_DRAW (draw_line))
     { 
       magick_pen (API,draw_line->dc);
-      wmf_stream_printf (API,out,"line %f,%f %f,%f\n",
+      wmf_stream_printf (API,out,"line %.10g,%.10g %.10g,%.10g\n",
                          draw_line->from.x,draw_line->from.y,
                          draw_line->to.x,draw_line->to.y);
     }
@@ -821,7 +828,7 @@ static void wmf_magick_poly_line (wmfAPI* API,wmfPolyLine_t* poly_line)
 
       for (i = 0; i < poly_line->count; i++)
         {
-          wmf_stream_printf (API,out," %f,%f",
+          wmf_stream_printf (API,out," %.10g,%.10g",
                              poly_line->pt[i].x,poly_line->pt[i].y);
         }
 
@@ -858,7 +865,7 @@ static void wmf_magick_draw_polygon (wmfAPI* API,wmfPolyLine_t* poly_line)
 
       for (i = 0; i < poly_line->count; i++)
         {
-          wmf_stream_printf (API,out," %f,%f",
+          wmf_stream_printf (API,out," %.10g,%.10g",
                              poly_line->pt[i].x,poly_line->pt[i].y);
         }
 
@@ -889,12 +896,12 @@ static void wmf_magick_draw_rectangle (wmfAPI* API,
       magick_pen (API,draw_rect->dc);
 
       if ((draw_rect->width > 0) || (draw_rect->height > 0))
-        wmf_stream_printf (API,out,"roundrectangle %f,%f %f,%f %f,%f\n",
+        wmf_stream_printf (API,out,"roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
                            draw_rect->TL.x,draw_rect->TL.y,
                            draw_rect->BR.x,draw_rect->BR.y,
                            draw_rect->width/2,draw_rect->height/2);
       else
-	wmf_stream_printf (API,out,"rectangle %f,%f %f,%f\n",
+	wmf_stream_printf (API,out,"rectangle %.10g,%.10g %.10g,%.10g\n",
                            draw_rect->TL.x,draw_rect->TL.y,
                            draw_rect->BR.x,draw_rect->BR.y);
     }
@@ -1067,16 +1074,23 @@ static void wmf_magick_draw_text (wmfAPI* API,
     wmf_stream_printf (API,out,"decorate line-through\n");
 
   /* Set font size */
-/*   printf("========= Font Height  : %i\n", (int)WMF_FONT_HEIGHT(font)); */
-/*   printf("========= Font Width   : %i\n", (int)WMF_FONT_WIDTH(font)); */
-  pointsize = ceil((WMF_FONT_HEIGHT(font)*CENTIMETER_PER_POINT)*(ddata->image->y_resolution/72));
+/*  pointsize = ceil( WMF_FONT_HEIGHT(font) * ((double)TWIPS_PER_INCH/ddata->units_per_inch) * INCHES_PER_POINT */
+/*                     *(ddata->resolution_y/72) * (1/ddata->scale_y) ); */
 
-/*   printf("========= Pointsize    : %i\n", (int)pointsize); */
-/*   printf("== Scaled Pointsize    : %f\n", (float)pointsize*ddata->scale_y); */
+  pointsize = ceil( WMF_FONT_HEIGHT(font) * CENTIMETERS_PER_POINT * 1.4 *
+                    (ddata->resolution_y/72) * (1/ddata->scale_y) );
+  
+/*   printf("WMF_FONT_HEIGHT       = %i\n", (int)WMF_FONT_HEIGHT(font)); */
+/*   printf("WMF_FONT_WIDTH        = %i\n", (int)WMF_FONT_WIDTH(font)); */
+/*   printf("ddata->units_per_inch = %.10g\n", ddata->units_per_inch); */
+/*   printf("ddata->resolution_y   = %.10g\n", ddata->resolution_y); */
+/*   printf("ddata->scale_y        = %.10g\n", ddata->scale_y); */
+/*   printf("pointsize             = %i\n", (int)pointsize); */
+/*   printf("scaled pointsize      = %.10g\n", (float)pointsize*ddata->scale_y); */
   wmf_stream_printf (API,out,"font-size %i\n", pointsize);
 
   /* Translate coordinates so target is 0,0 */
-  wmf_stream_printf (API,out,"translate %f,%f\n",
+  wmf_stream_printf (API,out,"translate %.10g,%.10g\n",
                      draw_text->pt.x,draw_text->pt.y);
   
   /* Apply rotation */
@@ -1087,7 +1101,7 @@ static void wmf_magick_draw_text (wmfAPI* API,
   if(angle == 360)
     angle = 0;
   if (angle != 0)
-    wmf_stream_printf (API,out,"rotate %f\n",angle);
+    wmf_stream_printf (API,out,"rotate %.10g\n",angle);
           
   /*
    * Render text
@@ -1232,7 +1246,7 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
           green = (float) ((int) rgb.g) / 255;
           blue  = (float) ((int) rgb.b) / 255;
 
-          wmf_stream_printf (API,out,"%f %f %f setrgbcolor ",red,green,blue);
+          wmf_stream_printf (API,out,"%.10g %.10g %.10g setrgbcolor ",red,green,blue);
 
           wmf_stream_printf (API,out,"fill ");
         }
@@ -1247,55 +1261,55 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
       green = (float) ((int) rgb.g) / 255;
       blue  = (float) ((int) rgb.b) / 255;
 
-      wmf_stream_printf (API,out,"%f %f %f setrgbcolor\n",red,green,blue);
+      wmf_stream_printf (API,out,"%.10g %.10g %.10g setrgbcolor\n",red,green,blue);
 
       switch (brush->lbHatch)
         {
         case HS_HORIZONTAL:
-          wmf_stream_printf (API,out,"%f 5 %f { newpath dup %f exch moveto %f exch lineto stroke } for\n",
+          wmf_stream_printf (API,out,"%.10g 5 %.10g { newpath dup %.10g exch moveto %.10g exch lineto stroke } for\n",
                              bbox->TL.y,bbox->BR.y,bbox->TL.x,bbox->BR.x);
           break;
 
         case HS_VERTICAL:
-          wmf_stream_printf (API,out,"%f 5 %f { newpath dup %f moveto %f lineto stroke } for\n",
+          wmf_stream_printf (API,out,"%.10g 5 %.10g { newpath dup %.10g moveto %.10g lineto stroke } for\n",
                              bbox->TL.x,bbox->BR.x,bbox->TL.y,bbox->BR.y);
           break;
 
         case HS_FDIAGONAL:
           wmf_stream_printf (API,out,"gsave %% HS_FDIAGONAL\n");
-          wmf_stream_printf (API,out,"%f %f translate -45 rotate ",
+          wmf_stream_printf (API,out,"%.10g %.10g translate -45 rotate ",
                              bbox->TL.x-(bbox->BR.y-bbox->TL.y)/2,(bbox->TL.y+bbox->BR.y)/2);
           side = ((bbox->BR.x-bbox->TL.x) + (bbox->BR.y-bbox->TL.y)) / 1.41421356237309504880;
-          wmf_stream_printf (API,out,"0 5 %f { newpath dup 0 moveto %f lineto stroke } for ",
+          wmf_stream_printf (API,out,"0 5 %.10g { newpath dup 0 moveto %.10g lineto stroke } for ",
                              side,side);
           wmf_stream_printf (API,out,"grestore\n");
           break;
 
         case HS_BDIAGONAL:
           wmf_stream_printf (API,out,"gsave %% HS_BDIAGONAL\n");
-          wmf_stream_printf (API,out,"%f %f translate -45 rotate ",
+          wmf_stream_printf (API,out,"%.10g %.10g translate -45 rotate ",
                              bbox->TL.x-(bbox->BR.y-bbox->TL.y)/2,(bbox->TL.y+bbox->BR.y)/2);
           side = ((bbox->BR.x-bbox->TL.x) + (bbox->BR.y-bbox->TL.y)) / 1.41421356237309504880;
-          wmf_stream_printf (API,out,"0 5 %f { newpath dup 0 exch moveto %f exch lineto stroke } for ",
+          wmf_stream_printf (API,out,"0 5 %.10g { newpath dup 0 exch moveto %.10g exch lineto stroke } for ",
                              side,side);
           wmf_stream_printf (API,out,"grestore\n");
           break;
 
         case HS_CROSS:
-          wmf_stream_printf (API,out,"%f 5 %f { newpath dup %f exch moveto %f exch lineto stroke } for\n",
+          wmf_stream_printf (API,out,"%.10g 5 %.10g { newpath dup %.10g exch moveto %.10g exch lineto stroke } for\n",
                              bbox->TL.y,bbox->BR.y,bbox->TL.x,bbox->BR.x);
-          wmf_stream_printf (API,out,"%f 5 %f { newpath dup %f moveto %f lineto stroke } for\n",
+          wmf_stream_printf (API,out,"%.10g 5 %.10g { newpath dup %.10g moveto %.10g lineto stroke } for\n",
                              bbox->TL.x,bbox->BR.x,bbox->TL.y,bbox->BR.y);
           break;
 
         case HS_DIAGCROSS:
           wmf_stream_printf (API,out,"gsave %% HS_DIAGCROSS\n");
-          wmf_stream_printf (API,out,"%f %f translate -45 rotate ",
+          wmf_stream_printf (API,out,"%.10g %.10g translate -45 rotate ",
                              bbox->TL.x-(bbox->BR.y-bbox->TL.y)/2,(bbox->TL.y+bbox->BR.y)/2);
           side = ((bbox->BR.x-bbox->TL.x) + (bbox->BR.y-bbox->TL.y)) / 1.41421356237309504880;
-          wmf_stream_printf (API,out,"0 5 %f { newpath dup 0 moveto %f lineto stroke } for ",
+          wmf_stream_printf (API,out,"0 5 %.10g { newpath dup 0 moveto %.10g lineto stroke } for ",
                              side,side);
-          wmf_stream_printf (API,out,"0 5 %f { newpath dup 0 exch moveto %f exch lineto stroke } for ",
+          wmf_stream_printf (API,out,"0 5 %.10g { newpath dup 0 exch moveto %.10g exch lineto stroke } for ",
                              side,side);
           wmf_stream_printf (API,out,"grestore\n");
           break;
@@ -1387,7 +1401,7 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
       return;
     }
 
-  wmf_stream_printf (API,out,"stroke-width %f\n", max(0,pen_width));
+  wmf_stream_printf (API,out,"stroke-width %.10g\n", max(0,pen_width));
 
   switch (pen_endcap)
     {
@@ -1424,23 +1438,23 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
   switch (pen_style)
     {
     case PS_DASH: /* DASH_LINE */
-      wmf_stream_printf (API,out,"stroke-dasharray %f,%f\n",
+      wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g\n",
 		         pen_width*10,pen_width*10);
       break;
 
     case PS_ALTERNATE:
     case PS_DOT: /* DOTTED_LINE */
-      wmf_stream_printf (API,out,"stroke-dasharray %f,%f\n",
+      wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g\n",
 		         pen_width,pen_width*2);
       break;
 
     case PS_DASHDOT: /* DASH_DOT_LINE */
-      wmf_stream_printf (API,out,"stroke-dasharray %f,%f,%f,%f\n",
+      wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g,%.10g,%.10g\n",
 		         pen_width*10,pen_width*2,pen_width,pen_width*2);
       break;
 
     case PS_DASHDOTDOT: /* DASH_2_DOTS_LINE */
-      wmf_stream_printf (API,out,"stroke-dasharray %f,%f,%f,%f,%f,%f\n",
+      wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g,%.10g,%.10g,%.10g,%.10g\n",
 		         pen_width*10,pen_width*2,pen_width,pen_width*2,
                          pen_width,pen_width*2);
       break;
@@ -1496,8 +1510,9 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
     wmf_height;
 
   double
-    y_resolution = 72.0,
-    x_resolution = 72.0;
+    resolution_y = 72.0,
+    resolution_x = 72.0,
+    units_per_inch = TWIPS_PER_INCH;
 
   unsigned long
     mvg_length,
@@ -1569,7 +1584,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
       wmf_api_destroy (API);
       ThrowReaderException(CorruptImageError,"Failed to scan file",image);
     }
-/*   printf("Bounding Box: %f,%f %f,%f\n", bounding_box.TL.x, bounding_box.TL.y, */
+/*   printf("Bounding Box: %.10g,%.10g %.10g,%.10g\n", bounding_box.TL.x, bounding_box.TL.y, */
 /*          bounding_box.BR.x,bounding_box.BR.y); */
 
   /* Compute output width and height */
@@ -1579,7 +1594,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
      of an inch. Thus 720 twips equal 1/2 inch, while 32,768 twips is
      22.75 inches.
 
-     The units returned by wmf_size are in centimeters
+     The units returned by wmf_size are in twips
   */
   wmf_error = wmf_size (API,&wmf_width,&wmf_height);
   if ( wmf_error != wmf_E_None )
@@ -1588,26 +1603,31 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
       ThrowReaderException(CorruptImageError,"Failed to compute output size",
                            image);
     }
-  /*   printf("wmf_size: %fx%f\n", wmf_width, wmf_height); */
+/*   printf("wmf_size: %.10gx%.10g\n", wmf_width, wmf_height); */
+/*   printf("Units/inch: %i\n", API->File->pmh->Inch); */
 
   if(image->y_resolution > 0)
     {
-      y_resolution = image->y_resolution;
+      resolution_y = image->y_resolution;
       if ( image->units == PixelsPerCentimeterResolution )
-        y_resolution *= CENTIMETERS_INCH;
+        resolution_y *= CENTIMETERS_PER_INCH;
     }
   
   if(image->x_resolution > 0)
     {
-      x_resolution = image->x_resolution;
+      resolution_x = image->x_resolution;
       if ( image->units == PixelsPerCentimeterResolution )
-        x_resolution *= CENTIMETERS_INCH;
+        resolution_x *= CENTIMETERS_PER_INCH;
     }
 
-  wmf_width  = ceil(( wmf_width*CENTIMETERS_INCH)/TWIPS_INCH*x_resolution);
-  wmf_height = ceil((wmf_height*CENTIMETERS_INCH)/TWIPS_INCH*y_resolution);
+  /* If file has metafile header, then retrieve metafile units */
+  if((API)->File->placeable)
+    units_per_inch = (API)->File->pmh->Inch;
 
-  /*   printf("Size: %fx%f\n", wmf_width, wmf_height); */
+  wmf_width  = ceil(((double)wmf_width/units_per_inch)*resolution_x);
+  wmf_height = ceil(((double)wmf_height/units_per_inch)*resolution_y);
+
+/*   printf("Size: %.10gx%.10g\n", wmf_width, wmf_height); */
 
   ddata = WMF_MAGICK_GetData (API);
   ddata->bbox = bounding_box;
@@ -1651,9 +1671,9 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   strncpy(image->magick,image_info->magick,MaxTextExtent-1);
   ddata->image = image;
-  ddata->image->x_resolution = x_resolution;
-  ddata->image->y_resolution = y_resolution;
-  ddata->image->units = PixelsPerInchResolution;
+  ddata->resolution_x = resolution_x;
+  ddata->resolution_y = resolution_y;
+  ddata->units_per_inch = units_per_inch;
 
   /* Create MVG drawing commands*/
   ddata->out = wmf_stream_create (API,0);
