@@ -391,8 +391,8 @@ std::string Magick::Options::tileName ( void ) const
 // Origin of coordinate system to use when annotating with text or drawing
 void Magick::Options::transformOrigin ( double tx_, double ty_ )
 {
-  AffineInfo current = _imageInfo->affine;
-  AffineInfo affine;
+  AffineMatrix current = _imageInfo->affine;
+  AffineMatrix affine;
   affine.sx=1.0;
   affine.rx=0.0;
   affine.ry=0.0;
@@ -428,8 +428,8 @@ void Magick::Options::transformReset ( void )
 // Rotation to use when annotating with text or drawing
 void Magick::Options::transformRotation ( double angle_ )
 {
-  AffineInfo current = _imageInfo->affine;
-  AffineInfo affine;
+  AffineMatrix current = _imageInfo->affine;
+  AffineMatrix affine;
   affine.sx=1.0;
   affine.rx=0.0;
   affine.ry=0.0;
@@ -456,8 +456,8 @@ void Magick::Options::transformRotation ( double angle_ )
 // Scale to use when annotating with text or drawing
 void Magick::Options::transformScale ( double sx_, double sy_ )
 {
-  AffineInfo current = _imageInfo->affine;
-  AffineInfo affine;
+  AffineMatrix current = _imageInfo->affine;
+  AffineMatrix affine;
   affine.sx=1.0;
   affine.rx=0.0;
   affine.ry=0.0;
@@ -482,8 +482,8 @@ void Magick::Options::transformScale ( double sx_, double sy_ )
 // Skew to use in X axis when annotating with text or drawing
 void Magick::Options::transformSkewX ( double skewx_ )
 {
-  AffineInfo current = _imageInfo->affine;
-  AffineInfo affine;
+  AffineMatrix current = _imageInfo->affine;
+  AffineMatrix affine;
   affine.sx=1.0;
   affine.rx=0.0;
   affine.ry=0.0;
@@ -509,8 +509,8 @@ void Magick::Options::transformSkewX ( double skewx_ )
 // Skew to use in Y axis when annotating with text or drawing
 void Magick::Options::transformSkewY ( double skewy_ )
 {
-  AffineInfo current = _imageInfo->affine;
-  AffineInfo affine;
+  AffineMatrix current = _imageInfo->affine;
+  AffineMatrix affine;
   affine.sx=1.0;
   affine.rx=0.0;
   affine.ry=0.0;

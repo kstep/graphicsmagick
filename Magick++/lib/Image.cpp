@@ -232,10 +232,10 @@ void Magick::Image::annotate ( const std::string &text_,
 
   annotateInfo->gravity = gravity_;
 
-  AffineInfo oaffine = annotateInfo->affine;
+  AffineMatrix oaffine = annotateInfo->affine;
   if ( degrees_ != 0.0)
     {
-        AffineInfo affine;
+        AffineMatrix affine;
         affine.sx=1.0;
         affine.rx=0.0;
         affine.ry=0.0;
@@ -243,7 +243,7 @@ void Magick::Image::annotate ( const std::string &text_,
         affine.tx=0.0;
         affine.ty=0.0;
 
-        AffineInfo current = annotateInfo->affine;
+        AffineMatrix current = annotateInfo->affine;
 #define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
         affine.sx=cos(DegreesToRadians(fmod(degrees_,360.0)));
         affine.rx=sin(DegreesToRadians(fmod(degrees_,360.0)));
