@@ -162,7 +162,7 @@ extern "C" {
 static void DestroyTIFF(void)
 {
   AcquireSemaphore(&tiff_semaphore);
-  DestroySemaphore(tiff_semaphore);
+  DestroySemaphore(&tiff_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
