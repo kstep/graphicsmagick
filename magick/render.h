@@ -218,24 +218,24 @@ typedef struct _TypeMetric
 typedef struct gs_main_instance_s gs_main_instance;
 #endif
 
-#if !defined(DLLCALL)
+#if !defined(MagickDLLCall)
 #  if defined(WIN32)
-#    define DLLCALL __stdcall
+#    define MagickDLLCall __stdcall
 #  else
-#    define DLLCALL
+#    define MagickDLLCall
 #  endif
 #endif
 
 typedef struct _GhostscriptVectors
 {
   int
-    (DLLCALL * exit)(gs_main_instance *instance),
-    (DLLCALL * init_with_args)(gs_main_instance *instance, int argc, char **argv),
-    (DLLCALL * new_instance)(gs_main_instance **pinstance, void *caller_handle),
-    (DLLCALL * run_string)(gs_main_instance *instance, const char *str, int user_errors, int *pexit_code);
+    (MagickDLLCall *exit)(gs_main_instance *),
+    (MagickDLLCall *init_with_args)(gs_main_instance *,int,char **),
+    (MagickDLLCall *new_instance)(gs_main_instance **,void *),
+    (MagickDLLCall *run_string)(gs_main_instance *,const char *,int,int *);
 
   void
-    (DLLCALL * delete_instance)(gs_main_instance *instance);
+    (MagickDLLCall *delete_instance)(gs_main_instance *);
 } GhostscriptVectors;
 
 
