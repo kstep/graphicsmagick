@@ -390,6 +390,8 @@ static struct
     { "OrderedDither", },
     { "Shave", { {"geom", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference} } },
+    { "Level", { {"level", StringReference}, {"black-point", DoubleReference},
+      {"mid-point", DoubleReference}, {"white-point", DoubleReference} } },
   };
 
 /*
@@ -3915,6 +3917,8 @@ Mogrify(ref,...)
     OrderedDitherImage = 142
     Shave              = 143
     ShaveImage         = 144
+    Level              = 145
+    LevelImage         = 146
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -5072,7 +5076,7 @@ Mogrify(ref,...)
                 argument_list[3].double_reference=1.0;
               if (!attribute_flag[0])
                 {
-                  FormatString(message,"%lf/%lf/%lf",
+                  FormatString(message,"%lf%*[/,]%lf%*[/,]%lf",
                     argument_list[1].double_reference,
                     argument_list[2].double_reference,
                     argument_list[3].double_reference);
@@ -5523,6 +5527,28 @@ Mogrify(ref,...)
                 rectangle_info.height=argument_list[2].int_reference;
             }
           image=ShaveImage(image,&rectangle_info,&exception);
+          break;
+        }
+        case 73:  /* Level */
+        {
+          if (first)
+            {
+              if (!attribute_flag[1])
+                argument_list[1].double_reference=0.0
+              if (!attribute_flag[2])
+                argument_list[2].double_reference=1.0;
+              if (!attribute_flag[3])
+                argument_list[3].double_reference=MaxRGB;
+              if (!attribute_flag[0])
+                {
+                  FormatString(message,"%lf%*[/,]%lf%*[/,]%lf",
+                    argument_list[1].double_reference,
+                    argument_list[2].double_reference,
+                    argument_list[3].double_reference);
+                  argument_list[0].string_reference=AllocateString(message);
+                }
+            }
+          LevelImage(image,argument_list[0].string_reference);
           break;
         }
       }
