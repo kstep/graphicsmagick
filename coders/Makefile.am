@@ -48,9 +48,9 @@ noinst_LTLIBRARIES =
 else
 noinst_LTLIBRARIES = libCoders.la
 libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
-libCoders_la_LIBADD = @LIB_JBIG@ @LIB_HDF@ @LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ \
-  @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ \
-  @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
+#libCoders_la_LIBADD = @LIB_JBIG@ @LIB_HDF@ @LIB_TIFF@ @LIB_TTF@ @LIB_JPEG@ \
+#  @LIB_PNG@ @LIB_FPX@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ \
+#  @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
 endif # WITH_MODULES
 
 # Additional files to distribute
