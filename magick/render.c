@@ -1253,9 +1253,13 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
     pixel;
 
   PointInfo
+    extent[4],
+    min,
+    max,
     point;
 
   register long
+    i,
     x;
 
   register PixelPacket
@@ -1266,17 +1270,49 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
     inverse_edge;
 
   /*
-    Affine transform image.
+    Determine bounding box.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(composite != (const Image *) NULL);
   assert(composite->signature == MagickSignature);
   assert(affine != (AffineMatrix *) NULL);
-  edge.x1=0;
-  edge.x2=image->columns;
+  extent[0].x=0;
+  extent[0].y=0;
+  extent[1].x=composite->columns;
+  extent[1].y=0;
+  extent[2].x=composite->columns;
+  extent[2].y=composite->rows;
+  extent[3].x=0;
+  extent[3].y=composite->rows;
+  for (i=0; i < 4; i++)
+  {
+    x=extent[i].x+0.5;
+    y=extent[i].y+0.5;
+    extent[i].x=x*affine->sx+y*affine->ry+affine->tx;
+    extent[i].y=x*affine->rx+y*affine->sy+affine->ty;
+  }
+  min=extent[0];
+  max=extent[0];
+  for (i=1; i < 4; i++)
+  {
+    if (min.x > extent[i].x)
+      min.x=extent[i].x;
+    if (min.y > extent[i].y)
+      min.y=extent[i].y;
+    if (max.x < extent[i].x)
+      max.x=extent[i].x;
+    if (max.y < extent[i].y)
+      max.y=extent[i].y;
+  }
+  /*
+    Affine transform image.
+  */
+  SetImageType(image,TrueColorType);
+  edge.x1=min.x;
+  edge.x2=max.x;
   inverse_affine=InverseAffineMatrix(affine);
-  for (y=0; y < (long) image->rows; y++)
+  for (y=Max(min.y,0); y < (long) Min(max.y,image->rows); y++)
   {
     inverse_edge=AffineEdge(composite,&inverse_affine,y,&edge);
     if (inverse_edge.x2 < inverse_edge.x1)
