@@ -36,12 +36,6 @@
 /* Define if you have the libdl library or equivalent. */
 #undef HAVE_LIBDL
 
-/* Define if you have the `dld' library (-ldld). */
-#undef HAVE_LIBDLD
-
-/* Define if you have the `svld' library (-lsvld). */
-#undef HAVE_LIBSVLD
-
 /* Define if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
@@ -91,9 +85,6 @@
 
 /* Define to the system default library search path. */
 #undef LTDL_SYSSEARCHPATH
-
-/* Define if dlsym() requires a leading underscode in symbol names. */
-#undef NEED_USCORE
 
 /* Define if you have the ANSI C header files. */
 #undef STDC_HEADERS

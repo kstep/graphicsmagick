@@ -349,104 +349,11 @@
 /* Define if you have the <hdf/hdf.h> header file. */
 #undef HAVE_HDF_HDF_H
 
-/* Define if you have the `bsd' library (-lbsd). */
-#undef HAVE_LIBBSD
-
-/* Define if you have the `bz2' library (-lbz2). */
-#undef HAVE_LIBBZ2
-
-/* Define if you have the `df' library (-ldf). */
-#undef HAVE_LIBDF
-
-/* Define if you have the `dir' library (-ldir). */
-#undef HAVE_LIBDIR
-
-/* Define if you have the `dl' library (-ldl). */
-#undef HAVE_LIBDL
-
-/* Define if you have the `dnet' library (-ldnet). */
-#undef HAVE_LIBDNET
-
-/* Define if you have the `dnet_stub' library (-ldnet_stub). */
-#undef HAVE_LIBDNET_STUB
-
-/* Define if you have the `dps' library (-ldps). */
-#undef HAVE_LIBDPS
-
-/* Define if you have the `dpstk' library (-ldpstk). */
-#undef HAVE_LIBDPSTK
-
-/* Define if you have the `fpx' library (-lfpx). */
-#undef HAVE_LIBFPX
-
-/* Define if you have the `freetype' library (-lfreetype). */
-#undef HAVE_LIBFREETYPE
-
-/* Define if you have the `ICE' library (-lICE). */
-#undef HAVE_LIBICE
-
-/* Define if you have the `ipc' library (-lipc). */
-#undef HAVE_LIBIPC
-
-/* Define if you have the `jbig' library (-ljbig). */
-#undef HAVE_LIBJBIG
-
-/* Define if you have the `jpeg' library (-ljpeg). */
-#undef HAVE_LIBJPEG
-
-/* Define if you have the `lcms' library (-llcms). */
-#undef HAVE_LIBLCMS
-
-/* Define if you have the `m' library (-lm). */
-#undef HAVE_LIBM
-
-/* Define if you have the `nsl' library (-lnsl). */
-#undef HAVE_LIBNSL
-
-/* Define if you have the `png' library (-lpng). */
-#undef HAVE_LIBPNG
-
-/* Define if you have the `posix' library (-lposix). */
-#undef HAVE_LIBPOSIX
-
-/* Define if you have the `pthread' library (-lpthread). */
-#undef HAVE_LIBPTHREAD
-
-/* Define if you have the `sfio' library (-lsfio). */
-#undef HAVE_LIBSFIO
-
-/* Define if you have the `socket' library (-lsocket). */
-#undef HAVE_LIBSOCKET
-
-/* Define if you have the `stdio' library (-lstdio). */
-#undef HAVE_LIBSTDIO
-
-/* Define if you have the `tiff' library (-ltiff). */
-#undef HAVE_LIBTIFF
-
-/* Define if you have the `ttf' library (-lttf). */
-#undef HAVE_LIBTTF
-
-/* Define if you have the `x' library (-lx). */
-#undef HAVE_LIBX
-
-/* Define if you have the `Xext' library (-lXext). */
-#undef HAVE_LIBXEXT
-
-/* Define if you have the `xml' library (-lxml). */
-#undef HAVE_LIBXML
-
 /* Define if you have the <libxml/xmlerror.h> header file. */
 #undef HAVE_LIBXML_XMLERROR_H
 
 /* Define if you have the <libxml/xml-error.h> header file. */
 #undef HAVE_LIBXML_XML_ERROR_H
-
-/* Define if you have the `Xt' library (-lXt). */
-#undef HAVE_LIBXT
-
-/* Define if you have the `z' library (-lz). */
-#undef HAVE_LIBZ
 
 /* Define if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
@@ -588,9 +495,6 @@
 
 /* Define if you have Posix thread methods. */
 #undef HasPTHREADS
-
-/* Define if you have the SFIO mmap-based stdio library emulation */
-#undef HasSFIO
 
 /* X11 server supports shape extension */
 #undef HasShape

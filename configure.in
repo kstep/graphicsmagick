@@ -77,10 +77,10 @@ AC_LIBTOOL_SETUP
 # Configure libtool
 AC_PROG_LIBTOOL
 
-if test "$with_magick_plus_plus" = 'yes'
-then
- AC_LIBTOOL_CXX
-fi
+#if test "$with_magick_plus_plus" = 'yes'
+#then
+# AC_LIBTOOL_CXX
+#fi
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
@@ -175,12 +175,6 @@ AC_ARG_ENABLE(16bit-pixel,
 	      [with_16_bit_pixel=$enableval],
 	      [with_16_bit_pixel='no'])
 test "$with_16_bit_pixel" = 'yes' && AC_DEFINE(QuantumLeap,,Increase max color value from 255 to 65535)
-
-# Enable sfio stdio support
-AC_ARG_ENABLE(sfio,
-	      [  --enable-sfio           enable sfio-based stdio support (default is no)],
-	      [with_sfio=$enableval],
-	      [with_sfio='no'])
 
 # Set pixel cache threshold
 AC_ARG_WITH(cache,
@@ -370,24 +364,6 @@ srcdirfull=`cd $srcdir && pwd`
 builddir=`pwd`
 
 #
-# Sfio has a different structure than most delegates
-#
-if test "$with_sfio" != 'no'
-then
-  if test -d "$builddir/sfio/include" && test -d "$builddir/sfio/lib"
-  then
-    CPPFLAGS="$CPPFLAGS -I$builddir/sfio/include"
-    LDFLAGS="$LDFLAGS -L$builddir/sfio/lib"
-  else
-    if test -d "$srcdirfull/sfio/include" && test -d "$srcdirfull/sfio/lib"
-    then
-      CPPFLAGS="$CPPFLAGS -I$srcdirfull/sfio/include"
-      LDFLAGS="$LDFLAGS -L$srcdirfull/sfio/lib"
-    fi
-  fi
-fi
-
-#
 # Most delegates have includes in the same directory as the library
 #
 for dir in bzlib hdf/hdf/src jbig/libjbig jpeg lcms/source  png tiff/libtiff ttf ttf/include ttf/lib/.libs ttf/obj/.libs xml xml/.libs zlib
@@ -509,41 +485,6 @@ fi
 AC_SUBST(LIB_THREAD)
 
 #
-# Check for Sfio
-#
-have_sfio='no'
-LIB_SFIO=''
-if test "$with_sfio" != 'no'
-then
-    AC_CHECKING(for SFIO support ...)
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(stdio.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(sfio,_stdopen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(stdio,vprintf,passed=`expr $passed + 1`,failed=`expr $failed + 1`,-lsfio)
-    AC_MSG_CHECKING(if SFIO package is complete)
-    if test $passed -gt 0
-    then
-	if test $failed -gt 0
-	then
-	    AC_MSG_RESULT(no -- some components failed test)
-	    have_sfio='no (failed tests)'
-	else
-	    LIB_SFIO='-lstdio -lsfio'
-	    LIBS="$LIB_SFIO $LIBS"
-	    AC_DEFINE(HasSFIO,,Define if you have the SFIO mmap-based stdio library emulation)
-	    AC_MSG_RESULT(yes)
-	    have_sfio='yes'
-	fi
-    else
-	AC_MSG_RESULT(no)
-    fi
-fi
-AM_CONDITIONAL(HasSFIO, test "$have_sfio" != 'no')
-AC_SUBST(LIB_SFIO)
-
-
-#
 # Check for ZLIB
 #
 have_zlib='no'
@@ -551,7 +492,8 @@ dnl PNG requires zlib so enable zlib check if PNG is requested
 if test "$with_zlib" != 'no' || test "$with_png" != 'no'
 then
   LIB_ZLIB=''
-  AC_CHECKING(for ZLIB support ...)
+  AC_MSG_CHECKING(for ZLIB support )
+  AC_MSG_RESULT()
   failed=0;
   passed=0;
   AC_CHECK_HEADER(zconf.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -588,7 +530,8 @@ have_bzlib='no'
 if test "$with_bzlib" != 'no'
 then
   LIB_BZLIB=''
-  AC_CHECKING(for BZLIB support ...)
+  AC_MSG_CHECKING(for BZLIB support )
+  AC_MSG_RESULT()
   failed=0;
   passed=0;
   AC_CHECK_HEADER(bzlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -668,7 +611,8 @@ have_dps='no'
 LIB_DPS=''
 if test "$with_dps" != 'no' && test "$with_x" != 'no'
 then
-    AC_CHECKING([for Display Postscript support ...])
+    AC_MSG_CHECKING([for Display Postscript support ])
+    AC_MSG_RESULT()
     failed=0;
     passed=0;
     O_CPPFLAGS="$CPPFLAGS"
@@ -707,7 +651,8 @@ have_fpx='no'
 LIB_FPX=''
 if test "$with_fpx" != 'no'
 then
-    AC_CHECKING(for FlashPIX components ...)
+    AC_MSG_CHECKING(for FlashPIX components )
+    AC_MSG_RESULT()
     failed=0;
     passed=0;
     AC_CHECK_HEADER(fpx.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -740,7 +685,8 @@ have_lcms='no'
 LIB_LCMS=''
 if test "$with_lcms" != 'no'
 then
-    AC_CHECKING(for LCMS support ...)
+    AC_MSG_CHECKING(for LCMS support )
+    AC_MSG_RESULT()
     failed=0;
     passed=0;
     AC_CHECK_HEADER(lcms.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -773,7 +719,8 @@ have_png='no'
 LIB_PNG=''
 if test "$with_png" != 'no'
 then
-    AC_CHECKING(for PNG support ...)
+    AC_MSG_CHECKING(for PNG support )
+    AC_MSG_RESULT()
     failed=0;
     passed=0;
     AC_CHECK_HEADER(png.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -807,7 +754,8 @@ have_jpeg='no'
 LIB_JPEG=''
 if test "$with_jpeg" != 'no'
 then
-    AC_CHECKING(for JPEG support ...)
+    AC_MSG_CHECKING(for JPEG support )
+    AC_MSG_RESULT()
     failed=0;
     passed=0;
     AC_CHECK_HEADER(jconfig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -870,7 +818,8 @@ have_ttf='no'
 LIB_TTF=''
 if test "$with_ttf" != 'no'
 then
-    AC_CHECKING(for TrueType Font support ...)
+    AC_MSG_CHECKING(for TrueType Font support )
+    AC_MSG_RESULT()
     failed=0;
     passed=0;
     AC_CHECK_HEADERS(freetype.h freetype/freetype.h)
@@ -926,7 +875,8 @@ have_tiff='no'
 LIB_TIFF=''
 if test "$with_tiff" != 'no'
 then
-    AC_CHECKING(for TIFF support ...)
+    AC_MSG_CHECKING(for TIFF support )
+    AC_MSG_RESULT()
     failed=0;
     passed=0;
     AC_CHECK_HEADER(tiff.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -961,7 +911,8 @@ have_hdf='no'
 LIB_HDF=''
 if test "$with_hdf" != 'no'
 then
-    AC_CHECKING(for HDF components ...)
+    AC_MSG_CHECKING(for HDF components )
+    AC_MSG_RESULT()
     failed=0;
     passed=0;
     AC_CHECK_HEADERS(hdf.h hdf/hdf.h)
@@ -1000,7 +951,8 @@ have_jbig='no'
 LIB_JBIG=''
 if test "$with_jbig" != 'no'
 then
-    AC_CHECKING(for JBIG support ...)
+    AC_MSG_CHECKING(for JBIG support )
+    AC_MSG_RESULT()
     failed=0;
     passed=0;
     AC_CHECK_HEADER(jbig.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -1033,7 +985,8 @@ have_xml='no'
 LIB_XML=''
 if test "$with_xml" != 'no'
 then
-    AC_CHECKING(for XML support ...)
+    AC_MSG_CHECKING(for XML support )
+    AC_MSG_RESULT()
     failed=0;
     passed=0;
     AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -1498,10 +1451,10 @@ LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
 #LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 if test "$with_modules" = 'no'
 then
-#  LIBS=`echo "$LIB_JBIG $LIB_HDF $LIB_TIFF $LIB_TTF $LIB_JPEG $LIB_PNG $LIB_FPX $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_SFIO $LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
+#  LIBS=`echo "$LIB_JBIG $LIB_HDF $LIB_TIFF $LIB_TTF $LIB_JPEG $LIB_PNG $LIB_FPX $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
   LIBS=`echo "" | sed -e 's/  */ /g'`
 else
-#  LIBS=`echo "$LIB_SFIO $LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
+#  LIBS=`echo "$LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
   LIBS=`echo "" | sed -e 's/  */ /g'`
 fi
 
@@ -1534,7 +1487,6 @@ echo "GNU ld            --with-gnu-ld=$with_gnu_ld		$ac_cv_prog_gnu_ld"
 echo "Ghostscript       None                          $have_gs"
 echo "LZW support       --enable-lzw=$with_lzw		$with_lzw"
 echo "16 bit pixels     --enable-16bit-pixel=$with_16_bit_pixel	$with_16_bit_pixel"
-echo "SFIO              --enable-sfio=$with_sfio		$have_sfio"
 echo "PERL              --with-perl=$with_perl		$have_perl"
 echo "BZLIB             --with-bzlib=$with_bzlib		$with_bzlib"
 echo "DPS               --with-dps=$with_dps		$have_dps"
