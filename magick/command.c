@@ -276,9 +276,6 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
 Display
     *display;
 
-  double
-    sans;
-
   Image
     *image,
     *image_list,
@@ -760,7 +757,7 @@ Display
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+            if ((i == argc) || !IsGeometry(argv[i]))
               MagickFatalError(OptionFatalError,MissingValue,option);
             break;
           }
@@ -1409,9 +1406,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   CompositeOptions
     option_info;
 
-  double
-    sans;
-
   Image
     *composite_image,
     *image,
@@ -1522,7 +1516,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowCompositeException(OptionError,MissingAffineMatrix,
                     option);
               }
@@ -1562,7 +1556,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowCompositeException(OptionError,MissingPoint,option);
               }
             break;
@@ -1782,7 +1776,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowCompositeException(OptionError,MissingGeometry,option);
                 (void) CloneString(&option_info.displace_geometry,argv[i]);
                 option_info.compose=DisplaceCompositeOp;
@@ -2010,7 +2004,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowCompositeException(OptionError,MissingPoint,option);
               }
             break;
@@ -2201,7 +2195,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowCompositeException(OptionError,MissingPoint,option);
               }
             break;
@@ -2256,7 +2250,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
         if (LocaleCompare("sharpen",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowCompositeException(OptionError,MissingGeometry,option);
             break;
           }
@@ -2373,7 +2367,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowCompositeException(OptionError,MissingGeometry,option);
                 (void) CloneString(&option_info.unsharp_geometry,argv[i]);
                 option_info.compose=ThresholdCompositeOp;
@@ -2426,7 +2420,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowCompositeException(OptionError,MissingGeometry,option);
                 (void) CloneString(&option_info.watermark_geometry,argv[i]);
                 option_info.compose=ModulateCompositeOp;
@@ -2438,7 +2432,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowCompositeException(OptionError,MissingPoint,option);
               }
             break;
@@ -2796,7 +2790,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingMatrix,option);
               }
             break;
@@ -2844,7 +2838,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingPoint,option);
               }
             break;
@@ -2852,7 +2846,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("blur",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowConvertException(OptionError,MissingGeometry,option);
             break;
           }
@@ -2946,7 +2940,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingPaintRadius,
                     option);
               }
@@ -3226,7 +3220,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingPaintRadius,
                     option);
               }
@@ -3401,14 +3395,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowConvertException(OptionError,MissingImageGamma,option);
             break;
           }
         if (LocaleCompare("gaussian",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowConvertException(OptionError,MissingGeometry,option);
             break;
           }
@@ -3463,7 +3457,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingPoint,option);
               }
             break;
@@ -3486,7 +3480,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingImplodeAmount,
                     option);
               }
@@ -3561,7 +3555,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingGeometry,option);
               }
             break;
@@ -3785,7 +3779,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingPaintRadius,
                     option);
               }
@@ -3830,7 +3824,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingImageGamma,option);
               }
             if (*option == '+')
@@ -3904,7 +3898,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingPaintRadius,
                     option);
               }
@@ -4042,7 +4036,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("raise",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowConvertException(OptionError,MissingBevelWidth,option);
             break;
           }
@@ -4064,7 +4058,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingPoint,option);
               }
             break;
@@ -4169,7 +4163,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingThreshold,option);
               }
             break;
@@ -4177,14 +4171,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("shade",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowConvertException(OptionError,MissingAzimuth,option);
             break;
           }
         if (LocaleCompare("sharpen",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowConvertException(OptionError,MissingGeometry,option);
             break;
           }
@@ -4201,7 +4195,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("shear",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowConvertException(OptionError,MissingGeometry,option);
             break;
           }
@@ -4263,7 +4257,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingImageRotation,
                     option);
               }
@@ -4402,7 +4396,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingGeometry,option);
               }
             break;
@@ -4464,7 +4458,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("wave",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowConvertException(OptionError,MissingAmplitude,option);
             break;
           }
@@ -4473,7 +4467,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowConvertException(OptionError,MissingPoint,option);
               }
             break;
@@ -5813,7 +5807,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+            if ((i == argc) || !IsGeometry(argv[i]))
               MagickFatalError(OptionFatalError,MissingValue,option);
             break;
           }
@@ -6150,7 +6144,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   MagickFatalError(OptionFatalError,MissingGeometry,option);
               }
             break;
@@ -9616,7 +9610,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingMatrix,option);
               }
             break;
@@ -9660,7 +9654,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingPoint,option);
               }
             break;
@@ -9668,7 +9662,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("blur",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowMogrifyException(OptionError,MissingGeometry,option);
             break;
           }
@@ -9762,7 +9756,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingPaintRadius,
                     option);
               }
@@ -10031,7 +10025,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingPaintRadius,
                     option);
               }
@@ -10213,14 +10207,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("gamma",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowMogrifyException(OptionError,MissingImageGamma,option);
             break;
           }
         if (LocaleCompare("gaussian",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowMogrifyException(OptionError,MissingGeometry,option);
             break;
           }
@@ -10276,7 +10270,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingPoint,option);
               }
             break;
@@ -10296,7 +10290,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingAmount,option);
               }
             break;
@@ -10345,7 +10339,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingGeometry,option);
               }
             break;
@@ -10583,7 +10577,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingPaintRadius,option);
               }
             break;
@@ -10604,7 +10598,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingImageGamma,option);
               }
             if (*option == '+')
@@ -10678,7 +10672,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingPaintRadius,
                     option);
               }
@@ -10727,7 +10721,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("raise",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowMogrifyException(OptionError,MissingBevelWidth,option);
             break;
           }
@@ -10871,7 +10865,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingThreshold,
                     option);
               }
@@ -10880,14 +10874,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("shade",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowMogrifyException(OptionError,MissingAzimuth,option);
             break;
           }
         if (LocaleCompare("sharpen",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowMogrifyException(OptionError,MissingGeometry,option);
             break;
           }
@@ -10905,7 +10899,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("shear",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowMogrifyException(OptionError,MissingGeometry,option);
             break;
           }
@@ -10968,7 +10962,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingImageRotation,option);
               }
             break;
@@ -11102,7 +11096,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("unsharp",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowMogrifyException(OptionError,MissingGeometry,option);
             break;
           }
@@ -11162,7 +11156,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("wave",option+1) == 0)
           {
             i++;
-            if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+            if ((i == argc) || !IsGeometry(argv[i]))
               ThrowMogrifyException(OptionError,MissingAmplitude,option);
             break;
           }
@@ -11171,7 +11165,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMogrifyException(OptionError,MissingPoint,option);
               }
             break;
@@ -11584,7 +11578,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMontageException(OptionError,MissingPoint,option);
               }
             break;
@@ -11594,7 +11588,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMontageException(OptionError,MissingGeometry,option);
               }
             break;
@@ -12108,7 +12102,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMontageException(OptionError,MissingPoint,option);
               }
             break;
@@ -12303,7 +12297,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMontageException(OptionError,MissingPointsize,option);
                 image_info->pointsize=atof(argv[i]);
                 montage_info->pointsize=atof(argv[i]);
@@ -12336,7 +12330,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMontageException(OptionError,MissingPoint,option);
               }
             break;
@@ -12401,7 +12395,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMontageException(OptionError,MissingGeometry,option);
               }
             break;
@@ -12591,7 +12585,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             if (*option == '-')
               {
                 i++;
-                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                if ((i == argc) || !IsGeometry(argv[i]))
                   ThrowMontageException(OptionError,MissingPoint,option);
               }
             break;

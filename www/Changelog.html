@@ -53,6 +53,18 @@
 </tr>
 </table>
 <p>
+2003-09-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c: Linux's sscanf has the terrible bug that it
+        improperly handles pulling out the first floating value from the
+        string "0x1".  Instead of retreiving the value 0 and returning 1,
+        it returns 0, probably because it rejects the string as a hex
+        constant. As a result, all options which used sscanf to validate
+        this input are now converted to use IsGeometry().
+
+</UL>
+<p>
 2003-09-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
