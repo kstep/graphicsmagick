@@ -5111,9 +5111,6 @@ MagickExport unsigned int XMakeImage(Display *display,
               window->destroy=True;
             }
         }
-      if (window->immutable)
-        if (IsMonochromeImage(window->image,&window->image->exception))
-          depth=1;
       width=(unsigned int) window->image->columns;
       height=(unsigned int) window->image->rows;
     }

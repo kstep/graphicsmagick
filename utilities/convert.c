@@ -2226,8 +2226,7 @@ int main(int argc,char **argv)
   InitializeMagick((const char *) NULL);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
-    MagickError(ResourceLimitError,"Memory allocation failed",
-      (char *) NULL);
+    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   if (argc < 3)
     ConvertUsage();
   status=ConvertUtility(argc,argv);
