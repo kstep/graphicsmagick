@@ -6746,7 +6746,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 %  The format of the TransmitImage method is:
 %
 %      unsigned int TransmitImage(Image *image,ImageInfo *image_info,
-%        const TransmitType sendmode, void *param1, void *param2)
+%        const TransmitType sendmode,void *param1,void *param2)
 %
 %  A description of each parameter follows:
 %
@@ -6796,9 +6796,12 @@ MagickExport unsigned int TransmitImage(Image *image,ImageInfo *image_info,
     }
     case StreamTransmitType:
     {
+      int
+        (*fifo)(const Image *,const void *,const size_t);
+
+      fifo=(int (*)(const Image *,const void *,const size_t)) param1;
       image->client_data=param2;
-      status=WriteStream(image_info,image,
-        (int(*)(const _Image*,const void*,const unsigned)) param1);
+      status=WriteStream(image_info,image,fifo);
       break;
     }
     case ImageTransmitType:
