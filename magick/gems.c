@@ -85,6 +85,7 @@
 Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
+    alpha,
     brightness,
     hue,
     saturation;
@@ -96,7 +97,8 @@ Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness+=0.5*sign*(0.5*(sin(M_PI*(brightness-0.5))+1.0)-brightness);
+  alpha=0.500000000001;
+  brightness+=alpha*sign*(alpha*(sin(M_PI*(brightness-alpha))+1.0)-brightness);
   if (brightness > 1.0)
     brightness=1.0;
   else
@@ -569,7 +571,7 @@ Export void Modulate(double percent_hue,double percent_saturation,
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness+=0.01*percent_brightness;
+  brightness+=0.010000000001*percent_brightness;
   if (brightness < 0.0)
     brightness=0.0;
   else
