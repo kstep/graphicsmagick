@@ -1,3 +1,7 @@
+2003-04-21  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* Fixed bug with compiling png.c with libpng versions
+	older than libpng-0.95.
 
 2003-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -59,6 +63,7 @@
 	map array.  Without this patch, DispatchImage does
 	not work at all.
 
+>>>>>>> 1.484.2.9
 2003-04-16  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/effect.c: 4x4 ordered dither threshold was
