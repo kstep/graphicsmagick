@@ -249,7 +249,6 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   {
     for (u=0; u < (long) columns; u+=span)
     {
-      span=Min(cache_info->columns-(x+u),columns-u);
       if ((((x+u) < 0) || ((x+u) >= (long) cache_info->columns)) ||
           (((y+v) < 0) || ((y+v) >= (long) cache_info->rows)))
         {
@@ -300,6 +299,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
       /*
         Transfer a run of pixels.
       */
+      span=Min(cache_info->columns-(x+u),columns-u);
       p=AcquireCacheNexus(image,x+u,y+v,span,1,image_nexus,exception);
       if (p == (const PixelPacket *) NULL)
         break;

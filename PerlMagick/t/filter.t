@@ -247,7 +247,7 @@ testFilterSignature('input.miff', 'Trim',
 testFilterSignature('input.miff', 'Wave',
   q/25x157/,
   '785a088ef7b8be3534c26979979af0ce3a57c19c18a61759419ee3f88cd22cbf',
-  'ac7ad0ab842ef06fc3931181ee647c5f600277bdc0c7ae208e54ebf7ed523c18');
+  '7dea0c29b219f703d576474045e7a44f03626008d98f769d489ddc1b44bf0d97');
 
 ++$test;
 
