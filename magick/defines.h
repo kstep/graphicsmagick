@@ -44,6 +44,7 @@ extern "C" {
 #else
 
 #if defined(vms)
+#include "vms.h"
 #define ApplicationDefaults  "decw$system_defaults:"
 #define DirectorySeparator  ""
 #define DirectoryListSeparator  ';'
@@ -68,6 +69,7 @@ extern "C" {
 #endif
 
 #if defined(macintosh)
+#include "mac.h"
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
 #define DirectorySeparator  ":"
 #define DirectoryListSeparator  ';'
@@ -94,6 +96,7 @@ extern "C" {
 #endif
 
 #if defined(WIN32)
+#include "nt.h"
 #define ApplicationDefaults  "c:\\ImageMagick\\"
 #define DirectorySeparator  "\\"
 #define DirectoryListSeparator  ';'

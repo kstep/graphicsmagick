@@ -58,13 +58,7 @@
 #include "modules.h"
 #include "defines.h"
 
-#if defined(vms)
-# include "vms.h"
-#elif defined(macintosh)
-# include "mac.h"
-#elif defined(WIN32)
-# include "nt.h"
-#else
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 # if HAVE_SYS_NDIR_H || HAVE_SYS_DIR_H || HAVE_NDIR_H
 #  define dirent direct
 #  define NAMLEN(dirent) (dirent)->d_namlen

@@ -15,16 +15,16 @@ extern "C" {
 typedef struct _TokenInfo
 {
   int
-    state;  /* current state */
+    state;
 
   unsigned
-    flag;  /* option flag */
+    flag;
 
   char
-    quote;  /* current quote char */
+    quote;
 
   int
-    offset;  /* current token pos */
+    offset;
 } TokenInfo;
 
 /*

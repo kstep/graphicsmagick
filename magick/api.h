@@ -71,7 +71,7 @@ extern "C" {
 #define MaxTextExtent  1664
 #define MagickSignature  0xabacadab
 
-#if !defined(vms) && !defined(WIN32)
+#if !defined(vms) && !defined(macintosh)
 #include "magick/config.h"
 #include "magick/classify.h"
 #include "magick/image.h"
