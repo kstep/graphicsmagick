@@ -320,7 +320,6 @@ MagickExport void MagickError(const ExceptionType error,const char *reason,
 {
   if (error_handler != (ErrorHandler) NULL)
     (*error_handler)(error,reason,description);
-  errno=0;
 }
 
 /*
@@ -461,6 +460,7 @@ MagickExport void SetExceptionInfo(ExceptionInfo *exception,
 {
   assert(exception != (ExceptionInfo *) NULL);
   exception->severity=severity;
+  errno=0;
 }
 
 /*
