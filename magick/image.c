@@ -1945,7 +1945,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if (image->color_profile.length > 0)
-    (void) fprintf(file,"  Color Profile: %u bytes\n",
+    (void) fprintf(file,"  Profile-icc: %u bytes\n",
       image->color_profile.length);
   if (image->iptc_profile.length > 0)
     {
@@ -1959,7 +1959,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       /*
         Describe IPTC data.
       */
-      (void) fprintf(file,"  IPTC Profile: %u bytes\n",
+      (void) fprintf(file,"  Profile-iptc: %u bytes\n",
         image->iptc_profile.length);
       for (i=0; i < image->iptc_profile.length; i++)
       {
@@ -2054,7 +2054,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   {
     if (image->generic_profile[i].length <= 0)
       continue;
-    (void) fprintf(file,"  %s Profile: %u bytes\n",
+    (void) fprintf(file,"  Profile-%s: %u bytes\n",
       image->generic_profile[i].name == (char *) NULL ? "Generic" :
       image->generic_profile[i].name,image->generic_profile[i].length);
   }

@@ -374,7 +374,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     Determine length of generic profile.
   */
   image->generic_profile[i].name=AllocateString("");
-  FormatString(image->generic_profile[i].name,"JPEG-%d",
+  FormatString(image->generic_profile[i].name,"APP%d",
     jpeg_info->unread_marker-JPEG_APP0);
   image->generic_profile[i].length=GetCharacter(jpeg_info) << 8;
   image->generic_profile[i].length+=GetCharacter(jpeg_info);
@@ -1168,9 +1168,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     register int
       j;
 
-    if (LocaleNCompare(image->generic_profile[i].name,"JPEG-",5) != 0)
+    if (LocaleNCompare(image->generic_profile[i].name,"APP",3) != 0)
       continue;
-    x=atoi(image->generic_profile[i].name+5);
+    x=atoi(image->generic_profile[i].name+3);
     for (j=0; j < image->generic_profile[i].length; j+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_APP0+x,image->generic_profile[i].info+j,
         Min(image->generic_profile[i].length-j,65533));

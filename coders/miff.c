@@ -346,11 +346,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                     image->colors=(unsigned int) atoi(values);
                     break;
                   }
-                if (LocaleCompare(keyword,"Color-profile") == 0)
-                  {
-                    image->color_profile.length=(unsigned int) atoi(values);
-                    break;
-                  }
                 if (LocaleCompare(keyword,"Colorspace") == 0)
                   {
                     if (LocaleCompare(values,"CMYK") == 0)
@@ -431,11 +426,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                     (void) strcpy(id,values);
                     break;
                   }
-                if (LocaleCompare(keyword,"IPTC-profile") == 0)
-                  {
-                    image->iptc_profile.length=(unsigned int) atoi(values);
-                    break;
-                  }
                 if (LocaleCompare(keyword,"Iterations") == 0)
                   {
                     if (image_info->iterations == (char *) NULL)
@@ -475,6 +465,36 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                     ParseImageGeometry(PostscriptGeometry(values),
                       &image->page.x,&image->page.y,
                       &image->page.width,&image->page.height);
+                    break;
+                  }
+                if (LocaleNCompare(keyword,"Profile-",8) == 0)
+                  {
+                    if (LocaleCompare(keyword,"Profile-icc") == 0)
+                      {
+                        image->color_profile.length=atoi(values);
+                        break;
+                      }
+                    if (LocaleCompare(keyword,"Profile-iptc") == 0)
+                      {
+                        image->iptc_profile.length=atoi(values);
+                        break;
+                      }
+                    i=image->generic_profiles;
+                    if (image->generic_profile == (ProfileInfo *) NULL)
+                      image->generic_profile=(ProfileInfo *)
+                        AcquireMemory(sizeof(ProfileInfo));
+                    else
+                      ReacquireMemory((void **) &image->generic_profile,
+                        (i+1)*sizeof(ProfileInfo));
+                    if (image->generic_profile == (ProfileInfo *) NULL)
+                      {
+                        image->generic_profiles=0;
+                        ThrowReaderException(ResourceLimitWarning,
+                          "Memory allocation failed",image);
+                      }
+                    image->generic_profile[i].name=AllocateString(keyword+8);
+                    image->generic_profile[i].length=atoi(values);
+                    image->generic_profiles++;
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,values);
@@ -581,7 +601,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     /*
       Verify that required image information is defined.
     */
-    if ((strcmp(id,"ImageMagick") != 0) || (image->storage_class == UndefinedClass) ||
+    if ((LocaleCompare(id,"ImageMagick") != 0) ||
+        (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
       ThrowReaderException(CorruptImageWarning,
@@ -626,7 +647,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     if (image->color_profile.length > 0)
       {
         /*
-          Color profile.
+          ICC profile.
         */
         image->color_profile.info=(unsigned char *)
           AcquireMemory(image->color_profile.length);
@@ -648,6 +669,24 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             "Unable to read IPTC profile",image);
         (void) ReadBlob(image,image->iptc_profile.length,
           image->iptc_profile.info);
+      }
+    if (image->generic_profiles != 0)
+      {
+        /*
+          Generic profile.
+        */
+        for (i=0; i < image->generic_profiles; i++)
+        {
+          if (image->generic_profile[i].length == 0)
+            continue;
+          image->generic_profile[i].info=(unsigned char *)
+            AcquireMemory(image->generic_profile[i].length);
+          if (image->generic_profile[i].info == (unsigned char *) NULL)
+            ThrowReaderException(CorruptImageWarning,
+              "Unable to read IPTC profile",image);
+          (void) ReadBlob(image,image->generic_profile[i].length,
+            image->generic_profile[i].info);
+        }
       }
     if (image->storage_class == PseudoClass)
       {
@@ -1229,13 +1268,25 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     if (image->color_profile.length > 0)
       {
-        FormatString(buffer,"Color-profile=%u\n",image->color_profile.length);
+        FormatString(buffer,"Profile-icc=%u\n",image->color_profile.length);
         (void) WriteBlob(image,strlen(buffer),buffer);
       }
     if (image->iptc_profile.length > 0)
       {
-        FormatString(buffer,"IPTC-profile=%u\n",image->iptc_profile.length);
+        FormatString(buffer,"Profile-iptc=%u\n",image->iptc_profile.length);
         (void) WriteBlob(image,strlen(buffer),buffer);
+      }
+    if (image->generic_profiles != 0)
+      {
+        /*
+          Generic profile.
+        */
+        for (i=0; i < image->generic_profiles; i++)
+        {
+          FormatString(buffer,"Profile-%s=%u\n",image->generic_profile[i].name,
+            image->generic_profile[i].length);
+          (void) WriteBlob(image,strlen(buffer),buffer);
+        }
       }
     if (image->montage != (char *) NULL)
       {
@@ -1276,6 +1327,19 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (image->iptc_profile.length > 0)
       (void) WriteBlob(image,(int) image->iptc_profile.length,
         (char *) image->iptc_profile.info);
+    if (image->generic_profiles != 0)
+      {
+        /*
+          Generic profile.
+        */
+        for (i=0; i < image->generic_profiles; i++)
+        {
+          if (image->generic_profile[i].length == 0)
+            continue;
+          (void) WriteBlob(image,(int) image->generic_profile[i].length,
+            (char *) image->generic_profile[i].info);
+        }
+      }
     if (image->storage_class == PseudoClass)
       {
         register unsigned char

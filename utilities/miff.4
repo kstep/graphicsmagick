@@ -49,13 +49,6 @@ the number of colors in a \fBDirectClass\fP image. For a
 colormap.  If this key is not present in the header, and the image
 is \fBPseudoClass\fP, a linear 256 color grayscale colormap is used
 with the image data.  The maximum number of colormap entries is 65535. 
-.TP
-.B "color-profile=\fIvalue\fP"
-the number of bytes in the International Color Consortium color profile.
-The profile is defined by the ICC profile specification located at
-ftp://sgigate.sgi.com/pub/icc/icc34.ps.
-.TP
-.B "colorspace=\fBRGB\fP"
 .B "colorspace=\fBCMYK\fP"
 the colorspace of the pixel data.  The default is RGB.
 .TP
@@ -137,6 +130,13 @@ image header.  The format of the directory is explained below.
 .TP
 .B "page=\fIvalue\fP"
 preferred size and location of an image canvas.
+.TP
+.B "profile-icc=\fIvalue\fP"
+the number of bytes in the International Color Consortium color profile.
+The profile is defined by the ICC profile specification located at
+ftp://sgigate.sgi.com/pub/icc/icc34.ps.
+.TP
+.B "colorspace=\fBRGB\fP"
 .TP
 .B "red-primary=\fIx,y\fP"
 .B "green-primary=\fIx,y\fP"
