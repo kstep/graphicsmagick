@@ -321,6 +321,7 @@ static unsigned int TIFFErrors(const char *module,const char *format,
   char
     message[MaxTextExtent];
 
+  errno=0;
   (void) vsnprintf(message,MaxTextExtent-2,format,warning);
   message[MaxTextExtent-2]='\0';
   (void) strcat(message,".");
@@ -389,6 +390,7 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
   char
     message[MaxTextExtent];
 
+  errno=0;
   (void) vsnprintf(message,MaxTextExtent-2,format,warning);
   message[MaxTextExtent-2]='\0';
   (void) strcat(message,".");
@@ -897,20 +899,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (q == (PixelPacket *) NULL)
                 break;
               (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
+#if !defined(WORDS_BIGENDIAN)
               if (bits_per_sample >= 16)
                 {
-                  unsigned long
-                    lsb_first;
-                  
                   /*
-                    Ensure the header byte-order is most-significant byte first.
+                    On little-endian machines, words in the scanline
+                    must be converted to big-endian format prior to
+                    parsing.
                   */
-                  lsb_first=1;
-                  if (*(char *) &lsb_first)
-                    MSBOrderShort(scanline, Max((unsigned int) TIFFScanlineSize(tiff),
-                                                packet_size*width));
+                  TIFFSwabArrayOfShort((uint16*) scanline,
+                                       (TIFFScanlineSize(tiff)+1)/sizeof(uint16));
                 }
-
+#endif /* !defined(WORDS_BIGENDIAN) */
               (void) ImportImagePixelArea(image,quantum_type,bits_per_sample,scanline);
               if (!SyncImagePixels(image))
                 break;
@@ -2480,6 +2480,17 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 status=MagickFail;
                 break;
               }
+#if !defined(WORDS_BIGENDIAN)
+            if (bits_per_sample >= 16)
+                {
+                  /*
+                    On little-endian machines, words in the scanline
+                    must be converted to little-endian format for libtiff.
+                  */
+                  TIFFSwabArrayOfShort((uint16*) scanline,
+                                       (TIFFScanlineSize(tiff)+1)/sizeof(uint16));
+                }
+#endif /* !defined(WORDS_BIGENDIAN) */
             if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
               {
                 status=MagickFail;

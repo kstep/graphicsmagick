@@ -1,3 +1,9 @@
+2004-11-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Ensure that words in the
+	scanline are converted to little-endian format on little-endian
+	CPUs.
+
 2004-11-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/utility.c (MagickStrlCat): New function which is
