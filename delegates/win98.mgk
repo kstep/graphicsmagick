@@ -106,11 +106,11 @@ edit=>
 
 eps<=>pdf
 	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 eps<=>ps
 	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 fig=>
 	fig2dev -L ps "%i" "%o"
@@ -123,13 +123,13 @@ gplt=>
 
 gs-color=>
 	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pnmraw \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
-	  -sOutputFile="%s" -- "%s" -c quit
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -sOutputFile=%s -- "%s" -c quit
 
 gs-mono=>
 	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pbmraw \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
-	  -sOutputFile="%s" -- "%s" -c quit
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -sOutputFile=%s -- "%s" -c quit
 
 hpgl=>
 	hp2xx -q -m eps -f "%i" "%o"
@@ -153,11 +153,11 @@ pcl<=print
 
 pdf<=>eps
 	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 pdf<=>ps
 	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 pgp=>
 	pgpv -fq "%i"
@@ -168,11 +168,11 @@ pov=>
 
 ps<=>eps
 	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 ps<=>pdf
 	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 rad=>
 	ra_ppm -g 1.0 "%i" "%o"

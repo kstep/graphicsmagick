@@ -86,6 +86,9 @@
 /* Define if you have PNG library */
 #undef HasPNG
 
+/* Define if you have GS library */
+#undef HasGS
+
 /* Define if you have TIFF library */
 #undef HasTIFF
 

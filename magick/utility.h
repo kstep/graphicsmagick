@@ -54,6 +54,7 @@ extern MagickExport int
 extern MagickExport unsigned int
   CloneString(char **,const char *),
   ConcatenateString(char **,const char *),
+  ExecutePostscriptInterpreter(const unsigned int,const char *),
   ExpandFilenames(int *,char ***),
   IsAccessible(const char *),
   IsDirectory(const char *);

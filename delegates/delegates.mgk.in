@@ -107,11 +107,11 @@ emf=>
 
 eps<=>pdf
 	@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER \
-	  -sDEVICE=@GSPDFDevice@ -sOutputFile="%o" -- "%i" -c quit
+	  -sDEVICE=@GSPDFDevice@ -sOutputFile=%o -- "%i" -c quit
 
 eps<=>ps
 	@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER \
-	  -sDEVICE=@GSPSDevice@ -sOutputFile="%o" -- "%i" -c quit
+	  -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit
 
 fig=>
 	@FIGDecodeDelegate@ -L ps "%i" "%o"
@@ -125,12 +125,12 @@ gplt=>
 gs-color=>
 	@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER \
 	  -sDEVICE=@GSColorDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u \
-	  -g"%s" -r"%s" %s -sOutputFile="%s" -- "%s" -c quit
+	  -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit
 
 gs-mono=>
 	@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER \
 	  -sDEVICE=@GSMonoDevice@ -dTextAlphaBits=%u -dGraphicsAlphaBits=%u \
-	  -g"%s" -r"%s" %s -sOutputFile="%s" -- "%s" -c quit
+	  -g%s -r%s %s -sOutputFile=%s -- "%s" -c quit
 
 hpgl=>
 	@HPGLDecodeDelegate@ -q -m eps -f `basename "%o"` "%i"
@@ -162,11 +162,11 @@ m2v=>
 
 pdf<=>eps
 	@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER \
-	  -sDEVICE=@GSEPSDevice@ -sOutputFile="%o" -- "%i" -c quit
+	  -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit
 
 pdf<=>ps
 	@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER \
-	  -sDEVICE=@GSPSDevice@ -sOutputFile="%o" -- "%i" -c quit
+	  -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit
 
 pgp=>
 	@PGPDecodeDelegate@ -fq "%i"
@@ -186,11 +186,11 @@ pov=>
 
 ps<=>eps
 	@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER \
-	  -sDEVICE=@GSEPSDevice@ -sOutputFile="%o" -- "%i" -c quit
+	  -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit
 
 ps<=>pdf
 	@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER \
-	  -sDEVICE=@GSPDFDevice@ -sOutputFile="%o" -- "%i" -c quit
+	  -sDEVICE=@GSPDFDevice@ -sOutputFile=%o -- "%i" -c quit
 
 ps<=print
 	@PrintDelegate@ "%i"

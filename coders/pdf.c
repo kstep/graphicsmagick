@@ -306,7 +306,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
   MagickMonitor(RenderPostscriptText,0,8);
-  status=SystemCommand(image_info->verbose,command);
+  status=ExecutePostscriptInterpreter(image_info->verbose,command);
   MagickMonitor(RenderPostscriptText,7,8);
   if (status)
     {

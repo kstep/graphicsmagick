@@ -97,11 +97,11 @@ edit=>
 
 eps<=>pdf
 	gs -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 eps<=>ps
 	gs -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 fig=>
 	fig2dev -L ps "%i" "%o"
@@ -114,13 +114,13 @@ gplt=>
 
 gs-color=>
 	gs -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pnmraw \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
-	  -sOutputFile="%s" -- "%s" -c quit
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -sOutputFile=%s -- "%s" -c quit
 
 gs-mono=>
 	gs -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pbmraw \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
-	  -sOutputFile="%s" -- "%s" -c quit
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
+	  -sOutputFile=%s -- "%s" -c quit
 
 hpgl=>
 	hp2xx -q -m eps -f "%i" "%o"
@@ -141,11 +141,11 @@ m2v=>
 
 pdf<=>eps
 	gs -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 pdf<=>ps
 	gs -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 pgp=>
 	pgpv -fq "%i"
@@ -163,11 +163,11 @@ pov=>
 
 ps<=>eps
 	gs -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 ps<=>pdf
 	gs -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite \
-	  -sOutputFile="%o" -- "%i" -c quit
+	  -sOutputFile=%o -- "%i" -c quit
 
 ps<=print
 	copy "%i" magick.ps
