@@ -949,8 +949,8 @@ extern void
   closedir(DIR *);
 #endif /*  defined(__VMS_VER) && (__VMS_VER >= 70000000) */
 
-extern MagickExport int
-  ImageFormatConflict(char *);
+extern MagickExport unsigned int
+  VMSIsMagickConflict(const char *);
 
 extern void
   XtFree(char *);

@@ -231,31 +231,31 @@ struct dirent *readdir(DIR *directory)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I m a g e F o r m a t C o n f l i c t                                     %
+%   I s M a g i c k C o n f l i c t                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ImageFormatConflict returns true if the image format conflicts with
+%  Method VMSIsMagickConflict returns true if the image format conflicts with
 %  with a logical drive (.e.g. SYS$SCRATCH:).
 %
 %  Contributed by Forrest Cahoon (forrest@wiredaemons.com)
 %
-%  The format of the ImageFormatConflict method is:
+%  The format of the VMSIsMagickConflict method is:
 %
-%      status=ImageFormatConflict(magick)
+%      status=VMSIsMagickConflict(magick)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ImageFormatConflict returns true if the image format
+%    o status: Method VMSIsMagickConflict returns true if the image format
 %      conflicts with a logical drive.
 %
 %    o magick: Specifies the image format.
 %
 %
 */
-MagickExport int ImageFormatConflict(char *magick)
+MagickExport int VMSIsMagickConflict(char *magick)
 {
   ile3
     item_list[2];

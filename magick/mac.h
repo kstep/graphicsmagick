@@ -55,7 +55,6 @@ MagickExport Image
  
 extern MagickExport int
   Exit(int),
-  ImageFormatConflict(const char *),
   MACSystemCommand(const char *);
 
 extern MagickExport long
@@ -63,6 +62,9 @@ extern MagickExport long
 
 extern MagickExport struct dirent
   *readdir(DIR *);
+
+extern MagickExport unsigned int
+  MACIsMagickConflict(const char *);
 
 extern MagickExport void
   closedir(DIR *),

@@ -369,24 +369,24 @@ MagickExport void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I m a g e F o r m a t C o n f l i c t                                     %
+%   I s M a g i c k C o n f l i c t                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ImageFormatConflict returns true if the image format conflicts with
+%  Method MACIsMagickConflict returns true if the image format conflicts with
 %  a logical drive (.e.g. X:).
 %
 %  Contributed by Mark Gavin of Digital Applications, Inc.
 %
-%  The format of the ImageFormatConflict method is:
+%  The format of the MACIsMagickConflict method is:
 %
-%      status=ImageFormatConflict(magick)
+%      status=MACIsMagickConflict(magick)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ImageFormatConflict returns true if the image format
+%    o status: Method MACIsMagickConflict returns true if the image format
 %      conflicts with a logical drive.
 %
 %    o magick: Specifies the image format.
@@ -428,7 +428,7 @@ static OSErr HGetVInfo(short volume_index,StringPtr volume_name,short *volume,
   return(result);
 }
  
-MagickExport int ImageFormatConflict(const char *magick)
+MagickExport int MACIsMagickConflict(const char *magick)
 {
   unsigned long
     free_bytes,

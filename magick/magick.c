@@ -95,7 +95,7 @@ extern "C" {
 static void DestroyMagickInfo(void)
 {
   MagickInfo
-    *entry;
+    *magick_info;
 
   register MagickInfo
     *p;
@@ -103,15 +103,15 @@ static void DestroyMagickInfo(void)
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; )
   {
-    entry=p;
+    magick_info=p;
     p=p->next;
-    if (entry->tag != (char *) NULL)
-      LiberateMemory((void **) &entry->tag);
-    if (entry->description != (char *) NULL)
-      LiberateMemory((void **) &entry->description);
-    if (entry->module != (char *) NULL)
-      LiberateMemory((void **) &entry->module);
-    LiberateMemory((void **) &entry);
+    if (magick_info->tag != (char *) NULL)
+      LiberateMemory((void **) &magick_info->tag);
+    if (magick_info->description != (char *) NULL)
+      LiberateMemory((void **) &magick_info->description);
+    if (magick_info->module != (char *) NULL)
+      LiberateMemory((void **) &magick_info->module);
+    LiberateMemory((void **) &magick_info);
   }
   magick_list=(MagickInfo *) NULL;
   LiberateSemaphore(&magick_semaphore);
@@ -249,6 +249,48 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
     return(path);
   LiberateMemory((void **) &path);
   return((char *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s M a g i c k C o n f l i c t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsMagickConflict returns true if the image format conflicts with
+%  a logical drive (.e.g. X:).
+%
+%  The format of the IsMagickConflict method is:
+%
+%      unsigned int IsMagickConflict(const char *magick)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method IsMagickConflict returns true if the image format
+%      conflicts with a logical drive.
+%
+%    o magick: Specifies the image format.
+%
+%
+*/
+MagickExport int unsigned IsMagickConflict(const char *magick)
+{
+  assert(magick != (char *) NULL);
+#if defined(macintosh)
+  return(MACIsMagickConflict());
+#endif
+#if defined(vms)
+  return(VMSIsMagickConflict());
+#endif
+#if defined(WIN32)
+  return(NTIsMagickConflict());
+#endif
+  return(False);
 }
 
 /*
@@ -561,17 +603,17 @@ MagickExport void MagickIncarnate(const char *path)
 %
 %  The format of the RegisterMagickInfo method is:
 %
-%      MagickInfo *RegisterMagickInfo(MagickInfo *entry)
+%      MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
 %
 %  A description of each parameter follows:
 %
 %    o magick_info: Method RegisterMagickInfo returns a pointer MagickInfo
 %      structure that contains the specified tag info.
 %
-%    o entry: A pointer to a structure of type MagickInfo.
+%    o magick_info: A pointer to a structure of type MagickInfo.
 %
 */
-MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
+MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
 {
   register MagickInfo
     *p;
@@ -579,52 +621,309 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   /*
     Delete any existing tag.
   */
-  assert(entry != (MagickInfo *) NULL);
-  assert(entry->signature == MagickSignature);
-  UnregisterMagickInfo(entry->tag);
+  assert(magick_info != (MagickInfo *) NULL);
+  assert(magick_info->signature == MagickSignature);
+  UnregisterMagickInfo(magick_info->tag);
   AcquireSemaphore(&magick_semaphore);
-  entry->previous=(MagickInfo *) NULL;
-  entry->next=(MagickInfo *) NULL;
+  magick_info->previous=(MagickInfo *) NULL;
+  magick_info->next=(MagickInfo *) NULL;
   if (magick_list == (MagickInfo *) NULL)
     {
       /*
         Start magick list.
       */
-      magick_list=entry;
+      magick_list=magick_info;
       LiberateSemaphore(&magick_semaphore);
-      return(entry);
+      return(magick_info);
     }
   /*
     Tag is added in lexographic order.
   */
   for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->tag,entry->tag) >= 0)
+    if (LocaleCompare(p->tag,magick_info->tag) >= 0)
       break;
-  if (LocaleCompare(p->tag,entry->tag) < 0)
+  if (LocaleCompare(p->tag,magick_info->tag) < 0)
     {
       /*
         Add entry after target.
       */
-      entry->next=p->next;
-      p->next=entry;
-      entry->previous=p;
-      if (entry->next != (MagickInfo *) NULL)
-        entry->next->previous=entry;
+      magick_info->next=p->next;
+      p->next=magick_info;
+      magick_info->previous=p;
+      if (magick_info->next != (MagickInfo *) NULL)
+        magick_info->next->previous=magick_info;
       LiberateSemaphore(&magick_semaphore);
-      return(entry);
+      return(magick_info);
     }
   /*
     Add entry before target.
   */
-  entry->next=p;
-  entry->previous=p->previous;
-  p->previous=entry;
-  if (entry->previous != (MagickInfo *) NULL)
-    entry->previous->next=entry;
+  magick_info->next=p;
+  magick_info->previous=p->previous;
+  p->previous=magick_info;
+  if (magick_info->previous != (MagickInfo *) NULL)
+    magick_info->previous->next=magick_info;
   if (p == magick_list)
-    magick_list=entry;
+    magick_list=magick_info;
   LiberateSemaphore(&magick_semaphore);
-  return(entry);
+  return(magick_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e I n f o                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetImageInfo initializes the `magick' field of the ImageInfo
+%  structure.  It is set to a type of image format based on the prefix or
+%  suffix of the filename.  For example, `ps:image' returns PS indicating
+%  a Postscript image.  JPEG is returned for this filename: `image.jpg'.
+%  The filename prefix has precendence over the suffix.  Use an optional index
+%  enclosed in brackets after a file name to specify a desired subimage of a
+%  multi-resolution image format like Photo CD (e.g. img0001.pcd[4]).
+%
+%  The format of the SetImageInfo method is:
+%
+%      unsigned int SetImageInfo(ImageInfo *image_info,
+%        const unsigned int rectify,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o rectify: an unsigned value other than zero rectifies the attribute for
+%      multi-frame support (user may want multi-frame but image format may not
+%      support it).
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
+  const unsigned int rectify,ExceptionInfo *exception)
+{
+  char
+    magic[MaxTextExtent];
+
+  Image
+    *image;
+
+  MagicInfo
+    *magic_info;
+
+  register char
+    *p,
+    *q;
+
+  unsigned char
+    magick[2*MaxTextExtent];
+
+  unsigned int
+    affirm,
+    status;
+
+  /*
+    Look for 'image.format' in filename.
+  */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  *magic='\0';
+  p=image_info->filename+Max(Extent(image_info->filename)-1,0);
+  if (*p == ']')
+    for (q=p-1; q > image_info->filename; q--)
+    {
+      char
+        *tile;
+
+      /*
+        Look for sub-image specification (e.g. img0001.pcd[4]).
+      */
+      if (*q != '[')
+        continue;
+      if (!IsGeometry(q+1))
+        break;
+      tile=(char *) AcquireMemory(p-q);
+      if (tile == (char *) NULL)
+        break;
+      (void) strncpy(tile,q+1,p-q-1);
+      tile[p-q-1]='\0';
+      *q='\0';
+      p=q;
+      (void) CloneString(&image_info->tile,tile);
+      LiberateMemory((void **) &tile);
+      if (!IsSubimage(image_info->tile,True))
+        break;
+      /*
+        Determine sub-image range.
+      */
+      image_info->subimage=atoi(image_info->tile);
+      image_info->subrange=atoi(image_info->tile);
+      (void) sscanf(image_info->tile,"%u-%u",&image_info->subimage,
+        &image_info->subrange);
+      if (image_info->subrange < image_info->subimage)
+        Swap(image_info->subimage,image_info->subrange);
+      else
+        {
+          LiberateMemory((void **) &image_info->tile);
+          image_info->tile=(char *) NULL;
+        }
+      image_info->subrange-=image_info->subimage-1;
+      break;
+    }
+  while ((*p != '.') && (p > (image_info->filename+1)))
+    p--;
+  if ((LocaleCompare(p,".gz") == 0) || (LocaleCompare(p,".Z") == 0) ||
+      (LocaleCompare(p,".bz2") == 0))
+    do
+    {
+      p--;
+    } while ((*p != '.') && (p > (image_info->filename+1)));
+  if ((*p == '.') && (Extent(p) < (int) sizeof(magic)))
+    {
+      /*
+        User specified image format.
+      */
+      (void) strcpy(magic,p+1);
+      for (q=magic; *q != '\0'; q++)
+        if (*q == '.')
+          {
+            *q='\0';
+            break;
+          }
+      LocaleUpper(magic);
+      /*
+        SGI and RGB are ambiguous;  TMP must be set explicitly.
+      */
+      if (((LocaleNCompare(image_info->magick,"SGI",3) != 0) ||
+          (LocaleCompare(magic,"RGB") != 0)) &&
+          (LocaleCompare(magic,"TMP") != 0))
+        (void) strcpy(image_info->magick,magic);
+    }
+  /*
+    Look for explicit 'format:image' in filename.
+  */
+  affirm=False;
+  p=image_info->filename;
+  while (isalnum((int) *p))
+    p++;
+#if defined(vms)
+  if (*(p+1) == ':')
+    p+=2;  /* skip DECnet node spec */
+#endif
+  if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magic)))
+    {
+      MagickInfo
+        *magick_info;
+
+      /*
+        User specified image format.
+      */
+      (void) strncpy(magic,image_info->filename,p-image_info->filename);
+      magic[p-image_info->filename]='\0';
+      if (LocaleCompare(magic,"GRADATION") == 0)
+        (void) strcpy(magic,"GRADIENT");
+      LocaleUpper(magic);
+      magick_info=(MagickInfo *) GetMagickInfo(magic,exception);
+      if ((magick_info != (MagickInfo *) NULL) && !IsMagickConflict(magic))
+        {
+          /*
+            Strip off image format prefix.
+          */
+          p++;
+          (void) strcpy(image_info->filename,p);
+          if (LocaleCompare(magic,"IMPLICIT") != 0)
+            {
+              (void) strcpy(image_info->magick,magic);
+              if (LocaleCompare(magic,"TMP") != 0)
+                affirm=True;
+              else
+                image_info->temporary=True;
+            }
+        }
+    }
+  if (rectify)
+    {
+      char
+        filename[MaxTextExtent];
+
+      MagickInfo
+        *magick_info;
+
+      /*
+        Rectify multi-image file support.
+      */
+      FormatString(filename,image_info->filename,0);
+      if ((LocaleCompare(filename,image_info->filename) != 0) &&
+          (strchr(filename,'%') == (char *) NULL))
+        image_info->adjoin=False;
+      magick_info=(MagickInfo *) GetMagickInfo(magic,exception);
+      if (magick_info != (MagickInfo *) NULL)
+        image_info->adjoin&=magick_info->adjoin;
+      return(True);
+    }
+  if (affirm)
+    return(True);
+  /*
+    Allocate image structure.
+  */
+  image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    return(True);
+  /*
+    Determine the image format from the first few bytes of the file.
+  */
+  (void) strcpy(image->filename,image_info->filename);
+  status=OpenBlob(image_info,image,ReadBinaryType);
+  if (status == False)
+    {
+      DestroyImage(image);
+      return(True);
+    }
+  if ((image->blob.data != (char *) NULL)  || !image->exempt)
+    (void) ReadBlob(image,2*MaxTextExtent,magick);
+  else
+    {
+      FILE
+        *file;
+
+      register int
+        c,
+        i;
+
+      /*
+        Copy standard input or pipe to temporary file.
+      */
+      image_info->file=(FILE *) NULL;
+      TemporaryFilename(image->filename);
+      image_info->temporary=True;
+      FormatString(image_info->filename,"%.1024s",image->filename);
+      file=fopen(image->filename,WriteBinaryType);
+      if (file == (FILE *) NULL)
+        ThrowBinaryException(MissingDelegateWarning,"Unable to write file",
+          image->filename);
+      i=0;
+      for (c=fgetc(image->file); c != EOF; c=fgetc(image->file))
+      {
+        if (i < MaxTextExtent)
+          magick[i++]=(unsigned char) c;
+        (void) fputc(c,file);
+      }
+      (void) fclose(file);
+    }
+  DestroyImage(image);
+  p=GetImageMagick(magick,2*MaxTextExtent);
+  if (p != (char *) NULL)
+    (void) strcpy(image_info->magick,p);
+  magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
+  if (magic_info != (MagicInfo *) NULL)
+    (void) strcpy(image_info->magick,magic_info->name);
+  return(True);
 }
 
 /*
@@ -658,19 +957,19 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
 MagickExport MagickInfo *SetMagickInfo(const char *tag)
 {
   MagickInfo
-    *entry;
+    *magick_info;
 
   assert(tag != (const char *) NULL);
-  entry=(MagickInfo *) AcquireMemory(sizeof(MagickInfo));
-  if (entry == (MagickInfo *) NULL)
+  magick_info=(MagickInfo *) AcquireMemory(sizeof(MagickInfo));
+  if (magick_info == (MagickInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
-  memset(entry,0,sizeof(MagickInfo));
-  entry->tag=AllocateString(tag);
-  entry->adjoin=True;
-  entry->blob_support=True;
-  entry->signature=MagickSignature;
-  return(entry);
+  memset(magick_info,0,sizeof(MagickInfo));
+  magick_info->tag=AllocateString(tag);
+  magick_info->adjoin=True;
+  magick_info->blob_support=True;
+  magick_info->signature=MagickSignature;
+  return(magick_info);
 }
 
 /*

@@ -72,7 +72,6 @@ extern MagickExport char
 
 extern MagickExport int
   Exit(int),
-  ImageFormatConflict(const char *),
   IsWindows95(),
   NTSystemCommand(const char *);
 
@@ -95,6 +94,9 @@ extern MagickExport long
 extern MagickExport struct dirent
   *readdir(DIR *);
  
+extern MagickExport int
+  NTIsMagickConflict(const char *),
+
 extern MagickExport void
   closedir(DIR *),
   *mmap(char *,size_t,int,int,int,off_t),

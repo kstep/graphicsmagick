@@ -723,6 +723,7 @@ extern MagickExport unsigned int
   IsGeometry(const char *),
   IsGrayImage(Image *),
   IsImagesEqual(Image *,Image *),
+  IsMagickConflict(const char *),
   IsMonochromeImage(Image *),
   IsOpaqueImage(Image *),
   IsPseudoClass(Image *),
