@@ -718,6 +718,10 @@ static unsigned int RenderTruetype(Image *image,
         FT_Done_Face(face);
       status=True;
       p=getenv("TT_FONT_PATH");
+#if defined(TT_FONT_PATH)
+      if (p != (char *) NULL)
+        p=TT_FONT_PATH;
+#endif
       if (p != (char *) NULL)
         for ( ; ; )
         {
@@ -741,34 +745,6 @@ static unsigned int RenderTruetype(Image *image,
             break;
           p=q+1;
         }
-#if defined(TT_FONT_PATH)
-      if (status)
-        {
-          /*
-            Configured Truetype font path.
-          */
-          p=TT_FONT_PATH;
-          for ( ; ; )
-          {
-            q=strchr(p,DirectoryListSeparator);
-            if (q == (char *) NULL)
-              (void) strcpy(filename,p);
-            else
-              {
-                (void) strncpy(filename,p,q-p);
-                filename[q-p]='\0';
-              }
-            i=strlen(filename);
-            if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
-              (void) strcat(filename,DirectorySeparator);
-            (void) strcat(filename,annotate_info->font);
-            status=FT_New_Face(library,filename,0,&face);
-            if (!status || (q == (char *) NULL) || (*q == '\0'))
-              break;
-            p=q+1;
-          }
-        }
-#endif
       if (status)
         status=FT_New_Face(library,annotate_info->font,0,&face);
       if (status)
