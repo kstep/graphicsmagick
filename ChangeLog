@@ -1,3 +1,17 @@
+2003-07-08  William Radcliffe  <billr@corbis.com>
+
+	* magick/semaphore.c: Modified the way the system handles the
+	initialization of Win32 critical sections to use a spin lock
+	on WIn32 to bootstrap the initialization of all other crtical
+	sections. This is not an issue on UNIX since static init is used.
+	* magick/magic.c module.c magick.c log.c resource.c constitute.c
+	color.c cache.c delegate.c registry.c type.c: Small modifications
+	were made to eliminate the side effect of unlocking semaphores
+	as part of the releasing procedure. This also eliminated the
+	apparent bug of the system double locking certain semaphores.
+	The locked flag should now not be needed, but remains in place
+	for the time being as an added safegaurd.
+
 2003-07-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* png.c: added missing #ifdef JNG_SUPPORTED/#endif directives.

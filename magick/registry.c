@@ -174,6 +174,7 @@ MagickExport void DestroyMagickRegistry(void)
     MagickFreeMemory(registry_info);
   }
   registry_list=(RegistryInfo *) NULL;
+  LiberateSemaphoreInfo(&registry_semaphore);
   DestroySemaphoreInfo(&registry_semaphore);
 }
 

@@ -191,26 +191,26 @@ static unsigned long ParseEvents(const char *event_string)
 MagickExport void DestroyLogInfo(void)
 {
   AcquireSemaphoreInfo(&log_semaphore);
-  if (log_info == (LogInfo *) NULL)
+  if (log_info != (LogInfo *) NULL)
     {
-      DestroySemaphoreInfo(&log_semaphore);
-      return;
+      if (log_info->file != (FILE *) NULL)
+        if ((log_info->file != stdout) && (log_info->file != stderr))
+          {
+            (void) fprintf(log_info->file,"</log>\n");
+            (void) fclose(log_info->file);
+          }
+      if (log_info->filename != (char *) NULL)
+        MagickFreeMemory(log_info->filename);
+      if (log_info->path != (char *) NULL)
+        MagickFreeMemory(log_info->path);
+      if (log_info->format != (char *) NULL)
+        MagickFreeMemory(log_info->format);
+      MagickFreeMemory(log_info);
     }
-  if (log_info->file != (FILE *) NULL)
-    if ((log_info->file != stdout) && (log_info->file != stderr))
-      {
-        (void) fprintf(log_info->file,"</log>\n");
-        (void) fclose(log_info->file);
-      }
-  if (log_info->filename != (char *) NULL)
-    MagickFreeMemory(log_info->filename);
-  if (log_info->path != (char *) NULL)
-    MagickFreeMemory(log_info->path);
-  if (log_info->format != (char *) NULL)
-    MagickFreeMemory(log_info->format);
-  MagickFreeMemory(log_info);
-  DestroySemaphoreInfo(&log_semaphore);
+  log_info=(LogInfo *) NULL;
   log_initialize=True;
+  LiberateSemaphoreInfo(&log_semaphore);
+  DestroySemaphoreInfo(&log_semaphore);
 }
 
 /*

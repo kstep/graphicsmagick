@@ -130,6 +130,7 @@ MagickExport void DestroyTypeInfo(void)
     MagickFreeMemory(type_info);
   }
   type_list=(TypeInfo *) NULL;
+  LiberateSemaphoreInfo(&type_semaphore);
   DestroySemaphoreInfo(&type_semaphore);
 }
 

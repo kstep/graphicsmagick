@@ -662,7 +662,14 @@ MagickExport Image *ConstituteImage(const unsigned long width,
 */
 MagickExport void DestroyConstitute(void)
 {
+#if defined(JUST_FOR_DOCUMENTATION)
+  /* The first two calls should bracket any code that deals with the data
+     structurees being released */
   AcquireSemaphoreInfo(&constitute_semaphore);
+  LiberateSemaphoreInfo(&constitute_semaphore);
+#endif
+  /* The final call actually releases the associated mutex used to prevent
+     multiple threads from accessing the data */
   DestroySemaphoreInfo(&constitute_semaphore);
 }
 

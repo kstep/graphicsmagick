@@ -1977,16 +1977,23 @@ static unsigned int ModifyCache(Image *image)
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
-  AcquireSemaphoreInfo(&cache_info->semaphore);
+  /* These calls were removed for performance reasons. The most common case
+     for the code was causing a cache semaphore to be allocated and locked
+     for EACH AND EVERY scanline being read by a coder. This was despite the
+     fact that the reference count on the cache was always 1. Big WOT. */
+  /* AcquireSemaphoreInfo(&cache_info->semaphore); */
   if (cache_info->reference_count <= 1)
     {
-      LiberateSemaphoreInfo(&cache_info->semaphore);
+      /* LiberateSemaphoreInfo(&cache_info->semaphore); */
       return(True);
     }
+  /* we don't actually lock until we know for sure that someone else is using
+     the same cache. */
+  AcquireSemaphoreInfo(&cache_info->semaphore);
   cache_info->reference_count--;
   clone_image=(*image);
   GetCacheInfo(&image->cache);
-    AcquireImagePixels(&clone_image,0,0,image->columns,1,&image->exception);
+  AcquireImagePixels(&clone_image,0,0,image->columns,1,&image->exception);
   status=OpenCache(image,IOMode);
   if (status != False)
     {

@@ -123,6 +123,7 @@ MagickExport void DestroyDelegateInfo(void)
     MagickFreeMemory(delegate_info);
   }
   delegate_list=(DelegateInfo *) NULL;
+  LiberateSemaphoreInfo(&delegate_semaphore);
   DestroySemaphoreInfo(&delegate_semaphore);
 }
 

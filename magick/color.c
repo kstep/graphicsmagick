@@ -187,6 +187,7 @@ MagickExport void DestroyColorInfo(void)
     MagickFreeMemory(color_info);
   }
   color_list=(ColorInfo *) NULL;
+  LiberateSemaphoreInfo(&color_semaphore);
   DestroySemaphoreInfo(&color_semaphore);
 }
 

@@ -261,6 +261,7 @@ MagickExport void DestroyModuleInfo(void)
       (void) lt_dlexit();
       ltdl_initialized=False;
     }
+  LiberateSemaphoreInfo(&module_semaphore);
   DestroySemaphoreInfo(&module_semaphore);
 }
 

@@ -42,6 +42,8 @@
 #endif
 #if defined(WIN32)
 #include <windows.h>
+#define USE_SPINLOCKS
+#define SPINLOCK_DELAY_MILLI_SECS 10
 #endif
 
 /*
@@ -80,11 +82,30 @@ static pthread_mutex_t
 #endif
 
 #if defined(WIN32)
+#if !defined(USE_SPINLOCKS)
 static CRITICAL_SECTION
   semaphore_mutex;
 
 static unsigned int
   active_semaphore = False;
+#else
+static int
+  semaphore_mutex = 0;
+/* Wait for spin lock */
+static void spinlock_wait (int *sl)
+{
+  while (InterlockedCompareExchange (sl, 1, 0) != 0)
+  {
+    /* slight delay - just in case OS does not giveup CPU */
+    Sleep (SPINLOCK_DELAY_MILLI_SECS);
+  }
+}
+/* Release spin lock */
+static void spinlock_release (int *sl)
+{
+  InterlockedExchange (sl, 0);
+}
+#endif
 #endif
 
 /*
@@ -117,10 +138,14 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
+#if !defined(USE_SPINLOCKS)
   if (!active_semaphore)
     InitializeCriticalSection(&semaphore_mutex);
   active_semaphore=True;
   EnterCriticalSection(&semaphore_mutex);
+#else
+  spinlock_wait(&semaphore_mutex);
+#endif
 #endif
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     *semaphore_info=AllocateSemaphoreInfo();
@@ -128,7 +153,11 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
+#if !defined(USE_SPINLOCKS)
   LeaveCriticalSection(&semaphore_mutex);
+#else
+  spinlock_release(&semaphore_mutex);
+#endif
 #endif
   (void) LockSemaphoreInfo(*semaphore_info);
 }
@@ -220,9 +249,11 @@ MagickExport void DestroySemaphore(void)
   (void) pthread_mutex_destroy(&semaphore_mutex);
 #endif
 #if defined(WIN32)
+#if !defined(USE_SPINLOCKS)
   if (active_semaphore)
     DeleteCriticalSection(&semaphore_mutex);
   active_semaphore=False;
+#endif
 #endif
 }
 
@@ -255,15 +286,18 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   if (*semaphore_info == (SemaphoreInfo *) NULL)
     return;
   assert((*semaphore_info)->signature == MagickSignature);
-  (void) UnlockSemaphoreInfo(*semaphore_info);
 #if defined(HasPTHREADS)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
+#if !defined(USE_SPINLOCKS)
   if (!active_semaphore)
     InitializeCriticalSection(&semaphore_mutex);
   active_semaphore=True;
   EnterCriticalSection(&semaphore_mutex);
+#else
+  spinlock_wait(&semaphore_mutex);
+#endif
 #endif
 #if defined(HasPTHREADS)
   (void) pthread_mutex_destroy(&(*semaphore_info)->mutex);
@@ -276,7 +310,11 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   (void) pthread_mutex_unlock(&semaphore_mutex);
 #endif
 #if defined(WIN32)
+#if !defined(USE_SPINLOCKS)
   LeaveCriticalSection(&semaphore_mutex);
+#else
+  spinlock_release(&semaphore_mutex);
+#endif
 #endif
 }
 
@@ -306,9 +344,11 @@ MagickExport void InitializeSemaphore(void)
     (const pthread_mutexattr_t *) NULL);
 #endif
 #if defined(WIN32)
+#if !defined(USE_SPINLOCKS)
   if (!active_semaphore)
     InitializeCriticalSection(&semaphore_mutex);
   active_semaphore=True;
+#endif
 #endif
 }
 

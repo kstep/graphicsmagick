@@ -194,7 +194,14 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
 */
 MagickExport void DestroyMagickResources(void)
 {
+#if defined(JUST_FOR_DOCUMENTATION)
+  /* The first two calls should bracket any code that deals with the data
+     structurees being released */
   AcquireSemaphoreInfo(&resource_semaphore);
+  LiberateSemaphoreInfo(&resource_semaphore);
+#endif
+  /* The final call actually releases the associated mutex used to prevent
+     multiple threads from accessing the data */
   DestroySemaphoreInfo(&resource_semaphore);
 }
 
