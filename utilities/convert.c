@@ -149,6 +149,7 @@
 %    -treedepth value     depth of the color tree
 %    -type type           image type
 %    -units type          PixelsPerInch, PixelsPerCentimeter, or Undefined
+%    -unsharp geometry    sharpen the image
 %    -verbose             print detailed information about the image
 %    -view                FlashPix viewing transforms
 %    -wave geometry       alter an image along a sine wave
@@ -348,6 +349,7 @@ static void Usage()
       "-treedepth value     depth of the color tree",
       "-type type           image type",
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
+      "-unsharp geometry    sharpen the image",
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",
       "-wave geometry       alter an image along a sine wave",
@@ -1832,6 +1834,13 @@ int main(int argc,char **argv)
                   if (LocaleCompare("PixelsPerCentimeter",option) == 0)
                     image_info->units=PixelsPerCentimeterResolution;
                 }
+              break;
+            }
+          if (LocaleNCompare("unsharp",option+1,5) == 0)
+            {
+              i++;
+              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                MagickError(OptionError,"Missing geometry",option);
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);

@@ -4477,7 +4477,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=shade_image;
             continue;
           }
-        if (LocaleNCompare("-sharpen",option,5) == 0)
+        if (LocaleNCompare("-sharpen",option,6) == 0)
           {
             double
               radius,
@@ -4685,6 +4685,30 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 if (LocaleCompare("PixelsPerCentimeter",option) == 0)
                   (*image)->units=PixelsPerCentimeterResolution;
               }
+            continue;
+          }
+        if (LocaleNCompare("-unsharp",option,6) == 0)
+          {
+            double
+              radius,
+              sigma;
+
+            Image
+              *unsharp_image;
+
+            /*
+              Gaussian unsharpen image.
+            */
+            radius=0.0;
+            sigma=1.0;
+            if (*option == '-')
+              (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+            unsharp_image=UnsharpMaskImage(*image,radius,sigma,1.0,0.05,
+              &(*image)->exception);
+            if (unsharp_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=unsharp_image;
             continue;
           }
         break;
