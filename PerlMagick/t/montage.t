@@ -138,7 +138,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  'a9fe238f40b79dfadea2170df0bc70fb57aa411baaab58415286873dbfafe4f2');
+  'c32daadc52aa79a6f12cf04182864192dcdb8197d51fa3b8ef8b1c414f8de1f1');
 
 #
 # 15) Test Bordered, Un-framed Montage (frame=>'False')
@@ -147,7 +147,7 @@ testMontage( q//,
 testMontage( q/bordercolor=>'red'/, 
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
-  'cd39984ff198710317e5cf0e99b8e399b538c59fac52698ffd4361a555dff618');
+  '019881a171a42b04e82446d0d1025a01ccef7d056044536680c8bd5f909318d6');
 
 #
 # 16) Test Bordered, Un-framed Montage (mode=>'UnFrame')
@@ -165,7 +165,7 @@ testMontage( q/bordercolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'16x1', geometry=>'90x80+0+0>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  'ac0ec3cc389e7e3ac559e7b75b5140c99a026c6b05f4485bcfa3ee590f217977');
+  'e2d91de74a637bc34e1965900076654595ffd24995566974b4b8fc8c2ac44b31');
 
 #
 # 18) Test concatenated thumbnail Montage (concatenated via special Concatenate mode)
@@ -183,4 +183,4 @@ testMontage( q//,
 testMontage( q//, 
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'+0+0', frame=>'False', shadow=>'False',
   borderwidth=>'0', background=>'gray'/,
-  '77738966d37ba42471ece56353256f2c8e388f79f59368ea7ef20bce3fb57c87');
+  '00afe64ddf0bfb87b0c66b1d3e06ebe41f5e5054cd3cad5a6d8fa0b5d9a26801');

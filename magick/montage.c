@@ -346,7 +346,9 @@ MagickExport Image *MontageImages(const Image *images,
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
     image=image_list[i];
-    flags=GetImageGeometry(image,montage_info->geometry,True,&geometry);
+    SetGeometry(image,&geometry);
+    flags=ParseImageGeometry(montage_info->geometry,&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
     zoom_image=ZoomImage(image,geometry.width,geometry.height,exception);
     if (zoom_image == (Image *) NULL)
       break;
@@ -409,15 +411,23 @@ MagickExport Image *MontageImages(const Image *images,
   bevel_width=0;
   if (montage_info->frame != (char *) NULL)
     {
-      flags=GetImageGeometry(image,montage_info->frame,False,&geometry);
-      frame_info.width=geometry.width;
-      frame_info.height=geometry.height;
-      frame_info.outer_bevel=geometry.x;
-      frame_info.inner_bevel=geometry.y;
+      char
+        absolute_geometry[MaxTextExtent];
+
+      (void) memset(&frame_info,0,sizeof(FrameInfo));
+      frame_info.width=tile_info.width;
+      frame_info.height=tile_info.height;
+      FormatString(absolute_geometry,"%.1024s!",montage_info->frame);
+      flags=ParseImageGeometry(absolute_geometry,&frame_info.outer_bevel,
+        &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
+      if ((flags & HeightValue) == 0)
+        frame_info.height=frame_info.width;
+      if ((flags & XValue) == 0)
+        frame_info.outer_bevel=(long) (frame_info.width >> 2)+1;
+      if ((flags & YValue) == 0)
+        frame_info.inner_bevel=frame_info.outer_bevel;
       frame_info.x=(long) frame_info.width;
       frame_info.y=(long) frame_info.height;
-      frame_info.width=image->columns+2*frame_info.width;
-      frame_info.height=image->rows+2*frame_info.height;
       bevel_width=Max(frame_info.inner_bevel,frame_info.outer_bevel);
       border_width=Max(frame_info.width,frame_info.height);
     }
@@ -601,7 +611,6 @@ MagickExport Image *MontageImages(const Image *images,
       */
       switch (montage_info->gravity)
       {
-        case ForgetGravity:
         case NorthWestGravity:
         {
           x=0;
@@ -626,6 +635,7 @@ MagickExport Image *MontageImages(const Image *images,
           y=(long) (((height+2*border_width)-(long) image->rows)/2);
           break;
         }
+        case ForgetGravity:
         case StaticGravity:
         case CenterGravity:
         default:
