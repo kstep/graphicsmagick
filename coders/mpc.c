@@ -929,7 +929,8 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     *cache_info;
 
   char
-    buffer[MaxTextExtent];
+    buffer[MaxTextExtent],
+    cache_filename[MaxTextExtent];
 
   const ImageAttribute
     *attribute;
@@ -941,6 +942,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     *p;
 
   register IndexPacket
+    *clone_indexes,
     *indexes;
 
   register long
@@ -972,23 +974,12 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     /*
       Write persistent cache meta-information.
     */
-    clone_image=CloneImage(image,image->columns,image->rows,True,
-      &image->exception);
-    if (status == False)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
-    cache_info=(CacheInfo *) clone_image->cache;
-    cache_info->storage_class=image->storage_class;
-    cache_info->colorspace=image->colorspace;
-    cache_info->type=DiskCache;
-    cache_info->persist=True;
-    (void) strncpy(cache_info->meta_filename,image->filename,MaxTextExtent-1);
-    (void) strncpy(cache_info->cache_filename,image->filename,MaxTextExtent-1);
-    FormatString(buffer,"mpc-%lu",scene);
-    AppendImageFormat(buffer,cache_info->cache_filename);
     (void) WriteBlobString(image,"id=MagickCache\n");
-    FormatString(buffer,"cache=%.1024s  quantum-depth=%d\n",
-      cache_info->cache_filename,QuantumDepth);
+    (void) strncpy(cache_filename,image->filename,MaxTextExtent-1);
+    FormatString(buffer,"mpc-%lu",scene);
+    AppendImageFormat(buffer,cache_filename);
+    FormatString(buffer,"cache=%.1024s  quantum-depth=%d\n",cache_filename,
+      QuantumDepth);
     (void) WriteBlobString(image,buffer);
     if (image->storage_class == PseudoClass)
       FormatString(buffer,"class=PseudoClass  colors=%lu  matte=%s\n",
@@ -1275,6 +1266,18 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     /*
       Clone pixel cache.
     */
+    clone_image=CloneImage(image,image->columns,image->rows,True,
+      &image->exception);
+    if (status == False)
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
+    cache_info=(CacheInfo *) clone_image->cache;
+    cache_info->storage_class=image->storage_class;
+    cache_info->colorspace=image->colorspace;
+    cache_info->type=DiskCache;
+    cache_info->persist=True;
+    (void) strncpy(cache_info->meta_filename,image->filename,MaxTextExtent-1);
+    (void) strncpy(cache_info->cache_filename,cache_filename,MaxTextExtent-1);
     status=OpenCache(clone_image);
     if (status == False)
       ThrowWriterException(CacheWarning,"Unable to open pixel cache",image);
@@ -1285,9 +1288,11 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
       (void) CloneMemory(q,p,image->columns*sizeof(PixelPacket));
-      indexes=GetIndexes(clone_image);
-      if (indexes != (IndexPacket *) NULL)
-        (void) CloneMemory(indexes,GetIndexes(image),
+      clone_indexes=GetIndexes(clone_image);
+      indexes=GetIndexes(image);
+      if ((clone_indexes != (IndexPacket *) NULL) &&
+          (indexes != (IndexPacket *) NULL))
+        (void) CloneMemory(clone_indexes,indexes,
           image->columns*sizeof(IndexPacket));
       if (!SyncImagePixels(clone_image))
         break;
