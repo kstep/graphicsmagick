@@ -7129,29 +7129,27 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       green,
       red;
 
-    int
-      nbytes;
+    long
+      num_bytes;
 
-    (void) WriteBlobMSBULong(image,6L);
+    if (jng_color_type == 8 || jng_color_type == 12)
+      num_bytes=6;
+    else
+      num_bytes=10;
+    (void) WriteBlobMSBULong(image,num_bytes-4L);
     PNGType(chunk,mng_bKGD);
-    LogPNGChunk(logging,mng_bKGD,6L);
+    LogPNGChunk(logging,mng_bKGD,num_bytes-4L);
     red=ScaleQuantumToChar(image->background_color.red);
     green=ScaleQuantumToChar(image->background_color.green);
     blue=ScaleQuantumToChar(image->background_color.blue);
     *(chunk+4)=0;
     *(chunk+5)=red;
-    if (jng_color_type == 8 || jng_color_type == 12)
-      nbytes=6;
-    else
-      {
-        *(chunk+6)=0;
-        *(chunk+7)=green;
-        *(chunk+8)=0;
-        *(chunk+9)=blue;
-        nbytes=10;
-      }
-    (void) WriteBlob(image,nbytes,(char *) chunk);
-    (void) WriteBlobMSBULong(image,crc32(0,chunk,nbytes));
+    *(chunk+6)=0;
+    *(chunk+7)=green;
+    *(chunk+8)=0;
+    *(chunk+9)=blue;
+    (void) WriteBlob(image,num_bytes,(char *) chunk);
+    (void) WriteBlobMSBULong(image,crc32(0,chunk,num_bytes));
   }
 
   if ((image_info->colorspace == sRGBColorspace || image->rendering_intent))
