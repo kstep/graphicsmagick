@@ -1,12 +1,15 @@
 <HTML>
 <HEAD>
-<!-- This HTML file has been created by texi2html 1.51
-     from manual.texi on 4 September 1999 -->
+<!-- This HTML file has been created by texi2html 1.54
+     from manual.texi on 23 March 2000 -->
 
 <TITLE>bzip2 and libbzip2 - Miscellanea</TITLE>
+<link href="manual_3.html" rel=Previous>
+<link href="manual_toc.html" rel=ToC>
+
 </HEAD>
 <BODY>
-Go to the <A HREF="manual_1.html">first</A>, <A HREF="manual_3.html">previous</A>, next, last section, <A HREF="manual_toc.html">table of contents</A>.
+<p>Go to the <A HREF="manual_1.html">first</A>, <A HREF="manual_3.html">previous</A>, next, last section, <A HREF="manual_toc.html">table of contents</A>.
 <P><HR><P>
 
 
@@ -21,7 +24,7 @@ vary.
 
 <H2><A NAME="SEC44" HREF="manual_toc.html#TOC44">Limitations of the compressed file format</A></H2>
 <P>
-<CODE>bzip2-0.9.5</CODE> and <CODE>0.9.0</CODE>
+<CODE>bzip2-1.0</CODE>, <CODE>0.9.5</CODE> and <CODE>0.9.0</CODE>
 use exactly the same file format as the previous
 version, <CODE>bzip2-0.1</CODE>.  This decision was made in the interests of
 stability.  Creating yet another incompatible compressed file format
@@ -120,7 +123,7 @@ require some careful design of compressed file formats.
 <H2><A NAME="SEC45" HREF="manual_toc.html#TOC45">Portability issues</A></H2>
 <P>
 After some consideration, I have decided not to use
-GNU <CODE>autoconf</CODE> to configure 0.9.5.
+GNU <CODE>autoconf</CODE> to configure 0.9.5 or 1.0.
 
 </P>
 <P>
@@ -204,7 +207,7 @@ If you get problems, try using the flags
 <CODE>-O2</CODE> <CODE>-fomit-frame-pointer</CODE> <CODE>-fno-strength-reduce</CODE>.
 You should specifically <EM>not</EM> use <CODE>-funroll-loops</CODE>.
 
-You may notice that the Makefile runs four tests as part of
+You may notice that the Makefile runs six tests as part of
 the build process.  If the program passes all of these, it's
 a pretty good (but not 100%) indication that the compiler has
 done its job correctly.
@@ -302,6 +305,9 @@ memory but gets pretty good compression, and has minimal latency,
 consider Jean-loup
 Gailly's and Mark Adler's work, <CODE>zlib-1.1.2</CODE> and
 <CODE>gzip-1.2.4</CODE>.  Look for them at
+
+</P>
+<P>
 <CODE>http://www.cdrom.com/pub/infozip/zlib</CODE> and
 <CODE>http://www.gzip.org</CODE> respectively.
 
@@ -505,7 +511,18 @@ available from:
 http://www.cs.arizona.edu/people/gene/PAPERS/suffix.ps
 </PRE>
 
+<P>
+Finally, the following paper documents some recent investigations
+I made into the performance of sorting algorithms:
+
+<PRE>
+Julian Seward:
+   On the Performance of BWT Sorting Algorithms
+   Proceedings of the IEEE Data Compression Conference 2000
+     Snowbird, Utah.  28-30 March 2000.
+</PRE>
+
 <P><HR><P>
-Go to the <A HREF="manual_1.html">first</A>, <A HREF="manual_3.html">previous</A>, next, last section, <A HREF="manual_toc.html">table of contents</A>.
+<p>Go to the <A HREF="manual_1.html">first</A>, <A HREF="manual_3.html">previous</A>, next, last section, <A HREF="manual_toc.html">table of contents</A>.
 </BODY>
 </HTML>

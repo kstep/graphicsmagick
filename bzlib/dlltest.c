@@ -119,15 +119,15 @@ int main(int argc,char *argv[])
          }else{
             fp_w = stdout;
          }
-         if((BZ2fp_r == NULL && (BZ2fp_r = bzdopen(fileno(stdin),"rb"))==NULL)
-            || (BZ2fp_r != NULL && (BZ2fp_r = bzopen(fn_r,"rb"))==NULL)){
+         if((BZ2fp_r == NULL && (BZ2fp_r = BZ2_bzdopen(fileno(stdin),"rb"))==NULL)
+            || (BZ2fp_r != NULL && (BZ2fp_r = BZ2_bzopen(fn_r,"rb"))==NULL)){
             printf("can't bz2openstream\n");
             exit(1);
          }
-         while((len=bzread(BZ2fp_r,buff,0x1000))>0){
+         while((len=BZ2_bzread(BZ2fp_r,buff,0x1000))>0){
             fwrite(buff,1,len,fp_w);
          }
-         bzclose(BZ2fp_r);
+         BZ2_bzclose(BZ2fp_r);
          if(fp_w != stdout) fclose(fp_w);
       }else{
          BZFILE *BZ2fp_w = NULL;
@@ -146,15 +146,15 @@ int main(int argc,char *argv[])
          mode[1] = '0' + level;
          mode[2] = '\0';
 
-         if((fn_w == NULL && (BZ2fp_w = bzdopen(fileno(stdout),mode))==NULL)
-            || (fn_w !=NULL && (BZ2fp_w = bzopen(fn_w,mode))==NULL)){
+         if((fn_w == NULL && (BZ2fp_w = BZ2_bzdopen(fileno(stdout),mode))==NULL)
+            || (fn_w !=NULL && (BZ2fp_w = BZ2_bzopen(fn_w,mode))==NULL)){
             printf("can't bz2openstream\n");
             exit(1);
          }
          while((len=fread(buff,1,0x1000,fp_r))>0){
-            bzwrite(BZ2fp_w,buff,len);
+            BZ2_bzwrite(BZ2fp_w,buff,len);
          }
-         bzclose(BZ2fp_w);
+         BZ2_bzclose(BZ2fp_w);
          if(fp_r!=stdin)fclose(fp_r);
       }
    }

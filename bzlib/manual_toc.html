@@ -1,18 +1,99 @@
 <HTML>
 <HEAD>
-<!-- This HTML file has been created by texi2html 1.51
-     from manual.texi on 4 September 1999 -->
+<!-- This HTML file has been created by texi2html 1.54
+     from manual.texi on 23 March 2000 -->
 
 <TITLE>bzip2 and libbzip2 - Table of Contents</TITLE>
+
 </HEAD>
 <BODY>
 <H1>bzip2 and libbzip2</H1>
 <H2>a program and library for data compression</H2>
-<H2>copyright (C) 1996-1999 Julian Seward</H2>
-<H2>version 0.9.5d of 4 September 1999</H2>
+<H2>copyright (C) 1996-2000 Julian Seward</H2>
+<H2>version 1.0 of 21 March 2000</H2>
 <ADDRESS>Julian Seward</ADDRESS>
 <P>
 <P><HR><P>
+
+<P>
+This program, <CODE>bzip2</CODE>, 
+and associated library <CODE>libbzip2</CODE>, are
+Copyright (C) 1996-2000 Julian R Seward.  All rights reserved.
+
+</P>
+<P>
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+<UL>
+<LI>
+
+   Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+<LI>
+
+   The origin of this software must not be misrepresented; you must 
+   not claim that you wrote the original software.  If you use this 
+   software in a product, an acknowledgment in the product 
+   documentation would be appreciated but is not required.
+<LI>
+
+   Altered source versions must be plainly marked as such, and must
+   not be misrepresented as being the original software.
+<LI>
+
+   The name of the author may not be used to endorse or promote 
+   products derived from this software without specific prior written 
+   permission.
+</UL>
+
+<P>
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS
+OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+</P>
+<P>
+Julian Seward, Cambridge, UK.
+
+</P>
+<P>
+<CODE>jseward@acm.org</CODE>
+
+</P>
+<P>
+<CODE>http://sourceware.cygnus.com/bzip2</CODE>
+
+</P>
+<P>
+<CODE>http://www.cacheprof.org</CODE>
+
+</P>
+<P>
+<CODE>http://www.muraroa.demon.co.uk</CODE>
+
+</P>
+<P>
+<CODE>bzip2</CODE>/<CODE>libbzip2</CODE> version 1.0 of 21 March 2000.
+
+</P>
+<P>
+PATENTS: To the best of my knowledge, <CODE>bzip2</CODE> does not use any patented
+algorithms.  However, I do not have the resources available to carry out
+a full patent search.  Therefore I cannot give any guarantee of the
+above statement.
+
+</P>
+
 <UL>
 <LI><A NAME="TOC1" HREF="manual_1.html#SEC1">Introduction</A>
 <LI><A NAME="TOC2" HREF="manual_2.html#SEC2">How to use <CODE>bzip2</CODE></A>
@@ -51,20 +132,20 @@
 </UL>
 <LI><A NAME="TOC25" HREF="manual_3.html#SEC25">High-level interface</A>
 <UL>
-<LI><A NAME="TOC26" HREF="manual_3.html#SEC26"><CODE>bzReadOpen</CODE></A>
-<LI><A NAME="TOC27" HREF="manual_3.html#SEC27"><CODE>bzRead</CODE></A>
-<LI><A NAME="TOC28" HREF="manual_3.html#SEC28"><CODE>bzReadGetUnused</CODE></A>
-<LI><A NAME="TOC29" HREF="manual_3.html#SEC29"><CODE>bzReadClose</CODE></A>
-<LI><A NAME="TOC30" HREF="manual_3.html#SEC30"><CODE>bzWriteOpen</CODE></A>
-<LI><A NAME="TOC31" HREF="manual_3.html#SEC31"><CODE>bzWrite</CODE></A>
-<LI><A NAME="TOC32" HREF="manual_3.html#SEC32"><CODE>bzWriteClose</CODE></A>
+<LI><A NAME="TOC26" HREF="manual_3.html#SEC26"><CODE>BZ2_bzReadOpen</CODE></A>
+<LI><A NAME="TOC27" HREF="manual_3.html#SEC27"><CODE>BZ2_bzRead</CODE></A>
+<LI><A NAME="TOC28" HREF="manual_3.html#SEC28"><CODE>BZ2_bzReadGetUnused</CODE></A>
+<LI><A NAME="TOC29" HREF="manual_3.html#SEC29"><CODE>BZ2_bzReadClose</CODE></A>
+<LI><A NAME="TOC30" HREF="manual_3.html#SEC30"><CODE>BZ2_bzWriteOpen</CODE></A>
+<LI><A NAME="TOC31" HREF="manual_3.html#SEC31"><CODE>BZ2_bzWrite</CODE></A>
+<LI><A NAME="TOC32" HREF="manual_3.html#SEC32"><CODE>BZ2_bzWriteClose</CODE></A>
 <LI><A NAME="TOC33" HREF="manual_3.html#SEC33">Handling embedded compressed data streams</A>
 <LI><A NAME="TOC34" HREF="manual_3.html#SEC34">Standard file-reading/writing code</A>
 </UL>
 <LI><A NAME="TOC35" HREF="manual_3.html#SEC35">Utility functions</A>
 <UL>
-<LI><A NAME="TOC36" HREF="manual_3.html#SEC36"><CODE>bzBuffToBuffCompress</CODE></A>
-<LI><A NAME="TOC37" HREF="manual_3.html#SEC37"><CODE>bzBuffToBuffDecompress</CODE></A>
+<LI><A NAME="TOC36" HREF="manual_3.html#SEC36"><CODE>BZ2_bzBuffToBuffCompress</CODE></A>
+<LI><A NAME="TOC37" HREF="manual_3.html#SEC37"><CODE>BZ2_bzBuffToBuffDecompress</CODE></A>
 </UL>
 <LI><A NAME="TOC38" HREF="manual_3.html#SEC38"><CODE>zlib</CODE> compatibility functions</A>
 <LI><A NAME="TOC39" HREF="manual_3.html#SEC39">Using the library in a <CODE>stdio</CODE>-free environment</A>
@@ -85,8 +166,8 @@
 </UL>
 </UL>
 <P><HR><P>
-This document was generated on 4 September 1999 using the
+This document was generated on 23 March 2000 using the
 <A HREF="http://wwwcn.cern.ch/dci/texi2html/">texi2html</A>
-translator version 1.51.</P>
+translator version 1.51a.</P>
 </BODY>
 </HTML>
