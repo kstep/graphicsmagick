@@ -117,9 +117,9 @@ register IndexPacket *indexes;
 	     break;
            for (x=0; x < (long) image->columns; x++)
               {
-              q->red=XDownscale(*(WORD *)p);
-              q->green=XDownscale(*(WORD *)p);
-              q->blue=XDownscale(*(WORD *)p);
+              q->red=XDownScale(*(WORD *)p);
+              q->green=XDownScale(*(WORD *)p);
+              q->blue=XDownScale(*(WORD *)p);
 	      p+=2;
               q++;
               }
@@ -148,9 +148,9 @@ register PixelPacket *q;
    for (x=0; x < (long) image->columns; x++)
           {
 	  f=(double)MaxRGB* (*p-Min)/(Max-Min);
-          q->red=XDownscale(f);
-	  q->green=XDownscale(f);
-	  q->blue=XDownscale(f);
+          q->red=XDownScale(f);
+	  q->green=XDownScale(f);
+	  q->blue=XDownScale(f);
           p++;
           q++;
           }
@@ -205,6 +205,18 @@ register PixelPacket *q;
 }
 
 
+/*This function reads one block of WORDS*/
+void ReadBlobWordLSB(Image *I,size_t len,WORD *data)
+{
+while(len>=2)
+   {
+   *data++=ReadBlobLSBShort(I);
+   len-=2;
+   }
+if(len>0) (void) SeekBlob(I,len,SEEK_CUR);   
+}
+
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -254,7 +266,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image=AllocateImage(image_info);
   
-  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
@@ -320,7 +332,7 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",
 		}
 	     ldblk=8*MATLAB_HDR.SizeX;
              break; 
-      default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image)
+      default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image);   
       }	  
 
    image->columns= MATLAB_HDR.SizeX;
@@ -342,9 +354,9 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    
      for (i=0; i < (long)image->colors; i++)
            {
-           image->colormap[i].red=Upscale(i);
-           image->colormap[i].green=Upscale(i);
-           image->colormap[i].blue=Upscale(i);
+           image->colormap[i].red=UpScale(i);
+           image->colormap[i].green=UpScale(i);
+           image->colormap[i].blue=UpScale(i);
            }
      }	    
 
@@ -354,8 +366,6 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    if(BImgBuff==NULL) goto NoMemory;
 
 
-   Min=0;
-   Max=0;
    if(CellType==9) /*Find Min and Max Values for floats*/
      {
      filepos=TellBlob(image);
@@ -377,12 +387,16 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	/*Main loop for reading all scanlines*/
    for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
         {
-        (void) ReadBlob(image,ldblk,(char *)BImgBuff);
 	switch(CellType)
 	    {
-	    case 9:InsertFloatRow((double *)BImgBuff,i,image,Min,Max);
+	    case 4:ReadBlobWordLSB(image,ldblk,(WORD *)BImgBuff);
+		   InsertRow(BImgBuff,i,image);
 		   break;
-	    default:InsertRow(BImgBuff,i,image);
+	    case 9:(void) ReadBlob(image,ldblk,(char *)BImgBuff);
+		   InsertFloatRow((double *)BImgBuff,i,image,Min,Max);
+		   break;
+	    default:(void) ReadBlob(image,ldblk,(char *)BImgBuff);
+		    InsertRow(BImgBuff,i,image);
 	    }	
         }
 	
