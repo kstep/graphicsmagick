@@ -242,17 +242,17 @@ MagickExport unsigned int EqualizeImage(Image *image)
   for (i=0; i <= 65535; i++)
   {
     if (high.red != low.red)
-      equalize_map[i].red=
-        ScaleShortToQuantum((65535*(map[i].red-low.red))/(high.red-low.red));
+      equalize_map[i].red=ScaleShortToQuantum(
+        (65535.0*(map[i].red-low.red))/(high.red-low.red));
     if (high.green != low.green)
       equalize_map[i].green=ScaleShortToQuantum(
-        (65535*(map[i].green-low.green))/(high.green-low.green));
+        (65535.0*(map[i].green-low.green))/(high.green-low.green));
     if (high.blue != low.blue)
       equalize_map[i].blue=ScaleShortToQuantum(
-        (65535*(map[i].blue-low.blue))/(high.blue-low.blue));
+        (65535.0*(map[i].blue-low.blue))/(high.blue-low.blue));
     if (high.opacity != low.opacity)
       equalize_map[i].opacity=ScaleShortToQuantum(
-        (65535*(map[i].opacity-low.opacity))/(high.opacity-low.opacity));
+        (65535.0*(map[i].opacity-low.opacity))/(high.opacity-low.opacity));
   }
   LiberateMemory((void **) &histogram);
   LiberateMemory((void **) &map);
