@@ -8,6 +8,8 @@
 	an external command which (quickly) returns the
 	amount of physical memory installed on the machine.
 	Currently only activated for FreeBSD.
+	(MAGICK_PHYSICAL_MEMORY_COMMAND): Use sysctl to
+	determine total physical memory for Darwin.
 	* magick/delegate.c (ListDelegateInfo): If COLUMNS
 	environment variable is set, then use it to obtain
 	the screen width.  Some shells dynamically update

@@ -27431,7 +27431,7 @@ done
 ########
 MAGICK_PHYSICAL_MEMORY_COMMAND=''
 case "${host}" in
-  *-*-freebsd* )
+  *-*-freebsd* | *-apple-darwin*)
     # Extract the first word of "sysctl", so it can be a program name with args.
 set dummy sysctl; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
@@ -27474,6 +27474,7 @@ fi
     if test "${SysCtlDelegate}X" != 'X'
     then
        # "sysctl -n hw.physmem" became available in FreeBSD 2.0
+       # Apple's Darwin is based on FreeBSD and supports sysctl
        MAGICK_PHYSICAL_MEMORY_COMMAND="${SysCtlDelegate} -n hw.physmem"
     fi
     ;;

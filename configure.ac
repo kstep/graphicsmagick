@@ -688,11 +688,12 @@ AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll pread \
 ########
 MAGICK_PHYSICAL_MEMORY_COMMAND=''
 case "${host}" in
-  *-*-freebsd* )
+  *-*-freebsd* | *-apple-darwin*)
     AC_PATH_PROG(SysCtlDelegate,sysctl,)
     if test "${SysCtlDelegate}X" != 'X'
     then
        # "sysctl -n hw.physmem" became available in FreeBSD 2.0
+       # Apple's Darwin is based on FreeBSD and supports sysctl
        MAGICK_PHYSICAL_MEMORY_COMMAND="${SysCtlDelegate} -n hw.physmem"
     fi
     ;;
