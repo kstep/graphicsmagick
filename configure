@@ -23144,7 +23144,8 @@ fi
 # Check additional headers
 
 
-for ac_header in sys/times.h sys/types.h
+
+for ac_header in machine/param.h sys/times.h sys/types.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then

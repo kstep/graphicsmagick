@@ -47,6 +47,17 @@
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 #include "magick/version.h"
+#if defined(HasSharedMemory)
+# if defined(HAVE_MACHINE_PARAM_H)
+   /* Need by some *BSD systems in order to use shmget */
+#  include <machine/param.h>
+# endif /* defined(HAVE_MACHINE_PARAM_H */
+# if __FreeBSD__ >= 5
+   typedef unsigned short ushort; /* needed for sys/ipc.h at the moment */
+# endif
+# include <sys/ipc.h>
+# include <sys/shm.h>
+#endif
 #include "magick/xwindow.h"
 #if defined(HasX11)
 
@@ -8059,7 +8070,7 @@ MagickExport void XRefreshWindow(Display *display,const XWindowInfo *window,
       if (window->shared_memory)
         (void) XShmPutImage(display,window->id,window->annotate_context,
           window->ximage,x+window->x,y+window->y,x,y,width,height,True);
-#endif
+#endif /* defined(HasSharedMemory) */
       if (!window->shared_memory)
         (void) XPutImage(display,window->id,window->annotate_context,
           window->ximage,x+window->x,y+window->y,x,y,width,height);
@@ -8425,7 +8436,7 @@ MagickExport void XSignalHandler(int status)
       (void) shmdt(windows->magnify.segment_info[0].shmaddr);
       (void) shmctl(windows->magnify.segment_info[0].shmid,IPC_RMID,0);
     }
-#endif
+#endif /* defined(HasSharedMemory) */
   DestroyMagick();
   Exit(status);
 }
@@ -8598,7 +8609,7 @@ MagickExport void XUserPreferences(XResourceInfo *resource_info)
   FormatString(filename,"%.1024s%.1024src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   XrmPutFileDatabase(preferences_database,filename);
-#endif
+#endif /* defined(PreferencesDefaults) */
 }
 
 /*
@@ -8914,4 +8925,4 @@ MagickExport Window XWindowByProperty(Display *display,const Window window,
     (void) XFree((void *) children);
   return(child);
 }
-#endif
+#endif /* HasX11 */

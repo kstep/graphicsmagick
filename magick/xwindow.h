@@ -21,38 +21,36 @@ extern "C" {
 #undef True
 #define XLIB_ILLEGAL_ACCESS  1
 #if !defined(macintosh)
-#include <X11/Xos.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xresource.h>
-#include <X11/Xproto.h>
-#include <X11/Xatom.h>
-#include <X11/Xlocale.h>
-#include <X11/cursorfont.h>
-#include <X11/keysym.h>
-#if !defined(vms)
-#include <X11/XWDFile.h>
+# include <X11/Xos.h>
+# include <X11/Xlib.h>
+# include <X11/Xutil.h>
+# include <X11/Xresource.h>
+# include <X11/Xproto.h>
+# include <X11/Xatom.h>
+# include <X11/Xlocale.h>
+# include <X11/cursorfont.h>
+# include <X11/keysym.h>
+# if !defined(vms)
+#  include <X11/XWDFile.h>
+# else
+#  include "XWDFile.h"
+# endif
 #else
-#include "XWDFile.h"
-#endif
-#else
-#include <Xos.h>
-#include <Xlib.h>
-#include <Xutil.h>
-#include <Xresource.h>
-#include <Xproto.h>
-#include <Xatom.h>
-#include <cursorfont.h>
-#include <keysym.h>
-#include <XWDFile.h>
+# include <Xos.h>
+# include <Xlib.h>
+# include <Xutil.h>
+# include <Xresource.h>
+# include <Xproto.h>
+# include <Xatom.h>
+# include <cursorfont.h>
+# include <keysym.h>
+# include <XWDFile.h>
 #endif
 #if defined(HasShape)
-#include <X11/extensions/shape.h>
+# include <X11/extensions/shape.h>
 #endif
 #if defined(HasSharedMemory)
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <X11/extensions/XShm.h>
+# include <X11/extensions/XShm.h>
 #endif
 #if defined(HasDPS)
 # include <DPS/dpsXclient.h>
@@ -63,9 +61,9 @@ extern "C" {
 
 #undef index
 #if defined(hpux9)
-#define XFD_SET  int
+# define XFD_SET  int
 #else
-#define XFD_SET  fd_set
+# define XFD_SET  fd_set
 #endif
 
 /*

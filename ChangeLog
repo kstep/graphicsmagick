@@ -1,5 +1,8 @@
 2003-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/xwindow.c, magick/xwindow.h, magick/studio.h: Use FreeBSD
+	portability fixes from FreeBSD ports collection.
+	* configure.ac: Test for <machine/param.h> as used by some *BSD systems.
 	* QuickStart.txt, www/QuickStart.html: Don't distribute QuickStart.txt or
 	www/QuickStart.html since the content doesn't currently apply to
 	GraphicsMagick.

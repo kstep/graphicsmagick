@@ -601,7 +601,7 @@ AC_HEADER_STDC
 AC_HEADER_DIRENT
 
 # Check additional headers
-AC_CHECK_HEADERS(sys/times.h sys/types.h)
+AC_CHECK_HEADERS(machine/param.h sys/times.h sys/types.h)
 
 ########
 #
